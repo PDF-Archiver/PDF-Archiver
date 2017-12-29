@@ -761,15 +761,27 @@
                                     <action selector="previousButtonClicked:" target="XfG-lQ-9wD" id="938-7c-fZJ"/>
                                 </connections>
                             </button>
+                            <datePicker verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NiF-3c-nL6">
+                                <rect key="frame" x="814" y="453" width="96" height="27"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="IuJ-3v-wqE">
+                                    <font key="font" metaFont="system"/>
+                                    <date key="date" timeIntervalSinceReferenceDate="-595929600">
+                                        <!--1982-02-12 16:00:00 +0000-->
+                                    </date>
+                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                </datePickerCell>
+                            </datePicker>
                             <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="22" horizontalPageScroll="10" verticalLineScroll="22" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I5d-lP-2pc">
-                                <rect key="frame" x="503" y="20" width="209" height="398"/>
+                                <rect key="frame" x="503" y="20" width="209" height="354"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <clipView key="contentView" ambiguous="YES" drawsBackground="NO" id="wWG-Us-q19">
-                                    <rect key="frame" x="1" y="1" width="207" height="396"/>
+                                    <rect key="frame" x="1" y="1" width="207" height="352"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="sourceList" multipleSelection="NO" autosaveColumns="NO" rowHeight="22" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="14" outlineTableColumn="8bn-K4-2u1" id="acP-61-Cuu">
-                                            <rect key="frame" x="0.0" y="0.0" width="207" height="396"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="207" height="352"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="0.0"/>
                                             <color key="backgroundColor" name="_sourceListBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -944,18 +956,17 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <datePicker verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NiF-3c-nL6">
-                                <rect key="frame" x="814" y="453" width="96" height="27"/>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0fO-Ka-cSd">
+                                <rect key="frame" x="497" y="391" width="221" height="32"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="IuJ-3v-wqE">
+                                <buttonCell key="cell" type="push" title="select folder" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="O5o-sv-h0r">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
-                                    <date key="date" timeIntervalSinceReferenceDate="-595929600">
-                                        <!--1982-02-12 16:00:00 +0000-->
-                                    </date>
-                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                </datePickerCell>
-                            </datePicker>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="browseFileWithSender:" target="XfG-lQ-9wD" id="NCs-zK-jLg"/>
+                                </connections>
+                            </button>
                         </subviews>
                     </view>
                     <connections>
