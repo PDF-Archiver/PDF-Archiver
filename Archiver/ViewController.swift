@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import Quartz
 
 class ViewController: NSViewController {
     @IBOutlet weak var myDatePicker: NSDatePicker!
@@ -14,10 +15,23 @@ class ViewController: NSViewController {
     @IBOutlet weak var tagField: NSTextField!
     @IBOutlet weak var filenameField: NSTextField!
     
+    @IBOutlet weak var pdfPreview: PDFView!
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+//        let url = URL(string: "~/Downloads/test.pdf")
+//
+//        var document: PDFDocument?
+//        var pdfview: PDFView?
+//        pdfview = PDFView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height))
+//        document = PDFDocument(path: url!)
+//
+//        pdfview.document = document
+//        pdfview.displayMode = PDFDisplayMode.singlePageContinuous
+//        pdfview.autoScales = true
+//
+//        self.pdfPreview.addSubview(pdfview)
     }
     
     override var representedObject: Any? {

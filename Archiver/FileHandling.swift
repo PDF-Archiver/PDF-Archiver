@@ -7,8 +7,9 @@
 //
 
 import Foundation
+import Quartz
 
-struct PDFDocument {
+class PDFDocument {
     
     var basepath: URL
     var name: String
@@ -34,4 +35,12 @@ struct PDFDocument {
         print("parse all the things")
     }
     
+}
+
+func loadPDF(path: URL) {
+    
+    let url = NSBundle.mainBundle().URLForResource("myPDF", withExtension: "pdf")
+    let pdf = PDFDocument(URL: url)
+    pdf.pageCount() // number of pages in document
+    pdf.string() // entire text of document
 }

@@ -975,6 +975,7 @@
                         <outlet property="helloLabel" destination="2Sh-Rh-rhA" id="d2q-Tv-rCG"/>
                         <outlet property="myDatePicker" destination="NiF-3c-nL6" id="JmY-lT-052"/>
                         <outlet property="nameField" destination="2Sh-Rh-rhA" id="kGd-Sj-fch"/>
+                        <outlet property="pdfPreview" destination="80e-Of-Nzi" id="Jya-y4-cqt"/>
                         <outlet property="tagField" destination="2Sh-Rh-rhA" id="iLG-qI-W3D"/>
                     </connections>
                 </viewController>
