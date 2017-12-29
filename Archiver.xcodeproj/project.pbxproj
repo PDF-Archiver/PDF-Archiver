@@ -13,6 +13,7 @@
 		A31B52F11FF694B0007A3D14 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A31B52EF1FF694B0007A3D14 /* Main.storyboard */; };
 		A31B52FD1FF694B0007A3D14 /* ArchiverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B52FC1FF694B0007A3D14 /* ArchiverTests.swift */; };
 		A31B53081FF694B0007A3D14 /* ArchiverUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B53071FF694B0007A3D14 /* ArchiverUITests.swift */; };
+		A31B53171FF6A6D8007A3D14 /* PDFDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B53161FF6A6D8007A3D14 /* PDFDocument.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +47,7 @@
 		A31B53031FF694B0007A3D14 /* ArchiverUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ArchiverUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A31B53071FF694B0007A3D14 /* ArchiverUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiverUITests.swift; sourceTree = "<group>"; };
 		A31B53091FF694B0007A3D14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A31B53161FF6A6D8007A3D14 /* PDFDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFDocument.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,12 +98,13 @@
 		A31B52E81FF694B0007A3D14 /* Archiver */ = {
 			isa = PBXGroup;
 			children = (
+				A31B52F21FF694B0007A3D14 /* Info.plist */,
+				A31B52F31FF694B0007A3D14 /* Archiver.entitlements */,
 				A31B52E91FF694B0007A3D14 /* AppDelegate.swift */,
 				A31B52EB1FF694B0007A3D14 /* ViewController.swift */,
 				A31B52ED1FF694B0007A3D14 /* Assets.xcassets */,
 				A31B52EF1FF694B0007A3D14 /* Main.storyboard */,
-				A31B52F21FF694B0007A3D14 /* Info.plist */,
-				A31B52F31FF694B0007A3D14 /* Archiver.entitlements */,
+				A31B53161FF6A6D8007A3D14 /* PDFDocument.swift */,
 			);
 			path = Archiver;
 			sourceTree = "<group>";
@@ -258,6 +261,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A31B52EC1FF694B0007A3D14 /* ViewController.swift in Sources */,
+				A31B53171FF6A6D8007A3D14 /* PDFDocument.swift in Sources */,
 				A31B52EA1FF694B0007A3D14 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

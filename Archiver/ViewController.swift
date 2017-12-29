@@ -9,6 +9,7 @@
 import Cocoa
 
 class ViewController: NSViewController {
+    @IBOutlet weak var myDatePicker: NSDatePicker!
     @IBOutlet weak var descriptionField: NSTextField!
     @IBOutlet weak var tagField: NSTextField!
     @IBOutlet weak var filenameField: NSTextField!
@@ -24,15 +25,8 @@ class ViewController: NSViewController {
         // Update the view, if already loaded.
         }
     }
-//    @IBAction func sayButtonClicked(_ sender: Any) {
-//        var name = nameField.stringValue
-//        if name.isEmpty {
-//            name = "World"
-//        }
-//        let greeting = "Hello \(name)!"
-//        helloLabel.stringValue = greeting
-//    }
     
+    // button callbacks
     @IBAction func nextButtonClicked(_ sender: Any) {
         let greeting = "NEXT"
         filenameField.stringValue = greeting
@@ -42,19 +36,22 @@ class ViewController: NSViewController {
         filenameField.stringValue = greeting
     }
     @IBAction func saveButtonClicked(_ sender: Any) {
+        // getting & setting the date/time value
+        let myDate = myDatePicker.dateValue
+        print(myDate)
     }
     
     @IBAction func browseFile(sender: AnyObject) {
-        
+    
         let dialog = NSOpenPanel();
         
-        dialog.title                   = "Choose a .txt file";
-        dialog.showsResizeIndicator    = true;
-        dialog.showsHiddenFiles        = false;
-        dialog.canChooseDirectories    = true;
-        dialog.canCreateDirectories    = true;
-        dialog.allowsMultipleSelection = false;
-        dialog.allowedFileTypes        = ["txt"];
+        dialog.title                   = "Choose a .txt file"
+        dialog.showsResizeIndicator    = true
+        dialog.showsHiddenFiles        = false
+        dialog.canChooseDirectories    = true
+        dialog.canCreateDirectories    = true
+        dialog.allowsMultipleSelection = false
+        dialog.allowedFileTypes        = ["pdf"]
         
         if (dialog.runModal() == NSApplication.ModalResponse.OK) {
             let result = dialog.url // Pathname of the file
@@ -67,8 +64,9 @@ class ViewController: NSViewController {
             // User clicked on "Cancel"
             return
         }
-        
     }
+    
+    
     
 }
 

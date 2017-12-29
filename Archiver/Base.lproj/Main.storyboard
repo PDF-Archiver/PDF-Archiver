@@ -973,6 +973,7 @@
                         <outlet property="descriptionField" destination="WG2-MH-TVV" id="Zpw-ZF-ogL"/>
                         <outlet property="filenameField" destination="Gmk-Fi-bVz" id="CuC-Jy-qFN"/>
                         <outlet property="helloLabel" destination="2Sh-Rh-rhA" id="d2q-Tv-rCG"/>
+                        <outlet property="myDatePicker" destination="NiF-3c-nL6" id="JmY-lT-052"/>
                         <outlet property="nameField" destination="2Sh-Rh-rhA" id="kGd-Sj-fch"/>
                         <outlet property="tagField" destination="2Sh-Rh-rhA" id="iLG-qI-W3D"/>
                     </connections>
