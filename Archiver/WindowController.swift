@@ -41,8 +41,13 @@ class WindowController: NSWindowController {
             guard response == NSApplication.ModalResponse.OK else {
                 return
             }
-            self.contentViewController?.representedObject = openPanel.urls
-            print(openPanel.urls)
+            // self.contentViewController?.representedObject = openPanel.urls
+            for element in openPanel.urls {
+                print(element)
+                // test every file
+                var tmp = getPDFs(url: element)
+                print(tmp)
+            }
         }
     }
     
