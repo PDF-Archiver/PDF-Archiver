@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  FileHandling.swift
 //  Archiver
 //
 //  Created by Julian Kahnert on 29.12.17.
@@ -37,10 +37,11 @@ class PDFDocument {
     
 }
 
-func loadPDF(path: URL) {
-    
-    let url = NSBundle.mainBundle().URLForResource("myPDF", withExtension: "pdf")
-    let pdf = PDFDocument(URL: url)
-    pdf.pageCount() // number of pages in document
-    pdf.string() // entire text of document
-}
+//func loadPDF(path: URL) {
+//    
+//    let url = NSBundle.mainBundle().URLForResource("myPDF", withExtension: "pdf")
+//    let pdf = PDFDocument(URL: url)
+//    pdf.pageCount() // number of pages in document
+//    pdf.string() // entire text of document
+//}
+

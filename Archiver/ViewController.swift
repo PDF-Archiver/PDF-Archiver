@@ -56,28 +56,7 @@ class ViewController: NSViewController {
     }
     
     @IBAction func browseFile(sender: AnyObject) {
-    
-        let dialog = NSOpenPanel();
-        
-        dialog.title                   = "Choose a .txt file"
-        dialog.showsResizeIndicator    = true
-        dialog.showsHiddenFiles        = false
-        dialog.canChooseDirectories    = true
-        dialog.canCreateDirectories    = true
-        dialog.allowsMultipleSelection = false
-        dialog.allowedFileTypes        = ["pdf"]
-        
-        if (dialog.runModal() == NSApplication.ModalResponse.OK) {
-            let result = dialog.url // Pathname of the file
-            
-            if (result != nil) {
-                let path = result!.path
-                filenameField.stringValue = path
-            }
-        } else {
-            // User clicked on "Cancel"
-            return
-        }
+        // browse file callback
     }
     
     
