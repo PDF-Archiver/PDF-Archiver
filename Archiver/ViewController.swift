@@ -16,29 +16,24 @@ class ViewController: NSViewController {
     @IBOutlet weak var filenameField: NSTextField!
     
     @IBOutlet weak var pdfPreview: PDFView!
+    @IBOutlet var documentAC: NSArrayController!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
-//        let url = URL(string: "~/Downloads/test.pdf")
-//
-//        var document: PDFDocument?
-//        var pdfview: PDFView?
-//        pdfview = PDFView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height))
-//        document = PDFDocument(path: url!)
-//
-//        pdfview.document = document
-//        pdfview.displayMode = PDFDisplayMode.singlePageContinuous
-//        pdfview.autoScales = true
-//
-//        self.pdfPreview.addSubview(pdfview)
+        
+        let pdf_path = URL(fileURLWithPath: "~/Downloads/test.pdf")
+        let test = PDFDocument(path: pdf_path)
+        self.documentAC.addObject(test)
+        
     }
     
-    override var representedObject: Any? {
-        didSet {
-        // Update the view, if already loaded.
-        }
-    }
+//    override var representedObject: Any? {
+//        didSet {
+//            if let url = representedObject as? URL {
+////                directory = Directory(folderURL: url)
+//            }
+//        }
+//    }
     
     // button callbacks
     @IBAction func nextButtonClicked(_ sender: Any) {
@@ -58,8 +53,4 @@ class ViewController: NSViewController {
     @IBAction func browseFile(sender: AnyObject) {
         // browse file callback
     }
-    
-    
-    
 }
-

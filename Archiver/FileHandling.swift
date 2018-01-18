@@ -9,21 +9,19 @@
 import Foundation
 import Quartz
 
-struct PDFDocument {
+class PDFDocument: NSObject {
     // structure for PDF documents on disk
     
-    var basepath: URL
-    var name: String
+    @objc var basepath: URL
+    @objc var name: String
     var date: Date?
-    var description: String?
+//    var description: String
     var tags = Set<Character>()
     
     init(path: URL) {
         // create a filename and rename the document
         self.basepath = path.deletingLastPathComponent()
         self.name = path.lastPathComponent
-        
-        parse()
     }
     
     func rename() {
