@@ -10,12 +10,13 @@ import Cocoa
 import Quartz
 
 class ViewController: NSViewController {
+    @IBOutlet weak var pdfview: PDFView!
+    
     @IBOutlet weak var myDatePicker: NSDatePicker!
     @IBOutlet weak var descriptionField: NSTextField!
     @IBOutlet weak var tagField: NSTextField!
     @IBOutlet weak var filenameField: NSTextField!
     
-    @IBOutlet weak var pdfPreview: PDFView!
     @IBOutlet var documentAC: NSArrayController!
     
     // outlets
@@ -37,9 +38,18 @@ class ViewController: NSViewController {
         browse_files()
     }
     
-    // other stuff
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+
+        // TODO: example code
+        let url = URL(fileURLWithPath: "/Users/juka/Downloads/test.pdf")
+        pdfview.document = PDFDocument(url: url)
+        pdfview.displayMode = PDFDisplayMode.singlePageContinuous
+//        pdfview.displayMode = PDFDisplayMode.singlePage
+        pdfview.autoScales = false
+        
     }
+    
 
 }

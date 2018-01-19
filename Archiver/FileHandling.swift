@@ -9,7 +9,7 @@
 import Foundation
 import Quartz
 
-class PDFDocument: NSObject {
+class Document: NSObject {
     // structure for PDF documents on disk
     var path: URL
     var already_done: Bool
@@ -61,7 +61,7 @@ func browse_files() {
         // add new objects
         for element in openPanel.urls {
             for pdf_path in getPDFs(url: element) {
-                controller.documentAC.addObject(PDFDocument(path: pdf_path))
+                controller.documentAC.addObject(Document(path: pdf_path))
             }
         }
     }

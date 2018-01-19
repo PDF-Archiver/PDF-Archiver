@@ -14,6 +14,7 @@
 		A31B52FD1FF694B0007A3D14 /* ArchiverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B52FC1FF694B0007A3D14 /* ArchiverTests.swift */; };
 		A31B53081FF694B0007A3D14 /* ArchiverUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B53071FF694B0007A3D14 /* ArchiverUITests.swift */; };
 		A31B53171FF6A6D8007A3D14 /* FileHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B53161FF6A6D8007A3D14 /* FileHandling.swift */; };
+		A32D52F02012B5150032F05C /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A32D52EF2012B5150032F05C /* Quartz.framework */; };
 		A38A58AB1FFFA72D003F0573 /* WindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38A58AA1FFFA72D003F0573 /* WindowController.swift */; };
 /* End PBXBuildFile section */
 
@@ -49,6 +50,7 @@
 		A31B53071FF694B0007A3D14 /* ArchiverUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiverUITests.swift; sourceTree = "<group>"; };
 		A31B53091FF694B0007A3D14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A31B53161FF6A6D8007A3D14 /* FileHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHandling.swift; sourceTree = "<group>"; };
+		A32D52EF2012B5150032F05C /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
 		A38A58AA1FFFA72D003F0573 /* WindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -57,6 +59,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A32D52F02012B5150032F05C /* Quartz.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -84,6 +87,7 @@
 				A31B52FB1FF694B0007A3D14 /* ArchiverTests */,
 				A31B53061FF694B0007A3D14 /* ArchiverUITests */,
 				A31B52E71FF694B0007A3D14 /* Products */,
+				A32D52EE2012B5150032F05C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -128,6 +132,14 @@
 				A31B53091FF694B0007A3D14 /* Info.plist */,
 			);
 			path = ArchiverUITests;
+			sourceTree = "<group>";
+		};
+		A32D52EE2012B5150032F05C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A32D52EF2012B5150032F05C /* Quartz.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
