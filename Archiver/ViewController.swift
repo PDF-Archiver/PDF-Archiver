@@ -18,32 +18,15 @@ class ViewController: NSViewController {
     @IBOutlet weak var pdfPreview: PDFView!
     @IBOutlet var documentAC: NSArrayController!
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        let pdf_path = URL(fileURLWithPath: "~/Downloads/test.pdf")
-        let test = PDFDocument(path: pdf_path)
-        self.documentAC.addObject(test)
-        
-    }
-    
-//    override var representedObject: Any? {
-//        didSet {
-//            if let url = representedObject as? URL {
-////                directory = Directory(folderURL: url)
-//            }
-//        }
-//    }
-    
-    // button callbacks
+    // outlets
     @IBAction func nextButtonClicked(_ sender: Any) {
-        let greeting = "NEXT"
-        filenameField.stringValue = greeting
+        filenameField.stringValue = "NEXT"
     }
+    
     @IBAction func previousButtonClicked(_ sender: Any) {
-        let greeting = "PREVIOUS"
-        filenameField.stringValue = greeting
+        filenameField.stringValue = "PREVIOUS"
     }
+    
     @IBAction func saveButtonClicked(_ sender: Any) {
         // getting & setting the date/time value
         let myDate = myDatePicker.dateValue
@@ -51,28 +34,12 @@ class ViewController: NSViewController {
     }
     
     @IBAction func browseFile(sender: AnyObject) {
-        
-        let dialog = NSOpenPanel();
-        
-        dialog.title                   = "Choose a .txt file";
-        dialog.showsResizeIndicator    = true;
-        dialog.showsHiddenFiles        = false;
-        dialog.canChooseDirectories    = true;
-        dialog.canCreateDirectories    = true;
-        dialog.allowsMultipleSelection = false;
-        dialog.allowedFileTypes        = ["txt"];
-        
-        if (dialog.runModal() == NSApplication.ModalResponse.OK) {
-            let result = dialog.url // Pathname of the file
-            
-            if (result != nil) {
-                let path = result!.path
-                filenameField.stringValue = path
-            }
-        } else {
-            // User clicked on "Cancel"
-            return
-        }
-        
+        browse_files()
     }
+    
+    // other stuff
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
+
 }

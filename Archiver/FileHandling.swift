@@ -11,17 +11,21 @@ import Quartz
 
 class PDFDocument: NSObject {
     // structure for PDF documents on disk
-    
+    var path: URL
+    var already_done: Bool
+    @objc var name: String?
     @objc var basepath: URL
-    @objc var name: String
-    var date: Date?
-//    var description: String
-    var tags = Set<Character>()
+    var pdf_filename: String?
+    var pdf_date: Date?
+    var pdf_description: String?
+    var pdf_tags = Set<Character>()
     
     init(path: URL) {
+        self.path = path
         // create a filename and rename the document
         self.basepath = path.deletingLastPathComponent()
         self.name = path.lastPathComponent
+        self.already_done = false
     }
     
     func rename() {
@@ -34,6 +38,33 @@ class PDFDocument: NSObject {
         print("parse all the things")
     }
     
+}
+
+func browse_files() {
+    let openPanel = NSOpenPanel()
+    openPanel.title = "Choose a .pdf file or a folder"
+    openPanel.showsResizeIndicator = false
+    openPanel.showsHiddenFiles = false
+    openPanel.canChooseFiles = true
+    openPanel.canChooseDirectories = true
+    openPanel.allowsMultipleSelection = true
+    openPanel.allowedFileTypes = ["pdf"]
+    
+    openPanel.beginSheetModal(for: NSApplication.shared.mainWindow!) { response in
+        guard response == NSApplication.ModalResponse.OK else {
+            return
+        }
+        // clear old objects
+        let controller = NSApplication.shared.mainWindow?.windowController?.contentViewController as! ViewController
+        controller.documentAC.content = nil
+        
+        // add new objects
+        for element in openPanel.urls {
+            for pdf_path in getPDFs(url: element) {
+                controller.documentAC.addObject(PDFDocument(path: pdf_path))
+            }
+        }
+    }
 }
 
 func getPDFs(url: URL) -> Array<URL> {
@@ -60,14 +91,6 @@ func getPDFs(url: URL) -> Array<URL> {
         return []
     }
 }
-
-//func loadPDF(path: URL) {
-//    
-//    let url = NSBundle.mainBundle().URLForResource("myPDF", withExtension: "pdf")
-//    let pdf = PDFDocument(URL: url)
-//    pdf.pageCount() // number of pages in document
-//    pdf.string() // entire text of document
-//}
 
 extension FileManager {
     func isDirectory(url:URL) -> Bool? {
