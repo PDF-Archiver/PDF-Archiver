@@ -11,32 +11,23 @@ import Quartz
 
 class ViewController: NSViewController {
     @IBOutlet weak var pdfview: PDFView!
+    @IBOutlet var documentAC: NSArrayController!
     
-    @IBOutlet weak var myDatePicker: NSDatePicker!
+    @IBOutlet weak var datePicker: NSDatePicker!
     @IBOutlet weak var descriptionField: NSTextField!
     @IBOutlet weak var tagField: NSTextField!
     @IBOutlet weak var filenameField: NSTextField!
     
-    @IBOutlet var documentAC: NSArrayController!
-    
     // outlets
-    @IBAction func nextButtonClicked(_ sender: Any) {
-        filenameField.stringValue = "NEXT"
-    }
-    
-    @IBAction func previousButtonClicked(_ sender: Any) {
-        filenameField.stringValue = "PREVIOUS"
-    }
-    
-    @IBAction func saveButtonClicked(_ sender: Any) {
-        // getting & setting the date/time value
-        let myDate = myDatePicker.dateValue
-        print(myDate)
-    }
-    
     @IBAction func browseFile(sender: AnyObject) {
         browse_files()
     }
+    @IBAction func saveButtonClicked(_ sender: Any) {
+        // getting & setting the date/time value
+        let myDate = datePicker.dateValue
+        print(myDate)
+    }
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
