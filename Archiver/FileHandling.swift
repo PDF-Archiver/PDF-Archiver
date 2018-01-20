@@ -58,12 +58,15 @@ func browse_files() {
         let controller = NSApplication.shared.mainWindow?.windowController?.contentViewController as! ViewController
         controller.documentAC.content = nil
         
-        // add new objects
+        // get new pdf documents
+        var pdf_documents = [Document]()
         for element in openPanel.urls {
             for pdf_path in getPDFs(url: element) {
-                controller.documentAC.addObject(Document(path: pdf_path))
+                pdf_documents.append(Document(path: pdf_path))
             }
         }
+        // add pdf documents to the controller
+        controller.documentAC.content = pdf_documents
     }
 }
 

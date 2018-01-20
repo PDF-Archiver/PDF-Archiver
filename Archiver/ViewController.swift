@@ -37,19 +37,30 @@ class ViewController: NSViewController {
     @IBAction func browseFile(sender: AnyObject) {
         browse_files()
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-
-        // TODO: example code
-        let url = URL(fileURLWithPath: "/Users/juka/Downloads/test.pdf")
-        pdfview.document = PDFDocument(url: url)
-        pdfview.displayMode = PDFDisplayMode.singlePageContinuous
-//        pdfview.displayMode = PDFDisplayMode.singlePage
-        pdfview.autoScales = false
-        
     }
     
+    func update_PDFView(url: URL) {
+        pdfview.document = PDFDocument(url: url)
+//        pdfview.displayMode = PDFDisplayMode.singlePageContinuous
+        pdfview.displayMode = PDFDisplayMode.singlePage
+        pdfview.autoScales = true
+        pdfview.acceptsDraggedFiles = false
+        pdfview.interpolationQuality = PDFInterpolationQuality.low
+    }
+}
 
+
+extension ViewController: NSTableViewDelegate {
+    func tableViewSelectionDidChange(_ notification: Notification) {
+        let tableView = notification.object as! NSTableView
+        
+        if let identifier = tableView.identifier, identifier.rawValue == "DocumentTableView" {
+            // update the PDFView
+            let pdf_url = (self.documentAC.selectedObjects.first as! Document).path
+            self.update_PDFView(url: pdf_url)
+        }
+    }
 }
