@@ -30,6 +30,10 @@ class ViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // TODO: debug code to reset the preferences
+//        UserDefaults.standard.removeObject(forKey: "archivePath")
+//        UserDefaults.standard.removeObject(forKey: "tags")
     }
     
     func update_PDFView(url: URL) {

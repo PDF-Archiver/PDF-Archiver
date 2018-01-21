@@ -18,6 +18,7 @@
 		A31B53171FF6A6D8007A3D14 /* FileHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B53161FF6A6D8007A3D14 /* FileHandling.swift */; };
 		A32D52F02012B5150032F05C /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A32D52EF2012B5150032F05C /* Quartz.framework */; };
 		A38A58AB1FFFA72D003F0573 /* WindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38A58AA1FFFA72D003F0573 /* WindowController.swift */; };
+		A3A4C1C12015177A008BB354 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3A4C1C02015177A008BB354 /* Helpers.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +57,8 @@
 		A31B53161FF6A6D8007A3D14 /* FileHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHandling.swift; sourceTree = "<group>"; };
 		A32D52EF2012B5150032F05C /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
 		A38A58AA1FFFA72D003F0573 /* WindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowController.swift; sourceTree = "<group>"; };
+		A3A4C1C02015177A008BB354 /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
+		A3A4C1C22015381F008BB354 /* PDF Archiver.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "PDF Archiver.entitlements"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,6 +90,7 @@
 		A31B52DD1FF694B0007A3D14 = {
 			isa = PBXGroup;
 			children = (
+				A3A4C1C22015381F008BB354 /* PDF Archiver.entitlements */,
 				A31B52E81FF694B0007A3D14 /* PDFArchiver */,
 				A31B52FB1FF694B0007A3D14 /* PDFArchiverTests */,
 				A31B53061FF694B0007A3D14 /* PDFArchiverUITests */,
@@ -113,11 +117,12 @@
 				A31B52E91FF694B0007A3D14 /* AppDelegate.swift */,
 				A31B52EB1FF694B0007A3D14 /* ViewController.swift */,
 				A307BB362014B8530046C391 /* PrefsViewController.swift */,
+				A38A58AA1FFFA72D003F0573 /* WindowController.swift */,
 				A31B52ED1FF694B0007A3D14 /* Assets.xcassets */,
 				A31B52EF1FF694B0007A3D14 /* Main.storyboard */,
 				A31B53161FF6A6D8007A3D14 /* FileHandling.swift */,
 				A307BB3A2014D5300046C391 /* Preferences.swift */,
-				A38A58AA1FFFA72D003F0573 /* WindowController.swift */,
+				A3A4C1C02015177A008BB354 /* Helpers.swift */,
 			);
 			path = PDFArchiver;
 			sourceTree = "<group>";
@@ -217,6 +222,11 @@
 					A31B52E51FF694B0007A3D14 = {
 						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Sandbox = {
+								enabled = 1;
+							};
+						};
 					};
 					A31B52F71FF694B0007A3D14 = {
 						CreatedOnToolsVersion = 9.2;
@@ -284,6 +294,7 @@
 				A31B52EC1FF694B0007A3D14 /* ViewController.swift in Sources */,
 				A38A58AB1FFFA72D003F0573 /* WindowController.swift in Sources */,
 				A307BB3B2014D5300046C391 /* Preferences.swift in Sources */,
+				A3A4C1C12015177A008BB354 /* Helpers.swift in Sources */,
 				A307BB372014B8530046C391 /* PrefsViewController.swift in Sources */,
 				A31B53171FF6A6D8007A3D14 /* FileHandling.swift in Sources */,
 				A31B52EA1FF694B0007A3D14 /* AppDelegate.swift in Sources */,
@@ -443,7 +454,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = PDFArchiver/PDFArchiver.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "PDF Archiver.entitlements";
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -461,7 +472,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = PDFArchiver/PDFArchiver.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "PDF Archiver.entitlements";
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;

@@ -69,11 +69,10 @@ func browse_files() {
 
 func getPDFs(url: URL) -> Array<URL> {
     // function which gets an URL (file or folder) and returns the paths as URLs of the file or all PDF documents in this folder as an array
-    
     let fileManager = FileManager.default
     if fileManager.isDirectory(url:url) ?? false {
         // folder found
-        let enumerator: FileManager.DirectoryEnumerator = fileManager.enumerator(atPath: url.path)!
+        let enumerator = fileManager.enumerator(atPath: url.path)!
         var pdfURLs = [URL]()
         while let element = enumerator.nextObject() as? String, element.suffix(3).lowercased() == "pdf" {
             let pdf_url = URL(fileURLWithPath: url.path).appendingPathComponent(element)

@@ -25,11 +25,11 @@ class PrefsViewController: NSViewController {
             }
             self.prefs.archivePath = openPanel.url!
             self.archivePathTextField.stringValue = openPanel.url!.path
+            self.prefs.get_last_tags()
         }
     }
     
     @IBAction func okButton(_ sender: Any) {
-        // TODO: save the new preferences now
         view.window?.close()
     }
     
