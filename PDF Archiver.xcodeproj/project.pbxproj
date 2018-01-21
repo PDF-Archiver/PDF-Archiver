@@ -36,17 +36,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		A31B52E61FF694B0007A3D14 /* Archiver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Archiver.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A31B52E61FF694B0007A3D14 /* PDF Archiver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "PDF Archiver.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A31B52E91FF694B0007A3D14 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A31B52EB1FF694B0007A3D14 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		A31B52ED1FF694B0007A3D14 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A31B52F01FF694B0007A3D14 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		A31B52F21FF694B0007A3D14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A31B52F31FF694B0007A3D14 /* Archiver.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Archiver.entitlements; sourceTree = "<group>"; };
-		A31B52F81FF694B0007A3D14 /* ArchiverTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ArchiverTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A31B52F31FF694B0007A3D14 /* PDFArchiver.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PDFArchiver.entitlements; sourceTree = "<group>"; };
+		A31B52F81FF694B0007A3D14 /* PDF ArchiverTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "PDF ArchiverTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A31B52FC1FF694B0007A3D14 /* ArchiverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiverTests.swift; sourceTree = "<group>"; };
 		A31B52FE1FF694B0007A3D14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A31B53031FF694B0007A3D14 /* ArchiverUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ArchiverUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A31B53031FF694B0007A3D14 /* PDF ArchiverUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "PDF ArchiverUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A31B53071FF694B0007A3D14 /* ArchiverUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiverUITests.swift; sourceTree = "<group>"; };
 		A31B53091FF694B0007A3D14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A31B53161FF6A6D8007A3D14 /* FileHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHandling.swift; sourceTree = "<group>"; };
@@ -83,9 +83,9 @@
 		A31B52DD1FF694B0007A3D14 = {
 			isa = PBXGroup;
 			children = (
-				A31B52E81FF694B0007A3D14 /* Archiver */,
-				A31B52FB1FF694B0007A3D14 /* ArchiverTests */,
-				A31B53061FF694B0007A3D14 /* ArchiverUITests */,
+				A31B52E81FF694B0007A3D14 /* PDFArchiver */,
+				A31B52FB1FF694B0007A3D14 /* PDFArchiverTests */,
+				A31B53061FF694B0007A3D14 /* PDFArchiverUITests */,
 				A31B52E71FF694B0007A3D14 /* Products */,
 				A32D52EE2012B5150032F05C /* Frameworks */,
 			);
@@ -94,18 +94,18 @@
 		A31B52E71FF694B0007A3D14 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A31B52E61FF694B0007A3D14 /* Archiver.app */,
-				A31B52F81FF694B0007A3D14 /* ArchiverTests.xctest */,
-				A31B53031FF694B0007A3D14 /* ArchiverUITests.xctest */,
+				A31B52E61FF694B0007A3D14 /* PDF Archiver.app */,
+				A31B52F81FF694B0007A3D14 /* PDF ArchiverTests.xctest */,
+				A31B53031FF694B0007A3D14 /* PDF ArchiverUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		A31B52E81FF694B0007A3D14 /* Archiver */ = {
+		A31B52E81FF694B0007A3D14 /* PDFArchiver */ = {
 			isa = PBXGroup;
 			children = (
 				A31B52F21FF694B0007A3D14 /* Info.plist */,
-				A31B52F31FF694B0007A3D14 /* Archiver.entitlements */,
+				A31B52F31FF694B0007A3D14 /* PDFArchiver.entitlements */,
 				A31B52E91FF694B0007A3D14 /* AppDelegate.swift */,
 				A31B52EB1FF694B0007A3D14 /* ViewController.swift */,
 				A31B52ED1FF694B0007A3D14 /* Assets.xcassets */,
@@ -113,25 +113,25 @@
 				A31B53161FF6A6D8007A3D14 /* FileHandling.swift */,
 				A38A58AA1FFFA72D003F0573 /* WindowController.swift */,
 			);
-			path = Archiver;
+			path = PDFArchiver;
 			sourceTree = "<group>";
 		};
-		A31B52FB1FF694B0007A3D14 /* ArchiverTests */ = {
+		A31B52FB1FF694B0007A3D14 /* PDFArchiverTests */ = {
 			isa = PBXGroup;
 			children = (
 				A31B52FC1FF694B0007A3D14 /* ArchiverTests.swift */,
 				A31B52FE1FF694B0007A3D14 /* Info.plist */,
 			);
-			path = ArchiverTests;
+			path = PDFArchiverTests;
 			sourceTree = "<group>";
 		};
-		A31B53061FF694B0007A3D14 /* ArchiverUITests */ = {
+		A31B53061FF694B0007A3D14 /* PDFArchiverUITests */ = {
 			isa = PBXGroup;
 			children = (
 				A31B53071FF694B0007A3D14 /* ArchiverUITests.swift */,
 				A31B53091FF694B0007A3D14 /* Info.plist */,
 			);
-			path = ArchiverUITests;
+			path = PDFArchiverUITests;
 			sourceTree = "<group>";
 		};
 		A32D52EE2012B5150032F05C /* Frameworks */ = {
@@ -145,9 +145,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		A31B52E51FF694B0007A3D14 /* Archiver */ = {
+		A31B52E51FF694B0007A3D14 /* PDF Archiver */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A31B530C1FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "Archiver" */;
+			buildConfigurationList = A31B530C1FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "PDF Archiver" */;
 			buildPhases = (
 				A31B52E21FF694B0007A3D14 /* Sources */,
 				A31B52E31FF694B0007A3D14 /* Frameworks */,
@@ -157,14 +157,14 @@
 			);
 			dependencies = (
 			);
-			name = Archiver;
+			name = "PDF Archiver";
 			productName = Archiver;
-			productReference = A31B52E61FF694B0007A3D14 /* Archiver.app */;
+			productReference = A31B52E61FF694B0007A3D14 /* PDF Archiver.app */;
 			productType = "com.apple.product-type.application";
 		};
-		A31B52F71FF694B0007A3D14 /* ArchiverTests */ = {
+		A31B52F71FF694B0007A3D14 /* PDF ArchiverTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A31B530F1FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "ArchiverTests" */;
+			buildConfigurationList = A31B530F1FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "PDF ArchiverTests" */;
 			buildPhases = (
 				A31B52F41FF694B0007A3D14 /* Sources */,
 				A31B52F51FF694B0007A3D14 /* Frameworks */,
@@ -175,14 +175,14 @@
 			dependencies = (
 				A31B52FA1FF694B0007A3D14 /* PBXTargetDependency */,
 			);
-			name = ArchiverTests;
+			name = "PDF ArchiverTests";
 			productName = ArchiverTests;
-			productReference = A31B52F81FF694B0007A3D14 /* ArchiverTests.xctest */;
+			productReference = A31B52F81FF694B0007A3D14 /* PDF ArchiverTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		A31B53021FF694B0007A3D14 /* ArchiverUITests */ = {
+		A31B53021FF694B0007A3D14 /* PDF ArchiverUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A31B53121FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "ArchiverUITests" */;
+			buildConfigurationList = A31B53121FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "PDF ArchiverUITests" */;
 			buildPhases = (
 				A31B52FF1FF694B0007A3D14 /* Sources */,
 				A31B53001FF694B0007A3D14 /* Frameworks */,
@@ -193,9 +193,9 @@
 			dependencies = (
 				A31B53051FF694B0007A3D14 /* PBXTargetDependency */,
 			);
-			name = ArchiverUITests;
+			name = "PDF ArchiverUITests";
 			productName = ArchiverUITests;
-			productReference = A31B53031FF694B0007A3D14 /* ArchiverUITests.xctest */;
+			productReference = A31B53031FF694B0007A3D14 /* PDF ArchiverUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -224,7 +224,7 @@
 					};
 				};
 			};
-			buildConfigurationList = A31B52E11FF694B0007A3D14 /* Build configuration list for PBXProject "Archiver" */;
+			buildConfigurationList = A31B52E11FF694B0007A3D14 /* Build configuration list for PBXProject "PDF Archiver" */;
 			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -237,9 +237,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A31B52E51FF694B0007A3D14 /* Archiver */,
-				A31B52F71FF694B0007A3D14 /* ArchiverTests */,
-				A31B53021FF694B0007A3D14 /* ArchiverUITests */,
+				A31B52E51FF694B0007A3D14 /* PDF Archiver */,
+				A31B52F71FF694B0007A3D14 /* PDF ArchiverTests */,
+				A31B53021FF694B0007A3D14 /* PDF ArchiverUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -303,12 +303,12 @@
 /* Begin PBXTargetDependency section */
 		A31B52FA1FF694B0007A3D14 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A31B52E51FF694B0007A3D14 /* Archiver */;
+			target = A31B52E51FF694B0007A3D14 /* PDF Archiver */;
 			targetProxy = A31B52F91FF694B0007A3D14 /* PBXContainerItemProxy */;
 		};
 		A31B53051FF694B0007A3D14 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A31B52E51FF694B0007A3D14 /* Archiver */;
+			target = A31B52E51FF694B0007A3D14 /* PDF Archiver */;
 			targetProxy = A31B53041FF694B0007A3D14 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -435,10 +435,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = Archiver/Archiver.entitlements;
+				CODE_SIGN_ENTITLEMENTS = PDFArchiver/PDFArchiver.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = Archiver/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/PDFArchiver/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = JuKa.Archiver;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -450,10 +450,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = Archiver/Archiver.entitlements;
+				CODE_SIGN_ENTITLEMENTS = PDFArchiver/PDFArchiver.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = Archiver/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/PDFArchiver/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = JuKa.Archiver;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -473,7 +473,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = JuKa.ArchiverTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Archiver.app/Contents/MacOS/Archiver";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PDF Archiver.app/Contents/MacOS/PDF Archiver";
 			};
 			name = Debug;
 		};
@@ -489,7 +489,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = JuKa.ArchiverTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Archiver.app/Contents/MacOS/Archiver";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PDF Archiver.app/Contents/MacOS/PDF Archiver";
 			};
 			name = Release;
 		};
@@ -526,7 +526,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A31B52E11FF694B0007A3D14 /* Build configuration list for PBXProject "Archiver" */ = {
+		A31B52E11FF694B0007A3D14 /* Build configuration list for PBXProject "PDF Archiver" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A31B530A1FF694B0007A3D14 /* Debug */,
@@ -535,7 +535,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A31B530C1FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "Archiver" */ = {
+		A31B530C1FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "PDF Archiver" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A31B530D1FF694B0007A3D14 /* Debug */,
@@ -544,7 +544,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A31B530F1FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "ArchiverTests" */ = {
+		A31B530F1FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "PDF ArchiverTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A31B53101FF694B0007A3D14 /* Debug */,
@@ -553,7 +553,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A31B53121FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "ArchiverUITests" */ = {
+		A31B53121FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "PDF ArchiverUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A31B53131FF694B0007A3D14 /* Debug */,
