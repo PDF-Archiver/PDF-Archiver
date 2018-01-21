@@ -10,13 +10,41 @@ import Cocoa
 
 class PrefsViewController: NSViewController {
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do view setup here.
+    @IBOutlet weak var archivePathTextField: NSTextField!
+    @IBAction func changeArchivePathButton(_ sender: Any) {
+        let openPanel = NSOpenPanel()
+        openPanel.title = "Choose an archive folder"
+        openPanel.showsResizeIndicator = false
+        openPanel.showsHiddenFiles = false
+        openPanel.canChooseFiles = false
+        openPanel.canChooseDirectories = true
+        openPanel.allowsMultipleSelection = false
+        openPanel.beginSheetModal(for: NSApplication.shared.mainWindow!) { response in
+            guard response == NSApplication.ModalResponse.OK else {
+                return
+            }
+            self.prefs.archivePath = openPanel.url!
+            self.archivePathTextField.stringValue = openPanel.url!.path
+        }
     }
     
-    @IBAction func buttonClose(_ sender: Any) {
-        self.dismiss(self)
+    @IBAction func okButton(_ sender: Any) {
+        // TODO: save the new preferences now
+        view.window?.close()
     }
+    
+    var prefs = Preferences()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        // update path field
+        if let archivePath = prefs.archivePath {
+            self.archivePathTextField.stringValue = archivePath.path
+        }
+        
+    }
+    
+
     
 }

@@ -27,11 +27,6 @@ class ViewController: NSViewController {
         let myDate = datePicker.dateValue
         print(myDate)
     }
-    @IBAction func showPrefs(_ sender: AnyObject) {
-        let theSB = NSStoryboard(name: NSStoryboard.Name(rawValue: "Main"), bundle: nil)
-        let thePVC: PrefsViewController = theSB.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "prefsViewController")) as! PrefsViewController
-        self.presentViewControllerAsSheet(thePVC)
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

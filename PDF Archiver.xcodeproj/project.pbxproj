@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		A307BB372014B8530046C391 /* PrefsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A307BB362014B8530046C391 /* PrefsViewController.swift */; };
+		A307BB3B2014D5300046C391 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = A307BB3A2014D5300046C391 /* Preferences.swift */; };
 		A31B52EA1FF694B0007A3D14 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B52E91FF694B0007A3D14 /* AppDelegate.swift */; };
 		A31B52EC1FF694B0007A3D14 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B52EB1FF694B0007A3D14 /* ViewController.swift */; };
 		A31B52EE1FF694B0007A3D14 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A31B52ED1FF694B0007A3D14 /* Assets.xcassets */; };
@@ -38,6 +39,7 @@
 
 /* Begin PBXFileReference section */
 		A307BB362014B8530046C391 /* PrefsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrefsViewController.swift; sourceTree = "<group>"; };
+		A307BB3A2014D5300046C391 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		A31B52E61FF694B0007A3D14 /* PDF Archiver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "PDF Archiver.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A31B52E91FF694B0007A3D14 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A31B52EB1FF694B0007A3D14 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -110,10 +112,11 @@
 				A31B52F31FF694B0007A3D14 /* PDFArchiver.entitlements */,
 				A31B52E91FF694B0007A3D14 /* AppDelegate.swift */,
 				A31B52EB1FF694B0007A3D14 /* ViewController.swift */,
+				A307BB362014B8530046C391 /* PrefsViewController.swift */,
 				A31B52ED1FF694B0007A3D14 /* Assets.xcassets */,
 				A31B52EF1FF694B0007A3D14 /* Main.storyboard */,
-				A307BB362014B8530046C391 /* PrefsViewController.swift */,
 				A31B53161FF6A6D8007A3D14 /* FileHandling.swift */,
+				A307BB3A2014D5300046C391 /* Preferences.swift */,
 				A38A58AA1FFFA72D003F0573 /* WindowController.swift */,
 			);
 			path = PDFArchiver;
@@ -280,6 +283,7 @@
 			files = (
 				A31B52EC1FF694B0007A3D14 /* ViewController.swift in Sources */,
 				A38A58AB1FFFA72D003F0573 /* WindowController.swift in Sources */,
+				A307BB3B2014D5300046C391 /* Preferences.swift in Sources */,
 				A307BB372014B8530046C391 /* PrefsViewController.swift in Sources */,
 				A31B53171FF6A6D8007A3D14 /* FileHandling.swift in Sources */,
 				A31B52EA1FF694B0007A3D14 /* AppDelegate.swift in Sources */,

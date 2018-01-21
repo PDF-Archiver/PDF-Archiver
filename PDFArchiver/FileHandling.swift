@@ -54,10 +54,6 @@ func browse_files() {
         guard response == NSApplication.ModalResponse.OK else {
             return
         }
-        // clear old objects
-        let controller = NSApplication.shared.mainWindow?.windowController?.contentViewController as! ViewController
-        controller.documentAC.content = nil
-        
         // get new pdf documents
         var pdf_documents = [Document]()
         for element in openPanel.urls {
@@ -65,7 +61,8 @@ func browse_files() {
                 pdf_documents.append(Document(path: pdf_path))
             }
         }
-        // add pdf documents to the controller
+        // add pdf documents to the controller (and replace the old ones)
+        let controller = NSApplication.shared.mainWindow?.windowController?.contentViewController as! ViewController
         controller.documentAC.content = pdf_documents
     }
 }
