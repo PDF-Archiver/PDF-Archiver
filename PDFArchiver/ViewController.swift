@@ -11,6 +11,7 @@ import Quartz
 
 class ViewController: NSViewController {
     @IBOutlet weak var pdfview: PDFView!
+    @IBOutlet weak var tagTableView: NSTableView!
     @IBOutlet var documentAC: NSArrayController!
     @IBOutlet var tagAC: NSArrayController!
     
@@ -20,6 +21,18 @@ class ViewController: NSViewController {
     @IBOutlet weak var filenameField: NSTextField!
     
     // outlets
+    @IBAction func clickedTableView(_ sender: NSTableView) {
+        if sender.clickedRow == -1 {
+            if sender.clickedColumn == 0 {
+                sortArrayController(by: "count", ascending: false)
+            } else {
+                sortArrayController(by: "name", ascending: true)
+            }
+        } else {
+            tagTableView.deselectRow(tagAC.selectionIndex)
+        }
+    }
+    
     @IBAction func browseFile(sender: AnyObject) {
         browse_files()
     }
@@ -47,7 +60,14 @@ class ViewController: NSViewController {
         for (name, count) in tags_dict {
             tags.append(Tag(name: name, count: count as! Int))
         }
+        sortArrayController(by: "count", ascending: false)
         tagAC.content = tags
+        tagTableView.deselectRow(tagAC.selectionIndex)
+    }
+    
+    func sortArrayController(by key : String, ascending asc : Bool) {
+        tagAC.sortDescriptors = [NSSortDescriptor(key: key, ascending: asc)]
+        tagAC.rearrangeObjects()
     }
     
     func update_PDFView(url: URL) {

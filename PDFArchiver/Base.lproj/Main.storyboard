@@ -878,11 +878,11 @@ DQ
                                 <rect key="frame" x="480" y="40" width="241" height="356"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <clipView key="contentView" ambiguous="YES" id="FwI-oY-mZj">
-                                    <rect key="frame" x="1" y="0.0" width="239" height="340"/>
+                                    <rect key="frame" x="1" y="0.0" width="239" height="355"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView identifier="TagTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="40" rowSizeStyle="automatic" headerView="gxi-Wd-NVa" viewBased="YES" id="xpK-mJ-Y4J" userLabel="Tag Table View">
-                                            <rect key="frame" x="0.0" y="0.0" width="239.5" height="317"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="239" height="332"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -902,11 +902,11 @@ DQ
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView id="aAj-oT-fzK">
-                                                            <rect key="frame" x="1" y="1" width="24" height="17"/>
+                                                            <rect key="frame" x="1" y="1" width="23" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nnY-wt-8cw">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="24" height="17"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="23" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="right" title="Table View Cell" id="ZUy-OH-rod">
                                                                         <font key="font" metaFont="system"/>
@@ -924,7 +924,7 @@ DQ
                                                         </tableCellView>
                                                     </prototypeCellViews>
                                                 </tableColumn>
-                                                <tableColumn identifier="" width="210" minWidth="40" maxWidth="1000" id="bgb-vH-5vk">
+                                                <tableColumn identifier="" width="209.5" minWidth="40" maxWidth="1000" id="bgb-vH-5vk">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Tags">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -938,11 +938,11 @@ DQ
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView id="9wq-Yh-6cT">
-                                                            <rect key="frame" x="28" y="1" width="210" height="40"/>
+                                                            <rect key="frame" x="28" y="1" width="209" height="40"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">
-                                                                    <rect key="frame" x="0.0" y="23" width="210" height="17"/>
+                                                                    <rect key="frame" x="0.0" y="23" width="209" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="pXJ-g7-oZi">
                                                                         <font key="font" metaFont="system"/>
@@ -962,14 +962,15 @@ DQ
                                                 </tableColumn>
                                             </tableColumns>
                                             <connections>
+                                                <action selector="clickedTableView:" target="XfG-lQ-9wD" id="XLt-ju-bzD"/>
                                                 <binding destination="jrR-pM-UBT" name="content" keyPath="arrangedObjects" id="Ou8-Vc-Vho"/>
                                                 <binding destination="jrR-pM-UBT" name="selectionIndexes" keyPath="selectionIndexes" previousBinding="Ou8-Vc-Vho" id="KuO-e9-hkj"/>
                                             </connections>
                                         </tableView>
                                     </subviews>
                                 </clipView>
-                                <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="eVY-L6-cya">
-                                    <rect key="frame" x="1" y="340" width="239" height="15"/>
+                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="eVY-L6-cya">
+                                    <rect key="frame" x="1" y="8" width="0.0" height="15"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="uXh-d7-qiY">
@@ -977,7 +978,7 @@ DQ
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <tableHeaderView key="headerView" id="gxi-Wd-NVa">
-                                    <rect key="frame" x="0.0" y="0.0" width="239.5" height="23"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="239" height="23"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableHeaderView>
                             </scrollView>
@@ -1041,6 +1042,7 @@ DQ
                         <outlet property="pdfview" destination="80e-Of-Nzi" id="ZfS-9W-TAg"/>
                         <outlet property="tagAC" destination="jrR-pM-UBT" id="n34-dd-hGg"/>
                         <outlet property="tagField" destination="2Sh-Rh-rhA" id="iLG-qI-W3D"/>
+                        <outlet property="tagTableView" destination="xpK-mJ-Y4J" id="6if-v6-H9T"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
