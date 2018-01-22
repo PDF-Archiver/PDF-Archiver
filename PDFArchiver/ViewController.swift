@@ -12,6 +12,7 @@ import Quartz
 class ViewController: NSViewController {
     @IBOutlet weak var pdfview: PDFView!
     @IBOutlet var documentAC: NSArrayController!
+    @IBOutlet var tagAC: NSArrayController!
     
     @IBOutlet weak var datePicker: NSDatePicker!
     @IBOutlet weak var descriptionField: NSTextField!
@@ -34,6 +35,19 @@ class ViewController: NSViewController {
         // TODO: debug code to reset the preferences
 //        UserDefaults.standard.removeObject(forKey: "archivePath")
 //        UserDefaults.standard.removeObject(forKey: "tags")
+        
+        self.refresh_tags()
+        
+    }
+    
+    func refresh_tags() {
+        let tags_dict = UserDefaults.standard.dictionary(forKey: "tags")!
+        
+        var tags = [Tag]()
+        for (name, count) in tags_dict {
+            tags.append(Tag(name: name, count: count as! Int))
+        }
+        tagAC.content = tags
     }
     
     func update_PDFView(url: URL) {
