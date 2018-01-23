@@ -17,8 +17,8 @@ class ViewController: NSViewController {
     
     @IBOutlet weak var datePicker: NSDatePicker!
     @IBOutlet weak var descriptionField: NSTextField!
-    @IBOutlet weak var tagField: NSTextField!
     @IBOutlet weak var filenameField: NSTextField!
+    @IBOutlet weak var searchTagTableView: NSTableView!
     
     // outlets
     @IBAction func clickedTableView(_ sender: NSTableView) {
@@ -51,6 +51,9 @@ class ViewController: NSViewController {
         
         self.refresh_tags()
         
+        // TODO: example usage of the update search field tags function
+        self.update_search_field_tags(search: "a")
+        
     }
     
     func refresh_tags() {
@@ -63,6 +66,18 @@ class ViewController: NSViewController {
         sortArrayController(by: "count", ascending: false)
         tagAC.content = tags
         tagTableView.deselectRow(tagAC.selectionIndex)
+    }
+    
+    func update_search_field_tags(search: String) {
+        var tags = [String]()
+        for tag in tagAC.arrangedObjects as! [Tag] {
+            if tag.name.hasPrefix(search) {
+                tags.append(tag.name)
+            }
+        }
+        print(tags)
+        
+        // TOOD: set new table view elements here
     }
     
     func sortArrayController(by key : String, ascending asc : Bool) {
