@@ -1003,17 +1003,8 @@ DQ
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2Sh-Rh-rhA" userLabel="Document Tag Field">
-                                <rect key="frame" x="761" y="195" width="199" height="22"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="tags" drawsBackground="YES" id="KIv-IB-5za">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Gmk-Fi-bVz" userLabel="Document Filename Field">
-                                <rect key="frame" x="759" y="136" width="203" height="17"/>
+                                <rect key="frame" x="759" y="86" width="203" height="17"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" placeholderString="Tempalte Filename" id="Rcs-uL-9oS">
                                     <font key="font" metaFont="system"/>
@@ -1032,6 +1023,15 @@ DQ
                                     <action selector="saveButtonClicked:" target="XfG-lQ-9wD" id="KNq-Vn-Pp2"/>
                                 </connections>
                             </button>
+                            <searchField wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WfD-Nd-kM0" customClass="RecentMenuSearchField" customModule="PDF_Archiver" customModuleProvider="target">
+                                <rect key="frame" x="761" y="134" width="199" height="22"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" id="azW-Co-ROb">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </searchFieldCell>
+                            </searchField>
                         </subviews>
                     </view>
                     <connections>
@@ -1041,7 +1041,6 @@ DQ
                         <outlet property="filenameField" destination="Gmk-Fi-bVz" id="CuC-Jy-qFN"/>
                         <outlet property="pdfview" destination="80e-Of-Nzi" id="ZfS-9W-TAg"/>
                         <outlet property="tagAC" destination="jrR-pM-UBT" id="n34-dd-hGg"/>
-                        <outlet property="tagField" destination="2Sh-Rh-rhA" id="iLG-qI-W3D"/>
                         <outlet property="tagTableView" destination="xpK-mJ-Y4J" id="6if-v6-H9T"/>
                     </connections>
                 </viewController>
