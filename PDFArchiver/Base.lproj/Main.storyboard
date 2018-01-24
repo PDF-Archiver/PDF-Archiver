@@ -1031,6 +1031,9 @@ DQ
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </searchFieldCell>
+                                <connections>
+                                    <action selector="tagSearchField:" target="XfG-lQ-9wD" id="KA0-78-9FF"/>
+                                </connections>
                             </searchField>
                             <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oZc-B6-cqG" userLabel="Document Tag - Table View">
                                 <rect key="frame" x="761" y="237" width="199" height="95"/>
@@ -1183,6 +1186,7 @@ DQ
                         <outlet property="searchTagAC" destination="di6-YS-NB3" id="F20-Rt-jrW"/>
                         <outlet property="searchTagTableView" destination="MB5-j7-8r9" id="AgY-1s-r0h"/>
                         <outlet property="tagAC" destination="jrR-pM-UBT" id="n34-dd-hGg"/>
+                        <outlet property="tagSearchField" destination="WfD-Nd-kM0" id="S7l-y7-2yr"/>
                         <outlet property="tagTableView" destination="xpK-mJ-Y4J" id="6if-v6-H9T"/>
                     </connections>
                 </viewController>
