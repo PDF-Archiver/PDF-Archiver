@@ -14,8 +14,8 @@ class ViewController: NSViewController {
     @IBOutlet weak var tagTableView: NSTableView!
     @IBOutlet var documentAC: NSArrayController!
     @IBOutlet var tagAC: NSArrayController!
-    @IBOutlet var searchTagAC: NSArrayController!
     @IBOutlet var documentTagAC: NSArrayController!
+    @IBOutlet var searchTagAC: NSArrayController!
     
     @IBOutlet weak var datePicker: NSDatePicker!
     @IBOutlet weak var descriptionField: NSTextField!
@@ -58,6 +58,10 @@ class ViewController: NSViewController {
         // TODO: example usage of the update search field tags function
         self.update_search_field_tags(search: "a")
         
+        // add sorting to tag fields
+        documentAC.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+        searchTagAC.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+        
     }
     
     func refresh_tags() {
@@ -80,7 +84,6 @@ class ViewController: NSViewController {
                 tags.append(obj)
             }
         }
-        searchTagAC.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
         searchTagAC.content = tags
         
     }
