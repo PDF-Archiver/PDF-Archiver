@@ -1087,6 +1087,7 @@ DQ
                                                 </tableColumn>
                                             </tableColumns>
                                             <connections>
+                                                <action selector="clickedDocumentTagTableView:" target="XfG-lQ-9wD" id="yF4-Cx-nb1"/>
                                                 <binding destination="nlU-Xg-XLm" name="content" keyPath="arrangedObjects" id="gQp-KR-uuj"/>
                                                 <binding destination="nlU-Xg-XLm" name="selectionIndexes" keyPath="selectionIndexes" previousBinding="gQp-KR-uuj" id="ewh-tS-XEL"/>
                                             </connections>

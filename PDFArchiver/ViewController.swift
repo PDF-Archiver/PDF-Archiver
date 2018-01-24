@@ -36,6 +36,9 @@ class ViewController: NSViewController {
             tagTableView.deselectRow(tagAC.selectionIndex)
         }
     }
+    @IBAction func clickedDocumentTagTableView(_ sender: NSTableView) {
+        documentTagAC.remove(atArrangedObjectIndex: sender.clickedRow)
+    }
     
     @IBAction func browseFile(sender: AnyObject) {
         browse_files()
