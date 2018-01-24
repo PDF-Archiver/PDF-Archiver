@@ -80,7 +80,9 @@ class ViewController: NSViewController {
                 tags.append(obj)
             }
         }
+        searchTagAC.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
         searchTagAC.content = tags
+        
     }
     
     func sortArrayController(by key : String, ascending asc : Bool) {
