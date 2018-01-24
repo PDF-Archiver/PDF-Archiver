@@ -902,11 +902,11 @@ DQ
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView id="aAj-oT-fzK">
-                                                            <rect key="frame" x="1" y="1" width="28" height="17"/>
+                                                            <rect key="frame" x="1" y="1" width="27" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nnY-wt-8cw">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="28" height="17"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="27" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="right" title="Table View Cell" id="ZUy-OH-rod">
                                                                         <font key="font" metaFont="system"/>
@@ -938,7 +938,7 @@ DQ
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView id="9wq-Yh-6cT">
-                                                            <rect key="frame" x="32" y="1" width="205" height="40"/>
+                                                            <rect key="frame" x="31.5" y="1" width="205" height="40"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">
@@ -970,7 +970,7 @@ DQ
                                     </subviews>
                                 </clipView>
                                 <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="eVY-L6-cya">
-                                    <rect key="frame" x="1" y="340" width="239" height="15"/>
+                                    <rect key="frame" x="1" y="8" width="0.0" height="15"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="uXh-d7-qiY">
@@ -1046,7 +1046,7 @@ DQ
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                             <tableColumns>
-                                                <tableColumn identifier="" width="193.5" minWidth="40" maxWidth="1000" id="a86-rc-hFq">
+                                                <tableColumn identifier="" width="194" minWidth="40" maxWidth="1000" id="a86-rc-hFq">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Document Tags">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -1071,6 +1071,9 @@ DQ
                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
+                                                                    <connections>
+                                                                        <binding destination="x9B-kL-6Ub" name="value" keyPath="objectValue.name" id="Cla-ST-IeL"/>
+                                                                    </connections>
                                                                 </textField>
                                                             </subviews>
                                                             <connections>
@@ -1080,11 +1083,15 @@ DQ
                                                     </prototypeCellViews>
                                                 </tableColumn>
                                             </tableColumns>
+                                            <connections>
+                                                <binding destination="nlU-Xg-XLm" name="content" keyPath="arrangedObjects" id="gQp-KR-uuj"/>
+                                                <binding destination="nlU-Xg-XLm" name="selectionIndexes" keyPath="selectionIndexes" previousBinding="gQp-KR-uuj" id="ewh-tS-XEL"/>
+                                            </connections>
                                         </tableView>
                                     </subviews>
                                 </clipView>
                                 <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="PXe-8Z-aGt">
-                                    <rect key="frame" x="1" y="79" width="197" height="15"/>
+                                    <rect key="frame" x="1" y="8" width="0.0" height="15"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="PaV-mD-wlq">
@@ -1111,7 +1118,7 @@ DQ
                                             <tableViewGridLines key="gridStyleMask" dashed="YES"/>
                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                             <tableColumns>
-                                                <tableColumn identifier="" width="195" minWidth="40" maxWidth="1000" id="rs7-sA-nXv">
+                                                <tableColumn identifier="" width="195" minWidth="40" maxWidth="1000" id="rs7-sA-nXv" userLabel="Tags">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -1136,6 +1143,9 @@ DQ
                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
+                                                                    <connections>
+                                                                        <binding destination="6av-oG-Iqn" name="value" keyPath="objectValue.name" id="w7D-ZW-CRq"/>
+                                                                    </connections>
                                                                 </textField>
                                                             </subviews>
                                                             <connections>
@@ -1145,11 +1155,15 @@ DQ
                                                     </prototypeCellViews>
                                                 </tableColumn>
                                             </tableColumns>
+                                            <connections>
+                                                <binding destination="di6-YS-NB3" name="content" keyPath="arrangedObjects" id="Qaw-xB-FkT"/>
+                                                <binding destination="di6-YS-NB3" name="selectionIndexes" keyPath="selectionIndexes" previousBinding="Qaw-xB-FkT" id="L3p-Cm-9sG"/>
+                                            </connections>
                                         </tableView>
                                     </subviews>
                                 </clipView>
                                 <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="U9C-bn-w6K">
-                                    <rect key="frame" x="1" y="118.91677623987198" width="237.81633377075195" height="15"/>
+                                    <rect key="frame" x="1" y="-14" width="0.0" height="15"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="7JT-SW-jVA">
@@ -1163,8 +1177,10 @@ DQ
                         <outlet property="datePicker" destination="NiF-3c-nL6" id="7gV-M9-brh"/>
                         <outlet property="descriptionField" destination="WG2-MH-TVV" id="Zpw-ZF-ogL"/>
                         <outlet property="documentAC" destination="6y2-Gm-cOS" id="Yp0-gd-aBN"/>
+                        <outlet property="documentTagAC" destination="nlU-Xg-XLm" id="pRK-x5-tq6"/>
                         <outlet property="filenameField" destination="Gmk-Fi-bVz" id="CuC-Jy-qFN"/>
                         <outlet property="pdfview" destination="80e-Of-Nzi" id="ZfS-9W-TAg"/>
+                        <outlet property="searchTagAC" destination="di6-YS-NB3" id="F20-Rt-jrW"/>
                         <outlet property="searchTagTableView" destination="MB5-j7-8r9" id="AgY-1s-r0h"/>
                         <outlet property="tagAC" destination="jrR-pM-UBT" id="n34-dd-hGg"/>
                         <outlet property="tagTableView" destination="xpK-mJ-Y4J" id="6if-v6-H9T"/>
@@ -1173,6 +1189,8 @@ DQ
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <arrayController objectClassName="Document" id="6y2-Gm-cOS" userLabel="Document Array Controller"/>
                 <arrayController objectClassName="Tag" id="jrR-pM-UBT" userLabel="Tag Array Controller"/>
+                <arrayController objectClassName="Tag" id="di6-YS-NB3" userLabel="Search Tag Array Controller"/>
+                <arrayController objectClassName="Tag" id="nlU-Xg-XLm" userLabel="Document Tag Array Controller"/>
             </objects>
             <point key="canvasLocation" x="75" y="1118"/>
         </scene>

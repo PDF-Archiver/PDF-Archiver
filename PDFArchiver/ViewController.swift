@@ -14,6 +14,8 @@ class ViewController: NSViewController {
     @IBOutlet weak var tagTableView: NSTableView!
     @IBOutlet var documentAC: NSArrayController!
     @IBOutlet var tagAC: NSArrayController!
+    @IBOutlet var searchTagAC: NSArrayController!
+    @IBOutlet var documentTagAC: NSArrayController!
     
     @IBOutlet weak var datePicker: NSDatePicker!
     @IBOutlet weak var descriptionField: NSTextField!
@@ -42,6 +44,8 @@ class ViewController: NSViewController {
         print(myDate)
     }
 
+    var tagSearchTable = [String]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -69,15 +73,14 @@ class ViewController: NSViewController {
     }
     
     func update_search_field_tags(search: String) {
-        var tags = [String]()
+        var tags = [Tag]()
         for tag in tagAC.arrangedObjects as! [Tag] {
             if tag.name.hasPrefix(search) {
-                tags.append(tag.name)
+                let obj = Tag(name: tag.name, count: 0)
+                tags.append(obj)
             }
         }
-        print(tags)
-        
-        // TOOD: set new table view elements here
+        searchTagAC.content = tags
     }
     
     func sortArrayController(by key : String, ascending asc : Bool) {
@@ -93,9 +96,10 @@ class ViewController: NSViewController {
         pdfview.acceptsDraggedFiles = false
         pdfview.interpolationQuality = PDFInterpolationQuality.low
     }
+    
 }
 
-extension ViewController: NSTableViewDelegate {
+extension ViewController: NSTableViewDelegate, NSTableViewDataSource {
     func tableViewSelectionDidChange(_ notification: Notification) {
         let tableView = notification.object as! NSTableView
         
@@ -105,4 +109,5 @@ extension ViewController: NSTableViewDelegate {
             self.update_PDFView(url: pdf_url)
         }
     }
+
 }
