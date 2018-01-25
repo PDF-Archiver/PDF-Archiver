@@ -1075,7 +1075,7 @@ DQ
                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
                                                                     <connections>
-                                                                        <binding destination="x9B-kL-6Ub" name="value" keyPath="objectValue.name" id="Cla-ST-IeL"/>
+                                                                        <binding destination="x9B-kL-6Ub" name="value" keyPath="objectValue.name" id="Ouj-Ix-U40"/>
                                                                     </connections>
                                                                 </textField>
                                                             </subviews>
@@ -1088,8 +1088,8 @@ DQ
                                             </tableColumns>
                                             <connections>
                                                 <action selector="clickedDocumentTagTableView:" target="XfG-lQ-9wD" id="yF4-Cx-nb1"/>
-                                                <binding destination="nlU-Xg-XLm" name="content" keyPath="arrangedObjects" id="gQp-KR-uuj"/>
-                                                <binding destination="nlU-Xg-XLm" name="selectionIndexes" keyPath="selectionIndexes" previousBinding="gQp-KR-uuj" id="ewh-tS-XEL"/>
+                                                <binding destination="nlU-Xg-XLm" name="content" keyPath="arrangedObjects" id="dv6-bC-MYw"/>
+                                                <binding destination="nlU-Xg-XLm" name="selectionIndexes" keyPath="selectionIndexes" previousBinding="dv6-bC-MYw" id="znt-i6-vBG"/>
                                             </connections>
                                         </tableView>
                                     </subviews>
@@ -1114,7 +1114,7 @@ DQ
                                     <rect key="frame" x="1" y="1" width="198" height="76"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnSelection="YES" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" id="MB5-j7-8r9">
+                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" viewBased="YES" id="MB5-j7-8r9">
                                             <rect key="frame" x="0.0" y="0.0" width="198" height="76"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>

@@ -134,10 +134,9 @@ class ViewController: NSViewController {
 extension ViewController: NSTableViewDelegate, NSTableViewDataSource {
     func tableViewSelectionDidChange(_ notification: Notification) {
         let tableView = notification.object as! NSTableView
-        
         if let identifier = tableView.identifier, identifier.rawValue == "DocumentTableView" {
             // update the PDFView
-            let pdf_url = (self.documentAC.selectedObjects.first as! Document).path
+            let pdf_url = (documentAC.selectedObjects.first as! Document).path
             self.update_PDFView(url: pdf_url)
         }
     }
