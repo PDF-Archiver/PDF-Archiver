@@ -14,9 +14,9 @@ class TagSearchField: NSSearchField {
         let search_string = textView.string
         
         let rootViewController = NSApplication.shared.mainWindow?.windowController?.contentViewController as! ViewController
-        rootViewController.update_search_field_tags(search: search_string)
+//        rootViewController.update_search_field_tags(search: search_string)
+        print(rootViewController)
 
     }
     
 }
-

@@ -9,44 +9,52 @@
 import Cocoa
 import Quartz
 
-class ViewController: NSViewController {
+class ViewController: NSViewController, PrefsViewControllerDelegate {
+    func savePreferences(prefs: Preferences) {
+        print("test")
+    }
+    
+    var defaultTags = [Tag]()
+    var prefs: Preferences?
+    var dataModelInstance: DataModel?
+    
     @IBOutlet weak var pdfview: PDFView!
     @IBOutlet weak var tagTableView: NSTableView!
-    @IBOutlet weak var searchTagTableView: NSTableView!
     
     @IBOutlet var documentAC: NSArrayController!
     @IBOutlet var tagAC: NSArrayController!
     @IBOutlet var documentTagAC: NSArrayController!
-    @IBOutlet var searchTagAC: NSArrayController!
     
     @IBOutlet weak var datePicker: NSDatePicker!
     @IBOutlet weak var descriptionField: NSTextField!
-    @IBOutlet weak var filenameField: NSTextField!
     @IBOutlet weak var tagSearchField: TagSearchField!
     
     // outlets
     @IBAction func clickedTableView(_ sender: NSTableView) {
-        if sender.clickedRow == -1 {
-            if sender.clickedColumn == 0 {
-                sortArrayController(by: "count", ascending: false)
-            } else {
-                sortArrayController(by: "name", ascending: true)
-            }
-        } else {
-            tagTableView.deselectRow(tagAC.selectionIndex)
-        }
+//        if sender.clickedRow == -1 {
+//            if sender.clickedColumn == 0 {
+//                sortArrayController(by: "count", ascending: false)
+//                sort(objs: [Tag], by key: String, ascending: Bool)
+//            } else {
+//                sortArrayController(by: "name", ascending: true)
+//            }
+//        } else {
+//            tagTableView.deselectRow(tagAC.selectionIndex)
+//        }
     }
     @IBAction func clickedDocumentTagTableView(_ sender: NSTableView) {
         documentTagAC.remove(atArrangedObjectIndex: sender.clickedRow)
     }
     
     @IBAction func browseFile(sender: AnyObject) {
-        browse_files()
+        let selectedDocuments = getOpenPanelFiles()
+        // add pdf documents to the controller (and replace the old ones)
+        self.dataModelInstance?.documents = selectedDocuments
     }
     @IBAction func tagSearchField(_ sender: Any) {
         // get the right tag
         let tag_name: String
-        let selectedTag = (searchTagAC.content as! [Tag]).first
+        let selectedTag = (tagAC.content as! [Tag]).first
         if selectedTag != nil {
             tag_name = selectedTag!.name
         } else {
@@ -65,80 +73,25 @@ class ViewController: NSViewController {
         documentTagAC.addObject(tag)
         
     }
-    @IBAction func saveButtonClicked(_ sender: Any) {
-        // getting & setting the date/time value
-        let myDate = datePicker.dateValue
-        print(myDate)
-    }
-
-    var tagSearchTable = [String]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.dataModelInstance = DataModel()
+        self.dataModelInstance?.delegate = self as DocumentProtocol
+        
+
+        
+        
+        
         
         // TODO: debug code to reset the preferences
 //        UserDefaults.standard.removeObject(forKey: "archivePath")
 //        UserDefaults.standard.removeObject(forKey: "tags")
         
-        self.refresh_tags()
-        
-        // TODO: example usage of the update search field tags function
-        self.update_search_field_tags(search: "a")
-        
         // add sorting to tag fields
-        documentAC.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
-        searchTagAC.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
-        
-    }
-
-    func refresh_tags() {
-        let tags_dict = UserDefaults.standard.dictionary(forKey: "tags")!
-        
-        var tags = [Tag]()
-        for (name, count) in tags_dict {
-            tags.append(Tag(name: name, count: count as! Int))
-        }
-        sortArrayController(by: "count", ascending: false)
-        tagAC.content = tags
-        tagTableView.deselectRow(tagAC.selectionIndex)
-    }
-    
-    func update_search_field_tags(search: String) {
-        var tags = [Tag]()
-        for tag in tagAC.arrangedObjects as! [Tag] {
-            if tag.name.hasPrefix(search) {
-                let obj = Tag(name: tag.name, count: 0)
-                tags.append(obj)
-            }
-        }
-        searchTagAC.content = tags
+//        documentAC.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
         
     }
     
-    func sortArrayController(by key : String, ascending asc : Bool) {
-        tagAC.sortDescriptors = [NSSortDescriptor(key: key, ascending: asc)]
-        tagAC.rearrangeObjects()
-    }
-    
-    func update_PDFView(url: URL) {
-        pdfview.document = PDFDocument(url: url)
-//        pdfview.displayMode = PDFDisplayMode.singlePageContinuous
-        pdfview.displayMode = PDFDisplayMode.singlePage
-        pdfview.autoScales = true
-        pdfview.acceptsDraggedFiles = false
-        pdfview.interpolationQuality = PDFInterpolationQuality.low
-    }
-    
-}
-
-extension ViewController: NSTableViewDelegate, NSTableViewDataSource {
-    func tableViewSelectionDidChange(_ notification: Notification) {
-        let tableView = notification.object as! NSTableView
-        if let identifier = tableView.identifier, identifier.rawValue == "DocumentTableView" {
-            // update the PDFView
-            let pdf_url = (documentAC.selectedObjects.first as! Document).path
-            self.update_PDFView(url: pdf_url)
-        }
-    }
-
 }

@@ -21,7 +21,12 @@
 		A32D52F02012B5150032F05C /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A32D52EF2012B5150032F05C /* Quartz.framework */; };
 		A38A58AB1FFFA72D003F0573 /* WindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38A58AA1FFFA72D003F0573 /* WindowController.swift */; };
 		A3A4C1C12015177A008BB354 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3A4C1C02015177A008BB354 /* Helpers.swift */; };
+		A3ABDE27201CC70300338B9B /* TagList.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3ABDE26201CC70300338B9B /* TagList.swift */; };
 		A3F5BC912019BAA70043B192 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F5BC902019BAA70043B192 /* Document.swift */; };
+		A3F5BC96201A4CF50043B192 /* TagHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F5BC95201A4CF50043B192 /* TagHandling.swift */; };
+		A3FC0DA0201B054A0082CD2A /* ViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC0D9F201B054A0082CD2A /* ViewControllerExtension.swift */; };
+		A3FC0DA2201B059F0082CD2A /* DocumentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC0DA1201B059F0082CD2A /* DocumentProtocol.swift */; };
+		A3FC0DA4201B05F10082CD2A /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC0DA3201B05F10082CD2A /* DataModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,7 +69,12 @@
 		A38A58AA1FFFA72D003F0573 /* WindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowController.swift; sourceTree = "<group>"; };
 		A3A4C1C02015177A008BB354 /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		A3A4C1C22015381F008BB354 /* PDF Archiver.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "PDF Archiver.entitlements"; sourceTree = "<group>"; };
+		A3ABDE26201CC70300338B9B /* TagList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagList.swift; sourceTree = "<group>"; };
 		A3F5BC902019BAA70043B192 /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
+		A3F5BC95201A4CF50043B192 /* TagHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TagHandling.swift; path = PDFArchiver/TagHandling.swift; sourceTree = SOURCE_ROOT; };
+		A3FC0D9F201B054A0082CD2A /* ViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerExtension.swift; sourceTree = "<group>"; };
+		A3FC0DA1201B059F0082CD2A /* DocumentProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentProtocol.swift; sourceTree = "<group>"; };
+		A3FC0DA3201B05F10082CD2A /* DataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,12 +132,16 @@
 				A31B52F31FF694B0007A3D14 /* PDFArchiver.entitlements */,
 				A31B52E91FF694B0007A3D14 /* AppDelegate.swift */,
 				A31B52EB1FF694B0007A3D14 /* ViewController.swift */,
+				A3FC0D9F201B054A0082CD2A /* ViewControllerExtension.swift */,
 				A307BB362014B8530046C391 /* PrefsViewController.swift */,
 				A38A58AA1FFFA72D003F0573 /* WindowController.swift */,
 				A31B52ED1FF694B0007A3D14 /* Assets.xcassets */,
 				A31B52EF1FF694B0007A3D14 /* Main.storyboard */,
 				A3F5BC922019BAAE0043B192 /* Classes */,
+				A3FC0DA1201B059F0082CD2A /* DocumentProtocol.swift */,
+				A3FC0DA3201B05F10082CD2A /* DataModel.swift */,
 				A31B53161FF6A6D8007A3D14 /* FileHandling.swift */,
+				A3F5BC95201A4CF50043B192 /* TagHandling.swift */,
 				A3A4C1C02015177A008BB354 /* Helpers.swift */,
 			);
 			path = PDFArchiver;
@@ -166,6 +180,7 @@
 				A307BB3A2014D5300046C391 /* Preferences.swift */,
 				A3299E1B2015BE3D0036125F /* Tag.swift */,
 				A30A42272017A55300946FBA /* TagSearchField.swift */,
+				A3ABDE26201CC70300338B9B /* TagList.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -308,13 +323,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A3ABDE27201CC70300338B9B /* TagList.swift in Sources */,
 				A3299E1C2015BE3D0036125F /* Tag.swift in Sources */,
 				A31B52EC1FF694B0007A3D14 /* ViewController.swift in Sources */,
 				A38A58AB1FFFA72D003F0573 /* WindowController.swift in Sources */,
 				A307BB3B2014D5300046C391 /* Preferences.swift in Sources */,
 				A3F5BC912019BAA70043B192 /* Document.swift in Sources */,
+				A3F5BC96201A4CF50043B192 /* TagHandling.swift in Sources */,
 				A3A4C1C12015177A008BB354 /* Helpers.swift in Sources */,
+				A3FC0DA4201B05F10082CD2A /* DataModel.swift in Sources */,
+				A3FC0DA2201B059F0082CD2A /* DocumentProtocol.swift in Sources */,
 				A307BB372014B8530046C391 /* PrefsViewController.swift in Sources */,
+				A3FC0DA0201B054A0082CD2A /* ViewControllerExtension.swift in Sources */,
 				A31B53171FF6A6D8007A3D14 /* FileHandling.swift in Sources */,
 				A31B52EA1FF694B0007A3D14 /* AppDelegate.swift in Sources */,
 				A30A42282017A55300946FBA /* TagSearchField.swift in Sources */,

@@ -8,14 +8,27 @@
 
 import Foundation
 
-class Tag: NSObject {
+//class Tag: NSObject {
+//    // structure for available tags
+//    @objc var name: String
+//    @objc var count: Int
+//
+//    init(name: String, count: Int) {
+//        self.name = name
+//        self.count = count
+//    }
+//
+//}
+//
+
+class Tag {
     // structure for available tags
-    @objc var name: String
-    @objc var count: Int
+    var name: String
+    var count: Int
     
     init(name: String, count: Int) {
         self.name = name
         self.count = count
     }
-
+    
 }

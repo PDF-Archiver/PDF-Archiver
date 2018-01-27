@@ -9,7 +9,8 @@
 import Foundation
 import Quartz
 
-func browse_files() {
+
+func getOpenPanelFiles() -> [Document] {
     let openPanel = NSOpenPanel()
     openPanel.title = "Choose a .pdf file or a folder"
     openPanel.showsResizeIndicator = false
@@ -19,21 +20,19 @@ func browse_files() {
     openPanel.allowsMultipleSelection = true
     openPanel.allowedFileTypes = ["pdf"]
     
+    var pdf_documents: [Document] = []
     openPanel.beginSheetModal(for: NSApplication.shared.mainWindow!) { response in
         guard response == NSApplication.ModalResponse.OK else {
             return
         }
         // get new pdf documents
-        var pdf_documents = [Document]()
         for element in openPanel.urls {
             for pdf_path in getPDFs(url: element) {
                 pdf_documents.append(Document(path: pdf_path))
             }
         }
-        // add pdf documents to the controller (and replace the old ones)
-        let controller = NSApplication.shared.mainWindow?.windowController?.contentViewController as! ViewController
-        controller.documentAC.content = pdf_documents
     }
+    return pdf_documents
 }
 
 func getPDFs(url: URL) -> Array<URL> {

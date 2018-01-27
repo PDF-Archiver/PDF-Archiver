@@ -12,7 +12,7 @@ import Cocoa
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBAction func browseFile(_ sender: Any) {
-        browse_files()
+        // TODO: run browse_files()
     }
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {

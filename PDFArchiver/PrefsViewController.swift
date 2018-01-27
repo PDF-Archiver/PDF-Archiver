@@ -8,7 +8,14 @@
 
 import Cocoa
 
+protocol PrefsViewControllerDelegate: class {
+    func savePreferences(prefs: Preferences)
+    
+}
+
 class PrefsViewController: NSViewController {
+    var prefs: Preferences?
+    weak var delegate: PrefsViewControllerDelegate?
 
     @IBOutlet weak var archivePathTextField: NSTextField!
     @IBAction func changeArchivePathButton(_ sender: Any) {
@@ -23,23 +30,26 @@ class PrefsViewController: NSViewController {
             guard response == NSApplication.ModalResponse.OK else {
                 return
             }
-            self.prefs.archivePath = openPanel.url!
+            self.prefs?.archivePath = openPanel.url!
             self.archivePathTextField.stringValue = openPanel.url!.path
-            self.prefs.get_last_tags()
         }
     }
     
     @IBAction func okButton(_ sender: Any) {
         view.window?.close()
+        self.prefs!.save()
+//        delegate?.savePreferences(prefs: self.prefs!)
+        
     }
-    
-    var prefs = Preferences()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.prefs = Preferences()
+        self.prefs!.load()
+        
         // update path field
-        if let archivePath = prefs.archivePath {
+        if let archivePath = self.prefs?.archivePath {
             self.archivePathTextField.stringValue = archivePath.path
         }
         
