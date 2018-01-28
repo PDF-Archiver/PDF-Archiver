@@ -50,6 +50,7 @@ class ViewController: NSViewController, PrefsViewControllerDelegate {
         let selectedDocuments = getOpenPanelFiles()
         // add pdf documents to the controller (and replace the old ones)
         self.dataModelInstance?.documents = selectedDocuments
+        self.documentAC.content = self.dataModelInstance?.documents
     }
     @IBAction func tagSearchField(_ sender: Any) {
         // get the right tag

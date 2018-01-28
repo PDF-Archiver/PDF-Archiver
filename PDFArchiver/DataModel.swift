@@ -11,18 +11,19 @@ import Cocoa
 
 // Diese Klasse repräsentiert die Datenstruktur die du hast, mit allen möglichen Berechnungen etc. bevor Werte zum ViewController gegeben werden.
 
-class DataModel {
+class DataModel: NSObject {
     
     // Die Variable, in der der "Teil des Viewcontrollers" gespeichert wird
     // Muss optional sein, da im Initialzer kein delegate übergeben wird
     var delegate: DocumentProtocol?
     
     var prefs: Preferences
-    var documents: [Document]?
+    @objc var documents: [Document]?
     var tags: TagList?
     var old_tags: [Tag]?
     
-    init() {
+    override init() {
+//        super.init()
         self.prefs = Preferences()
         
     }

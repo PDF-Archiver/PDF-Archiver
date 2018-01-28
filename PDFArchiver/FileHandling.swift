@@ -21,10 +21,8 @@ func getOpenPanelFiles() -> [Document] {
     openPanel.allowedFileTypes = ["pdf"]
     
     var pdf_documents: [Document] = []
-    openPanel.beginSheetModal(for: NSApplication.shared.mainWindow!) { response in
-        guard response == NSApplication.ModalResponse.OK else {
-            return
-        }
+    let i = openPanel.runModal()
+    if(i == NSApplication.ModalResponse.OK){
         // get new pdf documents
         for element in openPanel.urls {
             for pdf_path in getPDFs(url: element) {

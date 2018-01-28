@@ -26,12 +26,13 @@ class Preferences {
     }
     
     func save() {
+        // save the archive path
         UserDefaults.standard.set(self._archivePath, forKey: "archivePath")
         
-        var tags: Dictionary<String, Int>
+        // save the last tags
+        var tags: Dictionary<String, Int> = [:]
         for tag in self.tags!.list! {
-            // TODO: generate Dictionary<String, Int> here!
-            print(tag)
+            tags[tag.name] = tag.count
         }
         UserDefaults.standard.set(tags, forKey: "tags")
     }

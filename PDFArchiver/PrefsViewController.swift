@@ -36,10 +36,8 @@ class PrefsViewController: NSViewController {
     }
     
     @IBAction func okButton(_ sender: Any) {
-        view.window?.close()
         self.prefs!.save()
-//        delegate?.savePreferences(prefs: self.prefs!)
-        
+        view.window?.close()
     }
     
     override func viewDidLoad() {
