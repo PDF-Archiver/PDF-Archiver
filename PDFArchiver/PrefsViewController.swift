@@ -33,7 +33,6 @@ class PrefsViewController: NSViewController {
     
     @IBAction func okButton(_ sender: Any) {
         self.prefs!.save()
-        print(self.prefs!.tags?.list)
         self.dismiss(self)
     }
     

@@ -19,12 +19,10 @@ class DataModel {
     
     var prefs: Preferences?
     var documents: [Document]?
-    var tags: TagList?
     var old_tags: [Tag]?
     
     init() {
         self.prefs = Preferences()
-        
     }
     
     func doSomeStuffWithDelegate() {
@@ -37,30 +35,30 @@ class DataModel {
 
     }
     
-    func get_last_tags() {
-        // get the archive path from the UserDefaults
-        if (self.prefs?.archivePath == nil) {
-            return
-        }
-        
-        // get all PDF files from this year and the last years
-        let date = Date()
-        let calendar = Calendar.current
-        let path_year1 = self.prefs?.archivePath!.appendingPathComponent(String(calendar.component(.year, from: date)),
-                                                                  isDirectory: true)
-        let path_year2 = self.prefs?.archivePath!.appendingPathComponent(String(calendar.component(.year, from: date) - 1),
-                                                                  isDirectory: true)
-        var files = [URL]()
-        files.append(contentsOf: getPDFs(url: path_year1!))
-        files.append(contentsOf: getPDFs(url: path_year2!))
-        
-        // get tags and counts from filename
-        var tags_raw: Array<String> = []
-        for file in files {
-            let matched = regex_matches(for: "_[a-z0-9]+", in: file.lastPathComponent)
-            tags_raw.append(contentsOf: matched.map({String($0.dropFirst())}))
-        }
-        let tags = tags_raw.reduce(into: [:]) { counts, word in counts[word, default: 0] += 1 }
-        print(tags)
-    }
+//    func get_last_tags() {
+//        // get the archive path from the UserDefaults
+//        if (self.prefs?.archivePath == nil) {
+//            return
+//        }
+//
+//        // get all PDF files from this year and the last years
+//        let date = Date()
+//        let calendar = Calendar.current
+//        let path_year1 = self.prefs?.archivePath!.appendingPathComponent(String(calendar.component(.year, from: date)),
+//                                                                  isDirectory: true)
+//        let path_year2 = self.prefs?.archivePath!.appendingPathComponent(String(calendar.component(.year, from: date) - 1),
+//                                                                  isDirectory: true)
+//        var files = [URL]()
+//        files.append(contentsOf: getPDFs(url: path_year1!))
+//        files.append(contentsOf: getPDFs(url: path_year2!))
+//
+//        // get tags and counts from filename
+//        var tags_raw: Array<String> = []
+//        for file in files {
+//            let matched = regex_matches(for: "_[a-z0-9]+", in: file.lastPathComponent)
+//            tags_raw.append(contentsOf: matched.map({String($0.dropFirst())}))
+//        }
+//        let tags = tags_raw.reduce(into: [:]) { counts, word in counts[word, default: 0] += 1 }
+//        print(tags)
+//    }
 }

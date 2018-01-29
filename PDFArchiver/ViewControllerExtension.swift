@@ -38,7 +38,6 @@ extension ViewController {
         
     }
     @objc func getPDFDocuments() {
-        print(self.dataModelInstance?.tags?.list)
         let selectedDocuments = getOpenPanelFiles()
         // add pdf documents to the controller (and replace the old ones)
         self.dataModelInstance?.documents = selectedDocuments
@@ -66,19 +65,7 @@ extension ViewController {
 //        self.tagAC.content = self.dataModelInstance?.old_tags
 //        self.tagTableView.deselectRow(tagAC.selectionIndex)
     }
-    
-//    func update_search_field_tags(search: String) {
-//        var tags = [Tag]()
-//        for tag in tagAC.arrangedObjects as! [Tag] {
-//            if tag.name.hasPrefix(search) {
-//                let obj = Tag(name: tag.name, count: 0)
-//                tags.append(obj)
-//            }
-//        }
-//        tagAC.content = tags
-//        
-//    }
-    
+      
 //    func sortArrayController(by key : String, ascending asc : Bool) {
 //        tagAC.sortDescriptors = [NSSortDescriptor(key: key, ascending: asc)]
 //        tagAC.rearrangeObjects()
@@ -99,7 +86,14 @@ extension ViewController: NSTableViewDelegate, NSTableViewDataSource {
             self.update_PDFView(url: pdf_url)
         }
     }
-    
+}
+
+extension ViewController: NSSearchFieldDelegate {
+    override func controlTextDidChange(_ notification: Notification) {
+        guard let textView = notification.object as? NSSearchField else { return }
+        let tags = self.dataModelInstance?.prefs?.tags?.filter(prefix: textView.stringValue)
+        self.tagAC.content = tags
+    }
 }
 
 

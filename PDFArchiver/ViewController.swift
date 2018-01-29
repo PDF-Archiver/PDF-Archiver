@@ -24,7 +24,7 @@ class ViewController: NSViewController {
     
     @IBOutlet weak var datePicker: NSDatePicker!
     @IBOutlet weak var descriptionField: NSTextField!
-    @IBOutlet weak var tagSearchField: TagSearchField!
+    @IBOutlet weak var tagSearchField: NSSearchField!
     
     // outlets
     @IBAction func clickedTableView(_ sender: NSTableView) {
@@ -72,18 +72,20 @@ class ViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // create data model instance
         self.dataModelInstance = DataModel()
         self.dataModelInstance?.delegate = self as DocumentProtocol
         
-        // set some notification obsever
+        self.tagAC.content = self.dataModelInstance?.prefs?.tags?.list
+        self.documentAC.content = self.dataModelInstance?.documents
+        
+        //MARK: Notification Observer
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(self.showPreferences), name: Notification.Name("ShowPreferences"), object: nil)
         notificationCenter.addObserver(self, selector: #selector(self.getPDFDocuments), name: Notification.Name("GetPDFDocuments"), object: nil)
         
-        // set tags
-        //        self.tagAC.content = self.dataModelInstance?.tags
-        //        print(self.prefs?.tags?.list)
-
+        //MARK: delegates
+        tagSearchField.delegate = self
         
         // add sorting to tag fields
 //        documentAC.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
