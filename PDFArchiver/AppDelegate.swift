@@ -11,8 +11,11 @@ import Cocoa
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
-    @IBAction func browseFile(_ sender: Any) {
-        // TODO: run browse_files()
+    @IBAction func showPreferences(_ sender: Any) {
+        NotificationCenter.default.post(name: Notification.Name("ShowPreferences"), object: nil)
+    }
+    @IBAction func getPDFDocuments(_ sender: Any) {
+        NotificationCenter.default.post(name: Notification.Name("GetPDFDocuments"), object: nil)
     }
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {

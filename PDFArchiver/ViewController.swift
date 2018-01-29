@@ -9,10 +9,7 @@
 import Cocoa
 import Quartz
 
-class ViewController: NSViewController, PrefsViewControllerDelegate {
-    func savePreferences(prefs: Preferences) {
-        print("test")
-    }
+class ViewController: NSViewController {
     
     var defaultTags = [Tag]()
     var prefs: Preferences?
@@ -47,10 +44,7 @@ class ViewController: NSViewController, PrefsViewControllerDelegate {
     }
     
     @IBAction func browseFile(sender: AnyObject) {
-        let selectedDocuments = getOpenPanelFiles()
-        // add pdf documents to the controller (and replace the old ones)
-        self.dataModelInstance?.documents = selectedDocuments
-        self.documentAC.content = self.dataModelInstance?.documents
+        getPDFDocuments()
     }
     @IBAction func tagSearchField(_ sender: Any) {
         // get the right tag
@@ -81,14 +75,15 @@ class ViewController: NSViewController, PrefsViewControllerDelegate {
         self.dataModelInstance = DataModel()
         self.dataModelInstance?.delegate = self as DocumentProtocol
         
+        // set some notification obsever
+        let notificationCenter = NotificationCenter.default
+        notificationCenter.addObserver(self, selector: #selector(self.showPreferences), name: Notification.Name("ShowPreferences"), object: nil)
+        notificationCenter.addObserver(self, selector: #selector(self.getPDFDocuments), name: Notification.Name("GetPDFDocuments"), object: nil)
+        
+        // set tags
+        //        self.tagAC.content = self.dataModelInstance?.tags
+        //        print(self.prefs?.tags?.list)
 
-        
-        
-        
-        
-        // TODO: debug code to reset the preferences
-//        UserDefaults.standard.removeObject(forKey: "archivePath")
-//        UserDefaults.standard.removeObject(forKey: "tags")
         
         // add sorting to tag fields
 //        documentAC.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]

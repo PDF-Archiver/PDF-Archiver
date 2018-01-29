@@ -25,7 +25,7 @@
                                         <menuItem isSeparatorItem="YES" id="VOq-y0-SEH"/>
                                         <menuItem title="Preferences…" alternate="YES" keyEquivalent="," id="BOF-NM-1cW">
                                             <connections>
-                                                <segue destination="Hpd-xj-I6h" kind="show" id="dMF-7Y-sC1"/>
+                                                <action selector="showPreferences:" target="Voe-Tx-rLC" id="iDW-fk-2qN"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="wFC-TO-SCJ"/>
@@ -71,7 +71,7 @@
                                         </menuItem>
                                         <menuItem title="Open…" keyEquivalent="o" id="IAo-SY-fd9">
                                             <connections>
-                                                <action selector="browseFile:" target="Voe-Tx-rLC" id="Lxs-8D-rnd"/>
+                                                <action selector="getPDFDocuments:" target="Voe-Tx-rLC" id="z48-YT-MqY"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Open Recent" id="tXI-mr-wws">
@@ -706,32 +706,11 @@
             </objects>
             <point key="canvasLocation" x="75" y="250"/>
         </scene>
-        <!--Preferences Window Controller-->
-        <scene sceneID="dV5-3n-VdR">
-            <objects>
-                <windowController id="Hpd-xj-I6h" userLabel="Preferences Window Controller" sceneMemberID="viewController">
-                    <window key="window" title="Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="VeD-4c-tfx">
-                        <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
-                        <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-                        <rect key="contentRect" x="1734" y="323" width="480" height="270"/>
-                        <rect key="screenRect" x="1440" y="0.0" width="1920" height="1080"/>
-                        <connections>
-                            <outlet property="delegate" destination="Hpd-xj-I6h" id="TqG-YP-Uwg"/>
-                        </connections>
-                    </window>
-                    <connections>
-                        <segue destination="mcV-6Y-gT5" kind="relationship" relationship="window.shadowedContentViewController" id="kec-I6-fYB"/>
-                    </connections>
-                </windowController>
-                <customObject id="fVS-z4-lnU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1064" y="110"/>
-        </scene>
         <!--Prefs View Controller-->
         <scene sceneID="ndM-Fj-5Cq">
             <objects>
-                <viewController id="mcV-6Y-gT5" customClass="PrefsViewController" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="BeE-gT-39S">
+                <viewController identifier="prefsViewController" storyboardIdentifier="prefsViewController" id="mcV-6Y-gT5" customClass="PrefsViewController" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" identifier="prefsViewController" id="BeE-gT-39S">
                         <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
@@ -777,7 +756,7 @@ DQ
                 </viewController>
                 <customObject id="6c0-ie-4dB" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1064" y="572"/>
+            <point key="canvasLocation" x="941" y="1096"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="hIz-AP-VOD">
@@ -938,7 +917,7 @@ DQ
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView id="9wq-Yh-6cT">
-                                                            <rect key="frame" x="31.5" y="1" width="224" height="40"/>
+                                                            <rect key="frame" x="32" y="1" width="224" height="40"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">
@@ -1098,6 +1077,7 @@ DQ
                         <outlet property="tagAC" destination="jrR-pM-UBT" id="n34-dd-hGg"/>
                         <outlet property="tagSearchField" destination="WfD-Nd-kM0" id="S7l-y7-2yr"/>
                         <outlet property="tagTableView" destination="xpK-mJ-Y4J" id="6if-v6-H9T"/>
+                        <segue destination="mcV-6Y-gT5" kind="modal" identifier="prefsSegue" id="2DJ-l1-blV"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -1105,7 +1085,7 @@ DQ
                 <arrayController objectClassName="Tag" id="jrR-pM-UBT" userLabel="Tag Array Controller"/>
                 <arrayController objectClassName="Tag" id="nlU-Xg-XLm" userLabel="Document Tag Array Controller"/>
             </objects>
-            <point key="canvasLocation" x="75" y="1118"/>
+            <point key="canvasLocation" x="75" y="1125"/>
         </scene>
     </scenes>
 </document>

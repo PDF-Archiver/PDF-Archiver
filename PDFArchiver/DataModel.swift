@@ -11,19 +11,18 @@ import Cocoa
 
 // Diese Klasse repräsentiert die Datenstruktur die du hast, mit allen möglichen Berechnungen etc. bevor Werte zum ViewController gegeben werden.
 
-class DataModel: NSObject {
+class DataModel {
     
     // Die Variable, in der der "Teil des Viewcontrollers" gespeichert wird
     // Muss optional sein, da im Initialzer kein delegate übergeben wird
     var delegate: DocumentProtocol?
     
-    var prefs: Preferences
-    @objc var documents: [Document]?
+    var prefs: Preferences?
+    var documents: [Document]?
     var tags: TagList?
     var old_tags: [Tag]?
     
-    override init() {
-//        super.init()
+    init() {
         self.prefs = Preferences()
         
     }
@@ -40,20 +39,20 @@ class DataModel: NSObject {
     
     func get_last_tags() {
         // get the archive path from the UserDefaults
-        if (self.prefs.archivePath == nil) {
+        if (self.prefs?.archivePath == nil) {
             return
         }
         
         // get all PDF files from this year and the last years
         let date = Date()
         let calendar = Calendar.current
-        let path_year1 = self.prefs.archivePath!.appendingPathComponent(String(calendar.component(.year, from: date)),
+        let path_year1 = self.prefs?.archivePath!.appendingPathComponent(String(calendar.component(.year, from: date)),
                                                                   isDirectory: true)
-        let path_year2 = self.prefs.archivePath!.appendingPathComponent(String(calendar.component(.year, from: date) - 1),
+        let path_year2 = self.prefs?.archivePath!.appendingPathComponent(String(calendar.component(.year, from: date) - 1),
                                                                   isDirectory: true)
         var files = [URL]()
-        files.append(contentsOf: getPDFs(url: path_year1))
-        files.append(contentsOf: getPDFs(url: path_year2))
+        files.append(contentsOf: getPDFs(url: path_year1!))
+        files.append(contentsOf: getPDFs(url: path_year2!))
         
         // get tags and counts from filename
         var tags_raw: Array<String> = []

@@ -24,7 +24,28 @@ extension ViewController: DocumentProtocol {
 }
 
 extension ViewController {
+    //MARK: segue stuff
+    override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
+        // set preferences variable in the PrefsViewController
+        if segue.identifier?.rawValue == "prefsSegue" {
+            let secondVC = segue.destinationController as! PrefsViewController
+            secondVC.prefs = self.dataModelInstance?.prefs
+        }
+        
+    }
+    @objc func showPreferences() {
+        self.performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "prefsSegue"), sender: self)
+        
+    }
+    @objc func getPDFDocuments() {
+        print(self.dataModelInstance?.tags?.list)
+        let selectedDocuments = getOpenPanelFiles()
+        // add pdf documents to the controller (and replace the old ones)
+        self.dataModelInstance?.documents = selectedDocuments
+        self.documentAC.content = self.dataModelInstance?.documents
+    }
 
+    //MARK: some helper methods
     func update_PDFView(url: URL) {
         self.pdfview.document = PDFDocument(url: url)
         // self.pdfview.displayMode = PDFDisplayMode.singlePageContinuous
