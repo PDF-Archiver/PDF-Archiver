@@ -23,6 +23,30 @@ class ViewController: NSViewController {
     @IBOutlet weak var tagSearchField: NSSearchField!
     
     // outlets
+    @IBAction func datePickDone(_ sender: NSDatePicker) {
+        print(sender.dateValue)
+        // test if a document is selected
+        guard !self.documentAC.selectedObjects.isEmpty else {
+            return
+        }
+        
+        // set the date of the pdf document
+        let document = self.dataModelInstance.documents![self.dataModelInstance.document_idx!] as Document
+        document.pdf_date = sender.dateValue
+    }
+    
+    @IBAction func descriptionDone(_ sender: NSTextField) {
+        print(sender.stringValue)
+        // test if a document is selected
+        guard !self.documentAC.selectedObjects.isEmpty else {
+            return
+        }
+        
+        // set the description of the pdf document
+        let document = self.dataModelInstance.documents![self.dataModelInstance.document_idx!] as Document
+        document.pdf_description = sender.stringValue
+    }
+    
     @IBAction func clickedTableView(_ sender: NSTableView) {
         if sender.clickedRow == -1 {
             if sender.clickedColumn == 0 {
@@ -34,8 +58,9 @@ class ViewController: NSViewController {
             tagTableView.deselectRow(tagAC.selectionIndex)
         }
     }
+    
     @IBAction func clickedDocumentTagTableView(_ sender: NSTableView) {
-        // test if the table is empty
+        // test if the document tag table is empty
         guard !self.documentTagAC.selectedObjects.isEmpty else {
             return
         }
@@ -59,20 +84,16 @@ class ViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // create data model instance
-//        self.dataModelInstance = DataModel()
-//        self.dataModelInstance?.delegate = self as DocumentDelegate
-        
+
         self.tagAC.content = self.dataModelInstance.tags?.list
         self.documentAC.content = self.dataModelInstance.documents
         
-        //MARK: Notification Observer
+        // MARK: - Notification Observer
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(self.showPreferences), name: Notification.Name("ShowPreferences"), object: nil)
         notificationCenter.addObserver(self, selector: #selector(self.getPDFDocuments), name: Notification.Name("GetPDFDocuments"), object: nil)
         
-        //MARK: delegates
+        // MARK: - delegates
         tagSearchField.delegate = self
         
         // add sorting to tag fields
