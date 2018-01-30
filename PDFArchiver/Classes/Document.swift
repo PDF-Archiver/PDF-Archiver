@@ -32,6 +32,11 @@ class Document: NSObject {
         self.basepath = path.deletingLastPathComponent()
         self.name = path.lastPathComponent
         self.already_done = false
+
+        self.pdf_filename = ""
+        self.pdf_date = Date()
+        self.pdf_description = ""
+        self.pdf_tags = [Tag]()
     }
     
     func rename() {

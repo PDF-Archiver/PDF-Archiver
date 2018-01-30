@@ -19,6 +19,7 @@ class DataModel: PreferencesDelegate {
     var prefs: Preferences?
     var documents: [Document]?
     var tags: TagList?
+    var document_idx: Int?
     
     init() {
         self.prefs = Preferences(delegate: self as PreferencesDelegate)

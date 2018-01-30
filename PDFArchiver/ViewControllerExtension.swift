@@ -31,12 +31,12 @@ extension ViewController {
             let secondVC = segue.destinationController as! PrefsViewController
             secondVC.prefs = self.dataModelInstance?.prefs
         }
-        
     }
+    
     @objc func showPreferences() {
         self.performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "prefsSegue"), sender: self)
-        
     }
+    
     @objc func getPDFDocuments() {
         let selectedDocuments = getOpenPanelFiles()
         // add pdf documents to the controller (and replace the old ones)
@@ -81,9 +81,16 @@ extension ViewController: NSTableViewDelegate, NSTableViewDataSource {
     func tableViewSelectionDidChange(_ notification: Notification) {
         let tableView = notification.object as! NSTableView
         if let identifier = tableView.identifier, identifier.rawValue == "DocumentTableView" {
+            // get the index of the selected row and save it
+            let idx = tableView.selectedRow
+            self.dataModelInstance?.document_idx = idx
+            
+            // pick a document and save the tags in the document tag list
+            let selectedDocument = self.dataModelInstance!.documents![idx] as Document
+            self.documentTagAC.content = selectedDocument.pdf_tags
+            
             // update the PDFView
-            let pdf_url = (documentAC.selectedObjects.first as! Document).path
-            self.update_PDFView(url: pdf_url)
+            self.update_PDFView(url: (self.dataModelInstance?.documents![idx].path)!)
         }
     }
 }
@@ -113,7 +120,14 @@ extension ViewController: NSSearchFieldDelegate {
         }
         
         // add new tag to document table view
-        self.documentTagAC.addObject(selectedTag)
+        if let idx = self.dataModelInstance!.document_idx {
+            // TODO: WTF? do I really have to do this in 2 steps???
+            var tmp = self.documentTagAC.content as! [Tag]
+            tmp.append(selectedTag!)
+            self.documentTagAC.content = tmp
+            
+            self.dataModelInstance!.documents![idx].pdf_tags!.append(selectedTag!)
+        }
     }
 }
 
