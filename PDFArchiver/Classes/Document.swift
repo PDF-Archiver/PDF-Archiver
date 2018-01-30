@@ -12,8 +12,8 @@ class Document: NSObject {
     // structure for PDF documents on disk
     var path: URL
     @objc var name: String?
-    var pdf_filename: String = ""
-    var pdf_date: Date = Date()
+    var pdf_filename: String?
+    var pdf_date: Date?
     var pdf_description: String? {
         get {
             return self._pdf_description
@@ -34,8 +34,8 @@ class Document: NSObject {
             }
         }
     }
-    var pdf_tags: [Tag] = [Tag]()
-    fileprivate var _pdf_description: String? = ""
+    var pdf_tags: [Tag]?
+    fileprivate var _pdf_description: String?
     
     init(path: URL) {
         self.path = path
@@ -43,14 +43,22 @@ class Document: NSObject {
         self.name = path.lastPathComponent
     }
     
-    func rename() {
+    func rename() -> Bool{
         // create a filename and rename the document
-        print("RENAMING FUNCTION")
+        if let date = self.pdf_date,
+           let description = self.pdf_description,
+           let tags = self.pdf_tags {
+            print(date)
+            print(description)
+            print(tags)
+            
+            // TODO: implement parsing here
+            print("Congratulations!!!")
+            return true
+            
+        } else {
+            print("Renaming not possible! Doublecheck the document fields.")
+            return false
+        }
     }
-    
-    func parse(){
-        // parse the existing name and set some properties
-        print("parse all the things")
-    }
-    
 }

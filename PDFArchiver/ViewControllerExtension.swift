@@ -9,22 +9,24 @@
 import Quartz
 
 extension ViewController {
-    func updateDocumentFields() {
+    func updateDocumentFields(update_pdf: Bool) {
         let idx: Int = (self.dataModelInstance.document_idx)!
         let document = self.dataModelInstance.documents![idx] as Document
         
         // set the document date, description and tags
-        self.datePicker.dateValue = document.pdf_date
-        self.descriptionField.stringValue = document.pdf_description!
+        self.datePicker.dateValue = document.pdf_date ?? Date()
+        self.descriptionField.stringValue = document.pdf_description ?? ""
         self.documentTagAC.content = document.pdf_tags
         
         // update pdf view
-        self.pdfview.document = PDFDocument(url: document.path)
-        // self.pdfview.displayMode = PDFDisplayMode.singlePageContinuous
-        self.pdfview.displayMode = PDFDisplayMode.singlePage
-        self.pdfview.autoScales = true
-        self.pdfview.acceptsDraggedFiles = false
-        self.pdfview.interpolationQuality = PDFInterpolationQuality.low
+        if update_pdf {
+            self.pdfview.document = PDFDocument(url: document.path)
+            // self.pdfview.displayMode = PDFDisplayMode.singlePageContinuous
+            self.pdfview.displayMode = PDFDisplayMode.singlePage
+            self.pdfview.autoScales = false
+            self.pdfview.acceptsDraggedFiles = false
+            self.pdfview.interpolationQuality = PDFInterpolationQuality.low
+        }
     }
     
     //MARK: segue stuff
@@ -46,6 +48,19 @@ extension ViewController {
         self.dataModelInstance.documents = selectedDocuments
         self.documentAC.content = self.dataModelInstance.documents
     }
+    @objc func saveDocument() {
+        // test if a document is selected
+        guard !self.documentAC.selectedObjects.isEmpty else {
+            return
+        }
+        
+        let result = (self.dataModelInstance.documents![self.dataModelInstance.document_idx!] as Document).rename()
+        if result {
+            self.dataModelInstance.documents!.remove(at: self.dataModelInstance.document_idx!)
+            self.documentAC.content = self.dataModelInstance.documents
+            updateDocumentFields(update_pdf: true)
+        }
+    }
 
     //MARK: some helper methods
     func sortArrayController(by key : String, ascending asc : Bool) {
@@ -62,7 +77,7 @@ extension ViewController: NSTableViewDelegate, NSTableViewDataSource {
             self.dataModelInstance.document_idx = tableView.selectedRow
             
             // pick a document and save the tags in the document tag list
-            updateDocumentFields()
+            updateDocumentFields(update_pdf: true)
         }
     }
 }
@@ -98,7 +113,11 @@ extension ViewController: NSSearchFieldDelegate {
             tmp.append(selectedTag!)
             self.documentTagAC.content = tmp
             
-            self.dataModelInstance.documents![idx].pdf_tags.append(selectedTag!)
+            if self.dataModelInstance.documents![idx].pdf_tags != nil {
+                self.dataModelInstance.documents![idx].pdf_tags!.append(selectedTag!)
+            } else {
+                self.dataModelInstance.documents![idx].pdf_tags = [selectedTag!]
+            }
         }
     }
 }

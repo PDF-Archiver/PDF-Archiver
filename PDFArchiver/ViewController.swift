@@ -24,7 +24,6 @@ class ViewController: NSViewController {
     
     // outlets
     @IBAction func datePickDone(_ sender: NSDatePicker) {
-        print(sender.dateValue)
         // test if a document is selected
         guard !self.documentAC.selectedObjects.isEmpty else {
             return
@@ -36,7 +35,6 @@ class ViewController: NSViewController {
     }
     
     @IBAction func descriptionDone(_ sender: NSTextField) {
-        print(sender.stringValue)
         // test if a document is selected
         guard !self.documentAC.selectedObjects.isEmpty else {
             return
@@ -68,10 +66,10 @@ class ViewController: NSViewController {
         // remove the selected element
         let idx = self.dataModelInstance.document_idx
         var i = 0
-        for tag in (self.dataModelInstance.documents![idx!].pdf_tags) {
+        for tag in self.dataModelInstance.documents![idx!].pdf_tags! {
             if tag.name == (self.documentTagAC.selectedObjects.first as! Tag).name {
-                self.dataModelInstance.documents![idx!].pdf_tags.remove(at: i)
-                updateDocumentFields()
+                self.dataModelInstance.documents![idx!].pdf_tags!.remove(at: i)
+                updateDocumentFields(update_pdf: false)
                 return
             }
             i += 1
@@ -79,9 +77,12 @@ class ViewController: NSViewController {
     }
     
     @IBAction func browseFile(sender: AnyObject) {
-        getPDFDocuments()
+        self.getPDFDocuments()
     }
-
+    @IBAction func saveDocumentButton(_ sender: NSButton) {
+        self.saveDocument()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -92,6 +93,7 @@ class ViewController: NSViewController {
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(self.showPreferences), name: Notification.Name("ShowPreferences"), object: nil)
         notificationCenter.addObserver(self, selector: #selector(self.getPDFDocuments), name: Notification.Name("GetPDFDocuments"), object: nil)
+        notificationCenter.addObserver(self, selector: #selector(self.saveDocument), name: Notification.Name("SaveDocument"), object: nil)
         
         // MARK: - delegates
         tagSearchField.delegate = self
