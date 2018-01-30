@@ -28,19 +28,33 @@ class ViewController: NSViewController {
     
     // outlets
     @IBAction func clickedTableView(_ sender: NSTableView) {
-//        if sender.clickedRow == -1 {
-//            if sender.clickedColumn == 0 {
-//                sortArrayController(by: "count", ascending: false)
-//                sort(objs: [Tag], by key: String, ascending: Bool)
-//            } else {
-//                sortArrayController(by: "name", ascending: true)
-//            }
-//        } else {
-//            tagTableView.deselectRow(tagAC.selectionIndex)
-//        }
+        if sender.clickedRow == -1 {
+            if sender.clickedColumn == 0 {
+                sortArrayController(by: "count", ascending: false)
+            } else {
+                sortArrayController(by: "name", ascending: true)
+            }
+        } else {
+            tagTableView.deselectRow(tagAC.selectionIndex)
+        }
     }
     @IBAction func clickedDocumentTagTableView(_ sender: NSTableView) {
-        documentTagAC.remove(atArrangedObjectIndex: sender.clickedRow)
+        // test if the table is empty
+        guard !self.documentTagAC.selectedObjects.isEmpty else {
+            return
+        }
+        
+        // remove the selected element
+        let idx = self.dataModelInstance?.document_idx
+        var i = 0
+        for tag in (self.dataModelInstance?.documents![idx!].pdf_tags)! {
+            if tag.name == (self.documentTagAC.selectedObjects.first as! Tag).name {
+                self.dataModelInstance?.documents![idx!].pdf_tags?.remove(at: i)
+                updateDocumentFields()
+                return
+            }
+            i += 1
+        }
     }
     
     @IBAction func browseFile(sender: AnyObject) {
@@ -66,6 +80,7 @@ class ViewController: NSViewController {
         tagSearchField.delegate = self
         
         // add sorting to tag fields
+        sortArrayController(by: "count", ascending: false)
 //        documentAC.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
         
     }

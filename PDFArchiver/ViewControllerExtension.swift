@@ -24,6 +24,24 @@ import Quartz
 //}
 
 extension ViewController {
+    func updateDocumentFields() {
+        let idx: Int = (self.dataModelInstance?.document_idx)!
+        let document = self.dataModelInstance!.documents![idx] as Document
+        
+        // set the document date, description and tags
+        self.datePicker.dateValue = document.pdf_date!
+        self.descriptionField.stringValue = document.pdf_description!
+        self.documentTagAC.content = document.pdf_tags
+        
+        // update pdf view
+        self.pdfview.document = PDFDocument(url: document.path)
+        // self.pdfview.displayMode = PDFDisplayMode.singlePageContinuous
+        self.pdfview.displayMode = PDFDisplayMode.singlePage
+        self.pdfview.autoScales = true
+        self.pdfview.acceptsDraggedFiles = false
+        self.pdfview.interpolationQuality = PDFInterpolationQuality.low
+    }
+    
     //MARK: segue stuff
     override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
         // set preferences variable in the PrefsViewController
@@ -45,15 +63,6 @@ extension ViewController {
     }
 
     //MARK: some helper methods
-    func update_PDFView(url: URL) {
-        self.pdfview.document = PDFDocument(url: url)
-        // self.pdfview.displayMode = PDFDisplayMode.singlePageContinuous
-        self.pdfview.displayMode = PDFDisplayMode.singlePage
-        self.pdfview.autoScales = true
-        self.pdfview.acceptsDraggedFiles = false
-        self.pdfview.interpolationQuality = PDFInterpolationQuality.low
-    }
-    
     func refresh_tags() {
 //        let tags_dict = UserDefaults.standard.dictionary(forKey: "tags")!
 //        
@@ -66,10 +75,10 @@ extension ViewController {
 //        self.tagTableView.deselectRow(tagAC.selectionIndex)
     }
       
-//    func sortArrayController(by key : String, ascending asc : Bool) {
-//        tagAC.sortDescriptors = [NSSortDescriptor(key: key, ascending: asc)]
-//        tagAC.rearrangeObjects()
-//    }
+    func sortArrayController(by key : String, ascending asc : Bool) {
+        tagAC.sortDescriptors = [NSSortDescriptor(key: key, ascending: asc)]
+        tagAC.rearrangeObjects()
+    }
     
 //    func savePreferences(prefs: Preferences) {
 //        self.prefs = prefs
@@ -82,15 +91,10 @@ extension ViewController: NSTableViewDelegate, NSTableViewDataSource {
         let tableView = notification.object as! NSTableView
         if let identifier = tableView.identifier, identifier.rawValue == "DocumentTableView" {
             // get the index of the selected row and save it
-            let idx = tableView.selectedRow
-            self.dataModelInstance?.document_idx = idx
+            self.dataModelInstance?.document_idx = tableView.selectedRow
             
             // pick a document and save the tags in the document tag list
-            let selectedDocument = self.dataModelInstance!.documents![idx] as Document
-            self.documentTagAC.content = selectedDocument.pdf_tags
-            
-            // update the PDFView
-            self.update_PDFView(url: (self.dataModelInstance?.documents![idx].path)!)
+            updateDocumentFields()
         }
     }
 }
