@@ -11,25 +11,36 @@ import Foundation
 class Document: NSObject {
     // structure for PDF documents on disk
     var path: URL
-    var already_done: Bool
     @objc var name: String?
-    @objc var basepath: URL
-    var pdf_filename: String?
-    var pdf_date: Date?
-    var pdf_description: String?
-    var pdf_tags: [Tag]?
+    var pdf_filename: String = ""
+    var pdf_date: Date = Date()
+    var pdf_description: String? {
+        get {
+            return self._pdf_description
+        }
+        set {
+            if var raw = newValue {
+                // TODO: we could use a CocoaPod here...
+                raw = raw.lowercased()
+                raw = raw.replacingOccurrences(of: " ", with: "-")
+                raw = raw.replacingOccurrences(of: "[:;.,!?/\\^+<>]", with: "", options: .regularExpression, range: nil)
+                // german umlaute
+                raw = raw.replacingOccurrences(of: "ä", with: "ae")
+                raw = raw.replacingOccurrences(of: "ö", with: "oe")
+                raw = raw.replacingOccurrences(of: "ü", with: "ue")
+                raw = raw.replacingOccurrences(of: "ß", with: "ss")
+                
+                self._pdf_description = raw
+            }
+        }
+    }
+    var pdf_tags: [Tag] = [Tag]()
+    fileprivate var _pdf_description: String? = ""
     
     init(path: URL) {
         self.path = path
         // create a filename and rename the document
-        self.basepath = path.deletingLastPathComponent()
         self.name = path.lastPathComponent
-        self.already_done = false
-
-        self.pdf_filename = ""
-        self.pdf_date = Date()
-        self.pdf_description = ""
-        self.pdf_tags = [Tag]()
     }
     
     func rename() {

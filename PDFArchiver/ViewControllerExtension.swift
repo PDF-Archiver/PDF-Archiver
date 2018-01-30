@@ -14,7 +14,7 @@ extension ViewController {
         let document = self.dataModelInstance.documents![idx] as Document
         
         // set the document date, description and tags
-        self.datePicker.dateValue = document.pdf_date!
+        self.datePicker.dateValue = document.pdf_date
         self.descriptionField.stringValue = document.pdf_description!
         self.documentTagAC.content = document.pdf_tags
         
@@ -98,7 +98,7 @@ extension ViewController: NSSearchFieldDelegate {
             tmp.append(selectedTag!)
             self.documentTagAC.content = tmp
             
-            self.dataModelInstance.documents![idx].pdf_tags!.append(selectedTag!)
+            self.dataModelInstance.documents![idx].pdf_tags.append(selectedTag!)
         }
     }
 }

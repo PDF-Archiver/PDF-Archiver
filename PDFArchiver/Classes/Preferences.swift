@@ -14,9 +14,8 @@ protocol PreferencesDelegate {
 }
 
 class Preferences {
-    var _archivePath: URL?
+    fileprivate var _archivePath: URL?
     var delegate: PreferencesDelegate?
-    
     var archivePath: URL? {
         get {
             return self._archivePath
@@ -26,6 +25,7 @@ class Preferences {
             self.get_last_tags(path: newValue)
         }
     }
+    
     init(delegate: PreferencesDelegate) {
         self.delegate = delegate
         self.load()

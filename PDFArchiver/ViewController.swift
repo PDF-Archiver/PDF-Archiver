@@ -68,9 +68,9 @@ class ViewController: NSViewController {
         // remove the selected element
         let idx = self.dataModelInstance.document_idx
         var i = 0
-        for tag in (self.dataModelInstance.documents![idx!].pdf_tags)! {
+        for tag in (self.dataModelInstance.documents![idx!].pdf_tags) {
             if tag.name == (self.documentTagAC.selectedObjects.first as! Tag).name {
-                self.dataModelInstance.documents![idx!].pdf_tags?.remove(at: i)
+                self.dataModelInstance.documents![idx!].pdf_tags.remove(at: i)
                 updateDocumentFields()
                 return
             }
