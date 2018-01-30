@@ -9,6 +9,12 @@
 import Foundation
 import Quartz
 
+//protocol DocumentDelegate {
+//
+//    func getDocumentDate() -> Date
+//    func getDocumentDescription() -> String
+//}
+
 class Document: NSObject {
     // structure for PDF documents on disk
     var path: URL

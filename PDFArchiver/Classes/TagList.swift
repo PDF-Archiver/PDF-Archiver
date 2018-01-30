@@ -27,7 +27,6 @@ class TagList {
             }
         }
         return tags
-
     }
     
     func sort(objs: [Tag], by key: String, ascending: Bool) -> [Tag] {
@@ -47,7 +46,5 @@ class TagList {
             print("Wrong key '\(key)' selected. This should not happen!")
             return []
         }
-
     }
-    
 }

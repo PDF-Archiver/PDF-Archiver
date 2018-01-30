@@ -11,27 +11,26 @@ import Cocoa
 
 // Diese Klasse repräsentiert die Datenstruktur die du hast, mit allen möglichen Berechnungen etc. bevor Werte zum ViewController gegeben werden.
 
-class DataModel {
-    
+class DataModel: PreferencesDelegate {
     // Die Variable, in der der "Teil des Viewcontrollers" gespeichert wird
     // Muss optional sein, da im Initialzer kein delegate übergeben wird
-    var delegate: DocumentProtocol?
+//    var delegate: DocumentDelegate?
     
     var prefs: Preferences?
     var documents: [Document]?
-    var old_tags: [Tag]?
+    var tags: TagList?
     
     init() {
-        self.prefs = Preferences()
+        self.prefs = Preferences(delegate: self as PreferencesDelegate)
     }
     
     func doSomeStuffWithDelegate() {
         // Hier erfolgt der Zugriff auf den Teil des ViewControllers
-        let docDate: Date = (delegate?.getDocumentDate())!
-        let docDescription: String = (delegate?.getDocumentDescription())!
+//        let docDate: Date = (delegate?.getDocumentDate())!
+//        let docDescription: String = (delegate?.getDocumentDescription())!
         
-        print(docDate)
-        print(docDescription)
+//        print(docDate)
+//        print(docDescription)
 
     }
     
@@ -61,4 +60,17 @@ class DataModel {
 //        let tags = tags_raw.reduce(into: [:]) { counts, word in counts[word, default: 0] += 1 }
 //        print(tags)
 //    }
+    
+    // MARK: - delegate functions
+    func setTagList(tagDict: Dictionary<String, Int>) {
+        self.tags = TagList(tags: tagDict)
+    }
+    
+    func getTagList() -> Dictionary<String, Int> {
+        var tags: Dictionary<String, Int> = [:]
+        for tag in self.tags?.list ?? [] {
+            tags[tag.name] = tag.count
+        }
+        return tags
+    }
 }

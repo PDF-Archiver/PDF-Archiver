@@ -8,9 +8,14 @@
 
 import Foundation
 
+protocol PreferencesDelegate {
+    func setTagList(tagDict: Dictionary<String, Int>)
+    func getTagList() -> Dictionary<String, Int>
+}
+
 class Preferences {
     var _archivePath: URL?
-    var tags: TagList?
+    var delegate: PreferencesDelegate?
     
     var archivePath: URL? {
         get {
@@ -21,7 +26,8 @@ class Preferences {
             self.get_last_tags(path: newValue)
         }
     }
-    init() {
+    init(delegate: PreferencesDelegate) {
+        self.delegate = delegate
         self.load()
     }
     
@@ -30,20 +36,17 @@ class Preferences {
         UserDefaults.standard.set(self._archivePath, forKey: "archivePath")
         
         // save the last tags
-        var tags: Dictionary<String, Int> = [:]
-        for tag in self.tags!.list! {
-            tags[tag.name] = tag.count
-        }
+        let tags = self.delegate?.getTagList()
         UserDefaults.standard.set(tags, forKey: "tags")
     }
     
     func load() {
+        // load archive path
         self._archivePath = UserDefaults.standard.url(forKey: "archivePath")
         
-        if let tags_raw = UserDefaults.standard.dictionary(forKey: "tags") as? Dictionary<String, Int> {
-            self.tags = TagList(tags: tags_raw)
-        }
-        
+        // load archive tags
+        let tags_raw = UserDefaults.standard.dictionary(forKey: "tags") as! Dictionary<String, Int>
+        self.delegate!.setTagList(tagDict: tags_raw)
     }
     
     private func get_last_tags(path: URL?) {
@@ -71,8 +74,7 @@ class Preferences {
         }
         
         let tags = tags_raw.reduce(into: [:]) { counts, word in counts[word, default: 0] += 1 }
-        self.tags = TagList(tags: tags)
-
+        self.delegate?.setTagList(tagDict: tags)
     }
     
 }

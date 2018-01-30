@@ -74,9 +74,9 @@ class ViewController: NSViewController {
         
         // create data model instance
         self.dataModelInstance = DataModel()
-        self.dataModelInstance?.delegate = self as DocumentProtocol
+//        self.dataModelInstance?.delegate = self as DocumentDelegate
         
-        self.tagAC.content = self.dataModelInstance?.prefs?.tags?.list
+        self.tagAC.content = self.dataModelInstance?.tags?.list
         self.documentAC.content = self.dataModelInstance?.documents
         
         //MARK: Notification Observer

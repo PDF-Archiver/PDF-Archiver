@@ -11,17 +11,17 @@ import Quartz
 
 // Die Extension implementiert das SomeProtocol protokoll.
 // Die im Protokoll definierten Funktionen müssen hier implementiert werden.
-extension ViewController: DocumentProtocol {
-    
-    func getDocumentDate() -> Date {
-        return datePicker.dateValue
-    }
-    
-    func getDocumentDescription() -> String {
-        return descriptionField.stringValue
-    }
-    
-}
+//extension ViewController: DocumentDelegate {
+//    
+//    func getDocumentDate() -> Date {
+//        return datePicker.dateValue
+//    }
+//    
+//    func getDocumentDescription() -> String {
+//        return descriptionField.stringValue
+//    }
+//    
+//}
 
 extension ViewController {
     //MARK: segue stuff
@@ -91,7 +91,7 @@ extension ViewController: NSTableViewDelegate, NSTableViewDataSource {
 extension ViewController: NSSearchFieldDelegate {
     override func controlTextDidChange(_ notification: Notification) {
         guard let textView = notification.object as? NSSearchField else { return }
-        let tags = self.dataModelInstance?.prefs?.tags?.filter(prefix: textView.stringValue)
+        let tags = self.dataModelInstance?.tags?.filter(prefix: textView.stringValue)
         self.tagAC.content = tags
     }
 }
