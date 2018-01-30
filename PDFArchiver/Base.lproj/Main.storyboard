@@ -1104,9 +1104,6 @@ DQ
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </searchFieldCell>
-                                <connections>
-                                    <action selector="tagSearchField:" target="XfG-lQ-9wD" id="KA0-78-9FF"/>
-                                </connections>
                             </searchField>
                         </subviews>
                         <constraints>

@@ -94,6 +94,27 @@ extension ViewController: NSSearchFieldDelegate {
         let tags = self.dataModelInstance?.tags?.filter(prefix: textView.stringValue)
         self.tagAC.content = tags
     }
+    
+    override func controlTextDidEndEditing(_ notification: Notification) {
+        // try to get the selected tag
+        var selectedTag: Tag?
+        selectedTag = (self.tagAC.content as! [Tag]).first
+        if selectedTag == nil {
+            // no tag selected - get the name of the search field
+            selectedTag = Tag(name: self.tagSearchField.stringValue,
+                              count: 0)
+        }
+        
+        // test if element already exists in document tag table view
+        for element in self.documentTagAC.arrangedObjects as! [Tag] {
+            if element.name == selectedTag?.name {
+                return
+            }
+        }
+        
+        // add new tag to document table view
+        self.documentTagAC.addObject(selectedTag)
+    }
 }
 
 

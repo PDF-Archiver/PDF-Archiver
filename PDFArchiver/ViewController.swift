@@ -46,29 +46,7 @@ class ViewController: NSViewController {
     @IBAction func browseFile(sender: AnyObject) {
         getPDFDocuments()
     }
-    @IBAction func tagSearchField(_ sender: Any) {
-        // get the right tag
-        let tag_name: String
-        let selectedTag = (tagAC.content as! [Tag]).first
-        if selectedTag != nil {
-            tag_name = selectedTag!.name
-        } else {
-            tag_name = tagSearchField.stringValue
-        }
 
-        // test if element already exists in document tag table view
-        for element in documentTagAC.arrangedObjects as! [Tag] {
-            if tag_name == element.name {
-                return
-            }
-        }
-        
-        // add new tag to document table view
-        let tag = Tag(name: tag_name, count: 0)
-        documentTagAC.addObject(tag)
-        
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
