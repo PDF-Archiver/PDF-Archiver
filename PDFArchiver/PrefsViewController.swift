@@ -11,7 +11,6 @@ import Cocoa
 class PrefsViewController: NSViewController {
     var test: String?
     var prefs: Preferences?
-//    weak var delegate: PrefsViewControllerDelegate?
 
     @IBOutlet weak var archivePathTextField: NSTextField!
     @IBAction func changeArchivePathButton(_ sender: Any) {
@@ -38,12 +37,7 @@ class PrefsViewController: NSViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        self.prefs = preferences
-        
-//        let model = DataModel.shared
-//        self.prefs = model.prefs
-//        self.prefs!.load()
-        
+
         // update path field
         if let archivePath = self.prefs?.archivePath {
             self.archivePathTextField.stringValue = archivePath.path

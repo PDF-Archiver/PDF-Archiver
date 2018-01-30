@@ -6,14 +6,10 @@
 //  Copyright © 2017 Julian Kahnert. All rights reserved.
 //
 
-import Cocoa
 import Quartz
 
 class ViewController: NSViewController {
-    
-    var defaultTags = [Tag]()
-    var prefs: Preferences?
-    var dataModelInstance: DataModel?
+    var dataModelInstance = DataModel()
     
     @IBOutlet weak var pdfview: PDFView!
     @IBOutlet weak var tagTableView: NSTableView!
@@ -45,11 +41,11 @@ class ViewController: NSViewController {
         }
         
         // remove the selected element
-        let idx = self.dataModelInstance?.document_idx
+        let idx = self.dataModelInstance.document_idx
         var i = 0
-        for tag in (self.dataModelInstance?.documents![idx!].pdf_tags)! {
+        for tag in (self.dataModelInstance.documents![idx!].pdf_tags)! {
             if tag.name == (self.documentTagAC.selectedObjects.first as! Tag).name {
-                self.dataModelInstance?.documents![idx!].pdf_tags?.remove(at: i)
+                self.dataModelInstance.documents![idx!].pdf_tags?.remove(at: i)
                 updateDocumentFields()
                 return
             }
@@ -65,11 +61,11 @@ class ViewController: NSViewController {
         super.viewDidLoad()
         
         // create data model instance
-        self.dataModelInstance = DataModel()
+//        self.dataModelInstance = DataModel()
 //        self.dataModelInstance?.delegate = self as DocumentDelegate
         
-        self.tagAC.content = self.dataModelInstance?.tags?.list
-        self.documentAC.content = self.dataModelInstance?.documents
+        self.tagAC.content = self.dataModelInstance.tags?.list
+        self.documentAC.content = self.dataModelInstance.documents
         
         //MARK: Notification Observer
         let notificationCenter = NotificationCenter.default

@@ -6,9 +6,7 @@
 //  Copyright © 2017 Julian Kahnert. All rights reserved.
 //
 
-import Foundation
 import Quartz
-
 
 func getOpenPanelFiles() -> [Document] {
     let openPanel = NSOpenPanel()
