@@ -9,7 +9,6 @@
 import Cocoa
 
 class PrefsViewController: NSViewController {
-    var test: String?
     var prefs: Preferences?
 
     @IBOutlet weak var archivePathTextField: NSTextField!
@@ -32,6 +31,7 @@ class PrefsViewController: NSViewController {
     
     @IBAction func okButton(_ sender: Any) {
         self.prefs!.save()
+        // TODO: add update of the view here!
         self.dismiss(self)
     }
     

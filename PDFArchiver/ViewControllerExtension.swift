@@ -10,6 +10,8 @@ import Quartz
 
 extension ViewController {
     func updateDocumentFields(update_pdf: Bool) {
+        self.tagAC.content = self.dataModelInstance.tags?.list
+        
         // test if no documents exist in document table view
         if self.dataModelInstance.documents?.count == 0 {
             self.pdfview.document = nil
@@ -98,6 +100,8 @@ extension ViewController: NSSearchFieldDelegate {
     }
     
     override func controlTextDidEndEditing(_ notification: Notification) {
+        var newly_created = false
+        
         // try to get the selected tag
         var selectedTag: Tag?
         selectedTag = (self.tagAC.content as! [Tag]).first
@@ -105,6 +109,7 @@ extension ViewController: NSSearchFieldDelegate {
             // no tag selected - get the name of the search field
             selectedTag = Tag(name: self.tagSearchField.stringValue,
                               count: 0)
+            newly_created = true
         }
         
         // test if element already exists in document tag table view
@@ -126,8 +131,15 @@ extension ViewController: NSSearchFieldDelegate {
             } else {
                 self.dataModelInstance.documents![idx].pdf_tags = [selectedTag!]
             }
+            
+            // clear search field content
+            self.tagSearchField.stringValue = ""
+            
+            // add tag to tagAC
+            if newly_created {
+                self.dataModelInstance.tags?.list?.append(selectedTag!)
+                self.updateDocumentFields(update_pdf: false)
+            }
         }
     }
 }
-
-
