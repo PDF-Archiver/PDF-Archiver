@@ -927,7 +927,7 @@ DQ
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView id="9wq-Yh-6cT">
-                                                            <rect key="frame" x="32" y="1" width="224" height="40"/>
+                                                            <rect key="frame" x="31.5" y="1" width="224" height="40"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">
@@ -1085,7 +1085,7 @@ DQ
                                         </tableHeaderView>
                                     </scrollView>
                                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="U4W-9l-6vC">
-                                        <rect key="frame" x="101" y="13" width="70" height="32"/>
+                                        <rect key="frame" x="100" y="13" width="70" height="32"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="21" id="C1f-7R-CeS"/>
                                         </constraints>

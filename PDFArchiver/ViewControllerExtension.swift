@@ -10,7 +10,15 @@ import Quartz
 
 extension ViewController {
     func updateDocumentFields(update_pdf: Bool) {
-        let idx: Int = (self.dataModelInstance.document_idx)!
+        // test if no documents exist in document table view
+        if self.dataModelInstance.documents?.count == 0 {
+            self.pdfview.document = nil
+            self.datePicker.dateValue = Date()
+            self.descriptionField.stringValue = ""
+            self.documentTagAC.content = nil
+            return
+        }
+        let idx = self.dataModelInstance.document_idx ?? 0
         let document = self.dataModelInstance.documents![idx] as Document
         
         // set the document date, description and tags
@@ -54,7 +62,7 @@ extension ViewController {
             return
         }
         
-        let result = (self.dataModelInstance.documents![self.dataModelInstance.document_idx!] as Document).rename()
+        let result = (self.dataModelInstance.documents![self.dataModelInstance.document_idx!] as Document).rename(archive_path: (self.dataModelInstance.prefs?.archivePath)!)
         if result {
             self.dataModelInstance.documents!.remove(at: self.dataModelInstance.document_idx!)
             self.documentAC.content = self.dataModelInstance.documents
