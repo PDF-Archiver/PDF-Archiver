@@ -45,7 +45,7 @@ class Preferences {
         self._archivePath = UserDefaults.standard.url(forKey: "archivePath")
         
         // load archive tags
-        let tags_raw = UserDefaults.standard.dictionary(forKey: "tags") as! Dictionary<String, Int>
+        let tags_raw = (UserDefaults.standard.dictionary(forKey: "tags") ?? [:]) as! Dictionary<String, Int>
         self.delegate!.setTagList(tagDict: tags_raw)
     }
     
