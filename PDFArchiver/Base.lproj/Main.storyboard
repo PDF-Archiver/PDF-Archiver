@@ -4,6 +4,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
         <plugIn identifier="com.apple.pdfkit.ibplugin" version="13771"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+        <capability name="system font weights other than Regular or Bold" minToolsVersion="7.0"/>
     </dependencies>
     <scenes>
         <!--Application-->
@@ -711,12 +712,11 @@
             <objects>
                 <viewController storyboardIdentifier="prefsViewController" id="mcV-6Y-gT5" customClass="PrefsViewController" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="BeE-gT-39S">
-                        <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                        <rect key="frame" x="0.0" y="0.0" width="480" height="115"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bXb-Gg-LFK">
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bXb-Gg-LFK">
                                 <rect key="frame" x="211" y="13" width="59" height="32"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Q9w-Zf-cLh">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -728,18 +728,27 @@ DQ
                                     <action selector="okButton:" target="mcV-6Y-gT5" id="9nY-8Z-2xc"/>
                                 </connections>
                             </button>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="X5U-R0-ENH">
-                                <rect key="frame" x="17" y="215" width="341" height="22"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="X5U-R0-ENH">
+                                <rect key="frame" x="20" y="51" width="347" height="22"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="347" id="rSP-Su-HYL"/>
+                                </constraints>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="Archive Path" usesSingleLineMode="YES" id="gtQ-4r-22c">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8RK-0V-cYr">
-                                <rect key="frame" x="381" y="209" width="85" height="32"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PTW-ce-MNP">
+                                <rect key="frame" x="18" y="78" width="89" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Archive Path:" id="Ju7-wj-fHp">
+                                    <font key="font" metaFont="systemSemibold" size="13"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8RK-0V-cYr">
+                                <rect key="frame" x="381" y="45" width="85" height="32"/>
                                 <buttonCell key="cell" type="push" title="change" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="XbB-C4-8qz">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -749,6 +758,19 @@ DQ
                                 </connections>
                             </button>
                         </subviews>
+                        <constraints>
+                            <constraint firstItem="X5U-R0-ENH" firstAttribute="top" secondItem="PTW-ce-MNP" secondAttribute="bottom" constant="5" id="0qZ-lx-bzX"/>
+                            <constraint firstAttribute="trailing" secondItem="8RK-0V-cYr" secondAttribute="trailing" constant="20" id="73b-WR-eVR"/>
+                            <constraint firstItem="bXb-Gg-LFK" firstAttribute="top" secondItem="X5U-R0-ENH" secondAttribute="bottom" constant="10" id="Ehc-AC-11B"/>
+                            <constraint firstItem="X5U-R0-ENH" firstAttribute="leading" secondItem="BeE-gT-39S" secondAttribute="leading" constant="20" id="Niq-b1-NFn"/>
+                            <constraint firstItem="bXb-Gg-LFK" firstAttribute="centerX" secondItem="BeE-gT-39S" secondAttribute="centerX" id="ObT-Bi-o0V"/>
+                            <constraint firstAttribute="bottom" secondItem="bXb-Gg-LFK" secondAttribute="bottom" constant="20" id="SwK-wc-Tfn"/>
+                            <constraint firstItem="PTW-ce-MNP" firstAttribute="top" secondItem="BeE-gT-39S" secondAttribute="top" constant="20" id="cZV-I0-EC7"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="PTW-ce-MNP" secondAttribute="trailing" constant="20" symbolic="YES" id="fnl-Ic-rUB"/>
+                            <constraint firstItem="8RK-0V-cYr" firstAttribute="leading" secondItem="X5U-R0-ENH" secondAttribute="trailing" constant="20" id="nBi-Lb-yY3"/>
+                            <constraint firstItem="PTW-ce-MNP" firstAttribute="leading" secondItem="BeE-gT-39S" secondAttribute="leading" constant="20" id="nN2-d8-x44"/>
+                            <constraint firstItem="8RK-0V-cYr" firstAttribute="top" secondItem="X5U-R0-ENH" secondAttribute="top" id="txV-mb-VDp"/>
+                        </constraints>
                     </view>
                     <connections>
                         <outlet property="archivePathTextField" destination="X5U-R0-ENH" id="bsd-F5-EBo"/>
@@ -756,7 +778,7 @@ DQ
                 </viewController>
                 <customObject id="6c0-ie-4dB" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="941" y="1096"/>
+            <point key="canvasLocation" x="940" y="1123.5"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="hIz-AP-VOD">
@@ -927,7 +949,7 @@ DQ
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView id="9wq-Yh-6cT">
-                                                            <rect key="frame" x="31.5" y="1" width="224" height="40"/>
+                                                            <rect key="frame" x="32" y="1" width="224" height="40"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">
@@ -1159,7 +1181,7 @@ DQ
                         <outlet property="tagAC" destination="jrR-pM-UBT" id="n34-dd-hGg"/>
                         <outlet property="tagSearchField" destination="WfD-Nd-kM0" id="S7l-y7-2yr"/>
                         <outlet property="tagTableView" destination="xpK-mJ-Y4J" id="6if-v6-H9T"/>
-                        <segue destination="mcV-6Y-gT5" kind="modal" identifier="prefsSegue" id="2DJ-l1-blV"/>
+                        <segue destination="mcV-6Y-gT5" kind="sheet" identifier="prefsSegue" id="2DJ-l1-blV"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
