@@ -10,21 +10,19 @@ import Foundation
 
 class TagList {
     // structure for available tags
-    var list: [Tag]?
+    var list: Set<Tag>
     
     init(tags: Dictionary<String, Int>) {
         self.list = []
         for (name, count) in tags {
-            self.list?.append(Tag(name: name, count: count))
+            self.list.insert(Tag(name: name, count: count))
         }
     }
     
-    func filter(prefix: String) -> [Tag] {
-        var tags = [Tag]()
-        for tag in self.list ?? [] {
-            if tag.name.hasPrefix(prefix) {
-                tags.append(tag)
-            }
+    func filter(prefix: String) -> Set<Tag> {
+        // TODO: fuzzy matching would be nice!
+        let tags = self.list.filter { a in
+            return a.name.hasPrefix(prefix)
         }
         return tags
     }

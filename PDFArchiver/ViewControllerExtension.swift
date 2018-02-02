@@ -146,7 +146,7 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
             
             // add tag to tagAC
             if newly_created {
-                self.dataModelInstance.tags?.list?.append(selectedTag!)
+                self.dataModelInstance.tags?.list.insert(selectedTag!)
                 self.updateViewController(update_pdf: false)
             }
         }
