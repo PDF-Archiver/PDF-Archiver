@@ -63,11 +63,13 @@ extension ViewController {
         guard !self.documentAC.selectedObjects.isEmpty else {
             return
         }
-        
-        let result = (self.dataModelInstance.documents![self.dataModelInstance.document_idx!] as Document).rename(archive_path: (self.dataModelInstance.prefs?.archivePath)!)
+        guard let idx = self.dataModelInstance.document_idx else { return }
+        guard var documents = self.dataModelInstance.documents else { return }
+        guard let path = self.dataModelInstance.prefs?.archivePath else { return }
+        let result = (documents[idx] as Document).rename(archive_path: path)
         if result {
-            self.dataModelInstance.documents!.remove(at: self.dataModelInstance.document_idx!)
-            self.documentAC.content = self.dataModelInstance.documents
+            documents.remove(at: self.dataModelInstance.document_idx!)
+            self.documentAC.content = documents
             updateViewController(update_pdf: true)
         }
     }
@@ -92,11 +94,18 @@ extension ViewController: NSTableViewDelegate, NSTableViewDataSource {
     }
 }
 
-extension ViewController: NSSearchFieldDelegate {
+extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
     override func controlTextDidChange(_ notification: Notification) {
-        guard let textView = notification.object as? NSSearchField else { return }
-        let tags = self.dataModelInstance.tags?.filter(prefix: textView.stringValue)
-        self.tagAC.content = tags
+        let id = notification.object as! NSTextField
+        if id.identifier?.rawValue == "documentDescriptionField" {
+            guard let textField = notification.object as? NSTextField else { return }
+            guard let idx = self.dataModelInstance.document_idx else { return }
+            (self.dataModelInstance.documents![idx] as Document).pdf_description = textField.stringValue
+        } else if id.identifier?.rawValue == "tagSearchField" {
+            guard let searchField = notification.object as? NSSearchField else { return }
+            let tags = self.dataModelInstance.tags?.filter(prefix: searchField.stringValue)
+            self.tagAC.content = tags
+        }
     }
     
     override func controlTextDidEndEditing(_ notification: Notification) {

@@ -98,6 +98,7 @@ class ViewController: NSViewController {
         
         // MARK: - delegates
         tagSearchField.delegate = self
+        descriptionField.delegate = self
         
         // add sorting to tag fields
         sortArrayController(by: "count", ascending: false)

@@ -1003,7 +1003,7 @@ DQ
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="N6d-d5-13u">
                                 <rect key="frame" x="455" y="144" width="270" height="249"/>
                                 <subviews>
-                                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="WG2-MH-TVV" userLabel="Document Description Field">
+                                    <textField identifier="documentDescriptionField" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="WG2-MH-TVV" userLabel="Document Description Field">
                                         <rect key="frame" x="20" y="180" width="230" height="22"/>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="Document Description" drawsBackground="YES" id="PCv-if-5Qd">
                                             <font key="font" metaFont="system"/>
@@ -1135,7 +1135,7 @@ DQ
                                     <constraint firstItem="NiF-3c-nL6" firstAttribute="centerX" secondItem="WG2-MH-TVV" secondAttribute="centerX" id="vtm-Zb-asj"/>
                                 </constraints>
                             </customView>
-                            <searchField wantsLayer="YES" verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WfD-Nd-kM0">
+                            <searchField identifier="tagSearchField" wantsLayer="YES" verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WfD-Nd-kM0">
                                 <rect key="frame" x="745" y="398" width="260" height="22"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="260" id="7AH-dr-uWR"/>
