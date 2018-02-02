@@ -31,7 +31,7 @@ class PrefsViewController: NSViewController {
     
     @IBAction func okButton(_ sender: Any) {
         self.prefs!.save()
-        // TODO: add update of the view here!
+        NotificationCenter.default.post(name: Notification.Name("UpdateViewController"), object: nil)
         self.dismiss(self)
     }
     

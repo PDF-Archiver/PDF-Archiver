@@ -69,7 +69,7 @@ class ViewController: NSViewController {
         for tag in self.dataModelInstance.documents![idx!].pdf_tags! {
             if tag.name == (self.documentTagAC.selectedObjects.first as! Tag).name {
                 self.dataModelInstance.documents![idx!].pdf_tags!.remove(at: i)
-                updateDocumentFields(update_pdf: false)
+                self.updateViewController(update_pdf: false)
                 return
             }
             i += 1
@@ -94,6 +94,7 @@ class ViewController: NSViewController {
         notificationCenter.addObserver(self, selector: #selector(self.showPreferences), name: Notification.Name("ShowPreferences"), object: nil)
         notificationCenter.addObserver(self, selector: #selector(self.getPDFDocuments), name: Notification.Name("GetPDFDocuments"), object: nil)
         notificationCenter.addObserver(self, selector: #selector(self.saveDocument), name: Notification.Name("SaveDocument"), object: nil)
+        notificationCenter.addObserver(self, selector: #selector(self.updateViewController), name: Notification.Name("UpdateViewController"), object: nil)
         
         // MARK: - delegates
         tagSearchField.delegate = self

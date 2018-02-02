@@ -9,11 +9,21 @@
 import Quartz
 
 extension ViewController {
-    func updateDocumentFields(update_pdf: Bool) {
+    // MARK: - segue stuff
+    override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
+        // set preferences variable in the PrefsViewController
+        if segue.identifier?.rawValue == "prefsSegue" {
+            let secondVC = segue.destinationController as! PrefsViewController
+            secondVC.prefs = self.dataModelInstance.prefs
+        }
+    }
+    
+    // MARK: - notifications
+    @objc func updateViewController(update_pdf: Bool) {
         self.tagAC.content = self.dataModelInstance.tags?.list
         
         // test if no documents exist in document table view
-        if self.dataModelInstance.documents?.count == 0 {
+        if self.dataModelInstance.documents?.count == nil || self.dataModelInstance.documents?.count == 0 {
             self.pdfview.document = nil
             self.datePicker.dateValue = Date()
             self.descriptionField.stringValue = ""
@@ -38,16 +48,6 @@ extension ViewController {
             self.pdfview.interpolationQuality = PDFInterpolationQuality.low
         }
     }
-    
-    //MARK: segue stuff
-    override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
-        // set preferences variable in the PrefsViewController
-        if segue.identifier?.rawValue == "prefsSegue" {
-            let secondVC = segue.destinationController as! PrefsViewController
-            secondVC.prefs = self.dataModelInstance.prefs
-        }
-    }
-    
     @objc func showPreferences() {
         self.performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "prefsSegue"), sender: self)
     }
@@ -68,7 +68,7 @@ extension ViewController {
         if result {
             self.dataModelInstance.documents!.remove(at: self.dataModelInstance.document_idx!)
             self.documentAC.content = self.dataModelInstance.documents
-            updateDocumentFields(update_pdf: true)
+            updateViewController(update_pdf: true)
         }
     }
 
@@ -87,7 +87,7 @@ extension ViewController: NSTableViewDelegate, NSTableViewDataSource {
             self.dataModelInstance.document_idx = tableView.selectedRow
             
             // pick a document and save the tags in the document tag list
-            updateDocumentFields(update_pdf: true)
+            self.updateViewController(update_pdf: true)
         }
     }
 }
@@ -138,7 +138,7 @@ extension ViewController: NSSearchFieldDelegate {
             // add tag to tagAC
             if newly_created {
                 self.dataModelInstance.tags?.list?.append(selectedTag!)
-                self.updateDocumentFields(update_pdf: false)
+                self.updateViewController(update_pdf: false)
             }
         }
     }
