@@ -11,14 +11,14 @@ import Foundation
 class TagList {
     // structure for available tags
     var list: Set<Tag>
-    
+
     init(tags: Dictionary<String, Int>) {
         self.list = []
         for (name, count) in tags {
             self.list.insert(Tag(name: name, count: count))
         }
     }
-    
+
     func filter(prefix: String) -> Set<Tag> {
         // TODO: fuzzy matching would be nice!
         let tags = self.list.filter { a in
@@ -26,7 +26,7 @@ class TagList {
         }
         return tags
     }
-    
+
     func sort(objs: [Tag], by key: String, ascending: Bool) -> [Tag] {
         if key == "name" {
             if ascending {

@@ -9,7 +9,7 @@
 import Foundation
 
 func regex_matches(for regex: String, in text: String) -> [String] {
-    
+
     do {
         let regex = try NSRegularExpression(pattern: regex)
         let results = regex.matches(in: text,

@@ -28,13 +28,13 @@ class PrefsViewController: NSViewController {
             self.archivePathTextField.stringValue = openPanel.url!.path
         }
     }
-    
+
     @IBAction func okButton(_ sender: Any) {
         self.prefs!.save()
         NotificationCenter.default.post(name: Notification.Name("UpdateViewController"), object: nil)
         self.dismiss(self)
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -42,9 +42,7 @@ class PrefsViewController: NSViewController {
         if let archivePath = self.prefs?.archivePath {
             self.archivePathTextField.stringValue = archivePath.path
         }
-        
-    }
-    
 
-    
+    }
+
 }

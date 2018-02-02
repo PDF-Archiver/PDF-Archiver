@@ -17,10 +17,10 @@ func getOpenPanelFiles() -> [Document] {
     openPanel.canChooseDirectories = true
     openPanel.allowsMultipleSelection = true
     openPanel.allowedFileTypes = ["pdf"]
-    
+
     var pdf_documents: [Document] = []
     let i = openPanel.runModal()
-    if(i == NSApplication.ModalResponse.OK){
+    if(i == NSApplication.ModalResponse.OK) {
         // get new pdf documents
         for element in openPanel.urls {
             for pdf_path in getPDFs(url: element) {
@@ -43,11 +43,11 @@ func getPDFs(url: URL) -> Array<URL> {
             pdfURLs.append(pdf_url)
         }
         return pdfURLs
-        
+
     } else if fileManager.isReadableFile(atPath: url.path) && url.pathExtension.lowercased() == "pdf" {
         // file found
         return [url]
-    
+
     } else {
         // no file or directory found
         // TODO: this might throw an error
@@ -56,7 +56,7 @@ func getPDFs(url: URL) -> Array<URL> {
 }
 
 extension FileManager {
-    func isDirectory(url:URL) -> Bool? {
+    func isDirectory(url: URL) -> Bool? {
         var isDir: ObjCBool = ObjCBool(false)
         if fileExists(atPath: url.path, isDirectory: &isDir) {
             return isDir.boolValue

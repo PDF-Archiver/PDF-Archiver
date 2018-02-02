@@ -20,7 +20,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBAction func saveDocument(_ sender: NSMenuItem) {
         NotificationCenter.default.post(name: Notification.Name("SaveDocument"), object: nil)
     }
-    
+
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Insert code here to initialize your application
     }
@@ -28,5 +28,5 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
     }
-    
+
 }
