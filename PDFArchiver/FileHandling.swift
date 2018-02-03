@@ -19,8 +19,7 @@ func getOpenPanelFiles() -> [Document] {
     openPanel.allowedFileTypes = ["pdf"]
 
     var pdf_documents: [Document] = []
-    let i = openPanel.runModal()
-    if(i == NSApplication.ModalResponse.OK) {
+    if openPanel.runModal() == NSApplication.ModalResponse.OK {
         // get new pdf documents
         for element in openPanel.urls {
             for pdf_path in getPDFs(url: element) {
@@ -31,10 +30,10 @@ func getOpenPanelFiles() -> [Document] {
     return pdf_documents
 }
 
-func getPDFs(url: URL) -> Array<URL> {
-    // function which gets an URL (file or folder) and returns the paths as URLs of the file or all PDF documents in this folder as an array
+func getPDFs(url: URL) -> [URL] {
+    // get URL (file or folder) and return paths of the file or all PDF documents in this folder
     let fileManager = FileManager.default
-    if fileManager.isDirectory(url:url) ?? false {
+    if fileManager.isDirectory(url: url) ?? false {
         // folder found
         let enumerator = fileManager.enumerator(atPath: url.path)!
         var pdfURLs = [URL]()

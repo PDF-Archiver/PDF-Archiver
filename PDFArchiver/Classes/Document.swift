@@ -12,30 +12,32 @@ class Document: NSObject {
     // structure for PDF documents on disk
     var path: URL
     @objc var name: String?
-    var pdf_date: Date?
-    var pdf_description: String? {
+    var documentDate: Date?
+    var documentDescription: String? {
         get {
-            return self._pdf_description
+            return self._documentDescription
         }
         set {
             if var raw = newValue {
                 // TODO: we could use a CocoaPod here...
                 raw = raw.lowercased()
-                raw = raw.replacingOccurrences(of: "[:;.,!?/\\^+<>#@|]", with: "", options: .regularExpression, range: nil)
+                raw = raw.replacingOccurrences(of: "[:;.,!?/\\^+<>#@|]", with: "",
+                                               options: .regularExpression, range: nil)
                 raw = raw.replacingOccurrences(of: " ", with: "-")
-                raw = raw.replacingOccurrences(of: "[-]+", with: "-", options: .regularExpression, range: nil)
+                raw = raw.replacingOccurrences(of: "[-]+", with: "-",
+                                               options: .regularExpression, range: nil)
                 // german umlaute
                 raw = raw.replacingOccurrences(of: "ä", with: "ae")
                 raw = raw.replacingOccurrences(of: "ö", with: "oe")
                 raw = raw.replacingOccurrences(of: "ü", with: "ue")
                 raw = raw.replacingOccurrences(of: "ß", with: "ss")
 
-                self._pdf_description = raw
+                self._documentDescription = raw
             }
         }
     }
-    var pdf_tags: [Tag]?
-    fileprivate var _pdf_description: String?
+    var documentTags: [Tag]?
+    fileprivate var _documentDescription: String?
 
     init(path: URL) {
         self.path = path
@@ -43,11 +45,11 @@ class Document: NSObject {
         self.name = path.lastPathComponent
     }
 
-    func rename(archive_path: URL) -> Bool {
+    func rename(archivePath: URL) -> Bool {
         // create a filename and rename the document
-        if let date = self.pdf_date,
-           let description = self.pdf_description,
-           let tags = self.pdf_tags {
+        if let date = self.documentDate,
+           let description = self.documentDescription,
+           let tags = self.documentTags {
             if description == "" {
                 return false
             }
@@ -66,14 +68,15 @@ class Document: NSObject {
 
             // create new filepath
             let filename = "\(date_str)--\(description)__\(tag_str).pdf"
-            let new_basepath = archive_path.appendingPathComponent(String(date_str.prefix(4)))
+            let new_basepath = archivePath.appendingPathComponent(String(date_str.prefix(4)))
             // check, if this path already exists ... create it
             let new_filepath = new_basepath.appendingPathComponent(filename)
 
             let fileManager = FileManager.default
             do {
                 if !(fileManager.isDirectory(url: new_basepath) ?? false) {
-                    try fileManager.createDirectory(at: new_basepath, withIntermediateDirectories: false, attributes: nil)
+                    try fileManager.createDirectory(at: new_basepath,
+                                                    withIntermediateDirectories: false, attributes: nil)
                 }
 
                 try fileManager.moveItem(at: self.path, to: new_filepath)

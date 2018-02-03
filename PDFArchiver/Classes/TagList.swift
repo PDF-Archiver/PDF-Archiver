@@ -12,7 +12,7 @@ class TagList {
     // structure for available tags
     var list: Set<Tag>
 
-    init(tags: Dictionary<String, Int>) {
+    init(tags: [String: Int]) {
         self.list = []
         for (name, count) in tags {
             self.list.insert(Tag(name: name, count: count))
@@ -21,8 +21,8 @@ class TagList {
 
     func filter(prefix: String) -> Set<Tag> {
         // TODO: fuzzy matching would be nice!
-        let tags = self.list.filter { a in
-            return a.name.hasPrefix(prefix)
+        let tags = self.list.filter { tag in
+            return tag.name.hasPrefix(prefix)
         }
         return tags
     }

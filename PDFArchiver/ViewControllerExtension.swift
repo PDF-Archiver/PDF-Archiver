@@ -13,13 +13,13 @@ extension ViewController {
     override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
         // set preferences variable in the PrefsViewController
         if segue.identifier?.rawValue == "prefsSegue" {
-            let secondVC = segue.destinationController as! PrefsViewController
+            guard let secondVC = segue.destinationController as? PrefsViewController else { return }
             secondVC.prefs = self.dataModelInstance.prefs
         }
     }
 
     // MARK: - notifications
-    @objc func updateViewController(update_pdf: Bool) {
+    @objc func updateViewController(updatePDF: Bool) {
         self.tagAC.content = self.dataModelInstance.tags?.list
 
         // test if no documents exist in document table view
@@ -30,16 +30,16 @@ extension ViewController {
             self.documentTagAC.content = nil
             return
         }
-        let idx = self.dataModelInstance.document_idx ?? 0
+        let idx = self.dataModelInstance.documentIdx ?? 0
         let document = self.dataModelInstance.documents![idx] as Document
 
         // set the document date, description and tags
-        self.datePicker.dateValue = document.pdf_date ?? Date()
-        self.descriptionField.stringValue = document.pdf_description ?? ""
-        self.documentTagAC.content = document.pdf_tags
+        self.datePicker.dateValue = document.documentDate ?? Date()
+        self.descriptionField.stringValue = document.documentDescription ?? ""
+        self.documentTagAC.content = document.documentTags
 
         // update pdf view
-        if update_pdf {
+        if updatePDF {
             self.pdfview.document = PDFDocument(url: document.path)
             // self.pdfview.displayMode = PDFDisplayMode.singlePageContinuous
             self.pdfview.displayMode = PDFDisplayMode.singlePage
@@ -63,14 +63,14 @@ extension ViewController {
         guard !self.documentAC.selectedObjects.isEmpty else {
             return
         }
-        guard let idx = self.dataModelInstance.document_idx else { return }
+        guard let idx = self.dataModelInstance.documentIdx else { return }
         guard var documents = self.dataModelInstance.documents else { return }
         guard let path = self.dataModelInstance.prefs?.archivePath else { return }
-        let result = (documents[idx] as Document).rename(archive_path: path)
+        let result = (documents[idx] as Document).rename(archivePath: path)
         if result {
-            documents.remove(at: self.dataModelInstance.document_idx!)
+            documents.remove(at: self.dataModelInstance.documentIdx!)
             self.documentAC.content = documents
-            updateViewController(update_pdf: true)
+            updateViewController(updatePDF: true)
         }
     }
 
@@ -83,24 +83,24 @@ extension ViewController {
 
 extension ViewController: NSTableViewDelegate, NSTableViewDataSource {
     func tableViewSelectionDidChange(_ notification: Notification) {
-        let tableView = notification.object as! NSTableView
+        guard let tableView = notification.object as? NSTableView else { return }
         if let identifier = tableView.identifier, identifier.rawValue == "DocumentTableView" {
             // get the index of the selected row and save it
-            self.dataModelInstance.document_idx = tableView.selectedRow
+            self.dataModelInstance.documentIdx = tableView.selectedRow
 
             // pick a document and save the tags in the document tag list
-            self.updateViewController(update_pdf: true)
+            self.updateViewController(updatePDF: true)
         }
     }
 }
 
 extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
     override func controlTextDidChange(_ notification: Notification) {
-        let id = notification.object as! NSTextField
+        guard let id = notification.object as? NSTextField else { return }
         if id.identifier?.rawValue == "documentDescriptionField" {
             guard let textField = notification.object as? NSTextField else { return }
-            guard let idx = self.dataModelInstance.document_idx else { return }
-            (self.dataModelInstance.documents![idx] as Document).pdf_description = textField.stringValue
+            guard let idx = self.dataModelInstance.documentIdx else { return }
+            (self.dataModelInstance.documents![idx] as Document).documentDescription = textField.stringValue
         } else if id.identifier?.rawValue == "tagSearchField" {
             guard let searchField = notification.object as? NSSearchField else { return }
             let tags = self.dataModelInstance.tags?.filter(prefix: searchField.stringValue)
@@ -109,45 +109,47 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
     }
 
     override func controlTextDidEndEditing(_ notification: Notification) {
-        var newly_created = false
-
         // try to get the selected tag
-        var selectedTag: Tag?
-        selectedTag = (self.tagAC.content as! [Tag]).first
-        if selectedTag == nil {
+        var selectedTag: Tag
+        let newlyCreated: Bool
+        if let tags = self.tagAC.content as? [Tag] {
+            selectedTag = tags.first!
+            newlyCreated = false
+        } else {
             // no tag selected - get the name of the search field
             selectedTag = Tag(name: self.tagSearchField.stringValue,
                               count: 0)
-            newly_created = true
+            newlyCreated = true
         }
 
         // test if element already exists in document tag table view
-        for element in self.documentTagAC.arrangedObjects as! [Tag] {
-            if element.name == selectedTag?.name {
+        if let documents = self.documentTagAC.content as? [Tag] {
+            for element in documents where element.name == selectedTag.name {
                 return
             }
         }
 
         // add new tag to document table view
-        if let idx = self.dataModelInstance.document_idx {
+        if let idx = self.dataModelInstance.documentIdx {
             // TODO: WTF? do I really have to do this in 2 steps???
-            var tmp = self.documentTagAC.content as! [Tag]
-            tmp.append(selectedTag!)
-            self.documentTagAC.content = tmp
+            var tags = [selectedTag]
+            if let documentTags = self.documentTagAC.content as? [Tag] {
+                tags.append(contentsOf: documentTags)
+            }
 
-            if self.dataModelInstance.documents![idx].pdf_tags != nil {
-                self.dataModelInstance.documents![idx].pdf_tags!.append(selectedTag!)
+            if self.dataModelInstance.documents![idx].documentTags != nil {
+                self.dataModelInstance.documents![idx].documentTags!.append(selectedTag)
             } else {
-                self.dataModelInstance.documents![idx].pdf_tags = [selectedTag!]
+                self.dataModelInstance.documents![idx].documentTags = [selectedTag]
             }
 
             // clear search field content
             self.tagSearchField.stringValue = ""
 
             // add tag to tagAC
-            if newly_created {
-                self.dataModelInstance.tags?.list.insert(selectedTag!)
-                self.updateViewController(update_pdf: false)
+            if newlyCreated {
+                self.dataModelInstance.tags?.list.insert(selectedTag)
+                self.updateViewController(updatePDF: false)
             }
         }
     }

@@ -12,19 +12,19 @@ class DataModel: PreferencesDelegate {
     var prefs: Preferences?
     var documents: [Document]?
     var tags: TagList?
-    var document_idx: Int?
+    var documentIdx: Int?
 
     init() {
         self.prefs = Preferences(delegate: self as PreferencesDelegate)
     }
 
     // MARK: - delegate functions
-    func setTagList(tagDict: Dictionary<String, Int>) {
+    func setTagList(tagDict: [String: Int]) {
         self.tags = TagList(tags: tagDict)
     }
 
-    func getTagList() -> Dictionary<String, Int> {
-        var tags: Dictionary<String, Int> = [:]
+    func getTagList() -> [String: Int] {
+        var tags: [String: Int] = [:]
         for tag in self.tags?.list ?? [] {
             tags[tag.name] = tag.count
         }

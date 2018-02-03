@@ -30,8 +30,8 @@ class ViewController: NSViewController {
         }
 
         // set the date of the pdf document
-        let document = self.dataModelInstance.documents![self.dataModelInstance.document_idx!] as Document
-        document.pdf_date = sender.dateValue
+        let document = self.dataModelInstance.documents![self.dataModelInstance.documentIdx!] as Document
+        document.documentDate = sender.dateValue
     }
 
     @IBAction func descriptionDone(_ sender: NSTextField) {
@@ -41,8 +41,8 @@ class ViewController: NSViewController {
         }
 
         // set the description of the pdf document
-        let document = self.dataModelInstance.documents![self.dataModelInstance.document_idx!] as Document
-        document.pdf_description = sender.stringValue
+        let document = self.dataModelInstance.documents![self.dataModelInstance.documentIdx!] as Document
+        document.documentDescription = sender.stringValue
     }
 
     @IBAction func clickedTableView(_ sender: NSTableView) {
@@ -64,12 +64,13 @@ class ViewController: NSViewController {
         }
 
         // remove the selected element
-        let idx = self.dataModelInstance.document_idx
+        let idx = self.dataModelInstance.documentIdx
         var i = 0
-        for tag in self.dataModelInstance.documents![idx!].pdf_tags! {
-            if tag.name == (self.documentTagAC.selectedObjects.first as! Tag).name {
-                self.dataModelInstance.documents![idx!].pdf_tags!.remove(at: i)
-                self.updateViewController(update_pdf: false)
+        for tag in self.dataModelInstance.documents![idx!].documentTags! {
+            guard let obj = self.documentTagAC.selectedObjects.first as? Tag else { return }
+            if tag.name == obj.name {
+                self.dataModelInstance.documents![idx!].documentTags!.remove(at: i)
+                self.updateViewController(updatePDF: false)
                 return
             }
             i += 1
@@ -91,10 +92,14 @@ class ViewController: NSViewController {
 
         // MARK: - Notification Observer
         let notificationCenter = NotificationCenter.default
-        notificationCenter.addObserver(self, selector: #selector(self.showPreferences), name: Notification.Name("ShowPreferences"), object: nil)
-        notificationCenter.addObserver(self, selector: #selector(self.getPDFDocuments), name: Notification.Name("GetPDFDocuments"), object: nil)
-        notificationCenter.addObserver(self, selector: #selector(self.saveDocument), name: Notification.Name("SaveDocument"), object: nil)
-        notificationCenter.addObserver(self, selector: #selector(self.updateViewController), name: Notification.Name("UpdateViewController"), object: nil)
+        notificationCenter.addObserver(self, selector: #selector(self.showPreferences),
+                                       name: Notification.Name("ShowPreferences"), object: nil)
+        notificationCenter.addObserver(self, selector: #selector(self.getPDFDocuments),
+                                       name: Notification.Name("GetPDFDocuments"), object: nil)
+        notificationCenter.addObserver(self, selector: #selector(self.saveDocument),
+                                       name: Notification.Name("SaveDocument"), object: nil)
+        notificationCenter.addObserver(self, selector: #selector(self.updateViewController),
+                                       name: Notification.Name("UpdateViewController"), object: nil)
 
         // MARK: - delegates
         tagSearchField.delegate = self
