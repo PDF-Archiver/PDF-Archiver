@@ -21,9 +21,7 @@ class PrefsViewController: NSViewController {
         openPanel.canChooseDirectories = true
         openPanel.allowsMultipleSelection = false
         openPanel.beginSheetModal(for: NSApplication.shared.mainWindow!) { response in
-            guard response == NSApplication.ModalResponse.OK else {
-                return
-            }
+            guard response == NSApplication.ModalResponse.OK else { return }
             self.prefs?.archivePath = openPanel.url!
             self.archivePathTextField.stringValue = openPanel.url!.path
 

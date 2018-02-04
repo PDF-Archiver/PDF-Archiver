@@ -8,28 +8,6 @@
 
 import Quartz
 
-func getOpenPanelFiles() -> [Document] {
-    let openPanel = NSOpenPanel()
-    openPanel.title = "Choose a .pdf file or a folder"
-    openPanel.showsResizeIndicator = false
-    openPanel.showsHiddenFiles = false
-    openPanel.canChooseFiles = true
-    openPanel.canChooseDirectories = true
-    openPanel.allowsMultipleSelection = true
-    openPanel.allowedFileTypes = ["pdf"]
-
-    var pdf_documents: [Document] = []
-    if openPanel.runModal() == NSApplication.ModalResponse.OK {
-        // get new pdf documents
-        for element in openPanel.urls {
-            for pdf_path in getPDFs(url: element) {
-                pdf_documents.append(Document(path: pdf_path))
-            }
-        }
-    }
-    return pdf_documents
-}
-
 func getPDFs(url: URL) -> [URL] {
     // get URL (file or folder) and return paths of the file or all PDF documents in this folder
     let fileManager = FileManager.default
@@ -49,7 +27,6 @@ func getPDFs(url: URL) -> [URL] {
 
     } else {
         // no file or directory found
-        // TODO: this might throw an error
         return []
     }
 }
