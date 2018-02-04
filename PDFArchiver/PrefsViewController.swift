@@ -26,13 +26,14 @@ class PrefsViewController: NSViewController {
             }
             self.prefs?.archivePath = openPanel.url!
             self.archivePathTextField.stringValue = openPanel.url!.path
+
+            self.prefs!.save()
+            NotificationCenter.default.post(name: Notification.Name("UpdateViewController"), object: nil)
         }
     }
 
-    @IBAction func okButton(_ sender: Any) {
-        self.prefs!.save()
-        NotificationCenter.default.post(name: Notification.Name("UpdateViewController"), object: nil)
-        self.dismiss(self)
+    override func viewDidAppear() {
+        view.window?.styleMask.remove(.resizable)
     }
 
     override func viewDidLoad() {

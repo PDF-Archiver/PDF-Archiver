@@ -707,29 +707,16 @@
             </objects>
             <point key="canvasLocation" x="75" y="250"/>
         </scene>
-        <!--Prefs View Controller-->
+        <!--Preferences-->
         <scene sceneID="ndM-Fj-5Cq">
             <objects>
-                <viewController storyboardIdentifier="prefsViewController" id="mcV-6Y-gT5" customClass="PrefsViewController" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Preferences" storyboardIdentifier="prefsViewController" id="mcV-6Y-gT5" customClass="PrefsViewController" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="BeE-gT-39S">
                         <rect key="frame" x="0.0" y="0.0" width="480" height="115"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bXb-Gg-LFK">
-                                <rect key="frame" x="211" y="13" width="59" height="32"/>
-                                <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Q9w-Zf-cLh">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                    <string key="keyEquivalent" base64-UTF8="YES">
-DQ
-</string>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="okButton:" target="mcV-6Y-gT5" id="9nY-8Z-2xc"/>
-                                </connections>
-                            </button>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="X5U-R0-ENH">
-                                <rect key="frame" x="20" y="51" width="347" height="22"/>
+                                <rect key="frame" x="20" y="43" width="347" height="22"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="347" id="rSP-Su-HYL"/>
                                 </constraints>
@@ -740,7 +727,7 @@ DQ
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PTW-ce-MNP">
-                                <rect key="frame" x="18" y="78" width="89" height="17"/>
+                                <rect key="frame" x="18" y="70" width="89" height="17"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Archive Path:" id="Ju7-wj-fHp">
                                     <font key="font" metaFont="systemSemibold" size="13"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -748,7 +735,7 @@ DQ
                                 </textFieldCell>
                             </textField>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8RK-0V-cYr">
-                                <rect key="frame" x="381" y="45" width="85" height="32"/>
+                                <rect key="frame" x="381" y="37" width="85" height="32"/>
                                 <buttonCell key="cell" type="push" title="change" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="XbB-C4-8qz">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -761,11 +748,8 @@ DQ
                         <constraints>
                             <constraint firstItem="X5U-R0-ENH" firstAttribute="top" secondItem="PTW-ce-MNP" secondAttribute="bottom" constant="5" id="0qZ-lx-bzX"/>
                             <constraint firstAttribute="trailing" secondItem="8RK-0V-cYr" secondAttribute="trailing" constant="20" id="73b-WR-eVR"/>
-                            <constraint firstItem="bXb-Gg-LFK" firstAttribute="top" secondItem="X5U-R0-ENH" secondAttribute="bottom" constant="10" id="Ehc-AC-11B"/>
                             <constraint firstItem="X5U-R0-ENH" firstAttribute="leading" secondItem="BeE-gT-39S" secondAttribute="leading" constant="20" id="Niq-b1-NFn"/>
-                            <constraint firstItem="bXb-Gg-LFK" firstAttribute="centerX" secondItem="BeE-gT-39S" secondAttribute="centerX" id="ObT-Bi-o0V"/>
-                            <constraint firstAttribute="bottom" secondItem="bXb-Gg-LFK" secondAttribute="bottom" constant="20" id="SwK-wc-Tfn"/>
-                            <constraint firstItem="PTW-ce-MNP" firstAttribute="top" secondItem="BeE-gT-39S" secondAttribute="top" constant="20" id="cZV-I0-EC7"/>
+                            <constraint firstItem="PTW-ce-MNP" firstAttribute="top" secondItem="BeE-gT-39S" secondAttribute="top" constant="28" id="cZV-I0-EC7"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="PTW-ce-MNP" secondAttribute="trailing" constant="20" symbolic="YES" id="fnl-Ic-rUB"/>
                             <constraint firstItem="8RK-0V-cYr" firstAttribute="leading" secondItem="X5U-R0-ENH" secondAttribute="trailing" constant="20" id="nBi-Lb-yY3"/>
                             <constraint firstItem="PTW-ce-MNP" firstAttribute="leading" secondItem="BeE-gT-39S" secondAttribute="leading" constant="20" id="nN2-d8-x44"/>
