@@ -8,7 +8,7 @@
 
 import Foundation
 
-class TagList {
+struct TagList {
     // structure for available tags
     var list: Set<Tag>
 

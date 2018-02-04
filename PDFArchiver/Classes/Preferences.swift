@@ -13,7 +13,7 @@ protocol PreferencesDelegate: class {
     func getTagList() -> [String: Int]
 }
 
-class Preferences {
+struct Preferences {
     fileprivate var _archivePath: URL?
     weak var delegate: PreferencesDelegate?
     var archivePath: URL? {
@@ -41,7 +41,7 @@ class Preferences {
         UserDefaults.standard.set(tags, forKey: "tags")
     }
 
-    func load() {
+    mutating func load() {
         // load archive path
         self._archivePath = UserDefaults.standard.url(forKey: "archivePath")
 
