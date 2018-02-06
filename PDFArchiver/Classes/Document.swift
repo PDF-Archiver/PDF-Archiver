@@ -38,11 +38,37 @@ class Document: NSObject {
     }
     var documentTags: [Tag]?
     fileprivate var _documentDescription: String?
+    fileprivate let _dateFormatter: DateFormatter
 
     init(path: URL) {
         self.path = path
+
         // create a filename and rename the document
-        self.name = path.lastPathComponent
+        self.name = String(path.lastPathComponent)
+
+        // initialize the date formatter
+        self._dateFormatter = DateFormatter()
+        self._dateFormatter.dateFormat = "yyyy-MM-dd"
+
+        // try to parse the current filename
+        // parse the date
+        if var dateRaw = regex_matches(for: "^\\d{4}-\\d{2}-\\d{2}--", in: self.name!) {
+            self.documentDate = self._dateFormatter.date(from: String(dateRaw[0].dropLast(2)))
+        }
+
+        // parse the description
+        if var raw = regex_matches(for: "--[a-zA-Z-]+__", in: self.name!) {
+            self._documentDescription = getSubstring(raw[0], startIdx: 2, endIdx: -2)
+        }
+
+        // parse the tags
+        if var raw = regex_matches(for: "__[a-zA-Z_]+.[pdfPDF]{3}$", in: self.name!) {
+            let tags = getSubstring(raw[0], startIdx: 2, endIdx: -4).components(separatedBy: "_")
+            self.documentTags = [Tag]()
+            for tag in tags {
+                self.documentTags!.append(Tag(name: tag, count: 0))
+            }
+        }
     }
 
     func rename(archivePath: URL) -> Bool {
@@ -55,9 +81,7 @@ class Document: NSObject {
             }
 
             // get date
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy-MM-dd"
-            let date_str = formatter.string(from: date)
+            let date_str = self._dateFormatter.string(from: date)
 
             // get tags
             var tag_str = ""
