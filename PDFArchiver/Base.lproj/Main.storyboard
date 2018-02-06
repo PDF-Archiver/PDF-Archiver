@@ -690,7 +690,7 @@
         <scene sceneID="R2V-B0-nI4">
             <objects>
                 <windowController id="B8D-0N-5wS" customClass="WindowController" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
-                    <window key="window" title="PDF Archiver" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA">
+                    <window key="window" title="PDF Archiver" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA" customClass="MyWindow" customModule="PDF_Archiver" customModuleProvider="target">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="196" y="240" width="1000" height="608"/>
@@ -933,7 +933,7 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView id="9wq-Yh-6cT">
-                                                            <rect key="frame" x="31.5" y="1" width="224" height="40"/>
+                                                            <rect key="frame" x="32" y="1" width="224" height="40"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">
@@ -996,6 +996,7 @@
                                         </textFieldCell>
                                         <connections>
                                             <action selector="descriptionDone:" target="XfG-lQ-9wD" id="Asw-y2-Ksn"/>
+                                            <outlet property="nextKeyView" destination="WfD-Nd-kM0" id="79O-kS-dGN"/>
                                         </connections>
                                     </textField>
                                     <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="NiF-3c-nL6" userLabel="Document Date Picker">
@@ -1013,6 +1014,7 @@
                                         </datePickerCell>
                                         <connections>
                                             <action selector="datePickDone:" target="XfG-lQ-9wD" id="fVx-aB-Lhf"/>
+                                            <outlet property="nextKeyView" destination="WG2-MH-TVV" id="QVd-2M-CAq"/>
                                         </connections>
                                     </datePicker>
                                     <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oZc-B6-cqG" userLabel="Document Tag - Table View">
@@ -1131,6 +1133,9 @@
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </searchFieldCell>
+                                <connections>
+                                    <outlet property="nextKeyView" destination="NiF-3c-nL6" id="oWl-kB-RF2"/>
+                                </connections>
                             </searchField>
                         </subviews>
                         <constraints>
@@ -1155,6 +1160,9 @@
                             <constraint firstItem="Ii4-sZ-BA5" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="20" id="vMZ-Q8-4a5"/>
                             <constraint firstAttribute="bottom" secondItem="80e-Of-Nzi" secondAttribute="bottom" constant="20" id="xvF-WV-piD"/>
                         </constraints>
+                        <connections>
+                            <outlet property="nextKeyView" destination="NiF-3c-nL6" id="Z5a-cI-KsG"/>
+                        </connections>
                     </view>
                     <connections>
                         <outlet property="datePicker" destination="NiF-3c-nL6" id="7gV-M9-brh"/>
