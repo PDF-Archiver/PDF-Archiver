@@ -777,6 +777,9 @@
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="415" id="RBO-lp-E1a"/>
                                 </constraints>
+                                <shadow key="shadow" blurRadius="1">
+                                    <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </shadow>
                             </pdfView>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ii4-sZ-BA5" userLabel="Document Scroll View">
                                 <rect key="frame" x="495" y="462" width="470" height="126"/>
@@ -1120,6 +1123,9 @@
                                     <constraint firstItem="NiF-3c-nL6" firstAttribute="top" secondItem="N6d-d5-13u" secondAttribute="top" constant="20" id="sQO-ta-3pN"/>
                                     <constraint firstItem="NiF-3c-nL6" firstAttribute="centerX" secondItem="WG2-MH-TVV" secondAttribute="centerX" id="vtm-Zb-asj"/>
                                 </constraints>
+                                <shadow key="shadow" blurRadius="1">
+                                    <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </shadow>
                             </customView>
                             <searchField identifier="tagSearchField" wantsLayer="YES" verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WfD-Nd-kM0">
                                 <rect key="frame" x="745" y="398" width="260" height="22"/>
@@ -1168,6 +1174,7 @@
                         <outlet property="datePicker" destination="NiF-3c-nL6" id="7gV-M9-brh"/>
                         <outlet property="descriptionField" destination="WG2-MH-TVV" id="Zpw-ZF-ogL"/>
                         <outlet property="documentAC" destination="6y2-Gm-cOS" id="Yp0-gd-aBN"/>
+                        <outlet property="documentCustomView" destination="N6d-d5-13u" id="07V-6H-j0N"/>
                         <outlet property="documentTagAC" destination="nlU-Xg-XLm" id="pRK-x5-tq6"/>
                         <outlet property="pdfview" destination="80e-Of-Nzi" id="ZfS-9W-TAg"/>
                         <outlet property="tagAC" destination="jrR-pM-UBT" id="n34-dd-hGg"/>
