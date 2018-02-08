@@ -690,8 +690,8 @@
         <scene sceneID="R2V-B0-nI4">
             <objects>
                 <windowController id="B8D-0N-5wS" customClass="WindowController" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
-                    <window key="window" title="PDF Archiver" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA" customClass="MyWindow" customModule="PDF_Archiver" customModuleProvider="target">
-                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+                    <window key="window" title="PDF Archiver" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" animationBehavior="default" titlebarAppearsTransparent="YES" titleVisibility="hidden" id="IQv-IB-iLA" customClass="MyWindow" customModule="PDF_Archiver" customModuleProvider="target">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES" fullSizeContentView="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="196" y="240" width="1000" height="608"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
@@ -773,7 +773,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <pdfView wantsLayer="YES" displayMode="singlePage" autoScales="YES" translatesAutoresizingMaskIntoConstraints="NO" id="80e-Of-Nzi" userLabel="PDFView">
-                                <rect key="frame" x="20" y="20" width="415" height="568"/>
+                                <rect key="frame" x="20" y="20" width="415" height="558"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="415" id="RBO-lp-E1a"/>
                                 </constraints>
@@ -782,13 +782,13 @@
                                 </shadow>
                             </pdfView>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ii4-sZ-BA5" userLabel="Document Scroll View">
-                                <rect key="frame" x="495" y="462" width="470" height="126"/>
+                                <rect key="frame" x="495" y="462" width="470" height="116"/>
                                 <clipView key="contentView" id="dAE-Dg-N2e">
-                                    <rect key="frame" x="1" y="0.0" width="468" height="125"/>
+                                    <rect key="frame" x="1" y="0.0" width="468" height="115"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView identifier="DocumentTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" headerView="jC3-Ja-goD" viewBased="YES" id="afH-JH-U5W" userLabel="Document Table View">
-                                            <rect key="frame" x="0.0" y="0.0" width="468" height="102"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="468" height="92"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1123,9 +1123,6 @@
                                     <constraint firstItem="NiF-3c-nL6" firstAttribute="top" secondItem="N6d-d5-13u" secondAttribute="top" constant="20" id="sQO-ta-3pN"/>
                                     <constraint firstItem="NiF-3c-nL6" firstAttribute="centerX" secondItem="WG2-MH-TVV" secondAttribute="centerX" id="vtm-Zb-asj"/>
                                 </constraints>
-                                <shadow key="shadow" blurRadius="1">
-                                    <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                </shadow>
                             </customView>
                             <searchField identifier="tagSearchField" wantsLayer="YES" verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WfD-Nd-kM0">
                                 <rect key="frame" x="745" y="398" width="260" height="22"/>
@@ -1161,9 +1158,9 @@
                             <constraint firstItem="kGW-Ke-BkB" firstAttribute="centerY" relation="greaterThanOrEqual" secondItem="WfD-Nd-kM0" secondAttribute="centerY" constant="200" id="oNh-9w-eDn"/>
                             <constraint firstItem="kGW-Ke-BkB" firstAttribute="leading" secondItem="N6d-d5-13u" secondAttribute="trailing" constant="20" id="rkA-9J-MRg"/>
                             <constraint firstAttribute="trailing" secondItem="Ii4-sZ-BA5" secondAttribute="trailing" constant="60" id="sq7-gY-ZT6"/>
-                            <constraint firstItem="80e-Of-Nzi" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="20" id="tq0-gV-KUa"/>
+                            <constraint firstItem="80e-Of-Nzi" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="30" id="tq0-gV-KUa"/>
                             <constraint firstItem="N6d-d5-13u" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="215" id="vIY-aD-PDo"/>
-                            <constraint firstItem="Ii4-sZ-BA5" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="20" id="vMZ-Q8-4a5"/>
+                            <constraint firstItem="Ii4-sZ-BA5" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="30" id="vMZ-Q8-4a5"/>
                             <constraint firstAttribute="bottom" secondItem="80e-Of-Nzi" secondAttribute="bottom" constant="20" id="xvF-WV-piD"/>
                         </constraints>
                         <connections>

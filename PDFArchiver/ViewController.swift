@@ -88,12 +88,6 @@ class ViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // set background color of the view
-        self.view.wantsLayer = true
-        self.view.layer?.backgroundColor = CGColor.init(gray: 0.999, alpha: 1)
-        self.documentCustomView.wantsLayer = true
-        self.documentCustomView.layer?.backgroundColor = CGColor.init(gray: 0.94, alpha: 0.9)
-
         // set the array controller
         self.tagAC.content = self.dataModelInstance.tags?.list
         self.documentAC.content = self.dataModelInstance.documents
@@ -119,4 +113,12 @@ class ViewController: NSViewController {
 
     }
 
+    override func viewWillAppear() {
+        // set background color of the view
+        self.view.wantsLayer = true
+        self.view.layer?.backgroundColor = CGColor.init(red: 0.33, green: 0.6, blue: 0.83, alpha: 0.1)
+        self.documentCustomView.wantsLayer = true
+        self.documentCustomView.layer?.backgroundColor = CGColor.init(red: 0.33, green: 0.6, blue: 0.83,
+                                                                      alpha: 0.25)
+    }
 }
