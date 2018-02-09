@@ -18,8 +18,10 @@ class ViewController: NSViewController {
 
     var dataModelInstance = DataModel()
 
+    @IBOutlet weak var pdfDocumentsView: NSView!
     @IBOutlet weak var pdfview: PDFView!
-    @IBOutlet weak var documentCustomView: NSView!
+    @IBOutlet weak var documentAttributesView: NSView!
+    @IBOutlet weak var tagSearchView: NSView!
     @IBOutlet weak var tagTableView: NSTableView!
 
     @IBOutlet var documentAC: NSArrayController!
@@ -123,10 +125,21 @@ class ViewController: NSViewController {
     override func viewWillAppear() {
         // set background color of the view
         self.view.wantsLayer = true
-//        self.view.layer?.backgroundColor = CGColor.init(red: 141/255, green: 189/255, blue: 246/255, alpha: 0.9)
-        self.documentCustomView.wantsLayer = true
-        self.documentCustomView.layer?.backgroundColor = CGColor.init(red: 1, green: 1, blue: 1, alpha: 0.9)
-        self.documentCustomView.layer?.cornerRadius = 5
+        self.view.layer?.backgroundColor = self.color3
 
+        self.pdfDocumentsView.wantsLayer = true
+        self.pdfDocumentsView.layer?.backgroundColor = self.color5.copy(alpha: 0.1)
+        self.pdfDocumentsView.layer?.cornerRadius = 3
+
+        self.pdfview.backgroundColor = NSColor.init(cgColor: self.color5.copy(alpha: 0.7)!)!
+        self.pdfview.layer?.cornerRadius = 3
+
+        self.documentAttributesView.wantsLayer = true
+        self.documentAttributesView.layer?.backgroundColor = self.color5.copy(alpha: 0.1)
+        self.documentAttributesView.layer?.cornerRadius = 3
+
+        self.tagSearchView.wantsLayer = true
+        self.tagSearchView.layer?.backgroundColor = self.color5.copy(alpha: 0.1)
+        self.tagSearchView.layer?.cornerRadius = 3
     }
 }
