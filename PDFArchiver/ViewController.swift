@@ -123,10 +123,10 @@ class ViewController: NSViewController {
     override func viewWillAppear() {
         // set background color of the view
         self.view.wantsLayer = true
-        self.view.layer?.backgroundColor = CGColor.init(red: 141/255, green: 189/255, blue: 246/255, alpha: 0.9)
+//        self.view.layer?.backgroundColor = CGColor.init(red: 141/255, green: 189/255, blue: 246/255, alpha: 0.9)
         self.documentCustomView.wantsLayer = true
         self.documentCustomView.layer?.backgroundColor = CGColor.init(red: 1, green: 1, blue: 1, alpha: 0.9)
-        self.documentCustomView.layer?.cornerRadius = 15
+        self.documentCustomView.layer?.cornerRadius = 5
 
     }
 }
