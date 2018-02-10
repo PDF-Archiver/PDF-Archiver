@@ -12,6 +12,7 @@ class Document: NSObject {
     // structure for PDF documents on disk
     var path: URL
     @objc var name: String?
+    @objc var documentDone: String = ""
     var documentDate: Date?
     var documentDescription: String? {
         get {
@@ -108,6 +109,8 @@ class Document: NSObject {
                 print("Ooops! Something went wrong: \(error)")
                 return false
             }
+            self.path = new_filepath
+            self.documentDone = "✔️"
             return true
 
         } else {
