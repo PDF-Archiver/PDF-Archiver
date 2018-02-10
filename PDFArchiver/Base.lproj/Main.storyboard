@@ -4,7 +4,6 @@
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
         <plugIn identifier="com.apple.pdfkit.ibplugin" version="13771"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
-        <capability name="system font weights other than Regular or Bold" minToolsVersion="7.0"/>
     </dependencies>
     <scenes>
         <!--Application-->
@@ -147,51 +146,64 @@
             <objects>
                 <viewController title="Preferences" storyboardIdentifier="prefsViewController" id="mcV-6Y-gT5" customClass="PrefsViewController" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="BeE-gT-39S">
-                        <rect key="frame" x="0.0" y="0.0" width="480" height="115"/>
+                        <rect key="frame" x="0.0" y="0.0" width="482" height="105"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="X5U-R0-ENH">
-                                <rect key="frame" x="20" y="43" width="347" height="22"/>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="uzI-d8-kcx">
+                                <rect key="frame" x="20" y="20" width="442" height="31"/>
+                                <subviews>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="X5U-R0-ENH">
+                                        <rect key="frame" x="5" y="5" width="352" height="21"/>
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" enabled="NO" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="please set the path ..." drawsBackground="YES" usesSingleLineMode="YES" id="gtQ-4r-22c">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8RK-0V-cYr">
+                                        <rect key="frame" x="356" y="-2" width="87" height="32"/>
+                                        <buttonCell key="cell" type="push" title="Change" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="XbB-C4-8qz">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="changeArchivePathButton:" target="mcV-6Y-gT5" id="XbC-8a-TdC"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="347" id="rSP-Su-HYL"/>
+                                    <constraint firstAttribute="bottom" secondItem="X5U-R0-ENH" secondAttribute="bottom" constant="5" id="7K3-G2-fSB"/>
+                                    <constraint firstItem="X5U-R0-ENH" firstAttribute="leading" secondItem="uzI-d8-kcx" secondAttribute="leading" constant="5" id="DSA-45-8na"/>
+                                    <constraint firstItem="8RK-0V-cYr" firstAttribute="baseline" secondItem="X5U-R0-ENH" secondAttribute="baseline" id="Kzt-qp-RXi"/>
+                                    <constraint firstItem="X5U-R0-ENH" firstAttribute="top" secondItem="uzI-d8-kcx" secondAttribute="top" constant="5" id="OyF-WS-wh9"/>
+                                    <constraint firstItem="8RK-0V-cYr" firstAttribute="top" secondItem="uzI-d8-kcx" secondAttribute="top" constant="5" id="ROq-Pp-6Ih"/>
+                                    <constraint firstItem="8RK-0V-cYr" firstAttribute="leading" secondItem="X5U-R0-ENH" secondAttribute="trailing" constant="5" id="TLf-yu-6yT"/>
+                                    <constraint firstItem="8RK-0V-cYr" firstAttribute="leading" secondItem="X5U-R0-ENH" secondAttribute="trailing" constant="5" id="Tw4-O1-ILT"/>
+                                    <constraint firstAttribute="trailing" secondItem="8RK-0V-cYr" secondAttribute="trailing" constant="5" id="nnl-3U-dRd"/>
                                 </constraints>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" enabled="NO" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="please set the path ..." usesSingleLineMode="YES" id="gtQ-4r-22c">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
+                            </customView>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PTW-ce-MNP">
-                                <rect key="frame" x="18" y="70" width="89" height="17"/>
+                                <rect key="frame" x="18" y="56" width="446" height="19"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Archive Path:" id="Ju7-wj-fHp">
-                                    <font key="font" metaFont="systemSemibold" size="13"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <font key="font" metaFont="systemBold" size="15"/>
+                                    <color key="textColor" red="0.79329520460000003" green="0.25477233529999999" blue="0.30978807809999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8RK-0V-cYr">
-                                <rect key="frame" x="381" y="37" width="85" height="32"/>
-                                <buttonCell key="cell" type="push" title="change" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="XbB-C4-8qz">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="changeArchivePathButton:" target="mcV-6Y-gT5" id="XbC-8a-TdC"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="X5U-R0-ENH" firstAttribute="top" secondItem="PTW-ce-MNP" secondAttribute="bottom" constant="5" id="0qZ-lx-bzX"/>
-                            <constraint firstAttribute="trailing" secondItem="8RK-0V-cYr" secondAttribute="trailing" constant="20" id="73b-WR-eVR"/>
-                            <constraint firstItem="X5U-R0-ENH" firstAttribute="leading" secondItem="BeE-gT-39S" secondAttribute="leading" constant="20" id="Niq-b1-NFn"/>
-                            <constraint firstItem="PTW-ce-MNP" firstAttribute="top" secondItem="BeE-gT-39S" secondAttribute="top" constant="28" id="cZV-I0-EC7"/>
-                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="PTW-ce-MNP" secondAttribute="trailing" constant="20" symbolic="YES" id="fnl-Ic-rUB"/>
-                            <constraint firstItem="8RK-0V-cYr" firstAttribute="leading" secondItem="X5U-R0-ENH" secondAttribute="trailing" constant="20" id="nBi-Lb-yY3"/>
-                            <constraint firstItem="PTW-ce-MNP" firstAttribute="leading" secondItem="BeE-gT-39S" secondAttribute="leading" constant="20" id="nN2-d8-x44"/>
-                            <constraint firstItem="8RK-0V-cYr" firstAttribute="top" secondItem="X5U-R0-ENH" secondAttribute="top" id="txV-mb-VDp"/>
+                            <constraint firstItem="uzI-d8-kcx" firstAttribute="leading" secondItem="BeE-gT-39S" secondAttribute="leading" constant="20" id="7XQ-4C-Wfc"/>
+                            <constraint firstItem="PTW-ce-MNP" firstAttribute="leading" secondItem="BeE-gT-39S" secondAttribute="leading" constant="20" id="Cdx-jD-ESH"/>
+                            <constraint firstItem="uzI-d8-kcx" firstAttribute="width" secondItem="PTW-ce-MNP" secondAttribute="width" id="JC8-q3-Kna"/>
+                            <constraint firstItem="uzI-d8-kcx" firstAttribute="top" secondItem="PTW-ce-MNP" secondAttribute="bottom" constant="5" id="O2a-gS-5rX"/>
+                            <constraint firstAttribute="trailing" secondItem="uzI-d8-kcx" secondAttribute="trailing" constant="20" id="a9l-zR-3ga"/>
+                            <constraint firstItem="PTW-ce-MNP" firstAttribute="top" secondItem="BeE-gT-39S" secondAttribute="top" constant="30" id="kEc-a8-Sqb"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="PTW-ce-MNP" secondAttribute="trailing" constant="20" symbolic="YES" id="lt8-K2-uRa"/>
+                            <constraint firstAttribute="bottom" secondItem="uzI-d8-kcx" secondAttribute="bottom" constant="20" id="zKB-VE-QiF"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="archivPathView" destination="uzI-d8-kcx" id="tKU-A7-wDz"/>
                         <outlet property="archivePathTextField" destination="X5U-R0-ENH" id="bsd-F5-EBo"/>
                     </connections>
                 </viewController>
@@ -508,7 +520,7 @@
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                    <rect key="frame" x="32" y="1" width="194" height="40"/>
+                                                                    <rect key="frame" x="31.5" y="1" width="194" height="40"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">
@@ -589,8 +601,8 @@
                                 </textFieldCell>
                             </textField>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="0fO-Ka-cSd" userLabel="Get PDF Button">
-                                <rect key="frame" x="81" y="13" width="99" height="32"/>
-                                <buttonCell key="cell" type="push" title="get PDFs " bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="O5o-sv-h0r">
+                                <rect key="frame" x="80" y="13" width="101" height="32"/>
+                                <buttonCell key="cell" type="push" title="Get PDFs " bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="O5o-sv-h0r">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
