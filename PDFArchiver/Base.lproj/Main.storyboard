@@ -242,7 +242,7 @@
                                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                     <tableColumns>
                                                         <tableColumn identifier="" width="205" minWidth="40" maxWidth="1000" id="nm7-rf-3j8">
-                                                            <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="PDF Documents">
+                                                            <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Document">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -344,7 +344,7 @@
                                         <shadow key="shadow">
                                             <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </shadow>
-                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="Document Description" drawsBackground="YES" id="PCv-if-5Qd">
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="Description" drawsBackground="YES" id="PCv-if-5Qd">
                                             <font key="font" metaFont="system"/>
                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -368,7 +368,7 @@
                                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                     <tableColumns>
                                                         <tableColumn identifier="" width="225" minWidth="40" maxWidth="1000" id="a86-rc-hFq">
-                                                            <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Document Tags">
+                                                            <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Tag">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -484,7 +484,7 @@
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="aAj-oT-fzK">
-                                                                    <rect key="frame" x="1" y="1" width="28" height="17"/>
+                                                                    <rect key="frame" x="1" y="1" width="27" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nnY-wt-8cw">
@@ -507,7 +507,7 @@
                                                             </prototypeCellViews>
                                                         </tableColumn>
                                                         <tableColumn identifier="" width="194.5" minWidth="40" maxWidth="1000" id="bgb-vH-5vk">
-                                                            <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Available Tags">
+                                                            <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Tag">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -520,7 +520,7 @@
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                    <rect key="frame" x="31.5" y="1" width="194" height="40"/>
+                                                                    <rect key="frame" x="32" y="1" width="194" height="40"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">
@@ -601,8 +601,8 @@
                                 </textFieldCell>
                             </textField>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="0fO-Ka-cSd" userLabel="Get PDF Button">
-                                <rect key="frame" x="80" y="13" width="101" height="32"/>
-                                <buttonCell key="cell" type="push" title="Get PDFs " bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="O5o-sv-h0r">
+                                <rect key="frame" x="79" y="13" width="103" height="32"/>
+                                <buttonCell key="cell" type="push" title="Add PDFs " bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="O5o-sv-h0r">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -628,7 +628,7 @@
                             </button>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8J4-uS-3fj">
                                 <rect key="frame" x="18" y="551" width="224" height="19"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Available Tags" id="FTj-OD-Ghm">
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="PDF Documents" id="FTj-OD-Ghm">
                                     <font key="font" metaFont="systemBold" size="15"/>
                                     <color key="textColor" red="0.79329520460000003" green="0.25477233529999999" blue="0.30978807809999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
