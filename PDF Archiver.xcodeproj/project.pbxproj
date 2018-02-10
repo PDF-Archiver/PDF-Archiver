@@ -140,7 +140,6 @@
 				A38A58AA1FFFA72D003F0573 /* WindowController.swift */,
 				A31B52ED1FF694B0007A3D14 /* Assets.xcassets */,
 				A31B52EF1FF694B0007A3D14 /* Main.storyboard */,
-				A3A6964B202F91E500AB85C9 /* Layout.swift */,
 				A3F5BC922019BAAE0043B192 /* Classes */,
 				A3FC0DA3201B05F10082CD2A /* DataModel.swift */,
 				A31B53161FF6A6D8007A3D14 /* FileHandling.swift */,
@@ -179,6 +178,7 @@
 		A3F5BC922019BAAE0043B192 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				A3A6964B202F91E500AB85C9 /* Layout.swift */,
 				A3F5BC902019BAA70043B192 /* Document.swift */,
 				A307BB3A2014D5300046C391 /* Preferences.swift */,
 				A3299E1B2015BE3D0036125F /* Tag.swift */,
