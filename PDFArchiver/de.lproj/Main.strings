@@ -32,6 +32,9 @@
 /* Class = "NSMenuItem"; title = "PDF Archiver Help"; ObjectID = "FKE-Sm-Kum"; */
 "FKE-Sm-Kum.title" = "PDF Archivierer Hilfe";
 
+/* Class = "NSTextFieldCell"; title = "PDF Documents"; ObjectID = "FTj-OD-Ghm"; */
+"FTj-OD-Ghm.title" = "PDF Dokumente";
+
 /* Class = "NSMenuItem"; title = "Open…"; ObjectID = "IAo-SY-fd9"; */
 "IAo-SY-fd9.title" = "Öffnen …";
 
@@ -44,8 +47,8 @@
 /* Class = "NSMenuItem"; title = "Show All"; ObjectID = "Kd2-mp-pUS"; */
 "Kd2-mp-pUS.title" = "Alle einblenden";
 
-/* Class = "NSButtonCell"; title = "get PDFs "; ObjectID = "O5o-sv-h0r"; */
-"O5o-sv-h0r.title" = "öffne PDFs ";
+/* Class = "NSButtonCell"; title = "Add PDFs "; ObjectID = "O5o-sv-h0r"; */
+"O5o-sv-h0r.title" = "PDFs hinzufügen";
 
 /* Class = "NSMenuItem"; title = "Minimize"; ObjectID = "OY7-WF-poV"; */
 "OY7-WF-poV.title" = "Minimieren";
@@ -53,11 +56,14 @@
 /* Class = "NSMenuItem"; title = "Hide PDF Archiver"; ObjectID = "Olw-nP-bQN"; */
 "Olw-nP-bQN.title" = "PDF Archivierer ausblenden";
 
-/* Class = "NSTextFieldCell"; placeholderString = "Document Description"; ObjectID = "PCv-if-5Qd"; */
-"PCv-if-5Qd.placeholderString" = "Dokument Beschreibung";
+/* Class = "NSTextFieldCell"; placeholderString = "Description"; ObjectID = "PCv-if-5Qd"; */
+"PCv-if-5Qd.placeholderString" = "Beschreibung";
 
 /* Class = "NSMenuItem"; title = "Zoom"; ObjectID = "R4o-n2-Eq4"; */
 "R4o-n2-Eq4.title" = "Zoomen";
+
+/* Class = "NSTextFieldCell"; title = "Document Attributes"; ObjectID = "RIU-wB-4cE"; */
+"RIU-wB-4cE.title" = "Document Attributes";
 
 /* Class = "NSMenu"; title = "Window"; ObjectID = "Td7-aD-5lo"; */
 "Td7-aD-5lo.title" = "Fenster";
@@ -66,19 +72,19 @@
 "Vdr-fp-XzO.title" = "Andere ausblenden";
 
 /* Class = "NSButtonCell"; title = "change"; ObjectID = "XbB-C4-8qz"; */
-"XbB-C4-8qz.title" = "ändern";
+"XbB-C4-8qz.title" = "Ändern";
 
 /* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "Zdh-HQ-s5r"; */
 //"Zdh-HQ-s5r.title" = "Text Cell";
 
-/* Class = "NSTableColumn"; headerCell.title = "Document Tags"; ObjectID = "a86-rc-hFq"; */
-"a86-rc-hFq.headerCell.title" = "Dokument Tags";
+/* Class = "NSTableColumn"; headerCell.title = "Tag"; ObjectID = "a86-rc-hFq"; */
+"a86-rc-hFq.headerCell.title" = "Tag";
 
 /* Class = "NSMenuItem"; title = "Window"; ObjectID = "aUF-d1-5bR"; */
 "aUF-d1-5bR.title" = "Fenster";
 
-/* Class = "NSTableColumn"; headerCell.title = "Available Tags"; ObjectID = "bgb-vH-5vk"; */
-"bgb-vH-5vk.headerCell.title" = "Verfügbare Tags";
+/* Class = "NSTableColumn"; headerCell.title = "Tag"; ObjectID = "bgb-vH-5vk"; */
+"bgb-vH-5vk.headerCell.title" = "Tag";
 
 /* Class = "NSMenu"; title = "File"; ObjectID = "bib-Uj-vzu"; */
 "bib-Uj-vzu.title" = "Ablage";
@@ -101,8 +107,8 @@
 /* Class = "NSViewController"; title = "Preferences"; ObjectID = "mcV-6Y-gT5"; */
 "mcV-6Y-gT5.title" = "Einstellungen";
 
-/* Class = "NSTableColumn"; headerCell.title = "PDF Documents"; ObjectID = "nm7-rf-3j8"; */
-"nm7-rf-3j8.headerCell.title" = "PDF Dokumente";
+/* Class = "NSTableColumn"; headerCell.title = "Document"; ObjectID = "nm7-rf-3j8"; */
+"nm7-rf-3j8.headerCell.title" = "Dokument";
 
 /* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "o1a-m8-IzU"; */
 //"o1a-m8-IzU.title" = "Text Cell";
@@ -112,6 +118,9 @@
 
 /* Class = "NSMenuItem"; title = "Save…"; ObjectID = "pxx-59-PXV"; */
 "pxx-59-PXV.title" = "Speichern …";
+
+/* Class = "NSTextFieldCell"; title = "Available Tags"; ObjectID = "qKy-yf-U85"; */
+"qKy-yf-U85.title" = "Verfügbare Tags";
 
 /* Class = "NSMenu"; title = "PDF Archiver"; ObjectID = "uQy-DD-JDr"; */
 "uQy-DD-JDr.title" = "PDF Archivierer";

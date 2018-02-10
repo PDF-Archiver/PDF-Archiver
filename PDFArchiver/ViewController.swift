@@ -9,17 +9,12 @@
 import Quartz
 
 class ViewController: NSViewController {
-    //https://color.adobe.com/de/Simple-Theme-color-theme-10451401/
-    let color1 = CGColor.init(red: 0.793, green: 0.255, blue: 0.310, alpha: 1)
-    let color2 = CGColor.init(red: 0.903, green: 0.412, blue: 0.404, alpha: 1)
-    let color3 = CGColor.init(red: 0.980, green: 0.980, blue: 0.980, alpha: 1)
-    let color4 = CGColor.init(red: 0.131, green: 0.172, blue: 0.231, alpha: 1)
-    let color5 = CGColor.init(red: 0.213, green: 0.242, blue: 0.286, alpha: 1)
-
     var dataModelInstance = DataModel()
 
+    @IBOutlet weak var pdfDocumentsView: NSView!
     @IBOutlet weak var pdfview: PDFView!
-    @IBOutlet weak var documentCustomView: NSView!
+    @IBOutlet weak var documentAttributesView: NSView!
+    @IBOutlet weak var tagSearchView: NSView!
     @IBOutlet weak var tagTableView: NSTableView!
 
     @IBOutlet var documentAC: NSArrayController!
@@ -121,12 +116,25 @@ class ViewController: NSViewController {
     }
 
     override func viewWillAppear() {
+        let layout = Layout()
+
         // set background color of the view
         self.view.wantsLayer = true
-        self.view.layer?.backgroundColor = CGColor.init(red: 141/255, green: 189/255, blue: 246/255, alpha: 0.9)
-        self.documentCustomView.wantsLayer = true
-        self.documentCustomView.layer?.backgroundColor = CGColor.init(red: 1, green: 1, blue: 1, alpha: 0.9)
-        self.documentCustomView.layer?.cornerRadius = 15
+        self.view.layer?.backgroundColor = layout.color3
 
+        self.pdfDocumentsView.wantsLayer = true
+        self.pdfDocumentsView.layer?.backgroundColor = layout.fieldBackgroundColorDark
+        self.pdfDocumentsView.layer?.cornerRadius = layout.cornerRadius
+
+        self.pdfview.backgroundColor = NSColor.init(cgColor: layout.pdfBackgroundColor)!
+        self.pdfview.layer?.cornerRadius = layout.cornerRadius
+
+        self.documentAttributesView.wantsLayer = true
+        self.documentAttributesView.layer?.backgroundColor = layout.fieldBackgroundColorLight
+        self.documentAttributesView.layer?.cornerRadius = layout.cornerRadius
+
+        self.tagSearchView.wantsLayer = true
+        self.tagSearchView.layer?.backgroundColor = layout.fieldBackgroundColorLight
+        self.tagSearchView.layer?.cornerRadius = layout.cornerRadius
     }
 }

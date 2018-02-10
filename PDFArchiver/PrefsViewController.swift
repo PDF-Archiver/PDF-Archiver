@@ -30,8 +30,11 @@ class PrefsViewController: NSViewController {
         }
     }
 
-    override func viewDidAppear() {
-        view.window?.styleMask.remove(.resizable)
+    override func viewWillAppear() {
+        self.view.window?.titleVisibility = NSWindow.TitleVisibility.hidden
+        self.view.window?.titlebarAppearsTransparent = true
+        self.view.window?.styleMask.remove(.resizable)
+        self.view.window?.styleMask.insert(.fullSizeContentView)
     }
 
     override func viewDidLoad() {
