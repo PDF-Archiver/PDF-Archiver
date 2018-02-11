@@ -86,7 +86,7 @@ class Document: NSObject {
 
             // get tags
             var tag_str = ""
-            for tag in tags {
+            for tag in tags.sorted(by: { $0.name < $1.name }) {
                 tag_str += "\(tag.name)_"
             }
             tag_str = String(tag_str.dropLast(1))
@@ -109,6 +109,7 @@ class Document: NSObject {
                 print("Ooops! Something went wrong: \(error)")
                 return false
             }
+            self.name = String(new_filepath.lastPathComponent)
             self.path = new_filepath
             self.documentDone = "✔️"
             return true

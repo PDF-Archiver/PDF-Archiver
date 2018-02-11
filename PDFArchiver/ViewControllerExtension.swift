@@ -37,6 +37,7 @@ extension ViewController {
         self.datePicker.dateValue = document.documentDate ?? Date()
         self.descriptionField.stringValue = document.documentDescription ?? ""
         self.documentTagAC.content = document.documentTags
+        self.documentAC.setSelectionIndex(self.dataModelInstance.documentIdx ?? 0)
 
         // update pdf view
         if updatePDF {
@@ -93,6 +94,9 @@ extension ViewController {
         let result = (documents[idx] as Document).rename(archivePath: path)
         if result {
             self.documentAC.content = documents
+            if idx < documents.count {
+                self.dataModelInstance.documentIdx = idx + 1
+            }
             updateViewController(updatePDF: true)
         }
     }
@@ -132,6 +136,12 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
     }
 
     override func controlTextDidEndEditing(_ notification: Notification) {
+        // check if the last key pressed is the Return key
+        guard let textMovement = notification.userInfo?["NSTextMovement"] as? Int else { return }
+        if textMovement != NSReturnTextMovement.hashValue {
+            return
+        }
+
         // try to get the selected tag
         var selectedTag: Tag
         let newlyCreated: Bool

@@ -310,6 +310,9 @@
                                             <rect key="frame" x="0.0" y="0.0" width="208" height="23"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableHeaderView>
+                                        <connections>
+                                            <outlet property="nextKeyView" destination="NiF-3c-nL6" id="lO5-Wu-qdT"/>
+                                        </connections>
                                     </scrollView>
                                 </subviews>
                                 <constraints>
@@ -360,7 +363,7 @@
                                         </textFieldCell>
                                         <connections>
                                             <action selector="descriptionDone:" target="XfG-lQ-9wD" id="Asw-y2-Ksn"/>
-                                            <outlet property="nextKeyView" destination="WfD-Nd-kM0" id="79O-kS-dGN"/>
+                                            <outlet property="nextKeyView" destination="WfD-Nd-kM0" id="xAD-eB-rDw"/>
                                         </connections>
                                     </textField>
                                     <scrollView wantsLayer="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oZc-B6-cqG" userLabel="Document Tag - Table View">
@@ -463,7 +466,7 @@
                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         </searchFieldCell>
                                         <connections>
-                                            <outlet property="nextKeyView" destination="NiF-3c-nL6" id="oWl-kB-RF2"/>
+                                            <outlet property="nextKeyView" destination="Ii4-sZ-BA5" id="AUP-Su-Wv1"/>
                                         </connections>
                                     </searchField>
                                     <scrollView autohidesScrollers="YES" horizontalLineScroll="42" horizontalPageScroll="10" verticalLineScroll="42" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kGW-Ke-BkB" userLabel="Tag Scroll View">
@@ -682,7 +685,7 @@
                             <constraint firstItem="EVB-U9-dup" firstAttribute="centerX" secondItem="8J4-uS-3fj" secondAttribute="centerX" id="xws-bu-7ej"/>
                         </constraints>
                         <connections>
-                            <outlet property="nextKeyView" destination="NiF-3c-nL6" id="Z5a-cI-KsG"/>
+                            <outlet property="nextKeyView" destination="Ii4-sZ-BA5" id="o0g-KA-Dzn"/>
                         </connections>
                     </view>
                     <connections>
