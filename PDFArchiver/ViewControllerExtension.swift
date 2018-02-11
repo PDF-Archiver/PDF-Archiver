@@ -37,6 +37,7 @@ extension ViewController {
         self.datePicker.dateValue = document.documentDate ?? Date()
         self.descriptionField.stringValue = document.documentDescription ?? ""
         self.documentTagAC.content = document.documentTags
+        self.documentAC.setSelectionIndex(self.dataModelInstance.documentIdx ?? 0)
 
         // update pdf view
         if updatePDF {
@@ -92,8 +93,10 @@ extension ViewController {
         guard let path = self.dataModelInstance.prefs?.archivePath else { return }
         let result = (documents[idx] as Document).rename(archivePath: path)
         if result {
-            documents.remove(at: self.dataModelInstance.documentIdx!)
             self.documentAC.content = documents
+            if idx < documents.count {
+                self.dataModelInstance.documentIdx = idx + 1
+            }
             updateViewController(updatePDF: true)
         }
     }
@@ -133,10 +136,17 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
     }
 
     override func controlTextDidEndEditing(_ notification: Notification) {
+        // check if the last key pressed is the Return key
+        guard let textMovement = notification.userInfo?["NSTextMovement"] as? Int else { return }
+        if textMovement != NSReturnTextMovement.hashValue {
+            return
+        }
+
         // try to get the selected tag
         var selectedTag: Tag
         let newlyCreated: Bool
-        if let tags = self.tagAC.content as? [Tag] {
+        let tags = self.tagAC.content as? [Tag] ?? []
+        if tags.count > 0 {
             selectedTag = tags.first!
             newlyCreated = false
         } else {
@@ -147,22 +157,17 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
         }
 
         // test if element already exists in document tag table view
-        if let documents = self.documentTagAC.content as? [Tag] {
-            for element in documents where element.name == selectedTag.name {
+        if let documentTags = self.documentTagAC.content as? [Tag] {
+            for tag in documentTags where tag.name == selectedTag.name {
+                print("Tag already found!")
                 return
             }
         }
 
         // add new tag to document table view
         if let idx = self.dataModelInstance.documentIdx {
-            // TODO: WTF? do I really have to do this in 2 steps???
-            var tags = [selectedTag]
-            if let documentTags = self.documentTagAC.content as? [Tag] {
-                tags.append(contentsOf: documentTags)
-            }
-
             if self.dataModelInstance.documents![idx].documentTags != nil {
-                self.dataModelInstance.documents![idx].documentTags!.append(selectedTag)
+                self.dataModelInstance.documents![idx].documentTags!.insert(selectedTag, at: 0)
             } else {
                 self.dataModelInstance.documents![idx].documentTags = [selectedTag]
             }
@@ -173,8 +178,10 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
             // add tag to tagAC
             if newlyCreated {
                 self.dataModelInstance.tags?.list.insert(selectedTag)
-                self.updateViewController(updatePDF: false)
             }
+            self.updateViewController(updatePDF: false)
+        } else {
+            print("Please pick documents first!")
         }
     }
 }

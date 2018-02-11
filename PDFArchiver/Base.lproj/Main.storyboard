@@ -254,12 +254,24 @@
                                                             </textFieldCell>
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
-                                                                <tableCellView id="cdz-pE-qO8">
+                                                                <tableCellView id="VD2-lj-7nv">
                                                                     <rect key="frame" x="1" y="1" width="205" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
+                                                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vlQ-KX-ziV">
+                                                                            <rect key="frame" x="0.0" y="0.0" width="27" height="17"/>
+                                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                                                            <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="tbm-cD-D49">
+                                                                                <font key="font" metaFont="system"/>
+                                                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                            </textFieldCell>
+                                                                            <connections>
+                                                                                <binding destination="VD2-lj-7nv" name="value" keyPath="objectValue.documentDone" id="K02-VD-opx"/>
+                                                                            </connections>
+                                                                        </textField>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="syz-ag-Wgc">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="176" height="17"/>
+                                                                            <rect key="frame" x="26" y="0.0" width="178" height="17"/>
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="B7Q-Q5-RNU">
                                                                                 <font key="font" metaFont="system"/>
@@ -267,13 +279,10 @@
                                                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                             </textFieldCell>
                                                                             <connections>
-                                                                                <binding destination="cdz-pE-qO8" name="value" keyPath="objectValue.name" id="IWN-5q-uZ8"/>
+                                                                                <binding destination="VD2-lj-7nv" name="value" keyPath="objectValue.name" id="bEp-eG-Lzr"/>
                                                                             </connections>
                                                                         </textField>
                                                                     </subviews>
-                                                                    <connections>
-                                                                        <outlet property="textField" destination="syz-ag-Wgc" id="Fn6-YJ-jf9"/>
-                                                                    </connections>
                                                                 </tableCellView>
                                                             </prototypeCellViews>
                                                         </tableColumn>
@@ -301,6 +310,9 @@
                                             <rect key="frame" x="0.0" y="0.0" width="208" height="23"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableHeaderView>
+                                        <connections>
+                                            <outlet property="nextKeyView" destination="NiF-3c-nL6" id="lO5-Wu-qdT"/>
+                                        </connections>
                                     </scrollView>
                                 </subviews>
                                 <constraints>
@@ -351,7 +363,7 @@
                                         </textFieldCell>
                                         <connections>
                                             <action selector="descriptionDone:" target="XfG-lQ-9wD" id="Asw-y2-Ksn"/>
-                                            <outlet property="nextKeyView" destination="WfD-Nd-kM0" id="79O-kS-dGN"/>
+                                            <outlet property="nextKeyView" destination="WfD-Nd-kM0" id="xAD-eB-rDw"/>
                                         </connections>
                                     </textField>
                                     <scrollView wantsLayer="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oZc-B6-cqG" userLabel="Document Tag - Table View">
@@ -454,7 +466,7 @@
                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         </searchFieldCell>
                                         <connections>
-                                            <outlet property="nextKeyView" destination="NiF-3c-nL6" id="oWl-kB-RF2"/>
+                                            <outlet property="nextKeyView" destination="Ii4-sZ-BA5" id="AUP-Su-Wv1"/>
                                         </connections>
                                     </searchField>
                                     <scrollView autohidesScrollers="YES" horizontalLineScroll="42" horizontalPageScroll="10" verticalLineScroll="42" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kGW-Ke-BkB" userLabel="Tag Scroll View">
@@ -673,7 +685,7 @@
                             <constraint firstItem="EVB-U9-dup" firstAttribute="centerX" secondItem="8J4-uS-3fj" secondAttribute="centerX" id="xws-bu-7ej"/>
                         </constraints>
                         <connections>
-                            <outlet property="nextKeyView" destination="NiF-3c-nL6" id="Z5a-cI-KsG"/>
+                            <outlet property="nextKeyView" destination="Ii4-sZ-BA5" id="o0g-KA-Dzn"/>
                         </connections>
                     </view>
                     <connections>

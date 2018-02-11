@@ -111,8 +111,6 @@ class ViewController: NSViewController {
 
         // add sorting to tag fields
         sortArrayController(by: "count", ascending: false)
-//        documentAC.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
-
     }
 
     override func viewWillAppear() {
