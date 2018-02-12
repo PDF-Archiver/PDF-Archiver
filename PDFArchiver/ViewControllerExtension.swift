@@ -24,7 +24,7 @@ extension ViewController {
 
         // test if no documents exist in document table view
         if self.dataModelInstance.documents?.count == nil || self.dataModelInstance.documents?.count == 0 {
-            self.pdfview.document = nil
+            self.pdfContentView.document = nil
             self.datePicker.dateValue = Date()
             self.descriptionField.stringValue = ""
             self.documentTagAC.content = nil
@@ -41,12 +41,12 @@ extension ViewController {
 
         // update pdf view
         if updatePDF {
-            self.pdfview.document = PDFDocument(url: document.path)
+            self.pdfContentView.document = PDFDocument(url: document.path)
             // self.pdfview.displayMode = PDFDisplayMode.singlePageContinuous
-            self.pdfview.displayMode = PDFDisplayMode.singlePage
-            self.pdfview.autoScales = false
-            self.pdfview.acceptsDraggedFiles = false
-            self.pdfview.interpolationQuality = PDFInterpolationQuality.low
+            self.pdfContentView.displayMode = PDFDisplayMode.singlePage
+            self.pdfContentView.autoScales = false
+            self.pdfContentView.acceptsDraggedFiles = false
+            self.pdfContentView.interpolationQuality = PDFInterpolationQuality.low
         }
     }
     @objc func showPreferences() {

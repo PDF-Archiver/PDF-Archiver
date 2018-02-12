@@ -12,7 +12,8 @@ class ViewController: NSViewController {
     var dataModelInstance = DataModel()
 
     @IBOutlet weak var pdfDocumentsView: NSView!
-    @IBOutlet weak var pdfview: PDFView!
+    @IBOutlet weak var pdfView: NSView!
+    @IBOutlet weak var pdfContentView: PDFView!
     @IBOutlet weak var documentAttributesView: NSView!
     @IBOutlet weak var tagSearchView: NSView!
     @IBOutlet weak var tagTableView: NSTableView!
@@ -124,8 +125,12 @@ class ViewController: NSViewController {
         self.pdfDocumentsView.layer?.backgroundColor = layout.fieldBackgroundColorDark
         self.pdfDocumentsView.layer?.cornerRadius = layout.cornerRadius
 
-        self.pdfview.backgroundColor = NSColor.init(cgColor: layout.pdfBackgroundColor)!
-        self.pdfview.layer?.cornerRadius = layout.cornerRadius
+        self.pdfView.wantsLayer = true
+        self.pdfView.layer?.backgroundColor = layout.fieldBackgroundColorDark
+        self.pdfView.layer?.cornerRadius = layout.cornerRadius
+
+        self.pdfContentView.backgroundColor = NSColor.init(cgColor: layout.fieldBackgroundColorDark)!
+        self.pdfContentView.layer?.cornerRadius = layout.cornerRadius
 
         self.documentAttributesView.wantsLayer = true
         self.documentAttributesView.layer?.backgroundColor = layout.fieldBackgroundColorLight

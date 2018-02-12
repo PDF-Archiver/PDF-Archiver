@@ -219,12 +219,21 @@
                         <rect key="frame" x="0.0" y="0.0" width="940" height="600"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <pdfView wantsLayer="YES" displayMode="singlePage" autoScales="YES" translatesAutoresizingMaskIntoConstraints="NO" id="80e-Of-Nzi" userLabel="PDFView">
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="nVE-OX-PwM">
                                 <rect key="frame" x="260" y="20" width="400" height="550"/>
+                                <subviews>
+                                    <pdfView wantsLayer="YES" displayMode="singlePage" autoScales="YES" translatesAutoresizingMaskIntoConstraints="NO" id="80e-Of-Nzi" userLabel="PDFView">
+                                        <rect key="frame" x="5" y="5" width="390" height="540"/>
+                                    </pdfView>
+                                </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="400" id="g47-iB-fEy"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="400" id="8Jq-1Z-TeZ"/>
+                                    <constraint firstAttribute="bottom" secondItem="80e-Of-Nzi" secondAttribute="bottom" constant="5" id="TtW-5L-u4P"/>
+                                    <constraint firstAttribute="trailing" secondItem="80e-Of-Nzi" secondAttribute="trailing" constant="5" id="cwb-Z0-1e3"/>
+                                    <constraint firstItem="80e-Of-Nzi" firstAttribute="top" secondItem="nVE-OX-PwM" secondAttribute="top" constant="5" id="svo-EK-z4m"/>
+                                    <constraint firstItem="80e-Of-Nzi" firstAttribute="leading" secondItem="nVE-OX-PwM" secondAttribute="leading" constant="5" id="vkf-3b-33C"/>
                                 </constraints>
-                            </pdfView>
+                            </customView>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="EVB-U9-dup">
                                 <rect key="frame" x="20" y="56" width="220" height="490"/>
                                 <subviews>
@@ -532,7 +541,7 @@
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                    <rect key="frame" x="32" y="1" width="194" height="40"/>
+                                                                    <rect key="frame" x="31.5" y="1" width="194" height="40"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">
@@ -649,18 +658,14 @@
                         </subviews>
                         <constraints>
                             <constraint firstItem="N6d-d5-13u" firstAttribute="top" secondItem="upy-ZK-2Zs" secondAttribute="bottom" constant="5" id="8Dk-Xr-lCa"/>
-                            <constraint firstAttribute="bottom" secondItem="80e-Of-Nzi" secondAttribute="bottom" constant="20" id="8ED-St-n8g"/>
                             <constraint firstAttribute="trailing" secondItem="N6d-d5-13u" secondAttribute="trailing" constant="20" id="9va-rS-8E0"/>
-                            <constraint firstItem="N6d-d5-13u" firstAttribute="leading" secondItem="80e-Of-Nzi" secondAttribute="trailing" constant="20" id="AWl-ib-DsL"/>
                             <constraint firstItem="EVB-U9-dup" firstAttribute="top" secondItem="8J4-uS-3fj" secondAttribute="bottom" constant="5" id="Ba5-E9-msF"/>
                             <constraint firstItem="8J4-uS-3fj" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" id="C43-wl-wzP"/>
-                            <constraint firstItem="BZd-ly-6BW" firstAttribute="leading" secondItem="80e-Of-Nzi" secondAttribute="trailing" constant="20" id="Cim-sr-RXg"/>
                             <constraint firstItem="0fO-Ka-cSd" firstAttribute="centerX" secondItem="8J4-uS-3fj" secondAttribute="centerX" id="D6Q-F8-aoH"/>
                             <constraint firstAttribute="bottom" secondItem="BZd-ly-6BW" secondAttribute="bottom" constant="20" id="EHL-cV-1aC"/>
                             <constraint firstItem="EVB-U9-dup" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" id="FDa-zQ-8iA"/>
                             <constraint firstItem="z3w-bA-vGU" firstAttribute="top" secondItem="U4W-9l-6vC" secondAttribute="bottom" constant="20" id="J1w-NX-nA3"/>
                             <constraint firstItem="0fO-Ka-cSd" firstAttribute="top" secondItem="EVB-U9-dup" secondAttribute="bottom" constant="15" id="Jts-ji-gsk"/>
-                            <constraint firstItem="BZd-ly-6BW" firstAttribute="leading" secondItem="80e-Of-Nzi" secondAttribute="trailing" constant="20" id="MEY-IP-CvO"/>
                             <constraint firstAttribute="trailing" secondItem="BZd-ly-6BW" secondAttribute="trailing" constant="20" id="Qg3-5Z-7Hm"/>
                             <constraint firstAttribute="trailing" secondItem="upy-ZK-2Zs" secondAttribute="trailing" constant="20" id="RlU-cC-tl3"/>
                             <constraint firstAttribute="bottom" secondItem="0fO-Ka-cSd" secondAttribute="bottom" constant="20" id="RvI-Jo-Yu8"/>
@@ -669,20 +674,21 @@
                             <constraint firstItem="EVB-U9-dup" firstAttribute="width" secondItem="8J4-uS-3fj" secondAttribute="width" id="TiU-P0-hiI"/>
                             <constraint firstItem="upy-ZK-2Zs" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="30" id="XfN-iM-qkN"/>
                             <constraint firstItem="BZd-ly-6BW" firstAttribute="top" secondItem="z3w-bA-vGU" secondAttribute="bottom" constant="5" id="ZMJ-0b-a5t"/>
-                            <constraint firstItem="N6d-d5-13u" firstAttribute="leading" secondItem="80e-Of-Nzi" secondAttribute="trailing" constant="20" id="coU-rp-Xip"/>
+                            <constraint firstItem="nVE-OX-PwM" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="30" id="aaV-tN-XTE"/>
+                            <constraint firstItem="N6d-d5-13u" firstAttribute="leading" secondItem="nVE-OX-PwM" secondAttribute="trailing" constant="20" id="c4n-Zp-QsO"/>
                             <constraint firstItem="BZd-ly-6BW" firstAttribute="width" secondItem="upy-ZK-2Zs" secondAttribute="width" id="dmO-In-bFw"/>
                             <constraint firstItem="z3w-bA-vGU" firstAttribute="centerX" secondItem="upy-ZK-2Zs" secondAttribute="centerX" id="gSp-Xn-0oH"/>
                             <constraint firstItem="BZd-ly-6BW" firstAttribute="top" secondItem="z3w-bA-vGU" secondAttribute="bottom" constant="5" id="hSr-nJ-a9D"/>
-                            <constraint firstItem="80e-Of-Nzi" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="30" id="lx5-uz-Kny"/>
                             <constraint firstItem="U4W-9l-6vC" firstAttribute="top" secondItem="N6d-d5-13u" secondAttribute="bottom" constant="7" id="pxR-Oe-RZi"/>
                             <constraint firstItem="z3w-bA-vGU" firstAttribute="width" secondItem="upy-ZK-2Zs" secondAttribute="width" id="rMx-NK-Y9g"/>
+                            <constraint firstItem="nVE-OX-PwM" firstAttribute="leading" secondItem="EVB-U9-dup" secondAttribute="trailing" constant="20" id="riE-nL-FoT"/>
                             <constraint firstItem="N6d-d5-13u" firstAttribute="width" secondItem="upy-ZK-2Zs" secondAttribute="width" id="t5b-26-iM2"/>
                             <constraint firstItem="U4W-9l-6vC" firstAttribute="centerX" secondItem="upy-ZK-2Zs" secondAttribute="centerX" id="ufd-PS-FV0"/>
                             <constraint firstItem="8J4-uS-3fj" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="30" id="ugg-E9-2B5"/>
                             <constraint firstItem="BZd-ly-6BW" firstAttribute="centerX" secondItem="upy-ZK-2Zs" secondAttribute="centerX" id="vTG-Sb-88X"/>
                             <constraint firstAttribute="bottom" secondItem="BZd-ly-6BW" secondAttribute="bottom" constant="20" id="vvh-wd-UPx"/>
-                            <constraint firstItem="80e-Of-Nzi" firstAttribute="leading" secondItem="EVB-U9-dup" secondAttribute="trailing" constant="20" id="wGQ-qP-A5j"/>
                             <constraint firstItem="EVB-U9-dup" firstAttribute="centerX" secondItem="8J4-uS-3fj" secondAttribute="centerX" id="xws-bu-7ej"/>
+                            <constraint firstAttribute="bottom" secondItem="nVE-OX-PwM" secondAttribute="bottom" constant="20" id="ytO-YP-r8R"/>
                         </constraints>
                         <connections>
                             <outlet property="nextKeyView" destination="Ii4-sZ-BA5" id="o0g-KA-Dzn"/>
@@ -694,8 +700,9 @@
                         <outlet property="documentAC" destination="6y2-Gm-cOS" id="Yp0-gd-aBN"/>
                         <outlet property="documentAttributesView" destination="N6d-d5-13u" id="07V-6H-j0N"/>
                         <outlet property="documentTagAC" destination="nlU-Xg-XLm" id="pRK-x5-tq6"/>
+                        <outlet property="pdfContentView" destination="80e-Of-Nzi" id="ZfS-9W-TAg"/>
                         <outlet property="pdfDocumentsView" destination="EVB-U9-dup" id="JvW-e6-p0Y"/>
-                        <outlet property="pdfview" destination="80e-Of-Nzi" id="ZfS-9W-TAg"/>
+                        <outlet property="pdfView" destination="nVE-OX-PwM" id="Jya-99-dce"/>
                         <outlet property="tagAC" destination="jrR-pM-UBT" id="n34-dd-hGg"/>
                         <outlet property="tagSearchField" destination="WfD-Nd-kM0" id="S7l-y7-2yr"/>
                         <outlet property="tagSearchView" destination="BZd-ly-6BW" id="ULj-Og-MHE"/>

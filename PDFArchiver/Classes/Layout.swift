@@ -19,14 +19,12 @@ struct Layout {
     // other colors
     let fieldBackgroundColorDark: CGColor
     let fieldBackgroundColorLight: CGColor
-    let pdfBackgroundColor: CGColor
 
     // layout stuff
     let cornerRadius = CGFloat(integerLiteral: 3)
 
     init() {
-        self.fieldBackgroundColorDark = color4.copy(alpha: 0.3)!
-        self.fieldBackgroundColorLight = color5.copy(alpha: 0.15)!
-        self.pdfBackgroundColor = color5.copy(alpha: 0.7)!
+        self.fieldBackgroundColorDark = color5.copy(alpha: 0.7)!
+        self.fieldBackgroundColorLight = color4.copy(alpha: 0.3)!
     }
 }
