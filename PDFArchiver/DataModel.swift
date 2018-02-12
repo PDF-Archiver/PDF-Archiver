@@ -12,7 +12,19 @@ class DataModel: PreferencesDelegate {
     var prefs: Preferences?
     var documents: [Document]?
     var tags: TagList?
-    var documentIdx: Int?
+    var documentIdx: Int? {
+        get {
+            return self._documentIdx
+        }
+        set {
+            if let raw = newValue, raw < (self.documents ?? []).count {
+                self._documentIdx = raw
+            } else {
+                self._documentIdx = nil
+            }
+        }
+    }
+    fileprivate var _documentIdx: Int?
 
     init() {
         self.prefs = Preferences(delegate: self as PreferencesDelegate)

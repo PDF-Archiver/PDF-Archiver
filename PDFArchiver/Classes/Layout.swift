@@ -25,6 +25,6 @@ struct Layout {
 
     init() {
         self.fieldBackgroundColorDark = color5.copy(alpha: 0.7)!
-        self.fieldBackgroundColorLight = color4.copy(alpha: 0.3)!
+        self.fieldBackgroundColorLight = color4.copy(alpha: 0.1)!
     }
 }

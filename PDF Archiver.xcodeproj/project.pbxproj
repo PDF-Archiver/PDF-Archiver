@@ -17,7 +17,6 @@
 		A31B53081FF694B0007A3D14 /* ArchiverUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B53071FF694B0007A3D14 /* ArchiverUITests.swift */; };
 		A31B53171FF6A6D8007A3D14 /* FileHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B53161FF6A6D8007A3D14 /* FileHandling.swift */; };
 		A3299E1C2015BE3D0036125F /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3299E1B2015BE3D0036125F /* Tag.swift */; };
-		A32D52F02012B5150032F05C /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A32D52EF2012B5150032F05C /* Quartz.framework */; };
 		A359963F202A3CC700CDD6E8 /* MyWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A359963E202A3CC700CDD6E8 /* MyWindow.swift */; };
 		A359E4B7202C376E00A703AF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A359E4B9202C376E00A703AF /* InfoPlist.strings */; };
 		A38A58AB1FFFA72D003F0573 /* WindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38A58AA1FFFA72D003F0573 /* WindowController.swift */; };
@@ -84,7 +83,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A32D52F02012B5150032F05C /* Quartz.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

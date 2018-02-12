@@ -122,14 +122,14 @@ class ViewController: NSViewController {
         self.view.layer?.backgroundColor = layout.color3
 
         self.pdfDocumentsView.wantsLayer = true
-        self.pdfDocumentsView.layer?.backgroundColor = layout.fieldBackgroundColorDark
+        self.pdfDocumentsView.layer?.backgroundColor = layout.fieldBackgroundColorLight
         self.pdfDocumentsView.layer?.cornerRadius = layout.cornerRadius
 
         self.pdfView.wantsLayer = true
-        self.pdfView.layer?.backgroundColor = layout.fieldBackgroundColorDark
+        self.pdfView.layer?.backgroundColor = layout.fieldBackgroundColorLight
         self.pdfView.layer?.cornerRadius = layout.cornerRadius
 
-        self.pdfContentView.backgroundColor = NSColor.init(cgColor: layout.fieldBackgroundColorDark)!
+        self.pdfContentView.backgroundColor = NSColor.init(cgColor: layout.color5)!
         self.pdfContentView.layer?.cornerRadius = layout.cornerRadius
 
         self.documentAttributesView.wantsLayer = true

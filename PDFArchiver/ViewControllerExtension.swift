@@ -80,7 +80,7 @@ extension ViewController {
 
             // add pdf documents to the controller (and replace the old ones)
             self.documentAC.content = self.dataModelInstance.documents
-            self.updateViewController(updatePDF: true)
+            // no need to refresh the view manually here, because the selection changes which triggers a view update
         }
     }
     @objc func saveDocument() {
