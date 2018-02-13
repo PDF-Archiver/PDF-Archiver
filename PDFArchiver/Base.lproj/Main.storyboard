@@ -495,13 +495,13 @@
                                             <outlet property="nextKeyView" destination="Ii4-sZ-BA5" id="AUP-Su-Wv1"/>
                                         </connections>
                                     </searchField>
-                                    <scrollView autohidesScrollers="YES" horizontalLineScroll="42" horizontalPageScroll="10" verticalLineScroll="42" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kGW-Ke-BkB" userLabel="Tag Scroll View">
+                                    <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kGW-Ke-BkB" userLabel="Tag Scroll View">
                                         <rect key="frame" x="5" y="5" width="230" height="235"/>
                                         <clipView key="contentView" id="FwI-oY-mZj">
                                             <rect key="frame" x="1" y="0.0" width="228" height="234"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
-                                                <tableView identifier="TagTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="40" rowSizeStyle="automatic" headerView="gxi-Wd-NVa" viewBased="YES" id="xpK-mJ-Y4J" userLabel="Tag Table View">
+                                                <tableView identifier="TagTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" headerView="gxi-Wd-NVa" viewBased="YES" id="xpK-mJ-Y4J" userLabel="Tag Table View">
                                                     <rect key="frame" x="0.0" y="0.0" width="228" height="211"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <size key="intercellSpacing" width="3" height="2"/>
@@ -558,11 +558,11 @@
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                    <rect key="frame" x="32" y="1" width="194" height="40"/>
+                                                                    <rect key="frame" x="32" y="1" width="194" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">
-                                                                            <rect key="frame" x="0.0" y="23" width="174" height="17"/>
+                                                                            <rect key="frame" x="0.0" y="0.0" width="174" height="17"/>
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="pXJ-g7-oZi">
                                                                                 <font key="font" metaFont="system"/>
