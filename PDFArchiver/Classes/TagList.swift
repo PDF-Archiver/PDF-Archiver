@@ -20,7 +20,6 @@ struct TagList {
     }
 
     func filter(prefix: String) -> Set<Tag> {
-        // TODO: fuzzy matching would be nice!
         let tags = self.list.filter { tag in
             return tag.name.hasPrefix(prefix)
         }

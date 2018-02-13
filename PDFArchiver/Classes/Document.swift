@@ -20,7 +20,7 @@ class Document: NSObject {
         }
         set {
             if var raw = newValue {
-                // TODO: we could use a CocoaPod here...
+                // normalize description
                 raw = raw.lowercased()
                 raw = raw.replacingOccurrences(of: "[:;.,!?/\\^+<>#@|]", with: "",
                                                options: .regularExpression, range: nil)
