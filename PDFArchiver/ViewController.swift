@@ -6,25 +6,49 @@
 //  Copyright © 2017 Julian Kahnert. All rights reserved.
 //
 
-import Cocoa
 import Quartz
 
 class ViewController: NSViewController {
-    @IBOutlet weak var pdfview: PDFView!
+    var dataModelInstance = DataModel()
+
+    @IBOutlet weak var pdfDocumentsView: NSView!
+    @IBOutlet weak var pdfView: NSView!
+    @IBOutlet weak var pdfContentView: PDFView!
+    @IBOutlet weak var documentAttributesView: NSView!
+    @IBOutlet weak var tagSearchView: NSView!
     @IBOutlet weak var tagTableView: NSTableView!
-    @IBOutlet weak var searchTagTableView: NSTableView!
-    
+
     @IBOutlet var documentAC: NSArrayController!
     @IBOutlet var tagAC: NSArrayController!
     @IBOutlet var documentTagAC: NSArrayController!
-    @IBOutlet var searchTagAC: NSArrayController!
-    
+
     @IBOutlet weak var datePicker: NSDatePicker!
     @IBOutlet weak var descriptionField: NSTextField!
-    @IBOutlet weak var filenameField: NSTextField!
-    @IBOutlet weak var tagSearchField: TagSearchField!
-    
+    @IBOutlet weak var tagSearchField: NSSearchField!
+
     // outlets
+    @IBAction func datePickDone(_ sender: NSDatePicker) {
+        // test if a document is selected
+        guard !self.documentAC.selectedObjects.isEmpty else {
+            return
+        }
+
+        // set the date of the pdf document
+        let document = self.dataModelInstance.documents![self.dataModelInstance.documentIdx!] as Document
+        document.documentDate = sender.dateValue
+    }
+
+    @IBAction func descriptionDone(_ sender: NSTextField) {
+        // test if a document is selected
+        guard !self.documentAC.selectedObjects.isEmpty else {
+            return
+        }
+
+        // set the description of the pdf document
+        let document = self.dataModelInstance.documents![self.dataModelInstance.documentIdx!] as Document
+        document.documentDescription = sender.stringValue
+    }
+
     @IBAction func clickedTableView(_ sender: NSTableView) {
         if sender.clickedRow == -1 {
             if sender.clickedColumn == 0 {
@@ -36,109 +60,84 @@ class ViewController: NSViewController {
             tagTableView.deselectRow(tagAC.selectionIndex)
         }
     }
+
     @IBAction func clickedDocumentTagTableView(_ sender: NSTableView) {
-        documentTagAC.remove(atArrangedObjectIndex: sender.clickedRow)
-    }
-    
-    @IBAction func browseFile(sender: AnyObject) {
-        browse_files()
-    }
-    @IBAction func tagSearchField(_ sender: Any) {
-        // get the right tag
-        let tag_name: String
-        let selectedTag = (searchTagAC.content as! [Tag]).first
-        if selectedTag != nil {
-            tag_name = selectedTag!.name
-        } else {
-            tag_name = tagSearchField.stringValue
+        // test if the document tag table is empty
+        guard !self.documentTagAC.selectedObjects.isEmpty else {
+            return
         }
 
-        // test if element already exists in document tag table view
-        for element in documentTagAC.arrangedObjects as! [Tag] {
-            if tag_name == element.name {
+        // remove the selected element
+        let idx = self.dataModelInstance.documentIdx
+        var i = 0
+        for tag in self.dataModelInstance.documents![idx!].documentTags! {
+            guard let obj = self.documentTagAC.selectedObjects.first as? Tag else { return }
+            if tag.name == obj.name {
+                self.dataModelInstance.documents![idx!].documentTags!.remove(at: i)
+                self.updateViewController(updatePDF: false)
                 return
             }
+            i += 1
         }
-        
-        // add new tag to document table view
-        let tag = Tag(name: tag_name, count: 0)
-        documentTagAC.addObject(tag)
-        
-    }
-    @IBAction func saveButtonClicked(_ sender: Any) {
-        // getting & setting the date/time value
-        let myDate = datePicker.dateValue
-        print(myDate)
     }
 
-    var tagSearchTable = [String]()
-    
+    @IBAction func browseFile(sender: AnyObject) {
+        self.getPDFDocuments()
+    }
+    @IBAction func saveDocumentButton(_ sender: NSButton) {
+        self.saveDocument()
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // TODO: debug code to reset the preferences
-//        UserDefaults.standard.removeObject(forKey: "archivePath")
-//        UserDefaults.standard.removeObject(forKey: "tags")
-        
-        self.refresh_tags()
-        
-        // TODO: example usage of the update search field tags function
-        self.update_search_field_tags(search: "a")
-        
+
+        // set the array controller
+        self.tagAC.content = self.dataModelInstance.tags?.list
+        self.documentAC.content = self.dataModelInstance.documents
+
+        // MARK: - Notification Observer
+        let notificationCenter = NotificationCenter.default
+        notificationCenter.addObserver(self, selector: #selector(self.showPreferences),
+                                       name: Notification.Name("ShowPreferences"), object: nil)
+        notificationCenter.addObserver(self, selector: #selector(self.getPDFDocuments),
+                                       name: Notification.Name("GetPDFDocuments"), object: nil)
+        notificationCenter.addObserver(self, selector: #selector(self.saveDocument),
+                                       name: Notification.Name("SaveDocument"), object: nil)
+        notificationCenter.addObserver(self, selector: #selector(self.updateViewController),
+                                       name: Notification.Name("UpdateViewController"), object: nil)
+
+        // MARK: - delegates
+        tagSearchField.delegate = self
+        descriptionField.delegate = self
+
         // add sorting to tag fields
-        documentAC.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
-        searchTagAC.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
-        
-    }
-
-    func refresh_tags() {
-        let tags_dict = UserDefaults.standard.dictionary(forKey: "tags")!
-        
-        var tags = [Tag]()
-        for (name, count) in tags_dict {
-            tags.append(Tag(name: name, count: count as! Int))
-        }
         sortArrayController(by: "count", ascending: false)
-        tagAC.content = tags
-        tagTableView.deselectRow(tagAC.selectionIndex)
-    }
-    
-    func update_search_field_tags(search: String) {
-        var tags = [Tag]()
-        for tag in tagAC.arrangedObjects as! [Tag] {
-            if tag.name.hasPrefix(search) {
-                let obj = Tag(name: tag.name, count: 0)
-                tags.append(obj)
-            }
-        }
-        searchTagAC.content = tags
-        
-    }
-    
-    func sortArrayController(by key : String, ascending asc : Bool) {
-        tagAC.sortDescriptors = [NSSortDescriptor(key: key, ascending: asc)]
-        tagAC.rearrangeObjects()
-    }
-    
-    func update_PDFView(url: URL) {
-        pdfview.document = PDFDocument(url: url)
-//        pdfview.displayMode = PDFDisplayMode.singlePageContinuous
-        pdfview.displayMode = PDFDisplayMode.singlePage
-        pdfview.autoScales = true
-        pdfview.acceptsDraggedFiles = false
-        pdfview.interpolationQuality = PDFInterpolationQuality.low
-    }
-    
-}
-
-extension ViewController: NSTableViewDelegate, NSTableViewDataSource {
-    func tableViewSelectionDidChange(_ notification: Notification) {
-        let tableView = notification.object as! NSTableView
-        if let identifier = tableView.identifier, identifier.rawValue == "DocumentTableView" {
-            // update the PDFView
-            let pdf_url = (documentAC.selectedObjects.first as! Document).path
-            self.update_PDFView(url: pdf_url)
-        }
     }
 
+    override func viewWillAppear() {
+        let layout = Layout()
+
+        // set background color of the view
+        self.view.wantsLayer = true
+        self.view.layer?.backgroundColor = layout.color3
+
+        self.pdfDocumentsView.wantsLayer = true
+        self.pdfDocumentsView.layer?.backgroundColor = layout.fieldBackgroundColorLight
+        self.pdfDocumentsView.layer?.cornerRadius = layout.cornerRadius
+
+        self.pdfView.wantsLayer = true
+        self.pdfView.layer?.backgroundColor = layout.fieldBackgroundColorLight
+        self.pdfView.layer?.cornerRadius = layout.cornerRadius
+
+        self.pdfContentView.backgroundColor = NSColor.init(cgColor: layout.color5)!
+        self.pdfContentView.layer?.cornerRadius = layout.cornerRadius
+
+        self.documentAttributesView.wantsLayer = true
+        self.documentAttributesView.layer?.backgroundColor = layout.fieldBackgroundColorLight
+        self.documentAttributesView.layer?.cornerRadius = layout.cornerRadius
+
+        self.tagSearchView.wantsLayer = true
+        self.tagSearchView.layer?.backgroundColor = layout.fieldBackgroundColorLight
+        self.tagSearchView.layer?.cornerRadius = layout.cornerRadius
+    }
 }

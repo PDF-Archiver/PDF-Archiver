@@ -6,7 +6,6 @@
 //  Copyright © 2018 Julian Kahnert. All rights reserved.
 //
 
-
 import Cocoa
 
 class WindowController: NSWindowController {
@@ -27,5 +26,3 @@ class WindowController: NSWindowController {
     }
 
 }
-
-

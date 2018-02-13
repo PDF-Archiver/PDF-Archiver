@@ -8,49 +8,69 @@
 
 import Foundation
 
+protocol PreferencesDelegate: class {
+    func setTagList(tagDict: [String: Int])
+    func getTagList() -> [String: Int]
+}
+
 struct Preferences {
+    fileprivate var _archivePath: URL?
+    weak var delegate: PreferencesDelegate?
     var archivePath: URL? {
         get {
-            return UserDefaults.standard.url(forKey: "archivePath")
+            return self._archivePath
         }
         set {
-            UserDefaults.standard.set(newValue, forKey: "archivePath")
+            guard let newValue = newValue else { return }
+            self._archivePath = newValue
+            self.get_last_tags(path: newValue)
         }
     }
-    
-    var tags: Dictionary<String, Int>? {
-        get {
-            return UserDefaults.standard.dictionary(forKey: "tags") as? Dictionary<String, Int>
-        }
-        set {
-            UserDefaults.standard.set(newValue, forKey: "tags")
-        }
+
+    init(delegate: PreferencesDelegate) {
+        self.delegate = delegate
+        self.load()
     }
-    
-    mutating func get_last_tags() {
-        // get the archive path from the UserDefaults
-        if (self.archivePath == nil) {
-            return
-        }
-        
+
+    func save() {
+        // save the archive path
+        UserDefaults.standard.set(self._archivePath, forKey: "archivePath")
+
+        // save the last tags
+        let tags = self.delegate?.getTagList()
+        UserDefaults.standard.set(tags, forKey: "tags")
+    }
+
+    mutating func load() {
+        // load archive path
+        self._archivePath = UserDefaults.standard.url(forKey: "archivePath")
+
+        // load archive tags
+        guard let tagsRaw = (UserDefaults.standard.dictionary(forKey: "tags") ?? [:]) as? [String: Int] else { return }
+        self.delegate!.setTagList(tagDict: tagsRaw)
+    }
+
+    private func get_last_tags(path: URL) {
         // get all PDF files from this year and the last years
         let date = Date()
         let calendar = Calendar.current
-        let path_year1 = self.archivePath!.appendingPathComponent(String(calendar.component(.year, from: date)),
-                                                             isDirectory: true)
-        let path_year2 = self.archivePath!.appendingPathComponent(String(calendar.component(.year, from: date) - 1),
-                                                             isDirectory: true)
+        let path_year1 = path.appendingPathComponent(String(calendar.component(.year, from: date)),
+                                                                  isDirectory: true)
+        let path_year2 = path.appendingPathComponent(String(calendar.component(.year, from: date) - 1),
+                                                                  isDirectory: true)
         var files = [URL]()
         files.append(contentsOf: getPDFs(url: path_year1))
         files.append(contentsOf: getPDFs(url: path_year2))
-        
+
         // get tags and counts from filename
-        var tags_raw: Array<String> = []
+        var tags_raw: [String] = []
         for file in files {
             let matched = regex_matches(for: "_[a-z0-9]+", in: file.lastPathComponent)
-            tags_raw.append(contentsOf: matched.map({String($0.dropFirst())}))
+            tags_raw.append(matched.map({String(describing: $0.dropFirst())})!)
         }
-        self.tags = tags_raw.reduce(into: [:]) { counts, word in counts[word, default: 0] += 1 }
+
+        let tags = tags_raw.reduce(into: [:]) { counts, word in counts[word, default: 0] += 1 }
+        self.delegate?.setTagList(tagDict: tags)
     }
 
 }

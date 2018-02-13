@@ -11,10 +11,16 @@ import Cocoa
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
-    @IBAction func browseFile(_ sender: Any) {
-        browse_files()
+    @IBAction func showPreferences(_ sender: NSMenuItem) {
+        NotificationCenter.default.post(name: Notification.Name("ShowPreferences"), object: nil)
     }
-    
+    @IBAction func getPDFDocuments(_ sender: NSMenuItem) {
+        NotificationCenter.default.post(name: Notification.Name("GetPDFDocuments"), object: nil)
+    }
+    @IBAction func saveDocument(_ sender: NSMenuItem) {
+        NotificationCenter.default.post(name: Notification.Name("SaveDocument"), object: nil)
+    }
+
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Insert code here to initialize your application
     }
@@ -22,5 +28,5 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
     }
-    
+
 }
