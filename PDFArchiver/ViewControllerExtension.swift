@@ -42,11 +42,6 @@ extension ViewController {
         // update pdf view
         if updatePDF {
             self.pdfContentView.document = PDFDocument(url: document.path)
-            // self.pdfview.displayMode = PDFDisplayMode.singlePageContinuous
-            self.pdfContentView.displayMode = PDFDisplayMode.singlePage
-            self.pdfContentView.autoScales = false
-            self.pdfContentView.acceptsDraggedFiles = false
-            self.pdfContentView.interpolationQuality = PDFInterpolationQuality.low
         }
     }
     @objc func showPreferences() {

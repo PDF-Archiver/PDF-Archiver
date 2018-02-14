@@ -112,6 +112,15 @@ class ViewController: NSViewController {
 
         // add sorting to tag fields
         sortArrayController(by: "count", ascending: false)
+
+        // set some PDF View settings
+//         self.pdfContentView.displayMode = PDFDisplayMode.singlePageContinuous
+        self.pdfContentView.displayMode = PDFDisplayMode.singlePage
+        self.pdfContentView.autoScales = true
+        if #available(OSX 10.13, *) {
+            self.pdfContentView.acceptsDraggedFiles = false
+        }
+        self.pdfContentView.interpolationQuality = PDFInterpolationQuality.low
     }
 
     override func viewWillAppear() {

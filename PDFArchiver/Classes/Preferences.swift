@@ -65,8 +65,10 @@ struct Preferences {
         // get tags and counts from filename
         var tags_raw: [String] = []
         for file in files {
-            let matched = regex_matches(for: "_[a-z0-9]+", in: file.lastPathComponent)
-            tags_raw.append(matched.map({String(describing: $0.dropFirst())})!)
+            let matched = regex_matches(for: "_[a-z0-9]+", in: file.lastPathComponent) ?? []
+            for tag in matched {
+                tags_raw.append(String(tag.dropFirst()))
+            }
         }
 
         let tags = tags_raw.reduce(into: [:]) { counts, word in counts[word, default: 0] += 1 }

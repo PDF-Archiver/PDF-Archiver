@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
+        <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
         <plugIn identifier="com.apple.pdfkit.ibplugin" version="13771"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -216,15 +217,15 @@
         <scene sceneID="hIz-AP-VOD">
             <objects>
                 <viewController identifier="mainViewController" storyboardIdentifier="mainViewController" id="XfG-lQ-9wD" customClass="ViewController" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" wantsLayer="YES" id="m2S-Jp-Qdl">
+                    <view key="view" wantsLayer="YES" misplaced="YES" id="m2S-Jp-Qdl">
                         <rect key="frame" x="0.0" y="0.0" width="940" height="600"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="nVE-OX-PwM">
-                                <rect key="frame" x="260" y="20" width="400" height="550"/>
+                                <rect key="frame" x="260" y="20" width="400" height="554"/>
                                 <subviews>
                                     <pdfView wantsLayer="YES" displayMode="singlePage" autoScales="YES" translatesAutoresizingMaskIntoConstraints="NO" id="80e-Of-Nzi" userLabel="PDFView">
-                                        <rect key="frame" x="5" y="5" width="390" height="540"/>
+                                        <rect key="frame" x="5" y="5" width="390" height="544"/>
                                     </pdfView>
                                 </subviews>
                                 <constraints>
@@ -236,16 +237,16 @@
                                 </constraints>
                             </customView>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="EVB-U9-dup">
-                                <rect key="frame" x="20" y="56" width="220" height="490"/>
+                                <rect key="frame" x="20" y="56" width="220" height="491"/>
                                 <subviews>
                                     <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ii4-sZ-BA5" userLabel="Document Scroll View">
-                                        <rect key="frame" x="5" y="5" width="210" height="480"/>
+                                        <rect key="frame" x="5" y="5" width="210" height="481"/>
                                         <clipView key="contentView" id="dAE-Dg-N2e">
-                                            <rect key="frame" x="1" y="0.0" width="208" height="479"/>
+                                            <rect key="frame" x="1" y="0.0" width="208" height="480"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <tableView identifier="DocumentTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" headerView="jC3-Ja-goD" viewBased="YES" id="afH-JH-U5W" userLabel="Document Table View">
-                                                    <rect key="frame" x="0.0" y="0.0" width="208" height="456"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="208" height="457"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <size key="intercellSpacing" width="3" height="2"/>
                                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -353,7 +354,7 @@
                                 </constraints>
                             </customView>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="N6d-d5-13u">
-                                <rect key="frame" x="680" y="365" width="240" height="180"/>
+                                <rect key="frame" x="680" y="367" width="240" height="180"/>
                                 <subviews>
                                     <datePicker wantsLayer="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="NiF-3c-nL6" userLabel="Document Date Picker">
                                         <rect key="frame" x="80" y="153" width="80" height="22"/>
@@ -494,13 +495,13 @@
                                             <outlet property="nextKeyView" destination="Ii4-sZ-BA5" id="AUP-Su-Wv1"/>
                                         </connections>
                                     </searchField>
-                                    <scrollView autohidesScrollers="YES" horizontalLineScroll="42" horizontalPageScroll="10" verticalLineScroll="42" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kGW-Ke-BkB" userLabel="Tag Scroll View">
+                                    <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kGW-Ke-BkB" userLabel="Tag Scroll View">
                                         <rect key="frame" x="5" y="5" width="230" height="235"/>
                                         <clipView key="contentView" id="FwI-oY-mZj">
                                             <rect key="frame" x="1" y="0.0" width="228" height="234"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
-                                                <tableView identifier="TagTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="40" rowSizeStyle="automatic" headerView="gxi-Wd-NVa" viewBased="YES" id="xpK-mJ-Y4J" userLabel="Tag Table View">
+                                                <tableView identifier="TagTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" headerView="gxi-Wd-NVa" viewBased="YES" id="xpK-mJ-Y4J" userLabel="Tag Table View">
                                                     <rect key="frame" x="0.0" y="0.0" width="228" height="211"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <size key="intercellSpacing" width="3" height="2"/>
@@ -557,11 +558,11 @@
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                    <rect key="frame" x="31.5" y="1" width="194" height="40"/>
+                                                                    <rect key="frame" x="32" y="1" width="194" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">
-                                                                            <rect key="frame" x="0.0" y="23" width="174" height="17"/>
+                                                                            <rect key="frame" x="0.0" y="0.0" width="174" height="17"/>
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="pXJ-g7-oZi">
                                                                                 <font key="font" metaFont="system"/>
@@ -616,23 +617,23 @@
                                 </constraints>
                             </customView>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="upy-ZK-2Zs">
-                                <rect key="frame" x="678" y="550" width="244" height="20"/>
+                                <rect key="frame" x="678" y="552" width="244" height="22"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="20" id="EvH-It-sBa"/>
+                                    <constraint firstAttribute="height" constant="22" id="EvH-It-sBa"/>
                                 </constraints>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Document Attributes" id="RIU-wB-4cE">
-                                    <font key="font" metaFont="systemBlack" size="16"/>
+                                    <font key="font" metaFont="systemBlack" size="18"/>
                                     <color key="textColor" red="0.79329520460000003" green="0.25477233529999999" blue="0.30978807809999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="z3w-bA-vGU">
-                                <rect key="frame" x="678" y="297" width="244" height="20"/>
+                                <rect key="frame" x="678" y="297" width="244" height="22"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="20" id="Mpn-gj-Kr3"/>
+                                    <constraint firstAttribute="height" constant="22" id="Mpn-gj-Kr3"/>
                                 </constraints>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Available Tags" id="qKy-yf-U85">
-                                    <font key="font" metaFont="systemBlack" size="16"/>
+                                    <font key="font" metaFont="systemBlack" size="18"/>
                                     <color key="textColor" red="0.79329520460000003" green="0.25477233529999999" blue="0.30978807809999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
@@ -648,7 +649,7 @@
                                 </connections>
                             </button>
                             <button wantsLayer="YES" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="U4W-9l-6vC">
-                                <rect key="frame" x="765" y="330" width="70" height="32"/>
+                                <rect key="frame" x="765" y="332" width="70" height="32"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="5XA-Ia-lvx"/>
                                 </constraints>
@@ -664,9 +665,12 @@
                                 </connections>
                             </button>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8J4-uS-3fj">
-                                <rect key="frame" x="18" y="551" width="224" height="19"/>
+                                <rect key="frame" x="18" y="552" width="224" height="22"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="22" id="SWU-hZ-BUg"/>
+                                </constraints>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="PDF Documents" id="FTj-OD-Ghm">
-                                    <font key="font" metaFont="systemBlack" size="16"/>
+                                    <font key="font" metaFont="systemBlack" size="18"/>
                                     <color key="textColor" red="0.79329520460000003" green="0.25477233529999999" blue="0.30978807809999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
