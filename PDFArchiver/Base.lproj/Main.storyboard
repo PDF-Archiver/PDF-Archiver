@@ -465,6 +465,9 @@
                                             <rect key="frame" x="0.0" y="0.0" width="228" height="23"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableHeaderView>
+                                        <connections>
+                                            <outlet property="nextKeyView" destination="WfD-Nd-kM0" id="3FD-sE-0MK"/>
+                                        </connections>
                                     </scrollView>
                                 </subviews>
                                 <constraints>
