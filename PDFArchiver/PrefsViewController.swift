@@ -41,10 +41,9 @@ class PrefsViewController: NSViewController {
         super.viewDidLoad()
 
         // update path field
+        self.prefs?.load()
         if let archivePath = self.prefs?.archivePath {
             self.archivePathTextField.stringValue = archivePath.path
         }
-
     }
-
 }
