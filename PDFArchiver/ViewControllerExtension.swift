@@ -86,8 +86,18 @@ extension ViewController {
         guard let idx = self.dataModelInstance.documentIdx else { return }
         guard var documents = self.dataModelInstance.documents else { return }
         guard let path = self.dataModelInstance.prefs?.archivePath else { return }
-        let result = (documents[idx] as Document).rename(archivePath: path)
+        let selectedDocument = documents[idx] as Document
+        let result = selectedDocument.rename(archivePath: path)
         if result {
+            // update tag count
+            let tags = self.tagAC.arrangedObjects as? [Tag] ?? []
+            for selectedTag in selectedDocument.documentTags ?? [] {
+                for tag in tags where tag.name == selectedTag.name {
+                    tag.count += 1
+                }
+            }
+
+            // select a new document
             self.documentAC.content = documents
             if idx < documents.count {
                 self.dataModelInstance.documentIdx = idx + 1
@@ -173,10 +183,6 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
             // add tag to tagAC
             if newlyCreated {
                 self.dataModelInstance.tags?.list.insert(selectedTag)
-            } else {
-                for tag in tags where tag.name == selectedTag.name {
-                    tag.count += 1
-                }
             }
             self.updateViewController(updatePDF: false)
         } else {
