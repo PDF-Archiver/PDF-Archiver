@@ -36,8 +36,11 @@ struct Preferences {
         // save the archive path
         UserDefaults.standard.set(self._archivePath, forKey: "archivePath")
 
-        // save the last tags
-        let tags = self.delegate?.getTagList()
+        // save the last tags (with count > 0)
+        var tags = self.delegate?.getTagList() ?? [:]
+        for (name, count) in tags where count < 1 {
+            tags.removeValue(forKey: name)
+        }
         UserDefaults.standard.set(tags, forKey: "tags")
     }
 

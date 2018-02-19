@@ -86,8 +86,18 @@ extension ViewController {
         guard let idx = self.dataModelInstance.documentIdx else { return }
         guard var documents = self.dataModelInstance.documents else { return }
         guard let path = self.dataModelInstance.prefs?.archivePath else { return }
-        let result = (documents[idx] as Document).rename(archivePath: path)
+        let selectedDocument = documents[idx] as Document
+        let result = selectedDocument.rename(archivePath: path)
         if result {
+            // update tag count
+            let tags = self.tagAC.arrangedObjects as? [Tag] ?? []
+            for selectedTag in selectedDocument.documentTags ?? [] {
+                for tag in tags where tag.name == selectedTag.name {
+                    tag.count += 1
+                }
+            }
+
+            // select a new document
             self.documentAC.content = documents
             if idx < documents.count {
                 self.dataModelInstance.documentIdx = idx + 1
@@ -140,14 +150,14 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
         // try to get the selected tag
         var selectedTag: Tag
         let newlyCreated: Bool
-        let tags = self.tagAC.content as? [Tag] ?? []
+        let tags = self.tagAC.arrangedObjects as? [Tag] ?? []
         if tags.count > 0 {
             selectedTag = tags.first!
             newlyCreated = false
         } else {
             // no tag selected - get the name of the search field
-            selectedTag = Tag(name: self.tagSearchField.stringValue,
-                              count: 0)
+            selectedTag = Tag(name: slugifyTag(self.tagSearchField.stringValue),
+                              count: 1)
             newlyCreated = true
         }
 

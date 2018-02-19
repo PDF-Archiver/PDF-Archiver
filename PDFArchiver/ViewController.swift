@@ -70,10 +70,12 @@ class ViewController: NSViewController {
         // remove the selected element
         let idx = self.dataModelInstance.documentIdx
         var i = 0
+        guard let obj = self.documentTagAC.selectedObjects.first as? Tag else { return }
         for tag in self.dataModelInstance.documents![idx!].documentTags! {
-            guard let obj = self.documentTagAC.selectedObjects.first as? Tag else { return }
             if tag.name == obj.name {
                 self.dataModelInstance.documents![idx!].documentTags!.remove(at: i)
+                tag.count -= 1
+
                 self.updateViewController(updatePDF: false)
                 return
             }
@@ -90,6 +92,9 @@ class ViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        // set the date picker to canadian local, e.g. YYYY-MM-DD
+        self.datePicker.locale = Locale.init(identifier: "en_CA")
 
         // set the array controller
         self.tagAC.content = self.dataModelInstance.tags?.list
@@ -148,5 +153,9 @@ class ViewController: NSViewController {
         self.tagSearchView.wantsLayer = true
         self.tagSearchView.layer?.backgroundColor = layout.fieldBackgroundColorLight
         self.tagSearchView.layer?.cornerRadius = layout.cornerRadius
+    }
+
+    override func viewDidDisappear() {
+        self.dataModelInstance.prefs?.save()
     }
 }

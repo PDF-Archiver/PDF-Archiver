@@ -33,7 +33,7 @@ date--name-with-description__tag1_tag2_tagN.pdf
 * **Enable PDF content searching:** buy Scanbot Pro and turn on [OCR](https://en.wikipedia.org/wiki/Optical_character_recognition)
 * **Let PDF Archiver recognize the scan date:** set a compatible filename template
     * In your Scanbot App go to: `Preferences > Advanced Settings > Filename Template`
-    * Choose: `[year]-[month]-[day]--Scanbot-[Hours][Minutes][Seconds]__scan`
+    * Choose: `[year]-[month]-[day]--Scanbot-[Hours][Minutes][Seconds]`
 
 ##### PDF Archiver
 * Use keyboard shortcuts

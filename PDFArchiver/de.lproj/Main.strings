@@ -3,7 +3,7 @@
 "0XN-Jb-GHq.title" = "Speichern";
 
 /* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "144-l1-cpe"; */
-//"144-l1-cpe.title" = "Text Cell";
+"144-l1-cpe.title" = "Text Cell";
 
 /* Class = "NSMenuItem"; title = "PDF Archiver"; ObjectID = "1Xt-HY-uBw"; */
 "1Xt-HY-uBw.title" = "PDF Archivierer";
@@ -35,7 +35,10 @@
 /* Class = "NSTextFieldCell"; title = "PDF Documents"; ObjectID = "FTj-OD-Ghm"; */
 "FTj-OD-Ghm.title" = "PDF Dokumente";
 
-/* Class = "NSMenuItem"; title = "Open…"; ObjectID = "IAo-SY-fd9"; */
+/* Class = "NSMenuItem"; title = "Reset Cache"; ObjectID = "Hz0-RV-wAv"; */
+"Hz0-RV-wAv.title" = "Zwischenspeicher zurücksetzen";
+
+/* Class = "NSMenuItem"; title = "Öffnen …"; ObjectID = "IAo-SY-fd9"; */
 "IAo-SY-fd9.title" = "Öffnen …";
 
 /* Class = "NSWindow"; title = "PDF Archiver"; ObjectID = "IQv-IB-iLA"; */
@@ -122,9 +125,11 @@
 /* Class = "NSTextFieldCell"; title = "Available Tags"; ObjectID = "qKy-yf-U85"; */
 "qKy-yf-U85.title" = "Verfügbare Tags";
 
-/* Class = "NSMenu"; title = "PDF Archiver"; ObjectID = "uQy-DD-JDr"; */
+/* Class = "NSTextFieldCell"; title = "Table View Cell"; ObjectID = "tbm-cD-D49"; */
+"tbm-cD-D49.title" = "Table View Cell";
+
+/* Class = "NSMenu"; title = "PDF Archivierer"; ObjectID = "uQy-DD-JDr"; */
 "uQy-DD-JDr.title" = "PDF Archivierer";
 
 /* Class = "NSMenuItem"; title = "Help"; ObjectID = "wpr-3q-Mcd"; */
 "wpr-3q-Mcd.title" = "Hilfe";
-
