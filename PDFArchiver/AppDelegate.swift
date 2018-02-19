@@ -20,6 +20,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBAction func saveDocument(_ sender: NSMenuItem) {
         NotificationCenter.default.post(name: Notification.Name("SaveDocument"), object: nil)
     }
+    @IBAction func resetUserDefaults(_ sender: NSMenuItem) {
+        // remove all user defaults
+        UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+        UserDefaults.standard.synchronize()
+        // close application
+        NSApplication.shared.terminate(self)
+    }
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Insert code here to initialize your application
