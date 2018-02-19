@@ -140,7 +140,7 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
         // try to get the selected tag
         var selectedTag: Tag
         let newlyCreated: Bool
-        let tags = self.tagAC.content as? [Tag] ?? []
+        let tags = self.tagAC.arrangedObjects as? [Tag] ?? []
         if tags.count > 0 {
             selectedTag = tags.first!
             newlyCreated = false
