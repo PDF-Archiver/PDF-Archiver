@@ -91,6 +91,9 @@ class ViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // set the date picker to canadian local, e.g. YYYY-MM-DD
+        self.datePicker.locale = Locale.init(identifier: "en_CA")
+
         // set the array controller
         self.tagAC.content = self.dataModelInstance.tags?.list
         self.documentAC.content = self.dataModelInstance.documents

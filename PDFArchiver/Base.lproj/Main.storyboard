@@ -357,9 +357,9 @@
                                 <rect key="frame" x="680" y="367" width="240" height="180"/>
                                 <subviews>
                                     <datePicker wantsLayer="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="NiF-3c-nL6" userLabel="Document Date Picker">
-                                        <rect key="frame" x="80" y="153" width="80" height="22"/>
+                                        <rect key="frame" x="78" y="153" width="85" height="22"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="80" id="fob-r2-r1g"/>
+                                            <constraint firstAttribute="width" constant="85" id="fob-r2-r1g"/>
                                         </constraints>
                                         <shadow key="shadow">
                                             <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
