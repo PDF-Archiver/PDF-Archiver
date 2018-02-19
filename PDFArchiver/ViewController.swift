@@ -154,4 +154,8 @@ class ViewController: NSViewController {
         self.tagSearchView.layer?.backgroundColor = layout.fieldBackgroundColorLight
         self.tagSearchView.layer?.cornerRadius = layout.cornerRadius
     }
+
+    override func viewDidDisappear() {
+        self.dataModelInstance.prefs?.save()
+    }
 }
