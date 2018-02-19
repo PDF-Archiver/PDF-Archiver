@@ -147,7 +147,7 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
         } else {
             // no tag selected - get the name of the search field
             selectedTag = Tag(name: self.tagSearchField.stringValue,
-                              count: 0)
+                              count: 1)
             newlyCreated = true
         }
 
@@ -173,6 +173,10 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
             // add tag to tagAC
             if newlyCreated {
                 self.dataModelInstance.tags?.list.insert(selectedTag)
+            } else {
+                for tag in tags where tag.name == selectedTag.name {
+                    tag.count += 1
+                }
             }
             self.updateViewController(updatePDF: false)
         } else {

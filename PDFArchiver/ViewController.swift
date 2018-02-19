@@ -70,10 +70,12 @@ class ViewController: NSViewController {
         // remove the selected element
         let idx = self.dataModelInstance.documentIdx
         var i = 0
+        guard let obj = self.documentTagAC.selectedObjects.first as? Tag else { return }
         for tag in self.dataModelInstance.documents![idx!].documentTags! {
-            guard let obj = self.documentTagAC.selectedObjects.first as? Tag else { return }
             if tag.name == obj.name {
                 self.dataModelInstance.documents![idx!].documentTags!.remove(at: i)
+                tag.count -= 1
+
                 self.updateViewController(updatePDF: false)
                 return
             }
