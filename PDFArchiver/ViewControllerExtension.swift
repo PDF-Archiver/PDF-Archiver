@@ -79,6 +79,9 @@ extension ViewController {
         }
     }
     @objc func saveDocument() {
+        // TODO: workaround because the "self.dataModelInstance.prefs?.archivePath" is nil after clearing cache
+        self.dataModelInstance.prefs?.load()
+
         // test if a document is selected
         guard !self.documentAC.selectedObjects.isEmpty else {
             return
