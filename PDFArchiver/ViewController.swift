@@ -110,6 +110,8 @@ class ViewController: NSViewController {
                                        name: Notification.Name("SaveDocument"), object: nil)
         notificationCenter.addObserver(self, selector: #selector(self.updateViewController),
                                        name: Notification.Name("UpdateViewController"), object: nil)
+        notificationCenter.addObserver(self, selector: #selector(self.resetCache),
+                                       name: Notification.Name("ResetCache"), object: nil)
 
         // MARK: - delegates
         tagSearchField.delegate = self

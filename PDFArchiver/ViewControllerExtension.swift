@@ -108,6 +108,15 @@ extension ViewController {
             updateViewController(updatePDF: true)
         }
     }
+    @objc func resetCache() {
+        // remove preferences
+        self.dataModelInstance.prefs = nil
+        // remove all user defaults
+        UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+        UserDefaults.standard.synchronize()
+        // close application
+        NSApplication.shared.terminate(self)
+    }
 
     // MARK: some helper methods
     func sortArrayController(by key: String, ascending asc: Bool) {
