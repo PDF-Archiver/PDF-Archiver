@@ -21,11 +21,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NotificationCenter.default.post(name: Notification.Name("SaveDocument"), object: nil)
     }
     @IBAction func resetUserDefaults(_ sender: NSMenuItem) {
-        // remove all user defaults
-        UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
-        UserDefaults.standard.synchronize()
-        // close application
-        NSApplication.shared.terminate(self)
+        NotificationCenter.default.post(name: Notification.Name("ResetCache"), object: nil)
     }
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {

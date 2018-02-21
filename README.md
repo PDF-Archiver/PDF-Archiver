@@ -3,14 +3,14 @@
 </p>
 
 # PDF Archiver
-A Tool for file tagging and archiving tasks.
+A tool for tagging files and archiving tasks.
 
 ### The Goal
-Archive all incoming documents digitally to access and search them.
+Archive all incoming documents digitally to access and search them in an easier way.
 
 ### The Way
-* Scan all incoming documents and save them on your Computer/iCloud in a *untagged* folder.
-* Put the original papers documents yearwise in a folder. Don't care about bills/insurance papers etc. just leave them in a box for every year.
+* Scan all incoming documents and save them on your computer/iCloud in an *untagged* folder.
+* Put the original paper documents in a folder, sorted by year. Don't care about bills/insurance papers etc.. Just leave all of them in one box for the every year.
 * Open the **PDF Archiver** and start tagging. Your documents will be moved from the *untagged* to your *Archive* folder.
 
 ### The Look
@@ -28,9 +28,9 @@ Your archive will look like this:
 ```
 
 This structure makes it very easy to search files ...
-* ... by tag via a searchterm like: `_tagname` starting with `_`
-* ... by description via a searchterm like: `-descriptionword` starting with `-`
-* ... by tag or description via a searchterm like: `searchword`  starting with the term
+* ... by tag via a searchterm like: `_tagname`, starting with `_`
+* ... by description via a searchterm like: `-descriptionword`, starting with `-`
+* ... by tag or description via a searchterm like: `searchword`,  starting with the term
 * ... and even the file content: have a look at the [Pro Tips](#pro-tips)!
 
 ### The Feel
@@ -40,18 +40,18 @@ This structure makes it very easy to search files ...
 
 ## :rocket: Usage
 * Scan your documents, e.g. with [Scanbot](https://scanbot.io)
-* Create a `Archiv` folder in your iCloud Drive
+* Create an `Archive` folder in your iCloud Drive
 * Start tagging your files
 
 ## :scroll: Convention
 * **Date:** `yyyy-mm-dd` Date of the document content
 * **Description:** `--ikea-tradfri-gateway` Meaningful description of the document, `$CapitalLetters, $Spaces, ä, ö, ü, ß` will be replaced
-* **Tags:** `__bill_ikea_iot` tags which will help you to find the document in your archive
+* **Tags:** `__bill_ikea_iot` Tags which will help you to find the document in your archive
 
 ## :floppy_disk: Installation
 * `git clone https://github.com/JulianKahnert/PDF-Archiver.git` get the project
 * `cd PDF-Archiver && xcodebuild` build the app
-* `cp -r "build/Release/PDF Archiver.app" ~/Applications/` copy it your Applications folder
+* `cp -r "build/Release/PDF Archiver.app" ~/Applications/` copy it to your Applications folder
 * Start **PDF Archiver** :rocket:
 
 ## <a name="pro-tips"></a>:mortar_board: Pro Tips
@@ -63,7 +63,7 @@ This structure makes it very easy to search files ...
     * Choose: `[year]-[month]-[day]--Scanbot-[Hours][Minutes][Seconds]`
 
 ##### PDF Archiver
-* Use keyboard shortcuts
+* You can use keyboard shortcuts
     * `CMD o`: add new PDF documents
     * `CMD s`: save the current document in your archive
 * Use the `TAB` key for fast field switching
