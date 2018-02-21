@@ -79,6 +79,9 @@ extension ViewController {
         }
     }
     @objc func saveDocument() {
+        // TODO: workaround because the "self.dataModelInstance.prefs?.archivePath" is nil after clearing cache
+        self.dataModelInstance.prefs?.load()
+
         // test if a document is selected
         guard !self.documentAC.selectedObjects.isEmpty else {
             return
@@ -104,6 +107,15 @@ extension ViewController {
             }
             updateViewController(updatePDF: true)
         }
+    }
+    @objc func resetCache() {
+        // remove preferences
+        self.dataModelInstance.prefs = nil
+        // remove all user defaults
+        UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+        UserDefaults.standard.synchronize()
+        // close application
+        NSApplication.shared.terminate(self)
     }
 
     // MARK: some helper methods

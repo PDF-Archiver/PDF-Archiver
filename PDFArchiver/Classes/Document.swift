@@ -58,12 +58,12 @@ class Document: NSObject {
         }
 
         // parse the description
-        if var raw = regex_matches(for: "--[a-zA-Z-]+__", in: self.name!) {
+        if var raw = regex_matches(for: "--[a-zA-Z0-9-]+__", in: self.name!) {
             self._documentDescription = getSubstring(raw[0], startIdx: 2, endIdx: -2)
         }
 
         // parse the tags
-        if var raw = regex_matches(for: "__[a-zA-Z_]+.[pdfPDF]{3}$", in: self.name!) {
+        if var raw = regex_matches(for: "__[a-zA-Z0-9_]+.[pdfPDF]{3}$", in: self.name!) {
             let tags = getSubstring(raw[0], startIdx: 2, endIdx: -4).components(separatedBy: "_")
             self.documentTags = [Tag]()
             for tag in tags {
