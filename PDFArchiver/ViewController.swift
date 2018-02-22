@@ -158,6 +158,12 @@ class ViewController: NSViewController {
     }
 
     override func viewDidDisappear() {
-        self.dataModelInstance.prefs?.save()
+        if let prefs = self.dataModelInstance.prefs,
+           let archivePath = self.dataModelInstance.prefs?.archivePath {
+            prefs.save()
+            print("\nSAVE COMPLETE\n")
+        } else {
+            print("\nSAVE NOT POSSIBLE\n")
+        }
     }
 }

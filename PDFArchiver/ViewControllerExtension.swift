@@ -11,10 +11,9 @@ import Quartz
 extension ViewController {
     // MARK: - segue stuff
     override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
-        // set preferences variable in the PrefsViewController
-        if segue.identifier?.rawValue == "prefsSegue" {
-            guard let secondVC = segue.destinationController as? PrefsViewController else { return }
-            secondVC.prefs = self.dataModelInstance.prefs
+        // preferences view controller delegate
+        if let prefsViewController = segue.destinationController as? PrefsViewController {
+            prefsViewController.delegate = self
         }
     }
 
@@ -79,9 +78,6 @@ extension ViewController {
         }
     }
     @objc func saveDocument() {
-        // TODO: workaround because the "self.dataModelInstance.prefs?.archivePath" is nil after clearing cache
-        self.dataModelInstance.prefs?.load()
-
         // test if a document is selected
         guard !self.documentAC.selectedObjects.isEmpty else {
             return
@@ -200,5 +196,15 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
         } else {
             print("Please pick documents first!")
         }
+    }
+}
+
+extension ViewController: PrefsViewControllerDelegate {
+    func getPrefs() -> Preferences {
+        return self.dataModelInstance.prefs!
+    }
+
+    func setPrefs(prefs: Preferences) {
+        self.dataModelInstance.prefs = prefs
     }
 }
