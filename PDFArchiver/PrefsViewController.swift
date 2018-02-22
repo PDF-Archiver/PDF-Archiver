@@ -8,8 +8,14 @@
 
 import Cocoa
 
+protocol PrefsViewControllerDelegate: class {
+    func setPrefs(prefs: Preferences)
+    func getPrefs() -> Preferences
+}
+
 class PrefsViewController: NSViewController {
     var prefs: Preferences?
+    weak var delegate: PrefsViewControllerDelegate?
 
     @IBOutlet weak var archivePathTextField: NSTextField!
     @IBAction func changeArchivePathButton(_ sender: Any) {
@@ -39,11 +45,16 @@ class PrefsViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.prefs = self.delegate?.getPrefs()
 
         // update path field
-        self.prefs?.load()
+        self.prefs!.load()
         if let archivePath = self.prefs?.archivePath {
             self.archivePathTextField.stringValue = archivePath.path
         }
+    }
+
+    override func viewWillDisappear() {
+        self.delegate?.setPrefs(prefs: self.prefs!)
     }
 }
