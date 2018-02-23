@@ -13,8 +13,8 @@
 		A31B52EC1FF694B0007A3D14 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B52EB1FF694B0007A3D14 /* ViewController.swift */; };
 		A31B52EE1FF694B0007A3D14 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A31B52ED1FF694B0007A3D14 /* Assets.xcassets */; };
 		A31B52F11FF694B0007A3D14 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A31B52EF1FF694B0007A3D14 /* Main.storyboard */; };
-		A31B52FD1FF694B0007A3D14 /* ArchiverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B52FC1FF694B0007A3D14 /* ArchiverTests.swift */; };
-		A31B53081FF694B0007A3D14 /* ArchiverUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B53071FF694B0007A3D14 /* ArchiverUITests.swift */; };
+		A31B52FD1FF694B0007A3D14 /* PDFArchiverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B52FC1FF694B0007A3D14 /* PDFArchiverTests.swift */; };
+		A31B53081FF694B0007A3D14 /* PDFArchiverUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B53071FF694B0007A3D14 /* PDFArchiverUITests.swift */; };
 		A31B53171FF6A6D8007A3D14 /* FileHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B53161FF6A6D8007A3D14 /* FileHandling.swift */; };
 		A3299E1C2015BE3D0036125F /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3299E1B2015BE3D0036125F /* Tag.swift */; };
 		A359963F202A3CC700CDD6E8 /* MyWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A359963E202A3CC700CDD6E8 /* MyWindow.swift */; };
@@ -56,10 +56,10 @@
 		A31B52F21FF694B0007A3D14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A31B52F31FF694B0007A3D14 /* PDFArchiver.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PDFArchiver.entitlements; sourceTree = "<group>"; };
 		A31B52F81FF694B0007A3D14 /* PDF ArchiverTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "PDF ArchiverTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A31B52FC1FF694B0007A3D14 /* ArchiverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiverTests.swift; sourceTree = "<group>"; };
+		A31B52FC1FF694B0007A3D14 /* PDFArchiverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFArchiverTests.swift; sourceTree = "<group>"; };
 		A31B52FE1FF694B0007A3D14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A31B53031FF694B0007A3D14 /* PDF ArchiverUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "PDF ArchiverUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A31B53071FF694B0007A3D14 /* ArchiverUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiverUITests.swift; sourceTree = "<group>"; };
+		A31B53071FF694B0007A3D14 /* PDFArchiverUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFArchiverUITests.swift; sourceTree = "<group>"; };
 		A31B53091FF694B0007A3D14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A31B53161FF6A6D8007A3D14 /* FileHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHandling.swift; sourceTree = "<group>"; };
 		A3299E1B2015BE3D0036125F /* Tag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
@@ -150,7 +150,7 @@
 		A31B52FB1FF694B0007A3D14 /* PDFArchiverTests */ = {
 			isa = PBXGroup;
 			children = (
-				A31B52FC1FF694B0007A3D14 /* ArchiverTests.swift */,
+				A31B52FC1FF694B0007A3D14 /* PDFArchiverTests.swift */,
 				A31B52FE1FF694B0007A3D14 /* Info.plist */,
 			);
 			path = PDFArchiverTests;
@@ -159,7 +159,7 @@
 		A31B53061FF694B0007A3D14 /* PDFArchiverUITests */ = {
 			isa = PBXGroup;
 			children = (
-				A31B53071FF694B0007A3D14 /* ArchiverUITests.swift */,
+				A31B53071FF694B0007A3D14 /* PDFArchiverUITests.swift */,
 				A31B53091FF694B0007A3D14 /* Info.plist */,
 			);
 			path = PDFArchiverUITests;
@@ -333,7 +333,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint autocorrect\n    swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi";
+			shellScript = "if which swiftlint >/dev/null; then\n#swiftlint autocorrect\n#swiftlint\n    echo \"TEST\"\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -363,7 +363,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A31B52FD1FF694B0007A3D14 /* ArchiverTests.swift in Sources */,
+				A31B52FD1FF694B0007A3D14 /* PDFArchiverTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -371,7 +371,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A31B53081FF694B0007A3D14 /* ArchiverUITests.swift in Sources */,
+				A31B53081FF694B0007A3D14 /* PDFArchiverUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -565,7 +565,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = ArchiverTests/Info.plist;
+				INFOPLIST_FILE = PDFArchiverTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = JuKa.ArchiverTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -581,7 +581,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = ArchiverTests/Info.plist;
+				INFOPLIST_FILE = PDFArchiverTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = JuKa.ArchiverTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -596,12 +596,13 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = ArchiverUITests/Info.plist;
+				INFOPLIST_FILE = PDFArchiverUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = JuKa.ArchiverUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SWIFT_VERSION = 4.0;
-				TEST_TARGET_NAME = Archiver;
+				TEST_TARGET_NAME = "PDF Archiver";
 			};
 			name = Debug;
 		};
@@ -611,12 +612,13 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = ArchiverUITests/Info.plist;
+				INFOPLIST_FILE = PDFArchiverUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = JuKa.ArchiverUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SWIFT_VERSION = 4.0;
-				TEST_TARGET_NAME = Archiver;
+				TEST_TARGET_NAME = "PDF Archiver";
 			};
 			name = Release;
 		};
