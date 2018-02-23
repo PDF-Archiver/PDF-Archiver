@@ -1,15 +1,14 @@
 //
-//  ArchiverTests.swift
-//  ArchiverTests
+//  PDFArchiverTests.swift
+//  PDFArchiverTests
 //
 //  Created by Julian Kahnert on 29.12.17.
 //  Copyright © 2017 Julian Kahnert. All rights reserved.
 //
 
 import XCTest
-@testable import Archiver
 
-class ArchiverTests: XCTestCase {
+class PDFArchiverTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
