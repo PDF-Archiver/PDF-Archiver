@@ -156,16 +156,16 @@
             <objects>
                 <viewController title="Preferences" storyboardIdentifier="prefsViewController" id="mcV-6Y-gT5" customClass="PrefsViewController" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="BeE-gT-39S">
-                        <rect key="frame" x="0.0" y="0.0" width="482" height="105"/>
+                        <rect key="frame" x="0.0" y="0.0" width="540" height="105"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="uzI-d8-kcx">
-                                <rect key="frame" x="20" y="20" width="442" height="31"/>
+                                <rect key="frame" x="20" y="20" width="500" height="31"/>
                                 <subviews>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="X5U-R0-ENH">
-                                        <rect key="frame" x="5" y="5" width="297" height="21"/>
+                                        <rect key="frame" x="5" y="5" width="139" height="21"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" relation="lessThanOrEqual" constant="500" id="GBH-MY-o7V"/>
+                                            <constraint firstAttribute="width" relation="lessThanOrEqual" constant="415" id="2D3-PF-R3G"/>
                                         </constraints>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="please set the path ..." drawsBackground="YES" usesSingleLineMode="YES" id="gtQ-4r-22c">
                                             <font key="font" metaFont="system"/>
@@ -175,10 +175,7 @@
                                         </textFieldCell>
                                     </textField>
                                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8RK-0V-cYr">
-                                        <rect key="frame" x="301" y="-2" width="142" height="32"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" relation="lessThanOrEqual" constant="130" id="wEg-o9-Og1"/>
-                                        </constraints>
+                                        <rect key="frame" x="143" y="-2" width="358" height="32"/>
                                         <buttonCell key="cell" type="push" title="Change" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="XbB-C4-8qz">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>
@@ -196,11 +193,12 @@
                                     <constraint firstItem="8RK-0V-cYr" firstAttribute="top" secondItem="uzI-d8-kcx" secondAttribute="top" constant="5" id="ROq-Pp-6Ih"/>
                                     <constraint firstItem="8RK-0V-cYr" firstAttribute="leading" secondItem="X5U-R0-ENH" secondAttribute="trailing" constant="5" id="TLf-yu-6yT"/>
                                     <constraint firstItem="8RK-0V-cYr" firstAttribute="leading" secondItem="X5U-R0-ENH" secondAttribute="trailing" constant="5" id="Tw4-O1-ILT"/>
+                                    <constraint firstAttribute="width" constant="500" id="eO5-MK-HuK"/>
                                     <constraint firstAttribute="trailing" secondItem="8RK-0V-cYr" secondAttribute="trailing" constant="5" id="nnl-3U-dRd"/>
                                 </constraints>
                             </customView>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PTW-ce-MNP">
-                                <rect key="frame" x="18" y="56" width="446" height="19"/>
+                                <rect key="frame" x="18" y="56" width="504" height="19"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Archive Path:" id="Ju7-wj-fHp">
                                     <font key="font" metaFont="systemBlack" size="16"/>
                                     <color key="textColor" red="0.79329520460000003" green="0.25477233529999999" blue="0.30978807809999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
@@ -299,7 +297,7 @@
                                                                         </textField>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="syz-ag-Wgc">
                                                                             <rect key="frame" x="20" y="0.0" width="187" height="17"/>
-                                                                            <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="B7Q-Q5-RNU">
+                                                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" truncatesLastVisibleLine="YES" sendsActionOnEndEditing="YES" title="Table View Cell" id="B7Q-Q5-RNU">
                                                                                 <font key="font" metaFont="system"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
