@@ -26,12 +26,11 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      language = "en"
-      region = "US"
+      language = ""
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
          <TestableReference
-            skipped = "YES">
+            skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A31B52F71FF694B0007A3D14"
@@ -39,10 +38,6 @@
                BlueprintName = "PDF ArchiverTests"
                ReferencedContainer = "container:PDF Archiver.xcodeproj">
             </BuildableReference>
-            <LocationScenarioReference
-               identifier = "com.apple.dt.IDEFoundation.CurrentLocationScenarioIdentifier"
-               referenceType = "1">
-            </LocationScenarioReference>
          </TestableReference>
          <TestableReference
             skipped = "NO">
