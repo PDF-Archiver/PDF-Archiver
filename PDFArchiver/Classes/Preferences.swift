@@ -22,6 +22,14 @@ struct Preferences {
         }
         set {
             guard let newValue = newValue else { return }
+            // save the security scope bookmark [https://stackoverflow.com/a/35863729]
+            do {
+                let bookmark = try newValue.bookmarkData(options: .securityScopeAllowOnlyReadAccess, includingResourceValuesForKeys: nil, relativeTo: nil)
+                UserDefaults.standard.set(bookmark, forKey: "securityScopeBookmark")
+            } catch let error as NSError {
+                print("Bookmark Write Fails: \(error.description)")
+            }
+            
             self._archivePath = newValue
             self.get_last_tags(path: newValue)
         }

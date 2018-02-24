@@ -92,6 +92,15 @@ class ViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        // get the security scope bookmark [https://stackoverflow.com/a/35863729]
+        if let bookmarkData = UserDefaults.standard.object(forKey: "securityScopeBookmark") as? Data {
+            do {
+                let url = try NSURL.init(resolvingBookmarkData: bookmarkData, options: .withoutUI, relativeTo: nil, bookmarkDataIsStale: nil)
+                url.startAccessingSecurityScopedResource()
+            } catch let error as NSError {
+                print("Bookmark Access Fails: \(error.description)")
+            }
+        }
 
         // set the date picker to canadian local, e.g. YYYY-MM-DD
         self.datePicker.locale = Locale.init(identifier: "en_CA")
