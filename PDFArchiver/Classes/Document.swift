@@ -13,7 +13,7 @@ class Document: NSObject {
     var path: URL
     @objc var name: String?
     @objc var documentDone: String = ""
-    var documentDate: Date?
+    var documentDate = Date()
     var documentDescription: String? {
         get {
             return self._documentDescription
@@ -53,8 +53,9 @@ class Document: NSObject {
 
         // try to parse the current filename
         // parse the date
-        if var dateRaw = regex_matches(for: "^\\d{4}-\\d{2}-\\d{2}--", in: self.name!) {
-            self.documentDate = self._dateFormatter.date(from: String(dateRaw[0].dropLast(2)))
+        if var dateRaw = regex_matches(for: "^\\d{4}-\\d{2}-\\d{2}--", in: self.name!),
+           let date = self._dateFormatter.date(from: String(dateRaw[0].dropLast(2))) {
+            self.documentDate = date
         }
 
         // parse the description
@@ -74,15 +75,14 @@ class Document: NSObject {
 
     func rename(archivePath: URL) -> Bool {
         // create a filename and rename the document
-        if let date = self.documentDate,
-           let description = self.documentDescription,
+        if let description = self.documentDescription,
            let tags = self.documentTags {
             if description == "" {
                 return false
             }
 
             // get date
-            let date_str = self._dateFormatter.string(from: date)
+            let date_str = self._dateFormatter.string(from: self.documentDate)
 
             // get tags
             var tag_str = ""

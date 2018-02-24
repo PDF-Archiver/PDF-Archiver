@@ -33,12 +33,7 @@ extension ViewController {
         let document = self.dataModelInstance.documents![idx] as Document
 
         // set the document date, description and tags
-        if let date = document.documentDate {
-            self.datePicker.dateValue = date
-        } else {
-            self.datePicker.dateValue = Date()
-            document.documentDate = Date()
-        }
+        self.datePicker.dateValue = document.documentDate
         self.descriptionField.stringValue = document.documentDescription ?? ""
         self.documentTagAC.content = document.documentTags
         self.documentAC.setSelectionIndex(self.dataModelInstance.documentIdx ?? 0)
