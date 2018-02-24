@@ -7,6 +7,16 @@
 //
 
 import Foundation
+import Quartz
+
+func dialogOK(message_key: String, info_key: String, style: NSAlert.Style) {
+    let alert = NSAlert()
+    alert.messageText = NSLocalizedString(message_key, comment: "")
+    alert.informativeText = NSLocalizedString(info_key, comment: "")
+    alert.alertStyle = style
+    alert.addButton(withTitle: "OK")
+    alert.runModal()
+}
 
 func regex_matches(for regex: String, in text: String) -> [String]? {
 

@@ -79,12 +79,16 @@ extension ViewController {
     }
     @objc func saveDocument() {
         // test if a document is selected
-        guard !self.documentAC.selectedObjects.isEmpty else {
+        guard !self.documentAC.selectedObjects.isEmpty,
+              let idx = self.dataModelInstance.documentIdx,
+              var documents = self.dataModelInstance.documents else {
             return
         }
-        guard let idx = self.dataModelInstance.documentIdx else { return }
-        guard var documents = self.dataModelInstance.documents else { return }
-        guard let path = self.dataModelInstance.prefs?.archivePath else { return }
+
+        guard let path = self.dataModelInstance.prefs?.archivePath else {
+            dialogOK(message_key: "no_archive", info_key: "select_preferences", style: .critical)
+            return
+        }
         let selectedDocument = documents[idx] as Document
         let result = selectedDocument.rename(archivePath: path)
         if result {

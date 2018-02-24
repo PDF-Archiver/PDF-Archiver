@@ -115,7 +115,7 @@ class Document: NSObject {
             return true
 
         } else {
-            print("Renaming not possible! Doublecheck the document fields.")
+            dialogOK(message_key: "renaming_failed", info_key: "check_document_fields", style: .warning)
             return false
         }
     }
