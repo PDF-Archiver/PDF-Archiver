@@ -15,8 +15,8 @@ func getPDFs(url: URL) -> [URL] {
         // folder found
         let enumerator = fileManager.enumerator(atPath: url.path)!
         var pdfURLs = [URL]()
-        while let element = enumerator.nextObject() as? String, element.suffix(3).lowercased() == "pdf" {
-            let pdf_url = URL(fileURLWithPath: url.path).appendingPathComponent(element)
+        for element in enumerator where (element as! String).suffix(3).lowercased() == "pdf" {
+            let pdf_url = URL(fileURLWithPath: url.path).appendingPathComponent(element as! String)
             pdfURLs.append(pdf_url)
         }
         return pdfURLs
