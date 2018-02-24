@@ -170,7 +170,7 @@ class ViewController: NSViewController {
         if let prefs = self.dataModelInstance.prefs,
            let archivePath = self.dataModelInstance.prefs?.archivePath {
             prefs.save()
-            print("\nSAVE COMPLETE\n")
+            print("\nSAVE COMPLETE (\(archivePath)\n")
         } else {
             print("\nSAVE NOT POSSIBLE\n")
         }
