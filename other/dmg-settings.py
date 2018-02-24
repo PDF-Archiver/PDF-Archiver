@@ -17,7 +17,7 @@ import os.path
 
 # .. Useful stuff ..............................................................
 
-application = defines.get('app', '/Users/juka/Documents/GIT/PDFArchiver/build/Release/PDF Archiver.app')
+application = defines.get('app', '/Users/juka/Documents/GIT/PDFArchiver/other/build/PDF Archiver.app')
 appname = os.path.basename(application)
 
 def icon_from_app(app_path):
