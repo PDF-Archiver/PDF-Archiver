@@ -378,8 +378,8 @@
                                         </shadow>
                                         <datePickerCell key="cell" borderStyle="bezel" alignment="left" datePickerStyle="textField" id="IuJ-3v-wqE">
                                             <font key="font" metaFont="system"/>
-                                            <date key="date" timeIntervalSinceReferenceDate="-595929600">
-                                                <!--1982-02-12 16:00:00 +0000-->
+                                            <date key="date" timeIntervalSinceReferenceDate="-20163600">
+                                                <!--2000-05-12 15:00:00 +0000-->
                                             </date>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -572,7 +572,7 @@
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                    <rect key="frame" x="32" y="1" width="194" height="17"/>
+                                                                    <rect key="frame" x="31.5" y="1" width="194" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">
