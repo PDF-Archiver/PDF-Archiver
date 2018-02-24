@@ -112,6 +112,18 @@ class Document: NSObject {
             self.name = String(new_filepath.lastPathComponent)
             self.path = new_filepath
             self.documentDone = "✔️"
+            
+            do {
+                var tags = [String]()
+                for tag in self.documentTags ?? [] {
+                    tags += [tag.name]
+                }
+                
+                // set file tags [https://stackoverflow.com/a/47340666]
+                try (new_filepath as NSURL).setResourceValue(tags, forKey: URLResourceKey.tagNamesKey)
+            } catch let error as NSError {
+                print("Could not set file tags: \(error)")
+            }
             return true
 
         } else {
