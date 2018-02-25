@@ -13,7 +13,7 @@ class Document: NSObject {
     var path: URL
     @objc var name: String?
     @objc var documentDone: String = ""
-    var documentDate: Date?
+    var documentDate = Date()
     var documentDescription: String? {
         get {
             return self._documentDescription
@@ -53,8 +53,9 @@ class Document: NSObject {
 
         // try to parse the current filename
         // parse the date
-        if var dateRaw = regex_matches(for: "^\\d{4}-\\d{2}-\\d{2}--", in: self.name!) {
-            self.documentDate = self._dateFormatter.date(from: String(dateRaw[0].dropLast(2)))
+        if var dateRaw = regex_matches(for: "^\\d{4}-\\d{2}-\\d{2}--", in: self.name!),
+           let date = self._dateFormatter.date(from: String(dateRaw[0].dropLast(2))) {
+            self.documentDate = date
         }
 
         // parse the description
@@ -74,15 +75,14 @@ class Document: NSObject {
 
     func rename(archivePath: URL) -> Bool {
         // create a filename and rename the document
-        if let date = self.documentDate,
-           let description = self.documentDescription,
+        if let description = self.documentDescription,
            let tags = self.documentTags {
             if description == "" {
                 return false
             }
 
             // get date
-            let date_str = self._dateFormatter.string(from: date)
+            let date_str = self._dateFormatter.string(from: self.documentDate)
 
             // get tags
             var tag_str = ""
@@ -112,10 +112,22 @@ class Document: NSObject {
             self.name = String(new_filepath.lastPathComponent)
             self.path = new_filepath
             self.documentDone = "✔️"
+            
+            do {
+                var tags = [String]()
+                for tag in self.documentTags ?? [] {
+                    tags += [tag.name]
+                }
+                
+                // set file tags [https://stackoverflow.com/a/47340666]
+                try (new_filepath as NSURL).setResourceValue(tags, forKey: URLResourceKey.tagNamesKey)
+            } catch let error as NSError {
+                print("Could not set file tags: \(error)")
+            }
             return true
 
         } else {
-            print("Renaming not possible! Doublecheck the document fields.")
+            dialogOK(message_key: "renaming_failed", info_key: "check_document_fields", style: .warning)
             return false
         }
     }

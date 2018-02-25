@@ -1,0 +1,13 @@
+/* 
+  Localized.strings
+  PDF Archiver
+
+  Created by Julian Kahnert on 24.02.18.
+  Copyright © 2018 Julian Kahnert. All rights reserved.
+*/
+
+"no_archive" = "Kein Archiv Pfad gefunden!";
+"select_preferences" = "Bitte Pfad in den Einstellungen auswählen.";
+
+"renaming_failed" = "Umbenennen fehlgeschlagen!";
+"check_document_fields" = "Bitte Dokumenten Felder prüfen.";

@@ -1,0 +1,13 @@
+/* 
+  Localized.strings
+  PDF Archiver
+
+  Created by Julian Kahnert on 24.02.18.
+  Copyright © 2018 Julian Kahnert. All rights reserved.
+*/
+
+"no_archive" = "No archive path found!";
+"select_preferences" = "Please select one in the preferences.";
+
+"renaming_failed" = "Renaming failed!";
+"check_document_fields" = "Doublecheck the document fields.";

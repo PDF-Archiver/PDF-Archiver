@@ -15,13 +15,13 @@
 "5kV-Vb-QxS.title" = "Über PDF Archivierer";
 
 /* Class = "NSMenu"; title = "Main Menu"; ObjectID = "AYu-sK-qS6"; */
-//"AYu-sK-qS6.title" = "Main Menu";
+"AYu-sK-qS6.title" = "Hauptmenü";
 
 /* Class = "NSTextFieldCell"; title = "Table View Cell"; ObjectID = "B7Q-Q5-RNU"; */
-//"B7Q-Q5-RNU.title" = "Table View Cell";
+"B7Q-Q5-RNU.title" = "Tabellen Eintrag";
 
 /* Class = "NSMenuItem"; title = "Preferences…"; ObjectID = "BOF-NM-1cW"; */
-"BOF-NM-1cW.title" = "Einstellungen …";
+"BOF-NM-1cW.title" = "Einstellungen…";
 
 /* Class = "NSMenuItem"; title = "Close"; ObjectID = "DVo-aG-piG"; */
 "DVo-aG-piG.title" = "Schließen";
@@ -35,11 +35,11 @@
 /* Class = "NSTextFieldCell"; title = "PDF Documents"; ObjectID = "FTj-OD-Ghm"; */
 "FTj-OD-Ghm.title" = "PDF Dokumente";
 
-/* Class = "NSMenuItem"; title = "Reset Cache"; ObjectID = "Hz0-RV-wAv"; */
-"Hz0-RV-wAv.title" = "Zwischenspeicher zurücksetzen";
+/* Class = "NSMenuItem"; title = "Reset Settings"; ObjectID = "Hz0-RV-wAv"; */
+"Hz0-RV-wAv.title" = "Einstellungen zurücksetzen";
 
 /* Class = "NSMenuItem"; title = "Öffnen …"; ObjectID = "IAo-SY-fd9"; */
-"IAo-SY-fd9.title" = "Öffnen …";
+"IAo-SY-fd9.title" = "Öffnen…";
 
 /* Class = "NSWindow"; title = "PDF Archiver"; ObjectID = "IQv-IB-iLA"; */
 "IQv-IB-iLA.title" = "PDF Archivierer";
@@ -102,7 +102,7 @@
 "gtQ-4r-22c.placeholderString" = "Bitte Pfad setzen  ...";
 
 /* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "l4J-fs-Cne"; */
-//"l4J-fs-Cne.title" = "Text Cell";
+"l4J-fs-Cne.title" = "Text Eintrag";
 
 /* Class = "NSTextFieldCell"; title = "Table View Cell"; ObjectID = "mEm-YG-Iaa"; */
 //"mEm-YG-Iaa.title" = "Table View Cell";
@@ -114,10 +114,10 @@
 "nm7-rf-3j8.headerCell.title" = "Dokument";
 
 /* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "o1a-m8-IzU"; */
-//"o1a-m8-IzU.title" = "Text Cell";
+"o1a-m8-IzU.title" = "Text Eintrag";
 
 /* Class = "NSTextFieldCell"; title = "Table View Cell"; ObjectID = "pXJ-g7-oZi"; */
-//"pXJ-g7-oZi.title" = "Table View Cell";
+"pXJ-g7-oZi.title" = "Tabellen Eintrag";
 
 /* Class = "NSMenuItem"; title = "Save…"; ObjectID = "pxx-59-PXV"; */
 "pxx-59-PXV.title" = "Speichern …";
