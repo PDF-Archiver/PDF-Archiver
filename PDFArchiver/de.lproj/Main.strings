@@ -6,13 +6,13 @@
 "144-l1-cpe.title" = "Text Cell";
 
 /* Class = "NSMenuItem"; title = "PDF Archiver"; ObjectID = "1Xt-HY-uBw"; */
-"1Xt-HY-uBw.title" = "PDF Archivierer";
+"1Xt-HY-uBw.title" = "PDF Archivar";
 
 /* Class = "NSMenuItem"; title = "Quit PDF Archiver"; ObjectID = "4sb-4s-VLi"; */
-"4sb-4s-VLi.title" = "PDF Archivierer beenden";
+"4sb-4s-VLi.title" = "PDF Archivar beenden";
 
 /* Class = "NSMenuItem"; title = "About PDF Archiver"; ObjectID = "5kV-Vb-QxS"; */
-"5kV-Vb-QxS.title" = "Über PDF Archivierer";
+"5kV-Vb-QxS.title" = "Über PDF Archivar";
 
 /* Class = "NSMenu"; title = "Main Menu"; ObjectID = "AYu-sK-qS6"; */
 "AYu-sK-qS6.title" = "Hauptmenü";
@@ -30,7 +30,7 @@
 "F2S-fz-NVQ.title" = "Hilfe";
 
 /* Class = "NSMenuItem"; title = "PDF Archiver Help"; ObjectID = "FKE-Sm-Kum"; */
-"FKE-Sm-Kum.title" = "PDF Archivierer Hilfe";
+"FKE-Sm-Kum.title" = "PDF Archivar Hilfe";
 
 /* Class = "NSTextFieldCell"; title = "PDF Documents"; ObjectID = "FTj-OD-Ghm"; */
 "FTj-OD-Ghm.title" = "PDF Dokumente";
@@ -42,7 +42,7 @@
 "IAo-SY-fd9.title" = "Öffnen…";
 
 /* Class = "NSWindow"; title = "PDF Archiver"; ObjectID = "IQv-IB-iLA"; */
-"IQv-IB-iLA.title" = "PDF Archivierer";
+"IQv-IB-iLA.title" = "PDF Archivar";
 
 /* Class = "NSTextFieldCell"; title = "Archive Path:"; ObjectID = "Ju7-wj-fHp"; */
 "Ju7-wj-fHp.title" = "Archiv Pfad:";
@@ -57,7 +57,7 @@
 "OY7-WF-poV.title" = "Minimieren";
 
 /* Class = "NSMenuItem"; title = "Hide PDF Archiver"; ObjectID = "Olw-nP-bQN"; */
-"Olw-nP-bQN.title" = "PDF Archivierer ausblenden";
+"Olw-nP-bQN.title" = "PDF Archivar ausblenden";
 
 /* Class = "NSTextFieldCell"; placeholderString = "Description"; ObjectID = "PCv-if-5Qd"; */
 "PCv-if-5Qd.placeholderString" = "Beschreibung";
@@ -128,8 +128,8 @@
 /* Class = "NSTextFieldCell"; title = "Table View Cell"; ObjectID = "tbm-cD-D49"; */
 "tbm-cD-D49.title" = "Table View Cell";
 
-/* Class = "NSMenu"; title = "PDF Archivierer"; ObjectID = "uQy-DD-JDr"; */
-"uQy-DD-JDr.title" = "PDF Archivierer";
+/* Class = "NSMenu"; title = "PDF Archivar"; ObjectID = "uQy-DD-JDr"; */
+"uQy-DD-JDr.title" = "PDF Archivar";
 
 /* Class = "NSMenuItem"; title = "Help"; ObjectID = "wpr-3q-Mcd"; */
 "wpr-3q-Mcd.title" = "Hilfe";
