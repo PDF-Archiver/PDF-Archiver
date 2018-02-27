@@ -98,7 +98,7 @@
 /* Class = "NSMenuItem"; title = "File"; ObjectID = "dMs-cI-mzQ"; */
 "dMs-cI-mzQ.title" = "Ablage";
 
-/* Class = "NSTextFieldCell"; placeholderString = "please set the path ..."; ObjectID = "gtQ-4r-22c"; */
+/* Class = "NSTextFieldCell"; placeholderString = "Please set the path ..."; ObjectID = "gtQ-4r-22c"; */
 "gtQ-4r-22c.placeholderString" = "Bitte Pfad setzen  ...";
 
 /* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "l4J-fs-Cne"; */

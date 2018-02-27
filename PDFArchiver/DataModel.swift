@@ -17,10 +17,11 @@ class DataModel: PreferencesDelegate {
             return self._documentIdx
         }
         set {
-            if let raw = newValue, raw < (self.documents ?? []).count {
+            let documents = self.documents ?? []
+            if let raw = newValue, raw < documents.count {
                 self._documentIdx = raw
             } else {
-                self._documentIdx = nil
+                self._documentIdx = 0
             }
         }
     }

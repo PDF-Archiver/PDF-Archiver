@@ -9,8 +9,8 @@ A tool for tagging files and archiving tasks.
 Archive all incoming documents digitally to access and search them in an easier way.
 
 ### The Way
-* Scan all incoming documents and save them on your computer/iCloud in an *untagged* folder.
-* Put the original paper documents in a folder, sorted by year. Don't care about bills/insurance papers etc.. Just leave all of them in one box for the every year.
+* Scan all incoming bills etc. and save them on your computer/iCloud in an *untagged* folder.
+* Put the original paper documents in a folder, sorted by year. Don't care about bills/insurance papers etc.. Just leave all of them in one box for the each year.
 * Open the **PDF Archiver** and start tagging. Your documents will be moved from the *untagged* to your *Archive* folder.
 
 ### The Look
@@ -27,7 +27,7 @@ Your archive will look like this:
         └── 2018-12-01--master-thesis__finally_longterm_university.pdf
 ```
 
-This structure makes it very easy to search files ...
+This structure is independent from your OS and filesystem and makes it very easy to search files ...
 * ... by tag via a searchterm like: `_tagname`, starting with `_`
 * ... by description via a searchterm like: `-descriptionword`, starting with `-`
 * ... by tag or description via a searchterm like: `searchword`,  starting with the term
@@ -41,6 +41,7 @@ This structure makes it very easy to search files ...
 ## :rocket: Usage
 * Scan your documents, e.g. with [Scanbot](https://scanbot.io)
 * Create an `Archive` folder in your iCloud Drive
+* Select it in the *Preferences* panel (`CMD ,` ...obviously)
 * Start tagging your files
 
 ## :scroll: Convention
@@ -64,6 +65,7 @@ This structure makes it very easy to search files ...
 
 ##### PDF Archiver
 * You can use keyboard shortcuts
+    * `CMD ,`: open the preferences panel
     * `CMD o`: add new PDF documents
     * `CMD s`: save the current document in your archive
 * Use the `TAB` key for fast field switching
