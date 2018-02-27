@@ -11,3 +11,5 @@
 
 "renaming_failed" = "Umbenennen fehlgeschlagen!";
 "check_document_fields" = "Bitte Dokumenten Felder prüfen.";
+"check_document_description" = "Bitte Dokument Beschreibung prüfen.";
+"check_document_tags" = "Bitte Dokument Tags prüfen.";
