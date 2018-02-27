@@ -104,6 +104,8 @@ extension ViewController {
             self.documentAC.content = documents
             if idx < documents.count {
                 self.dataModelInstance.documentIdx = idx + 1
+            } else {
+                self.dataModelInstance.documentIdx = documents.count
             }
             updateViewController(updatePDF: true)
         }
@@ -142,8 +144,8 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
     override func controlTextDidChange(_ notification: Notification) {
         guard let id = notification.object as? NSTextField else { return }
         if id.identifier?.rawValue == "documentDescriptionField" {
-            guard let textField = notification.object as? NSTextField else { return }
-            guard let idx = self.dataModelInstance.documentIdx else { return }
+            guard let textField = notification.object as? NSTextField,
+                  let idx = self.dataModelInstance.documentIdx else { return }
             (self.dataModelInstance.documents![idx] as Document).documentDescription = textField.stringValue
         } else if id.identifier?.rawValue == "tagSearchField" {
             guard let searchField = notification.object as? NSSearchField else { return }
@@ -182,24 +184,25 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
         }
 
         // add new tag to document table view
-        if let idx = self.dataModelInstance.documentIdx {
-            if self.dataModelInstance.documents![idx].documentTags != nil {
-                self.dataModelInstance.documents![idx].documentTags!.insert(selectedTag, at: 0)
-            } else {
-                self.dataModelInstance.documents![idx].documentTags = [selectedTag]
-            }
-
-            // clear search field content
-            self.tagSearchField.stringValue = ""
-
-            // add tag to tagAC
-            if newlyCreated {
-                self.dataModelInstance.tags?.list.insert(selectedTag)
-            }
-            self.updateViewController(updatePDF: false)
-        } else {
+        guard let idx = self.dataModelInstance.documentIdx else {
             print("Please pick documents first!")
+            return
         }
+
+        if self.dataModelInstance.documents![idx].documentTags != nil {
+            self.dataModelInstance.documents![idx].documentTags!.insert(selectedTag, at: 0)
+        } else {
+            self.dataModelInstance.documents![idx].documentTags = [selectedTag]
+        }
+
+        // clear search field content
+        self.tagSearchField.stringValue = ""
+
+        // add tag to tagAC
+        if newlyCreated {
+            self.dataModelInstance.tags?.list.insert(selectedTag)
+        }
+        self.updateViewController(updatePDF: false)
     }
 }
 

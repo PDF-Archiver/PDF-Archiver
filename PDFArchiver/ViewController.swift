@@ -29,23 +29,27 @@ class ViewController: NSViewController {
     // outlets
     @IBAction func datePickDone(_ sender: NSDatePicker) {
         // test if a document is selected
-        guard !self.documentAC.selectedObjects.isEmpty else {
-            return
+        guard !self.documentAC.selectedObjects.isEmpty,
+            let idx = self.dataModelInstance.documentIdx,
+            let documents = self.dataModelInstance.documents else {
+                return
         }
 
         // set the date of the pdf document
-        let document = self.dataModelInstance.documents![self.dataModelInstance.documentIdx!] as Document
+        let document = documents[idx] as Document
         document.documentDate = sender.dateValue
     }
 
     @IBAction func descriptionDone(_ sender: NSTextField) {
         // test if a document is selected
-        guard !self.documentAC.selectedObjects.isEmpty else {
+        guard !self.documentAC.selectedObjects.isEmpty,
+              let idx = self.dataModelInstance.documentIdx,
+              let documents = self.dataModelInstance.documents else {
             return
         }
 
         // set the description of the pdf document
-        let document = self.dataModelInstance.documents![self.dataModelInstance.documentIdx!] as Document
+        let document = documents[idx] as Document
         document.documentDescription = sender.stringValue
     }
 
@@ -63,19 +67,22 @@ class ViewController: NSViewController {
 
     @IBAction func clickedDocumentTagTableView(_ sender: NSTableView) {
         // test if the document tag table is empty
-        guard !self.documentTagAC.selectedObjects.isEmpty else {
-            return
+        guard !self.documentAC.selectedObjects.isEmpty,
+            let idx = self.dataModelInstance.documentIdx,
+            let documents = self.dataModelInstance.documents,
+            let obj = self.documentTagAC.selectedObjects.first as? Tag else {
+                return
         }
 
         // remove the selected element
-        let idx = self.dataModelInstance.documentIdx
         var i = 0
-        guard let obj = self.documentTagAC.selectedObjects.first as? Tag else { return }
-        for tag in self.dataModelInstance.documents![idx!].documentTags! {
+        var documentTags = documents[idx].documentTags ?? []
+        for tag in documentTags {
             if tag.name == obj.name {
-                self.dataModelInstance.documents![idx!].documentTags!.remove(at: i)
+                documentTags.remove(at: i)
                 tag.count -= 1
 
+                self.dataModelInstance.documents![idx].documentTags = documentTags
                 self.updateViewController(updatePDF: false)
                 return
             }
