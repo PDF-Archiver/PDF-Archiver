@@ -151,6 +151,82 @@
             </objects>
             <point key="canvasLocation" x="75" y="250"/>
         </scene>
+        <!--Onboarding-->
+        <scene sceneID="vIq-pB-TLg">
+            <objects>
+                <viewController title="Onboarding" storyboardIdentifier="onboardingViewController" id="IBN-wm-PS1" customClass="OnboardingViewController" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="1Ps-AJ-22C">
+                        <rect key="frame" x="0.0" y="0.0" width="650" height="400"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <button wantsLayer="YES" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="JZJ-KJ-qDR">
+                                <rect key="frame" x="269" y="13" width="112" height="32"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="100" id="X55-q9-EQe"/>
+                                </constraints>
+                                <shadow key="shadow">
+                                    <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </shadow>
+                                <buttonCell key="cell" type="push" title="Close" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="90s-ei-HMI">
+                                    <behavior key="behavior" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="closeButton:" target="IBN-wm-PS1" id="l95-Cg-MdH"/>
+                                </connections>
+                            </button>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="ycm-Wf-adg">
+                                <rect key="frame" x="0.0" y="51" width="650" height="349"/>
+                                <subviews>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jsU-Cj-RIy">
+                                        <rect key="frame" x="18" y="293" width="614" height="36"/>
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Welcome to PDF Archiver" id="LDE-IZ-15h">
+                                            <font key="font" size="30" name=".AppleSystemUIFont"/>
+                                            <color key="textColor" red="0.1306995749" green="0.1715696156" blue="0.23138025400000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <box verticalHuggingPriority="750" ambiguous="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="dHm-Tb-rnI">
+                                        <rect key="frame" x="131" y="285" width="387" height="5"/>
+                                    </box>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2r6-lY-Roq">
+                                        <rect key="frame" x="18" y="263" width="614" height="19"/>
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Thank you for downloading." id="8Xm-l9-Ww4">
+                                            <font key="font" size="16" name=".AppleSystemUIFont"/>
+                                            <color key="textColor" red="0.21256765720000001" green="0.24246880409999999" blue="0.28628057239999999" alpha="0.67864404965753422" colorSpace="custom" customColorSpace="displayP3"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="2r6-lY-Roq" firstAttribute="leading" secondItem="ycm-Wf-adg" secondAttribute="leading" constant="20" id="Fhc-aU-dHO"/>
+                                    <constraint firstItem="2r6-lY-Roq" firstAttribute="top" secondItem="dHm-Tb-rnI" secondAttribute="bottom" constant="5" id="b0a-LT-oTW"/>
+                                    <constraint firstAttribute="trailing" secondItem="2r6-lY-Roq" secondAttribute="trailing" constant="20" id="h0J-5x-Gbc"/>
+                                    <constraint firstItem="jsU-Cj-RIy" firstAttribute="top" secondItem="ycm-Wf-adg" secondAttribute="top" constant="20" id="hQ5-Be-YZY"/>
+                                    <constraint firstItem="dHm-Tb-rnI" firstAttribute="top" secondItem="jsU-Cj-RIy" secondAttribute="bottom" constant="5" id="kVD-Y7-zFY"/>
+                                    <constraint firstAttribute="trailing" secondItem="jsU-Cj-RIy" secondAttribute="trailing" constant="20" id="nJV-fp-8CI"/>
+                                    <constraint firstItem="jsU-Cj-RIy" firstAttribute="leading" secondItem="ycm-Wf-adg" secondAttribute="leading" constant="20" id="nd2-cX-3vl"/>
+                                </constraints>
+                            </customView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="ycm-Wf-adg" secondAttribute="trailing" id="0aN-fU-hkU"/>
+                            <constraint firstItem="ycm-Wf-adg" firstAttribute="top" secondItem="1Ps-AJ-22C" secondAttribute="top" id="6RU-p7-3Xh"/>
+                            <constraint firstItem="ycm-Wf-adg" firstAttribute="centerX" secondItem="1Ps-AJ-22C" secondAttribute="centerX" id="JRY-qU-NCA"/>
+                            <constraint firstItem="JZJ-KJ-qDR" firstAttribute="centerX" secondItem="1Ps-AJ-22C" secondAttribute="centerX" id="MM2-OP-Qi2"/>
+                            <constraint firstAttribute="bottom" secondItem="JZJ-KJ-qDR" secondAttribute="bottom" constant="20" id="S6I-gn-S4d"/>
+                            <constraint firstItem="JZJ-KJ-qDR" firstAttribute="top" secondItem="ycm-Wf-adg" secondAttribute="bottom" constant="10" id="rNG-0P-eMP"/>
+                            <constraint firstItem="ycm-Wf-adg" firstAttribute="leading" secondItem="1Ps-AJ-22C" secondAttribute="leading" id="xa1-PR-Gq0"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="customView" destination="ycm-Wf-adg" id="IGn-nL-AcL"/>
+                    </connections>
+                </viewController>
+                <customObject id="ICJ-xA-6Ud" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="989" y="1019"/>
+        </scene>
         <!--Preferences-->
         <scene sceneID="ndM-Fj-5Cq">
             <objects>
@@ -226,7 +302,7 @@
                 </viewController>
                 <customObject id="6c0-ie-4dB" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="940" y="1123.5"/>
+            <point key="canvasLocation" x="934" y="1375"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="hIz-AP-VOD">
@@ -575,7 +651,7 @@
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                    <rect key="frame" x="31.5" y="1" width="194" height="17"/>
+                                                                    <rect key="frame" x="32" y="1" width="194" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">
@@ -745,6 +821,7 @@
                         <outlet property="tagSearchView" destination="BZd-ly-6BW" id="ULj-Og-MHE"/>
                         <outlet property="tagTableView" destination="xpK-mJ-Y4J" id="6if-v6-H9T"/>
                         <segue destination="mcV-6Y-gT5" kind="modal" identifier="prefsSegue" id="2DJ-l1-blV"/>
+                        <segue destination="IBN-wm-PS1" kind="sheet" identifier="onboardingSegue" id="PNh-jz-8j4"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

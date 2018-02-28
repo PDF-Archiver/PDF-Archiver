@@ -145,7 +145,7 @@ class ViewController: NSViewController {
         }
         self.pdfContentView.interpolationQuality = PDFInterpolationQuality.low
     }
-
+    
     override func viewWillAppear() {
         let layout = Layout()
 
@@ -171,6 +171,15 @@ class ViewController: NSViewController {
         self.tagSearchView.wantsLayer = true
         self.tagSearchView.layer?.backgroundColor = layout.fieldBackgroundColorLight
         self.tagSearchView.layer?.cornerRadius = layout.cornerRadius
+    }
+    
+    override func viewDidAppear() {
+        UserDefaults.standard.removeObject(forKey: "onboardingShown")
+        
+        // show onboarding view
+        if !UserDefaults.standard.bool(forKey: "onboardingShown") {
+            self.performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "onboardingSegue"), sender: self)
+        }
     }
 
     override func viewDidDisappear() {
