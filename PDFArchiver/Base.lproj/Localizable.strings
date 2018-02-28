@@ -11,3 +11,5 @@
 
 "renaming_failed" = "Renaming failed!";
 "check_document_fields" = "Doublecheck the document fields.";
+"check_document_description" = "Doublecheck the document description.";
+"check_document_tags" = "Doublecheck the document tags.";

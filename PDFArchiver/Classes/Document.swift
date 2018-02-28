@@ -74,30 +74,20 @@ class Document: NSObject {
     }
 
     func rename(archivePath: URL) -> Bool {
-        // create a filename and rename the document
-        guard let description = self.documentDescription,
-              let tags = self.documentTags else {
-                dialogOK(message_key: "renaming_failed", info_key: "check_document_fields", style: .warning)
-                return false
-        }
-        if description == "" {
+        let new_basepath: URL
+        let filename: String
+        do {
+            (new_basepath, filename) = try getRenamingPath(archivePath: archivePath)
+        } catch DocumentError.description {
+            dialogOK(message_key: "renaming_failed", info_key: "check_document_description", style: .warning)
+            return false
+        } catch DocumentError.tags {
+            dialogOK(message_key: "renaming_failed", info_key: "check_document_tags", style: .warning)
+            return false
+        } catch {
             dialogOK(message_key: "renaming_failed", info_key: "check_document_fields", style: .warning)
             return false
         }
-        
-        // get date
-        let date_str = self._dateFormatter.string(from: self.documentDate)
-
-        // get tags
-        var tag_str = ""
-        for tag in tags.sorted(by: { $0.name < $1.name }) {
-            tag_str += "\(tag.name)_"
-        }
-        tag_str = String(tag_str.dropLast(1))
-        
-        // create new filepath
-        let filename = "\(date_str)--\(description)__\(tag_str).pdf"
-        let new_basepath = archivePath.appendingPathComponent(String(date_str.prefix(4)))
         
         // check, if this path already exists ... create it
         let new_filepath = new_basepath.appendingPathComponent(filename)
@@ -130,4 +120,37 @@ class Document: NSObject {
         }
         return true
     }
+    
+    internal func getRenamingPath(archivePath: URL) throws -> (new_basepath: URL, filename: String) {
+        // create a filename and rename the document
+        guard let tags = self.documentTags,
+              tags.count > 0 else {
+                throw DocumentError.tags
+        }
+        guard let description = self.documentDescription,
+              description != "" else {
+            throw DocumentError.description
+        }
+        
+        // get date
+        let date_str = self._dateFormatter.string(from: self.documentDate)
+        
+        // get tags
+        var tag_str = ""
+        for tag in tags.sorted(by: { $0.name < $1.name }) {
+            tag_str += "\(tag.name)_"
+        }
+        tag_str = String(tag_str.dropLast(1))
+        
+        // create new filepath
+        let filename = "\(date_str)--\(description)__\(tag_str).pdf"
+        let new_basepath = archivePath.appendingPathComponent(String(date_str.prefix(4)))
+    
+        return (new_basepath, filename)
+    }
+}
+
+enum DocumentError: Error {
+    case description
+    case tags
 }

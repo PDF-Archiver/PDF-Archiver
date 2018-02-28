@@ -1,5 +1,11 @@
 <p align="center">
-<img src="PDFArchiver/Assets.xcassets/AppIcon.appiconset/1055071-128.png">
+<img src="assets/AppIcon.svg">
+</p>
+
+<p align="center">
+<a href="https://itunes.apple.com/app/pdf-archivar/id1352719750" target="itunes_store">
+  <img src="assets/MacAppStoreBadge.svg">
+</a>
 </p>
 
 # PDF Archiver
@@ -35,7 +41,7 @@ This structure is independent from your OS and filesystem and makes it very easy
 
 ### The Feel
 <p align="center">
-<img src="other/example.gif"  style="width: 75%;">
+<img src="assets/example.gif" style="width: 75%;">
 </p>
 
 ## :rocket: Usage
