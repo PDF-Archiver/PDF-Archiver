@@ -128,6 +128,8 @@ class ViewController: NSViewController {
                                        name: Notification.Name("UpdateViewController"), object: nil)
         notificationCenter.addObserver(self, selector: #selector(self.resetCache),
                                        name: Notification.Name("ResetCache"), object: nil)
+        notificationCenter.addObserver(self, selector: #selector(self.showOnboarding),
+                                       name: Notification.Name("ShowOnboarding"), object: nil)
 
         // MARK: - delegates
         tagSearchField.delegate = self
@@ -174,11 +176,9 @@ class ViewController: NSViewController {
     }
     
     override func viewDidAppear() {
-        UserDefaults.standard.removeObject(forKey: "onboardingShown")
-        
         // show onboarding view
         if !UserDefaults.standard.bool(forKey: "onboardingShown") {
-            self.performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "onboardingSegue"), sender: self)
+            self.showOnboarding()
         }
     }
 

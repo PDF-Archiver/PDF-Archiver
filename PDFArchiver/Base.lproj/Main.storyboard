@@ -109,10 +109,16 @@
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="g5g-oz-d55"/>
-                                        <menuItem title="Reset Settings" id="Hz0-RV-wAv">
+                                        <menuItem title="Show Onboarding" id="Hz0-RV-wAv" userLabel="Show Onboarding">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="resetUserDefaults:" target="Voe-Tx-rLC" id="bKO-zb-1Ml"/>
+                                                <action selector="showOnboarding:" target="Voe-Tx-rLC" id="6CG-fz-q8n"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Reset Settings" id="N0V-Bp-Pnp">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="resetUserDefaults:" target="Voe-Tx-rLC" id="Mm3-1k-IDB"/>
                                             </connections>
                                         </menuItem>
                                     </items>

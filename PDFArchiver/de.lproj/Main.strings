@@ -36,7 +36,11 @@
 "FTj-OD-Ghm.title" = "PDF Dokumente";
 
 /* Class = "NSMenuItem"; title = "Reset Settings"; ObjectID = "Hz0-RV-wAv"; */
-"Hz0-RV-wAv.title" = "Einstellungen zurücksetzen";
+//"Hz0-RV-wAv.title" = "Einstellungen zurücksetzen";
+
+/* Class = "NSMenuItem"; title = "Reset Settings"; ObjectID = "N0V-Bp-Pnp"; */
+"N0V-Bp-Pnp.title" = "Einstellungen zurücksetzen";
+
 
 /* Class = "NSMenuItem"; title = "Öffnen …"; ObjectID = "IAo-SY-fd9"; */
 "IAo-SY-fd9.title" = "Öffnen…";
