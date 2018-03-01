@@ -46,7 +46,6 @@ extension ViewController {
     @objc func showPreferences() {
         self.performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "prefsSegue"), sender: self)
     }
-
     @objc func getPDFDocuments() {
         let openPanel = NSOpenPanel()
         openPanel.title = "Choose a .pdf file or a folder"
@@ -118,6 +117,9 @@ extension ViewController {
         UserDefaults.standard.synchronize()
         // close application
         NSApplication.shared.terminate(self)
+    }
+    @objc func showOnboarding() {
+        self.performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "onboardingSegue"), sender: self)
     }
 
     // MARK: some helper methods

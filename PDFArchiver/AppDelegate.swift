@@ -23,7 +23,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBAction func resetUserDefaults(_ sender: NSMenuItem) {
         NotificationCenter.default.post(name: Notification.Name("ResetCache"), object: nil)
     }
-
+    @IBAction func showOnboarding(_ sender: NSMenuItem) {
+        NotificationCenter.default.post(name: Notification.Name("ShowOnboarding"), object: nil)
+    }
+    
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Insert code here to initialize your application
     }

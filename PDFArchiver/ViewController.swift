@@ -128,6 +128,8 @@ class ViewController: NSViewController {
                                        name: Notification.Name("UpdateViewController"), object: nil)
         notificationCenter.addObserver(self, selector: #selector(self.resetCache),
                                        name: Notification.Name("ResetCache"), object: nil)
+        notificationCenter.addObserver(self, selector: #selector(self.showOnboarding),
+                                       name: Notification.Name("ShowOnboarding"), object: nil)
 
         // MARK: - delegates
         tagSearchField.delegate = self
@@ -145,7 +147,7 @@ class ViewController: NSViewController {
         }
         self.pdfContentView.interpolationQuality = PDFInterpolationQuality.low
     }
-
+    
     override func viewWillAppear() {
         let layout = Layout()
 
@@ -171,6 +173,13 @@ class ViewController: NSViewController {
         self.tagSearchView.wantsLayer = true
         self.tagSearchView.layer?.backgroundColor = layout.fieldBackgroundColorLight
         self.tagSearchView.layer?.cornerRadius = layout.cornerRadius
+    }
+    
+    override func viewDidAppear() {
+        // show onboarding view
+        if !UserDefaults.standard.bool(forKey: "onboardingShown") {
+            self.showOnboarding()
+        }
     }
 
     override func viewDidDisappear() {
