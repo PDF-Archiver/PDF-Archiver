@@ -162,13 +162,14 @@
             <objects>
                 <viewController title="Onboarding" storyboardIdentifier="onboardingViewController" id="IBN-wm-PS1" customClass="OnboardingViewController" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="1Ps-AJ-22C">
-                        <rect key="frame" x="0.0" y="0.0" width="650" height="332"/>
+                        <rect key="frame" x="0.0" y="0.0" width="650" height="344"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <button wantsLayer="YES" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="JZJ-KJ-qDR">
-                                <rect key="frame" x="244" y="13" width="162" height="32"/>
+                                <rect key="frame" x="244" y="-1" width="162" height="37"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="150" id="X55-q9-EQe"/>
+                                    <constraint firstAttribute="height" constant="26" id="YzC-2g-DgO"/>
                                 </constraints>
                                 <shadow key="shadow">
                                     <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -182,7 +183,7 @@
                                 </connections>
                             </button>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="ycm-Wf-adg">
-                                <rect key="frame" x="0.0" y="51" width="650" height="281"/>
+                                <rect key="frame" x="0.0" y="38" width="650" height="306"/>
                                 <subviews>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jsU-Cj-RIy">
                                         <rect key="frame" x="158" y="225" width="335" height="36"/>
@@ -221,7 +222,7 @@
                                         <constraints>
                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="60" id="r26-Tl-4mk"/>
                                         </constraints>
-                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="CMD ," id="Dce-Xm-wCT">
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="⌘ ," id="Dce-Xm-wCT">
                                             <font key="font" size="15" name="SFMono-Bold"/>
                                             <color key="textColor" red="0.79329520460000003" green="0.25477233529999999" blue="0.30978807809999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -232,7 +233,7 @@
                                         <constraints>
                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="60" id="Jdn-ZD-gLA"/>
                                         </constraints>
-                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="CMD o" id="m4z-q1-wQ4">
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="⌘ o" id="m4z-q1-wQ4">
                                             <font key="font" size="15" name="SFMono-Bold"/>
                                             <color key="textColor" red="0.79329520460000003" green="0.25477233529999999" blue="0.30978807809999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -243,7 +244,7 @@
                                         <constraints>
                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="60" id="g4Q-9A-JK5"/>
                                         </constraints>
-                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="CMD s" id="cpe-TF-DiZ">
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="⌘ s" id="cpe-TF-DiZ">
                                             <font key="font" size="15" name="SFMono-Bold"/>
                                             <color key="textColor" red="0.79329520460000003" green="0.25477233529999999" blue="0.30978807809999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -266,7 +267,7 @@
                                     <constraint firstItem="2r6-lY-Roq" firstAttribute="top" secondItem="dHm-Tb-rnI" secondAttribute="bottom" constant="5" id="b0a-LT-oTW"/>
                                     <constraint firstItem="Tpx-oz-ZWL" firstAttribute="bottom" secondItem="JUz-Wg-5GQ" secondAttribute="bottom" id="cWS-Ol-BVq"/>
                                     <constraint firstItem="dHm-Tb-rnI" firstAttribute="leading" secondItem="ycm-Wf-adg" secondAttribute="leading" constant="131" id="fkV-Gi-hdy"/>
-                                    <constraint firstItem="jsU-Cj-RIy" firstAttribute="top" secondItem="ycm-Wf-adg" secondAttribute="top" constant="20" id="hQ5-Be-YZY"/>
+                                    <constraint firstItem="jsU-Cj-RIy" firstAttribute="top" secondItem="ycm-Wf-adg" secondAttribute="top" constant="45" id="hQ5-Be-YZY"/>
                                     <constraint firstItem="OpW-y7-zJz" firstAttribute="leading" secondItem="JUz-Wg-5GQ" secondAttribute="trailing" constant="40" id="i1Q-TO-b1N"/>
                                     <constraint firstItem="dHm-Tb-rnI" firstAttribute="centerX" secondItem="2r6-lY-Roq" secondAttribute="centerX" id="kLu-SC-OI3"/>
                                     <constraint firstItem="dHm-Tb-rnI" firstAttribute="top" secondItem="jsU-Cj-RIy" secondAttribute="bottom" constant="5" id="kVD-Y7-zFY"/>
@@ -282,8 +283,8 @@
                             <constraint firstItem="ycm-Wf-adg" firstAttribute="top" secondItem="1Ps-AJ-22C" secondAttribute="top" id="6RU-p7-3Xh"/>
                             <constraint firstItem="ycm-Wf-adg" firstAttribute="centerX" secondItem="1Ps-AJ-22C" secondAttribute="centerX" id="JRY-qU-NCA"/>
                             <constraint firstItem="JZJ-KJ-qDR" firstAttribute="centerX" secondItem="1Ps-AJ-22C" secondAttribute="centerX" id="MM2-OP-Qi2"/>
-                            <constraint firstAttribute="bottom" secondItem="JZJ-KJ-qDR" secondAttribute="bottom" constant="20" id="S6I-gn-S4d"/>
-                            <constraint firstItem="JZJ-KJ-qDR" firstAttribute="top" secondItem="ycm-Wf-adg" secondAttribute="bottom" constant="10" id="rNG-0P-eMP"/>
+                            <constraint firstAttribute="bottom" secondItem="JZJ-KJ-qDR" secondAttribute="bottom" constant="6" id="S6I-gn-S4d"/>
+                            <constraint firstItem="JZJ-KJ-qDR" firstAttribute="top" secondItem="ycm-Wf-adg" secondAttribute="bottom" constant="6" id="rNG-0P-eMP"/>
                             <constraint firstItem="ycm-Wf-adg" firstAttribute="leading" secondItem="1Ps-AJ-22C" secondAttribute="leading" id="xa1-PR-Gq0"/>
                         </constraints>
                     </view>
@@ -293,7 +294,7 @@
                 </viewController>
                 <customObject id="ICJ-xA-6Ud" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="989" y="1019"/>
+            <point key="canvasLocation" x="989" y="1018.5"/>
         </scene>
         <!--Preferences-->
         <scene sceneID="ndM-Fj-5Cq">

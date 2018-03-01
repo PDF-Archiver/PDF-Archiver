@@ -1,132 +1,158 @@
 
-/* Class = "NSButtonCell"; title = "Save"; ObjectID = "0XN-Jb-GHq"; */
+/* Class = "NSButtonCell"; title = "Speichern"; ObjectID = "0XN-Jb-GHq"; */
 "0XN-Jb-GHq.title" = "Speichern";
 
 /* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "144-l1-cpe"; */
-"144-l1-cpe.title" = "Text Cell";
+"144-l1-cpe.title" = "Text Eintrag";
 
-/* Class = "NSMenuItem"; title = "PDF Archiver"; ObjectID = "1Xt-HY-uBw"; */
+/* Class = "NSMenuItem"; title = "PDF Archivar"; ObjectID = "1Xt-HY-uBw"; */
 "1Xt-HY-uBw.title" = "PDF Archivar";
 
-/* Class = "NSMenuItem"; title = "Quit PDF Archiver"; ObjectID = "4sb-4s-VLi"; */
+/* Class = "NSMenuItem"; title = "PDF Archivar beenden"; ObjectID = "4sb-4s-VLi"; */
 "4sb-4s-VLi.title" = "PDF Archivar beenden";
 
-/* Class = "NSMenuItem"; title = "About PDF Archiver"; ObjectID = "5kV-Vb-QxS"; */
+/* Class = "NSMenuItem"; title = "Über PDF Archivar"; ObjectID = "5kV-Vb-QxS"; */
 "5kV-Vb-QxS.title" = "Über PDF Archivar";
 
-/* Class = "NSMenu"; title = "Main Menu"; ObjectID = "AYu-sK-qS6"; */
+/* Class = "NSTextFieldCell"; title = "Thank you for downloading."; ObjectID = "8Xm-l9-Ww4"; */
+"8Xm-l9-Ww4.title" = "Danke für das Herunterladen.";
+
+/* Class = "NSButtonCell"; title = "Close"; ObjectID = "90s-ei-HMI"; */
+"90s-ei-HMI.title" = "Schließen";
+
+/* Class = "NSMenu"; title = "Hauptmenü"; ObjectID = "AYu-sK-qS6"; */
 "AYu-sK-qS6.title" = "Hauptmenü";
 
-/* Class = "NSTextFieldCell"; title = "Table View Cell"; ObjectID = "B7Q-Q5-RNU"; */
+/* Class = "NSTextFieldCell"; title = "1 ) Select an Archive Path in preferences\n\n2) Select untagged documents\n\n3) Tag your document and save  it"; ObjectID = "AlK-ae-Y1M"; */
+"AlK-ae-Y1M.title" = "1 ) Setze den Archiv Pfad in den Einstellungen:\n\n2) Wähle Dokumente aus:\n\n3) Versehe deine Dokumente mit Tags und speichere sie:";
+
+/* Class = "NSTextFieldCell"; title = "Tabellen Eintrag"; ObjectID = "B7Q-Q5-RNU"; */
 "B7Q-Q5-RNU.title" = "Tabellen Eintrag";
 
-/* Class = "NSMenuItem"; title = "Preferences…"; ObjectID = "BOF-NM-1cW"; */
+/* Class = "NSMenuItem"; title = "Einstellungen…"; ObjectID = "BOF-NM-1cW"; */
 "BOF-NM-1cW.title" = "Einstellungen…";
 
-/* Class = "NSMenuItem"; title = "Close"; ObjectID = "DVo-aG-piG"; */
+/* Class = "NSMenuItem"; title = "Schließen"; ObjectID = "DVo-aG-piG"; */
 "DVo-aG-piG.title" = "Schließen";
 
-/* Class = "NSMenu"; title = "Help"; ObjectID = "F2S-fz-NVQ"; */
+/* Class = "NSTextFieldCell"; title = "CMD ,"; ObjectID = "Dce-Xm-wCT"; */
+"Dce-Xm-wCT.title" = "⌘ ,";
+
+/* Class = "NSMenu"; title = "Hilfe"; ObjectID = "F2S-fz-NVQ"; */
 "F2S-fz-NVQ.title" = "Hilfe";
 
-/* Class = "NSMenuItem"; title = "PDF Archiver Help"; ObjectID = "FKE-Sm-Kum"; */
+/* Class = "NSMenuItem"; title = "PDF Archivar Hilfe"; ObjectID = "FKE-Sm-Kum"; */
 "FKE-Sm-Kum.title" = "PDF Archivar Hilfe";
 
-/* Class = "NSTextFieldCell"; title = "PDF Documents"; ObjectID = "FTj-OD-Ghm"; */
+/* Class = "NSTextFieldCell"; title = "PDF Dokumente"; ObjectID = "FTj-OD-Ghm"; */
 "FTj-OD-Ghm.title" = "PDF Dokumente";
 
-/* Class = "NSMenuItem"; title = "Reset Settings"; ObjectID = "Hz0-RV-wAv"; */
-//"Hz0-RV-wAv.title" = "Einstellungen zurücksetzen";
+/* Class = "NSMenuItem"; title = "Show Onboarding"; ObjectID = "Hz0-RV-wAv"; */
+"Hz0-RV-wAv.title" = "Einführung anzeigen";
 
-/* Class = "NSMenuItem"; title = "Reset Settings"; ObjectID = "N0V-Bp-Pnp"; */
-"N0V-Bp-Pnp.title" = "Einstellungen zurücksetzen";
-
-
-/* Class = "NSMenuItem"; title = "Öffnen …"; ObjectID = "IAo-SY-fd9"; */
+/* Class = "NSMenuItem"; title = "Öffnen…"; ObjectID = "IAo-SY-fd9"; */
 "IAo-SY-fd9.title" = "Öffnen…";
 
-/* Class = "NSWindow"; title = "PDF Archiver"; ObjectID = "IQv-IB-iLA"; */
+/* Class = "NSViewController"; title = "Onboarding"; ObjectID = "IBN-wm-PS1"; */
+"IBN-wm-PS1.title" = "Einführung";
+
+/* Class = "NSWindow"; title = "PDF Archivar"; ObjectID = "IQv-IB-iLA"; */
 "IQv-IB-iLA.title" = "PDF Archivar";
 
-/* Class = "NSTextFieldCell"; title = "Archive Path:"; ObjectID = "Ju7-wj-fHp"; */
+/* Class = "NSTextFieldCell"; title = "Archiv Pfad:"; ObjectID = "Ju7-wj-fHp"; */
 "Ju7-wj-fHp.title" = "Archiv Pfad:";
 
-/* Class = "NSMenuItem"; title = "Show All"; ObjectID = "Kd2-mp-pUS"; */
+/* Class = "NSMenuItem"; title = "Alle einblenden"; ObjectID = "Kd2-mp-pUS"; */
 "Kd2-mp-pUS.title" = "Alle einblenden";
 
-/* Class = "NSButtonCell"; title = "Add PDFs "; ObjectID = "O5o-sv-h0r"; */
+/* Class = "NSTextFieldCell"; title = "Welcome to PDF Archiver"; ObjectID = "LDE-IZ-15h"; */
+"LDE-IZ-15h.title" = "Willkommen bei PDF Archivar";
+
+/* Class = "NSMenuItem"; title = "Einstellungen zurücksetzen"; ObjectID = "N0V-Bp-Pnp"; */
+"N0V-Bp-Pnp.title" = "Einstellungen zurücksetzen";
+
+/* Class = "NSButtonCell"; title = "PDFs hinzufügen"; ObjectID = "O5o-sv-h0r"; */
 "O5o-sv-h0r.title" = "PDFs hinzufügen";
 
-/* Class = "NSMenuItem"; title = "Minimize"; ObjectID = "OY7-WF-poV"; */
+/* Class = "NSMenuItem"; title = "Minimieren"; ObjectID = "OY7-WF-poV"; */
 "OY7-WF-poV.title" = "Minimieren";
 
-/* Class = "NSMenuItem"; title = "Hide PDF Archiver"; ObjectID = "Olw-nP-bQN"; */
+/* Class = "NSMenuItem"; title = "PDF Archivar ausblenden"; ObjectID = "Olw-nP-bQN"; */
 "Olw-nP-bQN.title" = "PDF Archivar ausblenden";
 
-/* Class = "NSTextFieldCell"; placeholderString = "Description"; ObjectID = "PCv-if-5Qd"; */
+/* Class = "NSTextFieldCell"; placeholderString = "Beschreibung"; ObjectID = "PCv-if-5Qd"; */
 "PCv-if-5Qd.placeholderString" = "Beschreibung";
 
-/* Class = "NSMenuItem"; title = "Zoom"; ObjectID = "R4o-n2-Eq4"; */
+/* Class = "NSMenuItem"; title = "Zoomen"; ObjectID = "R4o-n2-Eq4"; */
 "R4o-n2-Eq4.title" = "Zoomen";
 
-/* Class = "NSTextFieldCell"; title = "Document Attributes"; ObjectID = "RIU-wB-4cE"; */
+/* Class = "NSTextFieldCell"; title = "Dokument Attribute"; ObjectID = "RIU-wB-4cE"; */
 "RIU-wB-4cE.title" = "Dokument Attribute";
 
-/* Class = "NSMenu"; title = "Window"; ObjectID = "Td7-aD-5lo"; */
+/* Class = "NSMenu"; title = "Fenster"; ObjectID = "Td7-aD-5lo"; */
 "Td7-aD-5lo.title" = "Fenster";
 
-/* Class = "NSMenuItem"; title = "Hide Others"; ObjectID = "Vdr-fp-XzO"; */
+/* Class = "NSMenuItem"; title = "Andere ausblenden"; ObjectID = "Vdr-fp-XzO"; */
 "Vdr-fp-XzO.title" = "Andere ausblenden";
 
-/* Class = "NSButtonCell"; title = "change"; ObjectID = "XbB-C4-8qz"; */
+/* Class = "NSButtonCell"; title = "Ändern"; ObjectID = "XbB-C4-8qz"; */
 "XbB-C4-8qz.title" = "Ändern";
 
 /* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "Zdh-HQ-s5r"; */
-//"Zdh-HQ-s5r.title" = "Text Cell";
+"Zdh-HQ-s5r.title" = "Text Cell";
 
 /* Class = "NSTableColumn"; headerCell.title = "Tag"; ObjectID = "a86-rc-hFq"; */
 "a86-rc-hFq.headerCell.title" = "Tag";
 
-/* Class = "NSMenuItem"; title = "Window"; ObjectID = "aUF-d1-5bR"; */
+/* Class = "NSMenuItem"; title = "Fenster"; ObjectID = "aUF-d1-5bR"; */
 "aUF-d1-5bR.title" = "Fenster";
 
 /* Class = "NSTableColumn"; headerCell.title = "Tag"; ObjectID = "bgb-vH-5vk"; */
 "bgb-vH-5vk.headerCell.title" = "Tag";
 
-/* Class = "NSMenu"; title = "File"; ObjectID = "bib-Uj-vzu"; */
+/* Class = "NSMenu"; title = "Ablage"; ObjectID = "bib-Uj-vzu"; */
 "bib-Uj-vzu.title" = "Ablage";
+
+/* Class = "NSTextFieldCell"; title = "CMD s"; ObjectID = "cpe-TF-DiZ"; */
+"cpe-TF-DiZ.title" = "⌘ s";
 
 /* Class = "NSTableColumn"; headerCell.title = "#"; ObjectID = "dAK-Zr-LS0"; */
 "dAK-Zr-LS0.headerCell.title" = "#";
 
-/* Class = "NSMenuItem"; title = "File"; ObjectID = "dMs-cI-mzQ"; */
+/* Class = "NSMenuItem"; title = "Ablage"; ObjectID = "dMs-cI-mzQ"; */
 "dMs-cI-mzQ.title" = "Ablage";
 
-/* Class = "NSTextFieldCell"; placeholderString = "Please set the path ..."; ObjectID = "gtQ-4r-22c"; */
+/* Class = "NSTextFieldCell"; ibExternalAccessibilityHelp = "Archive Path"; ObjectID = "gtQ-4r-22c"; */
+"gtQ-4r-22c.ibExternalAccessibilityHelp" = "Archiv Pfad";
+
+/* Class = "NSTextFieldCell"; placeholderString = "Bitte Pfad setzen  ..."; ObjectID = "gtQ-4r-22c"; */
 "gtQ-4r-22c.placeholderString" = "Bitte Pfad setzen  ...";
 
-/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "l4J-fs-Cne"; */
+/* Class = "NSTextFieldCell"; title = "Text Eintrag"; ObjectID = "l4J-fs-Cne"; */
 "l4J-fs-Cne.title" = "Text Eintrag";
 
-/* Class = "NSTextFieldCell"; title = "Table View Cell"; ObjectID = "mEm-YG-Iaa"; */
-//"mEm-YG-Iaa.title" = "Table View Cell";
+/* Class = "NSTextFieldCell"; title = "CMD o"; ObjectID = "m4z-q1-wQ4"; */
+"m4z-q1-wQ4.title" = "⌘ o";
 
-/* Class = "NSViewController"; title = "Preferences"; ObjectID = "mcV-6Y-gT5"; */
+/* Class = "NSTextFieldCell"; title = "Table View Cell"; ObjectID = "mEm-YG-Iaa"; */
+"mEm-YG-Iaa.title" = "Table View Cell";
+
+/* Class = "NSViewController"; title = "Einstellungen"; ObjectID = "mcV-6Y-gT5"; */
 "mcV-6Y-gT5.title" = "Einstellungen";
 
-/* Class = "NSTableColumn"; headerCell.title = "Document"; ObjectID = "nm7-rf-3j8"; */
+/* Class = "NSTableColumn"; headerCell.title = "Dokument"; ObjectID = "nm7-rf-3j8"; */
 "nm7-rf-3j8.headerCell.title" = "Dokument";
 
-/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "o1a-m8-IzU"; */
+/* Class = "NSTextFieldCell"; title = "Text Eintrag"; ObjectID = "o1a-m8-IzU"; */
 "o1a-m8-IzU.title" = "Text Eintrag";
 
-/* Class = "NSTextFieldCell"; title = "Table View Cell"; ObjectID = "pXJ-g7-oZi"; */
+/* Class = "NSTextFieldCell"; title = "Tabellen Eintrag"; ObjectID = "pXJ-g7-oZi"; */
 "pXJ-g7-oZi.title" = "Tabellen Eintrag";
 
-/* Class = "NSMenuItem"; title = "Save…"; ObjectID = "pxx-59-PXV"; */
+/* Class = "NSMenuItem"; title = "Speichern …"; ObjectID = "pxx-59-PXV"; */
 "pxx-59-PXV.title" = "Speichern …";
 
-/* Class = "NSTextFieldCell"; title = "Available Tags"; ObjectID = "qKy-yf-U85"; */
+/* Class = "NSTextFieldCell"; title = "Verfügbare Tags"; ObjectID = "qKy-yf-U85"; */
 "qKy-yf-U85.title" = "Verfügbare Tags";
 
 /* Class = "NSTextFieldCell"; title = "Table View Cell"; ObjectID = "tbm-cD-D49"; */
@@ -135,5 +161,5 @@
 /* Class = "NSMenu"; title = "PDF Archivar"; ObjectID = "uQy-DD-JDr"; */
 "uQy-DD-JDr.title" = "PDF Archivar";
 
-/* Class = "NSMenuItem"; title = "Help"; ObjectID = "wpr-3q-Mcd"; */
+/* Class = "NSMenuItem"; title = "Hilfe"; ObjectID = "wpr-3q-Mcd"; */
 "wpr-3q-Mcd.title" = "Hilfe";
