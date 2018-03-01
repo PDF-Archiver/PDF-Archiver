@@ -22,12 +22,7 @@ class OnboardingViewController: NSViewController {
         
         // set background color of the view
         let layout = Layout()
-//        self.view.wantsLayer = true
-//        self.view.layer?.backgroundColor = layout.color3
-//        self.view.layer?.cornerRadius = layout.cornerRadius
-        
         self.customView.wantsLayer = true
         self.customView.layer?.backgroundColor = layout.color3
-        self.customView.layer?.cornerRadius = layout.cornerRadius
     }
 }
