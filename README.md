@@ -1,5 +1,7 @@
 <p align="center">
-<img src="assets/AppIcon.svg">
+<a href="https://itunes.apple.com/app/pdf-archivar/id1352719750" target="itunes_store">
+  <img src="assets/AppIcon.svg" width="200px">
+</a>
 </p>
 
 <p align="center">
