@@ -24,7 +24,7 @@
 "AYu-sK-qS6.title" = "Hauptmenü";
 
 /* Class = "NSTextFieldCell"; title = "1 ) Select an Archive Path in preferences\n\n2) Select untagged documents\n\n3) Tag your document and save  it"; ObjectID = "AlK-ae-Y1M"; */
-"AlK-ae-Y1M.title" = "1 ) Setze den Archiv Pfad in den Einstellungen:\n\n2) Wähle Dokumente aus:\n\n3) Versehe deine Dokumente mit Tags und speichere sie:";
+"AlK-ae-Y1M.title" = "Setze den Archiv Pfad in den Einstellungen:\n\nWähle Dokumente aus:\n\nVersehe deine Dokumente mit Tags und speichere sie:";
 
 /* Class = "NSTextFieldCell"; title = "Tabellen Eintrag"; ObjectID = "B7Q-Q5-RNU"; */
 "B7Q-Q5-RNU.title" = "Tabellen Eintrag";
