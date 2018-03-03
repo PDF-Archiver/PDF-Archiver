@@ -57,7 +57,7 @@ This structure is independent from your OS and filesystem and makes it very easy
 * **Date:** `yyyy-mm-dd` Date of the document content.
 * **Description:** `--ikea-tradfri-gateway` Meaningful description of the document.
 * **Tags:** `__bill_ikea_iot` Tags which will help you to find the document in your archive.
-Capital letters, spaces and language specific characters (like `ä, ö, ü, ß`) will be removed to maximize the filesystem compatibility.
+Capital letters, spaces and language specific characters (such as `ä, ö, ü, ß`) will be removed to maximize the filesystem compatibility.
 
 ## :floppy_disk: Installation
 Download it from the Mac App Store:
