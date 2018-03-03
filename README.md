@@ -15,9 +15,10 @@ A tool for tagging files and archiving tasks.
 
 ### The Goal
 Archive all incoming documents digitally to access and search them in an easier way.
+Transfer the sorted documents to your smartphone or make a backup within seconds.
 
 ### The Way
-* Scan all incoming bills etc. and save them on your computer/iCloud in an *untagged* folder.
+* Scan all incoming bills, letters etc. and save them on your computer/iCloud in an *untagged* folder.
 * Put the original paper documents in a folder, sorted by year. Don't care about bills/insurance papers etc.. Just leave all of them in one box for the each year.
 * Open the **PDF Archiver** and start tagging. Your documents will be moved from the *untagged* to your *Archive* folder.
 
@@ -49,18 +50,27 @@ This structure is independent from your OS and filesystem and makes it very easy
 ## :rocket: Usage
 * Scan your documents, e.g. with [Scanbot](https://scanbot.io)
 * Create an `Archive` folder in your iCloud Drive
-* Select it in the *Preferences* panel (`CMD ,` ...obviously)
+* Select it in the *Preferences* panel (`⌘ ,` ...obviously)
 * Start tagging your files
 
 ## :scroll: Convention
-* **Date:** `yyyy-mm-dd` Date of the document content
-* **Description:** `--ikea-tradfri-gateway` Meaningful description of the document, `$CapitalLetters, $Spaces, ä, ö, ü, ß` will be replaced
-* **Tags:** `__bill_ikea_iot` Tags which will help you to find the document in your archive
+* **Date:** `yyyy-mm-dd` Date of the document content.
+* **Description:** `--ikea-tradfri-gateway` Meaningful description of the document.
+* **Tags:** `__bill_ikea_iot` Tags which will help you to find the document in your archive.
+Capital letters, spaces and language specific characters (like `ä, ö, ü, ß`) will be removed to maximize the filesystem compatibility.
 
 ## :floppy_disk: Installation
-* `git clone https://github.com/JulianKahnert/PDF-Archiver.git` get the project
-* `cd PDF-Archiver && xcodebuild` build the app
-* `cp -r "build/Release/PDF Archiver.app" ~/Applications/` copy it to your Applications folder
+Download it from the Mac App Store:
+
+<a href="https://itunes.apple.com/app/pdf-archiver/id1352719750" target="itunes_store">
+  <img src="assets/MacAppStoreBadge.svg">
+</a>
+
+Or clone the repository and build it:
+* Downloaded and install [Xcode.app](https://itunes.apple.com/app/xcode/id497799835)
+* Get the project: `git clone https://github.com/JulianKahnert/PDF-Archiver.git`
+* Build the app: `cd PDF-Archiver && xcodebuild clean build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO`
+* Copy it to your Applications folder: `cp -r "build/Release/PDF Archiver.app" ~/Applications/`
 * Start **PDF Archiver** :rocket:
 
 ## <a name="pro-tips"></a>:mortar_board: Pro Tips
@@ -73,9 +83,9 @@ This structure is independent from your OS and filesystem and makes it very easy
 
 ##### PDF Archiver
 * You can use keyboard shortcuts
-    * `CMD ,`: open the preferences panel
-    * `CMD o`: add new PDF documents
-    * `CMD s`: save the current document in your archive
+    * `⌘ ,`: open the preferences panel
+    * `⌘ o`: add new PDF documents
+    * `⌘ s`: save the current document in your archive
 * Use the `TAB` key for fast field switching
 
 ## :octocat: How to contribute
