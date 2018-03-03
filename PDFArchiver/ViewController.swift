@@ -190,5 +190,8 @@ class ViewController: NSViewController {
         } else {
             print("\nSAVE NOT POSSIBLE\n")
         }
+        
+        // quit application if the window disappears
+        NSApplication.shared.terminate(self)
     }
 }
