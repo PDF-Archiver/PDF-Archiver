@@ -205,20 +205,20 @@
                                         </textFieldCell>
                                     </textField>
                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="JUz-Wg-5GQ">
-                                        <rect key="frame" x="78" y="40" width="281" height="95"/>
+                                        <rect key="frame" x="78" y="40" width="265" height="95"/>
                                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="AlK-ae-Y1M">
                                             <font key="font" metaFont="system" size="15"/>
-                                            <string key="title">1 ) Select an Archive Path in preferences
+                                            <string key="title">Select an Archive Path in preferences:
 
-2) Select untagged documents
+Select untagged documents:
 
-3) Tag your document and save  it</string>
+Tag your document and save  it:</string>
                                             <color key="textColor" red="0.1306995749" green="0.1715696156" blue="0.23138025400000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                         </textFieldCell>
                                     </textField>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="OpW-y7-zJz">
-                                        <rect key="frame" x="395" y="112" width="64" height="23"/>
+                                        <rect key="frame" x="379" y="112" width="64" height="23"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="60" id="r26-Tl-4mk"/>
                                         </constraints>
@@ -229,7 +229,7 @@
                                         </textFieldCell>
                                     </textField>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lDQ-a2-L5n">
-                                        <rect key="frame" x="395" y="76" width="64" height="23"/>
+                                        <rect key="frame" x="379" y="76" width="64" height="23"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="60" id="Jdn-ZD-gLA"/>
                                         </constraints>
@@ -240,7 +240,7 @@
                                         </textFieldCell>
                                     </textField>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Tpx-oz-ZWL">
-                                        <rect key="frame" x="395" y="40" width="64" height="23"/>
+                                        <rect key="frame" x="379" y="40" width="64" height="23"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="60" id="g4Q-9A-JK5"/>
                                         </constraints>
