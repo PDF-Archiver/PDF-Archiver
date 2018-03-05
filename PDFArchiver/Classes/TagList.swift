@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import os.log
 
 struct TagList {
     // structure for available tags
@@ -40,7 +41,8 @@ struct TagList {
                 return objs.sorted(by: { $0.count > $1.count })
             }
         } else {
-            print("Wrong key '\(key)' selected. This should not happen!")
+            let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "DataModel")
+            os_log("Wrong key '%@' selected. This should not happen!", log: log, type: .error, key as CVarArg)
             return []
         }
     }

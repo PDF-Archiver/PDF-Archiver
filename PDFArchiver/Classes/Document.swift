@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import os.log
 
 class Document: NSObject {
     // structure for PDF documents on disk
@@ -100,7 +101,8 @@ class Document: NSObject {
 
             try fileManager.moveItem(at: self.path, to: new_filepath)
         } catch let error as NSError {
-            print("Ooops! Something went wrong: \(error)")
+            let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "DataModel")
+            os_log("Error while moving file: %@", log: log, type: .error, error as CVarArg)
             return false
         }
         self.name = String(new_filepath.lastPathComponent)
@@ -116,7 +118,8 @@ class Document: NSObject {
             // set file tags [https://stackoverflow.com/a/47340666]
             try (new_filepath as NSURL).setResourceValue(tags, forKey: URLResourceKey.tagNamesKey)
         } catch let error as NSError {
-            print("Could not set file tags: \(error)")
+            let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "DataModel")
+            os_log("Could not set file: %@", log: log, type: .error, error as CVarArg)
         }
         return true
     }

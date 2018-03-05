@@ -7,8 +7,10 @@
 //
 
 import Quartz
+import os.log
 
 class ViewController: NSViewController {
+    let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "MainViewController")
     var dataModelInstance = DataModel()
 
     @IBOutlet weak var pdfDocumentsView: NSView!
@@ -105,7 +107,7 @@ class ViewController: NSViewController {
                 let url = try NSURL.init(resolvingBookmarkData: bookmarkData, options: .withoutUI, relativeTo: nil, bookmarkDataIsStale: nil)
                 url.startAccessingSecurityScopedResource()
             } catch let error as NSError {
-                print("Bookmark Access Fails: \(error.description)")
+                os_log("Bookmark Access failed: %@", log: self.log, type: .error, error.description as CVarArg)
             }
         }
 
@@ -186,9 +188,9 @@ class ViewController: NSViewController {
         if let prefs = self.dataModelInstance.prefs,
            let archivePath = self.dataModelInstance.prefs?.archivePath {
             prefs.save()
-            print("\nSAVE COMPLETE (\(archivePath)\n")
+            os_log("Save complete: %@", log: self.log, type: .debug, archivePath as CVarArg)
         } else {
-            print("\nSAVE NOT POSSIBLE\n")
+            os_log("Save possible.", log: self.log, type: .debug)
         }
         
         // quit application if the window disappears

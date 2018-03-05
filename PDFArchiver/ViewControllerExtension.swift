@@ -7,6 +7,7 @@
 //
 
 import Quartz
+import os.log
 
 extension ViewController {
     // MARK: - segue stuff
@@ -180,14 +181,14 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
         // test if element already exists in document tag table view
         if let documentTags = self.documentTagAC.content as? [Tag] {
             for tag in documentTags where tag.name == selectedTag.name {
-                print("Tag already found!")
+                os_log("Tag '%@' already found!", log: self.log, type: .error, selectedTag.name as CVarArg)
                 return
             }
         }
 
         // add new tag to document table view
         guard let idx = self.dataModelInstance.documentIdx else {
-            print("Please pick documents first!")
+            os_log("Please pick documents first!", log: self.log, type: .info)
             return
         }
 

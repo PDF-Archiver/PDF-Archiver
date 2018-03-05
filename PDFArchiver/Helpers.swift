@@ -8,6 +8,7 @@
 
 import Foundation
 import Quartz
+import os.log
 
 func dialogOK(message_key: String, info_key: String, style: NSAlert.Style) {
     let alert = NSAlert()
@@ -30,8 +31,9 @@ func regex_matches(for regex: String, in text: String) -> [String]? {
         } else {
             return output
         }
-    } catch let error {
-        print("invalid regex: \(error.localizedDescription)")
+    } catch let error as NSError {
+        let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "Helpers")
+        os_log("Invalid regex: %@", log: log, type: .error, error as CVarArg)
         return nil
     }
 }

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import os.log
 
 protocol PreferencesDelegate: class {
     func setTagList(tagDict: [String: Int])
@@ -27,7 +28,8 @@ struct Preferences {
                 let bookmark = try newValue.bookmarkData(options: .securityScopeAllowOnlyReadAccess, includingResourceValuesForKeys: nil, relativeTo: nil)
                 UserDefaults.standard.set(bookmark, forKey: "securityScopeBookmark")
             } catch let error as NSError {
-                print("Bookmark Write Fails: \(error.description)")
+                let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "DataModel")
+                os_log("Bookmark Write Fails: %@", log: log, type: .error, error as CVarArg)
             }
             
             self._archivePath = newValue
