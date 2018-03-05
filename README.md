@@ -93,5 +93,8 @@ All contributions are welcome!
 Feel free to contribute to this project.
 Submit pull requests, contribute tutorials or other wiki content - whatever you have to offer, it would be appreciated!
 
-## :book: Credits and Thanks
-[zngguvnf.org](https://zngguvnf.org) for the initial idea of the naming convention.
+## :book: Thanks and Donations
+* [**zngguvnf.org**](https://zngguvnf.org) discussing and creating this archive structure.
+* [**Karl Voit**](http://karl-voit.at/managing-digital-photographs/)  for the initial idea of a document naming convention.
+
+<noscript><a href="https://liberapay.com/JulianKahnert/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a></noscript>
