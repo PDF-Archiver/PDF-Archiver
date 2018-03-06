@@ -33,6 +33,14 @@ class Document: NSObject {
                 raw = raw.replacingOccurrences(of: "ö", with: "oe")
                 raw = raw.replacingOccurrences(of: "ü", with: "ue")
                 raw = raw.replacingOccurrences(of: "ß", with: "ss")
+                
+                // trailing previous whitespaces from beginning/end
+                if raw.hasSuffix("-") {
+                    raw = String(raw.dropLast())
+                }
+                if raw.hasPrefix("-") {
+                    raw = String(raw.dropFirst())
+                }
 
                 self._documentDescription = raw
             }
