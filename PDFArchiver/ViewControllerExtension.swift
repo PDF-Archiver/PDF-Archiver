@@ -122,12 +122,6 @@ extension ViewController {
     @objc func showOnboarding() {
         self.performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "onboardingSegue"), sender: self)
     }
-
-    // MARK: some helper methods
-    func sortArrayController(by key: String, ascending asc: Bool) {
-        tagAC.sortDescriptors = [NSSortDescriptor(key: key, ascending: asc)]
-        tagAC.rearrangeObjects()
-    }
 }
 
 extension ViewController: NSTableViewDelegate, NSTableViewDataSource {

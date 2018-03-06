@@ -474,8 +474,8 @@ Tag your document and save  it:</string>
                                                         </tableColumn>
                                                     </tableColumns>
                                                     <connections>
-                                                        <binding destination="6y2-Gm-cOS" name="content" keyPath="arrangedObjects" id="kA5-wO-gLL"/>
-                                                        <binding destination="6y2-Gm-cOS" name="selectionIndexes" keyPath="selectionIndexes" previousBinding="kA5-wO-gLL" id="47H-fx-rGc"/>
+                                                        <binding destination="6y2-Gm-cOS" name="content" keyPath="arrangedObjects" id="GxU-I2-Cdh"/>
+                                                        <binding destination="6y2-Gm-cOS" name="selectionIndexes" keyPath="selectionIndexes" previousBinding="GxU-I2-Cdh" id="UUX-19-Jeq"/>
                                                         <outlet property="delegate" destination="XfG-lQ-9wD" id="IbN-nE-uz8"/>
                                                     </connections>
                                                 </tableView>
@@ -681,6 +681,7 @@ Tag your document and save  it:</string>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                             </textFieldCell>
+                                                            <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="count"/>
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="aAj-oT-fzK">
@@ -705,6 +706,9 @@ Tag your document and save  it:</string>
                                                                     </connections>
                                                                 </tableCellView>
                                                             </prototypeCellViews>
+                                                            <connections>
+                                                                <binding destination="jrR-pM-UBT" name="value" keyPath="arrangedObjects.count" id="JSl-95-Sk4"/>
+                                                            </connections>
                                                         </tableColumn>
                                                         <tableColumn identifier="" width="194.5" minWidth="40" maxWidth="1000" id="bgb-vH-5vk">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Tag">
@@ -717,6 +721,7 @@ Tag your document and save  it:</string>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                             </textFieldCell>
+                                                            <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="name"/>
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
@@ -741,12 +746,13 @@ Tag your document and save  it:</string>
                                                                     </connections>
                                                                 </tableCellView>
                                                             </prototypeCellViews>
+                                                            <connections>
+                                                                <binding destination="jrR-pM-UBT" name="value" keyPath="arrangedObjects.name" id="SeY-zo-T1X"/>
+                                                            </connections>
                                                         </tableColumn>
                                                     </tableColumns>
                                                     <connections>
-                                                        <action selector="clickedTableView:" target="XfG-lQ-9wD" id="XLt-ju-bzD"/>
-                                                        <binding destination="jrR-pM-UBT" name="content" keyPath="arrangedObjects" id="Ou8-Vc-Vho"/>
-                                                        <binding destination="jrR-pM-UBT" name="selectionIndexes" keyPath="selectionIndexes" previousBinding="Ou8-Vc-Vho" id="KuO-e9-hkj"/>
+                                                        <binding destination="jrR-pM-UBT" name="selectionIndexes" keyPath="selectionIndexes" id="v8p-1e-i2c"/>
                                                     </connections>
                                                 </tableView>
                                             </subviews>
@@ -895,7 +901,12 @@ Tag your document and save  it:</string>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <arrayController objectClassName="Document" id="6y2-Gm-cOS" userLabel="Document Array Controller"/>
-                <arrayController objectClassName="Tag" id="jrR-pM-UBT" userLabel="Tag Array Controller"/>
+                <arrayController objectClassName="Tag" automaticallyRearrangesObjects="YES" id="jrR-pM-UBT" userLabel="Tag Array Controller">
+                    <declaredKeys>
+                        <string>count</string>
+                        <string>name</string>
+                    </declaredKeys>
+                </arrayController>
                 <arrayController objectClassName="Tag" id="nlU-Xg-XLm" userLabel="Document Tag Array Controller"/>
             </objects>
             <point key="canvasLocation" x="75" y="1123"/>

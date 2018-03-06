@@ -55,18 +55,6 @@ class ViewController: NSViewController {
         document.documentDescription = sender.stringValue
     }
 
-    @IBAction func clickedTableView(_ sender: NSTableView) {
-        if sender.clickedRow == -1 {
-            if sender.clickedColumn == 0 {
-                sortArrayController(by: "count", ascending: false)
-            } else {
-                sortArrayController(by: "name", ascending: true)
-            }
-        } else {
-            tagTableView.deselectRow(tagAC.selectionIndex)
-        }
-    }
-
     @IBAction func clickedDocumentTagTableView(_ sender: NSTableView) {
         // test if the document tag table is empty
         guard !self.documentAC.selectedObjects.isEmpty,
@@ -138,8 +126,8 @@ class ViewController: NSViewController {
         descriptionField.delegate = self
 
         // add sorting to tag fields
-        sortArrayController(by: "count", ascending: false)
-
+        self.tagTableView.sortDescriptors = [NSSortDescriptor(key: "count", ascending: false), NSSortDescriptor(key: "name", ascending: true)]
+        
         // set some PDF View settings
 //         self.pdfContentView.displayMode = PDFDisplayMode.singlePageContinuous
         self.pdfContentView.displayMode = PDFDisplayMode.singlePage
