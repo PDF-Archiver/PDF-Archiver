@@ -97,8 +97,9 @@ class ViewController: NSViewController {
                 if let archivePathTmp = archivePath  {
                     archivePathTmp.startAccessingSecurityScopedResource()
                     
-                    print("Setting archive path, e.g. update tag list.")
-                    self.dataModelInstance.prefs?.archivePath = archivePathTmp as URL
+                    // workaround which might slows down the system, if the archive gets big
+                    os_log("Setting archive path, e.g. update tag list.", log: self.log, type: .debug)
+                    self.dataModelInstance.prefs?.getArchiveTags()
                 }
             } catch let error as NSError {
                 os_log("Bookmark Access failed: %@", log: self.log, type: .error, error.description as CVarArg)

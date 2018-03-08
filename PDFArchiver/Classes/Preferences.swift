@@ -15,6 +15,7 @@ protocol PreferencesDelegate: class {
 }
 
 struct Preferences {
+    let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "DataModel")
     fileprivate var _archivePath: URL?
     weak var delegate: PreferencesDelegate?
     var archivePath: URL? {
@@ -28,12 +29,11 @@ struct Preferences {
                 let bookmark = try newValue.bookmarkData(options: .securityScopeAllowOnlyReadAccess, includingResourceValuesForKeys: nil, relativeTo: nil)
                 UserDefaults.standard.set(bookmark, forKey: "securityScopeBookmark")
             } catch let error as NSError {
-                let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "DataModel")
-                os_log("Bookmark Write Fails: %@", log: log, type: .error, error as CVarArg)
+                os_log("Bookmark Write Fails: %@", log: self.log, type: .error, error as CVarArg)
             }
             
             self._archivePath = newValue
-            self.get_last_tags(path: newValue)
+            self.getArchiveTags()
         }
     }
 
@@ -63,7 +63,11 @@ struct Preferences {
         self.delegate!.setTagList(tagDict: tagsRaw)
     }
 
-    private func get_last_tags(path: URL) {
+    func getArchiveTags() {
+        guard let path = self._archivePath else {
+            os_log("No archive path selected, could not get old tags.", log: self.log, type: .error)
+            return
+        }
         // get all PDF files from this year and the last years
         let date = Date()
         let calendar = Calendar.current
