@@ -100,10 +100,16 @@ class ViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // get the security scope bookmark [https://stackoverflow.com/a/35863729]
+        var archivePath: NSURL? = nil
         if let bookmarkData = UserDefaults.standard.object(forKey: "securityScopeBookmark") as? Data {
             do {
-                let url = try NSURL.init(resolvingBookmarkData: bookmarkData, options: .withoutUI, relativeTo: nil, bookmarkDataIsStale: nil)
-                url.startAccessingSecurityScopedResource()
+                archivePath = try NSURL.init(resolvingBookmarkData: bookmarkData, options: .withoutUI, relativeTo: nil, bookmarkDataIsStale: nil)
+                if let archivePathTmp = archivePath  {
+                    archivePathTmp.startAccessingSecurityScopedResource()
+                    
+                    print("Setting archive path, e.g. update tag list.")
+                    self.dataModelInstance.prefs?.archivePath = archivePathTmp as URL
+                }
             } catch let error as NSError {
                 print("Bookmark Access Fails: \(error.description)")
             }
