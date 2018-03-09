@@ -115,7 +115,6 @@ extension ViewController {
         self.dataModelInstance.prefs = nil
         // remove all user defaults
         UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
-        UserDefaults.standard.synchronize()
         // close application
         NSApplication.shared.terminate(self)
     }
