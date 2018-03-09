@@ -49,15 +49,15 @@
 ////    func testTmp() {
 ////
 ////        let app = XCUIApplication()
-////        let pdfArchivarWindow = app.windows["PDF Archivar"]
-////        pdfArchivarWindow.click()
-////        pdfArchivarWindow/*@START_MENU_TOKEN@*/.tables["DocumentTableView"]/*[[".scrollViews.tables[\"DocumentTableView\"]",".tables[\"DocumentTableView\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.typeKey(",", modifierFlags:.command)
+////        let pdfArchiverWindow = app.windows["PDF Archiver"]
+////        pdfArchiverWindow.click()
+////        pdfArchiverWindow/*@START_MENU_TOKEN@*/.tables["DocumentTableView"]/*[[".scrollViews.tables[\"DocumentTableView\"]",".tables[\"DocumentTableView\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.typeKey(",", modifierFlags:.command)
 ////        app/*@START_MENU_TOKEN@*/.buttons["Ändern"]/*[[".dialogs[\"Einstellungen\"].buttons[\"Ändern\"]",".buttons[\"Ändern\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.click()
 ////
 ////        let einstellungenDialog = app.dialogs["Einstellungen"]
 ////        einstellungenDialog.click()
 ////        einstellungenDialog.buttons[XCUIIdentifierCloseWindow].click()
-////        pdfArchivarWindow.buttons[XCUIIdentifierCloseWindow].click()
+////        pdfArchiverWindow.buttons[XCUIIdentifierCloseWindow].click()
 ////
 ////    }
 //    
