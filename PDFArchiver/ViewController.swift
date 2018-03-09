@@ -96,10 +96,6 @@ class ViewController: NSViewController {
                 archivePath = try NSURL.init(resolvingBookmarkData: bookmarkData, options: .withoutUI, relativeTo: nil, bookmarkDataIsStale: nil)
                 if let archivePathTmp = archivePath  {
                     archivePathTmp.startAccessingSecurityScopedResource()
-                    
-                    // workaround which might slows down the system, if the archive gets big
-                    os_log("Setting archive path, e.g. update tag list.", log: self.log, type: .debug)
-                    self.dataModelInstance.prefs?.getArchiveTags()
                 }
             } catch let error as NSError {
                 os_log("Bookmark Access failed: %@", log: self.log, type: .error, error.description as CVarArg)
@@ -123,6 +119,8 @@ class ViewController: NSViewController {
                                        name: Notification.Name("ResetCache"), object: nil)
         notificationCenter.addObserver(self, selector: #selector(self.showOnboarding),
                                        name: Notification.Name("ShowOnboarding"), object: nil)
+        notificationCenter.addObserver(self, selector: #selector(self.updateTags),
+                                       name: Notification.Name("UpdateTags"), object: nil)
 
         // MARK: - delegates
         tagSearchField.delegate = self

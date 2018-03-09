@@ -121,6 +121,10 @@ extension ViewController {
             updateViewController(updatePDF: true)
         }
     }
+    @objc func updateTags() {
+        os_log("Setting archive path, e.g. update tag list.", log: self.log, type: .debug)
+        self.dataModelInstance.prefs?.getArchiveTags()
+    }
 }
 
 extension ViewController: NSTableViewDelegate, NSTableViewDataSource {

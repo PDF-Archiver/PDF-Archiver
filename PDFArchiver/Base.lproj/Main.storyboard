@@ -107,6 +107,12 @@
                                                 <action selector="showOnboarding:" target="Voe-Tx-rLC" id="6CG-fz-q8n"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Update Tags" id="CDG-jy-mOA" userLabel="Update Tags">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="updateTags:" target="Voe-Tx-rLC" id="gtA-Jn-uOh"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem title="Reset Settings" id="N0V-Bp-Pnp">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
