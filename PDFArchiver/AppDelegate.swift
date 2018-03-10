@@ -11,6 +11,10 @@ import Cocoa
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
+    @IBAction func showHelp(_ sender: NSMenuItem) {
+        let helpURL = URL(string: "https://github.com/PDF-Archiver/PDF-Archiver/wiki/FAQs")
+        NSWorkspace.shared.open(helpURL!)
+    }
     @IBAction func showPreferences(_ sender: NSMenuItem) {
         NotificationCenter.default.post(name: Notification.Name("ShowPreferences"), object: nil)
     }
