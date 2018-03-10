@@ -2,7 +2,7 @@
 /* Class = "NSButtonCell"; title = "Speichern"; ObjectID = "0XN-Jb-GHq"; */
 "0XN-Jb-GHq.title" = "Speichern";
 
-/* Class = "NSButton"; ibShadowedToolTip = "Add documents to the upper list"; ObjectID = "0fO-Ka-cSd"; */
+/* Class = "NSButton"; ibShadowedToolTip = "Füge Dokumente der oberen Liste hinzu"; ObjectID = "0fO-Ka-cSd"; */
 "0fO-Ka-cSd.ibShadowedToolTip" = "Füge Dokumente der oberen Liste hinzu";
 
 /* Class = "NSTextFieldCell"; title = "Text Eintrag"; ObjectID = "144-l1-cpe"; */
@@ -35,6 +35,9 @@
 /* Class = "NSMenuItem"; title = "Einstellungen…"; ObjectID = "BOF-NM-1cW"; */
 "BOF-NM-1cW.title" = "Einstellungen…";
 
+/* Class = "NSMenuItem"; title = "Update Tags"; ObjectID = "CDG-jy-mOA"; */
+"CDG-jy-mOA.title" = "Tags aktualisieren";
+
 /* Class = "NSMenuItem"; title = "Schließen"; ObjectID = "DVo-aG-piG"; */
 "DVo-aG-piG.title" = "Schließen";
 
@@ -62,7 +65,7 @@
 /* Class = "NSWindow"; title = "PDF Archiver"; ObjectID = "IQv-IB-iLA"; */
 "IQv-IB-iLA.title" = "PDF Archiver";
 
-/* Class = "NSScrollView"; ibShadowedToolTip = "Documents to tag"; ObjectID = "Ii4-sZ-BA5"; */
+/* Class = "NSScrollView"; ibShadowedToolTip = "Zu taggende Dokumente"; ObjectID = "Ii4-sZ-BA5"; */
 "Ii4-sZ-BA5.ibShadowedToolTip" = "Zu taggende Dokumente";
 
 /* Class = "NSTextFieldCell"; title = "Archiv Pfad:"; ObjectID = "Ju7-wj-fHp"; */
@@ -77,7 +80,7 @@
 /* Class = "NSMenuItem"; title = "Einstellungen zurücksetzen"; ObjectID = "N0V-Bp-Pnp"; */
 "N0V-Bp-Pnp.title" = "Einstellungen zurücksetzen";
 
-/* Class = "NSDatePicker"; ibShadowedToolTip = "date of the document"; ObjectID = "NiF-3c-nL6"; */
+/* Class = "NSDatePicker"; ibShadowedToolTip = "Datum des Dokumentes"; ObjectID = "NiF-3c-nL6"; */
 "NiF-3c-nL6.ibShadowedToolTip" = "Datum des Dokumentes";
 
 /* Class = "NSButtonCell"; title = "PDFs hinzufügen"; ObjectID = "O5o-sv-h0r"; */
@@ -101,16 +104,16 @@
 /* Class = "NSMenu"; title = "Fenster"; ObjectID = "Td7-aD-5lo"; */
 "Td7-aD-5lo.title" = "Fenster";
 
-/* Class = "NSButton"; ibShadowedToolTip = "Save current document in archive"; ObjectID = "U4W-9l-6vC"; */
+/* Class = "NSButton"; ibShadowedToolTip = "Speicher das aktuelle Dokument im Archiv"; ObjectID = "U4W-9l-6vC"; */
 "U4W-9l-6vC.ibShadowedToolTip" = "Speicher das aktuelle Dokument im Archiv";
 
 /* Class = "NSMenuItem"; title = "Andere ausblenden"; ObjectID = "Vdr-fp-XzO"; */
 "Vdr-fp-XzO.title" = "Andere ausblenden";
 
-/* Class = "NSTextField"; ibShadowedToolTip = "description of the document"; ObjectID = "WG2-MH-TVV"; */
+/* Class = "NSTextField"; ibShadowedToolTip = "Beschreibung des Dokumentes"; ObjectID = "WG2-MH-TVV"; */
 "WG2-MH-TVV.ibShadowedToolTip" = "Beschreibung des Dokumentes";
 
-/* Class = "NSSearchField"; ibShadowedToolTip = "Tag input; press return key to add it to the document attributes"; ObjectID = "WfD-Nd-kM0"; */
+/* Class = "NSSearchField"; ibShadowedToolTip = "Tag Eingabe; Drücke die Return taste um die Dokument Attribute hinzuzufügen"; ObjectID = "WfD-Nd-kM0"; */
 "WfD-Nd-kM0.ibShadowedToolTip" = "Tag Eingabe; Drücke die Return taste um die Dokument Attribute hinzuzufügen";
 
 /* Class = "NSButtonCell"; title = "Ändern"; ObjectID = "XbB-C4-8qz"; */
@@ -146,7 +149,7 @@
 /* Class = "NSTextFieldCell"; placeholderString = "Bitte Pfad setzen  ..."; ObjectID = "gtQ-4r-22c"; */
 "gtQ-4r-22c.placeholderString" = "Bitte Pfad setzen  ...";
 
-/* Class = "NSScrollView"; ibShadowedToolTip = "Used tags in your archive"; ObjectID = "kGW-Ke-BkB"; */
+/* Class = "NSScrollView"; ibShadowedToolTip = "Bisher verwendete Tags aus dem Archiv"; ObjectID = "kGW-Ke-BkB"; */
 "kGW-Ke-BkB.ibShadowedToolTip" = "Bisher verwendete Tags aus dem Archiv";
 
 /* Class = "NSTextFieldCell"; title = "Text Eintrag"; ObjectID = "l4J-fs-Cne"; */
@@ -167,7 +170,7 @@
 /* Class = "NSTextFieldCell"; title = "Text Eintrag"; ObjectID = "o1a-m8-IzU"; */
 "o1a-m8-IzU.title" = "Text Eintrag";
 
-/* Class = "NSScrollView"; ibShadowedToolTip = "tags of the document"; ObjectID = "oZc-B6-cqG"; */
+/* Class = "NSScrollView"; ibShadowedToolTip = "Tags des Dokumentes"; ObjectID = "oZc-B6-cqG"; */
 "oZc-B6-cqG.ibShadowedToolTip" = "Tags des Dokumentes";
 
 /* Class = "NSTextFieldCell"; title = "Tabellen Eintrag"; ObjectID = "pXJ-g7-oZi"; */
