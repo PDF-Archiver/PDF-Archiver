@@ -116,10 +116,6 @@ class ViewController: NSViewController {
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(self.showPreferences),
                                        name: Notification.Name("ShowPreferences"), object: nil)
-        notificationCenter.addObserver(self, selector: #selector(self.getPDFDocuments),
-                                       name: Notification.Name("GetPDFDocuments"), object: nil)
-        notificationCenter.addObserver(self, selector: #selector(self.saveDocument),
-                                       name: Notification.Name("SaveDocument"), object: nil)
         notificationCenter.addObserver(self, selector: #selector(self.updateViewController),
                                        name: Notification.Name("UpdateViewController"), object: nil)
         notificationCenter.addObserver(self, selector: #selector(self.resetCache),

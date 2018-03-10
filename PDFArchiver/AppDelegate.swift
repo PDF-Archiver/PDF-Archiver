@@ -14,12 +14,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBAction func showPreferences(_ sender: NSMenuItem) {
         NotificationCenter.default.post(name: Notification.Name("ShowPreferences"), object: nil)
     }
-    @IBAction func getPDFDocuments(_ sender: NSMenuItem) {
-        NotificationCenter.default.post(name: Notification.Name("GetPDFDocuments"), object: nil)
-    }
-    @IBAction func saveDocument(_ sender: NSMenuItem) {
-        NotificationCenter.default.post(name: Notification.Name("SaveDocument"), object: nil)
-    }
     @IBAction func resetUserDefaults(_ sender: NSMenuItem) {
         NotificationCenter.default.post(name: Notification.Name("ResetCache"), object: nil)
     }

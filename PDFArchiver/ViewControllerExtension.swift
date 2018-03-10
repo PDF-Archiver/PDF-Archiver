@@ -47,7 +47,18 @@ extension ViewController {
     @objc func showPreferences() {
         self.performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "prefsSegue"), sender: self)
     }
-    @objc func getPDFDocuments() {
+    @objc func resetCache() {
+        // remove preferences
+        self.dataModelInstance.prefs = nil
+        // remove all user defaults
+        UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+        // close application
+        NSApplication.shared.terminate(self)
+    }
+    @objc func showOnboarding() {
+        self.performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "onboardingSegue"), sender: self)
+    }
+    func getPDFDocuments() {
         let openPanel = NSOpenPanel()
         openPanel.title = "Choose a .pdf file or a folder"
         openPanel.showsResizeIndicator = false
@@ -77,7 +88,7 @@ extension ViewController {
             // no need to refresh the view manually here, because the selection changes which triggers a view update
         }
     }
-    @objc func saveDocument() {
+    func saveDocument() {
         // test if a document is selected
         guard !self.documentAC.selectedObjects.isEmpty,
               let idx = self.dataModelInstance.documentIdx,
@@ -109,17 +120,6 @@ extension ViewController {
             }
             updateViewController(updatePDF: true)
         }
-    }
-    @objc func resetCache() {
-        // remove preferences
-        self.dataModelInstance.prefs = nil
-        // remove all user defaults
-        UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
-        // close application
-        NSApplication.shared.terminate(self)
-    }
-    @objc func showOnboarding() {
-        self.performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "onboardingSegue"), sender: self)
     }
 }
 
