@@ -11,18 +11,30 @@
 </p>
 
 # PDF Archiver
-A tool for tagging files and archiving tasks.
 
-### The Goal
+<p align="center">
+<img src="assets/example.gif" style="width: 75%;">
+</p>
+
 Archive all incoming documents digitally to access and search them in an easier way.
 Transfer the sorted documents to your smartphone or make a backup within seconds.
 
-### The Way
 * Scan all incoming bills, letters etc. and save them on your computer/iCloud in an *untagged* folder.
 * Put the original paper documents in a folder, sorted by year. Don't care about bills/insurance papers etc.. Just leave all of them in one box for the each year.
 * Open the **PDF Archiver** and start tagging. Your documents will be moved from the *untagged* to your *Archive* folder.
 
-### The Look
+## :rocket: Usage
+* Scan your documents, e.g. with [Scanbot](https://scanbot.io)
+* Create an `Archive` folder in your iCloud Drive
+* Select it in the *Preferences* panel (`⌘ ,` ...obviously)
+* Start tagging your files
+
+## :scroll: Convention
+* **Date:** `yyyy-mm-dd` Date of the document content.
+* **Description:** `--ikea-tradfri-gateway` Meaningful description of the document.
+* **Tags:** `__bill_ikea_iot` Tags which will help you to find the document in your archive.
+Capital letters, spaces and language specific characters (such as `ä, ö, ü, ß`) will be removed to maximize the filesystem compatibility.
+
 Your archive will look like this:
 ```
 .
@@ -42,22 +54,6 @@ This structure is independent from your OS and filesystem and makes it very easy
 * ... by tag or description via a searchterm like: `searchword`,  starting with the term
 * ... and even the file content: have a look at the [Pro Tips](#pro-tips)!
 
-### The Feel
-<p align="center">
-<img src="assets/example.gif" style="width: 75%;">
-</p>
-
-## :rocket: Usage
-* Scan your documents, e.g. with [Scanbot](https://scanbot.io)
-* Create an `Archive` folder in your iCloud Drive
-* Select it in the *Preferences* panel (`⌘ ,` ...obviously)
-* Start tagging your files
-
-## :scroll: Convention
-* **Date:** `yyyy-mm-dd` Date of the document content.
-* **Description:** `--ikea-tradfri-gateway` Meaningful description of the document.
-* **Tags:** `__bill_ikea_iot` Tags which will help you to find the document in your archive.
-Capital letters, spaces and language specific characters (such as `ä, ö, ü, ß`) will be removed to maximize the filesystem compatibility.
 
 ## :floppy_disk: Installation
 Download it from the Mac App Store:
@@ -88,8 +84,12 @@ Or clone the repository and build it:
     * `⌘ s`: save the current document in your archive
 * Use the `TAB` key for fast field switching
 
+## :interrobang: Help
+* Take a look at the  [FAQs](https://github.com/PDF-Archiver/PDF-Archiver/wiki/FAQs).
+* Get in contact with us at [Slack](https://pdf-archiver.slack.com).
+
 ## :octocat: How to contribute
-All contributions are welcome!
+All [contributions](https://github.com/PDF-Archiver/PDF-Archiver/blob/develop/.github/CONTRIBUTING.md) are welcome!
 Feel free to contribute to this project.
 Submit pull requests, contribute tutorials or other wiki content - whatever you have to offer, it would be appreciated!
 
