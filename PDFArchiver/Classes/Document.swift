@@ -9,7 +9,14 @@
 import Foundation
 import os.log
 
+//protocol PreferencesDelegate: class {
+//    func setTagList(tagDict: [String: Int])
+//    func getTagList() -> [String: Int]
+//}
+
 class Document: NSObject {
+    let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "Document")
+    weak var delegate: TagsDelegate?
     // structure for PDF documents on disk
     var path: URL
     @objc var name: String?
@@ -50,8 +57,9 @@ class Document: NSObject {
     fileprivate var _documentDescription: String?
     fileprivate let _dateFormatter: DateFormatter
 
-    init(path: URL) {
+    init(path: URL, delegate: TagsDelegate) {
         self.path = path
+        self.delegate = delegate
 
         // create a filename and rename the document
         self.name = String(path.lastPathComponent)
@@ -74,10 +82,22 @@ class Document: NSObject {
 
         // parse the tags
         if var raw = regex_matches(for: "__[a-zA-Z0-9_]+.[pdfPDF]{3}$", in: self.name!) {
-            let tags = getSubstring(raw[0], startIdx: 2, endIdx: -4).components(separatedBy: "_")
+            // parse the tags of a document
+            let documentTagNames = getSubstring(raw[0], startIdx: 2, endIdx: -4).components(separatedBy: "_")
+            // get the available tags of the archive
+            let availableTags = self.delegate?.getTagList() ?? []
+            
             self.documentTags = [Tag]()
-            for tag in tags {
-                self.documentTags!.append(Tag(name: tag, count: 0))
+            for documentTagName in documentTagNames {
+                if availableTags.contains(where: { $0.name == documentTagName }) {
+                    os_log("Tag already found in archive tags.", log: self.log, type: .debug)
+                    for availableTag in availableTags where availableTag.name == documentTagName {
+                        self.documentTags!.append(availableTag)
+                    }
+                } else {
+                    os_log("Tag not found in archive tags.", log: self.log, type: .debug)
+                    self.documentTags!.append(Tag(name: documentTagName, count: 0))
+                }
             }
         }
     }
@@ -109,8 +129,7 @@ class Document: NSObject {
 
             try fileManager.moveItem(at: self.path, to: new_filepath)
         } catch let error as NSError {
-            let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "DataModel")
-            os_log("Error while moving file: %@", log: log, type: .error, error as CVarArg)
+            os_log("Error while moving file: %@", log: self.log, type: .error, error as CVarArg)
             return false
         }
         self.name = String(new_filepath.lastPathComponent)
@@ -127,7 +146,7 @@ class Document: NSObject {
             try (new_filepath as NSURL).setResourceValue(tags, forKey: URLResourceKey.tagNamesKey)
         } catch let error as NSError {
             let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "DataModel")
-            os_log("Could not set file: %@", log: log, type: .error, error as CVarArg)
+            os_log("Could not set file: %@", log: self.log, type: .error, error as CVarArg)
         }
         return true
     }

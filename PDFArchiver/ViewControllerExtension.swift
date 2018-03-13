@@ -20,8 +20,9 @@ extension ViewController {
 
     // MARK: - notifications
     @objc func updateViewController(updatePDF: Bool) {
-        self.tagAC.content = self.dataModelInstance.tags?.list
-
+        os_log("Update view controller fields and tables.", log: self.log, type: .debug)
+        self.tagAC.content = self.dataModelInstance.tags
+        
         // test if no documents exist in document table view
         if self.dataModelInstance.documents?.count == nil || self.dataModelInstance.documents?.count == 0 {
             self.pdfContentView.document = nil
@@ -58,6 +59,10 @@ extension ViewController {
     @objc func showOnboarding() {
         self.performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "onboardingSegue"), sender: self)
     }
+    @objc func updateTags() {
+        os_log("Setting archive path, e.g. update tag list.", log: self.log, type: .debug)
+        self.dataModelInstance.prefs?.getArchiveTags()
+    }
     func getPDFDocuments() {
         let openPanel = NSOpenPanel()
         openPanel.title = "Choose a .pdf file or a folder"
@@ -75,10 +80,8 @@ extension ViewController {
 
                 // get the new documents
                 for element in openPanel.urls {
-                    for pdf_path in getPDFs(url: element) {
-                        let selectedDocument = Document(path: pdf_path)
-                        self.dataModelInstance.documents?.append(selectedDocument)
-                    }
+                    let files = getPDFs(url: element)
+                    self.dataModelInstance.addNewDocuments(paths: files)
                 }
             }
             openPanel.close()
@@ -145,8 +148,7 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
             (self.dataModelInstance.documents![idx] as Document).documentDescription = textField.stringValue
         } else if id.identifier?.rawValue == "tagSearchField" {
             guard let searchField = notification.object as? NSSearchField else { return }
-            let tags = self.dataModelInstance.tags?.filter(prefix: searchField.stringValue)
-            self.tagAC.content = tags
+            self.tagAC.content = self.dataModelInstance.filterTags(prefix: searchField.stringValue)
         }
     }
 
@@ -196,7 +198,7 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
 
         // add tag to tagAC
         if newlyCreated {
-            self.dataModelInstance.tags?.list.insert(selectedTag)
+            self.dataModelInstance.tags?.insert(selectedTag)
         }
         self.updateViewController(updatePDF: false)
     }

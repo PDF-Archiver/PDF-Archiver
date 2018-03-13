@@ -96,9 +96,6 @@ class ViewController: NSViewController {
                 archivePath = try NSURL.init(resolvingBookmarkData: bookmarkData, options: .withoutUI, relativeTo: nil, bookmarkDataIsStale: nil)
                 if let archivePathTmp = archivePath  {
                     archivePathTmp.startAccessingSecurityScopedResource()
-                    
-                    print("Setting archive path, e.g. update tag list.")
-                    self.dataModelInstance.prefs?.archivePath = archivePathTmp as URL
                 }
             } catch let error as NSError {
                 os_log("Bookmark Access failed: %@", log: self.log, type: .error, error.description as CVarArg)
@@ -109,7 +106,8 @@ class ViewController: NSViewController {
         self.datePicker.locale = Locale.init(identifier: "en_CA")
 
         // set the array controller
-        self.tagAC.content = self.dataModelInstance.tags?.list
+        self.tagAC.content = self.dataModelInstance.tags
+        
         self.documentAC.content = self.dataModelInstance.documents
 
         // MARK: - Notification Observer
@@ -122,6 +120,8 @@ class ViewController: NSViewController {
                                        name: Notification.Name("ResetCache"), object: nil)
         notificationCenter.addObserver(self, selector: #selector(self.showOnboarding),
                                        name: Notification.Name("ShowOnboarding"), object: nil)
+        notificationCenter.addObserver(self, selector: #selector(self.updateTags),
+                                       name: Notification.Name("UpdateTags"), object: nil)
 
         // MARK: - delegates
         tagSearchField.delegate = self

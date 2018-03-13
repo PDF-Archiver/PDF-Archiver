@@ -1,6 +1,6 @@
 Make sure you are running the latest version of **PDF Archiver** before reporting an issue.
 
-You should only file an issue if you found a bug. Feature and enhancement requests should be discussed by [mail](mailto:PDF-Archiver@juliankahnert.de?subject=Feature-Request)!
+You should only file an issue if you found a bug. Feature and enhancement requests should be discussed by [mail](mailto:mail@pdf-archiver.io?subject=Feature-Request)!
 
 **PDF Archiver version (PDF Archiver > About PDF Archiver):**
 
