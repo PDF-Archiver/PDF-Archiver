@@ -27,7 +27,8 @@ class Document: NSObject {
                 raw = raw.lowercased()
                 raw = raw.replacingOccurrences(of: "[:;.,!?/\\^+<>#@|]", with: "",
                                                options: .regularExpression, range: nil)
-                raw = raw.replacingOccurrences(of: " ", with: "-")
+                raw = raw.replacingOccurrences(of: "[\\s_]", with: "-",
+                                               options: .regularExpression, range: nil)
                 raw = raw.replacingOccurrences(of: "[-]+", with: "-",
                                                options: .regularExpression, range: nil)
                 // german umlaute
@@ -52,7 +53,7 @@ class Document: NSObject {
     fileprivate var _documentDescription: String?
     fileprivate let _dateFormatter: DateFormatter
 
-    init(path: URL, delegate: TagsDelegate) {
+    init(path: URL, delegate: TagsDelegate?) {
         self.path = path
         self.delegate = delegate
 
