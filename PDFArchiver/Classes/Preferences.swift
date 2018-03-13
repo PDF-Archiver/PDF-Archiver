@@ -9,15 +9,10 @@
 import Foundation
 import os.log
 
-protocol PreferencesDelegate: class {
-    func setTagList(tagDict: [String: Int])
-    func getTagList() -> [String: Int]
-}
-
 struct Preferences {
     let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "DataModel")
     fileprivate var _archivePath: URL?
-    weak var delegate: PreferencesDelegate?
+    weak var delegate: TagsDelegate?
     var archivePath: URL? {
         get {
             return self._archivePath
@@ -37,7 +32,7 @@ struct Preferences {
         }
     }
 
-    init(delegate: PreferencesDelegate) {
+    init(delegate: TagsDelegate) {
         self.delegate = delegate
         self.load()
     }
@@ -47,7 +42,11 @@ struct Preferences {
         UserDefaults.standard.set(self._archivePath, forKey: "archivePath")
 
         // save the last tags (with count > 0)
-        var tags = self.delegate?.getTagList() ?? [:]
+        var tags: [String: Int] = [:]
+        for tag in self.delegate?.getTagList() ?? Set<Tag>() {
+            tags[tag.name] = tag.count
+        }
+        
         for (name, count) in tags where count < 1 {
             tags.removeValue(forKey: name)
         }
@@ -59,8 +58,12 @@ struct Preferences {
         self._archivePath = UserDefaults.standard.url(forKey: "archivePath")
 
         // load archive tags
-        guard let tagsRaw = (UserDefaults.standard.dictionary(forKey: "tags") ?? [:]) as? [String: Int] else { return }
-        self.delegate!.setTagList(tagDict: tagsRaw)
+        guard let tagsDict = (UserDefaults.standard.dictionary(forKey: "tags") ?? [:]) as? [String: Int] else { return }
+        var newTagList = Set<Tag>()
+        for (name, count) in tagsDict {
+            newTagList.insert(Tag(name: name, count: count))
+        }
+        self.delegate!.setTagList(tagList: newTagList)
     }
 
     func getArchiveTags() {
@@ -88,8 +91,12 @@ struct Preferences {
             }
         }
 
-        let tags = tags_raw.reduce(into: [:]) { counts, word in counts[word, default: 0] += 1 }
-        self.delegate?.setTagList(tagDict: tags)
+        let tagsDict = tags_raw.reduce(into: [:]) { counts, word in counts[word, default: 0] += 1 }
+        var newTagList = Set<Tag>()
+        for (name, count) in tagsDict {
+            newTagList.insert(Tag(name: name, count: count))
+        }
+        self.delegate?.setTagList(tagList: newTagList)
     }
 
 }

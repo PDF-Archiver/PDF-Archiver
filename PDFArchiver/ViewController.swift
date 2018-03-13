@@ -106,7 +106,8 @@ class ViewController: NSViewController {
         self.datePicker.locale = Locale.init(identifier: "en_CA")
 
         // set the array controller
-        self.tagAC.content = self.dataModelInstance.tags?.list
+        self.tagAC.content = self.dataModelInstance.tags
+        
         self.documentAC.content = self.dataModelInstance.documents
 
         // MARK: - Notification Observer
