@@ -30,8 +30,6 @@ class PrefsViewController: NSViewController {
             guard response == NSApplication.ModalResponse.OK else { return }
             self.prefs?.archivePath = openPanel.url!
             self.archivePathTextField.stringValue = openPanel.url!.path
-
-            self.prefs!.save()
             NotificationCenter.default.post(name: Notification.Name("UpdateViewController"), object: nil)
         }
     }

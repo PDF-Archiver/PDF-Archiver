@@ -106,14 +106,6 @@ extension ViewController {
         let selectedDocument = documents[idx] as Document
         let result = selectedDocument.rename(archivePath: path)
         if result {
-            // update tag count
-            let tags = self.tagAC.arrangedObjects as? [Tag] ?? []
-            for selectedTag in selectedDocument.documentTags ?? [] {
-                for tag in tags where tag.name == selectedTag.name {
-                    tag.count += 1
-                }
-            }
-
             // select a new document
             self.documentAC.content = documents
             if idx < documents.count {
@@ -121,7 +113,7 @@ extension ViewController {
             } else {
                 self.dataModelInstance.documentIdx = documents.count
             }
-            updateViewController(updatePDF: true)
+            self.updateViewController(updatePDF: true)
         }
     }
 }
@@ -165,6 +157,7 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
         let tags = self.tagAC.arrangedObjects as? [Tag] ?? []
         if tags.count > 0 {
             selectedTag = tags.first!
+            selectedTag.count += 1
             newlyCreated = false
         } else {
             // no tag selected - get the name of the search field

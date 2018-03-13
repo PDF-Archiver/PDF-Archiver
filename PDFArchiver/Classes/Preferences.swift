@@ -29,6 +29,7 @@ struct Preferences {
             
             self._archivePath = newValue
             self.getArchiveTags()
+            self.save()
         }
     }
 

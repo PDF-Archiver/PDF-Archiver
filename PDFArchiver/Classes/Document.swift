@@ -9,11 +9,6 @@
 import Foundation
 import os.log
 
-//protocol PreferencesDelegate: class {
-//    func setTagList(tagDict: [String: Int])
-//    func getTagList() -> [String: Int]
-//}
-
 class Document: NSObject {
     let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "Document")
     weak var delegate: TagsDelegate?
@@ -85,20 +80,27 @@ class Document: NSObject {
             // parse the tags of a document
             let documentTagNames = getSubstring(raw[0], startIdx: 2, endIdx: -4).components(separatedBy: "_")
             // get the available tags of the archive
-            let availableTags = self.delegate?.getTagList() ?? []
+            var availableTags = self.delegate?.getTagList() ?? []
             
             self.documentTags = [Tag]()
             for documentTagName in documentTagNames {
                 if availableTags.contains(where: { $0.name == documentTagName }) {
                     os_log("Tag already found in archive tags.", log: self.log, type: .debug)
                     for availableTag in availableTags where availableTag.name == documentTagName {
+                        availableTag.count += 1
                         self.documentTags!.append(availableTag)
+                        break
                     }
                 } else {
                     os_log("Tag not found in archive tags.", log: self.log, type: .debug)
-                    self.documentTags!.append(Tag(name: documentTagName, count: 0))
+                    let newTag = Tag(name: documentTagName, count: 1)
+                    availableTags.insert(newTag)
+                    self.documentTags!.append(newTag)
                 }
             }
+            
+            // update the tag list
+            self.delegate?.setTagList(tagList: availableTags)
         }
     }
 
@@ -145,7 +147,6 @@ class Document: NSObject {
             // set file tags [https://stackoverflow.com/a/47340666]
             try (new_filepath as NSURL).setResourceValue(tags, forKey: URLResourceKey.tagNamesKey)
         } catch let error as NSError {
-            let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "DataModel")
             os_log("Could not set file: %@", log: self.log, type: .error, error as CVarArg)
         }
         return true

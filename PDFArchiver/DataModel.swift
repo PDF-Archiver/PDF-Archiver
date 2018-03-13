@@ -53,6 +53,7 @@ class DataModel: TagsDelegate {
     // MARK: - delegate functions
     func setTagList(tagList: Set<Tag>) {
         self.tags = tagList
+        NotificationCenter.default.post(name: Notification.Name("UpdateViewController"), object: nil)
     }
 
     func getTagList() -> Set<Tag> {
