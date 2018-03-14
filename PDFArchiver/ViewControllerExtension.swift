@@ -116,6 +116,36 @@ extension ViewController {
             self.updateViewController(updatePDF: true)
         }
     }
+    func addDocumentTag(tag selectedTag: Tag, new newlyCreated: Bool) {
+        // test if element already exists in document tag table view
+        if let documentTags = self.documentTagAC.content as? [Tag] {
+            for tag in documentTags where tag.name == selectedTag.name {
+                os_log("Tag '%@' already found!", log: self.log, type: .error, selectedTag.name as CVarArg)
+                return
+            }
+        }
+        
+        // add new tag to document table view
+        guard let idx = self.dataModelInstance.documentIdx else {
+            os_log("Please pick documents first!", log: self.log, type: .info)
+            return
+        }
+        
+        if self.dataModelInstance.documents![idx].documentTags != nil {
+            self.dataModelInstance.documents![idx].documentTags!.insert(selectedTag, at: 0)
+        } else {
+            self.dataModelInstance.documents![idx].documentTags = [selectedTag]
+        }
+        
+        // clear search field content
+        self.tagSearchField.stringValue = ""
+        
+        // add tag to tagAC
+        if newlyCreated {
+            self.dataModelInstance.tags?.insert(selectedTag)
+        }
+        self.updateViewController(updatePDF: false)
+    }
 }
 
 extension ViewController: NSTableViewDelegate, NSTableViewDataSource {
@@ -165,35 +195,9 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
                               count: 1)
             newlyCreated = true
         }
-
-        // test if element already exists in document tag table view
-        if let documentTags = self.documentTagAC.content as? [Tag] {
-            for tag in documentTags where tag.name == selectedTag.name {
-                os_log("Tag '%@' already found!", log: self.log, type: .error, selectedTag.name as CVarArg)
-                return
-            }
-        }
-
-        // add new tag to document table view
-        guard let idx = self.dataModelInstance.documentIdx else {
-            os_log("Please pick documents first!", log: self.log, type: .info)
-            return
-        }
-
-        if self.dataModelInstance.documents![idx].documentTags != nil {
-            self.dataModelInstance.documents![idx].documentTags!.insert(selectedTag, at: 0)
-        } else {
-            self.dataModelInstance.documents![idx].documentTags = [selectedTag]
-        }
-
-        // clear search field content
-        self.tagSearchField.stringValue = ""
-
-        // add tag to tagAC
-        if newlyCreated {
-            self.dataModelInstance.tags?.insert(selectedTag)
-        }
-        self.updateViewController(updatePDF: false)
+        
+        // add the selected tag to the document
+        self.addDocumentTag(tag: selectedTag, new: newlyCreated)
     }
 }
 

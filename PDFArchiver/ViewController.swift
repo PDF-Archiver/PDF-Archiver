@@ -79,10 +79,16 @@ class ViewController: NSViewController {
             i += 1
         }
     }
-
+    
+    @IBAction func clickedTagTableView(_ sender: NSTableView) {
+        self.addDocumentTag(tag: self.tagAC.selectedObjects.first as! Tag,
+                            new: false)
+    }
+    
     @IBAction func browseFile(sender: AnyObject) {
         self.getPDFDocuments()
     }
+    
     @IBAction func saveDocumentButton(_ sender: NSButton) {
         self.saveDocument()
     }

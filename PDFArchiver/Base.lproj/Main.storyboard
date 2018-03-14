@@ -747,6 +747,7 @@ Tag your document and save  it:</string>
                                                         </tableColumn>
                                                     </tableColumns>
                                                     <connections>
+                                                        <action selector="clickedTagTableView:" target="XfG-lQ-9wD" id="C1O-k3-Mk1"/>
                                                         <binding destination="jrR-pM-UBT" name="selectionIndexes" keyPath="selectionIndexes" id="v8p-1e-i2c"/>
                                                     </connections>
                                                 </tableView>
