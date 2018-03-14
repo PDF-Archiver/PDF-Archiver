@@ -13,3 +13,4 @@
 "check_document_fields" = "Bitte Dokumenten Felder prüfen.";
 "check_document_description" = "Bitte Dokument Beschreibung prüfen.";
 "check_document_tags" = "Bitte Dokument Tags prüfen.";
+"file_already_exists" = "Dateiname existstiert bereits. \nBitte z.B. Dokument Beschreibung verändern.";

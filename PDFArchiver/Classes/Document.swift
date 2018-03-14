@@ -71,9 +71,12 @@ class Document: NSObject {
             self.documentDate = date
         }
 
-        // parse the description
+        // parse the description or use the filename
         if var raw = regex_matches(for: "--[a-zA-Z0-9-]+__", in: self.name!) {
             self._documentDescription = getSubstring(raw[0], startIdx: 2, endIdx: -2)
+        } else {
+            let newDescription = String(path.lastPathComponent.dropLast(4))
+            self._documentDescription = newDescription.components(separatedBy: "__")[0]
         }
 
         // parse the tags
@@ -106,10 +109,10 @@ class Document: NSObject {
     }
 
     func rename(archivePath: URL) -> Bool {
-        let new_basepath: URL
+        let newBasePath: URL
         let filename: String
         do {
-            (new_basepath, filename) = try getRenamingPath(archivePath: archivePath)
+            (newBasePath, filename) = try getRenamingPath(archivePath: archivePath)
         } catch DocumentError.description {
             dialogOK(message_key: "renaming_failed", info_key: "check_document_description", style: .warning)
             return false
@@ -122,21 +125,28 @@ class Document: NSObject {
         }
         
         // check, if this path already exists ... create it
-        let new_filepath = new_basepath.appendingPathComponent(filename)
+        let newFilepath = newBasePath.appendingPathComponent(filename)
         let fileManager = FileManager.default
         do {
-            if !(fileManager.isDirectory(url: new_basepath) ?? false) {
-                try fileManager.createDirectory(at: new_basepath,
+            if !(fileManager.isDirectory(url: newBasePath) ?? false) {
+                try fileManager.createDirectory(at: newBasePath,
                                                 withIntermediateDirectories: false, attributes: nil)
             }
 
-            try fileManager.moveItem(at: self.path, to: new_filepath)
+            // test if the document name already exists in archive, otherwise move it
+            if fileManager.fileExists(atPath: newFilepath.path) {
+                os_log("File already exists!", log: self.log, type: .error)
+                dialogOK(message_key: "renaming_failed", info_key: "file_already_exists", style: .warning)
+                return false
+            } else {
+                try fileManager.moveItem(at: self.path, to: newFilepath)
+            }
         } catch let error as NSError {
             os_log("Error while moving file: %@", log: self.log, type: .error, error as CVarArg)
             return false
         }
-        self.name = String(new_filepath.lastPathComponent)
-        self.path = new_filepath
+        self.name = String(newFilepath.lastPathComponent)
+        self.path = newFilepath
         self.documentDone = "✔️"
         
         do {
@@ -146,7 +156,7 @@ class Document: NSObject {
             }
             
             // set file tags [https://stackoverflow.com/a/47340666]
-            try (new_filepath as NSURL).setResourceValue(tags, forKey: URLResourceKey.tagNamesKey)
+            try (newFilepath as NSURL).setResourceValue(tags, forKey: URLResourceKey.tagNamesKey)
         } catch let error as NSError {
             os_log("Could not set file: %@", log: self.log, type: .error, error as CVarArg)
         }

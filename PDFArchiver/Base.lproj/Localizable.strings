@@ -13,3 +13,4 @@
 "check_document_fields" = "Doublecheck the document fields.";
 "check_document_description" = "Doublecheck the document description.";
 "check_document_tags" = "Doublecheck the document tags.";
+"file_already_exists" = "File with the current filename already exists. \nPlease change e.g. the description.";
