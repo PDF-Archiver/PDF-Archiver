@@ -81,8 +81,10 @@ class ViewController: NSViewController {
     }
     
     @IBAction func clickedTagTableView(_ sender: NSTableView) {
-        self.addDocumentTag(tag: self.tagAC.selectedObjects.first as! Tag,
-                            new: false)
+        if let selectedTag = self.tagAC.selectedObjects.first as? Tag {
+            self.addDocumentTag(tag: selectedTag,
+                                new: false)
+        }
     }
     
     @IBAction func browseFile(sender: AnyObject) {
