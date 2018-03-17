@@ -8,10 +8,15 @@
 
 import Foundation
 
-class DataModel: PreferencesDelegate {
+protocol TagsDelegate: class {
+    func setTagList(tagList: Set<Tag>)
+    func getTagList() -> Set<Tag>
+}
+
+class DataModel: TagsDelegate {    
     var prefs: Preferences?
     var documents: [Document]?
-    var tags: TagList?
+    var tags: Set<Tag>?
     var documentIdx: Int? {
         get {
             return self._documentIdx
@@ -28,19 +33,30 @@ class DataModel: PreferencesDelegate {
     fileprivate var _documentIdx: Int?
 
     init() {
-        self.prefs = Preferences(delegate: self as PreferencesDelegate)
+        self.prefs = Preferences(delegate: self as TagsDelegate)
+    }
+    
+    func addNewDocuments(paths: [URL]) {
+        for pdf_path in paths {
+            let selectedDocument = Document(path: pdf_path, delegate: self as TagsDelegate)
+            self.documents?.append(selectedDocument)
+        }
+    }
+    
+    func filterTags(prefix: String) -> Set<Tag> {
+        let tags = (self.tags ?? []).filter { tag in
+            return tag.name.hasPrefix(prefix)
+        }
+        return tags
     }
 
     // MARK: - delegate functions
-    func setTagList(tagDict: [String: Int]) {
-        self.tags = TagList(tags: tagDict)
+    func setTagList(tagList: Set<Tag>) {
+        self.tags = tagList
+        NotificationCenter.default.post(name: Notification.Name("UpdateViewController"), object: nil)
     }
 
-    func getTagList() -> [String: Int] {
-        var tags: [String: Int] = [:]
-        for tag in self.tags?.list ?? [] {
-            tags[tag.name] = tag.count
-        }
-        return tags
+    func getTagList() -> Set<Tag> {
+        return self.tags ?? []
     }
 }

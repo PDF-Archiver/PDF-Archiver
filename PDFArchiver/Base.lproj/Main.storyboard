@@ -62,22 +62,14 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="File" id="bib-Uj-vzu">
                                     <items>
-                                        <menuItem title="Open…" keyEquivalent="o" id="IAo-SY-fd9">
-                                            <connections>
-                                                <action selector="getPDFDocuments:" target="Voe-Tx-rLC" id="z48-YT-MqY"/>
-                                            </connections>
-                                        </menuItem>
+                                        <menuItem title="Open…" keyEquivalent="o" id="IAo-SY-fd9"/>
                                         <menuItem isSeparatorItem="YES" id="m54-Is-iLE"/>
                                         <menuItem title="Close" keyEquivalent="w" id="DVo-aG-piG">
                                             <connections>
                                                 <action selector="performClose:" target="Ady-hI-5gd" id="HmO-Ls-i7Q"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Save…" keyEquivalent="s" id="pxx-59-PXV">
-                                            <connections>
-                                                <action selector="saveDocument:" target="Voe-Tx-rLC" id="2gE-8A-o6G"/>
-                                            </connections>
-                                        </menuItem>
+                                        <menuItem title="Save…" keyEquivalent="s" id="pxx-59-PXV"/>
                                     </items>
                                 </menu>
                             </menuItem>
@@ -105,7 +97,7 @@
                                     <items>
                                         <menuItem title="PDF Archiver Help" keyEquivalent="?" id="FKE-Sm-Kum">
                                             <connections>
-                                                <action selector="showHelp:" target="Ady-hI-5gd" id="y7X-2Q-9no"/>
+                                                <action selector="showHelp:" target="Voe-Tx-rLC" id="lQ1-1b-Grf"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="g5g-oz-d55"/>
@@ -113,6 +105,12 @@
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="showOnboarding:" target="Voe-Tx-rLC" id="6CG-fz-q8n"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Update Tags" id="CDG-jy-mOA" userLabel="Update Tags">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="updateTags:" target="Voe-Tx-rLC" id="gtA-Jn-uOh"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Reset Settings" id="N0V-Bp-Pnp">
@@ -140,7 +138,7 @@
         <scene sceneID="R2V-B0-nI4">
             <objects>
                 <windowController id="B8D-0N-5wS" customClass="WindowController" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
-                    <window key="window" title="PDF Archiver" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" animationBehavior="default" titlebarAppearsTransparent="YES" titleVisibility="hidden" id="IQv-IB-iLA" customClass="MyWindow" customModule="PDF_Archiver" customModuleProvider="target">
+                    <window key="window" title="PDF Archiver" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" showsToolbarButton="NO" frameAutosaveName="" animationBehavior="default" titlebarAppearsTransparent="YES" titleVisibility="hidden" id="IQv-IB-iLA" customClass="MyWindow" customModule="PDF_Archiver" customModuleProvider="target">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES" fullSizeContentView="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="196" y="240" width="940" height="600"/>
@@ -399,20 +397,20 @@ Tag your document and save  it:</string>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="EVB-U9-dup">
                                 <rect key="frame" x="20" y="56" width="220" height="495"/>
                                 <subviews>
-                                    <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ii4-sZ-BA5" userLabel="Document Scroll View">
+                                    <scrollView toolTip="Documents to tag" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ii4-sZ-BA5" userLabel="Document Scroll View">
                                         <rect key="frame" x="5" y="5" width="210" height="485"/>
                                         <clipView key="contentView" id="dAE-Dg-N2e">
-                                            <rect key="frame" x="1" y="0.0" width="208" height="484"/>
+                                            <rect key="frame" x="1" y="0.0" width="208" height="469"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <tableView identifier="DocumentTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" headerView="jC3-Ja-goD" viewBased="YES" id="afH-JH-U5W" userLabel="Document Table View">
-                                                    <rect key="frame" x="0.0" y="0.0" width="208" height="461"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="341.5" height="446"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <size key="intercellSpacing" width="3" height="2"/>
                                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                     <tableColumns>
-                                                        <tableColumn identifier="" width="205" minWidth="40" maxWidth="1000" id="nm7-rf-3j8">
+                                                        <tableColumn identifier="" width="338.5" minWidth="40" maxWidth="1000" id="nm7-rf-3j8">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Document">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -426,7 +424,7 @@ Tag your document and save  it:</string>
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="VD2-lj-7nv">
-                                                                    <rect key="frame" x="1" y="1" width="205" height="17"/>
+                                                                    <rect key="frame" x="1" y="1" width="338" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="vlQ-KX-ziV">
@@ -444,7 +442,7 @@ Tag your document and save  it:</string>
                                                                             </connections>
                                                                         </textField>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="syz-ag-Wgc">
-                                                                            <rect key="frame" x="20" y="0.0" width="187" height="17"/>
+                                                                            <rect key="frame" x="20" y="0.0" width="320" height="17"/>
                                                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" truncatesLastVisibleLine="YES" sendsActionOnEndEditing="YES" title="Table View Cell" id="B7Q-Q5-RNU">
                                                                                 <font key="font" metaFont="system"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -474,8 +472,8 @@ Tag your document and save  it:</string>
                                                         </tableColumn>
                                                     </tableColumns>
                                                     <connections>
-                                                        <binding destination="6y2-Gm-cOS" name="content" keyPath="arrangedObjects" id="kA5-wO-gLL"/>
-                                                        <binding destination="6y2-Gm-cOS" name="selectionIndexes" keyPath="selectionIndexes" previousBinding="kA5-wO-gLL" id="47H-fx-rGc"/>
+                                                        <binding destination="6y2-Gm-cOS" name="content" keyPath="arrangedObjects" id="GxU-I2-Cdh"/>
+                                                        <binding destination="6y2-Gm-cOS" name="selectionIndexes" keyPath="selectionIndexes" previousBinding="GxU-I2-Cdh" id="UUX-19-Jeq"/>
                                                         <outlet property="delegate" destination="XfG-lQ-9wD" id="IbN-nE-uz8"/>
                                                     </connections>
                                                 </tableView>
@@ -484,8 +482,8 @@ Tag your document and save  it:</string>
                                         <shadow key="shadow" blurRadius="-1">
                                             <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </shadow>
-                                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="dOY-6V-Bo9">
-                                            <rect key="frame" x="1" y="8" width="0.0" height="15"/>
+                                        <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="dOY-6V-Bo9">
+                                            <rect key="frame" x="1" y="469" width="208" height="15"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
                                         <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="1tv-Up-ah4">
@@ -493,7 +491,7 @@ Tag your document and save  it:</string>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
                                         <tableHeaderView key="headerView" id="jC3-Ja-goD">
-                                            <rect key="frame" x="0.0" y="0.0" width="208" height="23"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="341.5" height="23"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableHeaderView>
                                         <connections>
@@ -516,7 +514,7 @@ Tag your document and save  it:</string>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="N6d-d5-13u">
                                 <rect key="frame" x="680" y="371" width="240" height="180"/>
                                 <subviews>
-                                    <datePicker wantsLayer="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="NiF-3c-nL6" userLabel="Document Date Picker">
+                                    <datePicker toolTip="date of the document" wantsLayer="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="NiF-3c-nL6" userLabel="Document Date Picker">
                                         <rect key="frame" x="78" y="153" width="85" height="22"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="85" id="fob-r2-r1g"/>
@@ -537,7 +535,7 @@ Tag your document and save  it:</string>
                                             <outlet property="nextKeyView" destination="WG2-MH-TVV" id="QVd-2M-CAq"/>
                                         </connections>
                                     </datePicker>
-                                    <textField identifier="documentDescriptionField" wantsLayer="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="WG2-MH-TVV" userLabel="Document Description Field">
+                                    <textField identifier="documentDescriptionField" toolTip="description of the document" wantsLayer="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="WG2-MH-TVV" userLabel="Document Description Field">
                                         <rect key="frame" x="5" y="126" width="230" height="22"/>
                                         <shadow key="shadow">
                                             <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -552,7 +550,7 @@ Tag your document and save  it:</string>
                                             <outlet property="nextKeyView" destination="WfD-Nd-kM0" id="xAD-eB-rDw"/>
                                         </connections>
                                     </textField>
-                                    <scrollView wantsLayer="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oZc-B6-cqG" userLabel="Document Tag - Table View">
+                                    <scrollView toolTip="tags of the document" wantsLayer="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oZc-B6-cqG" userLabel="Document Tag - Table View">
                                         <rect key="frame" x="5" y="5" width="230" height="116"/>
                                         <clipView key="contentView" id="kWK-ER-HYK">
                                             <rect key="frame" x="1" y="1" width="228" height="114"/>
@@ -624,9 +622,6 @@ Tag your document and save  it:</string>
                                             <rect key="frame" x="224" y="17" width="15" height="102"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
-                                        <connections>
-                                            <outlet property="nextKeyView" destination="WfD-Nd-kM0" id="3FD-sE-0MK"/>
-                                        </connections>
                                     </scrollView>
                                 </subviews>
                                 <constraints>
@@ -646,7 +641,7 @@ Tag your document and save  it:</string>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="BZd-ly-6BW">
                                 <rect key="frame" x="680" y="20" width="240" height="276"/>
                                 <subviews>
-                                    <searchField identifier="tagSearchField" wantsLayer="YES" verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WfD-Nd-kM0">
+                                    <searchField identifier="tagSearchField" toolTip="Tag input; press return key to add it to the document attributes" wantsLayer="YES" verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WfD-Nd-kM0">
                                         <rect key="frame" x="5" y="249" width="230" height="22"/>
                                         <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" id="azW-Co-ROb">
                                             <font key="font" metaFont="system"/>
@@ -657,7 +652,7 @@ Tag your document and save  it:</string>
                                             <outlet property="nextKeyView" destination="Ii4-sZ-BA5" id="AUP-Su-Wv1"/>
                                         </connections>
                                     </searchField>
-                                    <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kGW-Ke-BkB" userLabel="Tag Scroll View">
+                                    <scrollView toolTip="Used tags in your archive" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kGW-Ke-BkB" userLabel="Tag Scroll View">
                                         <rect key="frame" x="5" y="5" width="230" height="239"/>
                                         <clipView key="contentView" id="FwI-oY-mZj">
                                             <rect key="frame" x="1" y="0.0" width="228" height="238"/>
@@ -681,6 +676,7 @@ Tag your document and save  it:</string>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                             </textFieldCell>
+                                                            <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="count"/>
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="aAj-oT-fzK">
@@ -705,6 +701,9 @@ Tag your document and save  it:</string>
                                                                     </connections>
                                                                 </tableCellView>
                                                             </prototypeCellViews>
+                                                            <connections>
+                                                                <binding destination="jrR-pM-UBT" name="value" keyPath="arrangedObjects.count" id="JSl-95-Sk4"/>
+                                                            </connections>
                                                         </tableColumn>
                                                         <tableColumn identifier="" width="194.5" minWidth="40" maxWidth="1000" id="bgb-vH-5vk">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Tag">
@@ -717,6 +716,7 @@ Tag your document and save  it:</string>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                             </textFieldCell>
+                                                            <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="name"/>
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
@@ -741,12 +741,14 @@ Tag your document and save  it:</string>
                                                                     </connections>
                                                                 </tableCellView>
                                                             </prototypeCellViews>
+                                                            <connections>
+                                                                <binding destination="jrR-pM-UBT" name="value" keyPath="arrangedObjects.name" id="SeY-zo-T1X"/>
+                                                            </connections>
                                                         </tableColumn>
                                                     </tableColumns>
                                                     <connections>
-                                                        <action selector="clickedTableView:" target="XfG-lQ-9wD" id="XLt-ju-bzD"/>
-                                                        <binding destination="jrR-pM-UBT" name="content" keyPath="arrangedObjects" id="Ou8-Vc-Vho"/>
-                                                        <binding destination="jrR-pM-UBT" name="selectionIndexes" keyPath="selectionIndexes" previousBinding="Ou8-Vc-Vho" id="KuO-e9-hkj"/>
+                                                        <action selector="clickedTagTableView:" target="XfG-lQ-9wD" id="C1O-k3-Mk1"/>
+                                                        <binding destination="jrR-pM-UBT" name="selectionIndexes" keyPath="selectionIndexes" id="v8p-1e-i2c"/>
                                                     </connections>
                                                 </tableView>
                                             </subviews>
@@ -800,17 +802,19 @@ Tag your document and save  it:</string>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="0fO-Ka-cSd" userLabel="Get PDF Button">
+                            <button toolTip="Add documents to the upper list" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="0fO-Ka-cSd" userLabel="Get PDF Button">
                                 <rect key="frame" x="79" y="13" width="103" height="32"/>
                                 <buttonCell key="cell" type="push" title="Add PDFs " bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="O5o-sv-h0r">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
+                                    <string key="keyEquivalent">o</string>
+                                    <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                                 </buttonCell>
                                 <connections>
                                     <action selector="browseFileWithSender:" target="XfG-lQ-9wD" id="NCs-zK-jLg"/>
                                 </connections>
                             </button>
-                            <button wantsLayer="YES" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="U4W-9l-6vC">
+                            <button toolTip="Save current document in archive" wantsLayer="YES" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="U4W-9l-6vC">
                                 <rect key="frame" x="765" y="336" width="70" height="32"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="5XA-Ia-lvx"/>
@@ -821,6 +825,8 @@ Tag your document and save  it:</string>
                                 <buttonCell key="cell" type="push" title="Save" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="0XN-Jb-GHq">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
+                                    <string key="keyEquivalent">s</string>
+                                    <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                                 </buttonCell>
                                 <connections>
                                     <action selector="saveDocumentButton:" target="XfG-lQ-9wD" id="dHu-OA-fdp"/>
@@ -895,7 +901,12 @@ Tag your document and save  it:</string>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <arrayController objectClassName="Document" id="6y2-Gm-cOS" userLabel="Document Array Controller"/>
-                <arrayController objectClassName="Tag" id="jrR-pM-UBT" userLabel="Tag Array Controller"/>
+                <arrayController objectClassName="Tag" automaticallyRearrangesObjects="YES" id="jrR-pM-UBT" userLabel="Tag Array Controller">
+                    <declaredKeys>
+                        <string>count</string>
+                        <string>name</string>
+                    </declaredKeys>
+                </arrayController>
                 <arrayController objectClassName="Tag" id="nlU-Xg-XLm" userLabel="Document Tag Array Controller"/>
             </objects>
             <point key="canvasLocation" x="75" y="1123"/>

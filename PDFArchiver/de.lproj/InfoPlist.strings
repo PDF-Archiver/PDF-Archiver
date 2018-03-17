@@ -6,5 +6,5 @@
   Copyright © 2018 Julian Kahnert. All rights reserved.
 */
 
-"CFBundleDisplayName" = "PDF Archivar";
-"NSHumanReadableCopyright" = "2018 Julian Kahnert. Alle Rechte vorbehalten.\n\nPDF-Archivar@juliankahnert.de";
+"CFBundleDisplayName" = "PDF Archiver";
+"NSHumanReadableCopyright" = "2018 Julian Kahnert. Alle Rechte vorbehalten.\n\nmail@pdf-archiver.io";

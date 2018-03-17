@@ -7,8 +7,10 @@
 //
 
 import Quartz
+import os.log
 
 class ViewController: NSViewController {
+    let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "MainViewController")
     var dataModelInstance = DataModel()
 
     @IBOutlet weak var pdfDocumentsView: NSView!
@@ -53,18 +55,6 @@ class ViewController: NSViewController {
         document.documentDescription = sender.stringValue
     }
 
-    @IBAction func clickedTableView(_ sender: NSTableView) {
-        if sender.clickedRow == -1 {
-            if sender.clickedColumn == 0 {
-                sortArrayController(by: "count", ascending: false)
-            } else {
-                sortArrayController(by: "name", ascending: true)
-            }
-        } else {
-            tagTableView.deselectRow(tagAC.selectionIndex)
-        }
-    }
-
     @IBAction func clickedDocumentTagTableView(_ sender: NSTableView) {
         // test if the document tag table is empty
         guard !self.documentAC.selectedObjects.isEmpty,
@@ -89,10 +79,18 @@ class ViewController: NSViewController {
             i += 1
         }
     }
-
+    
+    @IBAction func clickedTagTableView(_ sender: NSTableView) {
+        if let selectedTag = self.tagAC.selectedObjects.first as? Tag {
+            self.addDocumentTag(tag: selectedTag,
+                                new: false)
+        }
+    }
+    
     @IBAction func browseFile(sender: AnyObject) {
         self.getPDFDocuments()
     }
+    
     @IBAction func saveDocumentButton(_ sender: NSButton) {
         self.saveDocument()
     }
@@ -106,12 +104,9 @@ class ViewController: NSViewController {
                 archivePath = try NSURL.init(resolvingBookmarkData: bookmarkData, options: .withoutUI, relativeTo: nil, bookmarkDataIsStale: nil)
                 if let archivePathTmp = archivePath  {
                     archivePathTmp.startAccessingSecurityScopedResource()
-                    
-                    print("Setting archive path, e.g. update tag list.")
-                    self.dataModelInstance.prefs?.archivePath = archivePathTmp as URL
                 }
             } catch let error as NSError {
-                print("Bookmark Access Fails: \(error.description)")
+                os_log("Bookmark Access failed: %@", log: self.log, type: .error, error.description as CVarArg)
             }
         }
 
@@ -119,31 +114,30 @@ class ViewController: NSViewController {
         self.datePicker.locale = Locale.init(identifier: "en_CA")
 
         // set the array controller
-        self.tagAC.content = self.dataModelInstance.tags?.list
+        self.tagAC.content = self.dataModelInstance.tags
+        
         self.documentAC.content = self.dataModelInstance.documents
 
         // MARK: - Notification Observer
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(self.showPreferences),
                                        name: Notification.Name("ShowPreferences"), object: nil)
-        notificationCenter.addObserver(self, selector: #selector(self.getPDFDocuments),
-                                       name: Notification.Name("GetPDFDocuments"), object: nil)
-        notificationCenter.addObserver(self, selector: #selector(self.saveDocument),
-                                       name: Notification.Name("SaveDocument"), object: nil)
         notificationCenter.addObserver(self, selector: #selector(self.updateViewController),
                                        name: Notification.Name("UpdateViewController"), object: nil)
         notificationCenter.addObserver(self, selector: #selector(self.resetCache),
                                        name: Notification.Name("ResetCache"), object: nil)
         notificationCenter.addObserver(self, selector: #selector(self.showOnboarding),
                                        name: Notification.Name("ShowOnboarding"), object: nil)
+        notificationCenter.addObserver(self, selector: #selector(self.updateTags),
+                                       name: Notification.Name("UpdateTags"), object: nil)
 
         // MARK: - delegates
         tagSearchField.delegate = self
         descriptionField.delegate = self
 
         // add sorting to tag fields
-        sortArrayController(by: "count", ascending: false)
-
+        self.tagTableView.sortDescriptors = [NSSortDescriptor(key: "count", ascending: false), NSSortDescriptor(key: "name", ascending: true)]
+        
         // set some PDF View settings
 //         self.pdfContentView.displayMode = PDFDisplayMode.singlePageContinuous
         self.pdfContentView.displayMode = PDFDisplayMode.singlePage
@@ -192,9 +186,9 @@ class ViewController: NSViewController {
         if let prefs = self.dataModelInstance.prefs,
            let archivePath = self.dataModelInstance.prefs?.archivePath {
             prefs.save()
-            print("\nSAVE COMPLETE (\(archivePath)\n")
+            os_log("Save complete: %@", log: self.log, type: .debug, archivePath as CVarArg)
         } else {
-            print("\nSAVE NOT POSSIBLE\n")
+            os_log("Save possible.", log: self.log, type: .debug)
         }
         
         // quit application if the window disappears

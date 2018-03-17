@@ -12,17 +12,9 @@ class WindowController: NSWindowController {
 
     override func windowDidLoad() {
         super.windowDidLoad()
-        //1.
-        if let window = window, let screen = window.screen {
-            let offsetFromLeftOfScreen: CGFloat = 100
-            let offsetFromTopOfScreen: CGFloat = 100
-            //2.
-            let screenRect = screen.visibleFrame
-            //3.
-            let newOriginY = screenRect.maxY - window.frame.height - offsetFromTopOfScreen
-            //4.
-            window.setFrameOrigin(NSPoint(x: offsetFromLeftOfScreen, y: newOriginY))
-        }
+        
+        // restore the window position, e.g. https://stackoverflow.com/a/49205940
+        self.windowFrameAutosaveName = NSWindow.FrameAutosaveName(rawValue: "MainWindowPosition")
     }
 
 }

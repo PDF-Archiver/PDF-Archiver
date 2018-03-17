@@ -7,6 +7,7 @@
 //
 
 import Quartz
+import os.log
 
 extension ViewController {
     // MARK: - segue stuff
@@ -19,8 +20,9 @@ extension ViewController {
 
     // MARK: - notifications
     @objc func updateViewController(updatePDF: Bool) {
-        self.tagAC.content = self.dataModelInstance.tags?.list
-
+        os_log("Update view controller fields and tables.", log: self.log, type: .debug)
+        self.tagAC.content = self.dataModelInstance.tags
+        
         // test if no documents exist in document table view
         if self.dataModelInstance.documents?.count == nil || self.dataModelInstance.documents?.count == 0 {
             self.pdfContentView.document = nil
@@ -46,7 +48,22 @@ extension ViewController {
     @objc func showPreferences() {
         self.performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "prefsSegue"), sender: self)
     }
-    @objc func getPDFDocuments() {
+    @objc func resetCache() {
+        // remove preferences
+        self.dataModelInstance.prefs = nil
+        // remove all user defaults
+        UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+        // close application
+        NSApplication.shared.terminate(self)
+    }
+    @objc func showOnboarding() {
+        self.performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "onboardingSegue"), sender: self)
+    }
+    @objc func updateTags() {
+        os_log("Setting archive path, e.g. update tag list.", log: self.log, type: .debug)
+        self.dataModelInstance.prefs?.getArchiveTags()
+    }
+    func getPDFDocuments() {
         let openPanel = NSOpenPanel()
         openPanel.title = "Choose a .pdf file or a folder"
         openPanel.showsResizeIndicator = false
@@ -63,10 +80,8 @@ extension ViewController {
 
                 // get the new documents
                 for element in openPanel.urls {
-                    for pdf_path in getPDFs(url: element) {
-                        let selectedDocument = Document(path: pdf_path)
-                        self.dataModelInstance.documents?.append(selectedDocument)
-                    }
+                    let files = getPDFs(url: element)
+                    self.dataModelInstance.addNewDocuments(paths: files)
                 }
             }
             openPanel.close()
@@ -76,7 +91,7 @@ extension ViewController {
             // no need to refresh the view manually here, because the selection changes which triggers a view update
         }
     }
-    @objc func saveDocument() {
+    func saveDocument() {
         // test if a document is selected
         guard !self.documentAC.selectedObjects.isEmpty,
               let idx = self.dataModelInstance.documentIdx,
@@ -91,14 +106,6 @@ extension ViewController {
         let selectedDocument = documents[idx] as Document
         let result = selectedDocument.rename(archivePath: path)
         if result {
-            // update tag count
-            let tags = self.tagAC.arrangedObjects as? [Tag] ?? []
-            for selectedTag in selectedDocument.documentTags ?? [] {
-                for tag in tags where tag.name == selectedTag.name {
-                    tag.count += 1
-                }
-            }
-
             // select a new document
             self.documentAC.content = documents
             if idx < documents.count {
@@ -106,26 +113,38 @@ extension ViewController {
             } else {
                 self.dataModelInstance.documentIdx = documents.count
             }
-            updateViewController(updatePDF: true)
+            self.updateViewController(updatePDF: true)
         }
     }
-    @objc func resetCache() {
-        // remove preferences
-        self.dataModelInstance.prefs = nil
-        // remove all user defaults
-        UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
-        UserDefaults.standard.synchronize()
-        // close application
-        NSApplication.shared.terminate(self)
-    }
-    @objc func showOnboarding() {
-        self.performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "onboardingSegue"), sender: self)
-    }
-
-    // MARK: some helper methods
-    func sortArrayController(by key: String, ascending asc: Bool) {
-        tagAC.sortDescriptors = [NSSortDescriptor(key: key, ascending: asc)]
-        tagAC.rearrangeObjects()
+    func addDocumentTag(tag selectedTag: Tag, new newlyCreated: Bool) {
+        // test if element already exists in document tag table view
+        if let documentTags = self.documentTagAC.content as? [Tag] {
+            for tag in documentTags where tag.name == selectedTag.name {
+                os_log("Tag '%@' already found!", log: self.log, type: .error, selectedTag.name as CVarArg)
+                return
+            }
+        }
+        
+        // add new tag to document table view
+        guard let idx = self.dataModelInstance.documentIdx else {
+            os_log("Please pick documents first!", log: self.log, type: .info)
+            return
+        }
+        
+        if self.dataModelInstance.documents![idx].documentTags != nil {
+            self.dataModelInstance.documents![idx].documentTags!.insert(selectedTag, at: 0)
+        } else {
+            self.dataModelInstance.documents![idx].documentTags = [selectedTag]
+        }
+        
+        // clear search field content
+        self.tagSearchField.stringValue = ""
+        
+        // add tag to tagAC
+        if newlyCreated {
+            self.dataModelInstance.tags?.insert(selectedTag)
+        }
+        self.updateViewController(updatePDF: false)
     }
 }
 
@@ -151,8 +170,7 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
             (self.dataModelInstance.documents![idx] as Document).documentDescription = textField.stringValue
         } else if id.identifier?.rawValue == "tagSearchField" {
             guard let searchField = notification.object as? NSSearchField else { return }
-            let tags = self.dataModelInstance.tags?.filter(prefix: searchField.stringValue)
-            self.tagAC.content = tags
+            self.tagAC.content = self.dataModelInstance.filterTags(prefix: searchField.stringValue)
         }
     }
 
@@ -169,6 +187,7 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
         let tags = self.tagAC.arrangedObjects as? [Tag] ?? []
         if tags.count > 0 {
             selectedTag = tags.first!
+            selectedTag.count += 1
             newlyCreated = false
         } else {
             // no tag selected - get the name of the search field
@@ -176,35 +195,9 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
                               count: 1)
             newlyCreated = true
         }
-
-        // test if element already exists in document tag table view
-        if let documentTags = self.documentTagAC.content as? [Tag] {
-            for tag in documentTags where tag.name == selectedTag.name {
-                print("Tag already found!")
-                return
-            }
-        }
-
-        // add new tag to document table view
-        guard let idx = self.dataModelInstance.documentIdx else {
-            print("Please pick documents first!")
-            return
-        }
-
-        if self.dataModelInstance.documents![idx].documentTags != nil {
-            self.dataModelInstance.documents![idx].documentTags!.insert(selectedTag, at: 0)
-        } else {
-            self.dataModelInstance.documents![idx].documentTags = [selectedTag]
-        }
-
-        // clear search field content
-        self.tagSearchField.stringValue = ""
-
-        // add tag to tagAC
-        if newlyCreated {
-            self.dataModelInstance.tags?.list.insert(selectedTag)
-        }
-        self.updateViewController(updatePDF: false)
+        
+        // add the selected tag to the document
+        self.addDocumentTag(tag: selectedTag, new: newlyCreated)
     }
 }
 

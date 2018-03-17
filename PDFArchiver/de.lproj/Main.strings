@@ -2,28 +2,31 @@
 /* Class = "NSButtonCell"; title = "Speichern"; ObjectID = "0XN-Jb-GHq"; */
 "0XN-Jb-GHq.title" = "Speichern";
 
-/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "144-l1-cpe"; */
+/* Class = "NSButton"; ibShadowedToolTip = "Füge Dokumente der oberen Liste hinzu"; ObjectID = "0fO-Ka-cSd"; */
+"0fO-Ka-cSd.ibShadowedToolTip" = "Füge Dokumente der oberen Liste hinzu";
+
+/* Class = "NSTextFieldCell"; title = "Text Eintrag"; ObjectID = "144-l1-cpe"; */
 "144-l1-cpe.title" = "Text Eintrag";
 
-/* Class = "NSMenuItem"; title = "PDF Archivar"; ObjectID = "1Xt-HY-uBw"; */
-"1Xt-HY-uBw.title" = "PDF Archivar";
+/* Class = "NSMenuItem"; title = "PDF Archiver"; ObjectID = "1Xt-HY-uBw"; */
+"1Xt-HY-uBw.title" = "PDF Archiver";
 
-/* Class = "NSMenuItem"; title = "PDF Archivar beenden"; ObjectID = "4sb-4s-VLi"; */
-"4sb-4s-VLi.title" = "PDF Archivar beenden";
+/* Class = "NSMenuItem"; title = "PDF Archiver beenden"; ObjectID = "4sb-4s-VLi"; */
+"4sb-4s-VLi.title" = "PDF Archiver beenden";
 
-/* Class = "NSMenuItem"; title = "Über PDF Archivar"; ObjectID = "5kV-Vb-QxS"; */
-"5kV-Vb-QxS.title" = "Über PDF Archivar";
+/* Class = "NSMenuItem"; title = "Über PDF Archiver"; ObjectID = "5kV-Vb-QxS"; */
+"5kV-Vb-QxS.title" = "Über PDF Archiver";
 
-/* Class = "NSTextFieldCell"; title = "Thank you for downloading."; ObjectID = "8Xm-l9-Ww4"; */
+/* Class = "NSTextFieldCell"; title = "Danke für das Herunterladen."; ObjectID = "8Xm-l9-Ww4"; */
 "8Xm-l9-Ww4.title" = "Danke für das Herunterladen.";
 
-/* Class = "NSButtonCell"; title = "Close"; ObjectID = "90s-ei-HMI"; */
+/* Class = "NSButtonCell"; title = "Schließen"; ObjectID = "90s-ei-HMI"; */
 "90s-ei-HMI.title" = "Schließen";
 
 /* Class = "NSMenu"; title = "Hauptmenü"; ObjectID = "AYu-sK-qS6"; */
 "AYu-sK-qS6.title" = "Hauptmenü";
 
-/* Class = "NSTextFieldCell"; title = "1 ) Select an Archive Path in preferences\n\n2) Select untagged documents\n\n3) Tag your document and save  it"; ObjectID = "AlK-ae-Y1M"; */
+/* Class = "NSTextFieldCell"; title = "Setze den Archiv Pfad in den Einstellungen:\n\nWähle Dokumente aus:\n\nVersehe deine Dokumente mit Tags und speichere sie:"; ObjectID = "AlK-ae-Y1M"; */
 "AlK-ae-Y1M.title" = "Setze den Archiv Pfad in den Einstellungen:\n\nWähle Dokumente aus:\n\nVersehe deine Dokumente mit Tags und speichere sie:";
 
 /* Class = "NSTextFieldCell"; title = "Tabellen Eintrag"; ObjectID = "B7Q-Q5-RNU"; */
@@ -32,32 +35,38 @@
 /* Class = "NSMenuItem"; title = "Einstellungen…"; ObjectID = "BOF-NM-1cW"; */
 "BOF-NM-1cW.title" = "Einstellungen…";
 
+/* Class = "NSMenuItem"; title = "Update Tags"; ObjectID = "CDG-jy-mOA"; */
+"CDG-jy-mOA.title" = "Tags aktualisieren";
+
 /* Class = "NSMenuItem"; title = "Schließen"; ObjectID = "DVo-aG-piG"; */
 "DVo-aG-piG.title" = "Schließen";
 
-/* Class = "NSTextFieldCell"; title = "CMD ,"; ObjectID = "Dce-Xm-wCT"; */
+/* Class = "NSTextFieldCell"; title = "⌘ ,"; ObjectID = "Dce-Xm-wCT"; */
 "Dce-Xm-wCT.title" = "⌘ ,";
 
 /* Class = "NSMenu"; title = "Hilfe"; ObjectID = "F2S-fz-NVQ"; */
 "F2S-fz-NVQ.title" = "Hilfe";
 
-/* Class = "NSMenuItem"; title = "PDF Archivar Hilfe"; ObjectID = "FKE-Sm-Kum"; */
-"FKE-Sm-Kum.title" = "PDF Archivar Hilfe";
+/* Class = "NSMenuItem"; title = "PDF Archiver Hilfe"; ObjectID = "FKE-Sm-Kum"; */
+"FKE-Sm-Kum.title" = "PDF Archiver Hilfe";
 
 /* Class = "NSTextFieldCell"; title = "PDF Dokumente"; ObjectID = "FTj-OD-Ghm"; */
 "FTj-OD-Ghm.title" = "PDF Dokumente";
 
-/* Class = "NSMenuItem"; title = "Show Onboarding"; ObjectID = "Hz0-RV-wAv"; */
+/* Class = "NSMenuItem"; title = "Einführung anzeigen"; ObjectID = "Hz0-RV-wAv"; */
 "Hz0-RV-wAv.title" = "Einführung anzeigen";
 
 /* Class = "NSMenuItem"; title = "Öffnen…"; ObjectID = "IAo-SY-fd9"; */
 "IAo-SY-fd9.title" = "Öffnen…";
 
-/* Class = "NSViewController"; title = "Onboarding"; ObjectID = "IBN-wm-PS1"; */
+/* Class = "NSViewController"; title = "Einführung"; ObjectID = "IBN-wm-PS1"; */
 "IBN-wm-PS1.title" = "Einführung";
 
-/* Class = "NSWindow"; title = "PDF Archivar"; ObjectID = "IQv-IB-iLA"; */
-"IQv-IB-iLA.title" = "PDF Archivar";
+/* Class = "NSWindow"; title = "PDF Archiver"; ObjectID = "IQv-IB-iLA"; */
+"IQv-IB-iLA.title" = "PDF Archiver";
+
+/* Class = "NSScrollView"; ibShadowedToolTip = "Zu taggende Dokumente"; ObjectID = "Ii4-sZ-BA5"; */
+"Ii4-sZ-BA5.ibShadowedToolTip" = "Zu taggende Dokumente";
 
 /* Class = "NSTextFieldCell"; title = "Archiv Pfad:"; ObjectID = "Ju7-wj-fHp"; */
 "Ju7-wj-fHp.title" = "Archiv Pfad:";
@@ -65,11 +74,14 @@
 /* Class = "NSMenuItem"; title = "Alle einblenden"; ObjectID = "Kd2-mp-pUS"; */
 "Kd2-mp-pUS.title" = "Alle einblenden";
 
-/* Class = "NSTextFieldCell"; title = "Welcome to PDF Archiver"; ObjectID = "LDE-IZ-15h"; */
-"LDE-IZ-15h.title" = "Willkommen bei PDF Archivar";
+/* Class = "NSTextFieldCell"; title = "Willkommen bei PDF Archiver"; ObjectID = "LDE-IZ-15h"; */
+"LDE-IZ-15h.title" = "Willkommen bei PDF Archiver";
 
 /* Class = "NSMenuItem"; title = "Einstellungen zurücksetzen"; ObjectID = "N0V-Bp-Pnp"; */
 "N0V-Bp-Pnp.title" = "Einstellungen zurücksetzen";
+
+/* Class = "NSDatePicker"; ibShadowedToolTip = "Datum des Dokumentes"; ObjectID = "NiF-3c-nL6"; */
+"NiF-3c-nL6.ibShadowedToolTip" = "Datum des Dokumentes";
 
 /* Class = "NSButtonCell"; title = "PDFs hinzufügen"; ObjectID = "O5o-sv-h0r"; */
 "O5o-sv-h0r.title" = "PDFs hinzufügen";
@@ -77,8 +89,8 @@
 /* Class = "NSMenuItem"; title = "Minimieren"; ObjectID = "OY7-WF-poV"; */
 "OY7-WF-poV.title" = "Minimieren";
 
-/* Class = "NSMenuItem"; title = "PDF Archivar ausblenden"; ObjectID = "Olw-nP-bQN"; */
-"Olw-nP-bQN.title" = "PDF Archivar ausblenden";
+/* Class = "NSMenuItem"; title = "PDF Archiver ausblenden"; ObjectID = "Olw-nP-bQN"; */
+"Olw-nP-bQN.title" = "PDF Archiver ausblenden";
 
 /* Class = "NSTextFieldCell"; placeholderString = "Beschreibung"; ObjectID = "PCv-if-5Qd"; */
 "PCv-if-5Qd.placeholderString" = "Beschreibung";
@@ -92,8 +104,17 @@
 /* Class = "NSMenu"; title = "Fenster"; ObjectID = "Td7-aD-5lo"; */
 "Td7-aD-5lo.title" = "Fenster";
 
+/* Class = "NSButton"; ibShadowedToolTip = "Speicher das aktuelle Dokument im Archiv"; ObjectID = "U4W-9l-6vC"; */
+"U4W-9l-6vC.ibShadowedToolTip" = "Speicher das aktuelle Dokument im Archiv";
+
 /* Class = "NSMenuItem"; title = "Andere ausblenden"; ObjectID = "Vdr-fp-XzO"; */
 "Vdr-fp-XzO.title" = "Andere ausblenden";
+
+/* Class = "NSTextField"; ibShadowedToolTip = "Beschreibung des Dokumentes"; ObjectID = "WG2-MH-TVV"; */
+"WG2-MH-TVV.ibShadowedToolTip" = "Beschreibung des Dokumentes";
+
+/* Class = "NSSearchField"; ibShadowedToolTip = "Tag Eingabe; Drücke die Return taste um die Dokument Attribute hinzuzufügen"; ObjectID = "WfD-Nd-kM0"; */
+"WfD-Nd-kM0.ibShadowedToolTip" = "Tag Eingabe; Drücke die Return taste um die Dokument Attribute hinzuzufügen";
 
 /* Class = "NSButtonCell"; title = "Ändern"; ObjectID = "XbB-C4-8qz"; */
 "XbB-C4-8qz.title" = "Ändern";
@@ -113,7 +134,7 @@
 /* Class = "NSMenu"; title = "Ablage"; ObjectID = "bib-Uj-vzu"; */
 "bib-Uj-vzu.title" = "Ablage";
 
-/* Class = "NSTextFieldCell"; title = "CMD s"; ObjectID = "cpe-TF-DiZ"; */
+/* Class = "NSTextFieldCell"; title = "⌘ s"; ObjectID = "cpe-TF-DiZ"; */
 "cpe-TF-DiZ.title" = "⌘ s";
 
 /* Class = "NSTableColumn"; headerCell.title = "#"; ObjectID = "dAK-Zr-LS0"; */
@@ -122,16 +143,19 @@
 /* Class = "NSMenuItem"; title = "Ablage"; ObjectID = "dMs-cI-mzQ"; */
 "dMs-cI-mzQ.title" = "Ablage";
 
-/* Class = "NSTextFieldCell"; ibExternalAccessibilityHelp = "Archive Path"; ObjectID = "gtQ-4r-22c"; */
+/* Class = "NSTextFieldCell"; ibExternalAccessibilityHelp = "Archiv Pfad"; ObjectID = "gtQ-4r-22c"; */
 "gtQ-4r-22c.ibExternalAccessibilityHelp" = "Archiv Pfad";
 
 /* Class = "NSTextFieldCell"; placeholderString = "Bitte Pfad setzen  ..."; ObjectID = "gtQ-4r-22c"; */
 "gtQ-4r-22c.placeholderString" = "Bitte Pfad setzen  ...";
 
+/* Class = "NSScrollView"; ibShadowedToolTip = "Bisher verwendete Tags aus dem Archiv"; ObjectID = "kGW-Ke-BkB"; */
+"kGW-Ke-BkB.ibShadowedToolTip" = "Bisher verwendete Tags aus dem Archiv";
+
 /* Class = "NSTextFieldCell"; title = "Text Eintrag"; ObjectID = "l4J-fs-Cne"; */
 "l4J-fs-Cne.title" = "Text Eintrag";
 
-/* Class = "NSTextFieldCell"; title = "CMD o"; ObjectID = "m4z-q1-wQ4"; */
+/* Class = "NSTextFieldCell"; title = "⌘ o"; ObjectID = "m4z-q1-wQ4"; */
 "m4z-q1-wQ4.title" = "⌘ o";
 
 /* Class = "NSTextFieldCell"; title = "Table View Cell"; ObjectID = "mEm-YG-Iaa"; */
@@ -146,6 +170,9 @@
 /* Class = "NSTextFieldCell"; title = "Text Eintrag"; ObjectID = "o1a-m8-IzU"; */
 "o1a-m8-IzU.title" = "Text Eintrag";
 
+/* Class = "NSScrollView"; ibShadowedToolTip = "Tags des Dokumentes"; ObjectID = "oZc-B6-cqG"; */
+"oZc-B6-cqG.ibShadowedToolTip" = "Tags des Dokumentes";
+
 /* Class = "NSTextFieldCell"; title = "Tabellen Eintrag"; ObjectID = "pXJ-g7-oZi"; */
 "pXJ-g7-oZi.title" = "Tabellen Eintrag";
 
@@ -158,8 +185,8 @@
 /* Class = "NSTextFieldCell"; title = "Table View Cell"; ObjectID = "tbm-cD-D49"; */
 "tbm-cD-D49.title" = "Table View Cell";
 
-/* Class = "NSMenu"; title = "PDF Archivar"; ObjectID = "uQy-DD-JDr"; */
-"uQy-DD-JDr.title" = "PDF Archivar";
+/* Class = "NSMenu"; title = "PDF Archiver"; ObjectID = "uQy-DD-JDr"; */
+"uQy-DD-JDr.title" = "PDF Archiver";
 
 /* Class = "NSMenuItem"; title = "Hilfe"; ObjectID = "wpr-3q-Mcd"; */
 "wpr-3q-Mcd.title" = "Hilfe";
