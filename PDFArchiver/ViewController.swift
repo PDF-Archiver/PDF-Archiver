@@ -131,6 +131,7 @@ class ViewController: NSViewController {
         descriptionField.delegate = self
 
         // add sorting to tag fields
+        self.documentAC.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true), NSSortDescriptor(key: "documentDone", ascending: false)]
         self.tagTableView.sortDescriptors = [NSSortDescriptor(key: "count", ascending: false), NSSortDescriptor(key: "name", ascending: true)]
         
         // set some PDF View settings
