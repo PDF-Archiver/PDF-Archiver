@@ -31,18 +31,16 @@ extension ViewController {
             self.documentTagAC.content = nil
             return
         }
-        let idx = self.dataModelInstance.documentIdx ?? 0
-        let document = self.dataModelInstance.documents![idx] as Document
-
-        // set the document date, description and tags
-        self.datePicker.dateValue = document.documentDate
-        self.descriptionField.stringValue = document.documentDescription ?? ""
-        self.documentTagAC.content = document.documentTags
-        self.documentAC.setSelectionIndex(self.dataModelInstance.documentIdx ?? 0)
-
-        // update pdf view
-        if updatePDF {
-            self.pdfContentView.document = PDFDocument(url: document.path)
+        if let selectedDocument = self.dataModelInstance.selectedDocument {
+            // set the document date, description and tags
+            self.datePicker.dateValue = selectedDocument.documentDate
+            self.descriptionField.stringValue = selectedDocument.documentDescription ?? ""
+            self.documentTagAC.content = selectedDocument.documentTags
+            
+            // update pdf view
+            if updatePDF {
+                self.pdfContentView.document = PDFDocument(url: selectedDocument.path)
+            }
         }
     }
     @objc func showPreferences() {
@@ -94,8 +92,8 @@ extension ViewController {
     func saveDocument() {
         // test if a document is selected
         guard !self.documentAC.selectedObjects.isEmpty,
-              let idx = self.dataModelInstance.documentIdx,
-              var documents = self.dataModelInstance.documents else {
+              let selectedDocument = self.dataModelInstance.selectedDocument,
+              let documents = self.dataModelInstance.documents else {
             return
         }
 
@@ -103,16 +101,10 @@ extension ViewController {
             dialogOK(message_key: "no_archive", info_key: "select_preferences", style: .critical)
             return
         }
-        let selectedDocument = documents[idx] as Document
         let result = selectedDocument.rename(archivePath: path)
         if result {
             // select a new document
             self.documentAC.content = documents
-            if idx < documents.count {
-                self.dataModelInstance.documentIdx = idx + 1
-            } else {
-                self.dataModelInstance.documentIdx = documents.count
-            }
             self.updateViewController(updatePDF: true)
         }
     }
@@ -126,15 +118,15 @@ extension ViewController {
         }
         
         // add new tag to document table view
-        guard let idx = self.dataModelInstance.documentIdx else {
+        guard let selectedDocument = self.dataModelInstance.selectedDocument else {
             os_log("Please pick documents first!", log: self.log, type: .info)
             return
         }
         
-        if self.dataModelInstance.documents![idx].documentTags != nil {
-            self.dataModelInstance.documents![idx].documentTags!.insert(selectedTag, at: 0)
+        if selectedDocument.documentTags != nil {
+            selectedDocument.documentTags!.insert(selectedTag, at: 0)
         } else {
-            self.dataModelInstance.documents![idx].documentTags = [selectedTag]
+            selectedDocument.documentTags = [selectedTag]
         }
         
         // clear search field content
@@ -151,9 +143,11 @@ extension ViewController {
 extension ViewController: NSTableViewDelegate, NSTableViewDataSource {
     func tableViewSelectionDidChange(_ notification: Notification) {
         guard let tableView = notification.object as? NSTableView else { return }
-        if let identifier = tableView.identifier, identifier.rawValue == "DocumentTableView" {
+        if let identifier = tableView.identifier,
+           identifier.rawValue == "DocumentTableView",
+           tableView.selectedRow >= 0 {
             // get the index of the selected row and save it
-            self.dataModelInstance.documentIdx = tableView.selectedRow
+            self.dataModelInstance.selectedDocument = self.documentAC.selectedObjects.first as? Document
 
             // pick a document and save the tags in the document tag list
             self.updateViewController(updatePDF: true)
@@ -166,8 +160,8 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
         guard let id = notification.object as? NSTextField else { return }
         if id.identifier?.rawValue == "documentDescriptionField" {
             guard let textField = notification.object as? NSTextField,
-                  let idx = self.dataModelInstance.documentIdx else { return }
-            (self.dataModelInstance.documents![idx] as Document).documentDescription = textField.stringValue
+                  let selectedDocument = self.dataModelInstance.selectedDocument else { return }
+            selectedDocument.documentDescription = textField.stringValue
         } else if id.identifier?.rawValue == "tagSearchField" {
             guard let searchField = notification.object as? NSSearchField else { return }
             self.tagAC.content = self.dataModelInstance.filterTags(prefix: searchField.stringValue)

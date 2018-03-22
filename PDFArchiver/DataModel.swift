@@ -17,19 +17,7 @@ class DataModel: TagsDelegate {
     var prefs: Preferences?
     var documents: [Document]?
     var tags: Set<Tag>?
-    var documentIdx: Int? {
-        get {
-            return self._documentIdx
-        }
-        set {
-            let documents = self.documents ?? []
-            if let raw = newValue, raw < documents.count {
-                self._documentIdx = raw
-            } else {
-                self._documentIdx = 0
-            }
-        }
-    }
+    var selectedDocument: Document?
     fileprivate var _documentIdx: Int?
 
     init() {
