@@ -1,3 +1,4 @@
+
 /*
   Localized.strings
   PDF Archiver
@@ -5,7 +6,6 @@
   Created by Julian Kahnert on 24.02.18.
   Copyright © 2018 Julian Kahnert. All rights reserved.
 */
-
 "check_document_description" = "Doublecheck the document description.";
 
 "check_document_fields" = "Doublecheck the document fields.";

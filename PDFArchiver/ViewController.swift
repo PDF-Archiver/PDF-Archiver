@@ -74,18 +74,18 @@ class ViewController: NSViewController {
             i += 1
         }
     }
-    
+
     @IBAction func clickedTagTableView(_ sender: NSTableView) {
         if let selectedTag = self.tagAC.selectedObjects.first as? Tag {
             self.addDocumentTag(tag: selectedTag,
                                 new: false)
         }
     }
-    
+
     @IBAction func browseFile(sender: AnyObject) {
         self.getPDFDocuments()
     }
-    
+
     @IBAction func saveDocumentButton(_ sender: NSButton) {
         self.saveDocument()
     }
@@ -97,7 +97,7 @@ class ViewController: NSViewController {
         if let bookmarkData = UserDefaults.standard.object(forKey: "securityScopeBookmark") as? Data {
             do {
                 archivePath = try NSURL.init(resolvingBookmarkData: bookmarkData, options: .withoutUI, relativeTo: nil, bookmarkDataIsStale: nil)
-                if let archivePathTmp = archivePath  {
+                if let archivePathTmp = archivePath {
                     archivePathTmp.startAccessingSecurityScopedResource()
                 }
             } catch let error as NSError {
@@ -110,7 +110,7 @@ class ViewController: NSViewController {
 
         // set the array controller
         self.tagAC.content = self.dataModelInstance.tags
-        
+
         self.documentAC.content = self.dataModelInstance.documents
 
         // MARK: - Notification Observer
@@ -131,9 +131,11 @@ class ViewController: NSViewController {
         descriptionField.delegate = self
 
         // add sorting to tag fields
-        self.documentAC.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true), NSSortDescriptor(key: "documentDone", ascending: false)]
-        self.tagTableView.sortDescriptors = [NSSortDescriptor(key: "count", ascending: false), NSSortDescriptor(key: "name", ascending: true)]
-        
+        self.documentAC.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true),
+                                           NSSortDescriptor(key: "documentDone", ascending: false)]
+        self.tagTableView.sortDescriptors = [NSSortDescriptor(key: "count", ascending: false),
+                                             NSSortDescriptor(key: "name", ascending: true)]
+
         // set some PDF View settings
 //         self.pdfContentView.displayMode = PDFDisplayMode.singlePageContinuous
         self.pdfContentView.displayMode = PDFDisplayMode.singlePage
@@ -143,7 +145,7 @@ class ViewController: NSViewController {
         }
         self.pdfContentView.interpolationQuality = PDFInterpolationQuality.low
     }
-    
+
     override func viewWillAppear() {
         let layout = Layout()
 
@@ -170,7 +172,7 @@ class ViewController: NSViewController {
         self.tagSearchView.layer?.backgroundColor = layout.fieldBackgroundColorLight
         self.tagSearchView.layer?.cornerRadius = layout.cornerRadius
     }
-    
+
     override func viewDidAppear() {
         // show onboarding view
         if !UserDefaults.standard.bool(forKey: "onboardingShown") {
@@ -186,7 +188,7 @@ class ViewController: NSViewController {
         } else {
             os_log("Save possible.", log: self.log, type: .debug)
         }
-        
+
         // quit application if the window disappears
         NSApplication.shared.terminate(self)
     }

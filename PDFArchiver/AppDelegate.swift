@@ -27,7 +27,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBAction func updateTags(_ sender: NSMenuItem) {
         NotificationCenter.default.post(name: Notification.Name("UpdateTags"), object: nil)
     }
-    
+
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Insert code here to initialize your application
     }

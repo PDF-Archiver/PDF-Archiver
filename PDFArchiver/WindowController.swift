@@ -12,7 +12,7 @@ class WindowController: NSWindowController {
 
     override func windowDidLoad() {
         super.windowDidLoad()
-        
+
         // restore the window position, e.g. https://stackoverflow.com/a/49205940
         self.windowFrameAutosaveName = NSWindow.FrameAutosaveName(rawValue: "MainWindowPosition")
     }

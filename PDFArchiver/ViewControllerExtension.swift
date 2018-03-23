@@ -22,7 +22,7 @@ extension ViewController {
     @objc func updateViewController(updatePDF: Bool) {
         os_log("Update view controller fields and tables.", log: self.log, type: .debug)
         self.tagAC.content = self.dataModelInstance.tags
-        
+
         // test if no documents exist in document table view
         if self.dataModelInstance.documents?.count == nil || self.dataModelInstance.documents?.count == 0 {
             self.pdfContentView.document = nil
@@ -36,7 +36,7 @@ extension ViewController {
             self.datePicker.dateValue = selectedDocument.documentDate
             self.descriptionField.stringValue = selectedDocument.documentDescription ?? ""
             self.documentTagAC.content = selectedDocument.documentTags
-            
+
             // update pdf view
             if updatePDF {
                 self.pdfContentView.document = PDFDocument(url: selectedDocument.path)
@@ -98,7 +98,7 @@ extension ViewController {
         }
 
         guard let path = self.dataModelInstance.prefs?.archivePath else {
-            dialogOK(message_key: "no_archive", info_key: "select_preferences", style: .critical)
+            dialogOK(messageKey: "no_archive", infoKey: "select_preferences", style: .critical)
             return
         }
         let result = selectedDocument.rename(archivePath: path)
@@ -116,22 +116,22 @@ extension ViewController {
                 return
             }
         }
-        
+
         // add new tag to document table view
         guard let selectedDocument = self.dataModelInstance.selectedDocument else {
             os_log("Please pick documents first!", log: self.log, type: .info)
             return
         }
-        
+
         if selectedDocument.documentTags != nil {
             selectedDocument.documentTags!.insert(selectedTag, at: 0)
         } else {
             selectedDocument.documentTags = [selectedTag]
         }
-        
+
         // clear search field content
         self.tagSearchField.stringValue = ""
-        
+
         // add tag to tagAC
         if newlyCreated {
             self.dataModelInstance.tags?.insert(selectedTag)
@@ -189,7 +189,7 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
                               count: 1)
             newlyCreated = true
         }
-        
+
         // add the selected tag to the document
         self.addDocumentTag(tag: selectedTag, new: newlyCreated)
     }
