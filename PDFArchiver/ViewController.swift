@@ -32,65 +32,60 @@ class ViewController: NSViewController {
     @IBAction func datePickDone(_ sender: NSDatePicker) {
         // test if a document is selected
         guard !self.documentAC.selectedObjects.isEmpty,
-            let idx = self.dataModelInstance.documentIdx,
-            let documents = self.dataModelInstance.documents else {
+            let selectedDocument = self.dataModelInstance.selectedDocument else {
                 return
         }
 
         // set the date of the pdf document
-        let document = documents[idx] as Document
-        document.documentDate = sender.dateValue
+        selectedDocument.documentDate = sender.dateValue
     }
 
     @IBAction func descriptionDone(_ sender: NSTextField) {
         // test if a document is selected
         guard !self.documentAC.selectedObjects.isEmpty,
-              let idx = self.dataModelInstance.documentIdx,
-              let documents = self.dataModelInstance.documents else {
+              let selectedDocument = self.dataModelInstance.selectedDocument else {
             return
         }
 
         // set the description of the pdf document
-        let document = documents[idx] as Document
-        document.documentDescription = sender.stringValue
+        selectedDocument.documentDescription = sender.stringValue
     }
 
     @IBAction func clickedDocumentTagTableView(_ sender: NSTableView) {
         // test if the document tag table is empty
         guard !self.documentAC.selectedObjects.isEmpty,
-            let idx = self.dataModelInstance.documentIdx,
-            let documents = self.dataModelInstance.documents,
+            let selectedDocument = self.dataModelInstance.selectedDocument,
             let obj = self.documentTagAC.selectedObjects.first as? Tag else {
                 return
         }
 
         // remove the selected element
         var i = 0
-        var documentTags = documents[idx].documentTags ?? []
+        var documentTags = selectedDocument.documentTags ?? []
         for tag in documentTags {
             if tag.name == obj.name {
                 documentTags.remove(at: i)
                 tag.count -= 1
 
-                self.dataModelInstance.documents![idx].documentTags = documentTags
+                selectedDocument.documentTags = documentTags
                 self.updateViewController(updatePDF: false)
                 return
             }
             i += 1
         }
     }
-    
+
     @IBAction func clickedTagTableView(_ sender: NSTableView) {
         if let selectedTag = self.tagAC.selectedObjects.first as? Tag {
             self.addDocumentTag(tag: selectedTag,
                                 new: false)
         }
     }
-    
+
     @IBAction func browseFile(sender: AnyObject) {
         self.getPDFDocuments()
     }
-    
+
     @IBAction func saveDocumentButton(_ sender: NSButton) {
         self.saveDocument()
     }
@@ -102,7 +97,7 @@ class ViewController: NSViewController {
         if let bookmarkData = UserDefaults.standard.object(forKey: "securityScopeBookmark") as? Data {
             do {
                 archivePath = try NSURL.init(resolvingBookmarkData: bookmarkData, options: .withoutUI, relativeTo: nil, bookmarkDataIsStale: nil)
-                if let archivePathTmp = archivePath  {
+                if let archivePathTmp = archivePath {
                     archivePathTmp.startAccessingSecurityScopedResource()
                 }
             } catch let error as NSError {
@@ -115,7 +110,7 @@ class ViewController: NSViewController {
 
         // set the array controller
         self.tagAC.content = self.dataModelInstance.tags
-        
+
         self.documentAC.content = self.dataModelInstance.documents
 
         // MARK: - Notification Observer
@@ -136,8 +131,11 @@ class ViewController: NSViewController {
         descriptionField.delegate = self
 
         // add sorting to tag fields
-        self.tagTableView.sortDescriptors = [NSSortDescriptor(key: "count", ascending: false), NSSortDescriptor(key: "name", ascending: true)]
-        
+        self.documentAC.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true),
+                                           NSSortDescriptor(key: "documentDone", ascending: false)]
+        self.tagTableView.sortDescriptors = [NSSortDescriptor(key: "count", ascending: false),
+                                             NSSortDescriptor(key: "name", ascending: true)]
+
         // set some PDF View settings
 //         self.pdfContentView.displayMode = PDFDisplayMode.singlePageContinuous
         self.pdfContentView.displayMode = PDFDisplayMode.singlePage
@@ -147,7 +145,7 @@ class ViewController: NSViewController {
         }
         self.pdfContentView.interpolationQuality = PDFInterpolationQuality.low
     }
-    
+
     override func viewWillAppear() {
         let layout = Layout()
 
@@ -174,7 +172,7 @@ class ViewController: NSViewController {
         self.tagSearchView.layer?.backgroundColor = layout.fieldBackgroundColorLight
         self.tagSearchView.layer?.cornerRadius = layout.cornerRadius
     }
-    
+
     override func viewDidAppear() {
         // show onboarding view
         if !UserDefaults.standard.bool(forKey: "onboardingShown") {
@@ -190,7 +188,7 @@ class ViewController: NSViewController {
         } else {
             os_log("Save possible.", log: self.log, type: .debug)
         }
-        
+
         // quit application if the window disappears
         NSApplication.shared.terminate(self)
     }

@@ -13,13 +13,13 @@ class OnboardingViewController: NSViewController {
     @IBAction func closeButton(_ sender: NSButton) {
         self.dismiss(self)
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         // Do view setup here.
         UserDefaults.standard.set(true, forKey: "onboardingShown")
-        
+
         // set background color of the view
         let layout = Layout()
         self.customView.wantsLayer = true

@@ -26,7 +26,7 @@ struct Preferences {
             } catch let error as NSError {
                 os_log("Bookmark Write Fails: %@", log: self.log, type: .error, error as CVarArg)
             }
-            
+
             self._archivePath = newValue
             self.getArchiveTags()
             self.save()
@@ -47,7 +47,7 @@ struct Preferences {
         for tag in self.delegate?.getTagList() ?? Set<Tag>() {
             tags[tag.name] = tag.count
         }
-        
+
         for (name, count) in tags where count < 1 {
             tags.removeValue(forKey: name)
         }

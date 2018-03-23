@@ -36,7 +36,7 @@ class Document: NSObject {
                 raw = raw.replacingOccurrences(of: "ö", with: "oe")
                 raw = raw.replacingOccurrences(of: "ü", with: "ue")
                 raw = raw.replacingOccurrences(of: "ß", with: "ss")
-                
+
                 // trailing previous whitespaces from beginning/end
                 if raw.hasSuffix("-") {
                     raw = String(raw.dropLast())
@@ -85,7 +85,7 @@ class Document: NSObject {
             let documentTagNames = getSubstring(raw[0], startIdx: 2, endIdx: -4).components(separatedBy: "_")
             // get the available tags of the archive
             var availableTags = self.delegate?.getTagList() ?? []
-            
+
             self.documentTags = [Tag]()
             for documentTagName in documentTagNames {
                 if availableTags.contains(where: { $0.name == documentTagName }) {
@@ -102,7 +102,7 @@ class Document: NSObject {
                     self.documentTags!.append(newTag)
                 }
             }
-            
+
             // update the tag list
             self.delegate?.setTagList(tagList: availableTags)
         }
@@ -114,16 +114,16 @@ class Document: NSObject {
         do {
             (newBasePath, filename) = try getRenamingPath(archivePath: archivePath)
         } catch DocumentError.description {
-            dialogOK(message_key: "renaming_failed", info_key: "check_document_description", style: .warning)
+            dialogOK(messageKey: "renaming_failed", infoKey: "check_document_description", style: .warning)
             return false
         } catch DocumentError.tags {
-            dialogOK(message_key: "renaming_failed", info_key: "check_document_tags", style: .warning)
+            dialogOK(messageKey: "renaming_failed", infoKey: "check_document_tags", style: .warning)
             return false
         } catch {
-            dialogOK(message_key: "renaming_failed", info_key: "check_document_fields", style: .warning)
+            dialogOK(messageKey: "renaming_failed", infoKey: "check_document_fields", style: .warning)
             return false
         }
-        
+
         // check, if this path already exists ... create it
         let newFilepath = newBasePath.appendingPathComponent(filename)
         let fileManager = FileManager.default
@@ -136,7 +136,7 @@ class Document: NSObject {
             // test if the document name already exists in archive, otherwise move it
             if fileManager.fileExists(atPath: newFilepath.path) {
                 os_log("File already exists!", log: self.log, type: .error)
-                dialogOK(message_key: "renaming_failed", info_key: "file_already_exists", style: .warning)
+                dialogOK(messageKey: "renaming_failed", infoKey: "file_already_exists", style: .warning)
                 return false
             } else {
                 try fileManager.moveItem(at: self.path, to: newFilepath)
@@ -148,13 +148,13 @@ class Document: NSObject {
         self.name = String(newFilepath.lastPathComponent)
         self.path = newFilepath
         self.documentDone = "✔️"
-        
+
         do {
             var tags = [String]()
             for tag in self.documentTags ?? [] {
                 tags += [tag.name]
             }
-            
+
             // set file tags [https://stackoverflow.com/a/47340666]
             try (newFilepath as NSURL).setResourceValue(tags, forKey: URLResourceKey.tagNamesKey)
         } catch let error as NSError {
@@ -162,7 +162,7 @@ class Document: NSObject {
         }
         return true
     }
-    
+
     internal func getRenamingPath(archivePath: URL) throws -> (new_basepath: URL, filename: String) {
         // create a filename and rename the document
         guard let tags = self.documentTags,
@@ -173,21 +173,21 @@ class Document: NSObject {
               description != "" else {
             throw DocumentError.description
         }
-        
+
         // get date
         let date_str = self._dateFormatter.string(from: self.documentDate)
-        
+
         // get tags
         var tag_str = ""
         for tag in tags.sorted(by: { $0.name < $1.name }) {
             tag_str += "\(tag.name)_"
         }
         tag_str = String(tag_str.dropLast(1))
-        
+
         // create new filepath
         let filename = "\(date_str)--\(description)__\(tag_str).pdf"
         let new_basepath = archivePath.appendingPathComponent(String(date_str.prefix(4)))
-    
+
         return (new_basepath, filename)
     }
 }

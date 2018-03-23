@@ -10,10 +10,10 @@ import Foundation
 import Quartz
 import os.log
 
-func dialogOK(message_key: String, info_key: String, style: NSAlert.Style) {
+func dialogOK(messageKey: String, infoKey: String, style: NSAlert.Style) {
     let alert = NSAlert()
-    alert.messageText = NSLocalizedString(message_key, comment: "")
-    alert.informativeText = NSLocalizedString(info_key, comment: "")
+    alert.messageText = NSLocalizedString(messageKey, comment: "")
+    alert.informativeText = NSLocalizedString(infoKey, comment: "")
     alert.alertStyle = style
     alert.addButton(withTitle: "OK")
     alert.runModal()
