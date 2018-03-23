@@ -1,4 +1,4 @@
-/* 
+/*
   Localized.strings
   PDF Archiver
 
@@ -6,11 +6,16 @@
   Copyright © 2018 Julian Kahnert. All rights reserved.
 */
 
+"check_document_description" = "Bitte Dokument Beschreibung prüfen.";
+
+"check_document_fields" = "Bitte Dokumenten Felder prüfen.";
+
+"check_document_tags" = "Bitte Dokument Tags prüfen.";
+
+"file_already_exists" = "Dateiname existstiert bereits. \nBitte z.B. Dokument Beschreibung verändern.";
+
 "no_archive" = "Kein Archiv Pfad gefunden!";
-"select_preferences" = "Bitte Pfad in den Einstellungen auswählen.";
 
 "renaming_failed" = "Umbenennen fehlgeschlagen!";
-"check_document_fields" = "Bitte Dokumenten Felder prüfen.";
-"check_document_description" = "Bitte Dokument Beschreibung prüfen.";
-"check_document_tags" = "Bitte Dokument Tags prüfen.";
-"file_already_exists" = "Dateiname existstiert bereits. \nBitte z.B. Dokument Beschreibung verändern.";
+
+"select_preferences" = "Bitte Pfad in den Einstellungen auswählen.";

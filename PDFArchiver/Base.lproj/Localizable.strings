@@ -1,4 +1,4 @@
-/* 
+/*
   Localized.strings
   PDF Archiver
 
@@ -6,11 +6,16 @@
   Copyright © 2018 Julian Kahnert. All rights reserved.
 */
 
+"check_document_description" = "Doublecheck the document description.";
+
+"check_document_fields" = "Doublecheck the document fields.";
+
+"check_document_tags" = "Doublecheck the document tags.";
+
+"file_already_exists" = "File with the current filename already exists. \nPlease change e.g. the description.";
+
 "no_archive" = "No archive path found!";
-"select_preferences" = "Please select one in the preferences.";
 
 "renaming_failed" = "Renaming failed!";
-"check_document_fields" = "Doublecheck the document fields.";
-"check_document_description" = "Doublecheck the document description.";
-"check_document_tags" = "Doublecheck the document tags.";
-"file_already_exists" = "File with the current filename already exists. \nPlease change e.g. the description.";
+
+"select_preferences" = "Please select one in the preferences.";
