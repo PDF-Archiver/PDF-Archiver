@@ -400,11 +400,11 @@ Tag your document and save  it:</string>
                                     <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" horizontalScrollElasticity="none" translatesAutoresizingMaskIntoConstraints="NO" id="snn-Ub-ylk">
                                         <rect key="frame" x="5" y="5" width="210" height="485"/>
                                         <clipView key="contentView" id="IQ8-Cx-TuB">
-                                            <rect key="frame" x="1" y="0.0" width="208" height="484"/>
+                                            <rect key="frame" x="1" y="0.0" width="208" height="469"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <tableView identifier="DocumentTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" headerView="8zw-71-lOb" viewBased="YES" id="6Bq-b9-66z" userLabel="Document Table View">
-                                                    <rect key="frame" x="0.0" y="0.0" width="208" height="461"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="368" height="446"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <size key="intercellSpacing" width="3" height="2"/>
                                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -450,7 +450,7 @@ Tag your document and save  it:</string>
                                                                 <binding destination="6y2-Gm-cOS" name="value" keyPath="arrangedObjects.documentDone" id="1NY-do-Hwv"/>
                                                             </connections>
                                                         </tableColumn>
-                                                        <tableColumn identifier="" width="162" minWidth="40" maxWidth="1000" id="t5i-OA-mho" userLabel="Name">
+                                                        <tableColumn identifier="" width="322" minWidth="40" maxWidth="1000" id="t5i-OA-mho" userLabel="Name">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Document">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -465,13 +465,13 @@ Tag your document and save  it:</string>
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="Ten-tg-2yw">
-                                                                    <rect key="frame" x="44" y="1" width="162" height="17"/>
+                                                                    <rect key="frame" x="44" y="1" width="322" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aJU-La-j8P">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="162" height="17"/>
+                                                                            <rect key="frame" x="0.0" y="0.0" width="322" height="17"/>
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Table View Cell" id="DzD-Dn-zMP">
+                                                                            <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="DzD-Dn-zMP">
                                                                                 <font key="font" metaFont="system"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -498,8 +498,8 @@ Tag your document and save  it:</string>
                                                 </tableView>
                                             </subviews>
                                         </clipView>
-                                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="ujd-lb-X02">
-                                            <rect key="frame" x="1" y="119" width="223" height="15"/>
+                                        <scroller key="horizontalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="ujd-lb-X02">
+                                            <rect key="frame" x="1" y="469" width="208" height="15"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
                                         <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="Faa-2w-ot5">
@@ -507,7 +507,7 @@ Tag your document and save  it:</string>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
                                         <tableHeaderView key="headerView" id="8zw-71-lOb">
-                                            <rect key="frame" x="0.0" y="0.0" width="208" height="23"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="368" height="23"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableHeaderView>
                                     </scrollView>
