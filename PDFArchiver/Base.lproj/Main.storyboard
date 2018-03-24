@@ -73,6 +73,44 @@
                                     </items>
                                 </menu>
                             </menuItem>
+                            <menuItem title="Item" id="HEM-fl-Hut" userLabel="Edit">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Edit" id="Slb-eC-QX1">
+                                    <items>
+                                        <menuItem title="Undo" keyEquivalent="z" id="Eg4-j5-RUa">
+                                            <connections>
+                                                <action selector="undo:" target="Ady-hI-5gd" id="yeN-bR-W8y"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Redo" keyEquivalent="Z" id="NHR-pV-L5G">
+                                            <connections>
+                                                <action selector="redo:" target="Ady-hI-5gd" id="jrs-qY-ymt"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="w5I-gF-L0b"/>
+                                        <menuItem title="Cut" keyEquivalent="x" id="cM7-20-SjD">
+                                            <connections>
+                                                <action selector="cut:" target="Ady-hI-5gd" id="IOX-Md-BqD"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Copy" keyEquivalent="c" id="YiI-pG-5cx">
+                                            <connections>
+                                                <action selector="copy:" target="Ady-hI-5gd" id="mRU-QZ-657"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Paste" keyEquivalent="v" id="gLa-UJ-lKU">
+                                            <connections>
+                                                <action selector="paste:" target="Ady-hI-5gd" id="2od-Jt-eZK"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Select All" keyEquivalent="a" id="eBO-vc-5XB">
+                                            <connections>
+                                                <action selector="selectAll:" target="Ady-hI-5gd" id="r67-xo-nGH"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
                             <menuItem title="Window" id="aUF-d1-5bR">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Window" systemMenu="window" id="Td7-aD-5lo">
@@ -132,7 +170,7 @@
                 <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="0.0"/>
+            <point key="canvasLocation" x="75" y="-456"/>
         </scene>
         <!--Window Controller-->
         <scene sceneID="R2V-B0-nI4">
@@ -726,7 +764,7 @@ Tag your document and save  it:</string>
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                    <rect key="frame" x="32" y="1" width="194" height="17"/>
+                                                                    <rect key="frame" x="31.5" y="1" width="194" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">

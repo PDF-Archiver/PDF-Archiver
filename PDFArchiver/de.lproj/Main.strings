@@ -190,3 +190,27 @@
 
 /* Class = "NSTextFieldCell"; title = "Available Tags"; ObjectID = "qKy-yf-U85"; */
 "qKy-yf-U85.title" = "Verfügbare Tags";
+
+/* Class = "NSMenuItem"; title = "Undo"; ObjectID = "Eg4-j5-RUa"; */
+"Eg4-j5-RUa.title" = "Widerrufen";
+
+/* Class = "NSMenuItem"; title = "Item"; ObjectID = "HEM-fl-Hut"; */
+"HEM-fl-Hut.title" = "Eintrag";
+
+/* Class = "NSMenuItem"; title = "Redo"; ObjectID = "NHR-pV-L5G"; */
+"NHR-pV-L5G.title" = "Wiederholen";
+
+/* Class = "NSMenu"; title = "Edit"; ObjectID = "Slb-eC-QX1"; */
+"Slb-eC-QX1.title" = "Bearbeiten";
+
+/* Class = "NSMenuItem"; title = "Copy"; ObjectID = "YiI-pG-5cx"; */
+"YiI-pG-5cx.title" = "Kopieren";
+
+/* Class = "NSMenuItem"; title = "Cut"; ObjectID = "cM7-20-SjD"; */
+"cM7-20-SjD.title" = "Ausschneiden";
+
+/* Class = "NSMenuItem"; title = "Select All"; ObjectID = "eBO-vc-5XB"; */
+"eBO-vc-5XB.title" = "Alles auswählen";
+
+/* Class = "NSMenuItem"; title = "Paste"; ObjectID = "gLa-UJ-lKU"; */
+"gLa-UJ-lKU.title" = "Einsetzen";

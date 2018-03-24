@@ -192,4 +192,5 @@ class ViewController: NSViewController {
         // quit application if the window disappears
         NSApplication.shared.terminate(self)
     }
+
 }
