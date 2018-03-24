@@ -13,6 +13,7 @@ struct Preferences {
     let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "DataModel")
     fileprivate var _archivePath: URL?
     weak var delegate: TagsDelegate?
+    var analyseOnlyLatestFolders: Bool = true
     var archivePath: URL? {
         get {
             return self._archivePath
@@ -72,16 +73,31 @@ struct Preferences {
             os_log("No archive path selected, could not get old tags.", log: self.log, type: .error)
             return
         }
+
+        // get year archive folders
+        var folders = [URL]()
+        do {
+            let fileManager = FileManager.default
+            folders = try fileManager.contentsOfDirectory(at: path, includingPropertiesForKeys: [.nameKey], options: .skipsHiddenFiles)
+                // only show folders with year numbers
+                .filter({ URL(fileURLWithPath: $0.path).lastPathComponent.prefix(2) == "20" || URL(fileURLWithPath: $0.path).lastPathComponent.prefix(2) == "19" })
+                // sort folders by year
+                .sorted(by: { $0.path > $1.path })
+
+        } catch {
+            os_log("An error occured while getting the archive year folders.")
+        }
+
+        // only use the latest two year folders by default
+        if self.analyseOnlyLatestFolders {
+            folders = Array(folders.prefix(2))
+        }
+
         // get all PDF files from this year and the last years
-        let date = Date()
-        let calendar = Calendar.current
-        let path_year1 = path.appendingPathComponent(String(calendar.component(.year, from: date)),
-                                                                  isDirectory: true)
-        let path_year2 = path.appendingPathComponent(String(calendar.component(.year, from: date) - 1),
-                                                                  isDirectory: true)
         var files = [URL]()
-        files.append(contentsOf: getPDFs(url: path_year1))
-        files.append(contentsOf: getPDFs(url: path_year2))
+        for folder in folders {
+            files.append(contentsOf: getPDFs(url: folder))
+        }
 
         // get tags and counts from filename
         var tags_raw: [String] = []

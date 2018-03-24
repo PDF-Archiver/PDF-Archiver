@@ -498,7 +498,7 @@ Tag your document and save  it:</string>
                                                 </tableView>
                                             </subviews>
                                         </clipView>
-                                        <scroller key="horizontalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="ujd-lb-X02">
+                                        <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="ujd-lb-X02">
                                             <rect key="frame" x="1" y="469" width="208" height="15"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </scroller>
