@@ -34,7 +34,7 @@ struct Preferences {
         }
     }
 
-    init(delegate: TagsDelegate) {
+    init(delegate: TagsDelegate?) {
         self.delegate = delegate
         self.load()
     }
@@ -65,7 +65,7 @@ struct Preferences {
         for (name, count) in tagsDict {
             newTagList.insert(Tag(name: name, count: count))
         }
-        self.delegate!.setTagList(tagList: newTagList)
+        self.delegate?.setTagList(tagList: newTagList)
     }
 
     func getArchiveTags() {
