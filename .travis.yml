@@ -1,5 +1,4 @@
 language: swift
-
 os: osx
 
 before_install:
@@ -13,8 +12,7 @@ osx_image:
 
 script:
   - swiftlint
-  - xcodebuild test -project "PDF Archiver.xcodeproj" -scheme "PDF Archiver"
-
+  - xcodebuild clean test -project "PDF Archiver.xcodeproj" -scheme "PDF Archiver" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO -quiet
 notifications:
   email:
     on_success: never
