@@ -1,3 +1,5 @@
+language: swift
+
 os: osx
 
 before_install:
