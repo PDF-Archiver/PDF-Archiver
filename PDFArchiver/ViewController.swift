@@ -105,12 +105,27 @@ class ViewController: NSViewController {
             }
         }
 
+        // get the security scope bookmark of the observed path
+        if let bookmarkData = UserDefaults.standard.object(forKey: "securityScopeBookmarkObservedPath") as? Data {
+            do {
+                let observedPath = try NSURL.init(resolvingBookmarkData: bookmarkData, options: .withoutUI, relativeTo: nil, bookmarkDataIsStale: nil)
+                observedPath.startAccessingSecurityScopedResource()
+            } catch let error as NSError {
+                os_log("Bookmark Access failed: %@", log: self.log, type: .error, error.description as CVarArg)
+            }
+        }
+
         // set the date picker to canadian local, e.g. YYYY-MM-DD
         self.datePicker.locale = Locale.init(identifier: "en_CA")
 
+        // get the new documents
+        if let observedPath = self.dataModelInstance.prefs?.observedPath {
+            let files = getPDFs(url: observedPath)
+            self.dataModelInstance.addNewDocuments(paths: files)
+        }
+
         // set the array controller
         self.tagAC.content = self.dataModelInstance.tags
-
         self.documentAC.content = self.dataModelInstance.documents
 
         // MARK: - Notification Observer

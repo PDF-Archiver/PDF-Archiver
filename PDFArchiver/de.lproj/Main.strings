@@ -137,8 +137,8 @@
 /* Class = "NSTextFieldCell"; ibExternalAccessibilityHelp = "Archive Path"; ObjectID = "gtQ-4r-22c"; */
 "gtQ-4r-22c.ibExternalAccessibilityHelp" = "Archiv Pfad";
 
-/* Class = "NSTextFieldCell"; placeholderString = "Please set the path ..."; ObjectID = "gtQ-4r-22c"; */
-"gtQ-4r-22c.placeholderString" = "Bitte Pfad setzen  ...";
+/* Class = "NSTextFieldCell"; placeholderString = "Please set the archive path ..."; ObjectID = "gtQ-4r-22c"; */
+"gtQ-4r-22c.placeholderString" = "Bitte Archiv Pfad setzen  ...";
 
 /* Class = "NSTextFieldCell"; title = "⌘ o"; ObjectID = "m4z-q1-wQ4"; */
 "m4z-q1-wQ4.title" = "⌘ o";
@@ -214,3 +214,15 @@
 
 /* Class = "NSMenuItem"; title = "Paste"; ObjectID = "gLa-UJ-lKU"; */
 "gLa-UJ-lKU.title" = "Einsetzen";
+
+/* Class = "NSTextFieldCell"; ibExternalAccessibilityHelp = "Observed Path"; ObjectID = "hox-RC-83t"; */
+"hox-RC-83t.ibExternalAccessibilityHelp" = "Überwachter Ordner";
+
+/* Class = "NSTextFieldCell"; placeholderString = "Please set the observed path ..."; ObjectID = "hox-RC-83t"; */
+"hox-RC-83t.placeholderString" = "Bitte überwachten Pfad setzen  ...";
+
+/* Class = "NSButtonCell"; title = "Change"; ObjectID = "obQ-RK-Zgm"; */
+"obQ-RK-Zgm.title" = "Ändern";
+
+/* Class = "NSTextFieldCell"; title = "Observed Folder:"; ObjectID = "z8O-Wh-LiY"; */
+"z8O-Wh-LiY.title" = "Überwachter Ordner";

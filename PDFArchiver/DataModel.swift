@@ -22,6 +22,7 @@ class DataModel: TagsDelegate {
 
     init() {
         self.prefs = Preferences(delegate: self as TagsDelegate)
+        self.documents = []
     }
 
     func addNewDocuments(paths: [URL]) {

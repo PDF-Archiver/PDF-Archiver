@@ -203,4 +203,10 @@ extension ViewController: PrefsViewControllerDelegate {
     func setPrefs(prefs: Preferences) {
         self.dataModelInstance.prefs = prefs
     }
+
+    func addDocuments(path: URL) {
+        let files = getPDFs(url: path)
+        self.dataModelInstance.addNewDocuments(paths: files)
+        self.documentAC.content = self.dataModelInstance.documents
+    }
 }

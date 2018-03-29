@@ -12,8 +12,27 @@ import os.log
 struct Preferences {
     let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "DataModel")
     fileprivate var _archivePath: URL?
+    fileprivate var _observedPath: URL?
     weak var delegate: TagsDelegate?
     var analyseOnlyLatestFolders: Bool = true
+    var observedPath: URL? {
+        get {
+            return self._observedPath
+        }
+        set {
+            guard let newValue = newValue else { return }
+            // save the security scope bookmark [https://stackoverflow.com/a/35863729]
+            do {
+                let bookmark = try newValue.bookmarkData(options: .securityScopeAllowOnlyReadAccess, includingResourceValuesForKeys: nil, relativeTo: nil)
+                UserDefaults.standard.set(bookmark, forKey: "securityScopeBookmarkObservedPath")
+            } catch let error as NSError {
+                os_log("Observed path bookmark Write Fails: %@", log: self.log, type: .error, error as CVarArg)
+            }
+
+            self._observedPath = newValue
+            self.save()
+        }
+    }
     var archivePath: URL? {
         get {
             return self._archivePath
@@ -43,6 +62,9 @@ struct Preferences {
         // save the archive path
         UserDefaults.standard.set(self._archivePath, forKey: "archivePath")
 
+        // save the observed path
+        UserDefaults.standard.set(self._observedPath, forKey: "observedPath")
+
         // save the last tags (with count > 0)
         var tags: [String: Int] = [:]
         for tag in self.delegate?.getTagList() ?? Set<Tag>() {
@@ -56,8 +78,11 @@ struct Preferences {
     }
 
     mutating func load() {
-        // load archive path
+        // load the archive path
         self._archivePath = UserDefaults.standard.url(forKey: "archivePath")
+
+        // load the observed path
+        self.observedPath = UserDefaults.standard.url(forKey: "observedPath")
 
         // load archive tags
         guard let tagsDict = (UserDefaults.standard.dictionary(forKey: "tags") ?? [:]) as? [String: Int] else { return }
