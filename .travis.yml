@@ -1,18 +1,15 @@
+language: swift
 os: osx
 
 before_install:
   - brew update
   - brew outdated swiftlint || brew upgrade swiftlint
 
-osx_image:
-  - xcode8.3
-  - xcode9.2
-  - xcode9.3beta
+osx_image: xcode9.2
 
 script:
   - swiftlint
-  - xcodebuild test -project "PDF Archiver.xcodeproj" -scheme "PDF Archiver"
-
+  - xcodebuild clean test -project "PDF Archiver.xcodeproj" -scheme "PDF Archiver" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO -quiet
 notifications:
   email:
     on_success: never
