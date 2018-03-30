@@ -18,8 +18,8 @@ func getPDFs(url: URL) -> [URL] {
         for element in enumerator {
             if let filename = element as? String,
                 filename.suffix(3).lowercased() == "pdf" {
-                let pdf_url = URL(fileURLWithPath: url.path).appendingPathComponent(filename)
-                pdfURLs.append(pdf_url)
+                let pdfUrl = URL(fileURLWithPath: url.path).appendingPathComponent(filename)
+                pdfURLs.append(pdfUrl)
             }
         }
         return pdfURLs

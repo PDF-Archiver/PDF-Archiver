@@ -157,12 +157,12 @@ extension ViewController: NSTableViewDelegate, NSTableViewDataSource {
 
 extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
     override func controlTextDidChange(_ notification: Notification) {
-        guard let id = notification.object as? NSTextField else { return }
-        if id.identifier?.rawValue == "documentDescriptionField" {
+        guard let identifier = (notification.object as? NSTextField)?.identifier else { return }
+        if identifier.rawValue == "documentDescriptionField" {
             guard let textField = notification.object as? NSTextField,
                   let selectedDocument = self.dataModelInstance.selectedDocument else { return }
             selectedDocument.documentDescription = textField.stringValue
-        } else if id.identifier?.rawValue == "tagSearchField" {
+        } else if identifier.rawValue == "tagSearchField" {
             guard let searchField = notification.object as? NSSearchField else { return }
             self.tagAC.content = self.dataModelInstance.filterTags(prefix: searchField.stringValue)
         }

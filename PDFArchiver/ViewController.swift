@@ -60,18 +60,14 @@ class ViewController: NSViewController {
         }
 
         // remove the selected element
-        var i = 0
         var documentTags = selectedDocument.documentTags ?? []
-        for tag in documentTags {
-            if tag.name == obj.name {
-                documentTags.remove(at: i)
-                tag.count -= 1
+        for (index, tag) in documentTags.enumerated() where tag.name == obj.name {
+            documentTags.remove(at: index)
+            tag.count -= 1
 
-                selectedDocument.documentTags = documentTags
-                self.updateViewController(updatePDF: false)
-                return
-            }
-            i += 1
+            selectedDocument.documentTags = documentTags
+            self.updateViewController(updatePDF: false)
+            break
         }
     }
 

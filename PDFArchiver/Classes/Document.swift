@@ -175,20 +175,20 @@ class Document: NSObject {
         }
 
         // get date
-        let date_str = self._dateFormatter.string(from: self.documentDate)
+        let dateStr = self._dateFormatter.string(from: self.documentDate)
 
         // get tags
-        var tag_str = ""
+        var tagStr = ""
         for tag in tags.sorted(by: { $0.name < $1.name }) {
-            tag_str += "\(tag.name)_"
+            tagStr += "\(tag.name)_"
         }
-        tag_str = String(tag_str.dropLast(1))
+        tagStr = String(tagStr.dropLast(1))
 
         // create new filepath
-        let filename = "\(date_str)--\(description)__\(tag_str).pdf"
-        let new_basepath = archivePath.appendingPathComponent(String(date_str.prefix(4)))
+        let filename = "\(dateStr)--\(description)__\(tagStr).pdf"
+        let newBasepath = archivePath.appendingPathComponent(String(dateStr.prefix(4)))
 
-        return (new_basepath, filename)
+        return (newBasepath, filename)
     }
 }
 

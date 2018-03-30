@@ -66,9 +66,9 @@ class DocumentTests: XCTestCase {
 
         var testArchivePath = URL(fileURLWithPath: "~/Downloads/Archive/")
         do {
-            let (new_basepath, filename) = try document.getRenamingPath(archivePath: testArchivePath)
+            let (newBasepath, filename) = try document.getRenamingPath(archivePath: testArchivePath)
             testArchivePath.appendPathComponent("2010")
-            XCTAssertEqual(new_basepath, testArchivePath)
+            XCTAssertEqual(newBasepath, testArchivePath)
 
             XCTAssertEqual(filename, path.lastPathComponent)
         } catch {

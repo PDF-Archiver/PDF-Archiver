@@ -125,15 +125,15 @@ struct Preferences {
         }
 
         // get tags and counts from filename
-        var tags_raw: [String] = []
+        var tagsRaw: [String] = []
         for file in files {
             let matched = regex_matches(for: "_[a-z0-9]+", in: file.lastPathComponent) ?? []
             for tag in matched {
-                tags_raw.append(String(tag.dropFirst()))
+                tagsRaw.append(String(tag.dropFirst()))
             }
         }
 
-        let tagsDict = tags_raw.reduce(into: [:]) { counts, word in counts[word, default: 0] += 1 }
+        let tagsDict = tagsRaw.reduce(into: [:]) { counts, word in counts[word, default: 0] += 1 }
         var newTagList = Set<Tag>()
         for (name, count) in tagsDict {
             newTagList.insert(Tag(name: name, count: count))

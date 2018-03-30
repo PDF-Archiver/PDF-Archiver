@@ -26,8 +26,8 @@ class DataModel: TagsDelegate {
     }
 
     func addNewDocuments(paths: [URL]) {
-        for pdf_path in paths {
-            let selectedDocument = Document(path: pdf_path, delegate: self as TagsDelegate)
+        for path in paths {
+            let selectedDocument = Document(path: path, delegate: self as TagsDelegate)
             self.documents?.append(selectedDocument)
         }
     }
