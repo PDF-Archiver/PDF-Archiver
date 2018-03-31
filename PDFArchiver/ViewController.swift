@@ -127,7 +127,7 @@ class ViewController: NSViewController, ViewControllerDelegate {
         self.datePicker.locale = Locale.init(identifier: "en_CA")
 
         // get the new documents
-        if let observedPath = self.dataModelInstance.prefs?.observedPath {
+        if let observedPath = self.dataModelInstance.prefs.observedPath {
             self.dataModelInstance.addDocuments(paths: [observedPath])
         }
 
@@ -203,9 +203,8 @@ class ViewController: NSViewController, ViewControllerDelegate {
     }
 
     override func viewDidDisappear() {
-        if let prefs = self.dataModelInstance.prefs,
-           let archivePath = self.dataModelInstance.prefs?.archivePath {
-            prefs.save()
+        if let archivePath = self.dataModelInstance.prefs.archivePath {
+            self.dataModelInstance.prefs.save()
             os_log("Save complete: %@", log: self.log, type: .debug, archivePath as CVarArg)
         } else {
             os_log("Save possible.", log: self.log, type: .debug)

@@ -51,11 +51,6 @@ struct Preferences {
         }
     }
 
-    init(delegate: TagsDelegate?) {
-        self.delegate = delegate
-        self.load()
-    }
-
     func save() {
         // save the archive path
         UserDefaults.standard.set(self._archivePath, forKey: "archivePath")

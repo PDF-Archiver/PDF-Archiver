@@ -24,7 +24,7 @@ extension ViewController {
         self.tagAC.content = self.dataModelInstance.tags
 
         // test if no documents exist in document table view
-        if self.dataModelInstance.documents?.count == nil || self.dataModelInstance.documents?.count == 0 {
+        if self.dataModelInstance.documents.count == 0 {
             self.pdfContentView.document = nil
             self.datePicker.dateValue = Date()
             self.descriptionField.stringValue = ""
@@ -47,8 +47,8 @@ extension ViewController {
         self.performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "prefsSegue"), sender: self)
     }
     @objc func resetCache() {
-        // remove preferences
-        self.dataModelInstance.prefs = nil
+        // remove preferences - initialize it temporary and kill the app directly afterwards
+        self.dataModelInstance.prefs = Preferences()
         // remove all user defaults
         UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
         // close application
@@ -59,7 +59,7 @@ extension ViewController {
     }
     @objc func updateTags() {
         os_log("Setting archive path, e.g. update tag list.", log: self.log, type: .debug)
-        self.dataModelInstance.prefs?.getArchiveTags()
+        self.dataModelInstance.prefs.getArchiveTags()
     }
     func getPDFDocuments() {
         let openPanel = NSOpenPanel()
@@ -89,19 +89,18 @@ extension ViewController {
     func saveDocument() {
         // test if a document is selected
         guard !self.documentAC.selectedObjects.isEmpty,
-              let selectedDocument = self.dataModelInstance.selectedDocument,
-              let documents = self.dataModelInstance.documents else {
+              let selectedDocument = self.dataModelInstance.selectedDocument else {
             return
         }
 
-        guard let path = self.dataModelInstance.prefs?.archivePath else {
+        guard let path = self.dataModelInstance.prefs.archivePath else {
             dialogOK(messageKey: "no_archive", infoKey: "select_preferences", style: .critical)
             return
         }
         let result = selectedDocument.rename(archivePath: path)
         if result {
             // select a new document
-            self.documentAC.content = documents
+            self.documentAC.content = self.dataModelInstance.documents
             self.updateViewController(updatePDF: true)
         }
     }
@@ -131,7 +130,7 @@ extension ViewController {
 
         // add tag to tagAC
         if newlyCreated {
-            self.dataModelInstance.tags?.insert(selectedTag)
+            self.dataModelInstance.tags.insert(selectedTag)
         }
         self.updateViewController(updatePDF: false)
     }

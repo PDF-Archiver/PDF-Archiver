@@ -15,15 +15,17 @@ protocol TagsDelegate: class {
 
 class DataModel: TagsDelegate {
     weak var viewControllerDelegate: ViewControllerDelegate?
-    var prefs: Preferences?
-    var documents: [Document]?
-    var tags: Set<Tag>?
+    var prefs = Preferences()
+    var documents: [Document]
+    var tags: Set<Tag>
     var selectedDocument: Document?
     fileprivate var _documentIdx: Int?
 
     init() {
-        self.prefs = Preferences(delegate: self as TagsDelegate)
         self.documents = []
+        self.tags = []
+        self.prefs.delegate = self as TagsDelegate
+        self.prefs.load()
     }
 
     func addDocuments(paths: [URL]) {
@@ -34,18 +36,15 @@ class DataModel: TagsDelegate {
         for path in paths {
             let files = getPDFs(url: path)
             for file in files {
-                let selectedDocument = Document(path: file, delegate: self as TagsDelegate)
-                self.documents?.append(selectedDocument)
+                self.documents.append(Document(path: file, delegate: self as TagsDelegate))
             }
         }
         // add documents to the GUI
-        if let documents = self.documents {
-            self.viewControllerDelegate?.setDocuments(documents: documents)
-        }
+        self.viewControllerDelegate?.setDocuments(documents: documents)
     }
 
     func filterTags(prefix: String) -> Set<Tag> {
-        let tags = (self.tags ?? []).filter { tag in
+        let tags = self.tags.filter { tag in
             return tag.name.hasPrefix(prefix)
         }
         return tags
@@ -58,6 +57,6 @@ class DataModel: TagsDelegate {
     }
 
     func getTagList() -> Set<Tag> {
-        return self.tags ?? []
+        return self.tags
     }
 }

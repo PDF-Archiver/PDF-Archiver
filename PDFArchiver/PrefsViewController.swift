@@ -31,7 +31,7 @@ class PrefsViewController: NSViewController {
         openPanel.allowsMultipleSelection = false
         openPanel.beginSheetModal(for: NSApplication.shared.mainWindow!) { response in
             guard response == NSApplication.ModalResponse.OK else { return }
-            self.dataModel?.prefs?.archivePath = openPanel.url!
+            self.dataModel?.prefs.archivePath = openPanel.url!
             self.archivePathTextField.stringValue = openPanel.url!.path
             NotificationCenter.default.post(name: Notification.Name("UpdateViewController"), object: nil)
         }
@@ -47,7 +47,7 @@ class PrefsViewController: NSViewController {
         openPanel.allowsMultipleSelection = false
         openPanel.beginSheetModal(for: NSApplication.shared.mainWindow!) { response in
             guard response == NSApplication.ModalResponse.OK else { return }
-            self.dataModel?.prefs?.observedPath = openPanel.url!
+            self.dataModel?.prefs.observedPath = openPanel.url!
             self.observedPathTextField.stringValue = openPanel.url!.path
             self.dataModel?.addDocuments(paths: openPanel.urls)
             NotificationCenter.default.post(name: Notification.Name("UpdateViewController"), object: nil)
@@ -66,18 +66,18 @@ class PrefsViewController: NSViewController {
         self.dataModel = self.delegate?.getDataModel()
 
         // update path field
-        self.dataModel?.prefs!.load()
-        if let archivePath = self.dataModel?.prefs?.archivePath {
+        self.dataModel?.prefs.load()
+        if let archivePath = self.dataModel?.prefs.archivePath {
             self.archivePathTextField.stringValue = archivePath.path
         }
-        if let observedPath = self.dataModel?.prefs?.observedPath {
+        if let observedPath = self.dataModel?.prefs.observedPath {
             self.observedPathTextField.stringValue = observedPath.path
         }
     }
 
     override func viewWillDisappear() {
         // save the current paths + tags
-        self.dataModel?.prefs?.save()
+        self.dataModel?.prefs.save()
 
         // update the data model of the main view controller
         if let dataModel = self.dataModel {
