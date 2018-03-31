@@ -76,6 +76,10 @@ class PrefsViewController: NSViewController {
     }
 
     override func viewWillDisappear() {
+        // save the current paths + tags
+        self.dataModel?.prefs?.save()
+
+        // update the data model of the main view controller
         if let dataModel = self.dataModel {
             self.delegate?.setDataModel(dataModel: dataModel)
         }

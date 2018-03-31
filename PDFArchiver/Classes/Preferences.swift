@@ -30,7 +30,6 @@ struct Preferences {
             }
 
             self._observedPath = newValue
-            self.save()
         }
     }
     var archivePath: URL? {
@@ -49,7 +48,6 @@ struct Preferences {
 
             self._archivePath = newValue
             self.getArchiveTags()
-            self.save()
         }
     }
 
