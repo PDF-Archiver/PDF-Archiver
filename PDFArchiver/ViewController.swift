@@ -128,8 +128,7 @@ class ViewController: NSViewController, ViewControllerDelegate {
 
         // get the new documents
         if let observedPath = self.dataModelInstance.prefs?.observedPath {
-            let files = getPDFs(url: observedPath)
-            self.dataModelInstance.addDocuments(paths: files)
+            self.dataModelInstance.addDocuments(paths: [observedPath])
         }
 
         // set the array controller
