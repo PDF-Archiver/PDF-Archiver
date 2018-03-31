@@ -14,6 +14,7 @@ protocol TagsDelegate: class {
 }
 
 class DataModel: TagsDelegate {
+    weak var viewControllerDelegate: ViewControllerDelegate?
     var prefs: Preferences?
     var documents: [Document]?
     var tags: Set<Tag>?
@@ -25,10 +26,21 @@ class DataModel: TagsDelegate {
         self.documents = []
     }
 
-    func addNewDocuments(paths: [URL]) {
+    func addDocuments(paths: [URL]) {
+        // clear old documents
+        self.documents = []
+
+        // add documents to the data model
         for path in paths {
-            let selectedDocument = Document(path: path, delegate: self as TagsDelegate)
-            self.documents?.append(selectedDocument)
+            let files = getPDFs(url: path)
+            for file in files {
+                let selectedDocument = Document(path: file, delegate: self as TagsDelegate)
+                self.documents?.append(selectedDocument)
+            }
+        }
+        // add documents to the GUI
+        if let documents = self.documents {
+            self.viewControllerDelegate?.setDocuments(documents: documents)
         }
     }
 

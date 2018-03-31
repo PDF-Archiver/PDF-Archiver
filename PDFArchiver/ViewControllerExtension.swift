@@ -77,10 +77,7 @@ extension ViewController {
                 self.dataModelInstance.documents = []
 
                 // get the new documents
-                for element in openPanel.urls {
-                    let files = getPDFs(url: element)
-                    self.dataModelInstance.addNewDocuments(paths: files)
-                }
+                self.dataModelInstance.addDocuments(paths: openPanel.urls)
             }
             openPanel.close()
 
@@ -196,17 +193,11 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
 }
 
 extension ViewController: PrefsViewControllerDelegate {
-    func getPrefs() -> Preferences {
-        return self.dataModelInstance.prefs!
+    func setDataModel(dataModel: DataModel) {
+        self.dataModelInstance = dataModel
     }
 
-    func setPrefs(prefs: Preferences) {
-        self.dataModelInstance.prefs = prefs
-    }
-
-    func addDocuments(path: URL) {
-        let files = getPDFs(url: path)
-        self.dataModelInstance.addNewDocuments(paths: files)
-        self.documentAC.content = self.dataModelInstance.documents
+    func getDataModel() -> DataModel {
+        return self.dataModelInstance
     }
 }

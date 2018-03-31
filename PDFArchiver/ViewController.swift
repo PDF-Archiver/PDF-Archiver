@@ -9,7 +9,11 @@
 import Quartz
 import os.log
 
-class ViewController: NSViewController {
+protocol ViewControllerDelegate: class {
+    func setDocuments(documents: [Document])
+}
+
+class ViewController: NSViewController, ViewControllerDelegate {
     let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "MainViewController")
     var dataModelInstance = DataModel()
 
@@ -86,8 +90,16 @@ class ViewController: NSViewController {
         self.saveDocument()
     }
 
+    func setDocuments(documents: [Document]) {
+        self.documentAC.content = documents
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        // set the data model VC delegate
+        self.dataModelInstance.viewControllerDelegate = self
+
         // get the security scope bookmark [https://stackoverflow.com/a/35863729]
         var archivePath: NSURL? = nil
         if let bookmarkData = UserDefaults.standard.object(forKey: "securityScopeBookmark") as? Data {
@@ -117,7 +129,7 @@ class ViewController: NSViewController {
         // get the new documents
         if let observedPath = self.dataModelInstance.prefs?.observedPath {
             let files = getPDFs(url: observedPath)
-            self.dataModelInstance.addNewDocuments(paths: files)
+            self.dataModelInstance.addDocuments(paths: files)
         }
 
         // set the array controller

@@ -9,13 +9,12 @@
 import Cocoa
 
 protocol PrefsViewControllerDelegate: class {
-    func setPrefs(prefs: Preferences)
-    func getPrefs() -> Preferences
-    func addDocuments(path: URL)
+    func setDataModel(dataModel: DataModel)
+    func getDataModel() -> DataModel
 }
 
 class PrefsViewController: NSViewController {
-    var prefs: Preferences?
+    var dataModel: DataModel?
     weak var delegate: PrefsViewControllerDelegate?
 
     @IBOutlet weak var archivePathTextField: NSTextField!
@@ -32,7 +31,7 @@ class PrefsViewController: NSViewController {
         openPanel.allowsMultipleSelection = false
         openPanel.beginSheetModal(for: NSApplication.shared.mainWindow!) { response in
             guard response == NSApplication.ModalResponse.OK else { return }
-            self.prefs?.archivePath = openPanel.url!
+            self.dataModel?.prefs?.archivePath = openPanel.url!
             self.archivePathTextField.stringValue = openPanel.url!.path
             NotificationCenter.default.post(name: Notification.Name("UpdateViewController"), object: nil)
         }
@@ -48,9 +47,9 @@ class PrefsViewController: NSViewController {
         openPanel.allowsMultipleSelection = false
         openPanel.beginSheetModal(for: NSApplication.shared.mainWindow!) { response in
             guard response == NSApplication.ModalResponse.OK else { return }
-            self.prefs?.observedPath = openPanel.url!
+            self.dataModel?.prefs?.observedPath = openPanel.url!
             self.observedPathTextField.stringValue = openPanel.url!.path
-            self.delegate?.addDocuments(path: openPanel.url!)
+            self.dataModel?.addDocuments(paths: openPanel.urls)
             NotificationCenter.default.post(name: Notification.Name("UpdateViewController"), object: nil)
         }
     }
@@ -64,19 +63,21 @@ class PrefsViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.prefs = self.delegate?.getPrefs()
+        self.dataModel = self.delegate?.getDataModel()
 
         // update path field
-        self.prefs!.load()
-        if let archivePath = self.prefs?.archivePath {
+        self.dataModel?.prefs!.load()
+        if let archivePath = self.dataModel?.prefs?.archivePath {
             self.archivePathTextField.stringValue = archivePath.path
         }
-        if let observedPath = self.prefs?.observedPath {
+        if let observedPath = self.dataModel?.prefs?.observedPath {
             self.observedPathTextField.stringValue = observedPath.path
         }
     }
 
     override func viewWillDisappear() {
-        self.delegate?.setPrefs(prefs: self.prefs!)
+        if let dataModel = self.dataModel {
+            self.delegate?.setDataModel(dataModel: dataModel)
+        }
     }
 }
