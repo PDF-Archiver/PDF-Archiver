@@ -18,4 +18,8 @@ class Tag: NSObject {
         self.count = count
     }
 
+    // MARK: - Other Stuff
+    override var description: String {
+        return "<Tag \(self.name): \(self.count)>"
+    }
 }

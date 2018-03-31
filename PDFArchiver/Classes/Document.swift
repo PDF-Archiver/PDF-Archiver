@@ -190,6 +190,11 @@ class Document: NSObject {
 
         return (newBasepath, filename)
     }
+
+    // MARK: - Other Stuff
+    override var description: String {
+        return "<Document \(self.self.name ?? "")>"
+    }
 }
 
 enum DocumentError: Error {
