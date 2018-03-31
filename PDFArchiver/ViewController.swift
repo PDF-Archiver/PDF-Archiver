@@ -36,7 +36,7 @@ class ViewController: NSViewController, ViewControllerDelegate {
     @IBAction func datePickDone(_ sender: NSDatePicker) {
         // test if a document is selected
         guard !self.documentAC.selectedObjects.isEmpty,
-            let selectedDocument = self.dataModelInstance.selectedDocument else {
+            let selectedDocument = self.documentAC.selectedObjects.first as? Document else {
                 return
         }
 
@@ -47,7 +47,7 @@ class ViewController: NSViewController, ViewControllerDelegate {
     @IBAction func descriptionDone(_ sender: NSTextField) {
         // test if a document is selected
         guard !self.documentAC.selectedObjects.isEmpty,
-              let selectedDocument = self.dataModelInstance.selectedDocument else {
+              let selectedDocument = self.documentAC.selectedObjects.first as? Document else {
             return
         }
 
@@ -58,7 +58,7 @@ class ViewController: NSViewController, ViewControllerDelegate {
     @IBAction func clickedDocumentTagTableView(_ sender: NSTableView) {
         // test if the document tag table is empty
         guard !self.documentAC.selectedObjects.isEmpty,
-            let selectedDocument = self.dataModelInstance.selectedDocument,
+            let selectedDocument = self.documentAC.selectedObjects.first as? Document,
             let obj = self.documentTagAC.selectedObjects.first as? Tag else {
                 return
         }

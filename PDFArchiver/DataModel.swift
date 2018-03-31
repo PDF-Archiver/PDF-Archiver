@@ -18,8 +18,6 @@ class DataModel: TagsDelegate {
     var prefs = Preferences()
     var documents: [Document]
     var tags: Set<Tag>
-    var selectedDocument: Document?
-    fileprivate var _documentIdx: Int?
 
     init() {
         self.documents = []

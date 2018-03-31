@@ -31,7 +31,7 @@ extension ViewController {
             self.documentTagAC.content = nil
             return
         }
-        if let selectedDocument = self.dataModelInstance.selectedDocument {
+        if let selectedDocument = self.documentAC.selectedObjects.first as? Document {
             // set the document date, description and tags
             self.datePicker.dateValue = selectedDocument.documentDate
             self.descriptionField.stringValue = selectedDocument.documentDescription ?? ""
@@ -89,7 +89,7 @@ extension ViewController {
     func saveDocument() {
         // test if a document is selected
         guard !self.documentAC.selectedObjects.isEmpty,
-              let selectedDocument = self.dataModelInstance.selectedDocument else {
+              let selectedDocument = self.documentAC.selectedObjects.first as? Document else {
             return
         }
 
@@ -114,7 +114,7 @@ extension ViewController {
         }
 
         // add new tag to document table view
-        guard let selectedDocument = self.dataModelInstance.selectedDocument else {
+        guard let selectedDocument = self.documentAC.selectedObjects.first as? Document else {
             os_log("Please pick documents first!", log: self.log, type: .info)
             return
         }
@@ -142,9 +142,6 @@ extension ViewController: NSTableViewDelegate, NSTableViewDataSource {
         if let identifier = tableView.identifier,
            identifier.rawValue == "DocumentTableView",
            tableView.selectedRow >= 0 {
-            // get the index of the selected row and save it
-            self.dataModelInstance.selectedDocument = self.documentAC.selectedObjects.first as? Document
-
             // pick a document and save the tags in the document tag list
             self.updateViewController(updatePDF: true)
         }
@@ -156,7 +153,7 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
         guard let identifier = (notification.object as? NSTextField)?.identifier else { return }
         if identifier.rawValue == "documentDescriptionField" {
             guard let textField = notification.object as? NSTextField,
-                  let selectedDocument = self.dataModelInstance.selectedDocument else { return }
+                  let selectedDocument = self.documentAC.selectedObjects.first as? Document else { return }
             selectedDocument.documentDescription = textField.stringValue
         } else if identifier.rawValue == "tagSearchField" {
             guard let searchField = notification.object as? NSSearchField else { return }
