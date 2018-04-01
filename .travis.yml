@@ -5,9 +5,7 @@ before_install:
   - brew update
   - brew outdated swiftlint || brew upgrade swiftlint
 
-osx_image:
-  - xcode9.2
-  - xcode8.3
+osx_image: xcode9.2
 
 script:
   - swiftlint
