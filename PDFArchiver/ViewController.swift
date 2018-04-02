@@ -104,7 +104,7 @@ class ViewController: NSViewController, ViewControllerDelegate {
         var archivePath: NSURL? = nil
         if let bookmarkData = UserDefaults.standard.object(forKey: "securityScopeBookmark") as? Data {
             do {
-                archivePath = try NSURL.init(resolvingBookmarkData: bookmarkData, options: .withoutUI, relativeTo: nil, bookmarkDataIsStale: nil)
+                archivePath = try NSURL.init(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: nil)
                 if let archivePathTmp = archivePath {
                     archivePathTmp.startAccessingSecurityScopedResource()
                 }
