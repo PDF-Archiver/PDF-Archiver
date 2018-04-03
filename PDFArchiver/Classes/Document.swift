@@ -143,6 +143,7 @@ class Document: NSObject {
             }
         } catch let error as NSError {
             os_log("Error while moving file: %@", log: self.log, type: .error, error as CVarArg)
+            dialogOK(messageKey: "renaming_failed", infoKey: error.localizedDescription, style: .warning)
             return false
         }
         self.name = String(newFilepath.lastPathComponent)
