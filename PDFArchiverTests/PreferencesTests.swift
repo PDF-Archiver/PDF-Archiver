@@ -35,7 +35,7 @@ class PreferencesTests: XCTestCase, TagsDelegate {
     func testLoad() {
 //        print(UserDefaults.standard.url(forKey: "archivePath"))
         print(self.tagList)
-        var prefs = Preferences(delegate: self)
+        var prefs = Preferences()
         prefs.load()
         print(self.tagList)
     }
