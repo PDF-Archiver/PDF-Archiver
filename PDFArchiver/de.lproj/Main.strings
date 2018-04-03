@@ -226,3 +226,24 @@
 
 /* Class = "NSTextFieldCell"; title = "Observed Folder:"; ObjectID = "z8O-Wh-LiY"; */
 "z8O-Wh-LiY.title" = "Überwachter Ordner";
+
+/* Class = "NSMenu"; title = "View"; ObjectID = "DKC-3b-TGx"; */
+"DKC-3b-TGx.title" = "Darstellung";
+
+/* Class = "NSMenuItem"; title = "View"; ObjectID = "nug-J6-Kob"; */
+"nug-J6-Kob.title" = "Darstellung";
+
+/* Class = "NSMenuItem"; title = "Actual Size"; ObjectID = "sPz-WA-DhP"; */
+"sPz-WA-DhP.title" = "Originalgröße";
+
+/* Class = "NSMenuItem"; title = "Zoom to Fit"; ObjectID = "NSU-xo-Ew8"; */
+"NSU-xo-Ew8.title" = "Größe an Fenster anpassen";
+
+/* Class = "NSMenuItem"; title = "Zoom In"; ObjectID = "2Su-q0-mEf"; */
+"2Su-q0-mEf.title" = "Vergrößern";
+
+/* Class = "NSMenuItem"; title = "Zoom Out"; ObjectID = "r0h-1S-Qhj"; */
+"r0h-1S-Qhj.title" = "Verkleinern";
+
+/* Class = "NSMenuItem"; title = "Enter Full Screen"; ObjectID = "iqX-xt-vZ6"; */
+"iqX-xt-vZ6.title" = "Vollbildmodus";

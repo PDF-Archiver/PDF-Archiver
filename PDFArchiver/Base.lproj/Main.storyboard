@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
-        <plugIn identifier="com.apple.pdfkit.ibplugin" version="13771"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14109"/>
+        <plugIn identifier="com.apple.pdfkit.ibplugin" version="14109"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
         <capability name="system font weights other than Regular or Bold" minToolsVersion="7.0"/>
     </dependencies>
@@ -28,7 +28,7 @@
                                         <menuItem title="Preferences…" alternate="YES" keyEquivalent="," id="BOF-NM-1cW">
                                             <accessibility identifier="prefrencesMenu"/>
                                             <connections>
-                                                <action selector="showPreferences:" target="Voe-Tx-rLC" id="iDW-fk-2qN"/>
+                                                <action selector="changeZoom:" target="Voe-Tx-rLC" id="iDW-fk-2qN"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="wFC-TO-SCJ"/>
@@ -111,6 +111,40 @@
                                     </items>
                                 </menu>
                             </menuItem>
+                            <menuItem title="View" id="nug-J6-Kob">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="View" id="DKC-3b-TGx">
+                                    <items>
+                                        <menuItem title="Actual Size" alternate="YES" keyEquivalent="0" identifier="ZoomActualSize" id="sPz-WA-DhP">
+                                            <connections>
+                                                <action selector="changeZoom:" target="Voe-Tx-rLC" id="7A3-3N-GVk"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Zoom to Fit" alternate="YES" keyEquivalent="9" identifier="ZoomToFit" id="NSU-xo-Ew8">
+                                            <connections>
+                                                <action selector="changeZoom:" target="Voe-Tx-rLC" id="ACY-yi-VBZ"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Zoom In" keyEquivalent="+" identifier="ZoomIn" id="2Su-q0-mEf">
+                                            <connections>
+                                                <action selector="changeZoom:" target="Voe-Tx-rLC" id="Zqh-BX-4gf"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Zoom Out" keyEquivalent="-" identifier="ZoomOut" id="r0h-1S-Qhj">
+                                            <connections>
+                                                <action selector="changeZoom:" target="Voe-Tx-rLC" id="JSE-Fy-5ee"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="izA-w2-QkB"/>
+                                        <menuItem title="Enter Full Screen" keyEquivalent="f" id="iqX-xt-vZ6">
+                                            <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="toggleFullScreen:" target="Ady-hI-5gd" id="HBx-Py-IcW"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
                             <menuItem title="Window" id="aUF-d1-5bR">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Window" systemMenu="window" id="Td7-aD-5lo">
@@ -135,26 +169,26 @@
                                     <items>
                                         <menuItem title="PDF Archiver Help" keyEquivalent="?" id="FKE-Sm-Kum">
                                             <connections>
-                                                <action selector="showHelp:" target="Voe-Tx-rLC" id="lQ1-1b-Grf"/>
+                                                <action selector="changeZoom:" target="Voe-Tx-rLC" id="lQ1-1b-Grf"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="g5g-oz-d55"/>
                                         <menuItem title="Show Onboarding" id="Hz0-RV-wAv" userLabel="Show Onboarding">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="showOnboarding:" target="Voe-Tx-rLC" id="6CG-fz-q8n"/>
+                                                <action selector="changeZoom:" target="Voe-Tx-rLC" id="6CG-fz-q8n"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Update Tags" id="CDG-jy-mOA" userLabel="Update Tags">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="updateTags:" target="Voe-Tx-rLC" id="gtA-Jn-uOh"/>
+                                                <action selector="changeZoom:" target="Voe-Tx-rLC" id="gtA-Jn-uOh"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Reset Settings" id="N0V-Bp-Pnp">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="resetUserDefaults:" target="Voe-Tx-rLC" id="Mm3-1k-IDB"/>
+                                                <action selector="changeZoom:" target="Voe-Tx-rLC" id="Mm3-1k-IDB"/>
                                             </connections>
                                         </menuItem>
                                     </items>
@@ -780,7 +814,7 @@ Tag your document and save  it:</string>
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="aAj-oT-fzK">
-                                                                    <rect key="frame" x="1" y="1" width="27" height="17"/>
+                                                                    <rect key="frame" x="1" y="1" width="28" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nnY-wt-8cw">
@@ -820,7 +854,7 @@ Tag your document and save  it:</string>
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                    <rect key="frame" x="32" y="1" width="194" height="17"/>
+                                                                    <rect key="frame" x="32" y="1" width="195" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">

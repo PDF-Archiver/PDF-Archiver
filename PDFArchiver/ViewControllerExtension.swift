@@ -61,6 +61,21 @@ extension ViewController {
         os_log("Setting archive path, e.g. update tag list.", log: self.log, type: .debug)
         self.dataModelInstance.prefs.getArchiveTags()
     }
+    @objc func zoomPDF(notification: NSNotification) {
+        guard let sender = notification.object as? NSMenuItem,
+              let identifierName = sender.identifier?.rawValue  else { return }
+
+        if identifierName == "ZoomActualSize" {
+            self.pdfContentView.scaleFactor = 1
+        } else if identifierName == "ZoomToFit" {
+            self.pdfContentView.autoScales = true
+        } else if identifierName == "ZoomIn" {
+            self.pdfContentView.zoomIn(self)
+        } else if identifierName == "ZoomOut" {
+            self.pdfContentView.zoomOut(self)
+        }
+    }
+
     func getPDFDocuments() {
         let openPanel = NSOpenPanel()
         openPanel.title = "Choose a .pdf file or a folder"

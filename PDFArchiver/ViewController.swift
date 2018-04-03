@@ -147,6 +147,8 @@ class ViewController: NSViewController, ViewControllerDelegate {
                                        name: Notification.Name("ShowOnboarding"), object: nil)
         notificationCenter.addObserver(self, selector: #selector(self.updateTags),
                                        name: Notification.Name("UpdateTags"), object: nil)
+        notificationCenter.addObserver(self, selector: #selector(self.zoomPDF(notification:)),
+                                       name: Notification.Name("ChangeZoom"), object: nil)
 
         // MARK: - delegates
         tagSearchField.delegate = self
