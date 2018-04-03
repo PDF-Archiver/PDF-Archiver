@@ -100,29 +100,6 @@ class ViewController: NSViewController, ViewControllerDelegate {
         // set the data model VC delegate
         self.dataModelInstance.viewControllerDelegate = self
 
-        // get the security scope bookmark [https://stackoverflow.com/a/35863729]
-        var archivePath: NSURL? = nil
-        if let bookmarkData = UserDefaults.standard.object(forKey: "securityScopeBookmark") as? Data {
-            do {
-                archivePath = try NSURL.init(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: nil)
-                if let archivePathTmp = archivePath {
-                    archivePathTmp.startAccessingSecurityScopedResource()
-                }
-            } catch let error as NSError {
-                os_log("Bookmark Access failed: %@", log: self.log, type: .error, error.description as CVarArg)
-            }
-        }
-
-        // get the security scope bookmark of the observed path
-        if let bookmarkData = UserDefaults.standard.object(forKey: "securityScopeBookmarkObservedPath") as? Data {
-            do {
-                let observedPath = try NSURL.init(resolvingBookmarkData: bookmarkData, options: .withoutUI, relativeTo: nil, bookmarkDataIsStale: nil)
-                observedPath.startAccessingSecurityScopedResource()
-            } catch let error as NSError {
-                os_log("Bookmark Access failed: %@", log: self.log, type: .error, error.description as CVarArg)
-            }
-        }
-
         // set the date picker to canadian local, e.g. YYYY-MM-DD
         self.datePicker.locale = Locale.init(identifier: "en_CA")
 

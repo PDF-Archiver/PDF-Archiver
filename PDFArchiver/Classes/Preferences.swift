@@ -16,6 +16,7 @@ struct Preferences {
     weak var delegate: TagsDelegate?
     var analyseOnlyLatestFolders: Bool = true
     var observedPath: URL? {
+        // ATTENTION: only set observed path, after an OpenPanel dialog
         get {
             return self._observedPath
         }
@@ -23,8 +24,8 @@ struct Preferences {
             guard let newValue = newValue else { return }
             // save the security scope bookmark [https://stackoverflow.com/a/35863729]
             do {
-                let bookmark = try newValue.bookmarkData(options: .securityScopeAllowOnlyReadAccess, includingResourceValuesForKeys: nil, relativeTo: nil)
-                UserDefaults.standard.set(bookmark, forKey: "securityScopeBookmarkObservedPath")
+                let bookmark = try newValue.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
+                UserDefaults.standard.set(bookmark, forKey: "observedPathWithSecurityScope")
             } catch let error as NSError {
                 os_log("Observed path bookmark Write Fails: %@", log: self.log, type: .error, error as CVarArg)
             }
@@ -33,6 +34,7 @@ struct Preferences {
         }
     }
     var archivePath: URL? {
+        // ATTENTION: only set archive path, after an OpenPanel dialog
         get {
             return self._archivePath
         }
@@ -40,7 +42,7 @@ struct Preferences {
             guard let newValue = newValue else { return }
             // save the security scope bookmark [https://stackoverflow.com/a/35863729]
             do {
-                let bookmark = try newValue.bookmarkData(options: .securityScopeAllowOnlyReadAccess, includingResourceValuesForKeys: nil, relativeTo: nil)
+                let bookmark = try newValue.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
                 UserDefaults.standard.set(bookmark, forKey: "securityScopeBookmark")
             } catch let error as NSError {
                 os_log("Bookmark Write Fails: %@", log: self.log, type: .error, error as CVarArg)
@@ -52,11 +54,7 @@ struct Preferences {
     }
 
     func save() {
-        // save the archive path
-        UserDefaults.standard.set(self._archivePath, forKey: "archivePath")
-
-        // save the observed path
-        UserDefaults.standard.set(self._observedPath, forKey: "observedPath")
+        // there is no need to save the archive/observed path here - see the setter of the variable
 
         // save the last tags (with count > 0)
         var tags: [String: Int] = [:]
@@ -71,11 +69,39 @@ struct Preferences {
     }
 
     mutating func load() {
-        // load the archive path
-        self._archivePath = UserDefaults.standard.url(forKey: "archivePath")
+        // load the archive path via the security scope bookmark [https://stackoverflow.com/a/35863729]
+        if let bookmarkData = UserDefaults.standard.object(forKey: "securityScopeBookmark") as? Data {
+            do {
+                var staleBookmarkData = false
+                self._archivePath = try URL.init(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &staleBookmarkData)
+                if staleBookmarkData {
+                    os_log("Stale bookmark data!", log: self.log, type: .fault)
+                }
+                let result = self._archivePath?.startAccessingSecurityScopedResource()
+                if !(result ?? false) {
+                    os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
+                }
+            } catch let error as NSError {
+                os_log("Bookmark Access failed: %@", log: self.log, type: .error, error.description as CVarArg)
+            }
+        }
 
-        // load the observed path
-        self.observedPath = UserDefaults.standard.url(forKey: "observedPath")
+        // load the observed path via the security scope bookmark [https://stackoverflow.com/a/35863729]
+        if let bookmarkData = UserDefaults.standard.object(forKey: "observedPathWithSecurityScope") as? Data {
+            do {
+                var staleBookmarkData = false
+                self._observedPath = try URL.init(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &staleBookmarkData)
+                if staleBookmarkData {
+                    os_log("Stale bookmark data!", log: self.log, type: .fault)
+                }
+                let result = self._observedPath?.startAccessingSecurityScopedResource()
+                if !(result ?? false) {
+                    os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
+                }
+            } catch let error as NSError {
+                os_log("Bookmark Access failed: %@", log: self.log, type: .error, error.description as CVarArg)
+            }
+        }
 
         // load archive tags
         guard let tagsDict = (UserDefaults.standard.dictionary(forKey: "tags") ?? [:]) as? [String: Int] else { return }
@@ -84,6 +110,16 @@ struct Preferences {
             newTagList.insert(Tag(name: name, count: count))
         }
         self.delegate?.setTagList(tagList: newTagList)
+
+        // get the security scope bookmark of the observed path
+        if let bookmarkData = UserDefaults.standard.object(forKey: "securityScopeBookmarkObservedPath") as? Data {
+            do {
+                let observedPath = try NSURL.init(resolvingBookmarkData: bookmarkData, options: .withoutUI, relativeTo: nil, bookmarkDataIsStale: nil)
+                observedPath.startAccessingSecurityScopedResource()
+            } catch let error as NSError {
+                os_log("Bookmark Access failed: %@", log: self.log, type: .error, error.description as CVarArg)
+            }
+        }
     }
 
     func getArchiveTags() {
