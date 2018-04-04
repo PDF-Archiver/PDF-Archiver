@@ -77,10 +77,6 @@ struct Preferences {
                 if staleBookmarkData {
                     os_log("Stale bookmark data!", log: self.log, type: .fault)
                 }
-                let result = self._archivePath?.startAccessingSecurityScopedResource()
-                if !(result ?? false) {
-                    os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-                }
             } catch let error as NSError {
                 os_log("Bookmark Access failed: %@", log: self.log, type: .error, error.description as CVarArg)
             }
@@ -94,10 +90,6 @@ struct Preferences {
                 if staleBookmarkData {
                     os_log("Stale bookmark data!", log: self.log, type: .fault)
                 }
-                let result = self._observedPath?.startAccessingSecurityScopedResource()
-                if !(result ?? false) {
-                    os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-                }
             } catch let error as NSError {
                 os_log("Bookmark Access failed: %@", log: self.log, type: .error, error.description as CVarArg)
             }
@@ -110,16 +102,6 @@ struct Preferences {
             newTagList.insert(Tag(name: name, count: count))
         }
         self.delegate?.setTagList(tagList: newTagList)
-
-        // get the security scope bookmark of the observed path
-        if let bookmarkData = UserDefaults.standard.object(forKey: "securityScopeBookmarkObservedPath") as? Data {
-            do {
-                let observedPath = try NSURL.init(resolvingBookmarkData: bookmarkData, options: .withoutUI, relativeTo: nil, bookmarkDataIsStale: nil)
-                observedPath.startAccessingSecurityScopedResource()
-            } catch let error as NSError {
-                os_log("Bookmark Access failed: %@", log: self.log, type: .error, error.description as CVarArg)
-            }
-        }
     }
 
     func getArchiveTags() {

@@ -103,9 +103,14 @@ class ViewController: NSViewController, ViewControllerDelegate {
         // set the date picker to canadian local, e.g. YYYY-MM-DD
         self.datePicker.locale = Locale.init(identifier: "en_CA")
 
-        // get the new documents
+        // access the file system and get the new documents
         if let observedPath = self.dataModelInstance.prefs.observedPath {
+            if !observedPath.startAccessingSecurityScopedResource() {
+                os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
+                return
+            }
             self.dataModelInstance.addDocuments(paths: [observedPath])
+            observedPath.stopAccessingSecurityScopedResource()
         }
 
         // set the array controller

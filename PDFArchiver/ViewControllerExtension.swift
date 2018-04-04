@@ -37,9 +37,15 @@ extension ViewController {
             self.descriptionField.stringValue = selectedDocument.documentDescription ?? ""
             self.documentTagAC.content = selectedDocument.documentTags
 
-            // update pdf view
-            if updatePDF {
+            // access the file system and update pdf view
+            if updatePDF,
+               let observedPath = self.dataModelInstance.prefs.observedPath {
+                if !observedPath.startAccessingSecurityScopedResource() {
+                    os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
+                    return
+                }
                 self.pdfContentView.document = PDFDocument(url: selectedDocument.path)
+                observedPath.stopAccessingSecurityScopedResource()
             }
         }
     }
@@ -59,7 +65,14 @@ extension ViewController {
     }
     @objc func updateTags() {
         os_log("Setting archive path, e.g. update tag list.", log: self.log, type: .debug)
+
+        // access the file system
+        if !(self.dataModelInstance.prefs.archivePath?.startAccessingSecurityScopedResource() ?? false) {
+            os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
+            return
+        }
         self.dataModelInstance.prefs.getArchiveTags()
+        self.dataModelInstance.prefs.archivePath?.stopAccessingSecurityScopedResource()
     }
     @objc func zoomPDF(notification: NSNotification) {
         guard let sender = notification.object as? NSMenuItem,
@@ -112,7 +125,15 @@ extension ViewController {
             dialogOK(messageKey: "no_archive", infoKey: "select_preferences", style: .critical)
             return
         }
+
+        // access the file system
+        if !(self.dataModelInstance.prefs.archivePath?.startAccessingSecurityScopedResource() ?? false) {
+            os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
+            return
+        }
         let result = selectedDocument.rename(archivePath: path)
+        self.dataModelInstance.prefs.archivePath?.stopAccessingSecurityScopedResource()
+
         if result {
             // select a new document
             self.documentAC.content = self.dataModelInstance.documents

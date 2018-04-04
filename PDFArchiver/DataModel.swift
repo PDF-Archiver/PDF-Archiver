@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import os.log
 
 protocol TagsDelegate: class {
     func setTagList(tagList: Set<Tag>)
@@ -14,6 +15,7 @@ protocol TagsDelegate: class {
 }
 
 class DataModel: TagsDelegate {
+    let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "DataModel")
     weak var viewControllerDelegate: ViewControllerDelegate?
     var prefs = Preferences()
     var documents: [Document]
@@ -30,13 +32,19 @@ class DataModel: TagsDelegate {
         // clear old documents
         self.documents = []
 
-        // add documents to the data model
+        // access the file system and add documents to the data model
+        if !(self.prefs.archivePath?.startAccessingSecurityScopedResource() ?? false) {
+            os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
+            return
+        }
         for path in paths {
             let files = getPDFs(url: path)
             for file in files {
                 self.documents.append(Document(path: file, delegate: self as TagsDelegate))
             }
         }
+        self.prefs.archivePath?.stopAccessingSecurityScopedResource()
+
         // add documents to the GUI
         self.viewControllerDelegate?.setDocuments(documents: documents)
     }
