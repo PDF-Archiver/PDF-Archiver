@@ -9,6 +9,7 @@
 import Cocoa
 
 protocol PrefsViewControllerDelegate: class {
+    func updateGUI()
     func setDataModel(dataModel: DataModel)
     func getDataModel() -> DataModel
 }
@@ -33,7 +34,9 @@ class PrefsViewController: NSViewController {
             guard response == NSApplication.ModalResponse.OK else { return }
             self.dataModel?.prefs.archivePath = openPanel.url!
             self.archivePathTextField.stringValue = openPanel.url!.path
-            NotificationCenter.default.post(name: Notification.Name("UpdateViewController"), object: nil)
+
+            // update the GUI
+            self.delegate?.updateGUI()
         }
     }
 
@@ -50,7 +53,9 @@ class PrefsViewController: NSViewController {
             self.dataModel?.prefs.observedPath = openPanel.url!
             self.observedPathTextField.stringValue = openPanel.url!.path
             self.dataModel?.addDocuments(paths: openPanel.urls)
-            NotificationCenter.default.post(name: Notification.Name("UpdateViewController"), object: nil)
+
+            // update the GUI
+            self.delegate?.updateGUI()
         }
     }
 

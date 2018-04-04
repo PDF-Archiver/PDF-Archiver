@@ -621,6 +621,7 @@ Tag your document and save  it:</string>
                                                         </tableColumn>
                                                     </tableColumns>
                                                     <connections>
+                                                        <action selector="clickedDocumentTableView:" target="XfG-lQ-9wD" id="VlH-02-0fE"/>
                                                         <outlet property="delegate" destination="XfG-lQ-9wD" id="KxX-p1-otG"/>
                                                     </connections>
                                                 </tableView>
@@ -854,7 +855,7 @@ Tag your document and save  it:</string>
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                    <rect key="frame" x="32" y="1" width="195" height="17"/>
+                                                                    <rect key="frame" x="31.5" y="1" width="195" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">

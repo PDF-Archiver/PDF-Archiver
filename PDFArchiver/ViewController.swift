@@ -55,6 +55,13 @@ class ViewController: NSViewController, ViewControllerDelegate {
         selectedDocument.documentDescription = sender.stringValue
     }
 
+    @IBAction func clickedDocumentTableView(_ sender: NSTableView) {
+        if self.documentAC.selectionIndex >= 0 {
+            // pick a document and save the tags in the document tag list
+            self.updateView(updatePDF: true)
+        }
+    }
+
     @IBAction func clickedDocumentTagTableView(_ sender: NSTableView) {
         // test if the document tag table is empty
         guard !self.documentAC.selectedObjects.isEmpty,
@@ -70,7 +77,7 @@ class ViewController: NSViewController, ViewControllerDelegate {
             tag.count -= 1
 
             selectedDocument.documentTags = documentTags
-            self.updateViewController(updatePDF: false)
+            self.updateView(updatePDF: false)
             break
         }
     }
@@ -79,6 +86,7 @@ class ViewController: NSViewController, ViewControllerDelegate {
         if let selectedTag = self.tagAC.selectedObjects.first as? Tag {
             self.addDocumentTag(tag: selectedTag,
                                 new: false)
+            self.updateView(updatePDF: false)
         }
     }
 
@@ -88,6 +96,7 @@ class ViewController: NSViewController, ViewControllerDelegate {
 
     @IBAction func saveDocumentButton(_ sender: NSButton) {
         self.saveDocument()
+        self.updateView(updatePDF: true)
     }
 
     func setDocuments(documents: [Document]) {
@@ -121,8 +130,6 @@ class ViewController: NSViewController, ViewControllerDelegate {
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(self.showPreferences),
                                        name: Notification.Name("ShowPreferences"), object: nil)
-        notificationCenter.addObserver(self, selector: #selector(self.updateViewController),
-                                       name: Notification.Name("UpdateViewController"), object: nil)
         notificationCenter.addObserver(self, selector: #selector(self.resetCache),
                                        name: Notification.Name("ResetCache"), object: nil)
         notificationCenter.addObserver(self, selector: #selector(self.showOnboarding),
@@ -133,8 +140,8 @@ class ViewController: NSViewController, ViewControllerDelegate {
                                        name: Notification.Name("ChangeZoom"), object: nil)
 
         // MARK: - delegates
-        tagSearchField.delegate = self
-        descriptionField.delegate = self
+        self.tagSearchField.delegate = self
+        self.descriptionField.delegate = self
 
         // add sorting to tag fields
         self.documentAC.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true),
@@ -143,13 +150,15 @@ class ViewController: NSViewController, ViewControllerDelegate {
                                              NSSortDescriptor(key: "name", ascending: true)]
 
         // set some PDF View settings
-//         self.pdfContentView.displayMode = PDFDisplayMode.singlePageContinuous
         self.pdfContentView.displayMode = PDFDisplayMode.singlePage
         self.pdfContentView.autoScales = true
         if #available(OSX 10.13, *) {
             self.pdfContentView.acceptsDraggedFiles = false
         }
         self.pdfContentView.interpolationQuality = PDFInterpolationQuality.low
+
+        // update the view after all the settigns
+        self.updateView(updatePDF: true)
     }
 
     override func viewWillAppear() {
