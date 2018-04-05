@@ -83,12 +83,19 @@ extension ViewController {
 
             // access the file system and update pdf view
             if updatePDF,
-               let observedPath = self.dataModelInstance.prefs.observedPath {
+               let observedPath = self.dataModelInstance.prefs.observedPath,
+               let archivePath = self.dataModelInstance.prefs.archivePath {
                 if !observedPath.startAccessingSecurityScopedResource() {
                     os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
                     return
                 }
+                    if !archivePath.startAccessingSecurityScopedResource() {
+                        os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
+                        return
+                    }
+
                 self.pdfContentView.document = PDFDocument(url: selectedDocument.path)
+                archivePath.stopAccessingSecurityScopedResource()
                 observedPath.stopAccessingSecurityScopedResource()
             }
         }

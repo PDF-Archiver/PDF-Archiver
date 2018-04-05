@@ -134,7 +134,8 @@ class Document: NSObject {
             }
 
             // test if the document name already exists in archive, otherwise move it
-            if fileManager.fileExists(atPath: newFilepath.path) {
+            if fileManager.fileExists(atPath: newFilepath.path),
+               self.path != newFilepath {
                 os_log("File already exists!", log: self.log, type: .error)
                 dialogOK(messageKey: "renaming_failed", infoKey: "file_already_exists", style: .warning)
                 return false
