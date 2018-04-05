@@ -113,14 +113,7 @@ class Document: NSObject {
         let filename: String
         do {
             (newBasePath, filename) = try getRenamingPath(archivePath: archivePath)
-        } catch DocumentError.description {
-            dialogOK(messageKey: "renaming_failed", infoKey: "check_document_description", style: .warning)
-            return false
-        } catch DocumentError.tags {
-            dialogOK(messageKey: "renaming_failed", infoKey: "check_document_tags", style: .warning)
-            return false
         } catch {
-            dialogOK(messageKey: "renaming_failed", infoKey: "check_document_fields", style: .warning)
             return false
         }
 
@@ -169,10 +162,12 @@ class Document: NSObject {
         // create a filename and rename the document
         guard let tags = self.documentTags,
               tags.count > 0 else {
-                throw DocumentError.tags
+            dialogOK(messageKey: "renaming_failed", infoKey: "check_document_tags", style: .warning)
+            throw DocumentError.tags
         }
         guard let description = self.documentDescription,
               description != "" else {
+            dialogOK(messageKey: "renaming_failed", infoKey: "check_document_description", style: .warning)
             throw DocumentError.description
         }
 
