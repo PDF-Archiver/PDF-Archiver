@@ -83,7 +83,7 @@ extension ViewController {
 
             // access the file system and update pdf view
             if updatePDF,
-                let observedPath = self.dataModelInstance.prefs.observedPath {
+               let observedPath = self.dataModelInstance.prefs.observedPath {
                 if !observedPath.startAccessingSecurityScopedResource() {
                     os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
                     return
@@ -137,12 +137,25 @@ extension ViewController {
             os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
             return
         }
+        if !(self.dataModelInstance.prefs.observedPath?.startAccessingSecurityScopedResource() ?? false) {
+            os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
+            return
+        }
         let result = selectedDocument.rename(archivePath: path)
+        self.dataModelInstance.prefs.observedPath?.stopAccessingSecurityScopedResource()
         self.dataModelInstance.prefs.archivePath?.stopAccessingSecurityScopedResource()
 
         if result {
-            // select a new document
+            // update the array controller
             self.documentAC.content = self.dataModelInstance.documents
+
+            // select a new document
+            let newIndex = self.documentAC.selectionIndex + 1
+            if newIndex < self.dataModelInstance.documents.count {
+                self.documentAC.setSelectionIndex(newIndex)
+            } else {
+                self.documentAC.setSelectionIndex(0)
+            }
         }
     }
 
