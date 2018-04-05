@@ -115,15 +115,14 @@ extension ViewController {
             if response.rawValue == NSApplication.ModalResponse.OK.rawValue {
                 // clear old documents from view
                 self.dataModelInstance.documents = []
-
                 // get the new documents
                 self.dataModelInstance.addDocuments(paths: openPanel.urls)
             }
             openPanel.close()
-
             // add pdf documents to the controller (and replace the old ones)
             self.documentAC.content = self.dataModelInstance.documents
-            // no need to refresh the view manually here, because the selection changes which triggers a view update
+            // update the view after a document was picked
+            self.updateView(updatePDF: true)
         }
     }
 

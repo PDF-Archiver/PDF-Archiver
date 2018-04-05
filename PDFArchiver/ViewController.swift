@@ -92,6 +92,7 @@ class ViewController: NSViewController, ViewControllerDelegate {
 
     @IBAction func browseFile(sender: AnyObject) {
         self.getPDFDocuments()
+        // no need to update the view here - it gets updated at the end of self.getPDFDocuments()
     }
 
     @IBAction func saveDocumentButton(_ sender: NSButton) {
