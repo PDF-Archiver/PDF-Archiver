@@ -364,18 +364,44 @@ Tag your document and save  it:</string>
                 </viewController>
                 <customObject id="ICJ-xA-6Ud" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="989" y="1018.5"/>
+            <point key="canvasLocation" x="1019" y="991"/>
+        </scene>
+        <!--Tab View Controller-->
+        <scene sceneID="5cQ-vG-Wp6">
+            <objects>
+                <tabViewController selectedTabViewItemIndex="0" id="ZqG-df-vaR" sceneMemberID="viewController">
+                    <tabViewItems>
+                        <tabViewItem identifier="" id="XBq-Fl-zZt"/>
+                        <tabViewItem identifier="" id="qZa-Lf-ldb"/>
+                    </tabViewItems>
+                    <tabView key="tabView" type="noTabsNoBorder" id="1CQ-ZS-tAy">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <font key="font" metaFont="message"/>
+                        <connections>
+                            <outlet property="delegate" destination="ZqG-df-vaR" id="xQW-1C-vE5"/>
+                        </connections>
+                    </tabView>
+                    <connections>
+                        <outlet property="tabView" destination="1CQ-ZS-tAy" id="2Sy-hR-sbX"/>
+                        <segue destination="emn-JX-zbO" kind="relationship" relationship="tabItems" id="3nY-5W-rlI"/>
+                        <segue destination="rWp-Co-RrU" kind="relationship" relationship="tabItems" id="c2L-vO-HCf"/>
+                    </connections>
+                </tabViewController>
+                <customObject id="yEX-ig-sSQ" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1019" y="1445"/>
         </scene>
         <!--Preferences-->
-        <scene sceneID="ndM-Fj-5Cq">
+        <scene sceneID="2JL-n5-vHk">
             <objects>
-                <viewController title="Preferences" storyboardIdentifier="prefsViewController" id="mcV-6Y-gT5" customClass="PrefsViewController" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="BeE-gT-39S">
-                        <rect key="frame" x="0.0" y="0.0" width="540" height="192"/>
+                <viewController title="Preferences" id="emn-JX-zbO" customClass="PrefsViewController" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="7f8-kJ-SDe">
+                        <rect key="frame" x="0.0" y="0.0" width="650" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="uzI-d8-kcx">
-                                <rect key="frame" x="20" y="106" width="500" height="32"/>
+                                <rect key="frame" x="75" y="177" width="500" height="32"/>
                                 <subviews>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="X5U-R0-ENH">
                                         <rect key="frame" x="5" y="5" width="410" height="22"/>
@@ -398,9 +424,6 @@ Tag your document and save  it:</string>
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
-                                        <connections>
-                                            <action selector="changeArchivePathButton:" target="mcV-6Y-gT5" id="FL6-wO-8f6"/>
-                                        </connections>
                                     </button>
                                 </subviews>
                                 <constraints>
@@ -416,7 +439,7 @@ Tag your document and save  it:</string>
                                 </constraints>
                             </customView>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="SUD-Bv-plx">
-                                <rect key="frame" x="20" y="20" width="500" height="32"/>
+                                <rect key="frame" x="75" y="91" width="500" height="32"/>
                                 <subviews>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hB8-Fa-RBW">
                                         <rect key="frame" x="5" y="5" width="410" height="22"/>
@@ -439,9 +462,6 @@ Tag your document and save  it:</string>
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
-                                        <connections>
-                                            <action selector="changeObservedPathButton:" target="mcV-6Y-gT5" id="WWY-Kj-8lJ"/>
-                                        </connections>
                                     </button>
                                 </subviews>
                                 <constraints>
@@ -457,7 +477,7 @@ Tag your document and save  it:</string>
                                 </constraints>
                             </customView>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PTW-ce-MNP">
-                                <rect key="frame" x="18" y="143" width="504" height="19"/>
+                                <rect key="frame" x="73" y="214" width="504" height="19"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Archive Path:" id="Ju7-wj-fHp">
                                     <font key="font" metaFont="systemSemibold" size="15"/>
                                     <color key="textColor" red="0.79329520460000003" green="0.25477233529999999" blue="0.30978807809999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
@@ -465,7 +485,7 @@ Tag your document and save  it:</string>
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="RAD-9s-bE4">
-                                <rect key="frame" x="18" y="57" width="504" height="19"/>
+                                <rect key="frame" x="73" y="128" width="504" height="19"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Observed Folder:" id="z8O-Wh-LiY">
                                     <font key="font" metaFont="systemSemibold" size="15"/>
                                     <color key="textColor" red="0.79329520460000003" green="0.25477233529999999" blue="0.30978807809999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
@@ -474,31 +494,40 @@ Tag your document and save  it:</string>
                             </textField>
                         </subviews>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="SUD-Bv-plx" secondAttribute="trailing" constant="20" id="2Kb-sL-MSn"/>
-                            <constraint firstItem="uzI-d8-kcx" firstAttribute="leading" secondItem="BeE-gT-39S" secondAttribute="leading" constant="20" id="7XQ-4C-Wfc"/>
-                            <constraint firstItem="SUD-Bv-plx" firstAttribute="leading" secondItem="BeE-gT-39S" secondAttribute="leading" constant="20" id="Bag-nt-eIf"/>
-                            <constraint firstItem="PTW-ce-MNP" firstAttribute="leading" secondItem="BeE-gT-39S" secondAttribute="leading" constant="20" id="Cdx-jD-ESH"/>
-                            <constraint firstItem="uzI-d8-kcx" firstAttribute="width" secondItem="PTW-ce-MNP" secondAttribute="width" id="JC8-q3-Kna"/>
-                            <constraint firstItem="uzI-d8-kcx" firstAttribute="top" secondItem="PTW-ce-MNP" secondAttribute="bottom" constant="5" id="O2a-gS-5rX"/>
-                            <constraint firstAttribute="trailing" secondItem="RAD-9s-bE4" secondAttribute="trailing" constant="20" id="PYq-fL-WGy"/>
-                            <constraint firstAttribute="trailing" secondItem="uzI-d8-kcx" secondAttribute="trailing" constant="20" id="a9l-zR-3ga"/>
-                            <constraint firstItem="PTW-ce-MNP" firstAttribute="top" secondItem="BeE-gT-39S" secondAttribute="top" constant="30" id="kEc-a8-Sqb"/>
-                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="PTW-ce-MNP" secondAttribute="trailing" constant="20" symbolic="YES" id="lt8-K2-uRa"/>
-                            <constraint firstItem="uzI-d8-kcx" firstAttribute="top" secondItem="PTW-ce-MNP" secondAttribute="bottom" constant="5" id="o46-JS-VeN"/>
-                            <constraint firstAttribute="bottom" secondItem="SUD-Bv-plx" secondAttribute="bottom" constant="20" id="rWx-E9-DLD"/>
-                            <constraint firstItem="RAD-9s-bE4" firstAttribute="top" secondItem="uzI-d8-kcx" secondAttribute="bottom" constant="30" id="t8n-tl-1bz"/>
-                            <constraint firstItem="SUD-Bv-plx" firstAttribute="top" secondItem="RAD-9s-bE4" secondAttribute="bottom" constant="5" id="vGI-IT-p4E"/>
-                            <constraint firstItem="RAD-9s-bE4" firstAttribute="leading" secondItem="BeE-gT-39S" secondAttribute="leading" constant="20" id="xLw-Or-sjw"/>
+                            <constraint firstItem="SUD-Bv-plx" firstAttribute="leading" secondItem="7f8-kJ-SDe" secondAttribute="leading" constant="75" id="3c7-4L-EgB"/>
+                            <constraint firstItem="PTW-ce-MNP" firstAttribute="top" secondItem="7f8-kJ-SDe" secondAttribute="top" constant="67" id="68w-JE-Uni"/>
+                            <constraint firstAttribute="trailing" secondItem="RAD-9s-bE4" secondAttribute="trailing" constant="75" id="6oG-Ra-P2S"/>
+                            <constraint firstItem="uzI-d8-kcx" firstAttribute="top" secondItem="PTW-ce-MNP" secondAttribute="bottom" constant="5" id="L1D-R9-RvH"/>
+                            <constraint firstItem="uzI-d8-kcx" firstAttribute="top" secondItem="PTW-ce-MNP" secondAttribute="bottom" constant="5" id="MT7-cg-pFI"/>
+                            <constraint firstItem="RAD-9s-bE4" firstAttribute="leading" secondItem="7f8-kJ-SDe" secondAttribute="leading" constant="75" id="OFB-nP-20K"/>
+                            <constraint firstItem="SUD-Bv-plx" firstAttribute="top" secondItem="RAD-9s-bE4" secondAttribute="bottom" constant="5" id="T21-eW-b8d"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="PTW-ce-MNP" secondAttribute="trailing" constant="20" symbolic="YES" id="TSh-xp-XHX"/>
+                            <constraint firstAttribute="bottom" secondItem="SUD-Bv-plx" secondAttribute="bottom" constant="91" id="lJV-XB-xlE"/>
+                            <constraint firstAttribute="trailing" secondItem="uzI-d8-kcx" secondAttribute="trailing" constant="75" id="lUN-sj-tGe"/>
+                            <constraint firstItem="RAD-9s-bE4" firstAttribute="top" secondItem="uzI-d8-kcx" secondAttribute="bottom" constant="30" id="oV0-73-ET0"/>
+                            <constraint firstItem="uzI-d8-kcx" firstAttribute="width" secondItem="PTW-ce-MNP" secondAttribute="width" id="pRl-7r-77F"/>
+                            <constraint firstItem="uzI-d8-kcx" firstAttribute="leading" secondItem="7f8-kJ-SDe" secondAttribute="leading" constant="75" id="sLi-gy-Van"/>
+                            <constraint firstAttribute="trailing" secondItem="SUD-Bv-plx" secondAttribute="trailing" constant="75" id="toq-8r-x08"/>
+                            <constraint firstItem="PTW-ce-MNP" firstAttribute="leading" secondItem="7f8-kJ-SDe" secondAttribute="leading" constant="75" id="xoi-Bm-eHA"/>
                         </constraints>
                     </view>
-                    <connections>
-                        <outlet property="archivePathTextField" destination="X5U-R0-ENH" id="bsd-F5-EBo"/>
-                        <outlet property="observedPathTextField" destination="hB8-Fa-RBW" id="7cp-YK-Cd4"/>
-                    </connections>
                 </viewController>
-                <customObject id="6c0-ie-4dB" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <customObject id="CD2-Zr-up1" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="934" y="1430.5"/>
+            <point key="canvasLocation" x="1724" y="1249"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="lPK-1g-uGP">
+            <objects>
+                <viewController id="rWp-Co-RrU" sceneMemberID="viewController">
+                    <view key="view" id="vFK-Vc-7T6">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </view>
+                </viewController>
+                <customObject id="S14-PJ-KOq" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1624" y="1648"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="hIz-AP-VOD">
@@ -855,7 +884,7 @@ Tag your document and save  it:</string>
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                    <rect key="frame" x="31.5" y="1" width="195" height="17"/>
+                                                                    <rect key="frame" x="32" y="1" width="195" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">
@@ -1026,8 +1055,8 @@ Tag your document and save  it:</string>
                         <outlet property="tagSearchField" destination="WfD-Nd-kM0" id="S7l-y7-2yr"/>
                         <outlet property="tagSearchView" destination="BZd-ly-6BW" id="ULj-Og-MHE"/>
                         <outlet property="tagTableView" destination="xpK-mJ-Y4J" id="6if-v6-H9T"/>
-                        <segue destination="mcV-6Y-gT5" kind="modal" identifier="prefsSegue" id="2DJ-l1-blV"/>
                         <segue destination="IBN-wm-PS1" kind="sheet" identifier="onboardingSegue" id="PNh-jz-8j4"/>
+                        <segue destination="ZqG-df-vaR" kind="modal" identifier="prefsSegue" id="zdd-Hx-5Da"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

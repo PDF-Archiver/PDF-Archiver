@@ -146,9 +146,6 @@
 /* Class = "NSTextFieldCell"; title = "Table View Cell"; ObjectID = "mEm-YG-Iaa"; */
 "mEm-YG-Iaa.title" = "Table View Cell";
 
-/* Class = "NSViewController"; title = "Preferences"; ObjectID = "mcV-6Y-gT5"; */
-"mcV-6Y-gT5.title" = "Einstellungen";
-
 /* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "o1a-m8-IzU"; */
 "o1a-m8-IzU.title" = "Text Eintrag";
 
@@ -247,3 +244,6 @@
 
 /* Class = "NSMenuItem"; title = "Enter Full Screen"; ObjectID = "iqX-xt-vZ6"; */
 "iqX-xt-vZ6.title" = "Vollbildmodus";
+
+/* Class = "NSViewController"; title = "Preferences"; ObjectID = "emn-JX-zbO"; */
+"emn-JX-zbO.title" = "";
