@@ -246,4 +246,19 @@
 "iqX-xt-vZ6.title" = "Vollbildmodus";
 
 /* Class = "NSViewController"; title = "Preferences"; ObjectID = "emn-JX-zbO"; */
-"emn-JX-zbO.title" = "";
+"emn-JX-zbO.title" = "Einstellungen";
+
+/* Class = "NSViewController"; title = "Donation"; ObjectID = "rWp-Co-RrU"; */
+"rWp-Co-RrU.title" = "Spenden";
+
+/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "Qa6-7P-qpR"; */
+"Qa6-7P-qpR.title" = "Text Eintrag";
+
+/* Class = "NSTextFieldCell"; title = "Table View Cell"; ObjectID = "gug-Ld-gvw"; */
+"gug-Ld-gvw.title" = "Text Eintrag";
+
+/* Class = "NSTextFieldCell"; title = "Table View Cell"; ObjectID = "xR6-1J-S4T"; */
+"xR6-1J-S4T.title" = "Text Eintrag";
+
+/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "xWP-RS-QMF"; */
+"xWP-RS-QMF.title" = "Text Eintrag";

@@ -369,11 +369,16 @@ Tag your document and save  it:</string>
         <!--Tab View Controller-->
         <scene sceneID="5cQ-vG-Wp6">
             <objects>
-                <tabViewController selectedTabViewItemIndex="0" id="ZqG-df-vaR" sceneMemberID="viewController">
+                <tabViewController selectedTabViewItemIndex="0" tabStyle="toolbar" id="ZqG-df-vaR" sceneMemberID="viewController">
                     <tabViewItems>
-                        <tabViewItem identifier="" id="XBq-Fl-zZt"/>
-                        <tabViewItem identifier="" id="qZa-Lf-ldb"/>
+                        <tabViewItem identifier="PreferencesTabViewItem" image="NSPreferencesGeneral" id="XBq-Fl-zZt">
+                            <nil key="label"/>
+                        </tabViewItem>
+                        <tabViewItem identifier="DonationTabViewItem" image="NSInfo" id="qZa-Lf-ldb">
+                            <nil key="label"/>
+                        </tabViewItem>
                     </tabViewItems>
+                    <viewControllerTransitionOptions key="transitionOptions" allowUserInteraction="YES"/>
                     <tabView key="tabView" type="noTabsNoBorder" id="1CQ-ZS-tAy">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -395,13 +400,13 @@ Tag your document and save  it:</string>
         <!--Preferences-->
         <scene sceneID="2JL-n5-vHk">
             <objects>
-                <viewController title="Preferences" id="emn-JX-zbO" customClass="PrefsViewController" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="7f8-kJ-SDe">
-                        <rect key="frame" x="0.0" y="0.0" width="650" height="300"/>
+                <viewController title="Preferences" identifier="PreferencesVC" storyboardIdentifier="PreferencesVC" id="emn-JX-zbO" customClass="MainPreferencesVC" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" identifier="PreferencesVC" id="7f8-kJ-SDe">
+                        <rect key="frame" x="0.0" y="0.0" width="650" height="192"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="uzI-d8-kcx">
-                                <rect key="frame" x="75" y="177" width="500" height="32"/>
+                                <rect key="frame" x="75" y="116" width="500" height="32"/>
                                 <subviews>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="X5U-R0-ENH">
                                         <rect key="frame" x="5" y="5" width="410" height="22"/>
@@ -424,6 +429,9 @@ Tag your document and save  it:</string>
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
+                                        <connections>
+                                            <action selector="changeArchivePathButton:" target="emn-JX-zbO" id="lxL-Of-btw"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <constraints>
@@ -439,7 +447,7 @@ Tag your document and save  it:</string>
                                 </constraints>
                             </customView>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="SUD-Bv-plx">
-                                <rect key="frame" x="75" y="91" width="500" height="32"/>
+                                <rect key="frame" x="75" y="30" width="500" height="32"/>
                                 <subviews>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hB8-Fa-RBW">
                                         <rect key="frame" x="5" y="5" width="410" height="22"/>
@@ -462,6 +470,9 @@ Tag your document and save  it:</string>
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
+                                        <connections>
+                                            <action selector="changeObservedPathButton:" target="emn-JX-zbO" id="5t0-vK-RMA"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <constraints>
@@ -477,7 +488,7 @@ Tag your document and save  it:</string>
                                 </constraints>
                             </customView>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PTW-ce-MNP">
-                                <rect key="frame" x="73" y="214" width="504" height="19"/>
+                                <rect key="frame" x="73" y="153" width="504" height="19"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Archive Path:" id="Ju7-wj-fHp">
                                     <font key="font" metaFont="systemSemibold" size="15"/>
                                     <color key="textColor" red="0.79329520460000003" green="0.25477233529999999" blue="0.30978807809999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
@@ -485,7 +496,7 @@ Tag your document and save  it:</string>
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="RAD-9s-bE4">
-                                <rect key="frame" x="73" y="128" width="504" height="19"/>
+                                <rect key="frame" x="73" y="67" width="504" height="19"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Observed Folder:" id="z8O-Wh-LiY">
                                     <font key="font" metaFont="systemSemibold" size="15"/>
                                     <color key="textColor" red="0.79329520460000003" green="0.25477233529999999" blue="0.30978807809999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
@@ -495,14 +506,14 @@ Tag your document and save  it:</string>
                         </subviews>
                         <constraints>
                             <constraint firstItem="SUD-Bv-plx" firstAttribute="leading" secondItem="7f8-kJ-SDe" secondAttribute="leading" constant="75" id="3c7-4L-EgB"/>
-                            <constraint firstItem="PTW-ce-MNP" firstAttribute="top" secondItem="7f8-kJ-SDe" secondAttribute="top" constant="67" id="68w-JE-Uni"/>
+                            <constraint firstItem="PTW-ce-MNP" firstAttribute="top" secondItem="7f8-kJ-SDe" secondAttribute="top" constant="20" id="68w-JE-Uni"/>
                             <constraint firstAttribute="trailing" secondItem="RAD-9s-bE4" secondAttribute="trailing" constant="75" id="6oG-Ra-P2S"/>
                             <constraint firstItem="uzI-d8-kcx" firstAttribute="top" secondItem="PTW-ce-MNP" secondAttribute="bottom" constant="5" id="L1D-R9-RvH"/>
                             <constraint firstItem="uzI-d8-kcx" firstAttribute="top" secondItem="PTW-ce-MNP" secondAttribute="bottom" constant="5" id="MT7-cg-pFI"/>
                             <constraint firstItem="RAD-9s-bE4" firstAttribute="leading" secondItem="7f8-kJ-SDe" secondAttribute="leading" constant="75" id="OFB-nP-20K"/>
                             <constraint firstItem="SUD-Bv-plx" firstAttribute="top" secondItem="RAD-9s-bE4" secondAttribute="bottom" constant="5" id="T21-eW-b8d"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="PTW-ce-MNP" secondAttribute="trailing" constant="20" symbolic="YES" id="TSh-xp-XHX"/>
-                            <constraint firstAttribute="bottom" secondItem="SUD-Bv-plx" secondAttribute="bottom" constant="91" id="lJV-XB-xlE"/>
+                            <constraint firstAttribute="bottom" secondItem="SUD-Bv-plx" secondAttribute="bottom" constant="30" id="lJV-XB-xlE"/>
                             <constraint firstAttribute="trailing" secondItem="uzI-d8-kcx" secondAttribute="trailing" constant="75" id="lUN-sj-tGe"/>
                             <constraint firstItem="RAD-9s-bE4" firstAttribute="top" secondItem="uzI-d8-kcx" secondAttribute="bottom" constant="30" id="oV0-73-ET0"/>
                             <constraint firstItem="uzI-d8-kcx" firstAttribute="width" secondItem="PTW-ce-MNP" secondAttribute="width" id="pRl-7r-77F"/>
@@ -511,18 +522,121 @@ Tag your document and save  it:</string>
                             <constraint firstItem="PTW-ce-MNP" firstAttribute="leading" secondItem="7f8-kJ-SDe" secondAttribute="leading" constant="75" id="xoi-Bm-eHA"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="archivePathTextField" destination="X5U-R0-ENH" id="vSN-68-eIZ"/>
+                        <outlet property="observedPathTextField" destination="hB8-Fa-RBW" id="1Cy-Lg-BQS"/>
+                    </connections>
                 </viewController>
                 <customObject id="CD2-Zr-up1" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1724" y="1249"/>
+            <point key="canvasLocation" x="1724" y="1206.5"/>
         </scene>
-        <!--View Controller-->
+        <!--Donation-->
         <scene sceneID="lPK-1g-uGP">
             <objects>
-                <viewController id="rWp-Co-RrU" sceneMemberID="viewController">
+                <viewController title="Donation" identifier="DonationsVC" storyboardIdentifier="DonationsVC" id="rWp-Co-RrU" customClass="PreferencesVC" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="vFK-Vc-7T6">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="olj-cJ-o2F">
+                                <rect key="frame" x="20" y="20" width="410" height="260"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <clipView key="contentView" ambiguous="YES" id="ntN-E7-YJW">
+                                    <rect key="frame" x="1" y="0.0" width="408" height="259"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="vyK-Pt-7PQ" viewBased="YES" id="TbT-ij-Bqt">
+                                            <rect key="frame" x="0.0" y="0.0" width="408" height="236"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <size key="intercellSpacing" width="3" height="2"/>
+                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
+                                            <tableColumns>
+                                                <tableColumn identifier="" width="116" minWidth="40" maxWidth="1000" id="xXo-11-RhQ">
+                                                    <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                                    </tableHeaderCell>
+                                                    <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" title="Text Cell" id="xWP-RS-QMF">
+                                                        <font key="font" metaFont="system"/>
+                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                    <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                                    <prototypeCellViews>
+                                                        <tableCellView id="C4Z-EB-Np9">
+                                                            <rect key="frame" x="1" y="1" width="116" height="17"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <subviews>
+                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="r04-5B-eAK">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="116" height="17"/>
+                                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="gug-Ld-gvw">
+                                                                        <font key="font" metaFont="system"/>
+                                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                    </textFieldCell>
+                                                                </textField>
+                                                            </subviews>
+                                                            <connections>
+                                                                <outlet property="textField" destination="r04-5B-eAK" id="3CY-2d-6xP"/>
+                                                            </connections>
+                                                        </tableCellView>
+                                                    </prototypeCellViews>
+                                                </tableColumn>
+                                                <tableColumn identifier="" width="286" minWidth="40" maxWidth="1000" id="zDf-Vh-rWR">
+                                                    <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                                    </tableHeaderCell>
+                                                    <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" title="Text Cell" id="Qa6-7P-qpR">
+                                                        <font key="font" metaFont="system"/>
+                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                    <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                                    <prototypeCellViews>
+                                                        <tableCellView id="Lkj-QZ-4NJ">
+                                                            <rect key="frame" x="120" y="1" width="286" height="17"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <subviews>
+                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Wvw-1r-9ns">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="286" height="17"/>
+                                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="xR6-1J-S4T">
+                                                                        <font key="font" metaFont="system"/>
+                                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                    </textFieldCell>
+                                                                </textField>
+                                                            </subviews>
+                                                            <connections>
+                                                                <outlet property="textField" destination="Wvw-1r-9ns" id="sEs-cb-8qk"/>
+                                                            </connections>
+                                                        </tableCellView>
+                                                    </prototypeCellViews>
+                                                </tableColumn>
+                                            </tableColumns>
+                                        </tableView>
+                                    </subviews>
+                                </clipView>
+                                <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="f3C-Iw-BDn">
+                                    <rect key="frame" x="1" y="8" width="0.0" height="15"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                                <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="obS-tH-vbo">
+                                    <rect key="frame" x="224" y="17" width="15" height="102"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </scroller>
+                                <tableHeaderView key="headerView" id="vyK-Pt-7PQ">
+                                    <rect key="frame" x="0.0" y="0.0" width="408" height="23"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableHeaderView>
+                            </scrollView>
+                        </subviews>
                     </view>
                 </viewController>
                 <customObject id="S14-PJ-KOq" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -1077,4 +1191,8 @@ Tag your document and save  it:</string>
             <point key="canvasLocation" x="75" y="1123"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="NSInfo" width="32" height="32"/>
+        <image name="NSPreferencesGeneral" width="32" height="32"/>
+    </resources>
 </document>

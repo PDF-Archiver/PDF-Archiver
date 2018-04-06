@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A307BB372014B8530046C391 /* PrefsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A307BB362014B8530046C391 /* PrefsViewController.swift */; };
+		A307BB372014B8530046C391 /* MainPreferencesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A307BB362014B8530046C391 /* MainPreferencesVC.swift */; };
 		A307BB3B2014D5300046C391 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = A307BB3A2014D5300046C391 /* Preferences.swift */; };
 		A31B52EA1FF694B0007A3D14 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B52E91FF694B0007A3D14 /* AppDelegate.swift */; };
 		A31B52EC1FF694B0007A3D14 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B52EB1FF694B0007A3D14 /* ViewController.swift */; };
@@ -21,11 +21,13 @@
 		A347FAD72041ACBE001A7925 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A347FAD92041ACBE001A7925 /* Localizable.strings */; };
 		A359963F202A3CC700CDD6E8 /* MyWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A359963E202A3CC700CDD6E8 /* MyWindow.swift */; };
 		A359E4B7202C376E00A703AF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A359E4B9202C376E00A703AF /* InfoPlist.strings */; };
+		A36B47C02077DA4D00F3DCAF /* DonationPreferencesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36B47BF2077DA4D00F3DCAF /* DonationPreferencesVC.swift */; };
 		A38A58AB1FFFA72D003F0573 /* WindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38A58AA1FFFA72D003F0573 /* WindowController.swift */; };
 		A38F4911206952AD00B8164A /* PreferencesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38F4910206952AD00B8164A /* PreferencesTests.swift */; };
 		A38F4913206955F600B8164A /* DataModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38F4912206955F600B8164A /* DataModelTests.swift */; };
 		A3A4C1C12015177A008BB354 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3A4C1C02015177A008BB354 /* Helpers.swift */; };
 		A3A6964C202F91E500AB85C9 /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3A6964B202F91E500AB85C9 /* Layout.swift */; };
+		A3C3D06D207744E400E80B1A /* PreferencesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3C3D06C207744E400E80B1A /* PreferencesVC.swift */; };
 		A3F5BC912019BAA70043B192 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F5BC902019BAA70043B192 /* Document.swift */; };
 		A3FC0DA0201B054A0082CD2A /* ViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC0D9F201B054A0082CD2A /* ViewControllerExtension.swift */; };
 		A3FC0DA4201B05F10082CD2A /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC0DA3201B05F10082CD2A /* DataModel.swift */; };
@@ -49,7 +51,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		A307BB362014B8530046C391 /* PrefsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrefsViewController.swift; sourceTree = "<group>"; };
+		A307BB362014B8530046C391 /* MainPreferencesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPreferencesVC.swift; sourceTree = "<group>"; };
 		A307BB3A2014D5300046C391 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		A31B52E61FF694B0007A3D14 /* PDF Archiver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "PDF Archiver.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A31B52E91FF694B0007A3D14 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -73,12 +75,14 @@
 		A359963E202A3CC700CDD6E8 /* MyWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyWindow.swift; sourceTree = "<group>"; };
 		A359E4B8202C376E00A703AF /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		A359E4BA202C377800A703AF /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		A36B47BF2077DA4D00F3DCAF /* DonationPreferencesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonationPreferencesVC.swift; sourceTree = "<group>"; };
 		A38A58AA1FFFA72D003F0573 /* WindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowController.swift; sourceTree = "<group>"; };
 		A38F4910206952AD00B8164A /* PreferencesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesTests.swift; sourceTree = "<group>"; };
 		A38F4912206955F600B8164A /* DataModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModelTests.swift; sourceTree = "<group>"; };
 		A3A4C1C02015177A008BB354 /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		A3A4C1C22015381F008BB354 /* PDF Archiver.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "PDF Archiver.entitlements"; sourceTree = "<group>"; };
 		A3A6964B202F91E500AB85C9 /* Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
+		A3C3D06C207744E400E80B1A /* PreferencesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesVC.swift; sourceTree = "<group>"; };
 		A3F48CF32054844000FCA566 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Main.strings; sourceTree = "<group>"; };
 		A3F5BC902019BAA70043B192 /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
 		A3FC0D9F201B054A0082CD2A /* ViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerExtension.swift; sourceTree = "<group>"; };
@@ -142,7 +146,9 @@
 				A31B52E91FF694B0007A3D14 /* AppDelegate.swift */,
 				A31B52EB1FF694B0007A3D14 /* ViewController.swift */,
 				A3FC0D9F201B054A0082CD2A /* ViewControllerExtension.swift */,
-				A307BB362014B8530046C391 /* PrefsViewController.swift */,
+				A3C3D06C207744E400E80B1A /* PreferencesVC.swift */,
+				A307BB362014B8530046C391 /* MainPreferencesVC.swift */,
+				A36B47BF2077DA4D00F3DCAF /* DonationPreferencesVC.swift */,
 				A32A128220468A3000CFC81F /* OnboardingViewController.swift */,
 				A38A58AA1FFFA72D003F0573 /* WindowController.swift */,
 				A31B52ED1FF694B0007A3D14 /* Assets.xcassets */,
@@ -378,11 +384,13 @@
 				A32A128320468A3000CFC81F /* OnboardingViewController.swift in Sources */,
 				A3A4C1C12015177A008BB354 /* Helpers.swift in Sources */,
 				A3FC0DA4201B05F10082CD2A /* DataModel.swift in Sources */,
-				A307BB372014B8530046C391 /* PrefsViewController.swift in Sources */,
+				A307BB372014B8530046C391 /* MainPreferencesVC.swift in Sources */,
 				A3A6964C202F91E500AB85C9 /* Layout.swift in Sources */,
 				A3FC0DA0201B054A0082CD2A /* ViewControllerExtension.swift in Sources */,
 				A31B53171FF6A6D8007A3D14 /* FileHandling.swift in Sources */,
+				A36B47C02077DA4D00F3DCAF /* DonationPreferencesVC.swift in Sources */,
 				A31B52EA1FF694B0007A3D14 /* AppDelegate.swift in Sources */,
+				A3C3D06D207744E400E80B1A /* PreferencesVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

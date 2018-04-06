@@ -12,9 +12,15 @@ import os.log
 extension ViewController {
     // MARK: - segue stuff
     override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
-        // preferences view controller delegate
-        if let prefsViewController = segue.destinationController as? PrefsViewController {
-            prefsViewController.delegate = self
+        guard let tabViewController = segue.destinationController
+            as? NSTabViewController else { return }
+
+        for controller in tabViewController.childViewControllers {
+            // TODO: add here all the over view controllers
+            print(controller.identifier)
+            if let controller = controller as? MainPreferencesVC {
+                controller.delegate = self
+            }
         }
     }
 
@@ -236,7 +242,7 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
     }
 }
 
-extension ViewController: PrefsViewControllerDelegate {
+extension ViewController: PreferencesDelegate {
     func updateGUI() {
         self.updateView(updatePDF: true)
     }

@@ -8,15 +8,9 @@
 
 import Cocoa
 
-protocol PrefsViewControllerDelegate: class {
-    func updateGUI()
-    func setDataModel(dataModel: DataModel)
-    func getDataModel() -> DataModel
-}
-
-class PrefsViewController: NSViewController {
+class MainPreferencesVC: PreferencesVC {
     var dataModel: DataModel?
-    weak var delegate: PrefsViewControllerDelegate?
+    weak var delegate: PreferencesDelegate?
 
     @IBOutlet weak var archivePathTextField: NSTextField!
 
@@ -59,15 +53,10 @@ class PrefsViewController: NSViewController {
         }
     }
 
-    override func viewWillAppear() {
-        self.view.window?.titleVisibility = NSWindow.TitleVisibility.hidden
-        self.view.window?.titlebarAppearsTransparent = true
-        self.view.window?.styleMask.remove(.resizable)
-        self.view.window?.styleMask.insert(.fullSizeContentView)
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        // get the data model from the main view controller
         self.dataModel = self.delegate?.getDataModel()
 
         // update path field
