@@ -208,11 +208,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A31B530C1FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "PDF Archiver" */;
 			buildPhases = (
+				A349C8212064E187002633A7 /* BartyCrouch */,
+				A389987A2025078D00C34E0B /* SwiftLint */,
 				A31B52E21FF694B0007A3D14 /* Sources */,
 				A31B52E31FF694B0007A3D14 /* Frameworks */,
 				A31B52E41FF694B0007A3D14 /* Resources */,
-				A389987A2025078D00C34E0B /* SwiftLint */,
-				A349C8212064E187002633A7 /* BartyCrouch */,
 			);
 			buildRules = (
 			);
