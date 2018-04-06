@@ -369,13 +369,15 @@ Tag your document and save  it:</string>
         <!--Tab View Controller-->
         <scene sceneID="5cQ-vG-Wp6">
             <objects>
-                <tabViewController selectedTabViewItemIndex="0" tabStyle="toolbar" id="ZqG-df-vaR" sceneMemberID="viewController">
+                <tabViewController identifier="PreferencesTabVC" storyboardIdentifier="PreferencesTabVC" selectedTabViewItemIndex="0" tabStyle="toolbar" id="ZqG-df-vaR" sceneMemberID="viewController">
                     <tabViewItems>
-                        <tabViewItem identifier="PreferencesTabViewItem" image="NSPreferencesGeneral" id="XBq-Fl-zZt">
+                        <tabViewItem identifier="PreferencesTabViewItem" image="NSPreferencesGeneral" id="XBq-Fl-zZt" userLabel="Main">
                             <nil key="label"/>
+                            <accessibility description="Main preferences panel"/>
                         </tabViewItem>
-                        <tabViewItem identifier="DonationTabViewItem" image="NSInfo" id="qZa-Lf-ldb">
+                        <tabViewItem identifier="DonationTabViewItem" image="NSInfo" id="qZa-Lf-ldb" userLabel="Donation">
                             <nil key="label"/>
+                            <accessibility description="Donation preferences tab"/>
                         </tabViewItem>
                     </tabViewItems>
                     <viewControllerTransitionOptions key="transitionOptions" allowUserInteraction="YES"/>
@@ -400,20 +402,20 @@ Tag your document and save  it:</string>
         <!--Preferences-->
         <scene sceneID="2JL-n5-vHk">
             <objects>
-                <viewController title="Preferences" identifier="PreferencesVC" storyboardIdentifier="PreferencesVC" id="emn-JX-zbO" customClass="MainPreferencesVC" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" identifier="PreferencesVC" id="7f8-kJ-SDe">
-                        <rect key="frame" x="0.0" y="0.0" width="650" height="192"/>
+                <viewController title="Preferences" identifier="MainPreferencesVC" storyboardIdentifier="MainPreferencesVC" id="emn-JX-zbO" customClass="MainPreferencesVC" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="7f8-kJ-SDe">
+                        <rect key="frame" x="0.0" y="0.0" width="750" height="144"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="uzI-d8-kcx">
-                                <rect key="frame" x="75" y="116" width="500" height="32"/>
+                                <rect key="frame" x="230" y="82" width="500" height="32"/>
                                 <subviews>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="X5U-R0-ENH">
                                         <rect key="frame" x="5" y="5" width="410" height="22"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="lessThanOrEqual" constant="415" id="2D3-PF-R3G"/>
                                         </constraints>
-                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="Please set the archive path ..." drawsBackground="YES" usesSingleLineMode="YES" id="gtQ-4r-22c">
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="Please set the archive path …" drawsBackground="YES" usesSingleLineMode="YES" id="gtQ-4r-22c">
                                             <font key="font" metaFont="system"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -425,7 +427,7 @@ Tag your document and save  it:</string>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="lessThanOrEqual" constant="75" id="Awi-kL-hDJ"/>
                                         </constraints>
-                                        <buttonCell key="cell" type="push" title="Change" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="XbB-C4-8qz">
+                                        <buttonCell key="cell" type="push" title="Change …" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="XbB-C4-8qz">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
@@ -444,17 +446,18 @@ Tag your document and save  it:</string>
                                     <constraint firstItem="8RK-0V-cYr" firstAttribute="leading" secondItem="X5U-R0-ENH" secondAttribute="trailing" constant="5" id="Tw4-O1-ILT"/>
                                     <constraint firstAttribute="width" constant="500" id="eO5-MK-HuK"/>
                                     <constraint firstAttribute="trailing" secondItem="8RK-0V-cYr" secondAttribute="trailing" constant="5" id="nnl-3U-dRd"/>
+                                    <constraint firstAttribute="height" constant="32" id="ubv-rm-W5h"/>
                                 </constraints>
                             </customView>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="SUD-Bv-plx">
-                                <rect key="frame" x="75" y="30" width="500" height="32"/>
+                                <rect key="frame" x="230" y="30" width="500" height="32"/>
                                 <subviews>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hB8-Fa-RBW">
                                         <rect key="frame" x="5" y="5" width="410" height="22"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="lessThanOrEqual" constant="415" id="3gU-La-gkQ"/>
                                         </constraints>
-                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="Please set the observed path ..." drawsBackground="YES" usesSingleLineMode="YES" id="hox-RC-83t">
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="Please set the observed path …" drawsBackground="YES" usesSingleLineMode="YES" id="hox-RC-83t">
                                             <font key="font" metaFont="system"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -466,7 +469,7 @@ Tag your document and save  it:</string>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="lessThanOrEqual" constant="75" id="vmo-RG-djZ"/>
                                         </constraints>
-                                        <buttonCell key="cell" type="push" title="Change" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="obQ-RK-Zgm">
+                                        <buttonCell key="cell" type="push" title="Change …" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="obQ-RK-Zgm">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
@@ -479,6 +482,7 @@ Tag your document and save  it:</string>
                                     <constraint firstItem="YTa-3I-7A5" firstAttribute="baseline" secondItem="hB8-Fa-RBW" secondAttribute="baseline" id="BJ6-8P-tgc"/>
                                     <constraint firstItem="hB8-Fa-RBW" firstAttribute="top" secondItem="SUD-Bv-plx" secondAttribute="top" constant="5" id="I1s-An-jVE"/>
                                     <constraint firstAttribute="width" constant="500" id="JT9-Zx-tU9"/>
+                                    <constraint firstAttribute="height" constant="32" id="Mg4-BD-Y1T"/>
                                     <constraint firstItem="YTa-3I-7A5" firstAttribute="leading" secondItem="hB8-Fa-RBW" secondAttribute="trailing" constant="5" id="NwG-zp-RLw"/>
                                     <constraint firstAttribute="trailing" secondItem="YTa-3I-7A5" secondAttribute="trailing" constant="5" id="OIe-PA-XH9"/>
                                     <constraint firstItem="YTa-3I-7A5" firstAttribute="leading" secondItem="hB8-Fa-RBW" secondAttribute="trailing" constant="5" id="P2N-0C-RF2"/>
@@ -487,17 +491,17 @@ Tag your document and save  it:</string>
                                     <constraint firstItem="hB8-Fa-RBW" firstAttribute="leading" secondItem="SUD-Bv-plx" secondAttribute="leading" constant="5" id="lhz-9j-tji"/>
                                 </constraints>
                             </customView>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PTW-ce-MNP">
-                                <rect key="frame" x="73" y="153" width="504" height="19"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Archive Path:" id="Ju7-wj-fHp">
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="RAD-9s-bE4">
+                                <rect key="frame" x="18" y="37" width="209" height="19"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Observed Folder:" id="z8O-Wh-LiY">
                                     <font key="font" metaFont="systemSemibold" size="15"/>
                                     <color key="textColor" red="0.79329520460000003" green="0.25477233529999999" blue="0.30978807809999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="RAD-9s-bE4">
-                                <rect key="frame" x="73" y="67" width="504" height="19"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Observed Folder:" id="z8O-Wh-LiY">
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PTW-ce-MNP">
+                                <rect key="frame" x="18" y="88" width="209" height="19"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Archive Path:" id="Ju7-wj-fHp">
                                     <font key="font" metaFont="systemSemibold" size="15"/>
                                     <color key="textColor" red="0.79329520460000003" green="0.25477233529999999" blue="0.30978807809999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -505,21 +509,17 @@ Tag your document and save  it:</string>
                             </textField>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="SUD-Bv-plx" firstAttribute="leading" secondItem="7f8-kJ-SDe" secondAttribute="leading" constant="75" id="3c7-4L-EgB"/>
-                            <constraint firstItem="PTW-ce-MNP" firstAttribute="top" secondItem="7f8-kJ-SDe" secondAttribute="top" constant="20" id="68w-JE-Uni"/>
-                            <constraint firstAttribute="trailing" secondItem="RAD-9s-bE4" secondAttribute="trailing" constant="75" id="6oG-Ra-P2S"/>
-                            <constraint firstItem="uzI-d8-kcx" firstAttribute="top" secondItem="PTW-ce-MNP" secondAttribute="bottom" constant="5" id="L1D-R9-RvH"/>
-                            <constraint firstItem="uzI-d8-kcx" firstAttribute="top" secondItem="PTW-ce-MNP" secondAttribute="bottom" constant="5" id="MT7-cg-pFI"/>
-                            <constraint firstItem="RAD-9s-bE4" firstAttribute="leading" secondItem="7f8-kJ-SDe" secondAttribute="leading" constant="75" id="OFB-nP-20K"/>
-                            <constraint firstItem="SUD-Bv-plx" firstAttribute="top" secondItem="RAD-9s-bE4" secondAttribute="bottom" constant="5" id="T21-eW-b8d"/>
-                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="PTW-ce-MNP" secondAttribute="trailing" constant="20" symbolic="YES" id="TSh-xp-XHX"/>
-                            <constraint firstAttribute="bottom" secondItem="SUD-Bv-plx" secondAttribute="bottom" constant="30" id="lJV-XB-xlE"/>
-                            <constraint firstAttribute="trailing" secondItem="uzI-d8-kcx" secondAttribute="trailing" constant="75" id="lUN-sj-tGe"/>
-                            <constraint firstItem="RAD-9s-bE4" firstAttribute="top" secondItem="uzI-d8-kcx" secondAttribute="bottom" constant="30" id="oV0-73-ET0"/>
-                            <constraint firstItem="uzI-d8-kcx" firstAttribute="width" secondItem="PTW-ce-MNP" secondAttribute="width" id="pRl-7r-77F"/>
-                            <constraint firstItem="uzI-d8-kcx" firstAttribute="leading" secondItem="7f8-kJ-SDe" secondAttribute="leading" constant="75" id="sLi-gy-Van"/>
-                            <constraint firstAttribute="trailing" secondItem="SUD-Bv-plx" secondAttribute="trailing" constant="75" id="toq-8r-x08"/>
-                            <constraint firstItem="PTW-ce-MNP" firstAttribute="leading" secondItem="7f8-kJ-SDe" secondAttribute="leading" constant="75" id="xoi-Bm-eHA"/>
+                            <constraint firstItem="uzI-d8-kcx" firstAttribute="top" secondItem="7f8-kJ-SDe" secondAttribute="top" constant="30" id="HFR-WV-tTj"/>
+                            <constraint firstItem="SUD-Bv-plx" firstAttribute="leading" secondItem="RAD-9s-bE4" secondAttribute="trailing" constant="5" id="JsF-Sm-h8L"/>
+                            <constraint firstItem="RAD-9s-bE4" firstAttribute="leading" secondItem="7f8-kJ-SDe" secondAttribute="leading" constant="20" id="Ol6-GQ-hNM"/>
+                            <constraint firstAttribute="trailing" secondItem="uzI-d8-kcx" secondAttribute="trailing" constant="20" id="bZD-PE-gH2"/>
+                            <constraint firstItem="SUD-Bv-plx" firstAttribute="top" secondItem="uzI-d8-kcx" secondAttribute="bottom" constant="20" id="ckc-HB-VlC"/>
+                            <constraint firstItem="uzI-d8-kcx" firstAttribute="leading" secondItem="PTW-ce-MNP" secondAttribute="trailing" constant="5" id="eOC-v3-PHZ"/>
+                            <constraint firstItem="PTW-ce-MNP" firstAttribute="leading" secondItem="7f8-kJ-SDe" secondAttribute="leading" constant="20" id="mul-3V-Jqn"/>
+                            <constraint firstAttribute="trailing" secondItem="SUD-Bv-plx" secondAttribute="trailing" constant="20" id="pt1-dx-qPJ"/>
+                            <constraint firstAttribute="bottom" secondItem="SUD-Bv-plx" secondAttribute="bottom" constant="30" id="q9P-2K-gkv"/>
+                            <constraint firstItem="SUD-Bv-plx" firstAttribute="centerY" secondItem="RAD-9s-bE4" secondAttribute="centerY" id="rwf-Yo-v1C"/>
+                            <constraint firstItem="uzI-d8-kcx" firstAttribute="centerY" secondItem="PTW-ce-MNP" secondAttribute="centerY" id="yw6-wl-vc1"/>
                         </constraints>
                     </view>
                     <connections>
@@ -529,12 +529,12 @@ Tag your document and save  it:</string>
                 </viewController>
                 <customObject id="CD2-Zr-up1" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1724" y="1206.5"/>
+            <point key="canvasLocation" x="1774" y="1205.5"/>
         </scene>
         <!--Donation-->
         <scene sceneID="lPK-1g-uGP">
             <objects>
-                <viewController title="Donation" identifier="DonationsVC" storyboardIdentifier="DonationsVC" id="rWp-Co-RrU" customClass="PreferencesVC" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Donation" identifier="DonationsVC" storyboardIdentifier="DonationsVC" id="rWp-Co-RrU" customClass="DonationPreferencesVC" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="vFK-Vc-7T6">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -703,7 +703,7 @@ Tag your document and save  it:</string>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jfD-0d-UT9">
                                                                             <rect key="frame" x="0.0" y="0.0" width="40" height="17"/>
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                                                            <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="center" title="Table View Cell" id="zWE-Hy-4ww">
+                                                                            <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="center" title="✔️" id="zWE-Hy-4ww">
                                                                                 <font key="font" metaFont="system"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -743,7 +743,7 @@ Tag your document and save  it:</string>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aJU-La-j8P">
                                                                             <rect key="frame" x="0.0" y="0.0" width="322" height="17"/>
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                                                            <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="DzD-Dn-zMP">
+                                                                            <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Document1" id="DzD-Dn-zMP">
                                                                                 <font key="font" metaFont="system"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>

@@ -107,8 +107,8 @@
 /* Class = "NSTextField"; ibShadowedToolTip = "description of the document"; ObjectID = "WG2-MH-TVV"; */
 "WG2-MH-TVV.ibShadowedToolTip" = "Beschreibung des Dokumentes";
 
-/* Class = "NSButtonCell"; title = "Change"; ObjectID = "XbB-C4-8qz"; */
-"XbB-C4-8qz.title" = "Ändern";
+/* Class = "NSButtonCell"; title = "Change …"; ObjectID = "XbB-C4-8qz"; */
+"XbB-C4-8qz.title" = "Ändern …";
 
 /* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "Zdh-HQ-s5r"; */
 "Zdh-HQ-s5r.title" = "Text Cell";
@@ -137,8 +137,8 @@
 /* Class = "NSTextFieldCell"; ibExternalAccessibilityHelp = "Archive Path"; ObjectID = "gtQ-4r-22c"; */
 "gtQ-4r-22c.ibExternalAccessibilityHelp" = "Archiv Pfad";
 
-/* Class = "NSTextFieldCell"; placeholderString = "Please set the archive path ..."; ObjectID = "gtQ-4r-22c"; */
-"gtQ-4r-22c.placeholderString" = "Bitte Archiv Pfad setzen  ...";
+/* Class = "NSTextFieldCell"; placeholderString = "Please set the archive path …"; ObjectID = "gtQ-4r-22c"; */
+"gtQ-4r-22c.placeholderString" = "Bitte Archiv Pfad setzen …";
 
 /* Class = "NSTextFieldCell"; title = "⌘ o"; ObjectID = "m4z-q1-wQ4"; */
 "m4z-q1-wQ4.title" = "⌘ o";
@@ -164,7 +164,7 @@
 /* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "1KI-Am-9H9"; */
 "1KI-Am-9H9.title" = "Text Eintrag";
 
-/* Class = "NSTextFieldCell"; title = "Table View Cell"; ObjectID = "DzD-Dn-zMP"; */
+/* Class = "NSTextFieldCell"; title = "Document1"; ObjectID = "DzD-Dn-zMP"; */
 "DzD-Dn-zMP.title" = "Text Eintrag";
 
 /* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "Lpy-0t-1Kb"; */
@@ -172,9 +172,6 @@
 
 /* Class = "NSTableColumn"; headerCell.title = "Document"; ObjectID = "t5i-OA-mho"; */
 "t5i-OA-mho.headerCell.title" = "Dokument";
-
-/* Class = "NSTextFieldCell"; title = "Table View Cell"; ObjectID = "zWE-Hy-4ww"; */
-"zWE-Hy-4ww.title" = "Text Eintrag";
 
 /* Class = "NSSearchField"; ibShadowedToolTip = "Tag input; press return key to add it to the document attributes"; ObjectID = "WfD-Nd-kM0"; */
 "WfD-Nd-kM0.ibShadowedToolTip" = "Tag eingeben und mit Return Taste zu Dokument Attributen hinzufügen";
@@ -215,11 +212,11 @@
 /* Class = "NSTextFieldCell"; ibExternalAccessibilityHelp = "Observed Path"; ObjectID = "hox-RC-83t"; */
 "hox-RC-83t.ibExternalAccessibilityHelp" = "Überwachter Ordner";
 
-/* Class = "NSTextFieldCell"; placeholderString = "Please set the observed path ..."; ObjectID = "hox-RC-83t"; */
-"hox-RC-83t.placeholderString" = "Bitte überwachten Pfad setzen  ...";
+/* Class = "NSTextFieldCell"; placeholderString = "Please set the observed path …"; ObjectID = "hox-RC-83t"; */
+"hox-RC-83t.placeholderString" = "Bitte überwachten Pfad setzen …";
 
-/* Class = "NSButtonCell"; title = "Change"; ObjectID = "obQ-RK-Zgm"; */
-"obQ-RK-Zgm.title" = "Ändern";
+/* Class = "NSButtonCell"; title = "Change …"; ObjectID = "obQ-RK-Zgm"; */
+"obQ-RK-Zgm.title" = "Ändern …";
 
 /* Class = "NSTextFieldCell"; title = "Observed Folder:"; ObjectID = "z8O-Wh-LiY"; */
 "z8O-Wh-LiY.title" = "Überwachter Ordner";
@@ -262,3 +259,12 @@
 
 /* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "xWP-RS-QMF"; */
 "xWP-RS-QMF.title" = "Text Eintrag";
+
+/* Class = "NSTextFieldCell"; title = "✔️"; ObjectID = "zWE-Hy-4ww"; */
+"zWE-Hy-4ww.title" = "✔️";
+
+/* Class = "NSTabViewItem"; ibExternalAccessibilityDescription = "Main preferences panel"; ObjectID = "XBq-Fl-zZt"; */
+"XBq-Fl-zZt.ibExternalAccessibilityDescription" = "Hauptseite der Einstellungen";
+
+/* Class = "NSTabViewItem"; ibExternalAccessibilityDescription = "Donation preferences tab"; ObjectID = "qZa-Lf-ldb"; */
+"qZa-Lf-ldb.ibExternalAccessibilityDescription" = "Spendenseite der Einstellungen";

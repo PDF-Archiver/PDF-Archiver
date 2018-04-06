@@ -17,7 +17,6 @@ extension ViewController {
 
         for controller in tabViewController.childViewControllers {
             // TODO: add here all the over view controllers
-            print(controller.identifier)
             if let controller = controller as? MainPreferencesVC {
                 controller.delegate = self
             }
