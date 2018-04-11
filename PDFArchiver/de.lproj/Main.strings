@@ -248,18 +248,6 @@
 /* Class = "NSViewController"; title = "Donation"; ObjectID = "rWp-Co-RrU"; */
 "rWp-Co-RrU.title" = "Spenden";
 
-/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "Qa6-7P-qpR"; */
-"Qa6-7P-qpR.title" = "Text Eintrag";
-
-/* Class = "NSTextFieldCell"; title = "Table View Cell"; ObjectID = "gug-Ld-gvw"; */
-"gug-Ld-gvw.title" = "Text Eintrag";
-
-/* Class = "NSTextFieldCell"; title = "Table View Cell"; ObjectID = "xR6-1J-S4T"; */
-"xR6-1J-S4T.title" = "Text Eintrag";
-
-/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "xWP-RS-QMF"; */
-"xWP-RS-QMF.title" = "Text Eintrag";
-
 /* Class = "NSTextFieldCell"; title = "✔️"; ObjectID = "zWE-Hy-4ww"; */
 "zWE-Hy-4ww.title" = "✔️";
 
@@ -268,3 +256,30 @@
 
 /* Class = "NSTabViewItem"; ibExternalAccessibilityDescription = "Donation preferences tab"; ObjectID = "qZa-Lf-ldb"; */
 "qZa-Lf-ldb.ibExternalAccessibilityDescription" = "Spendenseite der Einstellungen";
+
+/* Class = "NSTextFieldCell"; title = "Get tags:"; ObjectID = "Cvq-op-wAk"; */
+"Cvq-op-wAk.title" = "Hole Tags:";
+
+/* Class = "NSButtonCell"; title = "From all archive folders"; ObjectID = "k8C-2q-WjN"; */
+"k8C-2q-WjN.title" = "Alle Archiv Ordner";
+
+/* Class = "NSTextFieldCell"; title = "This may decrease the app speed for large archives."; ObjectID = "Tlv-Ku-QD7"; */
+"Tlv-Ku-QD7.title" = "Dies kann bei einem großen Archiv die Geschwindigkeit der App beeinflussen.";
+
+/* Class = "NSButtonCell"; title = "Button"; ObjectID = "dY2-A7-5th"; */
+"dY2-A7-5th.title" = "Button";
+
+/* Class = "NSTextFieldCell"; title = "One-Time"; ObjectID = "jRj-NL-KBJ"; */
+"jRj-NL-KBJ.title" = "Einmalig";
+
+/* Class = "NSButtonCell"; title = "Button"; ObjectID = "nXe-2w-oqh"; */
+"nXe-2w-oqh.title" = "Button";
+
+/* Class = "NSButtonCell"; title = "Button"; ObjectID = "ndf-3x-jdp"; */
+"ndf-3x-jdp.title" = "Button";
+
+/* Class = "NSTextFieldCell"; title = "Subscription"; ObjectID = "ylB-cg-cJ5"; */
+"ylB-cg-cJ5.title" = "Abo";
+
+/* Class = "NSButtonCell"; title = "Button"; ObjectID = "5JW-68-xh8"; */
+"5JW-68-xh8.title" = "Button";

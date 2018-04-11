@@ -7,12 +7,35 @@
 //
 
 import Cocoa
+import StoreKit
 
 class DonationPreferencesVC: PreferencesVC {
+    var dataModel: DataModel?
+    weak var delegate: PreferencesDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do view setup here.
+
+        // get the data model from the main view controller
+        self.dataModel = self.delegate?.getDataModel()
+
+        // update path field
+        self.dataModel?.prefs.load()
+//        if let archivePath = self.dataModel?.prefs.archivePath {
+//            self.archivePathTextField.stringValue = archivePath.path
+//        }
+//        if let observedPath = self.dataModel?.prefs.observedPath {
+//            self.observedPathTextField.stringValue = observedPath.path
+//        }
     }
 
+    override func viewWillDisappear() {
+        // save the current paths + tags
+        self.dataModel?.prefs.save()
+
+        // update the data model of the main view controller
+        if let dataModel = self.dataModel {
+            self.delegate?.setDataModel(dataModel: dataModel)
+        }
+    }
 }
