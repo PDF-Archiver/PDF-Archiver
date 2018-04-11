@@ -12,7 +12,7 @@ import Cocoa
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBAction func showHelp(_ sender: NSMenuItem) {
-        let helpURL = URL(string: "https://github.com/PDF-Archiver/PDF-Archiver/wiki/FAQs")
+        let helpURL = URL(string: "https://pdf-archiver.io/faq")
         NSWorkspace.shared.open(helpURL!)
     }
     @IBAction func showPreferences(_ sender: NSMenuItem) {
