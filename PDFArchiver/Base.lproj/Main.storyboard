@@ -738,9 +738,8 @@ Tag your document and save  it:</string>
                                                                     <rect key="frame" x="1" y="1" width="40" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
-                                                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jfD-0d-UT9">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="40" height="17"/>
-                                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="jfD-0d-UT9">
+                                                                            <rect key="frame" x="-2" y="0.0" width="44" height="17"/>
                                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="center" title="✔️" id="zWE-Hy-4ww">
                                                                                 <font key="font" metaFont="system"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -751,6 +750,12 @@ Tag your document and save  it:</string>
                                                                             </connections>
                                                                         </textField>
                                                                     </subviews>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="bottom" secondItem="jfD-0d-UT9" secondAttribute="bottom" id="Dsy-pe-cko"/>
+                                                                        <constraint firstItem="jfD-0d-UT9" firstAttribute="top" secondItem="XRF-wg-cG8" secondAttribute="top" id="HDx-1g-sbO"/>
+                                                                        <constraint firstItem="jfD-0d-UT9" firstAttribute="leading" secondItem="XRF-wg-cG8" secondAttribute="leading" id="Rss-bx-RjQ"/>
+                                                                        <constraint firstAttribute="trailing" secondItem="jfD-0d-UT9" secondAttribute="trailing" id="heD-3E-UJD"/>
+                                                                    </constraints>
                                                                     <connections>
                                                                         <outlet property="textField" destination="jfD-0d-UT9" id="6s3-5W-xT8"/>
                                                                     </connections>
@@ -778,9 +783,8 @@ Tag your document and save  it:</string>
                                                                     <rect key="frame" x="44" y="1" width="322" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
-                                                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aJU-La-j8P">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="322" height="17"/>
-                                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="aJU-La-j8P">
+                                                                            <rect key="frame" x="-2" y="0.0" width="326" height="17"/>
                                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Document1" id="DzD-Dn-zMP">
                                                                                 <font key="font" metaFont="system"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -791,6 +795,12 @@ Tag your document and save  it:</string>
                                                                             </connections>
                                                                         </textField>
                                                                     </subviews>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="trailing" secondItem="aJU-La-j8P" secondAttribute="trailing" id="Mqj-aB-Vyy"/>
+                                                                        <constraint firstAttribute="bottom" secondItem="aJU-La-j8P" secondAttribute="bottom" id="SJk-RM-0HG"/>
+                                                                        <constraint firstItem="aJU-La-j8P" firstAttribute="leading" secondItem="Ten-tg-2yw" secondAttribute="leading" id="TWl-9E-aXX"/>
+                                                                        <constraint firstItem="aJU-La-j8P" firstAttribute="top" secondItem="Ten-tg-2yw" secondAttribute="top" id="ZbI-je-XwO"/>
+                                                                    </constraints>
                                                                     <connections>
                                                                         <outlet property="textField" destination="aJU-La-j8P" id="TGp-YH-b2O"/>
                                                                     </connections>
@@ -899,9 +909,8 @@ Tag your document and save  it:</string>
                                                                     <rect key="frame" x="1" y="1" width="225" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
-                                                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RQx-fP-9gF">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="233" height="17"/>
-                                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="RQx-fP-9gF">
+                                                                            <rect key="frame" x="0.0" y="0.0" width="225" height="17"/>
                                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="mEm-YG-Iaa">
                                                                                 <font key="font" metaFont="system"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -912,6 +921,12 @@ Tag your document and save  it:</string>
                                                                             </connections>
                                                                         </textField>
                                                                     </subviews>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="trailing" secondItem="RQx-fP-9gF" secondAttribute="trailing" constant="2" id="0v6-OQ-XvC"/>
+                                                                        <constraint firstItem="RQx-fP-9gF" firstAttribute="leading" secondItem="x9B-kL-6Ub" secondAttribute="leading" constant="2" id="5NB-Lg-Xe0"/>
+                                                                        <constraint firstAttribute="bottom" secondItem="RQx-fP-9gF" secondAttribute="bottom" id="GnQ-AD-7oE"/>
+                                                                        <constraint firstItem="RQx-fP-9gF" firstAttribute="top" secondItem="x9B-kL-6Ub" secondAttribute="top" id="iMD-Gb-KMJ"/>
+                                                                    </constraints>
                                                                     <connections>
                                                                         <outlet property="textField" destination="RQx-fP-9gF" id="WVU-Ih-K45"/>
                                                                     </connections>
@@ -999,9 +1014,8 @@ Tag your document and save  it:</string>
                                                                     <rect key="frame" x="1" y="1" width="28" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
-                                                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nnY-wt-8cw">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="28" height="17"/>
-                                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="nnY-wt-8cw">
+                                                                            <rect key="frame" x="-2" y="0.0" width="32" height="17"/>
                                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="right" id="ZUy-OH-rod">
                                                                                 <font key="font" metaFont="system"/>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1012,6 +1026,12 @@ Tag your document and save  it:</string>
                                                                             </connections>
                                                                         </textField>
                                                                     </subviews>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="trailing" secondItem="nnY-wt-8cw" secondAttribute="trailing" id="Fk2-Vt-wcY"/>
+                                                                        <constraint firstAttribute="bottom" secondItem="nnY-wt-8cw" secondAttribute="bottom" id="NYz-ai-DF2"/>
+                                                                        <constraint firstItem="nnY-wt-8cw" firstAttribute="leading" secondItem="aAj-oT-fzK" secondAttribute="leading" id="RoT-iz-dVz"/>
+                                                                        <constraint firstItem="nnY-wt-8cw" firstAttribute="top" secondItem="aAj-oT-fzK" secondAttribute="top" id="dyA-hz-Jyz"/>
+                                                                    </constraints>
                                                                     <connections>
                                                                         <outlet property="textField" destination="nnY-wt-8cw" id="Kv4-PT-N6c"/>
                                                                     </connections>
@@ -1036,7 +1056,7 @@ Tag your document and save  it:</string>
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                    <rect key="frame" x="31.5" y="1" width="195" height="17"/>
+                                                                    <rect key="frame" x="32" y="1" width="195" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">
