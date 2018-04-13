@@ -20,8 +20,11 @@ class DataModel: TagsDelegate {
     var prefs = Preferences()
     var documents: [Document]
     var tags: Set<Tag>
+    var store: IAPHelper
 
     init() {
+        self.store = IAPHelper(productIds: Set(["SUBSCRIPTION_LEVEL1", "SUBSCRIPTION_LEVEL2"]))
+
         self.documents = []
         self.tags = []
         self.prefs.delegate = self as TagsDelegate

@@ -60,7 +60,6 @@ class MainPreferencesVC: PreferencesVC {
         self.dataModel = self.delegate?.getDataModel()
 
         // update path field
-        self.dataModel?.prefs.load()
         if let archivePath = self.dataModel?.prefs.archivePath {
             self.archivePathTextField.stringValue = archivePath.path
         }

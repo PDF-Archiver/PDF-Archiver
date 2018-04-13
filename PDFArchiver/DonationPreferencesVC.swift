@@ -9,24 +9,29 @@
 import Cocoa
 import StoreKit
 
+//public typealias ProductsRequestCompletionHandler = (_ success: Bool, _ products: [SKProduct]?) -> Void
+
 class DonationPreferencesVC: PreferencesVC {
+    @IBOutlet weak var subscriptionLevel1Button: NSButton!
     var dataModel: DataModel?
     weak var delegate: PreferencesDelegate?
+
+    var productsRequestCompletionHandler: ProductsRequestCompletionHandler?
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // get the data model from the main view controller
         self.dataModel = self.delegate?.getDataModel()
+    }
 
-        // update path field
-        self.dataModel?.prefs.load()
-//        if let archivePath = self.dataModel?.prefs.archivePath {
-//            self.archivePathTextField.stringValue = archivePath.path
+    @IBAction func subscriptionLevel1Clicked(_ sender: NSButton) {
+//        self.dataModel?.store.requestProducts {success, products in
+//            if success {
+//                print(products)
+//            }
 //        }
-//        if let observedPath = self.dataModel?.prefs.observedPath {
-//            self.observedPathTextField.stringValue = observedPath.path
-//        }
+        print(self.dataModel?.store.products)
     }
 
     override func viewWillDisappear() {

@@ -19,6 +19,8 @@ extension ViewController {
             // TODO: add here all the over view controllers
             if let controller = controller as? MainPreferencesVC {
                 controller.delegate = self
+            } else if let controller = controller as? DonationPreferencesVC {
+                controller.delegate = self
             }
         }
     }

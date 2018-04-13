@@ -4,6 +4,7 @@
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14109"/>
         <plugIn identifier="com.apple.pdfkit.ibplugin" version="14109"/>
+        <capability name="box content view" minToolsVersion="7.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
         <capability name="system font weights other than Regular or Bold" minToolsVersion="7.0"/>
     </dependencies>
@@ -404,11 +405,11 @@ Tag your document and save  it:</string>
             <objects>
                 <viewController title="Preferences" identifier="MainPreferencesVC" storyboardIdentifier="MainPreferencesVC" id="emn-JX-zbO" customClass="MainPreferencesVC" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="7f8-kJ-SDe">
-                        <rect key="frame" x="0.0" y="0.0" width="750" height="211"/>
+                        <rect key="frame" x="0.0" y="0.0" width="696" height="211"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="uzI-d8-kcx">
-                                <rect key="frame" x="230" y="149" width="500" height="32"/>
+                                <rect key="frame" x="176" y="149" width="500" height="32"/>
                                 <subviews>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="X5U-R0-ENH">
                                         <rect key="frame" x="5" y="5" width="410" height="22"/>
@@ -450,7 +451,7 @@ Tag your document and save  it:</string>
                                 </constraints>
                             </customView>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="SUD-Bv-plx">
-                                <rect key="frame" x="230" y="97" width="500" height="32"/>
+                                <rect key="frame" x="176" y="97" width="500" height="32"/>
                                 <subviews>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hB8-Fa-RBW">
                                         <rect key="frame" x="5" y="5" width="410" height="22"/>
@@ -492,7 +493,7 @@ Tag your document and save  it:</string>
                                 </constraints>
                             </customView>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="RAD-9s-bE4">
-                                <rect key="frame" x="18" y="104" width="209" height="19"/>
+                                <rect key="frame" x="18" y="104" width="155" height="19"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Observed Folder:" id="z8O-Wh-LiY">
                                     <font key="font" metaFont="systemSemibold" size="15"/>
                                     <color key="textColor" red="0.79329520460000003" green="0.25477233529999999" blue="0.30978807809999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
@@ -500,7 +501,7 @@ Tag your document and save  it:</string>
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Aga-Jg-klC">
-                                <rect key="frame" x="18" y="58" width="209" height="19"/>
+                                <rect key="frame" x="18" y="58" width="155" height="19"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Get tags:" id="Cvq-op-wAk">
                                     <font key="font" metaFont="systemSemibold" size="15"/>
                                     <color key="textColor" red="0.79329520460000003" green="0.25477233529999999" blue="0.30978807809999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
@@ -508,7 +509,7 @@ Tag your document and save  it:</string>
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PTW-ce-MNP">
-                                <rect key="frame" x="18" y="155" width="209" height="19"/>
+                                <rect key="frame" x="18" y="155" width="155" height="19"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Archive Path:" id="Ju7-wj-fHp">
                                     <font key="font" metaFont="systemSemibold" size="15"/>
                                     <color key="textColor" red="0.79329520460000003" green="0.25477233529999999" blue="0.30978807809999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
@@ -516,7 +517,7 @@ Tag your document and save  it:</string>
                                 </textFieldCell>
                             </textField>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="VjG-iv-1c7">
-                                <rect key="frame" x="230" y="30" width="500" height="47"/>
+                                <rect key="frame" x="176" y="30" width="500" height="47"/>
                                 <subviews>
                                     <button verticalHuggingPriority="750" springLoaded="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PpK-o3-Nnb">
                                         <rect key="frame" x="4" y="25" width="493" height="19"/>
@@ -574,72 +575,111 @@ Tag your document and save  it:</string>
                 </viewController>
                 <customObject id="CD2-Zr-up1" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1774" y="1222.5"/>
+            <point key="canvasLocation" x="1747" y="1295.5"/>
         </scene>
         <!--Donation-->
         <scene sceneID="lPK-1g-uGP">
             <objects>
                 <viewController title="Donation" identifier="DonationsVC" storyboardIdentifier="DonationsVC" id="rWp-Co-RrU" customClass="DonationPreferencesVC" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="vFK-Vc-7T6">
-                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                        <rect key="frame" x="0.0" y="0.0" width="490" height="193"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ara-lf-gvp">
-                                <rect key="frame" x="18" y="263" width="414" height="17"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="One-Time" id="jRj-NL-KBJ">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Eeg-DK-Xip">
-                                <rect key="frame" x="18" y="110" width="412" height="17"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Subscription" id="ylB-cg-cJ5">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pjt-37-tlz">
-                                <rect key="frame" x="14" y="227" width="189" height="32"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <buttonCell key="cell" type="push" title="Button" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="dY2-A7-5th">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                            </button>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OLw-Bf-fGp">
-                                <rect key="frame" x="14" y="194" width="189" height="32"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <buttonCell key="cell" type="push" title="Button" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="5JW-68-xh8">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                            </button>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Zkb-C5-cZI">
-                                <rect key="frame" x="14" y="161" width="189" height="32"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <buttonCell key="cell" type="push" title="Button" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ndf-3x-jdp">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                            </button>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5gc-Ox-MzG">
-                                <rect key="frame" x="14" y="74" width="189" height="32"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <buttonCell key="cell" type="push" title="Button" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="nXe-2w-oqh">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                            </button>
+                            <box autoresizesSubviews="NO" borderType="line" title="One-Time" translatesAutoresizingMaskIntoConstraints="NO" id="alz-A4-A8z">
+                                <rect key="frame" x="17" y="16" width="216" height="157"/>
+                                <view key="contentView" id="yc2-iU-djq">
+                                    <rect key="frame" x="1" y="1" width="214" height="135"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Zkb-C5-cZI">
+                                            <rect key="frame" x="9" y="13" width="196" height="39"/>
+                                            <buttonCell key="cell" type="push" title="Donate 5€" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ndf-3x-jdp">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                        </button>
+                                        <button verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="pjt-37-tlz">
+                                            <rect key="frame" x="9" y="92" width="196" height="32"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="21" id="bTt-g8-WKR"/>
+                                            </constraints>
+                                            <buttonCell key="cell" type="push" title="Donate 1€" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="dY2-A7-5th">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                        </button>
+                                        <button verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="OLw-Bf-fGp">
+                                            <rect key="frame" x="9" y="56" width="196" height="32"/>
+                                            <buttonCell key="cell" type="push" title="Donate 3€" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="5JW-68-xh8">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                        </button>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="OLw-Bf-fGp" firstAttribute="top" secondItem="pjt-37-tlz" secondAttribute="bottom" constant="15" id="0MQ-pj-tfO"/>
+                                        <constraint firstItem="pjt-37-tlz" firstAttribute="top" secondItem="yc2-iU-djq" secondAttribute="top" constant="15" id="2so-wU-c6L"/>
+                                        <constraint firstAttribute="trailing" secondItem="OLw-Bf-fGp" secondAttribute="trailing" constant="15" id="94X-mG-dTe"/>
+                                        <constraint firstItem="Zkb-C5-cZI" firstAttribute="leading" secondItem="yc2-iU-djq" secondAttribute="leading" constant="15" id="9YS-Kc-Q14"/>
+                                        <constraint firstItem="OLw-Bf-fGp" firstAttribute="leading" secondItem="yc2-iU-djq" secondAttribute="leading" constant="15" id="I3f-3Z-6XL"/>
+                                        <constraint firstAttribute="trailing" secondItem="pjt-37-tlz" secondAttribute="trailing" constant="15" id="OG8-WR-Wxd"/>
+                                        <constraint firstItem="Zkb-C5-cZI" firstAttribute="top" secondItem="OLw-Bf-fGp" secondAttribute="bottom" constant="15" id="UQP-7A-fOC"/>
+                                        <constraint firstItem="pjt-37-tlz" firstAttribute="leading" secondItem="yc2-iU-djq" secondAttribute="leading" constant="15" id="XoE-12-KZT"/>
+                                        <constraint firstAttribute="trailing" secondItem="Zkb-C5-cZI" secondAttribute="trailing" constant="15" id="aF4-bw-h7H"/>
+                                        <constraint firstAttribute="bottom" secondItem="Zkb-C5-cZI" secondAttribute="bottom" constant="20" id="ap0-ll-OQi"/>
+                                    </constraints>
+                                </view>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="210" id="xw7-Sr-0jQ"/>
+                                </constraints>
+                                <font key="titleFont" metaFont="systemSemibold" size="15"/>
+                            </box>
+                            <box autoresizesSubviews="NO" borderType="line" title="Subscription" translatesAutoresizingMaskIntoConstraints="NO" id="i7v-oz-zvL">
+                                <rect key="frame" x="257" y="16" width="216" height="157"/>
+                                <view key="contentView" id="R27-Hj-ORq">
+                                    <rect key="frame" x="1" y="1" width="214" height="135"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="5gc-Ox-MzG">
+                                            <rect key="frame" x="9" y="92" width="196" height="32"/>
+                                            <buttonCell key="cell" type="push" title="Year Subscription:" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="nXe-2w-oqh">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="subscriptionLevel1Clicked:" target="rWp-Co-RrU" id="KKr-fn-Tkp"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="5gc-Ox-MzG" firstAttribute="leading" secondItem="R27-Hj-ORq" secondAttribute="leading" constant="15" id="55w-PZ-OYk"/>
+                                        <constraint firstAttribute="trailing" secondItem="5gc-Ox-MzG" secondAttribute="trailing" constant="15" id="qET-c8-1ah"/>
+                                        <constraint firstItem="5gc-Ox-MzG" firstAttribute="top" secondItem="R27-Hj-ORq" secondAttribute="top" constant="15" id="vMM-ac-av3"/>
+                                    </constraints>
+                                </view>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="210" id="iIB-aU-3Zb"/>
+                                </constraints>
+                                <font key="titleFont" metaFont="systemSemibold" size="15"/>
+                            </box>
                         </subviews>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="i7v-oz-zvL" secondAttribute="bottom" constant="20" id="1Jy-3c-j2R"/>
+                            <constraint firstItem="i7v-oz-zvL" firstAttribute="leading" secondItem="alz-A4-A8z" secondAttribute="trailing" constant="30" id="9v0-Wy-311"/>
+                            <constraint firstItem="alz-A4-A8z" firstAttribute="leading" secondItem="vFK-Vc-7T6" secondAttribute="leading" constant="20" id="MGk-IC-0iP"/>
+                            <constraint firstItem="alz-A4-A8z" firstAttribute="top" secondItem="vFK-Vc-7T6" secondAttribute="top" constant="20" id="Nmp-uX-ka0"/>
+                            <constraint firstItem="i7v-oz-zvL" firstAttribute="top" secondItem="vFK-Vc-7T6" secondAttribute="top" constant="20" id="cGf-Z1-5g1"/>
+                            <constraint firstAttribute="bottom" secondItem="alz-A4-A8z" secondAttribute="bottom" constant="20" id="mZi-Rt-oi7"/>
+                            <constraint firstAttribute="trailing" secondItem="i7v-oz-zvL" secondAttribute="trailing" constant="20" id="xII-mT-yJN"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="subscriptionLevel1Button" destination="5gc-Ox-MzG" id="aFl-IA-MVs"/>
+                    </connections>
                 </viewController>
                 <customObject id="S14-PJ-KOq" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1624" y="1648"/>
+            <point key="canvasLocation" x="1692" y="1594.5"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="hIz-AP-VOD">
@@ -996,7 +1036,7 @@ Tag your document and save  it:</string>
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                    <rect key="frame" x="32" y="1" width="195" height="17"/>
+                                                                    <rect key="frame" x="31.5" y="1" width="195" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">
