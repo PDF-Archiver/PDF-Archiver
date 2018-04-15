@@ -269,8 +269,11 @@
 /* Class = "NSButtonCell"; title = "Donate 1€"; ObjectID = "dY2-A7-5th"; */
 "dY2-A7-5th.title" = "Donate 1€";
 
-/* Class = "NSButtonCell"; title = "Year Subscription:"; ObjectID = "nXe-2w-oqh"; */
-"nXe-2w-oqh.title" = "Year Subscription:";
+/* Class = "NSButtonCell"; title = "Year Subscription: Level 1"; ObjectID = "nXe-2w-oqh"; */
+"nXe-2w-oqh.title" = "Year Subscription: Level 1";
+
+/* Class = "NSButtonCell"; title = "Year Subscription: Level 2"; ObjectID = "WpL-o2-oza"; */
+"WpL-o2-oza.title" = "Year Subscription: Level 2";
 
 /* Class = "NSButtonCell"; title = "Donate 5€"; ObjectID = "ndf-3x-jdp"; */
 "ndf-3x-jdp.title" = "Donate 5€";
@@ -283,3 +286,6 @@
 
 /* Class = "NSBox"; title = "Subscription"; ObjectID = "i7v-oz-zvL"; */
 "i7v-oz-zvL.title" = "Abo";
+
+/* Class = "NSTextFieldCell"; title = "Mac App Store Connection:"; ObjectID = "ywB-46-644"; */
+"ywB-46-644.title" = "Mac App Store Verbindung:";

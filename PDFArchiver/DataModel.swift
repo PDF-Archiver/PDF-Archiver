@@ -24,11 +24,19 @@ class DataModel: TagsDelegate {
 
     init() {
         self.store = IAPHelper(productIds: Set(["SUBSCRIPTION_LEVEL1", "SUBSCRIPTION_LEVEL2"]))
-
         self.documents = []
         self.tags = []
         self.prefs.delegate = self as TagsDelegate
         self.prefs.load()
+
+        // get the product list
+        self.store.requestProducts {success, products in
+            if success {
+                self.store.products = products!
+
+                // todo set the button labels
+            }
+        }
     }
 
     func addDocuments(paths: [URL]) {

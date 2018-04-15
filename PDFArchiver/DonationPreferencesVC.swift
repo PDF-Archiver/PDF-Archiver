@@ -25,13 +25,29 @@ class DonationPreferencesVC: PreferencesVC {
         self.dataModel = self.delegate?.getDataModel()
     }
 
+    @IBAction func donationLevel1Clicked(_ sender: NSButton) {
+            self.dataModel?.store.requestProducts {success, productss in
+                if success {
+                    print(productss)
+                }
+            }
+    }
+
     @IBAction func subscriptionLevel1Clicked(_ sender: NSButton) {
-//        self.dataModel?.store.requestProducts {success, products in
-//            if success {
-//                print(products)
-//            }
+        guard let products = self.dataModel?.store.products else { return }
+//        print(products)
+//
+//        for product in products {
+//            print(product.productIdentifier)
 //        }
-        print(self.dataModel?.store.products)
+
+        for product in self.dataModel?.store.products ?? [] where product.productIdentifier == "SUBSCRIPTION_LEVEL1" {
+            print(product)
+            self.dataModel?.store.buyProduct(product)
+            break
+        }
+    }
+    @IBAction func subscriptionLevel2Clicked(_ sender: NSButton) {
     }
 
     override func viewWillDisappear() {
