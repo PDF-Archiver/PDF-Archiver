@@ -51,9 +51,9 @@ open class IAPHelper: NSObject {
             let purchased = UserDefaults.standard.bool(forKey: productIdentifier)
             if purchased {
                 purchasedProductIdentifiers.insert(productIdentifier)
-                print("Previously purchased: \(productIdentifier)")
+                os_log("Previously purchased: %@", log: self.log, type: .debug, productIdentifier)
             } else {
-                print("Not purchased: \(productIdentifier)")
+                os_log("Not purchased: %@", log: self.log, type: .debug, productIdentifier)
             }
         }
         super.init()
@@ -76,7 +76,7 @@ extension IAPHelper {
     }
 
     public func buyProduct(_ product: SKProduct) {
-        print("Buying \(product.productIdentifier)...")
+        os_log("Buying %@ ...", log: self.log, type: .info, product.productIdentifier)
         let payment = SKPayment(product: product)
         SKPaymentQueue.default().add(payment)
     }
@@ -147,7 +147,7 @@ extension IAPHelper: SKPaymentTransactionObserver {
     }
 
     private func complete(transaction: SKPaymentTransaction) {
-        print("complete...")
+        os_log("complete...", log: self.log, type: .debug)
         deliverPurchaseNotificationFor(identifier: transaction.payment.productIdentifier)
         SKPaymentQueue.default().finishTransaction(transaction)
     }
@@ -155,16 +155,16 @@ extension IAPHelper: SKPaymentTransactionObserver {
     private func restore(transaction: SKPaymentTransaction) {
         guard let productIdentifier = transaction.original?.payment.productIdentifier else { return }
 
-        print("restore... \(productIdentifier)")
+        os_log("restore...", log: self.log, type: .debug)
         deliverPurchaseNotificationFor(identifier: productIdentifier)
         SKPaymentQueue.default().finishTransaction(transaction)
     }
 
     private func fail(transaction: SKPaymentTransaction) {
-        print("fail...")
+        os_log("fail...", log: self.log, type: .debug)
         if let transactionError = transaction.error as NSError? {
             if transactionError.code != SKError.paymentCancelled.rawValue {
-                print("Transaction Error: \(transactionError.localizedDescription)")
+                os_log("Transaction Error: %@", log: self.log, type: .debug, transactionError.localizedDescription)
             }
         }
 

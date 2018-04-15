@@ -16,7 +16,6 @@ extension ViewController {
             as? NSTabViewController else { return }
 
         for controller in tabViewController.childViewControllers {
-            // TODO: add here all the over view controllers
             if let controller = controller as? MainPreferencesVC {
                 controller.delegate = self
             } else if let controller = controller as? DonationPreferencesVC {

@@ -8,10 +8,12 @@
 
 import Cocoa
 import StoreKit
+import Foundation
 
 //public typealias ProductsRequestCompletionHandler = (_ success: Bool, _ products: [SKProduct]?) -> Void
 
 class DonationPreferencesVC: PreferencesVC {
+    @IBOutlet weak var statusView: NSImageView!
     @IBOutlet weak var subscriptionLevel1Button: NSButton!
     var dataModel: DataModel?
     weak var delegate: PreferencesDelegate?
@@ -23,6 +25,13 @@ class DonationPreferencesVC: PreferencesVC {
 
         // get the data model from the main view controller
         self.dataModel = self.delegate?.getDataModel()
+
+        // set the status image
+        if self.dataModel?.store.products.isEmpty ?? true {
+            self.statusView.image = NSImage(named: .statusUnavailable)
+        } else {
+            self.statusView.image = NSImage(named: .statusAvailable)
+        }
     }
 
     @IBAction func donationLevel1Clicked(_ sender: NSButton) {
@@ -35,14 +44,7 @@ class DonationPreferencesVC: PreferencesVC {
 
     @IBAction func subscriptionLevel1Clicked(_ sender: NSButton) {
         guard let products = self.dataModel?.store.products else { return }
-//        print(products)
-//
-//        for product in products {
-//            print(product.productIdentifier)
-//        }
-
         for product in self.dataModel?.store.products ?? [] where product.productIdentifier == "SUBSCRIPTION_LEVEL1" {
-            print(product)
             self.dataModel?.store.buyProduct(product)
             break
         }

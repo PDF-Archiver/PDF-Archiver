@@ -722,6 +722,7 @@ Tag your document and save  it:</string>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="statusView" destination="psX-g9-FRY" id="3mT-WP-hW8"/>
                         <outlet property="subscriptionLevel1Button" destination="5gc-Ox-MzG" id="aFl-IA-MVs"/>
                     </connections>
                 </viewController>
@@ -1104,7 +1105,7 @@ Tag your document and save  it:</string>
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                    <rect key="frame" x="32" y="1" width="195" height="17"/>
+                                                                    <rect key="frame" x="31.5" y="1" width="195" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">

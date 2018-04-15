@@ -34,7 +34,7 @@ class DataModel: TagsDelegate {
             if success {
                 self.store.products = products!
 
-                // todo set the button labels
+                // TODO: set the button labels
             }
         }
     }
