@@ -53,6 +53,20 @@ extension ViewController {
         }
         self.dataModelInstance.prefs.getArchiveTags()
         self.dataModelInstance.prefs.archivePath?.stopAccessingSecurityScopedResource()
+
+        // access the file system and get the new documents
+        self.dataModelInstance.documents = []
+        if let observedPath = self.dataModelInstance.prefs.observedPath {
+            if !observedPath.startAccessingSecurityScopedResource() {
+                os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
+                return
+            }
+            self.dataModelInstance.addDocuments(paths: [observedPath])
+            observedPath.stopAccessingSecurityScopedResource()
+        }
+
+        // update the view
+        self.updateView(updatePDF: true)
     }
 
     @objc func zoomPDF(notification: NSNotification) {

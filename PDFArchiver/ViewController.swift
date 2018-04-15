@@ -198,8 +198,17 @@ class ViewController: NSViewController, ViewControllerDelegate {
 
     override func viewDidDisappear() {
         if let archivePath = self.dataModelInstance.prefs.archivePath {
+            // reset the tag count to the archived documents
+            for document in (self.documentAC.arrangedObjects as? [Document]) ?? [] where document.documentDone == "" {
+                for tag in document.documentTags ?? [] {
+                    tag.count -= 1
+                }
+            }
+
+            // save the tag count
             self.dataModelInstance.prefs.save()
             os_log("Save complete: %@", log: self.log, type: .debug, archivePath as CVarArg)
+
         } else {
             os_log("Save possible.", log: self.log, type: .debug)
         }
