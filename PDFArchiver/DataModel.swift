@@ -35,6 +35,7 @@ class DataModel: TagsDelegate {
                 self.store.products = products!
 
                 // TODO: set the button labels
+                NotificationCenter.default.post(name: Notification.Name("MASUpdateStatus"), object: true)
             }
         }
     }

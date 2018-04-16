@@ -27,7 +27,7 @@ struct Preferences {
                 let bookmark = try newValue.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
                 UserDefaults.standard.set(bookmark, forKey: "observedPathWithSecurityScope")
             } catch let error as NSError {
-                os_log("Observed path bookmark Write Fails: %@", log: self.log, type: .error, error as CVarArg)
+                os_log("Observed path bookmark Write Fails: %@", log: self.log, type: .error, error.description)
             }
 
             self._observedPath = newValue
@@ -45,7 +45,7 @@ struct Preferences {
                 let bookmark = try newValue.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
                 UserDefaults.standard.set(bookmark, forKey: "securityScopeBookmark")
             } catch let error as NSError {
-                os_log("Bookmark Write Fails: %@", log: self.log, type: .error, error as CVarArg)
+                os_log("Bookmark Write Fails: %@", log: self.log, type: .error, error.description)
             }
 
             self._archivePath = newValue
@@ -78,7 +78,7 @@ struct Preferences {
                     os_log("Stale bookmark data!", log: self.log, type: .fault)
                 }
             } catch let error as NSError {
-                os_log("Bookmark Access failed: %@", log: self.log, type: .error, error.description as CVarArg)
+                os_log("Bookmark Access failed: %@", log: self.log, type: .error, error.description)
             }
         }
 
@@ -91,7 +91,7 @@ struct Preferences {
                     os_log("Stale bookmark data!", log: self.log, type: .fault)
                 }
             } catch let error as NSError {
-                os_log("Bookmark Access failed: %@", log: self.log, type: .error, error.description as CVarArg)
+                os_log("Bookmark Access failed: %@", log: self.log, type: .error, error.description)
             }
         }
 

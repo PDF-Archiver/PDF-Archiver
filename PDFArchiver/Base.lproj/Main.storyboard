@@ -593,17 +593,20 @@ Tag your document and save  it:</string>
                                     <subviews>
                                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Zkb-C5-cZI">
                                             <rect key="frame" x="9" y="13" width="196" height="32"/>
-                                            <buttonCell key="cell" type="push" title="Donate 5€" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ndf-3x-jdp">
+                                            <buttonCell key="cell" type="push" title="Donate (Level 3)" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ndf-3x-jdp">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
+                                            <connections>
+                                                <action selector="donationLevel3Clicked:" target="rWp-Co-RrU" id="JQI-RQ-akb"/>
+                                            </connections>
                                         </button>
                                         <button verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="pjt-37-tlz">
                                             <rect key="frame" x="9" y="85" width="196" height="32"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="21" id="bTt-g8-WKR"/>
                                             </constraints>
-                                            <buttonCell key="cell" type="push" title="Donate 1€" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="dY2-A7-5th">
+                                            <buttonCell key="cell" type="push" title="Donate (Level 1)" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="dY2-A7-5th">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
@@ -613,10 +616,13 @@ Tag your document and save  it:</string>
                                         </button>
                                         <button verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="OLw-Bf-fGp">
                                             <rect key="frame" x="9" y="49" width="196" height="32"/>
-                                            <buttonCell key="cell" type="push" title="Donate 3€" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="5JW-68-xh8">
+                                            <buttonCell key="cell" type="push" title="Donate (Level 2)" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="5JW-68-xh8">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
+                                            <connections>
+                                                <action selector="donationLevel2Clicked:" target="rWp-Co-RrU" id="d0E-Zm-Hg3"/>
+                                            </connections>
                                         </button>
                                     </subviews>
                                     <constraints>
@@ -1105,7 +1111,7 @@ Tag your document and save  it:</string>
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                    <rect key="frame" x="31.5" y="1" width="195" height="17"/>
+                                                                    <rect key="frame" x="32" y="1" width="195" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">

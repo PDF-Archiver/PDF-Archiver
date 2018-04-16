@@ -9,19 +9,21 @@
 import Cocoa
 import StoreKit
 import Foundation
-
-//public typealias ProductsRequestCompletionHandler = (_ success: Bool, _ products: [SKProduct]?) -> Void
+import os.log
 
 class DonationPreferencesVC: PreferencesVC {
     @IBOutlet weak var statusView: NSImageView!
     @IBOutlet weak var subscriptionLevel1Button: NSButton!
     var dataModel: DataModel?
     weak var delegate: PreferencesDelegate?
-
     var productsRequestCompletionHandler: ProductsRequestCompletionHandler?
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        let notificationCenter = NotificationCenter.default
+        notificationCenter.addObserver(self, selector: #selector(self.masUpdateStatus(available:)),
+                                       name: Notification.Name("MASUpdateStatus"), object: nil)
 
         // get the data model from the main view controller
         self.dataModel = self.delegate?.getDataModel()
@@ -35,21 +37,23 @@ class DonationPreferencesVC: PreferencesVC {
     }
 
     @IBAction func donationLevel1Clicked(_ sender: NSButton) {
-            self.dataModel?.store.requestProducts {success, productss in
-                if success {
-                    print(productss)
-                }
-            }
+        self.buyProduct(identifier: "DONATION_LEVEL1")
+    }
+
+    @IBAction func donationLevel2Clicked(_ sender: NSButton) {
+        self.buyProduct(identifier: "DONATION_LEVEL2")
+    }
+
+    @IBAction func donationLevel3Clicked(_ sender: NSButton) {
+        self.buyProduct(identifier: "DONATION_LEVEL3")
     }
 
     @IBAction func subscriptionLevel1Clicked(_ sender: NSButton) {
-        guard let products = self.dataModel?.store.products else { return }
-        for product in self.dataModel?.store.products ?? [] where product.productIdentifier == "SUBSCRIPTION_LEVEL1" {
-            self.dataModel?.store.buyProduct(product)
-            break
-        }
+        self.buyProduct(identifier: "SUBSCRIPTION_LEVEL1")
     }
+
     @IBAction func subscriptionLevel2Clicked(_ sender: NSButton) {
+        self.buyProduct(identifier: "SUBSCRIPTION_LEVEL2")
     }
 
     override func viewWillDisappear() {
@@ -59,6 +63,26 @@ class DonationPreferencesVC: PreferencesVC {
         // update the data model of the main view controller
         if let dataModel = self.dataModel {
             self.delegate?.setDataModel(dataModel: dataModel)
+        }
+    }
+
+    @objc func masUpdateStatus(available: Bool) {
+        DispatchQueue.main.async {
+            if available {
+                self.statusView.image = NSImage(named: .statusAvailable)
+            } else {
+                self.statusView.image = NSImage(named: .statusUnavailable)
+            }
+        }
+    }
+
+    func buyProduct(identifier: String) {
+        os_log("Button clicked to buy: %@", log: self.log, type: .debug, identifier)
+
+        guard let products = self.dataModel?.store.products else { return }
+        for product in products where product.productIdentifier == identifier {
+            self.dataModel?.store.buyProduct(product)
+            break
         }
     }
 }

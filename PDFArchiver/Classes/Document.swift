@@ -136,7 +136,7 @@ class Document: NSObject {
                 try fileManager.moveItem(at: self.path, to: newFilepath)
             }
         } catch let error as NSError {
-            os_log("Error while moving file: %@", log: self.log, type: .error, error as CVarArg)
+            os_log("Error while moving file: %@", log: self.log, type: .error, error.description)
             dialogOK(messageKey: "renaming_failed", infoKey: error.localizedDescription, style: .warning)
             return false
         }
@@ -153,7 +153,7 @@ class Document: NSObject {
             // set file tags [https://stackoverflow.com/a/47340666]
             try (newFilepath as NSURL).setResourceValue(tags, forKey: URLResourceKey.tagNamesKey)
         } catch let error as NSError {
-            os_log("Could not set file: %@", log: self.log, type: .error, error as CVarArg)
+            os_log("Could not set file: %@", log: self.log, type: .error, error.description)
         }
         return true
     }

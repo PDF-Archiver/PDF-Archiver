@@ -207,7 +207,7 @@ class ViewController: NSViewController, ViewControllerDelegate {
 
             // save the tag count
             self.dataModelInstance.prefs.save()
-            os_log("Save complete: %@", log: self.log, type: .debug, archivePath as CVarArg)
+            os_log("Save complete: %@", log: self.log, type: .debug, archivePath.absoluteString)
 
         } else {
             os_log("Save possible.", log: self.log, type: .debug)

@@ -189,7 +189,7 @@ extension ViewController {
         // test if element already exists in document tag table view
         if let documentTags = self.documentTagAC.content as? [Tag] {
             for tag in documentTags where tag.name == selectedTag.name {
-                os_log("Tag '%@' already found!", log: self.log, type: .error, selectedTag.name as CVarArg)
+                os_log("Tag '%@' already found!", log: self.log, type: .error, selectedTag.name)
                 return
             }
         }

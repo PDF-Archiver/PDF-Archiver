@@ -33,7 +33,7 @@ func regex_matches(for regex: String, in text: String) -> [String]? {
         }
     } catch let error as NSError {
         let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "Helpers")
-        os_log("Invalid regex: %@", log: log, type: .error, error as CVarArg)
+        os_log("Invalid regex: %@", log: log, type: .error, error.description)
         return nil
     }
 }

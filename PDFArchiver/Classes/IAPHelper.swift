@@ -111,7 +111,7 @@ extension IAPHelper: SKProductsRequestDelegate {
 
     public func request(_ request: SKRequest, didFailWithError error: Error) {
         os_log("Failed to load list of products.", log: self.log, type: .error)
-        os_log("Error: %@", log: self.log, type: .error, error.localizedDescription as CVarArg)
+        os_log("Error: %@", log: self.log, type: .error, error.localizedDescription)
         productsRequestCompletionHandler?(false, nil)
         clearRequestAndHandler()
     }
@@ -164,7 +164,7 @@ extension IAPHelper: SKPaymentTransactionObserver {
         os_log("fail...", log: self.log, type: .debug)
         if let transactionError = transaction.error as NSError? {
             if transactionError.code != SKError.paymentCancelled.rawValue {
-                os_log("Transaction Error: %@", log: self.log, type: .debug, transactionError.localizedDescription)
+                os_log("Transaction Error: %@", log: self.log, type: .debug, transactionError.description)
             }
         }
 
