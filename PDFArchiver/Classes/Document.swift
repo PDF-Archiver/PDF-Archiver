@@ -18,11 +18,8 @@ class Document: NSObject {
     @objc var documentDone: String = ""
     var documentDate = Date()
     var documentDescription: String? {
-        get {
-            return self._documentDescription
-        }
-        set {
-            if var raw = newValue {
+        didSet {
+            if var raw = self.documentDescription {
                 // normalize description
                 raw = raw.lowercased()
                 raw = raw.replacingOccurrences(of: "[:;.,!?/\\^+<>#@|]", with: "",
@@ -45,12 +42,11 @@ class Document: NSObject {
                     raw = String(raw.dropFirst())
                 }
 
-                self._documentDescription = raw
+                self.documentDescription = raw
             }
         }
     }
     var documentTags: [Tag]?
-    fileprivate var _documentDescription: String?
     fileprivate let _dateFormatter: DateFormatter
 
     init(path: URL, delegate: TagsDelegate?) {
@@ -73,10 +69,10 @@ class Document: NSObject {
 
         // parse the description or use the filename
         if var raw = regex_matches(for: "--[a-zA-Z0-9-]+__", in: self.name!) {
-            self._documentDescription = getSubstring(raw[0], startIdx: 2, endIdx: -2)
+            self.documentDescription = getSubstring(raw[0], startIdx: 2, endIdx: -2)
         } else {
             let newDescription = String(path.lastPathComponent.dropLast(4))
-            self._documentDescription = newDescription.components(separatedBy: "__")[0]
+            self.documentDescription = newDescription.components(separatedBy: "__")[0]
         }
 
         // parse the tags
