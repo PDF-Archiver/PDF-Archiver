@@ -585,7 +585,7 @@ Tag your document and save  it:</string>
                         <rect key="frame" x="0.0" y="0.0" width="490" height="186"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <box autoresizesSubviews="NO" borderType="line" title="One-Time" translatesAutoresizingMaskIntoConstraints="NO" id="alz-A4-A8z">
+                            <box autoresizesSubviews="NO" borderType="line" title="One-Time Donation" translatesAutoresizingMaskIntoConstraints="NO" id="alz-A4-A8z">
                                 <rect key="frame" x="17" y="16" width="216" height="150"/>
                                 <view key="contentView" id="yc2-iU-djq">
                                     <rect key="frame" x="1" y="1" width="214" height="128"/>
@@ -593,12 +593,12 @@ Tag your document and save  it:</string>
                                     <subviews>
                                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Zkb-C5-cZI">
                                             <rect key="frame" x="9" y="13" width="196" height="32"/>
-                                            <buttonCell key="cell" type="push" title="Donate (Level 3)" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ndf-3x-jdp">
+                                            <buttonCell key="cell" type="push" title="Level 3" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ndf-3x-jdp">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                             <connections>
-                                                <action selector="donationLevel3Clicked:" target="rWp-Co-RrU" id="JQI-RQ-akb"/>
+                                                <action selector="donationButton1Clicked:" target="rWp-Co-RrU" id="JQI-RQ-akb"/>
                                             </connections>
                                         </button>
                                         <button verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="pjt-37-tlz">
@@ -606,22 +606,22 @@ Tag your document and save  it:</string>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="21" id="bTt-g8-WKR"/>
                                             </constraints>
-                                            <buttonCell key="cell" type="push" title="Donate (Level 1)" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="dY2-A7-5th">
+                                            <buttonCell key="cell" type="push" title="Level 1" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="dY2-A7-5th">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                             <connections>
-                                                <action selector="donationLevel1Clicked:" target="rWp-Co-RrU" id="7mZ-Y8-Zhh"/>
+                                                <action selector="donationButton1Clicked:" target="rWp-Co-RrU" id="7mZ-Y8-Zhh"/>
                                             </connections>
                                         </button>
                                         <button verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="OLw-Bf-fGp">
                                             <rect key="frame" x="9" y="49" width="196" height="32"/>
-                                            <buttonCell key="cell" type="push" title="Donate (Level 2)" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="5JW-68-xh8">
+                                            <buttonCell key="cell" type="push" title="Level 2" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="5JW-68-xh8">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                             <connections>
-                                                <action selector="donationLevel2Clicked:" target="rWp-Co-RrU" id="d0E-Zm-Hg3"/>
+                                                <action selector="donationButton1Clicked:" target="rWp-Co-RrU" id="d0E-Zm-Hg3"/>
                                             </connections>
                                         </button>
                                     </subviews>
@@ -644,7 +644,7 @@ Tag your document and save  it:</string>
                                 </constraints>
                                 <font key="titleFont" metaFont="systemSemibold" size="15"/>
                             </box>
-                            <box autoresizesSubviews="NO" borderType="line" title="Subscription" translatesAutoresizingMaskIntoConstraints="NO" id="i7v-oz-zvL">
+                            <box autoresizesSubviews="NO" borderType="line" title="Yearly Subscription" translatesAutoresizingMaskIntoConstraints="NO" id="i7v-oz-zvL">
                                 <rect key="frame" x="257" y="57" width="216" height="109"/>
                                 <view key="contentView" id="R27-Hj-ORq">
                                     <rect key="frame" x="1" y="1" width="214" height="87"/>
@@ -655,12 +655,12 @@ Tag your document and save  it:</string>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="21" id="gM0-JU-6hM"/>
                                             </constraints>
-                                            <buttonCell key="cell" type="push" title="Year Subscription: Level 1" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="nXe-2w-oqh">
+                                            <buttonCell key="cell" type="push" title="Level 1" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="nXe-2w-oqh">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                             <connections>
-                                                <action selector="subscriptionLevel1Clicked:" target="rWp-Co-RrU" id="KKr-fn-Tkp"/>
+                                                <action selector="donationButton1Clicked:" target="rWp-Co-RrU" id="KKr-fn-Tkp"/>
                                             </connections>
                                         </button>
                                         <button identifier="subscriptionLevel2" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="qB3-wG-Std">
@@ -668,12 +668,12 @@ Tag your document and save  it:</string>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="21" id="y0t-LD-EbU"/>
                                             </constraints>
-                                            <buttonCell key="cell" type="push" title="Year Subscription: Level 2" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="WpL-o2-oza">
+                                            <buttonCell key="cell" type="push" title="Level 2" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="WpL-o2-oza">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                             <connections>
-                                                <action selector="subscriptionLevel2Clicked:" target="rWp-Co-RrU" id="LJ8-i6-tRS"/>
+                                                <action selector="donationButton1Clicked:" target="rWp-Co-RrU" id="LJ8-i6-tRS"/>
                                             </connections>
                                         </button>
                                     </subviews>
@@ -700,6 +700,9 @@ Tag your document and save  it:</string>
                                     <constraint firstAttribute="height" constant="15" id="QHu-4A-oqj"/>
                                 </constraints>
                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSStatusNone" id="Mm7-eD-3b6"/>
+                                <connections>
+                                    <action selector="donationButton1Clicked:" target="rWp-Co-RrU" id="bvX-qo-kwq"/>
+                                </connections>
                             </imageView>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="sL0-ry-Buz">
                                 <rect key="frame" x="271" y="20" width="171" height="17"/>
@@ -728,8 +731,12 @@ Tag your document and save  it:</string>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="donationButton1" destination="pjt-37-tlz" id="jj2-Cz-xbO"/>
+                        <outlet property="donationButton2" destination="OLw-Bf-fGp" id="9zf-tj-Gxv"/>
+                        <outlet property="donationButton3" destination="Zkb-C5-cZI" id="05n-XA-uxH"/>
                         <outlet property="statusView" destination="psX-g9-FRY" id="3mT-WP-hW8"/>
-                        <outlet property="subscriptionLevel1Button" destination="5gc-Ox-MzG" id="aFl-IA-MVs"/>
+                        <outlet property="subscriptionButton1" destination="5gc-Ox-MzG" id="9Qm-Sr-3OT"/>
+                        <outlet property="subscriptionButton2" destination="qB3-wG-Std" id="eaP-yx-Htn"/>
                     </connections>
                 </viewController>
                 <customObject id="S14-PJ-KOq" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

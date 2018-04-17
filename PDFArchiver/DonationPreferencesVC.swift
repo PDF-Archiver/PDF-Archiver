@@ -12,8 +12,13 @@ import Foundation
 import os.log
 
 class DonationPreferencesVC: PreferencesVC {
+    @IBOutlet weak var donationButton1: NSButton!
+    @IBOutlet weak var donationButton2: NSButton!
+    @IBOutlet weak var donationButton3: NSButton!
+    @IBOutlet weak var subscriptionButton1: NSButton!
+    @IBOutlet weak var subscriptionButton2: NSButton!
+
     @IBOutlet weak var statusView: NSImageView!
-    @IBOutlet weak var subscriptionLevel1Button: NSButton!
     var dataModel: DataModel?
     weak var delegate: PreferencesDelegate?
     var productsRequestCompletionHandler: ProductsRequestCompletionHandler?
@@ -34,26 +39,36 @@ class DonationPreferencesVC: PreferencesVC {
         } else {
             self.statusView.image = NSImage(named: .statusAvailable)
         }
+
+        self.updateButtonTitles()
     }
 
-    @IBAction func donationLevel1Clicked(_ sender: NSButton) {
+    @IBAction func donationButton1Clicked(_ sender: NSButton) {
         self.buyProduct(identifier: "DONATION_LEVEL1")
     }
 
-    @IBAction func donationLevel2Clicked(_ sender: NSButton) {
+    @IBAction func donationButton2Clicked(_ sender: NSButton) {
         self.buyProduct(identifier: "DONATION_LEVEL2")
     }
 
-    @IBAction func donationLevel3Clicked(_ sender: NSButton) {
+    @IBAction func donationButton3Clicked(_ sender: NSButton) {
         self.buyProduct(identifier: "DONATION_LEVEL3")
     }
 
-    @IBAction func subscriptionLevel1Clicked(_ sender: NSButton) {
+    @IBAction func subscriptionButton1Clicked(_ sender: NSButton) {
         self.buyProduct(identifier: "SUBSCRIPTION_LEVEL1")
     }
 
-    @IBAction func subscriptionLevel2Clicked(_ sender: NSButton) {
+    @IBAction func subscriptionButton2Clicked(_ sender: NSButton) {
         self.buyProduct(identifier: "SUBSCRIPTION_LEVEL2")
+    }
+
+    @IBAction func statusImageClicked(_ sender: Any) {
+        print("CLICKEDDDDDDDDDDDDDDs")
+        if connectedToNetwork(),
+           self.dataModel?.store.products.isEmpty ?? true {
+            self.dataModel?.updateMASStatus()
+        }
     }
 
     override func viewWillDisappear() {
@@ -73,14 +88,33 @@ class DonationPreferencesVC: PreferencesVC {
             } else {
                 self.statusView.image = NSImage(named: .statusUnavailable)
             }
+
+            self.updateButtonTitles()
+        }
+    }
+
+    func updateButtonTitles() {
+        // set the button label
+        for product in self.dataModel?.store.products ?? [] {
+            print(product.productIdentifier)
+            if product.productIdentifier == "DONATION_LEVEL1" {
+                self.donationButton1.title = product.localizedPrice
+            } else if product.productIdentifier == "DONATION_LEVEL2" {
+                self.donationButton2.title = product.localizedPrice
+            } else if product.productIdentifier == "DONATION_LEVEL3" {
+                self.donationButton3.title = product.localizedPrice
+            } else if product.productIdentifier == "SUBSCRIPTION_LEVEL1" {
+                self.subscriptionButton1.title = product.localizedPrice
+            } else if product.productIdentifier == "SUBSCRIPTION_LEVEL2" {
+                self.subscriptionButton2.title = product.localizedPrice
+            }
         }
     }
 
     func buyProduct(identifier: String) {
-        os_log("Button clicked to buy: %@", log: self.log, type: .debug, identifier)
-
         guard let products = self.dataModel?.store.products else { return }
         for product in products where product.productIdentifier == identifier {
+            os_log("Button clicked to buy: %@", log: self.log, type: .debug, product.description)
             self.dataModel?.store.buyProduct(product)
             break
         }

@@ -30,11 +30,14 @@ class DataModel: TagsDelegate {
         self.prefs.load()
 
         // get the product list
+        self.updateMASStatus()
+    }
+
+    func updateMASStatus() {
         self.store.requestProducts {success, products in
             if success {
                 self.store.products = products!
 
-                // TODO: set the button labels
                 NotificationCenter.default.post(name: Notification.Name("MASUpdateStatus"), object: true)
             }
         }

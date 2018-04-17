@@ -266,25 +266,25 @@
 /* Class = "NSTextFieldCell"; title = "This may decrease the app speed for large archives."; ObjectID = "Tlv-Ku-QD7"; */
 "Tlv-Ku-QD7.title" = "Dies kann bei einem großen Archiv die Geschwindigkeit der App beeinflussen.";
 
-/* Class = "NSButtonCell"; title = "Donate (Level 1)"; ObjectID = "dY2-A7-5th"; */
-"dY2-A7-5th.title" = "Donate (Level 1)";
+/* Class = "NSButtonCell"; title = "Level 1"; ObjectID = "dY2-A7-5th"; */
+"dY2-A7-5th.title" = "Level 1";
 
-/* Class = "NSButtonCell"; title = "Year Subscription: Level 1"; ObjectID = "nXe-2w-oqh"; */
-"nXe-2w-oqh.title" = "Year Subscription: Level 1";
+/* Class = "NSButtonCell"; title = "Level 2"; ObjectID = "5JW-68-xh8"; */
+"5JW-68-xh8.title" = "Level 2";
 
-/* Class = "NSButtonCell"; title = "Year Subscription: Level 2"; ObjectID = "WpL-o2-oza"; */
-"WpL-o2-oza.title" = "Year Subscription: Level 2";
+/* Class = "NSButtonCell"; title = "Level 3"; ObjectID = "ndf-3x-jdp"; */
+"ndf-3x-jdp.title" = "Level 3";
 
-/* Class = "NSButtonCell"; title = "Donate (Level 3)"; ObjectID = "ndf-3x-jdp"; */
-"ndf-3x-jdp.title" = "Donate (Level 3)";
+/* Class = "NSButtonCell"; title = "Level 1"; ObjectID = "nXe-2w-oqh"; */
+"nXe-2w-oqh.title" = "Level 1";
 
-/* Class = "NSButtonCell"; title = "Donate (Level 2)"; ObjectID = "5JW-68-xh8"; */
-"5JW-68-xh8.title" = "Donate (Level 2)";
+/* Class = "NSButtonCell"; title = "Level 2"; ObjectID = "WpL-o2-oza"; */
+"WpL-o2-oza.title" = "Level 2";
 
-/* Class = "NSBox"; title = "One-Time"; ObjectID = "alz-A4-A8z"; */
+/* Class = "NSBox"; title = "One-Time Donation"; ObjectID = "alz-A4-A8z"; */
 "alz-A4-A8z.title" = "Einmalig";
 
-/* Class = "NSBox"; title = "Subscription"; ObjectID = "i7v-oz-zvL"; */
+/* Class = "NSBox"; title = "Yearly Subscription"; ObjectID = "i7v-oz-zvL"; */
 "i7v-oz-zvL.title" = "Abo";
 
 /* Class = "NSTextFieldCell"; title = "Mac App Store Connection:"; ObjectID = "ywB-46-644"; */
