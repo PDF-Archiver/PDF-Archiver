@@ -159,6 +159,7 @@ class ViewController: NSViewController, ViewControllerDelegate {
         self.pdfContentView.interpolationQuality = PDFInterpolationQuality.low
 
         // update the view after all the settigns
+        self.documentAC.setSelectionIndex(0)
         self.updateView(updatePDF: true)
     }
 
