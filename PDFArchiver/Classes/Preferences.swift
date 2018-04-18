@@ -11,12 +11,17 @@ import os.log
 
 struct Preferences {
     let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "DataModel")
+    fileprivate var _archivePath: URL?
+    fileprivate var _observedPath: URL?
     weak var delegate: TagsDelegate?
     var analyseOnlyLatestFolders: Bool = true
     var observedPath: URL? {
         // ATTENTION: only set observed path, after an OpenPanel dialog
-        didSet {
-            guard let newValue = self.observedPath else { return }
+        get {
+            return self._observedPath
+        }
+        set {
+            guard let newValue = newValue else { return }
             // save the security scope bookmark [https://stackoverflow.com/a/35863729]
             do {
                 let bookmark = try newValue.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
@@ -25,13 +30,16 @@ struct Preferences {
                 os_log("Observed path bookmark Write Fails: %@", log: self.log, type: .error, error.description)
             }
 
-            self.observedPath = newValue
+            self._observedPath = newValue
         }
     }
     var archivePath: URL? {
         // ATTENTION: only set archive path, after an OpenPanel dialog
-        didSet {
-            guard let newValue = self.archivePath else { return }
+        get {
+            return self._archivePath
+        }
+        set {
+            guard let newValue = newValue else { return }
             // save the security scope bookmark [https://stackoverflow.com/a/35863729]
             do {
                 let bookmark = try newValue.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
@@ -40,7 +48,7 @@ struct Preferences {
                 os_log("Bookmark Write Fails: %@", log: self.log, type: .error, error.description)
             }
 
-            self.archivePath = newValue
+            self._archivePath = newValue
             self.getArchiveTags()
         }
     }
@@ -65,7 +73,7 @@ struct Preferences {
         if let bookmarkData = UserDefaults.standard.object(forKey: "securityScopeBookmark") as? Data {
             do {
                 var staleBookmarkData = false
-                self.archivePath = try URL.init(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &staleBookmarkData)
+                self._archivePath = try URL.init(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &staleBookmarkData)
                 if staleBookmarkData {
                     os_log("Stale bookmark data!", log: self.log, type: .fault)
                 }
@@ -78,7 +86,7 @@ struct Preferences {
         if let bookmarkData = UserDefaults.standard.object(forKey: "observedPathWithSecurityScope") as? Data {
             do {
                 var staleBookmarkData = false
-                self.observedPath = try URL.init(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &staleBookmarkData)
+                self._observedPath = try URL.init(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &staleBookmarkData)
                 if staleBookmarkData {
                     os_log("Stale bookmark data!", log: self.log, type: .fault)
                 }
@@ -97,7 +105,7 @@ struct Preferences {
     }
 
     func getArchiveTags() {
-        guard let path = self.archivePath else {
+        guard let path = self._archivePath else {
             os_log("No archive path selected, could not get old tags.", log: self.log, type: .error)
             return
         }
