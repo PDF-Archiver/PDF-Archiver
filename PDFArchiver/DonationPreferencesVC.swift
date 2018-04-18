@@ -96,18 +96,27 @@ class DonationPreferencesVC: PreferencesVC {
     func updateButtonTitles() {
         // set the button label
         for product in self.dataModel?.store.products ?? [] {
-            print(product.productIdentifier)
+            var selectedButton: NSButton
             if product.productIdentifier == "DONATION_LEVEL1" {
-                self.donationButton1.title = product.localizedPrice
+                selectedButton = self.donationButton1
             } else if product.productIdentifier == "DONATION_LEVEL2" {
-                self.donationButton2.title = product.localizedPrice
+                selectedButton = self.donationButton2
             } else if product.productIdentifier == "DONATION_LEVEL3" {
-                self.donationButton3.title = product.localizedPrice
+                selectedButton = self.donationButton3
             } else if product.productIdentifier == "SUBSCRIPTION_LEVEL1" {
-                self.subscriptionButton1.title = product.localizedPrice
+                selectedButton = self.subscriptionButton1
             } else if product.productIdentifier == "SUBSCRIPTION_LEVEL2" {
-                self.subscriptionButton2.title = product.localizedPrice
+                selectedButton = self.subscriptionButton2
+            } else {
+                continue
             }
+
+            selectedButton.title = product.localizedPrice
+
+            if !(self.dataModel?.store.isProductPurchased(product.productIdentifier) ?? false) {
+                print(product.productIdentifier)
+            }
+
         }
     }
 

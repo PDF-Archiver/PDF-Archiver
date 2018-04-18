@@ -591,16 +591,6 @@ Tag your document and save  it:</string>
                                     <rect key="frame" x="1" y="1" width="214" height="128"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Zkb-C5-cZI">
-                                            <rect key="frame" x="9" y="13" width="196" height="32"/>
-                                            <buttonCell key="cell" type="push" title="Level 3" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ndf-3x-jdp">
-                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                            <connections>
-                                                <action selector="donationButton1Clicked:" target="rWp-Co-RrU" id="JQI-RQ-akb"/>
-                                            </connections>
-                                        </button>
                                         <button verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="pjt-37-tlz">
                                             <rect key="frame" x="9" y="85" width="196" height="32"/>
                                             <constraints>
@@ -611,7 +601,7 @@ Tag your document and save  it:</string>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                             <connections>
-                                                <action selector="donationButton1Clicked:" target="rWp-Co-RrU" id="7mZ-Y8-Zhh"/>
+                                                <action selector="donationButton1Clicked:" target="rWp-Co-RrU" id="f1h-ft-aZ6"/>
                                             </connections>
                                         </button>
                                         <button verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="OLw-Bf-fGp">
@@ -621,7 +611,17 @@ Tag your document and save  it:</string>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                             <connections>
-                                                <action selector="donationButton1Clicked:" target="rWp-Co-RrU" id="d0E-Zm-Hg3"/>
+                                                <action selector="donationButton2Clicked:" target="rWp-Co-RrU" id="SFb-Mb-6u8"/>
+                                            </connections>
+                                        </button>
+                                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Zkb-C5-cZI">
+                                            <rect key="frame" x="9" y="13" width="196" height="32"/>
+                                            <buttonCell key="cell" type="push" title="Level 3" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ndf-3x-jdp">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="donationButton3Clicked:" target="rWp-Co-RrU" id="8nm-hv-hKg"/>
                                             </connections>
                                         </button>
                                     </subviews>
@@ -660,7 +660,7 @@ Tag your document and save  it:</string>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                             <connections>
-                                                <action selector="donationButton1Clicked:" target="rWp-Co-RrU" id="KKr-fn-Tkp"/>
+                                                <action selector="subscriptionButton1Clicked:" target="rWp-Co-RrU" id="gBy-13-uL8"/>
                                             </connections>
                                         </button>
                                         <button identifier="subscriptionLevel2" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="qB3-wG-Std">
@@ -673,7 +673,7 @@ Tag your document and save  it:</string>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                             <connections>
-                                                <action selector="donationButton1Clicked:" target="rWp-Co-RrU" id="LJ8-i6-tRS"/>
+                                                <action selector="subscriptionButton2Clicked:" target="rWp-Co-RrU" id="zj2-WY-FTd"/>
                                             </connections>
                                         </button>
                                     </subviews>
