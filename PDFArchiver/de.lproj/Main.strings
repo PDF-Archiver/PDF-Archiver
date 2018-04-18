@@ -107,8 +107,8 @@
 /* Class = "NSTextField"; ibShadowedToolTip = "description of the document"; ObjectID = "WG2-MH-TVV"; */
 "WG2-MH-TVV.ibShadowedToolTip" = "Beschreibung des Dokumentes";
 
-/* Class = "NSButtonCell"; title = "Change"; ObjectID = "XbB-C4-8qz"; */
-"XbB-C4-8qz.title" = "Ändern";
+/* Class = "NSButtonCell"; title = "Change …"; ObjectID = "XbB-C4-8qz"; */
+"XbB-C4-8qz.title" = "Ändern …";
 
 /* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "Zdh-HQ-s5r"; */
 "Zdh-HQ-s5r.title" = "Text Cell";
@@ -137,17 +137,14 @@
 /* Class = "NSTextFieldCell"; ibExternalAccessibilityHelp = "Archive Path"; ObjectID = "gtQ-4r-22c"; */
 "gtQ-4r-22c.ibExternalAccessibilityHelp" = "Archiv Pfad";
 
-/* Class = "NSTextFieldCell"; placeholderString = "Please set the archive path ..."; ObjectID = "gtQ-4r-22c"; */
-"gtQ-4r-22c.placeholderString" = "Bitte Archiv Pfad setzen  ...";
+/* Class = "NSTextFieldCell"; placeholderString = "Please set the archive path …"; ObjectID = "gtQ-4r-22c"; */
+"gtQ-4r-22c.placeholderString" = "Bitte Archiv Pfad setzen …";
 
 /* Class = "NSTextFieldCell"; title = "⌘ o"; ObjectID = "m4z-q1-wQ4"; */
 "m4z-q1-wQ4.title" = "⌘ o";
 
 /* Class = "NSTextFieldCell"; title = "Table View Cell"; ObjectID = "mEm-YG-Iaa"; */
 "mEm-YG-Iaa.title" = "Table View Cell";
-
-/* Class = "NSViewController"; title = "Preferences"; ObjectID = "mcV-6Y-gT5"; */
-"mcV-6Y-gT5.title" = "Einstellungen";
 
 /* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "o1a-m8-IzU"; */
 "o1a-m8-IzU.title" = "Text Eintrag";
@@ -167,7 +164,7 @@
 /* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "1KI-Am-9H9"; */
 "1KI-Am-9H9.title" = "Text Eintrag";
 
-/* Class = "NSTextFieldCell"; title = "Table View Cell"; ObjectID = "DzD-Dn-zMP"; */
+/* Class = "NSTextFieldCell"; title = "Document1"; ObjectID = "DzD-Dn-zMP"; */
 "DzD-Dn-zMP.title" = "Text Eintrag";
 
 /* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "Lpy-0t-1Kb"; */
@@ -175,9 +172,6 @@
 
 /* Class = "NSTableColumn"; headerCell.title = "Document"; ObjectID = "t5i-OA-mho"; */
 "t5i-OA-mho.headerCell.title" = "Dokument";
-
-/* Class = "NSTextFieldCell"; title = "Table View Cell"; ObjectID = "zWE-Hy-4ww"; */
-"zWE-Hy-4ww.title" = "Text Eintrag";
 
 /* Class = "NSSearchField"; ibShadowedToolTip = "Tag input; press return key to add it to the document attributes"; ObjectID = "WfD-Nd-kM0"; */
 "WfD-Nd-kM0.ibShadowedToolTip" = "Tag eingeben und mit Return Taste zu Dokument Attributen hinzufügen";
@@ -218,11 +212,11 @@
 /* Class = "NSTextFieldCell"; ibExternalAccessibilityHelp = "Observed Path"; ObjectID = "hox-RC-83t"; */
 "hox-RC-83t.ibExternalAccessibilityHelp" = "Überwachter Ordner";
 
-/* Class = "NSTextFieldCell"; placeholderString = "Please set the observed path ..."; ObjectID = "hox-RC-83t"; */
-"hox-RC-83t.placeholderString" = "Bitte überwachten Pfad setzen  ...";
+/* Class = "NSTextFieldCell"; placeholderString = "Please set the observed path …"; ObjectID = "hox-RC-83t"; */
+"hox-RC-83t.placeholderString" = "Bitte überwachten Pfad setzen …";
 
-/* Class = "NSButtonCell"; title = "Change"; ObjectID = "obQ-RK-Zgm"; */
-"obQ-RK-Zgm.title" = "Ändern";
+/* Class = "NSButtonCell"; title = "Change …"; ObjectID = "obQ-RK-Zgm"; */
+"obQ-RK-Zgm.title" = "Ändern …";
 
 /* Class = "NSTextFieldCell"; title = "Observed Folder:"; ObjectID = "z8O-Wh-LiY"; */
 "z8O-Wh-LiY.title" = "Überwachter Ordner";
@@ -247,3 +241,51 @@
 
 /* Class = "NSMenuItem"; title = "Enter Full Screen"; ObjectID = "iqX-xt-vZ6"; */
 "iqX-xt-vZ6.title" = "Vollbildmodus";
+
+/* Class = "NSViewController"; title = "Preferences"; ObjectID = "emn-JX-zbO"; */
+"emn-JX-zbO.title" = "Einstellungen";
+
+/* Class = "NSViewController"; title = "Donation"; ObjectID = "rWp-Co-RrU"; */
+"rWp-Co-RrU.title" = "Spenden";
+
+/* Class = "NSTextFieldCell"; title = "✔️"; ObjectID = "zWE-Hy-4ww"; */
+"zWE-Hy-4ww.title" = "✔️";
+
+/* Class = "NSTabViewItem"; ibExternalAccessibilityDescription = "Main preferences panel"; ObjectID = "XBq-Fl-zZt"; */
+"XBq-Fl-zZt.ibExternalAccessibilityDescription" = "Hauptseite der Einstellungen";
+
+/* Class = "NSTabViewItem"; ibExternalAccessibilityDescription = "Donation preferences tab"; ObjectID = "qZa-Lf-ldb"; */
+"qZa-Lf-ldb.ibExternalAccessibilityDescription" = "Spendenseite der Einstellungen";
+
+/* Class = "NSTextFieldCell"; title = "Tags:"; ObjectID = "Cvq-op-wAk"; */
+"Cvq-op-wAk.title" = "Tags:";
+
+/* Class = "NSButtonCell"; title = "From all archive folders"; ObjectID = "k8C-2q-WjN"; */
+"k8C-2q-WjN.title" = "Aus allen Archiv Ordnern";
+
+/* Class = "NSTextFieldCell"; title = "This may decrease the app speed for large archives."; ObjectID = "Tlv-Ku-QD7"; */
+"Tlv-Ku-QD7.title" = "Die Analyse aller Ordner kann bei einem großen Archiv die Geschwindigkeit der App beeinflussen.";
+
+/* Class = "NSButtonCell"; title = "Level 1"; ObjectID = "dY2-A7-5th"; */
+"dY2-A7-5th.title" = "Level 1";
+
+/* Class = "NSButtonCell"; title = "Level 2"; ObjectID = "5JW-68-xh8"; */
+"5JW-68-xh8.title" = "Level 2";
+
+/* Class = "NSButtonCell"; title = "Level 3"; ObjectID = "ndf-3x-jdp"; */
+"ndf-3x-jdp.title" = "Level 3";
+
+/* Class = "NSButtonCell"; title = "Level 1"; ObjectID = "nXe-2w-oqh"; */
+"nXe-2w-oqh.title" = "Level 1";
+
+/* Class = "NSButtonCell"; title = "Level 2"; ObjectID = "WpL-o2-oza"; */
+"WpL-o2-oza.title" = "Level 2";
+
+/* Class = "NSBox"; title = "One-Time Donation"; ObjectID = "alz-A4-A8z"; */
+"alz-A4-A8z.title" = "Einmalig";
+
+/* Class = "NSBox"; title = "Yearly Subscription"; ObjectID = "i7v-oz-zvL"; */
+"i7v-oz-zvL.title" = "Abo";
+
+/* Class = "NSTextFieldCell"; title = "Mac App Store Connection:"; ObjectID = "ywB-46-644"; */
+"ywB-46-644.title" = "Mac App Store Verbindung:";

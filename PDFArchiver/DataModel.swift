@@ -20,12 +20,29 @@ class DataModel: TagsDelegate {
     var prefs = Preferences()
     var documents: [Document]
     var tags: Set<Tag>
+    var store: IAPHelper
 
     init() {
+        let availableIds = Set(["DONATION_LEVEL1", "DONATION_LEVEL2", "DONATION_LEVEL3",
+                                "SUBSCRIPTION_LEVEL1", "SUBSCRIPTION_LEVEL2"])
+        self.store = IAPHelper(productIds: availableIds)
         self.documents = []
         self.tags = []
         self.prefs.delegate = self as TagsDelegate
         self.prefs.load()
+
+        // get the product list
+        self.updateMASStatus()
+    }
+
+    func updateMASStatus() {
+        self.store.requestProducts {success, products in
+            if success {
+                self.store.products = products!
+
+                NotificationCenter.default.post(name: Notification.Name("MASUpdateStatus"), object: true)
+            }
+        }
     }
 
     func addDocuments(paths: [URL]) {

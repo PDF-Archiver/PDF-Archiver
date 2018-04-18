@@ -14,7 +14,7 @@ struct Preferences {
     fileprivate var _archivePath: URL?
     fileprivate var _observedPath: URL?
     weak var delegate: TagsDelegate?
-    var analyseOnlyLatestFolders: Bool = true
+    var analyseAllFolders: Bool = true
     var observedPath: URL? {
         // ATTENTION: only set observed path, after an OpenPanel dialog
         get {
@@ -27,7 +27,7 @@ struct Preferences {
                 let bookmark = try newValue.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
                 UserDefaults.standard.set(bookmark, forKey: "observedPathWithSecurityScope")
             } catch let error as NSError {
-                os_log("Observed path bookmark Write Fails: %@", log: self.log, type: .error, error as CVarArg)
+                os_log("Observed path bookmark Write Fails: %@", log: self.log, type: .error, error.description)
             }
 
             self._observedPath = newValue
@@ -45,7 +45,7 @@ struct Preferences {
                 let bookmark = try newValue.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
                 UserDefaults.standard.set(bookmark, forKey: "securityScopeBookmark")
             } catch let error as NSError {
-                os_log("Bookmark Write Fails: %@", log: self.log, type: .error, error as CVarArg)
+                os_log("Bookmark Write Fails: %@", log: self.log, type: .error, error.description)
             }
 
             self._archivePath = newValue
@@ -61,11 +61,13 @@ struct Preferences {
         for tag in self.delegate?.getTagList() ?? Set<Tag>() {
             tags[tag.name] = tag.count
         }
-
         for (name, count) in tags where count < 1 {
             tags.removeValue(forKey: name)
         }
         UserDefaults.standard.set(tags, forKey: "tags")
+
+        // save the analyseOnlyLatestFolders flag
+        UserDefaults.standard.set(self.analyseAllFolders, forKey: "analyseOnlyLatestFolders")
     }
 
     mutating func load() {
@@ -78,7 +80,7 @@ struct Preferences {
                     os_log("Stale bookmark data!", log: self.log, type: .fault)
                 }
             } catch let error as NSError {
-                os_log("Bookmark Access failed: %@", log: self.log, type: .error, error.description as CVarArg)
+                os_log("Bookmark Access failed: %@", log: self.log, type: .error, error.description)
             }
         }
 
@@ -91,7 +93,7 @@ struct Preferences {
                     os_log("Stale bookmark data!", log: self.log, type: .fault)
                 }
             } catch let error as NSError {
-                os_log("Bookmark Access failed: %@", log: self.log, type: .error, error.description as CVarArg)
+                os_log("Bookmark Access failed: %@", log: self.log, type: .error, error.description)
             }
         }
 
@@ -102,6 +104,9 @@ struct Preferences {
             newTagList.insert(Tag(name: name, count: count))
         }
         self.delegate?.setTagList(tagList: newTagList)
+
+        // save the analyseOnlyLatestFolders flag
+        self.analyseAllFolders = UserDefaults.standard.bool(forKey: "analyseOnlyLatestFolders")
     }
 
     func getArchiveTags() {
@@ -125,7 +130,7 @@ struct Preferences {
         }
 
         // only use the latest two year folders by default
-        if self.analyseOnlyLatestFolders {
+        if !(self.analyseAllFolders) {
             folders = Array(folders.prefix(2))
         }
 

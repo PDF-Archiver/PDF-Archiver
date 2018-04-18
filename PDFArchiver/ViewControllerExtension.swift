@@ -12,9 +12,15 @@ import os.log
 extension ViewController {
     // MARK: - segue stuff
     override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
-        // preferences view controller delegate
-        if let prefsViewController = segue.destinationController as? PrefsViewController {
-            prefsViewController.delegate = self
+        guard let tabViewController = segue.destinationController
+            as? NSTabViewController else { return }
+
+        for controller in tabViewController.childViewControllers {
+            if let controller = controller as? MainPreferencesVC {
+                controller.delegate = self
+            } else if let controller = controller as? DonationPreferencesVC {
+                controller.delegate = self
+            }
         }
     }
 
@@ -46,6 +52,20 @@ extension ViewController {
         }
         self.dataModelInstance.prefs.getArchiveTags()
         self.dataModelInstance.prefs.archivePath?.stopAccessingSecurityScopedResource()
+
+        // access the file system and get the new documents
+        self.dataModelInstance.documents = []
+        if let observedPath = self.dataModelInstance.prefs.observedPath {
+            if !observedPath.startAccessingSecurityScopedResource() {
+                os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
+                return
+            }
+            self.dataModelInstance.addDocuments(paths: [observedPath])
+            observedPath.stopAccessingSecurityScopedResource()
+        }
+
+        // update the view
+        self.updateView(updatePDF: true)
     }
 
     @objc func zoomPDF(notification: NSNotification) {
@@ -169,7 +189,7 @@ extension ViewController {
         // test if element already exists in document tag table view
         if let documentTags = self.documentTagAC.content as? [Tag] {
             for tag in documentTags where tag.name == selectedTag.name {
-                os_log("Tag '%@' already found!", log: self.log, type: .error, selectedTag.name as CVarArg)
+                os_log("Tag '%@' already found!", log: self.log, type: .error, selectedTag.name)
                 return
             }
         }
@@ -236,7 +256,7 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
     }
 }
 
-extension ViewController: PrefsViewControllerDelegate {
+extension ViewController: PreferencesDelegate {
     func updateGUI() {
         self.updateView(updatePDF: true)
     }
