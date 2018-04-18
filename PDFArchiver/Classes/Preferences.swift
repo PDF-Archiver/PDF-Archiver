@@ -14,7 +14,7 @@ struct Preferences {
     fileprivate var _archivePath: URL?
     fileprivate var _observedPath: URL?
     weak var delegate: TagsDelegate?
-    var analyseOnlyLatestFolders: Bool = true
+    var analyseAllFolders: Bool = true
     var observedPath: URL? {
         // ATTENTION: only set observed path, after an OpenPanel dialog
         get {
@@ -61,11 +61,13 @@ struct Preferences {
         for tag in self.delegate?.getTagList() ?? Set<Tag>() {
             tags[tag.name] = tag.count
         }
-
         for (name, count) in tags where count < 1 {
             tags.removeValue(forKey: name)
         }
         UserDefaults.standard.set(tags, forKey: "tags")
+
+        // save the analyseOnlyLatestFolders flag
+        UserDefaults.standard.set(self.analyseAllFolders, forKey: "analyseOnlyLatestFolders")
     }
 
     mutating func load() {
@@ -102,6 +104,9 @@ struct Preferences {
             newTagList.insert(Tag(name: name, count: count))
         }
         self.delegate?.setTagList(tagList: newTagList)
+
+        // save the analyseOnlyLatestFolders flag
+        self.analyseAllFolders = UserDefaults.standard.bool(forKey: "analyseOnlyLatestFolders")
     }
 
     func getArchiveTags() {
@@ -125,7 +130,7 @@ struct Preferences {
         }
 
         // only use the latest two year folders by default
-        if self.analyseOnlyLatestFolders {
+        if !(self.analyseAllFolders) {
             folders = Array(folders.prefix(2))
         }
 

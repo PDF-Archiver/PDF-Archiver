@@ -502,7 +502,7 @@ Tag your document and save  it:</string>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Aga-Jg-klC">
                                 <rect key="frame" x="18" y="58" width="155" height="19"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Get tags:" id="Cvq-op-wAk">
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Tags:" id="Cvq-op-wAk">
                                     <font key="font" metaFont="systemSemibold" size="15"/>
                                     <color key="textColor" red="0.79329520460000003" green="0.25477233529999999" blue="0.30978807809999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -525,10 +525,13 @@ Tag your document and save  it:</string>
                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                             <font key="font" metaFont="systemSemibold" size="15"/>
                                         </buttonCell>
+                                        <connections>
+                                            <action selector="tagsCheckButtonClicked:" target="emn-JX-zbO" id="BFe-1y-lqq"/>
+                                        </connections>
                                     </button>
                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="Qzn-ZO-Zxh">
                                         <rect key="frame" x="21" y="5" width="476" height="17"/>
-                                        <textFieldCell key="cell" allowsUndo="NO" sendsActionOnEndEditing="YES" title="This may decrease the app speed for large archives." id="Tlv-Ku-QD7">
+                                        <textFieldCell key="cell" allowsUndo="NO" sendsActionOnEndEditing="YES" title="Analysing all folders may decrease the app speed for large archives." id="Tlv-Ku-QD7">
                                             <font key="font" metaFont="system"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -571,6 +574,7 @@ Tag your document and save  it:</string>
                     <connections>
                         <outlet property="archivePathTextField" destination="X5U-R0-ENH" id="vSN-68-eIZ"/>
                         <outlet property="observedPathTextField" destination="hB8-Fa-RBW" id="1Cy-Lg-BQS"/>
+                        <outlet property="tagsCheckButton" destination="PpK-o3-Nnb" id="e7Q-EZ-HHd"/>
                     </connections>
                 </viewController>
                 <customObject id="CD2-Zr-up1" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

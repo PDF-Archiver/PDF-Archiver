@@ -13,8 +13,8 @@ class MainPreferencesVC: PreferencesVC {
     weak var delegate: PreferencesDelegate?
 
     @IBOutlet weak var archivePathTextField: NSTextField!
-
     @IBOutlet weak var observedPathTextField: NSTextField!
+    @IBOutlet weak var tagsCheckButton: NSButton!
 
     @IBAction func changeArchivePathButton(_ sender: Any) {
         let openPanel = NSOpenPanel()
@@ -52,6 +52,13 @@ class MainPreferencesVC: PreferencesVC {
             self.delegate?.updateGUI()
         }
     }
+    @IBAction func tagsCheckButtonClicked(_ sender: NSButton) {
+        if sender.state == .on {
+            self.dataModel?.prefs.analyseAllFolders = true
+        } else {
+            self.dataModel?.prefs.analyseAllFolders = false
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,6 +72,13 @@ class MainPreferencesVC: PreferencesVC {
         }
         if let observedPath = self.dataModel?.prefs.observedPath {
             self.observedPathTextField.stringValue = observedPath.path
+        }
+
+        // update tags
+        if !(self.dataModel?.prefs.analyseAllFolders ?? false) {
+            self.tagsCheckButton.state = .off
+        } else {
+            self.tagsCheckButton.state = .on
         }
     }
 

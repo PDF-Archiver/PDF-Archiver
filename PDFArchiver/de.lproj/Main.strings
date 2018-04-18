@@ -257,14 +257,14 @@
 /* Class = "NSTabViewItem"; ibExternalAccessibilityDescription = "Donation preferences tab"; ObjectID = "qZa-Lf-ldb"; */
 "qZa-Lf-ldb.ibExternalAccessibilityDescription" = "Spendenseite der Einstellungen";
 
-/* Class = "NSTextFieldCell"; title = "Get tags:"; ObjectID = "Cvq-op-wAk"; */
-"Cvq-op-wAk.title" = "Hole Tags:";
+/* Class = "NSTextFieldCell"; title = "Tags:"; ObjectID = "Cvq-op-wAk"; */
+"Cvq-op-wAk.title" = "Tags:";
 
 /* Class = "NSButtonCell"; title = "From all archive folders"; ObjectID = "k8C-2q-WjN"; */
-"k8C-2q-WjN.title" = "Alle Archiv Ordner";
+"k8C-2q-WjN.title" = "Aus allen Archiv Ordnern";
 
 /* Class = "NSTextFieldCell"; title = "This may decrease the app speed for large archives."; ObjectID = "Tlv-Ku-QD7"; */
-"Tlv-Ku-QD7.title" = "Dies kann bei einem großen Archiv die Geschwindigkeit der App beeinflussen.";
+"Tlv-Ku-QD7.title" = "Die Analyse aller Ordner kann bei einem großen Archiv die Geschwindigkeit der App beeinflussen.";
 
 /* Class = "NSButtonCell"; title = "Level 1"; ObjectID = "dY2-A7-5th"; */
 "dY2-A7-5th.title" = "Level 1";
