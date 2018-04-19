@@ -16,6 +16,10 @@
 
 "no_archive" = "Kein Archiv Pfad gefunden!";
 
+"payment_complete" = "Bezahlung abgeschlossen!";
+
+"payment_thanks" = "Vielen Dank für Ihre Spende. Dies hilft bei der Weiterentwicklung des Projektes.";
+
 "renaming_failed" = "Umbenennen fehlgeschlagen!";
 
 "select_preferences" = "Bitte Pfad in den Einstellungen auswählen.";

@@ -263,7 +263,7 @@
 /* Class = "NSButtonCell"; title = "From all archive folders"; ObjectID = "k8C-2q-WjN"; */
 "k8C-2q-WjN.title" = "Aus allen Archiv Ordnern";
 
-/* Class = "NSTextFieldCell"; title = "This may decrease the app speed for large archives."; ObjectID = "Tlv-Ku-QD7"; */
+/* Class = "NSTextFieldCell"; title = "Analysing all folders may decrease the app speed for large archives."; ObjectID = "Tlv-Ku-QD7"; */
 "Tlv-Ku-QD7.title" = "Die Analyse aller Ordner kann bei einem großen Archiv die Geschwindigkeit der App beeinflussen.";
 
 /* Class = "NSButtonCell"; title = "Level 1"; ObjectID = "dY2-A7-5th"; */
@@ -282,10 +282,10 @@
 "WpL-o2-oza.title" = "Level 2";
 
 /* Class = "NSBox"; title = "One-Time Donation"; ObjectID = "alz-A4-A8z"; */
-"alz-A4-A8z.title" = "Einmalig";
+"alz-A4-A8z.title" = "Einmalige Spende";
 
 /* Class = "NSBox"; title = "Yearly Subscription"; ObjectID = "i7v-oz-zvL"; */
-"i7v-oz-zvL.title" = "Abo";
+"i7v-oz-zvL.title" = "Jährliches Abo";
 
 /* Class = "NSTextFieldCell"; title = "Mac App Store Connection:"; ObjectID = "ywB-46-644"; */
 "ywB-46-644.title" = "Mac App Store Verbindung:";

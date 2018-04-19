@@ -16,6 +16,10 @@
 
 "no_archive" = "No archive path found!";
 
+"payment_complete" = "Payment completed!";
+
+"payment_thanks" = "Thank you for donating to this project. It helps to continue develop this app.";
+
 "renaming_failed" = "Renaming failed!";
 
 "select_preferences" = "Please select one in the preferences.";

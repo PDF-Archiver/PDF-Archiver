@@ -111,10 +111,14 @@ class DonationPreferencesVC: PreferencesVC {
                 continue
             }
 
+            // set button to localized price
             selectedButton.title = product.localizedPrice
 
-            if !(self.dataModel?.store.isProductPurchased(product.productIdentifier) ?? false) {
+            // disable already subscripted buttons
+            if self.dataModel?.store.isProductPurchased(product.productIdentifier) ?? false,
+                product.productIdentifier == "SUBSCRIPTION_LEVEL1" || product.productIdentifier == "SUBSCRIPTION_LEVEL2" {
                 print(product.productIdentifier)
+                selectedButton.isEnabled = false
             }
 
         }

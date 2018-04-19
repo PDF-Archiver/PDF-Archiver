@@ -132,6 +132,7 @@ extension IAPHelper: SKPaymentTransactionObserver {
             case .purchased:
                 complete(transaction: transaction)
                 os_log("Payment completed.", log: self.log, type: .debug)
+                dialogOK(messageKey: "payment_complete", infoKey: "payment_thanks", style: .informational)
             case .failed:
                 fail(transaction: transaction)
                 os_log("Payment failed.", log: self.log, type: .debug)
