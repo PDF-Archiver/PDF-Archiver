@@ -581,10 +581,10 @@ Tag your document and save  it:</string>
             </objects>
             <point key="canvasLocation" x="1747" y="1295.5"/>
         </scene>
-        <!--Donation-->
+        <!--Donation (Beta)-->
         <scene sceneID="lPK-1g-uGP">
             <objects>
-                <viewController title="Donation" identifier="DonationsVC" storyboardIdentifier="DonationsVC" id="rWp-Co-RrU" customClass="DonationPreferencesVC" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Donation (Beta)" identifier="DonationsVC" storyboardIdentifier="DonationsVC" id="rWp-Co-RrU" customClass="DonationPreferencesVC" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="vFK-Vc-7T6">
                         <rect key="frame" x="0.0" y="0.0" width="490" height="186"/>
                         <autoresizingMask key="autoresizingMask"/>
