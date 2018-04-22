@@ -17,31 +17,11 @@ class DonationPreferencesVC: PreferencesVC {
     @IBOutlet weak var donationButton3: NSButton!
     @IBOutlet weak var subscriptionButton1: NSButton!
     @IBOutlet weak var subscriptionButton2: NSButton!
+    @IBOutlet weak var donationButton: NSButton!
 
-    @IBOutlet weak var statusView: NSImageView!
     var dataModel: DataModel?
     weak var delegate: PreferencesDelegate?
     var productsRequestCompletionHandler: ProductsRequestCompletionHandler?
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        let notificationCenter = NotificationCenter.default
-        notificationCenter.addObserver(self, selector: #selector(self.masUpdateStatus(available:)),
-                                       name: Notification.Name("MASUpdateStatus"), object: nil)
-
-        // get the data model from the main view controller
-        self.dataModel = self.delegate?.getDataModel()
-
-        // set the status image
-        if self.dataModel?.store.products.isEmpty ?? true {
-            self.statusView.image = NSImage(named: .statusUnavailable)
-        } else {
-            self.statusView.image = NSImage(named: .statusAvailable)
-        }
-
-        self.updateButtonTitles()
-    }
 
     @IBAction func donationButton1Clicked(_ sender: NSButton) {
         self.buyProduct(identifier: "DONATION_LEVEL1")
@@ -64,11 +44,30 @@ class DonationPreferencesVC: PreferencesVC {
     }
 
     @IBAction func statusImageClicked(_ sender: Any) {
-        print("CLICKEDDDDDDDDDDDDDDs")
         if connectedToNetwork(),
            self.dataModel?.store.products.isEmpty ?? true {
             self.dataModel?.updateMASStatus()
         }
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        let notificationCenter = NotificationCenter.default
+        notificationCenter.addObserver(self, selector: #selector(self.masUpdateStatus(available:)),
+                                       name: Notification.Name("MASUpdateStatus"), object: nil)
+
+        // get the data model from the main view controller
+        self.dataModel = self.delegate?.getDataModel()
+        self.updateButtonTitles()
+
+        // set the status image
+        if self.dataModel?.store.products.isEmpty ?? true {
+            self.donationButton.image = NSImage(named: .statusUnavailable)
+        } else {
+            self.donationButton.image = NSImage(named: .statusAvailable)
+        }
+
     }
 
     override func viewWillDisappear() {
@@ -84,9 +83,9 @@ class DonationPreferencesVC: PreferencesVC {
     @objc func masUpdateStatus(available: Bool) {
         DispatchQueue.main.async {
             if available {
-                self.statusView.image = NSImage(named: .statusAvailable)
+                self.donationButton.image = NSImage(named: .statusAvailable)
             } else {
-                self.statusView.image = NSImage(named: .statusUnavailable)
+                self.donationButton.image = NSImage(named: .statusUnavailable)
             }
 
             self.updateButtonTitles()
@@ -117,7 +116,6 @@ class DonationPreferencesVC: PreferencesVC {
             // disable already subscripted buttons
             if self.dataModel?.store.isProductPurchased(product.productIdentifier) ?? false,
                 product.productIdentifier == "SUBSCRIPTION_LEVEL1" || product.productIdentifier == "SUBSCRIPTION_LEVEL2" {
-                print(product.productIdentifier)
                 selectedButton.isEnabled = false
             }
 

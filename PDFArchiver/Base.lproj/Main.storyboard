@@ -586,11 +586,11 @@ Tag your document and save  it:</string>
             <objects>
                 <viewController title="Donation (Beta)" identifier="DonationsVC" storyboardIdentifier="DonationsVC" id="rWp-Co-RrU" customClass="DonationPreferencesVC" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="vFK-Vc-7T6">
-                        <rect key="frame" x="0.0" y="0.0" width="490" height="186"/>
+                        <rect key="frame" x="0.0" y="0.0" width="490" height="189"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <box autoresizesSubviews="NO" borderType="line" title="One-Time Donation" translatesAutoresizingMaskIntoConstraints="NO" id="alz-A4-A8z">
-                                <rect key="frame" x="17" y="16" width="216" height="150"/>
+                                <rect key="frame" x="17" y="19" width="216" height="150"/>
                                 <view key="contentView" id="yc2-iU-djq">
                                     <rect key="frame" x="1" y="1" width="214" height="128"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -649,7 +649,7 @@ Tag your document and save  it:</string>
                                 <font key="titleFont" metaFont="systemSemibold" size="15"/>
                             </box>
                             <box autoresizesSubviews="NO" borderType="line" title="Yearly Subscription" translatesAutoresizingMaskIntoConstraints="NO" id="i7v-oz-zvL">
-                                <rect key="frame" x="257" y="57" width="216" height="109"/>
+                                <rect key="frame" x="257" y="60" width="216" height="109"/>
                                 <view key="contentView" id="R27-Hj-ORq">
                                     <rect key="frame" x="1" y="1" width="214" height="87"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -697,19 +697,8 @@ Tag your document and save  it:</string>
                                 </constraints>
                                 <font key="titleFont" metaFont="systemSemibold" size="15"/>
                             </box>
-                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="psX-g9-FRY">
-                                <rect key="frame" x="450" y="21" width="15" height="15"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="15" id="9xQ-OS-XPT"/>
-                                    <constraint firstAttribute="height" constant="15" id="QHu-4A-oqj"/>
-                                </constraints>
-                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSStatusNone" id="Mm7-eD-3b6"/>
-                                <connections>
-                                    <action selector="donationButton1Clicked:" target="rWp-Co-RrU" id="bvX-qo-kwq"/>
-                                </connections>
-                            </imageView>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="sL0-ry-Buz">
-                                <rect key="frame" x="271" y="20" width="171" height="17"/>
+                                <rect key="frame" x="274" y="23" width="171" height="17"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="17" id="ouW-Z0-oNf"/>
                                 </constraints>
@@ -719,26 +708,40 @@ Tag your document and save  it:</string>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="y11-yy-btf">
+                                <rect key="frame" x="451" y="22" width="16" height="16"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="12" id="IB7-Fa-ABb"/>
+                                    <constraint firstAttribute="width" constant="12" id="PhT-M7-4Ap"/>
+                                </constraints>
+                                <buttonCell key="cell" type="help" bezelStyle="helpButton" image="NSStatusNone" imagePosition="only" alignment="center" state="on" borderStyle="border" transparent="YES" imageScaling="proportionallyDown" inset="2" id="NWO-uV-DRS">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <connections>
+                                        <action selector="statusImageClicked:" target="rWp-Co-RrU" id="hmB-tb-JCd"/>
+                                    </connections>
+                                </buttonCell>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstItem="i7v-oz-zvL" firstAttribute="leading" secondItem="alz-A4-A8z" secondAttribute="trailing" constant="30" id="9v0-Wy-311"/>
-                            <constraint firstItem="sL0-ry-Buz" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="vFK-Vc-7T6" secondAttribute="leading" constant="20" symbolic="YES" id="Dbo-uh-82W"/>
-                            <constraint firstItem="psX-g9-FRY" firstAttribute="centerY" secondItem="sL0-ry-Buz" secondAttribute="centerY" id="HOO-GX-WZC"/>
+                            <constraint firstAttribute="trailing" secondItem="y11-yy-btf" secondAttribute="trailing" constant="25" id="DNx-Ok-LXW"/>
+                            <constraint firstItem="sL0-ry-Buz" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="vFK-Vc-7T6" secondAttribute="leading" constant="20" symbolic="YES" id="EHE-qc-GgK"/>
                             <constraint firstItem="alz-A4-A8z" firstAttribute="leading" secondItem="vFK-Vc-7T6" secondAttribute="leading" constant="20" id="MGk-IC-0iP"/>
                             <constraint firstItem="alz-A4-A8z" firstAttribute="top" secondItem="vFK-Vc-7T6" secondAttribute="top" constant="20" id="Nmp-uX-ka0"/>
+                            <constraint firstItem="y11-yy-btf" firstAttribute="centerY" secondItem="sL0-ry-Buz" secondAttribute="centerY" id="cEA-My-L8f"/>
                             <constraint firstItem="i7v-oz-zvL" firstAttribute="top" secondItem="vFK-Vc-7T6" secondAttribute="top" constant="20" id="cGf-Z1-5g1"/>
-                            <constraint firstAttribute="bottom" secondItem="alz-A4-A8z" secondAttribute="bottom" constant="20" id="h32-qW-qGI"/>
-                            <constraint firstItem="psX-g9-FRY" firstAttribute="leading" secondItem="sL0-ry-Buz" secondAttribute="trailing" constant="10" id="mVO-hf-oPv"/>
+                            <constraint firstAttribute="bottom" secondItem="y11-yy-btf" secondAttribute="bottom" constant="25" id="jLV-MW-NSx"/>
                             <constraint firstItem="sL0-ry-Buz" firstAttribute="bottom" secondItem="alz-A4-A8z" secondAttribute="bottom" id="pg6-cb-rhV"/>
+                            <constraint firstItem="y11-yy-btf" firstAttribute="leading" secondItem="sL0-ry-Buz" secondAttribute="trailing" constant="10" id="x2g-fu-4xr"/>
                             <constraint firstAttribute="trailing" secondItem="i7v-oz-zvL" secondAttribute="trailing" constant="20" id="xII-mT-yJN"/>
-                            <constraint firstAttribute="trailing" secondItem="psX-g9-FRY" secondAttribute="trailing" constant="25" id="ypk-XV-dBx"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="donationButton" destination="y11-yy-btf" id="u9e-sK-ZsI"/>
                         <outlet property="donationButton1" destination="pjt-37-tlz" id="jj2-Cz-xbO"/>
                         <outlet property="donationButton2" destination="OLw-Bf-fGp" id="9zf-tj-Gxv"/>
                         <outlet property="donationButton3" destination="Zkb-C5-cZI" id="05n-XA-uxH"/>
-                        <outlet property="statusView" destination="psX-g9-FRY" id="3mT-WP-hW8"/>
                         <outlet property="subscriptionButton1" destination="5gc-Ox-MzG" id="9Qm-Sr-3OT"/>
                         <outlet property="subscriptionButton2" destination="qB3-wG-Std" id="eaP-yx-Htn"/>
                     </connections>
@@ -1122,7 +1125,7 @@ Tag your document and save  it:</string>
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                    <rect key="frame" x="32" y="1" width="195" height="17"/>
+                                                                    <rect key="frame" x="31.5" y="1" width="195" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">

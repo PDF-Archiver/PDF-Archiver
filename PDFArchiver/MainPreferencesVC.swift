@@ -58,6 +58,15 @@ class MainPreferencesVC: PreferencesVC {
         } else {
             self.dataModel?.prefs.analyseAllFolders = false
         }
+
+        // access the file system and update the GUI
+        if !(self.dataModel?.prefs.archivePath?.startAccessingSecurityScopedResource() ?? false) {
+            os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
+            return
+        }
+        self.dataModel?.prefs.getArchiveTags()
+        self.dataModel?.prefs.archivePath?.stopAccessingSecurityScopedResource()
+        self.delegate?.updateGUI()
     }
 
     override func viewDidLoad() {
