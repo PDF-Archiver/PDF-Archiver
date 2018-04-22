@@ -45,13 +45,8 @@ extension ViewController {
     @objc func updateTags() {
         os_log("Setting archive path, e.g. update tag list.", log: self.log, type: .debug)
 
-        // access the file system
-        if !(self.dataModelInstance.prefs.archivePath?.startAccessingSecurityScopedResource() ?? false) {
-            os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-            return
-        }
+        // get tags
         self.dataModelInstance.prefs.getArchiveTags()
-        self.dataModelInstance.prefs.archivePath?.stopAccessingSecurityScopedResource()
 
         // access the file system and get the new documents
         self.dataModelInstance.documents = []

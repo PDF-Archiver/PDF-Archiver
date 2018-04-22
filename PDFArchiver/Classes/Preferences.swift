@@ -114,6 +114,11 @@ struct Preferences {
             os_log("No archive path selected, could not get old tags.", log: self.log, type: .error)
             return
         }
+        // access the file system
+        if !(self.archivePath?.startAccessingSecurityScopedResource() ?? false) {
+            os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
+            return
+        }
 
         // get year archive folders
         var folders = [URL]()
@@ -155,6 +160,10 @@ struct Preferences {
             newTagList.insert(Tag(name: name, count: count))
         }
         self.delegate?.setTagList(tagList: newTagList)
+
+        // stop accessing the file system
+        self.archivePath?.stopAccessingSecurityScopedResource()
+
     }
 
 }
