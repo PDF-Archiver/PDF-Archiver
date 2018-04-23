@@ -7,44 +7,67 @@
 //
 
 import Foundation
+import os.log
 
 protocol TagsDelegate: class {
     func setTagList(tagList: Set<Tag>)
     func getTagList() -> Set<Tag>
 }
 
-class DataModel: TagsDelegate {    
-    var prefs: Preferences?
-    var documents: [Document]?
-    var tags: Set<Tag>?
-    var documentIdx: Int? {
-        get {
-            return self._documentIdx
-        }
-        set {
-            let documents = self.documents ?? []
-            if let raw = newValue, raw < documents.count {
-                self._documentIdx = raw
-            } else {
-                self._documentIdx = 0
+class DataModel: TagsDelegate {
+    let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "DataModel")
+    weak var viewControllerDelegate: ViewControllerDelegate?
+    var prefs = Preferences()
+    var documents: [Document]
+    var tags: Set<Tag>
+    var store: IAPHelper
+
+    init() {
+        let availableIds = Set(["DONATION_LEVEL1", "DONATION_LEVEL2", "DONATION_LEVEL3",
+                                "SUBSCRIPTION_LEVEL1", "SUBSCRIPTION_LEVEL2"])
+        self.store = IAPHelper(productIds: availableIds)
+        self.documents = []
+        self.tags = []
+        self.prefs.delegate = self as TagsDelegate
+        self.prefs.load()
+
+        // get the product list
+        self.updateMASStatus()
+    }
+
+    func updateMASStatus() {
+        self.store.requestProducts {success, products in
+            if success {
+                self.store.products = products!
+
+                NotificationCenter.default.post(name: Notification.Name("MASUpdateStatus"), object: true)
             }
         }
     }
-    fileprivate var _documentIdx: Int?
 
-    init() {
-        self.prefs = Preferences(delegate: self as TagsDelegate)
-    }
-    
-    func addNewDocuments(paths: [URL]) {
-        for pdf_path in paths {
-            let selectedDocument = Document(path: pdf_path, delegate: self as TagsDelegate)
-            self.documents?.append(selectedDocument)
+    func addDocuments(paths: [URL]) {
+        // clear old documents
+        self.documents = []
+
+        // access the file system and add documents to the data model
+        if !(self.prefs.archivePath?.startAccessingSecurityScopedResource() ?? false) {
+            os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
+            return
         }
+        for path in paths {
+            let files = getPDFs(url: path)
+            for file in files {
+                self.documents.append(Document(path: file, delegate: self as TagsDelegate))
+            }
+        }
+        self.prefs.archivePath?.stopAccessingSecurityScopedResource()
+
+        // add documents to the GUI
+        self.viewControllerDelegate?.setDocuments(documents: documents)
     }
-    
+
     func filterTags(prefix: String) -> Set<Tag> {
-        let tags = (self.tags ?? []).filter { tag in
+        let tags = self.tags.filter { tag in
             return tag.name.hasPrefix(prefix)
         }
         return tags
@@ -53,10 +76,9 @@ class DataModel: TagsDelegate {
     // MARK: - delegate functions
     func setTagList(tagList: Set<Tag>) {
         self.tags = tagList
-        NotificationCenter.default.post(name: Notification.Name("UpdateViewController"), object: nil)
     }
 
     func getTagList() -> Set<Tag> {
-        return self.tags ?? []
+        return self.tags
     }
 }

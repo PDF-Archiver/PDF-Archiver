@@ -9,7 +9,11 @@
 import Quartz
 import os.log
 
-class ViewController: NSViewController {
+protocol ViewControllerDelegate: class {
+    func setDocuments(documents: [Document])
+}
+
+class ViewController: NSViewController, ViewControllerDelegate {
     let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "MainViewController")
     var dataModelInstance = DataModel()
 
@@ -32,122 +36,133 @@ class ViewController: NSViewController {
     @IBAction func datePickDone(_ sender: NSDatePicker) {
         // test if a document is selected
         guard !self.documentAC.selectedObjects.isEmpty,
-            let idx = self.dataModelInstance.documentIdx,
-            let documents = self.dataModelInstance.documents else {
+            let selectedDocument = self.documentAC.selectedObjects.first as? Document else {
                 return
         }
 
         // set the date of the pdf document
-        let document = documents[idx] as Document
-        document.documentDate = sender.dateValue
+        selectedDocument.documentDate = sender.dateValue
     }
 
     @IBAction func descriptionDone(_ sender: NSTextField) {
         // test if a document is selected
         guard !self.documentAC.selectedObjects.isEmpty,
-              let idx = self.dataModelInstance.documentIdx,
-              let documents = self.dataModelInstance.documents else {
+              let selectedDocument = self.documentAC.selectedObjects.first as? Document else {
             return
         }
 
         // set the description of the pdf document
-        let document = documents[idx] as Document
-        document.documentDescription = sender.stringValue
+        selectedDocument.documentDescription = sender.stringValue
+    }
+
+    @IBAction func clickedDocumentTableView(_ sender: NSTableView) {
+        if self.documentAC.selectionIndex >= 0 {
+            // pick a document and save the tags in the document tag list
+            self.updateView(updatePDF: true)
+        }
     }
 
     @IBAction func clickedDocumentTagTableView(_ sender: NSTableView) {
         // test if the document tag table is empty
         guard !self.documentAC.selectedObjects.isEmpty,
-            let idx = self.dataModelInstance.documentIdx,
-            let documents = self.dataModelInstance.documents,
+            let selectedDocument = self.documentAC.selectedObjects.first as? Document,
             let obj = self.documentTagAC.selectedObjects.first as? Tag else {
                 return
         }
 
         // remove the selected element
-        var i = 0
-        var documentTags = documents[idx].documentTags ?? []
-        for tag in documentTags {
-            if tag.name == obj.name {
-                documentTags.remove(at: i)
-                tag.count -= 1
+        var documentTags = selectedDocument.documentTags ?? []
+        for (index, tag) in documentTags.enumerated() where tag.name == obj.name {
+            documentTags.remove(at: index)
+            tag.count -= 1
 
-                self.dataModelInstance.documents![idx].documentTags = documentTags
-                self.updateViewController(updatePDF: false)
-                return
-            }
-            i += 1
+            selectedDocument.documentTags = documentTags
+            self.updateView(updatePDF: false)
+            break
         }
     }
-    
+
     @IBAction func clickedTagTableView(_ sender: NSTableView) {
         if let selectedTag = self.tagAC.selectedObjects.first as? Tag {
             self.addDocumentTag(tag: selectedTag,
                                 new: false)
+            self.updateView(updatePDF: false)
         }
     }
-    
+
     @IBAction func browseFile(sender: AnyObject) {
         self.getPDFDocuments()
+        // no need to update the view here - it gets updated at the end of self.getPDFDocuments()
     }
-    
+
     @IBAction func saveDocumentButton(_ sender: NSButton) {
         self.saveDocument()
+        self.updateView(updatePDF: true)
+    }
+
+    func setDocuments(documents: [Document]) {
+        self.documentAC.content = documents
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // get the security scope bookmark [https://stackoverflow.com/a/35863729]
-        var archivePath: NSURL? = nil
-        if let bookmarkData = UserDefaults.standard.object(forKey: "securityScopeBookmark") as? Data {
-            do {
-                archivePath = try NSURL.init(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: nil)
-                if let archivePathTmp = archivePath  {
-                    archivePathTmp.startAccessingSecurityScopedResource()
-                }
-            } catch let error as NSError {
-                os_log("Bookmark Access failed: %@", log: self.log, type: .error, error.description as CVarArg)
-            }
-        }
+
+        // set the data model VC delegate
+        self.dataModelInstance.viewControllerDelegate = self
 
         // set the date picker to canadian local, e.g. YYYY-MM-DD
         self.datePicker.locale = Locale.init(identifier: "en_CA")
 
+        // access the file system and get the new documents
+        if let observedPath = self.dataModelInstance.prefs.observedPath {
+            if !observedPath.startAccessingSecurityScopedResource() {
+                os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
+                return
+            }
+            self.dataModelInstance.addDocuments(paths: [observedPath])
+            observedPath.stopAccessingSecurityScopedResource()
+        }
+
         // set the array controller
         self.tagAC.content = self.dataModelInstance.tags
-        
         self.documentAC.content = self.dataModelInstance.documents
 
         // MARK: - Notification Observer
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(self.showPreferences),
                                        name: Notification.Name("ShowPreferences"), object: nil)
-        notificationCenter.addObserver(self, selector: #selector(self.updateViewController),
-                                       name: Notification.Name("UpdateViewController"), object: nil)
         notificationCenter.addObserver(self, selector: #selector(self.resetCache),
                                        name: Notification.Name("ResetCache"), object: nil)
         notificationCenter.addObserver(self, selector: #selector(self.showOnboarding),
                                        name: Notification.Name("ShowOnboarding"), object: nil)
         notificationCenter.addObserver(self, selector: #selector(self.updateTags),
                                        name: Notification.Name("UpdateTags"), object: nil)
+        notificationCenter.addObserver(self, selector: #selector(self.zoomPDF(notification:)),
+                                       name: Notification.Name("ChangeZoom"), object: nil)
 
         // MARK: - delegates
-        tagSearchField.delegate = self
-        descriptionField.delegate = self
+        self.tagSearchField.delegate = self
+        self.descriptionField.delegate = self
 
         // add sorting to tag fields
-        self.tagTableView.sortDescriptors = [NSSortDescriptor(key: "count", ascending: false), NSSortDescriptor(key: "name", ascending: true)]
-        
+        self.documentAC.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true),
+                                           NSSortDescriptor(key: "documentDone", ascending: false)]
+        self.tagTableView.sortDescriptors = [NSSortDescriptor(key: "count", ascending: false),
+                                             NSSortDescriptor(key: "name", ascending: true)]
+
         // set some PDF View settings
-//         self.pdfContentView.displayMode = PDFDisplayMode.singlePageContinuous
         self.pdfContentView.displayMode = PDFDisplayMode.singlePage
         self.pdfContentView.autoScales = true
         if #available(OSX 10.13, *) {
             self.pdfContentView.acceptsDraggedFiles = false
         }
         self.pdfContentView.interpolationQuality = PDFInterpolationQuality.low
+
+        // update the view after all the settigns
+        self.documentAC.setSelectionIndex(0)
+        self.updateView(updatePDF: true)
     }
-    
+
     override func viewWillAppear() {
         let layout = Layout()
 
@@ -174,7 +189,7 @@ class ViewController: NSViewController {
         self.tagSearchView.layer?.backgroundColor = layout.fieldBackgroundColorLight
         self.tagSearchView.layer?.cornerRadius = layout.cornerRadius
     }
-    
+
     override func viewDidAppear() {
         // show onboarding view
         if !UserDefaults.standard.bool(forKey: "onboardingShown") {
@@ -183,15 +198,24 @@ class ViewController: NSViewController {
     }
 
     override func viewDidDisappear() {
-        if let prefs = self.dataModelInstance.prefs,
-           let archivePath = self.dataModelInstance.prefs?.archivePath {
-            prefs.save()
-            os_log("Save complete: %@", log: self.log, type: .debug, archivePath as CVarArg)
+        if let archivePath = self.dataModelInstance.prefs.archivePath {
+            // reset the tag count to the archived documents
+            for document in (self.documentAC.arrangedObjects as? [Document]) ?? [] where document.documentDone == "" {
+                for tag in document.documentTags ?? [] {
+                    tag.count -= 1
+                }
+            }
+
+            // save the tag count
+            self.dataModelInstance.prefs.save()
+            os_log("Save complete: %@", log: self.log, type: .debug, archivePath.absoluteString)
+
         } else {
             os_log("Save possible.", log: self.log, type: .debug)
         }
-        
+
         // quit application if the window disappears
         NSApplication.shared.terminate(self)
     }
+
 }

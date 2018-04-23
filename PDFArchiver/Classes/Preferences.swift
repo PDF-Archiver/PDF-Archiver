@@ -12,8 +12,29 @@ import os.log
 struct Preferences {
     let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "DataModel")
     fileprivate var _archivePath: URL?
+    fileprivate var _observedPath: URL?
     weak var delegate: TagsDelegate?
+    var analyseAllFolders: Bool = true
+    var observedPath: URL? {
+        // ATTENTION: only set observed path, after an OpenPanel dialog
+        get {
+            return self._observedPath
+        }
+        set {
+            guard let newValue = newValue else { return }
+            // save the security scope bookmark [https://stackoverflow.com/a/35863729]
+            do {
+                let bookmark = try newValue.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
+                UserDefaults.standard.set(bookmark, forKey: "observedPathWithSecurityScope")
+            } catch let error as NSError {
+                os_log("Observed path bookmark Write Fails: %@", log: self.log, type: .error, error.description)
+            }
+
+            self._observedPath = newValue
+        }
+    }
     var archivePath: URL? {
+        // ATTENTION: only set archive path, after an OpenPanel dialog
         get {
             return self._archivePath
         }
@@ -24,39 +45,57 @@ struct Preferences {
                 let bookmark = try newValue.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
                 UserDefaults.standard.set(bookmark, forKey: "securityScopeBookmark")
             } catch let error as NSError {
-                os_log("Bookmark Write Fails: %@", log: self.log, type: .error, error as CVarArg)
+                os_log("Bookmark Write Fails: %@", log: self.log, type: .error, error.description)
             }
-            
+
             self._archivePath = newValue
             self.getArchiveTags()
-            self.save()
         }
     }
 
-    init(delegate: TagsDelegate) {
-        self.delegate = delegate
-        self.load()
-    }
-
     func save() {
-        // save the archive path
-        UserDefaults.standard.set(self._archivePath, forKey: "archivePath")
+        // there is no need to save the archive/observed path here - see the setter of the variable
 
         // save the last tags (with count > 0)
         var tags: [String: Int] = [:]
         for tag in self.delegate?.getTagList() ?? Set<Tag>() {
             tags[tag.name] = tag.count
         }
-        
         for (name, count) in tags where count < 1 {
             tags.removeValue(forKey: name)
         }
         UserDefaults.standard.set(tags, forKey: "tags")
+
+        // save the analyseOnlyLatestFolders flag
+        UserDefaults.standard.set(self.analyseAllFolders, forKey: "analyseOnlyLatestFolders")
     }
 
     mutating func load() {
-        // load archive path
-        self._archivePath = UserDefaults.standard.url(forKey: "archivePath")
+        // load the archive path via the security scope bookmark [https://stackoverflow.com/a/35863729]
+        if let bookmarkData = UserDefaults.standard.object(forKey: "securityScopeBookmark") as? Data {
+            do {
+                var staleBookmarkData = false
+                self._archivePath = try URL.init(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &staleBookmarkData)
+                if staleBookmarkData {
+                    os_log("Stale bookmark data!", log: self.log, type: .fault)
+                }
+            } catch let error as NSError {
+                os_log("Bookmark Access failed: %@", log: self.log, type: .error, error.description)
+            }
+        }
+
+        // load the observed path via the security scope bookmark [https://stackoverflow.com/a/35863729]
+        if let bookmarkData = UserDefaults.standard.object(forKey: "observedPathWithSecurityScope") as? Data {
+            do {
+                var staleBookmarkData = false
+                self._observedPath = try URL.init(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &staleBookmarkData)
+                if staleBookmarkData {
+                    os_log("Stale bookmark data!", log: self.log, type: .fault)
+                }
+            } catch let error as NSError {
+                os_log("Bookmark Access failed: %@", log: self.log, type: .error, error.description)
+            }
+        }
 
         // load archive tags
         guard let tagsDict = (UserDefaults.standard.dictionary(forKey: "tags") ?? [:]) as? [String: Int] else { return }
@@ -64,7 +103,10 @@ struct Preferences {
         for (name, count) in tagsDict {
             newTagList.insert(Tag(name: name, count: count))
         }
-        self.delegate!.setTagList(tagList: newTagList)
+        self.delegate?.setTagList(tagList: newTagList)
+
+        // save the analyseOnlyLatestFolders flag
+        self.analyseAllFolders = UserDefaults.standard.bool(forKey: "analyseOnlyLatestFolders")
     }
 
     func getArchiveTags() {
@@ -72,32 +114,56 @@ struct Preferences {
             os_log("No archive path selected, could not get old tags.", log: self.log, type: .error)
             return
         }
+        // access the file system
+        if !(self.archivePath?.startAccessingSecurityScopedResource() ?? false) {
+            os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
+            return
+        }
+
+        // get year archive folders
+        var folders = [URL]()
+        do {
+            let fileManager = FileManager.default
+            folders = try fileManager.contentsOfDirectory(at: path, includingPropertiesForKeys: [.nameKey], options: .skipsHiddenFiles)
+                // only show folders with year numbers
+                .filter({ URL(fileURLWithPath: $0.path).lastPathComponent.prefix(2) == "20" || URL(fileURLWithPath: $0.path).lastPathComponent.prefix(2) == "19" })
+                // sort folders by year
+                .sorted(by: { $0.path > $1.path })
+
+        } catch {
+            os_log("An error occured while getting the archive year folders.")
+        }
+
+        // only use the latest two year folders by default
+        if !(self.analyseAllFolders) {
+            folders = Array(folders.prefix(2))
+        }
+
         // get all PDF files from this year and the last years
-        let date = Date()
-        let calendar = Calendar.current
-        let path_year1 = path.appendingPathComponent(String(calendar.component(.year, from: date)),
-                                                                  isDirectory: true)
-        let path_year2 = path.appendingPathComponent(String(calendar.component(.year, from: date) - 1),
-                                                                  isDirectory: true)
         var files = [URL]()
-        files.append(contentsOf: getPDFs(url: path_year1))
-        files.append(contentsOf: getPDFs(url: path_year2))
+        for folder in folders {
+            files.append(contentsOf: getPDFs(url: folder))
+        }
 
         // get tags and counts from filename
-        var tags_raw: [String] = []
+        var tagsRaw: [String] = []
         for file in files {
             let matched = regex_matches(for: "_[a-z0-9]+", in: file.lastPathComponent) ?? []
             for tag in matched {
-                tags_raw.append(String(tag.dropFirst()))
+                tagsRaw.append(String(tag.dropFirst()))
             }
         }
 
-        let tagsDict = tags_raw.reduce(into: [:]) { counts, word in counts[word, default: 0] += 1 }
+        let tagsDict = tagsRaw.reduce(into: [:]) { counts, word in counts[word, default: 0] += 1 }
         var newTagList = Set<Tag>()
         for (name, count) in tagsDict {
             newTagList.insert(Tag(name: name, count: count))
         }
         self.delegate?.setTagList(tagList: newTagList)
+
+        // stop accessing the file system
+        self.archivePath?.stopAccessingSecurityScopedResource()
+
     }
 
 }

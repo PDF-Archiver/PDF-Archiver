@@ -9,16 +9,45 @@
 import Foundation
 import Quartz
 import os.log
+import SystemConfiguration
 
-func dialogOK(message_key: String, info_key: String, style: NSAlert.Style) {
+// MARK: check network connection
+func connectedToNetwork() -> Bool {
+    // source: https://stackoverflow.com/a/25623647
+    var zeroAddress = sockaddr_in()
+    zeroAddress.sin_len = UInt8(MemoryLayout<sockaddr_in>.size)
+    zeroAddress.sin_family = sa_family_t(AF_INET)
+
+    guard let defaultRouteReachability = withUnsafePointer(to: &zeroAddress, {
+        $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {
+            SCNetworkReachabilityCreateWithAddress(nil, $0)
+        }
+    }) else {
+        return false
+    }
+
+    var flags: SCNetworkReachabilityFlags = []
+    if !SCNetworkReachabilityGetFlags(defaultRouteReachability, &flags) {
+        return false
+    }
+
+    let isReachable = flags.contains(.reachable)
+    let needsConnection = flags.contains(.connectionRequired)
+
+    return (isReachable && !needsConnection)
+}
+
+// MARK: check dialog window
+func dialogOK(messageKey: String, infoKey: String, style: NSAlert.Style) {
     let alert = NSAlert()
-    alert.messageText = NSLocalizedString(message_key, comment: "")
-    alert.informativeText = NSLocalizedString(info_key, comment: "")
+    alert.messageText = NSLocalizedString(messageKey, comment: "")
+    alert.informativeText = NSLocalizedString(infoKey, comment: "")
     alert.alertStyle = style
     alert.addButton(withTitle: "OK")
     alert.runModal()
 }
 
+// MARK: other string stuff
 func regex_matches(for regex: String, in text: String) -> [String]? {
 
     do {
@@ -33,7 +62,7 @@ func regex_matches(for regex: String, in text: String) -> [String]? {
         }
     } catch let error as NSError {
         let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "Helpers")
-        os_log("Invalid regex: %@", log: log, type: .error, error as CVarArg)
+        os_log("Invalid regex: %@", log: log, type: .error, error.description)
         return nil
     }
 }
