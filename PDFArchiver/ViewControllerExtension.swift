@@ -248,6 +248,9 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
 
         // add the selected tag to the document
         self.addDocumentTag(tag: selectedTag, new: newlyCreated)
+
+        // update GUI
+        self.updateView(updatePDF: false)
     }
 }
 

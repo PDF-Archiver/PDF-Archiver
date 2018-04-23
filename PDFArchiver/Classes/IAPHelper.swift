@@ -132,7 +132,7 @@ extension IAPHelper: SKPaymentTransactionObserver {
             case .purchased:
                 complete(transaction: transaction)
                 os_log("Payment completed.", log: self.log, type: .debug)
-                
+
                 // show thanks message
                 DispatchQueue.main.async {
                     dialogOK(messageKey: "payment_complete", infoKey: "payment_thanks", style: .informational)

@@ -899,6 +899,9 @@ Tag your document and save  it:</string>
                                             <rect key="frame" x="0.0" y="0.0" width="368" height="23"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableHeaderView>
+                                        <connections>
+                                            <outlet property="nextKeyView" destination="NiF-3c-nL6" id="iAq-tr-TSE"/>
+                                        </connections>
                                     </scrollView>
                                 </subviews>
                                 <constraints>
@@ -1051,6 +1054,9 @@ Tag your document and save  it:</string>
                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         </searchFieldCell>
+                                        <connections>
+                                            <outlet property="nextKeyView" destination="snn-Ub-ylk" id="V7V-ZL-QpZ"/>
+                                        </connections>
                                     </searchField>
                                     <scrollView toolTip="Used tags in your archive" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kGW-Ke-BkB" userLabel="Tag Scroll View">
                                         <rect key="frame" x="5" y="5" width="230" height="239"/>
@@ -1125,7 +1131,7 @@ Tag your document and save  it:</string>
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                    <rect key="frame" x="31.5" y="1" width="195" height="17"/>
+                                                                    <rect key="frame" x="32" y="1" width="194" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">
@@ -1282,6 +1288,9 @@ Tag your document and save  it:</string>
                             <constraint firstItem="EVB-U9-dup" firstAttribute="centerX" secondItem="8J4-uS-3fj" secondAttribute="centerX" id="xws-bu-7ej"/>
                             <constraint firstAttribute="bottom" secondItem="nVE-OX-PwM" secondAttribute="bottom" constant="20" id="ytO-YP-r8R"/>
                         </constraints>
+                        <connections>
+                            <outlet property="nextKeyView" destination="snn-Ub-ylk" id="t5A-KN-H5u"/>
+                        </connections>
                     </view>
                     <connections>
                         <outlet property="datePicker" destination="NiF-3c-nL6" id="7gV-M9-brh"/>
