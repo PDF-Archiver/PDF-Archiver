@@ -145,8 +145,8 @@ class ViewController: NSViewController, ViewControllerDelegate {
         self.descriptionField.delegate = self
 
         // add sorting to tag fields
-        self.documentAC.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true),
-                                           NSSortDescriptor(key: "documentDone", ascending: false)]
+        self.documentAC.sortDescriptors = [NSSortDescriptor(key: "documentDone", ascending: false),
+                                           NSSortDescriptor(key: "name", ascending: true)]
         self.tagTableView.sortDescriptors = [NSSortDescriptor(key: "count", ascending: false),
                                              NSSortDescriptor(key: "name", ascending: true)]
 
