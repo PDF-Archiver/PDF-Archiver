@@ -211,6 +211,17 @@ extension ViewController {
     }
 }
 
+// MARK: - Selection changes in a NSTableView
+extension ViewController: NSTableViewDelegate {
+    func tableViewSelectionDidChange(_ notification: Notification) {
+        if let identifier = (notification.object as? NSTableView)?.identifier?.rawValue,
+           identifier == "DocumentTableView" {
+            self.updateView(updatePDF: true)
+        }
+    }
+}
+
+// MARK: - Selection changes in the description or search field
 extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
     override func controlTextDidChange(_ notification: Notification) {
         guard let identifier = (notification.object as? NSTextField)?.identifier else { return }
@@ -254,6 +265,7 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
     }
 }
 
+// MARK: - custom delegates
 extension ViewController: PreferencesDelegate {
     func updateGUI() {
         self.updateView(updatePDF: true)

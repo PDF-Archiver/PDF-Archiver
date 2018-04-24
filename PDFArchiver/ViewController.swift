@@ -55,13 +55,6 @@ class ViewController: NSViewController, ViewControllerDelegate {
         selectedDocument.documentDescription = sender.stringValue
     }
 
-    @IBAction func clickedDocumentTableView(_ sender: NSTableView) {
-        if self.documentAC.selectionIndex >= 0 {
-            // pick a document and save the tags in the document tag list
-            self.updateView(updatePDF: true)
-        }
-    }
-
     @IBAction func clickedDocumentTagTableView(_ sender: NSTableView) {
         // test if the document tag table is empty
         guard !self.documentAC.selectedObjects.isEmpty,
@@ -160,7 +153,6 @@ class ViewController: NSViewController, ViewControllerDelegate {
 
         // update the view after all the settigns
         self.documentAC.setSelectionIndex(0)
-        self.updateView(updatePDF: true)
     }
 
     override func viewWillAppear() {
