@@ -731,7 +731,7 @@ Tag your document and save  it:</string>
                                 <rect key="frame" x="33" y="208" width="424" height="68"/>
                                 <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" id="Zpu-W2-6EJ">
                                     <font key="font" metaFont="system"/>
-                                    <string key="title">PDF Archiver is a single person project.
+                                    <string key="title">PDF Archiver is a small open source project.
 
 You can support this project by picking a one-time donation or a yearly subscription via the buttons below.</string>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -1159,7 +1159,7 @@ You can support this project by picking a one-time donation or a yearly subscrip
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                    <rect key="frame" x="32" y="1" width="195" height="17"/>
+                                                                    <rect key="frame" x="31.5" y="1" width="195" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">
