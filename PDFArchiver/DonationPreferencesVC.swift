@@ -43,6 +43,11 @@ class DonationPreferencesVC: PreferencesVC {
         self.buyProduct(identifier: "SUBSCRIPTION_LEVEL2")
     }
 
+    @IBAction func changeSubscription(_ sender: NSButton) {
+        let helpURL = URL(string: "https://buy.itunes.apple.com/WebObjects/MZFinance.woa/wa/manageSubscriptions")
+        NSWorkspace.shared.open(helpURL!)
+    }
+
     @IBAction func statusImageClicked(_ sender: Any) {
         if connectedToNetwork(),
            self.dataModel?.store.products.isEmpty ?? true {

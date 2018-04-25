@@ -586,17 +586,17 @@ Tag your document and save  it:</string>
             <objects>
                 <viewController title="Donation" identifier="DonationsVC" storyboardIdentifier="DonationsVC" id="rWp-Co-RrU" customClass="DonationPreferencesVC" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="vFK-Vc-7T6">
-                        <rect key="frame" x="0.0" y="0.0" width="490" height="189"/>
+                        <rect key="frame" x="0.0" y="0.0" width="490" height="291"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <box autoresizesSubviews="NO" borderType="line" title="One-Time Donation" translatesAutoresizingMaskIntoConstraints="NO" id="alz-A4-A8z">
-                                <rect key="frame" x="17" y="19" width="216" height="150"/>
+                                <rect key="frame" x="17" y="43" width="216" height="145"/>
                                 <view key="contentView" id="yc2-iU-djq">
-                                    <rect key="frame" x="1" y="1" width="214" height="128"/>
+                                    <rect key="frame" x="1" y="1" width="214" height="123"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <button verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="pjt-37-tlz">
-                                            <rect key="frame" x="9" y="85" width="196" height="32"/>
+                                            <rect key="frame" x="9" y="80" width="196" height="32"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="21" id="bTt-g8-WKR"/>
                                             </constraints>
@@ -609,7 +609,7 @@ Tag your document and save  it:</string>
                                             </connections>
                                         </button>
                                         <button verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="OLw-Bf-fGp">
-                                            <rect key="frame" x="9" y="49" width="196" height="32"/>
+                                            <rect key="frame" x="9" y="44" width="196" height="32"/>
                                             <buttonCell key="cell" type="push" title="Level 2" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="5JW-68-xh8">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
@@ -619,7 +619,7 @@ Tag your document and save  it:</string>
                                             </connections>
                                         </button>
                                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Zkb-C5-cZI">
-                                            <rect key="frame" x="9" y="13" width="196" height="32"/>
+                                            <rect key="frame" x="9" y="8" width="196" height="32"/>
                                             <buttonCell key="cell" type="push" title="Level 3" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ndf-3x-jdp">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
@@ -639,25 +639,25 @@ Tag your document and save  it:</string>
                                         <constraint firstItem="Zkb-C5-cZI" firstAttribute="top" secondItem="OLw-Bf-fGp" secondAttribute="bottom" constant="15" id="UQP-7A-fOC"/>
                                         <constraint firstItem="pjt-37-tlz" firstAttribute="leading" secondItem="yc2-iU-djq" secondAttribute="leading" constant="15" id="XoE-12-KZT"/>
                                         <constraint firstAttribute="trailing" secondItem="Zkb-C5-cZI" secondAttribute="trailing" constant="15" id="aF4-bw-h7H"/>
-                                        <constraint firstAttribute="bottom" secondItem="Zkb-C5-cZI" secondAttribute="bottom" constant="20" id="ap0-ll-OQi"/>
+                                        <constraint firstAttribute="bottom" secondItem="Zkb-C5-cZI" secondAttribute="bottom" constant="15" id="ap0-ll-OQi"/>
                                     </constraints>
                                 </view>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="146" id="WCR-En-0Xf"/>
+                                    <constraint firstAttribute="height" constant="141" id="WCR-En-0Xf"/>
                                     <constraint firstAttribute="width" constant="210" id="xw7-Sr-0jQ"/>
                                 </constraints>
                                 <font key="titleFont" metaFont="systemSemibold" size="15"/>
                             </box>
                             <box autoresizesSubviews="NO" borderType="line" title="Yearly Subscription" translatesAutoresizingMaskIntoConstraints="NO" id="i7v-oz-zvL">
-                                <rect key="frame" x="257" y="60" width="216" height="109"/>
+                                <rect key="frame" x="257" y="43" width="216" height="145"/>
                                 <view key="contentView" id="R27-Hj-ORq">
-                                    <rect key="frame" x="1" y="1" width="214" height="87"/>
+                                    <rect key="frame" x="1" y="1" width="214" height="123"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <button identifier="subscriptionLevel1" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="5gc-Ox-MzG">
-                                            <rect key="frame" x="9" y="44" width="196" height="32"/>
+                                            <rect key="frame" x="9" y="80" width="196" height="32"/>
                                             <constraints>
-                                                <constraint firstAttribute="height" constant="21" id="gM0-JU-6hM"/>
+                                                <constraint firstAttribute="height" constant="21" id="Tvv-Fj-d3J"/>
                                             </constraints>
                                             <buttonCell key="cell" type="push" title="Level 1" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="nXe-2w-oqh">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -667,10 +667,23 @@ Tag your document and save  it:</string>
                                                 <action selector="subscriptionButton1Clicked:" target="rWp-Co-RrU" id="gBy-13-uL8"/>
                                             </connections>
                                         </button>
-                                        <button identifier="subscriptionLevel2" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="qB3-wG-Std">
+                                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="rOP-ht-QaC">
                                             <rect key="frame" x="9" y="8" width="196" height="32"/>
                                             <constraints>
-                                                <constraint firstAttribute="height" constant="21" id="y0t-LD-EbU"/>
+                                                <constraint firstAttribute="height" constant="21" id="rog-ge-qO2"/>
+                                            </constraints>
+                                            <buttonCell key="cell" type="push" title="Change Subscription" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="oVX-xZ-Rf3">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="changeSubscription:" target="rWp-Co-RrU" id="ujE-TC-0rN"/>
+                                            </connections>
+                                        </button>
+                                        <button identifier="subscriptionLevel2" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="qB3-wG-Std">
+                                            <rect key="frame" x="9" y="44" width="196" height="32"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="21" id="C9C-Ij-9cp"/>
                                             </constraints>
                                             <buttonCell key="cell" type="push" title="Level 2" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="WpL-o2-oza">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -682,34 +695,26 @@ Tag your document and save  it:</string>
                                         </button>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="qB3-wG-Std" firstAttribute="trailing" secondItem="5gc-Ox-MzG" secondAttribute="trailing" id="1Vd-ah-2S3"/>
-                                        <constraint firstAttribute="trailing" secondItem="5gc-Ox-MzG" secondAttribute="trailing" constant="15" id="E9X-DN-TnJ"/>
-                                        <constraint firstItem="5gc-Ox-MzG" firstAttribute="top" secondItem="R27-Hj-ORq" secondAttribute="top" constant="15" id="QgU-kc-pco"/>
-                                        <constraint firstAttribute="bottom" secondItem="qB3-wG-Std" secondAttribute="bottom" constant="15" id="Ts2-js-mLw"/>
-                                        <constraint firstItem="qB3-wG-Std" firstAttribute="leading" secondItem="5gc-Ox-MzG" secondAttribute="leading" id="W4k-VM-3lw"/>
-                                        <constraint firstItem="5gc-Ox-MzG" firstAttribute="leading" secondItem="R27-Hj-ORq" secondAttribute="leading" constant="15" id="n3J-ML-Lv9"/>
-                                        <constraint firstItem="qB3-wG-Std" firstAttribute="top" secondItem="5gc-Ox-MzG" secondAttribute="bottom" constant="15" id="t5H-aC-hvc"/>
+                                        <constraint firstItem="rOP-ht-QaC" firstAttribute="top" secondItem="qB3-wG-Std" secondAttribute="bottom" constant="15" id="4U3-7G-xU6"/>
+                                        <constraint firstItem="rOP-ht-QaC" firstAttribute="leading" secondItem="R27-Hj-ORq" secondAttribute="leading" constant="15" id="4zk-NQ-yFc"/>
+                                        <constraint firstItem="5gc-Ox-MzG" firstAttribute="leading" secondItem="R27-Hj-ORq" secondAttribute="leading" constant="15" id="5u9-5D-T6Q"/>
+                                        <constraint firstAttribute="bottom" secondItem="rOP-ht-QaC" secondAttribute="bottom" constant="15" id="JaK-gI-EU9"/>
+                                        <constraint firstItem="5gc-Ox-MzG" firstAttribute="top" secondItem="R27-Hj-ORq" secondAttribute="top" constant="15" id="ML9-v6-o40"/>
+                                        <constraint firstItem="qB3-wG-Std" firstAttribute="leading" secondItem="R27-Hj-ORq" secondAttribute="leading" constant="15" id="NiP-dc-uhg"/>
+                                        <constraint firstAttribute="trailing" secondItem="5gc-Ox-MzG" secondAttribute="trailing" constant="15" id="URa-G9-dZB"/>
+                                        <constraint firstItem="qB3-wG-Std" firstAttribute="top" secondItem="5gc-Ox-MzG" secondAttribute="bottom" constant="15" id="VSk-Eq-kH5"/>
+                                        <constraint firstAttribute="trailing" secondItem="rOP-ht-QaC" secondAttribute="trailing" constant="15" id="adJ-48-Cj2"/>
+                                        <constraint firstAttribute="trailing" secondItem="qB3-wG-Std" secondAttribute="trailing" constant="15" id="jGa-QV-BXK"/>
                                     </constraints>
                                 </view>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="105" id="LcR-S5-7dJ"/>
+                                    <constraint firstAttribute="height" constant="141" id="gbG-Er-2SH"/>
                                     <constraint firstAttribute="width" constant="210" id="iIB-aU-3Zb"/>
                                 </constraints>
                                 <font key="titleFont" metaFont="systemSemibold" size="15"/>
                             </box>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="sL0-ry-Buz">
-                                <rect key="frame" x="274" y="23" width="171" height="17"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="17" id="ouW-Z0-oNf"/>
-                                </constraints>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Mac App Store Connection:" id="ywB-46-644">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="y11-yy-btf">
-                                <rect key="frame" x="451" y="22" width="16" height="16"/>
+                                <rect key="frame" x="337" y="15" width="16" height="16"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="12" id="IB7-Fa-ABb"/>
                                     <constraint firstAttribute="width" constant="12" id="PhT-M7-4Ap"/>
@@ -722,18 +727,42 @@ Tag your document and save  it:</string>
                                     </connections>
                                 </buttonCell>
                             </button>
+                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="7Kr-6U-ceM">
+                                <rect key="frame" x="33" y="208" width="424" height="68"/>
+                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" id="Zpu-W2-6EJ">
+                                    <font key="font" metaFont="system"/>
+                                    <string key="title">PDF Archiver is a single person project.
+
+You can support this project by picking a one-time donation or a yearly subscription via the buttons below.</string>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="sL0-ry-Buz">
+                                <rect key="frame" x="160" y="15" width="171" height="17"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="17" id="ouW-Z0-oNf"/>
+                                </constraints>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Mac App Store Connection:" id="ywB-46-644">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
                         </subviews>
                         <constraints>
+                            <constraint firstAttribute="trailing" secondItem="7Kr-6U-ceM" secondAttribute="trailing" constant="35" id="2Kx-J7-DIH"/>
+                            <constraint firstItem="7Kr-6U-ceM" firstAttribute="leading" secondItem="vFK-Vc-7T6" secondAttribute="leading" constant="35" id="2Qb-hO-WUb"/>
+                            <constraint firstItem="7Kr-6U-ceM" firstAttribute="top" secondItem="vFK-Vc-7T6" secondAttribute="top" constant="15" id="4nQ-QI-AtF"/>
                             <constraint firstItem="i7v-oz-zvL" firstAttribute="leading" secondItem="alz-A4-A8z" secondAttribute="trailing" constant="30" id="9v0-Wy-311"/>
-                            <constraint firstAttribute="trailing" secondItem="y11-yy-btf" secondAttribute="trailing" constant="25" id="DNx-Ok-LXW"/>
-                            <constraint firstItem="sL0-ry-Buz" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="vFK-Vc-7T6" secondAttribute="leading" constant="20" symbolic="YES" id="EHE-qc-GgK"/>
                             <constraint firstItem="alz-A4-A8z" firstAttribute="leading" secondItem="vFK-Vc-7T6" secondAttribute="leading" constant="20" id="MGk-IC-0iP"/>
-                            <constraint firstItem="alz-A4-A8z" firstAttribute="top" secondItem="vFK-Vc-7T6" secondAttribute="top" constant="20" id="Nmp-uX-ka0"/>
+                            <constraint firstItem="alz-A4-A8z" firstAttribute="top" secondItem="7Kr-6U-ceM" secondAttribute="bottom" constant="20" id="Nmp-uX-ka0"/>
+                            <constraint firstItem="i7v-oz-zvL" firstAttribute="top" secondItem="alz-A4-A8z" secondAttribute="top" id="OxU-ng-z1b"/>
                             <constraint firstItem="y11-yy-btf" firstAttribute="centerY" secondItem="sL0-ry-Buz" secondAttribute="centerY" id="cEA-My-L8f"/>
-                            <constraint firstItem="i7v-oz-zvL" firstAttribute="top" secondItem="vFK-Vc-7T6" secondAttribute="top" constant="20" id="cGf-Z1-5g1"/>
-                            <constraint firstAttribute="bottom" secondItem="y11-yy-btf" secondAttribute="bottom" constant="25" id="jLV-MW-NSx"/>
-                            <constraint firstItem="sL0-ry-Buz" firstAttribute="bottom" secondItem="alz-A4-A8z" secondAttribute="bottom" id="pg6-cb-rhV"/>
-                            <constraint firstItem="y11-yy-btf" firstAttribute="leading" secondItem="sL0-ry-Buz" secondAttribute="trailing" constant="10" id="x2g-fu-4xr"/>
+                            <constraint firstItem="y11-yy-btf" firstAttribute="leading" secondItem="sL0-ry-Buz" secondAttribute="trailing" constant="10" id="dmh-oE-3fw"/>
+                            <constraint firstAttribute="bottom" secondItem="sL0-ry-Buz" secondAttribute="bottom" constant="15" id="myO-Ru-dwk"/>
+                            <constraint firstItem="sL0-ry-Buz" firstAttribute="centerX" secondItem="vFK-Vc-7T6" secondAttribute="centerX" id="nHb-Hq-6Xb"/>
+                            <constraint firstItem="sL0-ry-Buz" firstAttribute="top" secondItem="i7v-oz-zvL" secondAttribute="bottom" constant="15" id="vlP-Eb-yKd"/>
                             <constraint firstAttribute="trailing" secondItem="i7v-oz-zvL" secondAttribute="trailing" constant="20" id="xII-mT-yJN"/>
                         </constraints>
                     </view>
@@ -748,7 +777,7 @@ Tag your document and save  it:</string>
                 </viewController>
                 <customObject id="S14-PJ-KOq" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1692" y="1595"/>
+            <point key="canvasLocation" x="1692" y="1670"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="hIz-AP-VOD">
