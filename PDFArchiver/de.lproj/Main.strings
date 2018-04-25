@@ -245,8 +245,8 @@
 /* Class = "NSViewController"; title = "Preferences"; ObjectID = "emn-JX-zbO"; */
 "emn-JX-zbO.title" = "Einstellungen";
 
-/* Class = "NSViewController"; title = "Donation (Beta)"; ObjectID = "rWp-Co-RrU"; */
-"rWp-Co-RrU.title" = "Spenden (Beta)";
+/* Class = "NSViewController"; title = "Donation"; ObjectID = "rWp-Co-RrU"; */
+"rWp-Co-RrU.title" = "Spenden";
 
 /* Class = "NSTextFieldCell"; title = "✔️"; ObjectID = "zWE-Hy-4ww"; */
 "zWE-Hy-4ww.title" = "✔️";
