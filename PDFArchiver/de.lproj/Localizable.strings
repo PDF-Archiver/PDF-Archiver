@@ -20,6 +20,9 @@
 
 "payment_thanks" = "Vielen Dank für Ihre Spende. Dies hilft bei der Weiterentwicklung des Projektes.";
 
+/* Appended Button title */
+"per_year" = " pro Jahr";
+
 "renaming_failed" = "Umbenennen fehlgeschlagen!";
 
 "select_preferences" = "Bitte Pfad in den Einstellungen auswählen.";

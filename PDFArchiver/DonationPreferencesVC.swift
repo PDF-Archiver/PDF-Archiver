@@ -16,7 +16,6 @@ class DonationPreferencesVC: PreferencesVC {
     @IBOutlet weak var donationButton2: NSButton!
     @IBOutlet weak var donationButton3: NSButton!
     @IBOutlet weak var subscriptionButton1: NSButton!
-    @IBOutlet weak var subscriptionButton2: NSButton!
     @IBOutlet weak var donationButton: NSButton!
 
     var dataModel: DataModel?
@@ -37,10 +36,6 @@ class DonationPreferencesVC: PreferencesVC {
 
     @IBAction func subscriptionButton1Clicked(_ sender: NSButton) {
         self.buyProduct(identifier: "SUBSCRIPTION_LEVEL1")
-    }
-
-    @IBAction func subscriptionButton2Clicked(_ sender: NSButton) {
-        self.buyProduct(identifier: "SUBSCRIPTION_LEVEL2")
     }
 
     @IBAction func changeSubscription(_ sender: NSButton) {
@@ -64,7 +59,7 @@ class DonationPreferencesVC: PreferencesVC {
 
         // get the data model from the main view controller
         self.dataModel = self.delegate?.getDataModel()
-        self.updateButtonTitles()
+        self.updateButtons()
 
         // set the status image
         if self.dataModel?.store.products.isEmpty ?? true {
@@ -72,7 +67,6 @@ class DonationPreferencesVC: PreferencesVC {
         } else {
             self.donationButton.image = NSImage(named: .statusAvailable)
         }
-
     }
 
     override func viewWillDisappear() {
@@ -93,11 +87,17 @@ class DonationPreferencesVC: PreferencesVC {
                 self.donationButton.image = NSImage(named: .statusUnavailable)
             }
 
-            self.updateButtonTitles()
+            self.updateButtons()
         }
     }
 
-    func updateButtonTitles() {
+    func updateButtons() {
+        // set default button status to false
+        self.donationButton1.isEnabled = false
+        self.donationButton2.isEnabled = false
+        self.donationButton3.isEnabled = false
+        self.subscriptionButton1.isEnabled = false
+
         // set the button label
         for product in self.dataModel?.store.products ?? [] {
             var selectedButton: NSButton
@@ -109,19 +109,22 @@ class DonationPreferencesVC: PreferencesVC {
                 selectedButton = self.donationButton3
             } else if product.productIdentifier == "SUBSCRIPTION_LEVEL1" {
                 selectedButton = self.subscriptionButton1
-            } else if product.productIdentifier == "SUBSCRIPTION_LEVEL2" {
-                selectedButton = self.subscriptionButton2
             } else {
                 continue
             }
 
             // set button to localized price
             selectedButton.title = product.localizedPrice
+            selectedButton.isEnabled = true
 
-            // disable already subscripted buttons
-            if self.dataModel?.store.isProductPurchased(product.productIdentifier) ?? false,
-                product.productIdentifier == "SUBSCRIPTION_LEVEL1" || product.productIdentifier == "SUBSCRIPTION_LEVEL2" {
-                selectedButton.isEnabled = false
+            if product.productIdentifier == "SUBSCRIPTION_LEVEL1" {
+                // add "per year" to button title
+                selectedButton.title.append(NSLocalizedString("per_year", comment: "Appended Button title"))
+
+                // disable already subscripted buttons
+                if self.dataModel?.store.isProductPurchased(product.productIdentifier) ?? false {
+                    selectedButton.isEnabled = false
+                }
             }
 
         }

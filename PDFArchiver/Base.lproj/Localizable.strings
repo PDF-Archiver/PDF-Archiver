@@ -20,6 +20,9 @@
 
 "payment_thanks" = "Thank you for donating to this project. It helps to continue develop this app.";
 
+/* Appended Button title */
+"per_year" = " per year";
+
 "renaming_failed" = "Renaming failed!";
 
 "select_preferences" = "Please select one in the preferences.";

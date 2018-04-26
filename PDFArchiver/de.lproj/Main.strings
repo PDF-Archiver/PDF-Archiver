@@ -275,11 +275,8 @@
 /* Class = "NSButtonCell"; title = "Level 3"; ObjectID = "ndf-3x-jdp"; */
 "ndf-3x-jdp.title" = "Level 3";
 
-/* Class = "NSButtonCell"; title = "Level 1"; ObjectID = "nXe-2w-oqh"; */
-"nXe-2w-oqh.title" = "Level 1";
-
-/* Class = "NSButtonCell"; title = "Level 2"; ObjectID = "WpL-o2-oza"; */
-"WpL-o2-oza.title" = "Level 2";
+/* Class = "NSButtonCell"; title = "Subscribe"; ObjectID = "nXe-2w-oqh"; */
+"nXe-2w-oqh.title" = "Subscribe";
 
 /* Class = "NSBox"; title = "One-Time Donation"; ObjectID = "alz-A4-A8z"; */
 "alz-A4-A8z.title" = "Einmalige Spende";
