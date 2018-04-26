@@ -173,6 +173,12 @@
                                                 <action selector="showHelp:" target="Voe-Tx-rLC" id="6a2-CJ-tAD"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Privacy &amp; Terms of Use" id="6IH-UX-ZY8">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="showPrivacy:" target="Voe-Tx-rLC" id="aPj-IB-gXU"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem isSeparatorItem="YES" id="g5g-oz-d55"/>
                                         <menuItem title="Show Onboarding" id="Hz0-RV-wAv" userLabel="Show Onboarding">
                                             <modifierMask key="keyEquivalentModifierMask"/>

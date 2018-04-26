@@ -295,3 +295,6 @@
 
 /* Class = "NSButtonCell"; title = "Change Subscription"; ObjectID = "oVX-xZ-Rf3"; */
 "oVX-xZ-Rf3.title" = "Abo ändern";
+
+/* Class = "NSMenuItem"; title = "Privacy & Terms of Use"; ObjectID = "6IH-UX-ZY8"; */
+"6IH-UX-ZY8.title" = "Datenschutz & Nutzungsbedingungen";
