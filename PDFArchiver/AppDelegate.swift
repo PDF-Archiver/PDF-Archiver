@@ -16,7 +16,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NSWorkspace.shared.open(helpURL!)
     }
     @IBAction func showPrivacy(_ sender: NSMenuItem) {
-        let helpURL = URL(string: "https://pdf-archiver.io/privacy")
+        let helpURL = URL(string: NSLocalizedString("privacy", comment: "PDF Archiver privacy website"))
         NSWorkspace.shared.open(helpURL!)
     }
     @IBAction func showPreferences(_ sender: NSMenuItem) {

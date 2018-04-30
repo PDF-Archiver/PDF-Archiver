@@ -592,7 +592,7 @@ Tag your document and save  it:</string>
             <objects>
                 <viewController title="Donation" identifier="DonationsVC" storyboardIdentifier="DonationsVC" id="rWp-Co-RrU" customClass="DonationPreferencesVC" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="vFK-Vc-7T6">
-                        <rect key="frame" x="0.0" y="0.0" width="490" height="259"/>
+                        <rect key="frame" x="0.0" y="0.0" width="490" height="276"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <box autoresizesSubviews="NO" borderType="line" title="One-Time Donation" translatesAutoresizingMaskIntoConstraints="NO" id="alz-A4-A8z">
@@ -718,12 +718,12 @@ Tag your document and save  it:</string>
                                 </buttonCell>
                             </button>
                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="7Kr-6U-ceM">
-                                <rect key="frame" x="33" y="176" width="424" height="68"/>
+                                <rect key="frame" x="33" y="176" width="424" height="85"/>
                                 <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" id="Zpu-W2-6EJ">
                                     <font key="font" metaFont="system"/>
                                     <string key="title">PDF Archiver is a small open source project.
 
-You can support this project by picking a one-time donation or a yearly subscription via the buttons below.</string>
+You can support this project by picking a one-time donation or a yearly auto-renewing subscription via the buttons below (terms of use can befound in the Help/FAQs).</string>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
@@ -1148,7 +1148,7 @@ You can support this project by picking a one-time donation or a yearly subscrip
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                    <rect key="frame" x="31.5" y="1" width="195" height="17"/>
+                                                                    <rect key="frame" x="32" y="1" width="195" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">

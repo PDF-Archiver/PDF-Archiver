@@ -23,6 +23,9 @@
 /* Appended Button title */
 "per_year" = " per year";
 
+/* PDF Archiver privacy website */
+"privacy" = "https://pdf-archiver.io/privacy";
+
 "renaming_failed" = "Renaming failed!";
 
 "select_preferences" = "Please select one in the preferences.";
