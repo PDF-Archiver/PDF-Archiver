@@ -723,7 +723,7 @@ Tag your document and save  it:</string>
                                     <font key="font" metaFont="system"/>
                                     <string key="title">PDF Archiver is a small open source project.
 
-You can support this project by picking a one-time donation or a yearly auto-renewing subscription via the buttons below (terms of use can befound in the Help/FAQs).</string>
+You can support this project by picking a one-time donation or a yearly auto-renewing subscription via the buttons below (terms of use can be found in the Help/FAQs).</string>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
