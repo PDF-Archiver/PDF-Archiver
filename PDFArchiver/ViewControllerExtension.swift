@@ -170,13 +170,14 @@ extension ViewController {
             // update the array controller
             self.documentAC.content = self.dataModelInstance.documents
 
-            // select a new document
-            let newIndex = self.documentAC.selectionIndex + 1
-            if newIndex < self.dataModelInstance.documents.count {
-                self.documentAC.setSelectionIndex(newIndex)
-            } else {
-                self.documentAC.setSelectionIndex(0)
+            // select a new document, which is not already done
+            var newIndex = 0
+            var documents = (self.documentAC.arrangedObjects as? [Document]) ?? []
+            for idx in 0...documents.count-1 where documents[idx].documentDone == "" {
+                newIndex = idx
+                break
             }
+            self.documentAC.setSelectionIndex(newIndex)
         }
     }
 
