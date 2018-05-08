@@ -281,17 +281,20 @@
 /* Class = "NSBox"; title = "One-Time Donation"; ObjectID = "alz-A4-A8z"; */
 "alz-A4-A8z.title" = "Einmalige Spende";
 
-/* Class = "NSBox"; title = "Yearly Subscription"; ObjectID = "i7v-oz-zvL"; */
+/* Class = "NSBox"; title = "Auto-Renewing Subscription"; ObjectID = "i7v-oz-zvL"; */
 "i7v-oz-zvL.title" = "Jährliches Abo";
 
 /* Class = "NSTextFieldCell"; title = "Mac App Store Connection:"; ObjectID = "ywB-46-644"; */
 "ywB-46-644.title" = "Mac App Store Verbindung:";
 
-/* Class = "NSTextFieldCell"; title = "PDF Archiver is a small open source project.\n\nYou can support this project by picking a one-time donation or a yearly auto-renewing subscription via the buttons below (terms of use can be found in the Help/FAQs)."; ObjectID = "Zpu-W2-6EJ"; */
-"Zpu-W2-6EJ.title" = "PDF Archiver ist ein kleines Open Source Projekt.\n\nFalls Sie das Projekt unterstützen möchten können Sie hier eine einmalig Spende oder ein jährliches Spenden-Abo auswählen. Dieses Abo verlängert sich automatisch nach einem Jahr. Die Datenschutzerklärung kann über das Hilfe Menü eingesehen werden.";
+/* Class = "NSTextFieldCell"; title = "PDF Archiver is a small open source project.\n\nYou can support this project by picking a one-time donation or a yearly auto-renewing subscription via the buttons below."; ObjectID = "Zpu-W2-6EJ"; */
+"Zpu-W2-6EJ.title" = "PDF Archiver ist ein kleines Open Source Projekt.\n\nFalls Sie das Projekt unterstützen möchten können Sie hier eine einmalige Spende oder ein jährliches Spenden-Abo auswählen. Dieses Abo verlängert sich automatisch nach einem Jahr.";
 
 /* Class = "NSButtonCell"; title = "Change Subscription"; ObjectID = "oVX-xZ-Rf3"; */
 "oVX-xZ-Rf3.title" = "Abo ändern";
 
 /* Class = "NSMenuItem"; title = "Privacy & Terms of Use"; ObjectID = "6IH-UX-ZY8"; */
 "6IH-UX-ZY8.title" = "Datenschutz";
+
+/* Class = "NSTextFieldCell"; title = "Privacy Policy/Terms of Use:   https://pdf-archiver.io/privacy"; ObjectID = "2x1-w9-J6a"; */
+"2x1-w9-J6a.title" = "Datenschutzerklärung:   https://pdf-archiver.io/de/privacy";
