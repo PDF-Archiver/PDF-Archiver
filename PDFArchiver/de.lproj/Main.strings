@@ -288,7 +288,7 @@
 "ywB-46-644.title" = "Mac App Store Verbindung:";
 
 /* Class = "NSTextFieldCell"; title = "PDF Archiver is a small open source project.\n\nYou can support this project by picking a one-time donation or a yearly auto-renewing subscription via the buttons below (terms of use can be found in the Help/FAQs)."; ObjectID = "Zpu-W2-6EJ"; */
-"Zpu-W2-6EJ.title" = "PDF Archiver ist ein kleines Open Source Projekt.\n\nFalls Sie das Projekt unterstützen möchten können Sie hier eine einmalig Spende oder ein jährliches Spenden-Abo auswählen.";
+"Zpu-W2-6EJ.title" = "PDF Archiver ist ein kleines Open Source Projekt.\n\nFalls Sie das Projekt unterstützen möchten können Sie hier eine einmalig Spende oder ein jährliches Spenden-Abo auswählen. Dieses Abo verlängert sich automatisch nach einem Jahr. Die Datenschutzerklärung kann über das Hilfe Menü eingesehen werden.";
 
 /* Class = "NSButtonCell"; title = "Change Subscription"; ObjectID = "oVX-xZ-Rf3"; */
 "oVX-xZ-Rf3.title" = "Abo ändern";
