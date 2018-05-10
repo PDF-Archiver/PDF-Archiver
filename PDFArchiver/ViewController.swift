@@ -151,6 +151,9 @@ class ViewController: NSViewController, ViewControllerDelegate {
 
         // update the view after all the settigns
         self.documentAC.setSelectionIndex(0)
+
+        // update the tags, if file changes occured in the archive
+        self.testArchiveModification()
     }
 
     override func viewWillAppear() {
