@@ -210,6 +210,39 @@ extension ViewController {
             self.dataModelInstance.tags.insert(selectedTag)
         }
     }
+
+    func testArchiveModification() {
+        if let archivePath = self.dataModelInstance.prefs.archivePath {
+            let fileManager = FileManager.default
+            var newArchiveModificationDate: Date?
+            do {
+                // get the attributes of the current archive folder
+                let attributes = try fileManager.attributesOfItem(atPath: archivePath.path)
+                newArchiveModificationDate = attributes[FileAttributeKey.modificationDate] as? Date
+            } catch let error {
+                os_log("Folder not found: %@ \nUpdate tags anyway.", log: self.log, type: .debug, error.localizedDescription)
+            }
+
+            // compare dates here
+            if let archiveModificationDate = self.dataModelInstance.prefs.archiveModificationDate,
+                let newArchiveModificationDate = newArchiveModificationDate,
+                archiveModificationDate == newArchiveModificationDate {
+                os_log("No changes in archive folder, skipping tag update.", log: self.log, type: .debug)
+
+            } else {
+                os_log("Changes in archive folder detected, update tags.", log: self.log, type: .debug)
+
+                // update the archive tags
+                DispatchQueue.global(qos: .userInitiated).async {
+                    self.dataModelInstance.prefs.getArchiveTags()
+
+                    DispatchQueue.main.async {
+                        self.updateGUI()
+                    }
+                }
+            }
+        }
+    }
 }
 
 // MARK: - Selection changes in a NSTableView
