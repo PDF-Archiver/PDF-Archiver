@@ -14,14 +14,14 @@
 
 "file_already_exists" = "Dateiname existstiert bereits. \nBitte z.B. Dokument Beschreibung verändern.";
 
+/* PDF Archiver imprint website */
+"imprint" = "https://pdf-archiver.io/de/imprint";
+
 "no_archive" = "Kein Archiv Pfad gefunden!";
 
 "payment_complete" = "Bezahlung abgeschlossen!";
 
 "payment_thanks" = "Vielen Dank für Ihre Spende. Dies hilft bei der Weiterentwicklung des Projektes.";
-
-/* Appended Button title */
-"per_year" = " pro Jahr";
 
 /* PDF Archiver privacy website */
 "privacy" = "https://pdf-archiver.io/de/privacy";
