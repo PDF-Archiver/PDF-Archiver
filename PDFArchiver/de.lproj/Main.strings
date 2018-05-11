@@ -245,8 +245,8 @@
 /* Class = "NSViewController"; title = "Preferences"; ObjectID = "emn-JX-zbO"; */
 "emn-JX-zbO.title" = "Einstellungen";
 
-/* Class = "NSViewController"; title = "Donation (Beta)"; ObjectID = "rWp-Co-RrU"; */
-"rWp-Co-RrU.title" = "Spenden (Beta)";
+/* Class = "NSViewController"; title = "Donation"; ObjectID = "rWp-Co-RrU"; */
+"rWp-Co-RrU.title" = "Spenden";
 
 /* Class = "NSTextFieldCell"; title = "✔️"; ObjectID = "zWE-Hy-4ww"; */
 "zWE-Hy-4ww.title" = "✔️";
@@ -275,17 +275,17 @@
 /* Class = "NSButtonCell"; title = "Level 3"; ObjectID = "ndf-3x-jdp"; */
 "ndf-3x-jdp.title" = "Level 3";
 
-/* Class = "NSButtonCell"; title = "Level 1"; ObjectID = "nXe-2w-oqh"; */
-"nXe-2w-oqh.title" = "Level 1";
-
-/* Class = "NSButtonCell"; title = "Level 2"; ObjectID = "WpL-o2-oza"; */
-"WpL-o2-oza.title" = "Level 2";
-
 /* Class = "NSBox"; title = "One-Time Donation"; ObjectID = "alz-A4-A8z"; */
 "alz-A4-A8z.title" = "Einmalige Spende";
 
-/* Class = "NSBox"; title = "Yearly Subscription"; ObjectID = "i7v-oz-zvL"; */
-"i7v-oz-zvL.title" = "Jährliches Abo";
-
 /* Class = "NSTextFieldCell"; title = "Mac App Store Connection:"; ObjectID = "ywB-46-644"; */
 "ywB-46-644.title" = "Mac App Store Verbindung:";
+
+/* Class = "NSTextFieldCell"; title = "PDF Archiver is a small open source project.\n\nYou can support this project by picking a one-time donation via the buttons on the right."; ObjectID = "Zpu-W2-6EJ"; */
+"Zpu-W2-6EJ.title" = "PDF Archiver ist ein kleines Open Source Projekt.\n\nSie können das Projekt unterstützen, indem Sie eine Spende über die Button auf der rechten Seite auswählen.";
+
+/* Class = "NSMenuItem"; title = "Privacy Policy"; ObjectID = "6IH-UX-ZY8"; */
+"6IH-UX-ZY8.title" = "Datenschutz";
+
+/* Class = "NSMenuItem"; title = "Imprint"; ObjectID = "AQv-Kn-N9d"; */
+"AQv-Kn-N9d.title" = "Impressum";

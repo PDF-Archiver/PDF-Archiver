@@ -14,12 +14,18 @@
 
 "file_already_exists" = "File with the current filename already exists. \nPlease change e.g. the description.";
 
+/* PDF Archiver imprint website */
+"imprint" = "https://pdf-archiver.io/imprint";
+
 "no_archive" = "No archive path found!";
 
 "payment_complete" = "Payment completed!";
 
-"payment_thanks" = "Thank you for donating to this project. It helps to continue develop this app.";
+"payment_thanks" = "Thank you for donating to this project. It helps the development this app.";
+
+/* PDF Archiver privacy website */
+"privacy" = "https://pdf-archiver.io/privacy";
 
 "renaming_failed" = "Renaming failed!";
 
-"select_preferences" = "Please select one in the preferences.";
+"select_preferences" = "Please select a archive path in the preferences.";

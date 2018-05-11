@@ -173,6 +173,18 @@
                                                 <action selector="showHelp:" target="Voe-Tx-rLC" id="6a2-CJ-tAD"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Privacy Policy" id="6IH-UX-ZY8">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="showPrivacy:" target="Voe-Tx-rLC" id="aPj-IB-gXU"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Imprint" id="AQv-Kn-N9d">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="showImprint:" target="Voe-Tx-rLC" id="uN2-KD-CP3"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem isSeparatorItem="YES" id="g5g-oz-d55"/>
                                         <menuItem title="Show Onboarding" id="Hz0-RV-wAv" userLabel="Show Onboarding">
                                             <modifierMask key="keyEquivalentModifierMask"/>
@@ -581,22 +593,22 @@ Tag your document and save  it:</string>
             </objects>
             <point key="canvasLocation" x="1747" y="1295.5"/>
         </scene>
-        <!--Donation (Beta)-->
+        <!--Donation-->
         <scene sceneID="lPK-1g-uGP">
             <objects>
-                <viewController title="Donation (Beta)" identifier="DonationsVC" storyboardIdentifier="DonationsVC" id="rWp-Co-RrU" customClass="DonationPreferencesVC" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Donation" identifier="DonationsVC" storyboardIdentifier="DonationsVC" id="rWp-Co-RrU" customClass="DonationPreferencesVC" customModule="PDF_Archiver" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="vFK-Vc-7T6">
-                        <rect key="frame" x="0.0" y="0.0" width="490" height="189"/>
+                        <rect key="frame" x="0.0" y="0.0" width="455" height="210"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <box autoresizesSubviews="NO" borderType="line" title="One-Time Donation" translatesAutoresizingMaskIntoConstraints="NO" id="alz-A4-A8z">
-                                <rect key="frame" x="17" y="19" width="216" height="150"/>
+                                <rect key="frame" x="232" y="45" width="196" height="145"/>
                                 <view key="contentView" id="yc2-iU-djq">
-                                    <rect key="frame" x="1" y="1" width="214" height="128"/>
+                                    <rect key="frame" x="1" y="1" width="194" height="125"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <button verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="pjt-37-tlz">
-                                            <rect key="frame" x="9" y="85" width="196" height="32"/>
+                                            <rect key="frame" x="9" y="82" width="176" height="32"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="21" id="bTt-g8-WKR"/>
                                             </constraints>
@@ -609,7 +621,7 @@ Tag your document and save  it:</string>
                                             </connections>
                                         </button>
                                         <button verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="OLw-Bf-fGp">
-                                            <rect key="frame" x="9" y="49" width="196" height="32"/>
+                                            <rect key="frame" x="9" y="46" width="176" height="32"/>
                                             <buttonCell key="cell" type="push" title="Level 2" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="5JW-68-xh8">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
@@ -619,7 +631,7 @@ Tag your document and save  it:</string>
                                             </connections>
                                         </button>
                                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Zkb-C5-cZI">
-                                            <rect key="frame" x="9" y="13" width="196" height="32"/>
+                                            <rect key="frame" x="9" y="8" width="176" height="34"/>
                                             <buttonCell key="cell" type="push" title="Level 3" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ndf-3x-jdp">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
@@ -639,77 +651,17 @@ Tag your document and save  it:</string>
                                         <constraint firstItem="Zkb-C5-cZI" firstAttribute="top" secondItem="OLw-Bf-fGp" secondAttribute="bottom" constant="15" id="UQP-7A-fOC"/>
                                         <constraint firstItem="pjt-37-tlz" firstAttribute="leading" secondItem="yc2-iU-djq" secondAttribute="leading" constant="15" id="XoE-12-KZT"/>
                                         <constraint firstAttribute="trailing" secondItem="Zkb-C5-cZI" secondAttribute="trailing" constant="15" id="aF4-bw-h7H"/>
-                                        <constraint firstAttribute="bottom" secondItem="Zkb-C5-cZI" secondAttribute="bottom" constant="20" id="ap0-ll-OQi"/>
+                                        <constraint firstAttribute="bottom" secondItem="Zkb-C5-cZI" secondAttribute="bottom" constant="15" id="ap0-ll-OQi"/>
                                     </constraints>
                                 </view>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="146" id="WCR-En-0Xf"/>
-                                    <constraint firstAttribute="width" constant="210" id="xw7-Sr-0jQ"/>
+                                    <constraint firstAttribute="height" constant="141" id="WCR-En-0Xf"/>
+                                    <constraint firstAttribute="width" constant="190" id="xw7-Sr-0jQ"/>
                                 </constraints>
-                                <font key="titleFont" metaFont="systemSemibold" size="15"/>
+                                <font key="titleFont" metaFont="systemSemibold" size="14"/>
                             </box>
-                            <box autoresizesSubviews="NO" borderType="line" title="Yearly Subscription" translatesAutoresizingMaskIntoConstraints="NO" id="i7v-oz-zvL">
-                                <rect key="frame" x="257" y="60" width="216" height="109"/>
-                                <view key="contentView" id="R27-Hj-ORq">
-                                    <rect key="frame" x="1" y="1" width="214" height="87"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    <subviews>
-                                        <button identifier="subscriptionLevel1" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="5gc-Ox-MzG">
-                                            <rect key="frame" x="9" y="44" width="196" height="32"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="21" id="gM0-JU-6hM"/>
-                                            </constraints>
-                                            <buttonCell key="cell" type="push" title="Level 1" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="nXe-2w-oqh">
-                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                            <connections>
-                                                <action selector="subscriptionButton1Clicked:" target="rWp-Co-RrU" id="gBy-13-uL8"/>
-                                            </connections>
-                                        </button>
-                                        <button identifier="subscriptionLevel2" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="qB3-wG-Std">
-                                            <rect key="frame" x="9" y="8" width="196" height="32"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="21" id="y0t-LD-EbU"/>
-                                            </constraints>
-                                            <buttonCell key="cell" type="push" title="Level 2" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="WpL-o2-oza">
-                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                            <connections>
-                                                <action selector="subscriptionButton2Clicked:" target="rWp-Co-RrU" id="zj2-WY-FTd"/>
-                                            </connections>
-                                        </button>
-                                    </subviews>
-                                    <constraints>
-                                        <constraint firstItem="qB3-wG-Std" firstAttribute="trailing" secondItem="5gc-Ox-MzG" secondAttribute="trailing" id="1Vd-ah-2S3"/>
-                                        <constraint firstAttribute="trailing" secondItem="5gc-Ox-MzG" secondAttribute="trailing" constant="15" id="E9X-DN-TnJ"/>
-                                        <constraint firstItem="5gc-Ox-MzG" firstAttribute="top" secondItem="R27-Hj-ORq" secondAttribute="top" constant="15" id="QgU-kc-pco"/>
-                                        <constraint firstAttribute="bottom" secondItem="qB3-wG-Std" secondAttribute="bottom" constant="15" id="Ts2-js-mLw"/>
-                                        <constraint firstItem="qB3-wG-Std" firstAttribute="leading" secondItem="5gc-Ox-MzG" secondAttribute="leading" id="W4k-VM-3lw"/>
-                                        <constraint firstItem="5gc-Ox-MzG" firstAttribute="leading" secondItem="R27-Hj-ORq" secondAttribute="leading" constant="15" id="n3J-ML-Lv9"/>
-                                        <constraint firstItem="qB3-wG-Std" firstAttribute="top" secondItem="5gc-Ox-MzG" secondAttribute="bottom" constant="15" id="t5H-aC-hvc"/>
-                                    </constraints>
-                                </view>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="105" id="LcR-S5-7dJ"/>
-                                    <constraint firstAttribute="width" constant="210" id="iIB-aU-3Zb"/>
-                                </constraints>
-                                <font key="titleFont" metaFont="systemSemibold" size="15"/>
-                            </box>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="sL0-ry-Buz">
-                                <rect key="frame" x="274" y="23" width="171" height="17"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="17" id="ouW-Z0-oNf"/>
-                                </constraints>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Mac App Store Connection:" id="ywB-46-644">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="y11-yy-btf">
-                                <rect key="frame" x="451" y="22" width="16" height="16"/>
+                                <rect key="frame" x="411" y="17" width="16" height="16"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="12" id="IB7-Fa-ABb"/>
                                     <constraint firstAttribute="width" constant="12" id="PhT-M7-4Ap"/>
@@ -722,19 +674,42 @@ Tag your document and save  it:</string>
                                     </connections>
                                 </buttonCell>
                             </button>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="sL0-ry-Buz">
+                                <rect key="frame" x="234" y="17" width="171" height="17"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="17" id="ouW-Z0-oNf"/>
+                                </constraints>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Mac App Store Connection:" id="ywB-46-644">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="7Kr-6U-ceM">
+                                <rect key="frame" x="28" y="49" width="194" height="121"/>
+                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" id="Zpu-W2-6EJ">
+                                    <font key="font" metaFont="system"/>
+                                    <string key="title">PDF Archiver is a small open source project.
+
+You can support this project by picking a one-time donation via the buttons on the right.</string>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="i7v-oz-zvL" firstAttribute="leading" secondItem="alz-A4-A8z" secondAttribute="trailing" constant="30" id="9v0-Wy-311"/>
-                            <constraint firstAttribute="trailing" secondItem="y11-yy-btf" secondAttribute="trailing" constant="25" id="DNx-Ok-LXW"/>
-                            <constraint firstItem="sL0-ry-Buz" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="vFK-Vc-7T6" secondAttribute="leading" constant="20" symbolic="YES" id="EHE-qc-GgK"/>
-                            <constraint firstItem="alz-A4-A8z" firstAttribute="leading" secondItem="vFK-Vc-7T6" secondAttribute="leading" constant="20" id="MGk-IC-0iP"/>
-                            <constraint firstItem="alz-A4-A8z" firstAttribute="top" secondItem="vFK-Vc-7T6" secondAttribute="top" constant="20" id="Nmp-uX-ka0"/>
+                            <constraint firstItem="alz-A4-A8z" firstAttribute="width" secondItem="7Kr-6U-ceM" secondAttribute="width" id="Ju5-6F-ndk"/>
+                            <constraint firstItem="alz-A4-A8z" firstAttribute="bottom" secondItem="7Kr-6U-ceM" secondAttribute="bottom" id="Qaj-Wn-joJ"/>
                             <constraint firstItem="y11-yy-btf" firstAttribute="centerY" secondItem="sL0-ry-Buz" secondAttribute="centerY" id="cEA-My-L8f"/>
-                            <constraint firstItem="i7v-oz-zvL" firstAttribute="top" secondItem="vFK-Vc-7T6" secondAttribute="top" constant="20" id="cGf-Z1-5g1"/>
-                            <constraint firstAttribute="bottom" secondItem="y11-yy-btf" secondAttribute="bottom" constant="25" id="jLV-MW-NSx"/>
-                            <constraint firstItem="sL0-ry-Buz" firstAttribute="bottom" secondItem="alz-A4-A8z" secondAttribute="bottom" id="pg6-cb-rhV"/>
-                            <constraint firstItem="y11-yy-btf" firstAttribute="leading" secondItem="sL0-ry-Buz" secondAttribute="trailing" constant="10" id="x2g-fu-4xr"/>
-                            <constraint firstAttribute="trailing" secondItem="i7v-oz-zvL" secondAttribute="trailing" constant="20" id="xII-mT-yJN"/>
+                            <constraint firstItem="sL0-ry-Buz" firstAttribute="top" secondItem="alz-A4-A8z" secondAttribute="bottom" constant="15" id="ctt-XC-BCM"/>
+                            <constraint firstItem="y11-yy-btf" firstAttribute="leading" secondItem="sL0-ry-Buz" secondAttribute="trailing" constant="10" id="dmh-oE-3fw"/>
+                            <constraint firstItem="alz-A4-A8z" firstAttribute="leading" secondItem="7Kr-6U-ceM" secondAttribute="trailing" constant="15" id="gf5-Zc-JrY"/>
+                            <constraint firstItem="7Kr-6U-ceM" firstAttribute="leading" secondItem="vFK-Vc-7T6" secondAttribute="leading" constant="30" id="mXN-Vc-vsq"/>
+                            <constraint firstAttribute="trailing" secondItem="alz-A4-A8z" secondAttribute="trailing" constant="30" id="ndp-4c-wD7"/>
+                            <constraint firstItem="7Kr-6U-ceM" firstAttribute="top" secondItem="vFK-Vc-7T6" secondAttribute="top" constant="40" id="nft-Og-BAW"/>
+                            <constraint firstItem="y11-yy-btf" firstAttribute="trailing" secondItem="alz-A4-A8z" secondAttribute="trailing" id="qUS-9R-meC"/>
+                            <constraint firstItem="alz-A4-A8z" firstAttribute="top" secondItem="vFK-Vc-7T6" secondAttribute="top" constant="20" id="xvt-TW-iYu"/>
+                            <constraint firstAttribute="bottom" secondItem="y11-yy-btf" secondAttribute="bottom" constant="20" id="z7T-rm-Woa"/>
                         </constraints>
                     </view>
                     <connections>
@@ -742,13 +717,11 @@ Tag your document and save  it:</string>
                         <outlet property="donationButton1" destination="pjt-37-tlz" id="jj2-Cz-xbO"/>
                         <outlet property="donationButton2" destination="OLw-Bf-fGp" id="9zf-tj-Gxv"/>
                         <outlet property="donationButton3" destination="Zkb-C5-cZI" id="05n-XA-uxH"/>
-                        <outlet property="subscriptionButton1" destination="5gc-Ox-MzG" id="9Qm-Sr-3OT"/>
-                        <outlet property="subscriptionButton2" destination="qB3-wG-Std" id="eaP-yx-Htn"/>
                     </connections>
                 </viewController>
                 <customObject id="S14-PJ-KOq" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1692" y="1595"/>
+            <point key="canvasLocation" x="1617" y="1641"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="hIz-AP-VOD">
@@ -795,7 +768,7 @@ Tag your document and save  it:</string>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                             </tableHeaderCell>
-                                                            <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" title="Text Cell" id="Lpy-0t-1Kb">
+                                                            <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" refusesFirstResponder="YES" title="Text Cell" id="Lpy-0t-1Kb">
                                                                 <font key="font" metaFont="system"/>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -840,7 +813,7 @@ Tag your document and save  it:</string>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                             </tableHeaderCell>
-                                                            <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" title="Text Cell" id="1KI-Am-9H9">
+                                                            <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" refusesFirstResponder="YES" title="Text Cell" id="1KI-Am-9H9">
                                                                 <font key="font" metaFont="system"/>
                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -881,7 +854,6 @@ Tag your document and save  it:</string>
                                                         </tableColumn>
                                                     </tableColumns>
                                                     <connections>
-                                                        <action selector="clickedDocumentTableView:" target="XfG-lQ-9wD" id="VlH-02-0fE"/>
                                                         <outlet property="delegate" destination="XfG-lQ-9wD" id="KxX-p1-otG"/>
                                                     </connections>
                                                 </tableView>

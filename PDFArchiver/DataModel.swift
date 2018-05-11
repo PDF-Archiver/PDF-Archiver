@@ -23,8 +23,7 @@ class DataModel: TagsDelegate {
     var store: IAPHelper
 
     init() {
-        let availableIds = Set(["DONATION_LEVEL1", "DONATION_LEVEL2", "DONATION_LEVEL3",
-                                "SUBSCRIPTION_LEVEL1", "SUBSCRIPTION_LEVEL2"])
+        let availableIds = Set(["DONATION_LEVEL1", "DONATION_LEVEL2", "DONATION_LEVEL3"])
         self.store = IAPHelper(productIds: availableIds)
         self.documents = []
         self.tags = []
@@ -50,9 +49,10 @@ class DataModel: TagsDelegate {
         self.documents = []
 
         // access the file system and add documents to the data model
+        // TODO: there might be a better solution to access the security scope
         if !(self.prefs.archivePath?.startAccessingSecurityScopedResource() ?? false) {
             os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-            return
+//            return
         }
         for path in paths {
             let files = getPDFs(url: path)

@@ -55,13 +55,6 @@ class ViewController: NSViewController, ViewControllerDelegate {
         selectedDocument.documentDescription = sender.stringValue
     }
 
-    @IBAction func clickedDocumentTableView(_ sender: NSTableView) {
-        if self.documentAC.selectionIndex >= 0 {
-            // pick a document and save the tags in the document tag list
-            self.updateView(updatePDF: true)
-        }
-    }
-
     @IBAction func clickedDocumentTagTableView(_ sender: NSTableView) {
         // test if the document tag table is empty
         guard !self.documentAC.selectedObjects.isEmpty,
@@ -92,12 +85,10 @@ class ViewController: NSViewController, ViewControllerDelegate {
 
     @IBAction func browseFile(sender: AnyObject) {
         self.getPDFDocuments()
-        // no need to update the view here - it gets updated at the end of self.getPDFDocuments()
     }
 
     @IBAction func saveDocumentButton(_ sender: NSButton) {
         self.saveDocument()
-        self.updateView(updatePDF: true)
     }
 
     func setDocuments(documents: [Document]) {
@@ -145,8 +136,8 @@ class ViewController: NSViewController, ViewControllerDelegate {
         self.descriptionField.delegate = self
 
         // add sorting to tag fields
-        self.documentAC.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true),
-                                           NSSortDescriptor(key: "documentDone", ascending: false)]
+        self.documentAC.sortDescriptors = [NSSortDescriptor(key: "documentDone", ascending: false),
+                                           NSSortDescriptor(key: "name", ascending: true)]
         self.tagTableView.sortDescriptors = [NSSortDescriptor(key: "count", ascending: false),
                                              NSSortDescriptor(key: "name", ascending: true)]
 
@@ -160,7 +151,9 @@ class ViewController: NSViewController, ViewControllerDelegate {
 
         // update the view after all the settigns
         self.documentAC.setSelectionIndex(0)
-        self.updateView(updatePDF: true)
+
+        // update the tags, if file changes occured in the archive
+        self.testArchiveModification()
     }
 
     override func viewWillAppear() {

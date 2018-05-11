@@ -52,6 +52,7 @@ struct Preferences {
             self.getArchiveTags()
         }
     }
+    var archiveModificationDate: Date?
 
     func save() {
         // there is no need to save the archive/observed path here - see the setter of the variable
@@ -68,6 +69,11 @@ struct Preferences {
 
         // save the analyseOnlyLatestFolders flag
         UserDefaults.standard.set(self.analyseAllFolders, forKey: "analyseOnlyLatestFolders")
+
+        // save the archive modification date
+        if let date = self.archiveModificationDate {
+            UserDefaults.standard.set(date, forKey: "archiveModificationDate")
+        }
     }
 
     mutating func load() {
@@ -105,11 +111,16 @@ struct Preferences {
         }
         self.delegate?.setTagList(tagList: newTagList)
 
-        // save the analyseOnlyLatestFolders flag
+        // load the analyseOnlyLatestFolders flag
         self.analyseAllFolders = UserDefaults.standard.bool(forKey: "analyseOnlyLatestFolders")
+
+        // load the archive modification date
+        if let date = UserDefaults.standard.object(forKey: "archiveModificationDate") as? Date {
+            self.archiveModificationDate = date
+        }
     }
 
-    func getArchiveTags() {
+    mutating func getArchiveTags() {
         guard let path = self._archivePath else {
             os_log("No archive path selected, could not get old tags.", log: self.log, type: .error)
             return
@@ -129,6 +140,10 @@ struct Preferences {
                 .filter({ URL(fileURLWithPath: $0.path).lastPathComponent.prefix(2) == "20" || URL(fileURLWithPath: $0.path).lastPathComponent.prefix(2) == "19" })
                 // sort folders by year
                 .sorted(by: { $0.path > $1.path })
+
+            // update the archiveModificationDate
+            let attributes = try fileManager.attributesOfItem(atPath: path.path)
+            self.archiveModificationDate = attributes[FileAttributeKey.modificationDate] as? Date
 
         } catch {
             os_log("An error occured while getting the archive year folders.")

@@ -50,10 +50,12 @@ extension ViewController {
 
         // access the file system and get the new documents
         self.dataModelInstance.documents = []
+
+        // TODO: only access the security scope, if the documents need it
         if let observedPath = self.dataModelInstance.prefs.observedPath {
             if !observedPath.startAccessingSecurityScopedResource() {
                 os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-                return
+//                return
             }
             self.dataModelInstance.addDocuments(paths: [observedPath])
             observedPath.stopAccessingSecurityScopedResource()
@@ -97,21 +99,21 @@ extension ViewController {
             self.documentTagAC.content = selectedDocument.documentTags
 
             // access the file system and update pdf view
-            if updatePDF,
-               let observedPath = self.dataModelInstance.prefs.observedPath,
-               let archivePath = self.dataModelInstance.prefs.archivePath {
-                if !observedPath.startAccessingSecurityScopedResource() {
+            if updatePDF {
+                // TODO: there might be a better solution to access the security scope
+                if !(self.dataModelInstance.prefs.observedPath?.startAccessingSecurityScopedResource() ?? false) {
                     os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-                    return
+//                    return
                 }
-                    if !archivePath.startAccessingSecurityScopedResource() {
-                        os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-                        return
-                    }
+                // TODO: only access the security scope, if the documents need it
+                if !(self.dataModelInstance.prefs.archivePath?.startAccessingSecurityScopedResource() ?? false) {
+                    os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
+//                    return
+                }
 
                 self.pdfContentView.document = PDFDocument(url: selectedDocument.path)
-                archivePath.stopAccessingSecurityScopedResource()
-                observedPath.stopAccessingSecurityScopedResource()
+                self.dataModelInstance.prefs.archivePath?.stopAccessingSecurityScopedResource()
+                self.dataModelInstance.prefs.observedPath?.stopAccessingSecurityScopedResource()
             }
         }
     }
@@ -154,13 +156,15 @@ extension ViewController {
         }
 
         // access the file system
+        // TODO: only access the security scope, if the documents need it
         if !(self.dataModelInstance.prefs.archivePath?.startAccessingSecurityScopedResource() ?? false) {
             os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-            return
+//            return
         }
+        // TODO: only access the security scope, if the documents need it
         if !(self.dataModelInstance.prefs.observedPath?.startAccessingSecurityScopedResource() ?? false) {
             os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-            return
+//            return
         }
         let result = selectedDocument.rename(archivePath: path)
         self.dataModelInstance.prefs.observedPath?.stopAccessingSecurityScopedResource()
@@ -170,13 +174,14 @@ extension ViewController {
             // update the array controller
             self.documentAC.content = self.dataModelInstance.documents
 
-            // select a new document
-            let newIndex = self.documentAC.selectionIndex + 1
-            if newIndex < self.dataModelInstance.documents.count {
-                self.documentAC.setSelectionIndex(newIndex)
-            } else {
-                self.documentAC.setSelectionIndex(0)
+            // select a new document, which is not already done
+            var newIndex = 0
+            var documents = (self.documentAC.arrangedObjects as? [Document]) ?? []
+            for idx in 0...documents.count-1 where documents[idx].documentDone == "" {
+                newIndex = idx
+                break
             }
+            self.documentAC.setSelectionIndex(newIndex)
         }
     }
 
@@ -209,8 +214,52 @@ extension ViewController {
             self.dataModelInstance.tags.insert(selectedTag)
         }
     }
+
+    func testArchiveModification() {
+        if let archivePath = self.dataModelInstance.prefs.archivePath {
+            let fileManager = FileManager.default
+            var newArchiveModificationDate: Date?
+            do {
+                // get the attributes of the current archive folder
+                let attributes = try fileManager.attributesOfItem(atPath: archivePath.path)
+                newArchiveModificationDate = attributes[FileAttributeKey.modificationDate] as? Date
+            } catch let error {
+                os_log("Folder not found: %@ \nUpdate tags anyway.", log: self.log, type: .debug, error.localizedDescription)
+            }
+
+            // compare dates here
+            if let archiveModificationDate = self.dataModelInstance.prefs.archiveModificationDate,
+                let newArchiveModificationDate = newArchiveModificationDate,
+                archiveModificationDate == newArchiveModificationDate {
+                os_log("No changes in archive folder, skipping tag update.", log: self.log, type: .debug)
+
+            } else {
+                os_log("Changes in archive folder detected, update tags.", log: self.log, type: .debug)
+
+                // update the archive tags
+                DispatchQueue.global(qos: .userInitiated).async {
+                    self.dataModelInstance.prefs.getArchiveTags()
+
+                    DispatchQueue.main.async {
+                        self.updateGUI()
+                    }
+                }
+            }
+        }
+    }
 }
 
+// MARK: - Selection changes in a NSTableView
+extension ViewController: NSTableViewDelegate {
+    func tableViewSelectionDidChange(_ notification: Notification) {
+        if let identifier = (notification.object as? NSTableView)?.identifier?.rawValue,
+           identifier == "DocumentTableView" {
+            self.updateView(updatePDF: true)
+        }
+    }
+}
+
+// MARK: - Selection changes in the description or search field
 extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
     override func controlTextDidChange(_ notification: Notification) {
         guard let identifier = (notification.object as? NSTextField)?.identifier else { return }
@@ -254,6 +303,7 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
     }
 }
 
+// MARK: - custom delegates
 extension ViewController: PreferencesDelegate {
     func updateGUI() {
         self.updateView(updatePDF: true)

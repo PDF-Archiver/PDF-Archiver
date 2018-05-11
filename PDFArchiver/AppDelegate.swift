@@ -12,8 +12,13 @@ import Cocoa
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBAction func showHelp(_ sender: NSMenuItem) {
-        let helpURL = URL(string: "https://pdf-archiver.io/faq")
-        NSWorkspace.shared.open(helpURL!)
+        NSWorkspace.shared.open(URL(string: "https://pdf-archiver.io/faq")!)
+    }
+    @IBAction func showPrivacy(_ sender: NSMenuItem) {
+        NSWorkspace.shared.open(URL(string: NSLocalizedString("privacy", comment: "PDF Archiver privacy website"))!)
+    }
+    @IBAction func showImprint(_ sender: NSMenuItem) {
+        NSWorkspace.shared.open(URL(string: NSLocalizedString("imprint", comment: "PDF Archiver imprint website"))!)
     }
     @IBAction func showPreferences(_ sender: NSMenuItem) {
         NotificationCenter.default.post(name: Notification.Name("ShowPreferences"), object: nil)
