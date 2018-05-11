@@ -219,7 +219,7 @@
 "obQ-RK-Zgm.title" = "Ändern …";
 
 /* Class = "NSTextFieldCell"; title = "Observed Folder:"; ObjectID = "z8O-Wh-LiY"; */
-"z8O-Wh-LiY.title" = "Überwachter Ordner";
+"z8O-Wh-LiY.title" = "Überwachter Ordner:";
 
 /* Class = "NSMenu"; title = "View"; ObjectID = "DKC-3b-TGx"; */
 "DKC-3b-TGx.title" = "Darstellung";

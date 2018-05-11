@@ -49,9 +49,10 @@ class DataModel: TagsDelegate {
         self.documents = []
 
         // access the file system and add documents to the data model
+        // TODO: there might be a better solution to access the security scope
         if !(self.prefs.archivePath?.startAccessingSecurityScopedResource() ?? false) {
             os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-            return
+//            return
         }
         for path in paths {
             let files = getPDFs(url: path)
