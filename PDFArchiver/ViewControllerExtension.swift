@@ -50,10 +50,12 @@ extension ViewController {
 
         // access the file system and get the new documents
         self.dataModelInstance.documents = []
+
+        // TODO: only access the security scope, if the documents need it
         if let observedPath = self.dataModelInstance.prefs.observedPath {
             if !observedPath.startAccessingSecurityScopedResource() {
                 os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-                return
+//                return
             }
             self.dataModelInstance.addDocuments(paths: [observedPath])
             observedPath.stopAccessingSecurityScopedResource()
@@ -97,21 +99,21 @@ extension ViewController {
             self.documentTagAC.content = selectedDocument.documentTags
 
             // access the file system and update pdf view
-            if updatePDF,
-               let observedPath = self.dataModelInstance.prefs.observedPath,
-               let archivePath = self.dataModelInstance.prefs.archivePath {
-                if !observedPath.startAccessingSecurityScopedResource() {
+            if updatePDF {
+                // TODO: there might be a better solution to access the security scope
+                if !(self.dataModelInstance.prefs.observedPath?.startAccessingSecurityScopedResource() ?? false) {
                     os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-                    return
+//                    return
                 }
-                    if !archivePath.startAccessingSecurityScopedResource() {
-                        os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-                        return
-                    }
+                // TODO: only access the security scope, if the documents need it
+                if !(self.dataModelInstance.prefs.archivePath?.startAccessingSecurityScopedResource() ?? false) {
+                    os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
+//                    return
+                }
 
                 self.pdfContentView.document = PDFDocument(url: selectedDocument.path)
-                archivePath.stopAccessingSecurityScopedResource()
-                observedPath.stopAccessingSecurityScopedResource()
+                self.dataModelInstance.prefs.archivePath?.stopAccessingSecurityScopedResource()
+                self.dataModelInstance.prefs.observedPath?.stopAccessingSecurityScopedResource()
             }
         }
     }
@@ -154,13 +156,15 @@ extension ViewController {
         }
 
         // access the file system
+        // TODO: only access the security scope, if the documents need it
         if !(self.dataModelInstance.prefs.archivePath?.startAccessingSecurityScopedResource() ?? false) {
             os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-            return
+//            return
         }
+        // TODO: only access the security scope, if the documents need it
         if !(self.dataModelInstance.prefs.observedPath?.startAccessingSecurityScopedResource() ?? false) {
             os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-            return
+//            return
         }
         let result = selectedDocument.rename(archivePath: path)
         self.dataModelInstance.prefs.observedPath?.stopAccessingSecurityScopedResource()

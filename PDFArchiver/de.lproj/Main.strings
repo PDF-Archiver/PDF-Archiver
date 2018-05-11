@@ -219,7 +219,7 @@
 "obQ-RK-Zgm.title" = "Ändern …";
 
 /* Class = "NSTextFieldCell"; title = "Observed Folder:"; ObjectID = "z8O-Wh-LiY"; */
-"z8O-Wh-LiY.title" = "Überwachter Ordner";
+"z8O-Wh-LiY.title" = "Überwachter Ordner:";
 
 /* Class = "NSMenu"; title = "View"; ObjectID = "DKC-3b-TGx"; */
 "DKC-3b-TGx.title" = "Darstellung";
@@ -275,26 +275,17 @@
 /* Class = "NSButtonCell"; title = "Level 3"; ObjectID = "ndf-3x-jdp"; */
 "ndf-3x-jdp.title" = "Level 3";
 
-/* Class = "NSButtonCell"; title = "Subscribe"; ObjectID = "nXe-2w-oqh"; */
-"nXe-2w-oqh.title" = "Subscribe";
-
 /* Class = "NSBox"; title = "One-Time Donation"; ObjectID = "alz-A4-A8z"; */
 "alz-A4-A8z.title" = "Einmalige Spende";
-
-/* Class = "NSBox"; title = "Auto-Renewing Subscription"; ObjectID = "i7v-oz-zvL"; */
-"i7v-oz-zvL.title" = "Jährliches Abo";
 
 /* Class = "NSTextFieldCell"; title = "Mac App Store Connection:"; ObjectID = "ywB-46-644"; */
 "ywB-46-644.title" = "Mac App Store Verbindung:";
 
-/* Class = "NSTextFieldCell"; title = "PDF Archiver is a small open source project.\n\nYou can support this project by picking a one-time donation or a yearly auto-renewing subscription via the buttons below."; ObjectID = "Zpu-W2-6EJ"; */
-"Zpu-W2-6EJ.title" = "PDF Archiver ist ein kleines Open Source Projekt.\n\nFalls Sie das Projekt unterstützen möchten können Sie hier eine einmalige Spende oder ein jährliches Spenden-Abo auswählen. Dieses Abo verlängert sich automatisch nach einem Jahr.";
+/* Class = "NSTextFieldCell"; title = "PDF Archiver is a small open source project.\n\nYou can support this project by picking a one-time donation via the buttons on the right."; ObjectID = "Zpu-W2-6EJ"; */
+"Zpu-W2-6EJ.title" = "PDF Archiver ist ein kleines Open Source Projekt.\n\nSie können das Projekt unterstützen, indem Sie eine Spende über die Button auf der rechten Seite auswählen.";
 
-/* Class = "NSButtonCell"; title = "Change Subscription"; ObjectID = "oVX-xZ-Rf3"; */
-"oVX-xZ-Rf3.title" = "Abo ändern";
-
-/* Class = "NSMenuItem"; title = "Privacy & Terms of Use"; ObjectID = "6IH-UX-ZY8"; */
+/* Class = "NSMenuItem"; title = "Privacy Policy"; ObjectID = "6IH-UX-ZY8"; */
 "6IH-UX-ZY8.title" = "Datenschutz";
 
-/* Class = "NSTextFieldCell"; title = "Privacy Policy/Terms of Use:   https://pdf-archiver.io/privacy"; ObjectID = "2x1-w9-J6a"; */
-"2x1-w9-J6a.title" = "Datenschutzerklärung:   https://pdf-archiver.io/de/privacy";
+/* Class = "NSMenuItem"; title = "Imprint"; ObjectID = "AQv-Kn-N9d"; */
+"AQv-Kn-N9d.title" = "Impressum";

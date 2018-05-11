@@ -15,7 +15,6 @@ class DonationPreferencesVC: PreferencesVC {
     @IBOutlet weak var donationButton1: NSButton!
     @IBOutlet weak var donationButton2: NSButton!
     @IBOutlet weak var donationButton3: NSButton!
-    @IBOutlet weak var subscriptionButton1: NSButton!
     @IBOutlet weak var donationButton: NSButton!
 
     var dataModel: DataModel?
@@ -32,15 +31,6 @@ class DonationPreferencesVC: PreferencesVC {
 
     @IBAction func donationButton3Clicked(_ sender: NSButton) {
         self.buyProduct(identifier: "DONATION_LEVEL3")
-    }
-
-    @IBAction func subscriptionButton1Clicked(_ sender: NSButton) {
-        self.buyProduct(identifier: "SUBSCRIPTION_LEVEL1")
-    }
-
-    @IBAction func changeSubscription(_ sender: NSButton) {
-        let helpURL = URL(string: "https://buy.itunes.apple.com/WebObjects/MZFinance.woa/wa/manageSubscriptions")
-        NSWorkspace.shared.open(helpURL!)
     }
 
     @IBAction func statusImageClicked(_ sender: Any) {
@@ -96,7 +86,6 @@ class DonationPreferencesVC: PreferencesVC {
         self.donationButton1.isEnabled = false
         self.donationButton2.isEnabled = false
         self.donationButton3.isEnabled = false
-        self.subscriptionButton1.isEnabled = false
 
         // set the button label
         for product in self.dataModel?.store.products ?? [] {
@@ -107,8 +96,6 @@ class DonationPreferencesVC: PreferencesVC {
                 selectedButton = self.donationButton2
             } else if product.productIdentifier == "DONATION_LEVEL3" {
                 selectedButton = self.donationButton3
-            } else if product.productIdentifier == "SUBSCRIPTION_LEVEL1" {
-                selectedButton = self.subscriptionButton1
             } else {
                 continue
             }
@@ -116,17 +103,6 @@ class DonationPreferencesVC: PreferencesVC {
             // set button to localized price
             selectedButton.title = product.localizedPrice
             selectedButton.isEnabled = true
-
-            if product.productIdentifier == "SUBSCRIPTION_LEVEL1" {
-                // add "per year" to button title
-                selectedButton.title.append(NSLocalizedString("per_year", comment: "Appended Button title"))
-
-                // disable already subscripted buttons
-                if self.dataModel?.store.isProductPurchased(product.productIdentifier) ?? false {
-                    selectedButton.isEnabled = false
-                }
-            }
-
         }
     }
 
