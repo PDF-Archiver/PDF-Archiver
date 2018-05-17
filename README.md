@@ -1,14 +1,17 @@
-<p align="center">
+<div align="center">
 <a href="https://itunes.apple.com/app/pdf-archiver/id1352719750" target="itunes_store">
   <img src="assets/AppIcon.svg" width="200px">
-</a>
-</p>
+</a><br><br>
 
-<p align="center">
 <a href="https://itunes.apple.com/app/pdf-archiver/id1352719750" target="itunes_store">
   <img src="assets/MacAppStoreBadge.svg">
-</a>
-</p>
+</a><br>
+
+[![Build Status](https://travis-ci.org/PDF-Archiver/PDF-Archiver.svg?branch=master)](https://travis-ci.org/PDF-Archiver/PDF-Archiver)
+[![Maintainability](https://api.codeclimate.com/v1/badges/e460629e748c442f5285/maintainability)](https://codeclimate.com/github/PDF-Archiver/PDF-Archiver/maintainability)
+[![Receiving via Liberapay](https://img.shields.io/liberapay/receives/juliankahnert.svg)](https://liberapay.com/juliankahnert/)
+[![Say Thanks!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/JulianKahnert)
+</div>
 
 # PDF Archiver
 
