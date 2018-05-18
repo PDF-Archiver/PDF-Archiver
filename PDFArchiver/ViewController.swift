@@ -84,7 +84,7 @@ class ViewController: NSViewController, ViewControllerDelegate {
     }
 
     @IBAction func browseFile(sender: AnyObject) {
-        self.getPDFDocuments()
+        self.setObservedPath()
     }
 
     @IBAction func saveDocumentButton(_ sender: NSButton) {

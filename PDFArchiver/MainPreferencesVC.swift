@@ -36,7 +36,7 @@ class MainPreferencesVC: PreferencesVC {
 
     @IBAction func changeObservedPathButton(_ sender: NSButton) {
         let openPanel = NSOpenPanel()
-        openPanel.title = "Choose an archive folder"
+        openPanel.title = "Choose an observed folder"
         openPanel.showsResizeIndicator = false
         openPanel.showsHiddenFiles = false
         openPanel.canChooseFiles = false

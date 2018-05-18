@@ -118,28 +118,21 @@ extension ViewController {
         }
     }
 
-    func getPDFDocuments() {
+    func setObservedPath() {
         let openPanel = NSOpenPanel()
-        openPanel.title = "Choose a .pdf file or a folder"
+        openPanel.title = "Choose an observed folder"
         openPanel.showsResizeIndicator = false
         openPanel.showsHiddenFiles = false
-        openPanel.canChooseFiles = true
+        openPanel.canChooseFiles = false
         openPanel.canChooseDirectories = true
-        openPanel.canCreateDirectories = false
-        openPanel.allowsMultipleSelection = true
-        openPanel.allowedFileTypes = ["pdf"]
-        openPanel.beginSheetModal(for: NSApplication.shared.mainWindow!) { (response) in
-            if response.rawValue == NSApplication.ModalResponse.OK.rawValue {
-                // clear old documents from view
-                self.dataModelInstance.documents = []
-                // get the new documents
-                self.dataModelInstance.addDocuments(paths: openPanel.urls)
-            }
-            openPanel.close()
-            // add pdf documents to the controller (and replace the old ones)
-            self.documentAC.content = self.dataModelInstance.documents
-            // update the view after a document was picked
-            self.updateView(updatePDF: true)
+        openPanel.allowsMultipleSelection = false
+        openPanel.beginSheetModal(for: NSApplication.shared.mainWindow!) { response in
+            guard response == NSApplication.ModalResponse.OK else { return }
+            self.dataModelInstance.prefs.observedPath = openPanel.url!
+            self.dataModelInstance.addDocuments(paths: openPanel.urls)
+
+            // update the GUI
+            self.updateGUI()
         }
     }
 
