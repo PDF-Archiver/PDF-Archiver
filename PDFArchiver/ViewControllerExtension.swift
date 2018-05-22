@@ -112,6 +112,7 @@ extension ViewController {
                 }
 
                 self.pdfContentView.document = PDFDocument(url: selectedDocument.path)
+                self.pdfContentView.goToFirstPage(self)
                 self.dataModelInstance.prefs.archivePath?.stopAccessingSecurityScopedResource()
                 self.dataModelInstance.prefs.observedPath?.stopAccessingSecurityScopedResource()
             }
