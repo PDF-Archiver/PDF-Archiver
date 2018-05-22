@@ -11,9 +11,10 @@ import os.log
 
 protocol ViewControllerDelegate: class {
     func setDocuments(documents: [Document])
+    func accessSecurityScope(closure: () -> Void)
 }
 
-class ViewController: NSViewController, ViewControllerDelegate {
+class ViewController: NSViewController {
     let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "MainViewController")
     var dataModelInstance = DataModel()
 
@@ -89,10 +90,6 @@ class ViewController: NSViewController, ViewControllerDelegate {
 
     @IBAction func saveDocumentButton(_ sender: NSButton) {
         self.saveDocument()
-    }
-
-    func setDocuments(documents: [Document]) {
-        self.documentAC.content = documents
     }
 
     override func viewDidLoad() {

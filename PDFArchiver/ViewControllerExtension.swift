@@ -51,14 +51,11 @@ extension ViewController {
         // access the file system and get the new documents
         self.dataModelInstance.documents = []
 
-        // TODO: only access the security scope, if the documents need it
+        // add documents
         if let observedPath = self.dataModelInstance.prefs.observedPath {
-            if !observedPath.startAccessingSecurityScopedResource() {
-                os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-//                return
+            self.accessSecurityScope {
+                self.dataModelInstance.addDocuments(paths: [observedPath])
             }
-            self.dataModelInstance.addDocuments(paths: [observedPath])
-            observedPath.stopAccessingSecurityScopedResource()
         }
 
         // update the view
@@ -100,21 +97,10 @@ extension ViewController {
 
             // access the file system and update pdf view
             if updatePDF {
-                // TODO: there might be a better solution to access the security scope
-                if !(self.dataModelInstance.prefs.observedPath?.startAccessingSecurityScopedResource() ?? false) {
-                    os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-//                    return
+                self.accessSecurityScope {
+                    self.pdfContentView.document = PDFDocument(url: selectedDocument.path)
+                    self.pdfContentView.goToFirstPage(self)
                 }
-                // TODO: only access the security scope, if the documents need it
-                if !(self.dataModelInstance.prefs.archivePath?.startAccessingSecurityScopedResource() ?? false) {
-                    os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-//                    return
-                }
-
-                self.pdfContentView.document = PDFDocument(url: selectedDocument.path)
-                self.pdfContentView.goToFirstPage(self)
-                self.dataModelInstance.prefs.archivePath?.stopAccessingSecurityScopedResource()
-                self.dataModelInstance.prefs.observedPath?.stopAccessingSecurityScopedResource()
             }
         }
     }
@@ -150,32 +136,22 @@ extension ViewController {
         }
 
         // access the file system
-        // TODO: only access the security scope, if the documents need it
-        if !(self.dataModelInstance.prefs.archivePath?.startAccessingSecurityScopedResource() ?? false) {
-            os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-//            return
-        }
-        // TODO: only access the security scope, if the documents need it
-        if !(self.dataModelInstance.prefs.observedPath?.startAccessingSecurityScopedResource() ?? false) {
-            os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-//            return
-        }
-        let result = selectedDocument.rename(archivePath: path)
-        self.dataModelInstance.prefs.observedPath?.stopAccessingSecurityScopedResource()
-        self.dataModelInstance.prefs.archivePath?.stopAccessingSecurityScopedResource()
+        self.accessSecurityScope {
+            let result = selectedDocument.rename(archivePath: path)
 
-        if result {
-            // update the array controller
-            self.documentAC.content = self.dataModelInstance.documents
+            if result {
+                // update the array controller
+                self.documentAC.content = self.dataModelInstance.documents
 
-            // select a new document, which is not already done
-            var newIndex = 0
-            var documents = (self.documentAC.arrangedObjects as? [Document]) ?? []
-            for idx in 0...documents.count-1 where documents[idx].documentDone == "" {
-                newIndex = idx
-                break
+                // select a new document, which is not already done
+                var newIndex = 0
+                var documents = (self.documentAC.arrangedObjects as? [Document]) ?? []
+                for idx in 0...documents.count-1 where documents[idx].documentDone == "" {
+                    newIndex = idx
+                    break
+                }
+                self.documentAC.setSelectionIndex(newIndex)
             }
-            self.documentAC.setSelectionIndex(newIndex)
         }
     }
 
@@ -298,6 +274,33 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
 }
 
 // MARK: - custom delegates
+extension ViewController: ViewControllerDelegate {
+    func setDocuments(documents: [Document]) {
+        self.documentAC.content = documents
+    }
+
+    func accessSecurityScope(closure: () -> Void) {
+        // start accessing the file system
+        // TODO: use the closure if needed
+        if !(self.dataModelInstance.prefs.observedPath?.startAccessingSecurityScopedResource() ?? false) {
+            os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
+            //                    return
+        }
+        // TODO: only access the security scope, if the documents need it
+        if !(self.dataModelInstance.prefs.archivePath?.startAccessingSecurityScopedResource() ?? false) {
+            os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
+            //                    return
+        }
+
+        // run the used code
+        closure()
+
+        // stop accessing the file system
+        self.dataModelInstance.prefs.archivePath?.stopAccessingSecurityScopedResource()
+        self.dataModelInstance.prefs.observedPath?.stopAccessingSecurityScopedResource()
+    }
+}
+
 extension ViewController: PreferencesDelegate {
     func updateGUI() {
         self.updateView(updatePDF: true)
