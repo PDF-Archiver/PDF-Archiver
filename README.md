@@ -81,14 +81,11 @@ Or clone the repository and build it:
     * Choose: `[year]-[month]-[day]--Scanbot-[Hours][Minutes][Seconds]`
 
 ### PDF Archiver
-* You can use keyboard shortcuts
-    * `⌘ ,`: open the preferences panel
-    * `⌘ o`: add new PDF documents
-    * `⌘ s`: save the current document in your archive
-* Use the `TAB` key for fast field switching
+* Use the `↹` key for fast field switching
+* You can use keyboard shortcuts from the [FAQs](https://github.com/PDF-Archiver/PDF-Archiver/wiki/FAQs)
 
 ## :interrobang: Help
-* Take a look at the  [FAQs](https://github.com/PDF-Archiver/PDF-Archiver/wiki/FAQs).
+* Take a look at the [FAQs](https://github.com/PDF-Archiver/PDF-Archiver/wiki/FAQs).
 * Get in contact with us at [Slack](https://pdf-archiver.slack.com).
 
 ## :octocat: How to contribute
