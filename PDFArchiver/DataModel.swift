@@ -49,18 +49,14 @@ class DataModel: TagsDelegate {
         self.documents = []
 
         // access the file system and add documents to the data model
-        // TODO: there might be a better solution to access the security scope
-        if !(self.prefs.archivePath?.startAccessingSecurityScopedResource() ?? false) {
-            os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-//            return
-        }
-        for path in paths {
-            let files = getPDFs(url: path)
-            for file in files {
-                self.documents.append(Document(path: file, delegate: self as TagsDelegate))
+        self.viewControllerDelegate?.accessSecurityScope {
+            for path in paths {
+                let files = getPDFs(url: path)
+                for file in files {
+                    self.documents.append(Document(path: file, delegate: self as TagsDelegate))
+                }
             }
         }
-        self.prefs.archivePath?.stopAccessingSecurityScopedResource()
 
         // add documents to the GUI
         self.viewControllerDelegate?.setDocuments(documents: documents)

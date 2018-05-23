@@ -63,14 +63,22 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="File" id="bib-Uj-vzu">
                                     <items>
-                                        <menuItem title="Open…" keyEquivalent="o" id="IAo-SY-fd9"/>
+                                        <menuItem title="Open…" keyEquivalent="o" identifier="TESTTEST" id="IAo-SY-fd9">
+                                            <connections>
+                                                <action selector="browseFileWithSender:" target="Ady-hI-5gd" id="O3C-PL-cIY"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem isSeparatorItem="YES" id="m54-Is-iLE"/>
                                         <menuItem title="Close" keyEquivalent="w" id="DVo-aG-piG">
                                             <connections>
                                                 <action selector="performClose:" target="Ady-hI-5gd" id="HmO-Ls-i7Q"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Save…" keyEquivalent="s" id="pxx-59-PXV"/>
+                                        <menuItem title="Save…" keyEquivalent="s" id="pxx-59-PXV">
+                                            <connections>
+                                                <action selector="saveDocumentButton:" target="Ady-hI-5gd" id="rtn-84-WMq"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
@@ -91,7 +99,7 @@
                                         <menuItem isSeparatorItem="YES" id="w5I-gF-L0b"/>
                                         <menuItem title="Cut" keyEquivalent="x" id="cM7-20-SjD">
                                             <connections>
-                                                <action selector="cut:" target="Ady-hI-5gd" id="IOX-Md-BqD"/>
+                                                <action selector="cut:" target="Ady-hI-5gd" id="CPm-Mw-5jb"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Copy" keyEquivalent="c" id="YiI-pG-5cx">
