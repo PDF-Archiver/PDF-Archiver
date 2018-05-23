@@ -1,0 +1,31 @@
+
+/*
+  Localized.strings
+  PDF Archiver
+
+  Created by Julian Kahnert on 24.02.18.
+  Copyright © 2018 Julian Kahnert. All rights reserved.
+*/
+"check_document_description" = "Please add the document description.";
+
+"check_document_fields" = "Doublecheck the document fields.";
+
+"check_document_tags" = "Doublecheck the document tags and select at least one tag.";
+
+"file_already_exists" = "File with the current filename already exists. \nPlease change e.g. the description.";
+
+/* PDF Archiver imprint website */
+"imprint" = "https://pdf-archiver.io/imprint";
+
+"no_archive" = "No archive path found!";
+
+"payment_complete" = "Payment completed!";
+
+"payment_thanks" = "Thank you for donating to this project. It helps the development this app.";
+
+/* PDF Archiver privacy website */
+"privacy" = "https://pdf-archiver.io/privacy";
+
+"renaming_failed" = "Renaming failed!";
+
+"select_preferences" = "Please select a archive path in the preferences.";

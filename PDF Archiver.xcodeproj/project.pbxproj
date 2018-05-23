@@ -74,6 +74,9 @@
 		A32D52EF2012B5150032F05C /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
 		A347FADA2041AD39001A7925 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A347FADB2041AD3C001A7925 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A34EF76220B5E5A400B3B7AF /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Main.strings; sourceTree = "<group>"; };
+		A34EF76320B5E5A400B3B7AF /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A34EF76420B5E5A400B3B7AF /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		A359963E202A3CC700CDD6E8 /* MyWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyWindow.swift; sourceTree = "<group>"; };
 		A359E4B8202C376E00A703AF /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		A359E4BA202C377800A703AF /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -308,6 +311,7 @@
 				en,
 				Base,
 				de,
+				sv,
 			);
 			mainGroup = A31B52DD1FF694B0007A3D14;
 			productRefGroup = A31B52E71FF694B0007A3D14 /* Products */;
@@ -444,6 +448,7 @@
 			children = (
 				A31B52F01FF694B0007A3D14 /* Base */,
 				A3F48CF32054844000FCA566 /* de */,
+				A34EF76220B5E5A400B3B7AF /* sv */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -453,6 +458,7 @@
 			children = (
 				A347FADA2041AD39001A7925 /* Base */,
 				A347FADB2041AD3C001A7925 /* de */,
+				A34EF76320B5E5A400B3B7AF /* sv */,
 			);
 			name = Localizable.strings;
 			path = PDFArchiver;
@@ -463,6 +469,7 @@
 			children = (
 				A359E4B8202C376E00A703AF /* de */,
 				A359E4BA202C377800A703AF /* Base */,
+				A34EF76420B5E5A400B3B7AF /* sv */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
