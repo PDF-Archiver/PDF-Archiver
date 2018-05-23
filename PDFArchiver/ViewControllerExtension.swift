@@ -24,59 +24,6 @@ extension ViewController {
         }
     }
 
-    // MARK: - notifications
-    @objc func showPreferences() {
-        self.performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "prefsSegue"), sender: self)
-    }
-
-    @objc func resetCache() {
-        // remove preferences - initialize it temporary and kill the app directly afterwards
-        self.dataModelInstance.prefs = Preferences()
-        // remove all user defaults
-        UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
-        // close application
-        NSApplication.shared.terminate(self)
-    }
-
-    @objc func showOnboarding() {
-        self.performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "onboardingSegue"), sender: self)
-    }
-
-    @objc func updateTags() {
-        os_log("Setting archive path, e.g. update tag list.", log: self.log, type: .debug)
-
-        // get tags
-        self.dataModelInstance.prefs.getArchiveTags()
-
-        // access the file system and get the new documents
-        self.dataModelInstance.documents = []
-
-        // add documents
-        if let observedPath = self.dataModelInstance.prefs.observedPath {
-            self.accessSecurityScope {
-                self.dataModelInstance.addDocuments(paths: [observedPath])
-            }
-        }
-
-        // update the view
-        self.updateView(updatePDF: true)
-    }
-
-    @objc func zoomPDF(notification: NSNotification) {
-        guard let sender = notification.object as? NSMenuItem,
-              let identifierName = sender.identifier?.rawValue  else { return }
-
-        if identifierName == "ZoomActualSize" {
-            self.pdfContentView.scaleFactor = 1
-        } else if identifierName == "ZoomToFit" {
-            self.pdfContentView.autoScales = true
-        } else if identifierName == "ZoomIn" {
-            self.pdfContentView.zoomIn(self)
-        } else if identifierName == "ZoomOut" {
-            self.pdfContentView.zoomOut(self)
-        }
-    }
-
     func updateView(updatePDF: Bool) {
         os_log("Update view controller fields and tables.", log: self.log, type: .debug)
         self.tagAC.content = self.dataModelInstance.tags

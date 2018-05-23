@@ -289,3 +289,6 @@
 
 /* Class = "NSMenuItem"; title = "Imprint"; ObjectID = "AQv-Kn-N9d"; */
 "AQv-Kn-N9d.title" = "Impressum";
+
+/* Class = "NSMenuItem"; title = "Delete"; ObjectID = "eF0-vQ-qVy"; */
+"eF0-vQ-qVy.title" = "Löschen";

@@ -115,19 +115,6 @@ class ViewController: NSViewController {
         self.tagAC.content = self.dataModelInstance.tags
         self.documentAC.content = self.dataModelInstance.documents
 
-        // MARK: - Notification Observer
-        let notificationCenter = NotificationCenter.default
-        notificationCenter.addObserver(self, selector: #selector(self.showPreferences),
-                                       name: Notification.Name("ShowPreferences"), object: nil)
-        notificationCenter.addObserver(self, selector: #selector(self.resetCache),
-                                       name: Notification.Name("ResetCache"), object: nil)
-        notificationCenter.addObserver(self, selector: #selector(self.showOnboarding),
-                                       name: Notification.Name("ShowOnboarding"), object: nil)
-        notificationCenter.addObserver(self, selector: #selector(self.updateTags),
-                                       name: Notification.Name("UpdateTags"), object: nil)
-        notificationCenter.addObserver(self, selector: #selector(self.zoomPDF(notification:)),
-                                       name: Notification.Name("ChangeZoom"), object: nil)
-
         // MARK: - delegates
         self.tagSearchField.delegate = self
         self.descriptionField.delegate = self
@@ -183,7 +170,7 @@ class ViewController: NSViewController {
     override func viewDidAppear() {
         // show onboarding view
         if !UserDefaults.standard.bool(forKey: "onboardingShown") {
-            self.showOnboarding()
+            self.showOnboardingMenuItem(self)
         }
     }
 
