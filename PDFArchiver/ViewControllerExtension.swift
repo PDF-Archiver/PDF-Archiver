@@ -65,9 +65,10 @@ extension ViewController {
             self.dataModelInstance.prefs.observedPath = openPanel.url!
             self.dataModelInstance.addDocuments(paths: openPanel.urls)
 
-            // update the GUI
-            self.dataModelInstance.updateTags()
-            self.updateGUI()
+            // get tags and update the GUI
+            self.dataModelInstance.updateTags {
+                self.updateGUI()
+            }
         }
     }
 
@@ -154,13 +155,9 @@ extension ViewController {
             } else {
                 os_log("Changes in archive folder detected, update tags.", log: self.log, type: .debug)
 
-                // update the archive tags
-                DispatchQueue.global(qos: .userInitiated).async {
-                    self.dataModelInstance.prefs.getArchiveTags()
-
-                    DispatchQueue.main.async {
-                        self.updateGUI()
-                    }
+                // get tags and update the GUI
+                self.dataModelInstance.updateTags {
+                    self.updateGUI()
                 }
             }
         }

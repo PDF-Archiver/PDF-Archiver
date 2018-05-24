@@ -66,10 +66,11 @@ extension ViewController {
 
     @IBAction func updateTagsMenuItem(_ sender: AnyObject) {
         os_log("Setting archive path, e.g. update tag list.", log: self.log, type: .debug)
-        self.dataModelInstance.updateTags()
 
-        // update the view
-        self.updateView(updatePDF: true)
+        // get tags and update the GUI
+        self.dataModelInstance.updateTags {
+            self.updateView(updatePDF: true)
+        }
     }
 
     @IBAction func resetCacheMenuItem(_ sender: NSMenuItem) {

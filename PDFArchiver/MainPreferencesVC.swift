@@ -28,10 +28,11 @@ class MainPreferencesVC: PreferencesVC {
             guard response == NSApplication.ModalResponse.OK else { return }
             self.dataModel?.prefs.archivePath = openPanel.url!
             self.archivePathTextField.stringValue = openPanel.url!.path
-            self.dataModel?.updateTags()
 
-            // update the GUI
-            self.delegate?.updateGUI()
+            // get tags and update the GUI
+            self.dataModel?.updateTags {
+                self.delegate?.updateGUI()
+            }
         }
     }
 
@@ -49,9 +50,10 @@ class MainPreferencesVC: PreferencesVC {
             self.dataModel?.prefs.observedPath = openPanel.url!
             self.dataModel?.addDocuments(paths: openPanel.urls)
 
-            // update the GUI
-            self.dataModel?.updateTags()
-            self.delegate?.updateGUI()
+            // get tags and update the GUI
+            self.dataModel?.updateTags {
+                self.delegate?.updateGUI()
+            }
         }
     }
     @IBAction func tagsCheckButtonClicked(_ sender: NSButton) {
@@ -61,9 +63,10 @@ class MainPreferencesVC: PreferencesVC {
             self.dataModel?.prefs.analyseAllFolders = false
         }
 
-        // get tags and update GUI
-        self.dataModel?.updateTags()
-        self.delegate?.updateGUI()
+        // get tags and update the GUI
+        self.dataModel?.updateTags {
+            self.delegate?.updateGUI()
+        }
     }
 
     override func viewDidLoad() {

@@ -44,7 +44,27 @@ class DataModel: TagsDelegate {
         }
     }
 
-    func updateTags() {
+    func updateTags(completionHandler: @escaping () -> Void) {
+//        DispatchQueue.global(qos: .userInitiated).async {
+//            self.tags = []
+//
+//            // get tags
+//            self.prefs.getArchiveTags()
+//
+//            // access the file system and get the new documents
+//            self.documents = []
+//
+//            // add documents
+//            if let observedPath = self.prefs.observedPath {
+//                self.viewControllerDelegate?.accessSecurityScope {
+//                    self.addDocuments(paths: [observedPath])
+//                }
+//            }
+//
+//            DispatchQueue.main.async {
+//                completionHandler()
+//            }
+//        }
         self.tags = []
 
         // get tags
@@ -59,6 +79,8 @@ class DataModel: TagsDelegate {
                 self.addDocuments(paths: [observedPath])
             }
         }
+
+        completionHandler()
     }
 
     func addDocuments(paths: [URL]) {
