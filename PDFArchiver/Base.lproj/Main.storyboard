@@ -112,7 +112,7 @@
                                                 <action selector="paste:" target="Ady-hI-5gd" id="2od-Jt-eZK"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Delete" id="eF0-vQ-qVy">
+                                        <menuItem title="Move to Trash" id="eF0-vQ-qVy">
                                             <string key="keyEquivalent" base64-UTF8="YES">
 CA
 </string>
