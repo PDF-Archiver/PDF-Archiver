@@ -45,42 +45,27 @@ class DataModel: TagsDelegate {
     }
 
     func updateTags(completionHandler: @escaping () -> Void) {
-//        DispatchQueue.global(qos: .userInitiated).async {
-//            self.tags = []
-//
-//            // get tags
-//            self.prefs.getArchiveTags()
-//
-//            // access the file system and get the new documents
-//            self.documents = []
-//
-//            // add documents
-//            if let observedPath = self.prefs.observedPath {
-//                self.viewControllerDelegate?.accessSecurityScope {
-//                    self.addDocuments(paths: [observedPath])
-//                }
-//            }
-//
-//            DispatchQueue.main.async {
-//                completionHandler()
-//            }
-//        }
-        self.tags = []
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.tags = []
 
-        // get tags
-        self.prefs.getArchiveTags()
+            // get tags
+            self.prefs.getArchiveTags()
 
-        // access the file system and get the new documents
-        self.documents = []
+            // access the file system and get the new documents
+            self.documents = []
 
-        // add documents
-        if let observedPath = self.prefs.observedPath {
-            self.viewControllerDelegate?.accessSecurityScope {
-                self.addDocuments(paths: [observedPath])
+            DispatchQueue.main.async {
+                // add documents
+                if let observedPath = self.prefs.observedPath {
+                    self.viewControllerDelegate?.accessSecurityScope {
+                        self.addDocuments(paths: [observedPath])
+                    }
+                }
+
+                // run the completion after getting the old files
+                completionHandler()
             }
         }
-
-        completionHandler()
     }
 
     func addDocuments(paths: [URL]) {
