@@ -82,16 +82,16 @@ Or clone the repository and build it:
 
 ### PDF Archiver
 * Use the `↹` key for fast field switching
-* You can use keyboard shortcuts from the [FAQs](https://github.com/PDF-Archiver/PDF-Archiver/wiki/FAQs)
+* You can use keyboard shortcuts from the [FAQs](https://pdf-archiver.io/faq)
 
 ## :interrobang: Help
-* Take a look at the [FAQs](https://github.com/PDF-Archiver/PDF-Archiver/wiki/FAQs).
+* Take a look at the [FAQs](https://pdf-archiver.io/faq).
 * Get in contact with us at [Slack](https://pdf-archiver.slack.com).
 
 ## :octocat: How to contribute
 All [contributions](https://github.com/PDF-Archiver/PDF-Archiver/blob/develop/.github/CONTRIBUTING.md) are welcome!
 Feel free to contribute to this project.
-Submit pull requests, contribute tutorials or other wiki content - whatever you have to offer, it would be appreciated!
+Submit pull requests or contribute tutorials - whatever you have to offer, it would be appreciated!
 
 ## :book: Thanks and Donations
 * [**zngguvnf.org**](https://zngguvnf.org) discussing and creating this archive structure.
