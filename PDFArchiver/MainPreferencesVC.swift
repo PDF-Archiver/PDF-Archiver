@@ -28,6 +28,7 @@ class MainPreferencesVC: PreferencesVC {
             guard response == NSApplication.ModalResponse.OK else { return }
             self.dataModel?.prefs.archivePath = openPanel.url!
             self.archivePathTextField.stringValue = openPanel.url!.path
+            self.dataModel?.updateTags()
 
             // update the GUI
             self.delegate?.updateGUI()
@@ -44,11 +45,12 @@ class MainPreferencesVC: PreferencesVC {
         openPanel.allowsMultipleSelection = false
         openPanel.beginSheetModal(for: NSApplication.shared.mainWindow!) { response in
             guard response == NSApplication.ModalResponse.OK else { return }
-            self.dataModel?.prefs.observedPath = openPanel.url!
             self.observedPathTextField.stringValue = openPanel.url!.path
+            self.dataModel?.prefs.observedPath = openPanel.url!
             self.dataModel?.addDocuments(paths: openPanel.urls)
 
             // update the GUI
+            self.dataModel?.updateTags()
             self.delegate?.updateGUI()
         }
     }
@@ -60,7 +62,7 @@ class MainPreferencesVC: PreferencesVC {
         }
 
         // get tags and update GUI
-        self.dataModel?.prefs.getArchiveTags()
+        self.dataModel?.updateTags()
         self.delegate?.updateGUI()
     }
 

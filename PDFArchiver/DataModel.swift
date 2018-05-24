@@ -44,6 +44,23 @@ class DataModel: TagsDelegate {
         }
     }
 
+    func updateTags() {
+        self.tags = []
+
+        // get tags
+        self.prefs.getArchiveTags()
+
+        // access the file system and get the new documents
+        self.documents = []
+
+        // add documents
+        if let observedPath = self.prefs.observedPath {
+            self.viewControllerDelegate?.accessSecurityScope {
+                self.addDocuments(paths: [observedPath])
+            }
+        }
+    }
+
     func addDocuments(paths: [URL]) {
         // clear old documents
         self.documents = []

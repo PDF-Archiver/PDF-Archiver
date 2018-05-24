@@ -66,6 +66,7 @@ extension ViewController {
             self.dataModelInstance.addDocuments(paths: openPanel.urls)
 
             // update the GUI
+            self.dataModelInstance.updateTags()
             self.updateGUI()
         }
     }

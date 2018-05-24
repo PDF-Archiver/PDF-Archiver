@@ -64,21 +64,9 @@ extension ViewController {
         self.performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "onboardingSegue"), sender: self)
     }
 
-    @IBAction func updateTagsMenuItem(_ sender: NSMenuItem) {
+    @IBAction func updateTagsMenuItem(_ sender: AnyObject) {
         os_log("Setting archive path, e.g. update tag list.", log: self.log, type: .debug)
-
-        // get tags
-        self.dataModelInstance.prefs.getArchiveTags()
-
-        // access the file system and get the new documents
-        self.dataModelInstance.documents = []
-
-        // add documents
-        if let observedPath = self.dataModelInstance.prefs.observedPath {
-            self.accessSecurityScope {
-                self.dataModelInstance.addDocuments(paths: [observedPath])
-            }
-        }
+        self.dataModelInstance.updateTags()
 
         // update the view
         self.updateView(updatePDF: true)
