@@ -95,6 +95,7 @@ Submit pull requests or contribute tutorials - whatever you have to offer, it wo
 
 ## :book: Thanks and Donations
 * [**zngguvnf.org**](https://zngguvnf.org) discussing and creating this archive structure.
-* [**Karl Voit**](http://karl-voit.at/managing-digital-photographs/)  for the initial idea of a document naming convention.
+* [**Karl Voit**](http://karl-voit.at/managing-digital-photographs/) for the initial idea of a document naming convention.
+* [**Nick Roach**](https://www.elegantthemes.com) for the [Icon](https://www.iconfinder.com/icons/1055071/document_file_icon).
 
 <noscript><a href="https://liberapay.com/JulianKahnert/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a></noscript>
