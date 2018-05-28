@@ -713,10 +713,37 @@ You can support this project by picking a one-time donation via the buttons on t
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="eUn-EU-1OI">
+                                <rect key="frame" x="42" y="15" width="158" height="17"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="17" id="3fq-19-bHR"/>
+                                </constraints>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="People donated this Year." id="U5N-Gf-ZOk">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bxz-JO-TV5">
+                                <rect key="frame" x="28" y="15" width="13" height="17"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="17" id="xZL-Qf-pIh"/>
+                                </constraints>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="0" id="VSt-mJ-xeB">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
                         </subviews>
                         <constraints>
+                            <constraint firstItem="bxz-JO-TV5" firstAttribute="bottom" secondItem="eUn-EU-1OI" secondAttribute="bottom" id="8AH-dd-GR7"/>
+                            <constraint firstAttribute="bottom" secondItem="eUn-EU-1OI" secondAttribute="bottom" constant="15" id="DnY-gf-aVJ"/>
+                            <constraint firstAttribute="bottom" secondItem="bxz-JO-TV5" secondAttribute="bottom" constant="15" id="EI4-la-RaH"/>
                             <constraint firstItem="alz-A4-A8z" firstAttribute="width" secondItem="7Kr-6U-ceM" secondAttribute="width" id="Ju5-6F-ndk"/>
                             <constraint firstItem="alz-A4-A8z" firstAttribute="bottom" secondItem="7Kr-6U-ceM" secondAttribute="bottom" id="Qaj-Wn-joJ"/>
+                            <constraint firstAttribute="bottom" secondItem="bxz-JO-TV5" secondAttribute="bottom" constant="15" id="RJ8-ZW-VSG"/>
+                            <constraint firstItem="eUn-EU-1OI" firstAttribute="leading" secondItem="bxz-JO-TV5" secondAttribute="trailing" constant="5" id="THB-wH-Hmz"/>
                             <constraint firstItem="y11-yy-btf" firstAttribute="centerY" secondItem="sL0-ry-Buz" secondAttribute="centerY" id="cEA-My-L8f"/>
                             <constraint firstItem="sL0-ry-Buz" firstAttribute="top" secondItem="alz-A4-A8z" secondAttribute="bottom" constant="15" id="ctt-XC-BCM"/>
                             <constraint firstItem="y11-yy-btf" firstAttribute="leading" secondItem="sL0-ry-Buz" secondAttribute="trailing" constant="10" id="dmh-oE-3fw"/>
@@ -725,6 +752,7 @@ You can support this project by picking a one-time donation via the buttons on t
                             <constraint firstAttribute="trailing" secondItem="alz-A4-A8z" secondAttribute="trailing" constant="30" id="ndp-4c-wD7"/>
                             <constraint firstItem="7Kr-6U-ceM" firstAttribute="top" secondItem="vFK-Vc-7T6" secondAttribute="top" constant="40" id="nft-Og-BAW"/>
                             <constraint firstItem="y11-yy-btf" firstAttribute="trailing" secondItem="alz-A4-A8z" secondAttribute="trailing" id="qUS-9R-meC"/>
+                            <constraint firstItem="bxz-JO-TV5" firstAttribute="leading" secondItem="7Kr-6U-ceM" secondAttribute="leading" id="voy-Jr-H0w"/>
                             <constraint firstItem="alz-A4-A8z" firstAttribute="top" secondItem="vFK-Vc-7T6" secondAttribute="top" constant="20" id="xvt-TW-iYu"/>
                             <constraint firstAttribute="bottom" secondItem="y11-yy-btf" secondAttribute="bottom" constant="20" id="z7T-rm-Woa"/>
                         </constraints>
@@ -734,6 +762,7 @@ You can support this project by picking a one-time donation via the buttons on t
                         <outlet property="donationButton1" destination="pjt-37-tlz" id="jj2-Cz-xbO"/>
                         <outlet property="donationButton2" destination="OLw-Bf-fGp" id="9zf-tj-Gxv"/>
                         <outlet property="donationButton3" destination="Zkb-C5-cZI" id="05n-XA-uxH"/>
+                        <outlet property="donationNumber" destination="bxz-JO-TV5" id="8GY-IX-Bvo"/>
                     </connections>
                 </viewController>
                 <customObject id="S14-PJ-KOq" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -1120,7 +1149,7 @@ You can support this project by picking a one-time donation via the buttons on t
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                    <rect key="frame" x="32" y="1" width="195" height="17"/>
+                                                                    <rect key="frame" x="31.5" y="1" width="195" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">

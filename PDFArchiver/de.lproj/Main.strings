@@ -292,3 +292,9 @@
 
 /* Class = "NSMenuItem"; title = "Move to Trash"; ObjectID = "eF0-vQ-qVy"; */
 "eF0-vQ-qVy.title" = "In den Papierkorb legen";
+
+/* Class = "NSTextFieldCell"; title = "0"; ObjectID = "VSt-mJ-xeB"; */
+"VSt-mJ-xeB.title" = "0";
+
+/* Class = "NSTextFieldCell"; title = "People donated this Year."; ObjectID = "U5N-Gf-ZOk"; */
+"U5N-Gf-ZOk.title" = "Personen haben gespendet.";

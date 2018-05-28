@@ -12,6 +12,7 @@ import Foundation
 import os.log
 
 class DonationPreferencesVC: PreferencesVC {
+    @IBOutlet weak var donationNumber: NSTextField!
     @IBOutlet weak var donationButton1: NSButton!
     @IBOutlet weak var donationButton2: NSButton!
     @IBOutlet weak var donationButton3: NSButton!
@@ -76,33 +77,38 @@ class DonationPreferencesVC: PreferencesVC {
             } else {
                 self.donationButton.image = NSImage(named: .statusUnavailable)
             }
-
-            self.updateButtons()
         }
+
+        self.updateButtons()
     }
 
     func updateButtons() {
-        // set default button status to false
-        self.donationButton1.isEnabled = false
-        self.donationButton2.isEnabled = false
-        self.donationButton3.isEnabled = false
+        DispatchQueue.main.async {
+            // set default button status to false
+            self.donationButton1.isEnabled = false
+            self.donationButton2.isEnabled = false
+            self.donationButton3.isEnabled = false
 
-        // set the button label
-        for product in self.dataModel?.store.products ?? [] {
-            var selectedButton: NSButton
-            if product.productIdentifier == "DONATION_LEVEL1" {
-                selectedButton = self.donationButton1
-            } else if product.productIdentifier == "DONATION_LEVEL2" {
-                selectedButton = self.donationButton2
-            } else if product.productIdentifier == "DONATION_LEVEL3" {
-                selectedButton = self.donationButton3
-            } else {
-                continue
+            // set the button label
+            for product in self.dataModel?.store.products ?? [] {
+                var selectedButton: NSButton
+                if product.productIdentifier == "DONATION_LEVEL1" {
+                    selectedButton = self.donationButton1
+                } else if product.productIdentifier == "DONATION_LEVEL2" {
+                    selectedButton = self.donationButton2
+                } else if product.productIdentifier == "DONATION_LEVEL3" {
+                    selectedButton = self.donationButton3
+                } else {
+                    continue
+                }
+
+                // set button to localized price
+                selectedButton.title = product.localizedPrice
+                selectedButton.isEnabled = true
             }
 
-            // set button to localized price
-            selectedButton.title = product.localizedPrice
-            selectedButton.isEnabled = true
+            // update the number of donations
+            self.donationNumber.stringValue = getNumberOfDonations()
         }
     }
 
