@@ -226,15 +226,11 @@ extension ViewController: ViewControllerDelegate {
 
     func accessSecurityScope(closure: () -> Void) {
         // start accessing the file system
-        // TODO: use the closure if needed
         if !(self.dataModelInstance.prefs.observedPath?.startAccessingSecurityScopedResource() ?? false) {
-            os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-            //                    return
+            os_log("Accessing Security Scoped Resource of the observed path failed.", log: self.log, type: .fault)
         }
-        // TODO: only access the security scope, if the documents need it
         if !(self.dataModelInstance.prefs.archivePath?.startAccessingSecurityScopedResource() ?? false) {
-            os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-            //                    return
+            os_log("Accessing Security Scoped Resource of the archive path failed.", log: self.log, type: .fault)
         }
 
         // run the used code
