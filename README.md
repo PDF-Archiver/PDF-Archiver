@@ -1,14 +1,17 @@
-<p align="center">
+<div align="center">
 <a href="https://itunes.apple.com/app/pdf-archiver/id1352719750" target="itunes_store">
   <img src="assets/AppIcon.svg" width="200px">
-</a>
-</p>
+</a><br><br>
 
-<p align="center">
 <a href="https://itunes.apple.com/app/pdf-archiver/id1352719750" target="itunes_store">
   <img src="assets/MacAppStoreBadge.svg">
-</a>
-</p>
+</a><br>
+
+[![Build Status](https://travis-ci.org/PDF-Archiver/PDF-Archiver.svg?branch=master)](https://travis-ci.org/PDF-Archiver/PDF-Archiver)
+[![Maintainability](https://api.codeclimate.com/v1/badges/e460629e748c442f5285/maintainability)](https://codeclimate.com/github/PDF-Archiver/PDF-Archiver/maintainability)
+[![Receiving via Liberapay](https://img.shields.io/liberapay/receives/juliankahnert.svg)](https://liberapay.com/juliankahnert/)
+[![Say Thanks!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/JulianKahnert)
+</div>
 
 # PDF Archiver
 
@@ -78,23 +81,21 @@ Or clone the repository and build it:
     * Choose: `[year]-[month]-[day]--Scanbot-[Hours][Minutes][Seconds]`
 
 ### PDF Archiver
-* You can use keyboard shortcuts
-    * `⌘ ,`: open the preferences panel
-    * `⌘ o`: add new PDF documents
-    * `⌘ s`: save the current document in your archive
-* Use the `TAB` key for fast field switching
+* Use the `↹` key for fast field switching
+* You can use keyboard shortcuts from the [FAQs](https://pdf-archiver.io/faq)
 
 ## :interrobang: Help
-* Take a look at the  [FAQs](https://github.com/PDF-Archiver/PDF-Archiver/wiki/FAQs).
+* Take a look at the [FAQs](https://pdf-archiver.io/faq).
 * Get in contact with us at [Slack](https://pdf-archiver.slack.com).
 
 ## :octocat: How to contribute
 All [contributions](https://github.com/PDF-Archiver/PDF-Archiver/blob/develop/.github/CONTRIBUTING.md) are welcome!
 Feel free to contribute to this project.
-Submit pull requests, contribute tutorials or other wiki content - whatever you have to offer, it would be appreciated!
+Submit pull requests or contribute tutorials - whatever you have to offer, it would be appreciated!
 
 ## :book: Thanks and Donations
 * [**zngguvnf.org**](https://zngguvnf.org) discussing and creating this archive structure.
-* [**Karl Voit**](http://karl-voit.at/managing-digital-photographs/)  for the initial idea of a document naming convention.
+* [**Karl Voit**](http://karl-voit.at/managing-digital-photographs/) for the initial idea of a document naming convention.
+* [**Nick Roach**](https://www.elegantthemes.com) for the [Icon](https://www.iconfinder.com/icons/1055071/document_file_icon).
 
 <noscript><a href="https://liberapay.com/JulianKahnert/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a></noscript>

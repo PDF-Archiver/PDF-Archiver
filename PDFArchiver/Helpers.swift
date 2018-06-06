@@ -37,6 +37,21 @@ func connectedToNetwork() -> Bool {
     return (isReachable && !needsConnection)
 }
 
+func getNumberOfDonations() -> String {
+    var contents = "0"
+    if let url = URL(string: "https://pdf-archiver.io/assets/donations.txt") {
+        do {
+            contents = try String(contentsOf: url)
+        } catch {
+            // contents could not be loaded
+        }
+    } else {
+        // the URL was bad!
+    }
+
+    return contents
+}
+
 // MARK: check dialog window
 func dialogOK(messageKey: String, infoKey: String, style: NSAlert.Style) {
     let alert = NSAlert()

@@ -11,9 +11,10 @@ import os.log
 
 protocol ViewControllerDelegate: class {
     func setDocuments(documents: [Document])
+    func accessSecurityScope(closure: () -> Void)
 }
 
-class ViewController: NSViewController, ViewControllerDelegate {
+class ViewController: NSViewController {
     let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "MainViewController")
     var dataModelInstance = DataModel()
 
@@ -84,15 +85,11 @@ class ViewController: NSViewController, ViewControllerDelegate {
     }
 
     @IBAction func browseFile(sender: AnyObject) {
-        self.getPDFDocuments()
+        self.setObservedPath()
     }
 
     @IBAction func saveDocumentButton(_ sender: NSButton) {
         self.saveDocument()
-    }
-
-    func setDocuments(documents: [Document]) {
-        self.documentAC.content = documents
     }
 
     override func viewDidLoad() {
@@ -117,19 +114,6 @@ class ViewController: NSViewController, ViewControllerDelegate {
         // set the array controller
         self.tagAC.content = self.dataModelInstance.tags
         self.documentAC.content = self.dataModelInstance.documents
-
-        // MARK: - Notification Observer
-        let notificationCenter = NotificationCenter.default
-        notificationCenter.addObserver(self, selector: #selector(self.showPreferences),
-                                       name: Notification.Name("ShowPreferences"), object: nil)
-        notificationCenter.addObserver(self, selector: #selector(self.resetCache),
-                                       name: Notification.Name("ResetCache"), object: nil)
-        notificationCenter.addObserver(self, selector: #selector(self.showOnboarding),
-                                       name: Notification.Name("ShowOnboarding"), object: nil)
-        notificationCenter.addObserver(self, selector: #selector(self.updateTags),
-                                       name: Notification.Name("UpdateTags"), object: nil)
-        notificationCenter.addObserver(self, selector: #selector(self.zoomPDF(notification:)),
-                                       name: Notification.Name("ChangeZoom"), object: nil)
 
         // MARK: - delegates
         self.tagSearchField.delegate = self
@@ -186,7 +170,7 @@ class ViewController: NSViewController, ViewControllerDelegate {
     override func viewDidAppear() {
         // show onboarding view
         if !UserDefaults.standard.bool(forKey: "onboardingShown") {
-            self.showOnboarding()
+            self.showOnboardingMenuItem(self)
         }
     }
 

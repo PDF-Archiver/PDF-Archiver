@@ -264,7 +264,7 @@
 "k8C-2q-WjN.title" = "Aus allen Archiv Ordnern";
 
 /* Class = "NSTextFieldCell"; title = "Analysing all folders may decrease the app speed for large archives."; ObjectID = "Tlv-Ku-QD7"; */
-"Tlv-Ku-QD7.title" = "Die Analyse aller Ordner kann bei einem großen Archiv die Geschwindigkeit der App beeinflussen.";
+"Tlv-Ku-QD7.title" = "Die Analyse aller Ordner kann bei einem großen Archiv die Geschwindigkeit der App negativ beeinflussen.";
 
 /* Class = "NSButtonCell"; title = "Level 1"; ObjectID = "dY2-A7-5th"; */
 "dY2-A7-5th.title" = "Level 1";
@@ -289,3 +289,12 @@
 
 /* Class = "NSMenuItem"; title = "Imprint"; ObjectID = "AQv-Kn-N9d"; */
 "AQv-Kn-N9d.title" = "Impressum";
+
+/* Class = "NSMenuItem"; title = "Move to Trash"; ObjectID = "eF0-vQ-qVy"; */
+"eF0-vQ-qVy.title" = "In den Papierkorb legen";
+
+/* Class = "NSTextFieldCell"; title = "0"; ObjectID = "VSt-mJ-xeB"; */
+"VSt-mJ-xeB.title" = "0";
+
+/* Class = "NSTextFieldCell"; title = "People donated this Year."; ObjectID = "U5N-Gf-ZOk"; */
+"U5N-Gf-ZOk.title" = "Personen haben gespendet.";

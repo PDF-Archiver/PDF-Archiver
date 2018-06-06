@@ -18,6 +18,7 @@
 		A31B53171FF6A6D8007A3D14 /* FileHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B53161FF6A6D8007A3D14 /* FileHandling.swift */; };
 		A3299E1C2015BE3D0036125F /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3299E1B2015BE3D0036125F /* Tag.swift */; };
 		A32A128320468A3000CFC81F /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32A128220468A3000CFC81F /* OnboardingViewController.swift */; };
+		A344D1D220B5FF1000A168B2 /* VCE-MenuItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = A344D1D120B5FF1000A168B2 /* VCE-MenuItems.swift */; };
 		A347FAD72041ACBE001A7925 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A347FAD92041ACBE001A7925 /* Localizable.strings */; };
 		A359963F202A3CC700CDD6E8 /* MyWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A359963E202A3CC700CDD6E8 /* MyWindow.swift */; };
 		A359E4B7202C376E00A703AF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A359E4B9202C376E00A703AF /* InfoPlist.strings */; };
@@ -72,6 +73,7 @@
 		A3299E1B2015BE3D0036125F /* Tag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
 		A32A128220468A3000CFC81F /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		A32D52EF2012B5150032F05C /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
+		A344D1D120B5FF1000A168B2 /* VCE-MenuItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VCE-MenuItems.swift"; sourceTree = "<group>"; };
 		A347FADA2041AD39001A7925 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A347FADB2041AD3C001A7925 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A359963E202A3CC700CDD6E8 /* MyWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyWindow.swift; sourceTree = "<group>"; };
@@ -151,6 +153,7 @@
 				A31B52E91FF694B0007A3D14 /* AppDelegate.swift */,
 				A31B52EB1FF694B0007A3D14 /* ViewController.swift */,
 				A3FC0D9F201B054A0082CD2A /* ViewControllerExtension.swift */,
+				A344D1D120B5FF1000A168B2 /* VCE-MenuItems.swift */,
 				A3C3D06C207744E400E80B1A /* PreferencesVC.swift */,
 				A307BB362014B8530046C391 /* MainPreferencesVC.swift */,
 				A36B47BF2077DA4D00F3DCAF /* DonationPreferencesVC.swift */,
@@ -385,6 +388,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A344D1D220B5FF1000A168B2 /* VCE-MenuItems.swift in Sources */,
 				A3299E1C2015BE3D0036125F /* Tag.swift in Sources */,
 				A31B52EC1FF694B0007A3D14 /* ViewController.swift in Sources */,
 				A38A58AB1FFFA72D003F0573 /* WindowController.swift in Sources */,

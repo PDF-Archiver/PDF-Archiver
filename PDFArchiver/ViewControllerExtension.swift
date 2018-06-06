@@ -24,62 +24,6 @@ extension ViewController {
         }
     }
 
-    // MARK: - notifications
-    @objc func showPreferences() {
-        self.performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "prefsSegue"), sender: self)
-    }
-
-    @objc func resetCache() {
-        // remove preferences - initialize it temporary and kill the app directly afterwards
-        self.dataModelInstance.prefs = Preferences()
-        // remove all user defaults
-        UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
-        // close application
-        NSApplication.shared.terminate(self)
-    }
-
-    @objc func showOnboarding() {
-        self.performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "onboardingSegue"), sender: self)
-    }
-
-    @objc func updateTags() {
-        os_log("Setting archive path, e.g. update tag list.", log: self.log, type: .debug)
-
-        // get tags
-        self.dataModelInstance.prefs.getArchiveTags()
-
-        // access the file system and get the new documents
-        self.dataModelInstance.documents = []
-
-        // TODO: only access the security scope, if the documents need it
-        if let observedPath = self.dataModelInstance.prefs.observedPath {
-            if !observedPath.startAccessingSecurityScopedResource() {
-                os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-//                return
-            }
-            self.dataModelInstance.addDocuments(paths: [observedPath])
-            observedPath.stopAccessingSecurityScopedResource()
-        }
-
-        // update the view
-        self.updateView(updatePDF: true)
-    }
-
-    @objc func zoomPDF(notification: NSNotification) {
-        guard let sender = notification.object as? NSMenuItem,
-              let identifierName = sender.identifier?.rawValue  else { return }
-
-        if identifierName == "ZoomActualSize" {
-            self.pdfContentView.scaleFactor = 1
-        } else if identifierName == "ZoomToFit" {
-            self.pdfContentView.autoScales = true
-        } else if identifierName == "ZoomIn" {
-            self.pdfContentView.zoomIn(self)
-        } else if identifierName == "ZoomOut" {
-            self.pdfContentView.zoomOut(self)
-        }
-    }
-
     func updateView(updatePDF: Bool) {
         os_log("Update view controller fields and tables.", log: self.log, type: .debug)
         self.tagAC.content = self.dataModelInstance.tags
@@ -100,46 +44,31 @@ extension ViewController {
 
             // access the file system and update pdf view
             if updatePDF {
-                // TODO: there might be a better solution to access the security scope
-                if !(self.dataModelInstance.prefs.observedPath?.startAccessingSecurityScopedResource() ?? false) {
-                    os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-//                    return
+                self.accessSecurityScope {
+                    self.pdfContentView.document = PDFDocument(url: selectedDocument.path)
+                    self.pdfContentView.goToFirstPage(self)
                 }
-                // TODO: only access the security scope, if the documents need it
-                if !(self.dataModelInstance.prefs.archivePath?.startAccessingSecurityScopedResource() ?? false) {
-                    os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-//                    return
-                }
-
-                self.pdfContentView.document = PDFDocument(url: selectedDocument.path)
-                self.dataModelInstance.prefs.archivePath?.stopAccessingSecurityScopedResource()
-                self.dataModelInstance.prefs.observedPath?.stopAccessingSecurityScopedResource()
             }
         }
     }
 
-    func getPDFDocuments() {
+    func setObservedPath() {
         let openPanel = NSOpenPanel()
-        openPanel.title = "Choose a .pdf file or a folder"
+        openPanel.title = "Choose an observed folder"
         openPanel.showsResizeIndicator = false
         openPanel.showsHiddenFiles = false
-        openPanel.canChooseFiles = true
+        openPanel.canChooseFiles = false
         openPanel.canChooseDirectories = true
-        openPanel.canCreateDirectories = false
-        openPanel.allowsMultipleSelection = true
-        openPanel.allowedFileTypes = ["pdf"]
-        openPanel.beginSheetModal(for: NSApplication.shared.mainWindow!) { (response) in
-            if response.rawValue == NSApplication.ModalResponse.OK.rawValue {
-                // clear old documents from view
-                self.dataModelInstance.documents = []
-                // get the new documents
-                self.dataModelInstance.addDocuments(paths: openPanel.urls)
+        openPanel.allowsMultipleSelection = false
+        openPanel.beginSheetModal(for: NSApplication.shared.mainWindow!) { response in
+            guard response == NSApplication.ModalResponse.OK else { return }
+            self.dataModelInstance.prefs.observedPath = openPanel.url!
+            self.dataModelInstance.addDocuments(paths: openPanel.urls)
+
+            // get tags and update the GUI
+            self.dataModelInstance.updateTags {
+                self.updateGUI()
             }
-            openPanel.close()
-            // add pdf documents to the controller (and replace the old ones)
-            self.documentAC.content = self.dataModelInstance.documents
-            // update the view after a document was picked
-            self.updateView(updatePDF: true)
         }
     }
 
@@ -156,32 +85,22 @@ extension ViewController {
         }
 
         // access the file system
-        // TODO: only access the security scope, if the documents need it
-        if !(self.dataModelInstance.prefs.archivePath?.startAccessingSecurityScopedResource() ?? false) {
-            os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-//            return
-        }
-        // TODO: only access the security scope, if the documents need it
-        if !(self.dataModelInstance.prefs.observedPath?.startAccessingSecurityScopedResource() ?? false) {
-            os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-//            return
-        }
-        let result = selectedDocument.rename(archivePath: path)
-        self.dataModelInstance.prefs.observedPath?.stopAccessingSecurityScopedResource()
-        self.dataModelInstance.prefs.archivePath?.stopAccessingSecurityScopedResource()
+        self.accessSecurityScope {
+            let result = selectedDocument.rename(archivePath: path)
 
-        if result {
-            // update the array controller
-            self.documentAC.content = self.dataModelInstance.documents
+            if result {
+                // update the array controller
+                self.documentAC.content = self.dataModelInstance.documents
 
-            // select a new document, which is not already done
-            var newIndex = 0
-            var documents = (self.documentAC.arrangedObjects as? [Document]) ?? []
-            for idx in 0...documents.count-1 where documents[idx].documentDone == "" {
-                newIndex = idx
-                break
+                // select a new document, which is not already done
+                var newIndex = 0
+                var documents = (self.documentAC.arrangedObjects as? [Document]) ?? []
+                for idx in 0...documents.count-1 where documents[idx].documentDone == "" {
+                    newIndex = idx
+                    break
+                }
+                self.documentAC.setSelectionIndex(newIndex)
             }
-            self.documentAC.setSelectionIndex(newIndex)
         }
     }
 
@@ -236,13 +155,9 @@ extension ViewController {
             } else {
                 os_log("Changes in archive folder detected, update tags.", log: self.log, type: .debug)
 
-                // update the archive tags
-                DispatchQueue.global(qos: .userInitiated).async {
-                    self.dataModelInstance.prefs.getArchiveTags()
-
-                    DispatchQueue.main.async {
-                        self.updateGUI()
-                    }
+                // get tags and update the GUI
+                self.dataModelInstance.updateTags {
+                    self.updateGUI()
                 }
             }
         }
@@ -304,6 +219,29 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
 }
 
 // MARK: - custom delegates
+extension ViewController: ViewControllerDelegate {
+    func setDocuments(documents: [Document]) {
+        self.documentAC.content = documents
+    }
+
+    func accessSecurityScope(closure: () -> Void) {
+        // start accessing the file system
+        if !(self.dataModelInstance.prefs.observedPath?.startAccessingSecurityScopedResource() ?? false) {
+            os_log("Accessing Security Scoped Resource of the observed path failed.", log: self.log, type: .fault)
+        }
+        if !(self.dataModelInstance.prefs.archivePath?.startAccessingSecurityScopedResource() ?? false) {
+            os_log("Accessing Security Scoped Resource of the archive path failed.", log: self.log, type: .fault)
+        }
+
+        // run the used code
+        closure()
+
+        // stop accessing the file system
+        self.dataModelInstance.prefs.archivePath?.stopAccessingSecurityScopedResource()
+        self.dataModelInstance.prefs.observedPath?.stopAccessingSecurityScopedResource()
+    }
+}
+
 extension ViewController: PreferencesDelegate {
     func updateGUI() {
         self.updateView(updatePDF: true)

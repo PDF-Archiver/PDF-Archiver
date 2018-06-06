@@ -49,7 +49,6 @@ struct Preferences {
             }
 
             self._archivePath = newValue
-            self.getArchiveTags()
         }
     }
     var archiveModificationDate: Date?

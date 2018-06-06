@@ -44,23 +44,43 @@ class DataModel: TagsDelegate {
         }
     }
 
+    func updateTags(completionHandler: @escaping () -> Void) {
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.tags = []
+
+            // get tags
+            self.prefs.getArchiveTags()
+
+            // access the file system and get the new documents
+            self.documents = []
+
+            DispatchQueue.main.async {
+                // add documents
+                if let observedPath = self.prefs.observedPath {
+                    self.viewControllerDelegate?.accessSecurityScope {
+                        self.addDocuments(paths: [observedPath])
+                    }
+                }
+
+                // run the completion after getting the old files
+                completionHandler()
+            }
+        }
+    }
+
     func addDocuments(paths: [URL]) {
         // clear old documents
         self.documents = []
 
         // access the file system and add documents to the data model
-        // TODO: there might be a better solution to access the security scope
-        if !(self.prefs.archivePath?.startAccessingSecurityScopedResource() ?? false) {
-            os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-//            return
-        }
-        for path in paths {
-            let files = getPDFs(url: path)
-            for file in files {
-                self.documents.append(Document(path: file, delegate: self as TagsDelegate))
+        self.viewControllerDelegate?.accessSecurityScope {
+            for path in paths {
+                let files = getPDFs(url: path)
+                for file in files {
+                    self.documents.append(Document(path: file, delegate: self as TagsDelegate))
+                }
             }
         }
-        self.prefs.archivePath?.stopAccessingSecurityScopedResource()
 
         // add documents to the GUI
         self.viewControllerDelegate?.setDocuments(documents: documents)
