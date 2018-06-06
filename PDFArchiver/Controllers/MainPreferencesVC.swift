@@ -24,6 +24,7 @@ class MainPreferencesVC: PreferencesVC {
         openPanel.canChooseFiles = false
         openPanel.canChooseDirectories = true
         openPanel.allowsMultipleSelection = false
+        openPanel.canCreateDirectories = true
         openPanel.beginSheetModal(for: NSApplication.shared.mainWindow!) { response in
             guard response == NSApplication.ModalResponse.OK else { return }
             self.dataModel?.prefs.archivePath = openPanel.url!

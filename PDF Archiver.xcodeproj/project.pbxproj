@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		A307BB372014B8530046C391 /* MainPreferencesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A307BB362014B8530046C391 /* MainPreferencesVC.swift */; };
 		A307BB3B2014D5300046C391 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = A307BB3A2014D5300046C391 /* Preferences.swift */; };
+		A315408D20C83DF0004947CC /* StringHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = A315408C20C83DF0004947CC /* StringHandling.swift */; };
+		A315408F20C83E61004947CC /* ViewHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = A315408E20C83E61004947CC /* ViewHandling.swift */; };
 		A31B52EA1FF694B0007A3D14 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B52E91FF694B0007A3D14 /* AppDelegate.swift */; };
 		A31B52EC1FF694B0007A3D14 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B52EB1FF694B0007A3D14 /* ViewController.swift */; };
 		A31B52EE1FF694B0007A3D14 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A31B52ED1FF694B0007A3D14 /* Assets.xcassets */; };
@@ -27,7 +29,8 @@
 		A38A58AB1FFFA72D003F0573 /* WindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38A58AA1FFFA72D003F0573 /* WindowController.swift */; };
 		A38F4911206952AD00B8164A /* PreferencesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38F4910206952AD00B8164A /* PreferencesTests.swift */; };
 		A38F4913206955F600B8164A /* DataModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38F4912206955F600B8164A /* DataModelTests.swift */; };
-		A3A4C1C12015177A008BB354 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3A4C1C02015177A008BB354 /* Helpers.swift */; };
+		A3962D6320C40CA600A80AB5 /* HelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3962D6220C40CA600A80AB5 /* HelperTests.swift */; };
+		A3A4C1C12015177A008BB354 /* NetworkHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3A4C1C02015177A008BB354 /* NetworkHandling.swift */; };
 		A3A6964C202F91E500AB85C9 /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3A6964B202F91E500AB85C9 /* Layout.swift */; };
 		A3C3D06D207744E400E80B1A /* PreferencesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3C3D06C207744E400E80B1A /* PreferencesVC.swift */; };
 		A3C9052B207FEA44002A0543 /* IAPHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3C9052A207FEA44002A0543 /* IAPHelper.swift */; };
@@ -37,13 +40,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		A31B52F91FF694B0007A3D14 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A31B52DE1FF694B0007A3D14 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = A31B52E51FF694B0007A3D14;
-			remoteInfo = Archiver;
-		};
 		A31B53041FF694B0007A3D14 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A31B52DE1FF694B0007A3D14 /* Project object */;
@@ -51,11 +47,20 @@
 			remoteGlobalIDString = A31B52E51FF694B0007A3D14;
 			remoteInfo = Archiver;
 		};
+		A3962D6420C4114B00A80AB5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A31B52DE1FF694B0007A3D14 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A31B52E51FF694B0007A3D14;
+			remoteInfo = "PDF Archiver";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		A307BB362014B8530046C391 /* MainPreferencesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPreferencesVC.swift; sourceTree = "<group>"; };
 		A307BB3A2014D5300046C391 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
+		A315408C20C83DF0004947CC /* StringHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringHandling.swift; sourceTree = "<group>"; };
+		A315408E20C83E61004947CC /* ViewHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHandling.swift; sourceTree = "<group>"; };
 		A31B52E61FF694B0007A3D14 /* PDF Archiver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "PDF Archiver.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A31B52E91FF694B0007A3D14 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A31B52EB1FF694B0007A3D14 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -84,7 +89,8 @@
 		A38A58AA1FFFA72D003F0573 /* WindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowController.swift; sourceTree = "<group>"; };
 		A38F4910206952AD00B8164A /* PreferencesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesTests.swift; sourceTree = "<group>"; };
 		A38F4912206955F600B8164A /* DataModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModelTests.swift; sourceTree = "<group>"; };
-		A3A4C1C02015177A008BB354 /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
+		A3962D6220C40CA600A80AB5 /* HelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelperTests.swift; sourceTree = "<group>"; };
+		A3A4C1C02015177A008BB354 /* NetworkHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkHandling.swift; sourceTree = "<group>"; };
 		A3A4C1C22015381F008BB354 /* PDF Archiver.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "PDF Archiver.entitlements"; sourceTree = "<group>"; };
 		A3A6964B202F91E500AB85C9 /* Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
 		A3C3D06C207744E400E80B1A /* PreferencesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesVC.swift; sourceTree = "<group>"; };
@@ -121,6 +127,39 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A315408920C83C41004947CC /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				A31B53161FF6A6D8007A3D14 /* FileHandling.swift */,
+				A3A4C1C02015177A008BB354 /* NetworkHandling.swift */,
+				A315408E20C83E61004947CC /* ViewHandling.swift */,
+				A315408C20C83DF0004947CC /* StringHandling.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		A315408A20C83C5D004947CC /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A31B52EF1FF694B0007A3D14 /* Main.storyboard */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A315408B20C83C69004947CC /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				A31B52EB1FF694B0007A3D14 /* ViewController.swift */,
+				A3FC0D9F201B054A0082CD2A /* ViewControllerExtension.swift */,
+				A344D1D120B5FF1000A168B2 /* VCE-MenuItems.swift */,
+				A3C3D06C207744E400E80B1A /* PreferencesVC.swift */,
+				A307BB362014B8530046C391 /* MainPreferencesVC.swift */,
+				A36B47BF2077DA4D00F3DCAF /* DonationPreferencesVC.swift */,
+				A32A128220468A3000CFC81F /* OnboardingViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
 		A31B52DD1FF694B0007A3D14 = {
 			isa = PBXGroup;
 			children = (
@@ -147,24 +186,16 @@
 		A31B52E81FF694B0007A3D14 /* PDFArchiver */ = {
 			isa = PBXGroup;
 			children = (
+				A3F5BC922019BAAE0043B192 /* Models */,
+				A315408A20C83C5D004947CC /* Views */,
+				A315408B20C83C69004947CC /* Controllers */,
+				A315408920C83C41004947CC /* Helpers */,
 				A31B52F21FF694B0007A3D14 /* Info.plist */,
 				A359E4B9202C376E00A703AF /* InfoPlist.strings */,
 				A31B52F31FF694B0007A3D14 /* PDFArchiver.entitlements */,
 				A31B52E91FF694B0007A3D14 /* AppDelegate.swift */,
-				A31B52EB1FF694B0007A3D14 /* ViewController.swift */,
-				A3FC0D9F201B054A0082CD2A /* ViewControllerExtension.swift */,
-				A344D1D120B5FF1000A168B2 /* VCE-MenuItems.swift */,
-				A3C3D06C207744E400E80B1A /* PreferencesVC.swift */,
-				A307BB362014B8530046C391 /* MainPreferencesVC.swift */,
-				A36B47BF2077DA4D00F3DCAF /* DonationPreferencesVC.swift */,
-				A32A128220468A3000CFC81F /* OnboardingViewController.swift */,
 				A38A58AA1FFFA72D003F0573 /* WindowController.swift */,
 				A31B52ED1FF694B0007A3D14 /* Assets.xcassets */,
-				A31B52EF1FF694B0007A3D14 /* Main.storyboard */,
-				A3F5BC922019BAAE0043B192 /* Classes */,
-				A3FC0DA3201B05F10082CD2A /* DataModel.swift */,
-				A31B53161FF6A6D8007A3D14 /* FileHandling.swift */,
-				A3A4C1C02015177A008BB354 /* Helpers.swift */,
 			);
 			path = PDFArchiver;
 			sourceTree = "<group>";
@@ -173,6 +204,7 @@
 			isa = PBXGroup;
 			children = (
 				A31B52FC1FF694B0007A3D14 /* DocumentTests.swift */,
+				A3962D6220C40CA600A80AB5 /* HelperTests.swift */,
 				A38F4910206952AD00B8164A /* PreferencesTests.swift */,
 				A38F4912206955F600B8164A /* DataModelTests.swift */,
 				A31B52FE1FF694B0007A3D14 /* Info.plist */,
@@ -198,9 +230,10 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		A3F5BC922019BAAE0043B192 /* Classes */ = {
+		A3F5BC922019BAAE0043B192 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				A3FC0DA3201B05F10082CD2A /* DataModel.swift */,
 				A359963E202A3CC700CDD6E8 /* MyWindow.swift */,
 				A3A6964B202F91E500AB85C9 /* Layout.swift */,
 				A3F5BC902019BAA70043B192 /* Document.swift */,
@@ -208,7 +241,7 @@
 				A3299E1B2015BE3D0036125F /* Tag.swift */,
 				A3C9052A207FEA44002A0543 /* IAPHelper.swift */,
 			);
-			path = Classes;
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -244,7 +277,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				A31B52FA1FF694B0007A3D14 /* PBXTargetDependency */,
+				A3962D6520C4114B00A80AB5 /* PBXTargetDependency */,
 			);
 			name = "PDF ArchiverTests";
 			productName = ArchiverTests;
@@ -389,6 +422,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A344D1D220B5FF1000A168B2 /* VCE-MenuItems.swift in Sources */,
+				A315408F20C83E61004947CC /* ViewHandling.swift in Sources */,
 				A3299E1C2015BE3D0036125F /* Tag.swift in Sources */,
 				A31B52EC1FF694B0007A3D14 /* ViewController.swift in Sources */,
 				A38A58AB1FFFA72D003F0573 /* WindowController.swift in Sources */,
@@ -397,11 +431,12 @@
 				A359963F202A3CC700CDD6E8 /* MyWindow.swift in Sources */,
 				A32A128320468A3000CFC81F /* OnboardingViewController.swift in Sources */,
 				A3C9052B207FEA44002A0543 /* IAPHelper.swift in Sources */,
-				A3A4C1C12015177A008BB354 /* Helpers.swift in Sources */,
+				A3A4C1C12015177A008BB354 /* NetworkHandling.swift in Sources */,
 				A3FC0DA4201B05F10082CD2A /* DataModel.swift in Sources */,
 				A307BB372014B8530046C391 /* MainPreferencesVC.swift in Sources */,
 				A3A6964C202F91E500AB85C9 /* Layout.swift in Sources */,
 				A3FC0DA0201B054A0082CD2A /* ViewControllerExtension.swift in Sources */,
+				A315408D20C83DF0004947CC /* StringHandling.swift in Sources */,
 				A31B53171FF6A6D8007A3D14 /* FileHandling.swift in Sources */,
 				A36B47C02077DA4D00F3DCAF /* DonationPreferencesVC.swift in Sources */,
 				A31B52EA1FF694B0007A3D14 /* AppDelegate.swift in Sources */,
@@ -416,6 +451,7 @@
 				A38F4913206955F600B8164A /* DataModelTests.swift in Sources */,
 				A38F4911206952AD00B8164A /* PreferencesTests.swift in Sources */,
 				A31B52FD1FF694B0007A3D14 /* DocumentTests.swift in Sources */,
+				A3962D6320C40CA600A80AB5 /* HelperTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -430,15 +466,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		A31B52FA1FF694B0007A3D14 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = A31B52E51FF694B0007A3D14 /* PDF Archiver */;
-			targetProxy = A31B52F91FF694B0007A3D14 /* PBXContainerItemProxy */;
-		};
 		A31B53051FF694B0007A3D14 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = A31B52E51FF694B0007A3D14 /* PDF Archiver */;
 			targetProxy = A31B53041FF694B0007A3D14 /* PBXContainerItemProxy */;
+		};
+		A3962D6520C4114B00A80AB5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A31B52E51FF694B0007A3D14 /* PDF Archiver */;
+			targetProxy = A3962D6420C4114B00A80AB5 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
