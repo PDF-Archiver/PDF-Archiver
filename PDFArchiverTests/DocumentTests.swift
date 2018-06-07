@@ -3,7 +3,7 @@
 //  PDFArchiverTests
 //
 //  Created by Julian Kahnert on 29.12.17.
-//  Copyright © 2017 Julian Kahnert. All rights reserved.
+//  Copyright © 2018 Julian Kahnert. All rights reserved.
 //
 
 import XCTest
