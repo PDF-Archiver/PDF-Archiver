@@ -21,8 +21,7 @@ class OnboardingViewController: NSViewController {
         UserDefaults.standard.set(true, forKey: "onboardingShown")
 
         // set background color of the view
-        let layout = Layout()
         self.customView.wantsLayer = true
-        self.customView.layer?.backgroundColor = layout.color3
+        self.customView.layer?.backgroundColor = NSColor(named: NSColor.Name("OffWhite"))!.cgColor
     }
 }

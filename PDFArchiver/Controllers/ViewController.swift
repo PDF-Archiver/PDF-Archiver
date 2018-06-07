@@ -141,30 +141,29 @@ class ViewController: NSViewController {
     }
 
     override func viewWillAppear() {
-        let layout = Layout()
-
         // set background color of the view
         self.view.wantsLayer = true
-        self.view.layer?.backgroundColor = layout.color3
+        self.view.layer?.backgroundColor = NSColor(named: NSColor.Name("OffWhite"))!.cgColor
+        let cornerRadius = CGFloat(3)
 
         self.pdfDocumentsView.wantsLayer = true
-        self.pdfDocumentsView.layer?.backgroundColor = layout.fieldBackgroundColorLight
-        self.pdfDocumentsView.layer?.cornerRadius = layout.cornerRadius
+        self.pdfDocumentsView.layer?.backgroundColor = NSColor(named: NSColor.Name("DarkGreyBlue"))!.withAlphaComponent(0.1).cgColor
+        self.pdfDocumentsView.layer?.cornerRadius = cornerRadius
 
         self.pdfView.wantsLayer = true
-        self.pdfView.layer?.backgroundColor = layout.fieldBackgroundColorLight
-        self.pdfView.layer?.cornerRadius = layout.cornerRadius
+        self.pdfView.layer?.backgroundColor = NSColor(named: NSColor.Name("DarkGreyBlue"))!.withAlphaComponent(0.1).cgColor
+        self.pdfView.layer?.cornerRadius = cornerRadius
 
-        self.pdfContentView.backgroundColor = NSColor.init(cgColor: layout.color5)!
-        self.pdfContentView.layer?.cornerRadius = layout.cornerRadius
+        self.pdfContentView.backgroundColor = NSColor(named: NSColor.Name("DarkGrey"))!
+        self.pdfContentView.layer?.cornerRadius = cornerRadius
 
         self.documentAttributesView.wantsLayer = true
-        self.documentAttributesView.layer?.backgroundColor = layout.fieldBackgroundColorLight
-        self.documentAttributesView.layer?.cornerRadius = layout.cornerRadius
+        self.documentAttributesView.layer?.backgroundColor = NSColor(named: NSColor.Name("DarkGreyBlue"))!.withAlphaComponent(0.1).cgColor
+        self.documentAttributesView.layer?.cornerRadius = cornerRadius
 
         self.tagSearchView.wantsLayer = true
-        self.tagSearchView.layer?.backgroundColor = layout.fieldBackgroundColorLight
-        self.tagSearchView.layer?.cornerRadius = layout.cornerRadius
+        self.tagSearchView.layer?.backgroundColor = NSColor(named: NSColor.Name("DarkGreyBlue"))!.withAlphaComponent(0.1).cgColor
+        self.tagSearchView.layer?.cornerRadius = cornerRadius
     }
 
     override func viewDidAppear() {
