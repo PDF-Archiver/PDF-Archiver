@@ -8,6 +8,18 @@
 
 import Quartz
 
+func getOpenPanel(_ title: String) -> NSOpenPanel {
+    let openPanel = NSOpenPanel()
+    openPanel.title = title
+    openPanel.showsResizeIndicator = false
+    openPanel.showsHiddenFiles = false
+    openPanel.canChooseFiles = false
+    openPanel.canChooseDirectories = true
+    openPanel.allowsMultipleSelection = false
+    openPanel.canCreateDirectories = true
+    return openPanel
+}
+
 func getPDFs(url: URL) -> [URL] {
     // get URL (file or folder) and return paths of the file or all PDF documents in this folder
     let fileManager = FileManager.default

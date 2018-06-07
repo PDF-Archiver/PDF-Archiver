@@ -17,14 +17,7 @@ class MainPreferencesVC: PreferencesVC {
     @IBOutlet weak var tagsCheckButton: NSButton!
 
     @IBAction func changeArchivePathButton(_ sender: Any) {
-        let openPanel = NSOpenPanel()
-        openPanel.title = "Choose an archive folder"
-        openPanel.showsResizeIndicator = false
-        openPanel.showsHiddenFiles = false
-        openPanel.canChooseFiles = false
-        openPanel.canChooseDirectories = true
-        openPanel.allowsMultipleSelection = false
-        openPanel.canCreateDirectories = true
+        let openPanel = getOpenPanel("Choose an archive folder")
         openPanel.beginSheetModal(for: NSApplication.shared.mainWindow!) { response in
             guard response == NSApplication.ModalResponse.OK else { return }
             self.dataModel?.prefs.archivePath = openPanel.url!
@@ -38,13 +31,7 @@ class MainPreferencesVC: PreferencesVC {
     }
 
     @IBAction func changeObservedPathButton(_ sender: NSButton) {
-        let openPanel = NSOpenPanel()
-        openPanel.title = "Choose an observed folder"
-        openPanel.showsResizeIndicator = false
-        openPanel.showsHiddenFiles = false
-        openPanel.canChooseFiles = false
-        openPanel.canChooseDirectories = true
-        openPanel.allowsMultipleSelection = false
+        let openPanel = getOpenPanel("Choose an observed folder")
         openPanel.beginSheetModal(for: NSApplication.shared.mainWindow!) { response in
             guard response == NSApplication.ModalResponse.OK else { return }
             self.observedPathTextField.stringValue = openPanel.url!.path

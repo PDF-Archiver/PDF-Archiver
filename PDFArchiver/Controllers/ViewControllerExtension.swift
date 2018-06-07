@@ -53,13 +53,7 @@ extension ViewController {
     }
 
     func setObservedPath() {
-        let openPanel = NSOpenPanel()
-        openPanel.title = "Choose an observed folder"
-        openPanel.showsResizeIndicator = false
-        openPanel.showsHiddenFiles = false
-        openPanel.canChooseFiles = false
-        openPanel.canChooseDirectories = true
-        openPanel.allowsMultipleSelection = false
+        let openPanel = getOpenPanel("Choose an observed folder")
         openPanel.beginSheetModal(for: NSApplication.shared.mainWindow!) { response in
             guard response == NSApplication.ModalResponse.OK else { return }
             self.dataModelInstance.prefs.observedPath = openPanel.url!
