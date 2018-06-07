@@ -1,11 +1,9 @@
 <div align="center">
-<a href="https://itunes.apple.com/app/pdf-archiver/id1352719750" target="itunes_store">
+<a href="https://geo.itunes.apple.com/us/app/pdf-archiver/id1352719750?mt=12&app=apps" target="itunes_store">
   <img src="assets/AppIcon.svg" width="200px">
 </a><br><br>
 
-<a href="https://itunes.apple.com/app/pdf-archiver/id1352719750" target="itunes_store">
-  <img src="assets/MacAppStoreBadge.svg">
-</a><br>
+<a href="https://geo.itunes.apple.com/us/app/pdf-archiver/id1352719750?mt=12&app=apps" style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/assets/shared/badges/en-us/macappstore-lrg.svg) no-repeat;width:165px;height:40px;background-size:contain;"></a><br>
 
 [![Build Status](https://travis-ci.org/PDF-Archiver/PDF-Archiver.svg?branch=master)](https://travis-ci.org/PDF-Archiver/PDF-Archiver)
 [![Maintainability](https://api.codeclimate.com/v1/badges/e460629e748c442f5285/maintainability)](https://codeclimate.com/github/PDF-Archiver/PDF-Archiver/maintainability)
@@ -61,9 +59,7 @@ This structure is independent from your OS and filesystem and makes it very easy
 ## :floppy_disk: Installation
 Download it from the Mac App Store:
 
-<a href="https://itunes.apple.com/app/pdf-archiver/id1352719750" target="itunes_store">
-  <img src="assets/MacAppStoreBadge.svg">
-</a>
+<a href="https://geo.itunes.apple.com/us/app/pdf-archiver/id1352719750?mt=12&app=apps" style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/assets/shared/badges/en-us/macappstore-lrg.svg) no-repeat;width:165px;height:40px;background-size:contain;"></a>
 
 Or clone the repository and build it:
 * Downloaded and install [Xcode.app](https://itunes.apple.com/app/xcode/id497799835)
