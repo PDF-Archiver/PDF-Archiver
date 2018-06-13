@@ -36,6 +36,7 @@
 		A3F5BC912019BAA70043B192 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F5BC902019BAA70043B192 /* Document.swift */; };
 		A3FC0DA0201B054A0082CD2A /* ViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC0D9F201B054A0082CD2A /* ViewControllerExtension.swift */; };
 		A3FC0DA4201B05F10082CD2A /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC0DA3201B05F10082CD2A /* DataModel.swift */; };
+		A3FF275820D0E614007EED90 /* DateParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF275720D0E614007EED90 /* DateParser.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,6 +96,7 @@
 		A3F5BC902019BAA70043B192 /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
 		A3FC0D9F201B054A0082CD2A /* ViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerExtension.swift; sourceTree = "<group>"; };
 		A3FC0DA3201B05F10082CD2A /* DataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModel.swift; sourceTree = "<group>"; };
+		A3FF275720D0E614007EED90 /* DateParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateParser.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,6 +132,7 @@
 				A3A4C1C02015177A008BB354 /* NetworkHandling.swift */,
 				A315408E20C83E61004947CC /* ViewHandling.swift */,
 				A315408C20C83DF0004947CC /* StringHandling.swift */,
+				A3FF275720D0E614007EED90 /* DateParser.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -432,6 +435,7 @@
 				A31B53171FF6A6D8007A3D14 /* FileHandling.swift in Sources */,
 				A36B47C02077DA4D00F3DCAF /* DonationPreferencesVC.swift in Sources */,
 				A31B52EA1FF694B0007A3D14 /* AppDelegate.swift in Sources */,
+				A3FF275820D0E614007EED90 /* DateParser.swift in Sources */,
 				A3C3D06D207744E400E80B1A /* PreferencesVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -47,7 +47,6 @@ class Document: NSObject {
         }
     }
     var documentTags: [Tag]?
-    fileprivate let _dateFormatter: DateFormatter
 
     init(path: URL, delegate: TagsDelegate?) {
         self.path = path
@@ -56,14 +55,9 @@ class Document: NSObject {
         // create a filename and rename the document
         self.name = String(path.lastPathComponent)
 
-        // initialize the date formatter
-        self._dateFormatter = DateFormatter()
-        self._dateFormatter.dateFormat = "yyyy-MM-dd"
-
         // try to parse the current filename
-        // parse the date
-        if var dateRaw = regex_matches(for: "^\\d{4}-\\d{2}-\\d{2}--", in: self.name!),
-           let date = self._dateFormatter.date(from: String(dateRaw[0].dropLast(2))) {
+        let parser = DateParser()
+        if let date = parser.parse(self.name!) {
             self.documentDate = date
         }
 
@@ -167,8 +161,10 @@ class Document: NSObject {
             throw DocumentError.description
         }
 
-        // get date
-        let dateStr = self._dateFormatter.string(from: self.documentDate)
+        // get formatted date
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let dateStr = dateFormatter.string(from: self.documentDate)
 
         // get tags
         var tagStr = ""
