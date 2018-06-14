@@ -54,10 +54,9 @@ func convertToPDF(_ inPath: URL) -> URL {
 
 func getPDFs(url: URL) -> [URL] {
     // get URL (file or folder) and return paths of the file or all PDF documents in this folder
-    let fileManager = FileManager.default
-    if fileManager.isDirectory(url: url) ?? false {
+    if url.hasDirectoryPath {
         // folder found
-        let enumerator = fileManager.enumerator(atPath: url.path)!
+        let enumerator = FileManager.default.enumerator(atPath: url.path)!
         var pdfURLs = [URL]()
         for element in enumerator {
             if let filename = element as? String {
@@ -83,12 +82,13 @@ func getPDFs(url: URL) -> [URL] {
         }
         return pdfURLs
 
-    } else if fileManager.isReadableFile(atPath: url.path) && url.pathExtension.lowercased() == "pdf" {
+    } else if url.isFileURL && url.pathExtension.lowercased() == "pdf" {
         // pdf file found
         return [url]
 
     } else if let identifier = url.typeIdentifier,
-        fileManager.isReadableFile(atPath: url.path) && NSImage.imageTypes.contains(identifier) {
+        url.isFileURL,
+        NSImage.imageTypes.contains(identifier) {
         // picture file found
         let pdfUrl = convertToPDF(url)
         return [pdfUrl]
@@ -96,16 +96,5 @@ func getPDFs(url: URL) -> [URL] {
     } else {
         // no file or directory found
         return []
-    }
-}
-
-extension FileManager {
-    func isDirectory(url: URL) -> Bool? {
-        var isDir: ObjCBool = ObjCBool(false)
-        if fileExists(atPath: url.path, isDirectory: &isDir) {
-            return isDir.boolValue
-        } else {
-            return nil
-        }
     }
 }

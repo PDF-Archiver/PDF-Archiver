@@ -111,7 +111,7 @@ class Document: NSObject {
         let newFilepath = newBasePath.appendingPathComponent(filename)
         let fileManager = FileManager.default
         do {
-            if !(fileManager.isDirectory(url: newBasePath) ?? false) {
+            if !(newBasePath.hasDirectoryPath) {
                 try fileManager.createDirectory(at: newBasePath,
                                                 withIntermediateDirectories: false, attributes: nil)
             }

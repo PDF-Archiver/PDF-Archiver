@@ -185,14 +185,3 @@ extension IAPHelper: SKPaymentTransactionObserver {
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: IAPHelper.IAPHelperPurchaseNotification), object: identifier)
     }
 }
-
-// MARK: - SKProduct extension
-
-extension SKProduct {
-    var localizedPrice: String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = priceLocale
-        return formatter.string(from: price)!
-    }
-}
