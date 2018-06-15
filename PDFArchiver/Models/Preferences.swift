@@ -179,7 +179,7 @@ struct Preferences {
         // get all PDF files from this year and the last years
         var files = [URL]()
         for folder in folders {
-            files.append(contentsOf: getPDFs(url: folder))
+            files.append(contentsOf: getPDFs(folder))
         }
 
         return files

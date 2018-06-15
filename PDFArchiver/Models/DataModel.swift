@@ -75,7 +75,7 @@ class DataModel: TagsDelegate {
         // access the file system and add documents to the data model
         self.viewControllerDelegate?.accessSecurityScope {
             for path in paths {
-                let files = getPDFs(url: path)
+                let files = getPDFs(path)
                 for file in files {
                     self.documents.append(Document(path: file, delegate: self as TagsDelegate))
                 }

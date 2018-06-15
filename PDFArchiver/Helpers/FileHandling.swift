@@ -52,31 +52,15 @@ func convertToPDF(_ inPath: URL) -> URL {
     return outPath
 }
 
-func getAllFiles(_ url: URL) -> [URL] {
-    var files = [URL]()
+func getPDFs(_ sourceFolder: URL) -> [URL] {
+    // get all files in the source folder
+    let fileManager = FileManager.default
+    let files = (fileManager.enumerator(at: sourceFolder,
+                                        includingPropertiesForKeys: nil,
+                                        options: [.skipsHiddenFiles],
+                                        errorHandler: nil)?.allObjects as? [URL]) ?? []
 
-    if url.hasDirectoryPath {
-        // folder found
-        let enumerator = FileManager.default.enumerator(atPath: url.path)!
-        for element in enumerator {
-            if let filename = element as? String {
-                let completeDocumentPath = URL(fileURLWithPath: url.path).appendingPathComponent(filename)
-                files.append(completeDocumentPath)
-            }
-        }
-
-    } else if url.isFileURL {
-        // pdf file found
-        files.append(url)
-    }
-
-    return files
-}
-
-func getPDFs(url: URL) -> [URL] {
-    // get all files in folder
-    let files = getAllFiles(url)
-
+    // pick pdfs and convert pictures
     var pdfURLs = [URL]()
     for file in files {
         if file.pathExtension == "pdf" {
