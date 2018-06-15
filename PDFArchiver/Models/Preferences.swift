@@ -77,30 +77,10 @@ struct Preferences {
 
     mutating func load() {
         // load the archive path via the security scope bookmark [https://stackoverflow.com/a/35863729]
-        if let bookmarkData = UserDefaults.standard.object(forKey: "securityScopeBookmark") as? Data {
-            do {
-                var staleBookmarkData = false
-                self._archivePath = try URL.init(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &staleBookmarkData)
-                if staleBookmarkData {
-                    os_log("Stale bookmark data!", log: self.log, type: .fault)
-                }
-            } catch let error as NSError {
-                os_log("Bookmark Access failed: %@", log: self.log, type: .error, error.description)
-            }
-        }
+        self._archivePath = self.accessSecurityScope(scopeBookmarkName: "securityScopeBookmark")
 
         // load the observed path via the security scope bookmark [https://stackoverflow.com/a/35863729]
-        if let bookmarkData = UserDefaults.standard.object(forKey: "observedPathWithSecurityScope") as? Data {
-            do {
-                var staleBookmarkData = false
-                self._observedPath = try URL.init(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &staleBookmarkData)
-                if staleBookmarkData {
-                    os_log("Stale bookmark data!", log: self.log, type: .fault)
-                }
-            } catch let error as NSError {
-                os_log("Bookmark Access failed: %@", log: self.log, type: .error, error.description)
-            }
-        }
+        self._observedPath = self.accessSecurityScope(scopeBookmarkName: "observedPathWithSecurityScope")
 
         // load archive tags
         guard let tagsDict = (UserDefaults.standard.dictionary(forKey: "tags") ?? [:]) as? [String: Int] else { return }
@@ -130,6 +110,49 @@ struct Preferences {
             return
         }
 
+        // get all PDF files from the archive
+        let files = getPDFFiles(path)
+
+        // get tags and counts from filename
+        var tagsRaw: [String] = []
+        for file in files {
+            let matched = regex_matches(for: "_[a-z0-9]+", in: file.lastPathComponent) ?? []
+            for tag in matched {
+                tagsRaw.append(String(tag.dropFirst()))
+            }
+        }
+
+        let tagsDict = tagsRaw.reduce(into: [:]) { counts, word in counts[word, default: 0] += 1 }
+        var newTagList = Set<Tag>()
+        for (name, count) in tagsDict {
+            newTagList.insert(Tag(name: name, count: count))
+        }
+        self.delegate?.setTagList(tagList: newTagList)
+
+        // stop accessing the file system
+        self.archivePath?.stopAccessingSecurityScopedResource()
+
+    }
+
+    // MARK: private functions
+    fileprivate func accessSecurityScope(scopeBookmarkName: String) -> URL? {
+        // load the archive path via the security scope bookmark [https://stackoverflow.com/a/35863729]
+        if let bookmarkData = UserDefaults.standard.object(forKey: scopeBookmarkName) as? Data {
+            do {
+                var staleBookmarkData = false
+                let bookmarkPath = try URL.init(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &staleBookmarkData)
+                if staleBookmarkData {
+                    os_log("Stale bookmark data!", log: self.log, type: .fault)
+                }
+                return bookmarkPath
+            } catch let error as NSError {
+                os_log("Bookmark Access failed: %@", log: self.log, type: .error, error.description)
+            }
+        }
+        return nil
+    }
+
+    fileprivate mutating func getPDFFiles(_ path: URL) -> [URL] {
         // get year archive folders
         var folders = [URL]()
         do {
@@ -159,25 +182,6 @@ struct Preferences {
             files.append(contentsOf: getPDFs(url: folder))
         }
 
-        // get tags and counts from filename
-        var tagsRaw: [String] = []
-        for file in files {
-            let matched = regex_matches(for: "_[a-z0-9]+", in: file.lastPathComponent) ?? []
-            for tag in matched {
-                tagsRaw.append(String(tag.dropFirst()))
-            }
-        }
-
-        let tagsDict = tagsRaw.reduce(into: [:]) { counts, word in counts[word, default: 0] += 1 }
-        var newTagList = Set<Tag>()
-        for (name, count) in tagsDict {
-            newTagList.insert(Tag(name: name, count: count))
-        }
-        self.delegate?.setTagList(tagList: newTagList)
-
-        // stop accessing the file system
-        self.archivePath?.stopAccessingSecurityScopedResource()
-
+        return files
     }
-
 }
