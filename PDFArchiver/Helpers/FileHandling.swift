@@ -52,49 +52,48 @@ func convertToPDF(_ inPath: URL) -> URL {
     return outPath
 }
 
-func getPDFs(url: URL) -> [URL] {
-    // get URL (file or folder) and return paths of the file or all PDF documents in this folder
+func getAllFiles(_ url: URL) -> [URL] {
+    var files = [URL]()
+
     if url.hasDirectoryPath {
         // folder found
         let enumerator = FileManager.default.enumerator(atPath: url.path)!
-        var pdfURLs = [URL]()
         for element in enumerator {
             if let filename = element as? String {
-                var pdfUrl: URL
                 let completeDocumentPath = URL(fileURLWithPath: url.path).appendingPathComponent(filename)
-
-                if filename.lowercased().hasSuffix("pdf") {
-                    // add PDF
-                    pdfUrl = URL(fileURLWithPath: url.path).appendingPathComponent(filename)
-
-                } else if let fileTypeIdentifier = completeDocumentPath.typeIdentifier,
-                    NSImage.imageTypes.contains(fileTypeIdentifier) {
-                    // convert picture/supported file to PDF
-                    pdfUrl = convertToPDF(completeDocumentPath)
-
-                } else {
-                    // skip the unsupported filetype
-                    continue
-                }
-
-                pdfURLs.append(pdfUrl)
+                files.append(completeDocumentPath)
             }
         }
-        return pdfURLs
 
-    } else if url.isFileURL && url.pathExtension.lowercased() == "pdf" {
+    } else if url.isFileURL {
         // pdf file found
-        return [url]
-
-    } else if let identifier = url.typeIdentifier,
-        url.isFileURL,
-        NSImage.imageTypes.contains(identifier) {
-        // picture file found
-        let pdfUrl = convertToPDF(url)
-        return [pdfUrl]
-
-    } else {
-        // no file or directory found
-        return []
+        files.append(url)
     }
+
+    return files
+}
+
+func getPDFs(url: URL) -> [URL] {
+    // get all files in folder
+    let files = getAllFiles(url)
+
+    var pdfURLs = [URL]()
+    for file in files {
+        if file.pathExtension == "pdf" {
+            // add PDF
+            pdfURLs.append(file)
+
+        } else if let fileTypeIdentifier = file.typeIdentifier,
+            NSImage.imageTypes.contains(fileTypeIdentifier) {
+            // convert picture/supported file to PDF
+            let pdfURL = convertToPDF(file)
+            pdfURLs.append(pdfURL)
+
+        } else {
+            // skip the unsupported filetype
+            continue
+        }
+    }
+
+    return files
 }
