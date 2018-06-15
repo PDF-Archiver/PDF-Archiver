@@ -95,11 +95,10 @@ class ViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // set the data model VC delegate
+        // MARK: - delegates
+        self.tagSearchField.delegate = self
+        self.descriptionField.delegate = self
         self.dataModelInstance.viewControllerDelegate = self
-
-        // set the date picker to canadian local, e.g. YYYY-MM-DD
-        self.datePicker.locale = Locale.init(identifier: "en_CA")
 
         // access the file system and get the new documents
         if let observedPath = self.dataModelInstance.prefs.observedPath {
@@ -115,22 +114,19 @@ class ViewController: NSViewController {
         self.tagAC.content = self.dataModelInstance.tags
         self.documentAC.content = self.dataModelInstance.documents
 
-        // MARK: - delegates
-        self.tagSearchField.delegate = self
-        self.descriptionField.delegate = self
-
         // add sorting to tag fields
         self.documentAC.sortDescriptors = [NSSortDescriptor(key: "documentDone", ascending: false),
                                            NSSortDescriptor(key: "name", ascending: true)]
         self.tagTableView.sortDescriptors = [NSSortDescriptor(key: "count", ascending: false),
                                              NSSortDescriptor(key: "name", ascending: true)]
 
+        // set the date picker to canadian local, e.g. YYYY-MM-DD
+        self.datePicker.locale = Locale.init(identifier: "en_CA")
+
         // set some PDF View settings
         self.pdfContentView.displayMode = PDFDisplayMode.singlePage
         self.pdfContentView.autoScales = true
-        if #available(OSX 10.13, *) {
-            self.pdfContentView.acceptsDraggedFiles = false
-        }
+        self.pdfContentView.acceptsDraggedFiles = false
         self.pdfContentView.interpolationQuality = PDFInterpolationQuality.low
 
         // update the view after all the settigns
