@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import PDF_Archiver
+@testable import PDFArchiver
 
 class DocumentTests: XCTestCase {
 

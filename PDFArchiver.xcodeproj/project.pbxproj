@@ -62,16 +62,16 @@
 		A307BB3A2014D5300046C391 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		A315408C20C83DF0004947CC /* StringHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringHandling.swift; sourceTree = "<group>"; };
 		A315408E20C83E61004947CC /* ViewHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHandling.swift; sourceTree = "<group>"; };
-		A31B52E61FF694B0007A3D14 /* PDF Archiver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "PDF Archiver.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A31B52E61FF694B0007A3D14 /* PDFArchiver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PDFArchiver.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A31B52E91FF694B0007A3D14 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A31B52EB1FF694B0007A3D14 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		A31B52ED1FF694B0007A3D14 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A31B52F01FF694B0007A3D14 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		A31B52F21FF694B0007A3D14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A31B52F81FF694B0007A3D14 /* PDF ArchiverTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "PDF ArchiverTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A31B52F81FF694B0007A3D14 /* PDFArchiverTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PDFArchiverTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A31B52FC1FF694B0007A3D14 /* DocumentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentTests.swift; sourceTree = "<group>"; };
 		A31B52FE1FF694B0007A3D14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A31B53031FF694B0007A3D14 /* PDF ArchiverUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "PDF ArchiverUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A31B53031FF694B0007A3D14 /* PDFArchiverUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PDFArchiverUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A31B53071FF694B0007A3D14 /* PDFArchiverUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFArchiverUITests.swift; sourceTree = "<group>"; };
 		A31B53091FF694B0007A3D14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A31B53161FF6A6D8007A3D14 /* FileHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileHandling.swift; sourceTree = "<group>"; };
@@ -178,9 +178,9 @@
 		A31B52E71FF694B0007A3D14 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A31B52E61FF694B0007A3D14 /* PDF Archiver.app */,
-				A31B52F81FF694B0007A3D14 /* PDF ArchiverTests.xctest */,
-				A31B53031FF694B0007A3D14 /* PDF ArchiverUITests.xctest */,
+				A31B52E61FF694B0007A3D14 /* PDFArchiver.app */,
+				A31B52F81FF694B0007A3D14 /* PDFArchiverTests.xctest */,
+				A31B53031FF694B0007A3D14 /* PDFArchiverUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -246,9 +246,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		A31B52E51FF694B0007A3D14 /* PDF Archiver */ = {
+		A31B52E51FF694B0007A3D14 /* PDFArchiver */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A31B530C1FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "PDF Archiver" */;
+			buildConfigurationList = A31B530C1FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "PDFArchiver" */;
 			buildPhases = (
 				A349C8212064E187002633A7 /* BartyCrouch */,
 				A389987A2025078D00C34E0B /* SwiftLint */,
@@ -260,14 +260,14 @@
 			);
 			dependencies = (
 			);
-			name = "PDF Archiver";
+			name = PDFArchiver;
 			productName = Archiver;
-			productReference = A31B52E61FF694B0007A3D14 /* PDF Archiver.app */;
+			productReference = A31B52E61FF694B0007A3D14 /* PDFArchiver.app */;
 			productType = "com.apple.product-type.application";
 		};
-		A31B52F71FF694B0007A3D14 /* PDF ArchiverTests */ = {
+		A31B52F71FF694B0007A3D14 /* PDFArchiverTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A31B530F1FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "PDF ArchiverTests" */;
+			buildConfigurationList = A31B530F1FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "PDFArchiverTests" */;
 			buildPhases = (
 				A31B52F41FF694B0007A3D14 /* Sources */,
 				A31B52F51FF694B0007A3D14 /* Frameworks */,
@@ -278,14 +278,14 @@
 			dependencies = (
 				A3962D6520C4114B00A80AB5 /* PBXTargetDependency */,
 			);
-			name = "PDF ArchiverTests";
+			name = PDFArchiverTests;
 			productName = ArchiverTests;
-			productReference = A31B52F81FF694B0007A3D14 /* PDF ArchiverTests.xctest */;
+			productReference = A31B52F81FF694B0007A3D14 /* PDFArchiverTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		A31B53021FF694B0007A3D14 /* PDF ArchiverUITests */ = {
+		A31B53021FF694B0007A3D14 /* PDFArchiverUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A31B53121FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "PDF ArchiverUITests" */;
+			buildConfigurationList = A31B53121FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "PDFArchiverUITests" */;
 			buildPhases = (
 				A31B52FF1FF694B0007A3D14 /* Sources */,
 				A31B53001FF694B0007A3D14 /* Frameworks */,
@@ -296,9 +296,9 @@
 			dependencies = (
 				A31B53051FF694B0007A3D14 /* PBXTargetDependency */,
 			);
-			name = "PDF ArchiverUITests";
+			name = PDFArchiverUITests;
 			productName = ArchiverUITests;
-			productReference = A31B53031FF694B0007A3D14 /* PDF ArchiverUITests.xctest */;
+			productReference = A31B53031FF694B0007A3D14 /* PDFArchiverUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -335,7 +335,7 @@
 					};
 				};
 			};
-			buildConfigurationList = A31B52E11FF694B0007A3D14 /* Build configuration list for PBXProject "PDF Archiver" */;
+			buildConfigurationList = A31B52E11FF694B0007A3D14 /* Build configuration list for PBXProject "PDFArchiver" */;
 			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -349,9 +349,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A31B52E51FF694B0007A3D14 /* PDF Archiver */,
-				A31B52F71FF694B0007A3D14 /* PDF ArchiverTests */,
-				A31B53021FF694B0007A3D14 /* PDF ArchiverUITests */,
+				A31B52E51FF694B0007A3D14 /* PDFArchiver */,
+				A31B52F71FF694B0007A3D14 /* PDFArchiverTests */,
+				A31B53021FF694B0007A3D14 /* PDFArchiverUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -468,12 +468,12 @@
 /* Begin PBXTargetDependency section */
 		A31B53051FF694B0007A3D14 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A31B52E51FF694B0007A3D14 /* PDF Archiver */;
+			target = A31B52E51FF694B0007A3D14 /* PDFArchiver */;
 			targetProxy = A31B53041FF694B0007A3D14 /* PBXContainerItemProxy */;
 		};
 		A3962D6520C4114B00A80AB5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A31B52E51FF694B0007A3D14 /* PDF Archiver */;
+			target = A31B52E51FF694B0007A3D14 /* PDFArchiver */;
 			targetProxy = A3962D6420C4114B00A80AB5 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -675,7 +675,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PDF Archiver.app/Contents/MacOS/PDF Archiver";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PDFArchiver.app/Contents/MacOS/PDFArchiver";
 			};
 			name = Debug;
 		};
@@ -694,7 +694,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PDF Archiver.app/Contents/MacOS/PDF Archiver";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PDFArchiver.app/Contents/MacOS/PDFArchiver";
 			};
 			name = Release;
 		};
@@ -713,7 +713,7 @@
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
-				TEST_TARGET_NAME = "PDF Archiver";
+				TEST_TARGET_NAME = PDFArchiver;
 			};
 			name = Debug;
 		};
@@ -732,14 +732,14 @@
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 4.0;
-				TEST_TARGET_NAME = "PDF Archiver";
+				TEST_TARGET_NAME = PDFArchiver;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A31B52E11FF694B0007A3D14 /* Build configuration list for PBXProject "PDF Archiver" */ = {
+		A31B52E11FF694B0007A3D14 /* Build configuration list for PBXProject "PDFArchiver" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A31B530A1FF694B0007A3D14 /* Debug */,
@@ -748,7 +748,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A31B530C1FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "PDF Archiver" */ = {
+		A31B530C1FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "PDFArchiver" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A31B530D1FF694B0007A3D14 /* Debug */,
@@ -757,7 +757,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A31B530F1FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "PDF ArchiverTests" */ = {
+		A31B530F1FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "PDFArchiverTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A31B53101FF694B0007A3D14 /* Debug */,
@@ -766,7 +766,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A31B53121FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "PDF ArchiverUITests" */ = {
+		A31B53121FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "PDFArchiverUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A31B53131FF694B0007A3D14 /* Debug */,

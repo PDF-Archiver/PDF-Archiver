@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A31B52E51FF694B0007A3D14"
-               BuildableName = "PDF Archiver.app"
-               BlueprintName = "PDF Archiver"
-               ReferencedContainer = "container:PDF Archiver.xcodeproj">
+               BuildableName = "PDFArchiver.app"
+               BlueprintName = "PDFArchiver"
+               ReferencedContainer = "container:PDFArchiver.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -26,8 +26,6 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      language = "en"
-      region = "US"
       codeCoverageEnabled = "YES"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
@@ -36,19 +34,19 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A31B52F71FF694B0007A3D14"
-               BuildableName = "PDF ArchiverTests.xctest"
-               BlueprintName = "PDF ArchiverTests"
-               ReferencedContainer = "container:PDF Archiver.xcodeproj">
+               BuildableName = "PDFArchiverTests.xctest"
+               BlueprintName = "PDFArchiverTests"
+               ReferencedContainer = "container:PDFArchiver.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO">
+            skipped = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A31B53021FF694B0007A3D14"
-               BuildableName = "PDF ArchiverUITests.xctest"
-               BlueprintName = "PDF ArchiverUITests"
-               ReferencedContainer = "container:PDF Archiver.xcodeproj">
+               BuildableName = "PDFArchiverUITests.xctest"
+               BlueprintName = "PDFArchiverUITests"
+               ReferencedContainer = "container:PDFArchiver.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -56,9 +54,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A31B52E51FF694B0007A3D14"
-            BuildableName = "PDF Archiver.app"
-            BlueprintName = "PDF Archiver"
-            ReferencedContainer = "container:PDF Archiver.xcodeproj">
+            BuildableName = "PDFArchiver.app"
+            BlueprintName = "PDFArchiver"
+            ReferencedContainer = "container:PDFArchiver.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -68,8 +66,6 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      language = "en"
-      region = "US"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
@@ -81,9 +77,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A31B52E51FF694B0007A3D14"
-            BuildableName = "PDF Archiver.app"
-            BlueprintName = "PDF Archiver"
-            ReferencedContainer = "container:PDF Archiver.xcodeproj">
+            BuildableName = "PDFArchiver.app"
+            BlueprintName = "PDFArchiver"
+            ReferencedContainer = "container:PDFArchiver.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -100,9 +96,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A31B52E51FF694B0007A3D14"
-            BuildableName = "PDF Archiver.app"
-            BlueprintName = "PDF Archiver"
-            ReferencedContainer = "container:PDF Archiver.xcodeproj">
+            BuildableName = "PDFArchiver.app"
+            BlueprintName = "PDFArchiver"
+            ReferencedContainer = "container:PDFArchiver.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

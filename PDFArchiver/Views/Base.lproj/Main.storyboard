@@ -318,34 +318,34 @@ Tag your document and save  it:</string>
                                         </textFieldCell>
                                     </textField>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="OpW-y7-zJz">
-                                        <rect key="frame" x="379" y="112" width="64" height="23"/>
+                                        <rect key="frame" x="379" y="116" width="64" height="19"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="60" id="r26-Tl-4mk"/>
                                         </constraints>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="⌘ ," id="Dce-Xm-wCT">
-                                            <font key="font" size="15" name="SFMono-Bold"/>
+                                            <font key="font" metaFont="system" size="15"/>
                                             <color key="textColor" name="Headline2"/>
                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                         </textFieldCell>
                                     </textField>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lDQ-a2-L5n">
-                                        <rect key="frame" x="379" y="76" width="64" height="23"/>
+                                        <rect key="frame" x="379" y="78" width="64" height="19"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="60" id="Jdn-ZD-gLA"/>
                                         </constraints>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="⌘ o" id="m4z-q1-wQ4">
-                                            <font key="font" size="15" name="SFMono-Bold"/>
+                                            <font key="font" metaFont="system" size="15"/>
                                             <color key="textColor" name="Headline2"/>
                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                         </textFieldCell>
                                     </textField>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Tpx-oz-ZWL">
-                                        <rect key="frame" x="379" y="40" width="64" height="23"/>
+                                        <rect key="frame" x="379" y="40" width="64" height="19"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="60" id="g4Q-9A-JK5"/>
                                         </constraints>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="⌘ s" id="cpe-TF-DiZ">
-                                            <font key="font" size="15" name="SFMono-Bold"/>
+                                            <font key="font" metaFont="system" size="15"/>
                                             <color key="textColor" name="Headline2"/>
                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                         </textFieldCell>
@@ -799,7 +799,7 @@ You can support this project by picking a one-time donation via the buttons on t
                                         <rect key="frame" x="5" y="5" width="270" height="485"/>
                                         <clipView key="contentView" id="IQ8-Cx-TuB">
                                             <rect key="frame" x="1" y="0.0" width="268" height="469"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <tableView identifier="DocumentTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" headerView="8zw-71-lOb" viewBased="YES" id="6Bq-b9-66z" userLabel="Document Table View">
                                                     <rect key="frame" x="0.0" y="0.0" width="368" height="446"/>
@@ -973,7 +973,7 @@ You can support this project by picking a one-time donation via the buttons on t
                                         <rect key="frame" x="5" y="5" width="230" height="116"/>
                                         <clipView key="contentView" id="kWK-ER-HYK">
                                             <rect key="frame" x="1" y="1" width="228" height="114"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" id="3Nb-6r-7ib" userLabel="Document Tag Table View">
                                                     <rect key="frame" x="0.0" y="0.0" width="228" height="114"/>
@@ -1080,7 +1080,7 @@ You can support this project by picking a one-time donation via the buttons on t
                                         <rect key="frame" x="5" y="5" width="230" height="239"/>
                                         <clipView key="contentView" id="FwI-oY-mZj">
                                             <rect key="frame" x="1" y="0.0" width="228" height="238"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" headerView="gxi-Wd-NVa" viewBased="YES" id="xpK-mJ-Y4J" userLabel="Tag Table View">
                                                     <rect key="frame" x="0.0" y="0.0" width="228" height="215"/>
@@ -1134,7 +1134,7 @@ You can support this project by picking a one-time donation via the buttons on t
                                                                 <binding destination="jrR-pM-UBT" name="value" keyPath="arrangedObjects.count" id="JSl-95-Sk4"/>
                                                             </connections>
                                                         </tableColumn>
-                                                        <tableColumn identifier="" width="194.5" minWidth="40" maxWidth="1000" id="bgb-vH-5vk">
+                                                        <tableColumn identifier="" width="193.5" minWidth="40" maxWidth="1000" id="bgb-vH-5vk">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Tag">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -1149,7 +1149,7 @@ You can support this project by picking a one-time donation via the buttons on t
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                    <rect key="frame" x="32" y="1" width="195" height="17"/>
+                                                                    <rect key="frame" x="32" y="1" width="194" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">
