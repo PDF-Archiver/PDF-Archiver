@@ -15,6 +15,7 @@ struct Preferences {
     fileprivate var _observedPath: URL?
     weak var delegate: TagsDelegate?
     var analyseAllFolders: Bool = true
+    var slugifyNames: Bool = true
     var observedPath: URL? {
         // ATTENTION: only set observed path, after an OpenPanel dialog
         get {

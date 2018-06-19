@@ -21,17 +21,31 @@ class HelperTests: XCTestCase {
         super.tearDown()
     }
 
-    func testSlugify() {
+    func testSlugifySpecialCharacters() {
         // capital letters
-        XCTAssertEqual(slugify("Ä"), "ae")
-        XCTAssertEqual(slugify("Ö"), "oe")
-        XCTAssertEqual(slugify("Ü"), "ue")
+        XCTAssertEqual("Ä".slugify(), "Ae")
+        XCTAssertEqual("Ö".slugify(), "Oe")
+        XCTAssertEqual("Ü".slugify(), "Ue")
         // small letters
-        XCTAssertEqual(slugify("ä"), "ae")
-        XCTAssertEqual(slugify("ö"), "oe")
-        XCTAssertEqual(slugify("ü"), "ue")
+        XCTAssertEqual("ä".slugify(), "ae")
+        XCTAssertEqual("ö".slugify(), "oe")
+        XCTAssertEqual("ü".slugify(), "ue")
         // other
-        XCTAssertEqual(slugify("ß"), "ss")
+        XCTAssertEqual("ß".slugify(), "ss")
+    }
+
+    func testSlugifyName1() {
+        let exampleString = "Das hier ist-ein__öffentlicher TÄst!"
+
+        XCTAssertEqual(exampleString.lowercased().slugify(), "das-hier-ist-ein-oeffentlicher-taest")
+        XCTAssertNotEqual(exampleString.lowercased().slugify(), exampleString)
+    }
+
+    func testSlugifyName2() {
+        let exampleString = " Das hier ist ein Test "
+
+        XCTAssertEqual(exampleString.lowercased().slugify(), "das-hier-ist-ein-test")
+        XCTAssertNotEqual(exampleString.lowercased().slugify(), exampleString)
     }
 
 }

@@ -21,24 +21,6 @@ class DocumentTests: XCTestCase {
         super.tearDown()
     }
 
-    func testDocumentDescription() {
-        let document = Document(path: URL(fileURLWithPath: "~/Downloads/test.pdf"), delegate: nil)
-        let exampleString = "Das hier ist-ein__öffentlicher TÄst!"
-        document.documentDescription = exampleString
-
-        XCTAssertEqual(document.documentDescription, "das-hier-ist-ein-oeffentlicher-taest")
-        XCTAssertNotEqual(document.documentDescription, exampleString)
-    }
-
-    func testDocumentDescriptionWhitespaces() {
-        let document = Document(path: URL(fileURLWithPath: "~/Downloads/test.pdf"), delegate: nil)
-        let exampleString = " Das hier ist ein Test "
-        document.documentDescription = exampleString
-
-        XCTAssertEqual(document.documentDescription, "das-hier-ist-ein-test")
-        XCTAssertNotEqual(document.documentDescription, exampleString)
-    }
-
     func testDocumentNameParsing() {
         let path = URL(fileURLWithPath: "~/Downloads/2010-05-12--example-description__tag1_tag2.pdf")
         let document = Document(path: path, delegate: nil)

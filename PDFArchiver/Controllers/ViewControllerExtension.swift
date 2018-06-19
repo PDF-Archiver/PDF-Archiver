@@ -175,7 +175,13 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
         if identifier.rawValue == "documentDescriptionField" {
             guard let textField = notification.object as? NSTextField,
                   let selectedDocument = self.documentAC.selectedObjects.first as? Document else { return }
-            selectedDocument.documentDescription = textField.stringValue
+
+            var description = textField.stringValue.lowercased()
+            if self.dataModelInstance.prefs.slugifyNames {
+                description = description.slugify()
+            }
+            selectedDocument.documentDescription = description
+
         } else if identifier.rawValue == "tagSearchField" {
             guard let searchField = notification.object as? NSSearchField else { return }
             self.tagAC.content = self.dataModelInstance.filterTags(prefix: searchField.stringValue)
@@ -199,7 +205,11 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
             newlyCreated = false
         } else {
             // no tag selected - get the name of the search field
-            selectedTag = Tag(name: slugify(self.tagSearchField.stringValue),
+            var tagName = self.tagSearchField.stringValue.lowercased()
+            if self.dataModelInstance.prefs.slugifyNames {
+                tagName = tagName.slugify()
+            }
+            selectedTag = Tag(name: tagName,
                               count: 1)
             newlyCreated = true
         }

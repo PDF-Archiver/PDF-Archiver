@@ -19,30 +19,8 @@ class Document: NSObject {
     var documentDate = Date()
     var documentDescription: String? {
         didSet {
-            if var raw = self.documentDescription {
-                // normalize description
-                raw = raw.lowercased()
-                raw = raw.replacingOccurrences(of: "[:;.,!?/\\^+<>#@|]", with: "",
-                                               options: .regularExpression, range: nil)
-                raw = raw.replacingOccurrences(of: "[\\s_]", with: "-",
-                                               options: .regularExpression, range: nil)
-                raw = raw.replacingOccurrences(of: "[-]+", with: "-",
-                                               options: .regularExpression, range: nil)
-                // german umlaute
-                raw = raw.replacingOccurrences(of: "ä", with: "ae")
-                raw = raw.replacingOccurrences(of: "ö", with: "oe")
-                raw = raw.replacingOccurrences(of: "ü", with: "ue")
-                raw = raw.replacingOccurrences(of: "ß", with: "ss")
-
-                // trailing previous whitespaces from beginning/end
-                if raw.hasSuffix("-") {
-                    raw = String(raw.dropLast())
-                }
-                if raw.hasPrefix("-") {
-                    raw = String(raw.dropFirst())
-                }
-
-                self.documentDescription = raw
+            if let raw = self.documentDescription {
+                self.documentDescription = raw.lowercased()
             }
         }
     }
@@ -62,7 +40,7 @@ class Document: NSObject {
         }
 
         // parse the description or use the filename
-        if var raw = regex_matches(for: "--[a-zA-Z0-9-]+__", in: self.name!) {
+        if var raw = regex_matches(for: "--[\\w\\d-]+__", in: self.name!) {
             self.documentDescription = getSubstring(raw[0], startIdx: 2, endIdx: -2)
         } else {
             let newDescription = String(path.lastPathComponent.dropLast(4))
@@ -70,7 +48,7 @@ class Document: NSObject {
         }
 
         // parse the tags
-        if var raw = regex_matches(for: "__[a-zA-Z0-9_]+.[pdfPDF]{3}$", in: self.name!) {
+        if var raw = regex_matches(for: "__[\\w\\d_]+.[pdfPDF]{3}$", in: self.name!) {
             // parse the tags of a document
             let documentTagNames = getSubstring(raw[0], startIdx: 2, endIdx: -4).components(separatedBy: "_")
             // get the available tags of the archive

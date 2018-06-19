@@ -53,7 +53,11 @@ class ViewController: NSViewController {
         }
 
         // set the description of the pdf document
-        selectedDocument.documentDescription = sender.stringValue
+        var description = sender.stringValue
+        if self.dataModelInstance.prefs.slugifyNames {
+            description = description.slugify()
+        }
+        selectedDocument.documentDescription = description
     }
 
     @IBAction func clickedDocumentTagTableView(_ sender: NSTableView) {
