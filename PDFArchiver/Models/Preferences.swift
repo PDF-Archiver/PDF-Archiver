@@ -67,6 +67,9 @@ struct Preferences {
         }
         UserDefaults.standard.set(tags, forKey: "tags")
 
+        // save the slugifyNames flag
+        UserDefaults.standard.set(!(self.slugifyNames), forKey: "noSlugify")
+
         // save the analyseOnlyLatestFolders flag
         UserDefaults.standard.set(self.analyseAllFolders, forKey: "analyseOnlyLatestFolders")
 
@@ -90,6 +93,9 @@ struct Preferences {
             newTagList.insert(Tag(name: name, count: count))
         }
         self.delegate?.setTagList(tagList: newTagList)
+
+        // load the noSlugify flag
+        self.slugifyNames = !(UserDefaults.standard.bool(forKey: "noSlugify"))
 
         // load the analyseOnlyLatestFolders flag
         self.analyseAllFolders = UserDefaults.standard.bool(forKey: "analyseOnlyLatestFolders")

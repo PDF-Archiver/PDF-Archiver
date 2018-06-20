@@ -14,6 +14,7 @@ class MainPreferencesVC: PreferencesVC {
 
     @IBOutlet weak var archivePathTextField: NSTextField!
     @IBOutlet weak var observedPathTextField: NSTextField!
+    @IBOutlet weak var documentSlugifyCheckButton: NSButton!
     @IBOutlet weak var tagsCheckButton: NSButton!
 
     @IBAction func changeArchivePathButton(_ sender: Any) {
@@ -44,6 +45,15 @@ class MainPreferencesVC: PreferencesVC {
             }
         }
     }
+
+    @IBAction func documentSlugifyCheckButtonClicked(_ sender: NSButton) {
+        if sender.state == .on {
+            self.dataModel?.prefs.slugifyNames = true
+        } else {
+            self.dataModel?.prefs.slugifyNames = false
+        }
+    }
+
     @IBAction func tagsCheckButtonClicked(_ sender: NSButton) {
         if sender.state == .on {
             self.dataModel?.prefs.analyseAllFolders = true
@@ -69,6 +79,13 @@ class MainPreferencesVC: PreferencesVC {
         }
         if let observedPath = self.dataModel?.prefs.observedPath {
             self.observedPathTextField.stringValue = observedPath.path
+        }
+
+        // document slugify
+        if !(self.dataModel?.prefs.slugifyNames ?? false) {
+            self.documentSlugifyCheckButton.state = .off
+        } else {
+            self.documentSlugifyCheckButton.state = .on
         }
 
         // update tags

@@ -62,8 +62,8 @@
 /* Class = "NSWindow"; title = "PDF Archiver"; ObjectID = "IQv-IB-iLA"; */
 "IQv-IB-iLA.title" = "PDF Archiver";
 
-/* Class = "NSTextFieldCell"; title = "Archive Path:"; ObjectID = "Ju7-wj-fHp"; */
-"Ju7-wj-fHp.title" = "Archiv Pfad:";
+/* Class = "NSTextFieldCell"; title = "Archive Path"; ObjectID = "Ju7-wj-fHp"; */
+"Ju7-wj-fHp.title" = "Archiv Pfad";
 
 /* Class = "NSMenuItem"; title = "Show All"; ObjectID = "Kd2-mp-pUS"; */
 "Kd2-mp-pUS.title" = "Alle einblenden";
@@ -218,8 +218,8 @@
 /* Class = "NSButtonCell"; title = "Change …"; ObjectID = "obQ-RK-Zgm"; */
 "obQ-RK-Zgm.title" = "Ändern …";
 
-/* Class = "NSTextFieldCell"; title = "Observed Folder:"; ObjectID = "z8O-Wh-LiY"; */
-"z8O-Wh-LiY.title" = "Überwachter Ordner:";
+/* Class = "NSTextFieldCell"; title = "Observed Folder"; ObjectID = "z8O-Wh-LiY"; */
+"z8O-Wh-LiY.title" = "Überwachter Ordner";
 
 /* Class = "NSMenu"; title = "View"; ObjectID = "DKC-3b-TGx"; */
 "DKC-3b-TGx.title" = "Darstellung";
@@ -257,8 +257,8 @@
 /* Class = "NSTabViewItem"; ibExternalAccessibilityDescription = "Donation preferences tab"; ObjectID = "qZa-Lf-ldb"; */
 "qZa-Lf-ldb.ibExternalAccessibilityDescription" = "Spendenseite der Einstellungen";
 
-/* Class = "NSTextFieldCell"; title = "Tags:"; ObjectID = "Cvq-op-wAk"; */
-"Cvq-op-wAk.title" = "Tags:";
+/* Class = "NSTextFieldCell"; title = "Tags"; ObjectID = "Cvq-op-wAk"; */
+"Cvq-op-wAk.title" = "Tags";
 
 /* Class = "NSButtonCell"; title = "From all archive folders"; ObjectID = "k8C-2q-WjN"; */
 "k8C-2q-WjN.title" = "Aus allen Archiv Ordnern";
@@ -298,3 +298,9 @@
 
 /* Class = "NSTextFieldCell"; title = "People donated this Year."; ObjectID = "U5N-Gf-ZOk"; */
 "U5N-Gf-ZOk.title" = "Personen haben gespendet.";
+
+/* Class = "NSButtonCell"; title = "Slugify Document Description"; ObjectID = "DRZ-uz-4ap"; */
+"DRZ-uz-4ap.title" = "Entferne Sonderzeichen aus Beschreibung";
+
+/* Class = "NSTextFieldCell"; title = "Document"; ObjectID = "ZlY-Ux-pR6"; */
+"ZlY-Ux-pR6.title" = "Dokument";
