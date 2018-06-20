@@ -441,9 +441,9 @@ Tag your document and save  it:</string>
                                 <rect key="frame" x="188" y="159" width="500" height="32"/>
                                 <subviews>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="X5U-R0-ENH">
-                                        <rect key="frame" x="5" y="5" width="410" height="22"/>
+                                        <rect key="frame" x="5" y="5" width="405" height="22"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" relation="lessThanOrEqual" constant="415" id="2D3-PF-R3G"/>
+                                            <constraint firstAttribute="width" relation="lessThanOrEqual" constant="410" id="2D3-PF-R3G"/>
                                         </constraints>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="Please set the archive path …" drawsBackground="YES" usesSingleLineMode="YES" id="gtQ-4r-22c">
                                             <font key="font" metaFont="system"/>
@@ -453,9 +453,9 @@ Tag your document and save  it:</string>
                                         </textFieldCell>
                                     </textField>
                                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8RK-0V-cYr">
-                                        <rect key="frame" x="414" y="-2" width="87" height="33"/>
+                                        <rect key="frame" x="409" y="-2" width="92" height="33"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" relation="lessThanOrEqual" constant="75" id="Awi-kL-hDJ"/>
+                                            <constraint firstAttribute="width" relation="lessThanOrEqual" constant="80" id="Awi-kL-hDJ"/>
                                         </constraints>
                                         <buttonCell key="cell" type="push" title="Change …" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="XbB-C4-8qz">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -483,9 +483,9 @@ Tag your document and save  it:</string>
                                 <rect key="frame" x="188" y="119" width="500" height="32"/>
                                 <subviews>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hB8-Fa-RBW">
-                                        <rect key="frame" x="5" y="5" width="410" height="22"/>
+                                        <rect key="frame" x="5" y="5" width="405" height="22"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" relation="lessThanOrEqual" constant="415" id="3gU-La-gkQ"/>
+                                            <constraint firstAttribute="width" relation="lessThanOrEqual" constant="410" id="3gU-La-gkQ"/>
                                         </constraints>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="Please set the observed path …" drawsBackground="YES" usesSingleLineMode="YES" id="hox-RC-83t">
                                             <font key="font" metaFont="system"/>
@@ -495,9 +495,9 @@ Tag your document and save  it:</string>
                                         </textFieldCell>
                                     </textField>
                                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="YTa-3I-7A5">
-                                        <rect key="frame" x="414" y="-2" width="87" height="33"/>
+                                        <rect key="frame" x="409" y="-2" width="92" height="33"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" relation="lessThanOrEqual" constant="75" id="vmo-RG-djZ"/>
+                                            <constraint firstAttribute="width" relation="lessThanOrEqual" constant="80" id="vmo-RG-djZ"/>
                                         </constraints>
                                         <buttonCell key="cell" type="push" title="Change …" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="obQ-RK-Zgm">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -542,7 +542,7 @@ Tag your document and save  it:</string>
                                 <subviews>
                                     <button verticalHuggingPriority="750" springLoaded="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PpK-o3-Nnb">
                                         <rect key="frame" x="4" y="25" width="493" height="19"/>
-                                        <buttonCell key="cell" type="check" title="From all archive folders" bezelStyle="regularSquare" imagePosition="leading" state="on" inset="2" id="k8C-2q-WjN">
+                                        <buttonCell key="cell" type="check" title="Analyse all archive folders" bezelStyle="regularSquare" imagePosition="leading" inset="2" id="k8C-2q-WjN">
                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                             <font key="font" metaFont="systemSemibold" size="15"/>
                                         </buttonCell>
