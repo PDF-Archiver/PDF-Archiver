@@ -126,7 +126,7 @@ class Document: NSObject {
         return true
     }
 
-    fileprivate func getRenamingPath(archivePath: URL) throws -> (new_basepath: URL, filename: String) {
+    internal func getRenamingPath(archivePath: URL) throws -> (new_basepath: URL, filename: String) {
         // create a filename and rename the document
         guard let tags = self.documentTags,
               tags.count > 0 else {
