@@ -29,19 +29,6 @@ class DataModel: TagsDelegate {
         self.tags = []
         self.prefs.delegate = self as TagsDelegate
         self.prefs.load()
-
-        // get the product list
-        self.updateMASStatus()
-    }
-
-    func updateMASStatus() {
-        self.store.requestProducts {success, products in
-            if success {
-                self.store.products = products!
-
-                NotificationCenter.default.post(name: Notification.Name("MASUpdateStatus"), object: true)
-            }
-        }
     }
 
     func updateTags(completionHandler: @escaping () -> Void) {

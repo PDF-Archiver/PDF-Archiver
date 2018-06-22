@@ -20,7 +20,6 @@ class DonationPreferencesVC: PreferencesVC {
 
     var dataModel: DataModel?
     weak var delegate: PreferencesDelegate?
-    var productsRequestCompletionHandler: ProductsRequestCompletionHandler?
 
     @IBAction func donationButton1Clicked(_ sender: NSButton) {
         self.buyProduct(identifier: "DONATION_LEVEL1")
@@ -37,20 +36,17 @@ class DonationPreferencesVC: PreferencesVC {
     @IBAction func statusImageClicked(_ sender: Any) {
         if connectedToNetwork(),
            self.dataModel?.store.products.isEmpty ?? true {
-            self.dataModel?.updateMASStatus()
+            self.dataModel?.store.requestProducts()
         }
     }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
+    override func viewWillAppear() {
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(self.masUpdateStatus(available:)),
                                        name: Notification.Name("MASUpdateStatus"), object: nil)
 
         // get the data model from the main view controller
         self.dataModel = self.delegate?.getDataModel()
-        self.updateButtons()
 
         // set the status image
         if self.dataModel?.store.products.isEmpty ?? true {
@@ -58,6 +54,8 @@ class DonationPreferencesVC: PreferencesVC {
         } else {
             self.donationButton.image = NSImage(named: .statusAvailable)
         }
+
+        self.updateButtons()
     }
 
     override func viewWillDisappear() {
@@ -77,39 +75,37 @@ class DonationPreferencesVC: PreferencesVC {
             } else {
                 self.donationButton.image = NSImage(named: .statusUnavailable)
             }
-        }
 
-        self.updateButtons()
+            self.updateButtons()
+        }
     }
 
     func updateButtons() {
-        DispatchQueue.main.async {
-            // set default button status to false
-            self.donationButton1.isEnabled = false
-            self.donationButton2.isEnabled = false
-            self.donationButton3.isEnabled = false
+        // set default button status to false
+        self.donationButton1.isEnabled = false
+        self.donationButton2.isEnabled = false
+        self.donationButton3.isEnabled = false
 
-            // set the button label
-            for product in self.dataModel?.store.products ?? [] {
-                var selectedButton: NSButton
-                if product.productIdentifier == "DONATION_LEVEL1" {
-                    selectedButton = self.donationButton1
-                } else if product.productIdentifier == "DONATION_LEVEL2" {
-                    selectedButton = self.donationButton2
-                } else if product.productIdentifier == "DONATION_LEVEL3" {
-                    selectedButton = self.donationButton3
-                } else {
-                    continue
-                }
-
-                // set button to localized price
-                selectedButton.title = product.localizedPrice
-                selectedButton.isEnabled = true
+        // set the button label
+        for product in self.dataModel?.store.products ?? [] {
+            var selectedButton: NSButton
+            if product.productIdentifier == "DONATION_LEVEL1" {
+                selectedButton = self.donationButton1
+            } else if product.productIdentifier == "DONATION_LEVEL2" {
+                selectedButton = self.donationButton2
+            } else if product.productIdentifier == "DONATION_LEVEL3" {
+                selectedButton = self.donationButton3
+            } else {
+                continue
             }
 
-            // update the number of donations
-            self.donationNumber.stringValue = getNumberOfDonations()
+            // set button to localized price
+            selectedButton.title = product.localizedPrice
+            selectedButton.isEnabled = true
         }
+
+        // update the number of donations
+        self.donationNumber.stringValue = getNumberOfDonations()
     }
 
     func buyProduct(identifier: String) {
