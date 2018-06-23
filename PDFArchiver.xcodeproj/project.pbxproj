@@ -80,6 +80,8 @@
 		A344D1D120B5FF1000A168B2 /* VCE-MenuItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VCE-MenuItems.swift"; sourceTree = "<group>"; };
 		A347FADA2041AD39001A7925 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A347FADB2041AD3C001A7925 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A3519EA920DE967800D8ACDF /* shim.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = shim.h; sourceTree = "<group>"; };
+		A3519EAA20DE988400D8ACDF /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		A359963E202A3CC700CDD6E8 /* MyWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyWindow.swift; sourceTree = "<group>"; };
 		A359E4B8202C376E00A703AF /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		A359E4BA202C377800A703AF /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -198,6 +200,7 @@
 				A315408B20C83C69004947CC /* Controllers */,
 				A315408920C83C41004947CC /* Helpers */,
 				A31B52ED1FF694B0007A3D14 /* Assets.xcassets */,
+				A3519EAB20DE991400D8ACDF /* Modules */,
 			);
 			path = PDFArchiver;
 			sourceTree = "<group>";
@@ -229,6 +232,15 @@
 				A3797B60207B3684009DEF70 /* StoreKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A3519EAB20DE991400D8ACDF /* Modules */ = {
+			isa = PBXGroup;
+			children = (
+				A3519EA920DE967800D8ACDF /* shim.h */,
+				A3519EAA20DE988400D8ACDF /* module.modulemap */,
+			);
+			path = Modules;
 			sourceTree = "<group>";
 		};
 		A3F5BC922019BAAE0043B192 /* Models */ = {
@@ -631,12 +643,15 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/PDFArchiver/External/OpenSSL/include";
 				INFOPLIST_FILE = "$(SRCROOT)/PDFArchiver/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/PDFArchiver/External/OpenSSL/lib";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiver;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
@@ -650,12 +665,15 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/PDFArchiver/External/OpenSSL/include";
 				INFOPLIST_FILE = "$(SRCROOT)/PDFArchiver/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/PDFArchiver/External/OpenSSL/lib";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiver;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
