@@ -22,6 +22,7 @@
 		A32A128320468A3000CFC81F /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32A128220468A3000CFC81F /* OnboardingViewController.swift */; };
 		A344D1D220B5FF1000A168B2 /* VCE-MenuItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = A344D1D120B5FF1000A168B2 /* VCE-MenuItems.swift */; };
 		A347FAD72041ACBE001A7925 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A347FAD92041ACBE001A7925 /* Localizable.strings */; };
+		A3519EAD20DE9E3800D8ACDF /* OpenSSL.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3519EAC20DE9E3800D8ACDF /* OpenSSL.swift */; };
 		A359963F202A3CC700CDD6E8 /* MyWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A359963E202A3CC700CDD6E8 /* MyWindow.swift */; };
 		A359E4B7202C376E00A703AF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A359E4B9202C376E00A703AF /* InfoPlist.strings */; };
 		A36B47C02077DA4D00F3DCAF /* DonationPreferencesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36B47BF2077DA4D00F3DCAF /* DonationPreferencesVC.swift */; };
@@ -82,6 +83,7 @@
 		A347FADB2041AD3C001A7925 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A3519EA920DE967800D8ACDF /* shim.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = shim.h; sourceTree = "<group>"; };
 		A3519EAA20DE988400D8ACDF /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
+		A3519EAC20DE9E3800D8ACDF /* OpenSSL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenSSL.swift; sourceTree = "<group>"; };
 		A359963E202A3CC700CDD6E8 /* MyWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyWindow.swift; sourceTree = "<group>"; };
 		A359E4B8202C376E00A703AF /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		A359E4BA202C377800A703AF /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -139,6 +141,7 @@
 				A315408C20C83DF0004947CC /* StringHandling.swift */,
 				A3FF275720D0E614007EED90 /* DateParser.swift */,
 				A38FDE7C20DD33540015801E /* IAPHelper.swift */,
+				A3519EAC20DE9E3800D8ACDF /* OpenSSL.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -434,6 +437,7 @@
 			files = (
 				A344D1D220B5FF1000A168B2 /* VCE-MenuItems.swift in Sources */,
 				A315408F20C83E61004947CC /* ViewHandling.swift in Sources */,
+				A3519EAD20DE9E3800D8ACDF /* OpenSSL.swift in Sources */,
 				A3299E1C2015BE3D0036125F /* Tag.swift in Sources */,
 				A31B52EC1FF694B0007A3D14 /* ViewController.swift in Sources */,
 				A38A58AB1FFFA72D003F0573 /* WindowController.swift in Sources */,
