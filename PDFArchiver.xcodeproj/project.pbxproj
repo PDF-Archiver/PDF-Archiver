@@ -33,6 +33,7 @@
 		A38FDE7D20DD33540015801E /* IAPHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38FDE7C20DD33540015801E /* IAPHelper.swift */; };
 		A3962D6320C40CA600A80AB5 /* HelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3962D6220C40CA600A80AB5 /* HelperTests.swift */; };
 		A3A4C1C12015177A008BB354 /* NetworkHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3A4C1C02015177A008BB354 /* NetworkHandling.swift */; };
+		A3A99EDF20E15335001566EA /* pkcs7_union_accessors.c in Sources */ = {isa = PBXBuildFile; fileRef = A3A99EDE20E15335001566EA /* pkcs7_union_accessors.c */; };
 		A3C3D06D207744E400E80B1A /* PreferencesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3C3D06C207744E400E80B1A /* PreferencesVC.swift */; };
 		A3DD5A4E20D23EDC000E1005 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3DD5A4D20D23EDC000E1005 /* Extensions.swift */; };
 		A3F5BC912019BAA70043B192 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F5BC902019BAA70043B192 /* Document.swift */; };
@@ -96,6 +97,8 @@
 		A3962D6220C40CA600A80AB5 /* HelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelperTests.swift; sourceTree = "<group>"; };
 		A3A4C1C02015177A008BB354 /* NetworkHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkHandling.swift; sourceTree = "<group>"; };
 		A3A4C1C22015381F008BB354 /* PDFArchiver.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PDFArchiver.entitlements; sourceTree = "<group>"; };
+		A3A99EDD20E15335001566EA /* pkcs7_union_accessors.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = pkcs7_union_accessors.h; path = PDFArchiver/pkcs7_union_accessors.h; sourceTree = "<group>"; };
+		A3A99EDE20E15335001566EA /* pkcs7_union_accessors.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = pkcs7_union_accessors.c; path = PDFArchiver/pkcs7_union_accessors.c; sourceTree = "<group>"; };
 		A3C3D06C207744E400E80B1A /* PreferencesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesVC.swift; sourceTree = "<group>"; };
 		A3DD5A4D20D23EDC000E1005 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		A3F48CF32054844000FCA566 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Main.strings; sourceTree = "<group>"; };
@@ -172,6 +175,8 @@
 		A31B52DD1FF694B0007A3D14 = {
 			isa = PBXGroup;
 			children = (
+				A3A99EDD20E15335001566EA /* pkcs7_union_accessors.h */,
+				A3A99EDE20E15335001566EA /* pkcs7_union_accessors.c */,
 				A347FAD92041ACBE001A7925 /* Localizable.strings */,
 				A31B52E81FF694B0007A3D14 /* PDFArchiver */,
 				A31B52FB1FF694B0007A3D14 /* PDFArchiverTests */,
@@ -328,6 +333,7 @@
 				TargetAttributes = {
 					A31B52E51FF694B0007A3D14 = {
 						CreatedOnToolsVersion = 9.2;
+						LastSwiftMigration = 0940;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.InAppPurchase = {
@@ -441,6 +447,7 @@
 				A3299E1C2015BE3D0036125F /* Tag.swift in Sources */,
 				A31B52EC1FF694B0007A3D14 /* ViewController.swift in Sources */,
 				A38A58AB1FFFA72D003F0573 /* WindowController.swift in Sources */,
+				A3A99EDF20E15335001566EA /* pkcs7_union_accessors.c in Sources */,
 				A307BB3B2014D5300046C391 /* Preferences.swift in Sources */,
 				A3F5BC912019BAA70043B192 /* Document.swift in Sources */,
 				A359963F202A3CC700CDD6E8 /* MyWindow.swift in Sources */,
@@ -642,6 +649,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = PDFArchiver/PDFArchiver.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -656,6 +664,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
@@ -664,6 +673,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = PDFArchiver/PDFArchiver.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
