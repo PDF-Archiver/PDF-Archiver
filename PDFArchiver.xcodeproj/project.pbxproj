@@ -30,6 +30,8 @@
 		A38A58AB1FFFA72D003F0573 /* WindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38A58AA1FFFA72D003F0573 /* WindowController.swift */; };
 		A38F4911206952AD00B8164A /* PreferencesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38F4910206952AD00B8164A /* PreferencesTests.swift */; };
 		A38F4913206955F600B8164A /* DataModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38F4912206955F600B8164A /* DataModelTests.swift */; };
+		A38F98CE20E2A0E5000F27B3 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A38F98CC20E2A0E5000F27B3 /* libssl.a */; };
+		A38F98CF20E2A0E5000F27B3 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A38F98CD20E2A0E5000F27B3 /* libcrypto.a */; };
 		A38FDE7D20DD33540015801E /* IAPHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38FDE7C20DD33540015801E /* IAPHelper.swift */; };
 		A3962D6320C40CA600A80AB5 /* HelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3962D6220C40CA600A80AB5 /* HelperTests.swift */; };
 		A3A4C1C12015177A008BB354 /* NetworkHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3A4C1C02015177A008BB354 /* NetworkHandling.swift */; };
@@ -93,12 +95,14 @@
 		A38A58AA1FFFA72D003F0573 /* WindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowController.swift; sourceTree = "<group>"; };
 		A38F4910206952AD00B8164A /* PreferencesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesTests.swift; sourceTree = "<group>"; };
 		A38F4912206955F600B8164A /* DataModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModelTests.swift; sourceTree = "<group>"; };
+		A38F98CC20E2A0E5000F27B3 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssl.a; path = PDFArchiver/External/OpenSSL/lib/libssl.a; sourceTree = "<group>"; };
+		A38F98CD20E2A0E5000F27B3 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcrypto.a; path = PDFArchiver/External/OpenSSL/lib/libcrypto.a; sourceTree = "<group>"; };
 		A38FDE7C20DD33540015801E /* IAPHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPHelper.swift; sourceTree = "<group>"; };
 		A3962D6220C40CA600A80AB5 /* HelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelperTests.swift; sourceTree = "<group>"; };
 		A3A4C1C02015177A008BB354 /* NetworkHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkHandling.swift; sourceTree = "<group>"; };
 		A3A4C1C22015381F008BB354 /* PDFArchiver.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PDFArchiver.entitlements; sourceTree = "<group>"; };
-		A3A99EDD20E15335001566EA /* pkcs7_union_accessors.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = pkcs7_union_accessors.h; path = PDFArchiver/pkcs7_union_accessors.h; sourceTree = "<group>"; };
-		A3A99EDE20E15335001566EA /* pkcs7_union_accessors.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = pkcs7_union_accessors.c; path = PDFArchiver/pkcs7_union_accessors.c; sourceTree = "<group>"; };
+		A3A99EDD20E15335001566EA /* pkcs7_union_accessors.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pkcs7_union_accessors.h; sourceTree = "<group>"; };
+		A3A99EDE20E15335001566EA /* pkcs7_union_accessors.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = pkcs7_union_accessors.c; sourceTree = "<group>"; };
 		A3C3D06C207744E400E80B1A /* PreferencesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesVC.swift; sourceTree = "<group>"; };
 		A3DD5A4D20D23EDC000E1005 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		A3F48CF32054844000FCA566 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Main.strings; sourceTree = "<group>"; };
@@ -113,6 +117,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A38F98CE20E2A0E5000F27B3 /* libssl.a in Frameworks */,
+				A38F98CF20E2A0E5000F27B3 /* libcrypto.a in Frameworks */,
 				A3797B61207B3684009DEF70 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -175,8 +181,6 @@
 		A31B52DD1FF694B0007A3D14 = {
 			isa = PBXGroup;
 			children = (
-				A3A99EDD20E15335001566EA /* pkcs7_union_accessors.h */,
-				A3A99EDE20E15335001566EA /* pkcs7_union_accessors.c */,
 				A347FAD92041ACBE001A7925 /* Localizable.strings */,
 				A31B52E81FF694B0007A3D14 /* PDFArchiver */,
 				A31B52FB1FF694B0007A3D14 /* PDFArchiverTests */,
@@ -237,6 +241,8 @@
 		A32D52EE2012B5150032F05C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A38F98CD20E2A0E5000F27B3 /* libcrypto.a */,
+				A38F98CC20E2A0E5000F27B3 /* libssl.a */,
 				A3797B60207B3684009DEF70 /* StoreKit.framework */,
 			);
 			name = Frameworks;
@@ -245,6 +251,8 @@
 		A3519EAB20DE991400D8ACDF /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				A3A99EDD20E15335001566EA /* pkcs7_union_accessors.h */,
+				A3A99EDE20E15335001566EA /* pkcs7_union_accessors.c */,
 				A3519EA920DE967800D8ACDF /* shim.h */,
 				A3519EAA20DE988400D8ACDF /* module.modulemap */,
 			);

@@ -5,9 +5,8 @@
 //  Created by Julian Kahnert on 25.06.18.
 //  Copyright © 2018 Julian Kahnert. All rights reserved.
 //
-
 //
-//  pkcs7_union_accessors.c
+//  ORIGINAL FROM:
 //  SwiftyReceiptValidatorDemo
 //
 //  Created by Andrew Bancroft on 10/26/17.
