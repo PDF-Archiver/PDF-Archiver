@@ -14,9 +14,10 @@ class IAPHelper: NSObject {
     fileprivate let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "IAPHelper")
     fileprivate let productIdentifiers: Set<String>
     fileprivate var productsRequest: SKProductsRequest
-    fileprivate let receiptRequest = SKReceiptRefreshRequest()
+    fileprivate var receiptRequest = SKReceiptRefreshRequest()
 
     var products = [SKProduct]()
+    var receipt: ParsedReceipt?
 
     public init(productIds: Set<String>) {
         self.productIdentifiers = productIds
@@ -40,7 +41,7 @@ class IAPHelper: NSObject {
 // MARK: - StoreKit API
 
 extension IAPHelper {
-    
+
     public func buyProduct(_ product: SKProduct) {
         os_log("Buying %@ ...", log: self.log, type: .info, product.productIdentifier)
         let payment = SKPayment(product: product)
@@ -52,12 +53,54 @@ extension IAPHelper {
         self.productsRequest.start()
     }
 
-    public func requestReceipt(forceRefresh: Bool = false) {
+    public func isValidPurchase() -> Bool {
+        guard let receipt = self.receipt,
+              let originalAppVersion = receipt.originalAppVersion else { return false }
+
+        // test if the user has bought the app before the subscription model started
+        if originalAppVersion == "1.0" ||
+            originalAppVersion.hasPrefix("1.1.") ||
+            originalAppVersion.hasPrefix("1.2.") {
+            return true
+        }
+        
+        // TODO: test if the user is in a valid subscription
+
+        return false
+    }
+
+    fileprivate func validateReceipt() {
+        let receiptValidator = ReceiptValidator()
+        let validationResult = receiptValidator.validateReceipt()
+
+        switch validationResult {
+        case .success(let receipt):
+            // Work with parsed receipt data. Possibilities might be...
+            // enable a feature of your app
+            // remove ads
+            // etc...
+            print("SUCCESS")
+            print(receipt)
+            self.receipt = receipt
+
+        case .error(let error):
+            // Handle receipt validation failure. Possibilities might be...
+            // use StoreKit to request a new receipt
+            // enter a "grace period"
+            // disable a feature of your app
+            // etc...
+            print("ERROR:")
+            print(error)
+        }
+    }
+
+    fileprivate func requestReceipt(forceRefresh: Bool = false) {
         if let receiptUrl = Bundle.main.appStoreReceiptURL,
             let isReachable = try? receiptUrl.checkResourceIsReachable(),
             isReachable,
             forceRefresh == false {
             os_log("Receipt already found, skipping receipt refresh.", log: self.log, type: .info)
+            self.validateReceipt()
 
         } else {
             os_log("Receipt not found, refreshing receipt.", log: self.log, type: .info)
@@ -118,6 +161,8 @@ extension IAPHelper: SKPaymentTransactionObserver {
 extension IAPHelper: SKRequestDelegate {
 
     internal func requestDidFinish(_ request: SKRequest) {
-        print(request)
+        if request is SKReceiptRefreshRequest {
+            self.validateReceipt()
+        }
     }
 }
