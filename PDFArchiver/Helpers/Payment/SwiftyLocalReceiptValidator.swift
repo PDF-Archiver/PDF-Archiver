@@ -1,10 +1,12 @@
 //
-//  OpenSSL.swift
+//  SwiftyLocalReceiptValidator.swift
 //  PDFArchiver
 //
-//  Created by Julian Kahnert on 23.06.18.
+//  Created by Julian Kahnert on 27.06.18.
 //  Copyright © 2018 Julian Kahnert. All rights reserved.
 //
+
+// swiftlint:disable all
 
 /*
  MIT License
