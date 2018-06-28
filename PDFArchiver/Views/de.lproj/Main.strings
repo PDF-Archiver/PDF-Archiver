@@ -304,3 +304,9 @@
 
 /* Class = "NSTextFieldCell"; title = "Document"; ObjectID = "ZlY-Ux-pR6"; */
 "ZlY-Ux-pR6.title" = "Dokument";
+
+/* Class = "NSButtonCell"; title = "Monthly"; ObjectID = "SpT-AH-ELy"; */
+"SpT-AH-ELy.title" = "Monatlich";
+
+/* Class = "NSButtonCell"; title = "Yearly"; ObjectID = "Uao-RJ-bqA"; */
+"Uao-RJ-bqA.title" = "Jährlich";

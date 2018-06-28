@@ -53,7 +53,7 @@ extension IAPHelper {
         self.productsRequest.start()
     }
 
-    public func isValidPurchase() -> Bool {
+    public func appUsagePermitted() -> Bool {
         guard let receipt = self.receipt,
               let originalAppVersion = receipt.originalAppVersion else { return false }
 
@@ -63,7 +63,7 @@ extension IAPHelper {
             originalAppVersion.hasPrefix("1.2.") {
             return true
         }
-        
+
         // TODO: test if the user is in a valid subscription
 
         return false

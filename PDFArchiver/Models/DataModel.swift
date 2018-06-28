@@ -15,7 +15,7 @@ protocol TagsDelegate: class {
 }
 
 class DataModel: TagsDelegate {
-    let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "DataModel")
+    fileprivate let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "DataModel")
     weak var viewControllerDelegate: ViewControllerDelegate?
     var prefs = Preferences()
     var documents: [Document]

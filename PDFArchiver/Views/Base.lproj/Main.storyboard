@@ -266,7 +266,7 @@ CA
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <button wantsLayer="YES" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="JZJ-KJ-qDR">
-                                <rect key="frame" x="244" y="-1" width="162" height="37"/>
+                                <rect key="frame" x="454" y="-1" width="162" height="37"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="150" id="X55-q9-EQe"/>
                                     <constraint firstAttribute="height" constant="26" id="YzC-2g-DgO"/>
@@ -280,6 +280,22 @@ CA
                                 </buttonCell>
                                 <connections>
                                     <action selector="closeButton:" target="IBN-wm-PS1" id="l95-Cg-MdH"/>
+                                </connections>
+                            </button>
+                            <button wantsLayer="YES" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="xcs-gq-0c2">
+                                <rect key="frame" x="204" y="-1" width="162" height="37"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="150" id="lTi-MV-RFn"/>
+                                </constraints>
+                                <shadow key="shadow">
+                                    <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </shadow>
+                                <buttonCell key="cell" type="push" title="Yearly" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Uao-RJ-bqA">
+                                    <behavior key="behavior" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="yearlySubscriptionButton:" target="IBN-wm-PS1" id="Y9v-1I-004"/>
                                 </connections>
                             </button>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="ycm-Wf-adg">
@@ -377,19 +393,43 @@ Tag your document and save  it:</string>
                                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Tpx-oz-ZWL" secondAttribute="trailing" constant="20" symbolic="YES" id="x1A-Ls-BUX"/>
                                 </constraints>
                             </customView>
+                            <button wantsLayer="YES" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="WLx-Zu-4fL">
+                                <rect key="frame" x="34" y="-1" width="162" height="37"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="150" id="Ufl-Bg-1ly"/>
+                                </constraints>
+                                <shadow key="shadow">
+                                    <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </shadow>
+                                <buttonCell key="cell" type="push" title="Monthly" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="SpT-AH-ELy">
+                                    <behavior key="behavior" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="monthlySubscriptionButtonClicked:" target="IBN-wm-PS1" id="Ahf-kY-Tkz"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="ycm-Wf-adg" secondAttribute="trailing" id="0aN-fU-hkU"/>
                             <constraint firstItem="ycm-Wf-adg" firstAttribute="top" secondItem="1Ps-AJ-22C" secondAttribute="top" id="6RU-p7-3Xh"/>
+                            <constraint firstItem="xcs-gq-0c2" firstAttribute="top" secondItem="ycm-Wf-adg" secondAttribute="bottom" constant="6" id="8zt-QM-waE"/>
+                            <constraint firstAttribute="bottom" secondItem="xcs-gq-0c2" secondAttribute="bottom" constant="6" id="BKi-GO-cw3"/>
                             <constraint firstItem="ycm-Wf-adg" firstAttribute="centerX" secondItem="1Ps-AJ-22C" secondAttribute="centerX" id="JRY-qU-NCA"/>
-                            <constraint firstItem="JZJ-KJ-qDR" firstAttribute="centerX" secondItem="1Ps-AJ-22C" secondAttribute="centerX" id="MM2-OP-Qi2"/>
+                            <constraint firstItem="WLx-Zu-4fL" firstAttribute="top" secondItem="ycm-Wf-adg" secondAttribute="bottom" constant="6" id="Ozr-zC-V9a"/>
                             <constraint firstAttribute="bottom" secondItem="JZJ-KJ-qDR" secondAttribute="bottom" constant="6" id="S6I-gn-S4d"/>
+                            <constraint firstItem="xcs-gq-0c2" firstAttribute="leading" secondItem="WLx-Zu-4fL" secondAttribute="trailing" constant="20" id="lFs-MY-LTs"/>
                             <constraint firstItem="JZJ-KJ-qDR" firstAttribute="top" secondItem="ycm-Wf-adg" secondAttribute="bottom" constant="6" id="rNG-0P-eMP"/>
+                            <constraint firstItem="WLx-Zu-4fL" firstAttribute="leading" secondItem="1Ps-AJ-22C" secondAttribute="leading" constant="40" id="u2a-hK-LrT"/>
                             <constraint firstItem="ycm-Wf-adg" firstAttribute="leading" secondItem="1Ps-AJ-22C" secondAttribute="leading" id="xa1-PR-Gq0"/>
+                            <constraint firstAttribute="trailing" secondItem="JZJ-KJ-qDR" secondAttribute="trailing" constant="40" id="yeT-2c-E6K"/>
+                            <constraint firstAttribute="bottom" secondItem="WLx-Zu-4fL" secondAttribute="bottom" constant="6" id="yow-Oq-vGK"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="customView" destination="ycm-Wf-adg" id="IGn-nL-AcL"/>
+                        <outlet property="monthlySubscriptionButton" destination="WLx-Zu-4fL" id="bKR-qS-HXu"/>
+                        <outlet property="yearlySubscriptionButton" destination="xcs-gq-0c2" id="xT5-kZ-US9"/>
                     </connections>
                 </viewController>
                 <customObject id="ICJ-xA-6Ud" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -1177,7 +1217,7 @@ You can support this project by picking a one-time donation via the buttons on t
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                    <rect key="frame" x="32" y="1" width="194" height="17"/>
+                                                                    <rect key="frame" x="31.5" y="1" width="194" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">

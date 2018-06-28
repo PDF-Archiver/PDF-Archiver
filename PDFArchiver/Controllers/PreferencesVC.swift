@@ -13,10 +13,11 @@ protocol PreferencesDelegate: class {
     func updateGUI()
     func setDataModel(dataModel: DataModel)
     func getDataModel() -> DataModel
+    func closeApp()
 }
 
 class PreferencesVC: NSViewController {
-    let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "PreferencesVC")
+    internal let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "PreferencesVC")
 
     override func viewWillAppear() {
         self.view.window?.titlebarAppearsTransparent = true
