@@ -310,3 +310,30 @@
 
 /* Class = "NSButtonCell"; title = "Yearly"; ObjectID = "Uao-RJ-bqA"; */
 "Uao-RJ-bqA.title" = "Jährlich";
+
+/* Class = "NSTextFieldCell"; title = "Subscription"; ObjectID = "GL4-Kh-cUd"; */
+"GL4-Kh-cUd.title" = "";
+
+/* Class = "NSTextFieldCell"; title = "• Current price for the annual subscription is $3.49 USD per year, and may vary from country to country."; ObjectID = "TEQ-jX-d1p"; */
+"TEQ-jX-d1p.title" = "• TEXT1";
+
+/* Class = "NSTextFieldCell"; title = "Label"; ObjectID = "dlj-JL-aTc"; */
+"dlj-JL-aTc.title" = "";
+
+/* Class = "NSTextFieldCell"; title = "• Account will be charged for renewal within 24 hours prior to the end of the current period."; ObjectID = "pW5-SN-kFG"; */
+"pW5-SN-kFG.title" = "• TEXT2";
+
+/* Class = "NSTextFieldCell"; title = "• Payment will be charged to your iTunes account."; ObjectID = "wL1-fE-LS9"; */
+"wL1-fE-LS9.title" = "• TEXT3";
+
+/* Class = "NSTextFieldCell"; title = "• No cancellation of the current subscription is allowed during active subscription period.\n"; ObjectID = "98p-u8-Emj"; */
+"98p-u8-Emj.title" = "• TEXT4";
+
+/* Class = "NSTextFieldCell"; title = "• Any unused portion of a free trial period, will be forfeited when the user purchases a subscription.\n"; ObjectID = "dwb-bY-QTS"; */
+"dwb-bY-QTS.title" = "• TEXT5";
+
+/* Class = "NSTextFieldCell"; title = "• Auto-renewal may be turned off at any time by going to your settings in the iTunes Store after purchase.\n"; ObjectID = "tXi-h8-91J"; */
+"tXi-h8-91J.title" = "• TEXT6";
+
+/* Class = "NSTextFieldCell"; title = "• Privacy Policy & Terms of Use: https://pdf-archiver.io/privacy"; ObjectID = "uzz-aL-mvG"; */
+"uzz-aL-mvG.title" = "• Datenschutzerklärung: https://pdf-archiver.io/de/privacy";

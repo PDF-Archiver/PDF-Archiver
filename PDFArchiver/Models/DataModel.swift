@@ -23,8 +23,7 @@ class DataModel: TagsDelegate {
     var store: IAPHelper
 
     init() {
-        let availableIds = Set(["DONATION_LEVEL1", "DONATION_LEVEL2", "DONATION_LEVEL3"])
-        self.store = IAPHelper(productIds: availableIds)
+        self.store = IAPHelper()
         self.documents = []
         self.tags = []
         self.prefs.delegate = self as TagsDelegate

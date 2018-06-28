@@ -19,8 +19,9 @@ class IAPHelper: NSObject {
     var products = [SKProduct]()
     var receipt: ParsedReceipt?
 
-    public init(productIds: Set<String>) {
-        self.productIdentifiers = productIds
+    override init() {
+        self.productIdentifiers = Set(["DONATION_LEVEL1", "DONATION_LEVEL2", "DONATION_LEVEL3",
+                                       "SUBSCRIPTION_MONTHLY", "SUBSCRIPTION_YEARLY"])
         self.productsRequest = SKProductsRequest(productIdentifiers: self.productIdentifiers)
 
         // initialize the superclass and add class to payment queue

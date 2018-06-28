@@ -262,11 +262,11 @@ CA
             <objects>
                 <viewController title="Onboarding" storyboardIdentifier="onboardingViewController" id="IBN-wm-PS1" customClass="OnboardingViewController" customModule="PDFArchiver" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="1Ps-AJ-22C">
-                        <rect key="frame" x="0.0" y="0.0" width="650" height="344"/>
+                        <rect key="frame" x="0.0" y="0.0" width="718" height="587"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <button wantsLayer="YES" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="JZJ-KJ-qDR">
-                                <rect key="frame" x="454" y="-1" width="162" height="37"/>
+                                <rect key="frame" x="522" y="-1" width="162" height="37"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="150" id="X55-q9-EQe"/>
                                     <constraint firstAttribute="height" constant="26" id="YzC-2g-DgO"/>
@@ -283,14 +283,14 @@ CA
                                 </connections>
                             </button>
                             <button wantsLayer="YES" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="xcs-gq-0c2">
-                                <rect key="frame" x="204" y="-1" width="162" height="37"/>
+                                <rect key="frame" x="204" y="-1" width="162" height="32"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="150" id="lTi-MV-RFn"/>
                                 </constraints>
                                 <shadow key="shadow">
                                     <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </shadow>
-                                <buttonCell key="cell" type="push" title="Yearly" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Uao-RJ-bqA">
+                                <buttonCell key="cell" type="push" title="Yearly" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Uao-RJ-bqA">
                                     <behavior key="behavior" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -299,10 +299,10 @@ CA
                                 </connections>
                             </button>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="ycm-Wf-adg">
-                                <rect key="frame" x="0.0" y="38" width="650" height="306"/>
+                                <rect key="frame" x="30" y="251" width="658" height="306"/>
                                 <subviews>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jsU-Cj-RIy">
-                                        <rect key="frame" x="158" y="225" width="335" height="36"/>
+                                        <rect key="frame" x="162" y="225" width="335" height="36"/>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Welcome to PDF Archiver" id="LDE-IZ-15h">
                                             <font key="font" size="30" name=".AppleSystemUIFont"/>
                                             <color key="textColor" name="DarkGreyBlue"/>
@@ -310,10 +310,10 @@ CA
                                         </textFieldCell>
                                     </textField>
                                     <box horizontalHuggingPriority="249" verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="dHm-Tb-rnI">
-                                        <rect key="frame" x="131" y="217" width="388" height="5"/>
+                                        <rect key="frame" x="131" y="217" width="396" height="5"/>
                                     </box>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2r6-lY-Roq">
-                                        <rect key="frame" x="221" y="195" width="209" height="19"/>
+                                        <rect key="frame" x="225" y="195" width="209" height="19"/>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Thank you for downloading." id="8Xm-l9-Ww4">
                                             <font key="font" size="16" name=".AppleSystemUIFont"/>
                                             <color key="textColor" red="0.21256765720000001" green="0.24246880409999999" blue="0.28628057239999999" alpha="0.67864404965753422" colorSpace="custom" customColorSpace="displayP3"/>
@@ -394,14 +394,14 @@ Tag your document and save  it:</string>
                                 </constraints>
                             </customView>
                             <button wantsLayer="YES" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="WLx-Zu-4fL">
-                                <rect key="frame" x="34" y="-1" width="162" height="37"/>
+                                <rect key="frame" x="34" y="-1" width="162" height="32"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="150" id="Ufl-Bg-1ly"/>
                                 </constraints>
                                 <shadow key="shadow">
                                     <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </shadow>
-                                <buttonCell key="cell" type="push" title="Monthly" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="SpT-AH-ELy">
+                                <buttonCell key="cell" type="push" title="Monthly" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="SpT-AH-ELy">
                                     <behavior key="behavior" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -409,32 +409,110 @@ Tag your document and save  it:</string>
                                     <action selector="monthlySubscriptionButtonClicked:" target="IBN-wm-PS1" id="Ahf-kY-Tkz"/>
                                 </connections>
                             </button>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="yHZ-MX-wEj">
+                                <rect key="frame" x="15" y="33" width="688" height="198"/>
+                                <subviews>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Vlw-kp-khl">
+                                        <rect key="frame" x="28" y="159" width="91" height="19"/>
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Subscription" id="GL4-Kh-cUd">
+                                            <font key="font" size="15" name=".AppleSystemUIFont"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <matrix verticalHuggingPriority="750" mode="highlight" selectionByRect="NO" allowsEmptySelection="NO" autosizesCells="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h3B-uW-2BS">
+                                        <rect key="frame" x="20" y="20" width="648" height="119"/>
+                                        <color key="backgroundColor" name="OffWhite"/>
+                                        <size key="cellSize" width="634" height="17"/>
+                                        <textFieldCell key="prototype" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="dlj-JL-aTc">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <cells>
+                                            <column>
+                                                <textFieldCell scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" state="on" title="• Current price for the annual subscription is $3.49 USD per year, and may vary from country to country." id="TEQ-jX-d1p">
+                                                    <font key="font" metaFont="system"/>
+                                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                </textFieldCell>
+                                                <textFieldCell scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="• Payment will be charged to your iTunes account." id="wL1-fE-LS9">
+                                                    <font key="font" metaFont="system"/>
+                                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                </textFieldCell>
+                                                <textFieldCell scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="• Account will be charged for renewal within 24 hours prior to the end of the current period." id="pW5-SN-kFG">
+                                                    <font key="font" metaFont="system"/>
+                                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                </textFieldCell>
+                                                <textFieldCell scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="tXi-h8-91J">
+                                                    <font key="font" metaFont="system"/>
+                                                    <string key="title">• Auto-renewal may be turned off at any time by going to your settings in the iTunes Store after purchase.
+</string>
+                                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                </textFieldCell>
+                                                <textFieldCell scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="98p-u8-Emj">
+                                                    <font key="font" metaFont="system"/>
+                                                    <string key="title">• No cancellation of the current subscription is allowed during active subscription period.
+</string>
+                                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                </textFieldCell>
+                                                <textFieldCell scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="dwb-bY-QTS">
+                                                    <font key="font" metaFont="system"/>
+                                                    <string key="title">• Any unused portion of a free trial period, will be forfeited when the user purchases a subscription.
+</string>
+                                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                </textFieldCell>
+                                                <textFieldCell scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="• Privacy Policy &amp; Terms of Use: https://pdf-archiver.io/privacy" id="uzz-aL-mvG">
+                                                    <font key="font" metaFont="system"/>
+                                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                </textFieldCell>
+                                            </column>
+                                        </cells>
+                                    </matrix>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="h3B-uW-2BS" secondAttribute="bottom" constant="20" id="796-QS-PCH"/>
+                                    <constraint firstItem="Vlw-kp-khl" firstAttribute="leading" secondItem="yHZ-MX-wEj" secondAttribute="leading" constant="30" id="M8O-H9-555"/>
+                                    <constraint firstItem="h3B-uW-2BS" firstAttribute="leading" secondItem="yHZ-MX-wEj" secondAttribute="leading" constant="20" id="SD4-WV-c2b"/>
+                                    <constraint firstItem="Vlw-kp-khl" firstAttribute="top" secondItem="yHZ-MX-wEj" secondAttribute="top" constant="20" id="Xj8-qH-wRg"/>
+                                    <constraint firstAttribute="trailing" secondItem="h3B-uW-2BS" secondAttribute="trailing" constant="20" id="g1h-UJ-MNy"/>
+                                    <constraint firstItem="h3B-uW-2BS" firstAttribute="top" secondItem="Vlw-kp-khl" secondAttribute="bottom" constant="20" id="iwG-Ah-zlc"/>
+                                </constraints>
+                            </customView>
                         </subviews>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="ycm-Wf-adg" secondAttribute="trailing" id="0aN-fU-hkU"/>
-                            <constraint firstItem="ycm-Wf-adg" firstAttribute="top" secondItem="1Ps-AJ-22C" secondAttribute="top" id="6RU-p7-3Xh"/>
-                            <constraint firstItem="xcs-gq-0c2" firstAttribute="top" secondItem="ycm-Wf-adg" secondAttribute="bottom" constant="6" id="8zt-QM-waE"/>
+                            <constraint firstAttribute="trailing" secondItem="ycm-Wf-adg" secondAttribute="trailing" constant="30" id="0aN-fU-hkU"/>
+                            <constraint firstItem="yHZ-MX-wEj" firstAttribute="top" secondItem="ycm-Wf-adg" secondAttribute="bottom" constant="20" id="3bi-eo-l6S"/>
+                            <constraint firstItem="yHZ-MX-wEj" firstAttribute="leading" secondItem="1Ps-AJ-22C" secondAttribute="leading" constant="15" id="5VN-15-0Rk"/>
+                            <constraint firstItem="ycm-Wf-adg" firstAttribute="top" secondItem="1Ps-AJ-22C" secondAttribute="top" constant="30" id="6RU-p7-3Xh"/>
                             <constraint firstAttribute="bottom" secondItem="xcs-gq-0c2" secondAttribute="bottom" constant="6" id="BKi-GO-cw3"/>
+                            <constraint firstAttribute="trailing" secondItem="yHZ-MX-wEj" secondAttribute="trailing" constant="15" id="Bpq-5B-nch"/>
                             <constraint firstItem="ycm-Wf-adg" firstAttribute="centerX" secondItem="1Ps-AJ-22C" secondAttribute="centerX" id="JRY-qU-NCA"/>
-                            <constraint firstItem="WLx-Zu-4fL" firstAttribute="top" secondItem="ycm-Wf-adg" secondAttribute="bottom" constant="6" id="Ozr-zC-V9a"/>
                             <constraint firstAttribute="bottom" secondItem="JZJ-KJ-qDR" secondAttribute="bottom" constant="6" id="S6I-gn-S4d"/>
+                            <constraint firstItem="xcs-gq-0c2" firstAttribute="top" secondItem="yHZ-MX-wEj" secondAttribute="bottom" constant="6" id="TyL-bk-ZZU"/>
                             <constraint firstItem="xcs-gq-0c2" firstAttribute="leading" secondItem="WLx-Zu-4fL" secondAttribute="trailing" constant="20" id="lFs-MY-LTs"/>
-                            <constraint firstItem="JZJ-KJ-qDR" firstAttribute="top" secondItem="ycm-Wf-adg" secondAttribute="bottom" constant="6" id="rNG-0P-eMP"/>
                             <constraint firstItem="WLx-Zu-4fL" firstAttribute="leading" secondItem="1Ps-AJ-22C" secondAttribute="leading" constant="40" id="u2a-hK-LrT"/>
-                            <constraint firstItem="ycm-Wf-adg" firstAttribute="leading" secondItem="1Ps-AJ-22C" secondAttribute="leading" id="xa1-PR-Gq0"/>
+                            <constraint firstItem="ycm-Wf-adg" firstAttribute="leading" secondItem="1Ps-AJ-22C" secondAttribute="leading" constant="30" id="xa1-PR-Gq0"/>
                             <constraint firstAttribute="trailing" secondItem="JZJ-KJ-qDR" secondAttribute="trailing" constant="40" id="yeT-2c-E6K"/>
                             <constraint firstAttribute="bottom" secondItem="WLx-Zu-4fL" secondAttribute="bottom" constant="6" id="yow-Oq-vGK"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="customView" destination="ycm-Wf-adg" id="IGn-nL-AcL"/>
+                        <outlet property="customView2" destination="yHZ-MX-wEj" id="MtB-NK-m1u"/>
                         <outlet property="monthlySubscriptionButton" destination="WLx-Zu-4fL" id="bKR-qS-HXu"/>
                         <outlet property="yearlySubscriptionButton" destination="xcs-gq-0c2" id="xT5-kZ-US9"/>
                     </connections>
                 </viewController>
                 <customObject id="ICJ-xA-6Ud" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1019" y="991"/>
+            <point key="canvasLocation" x="1053" y="1094.5"/>
         </scene>
         <!--Tab View Controller-->
         <scene sceneID="5cQ-vG-Wp6">
@@ -467,7 +545,7 @@ Tag your document and save  it:</string>
                 </tabViewController>
                 <customObject id="yEX-ig-sSQ" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1019" y="1445"/>
+            <point key="canvasLocation" x="572" y="1838"/>
         </scene>
         <!--Preferences-->
         <scene sceneID="2JL-n5-vHk">
@@ -676,7 +754,7 @@ Tag your document and save  it:</string>
                 </viewController>
                 <customObject id="CD2-Zr-up1" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1753" y="1331"/>
+            <point key="canvasLocation" x="1267" y="1790"/>
         </scene>
         <!--Donation-->
         <scene sceneID="lPK-1g-uGP">
@@ -697,7 +775,7 @@ Tag your document and save  it:</string>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="21" id="bTt-g8-WKR"/>
                                             </constraints>
-                                            <buttonCell key="cell" type="push" title="Level 1" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="dY2-A7-5th">
+                                            <buttonCell key="cell" type="push" title="Level 1" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="dY2-A7-5th">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
@@ -707,7 +785,7 @@ Tag your document and save  it:</string>
                                         </button>
                                         <button verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="OLw-Bf-fGp">
                                             <rect key="frame" x="9" y="46" width="176" height="32"/>
-                                            <buttonCell key="cell" type="push" title="Level 2" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="5JW-68-xh8">
+                                            <buttonCell key="cell" type="push" title="Level 2" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="5JW-68-xh8">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
@@ -717,7 +795,7 @@ Tag your document and save  it:</string>
                                         </button>
                                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Zkb-C5-cZI">
                                             <rect key="frame" x="9" y="8" width="176" height="34"/>
-                                            <buttonCell key="cell" type="push" title="Level 3" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ndf-3x-jdp">
+                                            <buttonCell key="cell" type="push" title="Level 3" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ndf-3x-jdp">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
@@ -835,7 +913,7 @@ You can support this project by picking a one-time donation via the buttons on t
                 </viewController>
                 <customObject id="S14-PJ-KOq" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1617" y="1641"/>
+            <point key="canvasLocation" x="1141" y="2080"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="hIz-AP-VOD">
@@ -1217,7 +1295,7 @@ You can support this project by picking a one-time donation via the buttons on t
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                    <rect key="frame" x="31.5" y="1" width="194" height="17"/>
+                                                                    <rect key="frame" x="32" y="1" width="194" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">
@@ -1425,6 +1503,9 @@ You can support this project by picking a one-time donation via the buttons on t
         </namedColor>
         <namedColor name="Headline2">
             <color red="0.90299999713897705" green="0.41200000047683716" blue="0.40400001406669617" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+        </namedColor>
+        <namedColor name="OffWhite">
+            <color red="0.98000001907348633" green="0.98000001907348633" blue="0.98000001907348633" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
     </resources>
 </document>
