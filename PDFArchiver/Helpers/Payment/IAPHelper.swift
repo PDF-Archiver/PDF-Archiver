@@ -78,7 +78,7 @@ extension IAPHelper {
                 productIdentifier.hasPrefix("SUBSCRIPTION_"),
                 let subscriptionExpirationDate = receipt.subscriptionExpirationDate,
                 subscriptionExpirationDate > Date() {
-                
+
                 // assume that there is a subscription with a valid expiration date
                 return true
             }
@@ -88,27 +88,18 @@ extension IAPHelper {
     }
 
     fileprivate func validateReceipt() {
+        // validate the receipt data
         let receiptValidator = ReceiptValidator()
         let validationResult = receiptValidator.validateReceipt()
 
+        // handle the validation result
         switch validationResult {
         case .success(let receipt):
-            // Work with parsed receipt data. Possibilities might be...
-            // enable a feature of your app
-            // remove ads
-            // etc...
-            print("SUCCESS")
-            print(receipt)
+            os_log("Receipt validation successful.", log: self.log, type: .info)
             self.receipt = receipt
 
         case .error(let error):
-            // Handle receipt validation failure. Possibilities might be...
-            // use StoreKit to request a new receipt
-            // enter a "grace period"
-            // disable a feature of your app
-            // etc...
-            print("ERROR:")
-            print(error)
+            os_log("Receipt validation unsuccessful: ", log: self.log, type: .error, error.localizedDescription)
         }
     }
 
@@ -156,6 +147,9 @@ extension IAPHelper: SKPaymentTransactionObserver {
             case .purchased:
                 os_log("Payment completed.", log: self.log, type: .debug)
                 SKPaymentQueue.default().finishTransaction(transaction)
+
+                // request a new receipt
+                self.requestReceipt(forceRefresh: true)
 
                 // show thanks message
                 DispatchQueue.main.async {
