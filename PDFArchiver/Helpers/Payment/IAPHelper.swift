@@ -48,6 +48,12 @@ extension IAPHelper {
         let payment = SKPayment(product: product)
         SKPaymentQueue.default().add(payment)
     }
+    public func buyProduct(_ productIdentifier: String) {
+        for product in self.products where product.productIdentifier == productIdentifier {
+            self.buyProduct(product)
+            break
+        }
+    }
 
     public func requestProducts() {
         self.productsRequest.cancel()
@@ -65,7 +71,18 @@ extension IAPHelper {
             return true
         }
 
-        // TODO: test if the user is in a valid subscription
+        // test if the user is in a valid subscription
+        for receipt in (self.receipt?.inAppPurchaseReceipts)! {
+
+            if let productIdentifier = receipt.productIdentifier,
+                productIdentifier.hasPrefix("SUBSCRIPTION_"),
+                let subscriptionExpirationDate = receipt.subscriptionExpirationDate,
+                subscriptionExpirationDate > Date() {
+                
+                // assume that there is a subscription with a valid expiration date
+                return true
+            }
+        }
 
         return false
     }

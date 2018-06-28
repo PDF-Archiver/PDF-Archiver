@@ -18,6 +18,7 @@ class OnboardingViewController: NSViewController {
     @IBOutlet weak var yearlySubscriptionButton: NSButton!
 
     @IBAction func monthlySubscriptionButtonClicked(_ sender: NSButton) {
+        self.dataModel?.store.buyProduct("SUBSCRIPTION_MONTHLY")
     }
 
     @IBAction func yearlySubscriptionButton(_ sender: NSButton) {
