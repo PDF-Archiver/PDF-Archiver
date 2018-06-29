@@ -12,8 +12,10 @@ class OnboardingViewController: NSViewController {
     weak var delegate: PreferencesDelegate?
     var dataModel: DataModel?
 
-    @IBOutlet weak var customView: NSView!
+    @IBOutlet weak var baseView: NSView!
+    @IBOutlet weak var customView1: NSView!
     @IBOutlet weak var customView2: NSView!
+    @IBOutlet weak var customView3: NSView!
     @IBOutlet weak var monthlySubscriptionButton: NSButton!
     @IBOutlet weak var yearlySubscriptionButton: NSButton!
 
@@ -46,11 +48,24 @@ class OnboardingViewController: NSViewController {
     }
 
     override func viewWillAppear() {
+        let cornerRadius = CGFloat(3)
+        let customViewColor = NSColor(named: NSColor.Name("DarkGreyBlue"))!.withAlphaComponent(0.05).cgColor
+
+        // set background color
+        self.baseView.wantsLayer = true
+        self.baseView.layer?.backgroundColor = NSColor(named: NSColor.Name("OffWhite"))!.cgColor
+        self.baseView.layer?.cornerRadius = cornerRadius
+
         // set background color of the view
-        self.customView.wantsLayer = true
-        self.customView.layer?.backgroundColor = NSColor(named: NSColor.Name("OffWhite"))!.cgColor
+        self.customView1.wantsLayer = true
+        self.customView1.layer?.backgroundColor = customViewColor
+        self.customView1.layer?.cornerRadius = cornerRadius
         self.customView2.wantsLayer = true
-        self.customView2.layer?.backgroundColor = NSColor(named: NSColor.Name("OffWhite"))!.cgColor
+        self.customView2.layer?.backgroundColor = customViewColor
+        self.customView2.layer?.cornerRadius = cornerRadius
+        self.customView3.wantsLayer = true
+        self.customView3.layer?.backgroundColor = customViewColor
+        self.customView3.layer?.cornerRadius = cornerRadius
 
         // set the ui update function
         let notificationCenter = NotificationCenter.default

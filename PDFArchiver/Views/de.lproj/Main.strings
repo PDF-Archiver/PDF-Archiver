@@ -311,29 +311,11 @@
 /* Class = "NSButtonCell"; title = "Yearly"; ObjectID = "Uao-RJ-bqA"; */
 "Uao-RJ-bqA.title" = "Jährlich";
 
-/* Class = "NSTextFieldCell"; title = "Subscription"; ObjectID = "GL4-Kh-cUd"; */
-"GL4-Kh-cUd.title" = "";
+/* Class = "NSTextFieldCell"; title = "Automatic renewal and cancellation:"; ObjectID = "GL4-Kh-cUd"; */
+"GL4-Kh-cUd.title" = "Automatische Verlängerung und Kündigung:";
 
-/* Class = "NSTextFieldCell"; title = "• Current price for the annual subscription is $3.49 USD per year, and may vary from country to country."; ObjectID = "TEQ-jX-d1p"; */
-"TEQ-jX-d1p.title" = "• TEXT1";
+/* Class = "NSTextFieldCell"; title = "• Try the app for free! You can try the app in a free trial period of 2 weeks by choosing a subscription. You can try the app without any costs in this period.\n• Your Apple account will be charged for the next subscriptioon period within the final 24 hours of the current period.\n• The subscription will renew automatically if you do not deactivate the renewal in the account setting in iTunes or the App Store at least 24 hours before the end of the subscription period."; ObjectID = "Vnc-G1-ChS"; */
+"Vnc-G1-ChS.title" = "• Testen Sie die App 2 Wochen als Demo kostenlos. Wählen Sie hierfür eine Abo-Modell auf der rechten Seite aus.\n• Ihr Apple-Account wird innerhalb der letzten 24 Stunden der Laufzeit des laufenden Abos für den nächsten Zeitraum belastet.\n• Das Abo verlängert sich automatisch, wenn die Verlängerung nicht wenigstens 24 Stunden vor Ablauf in den Konto-Einstellungen in iTunes oder im App Store deaktiviert wird.";
 
-/* Class = "NSTextFieldCell"; title = "Label"; ObjectID = "dlj-JL-aTc"; */
-"dlj-JL-aTc.title" = "";
-
-/* Class = "NSTextFieldCell"; title = "• Account will be charged for renewal within 24 hours prior to the end of the current period."; ObjectID = "pW5-SN-kFG"; */
-"pW5-SN-kFG.title" = "• TEXT2";
-
-/* Class = "NSTextFieldCell"; title = "• Payment will be charged to your iTunes account."; ObjectID = "wL1-fE-LS9"; */
-"wL1-fE-LS9.title" = "• TEXT3";
-
-/* Class = "NSTextFieldCell"; title = "• No cancellation of the current subscription is allowed during active subscription period.\n"; ObjectID = "98p-u8-Emj"; */
-"98p-u8-Emj.title" = "• TEXT4";
-
-/* Class = "NSTextFieldCell"; title = "• Any unused portion of a free trial period, will be forfeited when the user purchases a subscription.\n"; ObjectID = "dwb-bY-QTS"; */
-"dwb-bY-QTS.title" = "• TEXT5";
-
-/* Class = "NSTextFieldCell"; title = "• Auto-renewal may be turned off at any time by going to your settings in the iTunes Store after purchase.\n"; ObjectID = "tXi-h8-91J"; */
-"tXi-h8-91J.title" = "• TEXT6";
-
-/* Class = "NSTextFieldCell"; title = "• Privacy Policy & Terms of Use: https://pdf-archiver.io/privacy"; ObjectID = "uzz-aL-mvG"; */
-"uzz-aL-mvG.title" = "• Datenschutzerklärung: https://pdf-archiver.io/de/privacy";
+/* Class = "NSTextFieldCell"; title = "Get 2 weeks free trial:"; ObjectID = "B9y-2y-RyJ"; */
+"B9y-2y-RyJ.title" = "2 Wochen kostenlos:";
