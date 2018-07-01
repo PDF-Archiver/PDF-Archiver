@@ -10,6 +10,10 @@
 import StoreKit
 import os.log
 
+protocol IAPHelperDelegate: class {
+    func updateGUI()
+}
+
 class IAPHelper: NSObject {
     fileprivate let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "IAPHelper")
     fileprivate let productIdentifiers: Set<String>
@@ -18,6 +22,8 @@ class IAPHelper: NSObject {
 
     var products = [SKProduct]()
     var receipt: ParsedReceipt?
+    var requestRunning: Int = 0
+    weak var delegate: IAPHelperDelegate?
 
     override init() {
         self.productIdentifiers = Set(["DONATION_LEVEL1", "DONATION_LEVEL2", "DONATION_LEVEL3",
@@ -45,9 +51,11 @@ extension IAPHelper {
 
     public func buyProduct(_ product: SKProduct) {
         os_log("Buying %@ ...", log: self.log, type: .info, product.productIdentifier)
+        self.requestStarted()
         let payment = SKPayment(product: product)
         SKPaymentQueue.default().add(payment)
     }
+
     public func buyProduct(_ productIdentifier: String) {
         for product in self.products where product.productIdentifier == productIdentifier {
             self.buyProduct(product)
@@ -57,6 +65,7 @@ extension IAPHelper {
 
     public func requestProducts() {
         self.productsRequest.cancel()
+        self.requestStarted()
         self.productsRequest.start()
     }
 
@@ -95,25 +104,27 @@ extension IAPHelper {
         // handle the validation result
         switch validationResult {
         case .success(let receipt):
-            os_log("Receipt validation successful.", log: self.log, type: .info)
+            os_log("Receipt validation: successful.", log: self.log, type: .info)
             self.receipt = receipt
 
         case .error(let error):
-            os_log("Receipt validation unsuccessful: ", log: self.log, type: .error, error.localizedDescription)
+            os_log("Receipt validation: unsuccessful (%@)", log: self.log, type: .error, error.localizedDescription)
         }
     }
 
     fileprivate func requestReceipt(forceRefresh: Bool = false) {
+        // refresh receipt if not reachable
         if let receiptUrl = Bundle.main.appStoreReceiptURL,
             let isReachable = try? receiptUrl.checkResourceIsReachable(),
             isReachable,
             forceRefresh == false {
-            os_log("Receipt already found, skipping receipt refresh.", log: self.log, type: .info)
+            os_log("Receipt already found, skipping receipt refresh (isReachable: %@, forceRefresh: %@).", log: self.log, type: .info, isReachable, forceRefresh)
             self.validateReceipt()
 
         } else {
             os_log("Receipt not found, refreshing receipt.", log: self.log, type: .info)
             self.receiptRequest.cancel()
+            self.requestStarted()
             self.receiptRequest.start()
         }
     }
@@ -128,12 +139,17 @@ extension IAPHelper: SKProductsRequestDelegate {
         os_log("Loaded list of products...", log: self.log, type: .debug)
 
         // fire up a notification to update the GUI
-        NotificationCenter.default.post(name: Notification.Name("MASUpdateStatus"), object: true)
+        self.delegate?.updateGUI()
 
         // log the products
         for product in self.products {
             os_log("Found product: %@ - %@ - %@", log: self.log, type: .debug, product.productIdentifier, product.localizedTitle, product.localizedPrice)
         }
+    }
+
+    internal func request(_ request: SKRequest, didFailWithError error: Error) {
+        self.requestStopped()
+        os_log("Product Request errored: %@", log: self.log, type: .error, error.localizedDescription)
     }
 }
 
@@ -149,7 +165,10 @@ extension IAPHelper: SKPaymentTransactionObserver {
                 SKPaymentQueue.default().finishTransaction(transaction)
 
                 // request a new receipt
-                self.requestReceipt(forceRefresh: true)
+                self.validateReceipt()
+
+                // fire up a request finished notification
+                self.requestStopped()
 
                 // show thanks message
                 DispatchQueue.main.async {
@@ -173,8 +192,25 @@ extension IAPHelper: SKPaymentTransactionObserver {
 extension IAPHelper: SKRequestDelegate {
 
     internal func requestDidFinish(_ request: SKRequest) {
+        self.requestStopped()
+
         if request is SKReceiptRefreshRequest {
+            // validate and save the receipt
             self.validateReceipt()
         }
+    }
+}
+
+// MARK: - SKRequestDelegate
+
+extension IAPHelper {
+    fileprivate func requestStarted() {
+        self.requestRunning += 1
+        self.delegate?.updateGUI()
+    }
+
+    fileprivate func requestStopped() {
+        self.requestRunning -= 1
+        self.delegate?.updateGUI()
     }
 }

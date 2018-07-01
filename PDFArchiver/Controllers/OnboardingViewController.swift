@@ -16,6 +16,7 @@ class OnboardingViewController: NSViewController {
     @IBOutlet weak var customView1: NSView!
     @IBOutlet weak var customView2: NSView!
     @IBOutlet weak var customView3: NSView!
+    @IBOutlet weak var progressIndicator: NSProgressIndicator!
     @IBOutlet weak var monthlySubscriptionButton: NSButton!
     @IBOutlet weak var yearlySubscriptionButton: NSButton!
 
@@ -45,6 +46,9 @@ class OnboardingViewController: NSViewController {
 
         // get the data model from the main view controller
         self.dataModel = self.delegate?.getDataModel()
+
+        // IAPHelper delegate
+        self.dataModel?.store.delegate = self
     }
 
     override func viewWillAppear() {
@@ -66,19 +70,20 @@ class OnboardingViewController: NSViewController {
         self.customView3.wantsLayer = true
         self.customView3.layer?.backgroundColor = customViewColor
         self.customView3.layer?.cornerRadius = cornerRadius
-
-        // set the ui update function
-        let notificationCenter = NotificationCenter.default
-        notificationCenter.addObserver(self, selector: #selector(self.updateButtons(available:)),
-                                       name: Notification.Name("MASUpdateStatus"), object: nil)
-
     }
+}
 
-    @objc func updateButtons(available: Bool) {
+extension OnboardingViewController: IAPHelperDelegate {
+    func updateGUI() {
         DispatchQueue.main.async {
-            // set default button status to false
-            self.monthlySubscriptionButton.isEnabled = false
-            self.yearlySubscriptionButton.isEnabled = false
+            // update the progress indicator
+            if (self.dataModel?.store.requestRunning ?? 0) != 0 {
+                self.progressIndicator.startAnimation(self)
+            } else {
+                self.progressIndicator.stopAnimation(self)
+            }
+
+            let appUsagePermitted = self.dataModel?.store.appUsagePermitted() ?? false
 
             // set the button label
             for product in self.dataModel?.store.products ?? [] {
@@ -99,10 +104,12 @@ class OnboardingViewController: NSViewController {
                 }
 
                 // set button to localized price
-                selectedButton.isEnabled = true
+                if !(appUsagePermitted) {
+                    selectedButton.isEnabled = true
+                }
             }
-
-            //
         }
+
     }
+
 }

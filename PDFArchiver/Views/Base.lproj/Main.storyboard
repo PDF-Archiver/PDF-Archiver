@@ -377,12 +377,12 @@ Tag your document and save  it:</string>
                                         </connections>
                                     </button>
                                     <button wantsLayer="YES" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="xcs-gq-0c2">
-                                        <rect key="frame" x="14" y="53" width="172" height="32"/>
+                                        <rect key="frame" x="14" y="63" width="172" height="32"/>
                                         <shadow key="shadow">
                                             <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </shadow>
                                         <buttonCell key="cell" type="push" title="Yearly" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Uao-RJ-bqA">
-                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
+                                            <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
                                         <connections>
@@ -390,7 +390,7 @@ Tag your document and save  it:</string>
                                         </connections>
                                     </button>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lsR-on-XvE">
-                                        <rect key="frame" x="18" y="132" width="164" height="17"/>
+                                        <rect key="frame" x="18" y="132" width="148" height="17"/>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Get 2 weeks free trial:" id="B9y-2y-RyJ">
                                             <font key="font" metaFont="systemSemibold" size="13"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -398,31 +398,36 @@ Tag your document and save  it:</string>
                                         </textFieldCell>
                                     </textField>
                                     <button wantsLayer="YES" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="WLx-Zu-4fL">
-                                        <rect key="frame" x="14" y="89" width="172" height="32"/>
+                                        <rect key="frame" x="14" y="94" width="172" height="32"/>
                                         <shadow key="shadow">
                                             <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </shadow>
                                         <buttonCell key="cell" type="push" title="Monthly" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="SpT-AH-ELy">
-                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
+                                            <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
                                         <connections>
                                             <action selector="monthlySubscriptionButtonClicked:" target="IBN-wm-PS1" id="Ahf-kY-Tkz"/>
                                         </connections>
                                     </button>
+                                    <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="b3f-rz-fr4">
+                                        <rect key="frame" x="174" y="133" width="16" height="16"/>
+                                    </progressIndicator>
                                 </subviews>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="WLx-Zu-4fL" secondAttribute="trailing" constant="20" id="2hq-2h-KNE"/>
-                                    <constraint firstItem="WLx-Zu-4fL" firstAttribute="top" secondItem="lsR-on-XvE" secondAttribute="bottom" constant="15" id="2rI-GJ-VYr"/>
+                                    <constraint firstItem="WLx-Zu-4fL" firstAttribute="top" secondItem="lsR-on-XvE" secondAttribute="bottom" constant="10" id="2rI-GJ-VYr"/>
+                                    <constraint firstItem="b3f-rz-fr4" firstAttribute="leading" secondItem="lsR-on-XvE" secondAttribute="trailing" constant="10" id="7eY-Wi-GbM"/>
                                     <constraint firstAttribute="height" constant="159" id="FRJ-05-dsV"/>
-                                    <constraint firstItem="xcs-gq-0c2" firstAttribute="top" secondItem="WLx-Zu-4fL" secondAttribute="bottom" constant="15" id="Kgl-KH-r5Q"/>
+                                    <constraint firstItem="xcs-gq-0c2" firstAttribute="top" secondItem="WLx-Zu-4fL" secondAttribute="bottom" constant="10" id="Kgl-KH-r5Q"/>
                                     <constraint firstItem="xcs-gq-0c2" firstAttribute="leading" secondItem="Ofp-Uf-gpZ" secondAttribute="leading" constant="20" id="LLE-kH-Fg7"/>
                                     <constraint firstItem="lsR-on-XvE" firstAttribute="leading" secondItem="Ofp-Uf-gpZ" secondAttribute="leading" constant="20" id="Ldn-6O-kkf"/>
                                     <constraint firstAttribute="trailing" secondItem="JZJ-KJ-qDR" secondAttribute="trailing" constant="20" id="Mkq-Ho-UgJ"/>
-                                    <constraint firstAttribute="trailing" secondItem="lsR-on-XvE" secondAttribute="trailing" constant="20" id="TIa-Cb-g2m"/>
                                     <constraint firstAttribute="width" constant="200" id="dDo-js-JlF"/>
-                                    <constraint firstItem="JZJ-KJ-qDR" firstAttribute="top" secondItem="xcs-gq-0c2" secondAttribute="bottom" constant="20" id="dfX-uA-Hfz"/>
+                                    <constraint firstItem="JZJ-KJ-qDR" firstAttribute="top" secondItem="xcs-gq-0c2" secondAttribute="bottom" constant="30" id="dfX-uA-Hfz"/>
+                                    <constraint firstAttribute="trailing" secondItem="b3f-rz-fr4" secondAttribute="trailing" constant="10" id="eQM-8l-a3r"/>
                                     <constraint firstItem="lsR-on-XvE" firstAttribute="top" secondItem="Ofp-Uf-gpZ" secondAttribute="top" constant="10" id="jGz-ch-nnr"/>
+                                    <constraint firstItem="b3f-rz-fr4" firstAttribute="top" secondItem="Ofp-Uf-gpZ" secondAttribute="top" constant="10" id="lww-6Q-k5v"/>
                                     <constraint firstItem="JZJ-KJ-qDR" firstAttribute="leading" secondItem="Ofp-Uf-gpZ" secondAttribute="leading" constant="20" id="oo2-ut-ntE"/>
                                     <constraint firstAttribute="trailing" secondItem="xcs-gq-0c2" secondAttribute="trailing" constant="20" id="qVj-nj-S40"/>
                                     <constraint firstItem="WLx-Zu-4fL" firstAttribute="leading" secondItem="Ofp-Uf-gpZ" secondAttribute="leading" constant="20" id="vhV-Ap-Rkt"/>
@@ -481,6 +486,7 @@ Tag your document and save  it:</string>
                         <outlet property="customView2" destination="yHZ-MX-wEj" id="MtB-NK-m1u"/>
                         <outlet property="customView3" destination="Ofp-Uf-gpZ" id="n7Y-f7-P00"/>
                         <outlet property="monthlySubscriptionButton" destination="WLx-Zu-4fL" id="bKR-qS-HXu"/>
+                        <outlet property="progressIndicator" destination="b3f-rz-fr4" id="zoi-Xn-Wj4"/>
                         <outlet property="yearlySubscriptionButton" destination="xcs-gq-0c2" id="xT5-kZ-US9"/>
                     </connections>
                 </viewController>
