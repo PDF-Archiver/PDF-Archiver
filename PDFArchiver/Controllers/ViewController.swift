@@ -15,7 +15,7 @@ protocol ViewControllerDelegate: class {
 }
 
 class ViewController: NSViewController {
-    let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "MainViewController")
+    internal let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "MainViewController")
     var dataModelInstance = DataModel()
 
     @IBOutlet weak var pdfDocumentsView: NSView!
@@ -167,8 +167,10 @@ class ViewController: NSViewController {
     }
 
     override func viewDidAppear() {
+        let isValid = self.dataModelInstance.store.appUsagePermitted()
+
         // show onboarding view
-        if !UserDefaults.standard.bool(forKey: "onboardingShown") {
+        if !UserDefaults.standard.bool(forKey: "onboardingShown") || isValid == false {
             self.showOnboardingMenuItem(self)
         }
     }

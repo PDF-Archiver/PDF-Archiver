@@ -304,3 +304,18 @@
 
 /* Class = "NSTextFieldCell"; title = "Document"; ObjectID = "ZlY-Ux-pR6"; */
 "ZlY-Ux-pR6.title" = "Dokument";
+
+/* Class = "NSButtonCell"; title = "Monthly"; ObjectID = "SpT-AH-ELy"; */
+"SpT-AH-ELy.title" = "Monatlich";
+
+/* Class = "NSButtonCell"; title = "Yearly"; ObjectID = "Uao-RJ-bqA"; */
+"Uao-RJ-bqA.title" = "Jährlich";
+
+/* Class = "NSTextFieldCell"; title = "Automatic renewal and cancellation:"; ObjectID = "GL4-Kh-cUd"; */
+"GL4-Kh-cUd.title" = "Automatische Verlängerung und Kündigung:";
+
+/* Class = "NSTextFieldCell"; title = "• Try the app for free! You can try the app in a free trial period of 2 weeks by choosing a subscription. You can try the app without any costs in this period.\n• Your Apple account will be charged for the next subscriptioon period within the final 24 hours of the current period.\n• The subscription will renew automatically if you do not deactivate the renewal in the account setting in iTunes or the App Store at least 24 hours before the end of the subscription period."; ObjectID = "Vnc-G1-ChS"; */
+"Vnc-G1-ChS.title" = "• Testen Sie die App 2 Wochen als Demo kostenlos. Wählen Sie hierfür eine Abo-Modell auf der rechten Seite aus.\n• Ihr Apple-Account wird innerhalb der letzten 24 Stunden der Laufzeit des laufenden Abos für den nächsten Zeitraum belastet.\n• Das Abo verlängert sich automatisch, wenn die Verlängerung nicht wenigstens 24 Stunden vor Ablauf in den Konto-Einstellungen in iTunes oder im App Store deaktiviert wird.";
+
+/* Class = "NSTextFieldCell"; title = "Get 2 weeks free trial:"; ObjectID = "B9y-2y-RyJ"; */
+"B9y-2y-RyJ.title" = "2 Wochen kostenlos:";

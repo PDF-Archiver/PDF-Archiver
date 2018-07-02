@@ -12,15 +12,17 @@ import os.log
 extension ViewController {
     // MARK: - segue stuff
     override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
-        guard let tabViewController = segue.destinationController
-            as? NSTabViewController else { return }
-
-        for controller in tabViewController.childViewControllers {
-            if let controller = controller as? MainPreferencesVC {
-                controller.delegate = self
-            } else if let controller = controller as? DonationPreferencesVC {
-                controller.delegate = self
+        if let tabViewController = segue.destinationController as? NSTabViewController {
+            for controller in tabViewController.childViewControllers {
+                if let controller = controller as? MainPreferencesVC {
+                    controller.delegate = self
+                } else if let controller = controller as? DonationPreferencesVC {
+                    controller.delegate = self
+                }
             }
+
+        } else if let viewController = segue.destinationController as? OnboardingViewController {
+            viewController.delegate = self
         }
     }
 
@@ -257,5 +259,9 @@ extension ViewController: PreferencesDelegate {
 
     func getDataModel() -> DataModel {
         return self.dataModelInstance
+    }
+
+    func closeApp() {
+        NSApplication.shared.terminate(self)
     }
 }

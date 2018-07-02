@@ -10,7 +10,7 @@ import Foundation
 import os.log
 
 class Document: NSObject {
-    let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "Document")
+    fileprivate let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "Document")
     weak var delegate: TagsDelegate?
     // structure for PDF documents on disk
     var path: URL

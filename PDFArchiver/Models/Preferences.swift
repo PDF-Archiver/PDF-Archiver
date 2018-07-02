@@ -10,7 +10,7 @@ import Foundation
 import os.log
 
 struct Preferences {
-    let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "DataModel")
+    fileprivate let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "DataModel")
     fileprivate var _archivePath: URL?
     fileprivate var _observedPath: URL?
     weak var delegate: TagsDelegate?

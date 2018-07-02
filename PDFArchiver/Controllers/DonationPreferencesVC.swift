@@ -81,21 +81,18 @@ class DonationPreferencesVC: PreferencesVC {
     }
 
     func updateButtons() {
-        // set default button status to false
-        self.donationButton1.isEnabled = false
-        self.donationButton2.isEnabled = false
-        self.donationButton3.isEnabled = false
-
         // set the button label
         for product in self.dataModel?.store.products ?? [] {
             var selectedButton: NSButton
-            if product.productIdentifier == "DONATION_LEVEL1" {
+
+            switch product.productIdentifier {
+            case "DONATION_LEVEL1":
                 selectedButton = self.donationButton1
-            } else if product.productIdentifier == "DONATION_LEVEL2" {
+            case "DONATION_LEVEL2":
                 selectedButton = self.donationButton2
-            } else if product.productIdentifier == "DONATION_LEVEL3" {
+            case "DONATION_LEVEL3":
                 selectedButton = self.donationButton3
-            } else {
+            default:
                 continue
             }
 
