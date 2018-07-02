@@ -17,6 +17,7 @@ class OnboardingViewController: NSViewController {
     @IBOutlet weak var customView2: NSView!
     @IBOutlet weak var customView3: NSView!
     @IBOutlet weak var progressIndicator: NSProgressIndicator!
+    @IBOutlet weak var lockIndicator: NSImageView!
     @IBOutlet weak var monthlySubscriptionButton: NSButton!
     @IBOutlet weak var yearlySubscriptionButton: NSButton!
 
@@ -49,6 +50,9 @@ class OnboardingViewController: NSViewController {
 
         // IAPHelper delegate
         self.dataModel?.store.delegate = self
+
+        // update the GUI
+        self.updateGUI()
     }
 
     override func viewWillAppear() {
@@ -83,7 +87,13 @@ extension OnboardingViewController: IAPHelperDelegate {
                 self.progressIndicator.stopAnimation(self)
             }
 
-            let appUsagePermitted = self.dataModel?.store.appUsagePermitted() ?? false
+            // update the locked/unlocked indicator
+            if let appUsagePermitted = self.dataModel?.store.appUsagePermitted(),
+                appUsagePermitted {
+                self.lockIndicator.image = NSImage(named: NSImage.Name("NSLockUnlockedTemplate"))
+            } else {
+                self.lockIndicator.image = NSImage(named: NSImage.Name("NSLockLockedTemplate"))
+            }
 
             // set the button label
             for product in self.dataModel?.store.products ?? [] {
@@ -103,13 +113,10 @@ extension OnboardingViewController: IAPHelperDelegate {
                     continue
                 }
 
-                // set button to localized price
-                if !(appUsagePermitted) {
-                    selectedButton.isEnabled = true
-                }
+                // enable the button
+                selectedButton.isEnabled = true
             }
         }
-
     }
 
 }

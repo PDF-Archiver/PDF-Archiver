@@ -81,11 +81,11 @@ extension IAPHelper {
         }
 
         // test if the user is in a valid subscription
-        for receipt in (self.receipt?.inAppPurchaseReceipts)! {
+        for tempReceipt in receipt.inAppPurchaseReceipts ?? [] {
 
-            if let productIdentifier = receipt.productIdentifier,
+            if let productIdentifier = tempReceipt.productIdentifier,
                 productIdentifier.hasPrefix("SUBSCRIPTION_"),
-                let subscriptionExpirationDate = receipt.subscriptionExpirationDate,
+                let subscriptionExpirationDate = tempReceipt.subscriptionExpirationDate,
                 subscriptionExpirationDate > Date() {
 
                 // assume that there is a subscription with a valid expiration date
@@ -164,20 +164,26 @@ extension IAPHelper: SKPaymentTransactionObserver {
                 os_log("Payment completed.", log: self.log, type: .debug)
                 SKPaymentQueue.default().finishTransaction(transaction)
 
-                // request a new receipt
+                // validate the new receipt (from purchase)
                 self.validateReceipt()
 
                 // fire up a request finished notification
                 self.requestStopped()
 
                 // show thanks message
-                DispatchQueue.main.async {
-                    dialogOK(messageKey: "payment_complete", infoKey: "payment_thanks", style: .informational)
+                print(transaction.payment.productIdentifier)
+                if !transaction.payment.productIdentifier.hasPrefix("SUBSCRIPTION_") {
+                    DispatchQueue.main.async {
+                        dialogOK(messageKey: "payment_complete", infoKey: "payment_thanks", style: .informational)
+                    }
                 }
+                queue.finishTransaction(transaction)
             case .failed:
                 os_log("Payment failed.", log: self.log, type: .debug)
+                self.requestStopped()
             case .restored:
                 os_log("Payment restored.", log: self.log, type: .debug)
+                queue.finishTransaction(transaction)
             case .deferred:
                 os_log("Payment deferred.", log: self.log, type: .debug)
             case .purchasing:
