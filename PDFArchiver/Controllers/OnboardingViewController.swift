@@ -26,10 +26,10 @@ class OnboardingViewController: NSViewController {
     }
 
     @IBAction func yearlySubscriptionButton(_ sender: NSButton) {
-        print(self.dataModel)
+        self.dataModel?.store.buyProduct("SUBSCRIPTION_YEARLY")
     }
 
-    @IBAction func closeButton(_ sender: NSButton) {
+    @IBAction func closeButton(_ sender: NSButton?) {
         self.dismiss(self)
 
         // test if user has purchased the app, close if not
@@ -99,7 +99,6 @@ extension OnboardingViewController: IAPHelperDelegate {
             for product in self.dataModel?.store.products ?? [] {
                 var selectedButton: NSButton
 
-                // TODO: this might be a enum
                 switch product.productIdentifier {
                 case "SUBSCRIPTION_MONTHLY":
                     selectedButton = self.monthlySubscriptionButton
@@ -119,4 +118,9 @@ extension OnboardingViewController: IAPHelperDelegate {
         }
     }
 
+    func closeView() {
+        DispatchQueue.main.async {
+            self.closeButton(nil)
+        }
+    }
 }

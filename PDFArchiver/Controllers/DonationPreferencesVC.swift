@@ -85,7 +85,6 @@ class DonationPreferencesVC: PreferencesVC {
         for product in self.dataModel?.store.products ?? [] {
             var selectedButton: NSButton
 
-            // TODO: this might be a enum
             switch product.productIdentifier {
             case "DONATION_LEVEL1":
                 selectedButton = self.donationButton1

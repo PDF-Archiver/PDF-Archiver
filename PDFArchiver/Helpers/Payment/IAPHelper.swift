@@ -12,6 +12,7 @@ import os.log
 
 protocol IAPHelperDelegate: class {
     func updateGUI()
+    func closeView()
 }
 
 class IAPHelper: NSObject {
@@ -39,8 +40,11 @@ class IAPHelper: NSObject {
         SKPaymentQueue.default().add(self)
 
         // request products and receipt
+        self.requestReceipt(appStart: true)
         self.requestProducts()
-        self.requestReceipt()
+        if self.appUsagePermitted() != true {
+            self.requestReceipt(forceRefresh: true)
+        }
     }
 
 }
@@ -69,6 +73,10 @@ extension IAPHelper {
         self.productsRequest.start()
     }
 
+    public func restorePurchases() {
+        self.requestReceipt(forceRefresh: true)
+    }
+
     public func appUsagePermitted() -> Bool {
         guard let receipt = self.receipt,
               let originalAppVersion = receipt.originalAppVersion else { return false }
@@ -89,6 +97,7 @@ extension IAPHelper {
                 subscriptionExpirationDate > Date() {
 
                 // assume that there is a subscription with a valid expiration date
+                os_log("Receipt expires: %@", log: self.log, type: .debug, subscriptionExpirationDate.description)
                 return true
             }
         }
@@ -112,7 +121,7 @@ extension IAPHelper {
         }
     }
 
-    fileprivate func requestReceipt(forceRefresh: Bool = false) {
+    fileprivate func requestReceipt(forceRefresh: Bool = false, appStart: Bool = false) {
         // refresh receipt if not reachable
         if let receiptUrl = Bundle.main.appStoreReceiptURL,
             let isReachable = try? receiptUrl.checkResourceIsReachable(),
@@ -121,6 +130,9 @@ extension IAPHelper {
             os_log("Receipt already found, skipping receipt refresh (isReachable: %@, forceRefresh: %@).", log: self.log, type: .info, isReachable, forceRefresh)
             self.validateReceipt()
 
+        } else if appStart {
+            os_log("Receipt not found, exit the app!", log: self.log, type: .error)
+            exit(173)
         } else {
             os_log("Receipt not found, refreshing receipt.", log: self.log, type: .info)
             self.receiptRequest.cancel()
@@ -171,13 +183,13 @@ extension IAPHelper: SKPaymentTransactionObserver {
                 self.requestStopped()
 
                 // show thanks message
-                print(transaction.payment.productIdentifier)
                 if !transaction.payment.productIdentifier.hasPrefix("SUBSCRIPTION_") {
                     DispatchQueue.main.async {
                         dialogOK(messageKey: "payment_complete", infoKey: "payment_thanks", style: .informational)
                     }
                 }
                 queue.finishTransaction(transaction)
+                self.delegate?.closeView()
             case .failed:
                 os_log("Payment failed.", log: self.log, type: .debug)
                 self.requestStopped()
