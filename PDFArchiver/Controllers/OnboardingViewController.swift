@@ -42,8 +42,7 @@ class OnboardingViewController: NSViewController {
         super.viewDidLoad()
 
         // Do view setup here.
-        // TODO: this is debug code
-//        UserDefaults.standard.set(true, forKey: "onboardingShown")
+        UserDefaults.standard.set(true, forKey: "onboardingShown")
 
         // get the data model from the main view controller
         self.dataModel = self.delegate?.getDataModel()
@@ -80,19 +79,20 @@ class OnboardingViewController: NSViewController {
 extension OnboardingViewController: IAPHelperDelegate {
     func updateGUI() {
         DispatchQueue.main.async {
-            // update the progress indicator
-            if (self.dataModel?.store.requestRunning ?? 0) != 0 {
-                self.progressIndicator.startAnimation(self)
-            } else {
-                self.progressIndicator.stopAnimation(self)
-            }
-
             // update the locked/unlocked indicator
             if let appUsagePermitted = self.dataModel?.store.appUsagePermitted(),
                 appUsagePermitted {
                 self.lockIndicator.image = NSImage(named: NSImage.Name("NSLockUnlockedTemplate"))
+
             } else {
                 self.lockIndicator.image = NSImage(named: NSImage.Name("NSLockLockedTemplate"))
+
+                // update the progress indicator
+                if (self.dataModel?.store.requestRunning ?? 0) != 0 {
+                    self.progressIndicator.startAnimation(self)
+                } else {
+                    self.progressIndicator.stopAnimation(self)
+                }
             }
 
             // set the button label
