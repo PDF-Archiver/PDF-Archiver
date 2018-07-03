@@ -262,14 +262,183 @@ CA
             <objects>
                 <viewController title="Onboarding" storyboardIdentifier="onboardingViewController" id="IBN-wm-PS1" customClass="OnboardingViewController" customModule="PDFArchiver" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="1Ps-AJ-22C">
-                        <rect key="frame" x="0.0" y="0.0" width="660" height="525"/>
+                        <rect key="frame" x="0.0" y="0.0" width="710" height="539"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="Ofp-Uf-gpZ">
+                                <rect key="frame" x="490" y="20" width="200" height="173"/>
+                                <subviews>
+                                    <button wantsLayer="YES" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="JZJ-KJ-qDR">
+                                        <rect key="frame" x="34" y="3" width="152" height="32"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="21" id="bPx-aK-cOL"/>
+                                        </constraints>
+                                        <shadow key="shadow">
+                                            <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </shadow>
+                                        <buttonCell key="cell" type="push" title="Close" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="90s-ei-HMI">
+                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="closeButton:" target="IBN-wm-PS1" id="l95-Cg-MdH"/>
+                                        </connections>
+                                    </button>
+                                    <button wantsLayer="YES" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="xcs-gq-0c2">
+                                        <rect key="frame" x="14" y="70" width="172" height="32"/>
+                                        <shadow key="shadow">
+                                            <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </shadow>
+                                        <buttonCell key="cell" type="push" title="Yearly" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Uao-RJ-bqA">
+                                            <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="yearlySubscriptionButton:" target="IBN-wm-PS1" id="Y9v-1I-004"/>
+                                        </connections>
+                                    </button>
+                                    <button wantsLayer="YES" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="Dew-gl-IoE">
+                                        <rect key="frame" x="14" y="39" width="172" height="32"/>
+                                        <shadow key="shadow">
+                                            <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </shadow>
+                                        <buttonCell key="cell" type="push" title="Manage Subscription" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="F0S-Zh-UzN">
+                                            <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="manageSubscriptionsButtonClicked:" target="IBN-wm-PS1" id="d7x-q8-jWc"/>
+                                        </connections>
+                                    </button>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lsR-on-XvE">
+                                        <rect key="frame" x="18" y="139" width="148" height="24"/>
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Get 1 month free trial:" id="B9y-2y-RyJ">
+                                            <font key="font" metaFont="systemSemibold" size="13"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <button wantsLayer="YES" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="WLx-Zu-4fL">
+                                        <rect key="frame" x="14" y="101" width="172" height="32"/>
+                                        <shadow key="shadow">
+                                            <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </shadow>
+                                        <buttonCell key="cell" type="push" title="Monthly" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="SpT-AH-ELy">
+                                            <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="monthlySubscriptionButtonClicked:" target="IBN-wm-PS1" id="Ahf-kY-Tkz"/>
+                                        </connections>
+                                    </button>
+                                    <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="b3f-rz-fr4">
+                                        <rect key="frame" x="174" y="147" width="16" height="16"/>
+                                    </progressIndicator>
+                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="N3B-Lv-5nK">
+                                        <rect key="frame" x="15" y="13" width="15" height="15"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="15" id="cgH-8N-vHB"/>
+                                            <constraint firstAttribute="height" constant="15" id="gQ3-UP-5gA"/>
+                                        </constraints>
+                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSLockLockedTemplate" id="ODH-v2-sKg"/>
+                                    </imageView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="WLx-Zu-4fL" secondAttribute="trailing" constant="20" id="2hq-2h-KNE"/>
+                                    <constraint firstItem="WLx-Zu-4fL" firstAttribute="top" secondItem="lsR-on-XvE" secondAttribute="bottom" constant="10" id="2rI-GJ-VYr"/>
+                                    <constraint firstItem="b3f-rz-fr4" firstAttribute="leading" secondItem="lsR-on-XvE" secondAttribute="trailing" constant="10" id="7eY-Wi-GbM"/>
+                                    <constraint firstItem="Dew-gl-IoE" firstAttribute="top" secondItem="xcs-gq-0c2" secondAttribute="bottom" constant="10" id="8W1-du-vqA"/>
+                                    <constraint firstItem="JZJ-KJ-qDR" firstAttribute="centerY" secondItem="N3B-Lv-5nK" secondAttribute="centerY" id="CjH-Wo-q5R"/>
+                                    <constraint firstItem="Dew-gl-IoE" firstAttribute="leading" secondItem="Ofp-Uf-gpZ" secondAttribute="leading" constant="20" id="GpO-dY-rMG"/>
+                                    <constraint firstAttribute="bottom" secondItem="JZJ-KJ-qDR" secondAttribute="bottom" constant="10" id="Iws-Yp-bny"/>
+                                    <constraint firstItem="xcs-gq-0c2" firstAttribute="top" secondItem="WLx-Zu-4fL" secondAttribute="bottom" constant="10" id="Kgl-KH-r5Q"/>
+                                    <constraint firstItem="xcs-gq-0c2" firstAttribute="leading" secondItem="Ofp-Uf-gpZ" secondAttribute="leading" constant="20" id="LLE-kH-Fg7"/>
+                                    <constraint firstItem="lsR-on-XvE" firstAttribute="leading" secondItem="Ofp-Uf-gpZ" secondAttribute="leading" constant="20" id="Ldn-6O-kkf"/>
+                                    <constraint firstAttribute="trailing" secondItem="JZJ-KJ-qDR" secondAttribute="trailing" constant="20" id="Mkq-Ho-UgJ"/>
+                                    <constraint firstAttribute="width" constant="200" id="dDo-js-JlF"/>
+                                    <constraint firstItem="JZJ-KJ-qDR" firstAttribute="leading" secondItem="N3B-Lv-5nK" secondAttribute="trailing" constant="10" id="e39-qx-Vt6"/>
+                                    <constraint firstAttribute="trailing" secondItem="b3f-rz-fr4" secondAttribute="trailing" constant="10" id="eQM-8l-a3r"/>
+                                    <constraint firstItem="lsR-on-XvE" firstAttribute="top" secondItem="Ofp-Uf-gpZ" secondAttribute="top" constant="10" id="jGz-ch-nnr"/>
+                                    <constraint firstAttribute="trailing" secondItem="Dew-gl-IoE" secondAttribute="trailing" constant="20" id="ktb-pa-Ubb"/>
+                                    <constraint firstItem="b3f-rz-fr4" firstAttribute="top" secondItem="Ofp-Uf-gpZ" secondAttribute="top" constant="10" id="lww-6Q-k5v"/>
+                                    <constraint firstAttribute="trailing" secondItem="xcs-gq-0c2" secondAttribute="trailing" constant="20" id="qVj-nj-S40"/>
+                                    <constraint firstItem="N3B-Lv-5nK" firstAttribute="leading" secondItem="Ofp-Uf-gpZ" secondAttribute="leading" constant="15" id="tQW-ed-UZR"/>
+                                    <constraint firstItem="JZJ-KJ-qDR" firstAttribute="top" secondItem="Dew-gl-IoE" secondAttribute="bottom" constant="15" id="uEI-bW-5vX"/>
+                                    <constraint firstItem="WLx-Zu-4fL" firstAttribute="leading" secondItem="Ofp-Uf-gpZ" secondAttribute="leading" constant="20" id="vhV-Ap-Rkt"/>
+                                </constraints>
+                            </customView>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="yHZ-MX-wEj">
+                                <rect key="frame" x="20" y="20" width="450" height="173"/>
+                                <subviews>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Vlw-kp-khl">
+                                        <rect key="frame" x="28" y="146" width="233" height="17"/>
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Automatic renewal and cancellation:" id="GL4-Kh-cUd">
+                                            <font key="font" metaFont="systemSemibold" size="13"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="b3N-vg-zo7">
+                                        <rect key="frame" x="8" y="41" width="434" height="98"/>
+                                        <textFieldCell key="cell" allowsUndo="NO" sendsActionOnEndEditing="YES" id="Vnc-G1-ChS">
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <string key="title">• Try the app for free! You can try the app in a free trial period of 1 month by choosing a subscription. You can try the app without any costs in this period.
+• Your Apple account will be charged for the next subscriptioon period within the final 24 hours of the current period.
+• The subscription will renew automatically if you do not deactivate the renewal in the account setting in iTunes or the App Store at least 24 hours before the end of the subscription period.</string>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <button wantsLayer="YES" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="Ixf-HI-ECo">
+                                        <rect key="frame" x="237" y="3" width="179" height="32"/>
+                                        <shadow key="shadow">
+                                            <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </shadow>
+                                        <buttonCell key="cell" type="push" title="Restore Purchases" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="NF4-Dh-JrT">
+                                            <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="restorePurchasesButton:" target="IBN-wm-PS1" id="Nbe-mD-ybR"/>
+                                        </connections>
+                                    </button>
+                                    <button wantsLayer="YES" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="RzL-gh-Ufz">
+                                        <rect key="frame" x="34" y="3" width="180" height="32"/>
+                                        <shadow key="shadow">
+                                            <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </shadow>
+                                        <buttonCell key="cell" type="push" title="Privacy &amp; Terms of Use" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="NCZ-5k-gf4">
+                                            <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="privacyButton:" target="IBN-wm-PS1" id="uC9-we-WDS"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="450" id="4aQ-Xh-MEj"/>
+                                    <constraint firstItem="Vlw-kp-khl" firstAttribute="top" secondItem="yHZ-MX-wEj" secondAttribute="top" constant="10" id="Dwy-ka-ua3"/>
+                                    <constraint firstItem="b3N-vg-zo7" firstAttribute="leading" secondItem="yHZ-MX-wEj" secondAttribute="leading" constant="10" id="FH8-ju-Zpc"/>
+                                    <constraint firstItem="Vlw-kp-khl" firstAttribute="leading" secondItem="yHZ-MX-wEj" secondAttribute="leading" constant="30" id="GI3-YD-ZXW"/>
+                                    <constraint firstAttribute="trailing" secondItem="Ixf-HI-ECo" secondAttribute="trailing" constant="40" id="HZF-pg-u3E"/>
+                                    <constraint firstItem="Ixf-HI-ECo" firstAttribute="width" secondItem="RzL-gh-Ufz" secondAttribute="width" id="NOi-yn-1Bm"/>
+                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Vlw-kp-khl" secondAttribute="trailing" constant="20" symbolic="YES" id="UoV-Tv-nzt"/>
+                                    <constraint firstAttribute="bottom" secondItem="RzL-gh-Ufz" secondAttribute="bottom" constant="10" id="WGA-62-ejx"/>
+                                    <constraint firstItem="Ixf-HI-ECo" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="RzL-gh-Ufz" secondAttribute="trailing" constant="35" id="bWU-Jf-dw1"/>
+                                    <constraint firstItem="RzL-gh-Ufz" firstAttribute="top" secondItem="b3N-vg-zo7" secondAttribute="bottom" constant="10" id="fL1-kR-W8G"/>
+                                    <constraint firstItem="b3N-vg-zo7" firstAttribute="top" secondItem="Vlw-kp-khl" secondAttribute="bottom" constant="7" id="fQE-4a-ula"/>
+                                    <constraint firstItem="RzL-gh-Ufz" firstAttribute="leading" secondItem="yHZ-MX-wEj" secondAttribute="leading" constant="40" id="pCM-vx-Wlf"/>
+                                    <constraint firstItem="Ixf-HI-ECo" firstAttribute="height" secondItem="RzL-gh-Ufz" secondAttribute="height" id="qdY-wI-lmk"/>
+                                    <constraint firstAttribute="trailing" secondItem="b3N-vg-zo7" secondAttribute="trailing" constant="10" id="r0U-gE-We6"/>
+                                    <constraint firstItem="Ixf-HI-ECo" firstAttribute="centerY" secondItem="RzL-gh-Ufz" secondAttribute="centerY" id="sji-w3-8wa"/>
+                                </constraints>
+                            </customView>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="ycm-Wf-adg">
-                                <rect key="frame" x="20" y="199" width="620" height="306"/>
+                                <rect key="frame" x="20" y="213" width="670" height="306"/>
                                 <subviews>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jsU-Cj-RIy">
-                                        <rect key="frame" x="143" y="225" width="335" height="36"/>
+                                        <rect key="frame" x="168" y="225" width="335" height="36"/>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Welcome to PDF Archiver" id="LDE-IZ-15h">
                                             <font key="font" size="30" name=".AppleSystemUIFont"/>
                                             <color key="textColor" name="DarkGreyBlue"/>
@@ -277,10 +446,10 @@ CA
                                         </textFieldCell>
                                     </textField>
                                     <box horizontalHuggingPriority="249" verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="dHm-Tb-rnI">
-                                        <rect key="frame" x="131" y="217" width="358" height="5"/>
+                                        <rect key="frame" x="131" y="217" width="408" height="5"/>
                                     </box>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2r6-lY-Roq">
-                                        <rect key="frame" x="206" y="195" width="209" height="19"/>
+                                        <rect key="frame" x="231" y="195" width="209" height="19"/>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Thank you for downloading." id="8Xm-l9-Ww4">
                                             <font key="font" size="16" name=".AppleSystemUIFont"/>
                                             <color key="textColor" red="0.21256765720000001" green="0.24246880409999999" blue="0.28628057239999999" alpha="0.67864404965753422" colorSpace="custom" customColorSpace="displayP3"/>
@@ -360,125 +529,6 @@ Tag your document and save  it:</string>
                                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Tpx-oz-ZWL" secondAttribute="trailing" constant="20" symbolic="YES" id="x1A-Ls-BUX"/>
                                 </constraints>
                             </customView>
-                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="Ofp-Uf-gpZ">
-                                <rect key="frame" x="440" y="20" width="200" height="159"/>
-                                <subviews>
-                                    <button wantsLayer="YES" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="JZJ-KJ-qDR">
-                                        <rect key="frame" x="34" y="3" width="152" height="32"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="21" id="bPx-aK-cOL"/>
-                                        </constraints>
-                                        <shadow key="shadow">
-                                            <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </shadow>
-                                        <buttonCell key="cell" type="push" title="Close" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="90s-ei-HMI">
-                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                        </buttonCell>
-                                        <connections>
-                                            <action selector="closeButton:" target="IBN-wm-PS1" id="l95-Cg-MdH"/>
-                                        </connections>
-                                    </button>
-                                    <button wantsLayer="YES" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="xcs-gq-0c2">
-                                        <rect key="frame" x="14" y="44" width="172" height="32"/>
-                                        <shadow key="shadow">
-                                            <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </shadow>
-                                        <buttonCell key="cell" type="push" title="Yearly" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Uao-RJ-bqA">
-                                            <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                        </buttonCell>
-                                        <connections>
-                                            <action selector="yearlySubscriptionButton:" target="IBN-wm-PS1" id="Y9v-1I-004"/>
-                                        </connections>
-                                    </button>
-                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lsR-on-XvE">
-                                        <rect key="frame" x="18" y="113" width="148" height="36"/>
-                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Get 2 weeks free trial:" id="B9y-2y-RyJ">
-                                            <font key="font" metaFont="systemSemibold" size="13"/>
-                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                        </textFieldCell>
-                                    </textField>
-                                    <button wantsLayer="YES" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="WLx-Zu-4fL">
-                                        <rect key="frame" x="14" y="75" width="172" height="32"/>
-                                        <shadow key="shadow">
-                                            <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </shadow>
-                                        <buttonCell key="cell" type="push" title="Monthly" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="SpT-AH-ELy">
-                                            <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                        </buttonCell>
-                                        <connections>
-                                            <action selector="monthlySubscriptionButtonClicked:" target="IBN-wm-PS1" id="Ahf-kY-Tkz"/>
-                                        </connections>
-                                    </button>
-                                    <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="b3f-rz-fr4">
-                                        <rect key="frame" x="174" y="133" width="16" height="16"/>
-                                    </progressIndicator>
-                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="N3B-Lv-5nK">
-                                        <rect key="frame" x="15" y="13" width="15" height="15"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="15" id="cgH-8N-vHB"/>
-                                            <constraint firstAttribute="height" constant="15" id="gQ3-UP-5gA"/>
-                                        </constraints>
-                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSLockLockedTemplate" id="ODH-v2-sKg"/>
-                                    </imageView>
-                                </subviews>
-                                <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="WLx-Zu-4fL" secondAttribute="trailing" constant="20" id="2hq-2h-KNE"/>
-                                    <constraint firstItem="WLx-Zu-4fL" firstAttribute="top" secondItem="lsR-on-XvE" secondAttribute="bottom" constant="10" id="2rI-GJ-VYr"/>
-                                    <constraint firstItem="JZJ-KJ-qDR" firstAttribute="top" secondItem="xcs-gq-0c2" secondAttribute="bottom" constant="20" id="5wE-ZV-ORL"/>
-                                    <constraint firstItem="b3f-rz-fr4" firstAttribute="leading" secondItem="lsR-on-XvE" secondAttribute="trailing" constant="10" id="7eY-Wi-GbM"/>
-                                    <constraint firstItem="JZJ-KJ-qDR" firstAttribute="centerY" secondItem="N3B-Lv-5nK" secondAttribute="centerY" id="CjH-Wo-q5R"/>
-                                    <constraint firstAttribute="bottom" secondItem="JZJ-KJ-qDR" secondAttribute="bottom" constant="10" id="Iws-Yp-bny"/>
-                                    <constraint firstItem="xcs-gq-0c2" firstAttribute="top" secondItem="WLx-Zu-4fL" secondAttribute="bottom" constant="10" id="Kgl-KH-r5Q"/>
-                                    <constraint firstItem="xcs-gq-0c2" firstAttribute="leading" secondItem="Ofp-Uf-gpZ" secondAttribute="leading" constant="20" id="LLE-kH-Fg7"/>
-                                    <constraint firstItem="lsR-on-XvE" firstAttribute="leading" secondItem="Ofp-Uf-gpZ" secondAttribute="leading" constant="20" id="Ldn-6O-kkf"/>
-                                    <constraint firstAttribute="trailing" secondItem="JZJ-KJ-qDR" secondAttribute="trailing" constant="20" id="Mkq-Ho-UgJ"/>
-                                    <constraint firstAttribute="width" constant="200" id="dDo-js-JlF"/>
-                                    <constraint firstItem="JZJ-KJ-qDR" firstAttribute="leading" secondItem="N3B-Lv-5nK" secondAttribute="trailing" constant="10" id="e39-qx-Vt6"/>
-                                    <constraint firstAttribute="trailing" secondItem="b3f-rz-fr4" secondAttribute="trailing" constant="10" id="eQM-8l-a3r"/>
-                                    <constraint firstItem="lsR-on-XvE" firstAttribute="top" secondItem="Ofp-Uf-gpZ" secondAttribute="top" constant="10" id="jGz-ch-nnr"/>
-                                    <constraint firstItem="b3f-rz-fr4" firstAttribute="top" secondItem="Ofp-Uf-gpZ" secondAttribute="top" constant="10" id="lww-6Q-k5v"/>
-                                    <constraint firstAttribute="trailing" secondItem="xcs-gq-0c2" secondAttribute="trailing" constant="20" id="qVj-nj-S40"/>
-                                    <constraint firstItem="N3B-Lv-5nK" firstAttribute="leading" secondItem="Ofp-Uf-gpZ" secondAttribute="leading" constant="15" id="tQW-ed-UZR"/>
-                                    <constraint firstItem="WLx-Zu-4fL" firstAttribute="leading" secondItem="Ofp-Uf-gpZ" secondAttribute="leading" constant="20" id="vhV-Ap-Rkt"/>
-                                </constraints>
-                            </customView>
-                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="yHZ-MX-wEj">
-                                <rect key="frame" x="20" y="20" width="400" height="159"/>
-                                <subviews>
-                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Vlw-kp-khl">
-                                        <rect key="frame" x="28" y="132" width="233" height="17"/>
-                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Automatic renewal and cancellation:" id="GL4-Kh-cUd">
-                                            <font key="font" metaFont="systemSemibold" size="13"/>
-                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                        </textFieldCell>
-                                    </textField>
-                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="b3N-vg-zo7">
-                                        <rect key="frame" x="8" y="10" width="384" height="112"/>
-                                        <textFieldCell key="cell" allowsUndo="NO" sendsActionOnEndEditing="YES" id="Vnc-G1-ChS">
-                                            <font key="font" metaFont="smallSystem"/>
-                                            <string key="title">• Try the app for free! You can try the app in a free trial period of 2 weeks by choosing a subscription. You can try the app without any costs in this period.
-• Your Apple account will be charged for the next subscriptioon period within the final 24 hours of the current period.
-• The subscription will renew automatically if you do not deactivate the renewal in the account setting in iTunes or the App Store at least 24 hours before the end of the subscription period.</string>
-                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                        </textFieldCell>
-                                    </textField>
-                                </subviews>
-                                <constraints>
-                                    <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="b3N-vg-zo7" secondAttribute="bottom" constant="10" id="3vN-Yt-ZeZ"/>
-                                    <constraint firstAttribute="width" constant="400" id="4aQ-Xh-MEj"/>
-                                    <constraint firstItem="Vlw-kp-khl" firstAttribute="top" secondItem="yHZ-MX-wEj" secondAttribute="top" constant="10" id="Dwy-ka-ua3"/>
-                                    <constraint firstItem="b3N-vg-zo7" firstAttribute="leading" secondItem="yHZ-MX-wEj" secondAttribute="leading" constant="10" id="FH8-ju-Zpc"/>
-                                    <constraint firstItem="Vlw-kp-khl" firstAttribute="leading" secondItem="yHZ-MX-wEj" secondAttribute="leading" constant="30" id="GI3-YD-ZXW"/>
-                                    <constraint firstItem="b3N-vg-zo7" firstAttribute="top" secondItem="Vlw-kp-khl" secondAttribute="bottom" constant="10" id="fQE-4a-ula"/>
-                                    <constraint firstAttribute="trailing" secondItem="b3N-vg-zo7" secondAttribute="trailing" constant="10" id="r0U-gE-We6"/>
-                                </constraints>
-                            </customView>
                         </subviews>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="ycm-Wf-adg" secondAttribute="trailing" constant="20" id="0aN-fU-hkU"/>
@@ -506,7 +556,7 @@ Tag your document and save  it:</string>
                 </viewController>
                 <customObject id="ICJ-xA-6Ud" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1209" y="1172.5"/>
+            <point key="canvasLocation" x="1234" y="1221.5"/>
         </scene>
         <!--Tab View Controller-->
         <scene sceneID="5cQ-vG-Wp6">
@@ -1289,7 +1339,7 @@ You can support this project by picking a one-time donation via the buttons on t
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                    <rect key="frame" x="31.5" y="1" width="194" height="17"/>
+                                                                    <rect key="frame" x="32" y="1" width="194" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">

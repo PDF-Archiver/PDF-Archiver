@@ -21,12 +21,23 @@ class OnboardingViewController: NSViewController {
     @IBOutlet weak var monthlySubscriptionButton: NSButton!
     @IBOutlet weak var yearlySubscriptionButton: NSButton!
 
+    @IBAction func privacyButton(_ sender: NSButton) {
+        NSWorkspace.shared.open(URL(string: NSLocalizedString("privacy", comment: "PDF Archiver privacy website"))!)
+    }
+
+    @IBAction func restorePurchasesButton(_ sender: NSButton) {
+        self.dataModel?.store.restorePurchases()
+    }
+
     @IBAction func monthlySubscriptionButtonClicked(_ sender: NSButton) {
         self.dataModel?.store.buyProduct("SUBSCRIPTION_MONTHLY")
     }
 
     @IBAction func yearlySubscriptionButton(_ sender: NSButton) {
         self.dataModel?.store.buyProduct("SUBSCRIPTION_YEARLY")
+    }
+    @IBAction func manageSubscriptionsButtonClicked(_ sender: NSButton) {
+        NSWorkspace.shared.open(URL(string: "https://apps.apple.com/account/subscriptions")!)
     }
 
     @IBAction func closeButton(_ sender: NSButton?) {

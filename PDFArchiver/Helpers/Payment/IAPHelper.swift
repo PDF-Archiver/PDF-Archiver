@@ -74,6 +74,10 @@ extension IAPHelper {
     }
 
     public func restorePurchases() {
+        // restore subscriptions
+        SKPaymentQueue.default().restoreCompletedTransactions()
+
+        // request a new receipt
         self.requestReceipt(forceRefresh: true)
     }
 
@@ -97,7 +101,7 @@ extension IAPHelper {
                 subscriptionExpirationDate > Date() {
 
                 // assume that there is a subscription with a valid expiration date
-                os_log("Receipt expires: %@", log: self.log, type: .debug, subscriptionExpirationDate.description)
+                os_log("Receipt expires: %@", log: self.log, type: .debug, subscriptionExpirationDate.description(with: .current))
                 return true
             }
         }
