@@ -289,7 +289,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A31B530C1FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "PDFArchiver" */;
 			buildPhases = (
-				A3BE5BF120E2A49900AE72CE /* ShellScript */,
+				A3BE5BF120E2A49900AE72CE /* BuildOpenSSL */,
 				A349C8212064E187002633A7 /* BartyCrouch */,
 				A389987A2025078D00C34E0B /* SwiftLint */,
 				A31B52E21FF694B0007A3D14 /* Sources */,
@@ -455,18 +455,19 @@
 			shellPath = /bin/sh;
 			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint autocorrect\n    swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi";
 		};
-		A3BE5BF120E2A49900AE72CE /* ShellScript */ = {
+		A3BE5BF120E2A49900AE72CE /* BuildOpenSSL */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 12;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = BuildOpenSSL;
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#bash \"$PROJECT_DIR\"/scripts/build_openssl.sh\n#!/bin/bash\n# from: https://medium.com/@joncardasis/openssl-swift-everything-you-need-to-know-2a4f9f256462\n\nREPO_FOLDER=\"$PROJECT_DIR\"\nOPENSSL_FOLDER=\"$REPO_FOLDER/PDFArchiver/External/OpenSSL\"\n\n# Create openssl folder structure, hidden at first\nOPENSSL_LIB_FOLDER=\"$OPENSSL_FOLDER/lib\"\nOPENSSL_INCLUDE_FOLDER=\"$OPENSSL_FOLDER/include\"\nmkdir \"$OPENSSL_LIB_FOLDER\" 2> /dev/null\nmkdir \"$OPENSSL_INCLUDE_FOLDER\" 2> /dev/null\n\n# skip building if libs already exist\nif [ -e \"$OPENSSL_LIB_FOLDER/libcrypto.a\" ] && [ -e \"$OPENSSL_LIB_FOLDER/libssl.a\" ] ; then\necho \"all files exists, skipping build\"\nexit 0\nfi\n\n# Build OpenSSL\ncd \"$OPENSSL_FOLDER/src\"\nmake clean\n./Configure darwin64-x86_64-cc\necho \"Building x86 64 static library...\"\nmake >> /dev/null 2>&1\nmake install >> /dev/null 2>&1\n\ncp \"LICENSE\" \"$OPENSSL_FOLDER\"\ncp -r \"include/\" \"$OPENSSL_INCLUDE_FOLDER\"\ncp \"libcrypto.a\" \"$OPENSSL_LIB_FOLDER\"\ncp \"libssl.a\" \"$OPENSSL_LIB_FOLDER\"\n\necho \"Finished OpenSSL generation script.\"\nexit 0";
+			shellScript = "bash \"$PROJECT_DIR\"/scripts/build_openssl.sh\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

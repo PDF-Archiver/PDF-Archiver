@@ -64,8 +64,7 @@ Download it from the Mac App Store:
 Or clone the repository and build it:
 * Downloaded and install [Xcode.app](https://itunes.apple.com/app/xcode/id497799835)
 * Get the project: `git clone https://github.com/PDF-Archiver/PDF-Archiver.git`
-* Build the app: `cd PDF-Archiver && xcodebuild clean build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO`
-* Copy it to your Applications folder: `cp -r "build/Release/PDF Archiver.app" ~/Applications/`
+* Install the app: `cd PDF-Archiver && bash scripts/install_app.sh`
 * Start **PDF Archiver** :rocket:
 
 ## <a name="pro-tips"></a>:mortar_board: Pro Tips
