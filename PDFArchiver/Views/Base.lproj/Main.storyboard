@@ -556,7 +556,7 @@ Tag your document and save  it:</string>
                 </viewController>
                 <customObject id="ICJ-xA-6Ud" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1234" y="1221.5"/>
+            <point key="canvasLocation" x="1225" y="1124"/>
         </scene>
         <!--Tab View Controller-->
         <scene sceneID="5cQ-vG-Wp6">
@@ -589,7 +589,7 @@ Tag your document and save  it:</string>
                 </tabViewController>
                 <customObject id="yEX-ig-sSQ" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="572" y="1838"/>
+            <point key="canvasLocation" x="75" y="1767"/>
         </scene>
         <!--Preferences-->
         <scene sceneID="2JL-n5-vHk">
@@ -798,7 +798,7 @@ Tag your document and save  it:</string>
                 </viewController>
                 <customObject id="CD2-Zr-up1" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1267" y="1790"/>
+            <point key="canvasLocation" x="836" y="1612"/>
         </scene>
         <!--Donation-->
         <scene sceneID="lPK-1g-uGP">
@@ -941,10 +941,12 @@ You can support this project by picking a one-time donation via the buttons on t
                             <constraint firstItem="7Kr-6U-ceM" firstAttribute="leading" secondItem="vFK-Vc-7T6" secondAttribute="leading" constant="30" id="mXN-Vc-vsq"/>
                             <constraint firstAttribute="trailing" secondItem="alz-A4-A8z" secondAttribute="trailing" constant="30" id="ndp-4c-wD7"/>
                             <constraint firstItem="7Kr-6U-ceM" firstAttribute="top" secondItem="vFK-Vc-7T6" secondAttribute="top" constant="40" id="nft-Og-BAW"/>
+                            <constraint firstItem="sL0-ry-Buz" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="vFK-Vc-7T6" secondAttribute="leading" constant="20" symbolic="YES" id="qJe-an-SbH"/>
                             <constraint firstItem="y11-yy-btf" firstAttribute="trailing" secondItem="alz-A4-A8z" secondAttribute="trailing" id="qUS-9R-meC"/>
                             <constraint firstItem="bxz-JO-TV5" firstAttribute="leading" secondItem="7Kr-6U-ceM" secondAttribute="leading" id="voy-Jr-H0w"/>
                             <constraint firstItem="alz-A4-A8z" firstAttribute="top" secondItem="vFK-Vc-7T6" secondAttribute="top" constant="20" id="xvt-TW-iYu"/>
                             <constraint firstAttribute="bottom" secondItem="y11-yy-btf" secondAttribute="bottom" constant="20" id="z7T-rm-Woa"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="eUn-EU-1OI" secondAttribute="trailing" constant="20" symbolic="YES" id="zc8-62-LYc"/>
                         </constraints>
                     </view>
                     <connections>
@@ -957,7 +959,7 @@ You can support this project by picking a one-time donation via the buttons on t
                 </viewController>
                 <customObject id="S14-PJ-KOq" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1141" y="2080"/>
+            <point key="canvasLocation" x="837" y="1912"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="hIz-AP-VOD">
@@ -1339,7 +1341,7 @@ You can support this project by picking a one-time donation via the buttons on t
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                    <rect key="frame" x="32" y="1" width="194" height="17"/>
+                                                                    <rect key="frame" x="31.5" y="1" width="194" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">
