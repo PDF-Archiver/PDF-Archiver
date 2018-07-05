@@ -23,6 +23,12 @@
 
 "payment_thanks" = "Thank you for donating to this project. It helps the development this app.";
 
+/* No comment provided by engineer. */
+"per_month" = "per month";
+
+/* No comment provided by engineer. */
+"per_year" = "per year";
+
 /* PDF Archiver privacy website */
 "privacy" = "https://pdf-archiver.io/privacy";
 

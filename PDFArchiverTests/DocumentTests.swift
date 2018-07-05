@@ -3,11 +3,11 @@
 //  PDFArchiverTests
 //
 //  Created by Julian Kahnert on 29.12.17.
-//  Copyright © 2017 Julian Kahnert. All rights reserved.
+//  Copyright © 2018 Julian Kahnert. All rights reserved.
 //
 
 import XCTest
-@testable import PDF_Archiver
+@testable import PDFArchiver
 
 class DocumentTests: XCTestCase {
 
@@ -19,24 +19,6 @@ class DocumentTests: XCTestCase {
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
-    }
-
-    func testDocumentDescription() {
-        let document = Document(path: URL(fileURLWithPath: "~/Downloads/test.pdf"), delegate: nil)
-        let exampleString = "Das hier ist-ein__öffentlicher TÄst!"
-        document.documentDescription = exampleString
-
-        XCTAssertEqual(document.documentDescription, "das-hier-ist-ein-oeffentlicher-taest")
-        XCTAssertNotEqual(document.documentDescription, exampleString)
-    }
-
-    func testDocumentDescriptionWhitespaces() {
-        let document = Document(path: URL(fileURLWithPath: "~/Downloads/test.pdf"), delegate: nil)
-        let exampleString = " Das hier ist ein Test "
-        document.documentDescription = exampleString
-
-        XCTAssertEqual(document.documentDescription, "das-hier-ist-ein-test")
-        XCTAssertNotEqual(document.documentDescription, exampleString)
     }
 
     func testDocumentNameParsing() {

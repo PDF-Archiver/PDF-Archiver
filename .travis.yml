@@ -9,7 +9,7 @@ osx_image: xcode9.3
 
 script:
   - swiftlint
-  - xcodebuild clean test -project "PDF Archiver.xcodeproj" -scheme "PDF Archiver" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO -quiet | xcpretty && exit ${PIPESTATUS[0]}
+  - xcodebuild clean test -project "PDFArchiver.xcodeproj" -scheme "PDFArchiver" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO -quiet | xcpretty && exit ${PIPESTATUS[0]}
 notifications:
   email:
     on_success: never
