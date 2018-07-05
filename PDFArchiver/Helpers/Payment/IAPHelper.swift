@@ -23,7 +23,9 @@ class IAPHelper: NSObject {
 
     var products = [SKProduct]()
     var receipt: ParsedReceipt?
-    var requestRunning: Int = 0
+    var requestRunning: Int = 0 {
+        didSet { self.delegate?.updateGUI() }
+    }
     weak var delegate: IAPHelperDelegate?
 
     override init() {
@@ -55,9 +57,9 @@ extension IAPHelper {
 
     public func buyProduct(_ product: SKProduct) {
         os_log("Buying %@ ...", log: self.log, type: .info, product.productIdentifier)
-        self.requestStarted()
         let payment = SKPayment(product: product)
         SKPaymentQueue.default().add(payment)
+        self.requestRunning += 1
     }
 
     public func buyProduct(_ productIdentifier: String) {
@@ -69,8 +71,8 @@ extension IAPHelper {
 
     public func requestProducts() {
         self.productsRequest.cancel()
-        self.requestStarted()
         self.productsRequest.start()
+        self.requestRunning += 1
     }
 
     public func restorePurchases() {
@@ -137,11 +139,12 @@ extension IAPHelper {
         } else if appStart {
             os_log("Receipt not found, exit the app!", log: self.log, type: .error)
             exit(173)
+
         } else {
             os_log("Receipt not found, refreshing receipt.", log: self.log, type: .info)
             self.receiptRequest.cancel()
-            self.requestStarted()
             self.receiptRequest.start()
+            self.requestRunning += 1
         }
     }
 }
@@ -164,8 +167,8 @@ extension IAPHelper: SKProductsRequestDelegate {
     }
 
     internal func request(_ request: SKRequest, didFailWithError error: Error) {
-        self.requestStopped()
         os_log("Product Request errored: %@", log: self.log, type: .error, error.localizedDescription)
+        self.requestRunning -= 1
     }
 }
 
@@ -184,7 +187,7 @@ extension IAPHelper: SKPaymentTransactionObserver {
                 self.validateReceipt()
 
                 // fire up a request finished notification
-                self.requestStopped()
+                self.requestRunning -= 1
 
                 // show thanks message
                 if !transaction.payment.productIdentifier.hasPrefix("SUBSCRIPTION_") {
@@ -196,7 +199,7 @@ extension IAPHelper: SKPaymentTransactionObserver {
                 self.delegate?.closeView()
             case .failed:
                 os_log("Payment failed.", log: self.log, type: .debug)
-                self.requestStopped()
+                self.requestRunning -= 1
             case .restored:
                 os_log("Payment restored.", log: self.log, type: .debug)
                 queue.finishTransaction(transaction)
@@ -214,25 +217,11 @@ extension IAPHelper: SKPaymentTransactionObserver {
 extension IAPHelper: SKRequestDelegate {
 
     internal func requestDidFinish(_ request: SKRequest) {
-        self.requestStopped()
+        self.requestRunning -= 1
 
         if request is SKReceiptRefreshRequest {
             // validate and save the receipt
             self.validateReceipt()
         }
-    }
-}
-
-// MARK: - SKRequestDelegate
-
-extension IAPHelper {
-    fileprivate func requestStarted() {
-        self.requestRunning += 1
-        self.delegate?.updateGUI()
-    }
-
-    fileprivate func requestStopped() {
-        self.requestRunning -= 1
-        self.delegate?.updateGUI()
     }
 }
