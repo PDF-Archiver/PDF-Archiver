@@ -12,6 +12,9 @@
 
 "check_document_tags" = "Bitte Dokument Tags prüfen und mindestens einen Tag auswählen.";
 
+/* Donation Number label */
+"donation_number_label" = "Personen haben gespendet.";
+
 "file_already_exists" = "Dateiname existstiert bereits. \nBitte z.B. Dokument Beschreibung verändern.";
 
 /* PDF Archiver imprint website */

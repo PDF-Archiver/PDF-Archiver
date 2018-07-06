@@ -12,6 +12,9 @@
 
 "check_document_tags" = "Doublecheck the document tags and select at least one tag.";
 
+/* Donation Number label */
+"donation_number_label" = "People donated this Year.";
+
 "file_already_exists" = "File with the current filename already exists. \nPlease change e.g. the description.";
 
 /* PDF Archiver imprint website */

@@ -12,13 +12,14 @@ import Foundation
 import os.log
 
 class DonationPreferencesVC: PreferencesVC {
-    @IBOutlet weak var donationNumber: NSTextField!
+    @IBOutlet weak var donationNumberLabel: NSTextField!
     @IBOutlet weak var donationButton1: NSButton!
     @IBOutlet weak var donationButton2: NSButton!
     @IBOutlet weak var donationButton3: NSButton!
     @IBOutlet weak var donationButton: NSButton!
 
     var dataModel: DataModel?
+    private var donationsNumber = "0"
     weak var delegate: PreferencesDelegate?
 
     @IBAction func donationButton1Clicked(_ sender: NSButton) {
@@ -55,7 +56,15 @@ class DonationPreferencesVC: PreferencesVC {
             self.donationButton.image = NSImage(named: .statusAvailable)
         }
 
-        self.updateButtons()
+        // update the buttons
+        DispatchQueue.main.async {
+            self.updateButtons()
+        }
+
+        // update the donation count property
+        DispatchQueue.global().async {
+            self.donationsNumber = getNumberOfDonations()
+        }
     }
 
     override func viewWillDisappear() {
@@ -102,7 +111,7 @@ class DonationPreferencesVC: PreferencesVC {
         }
 
         // update the number of donations
-        self.donationNumber.stringValue = getNumberOfDonations()
+        self.donationNumberLabel.stringValue = "\(self.donationsNumber) \(NSLocalizedString("donation_number_label", comment: "Donation Number label"))"
     }
 
     func buyProduct(identifier: String) {
