@@ -40,7 +40,7 @@ class IAPHelper: NSObject {
         self.productsRequest.delegate = self
         self.receiptRequest.delegate = self
         SKPaymentQueue.default().add(self)
-        
+
         // request products and receipt
         self.requestReceipt(appStart: true)
         self.requestProducts()
@@ -48,7 +48,7 @@ class IAPHelper: NSObject {
             self.requestReceipt(forceRefresh: true)
         }
     }
-    
+
 }
 
 // MARK: - StoreKit API

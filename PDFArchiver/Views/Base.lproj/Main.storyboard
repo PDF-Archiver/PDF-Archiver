@@ -1341,7 +1341,7 @@ You can support this project by picking a one-time donation via the buttons on t
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                    <rect key="frame" x="31.5" y="1" width="194" height="17"/>
+                                                                    <rect key="frame" x="32" y="1" width="194" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">
@@ -1423,8 +1423,8 @@ You can support this project by picking a one-time donation via the buttons on t
                                 </textFieldCell>
                             </textField>
                             <button toolTip="Add documents to the upper list" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="0fO-Ka-cSd" userLabel="Get PDF Button">
-                                <rect key="frame" x="109" y="13" width="103" height="32"/>
-                                <buttonCell key="cell" type="push" title="Add PDFs " bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="O5o-sv-h0r">
+                                <rect key="frame" x="91" y="13" width="139" height="32"/>
+                                <buttonCell key="cell" type="push" title="Add PDF Folder " bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="O5o-sv-h0r">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                     <string key="keyEquivalent">o</string>

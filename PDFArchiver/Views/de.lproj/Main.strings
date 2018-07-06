@@ -77,8 +77,8 @@
 /* Class = "NSDatePicker"; ibShadowedToolTip = "date of the document"; ObjectID = "NiF-3c-nL6"; */
 "NiF-3c-nL6.ibShadowedToolTip" = "Datum des Dokumentes";
 
-/* Class = "NSButtonCell"; title = "Add PDFs "; ObjectID = "O5o-sv-h0r"; */
-"O5o-sv-h0r.title" = "PDFs hinzufügen";
+/* Class = "NSButtonCell"; title = "Add PDF Folder "; ObjectID = "O5o-sv-h0r"; */
+"O5o-sv-h0r.title" = "PDF Ordner hinzufügen";
 
 /* Class = "NSMenuItem"; title = "Minimize"; ObjectID = "OY7-WF-poV"; */
 "OY7-WF-poV.title" = "Minimieren";
