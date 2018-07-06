@@ -215,10 +215,17 @@ CA
                                                 <action selector="updateTagsMenuItem:" target="Ady-hI-5gd" id="9d4-r3-xhX"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Reset Settings" id="N0V-Bp-Pnp">
+                                        <menuItem title="Manage Subscription" id="N0V-Bp-Pnp" userLabel="Manage Subscription">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="resetCacheMenuItem:" target="Ady-hI-5gd" id="Pgs-AT-Nri"/>
+                                                <action selector="showManageSubscriptions:" target="Ady-hI-5gd" id="Ybm-s8-5Zc"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="6ct-R1-jmK"/>
+                                        <menuItem title="Reset Settings" id="wws-V1-htX">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="resetCacheMenuItem:" target="Ady-hI-5gd" id="rHq-Or-ozU"/>
                                             </connections>
                                         </menuItem>
                                     </items>

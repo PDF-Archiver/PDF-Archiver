@@ -71,8 +71,11 @@
 /* Class = "NSTextFieldCell"; title = "Welcome to PDF Archiver"; ObjectID = "LDE-IZ-15h"; */
 "LDE-IZ-15h.title" = "Willkommen bei PDF Archiver";
 
-/* Class = "NSMenuItem"; title = "Reset Settings"; ObjectID = "N0V-Bp-Pnp"; */
-"N0V-Bp-Pnp.title" = "Einstellungen zurücksetzen";
+/* Class = "NSMenuItem"; title = "Reset Settings"; ObjectID = "wws-V1-htX"; */
+"wws-V1-htX.title" = "Einstellungen zurücksetzen";
+
+/* Class = "NSMenuItem"; title = "Manage Subscription"; ObjectID = "N0V-Bp-Pnp"; */
+"N0V-Bp-Pnp.title" = "Abo verwalten";
 
 /* Class = "NSDatePicker"; ibShadowedToolTip = "date of the document"; ObjectID = "NiF-3c-nL6"; */
 "NiF-3c-nL6.ibShadowedToolTip" = "Datum des Dokumentes";
