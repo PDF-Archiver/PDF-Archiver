@@ -79,5 +79,5 @@ func getPDFs(_ sourceFolder: URL) -> [URL] {
         }
     }
 
-    return files
+    return pdfURLs
 }
