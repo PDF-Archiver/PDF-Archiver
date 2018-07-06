@@ -18,14 +18,11 @@ class DataModel: TagsDelegate {
     fileprivate let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "DataModel")
     weak var viewControllerDelegate: ViewControllerDelegate?
     var prefs = Preferences()
-    var documents: [Document]
-    var tags: Set<Tag>
-    var store: IAPHelper
+    var documents = [Document]()
+    var tags = Set<Tag>()
+    var store = IAPHelper()
 
     init() {
-        self.store = IAPHelper()
-        self.documents = []
-        self.tags = []
         self.prefs.delegate = self as TagsDelegate
         self.prefs.load()
     }

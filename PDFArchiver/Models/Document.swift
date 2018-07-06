@@ -40,7 +40,7 @@ class Document: NSObject {
         }
 
         // parse the description or use the filename
-        if var raw = regex_matches(for: "--[\\w\\d-]+__", in: self.name!) {
+        if var raw = regexMatches(for: "--[\\w\\d-]+__", in: self.name!) {
             self.documentDescription = getSubstring(raw[0], startIdx: 2, endIdx: -2)
         } else {
             let newDescription = String(path.lastPathComponent.dropLast(4))
@@ -48,7 +48,7 @@ class Document: NSObject {
         }
 
         // parse the tags
-        if var raw = regex_matches(for: "__[\\w\\d_]+.[pdfPDF]{3}$", in: self.name!) {
+        if var raw = regexMatches(for: "__[\\w\\d_]+.[pdfPDF]{3}$", in: self.name!) {
             // parse the tags of a document
             let documentTagNames = getSubstring(raw[0], startIdx: 2, endIdx: -4).components(separatedBy: "_")
             // get the available tags of the archive

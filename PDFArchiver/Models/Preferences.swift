@@ -123,7 +123,7 @@ struct Preferences {
         // get tags and counts from filename
         var tagsRaw: [String] = []
         for file in files {
-            let matched = regex_matches(for: "_[a-z0-9]+", in: file.lastPathComponent) ?? []
+            let matched = regexMatches(for: "_[a-z0-9]+", in: file.lastPathComponent) ?? []
             for tag in matched {
                 tagsRaw.append(String(tag.dropFirst()))
             }
