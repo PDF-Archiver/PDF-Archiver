@@ -16,6 +16,7 @@ class MainPreferencesVC: PreferencesVC {
     @IBOutlet weak var observedPathTextField: NSTextField!
     @IBOutlet weak var documentSlugifyCheckButton: NSButton!
     @IBOutlet weak var tagsCheckButton: NSButton!
+    @IBOutlet weak var convertPicturesButton: NSButton!
 
     @IBAction func changeArchivePathButton(_ sender: Any) {
         let openPanel = getOpenPanel("Choose an archive folder")
@@ -47,24 +48,19 @@ class MainPreferencesVC: PreferencesVC {
     }
 
     @IBAction func documentSlugifyCheckButtonClicked(_ sender: NSButton) {
-        if sender.state == .on {
-            self.dataModel?.prefs.slugifyNames = true
-        } else {
-            self.dataModel?.prefs.slugifyNames = false
-        }
+        self.dataModel?.prefs.slugifyNames = sender.state == .on
     }
 
     @IBAction func tagsCheckButtonClicked(_ sender: NSButton) {
-        if sender.state == .on {
-            self.dataModel?.prefs.analyseAllFolders = true
-        } else {
-            self.dataModel?.prefs.analyseAllFolders = false
-        }
+        self.dataModel?.prefs.analyseAllFolders = sender.state == .on
 
         // get tags and update the GUI
         self.dataModel?.updateTags {
             self.delegate?.updateGUI()
         }
+    }
+    @IBAction func convertPicturesButtonClicked(_ sender: NSButton) {
+        self.dataModel?.prefs.convertPictures = sender.state == .on
     }
 
     override func viewDidLoad() {
@@ -82,18 +78,13 @@ class MainPreferencesVC: PreferencesVC {
         }
 
         // document slugify
-        if !(self.dataModel?.prefs.slugifyNames ?? false) {
-            self.documentSlugifyCheckButton.state = .off
-        } else {
-            self.documentSlugifyCheckButton.state = .on
-        }
+        self.documentSlugifyCheckButton.state = (self.dataModel?.prefs.slugifyNames ?? true) ? .on : .off
 
         // update tags
-        if !(self.dataModel?.prefs.analyseAllFolders ?? false) {
-            self.tagsCheckButton.state = .off
-        } else {
-            self.tagsCheckButton.state = .on
-        }
+        self.tagsCheckButton.state = (self.dataModel?.prefs.analyseAllFolders ?? false) ? .on : .off
+
+        // convert pictures
+        self.convertPicturesButton.state = (self.dataModel?.prefs.convertPictures ?? false) ? .on : .off
     }
 
     override func viewWillDisappear() {

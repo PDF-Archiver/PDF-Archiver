@@ -14,8 +14,9 @@ struct Preferences {
     fileprivate var _archivePath: URL?
     fileprivate var _observedPath: URL?
     weak var delegate: TagsDelegate?
-    var analyseAllFolders: Bool = true
     var slugifyNames: Bool = true
+    var analyseAllFolders: Bool = false
+    var convertPictures: Bool = false
     var observedPath: URL? {
         // ATTENTION: only set observed path, after an OpenPanel dialog
         get {
@@ -73,6 +74,9 @@ struct Preferences {
         // save the analyseOnlyLatestFolders flag
         UserDefaults.standard.set(self.analyseAllFolders, forKey: "analyseOnlyLatestFolders")
 
+        // save the convertPictures flag
+        UserDefaults.standard.set(self.convertPictures, forKey: "convertPictures")
+
         // save the archive modification date
         if let date = self.archiveModificationDate {
             UserDefaults.standard.set(date, forKey: "archiveModificationDate")
@@ -99,6 +103,9 @@ struct Preferences {
 
         // load the analyseOnlyLatestFolders flag
         self.analyseAllFolders = UserDefaults.standard.bool(forKey: "analyseOnlyLatestFolders")
+
+        // load the convertPictures flag
+        self.convertPictures = UserDefaults.standard.bool(forKey: "convertPictures")
 
         // load the archive modification date
         if let date = UserDefaults.standard.object(forKey: "archiveModificationDate") as? Date {

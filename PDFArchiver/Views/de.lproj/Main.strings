@@ -266,8 +266,8 @@
 /* Class = "NSButtonCell"; title = "Analyse all archive folders"; ObjectID = "k8C-2q-WjN"; */
 "k8C-2q-WjN.title" = "Alle Archiv Ordnern analysieren";
 
-/* Class = "NSTextFieldCell"; title = "Analysing all folders may decrease the app speed for large archives."; ObjectID = "Tlv-Ku-QD7"; */
-"Tlv-Ku-QD7.title" = "Die Analyse aller Ordner kann bei einem großen Archiv die Geschwindigkeit der App negativ beeinflussen.";
+/* Class = "NSTextFieldCell"; title = "This may decrease the app speed for large archives."; ObjectID = "Tlv-Ku-QD7"; */
+"Tlv-Ku-QD7.title" = "Dies kann die Geschwindigkeit der App negativ beeinflussen.";
 
 /* Class = "NSButtonCell"; title = "Level 1"; ObjectID = "dY2-A7-5th"; */
 "dY2-A7-5th.title" = "Level 1";
@@ -299,11 +299,11 @@
 /* Class = "NSTextFieldCell"; title = "0 People donated this Year."; ObjectID = "VSt-mJ-xeB"; */
 "VSt-mJ-xeB.title" = "0 People donated this Year.";
 
-/* Class = "NSButtonCell"; title = "Slugify Document Description"; ObjectID = "DRZ-uz-4ap"; */
-"DRZ-uz-4ap.title" = "Entferne Sonderzeichen aus Beschreibung";
+/* Class = "NSButtonCell"; title = "Convert description to maximize compatibility"; ObjectID = "DRZ-uz-4ap"; */
+"DRZ-uz-4ap.title" = "Maximale Kompatibilität";
 
-/* Class = "NSTextFieldCell"; title = "Document"; ObjectID = "ZlY-Ux-pR6"; */
-"ZlY-Ux-pR6.title" = "Dokument";
+/* Class = "NSTextFieldCell"; title = "Description"; ObjectID = "ZlY-Ux-pR6"; */
+"ZlY-Ux-pR6.title" = "Beschreibung";
 
 /* Class = "NSButtonCell"; title = "Monthly"; ObjectID = "SpT-AH-ELy"; */
 "SpT-AH-ELy.title" = "Monatlich";
@@ -328,3 +328,15 @@
 
 /* Class = "NSButtonCell"; title = "Restore Purchases"; ObjectID = "NF4-Dh-JrT"; */
 "NF4-Dh-JrT.title" = "Käufe wiederherstellen";
+
+/* Class = "NSTextFieldCell"; title = "Removes characters like ä, ö, ü etc. from the document description."; ObjectID = "C3p-Lb-2rS"; */
+"C3p-Lb-2rS.title" = "Entfernt Sonderzeichen (ä, ö, ü etc.) aus der Dokument Beschreibung.";
+
+/* Class = "NSTextFieldCell"; title = "Pictures"; ObjectID = "DHw-bL-Azd"; */
+"DHw-bL-Azd.title" = "Bilder";
+
+/* Class = "NSTextFieldCell"; title = "Convert pictures (jpg etc.) in the observed folder to PDFs and trash the original."; ObjectID = "WIy-5i-bbd"; */
+"WIy-5i-bbd.title" = "Konvertiert Bilder (jpg etc.) in dem überwachten Oderner zu PDFs und legt das Original in den Papierkorb.";
+
+/* Class = "NSButtonCell"; title = "Convert pictures to PDFs"; ObjectID = "dMg-Kx-7ej"; */
+"dMg-Kx-7ej.title" = "Konvertiert Bilder zu PDFs";
