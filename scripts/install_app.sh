@@ -1,11 +1,13 @@
 #!/bin/bash
 
+REPO_FOLDER="$(git rev-parse --show-toplevel)"
+
 # build OpenSSL
-bash scripts/build_openssl.sh
+bash "$REPO_FOLDER/scripts/build_openssl.sh"
 
 # build the app
 xcodebuild clean
-xcodebuild build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+xcodebuild build -quiet -configuration Debug CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
 
 # copy the app
-cp -r "build/Release/PDFArchiver.app" "$HOME/Applications/"
+cp -r "$REPO_FOLDER/build/Debug/PDFArchiver.app" "$HOME/Applications/"

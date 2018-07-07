@@ -167,7 +167,15 @@ class ViewController: NSViewController {
     }
 
     override func viewDidAppear() {
-        let isValid = self.dataModelInstance.store.appUsagePermitted()
+        // test if the app needs subscription validation
+        var isValid: Bool
+        #if RELEASE
+            os_log("RELEASE", log: self.log, type: .debug)
+            isValid = self.dataModelInstance.store.appUsagePermitted()
+        #else
+            os_log("NO RELEASE", log: self.log, type: .debug)
+            isValid = true
+        #endif
 
         // show onboarding view
         if !UserDefaults.standard.bool(forKey: "onboardingShown") || isValid == false {
