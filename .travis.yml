@@ -2,10 +2,6 @@ language: swift
 os: osx
 osx_image: xcode9.2
 
-cache:
-   directories:
-    - $TRAVIS_BUILD_DIR/PDFArchiver/External/OpenSSL/
-
 before_install:
   - brew bundle
   - gem install xcpretty

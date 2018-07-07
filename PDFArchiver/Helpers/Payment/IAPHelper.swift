@@ -42,11 +42,13 @@ class IAPHelper: NSObject {
         SKPaymentQueue.default().add(self)
 
         // request products and receipt
+        #if RELEASE
         self.requestReceipt(appStart: true)
         self.requestProducts()
         if self.appUsagePermitted() != true {
             self.requestReceipt(forceRefresh: true)
         }
+        #endif
     }
 
 }
