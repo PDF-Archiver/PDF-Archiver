@@ -18,26 +18,26 @@ class DonationPreferencesVC: PreferencesVC {
     @IBOutlet weak var donationButton3: NSButton!
     @IBOutlet weak var donationButton: NSButton!
 
-    var dataModel: DataModel?
     private var donationsNumber = "0"
-    weak var delegate: PreferencesDelegate?
+    weak var preferencesDelegate: PreferencesDelegate?
+    weak var iAPHelperDelegate: IAPHelperDelegate?
 
     @IBAction func donationButton1Clicked(_ sender: NSButton) {
-        self.buyProduct(identifier: "DONATION_LEVEL1")
+        self.iAPHelperDelegate?.buyProduct("DONATION_LEVEL1")
     }
 
     @IBAction func donationButton2Clicked(_ sender: NSButton) {
-        self.buyProduct(identifier: "DONATION_LEVEL2")
+        self.iAPHelperDelegate?.buyProduct("DONATION_LEVEL2")
     }
 
     @IBAction func donationButton3Clicked(_ sender: NSButton) {
-        self.buyProduct(identifier: "DONATION_LEVEL3")
+        self.iAPHelperDelegate?.buyProduct("DONATION_LEVEL3")
     }
 
     @IBAction func statusImageClicked(_ sender: Any) {
         if connectedToNetwork(),
-           self.dataModel?.store.products.isEmpty ?? true {
-            self.dataModel?.store.requestProducts()
+           self.iAPHelperDelegate?.products.isEmpty ?? true {
+            self.iAPHelperDelegate?.requestProducts()
         }
     }
 
@@ -46,11 +46,8 @@ class DonationPreferencesVC: PreferencesVC {
         notificationCenter.addObserver(self, selector: #selector(self.masUpdateStatus(available:)),
                                        name: Notification.Name("MASUpdateStatus"), object: nil)
 
-        // get the data model from the main view controller
-        self.dataModel = self.delegate?.getDataModel()
-
         // set the status image
-        if self.dataModel?.store.products.isEmpty ?? true {
+        if self.iAPHelperDelegate?.products.isEmpty ?? true {
             self.donationButton.image = NSImage(named: .statusUnavailable)
         } else {
             self.donationButton.image = NSImage(named: .statusAvailable)
@@ -67,15 +64,11 @@ class DonationPreferencesVC: PreferencesVC {
         }
     }
 
-    override func viewWillDisappear() {
-        // save the current paths + tags
-        self.dataModel?.prefs.save()
-
-        // update the data model of the main view controller
-        if let dataModel = self.dataModel {
-            self.delegate?.setDataModel(dataModel: dataModel)
-        }
-    }
+    // TODO: things should be saved when the MainPrefsVC disappears
+//    override func viewWillDisappear() {
+//        // save the current paths + tags
+//        self.preferencesDelegate?.save()
+//    }
 
     @objc func masUpdateStatus(available: Bool) {
         DispatchQueue.main.async {
@@ -91,7 +84,7 @@ class DonationPreferencesVC: PreferencesVC {
 
     func updateButtons() {
         // set the button label
-        for product in self.dataModel?.store.products ?? [] {
+        for product in self.iAPHelperDelegate?.products ?? [] {
             var selectedButton: NSButton
 
             switch product.productIdentifier {
@@ -112,14 +105,5 @@ class DonationPreferencesVC: PreferencesVC {
 
         // update the number of donations
         self.donationNumberLabel.stringValue = "\(self.donationsNumber) \(NSLocalizedString("donation_number_label", comment: "Donation Number label"))"
-    }
-
-    func buyProduct(identifier: String) {
-        guard let products = self.dataModel?.store.products else { return }
-        for product in products where product.productIdentifier == identifier {
-            os_log("Button clicked to buy: %@", log: self.log, type: .debug, product.description)
-            self.dataModel?.store.buyProduct(product)
-            break
-        }
     }
 }

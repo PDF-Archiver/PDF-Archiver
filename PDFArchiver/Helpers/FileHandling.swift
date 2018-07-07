@@ -52,6 +52,7 @@ func convertToPDF(_ inPath: URL) -> URL {
     return outPath
 }
 
+// TODO: is this really the right place for this function?
 func getPDFs(_ sourceFolder: URL) -> [URL] {
     // get all files in the source folder
     let fileManager = FileManager.default

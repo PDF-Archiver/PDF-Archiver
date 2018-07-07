@@ -15,14 +15,16 @@ extension ViewController {
         if let tabViewController = segue.destinationController as? NSTabViewController {
             for controller in tabViewController.childViewControllers {
                 if let controller = controller as? MainPreferencesVC {
-                    controller.delegate = self
+                    controller.preferencesDelegate = self.dataModelInstance.prefs
                 } else if let controller = controller as? DonationPreferencesVC {
-                    controller.delegate = self
+                    controller.preferencesDelegate = self.dataModelInstance.prefs
+                    controller.iAPHelperDelegate = self.dataModelInstance.store
                 }
             }
 
         } else if let viewController = segue.destinationController as? OnboardingViewController {
-            viewController.delegate = self
+            viewController.dataModelGUIDelegate = self.dataModelInstance
+            viewController.iAPHelperDelegate = self.dataModelInstance.store
         }
     }
 
@@ -31,7 +33,7 @@ extension ViewController {
         self.tagAC.content = self.dataModelInstance.tags
 
         // test if no documents exist in document table view
-        if self.dataModelInstance.documents.count == 0 {
+        if self.dataModelInstance.archive.documents.count == 0 {
             self.pdfContentView.document = nil
             self.datePicker.dateValue = Date()
             self.descriptionField.stringValue = ""
@@ -46,7 +48,7 @@ extension ViewController {
 
             // access the file system and update pdf view
             if updatePDF {
-                self.accessSecurityScope {
+                self.dataModelInstance.prefs.accessSecurityScope {
                     self.pdfContentView.document = PDFDocument(url: selectedDocument.path)
                     self.pdfContentView.goToFirstPage(self)
                 }
@@ -59,12 +61,11 @@ extension ViewController {
         openPanel.beginSheetModal(for: NSApplication.shared.mainWindow!) { response in
             guard response == NSApplication.ModalResponse.OK else { return }
             self.dataModelInstance.prefs.observedPath = openPanel.url!
-            self.dataModelInstance.addDocuments(paths: openPanel.urls)
+            self.dataModelInstance.addUntaggedDocuments(paths: openPanel.urls)
 
             // get tags and update the GUI
-            self.dataModelInstance.updateTags {
-                self.updateGUI()
-            }
+            self.dataModelInstance.updateTags()
+            self.updateGUI()
         }
     }
 
@@ -75,28 +76,25 @@ extension ViewController {
             return
         }
 
-        guard let path = self.dataModelInstance.prefs.archivePath else {
+        guard let _ = self.dataModelInstance.prefs.archivePath else {
             dialogOK(messageKey: "no_archive", infoKey: "select_preferences", style: .critical)
             return
         }
 
-        // access the file system
-        self.accessSecurityScope {
-            let result = selectedDocument.rename(archivePath: path)
+        let result = self.dataModelInstance.saveDocumentInArchive(document: selectedDocument)
 
-            if result {
-                // update the array controller
-                self.documentAC.content = self.dataModelInstance.documents
+        if result {
+            // update the array controller
+            self.documentAC.content = self.dataModelInstance.archive.documents
 
-                // select a new document, which is not already done
-                var newIndex = 0
-                var documents = (self.documentAC.arrangedObjects as? [Document]) ?? []
-                for idx in 0...documents.count-1 where documents[idx].documentDone == "" {
-                    newIndex = idx
-                    break
-                }
-                self.documentAC.setSelectionIndex(newIndex)
+            // select a new document, which is not already done
+            var newIndex = 0
+            var documents = (self.documentAC.arrangedObjects as? [Document]) ?? []
+            for idx in 0...documents.count-1 where documents[idx].documentDone == "" {
+                newIndex = idx
+                break
             }
+            self.documentAC.setSelectionIndex(newIndex)
         }
     }
 
@@ -152,8 +150,12 @@ extension ViewController {
                 os_log("Changes in archive folder detected, update tags.", log: self.log, type: .debug)
 
                 // get tags and update the GUI
-                self.dataModelInstance.updateTags {
-                    self.updateGUI()
+                DispatchQueue.global(qos: .userInitiated).async {
+                    self.dataModelInstance.updateTags()
+
+                    DispatchQueue.main.async {
+                        self.updateGUI()
+                    }
                 }
             }
         }
@@ -229,26 +231,9 @@ extension ViewController: ViewControllerDelegate {
     func setDocuments(documents: [Document]) {
         self.documentAC.content = documents
     }
-
-    func accessSecurityScope(closure: () -> Void) {
-        // start accessing the file system
-        if !(self.dataModelInstance.prefs.observedPath?.startAccessingSecurityScopedResource() ?? false) {
-            os_log("Accessing Security Scoped Resource of the observed path failed.", log: self.log, type: .fault)
-        }
-        if !(self.dataModelInstance.prefs.archivePath?.startAccessingSecurityScopedResource() ?? false) {
-            os_log("Accessing Security Scoped Resource of the archive path failed.", log: self.log, type: .fault)
-        }
-
-        // run the used code
-        closure()
-
-        // stop accessing the file system
-        self.dataModelInstance.prefs.archivePath?.stopAccessingSecurityScopedResource()
-        self.dataModelInstance.prefs.observedPath?.stopAccessingSecurityScopedResource()
-    }
 }
 
-extension ViewController: PreferencesDelegate {
+extension ViewController: PreferencesVCDelegate {
     func updateGUI() {
         self.updateView(updatePDF: true)
     }

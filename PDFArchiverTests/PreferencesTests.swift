@@ -9,7 +9,7 @@
 import XCTest
 @testable import PDFArchiver
 
-class PreferencesTests: XCTestCase, TagsDelegate {
+class PreferencesTests: XCTestCase, DataModelTagsDelegate {
     var tagList = Set<Tag>()
 
     func setTagList(tagList: Set<Tag>) {

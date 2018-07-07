@@ -11,7 +11,6 @@ import os.log
 
 class Document: NSObject {
     fileprivate let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "Document")
-    weak var delegate: TagsDelegate?
     // structure for PDF documents on disk
     var path: URL
     @objc var name: String?
@@ -26,9 +25,8 @@ class Document: NSObject {
     }
     var documentTags: [Tag]?
 
-    init(path: URL, delegate: TagsDelegate?) {
+    init(path: URL, availableTags: inout Set<Tag>) {
         self.path = path
-        self.delegate = delegate
 
         // create a filename and rename the document
         self.name = String(path.lastPathComponent)
@@ -52,7 +50,6 @@ class Document: NSObject {
             // parse the tags of a document
             let documentTagNames = getSubstring(raw[0], startIdx: 2, endIdx: -4).components(separatedBy: "_")
             // get the available tags of the archive
-            var availableTags = self.delegate?.getTagList() ?? []
 
             self.documentTags = [Tag]()
             for documentTagName in documentTagNames {
@@ -70,9 +67,6 @@ class Document: NSObject {
                     self.documentTags!.append(newTag)
                 }
             }
-
-            // update the tag list
-            self.delegate?.setTagList(tagList: availableTags)
         }
     }
 

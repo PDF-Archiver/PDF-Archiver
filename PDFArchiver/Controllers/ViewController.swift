@@ -11,7 +11,6 @@ import os.log
 
 protocol ViewControllerDelegate: class {
     func setDocuments(documents: [Document])
-    func accessSecurityScope(closure: () -> Void)
 }
 
 class ViewController: NSViewController {
@@ -105,18 +104,18 @@ class ViewController: NSViewController {
         self.dataModelInstance.viewControllerDelegate = self
 
         // access the file system and get the new documents
-        if let observedPath = self.dataModelInstance.prefs.observedPath {
-            if !observedPath.startAccessingSecurityScopedResource() {
-                os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-                return
-            }
-            self.dataModelInstance.addDocuments(paths: [observedPath])
-            observedPath.stopAccessingSecurityScopedResource()
-        }
+//        if let observedPath = self.dataModelInstance.prefs.observedPath {
+//            if !observedPath.startAccessingSecurityScopedResource() {
+//                os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
+//                return
+//            }
+//            self.dataModelInstance.addDocuments(paths: [observedPath])
+//            observedPath.stopAccessingSecurityScopedResource()
+//        }
 
         // set the array controller
         self.tagAC.content = self.dataModelInstance.tags
-        self.documentAC.content = self.dataModelInstance.documents
+        self.documentAC.content = self.dataModelInstance.archive.documents
 
         // add sorting to tag fields
         self.documentAC.sortDescriptors = [NSSortDescriptor(key: "documentDone", ascending: false),

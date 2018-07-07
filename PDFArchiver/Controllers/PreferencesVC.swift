@@ -9,7 +9,7 @@
 import Cocoa
 import os.log
 
-protocol PreferencesDelegate: class {
+protocol PreferencesVCDelegate: class {
     func updateGUI()
     func setDataModel(dataModel: DataModel)
     func getDataModel() -> DataModel
