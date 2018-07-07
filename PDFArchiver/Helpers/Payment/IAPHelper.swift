@@ -133,7 +133,7 @@ extension IAPHelper {
             let isReachable = try? receiptUrl.checkResourceIsReachable(),
             isReachable,
             forceRefresh == false {
-            os_log("Receipt already found, skipping receipt refresh (isReachable: %@, forceRefresh: %@).", log: self.log, type: .info, isReachable, forceRefresh)
+            os_log("Receipt already found, skipping receipt refresh (isReachable: %@, forceRefresh: %@).", log: self.log, type: .info, isReachable.description, forceRefresh.description)
             self.validateReceipt()
 
         } else if appStart {
