@@ -47,5 +47,5 @@ func getNumberOfDonations() -> String {
         // the URL was bad!
     }
 
-    return contents
+    return contents.replacingOccurrences(of: "\n", with: "", options: .regularExpression)
 }
