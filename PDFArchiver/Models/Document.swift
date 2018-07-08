@@ -50,19 +50,17 @@ class Document: NSObject {
         if var raw = regexMatches(for: "__[\\w\\d_]+.[pdfPDF]{3}$", in: self.name!) {
             // parse the tags of a document
             let documentTagNames = getSubstring(raw[0], startIdx: 2, endIdx: -4).components(separatedBy: "_")
-            // get the available tags of the archive
 
+            // get the available tags of the archive
             self.documentTags = [Tag]()
             for documentTagName in documentTagNames {
                 if availableTags.contains(where: { $0.name == documentTagName }) {
-                    os_log("Tag already found in archive tags.", log: self.log, type: .debug)
                     for availableTag in availableTags where availableTag.name == documentTagName {
                         availableTag.count += 1
                         self.documentTags!.append(availableTag)
                         break
                     }
                 } else {
-                    os_log("Tag not found in archive tags.", log: self.log, type: .debug)
                     let newTag = Tag(name: documentTagName, count: 1)
                     availableTags.insert(newTag)
                     self.documentTags!.append(newTag)

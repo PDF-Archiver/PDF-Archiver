@@ -32,8 +32,7 @@ class Preferences: PreferencesDelegate {
     var slugifyNames: Bool = true
     var analyseAllFolders: Bool = false {
         didSet {
-            self.archiveDelegate?.updateDocuments()
-            self.dataModelTagsDelegate?.updateTags()
+            self.archiveDelegate?.updateDocumentsAndTags()
         }
     }
     var convertPictures: Bool = false
@@ -75,7 +74,7 @@ class Preferences: PreferencesDelegate {
             self._archivePath = newValue
 
             // update the tags in archive
-            self.archiveDelegate?.updateDocuments()
+            self.archiveDelegate?.updateDocumentsAndTags()
         }
     }
 
@@ -135,9 +134,6 @@ class Preferences: PreferencesDelegate {
         if let date = UserDefaults.standard.object(forKey: "archiveModificationDate") as? Date {
             self.archiveModificationDate = date
         }
-
-        // update the tags and documents
-        self.archiveDelegate?.updateDocuments()
     }
 
     func accessSecurityScope(closure: () -> Void) {

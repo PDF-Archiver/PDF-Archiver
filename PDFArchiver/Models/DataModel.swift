@@ -110,22 +110,17 @@ class DataModel {
     }
 
     func addUntaggedDocuments(paths: [URL]) {
-        // clear old documents
-        self.untaggedDocuments = []
-
         // access the file system and add documents to the data model
         self.prefs.accessSecurityScope {
+            var documents = [Document]()
             for path in paths {
                 let files = getPDFs(path)
                 for file in files {
-                    self.untaggedDocuments.append(Document(path: file, availableTags: &self.tags))
+                    documents.append(Document(path: file, availableTags: &self.tags))
                 }
             }
+            self.untaggedDocuments = documents
         }
-
-        // update the tags
-        self.updateTags()
-        self.viewControllerDelegate?.updateView(updatePDF: false)
     }
 
     func setDocumentDescription(document: Document, description: String) {

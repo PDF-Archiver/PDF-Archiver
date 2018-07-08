@@ -11,7 +11,7 @@ import os.log
 import Quartz
 
 protocol ArchiveDelegate: class {
-    func updateDocuments()
+    func updateDocumentsAndTags()
 }
 
 class Archive: ArchiveDelegate {
@@ -20,7 +20,7 @@ class Archive: ArchiveDelegate {
     weak var preferencesDelegate: PreferencesDelegate?
     weak var dataModelTagsDelegate: DataModelTagsDelegate?
 
-    func updateDocuments() {
+    func updateDocumentsAndTags() {
         guard let archivePath = self.preferencesDelegate?.archivePath else {
             os_log("No archive path found.", log: self.log, type: .fault)
             return

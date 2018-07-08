@@ -18,6 +18,7 @@ protocol IAPHelperDelegate: class {
     func buyProduct(_ product: SKProduct)
     func buyProduct(_ productIdentifier: String)
     func appUsagePermitted() -> Bool
+    func preSubscriptionPurchase() -> Bool
     func restorePurchases()
 }
 
@@ -96,9 +97,7 @@ extension IAPHelper {
               let originalAppVersion = receipt.originalAppVersion else { return false }
 
         // test if the user has bought the app before the subscription model started
-        if originalAppVersion == "1.0" ||
-            originalAppVersion.hasPrefix("1.1.") ||
-            originalAppVersion.hasPrefix("1.2.") {
+        if preSubscriptionPurchase() {
             return true
         }
 
@@ -117,6 +116,15 @@ extension IAPHelper {
         }
 
         return false
+    }
+
+    public func preSubscriptionPurchase() -> Bool {
+        guard let receipt = self.receipt,
+            let originalAppVersion = receipt.originalAppVersion else { return false }
+
+        return originalAppVersion == "1.0" ||
+            originalAppVersion.hasPrefix("1.1.") ||
+            originalAppVersion.hasPrefix("1.2.")
     }
 
     fileprivate func validateReceipt() {
