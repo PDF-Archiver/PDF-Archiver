@@ -124,16 +124,12 @@ class ViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // MARK: - delegates
+        // set delegates
         self.tagSearchField.delegate = self
         self.specificationField.delegate = self
         self.dataModelInstance.viewControllerDelegate = self
 
-        // set the array controller
-        self.tagAC.content = self.dataModelInstance.tags
-        self.documentAC.content = self.dataModelInstance.untaggedDocuments
-
-        // add sorting to tag fields
+        // add sorting
         self.documentAC.sortDescriptors = [NSSortDescriptor(key: "documentDone", ascending: false),
                                            NSSortDescriptor(key: "name", ascending: true)]
         self.tagTableView.sortDescriptors = [NSSortDescriptor(key: "count", ascending: false),
@@ -150,9 +146,7 @@ class ViewController: NSViewController {
 
         // update the view after all the settigns
         self.documentAC.setSelectionIndex(0)
-    }
 
-    override func viewWillAppear() {
         // set background color of the view
         self.view.wantsLayer = true
         self.view.layer?.backgroundColor = NSColor(named: NSColor.Name("OffWhite"))!.cgColor
@@ -176,6 +170,12 @@ class ViewController: NSViewController {
         self.tagSearchView.wantsLayer = true
         self.tagSearchView.layer?.backgroundColor = NSColor(named: NSColor.Name("DarkGreyBlue"))!.withAlphaComponent(0.1).cgColor
         self.tagSearchView.layer?.cornerRadius = cornerRadius
+    }
+
+    override func viewWillAppear() {
+        // set the array controller
+        self.tagAC.content = self.dataModelInstance.tags
+        self.documentAC.content = self.dataModelInstance.untaggedDocuments
     }
 
     override func viewDidAppear() {
