@@ -40,23 +40,19 @@ extension ViewController {
                 return
         }
 
+        // get the index of selected document
+        let idx = self.documentAC.selectionIndex
+
         // move the document to trash
-        self.accessSecurityScope {
-            let fileManager = FileManager.default
-            do {
-                try fileManager.trashItem(at: selectedDocument.path, resultingItemURL: nil)
-            } catch let error {
-                os_log("Can not trash file: %@", log: self.log, type: .debug, error.localizedDescription)
-                return
-            }
-        }
+        // TODO: feedback if the document can not be trashed
+        _ = self.dataModelInstance.trashDocument(selectedDocument)
 
         // update the GUI
-        self.documentAC.selectNext(self)
-        if let idx = self.dataModelInstance.documents.index(where: { $0 == selectedDocument }) {
-            self.dataModelInstance.documents.remove(at: idx)
+        if idx < self.dataModelInstance.untaggedDocuments.count {
+            self.documentAC.setSelectionIndex(idx)
+        } else {
+            self.documentAC.setSelectionIndex(self.dataModelInstance.untaggedDocuments.count - 1)
         }
-        self.documentAC.content = self.dataModelInstance.documents
     }
 
     // MARK: - Help Menu
@@ -68,9 +64,7 @@ extension ViewController {
         os_log("Setting archive path, e.g. update tag list.", log: self.log, type: .debug)
 
         // get tags and update the GUI
-        self.dataModelInstance.updateTags {
-            self.updateView(updatePDF: true)
-        }
+        self.dataModelInstance.updateTags()
     }
 
     @IBAction func resetCacheMenuItem(_ sender: NSMenuItem) {

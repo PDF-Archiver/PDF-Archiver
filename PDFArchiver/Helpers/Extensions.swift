@@ -45,3 +45,17 @@ extension String {
             .joined(separator: separator)
     }
 }
+
+// remove document from array
+extension Array where Element == Document {
+
+    @discardableResult
+    mutating func remove(_ element: Document) -> Document? {
+        if let idx = self.index(of: element) {
+            return self.remove(at: idx)
+        } else {
+            return nil
+        }
+    }
+
+}

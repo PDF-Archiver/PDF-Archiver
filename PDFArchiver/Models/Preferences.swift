@@ -9,13 +9,33 @@
 import Foundation
 import os.log
 
-struct Preferences {
+protocol PreferencesDelegate: class {
+    var archivePath: URL? { get set }
+    var observedPath: URL? { get set }
+    var archiveModificationDate: Date? { get set }
+
+    var slugifyNames: Bool { get set }
+    var analyseAllFolders: Bool { get set }
+    var convertPictures: Bool { get set }
+
+    func accessSecurityScope(closure: () -> Void)
+    func save()
+}
+
+class Preferences: PreferencesDelegate {
     fileprivate let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "DataModel")
     fileprivate var _archivePath: URL?
     fileprivate var _observedPath: URL?
-    weak var delegate: TagsDelegate?
+    weak var dataModelTagsDelegate: DataModelTagsDelegate?
+    weak var archiveDelegate: ArchiveDelegate?
+    var archiveModificationDate: Date?
     var slugifyNames: Bool = true
-    var analyseAllFolders: Bool = false
+    var analyseAllFolders: Bool = false {
+        didSet {
+            self.archiveDelegate?.updateDocuments()
+            self.dataModelTagsDelegate?.updateTags()
+        }
+    }
     var convertPictures: Bool = false
     var observedPath: URL? {
         // ATTENTION: only set observed path, after an OpenPanel dialog
@@ -31,8 +51,11 @@ struct Preferences {
             } catch let error as NSError {
                 os_log("Observed path bookmark Write Fails: %@", log: self.log, type: .error, error.description)
             }
-
             self._observedPath = newValue
+
+            // update the untagged documents
+            self.dataModelTagsDelegate?.addUntaggedDocuments(paths: [newValue])
+            self.dataModelTagsDelegate?.updateTags()
         }
     }
     var archivePath: URL? {
@@ -49,18 +72,19 @@ struct Preferences {
             } catch let error as NSError {
                 os_log("Bookmark Write Fails: %@", log: self.log, type: .error, error.description)
             }
-
             self._archivePath = newValue
+
+            // update the tags in archive
+            self.archiveDelegate?.updateDocuments()
         }
     }
-    var archiveModificationDate: Date?
 
     func save() {
         // there is no need to save the archive/observed path here - see the setter of the variable
 
         // save the last tags (with count > 0)
         var tags: [String: Int] = [:]
-        for tag in self.delegate?.getTagList() ?? Set<Tag>() {
+        for tag in self.dataModelTagsDelegate?.getTagList() ?? Set<Tag>() {
             tags[tag.name] = tag.count
         }
         for (name, count) in tags where count < 1 {
@@ -83,12 +107,12 @@ struct Preferences {
         }
     }
 
-    mutating func load() {
+    func load() {
         // load the archive path via the security scope bookmark [https://stackoverflow.com/a/35863729]
-        self._archivePath = self.accessSecurityScope(scopeBookmarkName: "securityScopeBookmark")
+        self._archivePath = self.getBookmarkSecurityScope(scopeBookmarkName: "securityScopeBookmark")
 
         // load the observed path via the security scope bookmark [https://stackoverflow.com/a/35863729]
-        self._observedPath = self.accessSecurityScope(scopeBookmarkName: "observedPathWithSecurityScope")
+        self._observedPath = self.getBookmarkSecurityScope(scopeBookmarkName: "observedPathWithSecurityScope")
 
         // load archive tags
         guard let tagsDict = (UserDefaults.standard.dictionary(forKey: "tags") ?? [:]) as? [String: Int] else { return }
@@ -96,7 +120,7 @@ struct Preferences {
         for (name, count) in tagsDict {
             newTagList.insert(Tag(name: name, count: count))
         }
-        self.delegate?.setTagList(tagList: newTagList)
+        self.dataModelTagsDelegate?.setTagList(tagList: newTagList)
 
         // load the noSlugify flag
         self.slugifyNames = !(UserDefaults.standard.bool(forKey: "noSlugify"))
@@ -111,45 +135,31 @@ struct Preferences {
         if let date = UserDefaults.standard.object(forKey: "archiveModificationDate") as? Date {
             self.archiveModificationDate = date
         }
+
+        // update the tags and documents
+        self.archiveDelegate?.updateDocuments()
     }
 
-    mutating func getArchiveTags() {
-        guard let path = self._archivePath else {
-            os_log("No archive path selected, could not get old tags.", log: self.log, type: .error)
-            return
+    func accessSecurityScope(closure: () -> Void) {
+        // start accessing the file system
+        if !(self._observedPath?.startAccessingSecurityScopedResource() ?? false) {
+            os_log("Accessing Security Scoped Resource of the observed path failed.", log: self.log, type: .fault)
         }
-        // access the file system
-        if !(self.archivePath?.startAccessingSecurityScopedResource() ?? false) {
-            os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-            return
+        if !(self._archivePath?.startAccessingSecurityScopedResource() ?? false) {
+            os_log("Accessing Security Scoped Resource of the archive path failed.", log: self.log, type: .fault)
         }
 
-        // get all PDF files from the archive
-        let files = getPDFFiles(path)
-
-        // get tags and counts from filename
-        var tagsRaw: [String] = []
-        for file in files {
-            let matched = regexMatches(for: "_[a-z0-9]+", in: file.lastPathComponent) ?? []
-            for tag in matched {
-                tagsRaw.append(String(tag.dropFirst()))
-            }
-        }
-
-        let tagsDict = tagsRaw.reduce(into: [:]) { counts, word in counts[word, default: 0] += 1 }
-        var newTagList = Set<Tag>()
-        for (name, count) in tagsDict {
-            newTagList.insert(Tag(name: name, count: count))
-        }
-        self.delegate?.setTagList(tagList: newTagList)
+        // run the used code
+        closure()
 
         // stop accessing the file system
-        self.archivePath?.stopAccessingSecurityScopedResource()
-
+        self._archivePath?.stopAccessingSecurityScopedResource()
+        self._observedPath?.stopAccessingSecurityScopedResource()
     }
 
     // MARK: private functions
-    fileprivate func accessSecurityScope(scopeBookmarkName: String) -> URL? {
+
+    fileprivate func getBookmarkSecurityScope(scopeBookmarkName: String) -> URL? {
         // load the archive path via the security scope bookmark [https://stackoverflow.com/a/35863729]
         if let bookmarkData = UserDefaults.standard.object(forKey: scopeBookmarkName) as? Data {
             do {
@@ -166,36 +176,32 @@ struct Preferences {
         return nil
     }
 
-    fileprivate mutating func getPDFFiles(_ path: URL) -> [URL] {
-        // get year archive folders
-        var folders = [URL]()
-        do {
+    fileprivate func archiveModified() -> Bool {
+        if let archivePath = self.archivePath,
+           let archiveModificationDate = self.archiveModificationDate {
             let fileManager = FileManager.default
-            folders = try fileManager.contentsOfDirectory(at: path, includingPropertiesForKeys: [.nameKey], options: .skipsHiddenFiles)
-                // only show folders with year numbers
-                .filter({ URL(fileURLWithPath: $0.path).lastPathComponent.prefix(2) == "20" || URL(fileURLWithPath: $0.path).lastPathComponent.prefix(2) == "19" })
-                // sort folders by year
-                .sorted(by: { $0.path > $1.path })
+            var newArchiveModificationDate: Date?
+            do {
+                // get the attributes of the current archive folder
+                let attributes = try fileManager.attributesOfItem(atPath: archivePath.path)
+                newArchiveModificationDate = attributes[FileAttributeKey.modificationDate] as? Date
+            } catch let error {
+                os_log("Folder not found: %@ \nUpdate tags anyway.", log: self.log, type: .debug, error.localizedDescription)
+            }
 
-            // update the archiveModificationDate
-            let attributes = try fileManager.attributesOfItem(atPath: path.path)
-            self.archiveModificationDate = attributes[FileAttributeKey.modificationDate] as? Date
+            // compare dates here
+            if let newArchiveModificationDate = newArchiveModificationDate,
+                archiveModificationDate == newArchiveModificationDate {
+                os_log("No changes in archive folder, skipping tag update.", log: self.log, type: .debug)
+                return false
 
-        } catch {
-            os_log("An error occured while getting the archive year folders.")
+            } else {
+                os_log("Changes in archive folder detected, update tags.", log: self.log, type: .debug)
+                return true
+            }
         }
 
-        // only use the latest two year folders by default
-        if !(self.analyseAllFolders) {
-            folders = Array(folders.prefix(2))
-        }
-
-        // get all PDF files from this year and the last years
-        var files = [URL]()
-        for folder in folders {
-            files.append(contentsOf: getPDFs(folder))
-        }
-
-        return files
+        os_log("Archive path (%@) or modification date (%@) not found!", log: self.log, type: .debug, self.archivePath?.description ?? "", self.archiveModificationDate?.description ?? "")
+        return true
     }
 }

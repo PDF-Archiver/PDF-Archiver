@@ -39,7 +39,7 @@ class DocumentTests: XCTestCase {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let date = dateFormatter.date(from: "2010-05-12")
-        XCTAssertEqual(document.documentDate, date)
+        XCTAssertEqual(document.date, date)
     }
 
     func testDocumentRenaming() {

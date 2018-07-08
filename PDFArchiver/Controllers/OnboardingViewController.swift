@@ -8,9 +8,14 @@
 
 import Cocoa
 
+protocol OnboardingVCDelegate: class {
+    func updateGUI()
+    func closeOnboardingView()
+}
+
 class OnboardingViewController: NSViewController {
-    weak var delegate: PreferencesDelegate?
-    var dataModel: DataModel?
+    weak var iAPHelperDelegate: IAPHelperDelegate?
+    weak var viewControllerDelegate: ViewControllerDelegate?
 
     @IBOutlet weak var baseView: NSView!
     @IBOutlet weak var customView1: NSView!
@@ -26,15 +31,15 @@ class OnboardingViewController: NSViewController {
     }
 
     @IBAction func restorePurchasesButton(_ sender: NSButton) {
-        self.dataModel?.store.restorePurchases()
+        self.iAPHelperDelegate?.restorePurchases()
     }
 
     @IBAction func monthlySubscriptionButtonClicked(_ sender: NSButton) {
-        self.dataModel?.store.buyProduct("SUBSCRIPTION_MONTHLY")
+        self.iAPHelperDelegate?.buyProduct("SUBSCRIPTION_MONTHLY")
     }
 
     @IBAction func yearlySubscriptionButton(_ sender: NSButton) {
-        self.dataModel?.store.buyProduct("SUBSCRIPTION_YEARLY")
+        self.iAPHelperDelegate?.buyProduct("SUBSCRIPTION_YEARLY")
     }
     @IBAction func manageSubscriptionsButtonClicked(_ sender: NSButton) {
         NSWorkspace.shared.open(URL(string: "https://apps.apple.com/account/subscriptions")!)
@@ -42,11 +47,6 @@ class OnboardingViewController: NSViewController {
 
     @IBAction func closeButton(_ sender: NSButton?) {
         self.dismiss(self)
-
-        // test if user has purchased the app, close if not
-        if !(self.dataModel?.store.appUsagePermitted() ?? false) {
-            self.delegate?.closeApp()
-        }
     }
 
     override func viewDidLoad() {
@@ -54,12 +54,6 @@ class OnboardingViewController: NSViewController {
 
         // Do view setup here.
         UserDefaults.standard.set(true, forKey: "onboardingShown")
-
-        // get the data model from the main view controller
-        self.dataModel = self.delegate?.getDataModel()
-
-        // IAPHelper delegate
-        self.dataModel?.store.delegate = self
 
         // update the GUI
         self.updateGUI()
@@ -85,13 +79,22 @@ class OnboardingViewController: NSViewController {
         self.customView3.layer?.backgroundColor = customViewColor
         self.customView3.layer?.cornerRadius = cornerRadius
     }
+
+    override func viewWillDisappear() {
+        // test if user has purchased the app, close if not
+        if !(self.iAPHelperDelegate?.appUsagePermitted() ?? false) {
+            self.viewControllerDelegate?.closeApp()
+        }
+    }
 }
 
-extension OnboardingViewController: IAPHelperDelegate {
+// MARK: - OnboardingVCDelegate
+
+extension OnboardingViewController: OnboardingVCDelegate {
     func updateGUI() {
         DispatchQueue.main.async {
             // update the locked/unlocked indicator
-            if let appUsagePermitted = self.dataModel?.store.appUsagePermitted(),
+            if let appUsagePermitted = self.iAPHelperDelegate?.appUsagePermitted(),
                 appUsagePermitted {
                 self.lockIndicator.image = NSImage(named: NSImage.Name("NSLockUnlockedTemplate"))
 
@@ -99,7 +102,7 @@ extension OnboardingViewController: IAPHelperDelegate {
                 self.lockIndicator.image = NSImage(named: NSImage.Name("NSLockLockedTemplate"))
 
                 // update the progress indicator
-                if (self.dataModel?.store.requestRunning ?? 0) != 0 {
+                if (self.iAPHelperDelegate?.requestRunning ?? 0) != 0 {
                     self.progressIndicator.startAnimation(self)
                 } else {
                     self.progressIndicator.stopAnimation(self)
@@ -107,7 +110,7 @@ extension OnboardingViewController: IAPHelperDelegate {
             }
 
             // set the button label
-            for product in self.dataModel?.store.products ?? [] {
+            for product in self.iAPHelperDelegate?.products ?? [] {
                 var selectedButton: NSButton
 
                 switch product.productIdentifier {
@@ -129,7 +132,7 @@ extension OnboardingViewController: IAPHelperDelegate {
         }
     }
 
-    func closeView() {
+    func closeOnboardingView() {
         DispatchQueue.main.async {
             self.closeButton(nil)
         }
