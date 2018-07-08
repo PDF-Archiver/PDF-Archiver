@@ -40,14 +40,19 @@ extension ViewController {
                 return
         }
 
+        // get the index of selected document
+        let idx = self.documentAC.selectionIndex
+
         // move the document to trash
         // TODO: feedback if the document can not be trashed
         _ = self.dataModelInstance.trashDocument(selectedDocument)
 
         // update the GUI
-        self.documentAC.selectNext(self)
-        self.dataModelInstance.archive.documents.remove(selectedDocument)
-        self.documentAC.content = self.dataModelInstance.untaggedDocuments
+        if idx < self.dataModelInstance.untaggedDocuments.count {
+            self.documentAC.setSelectionIndex(idx)
+        } else {
+            self.documentAC.setSelectionIndex(self.dataModelInstance.untaggedDocuments.count - 1)
+        }
     }
 
     // MARK: - Help Menu
@@ -60,7 +65,6 @@ extension ViewController {
 
         // get tags and update the GUI
         self.dataModelInstance.updateTags()
-        self.updateView(updatePDF: false)
     }
 
     @IBAction func resetCacheMenuItem(_ sender: NSMenuItem) {

@@ -64,12 +64,6 @@ class DonationPreferencesVC: PreferencesVC {
         }
     }
 
-    // TODO: things should be saved when the MainPrefsVC disappears
-//    override func viewWillDisappear() {
-//        // save the current paths + tags
-//        self.preferencesDelegate?.save()
-//    }
-
     @objc func masUpdateStatus(available: Bool) {
         DispatchQueue.main.async {
             if available {

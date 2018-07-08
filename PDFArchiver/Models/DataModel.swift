@@ -15,12 +15,6 @@ protocol DataModelTagsDelegate: class {
     func updateTags()
     func addUntaggedDocuments(paths: [URL])
 }
-protocol DataModelGUIDelegate: class {
-    // TODO: test if this really closes the app from onboardingVC (when a user has not bought the app)
-    func updateGUI(updatePDF: Bool)
-    func closeOnboardingView()
-    func closeApp()
-}
 
 class DataModel {
     fileprivate let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "DataModel")
@@ -49,40 +43,40 @@ class DataModel {
         self.prefs.load()
 
         if let observedPath = self.prefs.observedPath {
-            if !observedPath.startAccessingSecurityScopedResource() {
-                os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-                return
-            }
             self.addUntaggedDocuments(paths: [observedPath])
-            observedPath.stopAccessingSecurityScopedResource()
         }
     }
 
     func saveDocumentInArchive(document: Document) -> Bool {
         if let archivePath = self.prefs.archivePath {
             // rename the document
-            let result = document.rename(archivePath: archivePath)
-
-            if result,
-               let renamedDocument = self.untaggedDocuments.remove(document) {
-                self.archive.documents.append(renamedDocument)
+            self.prefs.accessSecurityScope {
+                document.rename(archivePath: archivePath)
             }
-            return result
+
+            if document.renamed {
+                self.archive.documents.append(document)
+                self.viewControllerDelegate?.setDocuments(documents: self.untaggedDocuments)
+                return true
+            }
         }
         return false
     }
 
     func trashDocument(_ document: Document) -> Bool {
-        let fileManager = FileManager.default
-        do {
-            try fileManager.trashItem(at: document.path, resultingItemURL: nil)
-            self.archive.documents.remove(document)
-            return true
+        var trashed = false
+        self.prefs.accessSecurityScope {
+            let fileManager = FileManager.default
+            do {
+                try fileManager.trashItem(at: document.path, resultingItemURL: nil)
+                self.untaggedDocuments.remove(document)
+                trashed = true
 
-        } catch let error {
-            os_log("Can not trash file: %@", log: self.log, type: .debug, error.localizedDescription)
-            return false
+            } catch let error {
+                os_log("Can not trash file: %@", log: self.log, type: .debug, error.localizedDescription)
+            }
         }
+        return trashed
     }
 
     func updateTags() {
@@ -105,7 +99,7 @@ class DataModel {
         }
 
         // initialize an update of the gui
-        self.updateGUI(updatePDF: false)
+        self.viewControllerDelegate?.updateView(updatePDF: false)
     }
 
     func filterTags(prefix: String) -> Set<Tag> {
@@ -131,15 +125,15 @@ class DataModel {
 
         // update the tags
         self.updateTags()
-        self.viewControllerDelegate?.updateView(updatePDF: true)
+        self.viewControllerDelegate?.updateView(updatePDF: false)
     }
 
     func setDocumentDescription(document: Document, description: String) {
         // set the description of the pdf document
         if self.prefs.slugifyNames {
-            document.documentDescription = description.slugify()
+            document.specification = description.slugify()
         } else {
-            document.documentDescription = description
+            document.specification = description
         }
     }
 
@@ -173,7 +167,7 @@ class DataModel {
             document.documentTags = [tag]
         }
 
-        // TODO: tag count should be updated!?
+        // tag count update
         tag.count += 1
 
         // update the view
@@ -191,19 +185,5 @@ extension DataModel: DataModelTagsDelegate {
 
     func getTagList() -> Set<Tag> {
         return tags
-    }
-}
-
-extension DataModel: DataModelGUIDelegate {
-    func updateGUI(updatePDF: Bool) {
-        self.viewControllerDelegate?.updateView(updatePDF: updatePDF)
-    }
-
-    func closeOnboardingView() {
-        self.onboardingVCDelegate?.closeOnboardingView()
-    }
-
-    func closeApp() {
-        self.viewControllerDelegate?.closeApp()
     }
 }

@@ -12,6 +12,8 @@ import os.log
 
 protocol IAPHelperDelegate: class {
     var products: [SKProduct] { get }
+    var requestRunning: Int { get }
+
     func requestProducts()
     func buyProduct(_ product: SKProduct)
     func buyProduct(_ productIdentifier: String)
@@ -28,9 +30,9 @@ class IAPHelper: NSObject, IAPHelperDelegate {
     var products = [SKProduct]()
     var receipt: ParsedReceipt?
     var requestRunning: Int = 0 {
-        didSet { self.dataModelGUIDelegate?.updateGUI(updatePDF: false) }
+        didSet { self.onboardingVCDelegate?.updateGUI() }
     }
-    weak var dataModelGUIDelegate: DataModelGUIDelegate?
+    weak var onboardingVCDelegate: OnboardingVCDelegate?
 
     override init() {
         self.productIdentifiers = Set(["DONATION_LEVEL1", "DONATION_LEVEL2", "DONATION_LEVEL3",
@@ -164,7 +166,7 @@ extension IAPHelper: SKProductsRequestDelegate {
         os_log("Loaded list of products...", log: self.log, type: .debug)
 
         // fire up a notification to update the GUI
-        self.dataModelGUIDelegate?.updateGUI(updatePDF: false)
+        self.onboardingVCDelegate?.updateGUI()
 
         // log the products
         for product in self.products {
@@ -202,7 +204,7 @@ extension IAPHelper: SKPaymentTransactionObserver {
                     }
                 }
                 queue.finishTransaction(transaction)
-                self.dataModelGUIDelegate?.closeOnboardingView()
+                self.onboardingVCDelegate?.closeOnboardingView()
             case .failed:
                 os_log("Payment failed.", log: self.log, type: .debug)
                 self.requestRunning -= 1

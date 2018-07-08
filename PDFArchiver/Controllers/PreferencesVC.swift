@@ -9,13 +9,6 @@
 import Cocoa
 import os.log
 
-protocol PreferencesVCDelegate: class {
-    func updateGUI()
-    func setDataModel(dataModel: DataModel)
-    func getDataModel() -> DataModel
-    func closeApp()
-}
-
 class PreferencesVC: NSViewController {
     internal let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "PreferencesVC")
 

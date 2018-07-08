@@ -15,8 +15,7 @@ protocol OnboardingVCDelegate: class {
 
 class OnboardingViewController: NSViewController {
     weak var iAPHelperDelegate: IAPHelperDelegate?
-    weak var dataModelGUIDelegate: DataModelGUIDelegate?
-    var dataModel: DataModel?
+    weak var viewControllerDelegate: ViewControllerDelegate?
 
     @IBOutlet weak var baseView: NSView!
     @IBOutlet weak var customView1: NSView!
@@ -48,11 +47,6 @@ class OnboardingViewController: NSViewController {
 
     @IBAction func closeButton(_ sender: NSButton?) {
         self.dismiss(self)
-
-        // test if user has purchased the app, close if not
-        if !(self.dataModel?.store.appUsagePermitted() ?? false) {
-            self.dataModelGUIDelegate?.closeApp()
-        }
     }
 
     override func viewDidLoad() {
@@ -85,6 +79,13 @@ class OnboardingViewController: NSViewController {
         self.customView3.layer?.backgroundColor = customViewColor
         self.customView3.layer?.cornerRadius = cornerRadius
     }
+
+    override func viewWillDisappear() {
+        // test if user has purchased the app, close if not
+        if !(self.iAPHelperDelegate?.appUsagePermitted() ?? false) {
+            self.viewControllerDelegate?.closeApp()
+        }
+    }
 }
 
 // MARK: - OnboardingVCDelegate
@@ -93,7 +94,7 @@ extension OnboardingViewController: OnboardingVCDelegate {
     func updateGUI() {
         DispatchQueue.main.async {
             // update the locked/unlocked indicator
-            if let appUsagePermitted = self.dataModel?.store.appUsagePermitted(),
+            if let appUsagePermitted = self.iAPHelperDelegate?.appUsagePermitted(),
                 appUsagePermitted {
                 self.lockIndicator.image = NSImage(named: NSImage.Name("NSLockUnlockedTemplate"))
 
@@ -101,7 +102,7 @@ extension OnboardingViewController: OnboardingVCDelegate {
                 self.lockIndicator.image = NSImage(named: NSImage.Name("NSLockLockedTemplate"))
 
                 // update the progress indicator
-                if (self.dataModel?.store.requestRunning ?? 0) != 0 {
+                if (self.iAPHelperDelegate?.requestRunning ?? 0) != 0 {
                     self.progressIndicator.startAnimation(self)
                 } else {
                     self.progressIndicator.stopAnimation(self)
@@ -109,7 +110,7 @@ extension OnboardingViewController: OnboardingVCDelegate {
             }
 
             // set the button label
-            for product in self.dataModel?.store.products ?? [] {
+            for product in self.iAPHelperDelegate?.products ?? [] {
                 var selectedButton: NSButton
 
                 switch product.productIdentifier {

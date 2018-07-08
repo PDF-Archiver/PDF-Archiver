@@ -18,6 +18,7 @@ protocol PreferencesDelegate: class {
     var analyseAllFolders: Bool { get set }
     var convertPictures: Bool { get set }
 
+    func accessSecurityScope(closure: () -> Void)
     func save()
 }
 
@@ -30,7 +31,10 @@ class Preferences: PreferencesDelegate {
     var archiveModificationDate: Date?
     var slugifyNames: Bool = true
     var analyseAllFolders: Bool = false {
-        didSet { self.dataModelTagsDelegate?.updateTags() }
+        didSet {
+            self.archiveDelegate?.updateDocuments()
+            self.dataModelTagsDelegate?.updateTags()
+        }
     }
     var convertPictures: Bool = false
     var observedPath: URL? {
@@ -49,10 +53,8 @@ class Preferences: PreferencesDelegate {
             }
             self._observedPath = newValue
 
-            self.accessSecurityScope {
-                // update the untagged documents
-                self.dataModelTagsDelegate?.addUntaggedDocuments(paths: [newValue])
-            }
+            // update the untagged documents
+            self.dataModelTagsDelegate?.addUntaggedDocuments(paths: [newValue])
             self.dataModelTagsDelegate?.updateTags()
         }
     }
@@ -72,10 +74,8 @@ class Preferences: PreferencesDelegate {
             }
             self._archivePath = newValue
 
-            self.accessSecurityScope {
-                // update the tags in archive
-                self.archiveDelegate?.updateDocuments()
-            }
+            // update the tags in archive
+            self.archiveDelegate?.updateDocuments()
         }
     }
 
@@ -137,9 +137,7 @@ class Preferences: PreferencesDelegate {
         }
 
         // update the tags and documents
-        self.accessSecurityScope {
-            self.archiveDelegate?.updateDocuments()
-        }
+        self.archiveDelegate?.updateDocuments()
     }
 
     func accessSecurityScope(closure: () -> Void) {

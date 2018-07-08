@@ -23,10 +23,23 @@ extension ViewController {
             }
 
         } else if let viewController = segue.destinationController as? OnboardingViewController {
-            viewController.dataModelGUIDelegate = self.dataModelInstance
             viewController.iAPHelperDelegate = self.dataModelInstance.store
+            viewController.viewControllerDelegate = self
             self.dataModelInstance.onboardingVCDelegate = viewController
+            self.dataModelInstance.store.onboardingVCDelegate = viewController
         }
+    }
+}
+
+// MARK: - view controller delegates
+extension ViewController: ViewControllerDelegate {
+
+    func setDocuments(documents: [Document]) {
+        self.documentAC.content = documents
+    }
+
+    func closeApp() {
+        NSApplication.shared.terminate(self)
     }
 
     func updateView(updatePDF: Bool) {
@@ -37,14 +50,14 @@ extension ViewController {
         if self.dataModelInstance.archive.documents.count == 0 {
             self.pdfContentView.document = nil
             self.datePicker.dateValue = Date()
-            self.descriptionField.stringValue = ""
+            self.specificationField.stringValue = ""
             self.documentTagAC.content = nil
             return
         }
         if let selectedDocument = self.documentAC.selectedObjects.first as? Document {
             // set the document date, description and tags
-            self.datePicker.dateValue = selectedDocument.documentDate
-            self.descriptionField.stringValue = selectedDocument.documentDescription ?? ""
+            self.datePicker.dateValue = selectedDocument.date
+            self.specificationField.stringValue = selectedDocument.specification ?? ""
             self.documentTagAC.content = selectedDocument.documentTags
 
             // access the file system and update pdf view
@@ -80,7 +93,7 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
             if self.dataModelInstance.prefs.slugifyNames {
                 description = description.slugify()
             }
-            selectedDocument.documentDescription = description
+            selectedDocument.specification = description
 
         } else if identifier.rawValue == "tagSearchField" {
             guard let searchField = notification.object as? NSSearchField else { return }
@@ -119,18 +132,5 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
 
         // add the selected tag to the document
         self.dataModelInstance.add(tag: selectedTag, to: selectedDocument)
-    }
-}
-
-// MARK: - custom delegates
-extension ViewController: ViewControllerDelegate {
-
-    // TODO: do we really need those?
-    func setDocuments(documents: [Document]) {
-        self.documentAC.content = documents
-    }
-
-    func closeApp() {
-        NSApplication.shared.terminate(self)
     }
 }

@@ -31,7 +31,7 @@ class ViewController: NSViewController {
     @IBOutlet var documentTagAC: NSArrayController!
 
     @IBOutlet weak var datePicker: NSDatePicker!
-    @IBOutlet weak var descriptionField: NSTextField!
+    @IBOutlet weak var specificationField: NSTextField!
     @IBOutlet weak var tagSearchField: NSSearchField!
 
     // outlets
@@ -43,7 +43,7 @@ class ViewController: NSViewController {
         }
 
         // set the date of the pdf document
-        selectedDocument.documentDate = sender.dateValue
+        selectedDocument.date = sender.dateValue
     }
 
     @IBAction func descriptionDone(_ sender: NSTextField) {
@@ -87,19 +87,12 @@ class ViewController: NSViewController {
     }
 
     @IBAction func browseFile(sender: AnyObject) {
-//        let openPanel = getOpenPanel("Choose an observed folder")
-//        openPanel.beginSheetModal(for: NSApplication.shared.mainWindow!) { response in
-//            guard response == NSApplication.ModalResponse.OK else { return }
-//            self.dataModelInstance.prefs.observedPath = openPanel.url!
-//            self.dataModelInstance.addUntaggedDocuments(paths: openPanel.urls)
-//        }
-
-        // TODO: debug code
-        guard !self.documentAC.selectedObjects.isEmpty,
-            let selectedDocument = self.documentAC.selectedObjects.first as? Document else {
-                return
+        let openPanel = getOpenPanel("Choose an observed folder")
+        openPanel.beginSheetModal(for: NSApplication.shared.mainWindow!) { response in
+            guard response == NSApplication.ModalResponse.OK else { return }
+            self.dataModelInstance.prefs.observedPath = openPanel.url!
+            self.dataModelInstance.addUntaggedDocuments(paths: openPanel.urls)
         }
-        print(selectedDocument.documentTags)
     }
 
     @IBAction func saveDocumentButton(_ sender: NSButton) {
@@ -109,7 +102,7 @@ class ViewController: NSViewController {
                 return
         }
 
-        guard let _ = self.dataModelInstance.prefs.archivePath else {
+        guard self.dataModelInstance.prefs.archivePath != nil else {
             dialogOK(messageKey: "no_archive", infoKey: "select_preferences", style: .critical)
             return
         }
@@ -117,9 +110,6 @@ class ViewController: NSViewController {
         let result = self.dataModelInstance.saveDocumentInArchive(document: selectedDocument)
 
         if result {
-            // update the array controller
-            self.documentAC.content = self.dataModelInstance.untaggedDocuments
-
             // select a new document, which is not already done
             var newIndex = 0
             var documents = (self.documentAC.arrangedObjects as? [Document]) ?? []
@@ -136,7 +126,7 @@ class ViewController: NSViewController {
 
         // MARK: - delegates
         self.tagSearchField.delegate = self
-        self.descriptionField.delegate = self
+        self.specificationField.delegate = self
         self.dataModelInstance.viewControllerDelegate = self
 
         // set the array controller

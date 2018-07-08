@@ -15,11 +15,12 @@ class Document: NSObject {
     var path: URL
     @objc var name: String?
     @objc var documentDone: String = ""
-    var documentDate = Date()
-    var documentDescription: String? {
+    var renamed: Bool = false
+    var date = Date()
+    var specification: String? {
         didSet {
-            if let raw = self.documentDescription {
-                self.documentDescription = raw.lowercased()
+            if let raw = self.specification {
+                self.specification = raw.lowercased()
             }
         }
     }
@@ -34,15 +35,15 @@ class Document: NSObject {
         // try to parse the current filename
         let parser = DateParser()
         if let date = parser.parse(self.name!) {
-            self.documentDate = date
+            self.date = date
         }
 
         // parse the description or use the filename
         if var raw = regexMatches(for: "--[\\w\\d-]+__", in: self.name!) {
-            self.documentDescription = getSubstring(raw[0], startIdx: 2, endIdx: -2)
+            self.specification = getSubstring(raw[0], startIdx: 2, endIdx: -2)
         } else {
             let newDescription = String(path.lastPathComponent.dropLast(4))
-            self.documentDescription = newDescription.components(separatedBy: "__")[0]
+            self.specification = newDescription.components(separatedBy: "__")[0]
         }
 
         // parse the tags
@@ -70,6 +71,7 @@ class Document: NSObject {
         }
     }
 
+    @discardableResult
     func rename(archivePath: URL) -> Bool {
         let newBasePath: URL
         let filename: String
@@ -105,6 +107,7 @@ class Document: NSObject {
         self.name = String(newFilepath.lastPathComponent)
         self.path = newFilepath
         self.documentDone = "✔️"
+        self.renamed = true
 
         do {
             var tags = [String]()
@@ -127,7 +130,7 @@ class Document: NSObject {
             dialogOK(messageKey: "renaming_failed", infoKey: "check_document_tags", style: .warning)
             throw DocumentError.tags
         }
-        guard let description = self.documentDescription,
+        guard let description = self.specification,
               description != "" else {
             dialogOK(messageKey: "renaming_failed", infoKey: "check_document_description", style: .warning)
             throw DocumentError.description
@@ -136,7 +139,7 @@ class Document: NSObject {
         // get formatted date
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
-        let dateStr = dateFormatter.string(from: self.documentDate)
+        let dateStr = dateFormatter.string(from: self.date)
 
         // get tags
         var tagStr = ""

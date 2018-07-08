@@ -1417,7 +1417,7 @@ You can support this project by picking a one-time donation via the buttons on t
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                    <rect key="frame" x="32" y="1" width="194" height="17"/>
+                                                                    <rect key="frame" x="31.5" y="1" width="194" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">
@@ -1580,13 +1580,13 @@ You can support this project by picking a one-time donation via the buttons on t
                     </view>
                     <connections>
                         <outlet property="datePicker" destination="NiF-3c-nL6" id="7gV-M9-brh"/>
-                        <outlet property="descriptionField" destination="WG2-MH-TVV" id="Zpw-ZF-ogL"/>
                         <outlet property="documentAC" destination="6y2-Gm-cOS" id="Yp0-gd-aBN"/>
                         <outlet property="documentAttributesView" destination="N6d-d5-13u" id="07V-6H-j0N"/>
                         <outlet property="documentTagAC" destination="nlU-Xg-XLm" id="pRK-x5-tq6"/>
                         <outlet property="pdfContentView" destination="80e-Of-Nzi" id="ZfS-9W-TAg"/>
                         <outlet property="pdfDocumentsView" destination="EVB-U9-dup" id="JvW-e6-p0Y"/>
                         <outlet property="pdfView" destination="nVE-OX-PwM" id="Jya-99-dce"/>
+                        <outlet property="specificationField" destination="WG2-MH-TVV" id="Zpw-ZF-ogL"/>
                         <outlet property="tagAC" destination="jrR-pM-UBT" id="n34-dd-hGg"/>
                         <outlet property="tagSearchField" destination="WfD-Nd-kM0" id="S7l-y7-2yr"/>
                         <outlet property="tagSearchView" destination="BZd-ly-6BW" id="ULj-Og-MHE"/>
