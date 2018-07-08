@@ -25,12 +25,12 @@ class Preferences: PreferencesDelegate {
     fileprivate let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "DataModel")
     fileprivate var _archivePath: URL?
     fileprivate var _observedPath: URL?
-    weak var tagsDelegate: DataModelTagsDelegate?
+    weak var dataModelTagsDelegate: DataModelTagsDelegate?
     weak var archiveDelegate: ArchiveDelegate?
     var archiveModificationDate: Date?
     var slugifyNames: Bool = true
     var analyseAllFolders: Bool = false {
-        didSet { self.tagsDelegate?.updateTags() }
+        didSet { self.dataModelTagsDelegate?.updateTags() }
     }
     var convertPictures: Bool = false
     var observedPath: URL? {
@@ -51,8 +51,9 @@ class Preferences: PreferencesDelegate {
 
             self.accessSecurityScope {
                 // update the untagged documents
-                self.tagsDelegate?.addUntaggedDocuments(paths: [newValue])
+                self.dataModelTagsDelegate?.addUntaggedDocuments(paths: [newValue])
             }
+            self.dataModelTagsDelegate?.updateTags()
         }
     }
     var archivePath: URL? {
@@ -74,7 +75,6 @@ class Preferences: PreferencesDelegate {
             self.accessSecurityScope {
                 // update the tags in archive
                 self.archiveDelegate?.updateDocuments()
-                self.tagsDelegate?.updateTags()
             }
         }
     }
@@ -84,7 +84,7 @@ class Preferences: PreferencesDelegate {
 
         // save the last tags (with count > 0)
         var tags: [String: Int] = [:]
-        for tag in self.tagsDelegate?.getTagList() ?? Set<Tag>() {
+        for tag in self.dataModelTagsDelegate?.getTagList() ?? Set<Tag>() {
             tags[tag.name] = tag.count
         }
         for (name, count) in tags where count < 1 {
@@ -120,7 +120,7 @@ class Preferences: PreferencesDelegate {
         for (name, count) in tagsDict {
             newTagList.insert(Tag(name: name, count: count))
         }
-        self.tagsDelegate?.setTagList(tagList: newTagList)
+        self.dataModelTagsDelegate?.setTagList(tagList: newTagList)
 
         // load the noSlugify flag
         self.slugifyNames = !(UserDefaults.standard.bool(forKey: "noSlugify"))
@@ -134,6 +134,11 @@ class Preferences: PreferencesDelegate {
         // load the archive modification date
         if let date = UserDefaults.standard.object(forKey: "archiveModificationDate") as? Date {
             self.archiveModificationDate = date
+        }
+
+        // update the tags and documents
+        self.accessSecurityScope {
+            self.archiveDelegate?.updateDocuments()
         }
     }
 
@@ -171,5 +176,34 @@ class Preferences: PreferencesDelegate {
             }
         }
         return nil
+    }
+
+    fileprivate func archiveModified() -> Bool {
+        if let archivePath = self.archivePath,
+           let archiveModificationDate = self.archiveModificationDate {
+            let fileManager = FileManager.default
+            var newArchiveModificationDate: Date?
+            do {
+                // get the attributes of the current archive folder
+                let attributes = try fileManager.attributesOfItem(atPath: archivePath.path)
+                newArchiveModificationDate = attributes[FileAttributeKey.modificationDate] as? Date
+            } catch let error {
+                os_log("Folder not found: %@ \nUpdate tags anyway.", log: self.log, type: .debug, error.localizedDescription)
+            }
+
+            // compare dates here
+            if let newArchiveModificationDate = newArchiveModificationDate,
+                archiveModificationDate == newArchiveModificationDate {
+                os_log("No changes in archive folder, skipping tag update.", log: self.log, type: .debug)
+                return false
+
+            } else {
+                os_log("Changes in archive folder detected, update tags.", log: self.log, type: .debug)
+                return true
+            }
+        }
+
+        os_log("Archive path (%@) or modification date (%@) not found!", log: self.log, type: .debug, self.archivePath?.description ?? "", self.archiveModificationDate?.description ?? "")
+        return true
     }
 }

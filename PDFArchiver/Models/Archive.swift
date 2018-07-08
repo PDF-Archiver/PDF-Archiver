@@ -18,7 +18,7 @@ class Archive: ArchiveDelegate {
     fileprivate let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "Archive")
     var documents = [Document]()
     weak var preferencesDelegate: PreferencesDelegate?
-    weak var tagsDelegate: DataModelTagsDelegate?
+    weak var dataModelTagsDelegate: DataModelTagsDelegate?
 }
 
 // MARK: - Archive delegate
@@ -71,12 +71,15 @@ extension Archive {
         for file in files {
             // TODO: are these really the right files, e.g. pdf only?
             print(file)
-            var tags = self.tagsDelegate?.getTagList() ?? []
+            var tags = self.dataModelTagsDelegate?.getTagList() ?? []
             self.documents.append(Document(path: file, availableTags: &tags))
-            self.tagsDelegate?.setTagList(tagList: tags)
+            self.dataModelTagsDelegate?.setTagList(tagList: tags)
         }
 
         // stop accessing the file system
         archivePath.stopAccessingSecurityScopedResource()
+
+        // update the tags
+        self.dataModelTagsDelegate?.updateTags()
     }
 }

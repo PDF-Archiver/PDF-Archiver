@@ -46,10 +46,8 @@ extension ViewController {
 
         // update the GUI
         self.documentAC.selectNext(self)
-        if let idx = self.dataModelInstance.archive.documents.index(where: { $0 == selectedDocument }) {
-            self.dataModelInstance.archive.documents.remove(at: idx)
-        }
-        self.documentAC.content = self.dataModelInstance.archive.documents
+        self.dataModelInstance.archive.documents.remove(selectedDocument)
+        self.documentAC.content = self.dataModelInstance.untaggedDocuments
     }
 
     // MARK: - Help Menu
@@ -62,7 +60,7 @@ extension ViewController {
 
         // get tags and update the GUI
         self.dataModelInstance.updateTags()
-        self.updateView(updatePDF: true)
+        self.updateView(updatePDF: false)
     }
 
     @IBAction func resetCacheMenuItem(_ sender: NSMenuItem) {

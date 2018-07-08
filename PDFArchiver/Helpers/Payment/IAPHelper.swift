@@ -28,7 +28,7 @@ class IAPHelper: NSObject, IAPHelperDelegate {
     var products = [SKProduct]()
     var receipt: ParsedReceipt?
     var requestRunning: Int = 0 {
-        didSet { self.dataModelGUIDelegate?.updateGUI() }
+        didSet { self.dataModelGUIDelegate?.updateGUI(updatePDF: false) }
     }
     weak var dataModelGUIDelegate: DataModelGUIDelegate?
 
@@ -164,7 +164,7 @@ extension IAPHelper: SKProductsRequestDelegate {
         os_log("Loaded list of products...", log: self.log, type: .debug)
 
         // fire up a notification to update the GUI
-        self.dataModelGUIDelegate?.updateGUI()
+        self.dataModelGUIDelegate?.updateGUI(updatePDF: false)
 
         // log the products
         for product in self.products {

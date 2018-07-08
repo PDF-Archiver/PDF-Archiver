@@ -17,14 +17,15 @@ protocol DataModelTagsDelegate: class {
 }
 protocol DataModelGUIDelegate: class {
     // TODO: test if this really closes the app from onboardingVC (when a user has not bought the app)
-    func updateGUI()
+    func updateGUI(updatePDF: Bool)
     func closeOnboardingView()
     func closeApp()
 }
 
-class DataModel: DataModelTagsDelegate {
+class DataModel {
     fileprivate let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "DataModel")
     weak var viewControllerDelegate: ViewControllerDelegate?
+    weak var onboardingVCDelegate: OnboardingVCDelegate?
     var prefs = Preferences()
     var archive = Archive()
     var store = IAPHelper()
@@ -38,10 +39,10 @@ class DataModel: DataModelTagsDelegate {
 
     init() {
         // set delegates
-        self.prefs.tagsDelegate = self as DataModelTagsDelegate
+        self.prefs.dataModelTagsDelegate = self as DataModelTagsDelegate
         self.prefs.archiveDelegate = self.archive as ArchiveDelegate
 
-        self.archive.tagsDelegate = self as DataModelTagsDelegate
+        self.archive.dataModelTagsDelegate = self as DataModelTagsDelegate
         self.archive.preferencesDelegate = self.prefs as PreferencesDelegate
 
         // load preferences
@@ -59,7 +60,14 @@ class DataModel: DataModelTagsDelegate {
 
     func saveDocumentInArchive(document: Document) -> Bool {
         if let archivePath = self.prefs.archivePath {
-            return document.rename(archivePath: archivePath)
+            // rename the document
+            let result = document.rename(archivePath: archivePath)
+
+            if result,
+               let renamedDocument = self.untaggedDocuments.remove(document) {
+                self.archive.documents.append(renamedDocument)
+            }
+            return result
         }
         return false
     }
@@ -68,9 +76,7 @@ class DataModel: DataModelTagsDelegate {
         let fileManager = FileManager.default
         do {
             try fileManager.trashItem(at: document.path, resultingItemURL: nil)
-            if let index = self.archive.documents.index(of: document) {
-                self.archive.documents.remove(at: index)
-            }
+            self.archive.documents.remove(document)
             return true
 
         } catch let error {
@@ -97,6 +103,9 @@ class DataModel: DataModelTagsDelegate {
         for (name, count) in tagsDict {
             self.tags.insert(Tag(name: name, count: count))
         }
+
+        // initialize an update of the gui
+        self.updateGUI(updatePDF: false)
     }
 
     func filterTags(prefix: String) -> Set<Tag> {
@@ -122,33 +131,79 @@ class DataModel: DataModelTagsDelegate {
 
         // update the tags
         self.updateTags()
+        self.viewControllerDelegate?.updateView(updatePDF: true)
     }
 
-    // MARK: - delegate functions
+    func setDocumentDescription(document: Document, description: String) {
+        // set the description of the pdf document
+        if self.prefs.slugifyNames {
+            document.documentDescription = description.slugify()
+        } else {
+            document.documentDescription = description
+        }
+    }
+
+    func remove(tag: Tag, from document: Document) {
+        // remove the selected element
+        var documentTags = document.documentTags ?? []
+        for (index, documentTag) in documentTags.enumerated() where documentTag.name == tag.name {
+            documentTags.remove(at: index)
+            documentTag.count -= 1
+
+            // save the new document tags
+            document.documentTags = documentTags
+            break
+        }
+
+        self.viewControllerDelegate?.updateView(updatePDF: false)
+    }
+
+    @discardableResult
+    func add(tag: Tag, to document: Document) -> Bool {
+        // test if tag already exists in document tags
+        for documentTag in document.documentTags ?? [] where documentTag.name == tag.name {
+            os_log("Tag '%@' already found!", log: self.log, type: .error, tag.name)
+            return false
+        }
+
+        // add the new tag
+        if document.documentTags != nil {
+            document.documentTags!.insert(tag, at: 0)
+        } else {
+            document.documentTags = [tag]
+        }
+
+        // TODO: tag count should be updated!?
+        tag.count += 1
+
+        // update the view
+        self.viewControllerDelegate?.updateView(updatePDF: false)
+        return true
+    }
+}
+
+// MARK: - DataModel delegates
+
+extension DataModel: DataModelTagsDelegate {
     func setTagList(tagList: Set<Tag>) {
         self.tags = tagList
     }
 
     func getTagList() -> Set<Tag> {
-        return self.tags
+        return tags
     }
 }
 
-// MARK: - DataModelGUIDelegate extension
-
 extension DataModel: DataModelGUIDelegate {
-    func updateGUI() {
-        // TODO:
-        print("Update the GUI")
+    func updateGUI(updatePDF: Bool) {
+        self.viewControllerDelegate?.updateView(updatePDF: updatePDF)
     }
 
     func closeOnboardingView() {
-        // TODO:
-        print("close a view")
+        self.onboardingVCDelegate?.closeOnboardingView()
     }
 
     func closeApp() {
-        // TODO:
-        print("closes the app")
+        self.viewControllerDelegate?.closeApp()
     }
 }

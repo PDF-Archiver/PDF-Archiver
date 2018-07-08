@@ -1624,9 +1624,6 @@ You can support this project by picking a one-time donation via the buttons on t
         <namedColor name="Headline1">
             <color red="0.7929999828338623" green="0.25499999523162842" blue="0.31000000238418579" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
-        <namedColor name="Headline1">
-            <color red="0.79299998279999995" green="0.2549999952" blue="0.31000000239999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-        </namedColor>
         <namedColor name="Headline2">
             <color red="0.90299999713897705" green="0.41200000047683716" blue="0.40400001406669617" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>

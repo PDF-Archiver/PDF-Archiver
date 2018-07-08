@@ -8,7 +8,7 @@
 
 import Cocoa
 
-protocol OnboardingVCDelegate {
+protocol OnboardingVCDelegate: class {
     func updateGUI()
     func closeOnboardingView()
 }
@@ -86,6 +86,8 @@ class OnboardingViewController: NSViewController {
         self.customView3.layer?.cornerRadius = cornerRadius
     }
 }
+
+// MARK: - OnboardingVCDelegate
 
 extension OnboardingViewController: OnboardingVCDelegate {
     func updateGUI() {

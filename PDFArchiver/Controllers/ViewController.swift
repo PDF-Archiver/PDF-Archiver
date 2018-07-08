@@ -11,6 +11,8 @@ import os.log
 
 protocol ViewControllerDelegate: class {
     func setDocuments(documents: [Document])
+    func closeApp()
+    func updateView(updatePDF: Bool)
 }
 
 class ViewController: NSViewController {
@@ -52,47 +54,81 @@ class ViewController: NSViewController {
         }
 
         // set the description of the pdf document
-        var description = sender.stringValue
-        if self.dataModelInstance.prefs.slugifyNames {
-            description = description.slugify()
-        }
-        selectedDocument.documentDescription = description
+        self.dataModelInstance.setDocumentDescription(document: selectedDocument, description: sender.stringValue)
     }
 
     @IBAction func clickedDocumentTagTableView(_ sender: NSTableView) {
         // test if the document tag table is empty
         guard !self.documentAC.selectedObjects.isEmpty,
             let selectedDocument = self.documentAC.selectedObjects.first as? Document,
-            let obj = self.documentTagAC.selectedObjects.first as? Tag else {
+            let selectedTag = self.documentTagAC.selectedObjects.first as? Tag else {
                 return
         }
 
         // remove the selected element
-        var documentTags = selectedDocument.documentTags ?? []
-        for (index, tag) in documentTags.enumerated() where tag.name == obj.name {
-            documentTags.remove(at: index)
-            tag.count -= 1
-
-            selectedDocument.documentTags = documentTags
-            self.updateView(updatePDF: false)
-            break
-        }
+        self.dataModelInstance.remove(tag: selectedTag, from: selectedDocument)
     }
 
     @IBAction func clickedTagTableView(_ sender: NSTableView) {
-        if let selectedTag = self.tagAC.selectedObjects.first as? Tag {
-            self.addDocumentTag(tag: selectedTag,
-                                new: false)
-            self.updateView(updatePDF: false)
+        // add new tag to document table view
+        guard let selectedDocument = self.documentAC.selectedObjects.first as? Document,
+            let selectedTag = self.tagAC.selectedObjects.first as? Tag else {
+                os_log("Please pick documents first!", log: self.log, type: .info)
+                return
+        }
+
+        // test if element already exists in document tag table view
+        let result = self.dataModelInstance.add(tag: selectedTag, to: selectedDocument)
+
+        // if successful, clear search field content
+        if result {
+            self.tagSearchField.stringValue = ""
         }
     }
 
     @IBAction func browseFile(sender: AnyObject) {
-        self.setObservedPath()
+//        let openPanel = getOpenPanel("Choose an observed folder")
+//        openPanel.beginSheetModal(for: NSApplication.shared.mainWindow!) { response in
+//            guard response == NSApplication.ModalResponse.OK else { return }
+//            self.dataModelInstance.prefs.observedPath = openPanel.url!
+//            self.dataModelInstance.addUntaggedDocuments(paths: openPanel.urls)
+//        }
+
+        // TODO: debug code
+        guard !self.documentAC.selectedObjects.isEmpty,
+            let selectedDocument = self.documentAC.selectedObjects.first as? Document else {
+                return
+        }
+        print(selectedDocument.documentTags)
     }
 
     @IBAction func saveDocumentButton(_ sender: NSButton) {
-        self.saveDocument()
+        // test if a document is selected
+        guard !self.documentAC.selectedObjects.isEmpty,
+            let selectedDocument = self.documentAC.selectedObjects.first as? Document else {
+                return
+        }
+
+        guard let _ = self.dataModelInstance.prefs.archivePath else {
+            dialogOK(messageKey: "no_archive", infoKey: "select_preferences", style: .critical)
+            return
+        }
+
+        let result = self.dataModelInstance.saveDocumentInArchive(document: selectedDocument)
+
+        if result {
+            // update the array controller
+            self.documentAC.content = self.dataModelInstance.untaggedDocuments
+
+            // select a new document, which is not already done
+            var newIndex = 0
+            var documents = (self.documentAC.arrangedObjects as? [Document]) ?? []
+            for idx in 0...documents.count-1 where documents[idx].documentDone == "" {
+                newIndex = idx
+                break
+            }
+            self.documentAC.setSelectionIndex(newIndex)
+        }
     }
 
     override func viewDidLoad() {
@@ -103,19 +139,9 @@ class ViewController: NSViewController {
         self.descriptionField.delegate = self
         self.dataModelInstance.viewControllerDelegate = self
 
-        // access the file system and get the new documents
-//        if let observedPath = self.dataModelInstance.prefs.observedPath {
-//            if !observedPath.startAccessingSecurityScopedResource() {
-//                os_log("Accessing Security Scoped Resource failed.", log: self.log, type: .fault)
-//                return
-//            }
-//            self.dataModelInstance.addDocuments(paths: [observedPath])
-//            observedPath.stopAccessingSecurityScopedResource()
-//        }
-
         // set the array controller
         self.tagAC.content = self.dataModelInstance.tags
-        self.documentAC.content = self.dataModelInstance.archive.documents
+        self.documentAC.content = self.dataModelInstance.untaggedDocuments
 
         // add sorting to tag fields
         self.documentAC.sortDescriptors = [NSSortDescriptor(key: "documentDone", ascending: false),
@@ -134,9 +160,6 @@ class ViewController: NSViewController {
 
         // update the view after all the settigns
         self.documentAC.setSelectionIndex(0)
-
-        // update the tags, if file changes occured in the archive
-        self.testArchiveModification()
     }
 
     override func viewWillAppear() {

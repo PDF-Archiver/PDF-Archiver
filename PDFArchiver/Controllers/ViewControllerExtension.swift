@@ -25,6 +25,7 @@ extension ViewController {
         } else if let viewController = segue.destinationController as? OnboardingViewController {
             viewController.dataModelGUIDelegate = self.dataModelInstance
             viewController.iAPHelperDelegate = self.dataModelInstance.store
+            self.dataModelInstance.onboardingVCDelegate = viewController
         }
     }
 
@@ -51,111 +52,6 @@ extension ViewController {
                 self.dataModelInstance.prefs.accessSecurityScope {
                     self.pdfContentView.document = PDFDocument(url: selectedDocument.path)
                     self.pdfContentView.goToFirstPage(self)
-                }
-            }
-        }
-    }
-
-    func setObservedPath() {
-        let openPanel = getOpenPanel("Choose an observed folder")
-        openPanel.beginSheetModal(for: NSApplication.shared.mainWindow!) { response in
-            guard response == NSApplication.ModalResponse.OK else { return }
-            self.dataModelInstance.prefs.observedPath = openPanel.url!
-            self.dataModelInstance.addUntaggedDocuments(paths: openPanel.urls)
-
-            // get tags and update the GUI
-            self.dataModelInstance.updateTags()
-            self.updateGUI()
-        }
-    }
-
-    func saveDocument() {
-        // test if a document is selected
-        guard !self.documentAC.selectedObjects.isEmpty,
-              let selectedDocument = self.documentAC.selectedObjects.first as? Document else {
-            return
-        }
-
-        guard let _ = self.dataModelInstance.prefs.archivePath else {
-            dialogOK(messageKey: "no_archive", infoKey: "select_preferences", style: .critical)
-            return
-        }
-
-        let result = self.dataModelInstance.saveDocumentInArchive(document: selectedDocument)
-
-        if result {
-            // update the array controller
-            self.documentAC.content = self.dataModelInstance.archive.documents
-
-            // select a new document, which is not already done
-            var newIndex = 0
-            var documents = (self.documentAC.arrangedObjects as? [Document]) ?? []
-            for idx in 0...documents.count-1 where documents[idx].documentDone == "" {
-                newIndex = idx
-                break
-            }
-            self.documentAC.setSelectionIndex(newIndex)
-        }
-    }
-
-    func addDocumentTag(tag selectedTag: Tag, new newlyCreated: Bool) {
-        // test if element already exists in document tag table view
-        if let documentTags = self.documentTagAC.content as? [Tag] {
-            for tag in documentTags where tag.name == selectedTag.name {
-                os_log("Tag '%@' already found!", log: self.log, type: .error, selectedTag.name)
-                return
-            }
-        }
-
-        // add new tag to document table view
-        guard let selectedDocument = self.documentAC.selectedObjects.first as? Document else {
-            os_log("Please pick documents first!", log: self.log, type: .info)
-            return
-        }
-
-        if selectedDocument.documentTags != nil {
-            selectedDocument.documentTags!.insert(selectedTag, at: 0)
-        } else {
-            selectedDocument.documentTags = [selectedTag]
-        }
-
-        // clear search field content
-        self.tagSearchField.stringValue = ""
-
-        // add tag to tagAC
-        if newlyCreated {
-            self.dataModelInstance.tags.insert(selectedTag)
-        }
-    }
-
-    func testArchiveModification() {
-        if let archivePath = self.dataModelInstance.prefs.archivePath {
-            let fileManager = FileManager.default
-            var newArchiveModificationDate: Date?
-            do {
-                // get the attributes of the current archive folder
-                let attributes = try fileManager.attributesOfItem(atPath: archivePath.path)
-                newArchiveModificationDate = attributes[FileAttributeKey.modificationDate] as? Date
-            } catch let error {
-                os_log("Folder not found: %@ \nUpdate tags anyway.", log: self.log, type: .debug, error.localizedDescription)
-            }
-
-            // compare dates here
-            if let archiveModificationDate = self.dataModelInstance.prefs.archiveModificationDate,
-                let newArchiveModificationDate = newArchiveModificationDate,
-                archiveModificationDate == newArchiveModificationDate {
-                os_log("No changes in archive folder, skipping tag update.", log: self.log, type: .debug)
-
-            } else {
-                os_log("Changes in archive folder detected, update tags.", log: self.log, type: .debug)
-
-                // get tags and update the GUI
-                DispatchQueue.global(qos: .userInitiated).async {
-                    self.dataModelInstance.updateTags()
-
-                    DispatchQueue.main.async {
-                        self.updateGUI()
-                    }
                 }
             }
         }
@@ -199,14 +95,17 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
             return
         }
 
+        // add new tag to document table view
+        guard let selectedDocument = self.documentAC.selectedObjects.first as? Document else {
+                os_log("Please pick documents first!", log: self.log, type: .info)
+                return
+        }
+
         // try to get the selected tag
         var selectedTag: Tag
-        let newlyCreated: Bool
         let tags = self.tagAC.arrangedObjects as? [Tag] ?? []
         if tags.count > 0 {
             selectedTag = tags.first!
-            selectedTag.count += 1
-            newlyCreated = false
         } else {
             // no tag selected - get the name of the search field
             var tagName = self.tagSearchField.stringValue.lowercased()
@@ -215,35 +114,20 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
             }
             selectedTag = Tag(name: tagName,
                               count: 1)
-            newlyCreated = true
+            self.dataModelInstance.tags.insert(selectedTag)
         }
 
         // add the selected tag to the document
-        self.addDocumentTag(tag: selectedTag, new: newlyCreated)
-
-        // update GUI
-        self.updateView(updatePDF: false)
+        self.dataModelInstance.add(tag: selectedTag, to: selectedDocument)
     }
 }
 
 // MARK: - custom delegates
 extension ViewController: ViewControllerDelegate {
+
+    // TODO: do we really need those?
     func setDocuments(documents: [Document]) {
         self.documentAC.content = documents
-    }
-}
-
-extension ViewController: PreferencesVCDelegate {
-    func updateGUI() {
-        self.updateView(updatePDF: true)
-    }
-
-    func setDataModel(dataModel: DataModel) {
-        self.dataModelInstance = dataModel
-    }
-
-    func getDataModel() -> DataModel {
-        return self.dataModelInstance
     }
 
     func closeApp() {
