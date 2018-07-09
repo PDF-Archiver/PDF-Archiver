@@ -11,6 +11,7 @@ import os.log
 
 protocol ViewControllerDelegate: class {
     func setDocuments(documents: [Document])
+    func clearTagSearchField()
     func closeApp()
     func updateView(updatePDF: Bool)
 }
@@ -77,12 +78,7 @@ class ViewController: NSViewController, Logging {
         }
 
         // test if element already exists in document tag table view
-        let result = self.dataModelInstance.add(tag: selectedTag, to: selectedDocument)
-
-        // if successful, clear search field content
-        if result {
-            self.tagSearchField.stringValue = ""
-        }
+        self.dataModelInstance.add(tag: selectedTag, to: selectedDocument)
     }
 
     @IBAction func browseFile(sender: AnyObject) {

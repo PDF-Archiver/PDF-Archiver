@@ -164,6 +164,9 @@ class DataModel: Logging {
         // tag count update
         tag.count += 1
 
+        // clear search field content
+        self.viewControllerDelegate?.clearTagSearchField()
+
         // update the view
         self.viewControllerDelegate?.updateView(updatePDF: false)
         return true

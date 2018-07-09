@@ -38,6 +38,10 @@ extension ViewController: ViewControllerDelegate {
         self.documentAC.content = documents
     }
 
+    func clearTagSearchField() {
+        self.tagSearchField.stringValue = ""
+    }
+
     func closeApp() {
         NSApplication.shared.terminate(self)
     }
