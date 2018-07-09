@@ -92,6 +92,7 @@ extension IAPHelper {
     }
 
     public func appUsagePermitted() -> Bool {
+        #if RELEASE
         guard let receipt = self.receipt else { return false }
 
         // test if the user has bought the app before the subscription model started
@@ -114,15 +115,22 @@ extension IAPHelper {
         }
 
         return false
+        #else
+        return true
+        #endif
     }
 
     public func preSubscriptionPurchase() -> Bool {
+        #if RELEASE
         guard let receipt = self.receipt,
             let originalAppVersion = receipt.originalAppVersion else { return false }
 
         return originalAppVersion == "1.0" ||
             originalAppVersion.hasPrefix("1.1.") ||
             originalAppVersion.hasPrefix("1.2.")
+        #else
+        return true
+        #endif
     }
 
     fileprivate func validateReceipt() {
