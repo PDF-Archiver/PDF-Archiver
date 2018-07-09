@@ -27,7 +27,7 @@ class OnboardingViewController: NSViewController {
     @IBOutlet weak var yearlySubscriptionButton: NSButton!
 
     @IBAction func privacyButton(_ sender: NSButton) {
-        NSWorkspace.shared.open(URL(string: NSLocalizedString("privacy", comment: "PDF Archiver privacy website"))!)
+        NSWorkspace.shared.open(Constants.WebsiteEndpoints.privacy.url)
     }
 
     @IBAction func restorePurchasesButton(_ sender: NSButton) {

@@ -12,19 +12,19 @@ import Cocoa
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBAction func showManageSubscriptions(_ sender: NSMenuItem) {
-        NSWorkspace.shared.open(URL(string: "https://apps.apple.com/account/subscriptions")!)
+        NSWorkspace.shared.open(Constants.manageSubscription)
     }
 
     @IBAction func showHelp(_ sender: NSMenuItem) {
-        NSWorkspace.shared.open(URL(string: "https://pdf-archiver.io/faq")!)
+        NSWorkspace.shared.open(Constants.WebsiteEndpoints.faq.url)
     }
 
     @IBAction func showPrivacy(_ sender: NSMenuItem) {
-        NSWorkspace.shared.open(URL(string: NSLocalizedString("privacy", comment: "PDF Archiver privacy website"))!)
+        NSWorkspace.shared.open(Constants.WebsiteEndpoints.privacy.url)
     }
 
     @IBAction func showImprint(_ sender: NSMenuItem) {
-        NSWorkspace.shared.open(URL(string: NSLocalizedString("imprint", comment: "PDF Archiver imprint website"))!)
+        NSWorkspace.shared.open(Constants.WebsiteEndpoints.imprint.url)
     }
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {

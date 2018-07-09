@@ -17,9 +17,6 @@
 
 "file_already_exists" = "File with the current filename already exists. \nPlease change e.g. the description.";
 
-/* PDF Archiver imprint website */
-"imprint" = "https://pdf-archiver.io/imprint";
-
 "no_archive" = "No archive path found!";
 
 "payment_complete" = "Payment completed!";
@@ -31,9 +28,6 @@
 
 /* No comment provided by engineer. */
 "per_year" = "per year";
-
-/* PDF Archiver privacy website */
-"privacy" = "https://pdf-archiver.io/privacy";
 
 "renaming_failed" = "Renaming failed!";
 
