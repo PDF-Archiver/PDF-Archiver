@@ -22,8 +22,7 @@ protocol IAPHelperDelegate: class {
     func restorePurchases()
 }
 
-class IAPHelper: NSObject, IAPHelperDelegate {
-    fileprivate let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "IAPHelper")
+class IAPHelper: NSObject, IAPHelperDelegate, Logging {
     fileprivate let productIdentifiers: Set<String>
     fileprivate var productsRequest: SKProductsRequest
     fileprivate var receiptRequest = SKReceiptRefreshRequest()

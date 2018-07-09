@@ -22,8 +22,7 @@ protocol PreferencesDelegate: class {
     func save()
 }
 
-class Preferences: PreferencesDelegate {
-    fileprivate let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "DataModel")
+class Preferences: PreferencesDelegate, Logging {
     fileprivate var _archivePath: URL?
     fileprivate var _observedPath: URL?
     weak var dataModelTagsDelegate: DataModelTagsDelegate?

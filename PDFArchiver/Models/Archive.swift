@@ -14,8 +14,7 @@ protocol ArchiveDelegate: class {
     func updateDocumentsAndTags()
 }
 
-class Archive: ArchiveDelegate {
-    fileprivate let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "Archive")
+class Archive: ArchiveDelegate, Logging {
     var documents = [Document]()
     weak var preferencesDelegate: PreferencesDelegate?
     weak var dataModelTagsDelegate: DataModelTagsDelegate?

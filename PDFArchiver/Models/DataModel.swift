@@ -16,8 +16,7 @@ protocol DataModelTagsDelegate: class {
     func addUntaggedDocuments(paths: [URL])
 }
 
-class DataModel {
-    fileprivate let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "DataModel")
+class DataModel: Logging {
     weak var viewControllerDelegate: ViewControllerDelegate?
     weak var onboardingVCDelegate: OnboardingVCDelegate?
     var prefs = Preferences()

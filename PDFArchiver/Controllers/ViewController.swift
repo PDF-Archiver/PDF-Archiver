@@ -15,8 +15,7 @@ protocol ViewControllerDelegate: class {
     func updateView(updatePDF: Bool)
 }
 
-class ViewController: NSViewController {
-    internal let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "MainViewController")
+class ViewController: NSViewController, Logging {
     var dataModelInstance = DataModel()
 
     @IBOutlet weak var pdfDocumentsView: NSView!

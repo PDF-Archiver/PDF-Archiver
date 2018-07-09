@@ -9,8 +9,7 @@
 import Foundation
 import os.log
 
-class Document: NSObject {
-    fileprivate let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "Document")
+class Document: NSObject, Logging {
     // structure for PDF documents on disk
     var path: URL
     @objc var name: String?
