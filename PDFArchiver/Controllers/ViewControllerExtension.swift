@@ -106,6 +106,10 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
     }
 
     override func controlTextDidEndEditing(_ notification: Notification) {
+        // check if notification comes from the tagSearchField
+        guard let field = notification.object as? NSSearchField,
+              field.identifier?.rawValue == "tagSearchField" else { return }
+
         // check if the last key pressed is the Return key
         guard let textMovement = notification.userInfo?["NSTextMovement"] as? Int else { return }
         if textMovement != NSReturnTextMovement.hashValue {
