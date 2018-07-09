@@ -92,8 +92,7 @@ extension IAPHelper {
     }
 
     public func appUsagePermitted() -> Bool {
-        guard let receipt = self.receipt,
-              let originalAppVersion = receipt.originalAppVersion else { return false }
+        guard let receipt = self.receipt else { return false }
 
         // test if the user has bought the app before the subscription model started
         if preSubscriptionPurchase() {
