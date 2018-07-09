@@ -897,11 +897,11 @@ Tag your document and save  it:</string>
             <objects>
                 <viewController title="Donation" identifier="DonationsVC" storyboardIdentifier="DonationsVC" id="rWp-Co-RrU" customClass="DonationPreferencesVC" customModule="PDFArchiver" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="vFK-Vc-7T6">
-                        <rect key="frame" x="0.0" y="0.0" width="455" height="210"/>
+                        <rect key="frame" x="0.0" y="0.0" width="590" height="200"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <box autoresizesSubviews="NO" borderType="line" title="One-Time Donation" translatesAutoresizingMaskIntoConstraints="NO" id="alz-A4-A8z">
-                                <rect key="frame" x="232" y="45" width="196" height="145"/>
+                                <rect key="frame" x="367" y="45" width="196" height="145"/>
                                 <view key="contentView" id="yc2-iU-djq">
                                     <rect key="frame" x="1" y="1" width="194" height="125"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -960,7 +960,7 @@ Tag your document and save  it:</string>
                                 <font key="titleFont" metaFont="systemSemibold" size="14"/>
                             </box>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="y11-yy-btf">
-                                <rect key="frame" x="411" y="17" width="16" height="16"/>
+                                <rect key="frame" x="546" y="17" width="16" height="16"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="12" id="IB7-Fa-ABb"/>
                                     <constraint firstAttribute="width" constant="12" id="PhT-M7-4Ap"/>
@@ -974,7 +974,7 @@ Tag your document and save  it:</string>
                                 </buttonCell>
                             </button>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="sL0-ry-Buz">
-                                <rect key="frame" x="234" y="17" width="171" height="17"/>
+                                <rect key="frame" x="369" y="17" width="171" height="17"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="17" id="ouW-Z0-oNf"/>
                                 </constraints>
@@ -985,12 +985,14 @@ Tag your document and save  it:</string>
                                 </textFieldCell>
                             </textField>
                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="7Kr-6U-ceM">
-                                <rect key="frame" x="28" y="49" width="194" height="121"/>
-                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" id="Zpu-W2-6EJ">
+                                <rect key="frame" x="28" y="49" width="324" height="141"/>
+                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="Zpu-W2-6EJ">
                                     <font key="font" metaFont="system"/>
                                     <string key="title">PDF Archiver is a small open source project.
+You can support this project by picking a one-time donation via the buttons on the right.
 
-You can support this project by picking a one-time donation via the buttons on the right.</string>
+For changing your app subscription please have a look at the Menu:
+Help &gt; Show Onboarding</string>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
@@ -1009,19 +1011,18 @@ You can support this project by picking a one-time donation via the buttons on t
                         </subviews>
                         <constraints>
                             <constraint firstItem="sL0-ry-Buz" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="bxz-JO-TV5" secondAttribute="trailing" constant="8" symbolic="YES" id="6zI-lc-Ly2"/>
-                            <constraint firstItem="alz-A4-A8z" firstAttribute="width" secondItem="7Kr-6U-ceM" secondAttribute="width" id="Ju5-6F-ndk"/>
                             <constraint firstItem="alz-A4-A8z" firstAttribute="bottom" secondItem="7Kr-6U-ceM" secondAttribute="bottom" id="Qaj-Wn-joJ"/>
                             <constraint firstAttribute="bottom" secondItem="bxz-JO-TV5" secondAttribute="bottom" constant="15" id="RJ8-ZW-VSG"/>
                             <constraint firstItem="y11-yy-btf" firstAttribute="centerY" secondItem="sL0-ry-Buz" secondAttribute="centerY" id="cEA-My-L8f"/>
                             <constraint firstItem="sL0-ry-Buz" firstAttribute="top" secondItem="alz-A4-A8z" secondAttribute="bottom" constant="15" id="ctt-XC-BCM"/>
                             <constraint firstItem="y11-yy-btf" firstAttribute="leading" secondItem="sL0-ry-Buz" secondAttribute="trailing" constant="10" id="dmh-oE-3fw"/>
-                            <constraint firstItem="alz-A4-A8z" firstAttribute="leading" secondItem="7Kr-6U-ceM" secondAttribute="trailing" constant="15" id="gf5-Zc-JrY"/>
+                            <constraint firstItem="alz-A4-A8z" firstAttribute="leading" secondItem="7Kr-6U-ceM" secondAttribute="trailing" constant="20" id="gf5-Zc-JrY"/>
                             <constraint firstItem="7Kr-6U-ceM" firstAttribute="leading" secondItem="vFK-Vc-7T6" secondAttribute="leading" constant="30" id="mXN-Vc-vsq"/>
                             <constraint firstAttribute="trailing" secondItem="alz-A4-A8z" secondAttribute="trailing" constant="30" id="ndp-4c-wD7"/>
-                            <constraint firstItem="7Kr-6U-ceM" firstAttribute="top" secondItem="vFK-Vc-7T6" secondAttribute="top" constant="40" id="nft-Og-BAW"/>
+                            <constraint firstItem="7Kr-6U-ceM" firstAttribute="top" secondItem="vFK-Vc-7T6" secondAttribute="top" constant="10" id="nft-Og-BAW"/>
                             <constraint firstItem="y11-yy-btf" firstAttribute="trailing" secondItem="alz-A4-A8z" secondAttribute="trailing" id="qUS-9R-meC"/>
                             <constraint firstItem="bxz-JO-TV5" firstAttribute="leading" secondItem="7Kr-6U-ceM" secondAttribute="leading" id="voy-Jr-H0w"/>
-                            <constraint firstItem="alz-A4-A8z" firstAttribute="top" secondItem="vFK-Vc-7T6" secondAttribute="top" constant="20" id="xvt-TW-iYu"/>
+                            <constraint firstItem="alz-A4-A8z" firstAttribute="top" secondItem="vFK-Vc-7T6" secondAttribute="top" constant="10" id="xvt-TW-iYu"/>
                             <constraint firstAttribute="bottom" secondItem="y11-yy-btf" secondAttribute="bottom" constant="20" id="z7T-rm-Woa"/>
                         </constraints>
                     </view>
@@ -1035,7 +1036,7 @@ You can support this project by picking a one-time donation via the buttons on t
                 </viewController>
                 <customObject id="S14-PJ-KOq" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="816" y="1982"/>
+            <point key="canvasLocation" x="836" y="1990"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="hIz-AP-VOD">
@@ -1417,7 +1418,7 @@ You can support this project by picking a one-time donation via the buttons on t
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                    <rect key="frame" x="31.5" y="1" width="194" height="17"/>
+                                                                    <rect key="frame" x="32" y="1" width="194" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">

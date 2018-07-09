@@ -284,8 +284,8 @@
 /* Class = "NSTextFieldCell"; title = "Mac App Store Connection:"; ObjectID = "ywB-46-644"; */
 "ywB-46-644.title" = "Mac App Store Verbindung:";
 
-/* Class = "NSTextFieldCell"; title = "PDF Archiver is a small open source project.\n\nYou can support this project by picking a one-time donation via the buttons on the right."; ObjectID = "Zpu-W2-6EJ"; */
-"Zpu-W2-6EJ.title" = "PDF Archiver ist ein kleines Open Source Projekt.\n\nSie können das Projekt unterstützen, indem Sie eine Spende über die Button auf der rechten Seite auswählen.";
+/* Class = "NSTextFieldCell"; title = "PDF Archiver is a small open source project.\nYou can support this project by picking a one-time donation via the buttons on the right.\n\nFor changing your app subscription please have a look at the Menu:\nHelp > Show Onboarding"; ObjectID = "Zpu-W2-6EJ"; */
+"Zpu-W2-6EJ.title" = "PDF Archiver ist ein kleines Open Source Projekt.\nSie können das Projekt unterstützen, indem Sie eine Spende über die Button auf der rechten Seite auswählen.\n\nVerwende bitte das folgende Menü, um das Abomodell der App zu ändern:\nHilfe > Einführung anzeigen";
 
 /* Class = "NSMenuItem"; title = "Privacy Policy"; ObjectID = "6IH-UX-ZY8"; */
 "6IH-UX-ZY8.title" = "Datenschutz";
