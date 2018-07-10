@@ -34,7 +34,13 @@ class Preferences: PreferencesDelegate, Logging {
             self.archiveDelegate?.updateDocumentsAndTags()
         }
     }
-    var convertPictures: Bool = false
+    var convertPictures: Bool = false {
+        didSet {
+            if let observedPath = self.observedPath {
+                self.dataModelTagsDelegate?.addUntaggedDocuments(paths: [observedPath])
+            }
+        }
+    }
     var observedPath: URL? {
         // ATTENTION: only set observed path, after an OpenPanel dialog
         get {

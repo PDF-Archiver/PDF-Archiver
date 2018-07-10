@@ -54,7 +54,8 @@ class Archive: ArchiveDelegate, Logging {
             // get all PDF files from this year and the last years
             var files = [URL]()
             for folder in folders {
-                files.append(contentsOf: getPDFs(folder))
+                let filesInFolder = self.getPDFs(folder)
+                files.append(contentsOf: filesInFolder)
             }
 
             // update the taggedDocuments
@@ -68,5 +69,36 @@ class Archive: ArchiveDelegate, Logging {
 
         // update the tags
         self.dataModelTagsDelegate?.updateTags()
+    }
+
+    func getPDFs(_ sourceFolder: URL) -> [URL] {
+        // get all files in the source folder
+        let fileManager = FileManager.default
+        let files = (fileManager.enumerator(at: sourceFolder,
+                                            includingPropertiesForKeys: nil,
+                                            options: [.skipsHiddenFiles],
+                                            errorHandler: nil)?.allObjects as? [URL]) ?? []
+
+        // pick pdfs and convert pictures
+        var pdfURLs = [URL]()
+        for file in files {
+            if file.pathExtension == "pdf" {
+                // add PDF
+                pdfURLs.append(file)
+
+            } else if let fileTypeIdentifier = file.typeIdentifier,
+                NSImage.imageTypes.contains(fileTypeIdentifier),
+                self.preferencesDelegate?.convertPictures ?? false {
+                // convert picture/supported file to PDF
+                let pdfURL = convertToPDF(file)
+                pdfURLs.append(pdfURL)
+
+            } else {
+                // skip the unsupported filetype
+                continue
+            }
+        }
+
+        return pdfURLs
     }
 }

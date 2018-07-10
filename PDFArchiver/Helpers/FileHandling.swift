@@ -51,34 +51,3 @@ func convertToPDF(_ inPath: URL) -> URL {
 
     return outPath
 }
-
-// TODO: is this really the right place for this function?
-func getPDFs(_ sourceFolder: URL) -> [URL] {
-    // get all files in the source folder
-    let fileManager = FileManager.default
-    let files = (fileManager.enumerator(at: sourceFolder,
-                                        includingPropertiesForKeys: nil,
-                                        options: [.skipsHiddenFiles],
-                                        errorHandler: nil)?.allObjects as? [URL]) ?? []
-
-    // pick pdfs and convert pictures
-    var pdfURLs = [URL]()
-    for file in files {
-        if file.pathExtension == "pdf" {
-            // add PDF
-            pdfURLs.append(file)
-
-        } else if let fileTypeIdentifier = file.typeIdentifier,
-            NSImage.imageTypes.contains(fileTypeIdentifier) {
-            // convert picture/supported file to PDF
-            let pdfURL = convertToPDF(file)
-            pdfURLs.append(pdfURL)
-
-        } else {
-            // skip the unsupported filetype
-            continue
-        }
-    }
-
-    return pdfURLs
-}

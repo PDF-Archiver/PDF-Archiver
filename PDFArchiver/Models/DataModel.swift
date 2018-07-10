@@ -113,7 +113,7 @@ class DataModel: Logging {
         self.prefs.accessSecurityScope {
             var documents = [Document]()
             for path in paths {
-                let files = getPDFs(path)
+                let files = self.archive.getPDFs(path)
                 for file in files {
                     documents.append(Document(path: file, availableTags: &self.tags))
                 }
