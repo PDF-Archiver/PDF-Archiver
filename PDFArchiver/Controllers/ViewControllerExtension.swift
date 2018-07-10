@@ -134,7 +134,7 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
                 tagName = tagName.slugify()
             }
             selectedTag = Tag(name: tagName,
-                              count: 1)
+                              count: 0)
             self.dataModelInstance.tags.insert(selectedTag)
         }
 
