@@ -23,6 +23,8 @@ class OnboardingViewController: NSViewController {
     @IBOutlet weak var customView3: NSView!
     @IBOutlet weak var progressIndicator: NSProgressIndicator!
     @IBOutlet weak var lockIndicator: NSImageView!
+    @IBOutlet weak var monthlySubscriptionLabel: NSTextField!
+    @IBOutlet weak var yearlySubscriptionLabel: NSTextField!
     @IBOutlet weak var monthlySubscriptionButton: NSButton!
     @IBOutlet weak var yearlySubscriptionButton: NSButton!
 
@@ -111,16 +113,19 @@ extension OnboardingViewController: OnboardingVCDelegate {
 
             // set the button label
             for product in self.iAPHelperDelegate?.products ?? [] {
+                var selectedLabel: NSTextField
                 var selectedButton: NSButton
 
                 switch product.productIdentifier {
                 case "SUBSCRIPTION_MONTHLY":
                     selectedButton = self.monthlySubscriptionButton
-                    selectedButton.title = product.localizedPrice + " " + NSLocalizedString("per_month", comment: "")
+                    selectedLabel = self.monthlySubscriptionLabel
+                    selectedLabel.stringValue = product.localizedPrice + " " + NSLocalizedString("per_month", comment: "")
 
                 case "SUBSCRIPTION_YEARLY":
                     selectedButton = self.yearlySubscriptionButton
-                    selectedButton.title = product.localizedPrice + " " + NSLocalizedString("per_year", comment: "")
+                    selectedLabel = self.yearlySubscriptionLabel
+                    selectedLabel.stringValue = product.localizedPrice + " " + NSLocalizedString("per_year", comment: "")
 
                 default:
                     continue

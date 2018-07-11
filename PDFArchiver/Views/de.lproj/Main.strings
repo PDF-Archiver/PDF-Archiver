@@ -305,11 +305,11 @@
 /* Class = "NSTextFieldCell"; title = "Description"; ObjectID = "ZlY-Ux-pR6"; */
 "ZlY-Ux-pR6.title" = "Beschreibung";
 
-/* Class = "NSButtonCell"; title = "Monthly"; ObjectID = "SpT-AH-ELy"; */
-"SpT-AH-ELy.title" = "Monatlich";
+/* Class = "NSButtonCell"; title = "Subscribe"; ObjectID = "SpT-AH-ELy"; */
+"SpT-AH-ELy.title" = "Kaufen";
 
-/* Class = "NSButtonCell"; title = "Yearly"; ObjectID = "Uao-RJ-bqA"; */
-"Uao-RJ-bqA.title" = "Jährlich";
+/* Class = "NSButtonCell"; title = "Subscribe"; ObjectID = "Uao-RJ-bqA"; */
+"Uao-RJ-bqA.title" = "Kaufen";
 
 /* Class = "NSTextFieldCell"; title = "Automatic renewal and cancellation:"; ObjectID = "GL4-Kh-cUd"; */
 "GL4-Kh-cUd.title" = "Automatische Verlängerung und Kündigung:";
@@ -317,8 +317,8 @@
 /* Class = "NSTextFieldCell"; title = "• Try the app for free! You can try the app in a free trial period of 1 month by choosing a subscription. You can try the app without any costs in this period.\n• Your Apple account will be charged for the next subscriptioon period within the final 24 hours of the current period.\n• The subscription will renew automatically if you do not deactivate the renewal in the account setting in iTunes or the App Store at least 24 hours before the end of the subscription period."; ObjectID = "Vnc-G1-ChS"; */
 "Vnc-G1-ChS.title" = "• Testen Sie die App 1 Monat als Demo kostenlos. Wählen Sie hierfür eine Abo-Modell auf der rechten Seite aus.\n• Ihr Apple-Account wird innerhalb der letzten 24 Stunden der Laufzeit des laufenden Abos für den nächsten Zeitraum belastet.\n• Das Abo verlängert sich automatisch, wenn die Verlängerung nicht wenigstens 24 Stunden vor Ablauf in den Konto-Einstellungen in iTunes oder im App Store deaktiviert wird.";
 
-/* Class = "NSTextFieldCell"; title = "Get 1 month free trial:"; ObjectID = "B9y-2y-RyJ"; */
-"B9y-2y-RyJ.title" = "1 Monat kostenlos:";
+/* Class = "NSTextFieldCell"; title = "Subscriptions (1-month trial):"; ObjectID = "B9y-2y-RyJ"; */
+"B9y-2y-RyJ.title" = "Abos (1. Monat kostenlos):";
 
 /* Class = "NSButtonCell"; title = "Manage Subscription"; ObjectID = "F0S-Zh-UzN"; */
 "F0S-Zh-UzN.title" = "Abo verwalten";
@@ -340,3 +340,12 @@
 
 /* Class = "NSButtonCell"; title = "Convert pictures to PDFs"; ObjectID = "dMg-Kx-7ej"; */
 "dMg-Kx-7ej.title" = "Konvertiert Bilder zu PDFs";
+
+/* Class = "NSTextFieldCell"; title = "Yearly"; ObjectID = "7uk-Kh-PYi"; */
+"7uk-Kh-PYi.title" = "Jährlich";
+
+/* Class = "NSTextFieldCell"; title = "Monthly"; ObjectID = "MW5-7k-BCt"; */
+"MW5-7k-BCt.title" = "Monatlich";
+
+/* Class = "NSTextFieldCell"; title = "License:"; ObjectID = "wMm-UI-hhy"; */
+"wMm-UI-hhy.title" = "Lizenz:";
