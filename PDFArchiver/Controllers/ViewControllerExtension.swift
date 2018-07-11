@@ -51,7 +51,7 @@ extension ViewController: ViewControllerDelegate {
         self.tagAC.content = self.dataModelInstance.tags
 
         // test if no documents exist in document table view
-        if self.dataModelInstance.archive.documents.count == 0 {
+        if self.dataModelInstance.untaggedDocuments.count == 0 {
             self.pdfContentView.document = nil
             self.datePicker.dateValue = Date()
             self.specificationField.stringValue = ""

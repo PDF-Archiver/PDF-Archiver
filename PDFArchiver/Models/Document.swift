@@ -14,7 +14,6 @@ class Document: NSObject, Logging {
     var path: URL
     @objc var name: String?
     @objc var documentDone: String = ""
-    var renamed: Bool = false
     var date = Date()
     var specification: String? {
         didSet {
@@ -104,7 +103,6 @@ class Document: NSObject, Logging {
         self.name = String(newFilepath.lastPathComponent)
         self.path = newFilepath
         self.documentDone = "✔️"
-        self.renamed = true
 
         do {
             var tags = [String]()

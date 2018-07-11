@@ -49,12 +49,12 @@ class DataModel: Logging {
     func saveDocumentInArchive(document: Document) -> Bool {
         if let archivePath = self.prefs.archivePath {
             // rename the document
+            var result = false
             self.prefs.accessSecurityScope {
-                document.rename(archivePath: archivePath)
+                result = document.rename(archivePath: archivePath)
             }
 
-            if document.renamed {
-                self.archive.documents.append(document)
+            if result {
                 self.viewControllerDelegate?.setDocuments(documents: self.untaggedDocuments)
                 return true
             }
