@@ -132,9 +132,7 @@ extension OnboardingViewController: OnboardingVCDelegate {
                 }
 
                 // enable the button
-                if !(self.iAPHelperDelegate?.preSubscriptionPurchase() ?? false) {
-                    selectedButton.isEnabled = true
-                }
+                selectedButton.isEnabled = true
             }
         }
     }
