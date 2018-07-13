@@ -8,9 +8,14 @@
 
 import Cocoa
 
+protocol OnboardingVCDelegate: class {
+    func updateGUI()
+    func closeOnboardingView()
+}
+
 class OnboardingViewController: NSViewController {
-    weak var delegate: PreferencesDelegate?
-    var dataModel: DataModel?
+    weak var iAPHelperDelegate: IAPHelperDelegate?
+    weak var viewControllerDelegate: ViewControllerDelegate?
 
     @IBOutlet weak var baseView: NSView!
     @IBOutlet weak var customView1: NSView!
@@ -18,23 +23,25 @@ class OnboardingViewController: NSViewController {
     @IBOutlet weak var customView3: NSView!
     @IBOutlet weak var progressIndicator: NSProgressIndicator!
     @IBOutlet weak var lockIndicator: NSImageView!
+    @IBOutlet weak var monthlySubscriptionLabel: NSTextField!
+    @IBOutlet weak var yearlySubscriptionLabel: NSTextField!
     @IBOutlet weak var monthlySubscriptionButton: NSButton!
     @IBOutlet weak var yearlySubscriptionButton: NSButton!
 
     @IBAction func privacyButton(_ sender: NSButton) {
-        NSWorkspace.shared.open(URL(string: NSLocalizedString("privacy", comment: "PDF Archiver privacy website"))!)
+        NSWorkspace.shared.open(Constants.WebsiteEndpoints.privacy.url)
     }
 
     @IBAction func restorePurchasesButton(_ sender: NSButton) {
-        self.dataModel?.store.restorePurchases()
+        self.iAPHelperDelegate?.restorePurchases()
     }
 
     @IBAction func monthlySubscriptionButtonClicked(_ sender: NSButton) {
-        self.dataModel?.store.buyProduct("SUBSCRIPTION_MONTHLY")
+        self.iAPHelperDelegate?.buyProduct("SUBSCRIPTION_MONTHLY")
     }
 
     @IBAction func yearlySubscriptionButton(_ sender: NSButton) {
-        self.dataModel?.store.buyProduct("SUBSCRIPTION_YEARLY")
+        self.iAPHelperDelegate?.buyProduct("SUBSCRIPTION_YEARLY")
     }
     @IBAction func manageSubscriptionsButtonClicked(_ sender: NSButton) {
         NSWorkspace.shared.open(URL(string: "https://apps.apple.com/account/subscriptions")!)
@@ -42,11 +49,6 @@ class OnboardingViewController: NSViewController {
 
     @IBAction func closeButton(_ sender: NSButton?) {
         self.dismiss(self)
-
-        // test if user has purchased the app, close if not
-        if !(self.dataModel?.store.appUsagePermitted() ?? false) {
-            self.delegate?.closeApp()
-        }
     }
 
     override func viewDidLoad() {
@@ -54,12 +56,6 @@ class OnboardingViewController: NSViewController {
 
         // Do view setup here.
         UserDefaults.standard.set(true, forKey: "onboardingShown")
-
-        // get the data model from the main view controller
-        self.dataModel = self.delegate?.getDataModel()
-
-        // IAPHelper delegate
-        self.dataModel?.store.delegate = self
 
         // update the GUI
         self.updateGUI()
@@ -85,13 +81,22 @@ class OnboardingViewController: NSViewController {
         self.customView3.layer?.backgroundColor = customViewColor
         self.customView3.layer?.cornerRadius = cornerRadius
     }
+
+    override func viewWillDisappear() {
+        // test if user has purchased the app, close if not
+        if !(self.iAPHelperDelegate?.appUsagePermitted() ?? false) {
+            self.viewControllerDelegate?.closeApp()
+        }
+    }
 }
 
-extension OnboardingViewController: IAPHelperDelegate {
+// MARK: - OnboardingVCDelegate
+
+extension OnboardingViewController: OnboardingVCDelegate {
     func updateGUI() {
         DispatchQueue.main.async {
             // update the locked/unlocked indicator
-            if let appUsagePermitted = self.dataModel?.store.appUsagePermitted(),
+            if let appUsagePermitted = self.iAPHelperDelegate?.appUsagePermitted(),
                 appUsagePermitted {
                 self.lockIndicator.image = NSImage(named: NSImage.Name("NSLockUnlockedTemplate"))
 
@@ -99,7 +104,7 @@ extension OnboardingViewController: IAPHelperDelegate {
                 self.lockIndicator.image = NSImage(named: NSImage.Name("NSLockLockedTemplate"))
 
                 // update the progress indicator
-                if (self.dataModel?.store.requestRunning ?? 0) != 0 {
+                if (self.iAPHelperDelegate?.requestRunning ?? 0) != 0 {
                     self.progressIndicator.startAnimation(self)
                 } else {
                     self.progressIndicator.stopAnimation(self)
@@ -107,17 +112,20 @@ extension OnboardingViewController: IAPHelperDelegate {
             }
 
             // set the button label
-            for product in self.dataModel?.store.products ?? [] {
+            for product in self.iAPHelperDelegate?.products ?? [] {
+                var selectedLabel: NSTextField
                 var selectedButton: NSButton
 
                 switch product.productIdentifier {
                 case "SUBSCRIPTION_MONTHLY":
                     selectedButton = self.monthlySubscriptionButton
-                    selectedButton.title = product.localizedPrice + " " + NSLocalizedString("per_month", comment: "")
+                    selectedLabel = self.monthlySubscriptionLabel
+                    selectedLabel.stringValue = product.localizedPrice + " " + NSLocalizedString("per_month", comment: "")
 
                 case "SUBSCRIPTION_YEARLY":
                     selectedButton = self.yearlySubscriptionButton
-                    selectedButton.title = product.localizedPrice + " " + NSLocalizedString("per_year", comment: "")
+                    selectedLabel = self.yearlySubscriptionLabel
+                    selectedLabel.stringValue = product.localizedPrice + " " + NSLocalizedString("per_year", comment: "")
 
                 default:
                     continue
@@ -129,7 +137,7 @@ extension OnboardingViewController: IAPHelperDelegate {
         }
     }
 
-    func closeView() {
+    func closeOnboardingView() {
         DispatchQueue.main.async {
             self.closeButton(nil)
         }

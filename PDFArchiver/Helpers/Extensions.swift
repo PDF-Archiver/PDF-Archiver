@@ -45,3 +45,31 @@ extension String {
             .joined(separator: separator)
     }
 }
+
+// remove document from array
+extension Array where Element: NSObject {
+
+    @discardableResult
+    mutating func remove(_ element: Element) -> Element? {
+        if let idx = self.index(of: element) {
+            return self.remove(at: idx)
+        } else {
+            return nil
+        }
+    }
+
+}
+
+// add logging
+import os.log
+
+protocol Logging {
+    var log: OSLog { get }
+}
+
+extension Logging {
+    internal var log: OSLog {
+        return OSLog(subsystem: Bundle.main.bundleIdentifier!,
+                     category: String(describing: type(of: self)))
+    }
+}

@@ -37,15 +37,10 @@ func connectedToNetwork() -> Bool {
 
 func getNumberOfDonations() -> String {
     var contents = "0"
-    if let url = URL(string: "https://pdf-archiver.io/assets/donations.txt") {
-        do {
-            contents = try String(contentsOf: url)
-        } catch {
-            // contents could not be loaded
-        }
-    } else {
-        // the URL was bad!
+    do {
+        contents = try String(contentsOf: Constants.donationCount)
+    } catch {
+        // contents could not be loaded
     }
-
-    return contents
+    return contents.replacingOccurrences(of: "\n", with: "", options: .regularExpression)
 }

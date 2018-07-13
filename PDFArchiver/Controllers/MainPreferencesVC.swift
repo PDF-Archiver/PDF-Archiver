@@ -9,25 +9,20 @@
 import Cocoa
 
 class MainPreferencesVC: PreferencesVC {
-    var dataModel: DataModel?
-    weak var delegate: PreferencesDelegate?
+    weak var preferencesDelegate: PreferencesDelegate?
 
     @IBOutlet weak var archivePathTextField: NSTextField!
     @IBOutlet weak var observedPathTextField: NSTextField!
     @IBOutlet weak var documentSlugifyCheckButton: NSButton!
     @IBOutlet weak var tagsCheckButton: NSButton!
+    @IBOutlet weak var convertPicturesButton: NSButton!
 
     @IBAction func changeArchivePathButton(_ sender: Any) {
         let openPanel = getOpenPanel("Choose an archive folder")
         openPanel.beginSheetModal(for: NSApplication.shared.mainWindow!) { response in
             guard response == NSApplication.ModalResponse.OK else { return }
-            self.dataModel?.prefs.archivePath = openPanel.url!
+            self.preferencesDelegate?.archivePath = openPanel.url!
             self.archivePathTextField.stringValue = openPanel.url!.path
-
-            // get tags and update the GUI
-            self.dataModel?.updateTags {
-                self.delegate?.updateGUI()
-            }
         }
     }
 
@@ -36,73 +31,44 @@ class MainPreferencesVC: PreferencesVC {
         openPanel.beginSheetModal(for: NSApplication.shared.mainWindow!) { response in
             guard response == NSApplication.ModalResponse.OK else { return }
             self.observedPathTextField.stringValue = openPanel.url!.path
-            self.dataModel?.prefs.observedPath = openPanel.url!
-            self.dataModel?.addDocuments(paths: openPanel.urls)
-
-            // get tags and update the GUI
-            self.dataModel?.updateTags {
-                self.delegate?.updateGUI()
-            }
+            self.preferencesDelegate?.observedPath = openPanel.url!
         }
     }
 
     @IBAction func documentSlugifyCheckButtonClicked(_ sender: NSButton) {
-        if sender.state == .on {
-            self.dataModel?.prefs.slugifyNames = true
-        } else {
-            self.dataModel?.prefs.slugifyNames = false
-        }
+        self.preferencesDelegate?.slugifyNames = sender.state == .on
     }
 
     @IBAction func tagsCheckButtonClicked(_ sender: NSButton) {
-        if sender.state == .on {
-            self.dataModel?.prefs.analyseAllFolders = true
-        } else {
-            self.dataModel?.prefs.analyseAllFolders = false
-        }
-
-        // get tags and update the GUI
-        self.dataModel?.updateTags {
-            self.delegate?.updateGUI()
-        }
+        self.preferencesDelegate?.analyseAllFolders = sender.state == .on
+    }
+    @IBAction func convertPicturesButtonClicked(_ sender: NSButton) {
+        self.preferencesDelegate?.convertPictures = sender.state == .on
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // get the data model from the main view controller
-        self.dataModel = self.delegate?.getDataModel()
-
         // update path field
-        if let archivePath = self.dataModel?.prefs.archivePath {
+        if let archivePath = self.preferencesDelegate?.archivePath {
             self.archivePathTextField.stringValue = archivePath.path
         }
-        if let observedPath = self.dataModel?.prefs.observedPath {
+        if let observedPath = self.preferencesDelegate?.observedPath {
             self.observedPathTextField.stringValue = observedPath.path
         }
 
         // document slugify
-        if !(self.dataModel?.prefs.slugifyNames ?? false) {
-            self.documentSlugifyCheckButton.state = .off
-        } else {
-            self.documentSlugifyCheckButton.state = .on
-        }
+        self.documentSlugifyCheckButton.state = (self.preferencesDelegate?.slugifyNames ?? true) ? .on : .off
 
         // update tags
-        if !(self.dataModel?.prefs.analyseAllFolders ?? false) {
-            self.tagsCheckButton.state = .off
-        } else {
-            self.tagsCheckButton.state = .on
-        }
+        self.tagsCheckButton.state = (self.preferencesDelegate?.analyseAllFolders ?? false) ? .on : .off
+
+        // convert pictures
+        self.convertPicturesButton.state = (self.preferencesDelegate?.convertPictures ?? false) ? .on : .off
     }
 
     override func viewWillDisappear() {
         // save the current paths + tags
-        self.dataModel?.prefs.save()
-
-        // update the data model of the main view controller
-        if let dataModel = self.dataModel {
-            self.delegate?.setDataModel(dataModel: dataModel)
-        }
+        self.preferencesDelegate?.save()
     }
 }

@@ -71,14 +71,17 @@
 /* Class = "NSTextFieldCell"; title = "Welcome to PDF Archiver"; ObjectID = "LDE-IZ-15h"; */
 "LDE-IZ-15h.title" = "Willkommen bei PDF Archiver";
 
-/* Class = "NSMenuItem"; title = "Reset Settings"; ObjectID = "N0V-Bp-Pnp"; */
-"N0V-Bp-Pnp.title" = "Einstellungen zurücksetzen";
+/* Class = "NSMenuItem"; title = "Reset Settings"; ObjectID = "wws-V1-htX"; */
+"wws-V1-htX.title" = "Einstellungen zurücksetzen";
+
+/* Class = "NSMenuItem"; title = "Manage Subscription"; ObjectID = "N0V-Bp-Pnp"; */
+"N0V-Bp-Pnp.title" = "Abo verwalten";
 
 /* Class = "NSDatePicker"; ibShadowedToolTip = "date of the document"; ObjectID = "NiF-3c-nL6"; */
 "NiF-3c-nL6.ibShadowedToolTip" = "Datum des Dokumentes";
 
-/* Class = "NSButtonCell"; title = "Add PDFs "; ObjectID = "O5o-sv-h0r"; */
-"O5o-sv-h0r.title" = "PDFs hinzufügen";
+/* Class = "NSButtonCell"; title = "Add PDF Folder "; ObjectID = "O5o-sv-h0r"; */
+"O5o-sv-h0r.title" = "PDF Ordner hinzufügen";
 
 /* Class = "NSMenuItem"; title = "Minimize"; ObjectID = "OY7-WF-poV"; */
 "OY7-WF-poV.title" = "Minimieren";
@@ -263,8 +266,8 @@
 /* Class = "NSButtonCell"; title = "Analyse all archive folders"; ObjectID = "k8C-2q-WjN"; */
 "k8C-2q-WjN.title" = "Alle Archiv Ordnern analysieren";
 
-/* Class = "NSTextFieldCell"; title = "Analysing all folders may decrease the app speed for large archives."; ObjectID = "Tlv-Ku-QD7"; */
-"Tlv-Ku-QD7.title" = "Die Analyse aller Ordner kann bei einem großen Archiv die Geschwindigkeit der App negativ beeinflussen.";
+/* Class = "NSTextFieldCell"; title = "This may decrease the app speed for large archives."; ObjectID = "Tlv-Ku-QD7"; */
+"Tlv-Ku-QD7.title" = "Dies kann die Geschwindigkeit der App negativ beeinflussen.";
 
 /* Class = "NSButtonCell"; title = "Level 1"; ObjectID = "dY2-A7-5th"; */
 "dY2-A7-5th.title" = "Level 1";
@@ -281,8 +284,8 @@
 /* Class = "NSTextFieldCell"; title = "Mac App Store Connection:"; ObjectID = "ywB-46-644"; */
 "ywB-46-644.title" = "Mac App Store Verbindung:";
 
-/* Class = "NSTextFieldCell"; title = "PDF Archiver is a small open source project.\n\nYou can support this project by picking a one-time donation via the buttons on the right."; ObjectID = "Zpu-W2-6EJ"; */
-"Zpu-W2-6EJ.title" = "PDF Archiver ist ein kleines Open Source Projekt.\n\nSie können das Projekt unterstützen, indem Sie eine Spende über die Button auf der rechten Seite auswählen.";
+/* Class = "NSTextFieldCell"; title = "PDF Archiver is a small open source project.\nYou can support this project by picking a one-time donation via the buttons on the right.\n\nFor changing your app subscription please have a look at the Menu:\nHelp > Show Onboarding"; ObjectID = "Zpu-W2-6EJ"; */
+"Zpu-W2-6EJ.title" = "PDF Archiver ist ein kleines Open Source Projekt.\nSie können das Projekt unterstützen, indem Sie eine Spende über die Button auf der rechten Seite auswählen.\n\nVerwende bitte das folgende Menü, um das Abomodell der App zu ändern:\nHilfe > Einführung anzeigen";
 
 /* Class = "NSMenuItem"; title = "Privacy Policy"; ObjectID = "6IH-UX-ZY8"; */
 "6IH-UX-ZY8.title" = "Datenschutz";
@@ -293,23 +296,20 @@
 /* Class = "NSMenuItem"; title = "Move to Trash"; ObjectID = "eF0-vQ-qVy"; */
 "eF0-vQ-qVy.title" = "In den Papierkorb legen";
 
-/* Class = "NSTextFieldCell"; title = "0"; ObjectID = "VSt-mJ-xeB"; */
-"VSt-mJ-xeB.title" = "0";
+/* Class = "NSTextFieldCell"; title = "0 People donated this Year."; ObjectID = "VSt-mJ-xeB"; */
+"VSt-mJ-xeB.title" = "0 People donated this Year.";
 
-/* Class = "NSTextFieldCell"; title = "People donated this Year."; ObjectID = "U5N-Gf-ZOk"; */
-"U5N-Gf-ZOk.title" = "Personen haben gespendet.";
+/* Class = "NSButtonCell"; title = "Convert description to maximize compatibility"; ObjectID = "DRZ-uz-4ap"; */
+"DRZ-uz-4ap.title" = "Maximale Kompatibilität";
 
-/* Class = "NSButtonCell"; title = "Slugify Document Description"; ObjectID = "DRZ-uz-4ap"; */
-"DRZ-uz-4ap.title" = "Entferne Sonderzeichen aus Beschreibung";
+/* Class = "NSTextFieldCell"; title = "Description"; ObjectID = "ZlY-Ux-pR6"; */
+"ZlY-Ux-pR6.title" = "Beschreibung";
 
-/* Class = "NSTextFieldCell"; title = "Document"; ObjectID = "ZlY-Ux-pR6"; */
-"ZlY-Ux-pR6.title" = "Dokument";
+/* Class = "NSButtonCell"; title = "Subscribe"; ObjectID = "SpT-AH-ELy"; */
+"SpT-AH-ELy.title" = "Kaufen";
 
-/* Class = "NSButtonCell"; title = "Monthly"; ObjectID = "SpT-AH-ELy"; */
-"SpT-AH-ELy.title" = "Monatlich";
-
-/* Class = "NSButtonCell"; title = "Yearly"; ObjectID = "Uao-RJ-bqA"; */
-"Uao-RJ-bqA.title" = "Jährlich";
+/* Class = "NSButtonCell"; title = "Subscribe"; ObjectID = "Uao-RJ-bqA"; */
+"Uao-RJ-bqA.title" = "Kaufen";
 
 /* Class = "NSTextFieldCell"; title = "Automatic renewal and cancellation:"; ObjectID = "GL4-Kh-cUd"; */
 "GL4-Kh-cUd.title" = "Automatische Verlängerung und Kündigung:";
@@ -317,8 +317,8 @@
 /* Class = "NSTextFieldCell"; title = "• Try the app for free! You can try the app in a free trial period of 1 month by choosing a subscription. You can try the app without any costs in this period.\n• Your Apple account will be charged for the next subscriptioon period within the final 24 hours of the current period.\n• The subscription will renew automatically if you do not deactivate the renewal in the account setting in iTunes or the App Store at least 24 hours before the end of the subscription period."; ObjectID = "Vnc-G1-ChS"; */
 "Vnc-G1-ChS.title" = "• Testen Sie die App 1 Monat als Demo kostenlos. Wählen Sie hierfür eine Abo-Modell auf der rechten Seite aus.\n• Ihr Apple-Account wird innerhalb der letzten 24 Stunden der Laufzeit des laufenden Abos für den nächsten Zeitraum belastet.\n• Das Abo verlängert sich automatisch, wenn die Verlängerung nicht wenigstens 24 Stunden vor Ablauf in den Konto-Einstellungen in iTunes oder im App Store deaktiviert wird.";
 
-/* Class = "NSTextFieldCell"; title = "Get 1 month free trial:"; ObjectID = "B9y-2y-RyJ"; */
-"B9y-2y-RyJ.title" = "1 Monat kostenlos:";
+/* Class = "NSTextFieldCell"; title = "Subscriptions (1-month trial):"; ObjectID = "B9y-2y-RyJ"; */
+"B9y-2y-RyJ.title" = "Abos (1. Monat kostenlos):";
 
 /* Class = "NSButtonCell"; title = "Manage Subscription"; ObjectID = "F0S-Zh-UzN"; */
 "F0S-Zh-UzN.title" = "Abo verwalten";
@@ -328,3 +328,24 @@
 
 /* Class = "NSButtonCell"; title = "Restore Purchases"; ObjectID = "NF4-Dh-JrT"; */
 "NF4-Dh-JrT.title" = "Käufe wiederherstellen";
+
+/* Class = "NSTextFieldCell"; title = "Removes characters like ä, ö, ü etc. from the document description."; ObjectID = "C3p-Lb-2rS"; */
+"C3p-Lb-2rS.title" = "Entfernt Sonderzeichen (ä, ö, ü etc.) aus der Dokument Beschreibung.";
+
+/* Class = "NSTextFieldCell"; title = "Pictures"; ObjectID = "DHw-bL-Azd"; */
+"DHw-bL-Azd.title" = "Bilder";
+
+/* Class = "NSTextFieldCell"; title = "Convert pictures (jpg etc.) in the observed folder to PDFs and trash the original."; ObjectID = "WIy-5i-bbd"; */
+"WIy-5i-bbd.title" = "Konvertiert Bilder (jpg etc.) in dem überwachten Oderner zu PDFs und legt das Original in den Papierkorb.";
+
+/* Class = "NSButtonCell"; title = "Convert pictures to PDFs"; ObjectID = "dMg-Kx-7ej"; */
+"dMg-Kx-7ej.title" = "Konvertiert Bilder zu PDFs";
+
+/* Class = "NSTextFieldCell"; title = "Yearly"; ObjectID = "7uk-Kh-PYi"; */
+"7uk-Kh-PYi.title" = "Jährlich";
+
+/* Class = "NSTextFieldCell"; title = "Monthly"; ObjectID = "MW5-7k-BCt"; */
+"MW5-7k-BCt.title" = "Monatlich";
+
+/* Class = "NSTextFieldCell"; title = "License:"; ObjectID = "wMm-UI-hhy"; */
+"wMm-UI-hhy.title" = "Lizenz:";

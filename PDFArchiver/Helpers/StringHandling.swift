@@ -10,7 +10,7 @@ import Foundation
 import os.log
 
 // MARK: other string stuff
-func regex_matches(for regex: String, in text: String) -> [String]? {
+func regexMatches(for regex: String, in text: String) -> [String]? {
 
     do {
         let regex = try NSRegularExpression(pattern: regex)

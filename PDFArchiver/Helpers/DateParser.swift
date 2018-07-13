@@ -17,7 +17,7 @@ struct DateParser {
 
     func parse(_ dateIn: String) -> Date? {
         for format in formats {
-            if var dateRaw = regex_matches(for: format.value, in: dateIn) {
+            if var dateRaw = regexMatches(for: format.value, in: dateIn) {
                 self.dateFormatter.dateFormat = format.key
                 if let date = self.dateFormatter.date(from: String(dateRaw[0])) {
                     return date

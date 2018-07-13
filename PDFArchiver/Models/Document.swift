@@ -9,26 +9,23 @@
 import Foundation
 import os.log
 
-class Document: NSObject {
-    fileprivate let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "Document")
-    weak var delegate: TagsDelegate?
+class Document: NSObject, Logging {
     // structure for PDF documents on disk
     var path: URL
     @objc var name: String?
     @objc var documentDone: String = ""
-    var documentDate = Date()
-    var documentDescription: String? {
+    var date = Date()
+    var specification: String? {
         didSet {
-            if let raw = self.documentDescription {
-                self.documentDescription = raw.lowercased()
+            if let raw = self.specification {
+                self.specification = raw.lowercased()
             }
         }
     }
     var documentTags: [Tag]?
 
-    init(path: URL, delegate: TagsDelegate?) {
+    init(path: URL, availableTags: inout Set<Tag>) {
         self.path = path
-        self.delegate = delegate
 
         // create a filename and rename the document
         self.name = String(path.lastPathComponent)
@@ -36,46 +33,41 @@ class Document: NSObject {
         // try to parse the current filename
         let parser = DateParser()
         if let date = parser.parse(self.name!) {
-            self.documentDate = date
+            self.date = date
         }
 
         // parse the description or use the filename
-        if var raw = regex_matches(for: "--[\\w\\d-]+__", in: self.name!) {
-            self.documentDescription = getSubstring(raw[0], startIdx: 2, endIdx: -2)
+        if var raw = regexMatches(for: "--[\\w\\d-]+__", in: self.name!) {
+            self.specification = getSubstring(raw[0], startIdx: 2, endIdx: -2)
         } else {
             let newDescription = String(path.lastPathComponent.dropLast(4))
-            self.documentDescription = newDescription.components(separatedBy: "__")[0]
+            self.specification = newDescription.components(separatedBy: "__")[0]
         }
 
         // parse the tags
-        if var raw = regex_matches(for: "__[\\w\\d_]+.[pdfPDF]{3}$", in: self.name!) {
+        if var raw = regexMatches(for: "__[\\w\\d_]+.[pdfPDF]{3}$", in: self.name!) {
             // parse the tags of a document
             let documentTagNames = getSubstring(raw[0], startIdx: 2, endIdx: -4).components(separatedBy: "_")
-            // get the available tags of the archive
-            var availableTags = self.delegate?.getTagList() ?? []
 
+            // get the available tags of the archive
             self.documentTags = [Tag]()
             for documentTagName in documentTagNames {
                 if availableTags.contains(where: { $0.name == documentTagName }) {
-                    os_log("Tag already found in archive tags.", log: self.log, type: .debug)
                     for availableTag in availableTags where availableTag.name == documentTagName {
                         availableTag.count += 1
                         self.documentTags!.append(availableTag)
                         break
                     }
                 } else {
-                    os_log("Tag not found in archive tags.", log: self.log, type: .debug)
                     let newTag = Tag(name: documentTagName, count: 1)
                     availableTags.insert(newTag)
                     self.documentTags!.append(newTag)
                 }
             }
-
-            // update the tag list
-            self.delegate?.setTagList(tagList: availableTags)
         }
     }
 
+    @discardableResult
     func rename(archivePath: URL) -> Bool {
         let newBasePath: URL
         let filename: String
@@ -133,7 +125,7 @@ class Document: NSObject {
             dialogOK(messageKey: "renaming_failed", infoKey: "check_document_tags", style: .warning)
             throw DocumentError.tags
         }
-        guard let description = self.documentDescription,
+        guard let description = self.specification,
               description != "" else {
             dialogOK(messageKey: "renaming_failed", infoKey: "check_document_description", style: .warning)
             throw DocumentError.description
@@ -142,7 +134,7 @@ class Document: NSObject {
         // get formatted date
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
-        let dateStr = dateFormatter.string(from: self.documentDate)
+        let dateStr = dateFormatter.string(from: self.date)
 
         // get tags
         var tagStr = ""

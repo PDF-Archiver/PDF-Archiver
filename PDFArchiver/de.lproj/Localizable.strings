@@ -12,10 +12,10 @@
 
 "check_document_tags" = "Bitte Dokument Tags prüfen und mindestens einen Tag auswählen.";
 
-"file_already_exists" = "Dateiname existstiert bereits. \nBitte z.B. Dokument Beschreibung verändern.";
+/* Donation Number label */
+"donation_number_label" = "Personen haben gespendet.";
 
-/* PDF Archiver imprint website */
-"imprint" = "https://pdf-archiver.io/de/imprint";
+"file_already_exists" = "Dateiname existstiert bereits. \nBitte z.B. Dokument Beschreibung verändern.";
 
 "no_archive" = "Kein Archiv Pfad gefunden!";
 
@@ -28,9 +28,6 @@
 
 /* No comment provided by engineer. */
 "per_year" = "pro Jahr";
-
-/* PDF Archiver privacy website */
-"privacy" = "https://pdf-archiver.io/de/privacy";
 
 "renaming_failed" = "Umbenennen fehlgeschlagen!";
 

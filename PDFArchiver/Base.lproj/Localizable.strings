@@ -12,10 +12,10 @@
 
 "check_document_tags" = "Doublecheck the document tags and select at least one tag.";
 
-"file_already_exists" = "File with the current filename already exists. \nPlease change e.g. the description.";
+/* Donation Number label */
+"donation_number_label" = "People donated this Year.";
 
-/* PDF Archiver imprint website */
-"imprint" = "https://pdf-archiver.io/imprint";
+"file_already_exists" = "File with the current filename already exists. \nPlease change e.g. the description.";
 
 "no_archive" = "No archive path found!";
 
@@ -28,9 +28,6 @@
 
 /* No comment provided by engineer. */
 "per_year" = "per year";
-
-/* PDF Archiver privacy website */
-"privacy" = "https://pdf-archiver.io/privacy";
 
 "renaming_failed" = "Renaming failed!";
 

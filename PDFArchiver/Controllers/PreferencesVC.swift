@@ -9,15 +9,7 @@
 import Cocoa
 import os.log
 
-protocol PreferencesDelegate: class {
-    func updateGUI()
-    func setDataModel(dataModel: DataModel)
-    func getDataModel() -> DataModel
-    func closeApp()
-}
-
-class PreferencesVC: NSViewController {
-    internal let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "PreferencesVC")
+class PreferencesVC: NSViewController, Logging {
 
     override func viewWillAppear() {
         self.view.window?.titlebarAppearsTransparent = true

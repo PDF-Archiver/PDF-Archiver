@@ -63,9 +63,9 @@ Download it from the Mac App Store:
 
 Or clone the repository and build it:
 * Downloaded and install [Xcode.app](https://itunes.apple.com/app/xcode/id497799835)
-* Get the project: `git clone https://github.com/PDF-Archiver/PDF-Archiver.git`
+* Get the project: `git clone --recurse-submodules https://github.com/PDF-Archiver/PDF-Archiver.git`
 * Install the app: `cd PDF-Archiver && bash scripts/install_app.sh`
-* Start **PDF Archiver** :rocket:
+* Start **PDF Archiver** :rocket: (You might start the app a second time because of some app validation steps.)
 
 ## <a name="pro-tips"></a>:mortar_board: Pro Tips
 ### Scanbot
