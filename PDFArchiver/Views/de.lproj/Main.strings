@@ -264,7 +264,7 @@
 "Cvq-op-wAk.title" = "Tags";
 
 /* Class = "NSButtonCell"; title = "Analyse all archive folders"; ObjectID = "k8C-2q-WjN"; */
-"k8C-2q-WjN.title" = "Alle Archiv Ordnern analysieren";
+"k8C-2q-WjN.title" = "Alle Archiv Ordner analysieren";
 
 /* Class = "NSTextFieldCell"; title = "This may decrease the app speed for large archives."; ObjectID = "Tlv-Ku-QD7"; */
 "Tlv-Ku-QD7.title" = "Dies kann die Geschwindigkeit der App negativ beeinflussen.";
@@ -336,7 +336,7 @@
 "DHw-bL-Azd.title" = "Bilder";
 
 /* Class = "NSTextFieldCell"; title = "Convert pictures (jpg etc.) in the observed folder to PDFs and trash the original."; ObjectID = "WIy-5i-bbd"; */
-"WIy-5i-bbd.title" = "Konvertiert Bilder (jpg etc.) in dem überwachten Oderner zu PDFs und legt das Original in den Papierkorb.";
+"WIy-5i-bbd.title" = "Konvertiert Bilder (jpg etc.) in dem überwachten Ordner zu PDFs und legt das Original in den Papierkorb.";
 
 /* Class = "NSButtonCell"; title = "Convert pictures to PDFs"; ObjectID = "dMg-Kx-7ej"; */
 "dMg-Kx-7ej.title" = "Konvertiert Bilder zu PDFs";

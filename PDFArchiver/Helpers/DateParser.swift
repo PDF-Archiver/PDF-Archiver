@@ -11,6 +11,7 @@ import Foundation
 struct DateParser {
     var formats = [
         "yyyy-MM-dd": "\\d{4}-\\d{2}-\\d{2}",
+        "yyyy_MM_dd": "\\d{4}_\\d{2}_\\d{2}",
         "yyyyMMdd": "\\d{8}"
     ]
     let dateFormatter = DateFormatter()

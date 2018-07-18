@@ -17,9 +17,7 @@ class Document: NSObject, Logging {
     var date = Date()
     var specification: String? {
         didSet {
-            if let raw = self.specification {
-                self.specification = raw.lowercased()
-            }
+            self.specification = self.specification?.replacingOccurrences(of: "_", with: "-").lowercased()
         }
     }
     var documentTags: [Tag]?
@@ -41,7 +39,7 @@ class Document: NSObject, Logging {
             self.specification = getSubstring(raw[0], startIdx: 2, endIdx: -2)
         } else {
             let newDescription = String(path.lastPathComponent.dropLast(4))
-            self.specification = newDescription.components(separatedBy: "__")[0]
+            self.specification = newDescription.components(separatedBy: "__")[0].replacingOccurrences(of: "_", with: "-")
         }
 
         // parse the tags

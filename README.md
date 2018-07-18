@@ -70,7 +70,7 @@ Or clone the repository and build it:
 ## <a name="pro-tips"></a>:mortar_board: Pro Tips
 ### Scanbot
 * **Easy document sync:** save your scans in iCloud Drive
-* **Enable PDF content searching:** buy [Scanbot](https://scanbot.io) Pro and turn on [OCR](https://en.wikipedia.org/wiki/Optical_character_recognition)
+* **Enable PDF content searching:** buy [Scanbot Pro](https://scanbot.io) and turn on [OCR](https://en.wikipedia.org/wiki/Optical_character_recognition)
 * **Let PDF Archiver recognize the scan date:** set a compatible filename template
     * In your Scanbot App go to: `Preferences > Advanced Settings > Filename Template`
     * Choose: `[year]-[month]-[day]--Scanbot-[Hours][Minutes][Seconds]`
