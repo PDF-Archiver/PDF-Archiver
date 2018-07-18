@@ -264,7 +264,7 @@
 "Cvq-op-wAk.title" = "Tags";
 
 /* Class = "NSButtonCell"; title = "Analyse all archive folders"; ObjectID = "k8C-2q-WjN"; */
-"k8C-2q-WjN.title" = "Alle Archiv Ordnern analysieren";
+"k8C-2q-WjN.title" = "Alle Archiv Ordner analysieren";
 
 /* Class = "NSTextFieldCell"; title = "This may decrease the app speed for large archives."; ObjectID = "Tlv-Ku-QD7"; */
 "Tlv-Ku-QD7.title" = "Dies kann die Geschwindigkeit der App negativ beeinflussen.";
