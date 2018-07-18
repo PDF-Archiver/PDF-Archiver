@@ -83,6 +83,11 @@ class Preferences: PreferencesDelegate, Logging {
         }
     }
 
+    init() {
+        // load preferences - didSet methods will not be called in init
+        self.load()
+    }
+
     func save() {
         // there is no need to save the archive/observed path here - see the setter of the variable
 

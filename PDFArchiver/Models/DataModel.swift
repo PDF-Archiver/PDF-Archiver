@@ -38,9 +38,7 @@ class DataModel: Logging {
         self.archive.dataModelTagsDelegate = self as DataModelTagsDelegate
         self.archive.preferencesDelegate = self.prefs as PreferencesDelegate
 
-        // load preferences
-        self.prefs.load()
-
+        // documents from the observed path
         if let observedPath = self.prefs.observedPath {
             self.addUntaggedDocuments(paths: [observedPath])
         }
