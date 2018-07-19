@@ -33,6 +33,8 @@ class Archive: ArchiveDelegate, Logging {
             do {
                 let fileManager = FileManager.default
                 folders = try fileManager.contentsOfDirectory(at: archivePath, includingPropertiesForKeys: [.nameKey], options: .skipsHiddenFiles)
+                    // only show folders no files
+                    .filter({ $0.hasDirectoryPath })
                     // only show folders with year numbers
                     .filter({ URL(fileURLWithPath: $0.path).lastPathComponent.prefix(2) == "20" || URL(fileURLWithPath: $0.path).lastPathComponent.prefix(2) == "19" })
                     // sort folders by year
@@ -60,15 +62,12 @@ class Archive: ArchiveDelegate, Logging {
 
             // update the taggedDocuments
             self.documents = [Document]()
+            var tags = self.dataModelTagsDelegate?.getTagList() ?? []
             for file in files {
-                var tags = self.dataModelTagsDelegate?.getTagList() ?? []
                 self.documents.append(Document(path: file, availableTags: &tags))
-                self.dataModelTagsDelegate?.setTagList(tagList: tags)
             }
+            self.dataModelTagsDelegate?.setTagList(tagList: tags)
         }
-
-        // update the tags
-        self.dataModelTagsDelegate?.updateTags()
     }
 
     func getPDFs(_ sourceFolder: URL) -> [URL] {

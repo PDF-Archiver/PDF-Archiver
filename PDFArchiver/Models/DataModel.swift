@@ -12,7 +12,6 @@ import os.log
 protocol DataModelTagsDelegate: class {
     func setTagList(tagList: Set<Tag>)
     func getTagList() -> Set<Tag>
-    func updateTags()
     func addUntaggedDocuments(paths: [URL])
 }
 
@@ -41,6 +40,11 @@ class DataModel: Logging {
         // documents from the observed path
         if let observedPath = self.prefs.observedPath {
             self.addUntaggedDocuments(paths: [observedPath])
+        }
+
+        // update the archive documents and tags
+        DispatchQueue.global().async {
+            self.archive.updateDocumentsAndTags()
         }
     }
 
@@ -76,29 +80,6 @@ class DataModel: Logging {
         return trashed
     }
 
-    func updateTags() {
-        // get tags and counts from filename
-        var tagsRaw: [String] = []
-        for file in self.archive.documents + self.untaggedDocuments {
-            let matched = regexMatches(for: "_[a-z0-9]+", in: file.path.lastPathComponent) ?? []
-            for tag in matched {
-                tagsRaw.append(String(tag.dropFirst()))
-            }
-        }
-
-        // clear the old tags
-        self.tags = Set<Tag>()
-
-        // get the old tags
-        let tagsDict = tagsRaw.reduce(into: [:]) { counts, word in counts[word, default: 0] += 1 }
-        for (name, count) in tagsDict {
-            self.tags.insert(Tag(name: name, count: count))
-        }
-
-        // initialize an update of the gui
-        self.viewControllerDelegate?.updateView(updatePDF: false)
-    }
-
     func filterTags(prefix: String) -> Set<Tag> {
         let tags = self.tags.filter { tag in
             return tag.name.hasPrefix(prefix)
@@ -107,6 +88,13 @@ class DataModel: Logging {
     }
 
     func addUntaggedDocuments(paths: [URL]) {
+        // remove the tag count from the old documents
+        for document in self.untaggedDocuments {
+            for tag in document.documentTags {
+                tag.count -= 1
+            }
+        }
+
         // access the file system and add documents to the data model
         self.prefs.accessSecurityScope {
             var documents = [Document]()
@@ -131,33 +119,24 @@ class DataModel: Logging {
 
     func remove(tag: Tag, from document: Document) {
         // remove the selected element
-        var documentTags = document.documentTags ?? []
-        for (index, documentTag) in documentTags.enumerated() where documentTag.name == tag.name {
-            documentTags.remove(at: index)
-            documentTag.count -= 1
-
-            // save the new document tags
-            document.documentTags = documentTags
-            break
+        if document.documentTags.remove(tag) != nil {
+            tag.count -= 1
         }
 
+        // update the view, e.g. tag counts
         self.viewControllerDelegate?.updateView(updatePDF: false)
     }
 
     @discardableResult
     func add(tag: Tag, to document: Document) -> Bool {
         // test if tag already exists in document tags
-        for documentTag in document.documentTags ?? [] where documentTag.name == tag.name {
+        for documentTag in document.documentTags where documentTag.name == tag.name {
             os_log("Tag '%@' already found!", log: self.log, type: .error, tag.name)
             return false
         }
 
         // add the new tag
-        if document.documentTags != nil {
-            document.documentTags!.insert(tag, at: 0)
-        } else {
-            document.documentTags = [tag]
-        }
+        document.documentTags.insert(tag)
 
         // tag count update
         tag.count += 1

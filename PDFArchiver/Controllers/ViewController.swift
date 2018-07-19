@@ -143,28 +143,27 @@ class ViewController: NSViewController, Logging {
         self.documentAC.setSelectionIndex(0)
 
         // set background color of the view
-        self.view.wantsLayer = true
-        self.view.layer?.backgroundColor = NSColor(named: NSColor.Name("OffWhite"))!.cgColor
-        let cornerRadius = CGFloat(3)
+        self.view.wantsLayer = Constants.Layout.wantsLayer
+        self.view.layer?.backgroundColor = Constants.Layout.mainViewBackground
 
-        self.pdfDocumentsView.wantsLayer = true
-        self.pdfDocumentsView.layer?.backgroundColor = NSColor(named: NSColor.Name("DarkGreyBlue"))!.withAlphaComponent(0.1).cgColor
-        self.pdfDocumentsView.layer?.cornerRadius = cornerRadius
+        self.pdfDocumentsView.wantsLayer = Constants.Layout.wantsLayer
+        self.pdfDocumentsView.layer?.backgroundColor = Constants.Layout.customViewBackground
+        self.pdfDocumentsView.layer?.cornerRadius = Constants.Layout.cornerRadius
 
-        self.pdfView.wantsLayer = true
-        self.pdfView.layer?.backgroundColor = NSColor(named: NSColor.Name("DarkGreyBlue"))!.withAlphaComponent(0.1).cgColor
-        self.pdfView.layer?.cornerRadius = cornerRadius
+        self.pdfView.wantsLayer = Constants.Layout.wantsLayer
+        self.pdfView.layer?.backgroundColor = Constants.Layout.customViewBackground
+        self.pdfView.layer?.cornerRadius = Constants.Layout.cornerRadius
 
-        self.pdfContentView.backgroundColor = NSColor(named: NSColor.Name("DarkGrey"))!
-        self.pdfContentView.layer?.cornerRadius = cornerRadius
+        self.pdfContentView.backgroundColor = Constants.Layout.pdfViewBackground
+        self.pdfContentView.layer?.cornerRadius = Constants.Layout.cornerRadius
 
-        self.documentAttributesView.wantsLayer = true
-        self.documentAttributesView.layer?.backgroundColor = NSColor(named: NSColor.Name("DarkGreyBlue"))!.withAlphaComponent(0.1).cgColor
-        self.documentAttributesView.layer?.cornerRadius = cornerRadius
+        self.documentAttributesView.wantsLayer = Constants.Layout.wantsLayer
+        self.documentAttributesView.layer?.backgroundColor = Constants.Layout.customViewBackground
+        self.documentAttributesView.layer?.cornerRadius = Constants.Layout.cornerRadius
 
-        self.tagSearchView.wantsLayer = true
-        self.tagSearchView.layer?.backgroundColor = NSColor(named: NSColor.Name("DarkGreyBlue"))!.withAlphaComponent(0.1).cgColor
-        self.tagSearchView.layer?.cornerRadius = cornerRadius
+        self.tagSearchView.wantsLayer = Constants.Layout.wantsLayer
+        self.tagSearchView.layer?.backgroundColor = Constants.Layout.customViewBackground
+        self.tagSearchView.layer?.cornerRadius = Constants.Layout.cornerRadius
     }
 
     override func viewWillAppear() {
@@ -194,7 +193,7 @@ class ViewController: NSViewController, Logging {
         if let archivePath = self.dataModelInstance.prefs.archivePath {
             // reset the tag count to the archived documents
             for document in (self.documentAC.arrangedObjects as? [Document]) ?? [] where document.documentDone == "" {
-                for tag in document.documentTags ?? [] {
+                for tag in document.documentTags {
                     tag.count -= 1
                 }
             }

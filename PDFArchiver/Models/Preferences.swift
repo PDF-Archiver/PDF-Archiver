@@ -59,7 +59,6 @@ class Preferences: PreferencesDelegate, Logging {
 
             // update the untagged documents
             self.dataModelTagsDelegate?.addUntaggedDocuments(paths: [newValue])
-            self.dataModelTagsDelegate?.updateTags()
         }
     }
     var archivePath: URL? {

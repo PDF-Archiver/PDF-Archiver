@@ -20,7 +20,7 @@ class Document: NSObject, Logging {
             self.specification = self.specification?.replacingOccurrences(of: "_", with: "-").lowercased()
         }
     }
-    var documentTags: [Tag]?
+    var documentTags = Set<Tag>()
 
     init(path: URL, availableTags: inout Set<Tag>) {
         self.path = path
@@ -48,18 +48,14 @@ class Document: NSObject, Logging {
             let documentTagNames = getSubstring(raw[0], startIdx: 2, endIdx: -4).components(separatedBy: "_")
 
             // get the available tags of the archive
-            self.documentTags = [Tag]()
             for documentTagName in documentTagNames {
-                if availableTags.contains(where: { $0.name == documentTagName }) {
-                    for availableTag in availableTags where availableTag.name == documentTagName {
-                        availableTag.count += 1
-                        self.documentTags!.append(availableTag)
-                        break
-                    }
+                if let availableTag = availableTags.filter({$0.name == documentTagName}).first {
+                    availableTag.count += 1
+                    self.documentTags.insert(availableTag)
                 } else {
                     let newTag = Tag(name: documentTagName, count: 1)
                     availableTags.insert(newTag)
-                    self.documentTags!.append(newTag)
+                    self.documentTags.insert(newTag)
                 }
             }
         }
@@ -104,7 +100,7 @@ class Document: NSObject, Logging {
 
         do {
             var tags = [String]()
-            for tag in self.documentTags ?? [] {
+            for tag in self.documentTags {
                 tags += [tag.name]
             }
 
@@ -118,8 +114,7 @@ class Document: NSObject, Logging {
 
     internal func getRenamingPath(archivePath: URL) throws -> (new_basepath: URL, filename: String) {
         // create a filename and rename the document
-        guard let tags = self.documentTags,
-              tags.count > 0 else {
+        guard self.documentTags.count > 0 else {
             dialogOK(messageKey: "renaming_failed", infoKey: "check_document_tags", style: .warning)
             throw DocumentError.tags
         }
@@ -136,7 +131,7 @@ class Document: NSObject, Logging {
 
         // get tags
         var tagStr = ""
-        for tag in tags.sorted(by: { $0.name < $1.name }) {
+        for tag in Array(self.documentTags).sorted(by: { $0.name < $1.name }) {
             tagStr += "\(tag.name)_"
         }
         tagStr = String(tagStr.dropLast(1))

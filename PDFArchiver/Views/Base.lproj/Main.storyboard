@@ -209,10 +209,10 @@ CA
                                                 <action selector="showOnboardingMenuItem:" target="Ady-hI-5gd" id="jYV-jh-BWb"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Update Tags" id="CDG-jy-mOA" userLabel="Update Tags">
+                                        <menuItem title="Update View" id="CDG-jy-mOA" userLabel="Update Tags">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="updateTagsMenuItem:" target="Ady-hI-5gd" id="9d4-r3-xhX"/>
+                                                <action selector="updateViewMenuItem:" target="Ady-hI-5gd" id="FpV-YG-xgA"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Manage Subscription" id="N0V-Bp-Pnp" userLabel="Manage Subscription">

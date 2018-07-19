@@ -16,6 +16,7 @@ extension ViewController {
             for controller in tabViewController.childViewControllers {
                 if let controller = controller as? MainPreferencesVC {
                     controller.preferencesDelegate = self.dataModelInstance.prefs
+                    controller.viewControllerDelegate = self
                 } else if let controller = controller as? DonationPreferencesVC {
                     controller.preferencesDelegate = self.dataModelInstance.prefs
                     controller.iAPHelperDelegate = self.dataModelInstance.store

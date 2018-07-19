@@ -60,11 +60,9 @@ extension ViewController {
         self.performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "onboardingSegue"), sender: self)
     }
 
-    @IBAction func updateTagsMenuItem(_ sender: AnyObject) {
-        os_log("Setting archive path, e.g. update tag list.", log: self.log, type: .debug)
-
+    @IBAction func updateViewMenuItem(_ sender: AnyObject) {
         // get tags and update the GUI
-        self.dataModelInstance.updateTags()
+        self.updateView(updatePDF: true)
     }
 
     @IBAction func resetCacheMenuItem(_ sender: NSMenuItem) {

@@ -32,8 +32,8 @@
 /* Class = "NSMenuItem"; title = "Preferences…"; ObjectID = "BOF-NM-1cW"; */
 "BOF-NM-1cW.title" = "Einstellungen…";
 
-/* Class = "NSMenuItem"; title = "Update Tags"; ObjectID = "CDG-jy-mOA"; */
-"CDG-jy-mOA.title" = "Tags aktualisieren";
+/* Class = "NSMenuItem"; title = "Update View"; ObjectID = "CDG-jy-mOA"; */
+"CDG-jy-mOA.title" = "Ansicht aktualisieren";
 
 /* Class = "NSMenuItem"; title = "Close"; ObjectID = "DVo-aG-piG"; */
 "DVo-aG-piG.title" = "Schließen";
