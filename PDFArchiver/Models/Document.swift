@@ -12,7 +12,7 @@ import os.log
 class Document: NSObject, Logging {
     // structure for PDF documents on disk
     var path: URL
-    @objc var name: String?
+    @objc var name: String
     @objc var documentDone: String = ""
     var date = Date()
     var specification: String? {
@@ -30,20 +30,31 @@ class Document: NSObject, Logging {
 
         // try to parse the current filename
         let parser = DateParser()
-        if let date = parser.parse(self.name!) {
-            self.date = date
+        if let parsed = parser.parse(self.name) {
+            self.date = parsed.date
+
+            // cleanup the filename
+            let newDescription = path.lastPathComponent
+                // drop the already parsed date
+                .dropFirst(parsed.rawDate.count)
+                // drop the extension and the last .
+                .dropLast(path.pathExtension.count + 1)
+
+            // save a first "raw" specification
+            self.specification = newDescription
+                // exclude tags, if they exist
+                .components(separatedBy: "__")[0]
+                // clean up all "_" - they are for tag use only!
+                .replacingOccurrences(of: "_", with: "-")
         }
 
-        // parse the description or use the filename
-        if var raw = regexMatches(for: "--[\\w\\d-]+__", in: self.name!) {
+        // parse the specification and override it, if possible
+        if var raw = regexMatches(for: "--[\\w\\d-]+__", in: self.name) {
             self.specification = getSubstring(raw[0], startIdx: 2, endIdx: -2)
-        } else {
-            let newDescription = String(path.lastPathComponent.dropLast(4))
-            self.specification = newDescription.components(separatedBy: "__")[0].replacingOccurrences(of: "_", with: "-")
         }
 
         // parse the tags
-        if var raw = regexMatches(for: "__[\\w\\d_]+.[pdfPDF]{3}$", in: self.name!) {
+        if var raw = regexMatches(for: "__[\\w\\d_]+.[pdfPDF]{3}$", in: self.name) {
             // parse the tags of a document
             let documentTagNames = getSubstring(raw[0], startIdx: 2, endIdx: -4).components(separatedBy: "_")
 
@@ -145,7 +156,7 @@ class Document: NSObject, Logging {
 
     // MARK: - Other Stuff
     override var description: String {
-        return "<Document \(self.self.name ?? "")>"
+        return "<Document \(self.name)>"
     }
 }
 

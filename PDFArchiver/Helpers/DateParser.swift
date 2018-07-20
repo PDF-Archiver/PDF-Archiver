@@ -16,12 +16,12 @@ struct DateParser {
     ]
     let dateFormatter = DateFormatter()
 
-    func parse(_ dateIn: String) -> Date? {
+    func parse(_ dateIn: String) -> (date: Date, rawDate: String)? {
         for format in formats {
             if var dateRaw = regexMatches(for: format.value, in: dateIn) {
                 self.dateFormatter.dateFormat = format.key
                 if let date = self.dateFormatter.date(from: String(dateRaw[0])) {
-                    return date
+                    return (date, String(dateRaw[0]))
                 }
             }
         }
