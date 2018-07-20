@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A3050B162101CBFC00F5E90A /* DateParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3050B152101CBFC00F5E90A /* DateParserTests.swift */; };
 		A307BB372014B8530046C391 /* MainPreferencesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A307BB362014B8530046C391 /* MainPreferencesVC.swift */; };
 		A307BB3B2014D5300046C391 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = A307BB3A2014D5300046C391 /* Preferences.swift */; };
 		A315408D20C83DF0004947CC /* StringHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = A315408C20C83DF0004947CC /* StringHandling.swift */; };
@@ -65,6 +66,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A3050B152101CBFC00F5E90A /* DateParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateParserTests.swift; sourceTree = "<group>"; };
 		A307BB362014B8530046C391 /* MainPreferencesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPreferencesVC.swift; sourceTree = "<group>"; };
 		A307BB3A2014D5300046C391 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		A315408C20C83DF0004947CC /* StringHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringHandling.swift; sourceTree = "<group>"; };
@@ -226,6 +228,7 @@
 		A31B52FB1FF694B0007A3D14 /* PDFArchiverTests */ = {
 			isa = PBXGroup;
 			children = (
+				A3050B152101CBFC00F5E90A /* DateParserTests.swift */,
 				A31B52FC1FF694B0007A3D14 /* DocumentTests.swift */,
 				A3962D6220C40CA600A80AB5 /* HelperTests.swift */,
 				A38F4910206952AD00B8164A /* PreferencesTests.swift */,
@@ -517,6 +520,7 @@
 				A38F4913206955F600B8164A /* DataModelTests.swift in Sources */,
 				A38F4911206952AD00B8164A /* PreferencesTests.swift in Sources */,
 				A31B52FD1FF694B0007A3D14 /* DocumentTests.swift in Sources */,
+				A3050B162101CBFC00F5E90A /* DateParserTests.swift in Sources */,
 				A3962D6320C40CA600A80AB5 /* HelperTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

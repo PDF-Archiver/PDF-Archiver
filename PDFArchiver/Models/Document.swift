@@ -41,7 +41,7 @@ class Document: NSObject, Logging {
                 .dropLast(path.pathExtension.count + 1)
 
             // save a first "raw" specification
-            self.specification = newDescription
+            self.specification = String(newDescription)
                 // exclude tags, if they exist
                 .components(separatedBy: "__")[0]
                 // clean up all "_" - they are for tag use only!
