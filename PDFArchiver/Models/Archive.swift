@@ -18,7 +18,7 @@ class Archive: ArchiveDelegate, Logging {
     var documents = [Document]()
     weak var preferencesDelegate: PreferencesDelegate?
     weak var dataModelTagsDelegate: DataModelTagsDelegate?
-
+    
     func updateDocumentsAndTags() {
         guard let archivePath = self.preferencesDelegate?.archivePath else {
             os_log("No archive path found.", log: self.log, type: .fault)
@@ -79,8 +79,11 @@ class Archive: ArchiveDelegate, Logging {
                                             errorHandler: nil)?.allObjects as? [URL]) ?? []
 
         // pick pdfs and convert pictures
+        var firstConvertedDocument = true
         var pdfURLs = [URL]()
-        for file in files {
+        
+        // sort files like documentAC sortDescriptors
+        for file in files.sorted(by: { $0.lastPathComponent < $1.lastPathComponent }) {
             if file.pathExtension == "pdf" {
                 // add PDF
                 pdfURLs.append(file)
@@ -88,16 +91,58 @@ class Archive: ArchiveDelegate, Logging {
             } else if let fileTypeIdentifier = file.typeIdentifier,
                 NSImage.imageTypes.contains(fileTypeIdentifier),
                 self.preferencesDelegate?.convertPictures ?? false {
-                // convert picture/supported file to PDF
-                let pdfURL = convertToPDF(file)
-                pdfURLs.append(pdfURL)
 
-            } else {
-                // skip the unsupported filetype
-                continue
+                // get the output path
+                var outPath = file
+                outPath.deletePathExtension()
+                outPath = outPath.appendingPathExtension("pdf")
+                pdfURLs.append(outPath)
+
+                if firstConvertedDocument {
+                    // convert the first picture on the current thread
+                    self.convertToPDF(from: file, to: outPath)
+
+                    // do not update the view after the first document anymore
+                    firstConvertedDocument = false
+
+                    // update the view
+                    DispatchQueue.main.async {
+                        self.dataModelTagsDelegate?.updateView(updatePDF: true)
+                    }
+                } else {
+                    // convert all other pictures in the background
+                    DispatchQueue.global(qos: .background).async {
+                        self.convertToPDF(from: file, to: outPath)
+                    }
+                }
             }
         }
-
         return pdfURLs
+    }
+
+    func convertToPDF(from inPath: URL, to outPath: URL) {
+        // Create an empty PDF document
+        let pdfDocument = PDFDocument()
+
+        // Create a PDF page instance from the image
+        let image = NSImage(byReferencing: inPath)
+        let pdfPage = PDFPage(image: image)
+
+        // Insert the PDF page into your document
+        pdfDocument.insert(pdfPage!, at: 0)
+
+        // save the pdf document
+        self.preferencesDelegate?.accessSecurityScope {
+            pdfDocument.write(to: outPath)
+
+            // trash old pdf
+            let fileManager = FileManager.default
+            do {
+                try fileManager.trashItem(at: inPath, resultingItemURL: nil)
+            } catch let error {
+                let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "convertToPDF")
+                os_log("Can not trash file: %@", log: log, type: .debug, error.localizedDescription)
+            }
+        }
     }
 }

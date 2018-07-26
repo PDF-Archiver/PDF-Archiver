@@ -10,6 +10,7 @@ import Foundation
 import os.log
 
 protocol DataModelTagsDelegate: class {
+    func updateView(updatePDF: Bool)
     func setTagList(tagList: Set<Tag>)
     func getTagList() -> Set<Tag>
     func addUntaggedDocuments(paths: [URL])
@@ -87,27 +88,6 @@ class DataModel: Logging {
         return tags
     }
 
-    func addUntaggedDocuments(paths: [URL]) {
-        // remove the tag count from the old documents
-        for document in self.untaggedDocuments {
-            for tag in document.documentTags {
-                tag.count -= 1
-            }
-        }
-
-        // access the file system and add documents to the data model
-        self.prefs.accessSecurityScope {
-            var documents = [Document]()
-            for path in paths {
-                let files = self.archive.getPDFs(path)
-                for file in files {
-                    documents.append(Document(path: file, availableTags: &self.tags))
-                }
-            }
-            self.untaggedDocuments = documents
-        }
-    }
-
     func setDocumentDescription(document: Document, description: String) {
         // set the description of the pdf document
         if self.prefs.slugifyNames {
@@ -153,6 +133,10 @@ class DataModel: Logging {
 // MARK: - DataModel delegates
 
 extension DataModel: DataModelTagsDelegate {
+    func updateView(updatePDF: Bool) {
+        self.viewControllerDelegate?.updateView(updatePDF: updatePDF)
+    }
+
     func setTagList(tagList: Set<Tag>) {
         self.tags = tagList
     }
@@ -160,4 +144,26 @@ extension DataModel: DataModelTagsDelegate {
     func getTagList() -> Set<Tag> {
         return tags
     }
+
+    func addUntaggedDocuments(paths: [URL]) {
+        // remove the tag count from the old documents
+        for document in self.untaggedDocuments {
+            for tag in document.documentTags {
+                tag.count -= 1
+            }
+        }
+
+        // access the file system and add documents to the data model
+        self.prefs.accessSecurityScope {
+            var documents = [Document]()
+            for path in paths {
+                let files = self.archive.getPDFs(path)
+                for file in files {
+                    documents.append(Document(path: file, availableTags: &self.tags))
+                }
+            }
+            self.untaggedDocuments = documents
+        }
+    }
+
 }
