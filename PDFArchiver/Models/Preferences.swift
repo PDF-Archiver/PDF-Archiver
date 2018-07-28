@@ -78,7 +78,9 @@ class Preferences: PreferencesDelegate, Logging {
             self._archivePath = newValue
 
             // update the tags in archive
-            self.archiveDelegate?.updateDocumentsAndTags()
+            DispatchQueue.global().async {
+                self.archiveDelegate?.updateDocumentsAndTags()
+            }
         }
     }
 

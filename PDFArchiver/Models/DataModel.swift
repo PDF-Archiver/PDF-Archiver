@@ -13,6 +13,7 @@ protocol DataModelTagsDelegate: class {
     func updateView(updatePDF: Bool)
     func setTagList(tagList: Set<Tag>)
     func getTagList() -> Set<Tag>
+    func getUntaggedDocuments() -> [Document]
     func addUntaggedDocuments(paths: [URL])
 }
 
@@ -134,15 +135,22 @@ class DataModel: Logging {
 
 extension DataModel: DataModelTagsDelegate {
     func updateView(updatePDF: Bool) {
-        self.viewControllerDelegate?.updateView(updatePDF: updatePDF)
+        DispatchQueue.main.async {
+            self.viewControllerDelegate?.updateView(updatePDF: updatePDF)
+        }
     }
 
     func setTagList(tagList: Set<Tag>) {
         self.tags = tagList
+        self.updateView(updatePDF: false)
     }
 
     func getTagList() -> Set<Tag> {
-        return tags
+        return self.tags
+    }
+
+    func getUntaggedDocuments() -> [Document] {
+        return self.untaggedDocuments
     }
 
     func addUntaggedDocuments(paths: [URL]) {

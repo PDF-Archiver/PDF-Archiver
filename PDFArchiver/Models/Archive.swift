@@ -18,7 +18,7 @@ class Archive: ArchiveDelegate, Logging {
     var documents = [Document]()
     weak var preferencesDelegate: PreferencesDelegate?
     weak var dataModelTagsDelegate: DataModelTagsDelegate?
-    
+
     func updateDocumentsAndTags() {
         guard let archivePath = self.preferencesDelegate?.archivePath else {
             os_log("No archive path found.", log: self.log, type: .fault)
@@ -60,9 +60,21 @@ class Archive: ArchiveDelegate, Logging {
                 files.append(contentsOf: filesInFolder)
             }
 
+            // get the tags from already tagged "untaggedDocuments"
+            var tags = Set<Tag>()
+            for document in self.dataModelTagsDelegate?.getUntaggedDocuments() ?? [] {
+                for tag in document.documentTags {
+                    if let filteredTag = tags.filter({ $0.name == tag.name }).first {
+                        filteredTag.count += 1
+                    } else {
+                        tag.count = 1
+                        tags.insert(tag)
+                    }
+                }
+            }
+
             // update the taggedDocuments
             self.documents = [Document]()
-            var tags = self.dataModelTagsDelegate?.getTagList() ?? []
             for file in files {
                 self.documents.append(Document(path: file, availableTags: &tags))
             }
@@ -81,7 +93,7 @@ class Archive: ArchiveDelegate, Logging {
         // pick pdfs and convert pictures
         var firstConvertedDocument = true
         var pdfURLs = [URL]()
-        
+
         // sort files like documentAC sortDescriptors
         for file in files.sorted(by: { $0.lastPathComponent < $1.lastPathComponent }) {
             if file.pathExtension == "pdf" {
@@ -106,9 +118,7 @@ class Archive: ArchiveDelegate, Logging {
                     firstConvertedDocument = false
 
                     // update the view
-                    DispatchQueue.main.async {
-                        self.dataModelTagsDelegate?.updateView(updatePDF: true)
-                    }
+                    self.dataModelTagsDelegate?.updateView(updatePDF: true)
                 } else {
                     // convert all other pictures in the background
                     DispatchQueue.global(qos: .background).async {

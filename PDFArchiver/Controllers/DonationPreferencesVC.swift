@@ -18,7 +18,11 @@ class DonationPreferencesVC: PreferencesVC {
     @IBOutlet weak var donationButton3: NSButton!
     @IBOutlet weak var donationButton: NSButton!
 
-    private var donationsNumber = "0"
+    private var donationsNumber = "0" {
+        didSet {
+            self.updateDonationLabel()
+        }
+    }
     weak var preferencesDelegate: PreferencesDelegate?
     weak var iAPHelperDelegate: IAPHelperDelegate?
 
@@ -53,10 +57,9 @@ class DonationPreferencesVC: PreferencesVC {
             self.donationButton.image = NSImage(named: .statusAvailable)
         }
 
-        // update the buttons
-        DispatchQueue.main.async {
-            self.updateButtons()
-        }
+        // update the buttons and use the default donations count
+        self.updateButtons()
+        self.updateDonationLabel()
 
         // update the donation count property
         DispatchQueue.global().async {
@@ -71,9 +74,9 @@ class DonationPreferencesVC: PreferencesVC {
             } else {
                 self.donationButton.image = NSImage(named: .statusUnavailable)
             }
-
-            self.updateButtons()
         }
+
+        self.updateButtons()
     }
 
     func updateButtons() {
@@ -93,11 +96,16 @@ class DonationPreferencesVC: PreferencesVC {
             }
 
             // set button to localized price
-            selectedButton.title = product.localizedPrice
-            selectedButton.isEnabled = true
+            DispatchQueue.main.async {
+                selectedButton.title = product.localizedPrice
+                selectedButton.isEnabled = true
+            }
         }
+    }
 
-        // update the number of donations
-        self.donationNumberLabel.stringValue = "\(self.donationsNumber) \(NSLocalizedString("donation_number_label", comment: "Donation Number label"))"
+    func updateDonationLabel() {
+        DispatchQueue.main.async {
+            self.donationNumberLabel.stringValue = "\(self.donationsNumber) \(NSLocalizedString("donation_number_label", comment: "Donation Number label"))"
+        }
     }
 }
