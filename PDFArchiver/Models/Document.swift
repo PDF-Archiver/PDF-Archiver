@@ -30,33 +30,34 @@ class Document: NSObject, Logging {
 
         // try to parse the current filename
         let parser = DateParser()
+        var rawDate = ""
         if let parsed = parser.parse(self.name) {
             self.date = parsed.date
-
-            // cleanup the filename
-            let newDescription = path.lastPathComponent
-                // drop the already parsed date
-                .dropFirst(parsed.rawDate.count)
-                // drop the extension and the last .
-                .dropLast(path.pathExtension.count + 1)
-
-            // save a first "raw" specification
-            self.specification = String(newDescription)
-                // exclude tags, if they exist
-                .components(separatedBy: "__")[0]
-                // clean up all "_" - they are for tag use only!
-                .replacingOccurrences(of: "_", with: "-")
+            rawDate = parsed.rawDate
         }
 
+        // save a first "raw" specification
+        self.specification = path.lastPathComponent
+            // drop the already parsed date
+            .dropFirst(rawDate.count)
+            // drop the extension and the last .
+            .dropLast(path.pathExtension.count + 1)
+            // exclude tags, if they exist
+            .components(separatedBy: "__")[0]
+            // clean up all "_" - they are for tag use only!
+            .replacingOccurrences(of: "_", with: "-")
+            // remove a pre or suffix from the string
+            .slugifyPreSuffix()
+
         // parse the specification and override it, if possible
-        if var raw = regexMatches(for: "--[\\w\\d-]+__", in: self.name) {
-            self.specification = getSubstring(raw[0], startIdx: 2, endIdx: -2)
+        if var raw = self.name.capturedGroups(withRegex: "--([\\w\\d-]+)__") {
+            self.specification = raw[0]
         }
 
         // parse the tags
-        if var raw = regexMatches(for: "__[\\w\\d_]+.[pdfPDF]{3}$", in: self.name) {
+        if var raw = self.name.capturedGroups(withRegex: "__([\\w\\d_]+).[pdfPDF]{3}$") {
             // parse the tags of a document
-            let documentTagNames = getSubstring(raw[0], startIdx: 2, endIdx: -4).components(separatedBy: "_")
+            let documentTagNames = raw[0].components(separatedBy: "_")
 
             // get the available tags of the archive
             for documentTagName in documentTagNames {

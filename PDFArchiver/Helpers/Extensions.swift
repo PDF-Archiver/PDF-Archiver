@@ -26,26 +26,6 @@ extension SKProduct {
     }
 }
 
-// slugify a string
-extension String {
-    func slugify(withSeparator separator: String = "-") -> String {
-        // this function is inspired by:
-        // https://github.com/malt03/SwiftString/blob/0aeb47cbfa77cf8552bbadf49360ef529fbb8c03/Sources/StringExtensions.swift#L194
-        let slugCharacterSet = NSCharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\(separator)")
-        return replacingOccurrences(of: "ß", with: "ss")
-            .replacingOccurrences(of: "Ä", with: "Ae")
-            .replacingOccurrences(of: "Ö", with: "Oe")
-            .replacingOccurrences(of: "Ü", with: "Ue")
-            .replacingOccurrences(of: "ä", with: "ae")
-            .replacingOccurrences(of: "ö", with: "oe")
-            .replacingOccurrences(of: "ü", with: "ue")
-            .folding(options: .diacriticInsensitive, locale: .current)
-            .components(separatedBy: slugCharacterSet.inverted)
-            .filter { $0 != "" }
-            .joined(separator: separator)
-    }
-}
-
 // remove document from array
 extension Array where Element: NSObject {
 
