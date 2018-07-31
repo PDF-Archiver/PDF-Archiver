@@ -85,38 +85,29 @@ class Archive: ArchiveDelegate, Logging {
     func getPDFs(_ sourceFolder: URL) -> [URL] {
         // get all files in the source folder
         let fileManager = FileManager.default
-        let files = (fileManager.enumerator(at: sourceFolder,
-                                            includingPropertiesForKeys: nil,
-                                            options: [.skipsHiddenFiles],
+        let files = (fileManager.enumerator(at: sourceFolder, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles],
                                             errorHandler: nil)?.allObjects as? [URL]) ?? []
-
         // pick pdfs and convert pictures
         var firstConvertedDocument = true
         var pdfURLs = [URL]()
-
         // sort files like documentAC sortDescriptors
         for file in files.sorted(by: { $0.lastPathComponent < $1.lastPathComponent }) {
             if file.pathExtension == "pdf" {
                 // add PDF
                 pdfURLs.append(file)
-
             } else if let fileTypeIdentifier = file.typeIdentifier,
                 NSImage.imageTypes.contains(fileTypeIdentifier),
                 self.preferencesDelegate?.convertPictures ?? false {
-
                 // get the output path
                 var outPath = file
                 outPath.deletePathExtension()
                 outPath = outPath.appendingPathExtension("pdf")
                 pdfURLs.append(outPath)
-
                 if firstConvertedDocument {
                     // convert the first picture on the current thread
                     self.convertToPDF(from: file, to: outPath)
-
                     // do not update the view after the first document anymore
                     firstConvertedDocument = false
-
                     // update the view
                     self.dataModelTagsDelegate?.updateView(updatePDF: true)
                 } else {
