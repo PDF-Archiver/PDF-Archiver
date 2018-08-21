@@ -33,6 +33,8 @@ class Archive: ArchiveDelegate, Logging {
             do {
                 let fileManager = FileManager.default
                 folders = try fileManager.contentsOfDirectory(at: archivePath, includingPropertiesForKeys: [.nameKey], options: .skipsHiddenFiles)
+                    // only show folders no files
+                    .filter({ $0.hasDirectoryPath })
                     // only show folders with year numbers
                     .filter({ URL(fileURLWithPath: $0.path).lastPathComponent.prefix(2) == "20" || URL(fileURLWithPath: $0.path).lastPathComponent.prefix(2) == "19" })
                     // sort folders by year
@@ -58,47 +60,90 @@ class Archive: ArchiveDelegate, Logging {
                 files.append(contentsOf: filesInFolder)
             }
 
+            // get the tags from already tagged "untaggedDocuments"
+            var tags = Set<Tag>()
+            for document in self.dataModelTagsDelegate?.getUntaggedDocuments() ?? [] {
+                for tag in document.documentTags {
+                    if let filteredTag = tags.filter({ $0.name == tag.name }).first {
+                        filteredTag.count += 1
+                    } else {
+                        tag.count = 1
+                        tags.insert(tag)
+                    }
+                }
+            }
+
             // update the taggedDocuments
             self.documents = [Document]()
             for file in files {
-                var tags = self.dataModelTagsDelegate?.getTagList() ?? []
                 self.documents.append(Document(path: file, availableTags: &tags))
-                self.dataModelTagsDelegate?.setTagList(tagList: tags)
             }
+            self.dataModelTagsDelegate?.setTagList(tagList: tags)
         }
-
-        // update the tags
-        self.dataModelTagsDelegate?.updateTags()
     }
 
     func getPDFs(_ sourceFolder: URL) -> [URL] {
         // get all files in the source folder
         let fileManager = FileManager.default
-        let files = (fileManager.enumerator(at: sourceFolder,
-                                            includingPropertiesForKeys: nil,
-                                            options: [.skipsHiddenFiles],
+        let files = (fileManager.enumerator(at: sourceFolder, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles],
                                             errorHandler: nil)?.allObjects as? [URL]) ?? []
-
         // pick pdfs and convert pictures
+        var firstConvertedDocument = true
         var pdfURLs = [URL]()
-        for file in files {
+        // sort files like documentAC sortDescriptors
+        for file in files.sorted(by: { $0.lastPathComponent < $1.lastPathComponent }) {
             if file.pathExtension == "pdf" {
                 // add PDF
                 pdfURLs.append(file)
-
             } else if let fileTypeIdentifier = file.typeIdentifier,
                 NSImage.imageTypes.contains(fileTypeIdentifier),
                 self.preferencesDelegate?.convertPictures ?? false {
-                // convert picture/supported file to PDF
-                let pdfURL = convertToPDF(file)
-                pdfURLs.append(pdfURL)
-
-            } else {
-                // skip the unsupported filetype
-                continue
+                // get the output path
+                var outPath = file
+                outPath.deletePathExtension()
+                outPath = outPath.appendingPathExtension("pdf")
+                pdfURLs.append(outPath)
+                if firstConvertedDocument {
+                    // convert the first picture on the current thread
+                    self.convertToPDF(from: file, to: outPath)
+                    // do not update the view after the first document anymore
+                    firstConvertedDocument = false
+                    // update the view
+                    self.dataModelTagsDelegate?.updateView(updatePDF: true)
+                } else {
+                    // convert all other pictures in the background
+                    DispatchQueue.global(qos: .background).async {
+                        self.convertToPDF(from: file, to: outPath)
+                    }
+                }
             }
         }
-
         return pdfURLs
+    }
+
+    func convertToPDF(from inPath: URL, to outPath: URL) {
+        // Create an empty PDF document
+        let pdfDocument = PDFDocument()
+
+        // Create a PDF page instance from the image
+        let image = NSImage(byReferencing: inPath)
+        let pdfPage = PDFPage(image: image)
+
+        // Insert the PDF page into your document
+        pdfDocument.insert(pdfPage!, at: 0)
+
+        // save the pdf document
+        self.preferencesDelegate?.accessSecurityScope {
+            pdfDocument.write(to: outPath)
+
+            // trash old pdf
+            let fileManager = FileManager.default
+            do {
+                try fileManager.trashItem(at: inPath, resultingItemURL: nil)
+            } catch let error {
+                let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "convertToPDF")
+                os_log("Can not trash file: %@", log: log, type: .debug, error.localizedDescription)
+            }
+        }
     }
 }

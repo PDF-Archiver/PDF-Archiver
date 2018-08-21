@@ -7,8 +7,9 @@
 //
 
 import Foundation
+import Quartz
 
-class Constants {
+struct Constants {
     static let appURL: String = "https://pdf-archiver.io"
     static let donationCount = URL(string: appURL + "/assets/donations.txt")!
     static let manageSubscription = URL(string: "https://apps.apple.com/account/subscriptions")!
@@ -21,5 +22,13 @@ class Constants {
         var url: URL {
             return URL(string: "\(Constants.appURL)/\(self.rawValue)")!
         }
+    }
+
+    struct  Layout {
+        static let wantsLayer = true
+        static let cornerRadius = CGFloat(3)
+        static let customViewBackground = NSColor(named: NSColor.Name(rawValue: "DarkGreyBlue"))!.withAlphaComponent(0.1).cgColor
+        static let pdfViewBackground = NSColor(named: NSColor.Name("DarkGrey"))!
+        static let mainViewBackground = NSColor(named: NSColor.Name("OffWhite"))!.cgColor
     }
 }

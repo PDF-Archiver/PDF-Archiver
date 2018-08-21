@@ -10,6 +10,7 @@ import Cocoa
 
 class MainPreferencesVC: PreferencesVC {
     weak var preferencesDelegate: PreferencesDelegate?
+    weak var viewControllerDelegate: ViewControllerDelegate?
 
     @IBOutlet weak var archivePathTextField: NSTextField!
     @IBOutlet weak var observedPathTextField: NSTextField!
@@ -23,6 +24,7 @@ class MainPreferencesVC: PreferencesVC {
             guard response == NSApplication.ModalResponse.OK else { return }
             self.preferencesDelegate?.archivePath = openPanel.url!
             self.archivePathTextField.stringValue = openPanel.url!.path
+            self.viewControllerDelegate?.updateView(updatePDF: false)
         }
     }
 
@@ -32,6 +34,7 @@ class MainPreferencesVC: PreferencesVC {
             guard response == NSApplication.ModalResponse.OK else { return }
             self.observedPathTextField.stringValue = openPanel.url!.path
             self.preferencesDelegate?.observedPath = openPanel.url!
+            // no need to update the view here - it gets updated automatically, when documents are added
         }
     }
 

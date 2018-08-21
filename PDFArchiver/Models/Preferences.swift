@@ -59,7 +59,6 @@ class Preferences: PreferencesDelegate, Logging {
 
             // update the untagged documents
             self.dataModelTagsDelegate?.addUntaggedDocuments(paths: [newValue])
-            self.dataModelTagsDelegate?.updateTags()
         }
     }
     var archivePath: URL? {
@@ -79,8 +78,15 @@ class Preferences: PreferencesDelegate, Logging {
             self._archivePath = newValue
 
             // update the tags in archive
-            self.archiveDelegate?.updateDocumentsAndTags()
+            DispatchQueue.global().async {
+                self.archiveDelegate?.updateDocumentsAndTags()
+            }
         }
+    }
+
+    init() {
+        // load preferences - didSet methods will not be called in init
+        self.load()
     }
 
     func save() {

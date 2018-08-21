@@ -12,7 +12,7 @@ import os.log
 class Document: NSObject, Logging {
     // structure for PDF documents on disk
     var path: URL
-    @objc var name: String?
+    @objc var name: String
     @objc var documentDone: String = ""
     var date = Date()
     var specification: String? {
@@ -20,7 +20,7 @@ class Document: NSObject, Logging {
             self.specification = self.specification?.replacingOccurrences(of: "_", with: "-").lowercased()
         }
     }
-    var documentTags: [Tag]?
+    var documentTags = Set<Tag>()
 
     init(path: URL, availableTags: inout Set<Tag>) {
         self.path = path
@@ -30,36 +30,44 @@ class Document: NSObject, Logging {
 
         // try to parse the current filename
         let parser = DateParser()
-        if let date = parser.parse(self.name!) {
-            self.date = date
+        var rawDate = ""
+        if let parsed = parser.parse(self.name) {
+            self.date = parsed.date
+            rawDate = parsed.rawDate
         }
 
-        // parse the description or use the filename
-        if var raw = regexMatches(for: "--[\\w\\d-]+__", in: self.name!) {
-            self.specification = getSubstring(raw[0], startIdx: 2, endIdx: -2)
-        } else {
-            let newDescription = String(path.lastPathComponent.dropLast(4))
-            self.specification = newDescription.components(separatedBy: "__")[0].replacingOccurrences(of: "_", with: "-")
+        // save a first "raw" specification
+        self.specification = path.lastPathComponent
+            // drop the already parsed date
+            .dropFirst(rawDate.count)
+            // drop the extension and the last .
+            .dropLast(path.pathExtension.count + 1)
+            // exclude tags, if they exist
+            .components(separatedBy: "__")[0]
+            // clean up all "_" - they are for tag use only!
+            .replacingOccurrences(of: "_", with: "-")
+            // remove a pre or suffix from the string
+            .slugifyPreSuffix()
+
+        // parse the specification and override it, if possible
+        if var raw = self.name.capturedGroups(withRegex: "--([\\w\\d-]+)__") {
+            self.specification = raw[0]
         }
 
         // parse the tags
-        if var raw = regexMatches(for: "__[\\w\\d_]+.[pdfPDF]{3}$", in: self.name!) {
+        if var raw = self.name.capturedGroups(withRegex: "__([\\w\\d_]+).[pdfPDF]{3}$") {
             // parse the tags of a document
-            let documentTagNames = getSubstring(raw[0], startIdx: 2, endIdx: -4).components(separatedBy: "_")
+            let documentTagNames = raw[0].components(separatedBy: "_")
 
             // get the available tags of the archive
-            self.documentTags = [Tag]()
             for documentTagName in documentTagNames {
-                if availableTags.contains(where: { $0.name == documentTagName }) {
-                    for availableTag in availableTags where availableTag.name == documentTagName {
-                        availableTag.count += 1
-                        self.documentTags!.append(availableTag)
-                        break
-                    }
+                if let availableTag = availableTags.filter({$0.name == documentTagName}).first {
+                    availableTag.count += 1
+                    self.documentTags.insert(availableTag)
                 } else {
                     let newTag = Tag(name: documentTagName, count: 1)
                     availableTags.insert(newTag)
-                    self.documentTags!.append(newTag)
+                    self.documentTags.insert(newTag)
                 }
             }
         }
@@ -104,7 +112,7 @@ class Document: NSObject, Logging {
 
         do {
             var tags = [String]()
-            for tag in self.documentTags ?? [] {
+            for tag in self.documentTags {
                 tags += [tag.name]
             }
 
@@ -118,8 +126,7 @@ class Document: NSObject, Logging {
 
     internal func getRenamingPath(archivePath: URL) throws -> (new_basepath: URL, filename: String) {
         // create a filename and rename the document
-        guard let tags = self.documentTags,
-              tags.count > 0 else {
+        guard self.documentTags.count > 0 else {
             dialogOK(messageKey: "renaming_failed", infoKey: "check_document_tags", style: .warning)
             throw DocumentError.tags
         }
@@ -136,7 +143,7 @@ class Document: NSObject, Logging {
 
         // get tags
         var tagStr = ""
-        for tag in tags.sorted(by: { $0.name < $1.name }) {
+        for tag in Array(self.documentTags).sorted(by: { $0.name < $1.name }) {
             tagStr += "\(tag.name)_"
         }
         tagStr = String(tagStr.dropLast(1))
@@ -150,7 +157,7 @@ class Document: NSObject, Logging {
 
     // MARK: - Other Stuff
     override var description: String {
-        return "<Document \(self.self.name ?? "")>"
+        return "<Document \(self.name)>"
     }
 }
 

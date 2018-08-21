@@ -32,8 +32,8 @@
 /* Class = "NSMenuItem"; title = "Preferences…"; ObjectID = "BOF-NM-1cW"; */
 "BOF-NM-1cW.title" = "Einstellungen…";
 
-/* Class = "NSMenuItem"; title = "Update Tags"; ObjectID = "CDG-jy-mOA"; */
-"CDG-jy-mOA.title" = "Tags aktualisieren";
+/* Class = "NSMenuItem"; title = "Update View"; ObjectID = "CDG-jy-mOA"; */
+"CDG-jy-mOA.title" = "Ansicht aktualisieren";
 
 /* Class = "NSMenuItem"; title = "Close"; ObjectID = "DVo-aG-piG"; */
 "DVo-aG-piG.title" = "Schließen";
@@ -339,7 +339,7 @@
 "WIy-5i-bbd.title" = "Konvertiert Bilder (jpg etc.) in dem überwachten Ordner zu PDFs und legt das Original in den Papierkorb.";
 
 /* Class = "NSButtonCell"; title = "Convert pictures to PDFs"; ObjectID = "dMg-Kx-7ej"; */
-"dMg-Kx-7ej.title" = "Konvertiert Bilder zu PDFs";
+"dMg-Kx-7ej.title" = "Bilder zu PDFs konvertieren";
 
 /* Class = "NSTextFieldCell"; title = "Yearly"; ObjectID = "7uk-Kh-PYi"; */
 "7uk-Kh-PYi.title" = "Jährlich";
@@ -349,3 +349,9 @@
 
 /* Class = "NSTextFieldCell"; title = "License:"; ObjectID = "wMm-UI-hhy"; */
 "wMm-UI-hhy.title" = "Lizenz:";
+
+/* Class = "NSBox"; title = "Documents"; ObjectID = "hO8-8r-rGn"; */
+"hO8-8r-rGn.title" = "Dokumente";
+
+/* Class = "NSBox"; title = "Archive"; ObjectID = "qgP-PZ-Vec"; */
+"qgP-PZ-Vec.title" = "Archiv";

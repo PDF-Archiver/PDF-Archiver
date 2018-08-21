@@ -10,7 +10,7 @@ import Foundation
 
 class Tag: NSObject {
     // structure for available tags
-    @objc var name: String
+    @objc private(set) var name: String
     @objc var count: Int
 
     init(name: String, count: Int) {

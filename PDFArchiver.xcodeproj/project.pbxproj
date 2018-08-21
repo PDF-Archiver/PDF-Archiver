@@ -7,9 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A3050B162101CBFC00F5E90A /* DateParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3050B152101CBFC00F5E90A /* DateParserTests.swift */; };
 		A307BB372014B8530046C391 /* MainPreferencesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A307BB362014B8530046C391 /* MainPreferencesVC.swift */; };
 		A307BB3B2014D5300046C391 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = A307BB3A2014D5300046C391 /* Preferences.swift */; };
-		A315408D20C83DF0004947CC /* StringHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = A315408C20C83DF0004947CC /* StringHandling.swift */; };
+		A315408D20C83DF0004947CC /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A315408C20C83DF0004947CC /* StringExtensions.swift */; };
 		A315408F20C83E61004947CC /* ViewHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = A315408E20C83E61004947CC /* ViewHandling.swift */; };
 		A31B52EA1FF694B0007A3D14 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B52E91FF694B0007A3D14 /* AppDelegate.swift */; };
 		A31B52EC1FF694B0007A3D14 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B52EB1FF694B0007A3D14 /* ViewController.swift */; };
@@ -65,9 +66,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A3050B152101CBFC00F5E90A /* DateParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateParserTests.swift; sourceTree = "<group>"; };
 		A307BB362014B8530046C391 /* MainPreferencesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPreferencesVC.swift; sourceTree = "<group>"; };
 		A307BB3A2014D5300046C391 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
-		A315408C20C83DF0004947CC /* StringHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringHandling.swift; sourceTree = "<group>"; };
+		A315408C20C83DF0004947CC /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
 		A315408E20C83E61004947CC /* ViewHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHandling.swift; sourceTree = "<group>"; };
 		A31B52E61FF694B0007A3D14 /* PDFArchiver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PDFArchiver.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A31B52E91FF694B0007A3D14 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -149,12 +151,12 @@
 		A315408920C83C41004947CC /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				A315408C20C83DF0004947CC /* StringExtensions.swift */,
+				A3DD5A4D20D23EDC000E1005 /* Extensions.swift */,
 				A3735B6920F32B6C0056DA3D /* Constants.swift */,
 				A31B53161FF6A6D8007A3D14 /* FileHandling.swift */,
-				A3DD5A4D20D23EDC000E1005 /* Extensions.swift */,
 				A3A4C1C02015177A008BB354 /* NetworkHandling.swift */,
 				A315408E20C83E61004947CC /* ViewHandling.swift */,
-				A315408C20C83DF0004947CC /* StringHandling.swift */,
 				A3FF275720D0E614007EED90 /* DateParser.swift */,
 				A34A06DB20E408450097481D /* Payment */,
 			);
@@ -226,6 +228,7 @@
 		A31B52FB1FF694B0007A3D14 /* PDFArchiverTests */ = {
 			isa = PBXGroup;
 			children = (
+				A3050B152101CBFC00F5E90A /* DateParserTests.swift */,
 				A31B52FC1FF694B0007A3D14 /* DocumentTests.swift */,
 				A3962D6220C40CA600A80AB5 /* HelperTests.swift */,
 				A38F4910206952AD00B8164A /* PreferencesTests.swift */,
@@ -501,7 +504,7 @@
 				A3DD5A4E20D23EDC000E1005 /* Extensions.swift in Sources */,
 				A3FC0DA0201B054A0082CD2A /* ViewControllerExtension.swift in Sources */,
 				A38FDE7D20DD33540015801E /* IAPHelper.swift in Sources */,
-				A315408D20C83DF0004947CC /* StringHandling.swift in Sources */,
+				A315408D20C83DF0004947CC /* StringExtensions.swift in Sources */,
 				A31B53171FF6A6D8007A3D14 /* FileHandling.swift in Sources */,
 				A36B47C02077DA4D00F3DCAF /* DonationPreferencesVC.swift in Sources */,
 				A31B52EA1FF694B0007A3D14 /* AppDelegate.swift in Sources */,
@@ -517,6 +520,7 @@
 				A38F4913206955F600B8164A /* DataModelTests.swift in Sources */,
 				A38F4911206952AD00B8164A /* PreferencesTests.swift in Sources */,
 				A31B52FD1FF694B0007A3D14 /* DocumentTests.swift in Sources */,
+				A3050B162101CBFC00F5E90A /* DateParserTests.swift in Sources */,
 				A3962D6320C40CA600A80AB5 /* HelperTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
