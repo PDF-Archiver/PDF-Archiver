@@ -293,10 +293,10 @@ CA
                                         </connections>
                                     </button>
                                     <button wantsLayer="YES" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="xcs-gq-0c2">
-                                        <rect key="frame" x="144" y="71" width="92" height="31"/>
+                                        <rect key="frame" x="78" y="71" width="158" height="31"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="20" id="6cf-cd-zjK"/>
-                                            <constraint firstAttribute="width" constant="80" id="Lqa-0l-7Kj"/>
+                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="70" id="Lqa-0l-7Kj"/>
                                         </constraints>
                                         <shadow key="shadow">
                                             <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -337,10 +337,10 @@ CA
                                         </textFieldCell>
                                     </textField>
                                     <button wantsLayer="YES" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="WLx-Zu-4fL">
-                                        <rect key="frame" x="144" y="101" width="92" height="31"/>
+                                        <rect key="frame" x="78" y="101" width="158" height="31"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="20" id="mUR-ZM-4wd"/>
-                                            <constraint firstAttribute="width" constant="80" id="si0-qo-aej"/>
+                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="70" id="si0-qo-aej"/>
                                         </constraints>
                                         <shadow key="shadow">
                                             <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -357,7 +357,7 @@ CA
                                         <rect key="frame" x="224" y="139" width="16" height="16"/>
                                     </progressIndicator>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="KVC-tP-FEp">
-                                        <rect key="frame" x="18" y="110" width="119" height="17"/>
+                                        <rect key="frame" x="18" y="110" width="53" height="17"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="17" id="3Tl-DY-qsM"/>
                                         </constraints>
@@ -368,7 +368,7 @@ CA
                                         </textFieldCell>
                                     </textField>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="FHZ-ki-IR5">
-                                        <rect key="frame" x="18" y="80" width="119" height="17"/>
+                                        <rect key="frame" x="18" y="80" width="53" height="17"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="17" id="9nh-6F-kUq"/>
                                         </constraints>
@@ -413,6 +413,7 @@ CA
                                     <constraint firstItem="xcs-gq-0c2" firstAttribute="top" secondItem="WLx-Zu-4fL" secondAttribute="bottom" constant="10" id="Kgl-KH-r5Q"/>
                                     <constraint firstItem="lsR-on-XvE" firstAttribute="leading" secondItem="Ofp-Uf-gpZ" secondAttribute="leading" constant="20" id="Ldn-6O-kkf"/>
                                     <constraint firstItem="xcs-gq-0c2" firstAttribute="centerY" secondItem="FHZ-ki-IR5" secondAttribute="centerY" id="OwG-l6-PtL"/>
+                                    <constraint firstItem="xcs-gq-0c2" firstAttribute="width" secondItem="WLx-Zu-4fL" secondAttribute="width" id="Vf7-l8-oKe"/>
                                     <constraint firstItem="WLx-Zu-4fL" firstAttribute="centerY" secondItem="KVC-tP-FEp" secondAttribute="centerY" id="Xhs-Hz-slo"/>
                                     <constraint firstAttribute="width" constant="250" id="dDo-js-JlF"/>
                                     <constraint firstItem="JZJ-KJ-qDR" firstAttribute="leading" secondItem="N3B-Lv-5nK" secondAttribute="trailing" constant="30" id="dTm-Vc-IQ0"/>
@@ -706,7 +707,7 @@ Tag your document and save  it:</string>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="46Q-15-bWH">
                                             <rect key="frame" x="198" y="70" width="450" height="20"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" constant="446" id="G1G-xE-v93"/>
+                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="446" id="G1G-xE-v93"/>
                                             </constraints>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Removes characters like ä, ö, ü etc. from the document description." id="C3p-Lb-2rS">
                                                 <font key="font" metaFont="system"/>
@@ -715,9 +716,9 @@ Tag your document and save  it:</string>
                                             </textFieldCell>
                                         </textField>
                                         <button verticalHuggingPriority="751" springLoaded="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9Rv-e5-Agn">
-                                            <rect key="frame" x="180" y="93" width="468" height="19"/>
+                                            <rect key="frame" x="180" y="93" width="350" height="19"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" constant="464" id="3JG-h4-rDG"/>
+                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="70" id="3JG-h4-rDG"/>
                                             </constraints>
                                             <buttonCell key="cell" type="check" title="Convert description to maximize compatibility" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="DRZ-uz-4ap">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -730,7 +731,7 @@ Tag your document and save  it:</string>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="249" translatesAutoresizingMaskIntoConstraints="NO" id="6gA-CS-tF3">
                                             <rect key="frame" x="18" y="93" width="154" height="19"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" constant="150" id="2tq-6N-dSw"/>
+                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="150" id="2tq-6N-dSw"/>
                                             </constraints>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Description" id="ZlY-Ux-pR6">
                                                 <font key="font" metaFont="systemSemibold" size="15"/>
@@ -741,12 +742,13 @@ Tag your document and save  it:</string>
                                     </subviews>
                                     <constraints>
                                         <constraint firstItem="9Rv-e5-Agn" firstAttribute="leading" secondItem="6gA-CS-tF3" secondAttribute="trailing" constant="12" id="2m2-2M-QZ4"/>
+                                        <constraint firstItem="46Q-15-bWH" firstAttribute="leading" secondItem="Tju-Lf-HYr" secondAttribute="leading" constant="200" id="3dy-ev-xSv"/>
                                         <constraint firstItem="Aga-Jg-klC" firstAttribute="top" secondItem="6gA-CS-tF3" secondAttribute="bottom" constant="36" id="5Ao-6S-xg5"/>
                                         <constraint firstItem="6gA-CS-tF3" firstAttribute="centerY" secondItem="9Rv-e5-Agn" secondAttribute="centerY" id="8sc-td-pTE"/>
                                         <constraint firstItem="Aga-Jg-klC" firstAttribute="centerY" secondItem="PpK-o3-Nnb" secondAttribute="centerY" id="AVT-uf-p5L"/>
                                         <constraint firstAttribute="bottom" secondItem="Qzn-ZO-Zxh" secondAttribute="bottom" constant="15" id="BEa-5G-PdC"/>
-                                        <constraint firstItem="9Rv-e5-Agn" firstAttribute="trailing" secondItem="46Q-15-bWH" secondAttribute="trailing" id="BQt-1b-qUH"/>
                                         <constraint firstItem="46Q-15-bWH" firstAttribute="leading" secondItem="Qzn-ZO-Zxh" secondAttribute="leading" id="Fmz-h5-jXH"/>
+                                        <constraint firstAttribute="trailing" secondItem="9Rv-e5-Agn" secondAttribute="trailing" constant="138" id="HID-Rk-dNp"/>
                                         <constraint firstItem="Qzn-ZO-Zxh" firstAttribute="top" secondItem="PpK-o3-Nnb" secondAttribute="bottom" constant="5" id="K8J-21-djG"/>
                                         <constraint firstItem="46Q-15-bWH" firstAttribute="top" secondItem="9Rv-e5-Agn" secondAttribute="bottom" constant="5" id="M7R-lw-ev3"/>
                                         <constraint firstItem="6gA-CS-tF3" firstAttribute="trailing" secondItem="Aga-Jg-klC" secondAttribute="trailing" id="NsE-VL-u8Y"/>
@@ -755,7 +757,7 @@ Tag your document and save  it:</string>
                                         <constraint firstItem="PpK-o3-Nnb" firstAttribute="top" secondItem="46Q-15-bWH" secondAttribute="bottom" constant="15" id="aPT-cS-4bC"/>
                                         <constraint firstItem="PpK-o3-Nnb" firstAttribute="trailing" secondItem="Qzn-ZO-Zxh" secondAttribute="trailing" id="alz-Y2-T55"/>
                                         <constraint firstItem="6gA-CS-tF3" firstAttribute="leading" secondItem="Tju-Lf-HYr" secondAttribute="leading" constant="20" symbolic="YES" id="bvd-5T-en3"/>
-                                        <constraint firstItem="9Rv-e5-Agn" firstAttribute="leading" secondItem="PpK-o3-Nnb" secondAttribute="leading" id="kSB-yy-jHU"/>
+                                        <constraint firstItem="9Rv-e5-Agn" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="PpK-o3-Nnb" secondAttribute="leading" id="kSB-yy-jHU"/>
                                         <constraint firstAttribute="bottom" secondItem="Aga-Jg-klC" secondAttribute="bottom" constant="38" id="rxh-NK-lEP"/>
                                     </constraints>
                                 </view>
@@ -767,7 +769,7 @@ Tag your document and save  it:</string>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <button verticalHuggingPriority="750" springLoaded="YES" translatesAutoresizingMaskIntoConstraints="NO" id="joG-X7-QK9">
-                                            <rect key="frame" x="180" y="56" width="463" height="26"/>
+                                            <rect key="frame" x="171" y="56" width="472" height="26"/>
                                             <buttonCell key="cell" type="check" title="Convert pictures to PDFs" bezelStyle="regularSquare" imagePosition="left" inset="2" id="dMg-Kx-7ej">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="systemSemibold" size="15"/>
@@ -779,7 +781,7 @@ Tag your document and save  it:</string>
                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="quC-LR-hxW">
                                             <rect key="frame" x="198" y="19" width="445" height="34"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" constant="441" id="bNf-Oo-jgE"/>
+                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="441" id="bNf-Oo-jgE"/>
                                             </constraints>
                                             <textFieldCell key="cell" allowsUndo="NO" sendsActionOnEndEditing="YES" title="Convert pictures (jpg etc.) in the observed folder to PDFs and trash the original." id="WIy-5i-bbd">
                                                 <font key="font" metaFont="system"/>
@@ -788,7 +790,7 @@ Tag your document and save  it:</string>
                                             </textFieldCell>
                                         </textField>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="RAD-9s-bE4">
-                                            <rect key="frame" x="18" y="97" width="154" height="19"/>
+                                            <rect key="frame" x="9" y="97" width="154" height="19"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Observed Folder" id="z8O-Wh-LiY">
                                                 <font key="font" metaFont="systemSemibold" size="15"/>
                                                 <color key="textColor" name="Headline1"/>
@@ -796,7 +798,7 @@ Tag your document and save  it:</string>
                                             </textFieldCell>
                                         </textField>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PTW-ce-MNP">
-                                            <rect key="frame" x="18" y="134" width="154" height="19"/>
+                                            <rect key="frame" x="9" y="134" width="154" height="19"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Archive Path" id="Ju7-wj-fHp">
                                                 <font key="font" metaFont="systemSemibold" size="15"/>
                                                 <color key="textColor" name="Headline1"/>
@@ -804,9 +806,9 @@ Tag your document and save  it:</string>
                                             </textFieldCell>
                                         </textField>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="X5U-R0-ENH">
-                                            <rect key="frame" x="182" y="132" width="374" height="22"/>
+                                            <rect key="frame" x="173" y="132" width="374" height="22"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" constant="374" id="b8F-S1-4pX"/>
+                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="374" id="b8F-S1-4pX"/>
                                             </constraints>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="Please set the archive path …" drawsBackground="YES" usesSingleLineMode="YES" id="gtQ-4r-22c">
                                                 <font key="font" metaFont="system"/>
@@ -816,9 +818,9 @@ Tag your document and save  it:</string>
                                             </textFieldCell>
                                         </textField>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="oIL-jU-gHB">
-                                            <rect key="frame" x="18" y="171" width="154" height="19"/>
+                                            <rect key="frame" x="9" y="171" width="154" height="19"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" constant="150" id="dGP-Yz-Xiq"/>
+                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="150" id="dGP-Yz-Xiq"/>
                                                 <constraint firstAttribute="height" constant="19" id="uC2-NI-hfm"/>
                                             </constraints>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="iCloud" id="urS-Lh-uQS">
@@ -828,9 +830,9 @@ Tag your document and save  it:</string>
                                             </textFieldCell>
                                         </textField>
                                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8RK-0V-cYr">
-                                            <rect key="frame" x="555" y="125" width="92" height="33"/>
+                                            <rect key="frame" x="546" y="125" width="101" height="33"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" constant="80" id="aVb-iM-97d"/>
+                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="80" id="aVb-iM-97d"/>
                                             </constraints>
                                             <buttonCell key="cell" type="push" title="Change …" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="XbB-C4-8qz">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -841,7 +843,7 @@ Tag your document and save  it:</string>
                                             </connections>
                                         </button>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hB8-Fa-RBW">
-                                            <rect key="frame" x="182" y="95" width="374" height="22"/>
+                                            <rect key="frame" x="173" y="95" width="374" height="22"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="Please set the observed path …" drawsBackground="YES" usesSingleLineMode="YES" id="hox-RC-83t">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -850,7 +852,7 @@ Tag your document and save  it:</string>
                                             </textFieldCell>
                                         </textField>
                                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="YTa-3I-7A5">
-                                            <rect key="frame" x="555" y="88" width="92" height="33"/>
+                                            <rect key="frame" x="546" y="88" width="101" height="33"/>
                                             <buttonCell key="cell" type="push" title="Change …" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="obQ-RK-Zgm">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
@@ -860,7 +862,7 @@ Tag your document and save  it:</string>
                                             </connections>
                                         </button>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Kzj-Fs-SV2">
-                                            <rect key="frame" x="18" y="60" width="154" height="19"/>
+                                            <rect key="frame" x="9" y="60" width="154" height="19"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="19" id="u17-qY-P2h"/>
                                             </constraints>
@@ -871,7 +873,7 @@ Tag your document and save  it:</string>
                                             </textFieldCell>
                                         </textField>
                                         <button verticalHuggingPriority="750" springLoaded="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2Qv-dK-ZbP">
-                                            <rect key="frame" x="180" y="167" width="249" height="26"/>
+                                            <rect key="frame" x="171" y="167" width="249" height="26"/>
                                             <buttonCell key="cell" type="check" title="Save Documents in iCloud Drive" bezelStyle="regularSquare" imagePosition="left" inset="2" id="xlr-HK-YOq">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="systemSemibold" size="15"/>
@@ -883,6 +885,7 @@ Tag your document and save  it:</string>
                                     </subviews>
                                     <constraints>
                                         <constraint firstAttribute="bottom" secondItem="quC-LR-hxW" secondAttribute="bottom" constant="19" id="2GL-hR-k9y"/>
+                                        <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="2Qv-dK-ZbP" secondAttribute="trailing" constant="20" symbolic="YES" id="7Bn-69-Ivk"/>
                                         <constraint firstItem="PTW-ce-MNP" firstAttribute="leading" secondItem="RAD-9s-bE4" secondAttribute="leading" id="7nu-qZ-aoq"/>
                                         <constraint firstItem="Kzj-Fs-SV2" firstAttribute="top" secondItem="RAD-9s-bE4" secondAttribute="bottom" constant="18" id="8zF-zZ-Fro"/>
                                         <constraint firstItem="RAD-9s-bE4" firstAttribute="leading" secondItem="Kzj-Fs-SV2" secondAttribute="leading" id="CS3-O2-kbV"/>
@@ -909,6 +912,7 @@ Tag your document and save  it:</string>
                                         <constraint firstItem="8RK-0V-cYr" firstAttribute="leading" secondItem="YTa-3I-7A5" secondAttribute="leading" id="nho-Ui-Y7N"/>
                                         <constraint firstItem="oIL-jU-gHB" firstAttribute="leading" secondItem="PTW-ce-MNP" secondAttribute="leading" id="otL-wM-hpQ"/>
                                         <constraint firstItem="X5U-R0-ENH" firstAttribute="top" secondItem="2Qv-dK-ZbP" secondAttribute="bottom" constant="15" id="pYA-r4-ZlB"/>
+                                        <constraint firstItem="quC-LR-hxW" firstAttribute="leading" secondItem="ehH-tM-sl6" secondAttribute="leading" constant="200" id="pbU-ra-vfA"/>
                                         <constraint firstItem="X5U-R0-ENH" firstAttribute="leading" secondItem="hB8-Fa-RBW" secondAttribute="leading" id="qgt-Cf-X3L"/>
                                         <constraint firstItem="X5U-R0-ENH" firstAttribute="baseline" secondItem="8RK-0V-cYr" secondAttribute="baseline" id="tkp-4i-QKY"/>
                                         <constraint firstItem="PTW-ce-MNP" firstAttribute="trailing" secondItem="RAD-9s-bE4" secondAttribute="trailing" id="uJd-gC-alP"/>
@@ -1469,7 +1473,7 @@ Help &gt; Show Onboarding</string>
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                    <rect key="frame" x="31.5" y="1" width="194" height="17"/>
+                                                                    <rect key="frame" x="32" y="1" width="194" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">
