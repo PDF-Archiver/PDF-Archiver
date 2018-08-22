@@ -12,11 +12,16 @@ class MainPreferencesVC: PreferencesVC {
     weak var preferencesDelegate: PreferencesDelegate?
     weak var viewControllerDelegate: ViewControllerDelegate?
 
+    @IBOutlet weak var useiCloudDrive: NSButton!
     @IBOutlet weak var archivePathTextField: NSTextField!
     @IBOutlet weak var observedPathTextField: NSTextField!
     @IBOutlet weak var documentSlugifyCheckButton: NSButton!
     @IBOutlet weak var tagsCheckButton: NSButton!
     @IBOutlet weak var convertPicturesButton: NSButton!
+
+    @IBAction func iCloudDriveButtonClicked(_ sender: NSButton) {
+        self.preferencesDelegate?.useiCloudDrive = sender.state == .on
+    }
 
     @IBAction func changeArchivePathButton(_ sender: Any) {
         let openPanel = getOpenPanel("Choose an archive folder")
@@ -59,6 +64,9 @@ class MainPreferencesVC: PreferencesVC {
         if let observedPath = self.preferencesDelegate?.observedPath {
             self.observedPathTextField.stringValue = observedPath.path
         }
+
+        // use iCloud Drive as the archive path
+        self.useiCloudDrive.state = (self.preferencesDelegate?.useiCloudDrive ?? false) ? .on : .off
 
         // document slugify
         self.documentSlugifyCheckButton.state = (self.preferencesDelegate?.slugifyNames ?? true) ? .on : .off

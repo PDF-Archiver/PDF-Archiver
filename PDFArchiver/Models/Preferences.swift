@@ -124,6 +124,9 @@ class Preferences: PreferencesDelegate, Logging {
         if let date = self.archiveModificationDate {
             UserDefaults.standard.set(date, forKey: "archiveModificationDate")
         }
+
+        // save the useiCloudDrive flag
+        UserDefaults.standard.set(self.useiCloudDrive, forKey: "useiCloudDrive")
     }
 
     func load() {
@@ -154,6 +157,9 @@ class Preferences: PreferencesDelegate, Logging {
         if let date = UserDefaults.standard.object(forKey: "archiveModificationDate") as? Date {
             self.archiveModificationDate = date
         }
+
+        // load the useiCloudDrive flag
+        self.useiCloudDrive = UserDefaults.standard.bool(forKey: "useiCloudDrive")
     }
 
     func accessSecurityScope(closure: () -> Void) {
