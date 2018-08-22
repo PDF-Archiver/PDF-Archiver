@@ -15,6 +15,7 @@ protocol PreferencesDelegate: class {
     var archiveModificationDate: Date? { get set }
 
     var slugifyNames: Bool { get set }
+    var useiCloudDrive: Bool { get set }
     var analyseAllFolders: Bool { get set }
     var convertPictures: Bool { get set }
 
@@ -29,6 +30,14 @@ class Preferences: PreferencesDelegate, Logging {
     weak var archiveDelegate: ArchiveDelegate?
     var archiveModificationDate: Date?
     var slugifyNames: Bool = true
+    var useiCloudDrive: Bool = false {
+        didSet {
+            guard let archivePath = self.archivePath else { return }
+            self.accessSecurityScope {
+                self.archiveDelegate?.moveArchivedDocuments(to: archivePath)
+            }
+        }
+    }
     var analyseAllFolders: Bool = false {
         didSet {
             self.archiveDelegate?.updateDocumentsAndTags()
@@ -64,7 +73,7 @@ class Preferences: PreferencesDelegate, Logging {
     var archivePath: URL? {
         // ATTENTION: only set archive path, after an OpenPanel dialog
         get {
-            return self._archivePath
+            return self.useiCloudDrive ? FileManager.default.url(forUbiquityContainerIdentifier: nil)?.appendingPathComponent("Documents") : self._archivePath
         }
         set {
             guard let newValue = newValue else { return }
