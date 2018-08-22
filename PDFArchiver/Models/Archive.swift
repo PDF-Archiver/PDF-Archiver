@@ -22,7 +22,7 @@ class Archive: ArchiveDelegate, Logging {
 
     func moveArchivedDocuments(to newArchivPath: URL) {
         for document in self.documents {
-            document.rename(archivePath: newArchivPath)
+            document.rename(archivePath: newArchivPath, slugify: self.preferencesDelegate?.slugifyNames ?? true)
         }
     }
 
