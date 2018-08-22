@@ -355,3 +355,9 @@
 
 /* Class = "NSBox"; title = "Archive"; ObjectID = "qgP-PZ-Vec"; */
 "qgP-PZ-Vec.title" = "Archiv";
+
+/* Class = "NSTextFieldCell"; title = "iCloud"; ObjectID = "urS-Lh-uQS"; */
+"urS-Lh-uQS.title" = "iCloud";
+
+/* Class = "NSButtonCell"; title = "Save Documents in iCloud Drive"; ObjectID = "xlr-HK-YOq"; */
+"xlr-HK-YOq.title" = "Speichert die Dokumente in iCloud Drive";

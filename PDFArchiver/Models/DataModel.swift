@@ -55,7 +55,7 @@ class DataModel: Logging {
             // rename the document
             var result = false
             self.prefs.accessSecurityScope {
-                result = document.rename(archivePath: archivePath)
+                result = document.rename(archivePath: archivePath, slugify: self.prefs.slugifyNames)
             }
 
             if result {

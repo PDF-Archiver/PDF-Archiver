@@ -11,6 +11,7 @@ import os.log
 import Quartz
 
 protocol ArchiveDelegate: class {
+    func moveArchivedDocuments(to newArchivPath: URL)
     func updateDocumentsAndTags()
 }
 
@@ -18,6 +19,12 @@ class Archive: ArchiveDelegate, Logging {
     var documents = [Document]()
     weak var preferencesDelegate: PreferencesDelegate?
     weak var dataModelTagsDelegate: DataModelTagsDelegate?
+
+    func moveArchivedDocuments(to newArchivPath: URL) {
+        for document in self.documents {
+            document.rename(archivePath: newArchivPath, slugify: self.preferencesDelegate?.slugifyNames ?? true)
+        }
+    }
 
     func updateDocumentsAndTags() {
         guard let archivePath = self.preferencesDelegate?.archivePath else {
