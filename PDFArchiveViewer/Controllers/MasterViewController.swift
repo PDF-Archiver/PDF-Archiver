@@ -30,11 +30,15 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
   
   var detailViewController: DetailViewController? = nil
   var archive = Archive()
+  var browserQuery = DocumentsQuery()
   let searchController = UISearchController(searchResultsController: nil)
   
   // MARK: - View Setup
   override func viewDidLoad() {
     super.viewDidLoad()
+    
+    // setup data delegate
+    self.browserQuery.delegate = self
     
     // Setup the Search Controller
     searchController.searchResultsUpdater = self
@@ -45,7 +49,7 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
     
     // Setup the Scope Bar
     // TODO: fix this scope dynamically
-    searchController.searchBar.scopeButtonTitles = ["All", "2018", "2017", "201+6"]
+    searchController.searchBar.scopeButtonTitles = ["All", "2018", "2017", "2016"]
     searchController.searchBar.delegate = self
     
     // Setup the search footer
@@ -142,15 +146,23 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
   }
 }
 
+// MARK: - Delegates
+extension MasterViewController: DocumentsQueryDelegate {
+    func documentsQueryResultsDidChangeWithResults(documents: [Document], tags: Set<Tag>) {
+        self.archive.documents = documents.sorted().reversed()
+        self.archive.availableTags = tags
+        
+        self.tableView.reloadData()
+    }
+}
+
 extension MasterViewController: UISearchBarDelegate {
-  // MARK: - UISearchBar Delegate
   func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
     filterContentForSearchText(searchBar.text!, scope: searchBar.scopeButtonTitles![selectedScope])
   }
 }
 
 extension MasterViewController: UISearchResultsUpdating {
-  // MARK: - UISearchResultsUpdating Delegate
   func updateSearchResults(for searchController: UISearchController) {
     let searchBar = searchController.searchBar
     let scope = searchBar.scopeButtonTitles![searchBar.selectedScopeButtonIndex]
