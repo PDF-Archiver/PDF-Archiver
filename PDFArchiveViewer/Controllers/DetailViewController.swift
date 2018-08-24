@@ -25,45 +25,44 @@ import PDFKit
 import os.log
 
 class DetailViewController: UIViewController, Logging {
-    
+
     @IBOutlet weak var detailDescriptionLabel: UILabel!
     @IBOutlet weak var documentView: PDFView!
-    
+
     var detailDocument: Document? {
         didSet {
             configureView()
         }
     }
-    
+
     func configureView() {
         if let detailDocument = self.detailDocument,
             let detailDescriptionLabel = self.detailDescriptionLabel,
             let documentView = self.documentView {
-            
+
             detailDescriptionLabel.text = detailDocument.specification
             // TODO: put PDF or placeholder here
             documentView.document = PDFDocument(url: detailDocument.path)
             title = detailDocument.folder
         }
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         self.documentView.displayMode = PDFDisplayMode.singlePage
         self.documentView.autoScales = true
-//        self.documentView.interpolationQuality = PDFInterpolationQuality.low
+        //        self.documentView.interpolationQuality = PDFInterpolationQuality.low
         self.documentView.contentMode = .scaleAspectFill
-        
+
         self.documentView.backgroundColor = UIColor.darkGray
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
     }
-    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-    
-}
 
+}
