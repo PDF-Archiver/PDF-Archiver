@@ -6,7 +6,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -44,10 +43,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="VgS-Ng-LL7">
-                                <rect key="frame" x="20" y="126" width="339" height="541"/>
+                                <rect key="frame" x="0.0" y="116" width="375" height="551"/>
                                 <subviews>
                                     <label clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" text="" textAlignment="center" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="0XM-y9-sOw">
-                                        <rect key="frame" x="0.0" y="0.0" width="339" height="34"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="34"/>
                                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="34" id="5IE-tV-aWp"/>
@@ -56,30 +55,34 @@
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="Frz-VY-Cab">
-                                        <rect key="frame" x="0.0" y="34" width="339" height="507"/>
-                                    </imageView>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GUi-XC-jug" customClass="PDFView">
+                                        <rect key="frame" x="0.0" y="34" width="375" height="517"/>
+                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </view>
                                 </subviews>
                                 <constraints>
+                                    <constraint firstItem="GUi-XC-jug" firstAttribute="leading" secondItem="VgS-Ng-LL7" secondAttribute="leading" id="3BM-8i-Nvp"/>
+                                    <constraint firstAttribute="bottom" secondItem="GUi-XC-jug" secondAttribute="bottom" id="FJf-4r-L4u"/>
+                                    <constraint firstItem="GUi-XC-jug" firstAttribute="top" secondItem="0XM-y9-sOw" secondAttribute="bottom" id="PpT-4M-X1B"/>
                                     <constraint firstAttribute="trailing" secondItem="0XM-y9-sOw" secondAttribute="trailing" id="bhU-19-QgM"/>
+                                    <constraint firstAttribute="trailing" secondItem="GUi-XC-jug" secondAttribute="trailing" id="cG4-Cv-aAG"/>
                                     <constraint firstItem="0XM-y9-sOw" firstAttribute="leading" secondItem="VgS-Ng-LL7" secondAttribute="leading" id="hZP-T4-Ad3"/>
-                                    <constraint firstItem="Frz-VY-Cab" firstAttribute="leading" secondItem="VgS-Ng-LL7" secondAttribute="leading" id="upv-nM-9W3"/>
                                 </constraints>
                             </stackView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="VgS-Ng-LL7" firstAttribute="bottom" secondItem="GAO-Cl-Wes" secondAttribute="top" id="3fy-JI-3E5"/>
-                            <constraint firstItem="VgS-Ng-LL7" firstAttribute="top" secondItem="SYR-Wa-9uf" secondAttribute="bottom" constant="10" id="8JP-56-Aah"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="VgS-Ng-LL7" secondAttribute="trailing" id="ixO-2b-17L"/>
-                            <constraint firstItem="VgS-Ng-LL7" firstAttribute="leading" secondItem="svH-Pt-448" secondAttribute="leading" constant="20" id="nc5-yn-MCP"/>
+                            <constraint firstItem="VgS-Ng-LL7" firstAttribute="top" secondItem="SYR-Wa-9uf" secondAttribute="bottom" id="8JP-56-Aah"/>
+                            <constraint firstItem="VgS-Ng-LL7" firstAttribute="leading" secondItem="svH-Pt-448" secondAttribute="leading" id="PS0-XX-NfT"/>
+                            <constraint firstAttribute="trailing" secondItem="VgS-Ng-LL7" secondAttribute="trailing" id="hkr-rd-WNt"/>
                         </constraints>
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" largeTitleDisplayMode="always" id="mOI-FS-AaM"/>
                     <connections>
                         <outlet property="detailDescriptionLabel" destination="0XM-y9-sOw" id="deQ-Na-JPF"/>
-                        <outlet property="documentView" destination="Frz-VY-Cab" id="fsn-4g-vTq"/>
+                        <outlet property="documentView" destination="GUi-XC-jug" id="yfW-Uj-PmE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FJe-Yq-33r" sceneMemberID="firstResponder"/>
@@ -174,8 +177,8 @@
                             <rect key="frame" x="67.5" y="5.5" width="240" height="33"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Archive Viewer" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DSc-hJ-ulG">
-                                    <rect key="frame" x="0.0" y="6" width="232" height="21"/>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="PDF Archive Viewer" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DSc-hJ-ulG">
+                                    <rect key="frame" x="-3" y="6" width="239" height="30"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="25"/>
                                     <color key="textColor" name="Headline1"/>

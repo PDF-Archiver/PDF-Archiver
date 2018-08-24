@@ -18,8 +18,8 @@ class Document {
     private(set) var folder: String
     private(set) var isLocal: Bool
 
-    private var filename: String
-    private var path: URL
+    private(set) var filename: String
+    private(set) var path: URL
 
     init(path documentPath: URL, isLocal: Bool, availableTags: inout Set<Tag>) {
 

@@ -21,38 +21,49 @@
  */
 
 import UIKit
+import PDFKit
+import os.log
 
-class DetailViewController: UIViewController {
-  
-  @IBOutlet weak var detailDescriptionLabel: UILabel!
-  @IBOutlet weak var documentView: UIImageView!
-  
-  var detailDocument: Document? {
-    didSet {
-      configureView()
+class DetailViewController: UIViewController, Logging {
+    
+    @IBOutlet weak var detailDescriptionLabel: UILabel!
+    @IBOutlet weak var documentView: PDFView!
+    
+    var detailDocument: Document? {
+        didSet {
+            configureView()
+        }
     }
-  }
-  
-  func configureView() {
-    if let detailDocument = detailDocument {
-      if let detailDescriptionLabel = detailDescriptionLabel,
-        let candyImageView = documentView {
-        detailDescriptionLabel.text = detailDocument.specification
-        // TODO: put PDF or placeholder here
-//        candyImageView.image = UIImage(named: detailCandy.name)
-        title = detailDocument.folder
-      }
+    
+    func configureView() {
+        if let detailDocument = self.detailDocument,
+            let detailDescriptionLabel = self.detailDescriptionLabel,
+            let documentView = self.documentView {
+            
+            detailDescriptionLabel.text = detailDocument.specification
+            // TODO: put PDF or placeholder here
+            documentView.document = PDFDocument(url: detailDocument.path)
+            title = detailDocument.folder
+        }
     }
-  }
-  
-  override func viewDidLoad() {
-    super.viewDidLoad()
-    configureView()
-  }
-  
-  override func didReceiveMemoryWarning() {
-    super.didReceiveMemoryWarning()
-  }
-  
+    
+    override func viewWillAppear(_ animated: Bool) {
+        self.documentView.displayMode = PDFDisplayMode.singlePage
+        self.documentView.autoScales = true
+//        self.documentView.interpolationQuality = PDFInterpolationQuality.low
+        self.documentView.contentMode = .scaleAspectFill
+        
+        self.documentView.backgroundColor = UIColor.darkGray
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        configureView()
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+    }
+    
 }
 
