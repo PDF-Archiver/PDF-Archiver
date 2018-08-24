@@ -29,8 +29,7 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
   @IBOutlet var searchFooter: SearchFooter!
   
   var detailViewController: DetailViewController? = nil
-  var candies = [Candy]()
-  var filteredCandies = [Candy]()
+  var archive = Archive()
   let searchController = UISearchController(searchResultsController: nil)
   
   // MARK: - View Setup
@@ -40,33 +39,17 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
     // Setup the Search Controller
     searchController.searchResultsUpdater = self
     searchController.obscuresBackgroundDuringPresentation = false
-    searchController.searchBar.placeholder = "Search Candies"
+    searchController.searchBar.placeholder = "Search Documents"
     navigationItem.searchController = searchController
     definesPresentationContext = true
     
     // Setup the Scope Bar
-    searchController.searchBar.scopeButtonTitles = ["All", "Chocolate", "Hard", "Other"]
+    // TODO: fix this scope dynamically
+    searchController.searchBar.scopeButtonTitles = ["All", "2018", "2017", "201+6"]
     searchController.searchBar.delegate = self
     
     // Setup the search footer
     tableView.tableFooterView = searchFooter
-    
-    candies = [
-      Candy(category:"Chocolate", name:"Chocolate Bar"),
-      Candy(category:"Chocolate", name:"Chocolate Chip"),
-      Candy(category:"Chocolate", name:"Dark Chocolate"),
-      Candy(category:"Hard", name:"Lollipop"),
-      Candy(category:"Hard", name:"Candy Cane"),
-      Candy(category:"Hard", name:"Jaw Breaker"),
-      Candy(category:"Other", name:"Caramel"),
-      Candy(category:"Other", name:"Sour Chew"),
-      Candy(category:"Other", name:"Gummi Bear"),
-      Candy(category:"Other", name:"Candy Floss"),
-      Candy(category:"Chocolate", name:"Chocolate Coin"),
-      Candy(category:"Chocolate", name:"Chocolate Egg"),
-      Candy(category:"Other", name:"Jelly Beans"),
-      Candy(category:"Other", name:"Liquorice"),
-      Candy(category:"Hard", name:"Toffee Apple")]
     
     if let splitViewController = splitViewController {
       let controllers = splitViewController.viewControllers
@@ -94,24 +77,24 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     if isFiltering() {
-      searchFooter.setIsFilteringToShow(filteredItemCount: filteredCandies.count, of: candies.count)
-      return filteredCandies.count
+      searchFooter.setIsFilteringToShow(filteredItemCount: self.archive.filteredDocuments.count, of: self.archive.documents.count)
+      return self.archive.filteredDocuments.count
     }
     
     searchFooter.setNotFiltering()
-    return candies.count
+    return self.archive.documents.count
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-    let candy: Candy
+    let document: Document
     if isFiltering() {
-      candy = filteredCandies[indexPath.row]
+      document = self.archive.filteredDocuments[indexPath.row]
     } else {
-      candy = candies[indexPath.row]
+      document = self.archive.documents[indexPath.row]
     }
-    cell.textLabel!.text = candy.name
-    cell.detailTextLabel!.text = candy.category
+    cell.textLabel!.text = document.specification
+    cell.detailTextLabel!.text = DateFormatter.localizedString(from: document.date, dateStyle: .medium, timeStyle: .none)
     return cell
   }
   
@@ -119,14 +102,14 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     if segue.identifier == "showDetail" {
       if let indexPath = tableView.indexPathForSelectedRow {
-        let candy: Candy
+        let document: Document
         if isFiltering() {
-          candy = filteredCandies[indexPath.row]
+          document = self.archive.filteredDocuments[indexPath.row]
         } else {
-          candy = candies[indexPath.row]
+          document = self.archive.documents[indexPath.row]
         }
         let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
-        controller.detailCandy = candy
+        controller.detailDocument = document
         controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
         controller.navigationItem.leftItemsSupplementBackButton = true
       }
@@ -136,13 +119,14 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
   // MARK: - Private instance methods
   
   func filterContentForSearchText(_ searchText: String, scope: String = "All") {
-    filteredCandies = candies.filter({( candy : Candy) -> Bool in
-      let doesCategoryMatch = (scope == "All") || (candy.category == scope)
+    self.archive.filteredDocuments = self.archive.documents.filter({( document : Document) -> Bool in
+      let doesCategoryMatch = (scope == "All") || (document.folder == scope)
       
       if searchBarIsEmpty() {
         return doesCategoryMatch
       } else {
-        return doesCategoryMatch && candy.name.lowercased().contains(searchText.lowercased())
+        // TODO: maybe also search in tags/date
+        return doesCategoryMatch && document.specification.lowercased().contains(searchText.lowercased())
       }
     })
     tableView.reloadData()
