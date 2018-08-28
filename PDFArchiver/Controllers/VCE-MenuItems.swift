@@ -66,10 +66,12 @@ extension ViewController {
     }
 
     @IBAction func resetCacheMenuItem(_ sender: NSMenuItem) {
-        // remove preferences - initialize it temporary and kill the app directly afterwards
-        self.dataModelInstance.prefs = Preferences()
         // remove all user defaults
         UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+
+        // remove preferences - initialize it temporary and kill the app directly afterwards
+        self.dataModelInstance.prefs = Preferences()
+
         // close application
         NSApplication.shared.terminate(self)
     }

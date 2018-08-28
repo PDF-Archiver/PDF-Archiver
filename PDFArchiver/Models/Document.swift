@@ -13,7 +13,10 @@ class Document: NSObject, Logging {
     // structure for PDF documents on disk
     var path: URL
     @objc var name: String
-    @objc var documentDone: String = ""
+    @objc var documentDone: String {
+        return self.alreadyRenamed ? "✔️" : ""
+    }
+    var alreadyRenamed = false
     var date = Date()
     var specification: String? {
         didSet {
@@ -89,9 +92,9 @@ class Document: NSObject, Logging {
             .appendingPathComponent(filename)
         let fileManager = FileManager.default
         do {
-            if !(newFilepath.deletingLastPathComponent().hasDirectoryPath) {
-                try fileManager.createDirectory(at: newFilepath.deletingLastPathComponent(),
-                                                withIntermediateDirectories: false, attributes: nil)
+            let folderPath = newFilepath.deletingLastPathComponent()
+            if !fileManager.fileExists(atPath: folderPath.path) {
+                try fileManager.createDirectory(at: folderPath, withIntermediateDirectories: true, attributes: nil)
             }
 
             // test if the document name already exists in archive, otherwise move it
@@ -110,7 +113,7 @@ class Document: NSObject, Logging {
         }
         self.name = String(newFilepath.lastPathComponent)
         self.path = newFilepath
-        self.documentDone = "✔️"
+        self.alreadyRenamed = true
 
         do {
             var tags = [String]()

@@ -26,16 +26,35 @@ protocol PreferencesDelegate: class {
 class Preferences: PreferencesDelegate, Logging {
     fileprivate var _archivePath: URL?
     fileprivate var _observedPath: URL?
+    fileprivate var iCloudDrivePath = FileManager.default.url(forUbiquityContainerIdentifier: nil)?.appendingPathComponent("Documents")
     weak var dataModelTagsDelegate: DataModelTagsDelegate?
     weak var archiveDelegate: ArchiveDelegate?
     var archiveModificationDate: Date?
     var slugifyNames: Bool = true
     var useiCloudDrive: Bool = false {
         didSet {
-            guard let archivePath = self.archivePath else { return }
-            self.accessSecurityScope {
-                self.archiveDelegate?.moveArchivedDocuments(to: archivePath)
+
+            if self.useiCloudDrive {
+                // move archive files
+                self.accessSecurityScope {
+                    self.archiveDelegate?.moveArchivedDocuments(from: self._archivePath!, to: self.iCloudDrivePath!)
+                }
+
+                // create icloud container
+                if !FileManager.default.fileExists(atPath: self.iCloudDrivePath!.path) {
+                    do {
+                        try FileManager.default.createDirectory(at: self.iCloudDrivePath!, withIntermediateDirectories: true, attributes: nil)
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                }
+
+                // save the icloud drive container path as the archive
+                self.archivePath = self.iCloudDrivePath
             }
+
+            // update documents
+            self.archiveDelegate?.updateDocumentsAndTags()
         }
     }
     var analyseAllFolders: Bool = false {
@@ -77,6 +96,12 @@ class Preferences: PreferencesDelegate, Logging {
         }
         set {
             guard let newValue = newValue else { return }
+
+            // move archive files
+            self.accessSecurityScope {
+                self.archiveDelegate?.moveArchivedDocuments(from: self.iCloudDrivePath!, to: newValue)
+            }
+
             // save the security scope bookmark [https://stackoverflow.com/a/35863729]
             do {
                 let bookmark = try newValue.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)

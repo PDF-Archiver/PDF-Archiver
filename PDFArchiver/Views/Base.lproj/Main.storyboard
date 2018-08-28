@@ -673,9 +673,9 @@ Tag your document and save  it:</string>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Aga-Jg-klC">
-                                            <rect key="frame" x="18" y="38" width="154" height="19"/>
+                                            <rect key="frame" x="75" y="38" width="92" height="19"/>
                                             <constraints>
-                                                <constraint firstAttribute="height" constant="19" id="sgA-lx-VwQ"/>
+                                                <constraint firstAttribute="height" constant="19" id="Oeb-3S-fzW"/>
                                             </constraints>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Tags" id="Cvq-op-wAk">
                                                 <font key="font" metaFont="systemSemibold" size="15"/>
@@ -684,9 +684,9 @@ Tag your document and save  it:</string>
                                             </textFieldCell>
                                         </textField>
                                         <button verticalHuggingPriority="750" springLoaded="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PpK-o3-Nnb">
-                                            <rect key="frame" x="180" y="38" width="468" height="19"/>
+                                            <rect key="frame" x="175" y="38" width="468" height="19"/>
                                             <constraints>
-                                                <constraint firstAttribute="height" constant="15" id="t9B-iB-SIv"/>
+                                                <constraint firstAttribute="height" constant="15" id="dy9-iR-dmn"/>
                                             </constraints>
                                             <buttonCell key="cell" type="check" title="Analyse all archive folders" bezelStyle="regularSquare" imagePosition="leading" inset="2" id="k8C-2q-WjN">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -697,7 +697,7 @@ Tag your document and save  it:</string>
                                             </connections>
                                         </button>
                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="Qzn-ZO-Zxh">
-                                            <rect key="frame" x="198" y="15" width="450" height="20"/>
+                                            <rect key="frame" x="190" y="15" width="453" height="20"/>
                                             <textFieldCell key="cell" allowsUndo="NO" sendsActionOnEndEditing="YES" title="This may decrease the app speed for large archives." id="Tlv-Ku-QD7">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -705,9 +705,9 @@ Tag your document and save  it:</string>
                                             </textFieldCell>
                                         </textField>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="46Q-15-bWH">
-                                            <rect key="frame" x="198" y="70" width="450" height="20"/>
+                                            <rect key="frame" x="190" y="70" width="453" height="20"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="446" id="G1G-xE-v93"/>
+                                                <constraint firstAttribute="width" constant="449" id="nnk-Le-pIY"/>
                                             </constraints>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Removes characters like ä, ö, ü etc. from the document description." id="C3p-Lb-2rS">
                                                 <font key="font" metaFont="system"/>
@@ -716,9 +716,9 @@ Tag your document and save  it:</string>
                                             </textFieldCell>
                                         </textField>
                                         <button verticalHuggingPriority="751" springLoaded="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9Rv-e5-Agn">
-                                            <rect key="frame" x="180" y="93" width="350" height="19"/>
+                                            <rect key="frame" x="175" y="93" width="468" height="19"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="70" id="3JG-h4-rDG"/>
+                                                <constraint firstAttribute="width" constant="464" id="Kw2-jq-Jgl"/>
                                             </constraints>
                                             <buttonCell key="cell" type="check" title="Convert description to maximize compatibility" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="DRZ-uz-4ap">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -729,10 +729,7 @@ Tag your document and save  it:</string>
                                             </connections>
                                         </button>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="249" translatesAutoresizingMaskIntoConstraints="NO" id="6gA-CS-tF3">
-                                            <rect key="frame" x="18" y="93" width="154" height="19"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="150" id="2tq-6N-dSw"/>
-                                            </constraints>
+                                            <rect key="frame" x="75" y="93" width="92" height="19"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Description" id="ZlY-Ux-pR6">
                                                 <font key="font" metaFont="systemSemibold" size="15"/>
                                                 <color key="textColor" name="Headline1"/>
@@ -741,24 +738,24 @@ Tag your document and save  it:</string>
                                         </textField>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="9Rv-e5-Agn" firstAttribute="leading" secondItem="6gA-CS-tF3" secondAttribute="trailing" constant="12" id="2m2-2M-QZ4"/>
-                                        <constraint firstItem="46Q-15-bWH" firstAttribute="leading" secondItem="Tju-Lf-HYr" secondAttribute="leading" constant="200" id="3dy-ev-xSv"/>
-                                        <constraint firstItem="Aga-Jg-klC" firstAttribute="top" secondItem="6gA-CS-tF3" secondAttribute="bottom" constant="36" id="5Ao-6S-xg5"/>
-                                        <constraint firstItem="6gA-CS-tF3" firstAttribute="centerY" secondItem="9Rv-e5-Agn" secondAttribute="centerY" id="8sc-td-pTE"/>
-                                        <constraint firstItem="Aga-Jg-klC" firstAttribute="centerY" secondItem="PpK-o3-Nnb" secondAttribute="centerY" id="AVT-uf-p5L"/>
-                                        <constraint firstAttribute="bottom" secondItem="Qzn-ZO-Zxh" secondAttribute="bottom" constant="15" id="BEa-5G-PdC"/>
-                                        <constraint firstItem="46Q-15-bWH" firstAttribute="leading" secondItem="Qzn-ZO-Zxh" secondAttribute="leading" id="Fmz-h5-jXH"/>
-                                        <constraint firstAttribute="trailing" secondItem="9Rv-e5-Agn" secondAttribute="trailing" constant="138" id="HID-Rk-dNp"/>
-                                        <constraint firstItem="Qzn-ZO-Zxh" firstAttribute="top" secondItem="PpK-o3-Nnb" secondAttribute="bottom" constant="5" id="K8J-21-djG"/>
-                                        <constraint firstItem="46Q-15-bWH" firstAttribute="top" secondItem="9Rv-e5-Agn" secondAttribute="bottom" constant="5" id="M7R-lw-ev3"/>
-                                        <constraint firstItem="6gA-CS-tF3" firstAttribute="trailing" secondItem="Aga-Jg-klC" secondAttribute="trailing" id="NsE-VL-u8Y"/>
-                                        <constraint firstItem="46Q-15-bWH" firstAttribute="trailing" secondItem="PpK-o3-Nnb" secondAttribute="trailing" id="RYD-pF-Fz8"/>
-                                        <constraint firstItem="6gA-CS-tF3" firstAttribute="leading" secondItem="Aga-Jg-klC" secondAttribute="leading" id="VZ0-xw-IfM"/>
-                                        <constraint firstItem="PpK-o3-Nnb" firstAttribute="top" secondItem="46Q-15-bWH" secondAttribute="bottom" constant="15" id="aPT-cS-4bC"/>
-                                        <constraint firstItem="PpK-o3-Nnb" firstAttribute="trailing" secondItem="Qzn-ZO-Zxh" secondAttribute="trailing" id="alz-Y2-T55"/>
-                                        <constraint firstItem="6gA-CS-tF3" firstAttribute="leading" secondItem="Tju-Lf-HYr" secondAttribute="leading" constant="20" symbolic="YES" id="bvd-5T-en3"/>
-                                        <constraint firstItem="9Rv-e5-Agn" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="PpK-o3-Nnb" secondAttribute="leading" id="kSB-yy-jHU"/>
-                                        <constraint firstAttribute="bottom" secondItem="Aga-Jg-klC" secondAttribute="bottom" constant="38" id="rxh-NK-lEP"/>
+                                        <constraint firstItem="9Rv-e5-Agn" firstAttribute="leading" secondItem="PpK-o3-Nnb" secondAttribute="leading" id="3Ke-zE-Oka"/>
+                                        <constraint firstAttribute="bottom" secondItem="Qzn-ZO-Zxh" secondAttribute="bottom" constant="15" id="3jR-gx-ZA3"/>
+                                        <constraint firstItem="6gA-CS-tF3" firstAttribute="leading" secondItem="Tju-Lf-HYr" secondAttribute="leading" constant="77" id="67g-cX-bsk"/>
+                                        <constraint firstItem="6gA-CS-tF3" firstAttribute="leading" secondItem="Aga-Jg-klC" secondAttribute="leading" id="8Ls-LD-qc1"/>
+                                        <constraint firstAttribute="bottom" secondItem="Aga-Jg-klC" secondAttribute="bottom" constant="38" id="DEq-O8-KZL"/>
+                                        <constraint firstItem="Qzn-ZO-Zxh" firstAttribute="top" secondItem="PpK-o3-Nnb" secondAttribute="bottom" constant="5" id="G9z-Tw-GJa"/>
+                                        <constraint firstItem="46Q-15-bWH" firstAttribute="trailing" secondItem="PpK-o3-Nnb" secondAttribute="trailing" id="HPh-U9-qUc"/>
+                                        <constraint firstItem="Aga-Jg-klC" firstAttribute="centerY" secondItem="PpK-o3-Nnb" secondAttribute="centerY" id="IQs-BL-jFz"/>
+                                        <constraint firstItem="9Rv-e5-Agn" firstAttribute="trailing" secondItem="46Q-15-bWH" secondAttribute="trailing" id="KpZ-rJ-XjB"/>
+                                        <constraint firstAttribute="trailing" secondItem="9Rv-e5-Agn" secondAttribute="trailing" constant="25" id="LNW-iv-pTu"/>
+                                        <constraint firstItem="PpK-o3-Nnb" firstAttribute="top" secondItem="46Q-15-bWH" secondAttribute="bottom" constant="15" id="LhU-47-ng4"/>
+                                        <constraint firstItem="PpK-o3-Nnb" firstAttribute="trailing" secondItem="Qzn-ZO-Zxh" secondAttribute="trailing" id="Rcr-wd-XiA"/>
+                                        <constraint firstItem="46Q-15-bWH" firstAttribute="top" secondItem="9Rv-e5-Agn" secondAttribute="bottom" constant="5" id="Uhx-mC-qlb"/>
+                                        <constraint firstItem="6gA-CS-tF3" firstAttribute="trailing" secondItem="Aga-Jg-klC" secondAttribute="trailing" id="Xid-6v-66i"/>
+                                        <constraint firstItem="Aga-Jg-klC" firstAttribute="top" secondItem="6gA-CS-tF3" secondAttribute="bottom" constant="36" id="ZP8-mM-lov"/>
+                                        <constraint firstItem="46Q-15-bWH" firstAttribute="leading" secondItem="Qzn-ZO-Zxh" secondAttribute="leading" id="d7W-Y8-4cA"/>
+                                        <constraint firstItem="6gA-CS-tF3" firstAttribute="centerY" secondItem="9Rv-e5-Agn" secondAttribute="centerY" id="ja7-tb-dyV"/>
+                                        <constraint firstItem="9Rv-e5-Agn" firstAttribute="leading" secondItem="6gA-CS-tF3" secondAttribute="trailing" constant="12" id="y3S-Dk-w8j"/>
                                     </constraints>
                                 </view>
                             </box>
@@ -769,7 +766,7 @@ Tag your document and save  it:</string>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <button verticalHuggingPriority="750" springLoaded="YES" translatesAutoresizingMaskIntoConstraints="NO" id="joG-X7-QK9">
-                                            <rect key="frame" x="171" y="56" width="472" height="26"/>
+                                            <rect key="frame" x="170" y="56" width="473" height="19"/>
                                             <buttonCell key="cell" type="check" title="Convert pictures to PDFs" bezelStyle="regularSquare" imagePosition="left" inset="2" id="dMg-Kx-7ej">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="systemSemibold" size="15"/>
@@ -779,9 +776,9 @@ Tag your document and save  it:</string>
                                             </connections>
                                         </button>
                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="quC-LR-hxW">
-                                            <rect key="frame" x="198" y="19" width="445" height="34"/>
+                                            <rect key="frame" x="188" y="19" width="455" height="34"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="441" id="bNf-Oo-jgE"/>
+                                                <constraint firstAttribute="width" constant="451" id="xaG-Wk-ZeV"/>
                                             </constraints>
                                             <textFieldCell key="cell" allowsUndo="NO" sendsActionOnEndEditing="YES" title="Convert pictures (jpg etc.) in the observed folder to PDFs and trash the original." id="WIy-5i-bbd">
                                                 <font key="font" metaFont="system"/>
@@ -790,7 +787,7 @@ Tag your document and save  it:</string>
                                             </textFieldCell>
                                         </textField>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="RAD-9s-bE4">
-                                            <rect key="frame" x="9" y="97" width="154" height="19"/>
+                                            <rect key="frame" x="39" y="93" width="123" height="19"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Observed Folder" id="z8O-Wh-LiY">
                                                 <font key="font" metaFont="systemSemibold" size="15"/>
                                                 <color key="textColor" name="Headline1"/>
@@ -798,17 +795,17 @@ Tag your document and save  it:</string>
                                             </textFieldCell>
                                         </textField>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PTW-ce-MNP">
-                                            <rect key="frame" x="9" y="134" width="154" height="19"/>
-                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Archive Path" id="Ju7-wj-fHp">
+                                            <rect key="frame" x="39" y="132" width="123" height="19"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Archive Folder" id="Ju7-wj-fHp">
                                                 <font key="font" metaFont="systemSemibold" size="15"/>
                                                 <color key="textColor" name="Headline1"/>
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="X5U-R0-ENH">
-                                            <rect key="frame" x="173" y="132" width="374" height="22"/>
+                                            <rect key="frame" x="172" y="130" width="374" height="22"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="374" id="b8F-S1-4pX"/>
+                                                <constraint firstAttribute="width" constant="374" id="1mE-q7-Xho"/>
                                             </constraints>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="Please set the archive path …" drawsBackground="YES" usesSingleLineMode="YES" id="gtQ-4r-22c">
                                                 <font key="font" metaFont="system"/>
@@ -818,11 +815,7 @@ Tag your document and save  it:</string>
                                             </textFieldCell>
                                         </textField>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="oIL-jU-gHB">
-                                            <rect key="frame" x="9" y="171" width="154" height="19"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="150" id="dGP-Yz-Xiq"/>
-                                                <constraint firstAttribute="height" constant="19" id="uC2-NI-hfm"/>
-                                            </constraints>
+                                            <rect key="frame" x="39" y="169" width="123" height="19"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="iCloud" id="urS-Lh-uQS">
                                                 <font key="font" metaFont="systemSemibold" size="15"/>
                                                 <color key="textColor" name="Headline1"/>
@@ -830,20 +823,20 @@ Tag your document and save  it:</string>
                                             </textFieldCell>
                                         </textField>
                                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8RK-0V-cYr">
-                                            <rect key="frame" x="546" y="125" width="101" height="33"/>
+                                            <rect key="frame" x="545" y="123" width="102" height="33"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="80" id="aVb-iM-97d"/>
+                                                <constraint firstAttribute="width" constant="90" id="xrI-vX-Bmb"/>
                                             </constraints>
                                             <buttonCell key="cell" type="push" title="Change …" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="XbB-C4-8qz">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                             <connections>
-                                                <action selector="changeArchivePathButton:" target="emn-JX-zbO" id="lxL-Of-btw"/>
+                                                <action selector="changeArchivePathButtonClicked:" target="emn-JX-zbO" id="Apl-oQ-9Bu"/>
                                             </connections>
                                         </button>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hB8-Fa-RBW">
-                                            <rect key="frame" x="173" y="95" width="374" height="22"/>
+                                            <rect key="frame" x="172" y="91" width="374" height="22"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="Please set the observed path …" drawsBackground="YES" usesSingleLineMode="YES" id="hox-RC-83t">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -852,20 +845,17 @@ Tag your document and save  it:</string>
                                             </textFieldCell>
                                         </textField>
                                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="YTa-3I-7A5">
-                                            <rect key="frame" x="546" y="88" width="101" height="33"/>
+                                            <rect key="frame" x="545" y="84" width="102" height="33"/>
                                             <buttonCell key="cell" type="push" title="Change …" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="obQ-RK-Zgm">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                             <connections>
-                                                <action selector="changeObservedPathButton:" target="emn-JX-zbO" id="5t0-vK-RMA"/>
+                                                <action selector="changeObservedPathButtonClicked:" target="emn-JX-zbO" id="HKs-HL-8pu"/>
                                             </connections>
                                         </button>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Kzj-Fs-SV2">
-                                            <rect key="frame" x="9" y="60" width="154" height="19"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="19" id="u17-qY-P2h"/>
-                                            </constraints>
+                                            <rect key="frame" x="39" y="56" width="123" height="19"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Pictures" id="DHw-bL-Azd">
                                                 <font key="font" metaFont="systemSemibold" size="15"/>
                                                 <color key="textColor" name="Headline1"/>
@@ -873,7 +863,7 @@ Tag your document and save  it:</string>
                                             </textFieldCell>
                                         </textField>
                                         <button verticalHuggingPriority="750" springLoaded="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2Qv-dK-ZbP">
-                                            <rect key="frame" x="171" y="167" width="249" height="26"/>
+                                            <rect key="frame" x="170" y="169" width="473" height="19"/>
                                             <buttonCell key="cell" type="check" title="Save Documents in iCloud Drive" bezelStyle="regularSquare" imagePosition="left" inset="2" id="xlr-HK-YOq">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="systemSemibold" size="15"/>
@@ -884,58 +874,55 @@ Tag your document and save  it:</string>
                                         </button>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstAttribute="bottom" secondItem="quC-LR-hxW" secondAttribute="bottom" constant="19" id="2GL-hR-k9y"/>
-                                        <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="2Qv-dK-ZbP" secondAttribute="trailing" constant="20" symbolic="YES" id="7Bn-69-Ivk"/>
-                                        <constraint firstItem="PTW-ce-MNP" firstAttribute="leading" secondItem="RAD-9s-bE4" secondAttribute="leading" id="7nu-qZ-aoq"/>
-                                        <constraint firstItem="Kzj-Fs-SV2" firstAttribute="top" secondItem="RAD-9s-bE4" secondAttribute="bottom" constant="18" id="8zF-zZ-Fro"/>
-                                        <constraint firstItem="RAD-9s-bE4" firstAttribute="leading" secondItem="Kzj-Fs-SV2" secondAttribute="leading" id="CS3-O2-kbV"/>
-                                        <constraint firstItem="PTW-ce-MNP" firstAttribute="top" secondItem="oIL-jU-gHB" secondAttribute="bottom" constant="18" id="Dkh-Kt-R3L"/>
-                                        <constraint firstItem="2Qv-dK-ZbP" firstAttribute="leading" secondItem="X5U-R0-ENH" secondAttribute="leading" id="EAw-nx-N08"/>
-                                        <constraint firstItem="2Qv-dK-ZbP" firstAttribute="leading" secondItem="oIL-jU-gHB" secondAttribute="trailing" constant="12" id="Hd0-iH-Kla"/>
-                                        <constraint firstItem="hB8-Fa-RBW" firstAttribute="top" secondItem="X5U-R0-ENH" secondAttribute="bottom" constant="15" id="OSH-E1-7zS"/>
-                                        <constraint firstItem="8RK-0V-cYr" firstAttribute="baseline" secondItem="X5U-R0-ENH" secondAttribute="firstBaseline" id="PhA-Xy-zfD"/>
-                                        <constraint firstItem="hB8-Fa-RBW" firstAttribute="leading" secondItem="joG-X7-QK9" secondAttribute="leading" id="SOZ-3b-W8U"/>
-                                        <constraint firstItem="hB8-Fa-RBW" firstAttribute="top" secondItem="YTa-3I-7A5" secondAttribute="top" id="SVJ-0T-M7D"/>
-                                        <constraint firstItem="X5U-R0-ENH" firstAttribute="top" secondItem="8RK-0V-cYr" secondAttribute="top" id="Ttk-N6-de1"/>
-                                        <constraint firstItem="RAD-9s-bE4" firstAttribute="trailing" secondItem="Kzj-Fs-SV2" secondAttribute="trailing" id="XZj-IN-xA0"/>
-                                        <constraint firstItem="Kzj-Fs-SV2" firstAttribute="centerY" secondItem="joG-X7-QK9" secondAttribute="centerY" id="XyK-yx-V3s"/>
-                                        <constraint firstAttribute="trailing" secondItem="8RK-0V-cYr" secondAttribute="trailing" constant="25" id="ZUb-G1-Z3d"/>
-                                        <constraint firstItem="quC-LR-hxW" firstAttribute="top" secondItem="joG-X7-QK9" secondAttribute="bottom" constant="5" id="Zjj-Ze-yIe"/>
-                                        <constraint firstItem="oIL-jU-gHB" firstAttribute="centerY" secondItem="2Qv-dK-ZbP" secondAttribute="centerY" id="dn0-oi-JwN"/>
-                                        <constraint firstItem="8RK-0V-cYr" firstAttribute="leading" secondItem="X5U-R0-ENH" secondAttribute="trailing" constant="5" id="eec-Wg-bTX"/>
-                                        <constraint firstItem="YTa-3I-7A5" firstAttribute="baseline" secondItem="hB8-Fa-RBW" secondAttribute="firstBaseline" id="gT5-Dz-FYa"/>
-                                        <constraint firstItem="X5U-R0-ENH" firstAttribute="trailing" secondItem="hB8-Fa-RBW" secondAttribute="trailing" id="gXN-iu-x7c"/>
-                                        <constraint firstItem="joG-X7-QK9" firstAttribute="top" secondItem="hB8-Fa-RBW" secondAttribute="bottom" constant="15" id="giv-if-VNR"/>
-                                        <constraint firstItem="X5U-R0-ENH" firstAttribute="baseline" secondItem="PTW-ce-MNP" secondAttribute="firstBaseline" id="gz7-ON-qXc"/>
-                                        <constraint firstItem="joG-X7-QK9" firstAttribute="trailing" secondItem="quC-LR-hxW" secondAttribute="trailing" id="iO9-uJ-b3v"/>
-                                        <constraint firstItem="RAD-9s-bE4" firstAttribute="baseline" secondItem="hB8-Fa-RBW" secondAttribute="baseline" id="iZg-EX-Hhe"/>
-                                        <constraint firstItem="8RK-0V-cYr" firstAttribute="leading" secondItem="YTa-3I-7A5" secondAttribute="leading" id="nho-Ui-Y7N"/>
-                                        <constraint firstItem="oIL-jU-gHB" firstAttribute="leading" secondItem="PTW-ce-MNP" secondAttribute="leading" id="otL-wM-hpQ"/>
-                                        <constraint firstItem="X5U-R0-ENH" firstAttribute="top" secondItem="2Qv-dK-ZbP" secondAttribute="bottom" constant="15" id="pYA-r4-ZlB"/>
-                                        <constraint firstItem="quC-LR-hxW" firstAttribute="leading" secondItem="ehH-tM-sl6" secondAttribute="leading" constant="200" id="pbU-ra-vfA"/>
-                                        <constraint firstItem="X5U-R0-ENH" firstAttribute="leading" secondItem="hB8-Fa-RBW" secondAttribute="leading" id="qgt-Cf-X3L"/>
-                                        <constraint firstItem="X5U-R0-ENH" firstAttribute="baseline" secondItem="8RK-0V-cYr" secondAttribute="baseline" id="tkp-4i-QKY"/>
-                                        <constraint firstItem="PTW-ce-MNP" firstAttribute="trailing" secondItem="RAD-9s-bE4" secondAttribute="trailing" id="uJd-gC-alP"/>
-                                        <constraint firstItem="8RK-0V-cYr" firstAttribute="trailing" secondItem="YTa-3I-7A5" secondAttribute="trailing" id="uhX-PZ-iA0"/>
-                                        <constraint firstItem="oIL-jU-gHB" firstAttribute="trailing" secondItem="PTW-ce-MNP" secondAttribute="trailing" id="z46-eR-n11"/>
-                                        <constraint firstItem="YTa-3I-7A5" firstAttribute="trailing" secondItem="joG-X7-QK9" secondAttribute="trailing" id="zen-Uk-Vos"/>
+                                        <constraint firstItem="8RK-0V-cYr" firstAttribute="leading" secondItem="X5U-R0-ENH" secondAttribute="trailing" constant="5" id="3YY-XR-P4S"/>
+                                        <constraint firstItem="2Qv-dK-ZbP" firstAttribute="trailing" secondItem="8RK-0V-cYr" secondAttribute="trailing" id="6OH-Rj-fAt"/>
+                                        <constraint firstAttribute="trailing" secondItem="8RK-0V-cYr" secondAttribute="trailing" constant="25" id="6Xy-iw-eke"/>
+                                        <constraint firstItem="X5U-R0-ENH" firstAttribute="leading" secondItem="hB8-Fa-RBW" secondAttribute="leading" id="7xN-F7-lVd"/>
+                                        <constraint firstItem="PTW-ce-MNP" firstAttribute="top" secondItem="oIL-jU-gHB" secondAttribute="bottom" constant="18" id="9DT-By-3yE"/>
+                                        <constraint firstItem="8RK-0V-cYr" firstAttribute="leading" secondItem="YTa-3I-7A5" secondAttribute="leading" id="C5I-uq-Q3g"/>
+                                        <constraint firstItem="2Qv-dK-ZbP" firstAttribute="leading" secondItem="X5U-R0-ENH" secondAttribute="leading" id="EyP-j9-qd9"/>
+                                        <constraint firstAttribute="bottom" secondItem="quC-LR-hxW" secondAttribute="bottom" constant="19" id="Ihf-dI-qhB"/>
+                                        <constraint firstItem="hB8-Fa-RBW" firstAttribute="top" secondItem="YTa-3I-7A5" secondAttribute="top" id="KQV-ZS-yga"/>
+                                        <constraint firstItem="oIL-jU-gHB" firstAttribute="centerY" secondItem="2Qv-dK-ZbP" secondAttribute="centerY" id="Kqw-vj-7Yc"/>
+                                        <constraint firstItem="quC-LR-hxW" firstAttribute="top" secondItem="joG-X7-QK9" secondAttribute="bottom" constant="5" id="Maa-Rk-LZ7"/>
+                                        <constraint firstItem="PTW-ce-MNP" firstAttribute="leading" secondItem="RAD-9s-bE4" secondAttribute="leading" id="O7Q-aI-91M"/>
+                                        <constraint firstItem="oIL-jU-gHB" firstAttribute="trailing" secondItem="PTW-ce-MNP" secondAttribute="trailing" id="OX9-Xh-Jug"/>
+                                        <constraint firstItem="Kzj-Fs-SV2" firstAttribute="top" secondItem="RAD-9s-bE4" secondAttribute="bottom" constant="18" id="P6t-fE-YUn"/>
+                                        <constraint firstItem="YTa-3I-7A5" firstAttribute="trailing" secondItem="joG-X7-QK9" secondAttribute="trailing" id="QAl-Zz-ipa"/>
+                                        <constraint firstItem="PTW-ce-MNP" firstAttribute="baseline" secondItem="X5U-R0-ENH" secondAttribute="baseline" id="RbW-eQ-E5f"/>
+                                        <constraint firstItem="PTW-ce-MNP" firstAttribute="trailing" secondItem="RAD-9s-bE4" secondAttribute="trailing" id="RoF-Nl-QtD"/>
+                                        <constraint firstItem="joG-X7-QK9" firstAttribute="trailing" secondItem="quC-LR-hxW" secondAttribute="trailing" id="Rse-Lu-ScE"/>
+                                        <constraint firstItem="X5U-R0-ENH" firstAttribute="top" secondItem="8RK-0V-cYr" secondAttribute="top" id="TbS-zY-NGL"/>
+                                        <constraint firstItem="hB8-Fa-RBW" firstAttribute="top" secondItem="X5U-R0-ENH" secondAttribute="bottom" constant="17" id="VcO-Nm-RgA"/>
+                                        <constraint firstItem="2Qv-dK-ZbP" firstAttribute="leading" secondItem="oIL-jU-gHB" secondAttribute="trailing" constant="12" id="cxC-YH-Pao"/>
+                                        <constraint firstItem="oIL-jU-gHB" firstAttribute="leading" secondItem="PTW-ce-MNP" secondAttribute="leading" id="dB7-jW-VK1"/>
+                                        <constraint firstItem="RAD-9s-bE4" firstAttribute="leading" secondItem="Kzj-Fs-SV2" secondAttribute="leading" id="fPA-7Y-e9U"/>
+                                        <constraint firstItem="8RK-0V-cYr" firstAttribute="trailing" secondItem="YTa-3I-7A5" secondAttribute="trailing" id="hGe-vg-p23"/>
+                                        <constraint firstItem="Kzj-Fs-SV2" firstAttribute="centerY" secondItem="joG-X7-QK9" secondAttribute="centerY" id="k4B-Kz-LFt"/>
+                                        <constraint firstItem="X5U-R0-ENH" firstAttribute="trailing" secondItem="hB8-Fa-RBW" secondAttribute="trailing" id="lEm-bP-AUB"/>
+                                        <constraint firstItem="RAD-9s-bE4" firstAttribute="trailing" secondItem="Kzj-Fs-SV2" secondAttribute="trailing" id="ppE-Fg-tqo"/>
+                                        <constraint firstItem="YTa-3I-7A5" firstAttribute="baseline" secondItem="hB8-Fa-RBW" secondAttribute="firstBaseline" id="qPx-Tk-V8f"/>
+                                        <constraint firstItem="RAD-9s-bE4" firstAttribute="baseline" secondItem="hB8-Fa-RBW" secondAttribute="baseline" id="rbW-cp-Ei7"/>
+                                        <constraint firstItem="hB8-Fa-RBW" firstAttribute="leading" secondItem="joG-X7-QK9" secondAttribute="leading" id="rv7-7f-K0M"/>
+                                        <constraint firstItem="8RK-0V-cYr" firstAttribute="baseline" secondItem="X5U-R0-ENH" secondAttribute="firstBaseline" id="ssJ-WJ-NCe"/>
                                     </constraints>
                                 </view>
                             </box>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="qgP-PZ-Vec" firstAttribute="leading" secondItem="7f8-kJ-SDe" secondAttribute="leading" constant="20" symbolic="YES" id="6zQ-e9-OnC"/>
-                            <constraint firstItem="qgP-PZ-Vec" firstAttribute="leading" secondItem="hO8-8r-rGn" secondAttribute="leading" id="FuI-fh-SFu"/>
-                            <constraint firstItem="hO8-8r-rGn" firstAttribute="top" secondItem="qgP-PZ-Vec" secondAttribute="bottom" constant="15" id="S2E-go-DIS"/>
-                            <constraint firstAttribute="trailing" secondItem="qgP-PZ-Vec" secondAttribute="trailing" constant="20" symbolic="YES" id="UNZ-cZ-kX9"/>
-                            <constraint firstItem="qgP-PZ-Vec" firstAttribute="trailing" secondItem="hO8-8r-rGn" secondAttribute="trailing" id="bf6-26-sek"/>
-                            <constraint firstAttribute="bottom" secondItem="hO8-8r-rGn" secondAttribute="bottom" constant="20" symbolic="YES" id="fX9-jB-Ntl"/>
-                            <constraint firstItem="qgP-PZ-Vec" firstAttribute="top" secondItem="7f8-kJ-SDe" secondAttribute="top" constant="15" id="gd7-eP-kKo"/>
-                            <constraint firstItem="hO8-8r-rGn" firstAttribute="top" secondItem="7f8-kJ-SDe" secondAttribute="top" constant="249" id="o1F-PW-xFQ"/>
+                            <constraint firstAttribute="bottom" secondItem="hO8-8r-rGn" secondAttribute="bottom" constant="20" symbolic="YES" id="3op-me-Ssh"/>
+                            <constraint firstItem="qgP-PZ-Vec" firstAttribute="leading" secondItem="hO8-8r-rGn" secondAttribute="leading" id="4uq-ZY-P6a"/>
+                            <constraint firstItem="hO8-8r-rGn" firstAttribute="top" secondItem="qgP-PZ-Vec" secondAttribute="bottom" constant="15" id="9XM-lI-tXi"/>
+                            <constraint firstItem="qgP-PZ-Vec" firstAttribute="trailing" secondItem="hO8-8r-rGn" secondAttribute="trailing" id="ChP-dM-HMc"/>
+                            <constraint firstItem="qgP-PZ-Vec" firstAttribute="leading" secondItem="7f8-kJ-SDe" secondAttribute="leading" constant="20" symbolic="YES" id="EgK-YI-Cpw"/>
+                            <constraint firstAttribute="trailing" secondItem="qgP-PZ-Vec" secondAttribute="trailing" constant="20" symbolic="YES" id="KW1-iF-hyP"/>
+                            <constraint firstItem="hO8-8r-rGn" firstAttribute="top" secondItem="7f8-kJ-SDe" secondAttribute="top" constant="249" id="LVf-tr-YiO"/>
+                            <constraint firstItem="qgP-PZ-Vec" firstAttribute="top" secondItem="7f8-kJ-SDe" secondAttribute="top" constant="15" id="hZE-q1-2P3"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="archivePathTextField" destination="X5U-R0-ENH" id="vSN-68-eIZ"/>
+                        <outlet property="changeArchivePathButton" destination="8RK-0V-cYr" id="mvt-dW-q7Y"/>
                         <outlet property="convertPicturesButton" destination="joG-X7-QK9" id="nnk-Af-BXE"/>
                         <outlet property="documentSlugifyCheckButton" destination="9Rv-e5-Agn" id="vtT-7X-YSr"/>
                         <outlet property="observedPathTextField" destination="hB8-Fa-RBW" id="1Cy-Lg-BQS"/>
@@ -1679,9 +1666,6 @@ Help &gt; Show Onboarding</string>
         </namedColor>
         <namedColor name="Headline1">
             <color red="0.7929999828338623" green="0.25499999523162842" blue="0.31000000238418579" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-        </namedColor>
-        <namedColor name="Headline1">
-            <color red="0.79299998279999995" green="0.2549999952" blue="0.31000000239999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
         <namedColor name="Headline2">
             <color red="0.90299999713897705" green="0.41200000047683716" blue="0.40400001406669617" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>

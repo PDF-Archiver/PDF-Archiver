@@ -11,7 +11,7 @@ import os.log
 import Quartz
 
 protocol ArchiveDelegate: class {
-    func moveArchivedDocuments(to newArchivPath: URL)
+    func moveArchivedDocuments(from oldArchivePath: URL, to newArchivePath: URL)
     func updateDocumentsAndTags()
 }
 
@@ -20,9 +20,24 @@ class Archive: ArchiveDelegate, Logging {
     weak var preferencesDelegate: PreferencesDelegate?
     weak var dataModelTagsDelegate: DataModelTagsDelegate?
 
-    func moveArchivedDocuments(to newArchivPath: URL) {
-        for document in self.documents {
-            document.rename(archivePath: newArchivPath, slugify: self.preferencesDelegate?.slugifyNames ?? true)
+    func moveArchivedDocuments(from oldArchivePath: URL, to newArchivePath: URL) {
+        if oldArchivePath == newArchivePath {
+            return
+        }
+
+        self.preferencesDelegate?.accessSecurityScope {
+
+            let fileManager = FileManager.default
+            guard let documentsToBeMoved = fileManager.enumerator(at: oldArchivePath,
+                                                                  includingPropertiesForKeys: nil,
+                                                                  options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants],
+                                                                  errorHandler: nil) else { return }
+
+            for folder in documentsToBeMoved {
+                guard let folderPath = folder as? URL else { continue }
+                try? fileManager.moveItem(at: folderPath,
+                                          to: newArchivePath.appendingPathComponent(folderPath.lastPathComponent))
+            }
         }
     }
 
