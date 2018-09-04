@@ -61,6 +61,9 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
             detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
             // swiftlint:enable force_cast
         }
+
+        // setup background view controller
+        self.tableView.backgroundView = Bundle.main.loadNibNamed("EmptyBackgroundView", owner: nil, options: nil)?.first as? UIView ?? nil
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -99,7 +102,7 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
         } else {
             document = self.archive.documents[indexPath.row]
         }
-        cell.textLabel!.text = document.specification
+        cell.textLabel!.text = document.specification.replacingOccurrences(of: "-", with: " ")
         cell.detailTextLabel!.text = DateFormatter.localizedString(from: document.date, dateStyle: .medium, timeStyle: .none)
         return cell
     }
@@ -155,6 +158,13 @@ extension MasterViewController: DocumentsQueryDelegate {
     func documentsQueryResultsDidChangeWithResults(documents: [Document], tags: Set<Tag>) {
         self.archive.documents = documents.sorted().reversed()
         self.archive.availableTags = tags
+
+        // setup background view controller
+        if documents.isEmpty {
+            self.tableView.backgroundView = Bundle.main.loadNibNamed("EmptyBackgroundView", owner: nil, options: nil)?.first as? UIView ?? nil
+        } else {
+            self.tableView.backgroundView = nil
+        }
 
         self.tableView.reloadData()
     }
