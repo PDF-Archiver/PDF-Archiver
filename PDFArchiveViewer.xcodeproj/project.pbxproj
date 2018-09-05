@@ -13,6 +13,7 @@
 		171E0C851B8E5B84001E6242 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171E0C831B8E5B84001E6242 /* Main.storyboard */; };
 		171E0C8A1B8E5B84001E6242 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171E0C881B8E5B84001E6242 /* LaunchScreen.storyboard */; };
 		452C6F7B1E9BDA75003A4C50 /* SearchFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452C6F7A1E9BDA75003A4C50 /* SearchFooter.swift */; };
+		A30A0D4B2140364F002901CE /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30A0D4A2140364F002901CE /* TableViewCell.swift */; };
 		A336837B213DAF7D0011F280 /* EmptyBackgroundView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A336837A213DAF7D0011F280 /* EmptyBackgroundView.xib */; };
 		A34A84F92130A35A0093FAE5 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34A84F52130A35A0093FAE5 /* Document.swift */; };
 		A34A84FA2130A35A0093FAE5 /* DocumentsQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34A84F62130A35A0093FAE5 /* DocumentsQuery.swift */; };
@@ -32,6 +33,7 @@
 		171E0C891B8E5B84001E6242 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		171E0C8B1B8E5B84001E6242 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		452C6F7A1E9BDA75003A4C50 /* SearchFooter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchFooter.swift; sourceTree = "<group>"; };
+		A30A0D4A2140364F002901CE /* TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TableViewCell.swift; path = PDFArchiveViewer/Views/TableViewCell.swift; sourceTree = SOURCE_ROOT; };
 		A336837A213DAF7D0011F280 /* EmptyBackgroundView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EmptyBackgroundView.xib; sourceTree = "<group>"; };
 		A34A84F52130A35A0093FAE5 /* Document.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
 		A34A84F62130A35A0093FAE5 /* DocumentsQuery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentsQuery.swift; sourceTree = "<group>"; };
@@ -118,6 +120,7 @@
 				171E0C831B8E5B84001E6242 /* Main.storyboard */,
 				171E0C811B8E5B84001E6242 /* DetailViewController.swift */,
 				171E0C7F1B8E5B84001E6242 /* MasterViewController.swift */,
+				A30A0D4A2140364F002901CE /* TableViewCell.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -161,7 +164,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0940;
-				ORGANIZATIONNAME = "Peartree Developers";
+				ORGANIZATIONNAME = "Julian Kahnert";
 				TargetAttributes = {
 					171E0C791B8E5B84001E6242 = {
 						CreatedOnToolsVersion = 7.0;
@@ -235,6 +238,7 @@
 				A34A84FF2130A3780093FAE5 /* Logging.swift in Sources */,
 				171E0C821B8E5B84001E6242 /* DetailViewController.swift in Sources */,
 				171E0C801B8E5B84001E6242 /* MasterViewController.swift in Sources */,
+				A30A0D4B2140364F002901CE /* TableViewCell.swift in Sources */,
 				A34A84F92130A35A0093FAE5 /* Document.swift in Sources */,
 				A34A84FB2130A35A0093FAE5 /* Tag.swift in Sources */,
 				171E0C7E1B8E5B84001E6242 /* AppDelegate.swift in Sources */,

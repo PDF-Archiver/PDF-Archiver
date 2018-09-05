@@ -33,6 +33,9 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
     var browserQuery = DocumentsQuery()
     let searchController = UISearchController(searchResultsController: nil)
 
+    // Table view cells are reused and should be dequeued using a cell identifier.
+    private let cellIdentifier = "TableViewCell"
+
     // MARK: - View Setup
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -95,15 +98,15 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-        let document: Document
-        if isFiltering() {
-            document = self.archive.filteredDocuments[indexPath.row]
-        } else {
-            document = self.archive.documents[indexPath.row]
+
+        // get the desired cell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: self.cellIdentifier, for: indexPath) as? TableViewCell  else {
+            fatalError("The dequeued cell is not an instance of TableViewCell.")
         }
-        cell.textLabel!.text = document.specification.replacingOccurrences(of: "-", with: " ")
-        cell.detailTextLabel!.text = DateFormatter.localizedString(from: document.date, dateStyle: .medium, timeStyle: .none)
+        
+        // update the cell document and content
+        cell.document = self.archive.documents[indexPath.row]
+        cell.layoutSubviews()
         return cell
     }
 

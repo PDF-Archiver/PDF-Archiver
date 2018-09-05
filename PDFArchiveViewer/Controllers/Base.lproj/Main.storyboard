@@ -6,6 +6,8 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -119,31 +121,51 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" textLabel="UqX-9Y-1fI" detailTextLabel="yHh-5y-oIu" style="IBUITableViewCellStyleSubtitle" id="NMu-cR-gKu">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TableViewCell" id="gdF-Uw-SNl" customClass="TableViewCell" customModule="PDFArchiveViewer" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="NMu-cR-gKu" id="4YS-lZ-xcc">
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="gdF-Uw-SNl" id="3sO-Jb-oKx">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="document title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="UqX-9Y-1fI">
-                                                    <rect key="frame" x="15" y="5" width="110.5" height="20.5"/>
-                                                    <autoresizingMask key="autoresizingMask"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="document title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uen-cP-HYo">
+                                                    <rect key="frame" x="15" y="0.0" width="110.5" height="23"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="23" id="tEk-Df-Iiz"/>
+                                                    </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" name="DarkGrey"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="12.05.2018" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="yHh-5y-oIu">
-                                                    <rect key="frame" x="15" y="25.5" width="62" height="14.5"/>
-                                                    <autoresizingMask key="autoresizingMask"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="12.05.2018" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UJ9-L7-gGw">
+                                                    <rect key="frame" x="15" y="25" width="66.5" height="8"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="iYX-DE-MNh">
+                                                    <rect key="frame" x="335" y="9.5" width="25" height="25"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" secondItem="iYX-DE-MNh" secondAttribute="height" multiplier="1:1" id="YSj-IT-dSn"/>
+                                                        <constraint firstAttribute="height" constant="25" id="jjl-C9-aa0"/>
+                                                    </constraints>
+                                                </imageView>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstItem="uen-cP-HYo" firstAttribute="leading" secondItem="3sO-Jb-oKx" secondAttribute="leadingMargin" id="05r-nK-T6d"/>
+                                                <constraint firstItem="iYX-DE-MNh" firstAttribute="centerY" secondItem="3sO-Jb-oKx" secondAttribute="centerY" id="2Pr-4i-cmV"/>
+                                                <constraint firstItem="iYX-DE-MNh" firstAttribute="trailing" secondItem="3sO-Jb-oKx" secondAttribute="trailingMargin" id="Kde-Pu-mB6"/>
+                                                <constraint firstItem="UJ9-L7-gGw" firstAttribute="leading" secondItem="3sO-Jb-oKx" secondAttribute="leadingMargin" id="Om1-v1-Gco"/>
+                                                <constraint firstItem="UJ9-L7-gGw" firstAttribute="top" secondItem="uen-cP-HYo" secondAttribute="bottom" constant="2" id="Ti8-DI-wmj"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="UJ9-L7-gGw" secondAttribute="bottom" id="aiS-Ek-fLO"/>
+                                                <constraint firstItem="uen-cP-HYo" firstAttribute="top" secondItem="3sO-Jb-oKx" secondAttribute="top" id="wzw-Ff-pEA"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <segue destination="vC3-pB-5Vb" kind="showDetail" identifier="showDetail" id="q9E-Xa-mX4"/>
+                                            <outlet property="dateLabel" destination="UJ9-L7-gGw" id="bfJ-cw-iHD"/>
+                                            <outlet property="downloadImageView" destination="iYX-DE-MNh" id="RLr-tC-PAM"/>
+                                            <outlet property="tileLabel" destination="uen-cP-HYo" id="zOW-ju-Lda"/>
+                                            <segue destination="vC3-pB-5Vb" kind="showDetail" identifier="showDetails" id="w68-Lv-5Vb"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -224,12 +246,15 @@
         <namedColor name="DarkGrey">
             <color red="0.21299999952316284" green="0.24199999868869781" blue="0.28600001335144043" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
+        <namedColor name="DarkGrey">
+            <color red="0.21299999952316284" green="0.24199999868869781" blue="0.28600001335144043" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+        </namedColor>
         <namedColor name="Headline1">
             <color red="0.7929999828338623" green="0.25499999523162842" blue="0.31000000238418579" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="q9E-Xa-mX4"/>
+        <segue reference="w68-Lv-5Vb"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>
