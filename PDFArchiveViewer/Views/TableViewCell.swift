@@ -20,9 +20,7 @@ class TableViewCell: UITableViewCell {
         if let document = self.document {
             self.tileLabel.text = document.specification.replacingOccurrences(of: "-", with: " ")
             self.dateLabel.text = DateFormatter.localizedString(from: document.date, dateStyle: .medium, timeStyle: .none)
-            if !document.isLocal {
-                self.downloadImageView.image = #imageLiteral(resourceName: "apple-icloud")
-            }
+            self.downloadImageView.image = document.isLocal ? nil : #imageLiteral(resourceName: "apple-icloud")
         }
     }
 

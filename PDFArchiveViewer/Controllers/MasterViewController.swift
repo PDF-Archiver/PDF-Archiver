@@ -103,7 +103,7 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
         guard let cell = tableView.dequeueReusableCell(withIdentifier: self.cellIdentifier, for: indexPath) as? TableViewCell  else {
             fatalError("The dequeued cell is not an instance of TableViewCell.")
         }
-        
+
         // update the cell document and content
         cell.document = self.archive.documents[indexPath.row]
         cell.layoutSubviews()
@@ -112,21 +112,21 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
 
     // MARK: - Segues
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "showDetail" {
-            if let indexPath = tableView.indexPathForSelectedRow {
-                let document: Document
-                if isFiltering() {
-                    document = self.archive.filteredDocuments[indexPath.row]
-                } else {
-                    document = self.archive.documents[indexPath.row]
-                }
-                // swiftlint:disable force_cast
-                let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
-                // swiftlint:enable force_cast
-                controller.detailDocument = document
-                controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
-                controller.navigationItem.leftItemsSupplementBackButton = true
+        if segue.identifier == "showDetails",
+            let indexPath = tableView.indexPathForSelectedRow,
+            let navigationController = segue.destination as? UINavigationController,
+            let controller =  navigationController.topViewController as? DetailViewController {
+
+            let document: Document
+            if isFiltering() {
+                document = self.archive.filteredDocuments[indexPath.row]
+            } else {
+                document = self.archive.documents[indexPath.row]
             }
+
+            controller.detailDocument = document
+            controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
+            controller.navigationItem.leftItemsSupplementBackButton = true
         }
     }
 

@@ -43,6 +43,7 @@ class DetailViewController: UIViewController, Logging {
             detailDescriptionLabel.text = detailDocument.specification
             // TODO: put PDF or placeholder here
             documentView.document = PDFDocument(url: detailDocument.path)
+            documentView.goToFirstPage(self)
             title = detailDocument.folder
         }
     }
@@ -50,9 +51,7 @@ class DetailViewController: UIViewController, Logging {
     override func viewWillAppear(_ animated: Bool) {
         self.documentView.displayMode = PDFDisplayMode.singlePage
         self.documentView.autoScales = true
-        //        self.documentView.interpolationQuality = PDFInterpolationQuality.low
-        self.documentView.contentMode = .scaleAspectFill
-
+        self.documentView.interpolationQuality = PDFInterpolationQuality.low
         self.documentView.backgroundColor = UIColor.darkGray
     }
 
