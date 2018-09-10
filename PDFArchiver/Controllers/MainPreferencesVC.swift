@@ -86,7 +86,13 @@ class MainPreferencesVC: PreferencesVC {
             self.archivePathTextField.stringValue = archivePath.path
         }
 
-        self.useiCloudDrive.state = (self.preferencesDelegate?.useiCloudDrive ?? false) ? .on : .off
+        if let _ = self.preferencesDelegate?.iCloudDrivePath {
+            self.useiCloudDrive.state = (self.preferencesDelegate?.useiCloudDrive ?? false) ? .on : .off
+        } else {
+            self.useiCloudDrive.state = .off
+            self.useiCloudDrive.isEnabled = false
+        }
+
         self.archivePathTextField.isEnabled = !(self.preferencesDelegate?.useiCloudDrive ?? false)
         self.changeArchivePathButton.isEnabled = !(self.preferencesDelegate?.useiCloudDrive ?? false)
     }

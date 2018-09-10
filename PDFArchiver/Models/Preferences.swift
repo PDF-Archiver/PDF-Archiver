@@ -16,6 +16,7 @@ protocol PreferencesDelegate: class {
 
     var slugifyNames: Bool { get set }
     var useiCloudDrive: Bool { get set }
+    var iCloudDrivePath: URL? {get}
     var analyseAllFolders: Bool { get set }
     var convertPictures: Bool { get set }
 
@@ -24,9 +25,10 @@ protocol PreferencesDelegate: class {
 }
 
 class Preferences: PreferencesDelegate, Logging {
+
     fileprivate var _archivePath: URL?
     fileprivate var _observedPath: URL?
-    fileprivate var iCloudDrivePath = FileManager.default.url(forUbiquityContainerIdentifier: nil)?.appendingPathComponent("Documents")
+    private(set) var iCloudDrivePath = FileManager.default.url(forUbiquityContainerIdentifier: nil)?.appendingPathComponent("Documents")
     weak var dataModelTagsDelegate: DataModelTagsDelegate?
     weak var archiveDelegate: ArchiveDelegate?
     var archiveModificationDate: Date?
