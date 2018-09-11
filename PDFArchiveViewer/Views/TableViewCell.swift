@@ -11,7 +11,7 @@ import UIKit
 class TableViewCell: UITableViewCell {
     @IBOutlet weak var tileLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
-    @IBOutlet weak var downloadImageView: UIImageView!
+    @IBOutlet weak var downloadView: UIView!
 
     var document: Document?
 
@@ -20,7 +20,34 @@ class TableViewCell: UITableViewCell {
         if let document = self.document {
             self.tileLabel.text = document.specification.replacingOccurrences(of: "-", with: " ")
             self.dateLabel.text = DateFormatter.localizedString(from: document.date, dateStyle: .medium, timeStyle: .none)
-            self.downloadImageView.image = document.isLocal ? nil : #imageLiteral(resourceName: "apple-icloud")
+
+            for view in self.downloadView.subviews {
+                view.removeFromSuperview()
+            }
+
+            var view: UIView
+            switch document.downloadStatus {
+            case .local:
+                view = UIView()
+            case .iCloudDrive:
+                view = UIImageView(image: #imageLiteral(resourceName: "apple-icloud"))
+            case .downloading:
+                let indicatorView = UIActivityIndicatorView()
+                indicatorView.activityIndicatorViewStyle = .gray
+                indicatorView.translatesAutoresizingMaskIntoConstraints = true
+
+                // Springs and struts
+                indicatorView.center = CGPoint(x: self.downloadView.bounds.midX, y: self.downloadView.bounds.midY)
+                indicatorView.autoresizingMask = [
+                    .flexibleLeftMargin,
+                    .flexibleRightMargin,
+                    .flexibleTopMargin,
+                    .flexibleBottomMargin]
+
+                indicatorView.startAnimating()
+                view = indicatorView
+            }
+            self.downloadView.addSubview(view)
         }
     }
 
@@ -31,7 +58,6 @@ class TableViewCell: UITableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
         // Configure the view for the selected state
     }
 

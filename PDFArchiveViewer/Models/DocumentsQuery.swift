@@ -102,10 +102,26 @@ class DocumentsQuery: NSObject, Logging {
             // Check if it is a local document. These two values are possible for the "NSMetadataUbiquitousItemDownloadingStatusKey":
             // - NSMetadataUbiquitousItemDownloadingStatusCurrent
             // - NSMetadataUbiquitousItemDownloadingStatusNotDownloaded
-            guard let ubiquitousKey = metadataQueryResult.value(forAttribute: NSMetadataUbiquitousItemDownloadingStatusKey) as? String else { continue }
+            guard let downloadingStatus = metadataQueryResult.value(forAttribute: NSMetadataUbiquitousItemDownloadingStatusKey) as? String else { continue }
 
+            var documentStatus: DownloadStatus
+            switch downloadingStatus {
+            case "NSMetadataUbiquitousItemDownloadingStatusCurrent":
+                documentStatus = .local
+            case "NSMetadataUbiquitousItemDownloadingStatusNotDownloaded":
+
+                if let isDownloading = metadataQueryResult.value(forAttribute: NSMetadataUbiquitousItemIsDownloadingKey) as? Bool,
+                    isDownloading {
+                    documentStatus = .downloading
+                } else {
+                    documentStatus = .iCloudDrive
+                }
+
+            default:
+                fatalError()
+            }
             self.documents.append(Document(path: documentPath,
-                                           isLocal: ubiquitousKey == "NSMetadataUbiquitousItemDownloadingStatusCurrent",
+                                           downloadStatus: documentStatus,
                                            availableTags: &tags))
         }
 

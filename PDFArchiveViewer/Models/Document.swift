@@ -7,8 +7,15 @@
 //
 
 import Foundation
+import os.log
 
-class Document {
+enum DownloadStatus {
+    case iCloudDrive
+    case downloading
+    case local
+}
+
+class Document: Logging {
 
     // data from filename
     private(set) var date: Date
@@ -16,14 +23,14 @@ class Document {
     private(set) var tags = Set<Tag>()
 
     private(set) var folder: String
-    private(set) var isLocal: Bool
+    private(set) var downloadStatus: DownloadStatus
 
     private(set) var filename: String
     private(set) var path: URL
 
-    init(path documentPath: URL, isLocal: Bool, availableTags: inout Set<Tag>) {
+    init(path documentPath: URL, downloadStatus: DownloadStatus, availableTags: inout Set<Tag>) {
 
-        self.isLocal = isLocal
+        self.downloadStatus = downloadStatus
         self.path = documentPath
         self.filename = documentPath.lastPathComponent
         self.folder = documentPath.deletingLastPathComponent().lastPathComponent
@@ -49,6 +56,15 @@ class Document {
                 availableTags.insert(newTag)
                 self.tags.insert(newTag)
             }
+        }
+    }
+
+    func download() {
+        do {
+            try FileManager.default.startDownloadingUbiquitousItem(at: self.path)
+            self.downloadStatus = .downloading
+        } catch {
+            os_log("%s", log: self.log, type: .debug, error.localizedDescription)
         }
     }
 }

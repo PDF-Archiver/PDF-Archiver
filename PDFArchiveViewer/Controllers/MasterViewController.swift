@@ -30,7 +30,7 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
 
     var detailViewController: DetailViewController?
     var archive = Archive()
-    var browserQuery = DocumentsQuery()
+    var documentsQuery = DocumentsQuery()
     let searchController = UISearchController(searchResultsController: nil)
 
     // Table view cells are reused and should be dequeued using a cell identifier.
@@ -41,7 +41,7 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
         super.viewDidLoad()
 
         // setup data delegate
-        self.browserQuery.delegate = self
+        self.documentsQuery.delegate = self
 
         // Setup the Search Controller
         searchController.searchResultsUpdater = self
@@ -111,17 +111,33 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
     }
 
     // MARK: - Segues
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+        if identifier == "showDetails",
+            let document = getSelectedDocument() {
+
+            // download document if it is not already available
+            switch document.downloadStatus {
+            case .local:
+                return true
+            case .downloading:
+                return false
+            case .iCloudDrive:
+                document.download()
+                return false
+            }
+        }
+        return true
+    }
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showDetails",
-            let indexPath = tableView.indexPathForSelectedRow,
             let navigationController = segue.destination as? UINavigationController,
-            let controller =  navigationController.topViewController as? DetailViewController {
+            let controller =  navigationController.topViewController as? DetailViewController,
+            let document = getSelectedDocument() {
 
-            let document: Document
-            if isFiltering() {
-                document = self.archive.filteredDocuments[indexPath.row]
-            } else {
-                document = self.archive.documents[indexPath.row]
+            // "shouldPerformSegue" performs the document download
+            if document.downloadStatus != .local {
+                fatalError("Segue peparation, but the document could not be found locally!")
             }
 
             controller.detailDocument = document
@@ -132,7 +148,7 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
 
     // MARK: - Private instance methods
 
-    func filterContentForSearchText(_ searchText: String, scope: String = "All") {
+    private func filterContentForSearchText(_ searchText: String, scope: String = "All") {
         self.archive.filteredDocuments = self.archive.documents.filter({( document: Document) -> Bool in
             let doesCategoryMatch = (scope == "All") || (document.folder == scope)
 
@@ -146,13 +162,25 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
         tableView.reloadData()
     }
 
-    func searchBarIsEmpty() -> Bool {
+    private func searchBarIsEmpty() -> Bool {
         return searchController.searchBar.text?.isEmpty ?? true
     }
 
-    func isFiltering() -> Bool {
+    private func isFiltering() -> Bool {
         let searchBarScopeIsFiltering = searchController.searchBar.selectedScopeButtonIndex != 0
         return searchController.isActive && (!searchBarIsEmpty() || searchBarScopeIsFiltering)
+    }
+
+    private func getSelectedDocument() -> Document? {
+        guard let indexPath = self.tableView.indexPathForSelectedRow else { return nil }
+
+        let document: Document
+        if isFiltering() {
+            document = self.archive.filteredDocuments[indexPath.row]
+        } else {
+            document = self.archive.documents[indexPath.row]
+        }
+        return document
     }
 }
 
