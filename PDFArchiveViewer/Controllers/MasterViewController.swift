@@ -22,7 +22,7 @@
 
 import UIKit
 
-class MasterViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class MasterViewController: UIViewController, UITableViewDelegate {
 
     // MARK: - Properties
     @IBOutlet var tableView: UITableView!
@@ -34,11 +34,12 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
     let searchController = UISearchController(searchResultsController: nil)
 
     // Table view cells are reused and should be dequeued using a cell identifier.
-    private let cellIdentifier = "TableViewCell"
+    private let cellIdentifier = "DocumentTableViewCell"
 
     // MARK: - View Setup
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.tableView.register(UINib(nibName: cellIdentifier, bundle: nil), forCellReuseIdentifier: cellIdentifier)
 
         // setup data delegate
         self.documentsQuery.delegate = self
@@ -83,34 +84,6 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
         super.didReceiveMemoryWarning()
     }
 
-    // MARK: - Table View
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if isFiltering() {
-            searchFooter.setIsFilteringToShow(filteredItemCount: self.archive.filteredDocuments.count, of: self.archive.documents.count)
-            return self.archive.filteredDocuments.count
-        }
-
-        searchFooter.setNotFiltering()
-        return self.archive.documents.count
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
-        // get the desired cell
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: self.cellIdentifier, for: indexPath) as? TableViewCell  else {
-            fatalError("The dequeued cell is not an instance of TableViewCell.")
-        }
-
-        // update the cell document and content
-        cell.document = self.archive.documents[indexPath.row]
-        cell.layoutSubviews()
-        return cell
-    }
-
     // MARK: - Segues
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
         if identifier == "showDetails",
@@ -138,7 +111,7 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
 
             // "shouldPerformSegue" performs the document download
             if document.downloadStatus != .local {
-                fatalError("Segue peparation, but the document could not be found locally!")
+                fatalError("Segue peparation, but the document (status: \(document.downloadStatus)) could not be found locally!")
             }
 
             controller.detailDocument = document
@@ -148,7 +121,6 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
     }
 
     // MARK: - Private instance methods
-
     private func filterContentForSearchText(_ searchText: String, scope: String = "All") {
         self.archive.filteredDocuments = self.archive.documents.filter {( document: Document) -> Bool in
             let doesCategoryMatch = (scope == "All") || (document.folder == scope)
@@ -199,6 +171,51 @@ extension MasterViewController: DocumentsQueryDelegate {
         }
 
         self.tableView.reloadData()
+    }
+}
+
+extension MasterViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if isFiltering() {
+            searchFooter.setIsFilteringToShow(filteredItemCount: self.archive.filteredDocuments.count, of: self.archive.documents.count)
+            return self.archive.filteredDocuments.count
+        }
+
+        searchFooter.setNotFiltering()
+        return self.archive.documents.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+
+        // get the desired cell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: self.cellIdentifier, for: indexPath) as? DocumentTableViewCell else {
+            fatalError("The dequeued cell is not an instance of TableViewCell.")
+        }
+
+        // update the cell document and content
+        cell.document = self.archive.documents[indexPath.row]
+        cell.layoutSubviews()
+        return cell
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let document = getSelectedDocument() else { return }
+
+        // download document if it is not already available
+        switch document.downloadStatus {
+        case .local:
+            self.performSegue(withIdentifier: "showDetails", sender: self)
+            self.tableView.deselectRow(at: indexPath, animated: true)
+        case .downloading:
+            print("Downloading currently ...")
+        case .iCloudDrive:
+            print("Start download ...")
+            document.download()
+        }
     }
 }
 
