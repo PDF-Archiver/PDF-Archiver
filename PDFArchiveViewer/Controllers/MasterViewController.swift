@@ -61,16 +61,17 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
         if let splitViewController = splitViewController {
             let controllers = splitViewController.viewControllers
             // swiftlint:disable force_cast
-            detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
+            detailViewController = (controllers[controllers.count - 1] as! UINavigationController).topViewController as? DetailViewController
             // swiftlint:enable force_cast
         }
 
         // setup background view controller
-        self.tableView.backgroundView = Bundle.main.loadNibNamed("EmptyBackgroundView", owner: nil, options: nil)?.first as? UIView ?? nil
+        self.tableView.backgroundView = Bundle.main.loadNibNamed("EmptyBackgroundView", owner: nil, options: nil)?.first as? UIView
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        if splitViewController!.isCollapsed {
+        if let splitViewController = self.splitViewController,
+            splitViewController.isCollapsed {
             if let selectionIndexPath = tableView.indexPathForSelectedRow {
                 tableView.deselectRow(at: selectionIndexPath, animated: animated)
             }
@@ -132,7 +133,7 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showDetails",
             let navigationController = segue.destination as? UINavigationController,
-            let controller =  navigationController.topViewController as? DetailViewController,
+            let controller = navigationController.topViewController as? DetailViewController,
             let document = getSelectedDocument() {
 
             // "shouldPerformSegue" performs the document download
@@ -149,7 +150,7 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
     // MARK: - Private instance methods
 
     private func filterContentForSearchText(_ searchText: String, scope: String = "All") {
-        self.archive.filteredDocuments = self.archive.documents.filter({( document: Document) -> Bool in
+        self.archive.filteredDocuments = self.archive.documents.filter {( document: Document) -> Bool in
             let doesCategoryMatch = (scope == "All") || (document.folder == scope)
 
             if searchBarIsEmpty() {
@@ -158,7 +159,7 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
                 // TODO: maybe also search in tags/date
                 return doesCategoryMatch && document.specification.lowercased().contains(searchText.lowercased())
             }
-        })
+        }
         tableView.reloadData()
     }
 
@@ -192,7 +193,7 @@ extension MasterViewController: DocumentsQueryDelegate {
 
         // setup background view controller
         if documents.isEmpty {
-            self.tableView.backgroundView = Bundle.main.loadNibNamed("EmptyBackgroundView", owner: nil, options: nil)?.first as? UIView ?? nil
+            self.tableView.backgroundView = Bundle.main.loadNibNamed("EmptyBackgroundView", owner: nil, options: nil)?.first as? UIView
         } else {
             self.tableView.backgroundView = nil
         }
@@ -203,14 +204,19 @@ extension MasterViewController: DocumentsQueryDelegate {
 
 extension MasterViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
-        filterContentForSearchText(searchBar.text!, scope: searchBar.scopeButtonTitles![selectedScope])
+        guard let searchBarText = searchBar.text else { return }
+        guard let searchBarScopeButtonTitles = searchBar.scopeButtonTitles else { return }
+        filterContentForSearchText(searchBarText, scope: searchBarScopeButtonTitles[selectedScope])
     }
 }
 
 extension MasterViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         let searchBar = searchController.searchBar
-        let scope = searchBar.scopeButtonTitles![searchBar.selectedScopeButtonIndex]
-        filterContentForSearchText(searchController.searchBar.text!, scope: scope)
+        guard let searchBarText = searchBar.text else { return }
+        guard let searchBarScopeButtonTitles = searchBar.scopeButtonTitles else { return }
+
+        let scope = searchBarScopeButtonTitles[searchBar.selectedScopeButtonIndex]
+        filterContentForSearchText(searchBarText, scope: scope)
     }
 }

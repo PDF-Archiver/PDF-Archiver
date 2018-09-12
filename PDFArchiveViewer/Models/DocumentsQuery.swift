@@ -13,8 +13,8 @@
  This is the Browser Query which manages results form an `NSMetadataQuery` to compute which documents to show in the Browser UI / animations to display when cells move.
  */
 
-import UIKit
 import os.log
+import UIKit
 
 /**
  The delegate protocol implemented by the object that receives our results. We
@@ -88,7 +88,8 @@ class DocumentsQuery: NSObject, Logging {
     }
 
     // MARK: - Notifications
-    @objc func queryFeedback(_ notification: Notification) {
+    @objc
+    func queryFeedback(_ notification: Notification) {
 
         os_log("Got iCloud query feedback from '%@'", log: self.log, type: .debug, notification.name.rawValue)
         self.metadataQuery.disableUpdates()
@@ -118,7 +119,7 @@ class DocumentsQuery: NSObject, Logging {
                 }
 
             default:
-                fatalError()
+                fatalError("The downloading status '\(downloadingStatus)' was not handled correctly!")
             }
             self.documents.append(Document(path: documentPath,
                                            downloadStatus: documentStatus,

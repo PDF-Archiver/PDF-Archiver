@@ -24,14 +24,14 @@ import UIKit
 
 class SearchFooter: UIView {
 
-    let label: UILabel = UILabel()
+    let label = UILabel()
 
-    override public init(frame: CGRect) {
+    override init(frame: CGRect) {
         super.init(frame: frame)
         configureView()
     }
 
-    required public init?(coder: NSCoder) {
+    required init?(coder: NSCoder) {
         super.init(coder: coder)
         configureView()
     }
@@ -68,12 +68,12 @@ class SearchFooter: UIView {
 extension SearchFooter {
     // MARK: - Public API
 
-    public func setNotFiltering() {
+    func setNotFiltering() {
         label.text = ""
         hideFooter()
     }
 
-    public func setIsFilteringToShow(filteredItemCount: Int, of totalItemCount: Int) {
+    func setIsFilteringToShow(filteredItemCount: Int, of totalItemCount: Int) {
         if filteredItemCount == totalItemCount {
             setNotFiltering()
         } else if filteredItemCount == 0 {

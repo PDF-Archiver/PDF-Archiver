@@ -35,12 +35,13 @@ class Document: Logging {
         self.filename = documentPath.lastPathComponent
         self.folder = documentPath.deletingLastPathComponent().lastPathComponent
 
-        let parts = self.filename.capturedGroups(withRegex: "(\\d{4}-\\d{2}-\\d{2})--(.+)__([\\w\\d_]+)\\.[pdfPDF]{3}$")!
+        guard let parts = self.filename.capturedGroups(withRegex: "(\\d{4}-\\d{2}-\\d{2})--(.+)__([\\w\\d_]+)\\.[pdfPDF]{3}$") else { fatalError("Could not parse document filename!") }
 
         // parse the document date
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
-        self.date = dateFormatter.date(from: parts[0])!
+        guard let date = dateFormatter.date(from: parts[0]) else { fatalError("Could not parse the document date!") }
+        self.date = date
 
         // parse the document specification
         self.specification = parts[1]
@@ -48,7 +49,7 @@ class Document: Logging {
         // parse the document tags
         for tagname in parts[2].split(separator: "_") {
 
-            if let availableTag = availableTags.filter({$0.name == String(tagname)}).first {
+            if let availableTag = availableTags.first(where: { $0.name == String(tagname) }) {
                 availableTag.count += 1
                 self.tags.insert(availableTag)
             } else {

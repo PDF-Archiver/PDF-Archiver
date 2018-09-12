@@ -15,7 +15,7 @@ protocol Logging {
 
 extension Logging {
     internal var log: OSLog {
-        return OSLog(subsystem: Bundle.main.bundleIdentifier!,
+        return OSLog(subsystem: Bundle.main.bundleIdentifier ?? "PDFArchiveViewer",
                      category: String(describing: type(of: self)))
     }
 }

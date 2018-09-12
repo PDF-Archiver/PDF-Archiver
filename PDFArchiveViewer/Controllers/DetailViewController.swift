@@ -20,9 +20,9 @@
  * THE SOFTWARE.
  */
 
-import UIKit
-import PDFKit
 import os.log
+import PDFKit
+import UIKit
 
 class DetailViewController: UIViewController, Logging {
 
@@ -49,6 +49,7 @@ class DetailViewController: UIViewController, Logging {
     }
 
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         self.documentView.displayMode = PDFDisplayMode.singlePage
         self.documentView.autoScales = true
         self.documentView.interpolationQuality = PDFInterpolationQuality.low
