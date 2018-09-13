@@ -23,8 +23,9 @@ protocol IAPHelperDelegate: class {
 }
 
 class IAPHelper: NSObject, IAPHelperDelegate, Logging {
-    fileprivate let productIdentifiers: Set<String>
-    fileprivate var productsRequest: SKProductsRequest
+    fileprivate static let productIdentifiers = Set(["DONATION_LEVEL1", "DONATION_LEVEL2", "DONATION_LEVEL3",
+                                                     "SUBSCRIPTION_MONTHLY", "SUBSCRIPTION_YEARLY"])
+    fileprivate var productsRequest = SKProductsRequest(productIdentifiers: IAPHelper.productIdentifiers)
     fileprivate var receiptRequest = SKReceiptRefreshRequest()
 
     var products = [SKProduct]()
@@ -35,9 +36,6 @@ class IAPHelper: NSObject, IAPHelperDelegate, Logging {
     weak var onboardingVCDelegate: OnboardingVCDelegate?
 
     override init() {
-        self.productIdentifiers = Set(["DONATION_LEVEL1", "DONATION_LEVEL2", "DONATION_LEVEL3",
-                                       "SUBSCRIPTION_MONTHLY", "SUBSCRIPTION_YEARLY"])
-        self.productsRequest = SKProductsRequest(productIdentifiers: self.productIdentifiers)
 
         // initialize the superclass and add class to payment queue
         super.init()
@@ -51,9 +49,6 @@ class IAPHelper: NSObject, IAPHelperDelegate, Logging {
         #if RELEASE
         self.requestReceipt(appStart: true)
         self.requestProducts()
-        if self.appUsagePermitted() != true {
-            self.requestReceipt(forceRefresh: true)
-        }
         #endif
     }
 
@@ -88,7 +83,8 @@ extension IAPHelper {
         SKPaymentQueue.default().restoreCompletedTransactions()
 
         // request a new receipt
-        self.requestReceipt(forceRefresh: true)
+        // NOTE: this should be done by 'restoreCompletedTransactions()'
+        //self.requestReceipt(forceRefresh: true)
     }
 
     public func appUsagePermitted() -> Bool {
