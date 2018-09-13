@@ -22,8 +22,8 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="59.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rUi-If-D6N">
-                        <rect key="frame" x="16" y="11" width="250" height="21"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rUi-If-D6N">
+                        <rect key="frame" x="16" y="11" width="242" height="20"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <color key="textColor" name="DarkGrey"/>
                         <nil key="highlightedColor"/>
@@ -48,7 +48,7 @@
                 <constraints>
                     <constraint firstItem="EHZ-TF-9ku" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="Btx-6O-J5i"/>
                     <constraint firstItem="rUi-If-D6N" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="CR7-Ci-ana"/>
-                    <constraint firstItem="MLT-ef-xDl" firstAttribute="leading" secondItem="rUi-If-D6N" secondAttribute="trailing" id="Hzg-aV-Qld"/>
+                    <constraint firstItem="MLT-ef-xDl" firstAttribute="leading" secondItem="rUi-If-D6N" secondAttribute="trailing" constant="7" id="Hzg-aV-Qld"/>
                     <constraint firstItem="rUi-If-D6N" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="Niu-bU-hp0"/>
                     <constraint firstItem="B24-Ag-Eow" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="Ox9-3Z-9ov"/>
                     <constraint firstItem="MLT-ef-xDl" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="Uoy-gD-S3V"/>

@@ -50,10 +50,10 @@ class DetailViewController: UIViewController, Logging {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.documentView.displayMode = PDFDisplayMode.singlePage
+        self.documentView.displayMode = .singlePageContinuous
         self.documentView.autoScales = true
-        self.documentView.interpolationQuality = PDFInterpolationQuality.low
-        self.documentView.backgroundColor = UIColor.darkGray
+        self.documentView.interpolationQuality = .low
+        self.documentView.backgroundColor = .darkGray
     }
 
     override func viewDidLoad() {
