@@ -39,7 +39,7 @@ class DocumentsQuery: NSObject, Logging {
     fileprivate var currentQueryObjects: [Document]?
     fileprivate let workerQueue: OperationQueue = {
         let workerQueue = OperationQueue()
-        workerQueue.name = Bundle.main.bundleIdentifier! + ".browserdatasource.workerQueue"
+        workerQueue.name = (Bundle.main.bundleIdentifier ?? "PDFArchiveViewer") + ".browserdatasource.workerQueue"
         workerQueue.maxConcurrentOperationCount = 1
         return workerQueue
     }()
@@ -113,7 +113,10 @@ class DocumentsQuery: NSObject, Logging {
 
                 if let isDownloading = metadataQueryResult.value(forAttribute: NSMetadataUbiquitousItemIsDownloadingKey) as? Bool,
                     isDownloading {
-                    documentStatus = .downloading
+                    let percentDownloaded = Float(truncating: (metadataQueryResult.value(forAttribute: NSMetadataUbiquitousItemPercentDownloadedKey) as? NSNumber) ?? 0)
+
+                    documentStatus = .downloading(percentDownloaded: percentDownloaded)
+                    os_log("Downloading %.1f% ...", log: self.log, type: .debug, percentDownloaded)
                 } else {
                     documentStatus = .iCloudDrive
                 }

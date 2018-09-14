@@ -9,9 +9,9 @@
 import Foundation
 import os.log
 
-enum DownloadStatus {
+enum DownloadStatus: Equatable {
     case iCloudDrive
-    case downloading
+    case downloading(percentDownloaded: Float)
     case local
 }
 
@@ -63,7 +63,7 @@ class Document: Logging {
     func download() {
         do {
             try FileManager.default.startDownloadingUbiquitousItem(at: self.path)
-            self.downloadStatus = .downloading
+            self.downloadStatus = .downloading(percentDownloaded: 0)
         } catch {
             os_log("%s", log: self.log, type: .debug, error.localizedDescription)
         }
