@@ -52,7 +52,6 @@ class MasterViewController: UIViewController, UITableViewDelegate {
         definesPresentationContext = true
 
         // Setup the Scope Bar
-        // TODO: fix this scope dynamically
         searchController.searchBar.scopeButtonTitles = ["All", "2018", "2017", "2016"]
         searchController.searchBar.delegate = self
 
@@ -170,6 +169,15 @@ extension MasterViewController: DocumentsQueryDelegate {
             self.tableView.backgroundView = nil
         }
 
+        // setup search toolbar
+        var years = Set<String>()
+        for document in self.archive.documents {
+            years.insert(document.folder)
+        }
+        let scopeButtonTitles = years.sorted().reversed()
+        self.searchController.searchBar.scopeButtonTitles = Array(["All"] + scopeButtonTitles.prefix(3))
+
+        // reload the table view data
         self.tableView.reloadData()
     }
 }
