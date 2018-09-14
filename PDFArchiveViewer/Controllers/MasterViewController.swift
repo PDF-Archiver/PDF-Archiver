@@ -20,9 +20,10 @@
  * THE SOFTWARE.
  */
 
+import os.log
 import UIKit
 
-class MasterViewController: UIViewController, UITableViewDelegate {
+class MasterViewController: UIViewController, UITableViewDelegate, Logging {
 
     // MARK: - Properties
     @IBOutlet var tableView: UITableView!
@@ -121,7 +122,7 @@ class MasterViewController: UIViewController, UITableViewDelegate {
 
     // MARK: - Private instance methods
     private func filterContentForSearchText(_ searchText: String, scope: String = "All") {
-        self.archive.filteredDocuments = self.archive.documents.filter {( document: Document) -> Bool in
+        self.archive.filteredDocuments = self.archive.allDocuments.filter {( document: Document) -> Bool in
             let doesCategoryMatch = (scope == "All") || (document.folder == scope)
 
             if searchBarIsEmpty() {
@@ -150,7 +151,7 @@ class MasterViewController: UIViewController, UITableViewDelegate {
         if isFiltering() {
             document = self.archive.filteredDocuments[indexPath.row]
         } else {
-            document = self.archive.documents[indexPath.row]
+            document = self.archive.allDocuments[indexPath.row]
         }
         return document
     }
@@ -159,7 +160,7 @@ class MasterViewController: UIViewController, UITableViewDelegate {
 // MARK: - Delegates
 extension MasterViewController: DocumentsQueryDelegate {
     func documentsQueryResultsDidChangeWithResults(documents: [Document], tags: Set<Tag>) {
-        self.archive.documents = documents.sorted().reversed()
+        self.archive.allDocuments = documents.sorted().reversed()
         self.archive.availableTags = tags
 
         // setup background view controller
@@ -171,11 +172,20 @@ extension MasterViewController: DocumentsQueryDelegate {
 
         // setup search toolbar
         var years = Set<String>()
-        for document in self.archive.documents {
+        for document in self.archive.allDocuments {
             years.insert(document.folder)
         }
         let scopeButtonTitles = years.sorted().reversed()
         self.searchController.searchBar.scopeButtonTitles = Array(["All"] + scopeButtonTitles.prefix(3))
+
+        // update the filtered documents
+        let searchBar = searchController.searchBar
+        let searchBarText = searchBar.text ?? ""
+        if let scopeButtonTitles = searchBar.scopeButtonTitles {
+            filterContentForSearchText(searchBarText, scope: scopeButtonTitles[searchBar.selectedScopeButtonIndex])
+        } else {
+            filterContentForSearchText(searchBarText, scope: "All")
+        }
 
         // reload the table view data
         self.tableView.reloadData()
@@ -189,12 +199,12 @@ extension MasterViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if isFiltering() {
-            searchFooter.setIsFilteringToShow(filteredItemCount: self.archive.filteredDocuments.count, of: self.archive.documents.count)
+            searchFooter.setIsFilteringToShow(filteredItemCount: self.archive.filteredDocuments.count, of: self.archive.allDocuments.count)
             return self.archive.filteredDocuments.count
         }
 
         searchFooter.setNotFiltering()
-        return self.archive.documents.count
+        return self.archive.allDocuments.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -205,19 +215,26 @@ extension MasterViewController: UITableViewDataSource {
         }
 
         // update the cell document and content
-        cell.document = self.archive.documents[indexPath.row]
+        let document: Document
+        if isFiltering() {
+            document = self.archive.filteredDocuments[indexPath.row]
+        } else {
+            document = self.archive.allDocuments[indexPath.row]
+        }
+        cell.document = document
         cell.layoutSubviews()
         return cell
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let document = getSelectedDocument() else { return }
+        print(document.filename)
+        os_log("Selected Document: %@", log: self.log, type: .debug, document.filename)
 
         // download document if it is not already available
         switch document.downloadStatus {
         case .local:
             self.performSegue(withIdentifier: "showDetails", sender: self)
-            self.tableView.deselectRow(at: indexPath, animated: true)
         case .downloading:
             print("Downloading currently ...")
         case .iCloudDrive:
@@ -240,8 +257,6 @@ extension MasterViewController: UISearchResultsUpdating {
         let searchBar = searchController.searchBar
         guard let searchBarText = searchBar.text else { return }
         guard let searchBarScopeButtonTitles = searchBar.scopeButtonTitles else { return }
-
-        let scope = searchBarScopeButtonTitles[searchBar.selectedScopeButtonIndex]
-        filterContentForSearchText(searchBarText, scope: scope)
+        filterContentForSearchText(searchBarText, scope: searchBarScopeButtonTitles[searchBar.selectedScopeButtonIndex])
     }
 }

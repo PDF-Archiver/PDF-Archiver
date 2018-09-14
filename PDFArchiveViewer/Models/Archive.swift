@@ -10,7 +10,9 @@ import Foundation
 
 struct Archive {
 
-    var documents = [Document]()
+    // TODO: do filtering documents here
+    // TODO: save searchBar text + selected scopeButtonTitle here
+    var allDocuments = [Document]()
     var filteredDocuments = [Document]()
     var availableTags = Set<Tag>()
 }
