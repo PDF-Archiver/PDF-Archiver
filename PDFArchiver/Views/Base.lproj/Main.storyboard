@@ -628,10 +628,10 @@ Tag your document and save  it:</string>
             <objects>
                 <tabViewController identifier="PreferencesTabVC" storyboardIdentifier="PreferencesTabVC" selectedTabViewItemIndex="0" tabStyle="toolbar" id="ZqG-df-vaR" sceneMemberID="viewController">
                     <tabViewItems>
-                        <tabViewItem identifier="PreferencesTabViewItem" image="NSPreferencesGeneral" id="XBq-Fl-zZt" userLabel="Main">
+                        <tabViewItem identifier="mainPreferences" image="NSPreferencesGeneral" id="XBq-Fl-zZt" userLabel="Main">
                             <nil key="label"/>
                         </tabViewItem>
-                        <tabViewItem identifier="DonationTabViewItem" image="NSInfo" id="qZa-Lf-ldb" userLabel="Donation">
+                        <tabViewItem identifier="donationPreferences" image="NSInfo" id="qZa-Lf-ldb" userLabel="Donation">
                             <nil key="label"/>
                         </tabViewItem>
                     </tabViewItems>
@@ -944,7 +944,7 @@ Tag your document and save  it:</string>
                                     <rect key="frame" x="1" y="1" width="194" height="125"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <button verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="pjt-37-tlz">
+                                        <button identifier="level1" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="pjt-37-tlz">
                                             <rect key="frame" x="9" y="82" width="176" height="32"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="21" id="bTt-g8-WKR"/>
@@ -957,7 +957,7 @@ Tag your document and save  it:</string>
                                                 <action selector="donationButton1Clicked:" target="rWp-Co-RrU" id="f1h-ft-aZ6"/>
                                             </connections>
                                         </button>
-                                        <button verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="OLw-Bf-fGp">
+                                        <button identifier="level2" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="OLw-Bf-fGp">
                                             <rect key="frame" x="9" y="46" width="176" height="32"/>
                                             <buttonCell key="cell" type="push" title="Level 2" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="5JW-68-xh8">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -967,7 +967,7 @@ Tag your document and save  it:</string>
                                                 <action selector="donationButton2Clicked:" target="rWp-Co-RrU" id="SFb-Mb-6u8"/>
                                             </connections>
                                         </button>
-                                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Zkb-C5-cZI">
+                                        <button identifier="level3" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Zkb-C5-cZI">
                                             <rect key="frame" x="9" y="8" width="176" height="34"/>
                                             <buttonCell key="cell" type="push" title="Level 3" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ndf-3x-jdp">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -997,7 +997,7 @@ Tag your document and save  it:</string>
                                 </constraints>
                                 <font key="titleFont" metaFont="systemSemibold" size="14"/>
                             </box>
-                            <button identifier="Update MAS Status" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="y11-yy-btf">
+                            <button identifier="updateMASStatus" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="y11-yy-btf">
                                 <rect key="frame" x="546" y="17" width="16" height="16"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="12" id="IB7-Fa-ABb"/>

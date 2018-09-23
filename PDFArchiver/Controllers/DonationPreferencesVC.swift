@@ -16,11 +16,13 @@ protocol DonationPreferencesVCDelegate: class {
 }
 
 class DonationPreferencesVC: PreferencesVC, DonationPreferencesVCDelegate {
-    @IBOutlet weak var donationNumberLabel: NSTextField!
-    @IBOutlet weak var donationButton1: NSButton!
-    @IBOutlet weak var donationButton2: NSButton!
-    @IBOutlet weak var donationButton3: NSButton!
-    @IBOutlet weak var donationButton: NSButton!
+
+    // optional values because UI elements are sometimes nil during startup
+    @IBOutlet weak var donationNumberLabel: NSTextField?
+    @IBOutlet weak var donationButton1: NSButton?
+    @IBOutlet weak var donationButton2: NSButton?
+    @IBOutlet weak var donationButton3: NSButton?
+    @IBOutlet weak var donationButton: NSButton?
 
     private var donationsNumber = "0" {
         didSet {
@@ -50,6 +52,7 @@ class DonationPreferencesVC: PreferencesVC, DonationPreferencesVCDelegate {
     }
 
     override func viewWillAppear() {
+        super.viewWillAppear()
 
         // update the buttons and use the default donations count
         self.updateGUI()
@@ -65,14 +68,14 @@ class DonationPreferencesVC: PreferencesVC, DonationPreferencesVCDelegate {
 
             // set the MAS status image
             if self.iAPHelperDelegate?.products.isEmpty ?? true {
-                self.donationButton.image = NSImage(named: "NSStatusUnavailable")
+                self.donationButton?.image = NSImage(named: "NSStatusUnavailable")
             } else {
-                self.donationButton.image = NSImage(named: "NSStatusAvailable")
+                self.donationButton?.image = NSImage(named: "NSStatusAvailable")
             }
 
             // update the donation buttons
             for product in self.iAPHelperDelegate?.products ?? [] {
-                var selectedButton: NSButton
+                var selectedButton: NSButton?
                 switch product.productIdentifier {
                 case "DONATION_LEVEL1":
                     selectedButton = self.donationButton1
@@ -84,12 +87,12 @@ class DonationPreferencesVC: PreferencesVC, DonationPreferencesVCDelegate {
                     continue
                 }
                 // set button to localized price
-                selectedButton.title = product.localizedPrice
-                selectedButton.isEnabled = true
+                selectedButton?.title = product.localizedPrice
+                selectedButton?.isEnabled = true
             }
 
             // update the donation number
-            self.donationNumberLabel.stringValue = "\(self.donationsNumber) \(NSLocalizedString("donation_number_label", comment: "Donation Number label"))"
+            self.donationNumberLabel?.stringValue = "\(self.donationsNumber) \(NSLocalizedString("donation_number_label", comment: "Donation Number label"))"
         }
     }
 }

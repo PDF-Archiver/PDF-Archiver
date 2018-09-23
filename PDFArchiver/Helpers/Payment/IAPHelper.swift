@@ -55,9 +55,9 @@ class IAPHelper: NSObject, IAPHelperDelegate, Logging {
         SKPaymentQueue.default().add(self)
 
         // request products and receipt
+        self.requestProducts()
         #if RELEASE
         self.requestReceipt(appStart: true)
-        self.requestProducts()
         #endif
     }
 
