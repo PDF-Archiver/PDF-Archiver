@@ -14,7 +14,7 @@ extension ViewController {
 
     // MARK: - PDF Archiver Menu
     @IBAction func showPreferencesMenuItem(_ sender: NSMenuItem) {
-        self.performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "prefsSegue"), sender: self)
+        self.performSegue(withIdentifier: "prefsSegue", sender: self)
     }
 
     // MARK: - Window Menu
@@ -57,7 +57,7 @@ extension ViewController {
 
     // MARK: - Help Menu
     @IBAction func showOnboardingMenuItem(_ sender: AnyObject) {
-        self.performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "onboardingSegue"), sender: self)
+        self.performSegue(withIdentifier: "onboardingSegue", sender: self)
     }
 
     @IBAction func updateViewMenuItem(_ sender: AnyObject) {

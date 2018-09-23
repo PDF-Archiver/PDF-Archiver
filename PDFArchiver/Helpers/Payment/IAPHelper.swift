@@ -28,12 +28,21 @@ class IAPHelper: NSObject, IAPHelperDelegate, Logging {
     fileprivate var productsRequest = SKProductsRequest(productIdentifiers: IAPHelper.productIdentifiers)
     fileprivate var receiptRequest = SKReceiptRefreshRequest()
 
-    var products = [SKProduct]()
+    var products = [SKProduct]() {
+        didSet {
+            self.onboardingVCDelegate?.updateGUI()
+            self.donationPreferencesVCDelegate?.updateGUI()
+        }
+    }
     var receipt: ParsedReceipt?
     var requestRunning: Int = 0 {
-        didSet { self.onboardingVCDelegate?.updateGUI() }
+        didSet {
+            self.onboardingVCDelegate?.updateGUI()
+            self.donationPreferencesVCDelegate?.updateGUI()
+        }
     }
     weak var onboardingVCDelegate: OnboardingVCDelegate?
+    weak var donationPreferencesVCDelegate: DonationPreferencesVCDelegate?
 
     override init() {
 
@@ -174,9 +183,6 @@ extension IAPHelper: SKProductsRequestDelegate {
     internal func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
         self.products = response.products
         os_log("Loaded list of products...", log: self.log, type: .debug)
-
-        // fire up a notification to update the GUI
-        self.onboardingVCDelegate?.updateGUI()
 
         // log the products
         for product in self.products {

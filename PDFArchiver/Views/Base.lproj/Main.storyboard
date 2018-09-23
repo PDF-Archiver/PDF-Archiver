@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14113"/>
-        <plugIn identifier="com.apple.pdfkit.ibplugin" version="14113"/>
-        <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.18"/>
+        <plugIn identifier="com.apple.pdfkit.ibplugin" version="14313.18"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
-        <capability name="box content view" minToolsVersion="7.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
-        <capability name="system font weights other than Regular or Bold" minToolsVersion="7.0"/>
     </dependencies>
     <scenes>
         <!--Application-->
@@ -248,7 +246,7 @@ CA
         <scene sceneID="R2V-B0-nI4">
             <objects>
                 <windowController id="B8D-0N-5wS" customClass="WindowController" customModule="PDFArchiver" customModuleProvider="target" sceneMemberID="viewController">
-                    <window key="window" title="PDF Archiver" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" showsToolbarButton="NO" frameAutosaveName="" animationBehavior="default" titlebarAppearsTransparent="YES" titleVisibility="hidden" id="IQv-IB-iLA" customClass="MyWindow" customModule="PDFArchiver" customModuleProvider="target">
+                    <window key="window" title="PDF Archiver" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" frameAutosaveName="" animationBehavior="default" titlebarAppearsTransparent="YES" titleVisibility="hidden" id="IQv-IB-iLA" customClass="MyWindow" customModule="PDFArchiver" customModuleProvider="target">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES" fullSizeContentView="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="196" y="240" width="940" height="600"/>
@@ -632,11 +630,9 @@ Tag your document and save  it:</string>
                     <tabViewItems>
                         <tabViewItem identifier="PreferencesTabViewItem" image="NSPreferencesGeneral" id="XBq-Fl-zZt" userLabel="Main">
                             <nil key="label"/>
-                            <accessibility description="Main preferences panel"/>
                         </tabViewItem>
                         <tabViewItem identifier="DonationTabViewItem" image="NSInfo" id="qZa-Lf-ldb" userLabel="Donation">
                             <nil key="label"/>
-                            <accessibility description="Donation preferences tab"/>
                         </tabViewItem>
                     </tabViewItems>
                     <viewControllerTransitionOptions key="transitionOptions" allowUserInteraction="YES"/>
@@ -1001,7 +997,7 @@ Tag your document and save  it:</string>
                                 </constraints>
                                 <font key="titleFont" metaFont="systemSemibold" size="14"/>
                             </box>
-                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="y11-yy-btf">
+                            <button identifier="Update MAS Status" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="y11-yy-btf">
                                 <rect key="frame" x="546" y="17" width="16" height="16"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="12" id="IB7-Fa-ABb"/>
@@ -1119,7 +1115,7 @@ Help &gt; Show Onboarding</string>
                                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                     <tableColumns>
-                                                        <tableColumn identifier="" width="40" minWidth="40" maxWidth="1000" id="z3k-p7-D0U" userLabel="Status">
+                                                        <tableColumn width="40" minWidth="40" maxWidth="1000" id="z3k-p7-D0U" userLabel="Status">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -1164,7 +1160,7 @@ Help &gt; Show Onboarding</string>
                                                                 <binding destination="6y2-Gm-cOS" name="value" keyPath="arrangedObjects.documentDone" id="1NY-do-Hwv"/>
                                                             </connections>
                                                         </tableColumn>
-                                                        <tableColumn identifier="" width="322" minWidth="40" maxWidth="1000" id="t5i-OA-mho" userLabel="Name">
+                                                        <tableColumn width="322" minWidth="40" maxWidth="1000" id="t5i-OA-mho" userLabel="Name">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Document">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -1272,7 +1268,7 @@ Help &gt; Show Onboarding</string>
                                         </shadow>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" placeholderString="Description" drawsBackground="YES" id="PCv-if-5Qd">
                                             <font key="font" metaFont="system"/>
-                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         </textFieldCell>
                                         <connections>
@@ -1293,7 +1289,7 @@ Help &gt; Show Onboarding</string>
                                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                     <tableColumns>
-                                                        <tableColumn identifier="" width="225" minWidth="40" maxWidth="1000" id="a86-rc-hFq">
+                                                        <tableColumn width="225" minWidth="40" maxWidth="1000" id="a86-rc-hFq">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Tag">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -1400,7 +1396,7 @@ Help &gt; Show Onboarding</string>
                                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                     <tableColumns>
-                                                        <tableColumn identifier="" width="27.5" minWidth="10" maxWidth="3.4028234663852886e+38" id="dAK-Zr-LS0">
+                                                        <tableColumn width="27.5" minWidth="10" maxWidth="3.4028234663852886e+38" id="dAK-Zr-LS0">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="right" title="#">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -1445,7 +1441,7 @@ Help &gt; Show Onboarding</string>
                                                                 <binding destination="jrR-pM-UBT" name="value" keyPath="arrangedObjects.count" id="JSl-95-Sk4"/>
                                                             </connections>
                                                         </tableColumn>
-                                                        <tableColumn identifier="" width="193.5" minWidth="40" maxWidth="1000" id="bgb-vH-5vk">
+                                                        <tableColumn width="193.5" minWidth="40" maxWidth="1000" id="bgb-vH-5vk">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Tag">
                                                                 <font key="font" metaFont="smallSystem"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -1460,7 +1456,7 @@ Help &gt; Show Onboarding</string>
                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             <prototypeCellViews>
                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                    <rect key="frame" x="32" y="1" width="194" height="17"/>
+                                                                    <rect key="frame" x="32" y="1" width="193" height="17"/>
                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <subviews>
                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">

@@ -11,7 +11,11 @@ import StoreKit
 import Foundation
 import os.log
 
-class DonationPreferencesVC: PreferencesVC {
+protocol DonationPreferencesVCDelegate: class {
+    func updateGUI()
+}
+
+class DonationPreferencesVC: PreferencesVC, DonationPreferencesVCDelegate {
     @IBOutlet weak var donationNumberLabel: NSTextField!
     @IBOutlet weak var donationButton1: NSButton!
     @IBOutlet weak var donationButton2: NSButton!
@@ -20,7 +24,7 @@ class DonationPreferencesVC: PreferencesVC {
 
     private var donationsNumber = "0" {
         didSet {
-            self.updateDonationLabel()
+            self.updateGUI()
         }
     }
     weak var preferencesDelegate: PreferencesDelegate?
@@ -46,20 +50,9 @@ class DonationPreferencesVC: PreferencesVC {
     }
 
     override func viewWillAppear() {
-        let notificationCenter = NotificationCenter.default
-        notificationCenter.addObserver(self, selector: #selector(self.masUpdateStatus(available:)),
-                                       name: Notification.Name("MASUpdateStatus"), object: nil)
-
-        // set the status image
-        if self.iAPHelperDelegate?.products.isEmpty ?? true {
-            self.donationButton.image = NSImage(named: .statusUnavailable)
-        } else {
-            self.donationButton.image = NSImage(named: .statusAvailable)
-        }
 
         // update the buttons and use the default donations count
-        self.updateButtons()
-        self.updateDonationLabel()
+        self.updateGUI()
 
         // update the donation count property
         DispatchQueue.global().async {
@@ -67,44 +60,35 @@ class DonationPreferencesVC: PreferencesVC {
         }
     }
 
-    @objc func masUpdateStatus(available: Bool) {
+    func updateGUI() {
         DispatchQueue.main.async {
-            if available {
-                self.donationButton.image = NSImage(named: .statusAvailable)
+
+            // set the MAS status image
+            if self.iAPHelperDelegate?.products.isEmpty ?? true {
+                self.donationButton.image = NSImage(named: "NSStatusUnavailable")
             } else {
-                self.donationButton.image = NSImage(named: .statusUnavailable)
-            }
-        }
-
-        self.updateButtons()
-    }
-
-    func updateButtons() {
-        // set the button label
-        for product in self.iAPHelperDelegate?.products ?? [] {
-            var selectedButton: NSButton
-
-            switch product.productIdentifier {
-            case "DONATION_LEVEL1":
-                selectedButton = self.donationButton1
-            case "DONATION_LEVEL2":
-                selectedButton = self.donationButton2
-            case "DONATION_LEVEL3":
-                selectedButton = self.donationButton3
-            default:
-                continue
+                self.donationButton.image = NSImage(named: "NSStatusAvailable")
             }
 
-            // set button to localized price
-            DispatchQueue.main.async {
+            // update the donation buttons
+            for product in self.iAPHelperDelegate?.products ?? [] {
+                var selectedButton: NSButton
+                switch product.productIdentifier {
+                case "DONATION_LEVEL1":
+                    selectedButton = self.donationButton1
+                case "DONATION_LEVEL2":
+                    selectedButton = self.donationButton2
+                case "DONATION_LEVEL3":
+                    selectedButton = self.donationButton3
+                default:
+                    continue
+                }
+                // set button to localized price
                 selectedButton.title = product.localizedPrice
                 selectedButton.isEnabled = true
             }
-        }
-    }
 
-    func updateDonationLabel() {
-        DispatchQueue.main.async {
+            // update the donation number
             self.donationNumberLabel.stringValue = "\(self.donationsNumber) \(NSLocalizedString("donation_number_label", comment: "Donation Number label"))"
         }
     }

@@ -63,11 +63,11 @@ class OnboardingViewController: NSViewController {
 
     override func viewWillAppear() {
         let cornerRadius = CGFloat(3)
-        let customViewColor = NSColor(named: NSColor.Name("DarkGreyBlue"))!.withAlphaComponent(0.05).cgColor
+        let customViewColor = NSColor(named: "DarkGreyBlue")!.withAlphaComponent(0.05).cgColor
 
         // set background color
         self.baseView.wantsLayer = true
-        self.baseView.layer?.backgroundColor = NSColor(named: NSColor.Name("OffWhite"))!.cgColor
+        self.baseView.layer?.backgroundColor = NSColor(named: "OffWhite")!.cgColor
         self.baseView.layer?.cornerRadius = cornerRadius
 
         // set background color of the view
@@ -98,10 +98,10 @@ extension OnboardingViewController: OnboardingVCDelegate {
             // update the locked/unlocked indicator
             if let appUsagePermitted = self.iAPHelperDelegate?.appUsagePermitted(),
                 appUsagePermitted {
-                self.lockIndicator.image = NSImage(named: NSImage.Name("NSLockUnlockedTemplate"))
+                self.lockIndicator.image = NSImage(named: "NSLockUnlockedTemplate")
 
             } else {
-                self.lockIndicator.image = NSImage(named: NSImage.Name("NSLockLockedTemplate"))
+                self.lockIndicator.image = NSImage(named: "NSLockLockedTemplate")
 
                 // update the progress indicator
                 if (self.iAPHelperDelegate?.requestRunning ?? 0) != 0 {

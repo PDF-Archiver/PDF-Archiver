@@ -27,8 +27,8 @@ struct Constants {
     struct  Layout {
         static let wantsLayer = true
         static let cornerRadius = CGFloat(3)
-        static let customViewBackground = NSColor(named: NSColor.Name(rawValue: "DarkGreyBlue"))!.withAlphaComponent(0.1).cgColor
-        static let pdfViewBackground = NSColor(named: NSColor.Name("DarkGrey"))!
-        static let mainViewBackground = NSColor(named: NSColor.Name("OffWhite"))!.cgColor
+        static let customViewBackground = NSColor(named: "DarkGreyBlue")!.withAlphaComponent(0.1).cgColor
+        static let pdfViewBackground = NSColor(named: "DarkGrey")!
+        static let mainViewBackground = NSColor(named: "OffWhite")!.cgColor
     }
 }

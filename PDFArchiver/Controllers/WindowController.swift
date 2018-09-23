@@ -14,7 +14,7 @@ class WindowController: NSWindowController {
         super.windowDidLoad()
 
         // restore the window position, e.g. https://stackoverflow.com/a/49205940
-        self.windowFrameAutosaveName = NSWindow.FrameAutosaveName(rawValue: "MainWindowPosition")
+        self.windowFrameAutosaveName = "MainWindowPosition"
     }
 
 }
