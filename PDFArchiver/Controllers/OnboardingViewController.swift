@@ -66,9 +66,8 @@ class OnboardingViewController: NSViewController {
         let customViewColor = NSColor(named: "DarkGreyBlue")!.withAlphaComponent(0.05).cgColor
 
         // set background color
-        self.baseView.wantsLayer = true
-        self.baseView.layer?.backgroundColor = NSColor(named: "OffWhite")!.cgColor
-        self.baseView.layer?.cornerRadius = cornerRadius
+        // TODO: do we really need this?
+        self.baseView.layout()
 
         // set background color of the view
         self.customView1.wantsLayer = true

@@ -50,13 +50,7 @@ final class AppStoreReviewRequest {
             let twoSecondsFromNow = DispatchTime.now() + 2.0
             DispatchQueue.main.asyncAfter(deadline: twoSecondsFromNow) {
                 if #available(OSX 10.14, *) {
-                    // TODO: uncomment this and set deployment target to 10.14
-//                    SKStoreReviewController.requestReview()
-
-                    // TODO: debug code
-                    print("DEBUG: start review request manually")
-                    self.requestReviewManually(for: Constants.appId)
-
+                    SKStoreReviewController.requestReview()
                     UserDefaults.standard.set(self.currentVersion, forKey: UserDefaultsKeys.lastVersionPromptedForReviewKey.rawValue)
                 }
             }
@@ -64,7 +58,7 @@ final class AppStoreReviewRequest {
     }
 
     public func requestReviewManually(for appId: Int) {
-        guard let writeReviewURL = URL(string: "https://itunes.apple.com/app/id\(appId)?action=write-review")
+        guard let writeReviewURL = URL(string: "macappstore://itunes.apple.com/app/id\(appId)?action=write-review")
             else { fatalError("Expected a valid URL") }
         NSWorkspace.shared.open(writeReviewURL)
     }

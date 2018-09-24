@@ -36,23 +36,24 @@ class Preferences: PreferencesDelegate, Logging {
     var useiCloudDrive: Bool = false {
         didSet {
 
-            if self.useiCloudDrive {
+            if let iCloudDrivePath = self.iCloudDrivePath,
+                self.useiCloudDrive {
                 // move archive files
                 self.accessSecurityScope {
-                    self.archiveDelegate?.moveArchivedDocuments(from: self._archivePath!, to: self.iCloudDrivePath!)
+                    self.archiveDelegate?.moveArchivedDocuments(from: self._archivePath!, to: iCloudDrivePath)
                 }
 
                 // create icloud container
-                if !FileManager.default.fileExists(atPath: self.iCloudDrivePath!.path) {
+                if !FileManager.default.fileExists(atPath: iCloudDrivePath.path) {
                     do {
-                        try FileManager.default.createDirectory(at: self.iCloudDrivePath!, withIntermediateDirectories: true, attributes: nil)
+                        try FileManager.default.createDirectory(at: iCloudDrivePath, withIntermediateDirectories: true, attributes: nil)
                     } catch {
                         print(error.localizedDescription)
                     }
                 }
 
                 // save the icloud drive container path as the archive
-                self.archivePath = self.iCloudDrivePath
+                self.archivePath = iCloudDrivePath
             }
 
             // update documents
@@ -94,14 +95,16 @@ class Preferences: PreferencesDelegate, Logging {
     var archivePath: URL? {
         // ATTENTION: only set archive path, after an OpenPanel dialog
         get {
-            return self.useiCloudDrive ? FileManager.default.url(forUbiquityContainerIdentifier: nil)?.appendingPathComponent("Documents") : self._archivePath
+            return self.useiCloudDrive ? self.iCloudDrivePath : self._archivePath
         }
         set {
             guard let newValue = newValue else { return }
 
             // move archive files
-            self.accessSecurityScope {
-                self.archiveDelegate?.moveArchivedDocuments(from: self.iCloudDrivePath!, to: newValue)
+            if let iCloudDrivePath = self.iCloudDrivePath {
+                self.accessSecurityScope {
+                    self.archiveDelegate?.moveArchivedDocuments(from: iCloudDrivePath, to: newValue)
+                }
             }
 
             // save the security scope bookmark [https://stackoverflow.com/a/35863729]

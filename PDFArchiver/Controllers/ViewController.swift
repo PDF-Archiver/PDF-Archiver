@@ -142,28 +142,13 @@ class ViewController: NSViewController, Logging {
         // update the view after all the settigns
         self.documentAC.setSelectionIndex(0)
 
-        // set background color of the view
-        self.view.wantsLayer = Constants.Layout.wantsLayer
-        self.view.layer?.backgroundColor = Constants.Layout.mainViewBackground
-
-        self.pdfDocumentsView.wantsLayer = Constants.Layout.wantsLayer
-        self.pdfDocumentsView.layer?.backgroundColor = Constants.Layout.customViewBackground
-        self.pdfDocumentsView.layer?.cornerRadius = Constants.Layout.cornerRadius
-
+        // set background color of the main view will be set in BackgroundView.swift
         self.pdfView.wantsLayer = Constants.Layout.wantsLayer
         self.pdfView.layer?.backgroundColor = Constants.Layout.customViewBackground
         self.pdfView.layer?.cornerRadius = Constants.Layout.cornerRadius
 
         self.pdfContentView.backgroundColor = Constants.Layout.pdfViewBackground
         self.pdfContentView.layer?.cornerRadius = Constants.Layout.cornerRadius
-
-        self.documentAttributesView.wantsLayer = Constants.Layout.wantsLayer
-        self.documentAttributesView.layer?.backgroundColor = Constants.Layout.customViewBackground
-        self.documentAttributesView.layer?.cornerRadius = Constants.Layout.cornerRadius
-
-        self.tagSearchView.wantsLayer = Constants.Layout.wantsLayer
-        self.tagSearchView.layer?.backgroundColor = Constants.Layout.customViewBackground
-        self.tagSearchView.layer?.cornerRadius = Constants.Layout.cornerRadius
     }
 
     override func viewWillAppear() {

@@ -86,7 +86,7 @@ class MainPreferencesVC: PreferencesVC {
             self.archivePathTextField.stringValue = archivePath.path
         }
 
-        if let _ = self.preferencesDelegate?.iCloudDrivePath {
+        if self.preferencesDelegate?.iCloudDrivePath != nil {
             self.useiCloudDrive.state = (self.preferencesDelegate?.useiCloudDrive ?? false) ? .on : .off
         } else {
             self.useiCloudDrive.state = .off
