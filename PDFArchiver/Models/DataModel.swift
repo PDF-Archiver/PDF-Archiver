@@ -59,7 +59,12 @@ class DataModel: Logging {
             }
 
             if result {
+                // update the documents
                 self.viewControllerDelegate?.setDocuments(documents: self.untaggedDocuments)
+
+                // increment count an request a review?
+                AppStoreReviewRequest.shared.incrementCount()
+
                 return true
             }
         }

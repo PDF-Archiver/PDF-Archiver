@@ -186,19 +186,19 @@ CA
                                     <items>
                                         <menuItem title="PDF Archiver Help" keyEquivalent="?" id="FKE-Sm-Kum">
                                             <connections>
-                                                <action selector="showHelp:" target="Voe-Tx-rLC" id="6a2-CJ-tAD"/>
+                                                <action selector="showHelp:" target="Ady-hI-5gd" id="CES-TZ-VHe"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Privacy Policy" id="6IH-UX-ZY8">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="showPrivacy:" target="Voe-Tx-rLC" id="aPj-IB-gXU"/>
+                                                <action selector="showPrivacy:" target="Ady-hI-5gd" id="HXH-Ix-OA4"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="Imprint" id="AQv-Kn-N9d">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="showImprint:" target="Voe-Tx-rLC" id="uN2-KD-CP3"/>
+                                                <action selector="showImprint:" target="Ady-hI-5gd" id="EhN-MR-ZSM"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="g5g-oz-d55"/>
@@ -217,7 +217,13 @@ CA
                                         <menuItem title="Manage Subscription" id="N0V-Bp-Pnp" userLabel="Manage Subscription">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="showManageSubscriptions:" target="Ady-hI-5gd" id="Ybm-s8-5Zc"/>
+                                                <action selector="showManageSubscriptions:" target="Ady-hI-5gd" id="OAj-OM-N4K"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="App Store Review" id="l3h-jx-Ssa" userLabel="App Store Review">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="writeAppStoreReview:" target="Ady-hI-5gd" id="VJb-Rt-Wdr"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="6ct-R1-jmK"/>

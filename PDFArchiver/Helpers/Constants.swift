@@ -10,6 +10,7 @@ import Foundation
 import Quartz
 
 struct Constants {
+    static let appId: Int = 1352719750
     static let appURL: String = "https://pdf-archiver.io"
     static let donationCount = URL(string: appURL + "/assets/donations.txt")!
     static let manageSubscription = URL(string: "https://apps.apple.com/account/subscriptions")!

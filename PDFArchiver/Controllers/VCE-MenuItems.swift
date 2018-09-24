@@ -56,6 +56,19 @@ extension ViewController {
     }
 
     // MARK: - Help Menu
+
+    @IBAction func showHelp(_ sender: NSMenuItem) {
+        NSWorkspace.shared.open(Constants.WebsiteEndpoints.faq.url)
+    }
+
+    @IBAction func showPrivacy(_ sender: NSMenuItem) {
+        NSWorkspace.shared.open(Constants.WebsiteEndpoints.privacy.url)
+    }
+
+    @IBAction func showImprint(_ sender: NSMenuItem) {
+        NSWorkspace.shared.open(Constants.WebsiteEndpoints.imprint.url)
+    }
+
     @IBAction func showOnboardingMenuItem(_ sender: AnyObject) {
         self.performSegue(withIdentifier: "onboardingSegue", sender: self)
     }
@@ -63,6 +76,14 @@ extension ViewController {
     @IBAction func updateViewMenuItem(_ sender: AnyObject) {
         // get tags and update the GUI
         self.updateView(updatePDF: true)
+    }
+
+    @IBAction func showManageSubscriptions(_ sender: NSMenuItem) {
+        NSWorkspace.shared.open(Constants.manageSubscription)
+    }
+
+    @IBAction func writeAppStoreReview(_ sender: NSMenuItem) {
+        AppStoreReviewRequest.shared.requestReviewManually(for: Constants.appId)
     }
 
     @IBAction func resetCacheMenuItem(_ sender: NSMenuItem) {

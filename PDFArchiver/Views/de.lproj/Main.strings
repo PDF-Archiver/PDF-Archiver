@@ -355,3 +355,6 @@
 
 /* Class = "NSButtonCell"; title = "Save Documents in iCloud Drive"; ObjectID = "xlr-HK-YOq"; */
 "xlr-HK-YOq.title" = "Speichert die Dokumente in iCloud Drive";
+
+/* Class = "NSMenuItem"; title = "App Store Review"; ObjectID = "l3h-jx-Ssa"; */
+"l3h-jx-Ssa.title" = "App Store Review";
