@@ -272,7 +272,7 @@ CA
         <scene sceneID="vIq-pB-TLg">
             <objects>
                 <viewController title="Onboarding" storyboardIdentifier="onboardingViewController" id="IBN-wm-PS1" customClass="OnboardingViewController" customModule="PDFArchiver" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="1Ps-AJ-22C" customClass="BackgroundView" customModule="PDFArchiver" customModuleProvider="target">
+                    <view key="view" identifier="OnboardingBackgroundView" id="1Ps-AJ-22C" customClass="BackgroundView" customModule="PDFArchiver" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="760" height="531"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
@@ -520,7 +520,7 @@ CA
                                         <rect key="frame" x="256" y="195" width="209" height="19"/>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Thank you for downloading." id="8Xm-l9-Ww4">
                                             <font key="font" size="16" name=".AppleSystemUIFont"/>
-                                            <color key="textColor" name="CustomViewBackground"/>
+                                            <color key="textColor" name="Subtitle"/>
                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                         </textFieldCell>
                                     </textField>
@@ -1485,7 +1485,7 @@ Help &gt; Show Onboarding</string>
                                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                             <prototypeCellViews>
                                                                                 <tableCellView id="9wq-Yh-6cT">
-                                                                                    <rect key="frame" x="31.5" y="1" width="203" height="17"/>
+                                                                                    <rect key="frame" x="32" y="1" width="203" height="17"/>
                                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                     <subviews>
                                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">
@@ -1659,6 +1659,9 @@ Help &gt; Show Onboarding</string>
         </namedColor>
         <namedColor name="Headline2">
             <color red="0.90299999713897705" green="0.41200000047683716" blue="0.40400001406669617" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+        </namedColor>
+        <namedColor name="Subtitle">
+            <color red="0.13099999725818634" green="0.17200000584125519" blue="0.23100000619888306" alpha="0.80000001192092896" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>

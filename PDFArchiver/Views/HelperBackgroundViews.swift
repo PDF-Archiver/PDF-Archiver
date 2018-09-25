@@ -18,7 +18,7 @@ class BackgroundView: NSView {
         // set background color of the view
         self.wantsLayer = Constants.Layout.wantsLayer
         self.layer?.cornerRadius = Constants.Layout.cornerRadius
-        if self.identifier?.rawValue == "MainViewBackground" {
+        if self.identifier?.rawValue == "MainViewBackground" || self.identifier?.rawValue == "OnboardingBackgroundView" {
             self.layer?.backgroundColor = NSColor(named: "MainViewBackground")!.cgColor
         } else if self.identifier?.rawValue == "CustomViewBackground" {
             self.layer?.backgroundColor = NSColor(named: "CustomViewBackground")!.withAlphaComponent(0.1).cgColor
