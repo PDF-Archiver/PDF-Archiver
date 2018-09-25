@@ -141,14 +141,6 @@ class ViewController: NSViewController, Logging {
 
         // update the view after all the settigns
         self.documentAC.setSelectionIndex(0)
-
-        // set background color of the main view will be set in BackgroundView.swift
-        self.pdfView.wantsLayer = Constants.Layout.wantsLayer
-        self.pdfView.layer?.backgroundColor = Constants.Layout.customViewBackground
-        self.pdfView.layer?.cornerRadius = Constants.Layout.cornerRadius
-
-        self.pdfContentView.backgroundColor = Constants.Layout.pdfViewBackground
-        self.pdfContentView.layer?.cornerRadius = Constants.Layout.cornerRadius
     }
 
     override func viewWillAppear() {

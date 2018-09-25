@@ -63,7 +63,7 @@ class OnboardingViewController: NSViewController {
 
     override func viewWillAppear() {
         let cornerRadius = CGFloat(3)
-        let customViewColor = NSColor(named: "DarkGreyBlue")!.withAlphaComponent(0.05).cgColor
+        let customViewColor = NSColor(named: "CustomViewBackground")!.withAlphaComponent(0.05).cgColor
 
         // set background color
         // TODO: do we really need this?
