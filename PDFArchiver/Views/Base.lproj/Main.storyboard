@@ -1661,7 +1661,7 @@ Help &gt; Show Onboarding</string>
             <color red="0.90299999713897705" green="0.41200000047683716" blue="0.40400001406669617" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
         <namedColor name="Subtitle">
-            <color red="0.13099999725818634" green="0.17200000584125519" blue="0.23100000619888306" alpha="0.80000001192092896" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.13099999725818634" green="0.17200000584125519" blue="0.23100000619888306" alpha="0.60000002384185791" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>
