@@ -41,12 +41,15 @@ final class AppStoreReviewRequest {
         self.lastVersionPromptedForReview = UserDefaults.standard.string(forKey: UserDefaultsKeys.lastVersionPromptedForReviewKey.rawValue) ?? ""
     }
 
+    private func isSameMajorMinorVersion(version1: String, version2: String) -> Bool {
+        return version1.split(separator: ".").dropLast().joined(separator: ".") == version2.split(separator: ".").dropLast().joined(separator: ".")
+    }
+
     public func incrementCount() {
         self.count += 1
-        print("Process completed \(count) time(s)")
 
         // Has the process been completed several times and the user has not already been prompted for this version?
-        if self.count >= 4 && self.currentVersion != lastVersionPromptedForReview {
+        if self.count >= 4 && isSameMajorMinorVersion(version1: self.currentVersion, version2: self.lastVersionPromptedForReview) {
             let twoSecondsFromNow = DispatchTime.now() + 2.0
             DispatchQueue.main.asyncAfter(deadline: twoSecondsFromNow) {
                 if #available(OSX 10.14, *) {
