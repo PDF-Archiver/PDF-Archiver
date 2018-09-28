@@ -84,6 +84,8 @@ Or clone the repository and build it:
 * Get in contact with us at [Slack](https://pdf-archiver.slack.com).
 
 ## :octocat: How to contribute
+Rate the App in the [Mac App Store](https://itunes.apple.com/app/id1352719750).
+
 All [contributions](https://github.com/PDF-Archiver/PDF-Archiver/blob/develop/.github/CONTRIBUTING.md) are welcome!
 Feel free to contribute to this project.
 Submit pull requests or contribute tutorials - whatever you have to offer, it would be appreciated!
@@ -92,5 +94,6 @@ Submit pull requests or contribute tutorials - whatever you have to offer, it wo
 * [**zngguvnf.org**](https://zngguvnf.org) discussing and creating this archive structure.
 * [**Karl Voit**](http://karl-voit.at/managing-digital-photographs/) for the initial idea of a document naming convention.
 * [**Nick Roach**](https://www.elegantthemes.com) for the [Icon](https://www.iconfinder.com/icons/1055071/document_file_icon).
+* MAS Preview Sound: [Love Jones by @nop](http://dig.ccmixter.org/files/Lancefield/50789)
 
 <noscript><a href="https://liberapay.com/JulianKahnert/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a></noscript>
