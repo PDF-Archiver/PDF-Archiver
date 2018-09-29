@@ -7,3 +7,7 @@
 
 # PDF Archive Viewer
 WIP
+
+Test the Beta-Version with [Testflight](https://testflight.apple.com/join/luoTZhap) <a href="https://testflight.apple.com/join/luoTZhap" target="itunes_store">
+  <img src="https://developer.apple.com/assets/elements/icons/testflight/testflight-128x128_2x.png" width="20px">
+</a>.

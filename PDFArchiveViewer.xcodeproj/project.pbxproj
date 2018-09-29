@@ -23,6 +23,7 @@
 		A34A84FF2130A3780093FAE5 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34A84FD2130A3780093FAE5 /* Logging.swift */; };
 		A34A85002130A3780093FAE5 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34A84FE2130A3780093FAE5 /* StringExtensions.swift */; };
 		A34A85022130A3870093FAE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A34A85012130A3870093FAE5 /* Assets.xcassets */; };
+		A3AD3BBC215FA90A00F4805C /* TableSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3AD3BBB215FA90A00F4805C /* TableSection.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,6 +46,7 @@
 		A34A84FE2130A3780093FAE5 /* StringExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
 		A34A85012130A3870093FAE5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A34D8D7A2130A1E200867B65 /* PDFArchiveViewer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PDFArchiveViewer.entitlements; sourceTree = "<group>"; };
+		A3AD3BBB215FA90A00F4805C /* TableSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableSection.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +103,7 @@
 		A34A84F22130A2900093FAE5 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				171E0C831B8E5B84001E6242 /* Main.storyboard */,
 				452C6F7A1E9BDA75003A4C50 /* SearchFooter.swift */,
 				A336837A213DAF7D0011F280 /* EmptyBackgroundView.xib */,
 				A301A75421496992003EA382 /* DocumentTableViewCell.swift */,
@@ -112,6 +115,7 @@
 		A34A84F32130A2A70093FAE5 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				A3AD3BBB215FA90A00F4805C /* TableSection.swift */,
 				A34A84FD2130A3780093FAE5 /* Logging.swift */,
 				A34A84FE2130A3780093FAE5 /* StringExtensions.swift */,
 			);
@@ -121,7 +125,6 @@
 		A34A84F42130A2CC0093FAE5 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				171E0C831B8E5B84001E6242 /* Main.storyboard */,
 				171E0C811B8E5B84001E6242 /* DetailViewController.swift */,
 				171E0C7F1B8E5B84001E6242 /* MasterViewController.swift */,
 			);
@@ -238,6 +241,7 @@
 			files = (
 				A34A85002130A3780093FAE5 /* StringExtensions.swift in Sources */,
 				A34A84FC2130A35A0093FAE5 /* Archive.swift in Sources */,
+				A3AD3BBC215FA90A00F4805C /* TableSection.swift in Sources */,
 				452C6F7B1E9BDA75003A4C50 /* SearchFooter.swift in Sources */,
 				A34A84FF2130A3780093FAE5 /* Logging.swift in Sources */,
 				A301A75621496992003EA382 /* DocumentTableViewCell.swift in Sources */,
