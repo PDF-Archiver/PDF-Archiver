@@ -26,8 +26,7 @@ struct Archive {
         self.sections = TableSection.group(rowItems: self.allDocuments) { (document) in
             let calender = Calendar.current
             return String(calender.component(.year, from: document.date))
-        }
-        self.sections.reverse()
+        }.reversed()
     }
 
     mutating func setAllDocuments(_ documents: [Document]) {
@@ -51,8 +50,7 @@ struct Archive {
         self.sections = TableSection.group(rowItems: filteredDocuments) { (document) in
             let calender = Calendar.current
             return String(calender.component(.year, from: document.date))
-        }
-        self.sections.reverse()
+        }.reversed()
     }
 }
 

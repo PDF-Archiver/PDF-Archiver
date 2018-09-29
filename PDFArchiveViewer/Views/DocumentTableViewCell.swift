@@ -11,6 +11,7 @@ import UIKit
 class DocumentTableViewCell: UITableViewCell {
     @IBOutlet weak var tileLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
+    @IBOutlet weak var tagLabel: UILabel!
     @IBOutlet weak var downloadImageView: UIImageView!
     @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
 
@@ -21,6 +22,7 @@ class DocumentTableViewCell: UITableViewCell {
         if let document = self.document {
             self.tileLabel.text = document.specification.replacingOccurrences(of: "-", with: " ")
             self.dateLabel.text = DateFormatter.localizedString(from: document.date, dateStyle: .medium, timeStyle: .none)
+            self.tagLabel.text = document.tags.map { String($0.name) }.joined(separator: " ")
 
             switch document.downloadStatus {
             case .local:
