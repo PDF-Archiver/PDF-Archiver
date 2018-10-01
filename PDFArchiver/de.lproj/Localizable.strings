@@ -12,10 +12,19 @@
 
 "check_document_tags" = "Bitte Dokument Tags prüfen und mindestens einen Tag auswählen.";
 
+/* No comment provided by engineer. */
+"close" = "Schließen";
+
 /* Donation Number label */
 "donation_number_label" = "Personen haben gespendet.";
 
 "file_already_exists" = "Dateiname existstiert bereits. \nBitte z.B. Dokument Beschreibung verändern.";
+
+/* No license: Info. */
+"no-license-info" = "PDF Archiver wird ohne gültige Lizenz geschlossen. Bitte wählen Sie ein Abo-Modell.";
+
+/* No license: Title. */
+"no-license-title" = "Keine gültige Lizenz vorhanden!";
 
 "no_archive" = "Kein Archiv Pfad gefunden!";
 
