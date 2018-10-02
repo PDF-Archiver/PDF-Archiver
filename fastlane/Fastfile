@@ -20,7 +20,8 @@ lane :createNewScreenshots do
   capture_screenshots(
     scheme: "PDFArchiveViewer")
   upload_to_app_store(
-    skip_binary_upload: false, skip_metadata: false)
+    skip_binary_upload: false,
+    skip_metadata: false)
 end
 
 desc "Build Beta-Version & Upload it to TestFlight."

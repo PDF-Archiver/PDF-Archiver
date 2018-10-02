@@ -119,6 +119,9 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
             controller.detailDocument = document
             controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
             controller.navigationItem.leftItemsSupplementBackButton = true
+
+            // increment the AppStoreReview counter
+            AppStoreReviewRequest.shared.incrementCount()
         }
     }
 
