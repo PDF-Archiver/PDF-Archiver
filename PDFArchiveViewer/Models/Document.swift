@@ -15,7 +15,7 @@ enum DownloadStatus: Equatable {
     case local
 }
 
-class Document: Logging {
+struct Document: Logging {
 
     // data from filename
     private(set) var date: Date
@@ -28,44 +28,44 @@ class Document: Logging {
     private(set) var filename: String
     private(set) var path: URL
 
-    init(path documentPath: URL, downloadStatus: DownloadStatus, availableTags: inout Set<Tag>) {
+    init(path documentPath: URL, downloadStatus documentDownloadStatus: DownloadStatus, availableTags: inout Set<Tag>) {
 
-        self.downloadStatus = downloadStatus
-        self.path = documentPath
-        self.filename = documentPath.lastPathComponent
-        self.folder = documentPath.deletingLastPathComponent().lastPathComponent
+        downloadStatus = documentDownloadStatus
+        path = documentPath
+        filename = documentPath.lastPathComponent
+        folder = documentPath.deletingLastPathComponent().lastPathComponent
 
-        guard let parts = self.filename.capturedGroups(withRegex: "(\\d{4}-\\d{2}-\\d{2})--(.+)__([\\w\\d_]+)\\.[pdfPDF]{3}$") else { fatalError("Could not parse document filename!") }
+        guard let parts = filename.capturedGroups(withRegex: "(\\d{4}-\\d{2}-\\d{2})--(.+)__([\\w\\d_]+)\\.[pdfPDF]{3}$") else { fatalError("Could not parse document filename!") }
 
         // parse the document date
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
-        guard let date = dateFormatter.date(from: parts[0]) else { fatalError("Could not parse the document date!") }
-        self.date = date
+        guard let documentDate = dateFormatter.date(from: parts[0]) else { fatalError("Could not parse the document date!") }
+        date = documentDate
 
         // parse the document specification
-        self.specification = parts[1]
+        specification = parts[1]
 
         // parse the document tags
         for tagname in parts[2].split(separator: "_") {
 
-            if let availableTag = availableTags.first(where: { $0.name == String(tagname) }) {
+            if var availableTag = availableTags.first(where: { $0.name == String(tagname) }) {
                 availableTag.count += 1
-                self.tags.insert(availableTag)
+                tags.insert(availableTag)
             } else {
                 let newTag = Tag(name: String(tagname), count: 1)
                 availableTags.insert(newTag)
-                self.tags.insert(newTag)
+                tags.insert(newTag)
             }
         }
     }
 
-    func download() {
+    mutating func download() {
         do {
-            try FileManager.default.startDownloadingUbiquitousItem(at: self.path)
-            self.downloadStatus = .downloading(percentDownloaded: 0)
+            try FileManager.default.startDownloadingUbiquitousItem(at: path)
+            downloadStatus = .downloading(percentDownloaded: 0)
         } catch {
-            os_log("%s", log: self.log, type: .debug, error.localizedDescription)
+            os_log("%s", log: log, type: .debug, error.localizedDescription)
         }
     }
 }
@@ -77,6 +77,6 @@ extension Document: Hashable, Comparable, CustomStringConvertible {
     static func == (lhs: Document, rhs: Document) -> Bool {
         return lhs.path == rhs.path
     }
-    var description: String { return self.filename }
-    var hashValue: Int { return self.path.hashValue }
+    var description: String { return filename }
+    var hashValue: Int { return path.hashValue }
 }

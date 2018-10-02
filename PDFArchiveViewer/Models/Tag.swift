@@ -8,21 +8,16 @@
 
 import Foundation
 
-class Tag {
+struct Tag {
 
     let name: String
     var count: Int
-
-    init(name: String, count: Int) {
-        self.name = name
-        self.count = count
-    }
 }
 
 extension Tag: Hashable, CustomStringConvertible {
     static func == (lhs: Tag, rhs: Tag) -> Bool {
         return lhs.name == rhs.name
     }
-    var description: String { return "\(self.name) (\(self.count))" }
-    var hashValue: Int { return self.name.hashValue }
+    var description: String { return "\(name) (\(count))" }
+    var hashValue: Int { return name.hashValue }
 }

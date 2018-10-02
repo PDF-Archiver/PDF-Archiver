@@ -19,24 +19,24 @@ class DocumentTableViewCell: UITableViewCell {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        if let document = self.document {
-            self.tileLabel.text = document.specification.replacingOccurrences(of: "-", with: " ")
-            self.dateLabel.text = DateFormatter.localizedString(from: document.date, dateStyle: .medium, timeStyle: .none)
-            self.tagLabel.text = document.tags.map { String($0.name) }.joined(separator: " ")
+        if let document = document {
+            tileLabel.text = document.specification.replacingOccurrences(of: "-", with: " ")
+            dateLabel.text = DateFormatter.localizedString(from: document.date, dateStyle: .medium, timeStyle: .none)
+            tagLabel.text = document.tags.map { String($0.name) }.joined(separator: " ")
 
             switch document.downloadStatus {
             case .local:
-                self.downloadImageView.isHidden = true
-                self.activityIndicatorView.isHidden = true
-                self.activityIndicatorView.stopAnimating()
+                downloadImageView.isHidden = true
+                activityIndicatorView.isHidden = true
+                activityIndicatorView.stopAnimating()
             case .iCloudDrive:
-                self.downloadImageView.isHidden = false
-                self.activityIndicatorView.isHidden = true
-                self.activityIndicatorView.stopAnimating()
+                downloadImageView.isHidden = false
+                activityIndicatorView.isHidden = true
+                activityIndicatorView.stopAnimating()
             case .downloading:
-                self.downloadImageView.isHidden = true
-                self.activityIndicatorView.isHidden = false
-                self.activityIndicatorView.startAnimating()
+                downloadImageView.isHidden = true
+                activityIndicatorView.isHidden = false
+                activityIndicatorView.startAnimating()
             }
         }
     }
@@ -45,9 +45,9 @@ class DocumentTableViewCell: UITableViewCell {
         super.awakeFromNib()
 
         // Initialization code
-        self.downloadImageView.isHidden = true
-        self.activityIndicatorView.isHidden = true
-        self.activityIndicatorView.activityIndicatorViewStyle = .gray
+        downloadImageView.isHidden = true
+        activityIndicatorView.isHidden = true
+        activityIndicatorView.activityIndicatorViewStyle = .gray
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

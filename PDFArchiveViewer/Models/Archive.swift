@@ -16,26 +16,26 @@ struct Archive {
 
     lazy var years: [String] = {
         var years = Set<String>()
-        for document in self.allDocuments {
+        for document in allDocuments {
             years.insert(document.folder)
         }
         return Array(years.sorted().reversed().prefix(3))
     }()
 
     init() {
-        self.sections = TableSection.group(rowItems: self.allDocuments) { (document) in
+        sections = TableSection.group(rowItems: allDocuments) { (document) in
             let calender = Calendar.current
             return String(calender.component(.year, from: document.date))
         }.reversed()
     }
 
     mutating func setAllDocuments(_ documents: [Document]) {
-        self.allDocuments = documents
+        allDocuments = documents
     }
 
     mutating func filterContentForSearchText(_ searchText: String, scope: String = "All") {
         // filter documents
-        let filteredDocuments = self.allDocuments.filter {( document: Document) -> Bool in
+        let filteredDocuments = allDocuments.filter {( document: Document) -> Bool in
             let doesCategoryMatch = (scope == "All") || (document.folder == scope)
 
             if searchText.isEmpty {
@@ -47,7 +47,7 @@ struct Archive {
         }
 
         // create table sections
-        self.sections = TableSection.group(rowItems: filteredDocuments) { (document) in
+        sections = TableSection.group(rowItems: filteredDocuments) { (document) in
             let calender = Calendar.current
             return String(calender.component(.year, from: document.date))
         }.reversed()

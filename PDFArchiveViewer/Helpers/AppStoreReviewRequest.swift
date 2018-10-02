@@ -24,12 +24,12 @@ public final class AppStoreReviewRequest {
 
     private var count: Int {
         didSet {
-            UserDefaults.standard.set(self.count, forKey: UserDefaultsKeys.processCompletedCountKey.rawValue)
+            UserDefaults.standard.set(count, forKey: UserDefaultsKeys.processCompletedCountKey.rawValue)
         }
     }
     private var lastVersionPromptedForReview: String {
         didSet {
-            UserDefaults.standard.set(self.lastVersionPromptedForReview, forKey: UserDefaultsKeys.lastVersionPromptedForReviewKey.rawValue)
+            UserDefaults.standard.set(lastVersionPromptedForReview, forKey: UserDefaultsKeys.lastVersionPromptedForReviewKey.rawValue)
         }
     }
 
@@ -40,8 +40,8 @@ public final class AppStoreReviewRequest {
         self.currentVersion = currentVersion
 
         // get the last count and version from UserDefaults
-        self.count = UserDefaults.standard.integer(forKey: UserDefaultsKeys.processCompletedCountKey.rawValue)
-        self.lastVersionPromptedForReview = UserDefaults.standard.string(forKey: UserDefaultsKeys.lastVersionPromptedForReviewKey.rawValue) ?? ""
+        count = UserDefaults.standard.integer(forKey: UserDefaultsKeys.processCompletedCountKey.rawValue)
+        lastVersionPromptedForReview = UserDefaults.standard.string(forKey: UserDefaultsKeys.lastVersionPromptedForReviewKey.rawValue) ?? ""
     }
 
     private func isSameMajorMinorVersion(version1: String, version2: String) -> Bool {
@@ -49,13 +49,13 @@ public final class AppStoreReviewRequest {
     }
 
     public func incrementCount() {
-        if isSameMajorMinorVersion(version1: self.currentVersion, version2: self.lastVersionPromptedForReview) {
+        if isSameMajorMinorVersion(version1: currentVersion, version2: lastVersionPromptedForReview) {
             return
         }
-        self.count += 1
+        count += 1
 
         // Has the process been completed several times and the user has not already been prompted for this version?
-        if self.count >= reviewThresholdCount {
+        if count >= reviewThresholdCount {
             let twoSecondsFromNow = DispatchTime.now() + 2.0
             DispatchQueue.main.asyncAfter(deadline: twoSecondsFromNow) {
                 SKStoreReviewController.requestReview()

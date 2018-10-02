@@ -36,9 +36,9 @@ class DetailViewController: UIViewController, Logging {
     }
 
     func configureView() {
-        if let detailDocument = self.detailDocument,
-            let detailDescriptionLabel = self.detailDescriptionLabel,
-            let documentView = self.documentView {
+        if let detailDocument = detailDocument,
+            let detailDescriptionLabel = detailDescriptionLabel,
+            let documentView = documentView {
 
             detailDescriptionLabel.text = detailDocument.specification
             // TODO: put PDF or placeholder here
@@ -50,10 +50,10 @@ class DetailViewController: UIViewController, Logging {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.documentView.displayMode = .singlePageContinuous
-        self.documentView.autoScales = true
-        self.documentView.interpolationQuality = .low
-        self.documentView.backgroundColor = .darkGray
+        documentView.displayMode = .singlePageContinuous
+        documentView.autoScales = true
+        documentView.interpolationQuality = .low
+        documentView.backgroundColor = .darkGray
     }
 
     override func viewDidLoad() {

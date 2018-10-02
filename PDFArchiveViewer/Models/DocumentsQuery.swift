@@ -49,7 +49,7 @@ class DocumentsQuery: NSObject, Logging {
              If we already have results, we send them to the delegate as an
              initial update.
              */
-            if !self.documents.isEmpty {
+            if !documents.isEmpty {
                 OperationQueue.main.addOperation {
                     self.delegate?.documentsQueryResultsDidChangeWithResults(documents: self.documents, tags: self.tags)
                 }
@@ -91,12 +91,12 @@ class DocumentsQuery: NSObject, Logging {
     @objc
     func queryFeedback(_ notification: Notification) {
 
-        os_log("Got iCloud query feedback from '%@'", log: self.log, type: .debug, notification.name.rawValue)
-        self.metadataQuery.disableUpdates()
+        os_log("Got iCloud query feedback from '%@'", log: log, type: .debug, notification.name.rawValue)
+        metadataQuery.disableUpdates()
 
-        self.documents = [Document]()
-        self.tags = Set<Tag>()
-        for metadataQueryResult in self.metadataQuery.results as? [NSMetadataItem] ?? [] {
+        documents = [Document]()
+        tags = Set<Tag>()
+        for metadataQueryResult in metadataQuery.results as? [NSMetadataItem] ?? [] {
             // get the document path
             guard let documentPath = metadataQueryResult.value(forAttribute: NSMetadataItemURLKey) as? URL else { continue }
 
@@ -116,7 +116,7 @@ class DocumentsQuery: NSObject, Logging {
                     let percentDownloaded = Float(truncating: (metadataQueryResult.value(forAttribute: NSMetadataUbiquitousItemPercentDownloadedKey) as? NSNumber) ?? 0)
 
                     documentStatus = .downloading(percentDownloaded: percentDownloaded)
-                    os_log("Downloading %.1f% ...", log: self.log, type: .debug, percentDownloaded)
+                    os_log("Downloading %.1f% ...", log: log, type: .debug, percentDownloaded)
                 } else {
                     documentStatus = .iCloudDrive
                 }
@@ -124,7 +124,7 @@ class DocumentsQuery: NSObject, Logging {
             default:
                 fatalError("The downloading status '\(downloadingStatus)' was not handled correctly!")
             }
-            self.documents.append(Document(path: documentPath,
+            documents.append(Document(path: documentPath,
                                            downloadStatus: documentStatus,
                                            availableTags: &tags))
         }

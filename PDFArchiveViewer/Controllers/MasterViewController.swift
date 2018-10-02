@@ -40,10 +40,10 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
     // MARK: - View Setup
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.tableView.register(UINib(nibName: cellIdentifier, bundle: nil), forCellReuseIdentifier: cellIdentifier)
+        tableView.register(UINib(nibName: cellIdentifier, bundle: nil), forCellReuseIdentifier: cellIdentifier)
 
         // setup data delegate
-        self.documentsQuery.delegate = self
+        documentsQuery.delegate = self
 
         // Setup the Search Controller
         searchController.searchResultsUpdater = self
@@ -67,11 +67,11 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
         }
 
         // setup background view controller
-        self.tableView.backgroundView = Bundle.main.loadNibNamed("EmptyBackgroundView", owner: nil, options: nil)?.first as? UIView
+        tableView.backgroundView = Bundle.main.loadNibNamed("EmptyBackgroundView", owner: nil, options: nil)?.first as? UIView
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        if let splitViewController = self.splitViewController,
+        if let splitViewController = splitViewController,
             splitViewController.isCollapsed {
             if let selectionIndexPath = tableView.indexPathForSelectedRow {
                 tableView.deselectRow(at: selectionIndexPath, animated: animated)
@@ -87,8 +87,8 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
     // MARK: - Segues
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
         if identifier == "showDetails",
-            let indexPath = self.tableView.indexPathForSelectedRow,
-            let document = getSelectedDocument(from: indexPath) {
+            let indexPath = tableView.indexPathForSelectedRow,
+            var document = getSelectedDocument(from: indexPath) {
 
             // download document if it is not already available
             switch document.downloadStatus {
@@ -106,7 +106,7 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showDetails",
-            let indexPath = self.tableView.indexPathForSelectedRow,
+            let indexPath = tableView.indexPathForSelectedRow,
             let navigationController = segue.destination as? UINavigationController,
             let controller = navigationController.topViewController as? DetailViewController,
             let document = getSelectedDocument(from: indexPath) {
@@ -136,7 +136,7 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
     }
 
     private func getSelectedDocument(from indexPath: IndexPath) -> Document? {
-        let tableSection = self.archive.sections[indexPath.section]
+        let tableSection = archive.sections[indexPath.section]
         return tableSection.rowItems[indexPath.row]
     }
 }
@@ -144,30 +144,30 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
 // MARK: - Delegates
 extension MasterViewController: DocumentsQueryDelegate {
     func documentsQueryResultsDidChangeWithResults(documents: [Document], tags: Set<Tag>) {
-        self.archive.setAllDocuments(documents.sorted().reversed())
-        self.archive.availableTags = tags
+        archive.setAllDocuments(documents.sorted().reversed())
+        archive.availableTags = tags
 
         // setup background view controller
         if documents.isEmpty {
-            self.tableView.backgroundView = Bundle.main.loadNibNamed("EmptyBackgroundView", owner: nil, options: nil)?.first as? UIView
+            tableView.backgroundView = Bundle.main.loadNibNamed("EmptyBackgroundView", owner: nil, options: nil)?.first as? UIView
         } else {
-            self.tableView.backgroundView = nil
+            tableView.backgroundView = nil
         }
 
         // setup search toolbar
-        self.searchController.searchBar.scopeButtonTitles = ["All"] + self.archive.years
+        searchController.searchBar.scopeButtonTitles = ["All"] + archive.years
 
         // update the filtered documents
         let searchBar = searchController.searchBar
         let searchBarText = searchBar.text ?? ""
         if let scopeButtonTitles = searchBar.scopeButtonTitles {
-            self.archive.filterContentForSearchText(searchBarText, scope: scopeButtonTitles[searchBar.selectedScopeButtonIndex])
+            archive.filterContentForSearchText(searchBarText, scope: scopeButtonTitles[searchBar.selectedScopeButtonIndex])
         } else {
-            self.archive.filterContentForSearchText(searchBarText, scope: "All")
+            archive.filterContentForSearchText(searchBarText, scope: "All")
         }
 
         // reload the table view data
-        self.tableView.reloadData()
+        tableView.reloadData()
     }
 }
 
@@ -176,14 +176,14 @@ extension MasterViewController: UITableViewDataSource {
     // MARK: - required stubs
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 
-        let tableSection = self.archive.sections[section]
+        let tableSection = archive.sections[section]
         return tableSection.rowItems.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
         // get the desired cell
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: self.cellIdentifier, for: indexPath) as? DocumentTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? DocumentTableViewCell else {
             fatalError("The dequeued cell is not an instance of TableViewCell.")
         }
 
@@ -198,23 +198,23 @@ extension MasterViewController: UITableViewDataSource {
 
     // MARK: - optional stubs
     func numberOfSections(in tableView: UITableView) -> Int {
-        return self.archive.sections.count
+        return archive.sections.count
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let section = self.archive.sections[section]
+        let section = archive.sections[section]
         return section.sectionItem
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let document = getSelectedDocument(from: indexPath) else { return }
+        guard var document = getSelectedDocument(from: indexPath) else { return }
         print(document.filename)
-        os_log("Selected Document: %@", log: self.log, type: .debug, document.filename)
+        os_log("Selected Document: %@", log: log, type: .debug, document.filename)
 
         // download document if it is not already available
         switch document.downloadStatus {
         case .local:
-            self.performSegue(withIdentifier: "showDetails", sender: self)
+            performSegue(withIdentifier: "showDetails", sender: self)
         case .downloading:
             print("Downloading currently ...")
         case .iCloudDrive:
@@ -237,10 +237,10 @@ extension MasterViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
         guard let searchBarText = searchBar.text else { return }
         guard let searchBarScopeButtonTitles = searchBar.scopeButtonTitles else { return }
-        self.archive.filterContentForSearchText(searchBarText, scope: searchBarScopeButtonTitles[selectedScope])
+        archive.filterContentForSearchText(searchBarText, scope: searchBarScopeButtonTitles[selectedScope])
 
         // reload the table view data
-        self.tableView.reloadData()
+        tableView.reloadData()
     }
 }
 
@@ -249,9 +249,9 @@ extension MasterViewController: UISearchResultsUpdating {
         let searchBar = searchController.searchBar
         guard let searchBarText = searchBar.text else { return }
         guard let searchBarScopeButtonTitles = searchBar.scopeButtonTitles else { return }
-        self.archive.filterContentForSearchText(searchBarText, scope: searchBarScopeButtonTitles[searchBar.selectedScopeButtonIndex])
+        archive.filterContentForSearchText(searchBarText, scope: searchBarScopeButtonTitles[searchBar.selectedScopeButtonIndex])
 
         // reload the table view data
-        self.tableView.reloadData()
+        tableView.reloadData()
     }
 }

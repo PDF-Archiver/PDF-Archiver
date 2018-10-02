@@ -84,7 +84,7 @@ open class Snapshot: NSObject {
     }
 
     class func setLanguage(_ app: XCUIApplication) {
-        guard let cacheDirectory = self.cacheDirectory else {
+        guard let cacheDirectory = cacheDirectory else {
             print("CacheDirectory is not set - probably running on a physical device?")
             return
         }
@@ -101,7 +101,7 @@ open class Snapshot: NSObject {
     }
 
     class func setLocale(_ app: XCUIApplication) {
-        guard let cacheDirectory = self.cacheDirectory else {
+        guard let cacheDirectory = cacheDirectory else {
             print("CacheDirectory is not set - probably running on a physical device?")
             return
         }
@@ -121,7 +121,7 @@ open class Snapshot: NSObject {
     }
 
     class func setLaunchArguments(_ app: XCUIApplication) {
-        guard let cacheDirectory = self.cacheDirectory else {
+        guard let cacheDirectory = cacheDirectory else {
             print("CacheDirectory is not set - probably running on a physical device?")
             return
         }
@@ -155,7 +155,7 @@ open class Snapshot: NSObject {
         XCUIApplication().typeKey(XCUIKeyboardKeySecondaryFn, modifierFlags: [])
         #else
 
-        guard let app = self.app else {
+        guard let app = app else {
             print("XCUIApplication is not set. Please call setupSnapshot(app) before snapshot().")
             return
         }
@@ -249,7 +249,7 @@ private extension XCUIElementQuery {
             return element.isNetworkLoadingIndicator
         }
 
-        return self.containing(isNetworkLoadingIndicator)
+        return containing(isNetworkLoadingIndicator)
     }
 
     var deviceStatusBars: XCUIElementQuery {
@@ -261,7 +261,7 @@ private extension XCUIElementQuery {
             return element.isStatusBar(deviceWidth)
         }
 
-        return self.containing(isStatusBar)
+        return containing(isStatusBar)
     }
 }
 
