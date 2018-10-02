@@ -20,7 +20,7 @@
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No iCloud Drive Documents founds. Please use the PDF Archiver App for macOS to add Documents." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vbo-nv-V1x">
                     <rect key="frame" x="30" y="403" width="315" height="61"/>
                     <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="17"/>
-                    <color key="textColor" name="DarkGrey"/>
+                    <color key="textColor" name="TextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="120" verticalHuggingPriority="120" image="Logo" translatesAutoresizingMaskIntoConstraints="NO" id="R7H-ck-R5N">
@@ -45,7 +45,7 @@
     </objects>
     <resources>
         <image name="Logo" width="256" height="256"/>
-        <namedColor name="DarkGrey">
+        <namedColor name="TextColor">
             <color red="0.21299999952316284" green="0.24199999868869781" blue="0.28600001335144043" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
     </resources>

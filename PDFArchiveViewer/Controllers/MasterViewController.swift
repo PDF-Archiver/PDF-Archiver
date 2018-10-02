@@ -27,7 +27,6 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
 
     // MARK: - Properties
     @IBOutlet var tableView: UITableView!
-    @IBOutlet var searchFooter: SearchFooter!
 
     var detailViewController: DetailViewController?
     var archive = Archive()
@@ -55,9 +54,6 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
         // Setup the Scope Bar
         searchController.searchBar.scopeButtonTitles = ["All", "2018", "2017", "2016"]
         searchController.searchBar.delegate = self
-
-        // Setup the search footer
-        tableView.tableFooterView = searchFooter
 
         if let splitViewController = splitViewController {
             let controllers = splitViewController.viewControllers
@@ -228,8 +224,8 @@ extension MasterViewController: UITableViewDataSource {
         guard let view = view as? UITableViewHeaderFooterView else { return }
 
         // change colors
-        view.textLabel?.textColor = UIColor(named: "Headline1")
-        view.backgroundView?.backgroundColor = UIColor(named: "OffWhite")
+        view.textLabel?.textColor = UIColor(named: "MainTextColor")
+        view.backgroundView?.backgroundColor = UIColor(named: "MainBackgroundColor")
     }
 }
 

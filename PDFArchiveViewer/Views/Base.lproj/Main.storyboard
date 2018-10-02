@@ -17,10 +17,7 @@
                     <navigationBar key="navigationBar" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" largeTitles="YES" id="Pmd-2v-anx">
                         <rect key="frame" x="0.0" y="20" width="375" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="barTintColor" red="0.92138129472732544" green="0.9215582013130188" blue="0.92135167121887207" alpha="1" colorSpace="calibratedRGB"/>
-                        <textAttributes key="titleTextAttributes">
-                            <color key="textColor" name="DarkGrey"/>
-                        </textAttributes>
+                        <color key="barTintColor" name="MainBackgroundColor"/>
                     </navigationBar>
                     <connections>
                         <segue destination="PIm-xb-9tu" kind="relationship" relationship="rootViewController" id="hZM-UC-X0H"/>
@@ -123,23 +120,13 @@
                                     <outlet property="delegate" destination="PIm-xb-9tu" id="IEs-Qh-Gjm"/>
                                 </connections>
                             </tableView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gep-WE-N6c" customClass="SearchFooter" customModule="PDFArchiveViewer" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="bXy-2S-VGl"/>
-                                </constraints>
-                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="gep-WE-N6c" firstAttribute="leading" secondItem="gT4-6C-k5d" secondAttribute="leading" id="UvP-fW-rlg"/>
-                            <constraint firstAttribute="trailing" secondItem="gep-WE-N6c" secondAttribute="trailing" id="X32-5f-HOZ"/>
                             <constraint firstItem="x1X-8b-rb7" firstAttribute="top" secondItem="gT4-6C-k5d" secondAttribute="top" id="a61-mq-2hF"/>
                             <constraint firstItem="sAk-k2-4qg" firstAttribute="top" secondItem="x1X-8b-rb7" secondAttribute="bottom" id="i8W-fX-6zK"/>
                             <constraint firstAttribute="trailing" secondItem="x1X-8b-rb7" secondAttribute="trailing" id="oDp-5C-z6P"/>
                             <constraint firstItem="x1X-8b-rb7" firstAttribute="leading" secondItem="gT4-6C-k5d" secondAttribute="leading" id="vyb-8R-3Wx"/>
-                            <constraint firstItem="sAk-k2-4qg" firstAttribute="top" secondItem="gep-WE-N6c" secondAttribute="bottom" id="yN4-EY-vsP"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="tDQ-Zs-CDK">
@@ -152,7 +139,7 @@
                                     <rect key="frame" x="-3" y="6" width="239" height="30"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="25"/>
-                                    <color key="textColor" name="Headline1"/>
+                                    <color key="textColor" name="MainTextColor"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                             </subviews>
@@ -161,7 +148,6 @@
                     </navigationItem>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
                     <connections>
-                        <outlet property="searchFooter" destination="gep-WE-N6c" id="t7B-5T-xua"/>
                         <outlet property="tableView" destination="x1X-8b-rb7" id="Lu6-7F-2Xi"/>
                         <outlet property="view" destination="gT4-6C-k5d" id="jxQ-ST-pif"/>
                         <segue destination="vC3-pB-5Vb" kind="showDetail" identifier="showDetails" id="udr-wF-y1K"/>
@@ -178,10 +164,7 @@
                     <navigationBar key="navigationBar" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" largeTitles="YES" id="DjV-YW-jjY">
                         <rect key="frame" x="0.0" y="20" width="375" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="barTintColor" red="0.92138129472732544" green="0.9215582013130188" blue="0.92135167121887207" alpha="1" colorSpace="calibratedRGB"/>
-                        <textAttributes key="titleTextAttributes">
-                            <color key="textColor" name="DarkGrey"/>
-                        </textAttributes>
+                        <color key="barTintColor" name="MainBackgroundColor"/>
                     </navigationBar>
                     <connections>
                         <segue destination="JEX-9P-axG" kind="relationship" relationship="rootViewController" id="GKi-kA-LjT"/>
@@ -193,10 +176,10 @@
         </scene>
     </scenes>
     <resources>
-        <namedColor name="DarkGrey">
-            <color red="0.21299999952316284" green="0.24199999868869781" blue="0.28600001335144043" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+        <namedColor name="MainBackgroundColor">
+            <color red="0.98000001907348633" green="0.98000001907348633" blue="0.98000001907348633" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
-        <namedColor name="Headline1">
+        <namedColor name="MainTextColor">
             <color red="0.7929999828338623" green="0.25499999523162842" blue="0.31000000238418579" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
     </resources>

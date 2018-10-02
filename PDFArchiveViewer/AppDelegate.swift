@@ -28,6 +28,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        self.window?.tintColor = UIColor(named: "TextColor")
+        UISearchBar.appearance().tintColor = UIColor(named: "TextColor")
+        UINavigationBar.appearance().tintColor = UIColor(named: "TextColor")
+
         // Override point for customization after application launch.
         // swiftlint:disable force_cast force_unwrapping
         let splitViewController = window!.rootViewController as! UISplitViewController
@@ -36,9 +40,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         // swiftlint:enable force_cast force_unwrapping
         splitViewController.preferredDisplayMode = .allVisible
         splitViewController.delegate = self
-
-        UISearchBar.appearance().tintColor = UIColor.darkGray
-        UINavigationBar.appearance().tintColor = UIColor.darkGray
 
         return true
     }

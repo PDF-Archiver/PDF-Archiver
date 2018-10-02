@@ -53,7 +53,7 @@ class DetailViewController: UIViewController, Logging {
         documentView.displayMode = .singlePageContinuous
         documentView.autoScales = true
         documentView.interpolationQuality = .low
-        documentView.backgroundColor = .darkGray
+        documentView.backgroundColor = UIColor(named: "TextColorLight") ?? .darkGray
     }
 
     override func viewDidLoad() {

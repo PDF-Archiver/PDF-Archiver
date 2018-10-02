@@ -23,7 +23,7 @@
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="document name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rUi-If-D6N">
                         <rect key="frame" x="16" y="11" width="253" height="20"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                        <color key="textColor" name="DarkGrey"/>
+                        <color key="textColor" name="TextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="19. Sep 2004" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EHZ-TF-9ku">
@@ -65,7 +65,7 @@
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="tag1 tag2 tag3" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xVc-PW-jYj">
                         <rect key="frame" x="109" y="33" width="160" height="16"/>
                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                        <color key="textColor" name="DarkGrey"/>
+                        <color key="textColor" name="TextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                 </subviews>
@@ -103,7 +103,7 @@
     </objects>
     <resources>
         <image name="apple-icloud" width="48" height="48"/>
-        <namedColor name="DarkGrey">
+        <namedColor name="TextColor">
             <color red="0.21299999952316284" green="0.24199999868869781" blue="0.28600001335144043" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
     </resources>
