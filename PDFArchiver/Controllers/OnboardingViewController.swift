@@ -48,7 +48,23 @@ class OnboardingViewController: NSViewController {
     }
 
     @IBAction func closeButton(_ sender: NSButton?) {
-        self.dismiss(self)
+        if !(self.iAPHelperDelegate?.appUsagePermitted() ?? false) {
+            // ask for a subscription plan before closing the app
+            let alert = NSAlert()
+            alert.messageText = NSLocalizedString("no-license-title", comment: "No license: Title.")
+            alert.informativeText = NSLocalizedString("no-license-info", comment: "No license: Info.")
+            alert.alertStyle = .informational
+            alert.addButton(withTitle: NSLocalizedString("close", comment: "Close button in OnboardingView popup."))
+            alert.addButton(withTitle: "OK")
+
+            // user has selected the "close" button
+            if alert.runModal() == .alertFirstButtonReturn {
+                self.dismiss(self)
+            }
+        } else {
+            // app usage is permitted - dismiss the onboarding view controller
+            self.dismiss(self)
+        }
     }
 
     override func viewDidLoad() {

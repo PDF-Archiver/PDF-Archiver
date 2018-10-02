@@ -48,7 +48,7 @@ class Preferences: PreferencesDelegate, Logging {
                     do {
                         try FileManager.default.createDirectory(at: iCloudDrivePath, withIntermediateDirectories: true, attributes: nil)
                     } catch {
-                        print(error.localizedDescription)
+                        os_log("Create iCloud Container failed: %@", log: self.log, type: .error, error.localizedDescription)
                     }
                 }
 

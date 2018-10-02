@@ -20,19 +20,22 @@ private enum UserDefaultsKeys: String {
 final class AppStoreReviewRequest {
 
     static let shared = AppStoreReviewRequest()
+    private let currentVersion: String
 
     private var count: Int {
         didSet {
             UserDefaults.standard.set(self.count, forKey: UserDefaultsKeys.processCompletedCountKey.rawValue)
         }
     }
-    private let currentVersion: String
-    private let lastVersionPromptedForReview: String
+    private var lastVersionPromptedForReview: String {
+        didSet {
+            UserDefaults.standard.set(self.lastVersionPromptedForReview, forKey: UserDefaultsKeys.lastVersionPromptedForReviewKey.rawValue)
+        }
+    }
 
     private init() {
         // Get the current bundle version for the app
-        let infoDictionaryKey = kCFBundleVersionKey as String
-        guard let currentVersion = Bundle.main.object(forInfoDictionaryKey: infoDictionaryKey) as? String
+        guard let currentVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
             else { fatalError("Expected to find a bundle version in the info dictionary") }
         self.currentVersion = currentVersion
 
@@ -41,17 +44,24 @@ final class AppStoreReviewRequest {
         self.lastVersionPromptedForReview = UserDefaults.standard.string(forKey: UserDefaultsKeys.lastVersionPromptedForReviewKey.rawValue) ?? ""
     }
 
+    private func isSameMajorMinorVersion(version1: String, version2: String) -> Bool {
+        return version1.split(separator: ".").dropLast().joined(separator: ".") == version2.split(separator: ".").dropLast().joined(separator: ".")
+    }
+
     public func incrementCount() {
+        if isSameMajorMinorVersion(version1: self.currentVersion, version2: self.lastVersionPromptedForReview) {
+            return
+        }
         self.count += 1
-        print("Process completed \(count) time(s)")
 
         // Has the process been completed several times and the user has not already been prompted for this version?
-        if self.count >= 4 && self.currentVersion != lastVersionPromptedForReview {
+        if self.count >= 5 {
             let twoSecondsFromNow = DispatchTime.now() + 2.0
             DispatchQueue.main.asyncAfter(deadline: twoSecondsFromNow) {
                 if #available(OSX 10.14, *) {
                     SKStoreReviewController.requestReview()
-                    UserDefaults.standard.set(self.currentVersion, forKey: UserDefaultsKeys.lastVersionPromptedForReviewKey.rawValue)
+                    self.lastVersionPromptedForReview = self.currentVersion
+                    self.count = 0
                 }
             }
         }
