@@ -64,6 +64,7 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
 
         // setup background view controller
         tableView.backgroundView = Bundle.main.loadNibNamed("EmptyBackgroundView", owner: nil, options: nil)?.first as? UIView
+        tableView.separatorStyle = .none
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -146,8 +147,10 @@ extension MasterViewController: DocumentsQueryDelegate {
         // setup background view controller
         if documents.isEmpty {
             tableView.backgroundView = Bundle.main.loadNibNamed("EmptyBackgroundView", owner: nil, options: nil)?.first as? UIView
+            tableView.separatorStyle = .none
         } else {
             tableView.backgroundView = nil
+            tableView.separatorStyle = .singleLine
         }
 
         // setup search toolbar
