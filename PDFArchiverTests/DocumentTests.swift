@@ -105,13 +105,30 @@ class DocumentTests: XCTestCase {
         var tags = Set([tag1, tag2, tag3])
         let document = Document(path: path, availableTags: &tags)
 
-        var testArchivePath = URL(fileURLWithPath: "~/Downloads/Archive/")
         do {
-            let (newBasepath, filename) = try document.getRenamingPath(archivePath: testArchivePath)
-            testArchivePath.appendPathComponent("2010")
-            XCTAssertEqual(newBasepath, testArchivePath)
-
+            let (foldername, filename) = try document.getRenamingPath(slugifyName: true)
+            XCTAssertEqual(foldername, "2010")
             XCTAssertEqual(filename, path.lastPathComponent)
+        } catch {
+            XCTAssert(false)
+        }
+    }
+
+    func testDocumentRenamingWithSpaceInDescriptionSlugify() {
+        let path = URL(fileURLWithPath: "~/Downloads/Testscan 1.pdf")
+        var tags = Set([tag1, tag2, tag3])
+        let document = Document(path: path, availableTags: &tags)
+
+        document.specification = "This is a Test!"
+        document.documentTags = [tag1]
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        document.date = dateFormatter.date(from: "2010-05-12")!
+
+        do {
+            let (foldername, filename) = try document.getRenamingPath(slugifyName: true)
+            XCTAssertEqual(foldername, "2010")
+            XCTAssertEqual(filename, "2010-05-12--this-is-a-test__tag1.pdf")
         } catch {
             XCTAssert(false)
         }

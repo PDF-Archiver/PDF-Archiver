@@ -55,11 +55,16 @@ class DataModel: Logging {
             // rename the document
             var result = false
             self.prefs.accessSecurityScope {
-                result = document.rename(archivePath: archivePath)
+                result = document.rename(archivePath: archivePath, slugify: self.prefs.slugifyNames)
             }
 
             if result {
+                // update the documents
                 self.viewControllerDelegate?.setDocuments(documents: self.untaggedDocuments)
+
+                // increment count an request a review?
+                AppStoreReviewRequest.shared.incrementCount()
+
                 return true
             }
         }

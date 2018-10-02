@@ -15,6 +15,8 @@ protocol PreferencesDelegate: class {
     var archiveModificationDate: Date? { get set }
 
     var slugifyNames: Bool { get set }
+    var useiCloudDrive: Bool { get set }
+    var iCloudDrivePath: URL? {get}
     var analyseAllFolders: Bool { get set }
     var convertPictures: Bool { get set }
 
@@ -23,12 +25,41 @@ protocol PreferencesDelegate: class {
 }
 
 class Preferences: PreferencesDelegate, Logging {
+
     fileprivate var _archivePath: URL?
     fileprivate var _observedPath: URL?
+    private(set) var iCloudDrivePath = FileManager.default.url(forUbiquityContainerIdentifier: nil)?.appendingPathComponent("Documents")
     weak var dataModelTagsDelegate: DataModelTagsDelegate?
     weak var archiveDelegate: ArchiveDelegate?
     var archiveModificationDate: Date?
     var slugifyNames: Bool = true
+    var useiCloudDrive: Bool = false {
+        didSet {
+
+            if let iCloudDrivePath = self.iCloudDrivePath,
+                self.useiCloudDrive {
+                // move archive files
+                self.accessSecurityScope {
+                    self.archiveDelegate?.moveArchivedDocuments(from: self._archivePath!, to: iCloudDrivePath)
+                }
+
+                // create icloud container
+                if !FileManager.default.fileExists(atPath: iCloudDrivePath.path) {
+                    do {
+                        try FileManager.default.createDirectory(at: iCloudDrivePath, withIntermediateDirectories: true, attributes: nil)
+                    } catch {
+                        os_log("Create iCloud Container failed: %@", log: self.log, type: .error, error.localizedDescription)
+                    }
+                }
+
+                // save the icloud drive container path as the archive
+                self.archivePath = iCloudDrivePath
+            }
+
+            // update documents
+            self.archiveDelegate?.updateDocumentsAndTags()
+        }
+    }
     var analyseAllFolders: Bool = false {
         didSet {
             self.archiveDelegate?.updateDocumentsAndTags()
@@ -64,10 +95,18 @@ class Preferences: PreferencesDelegate, Logging {
     var archivePath: URL? {
         // ATTENTION: only set archive path, after an OpenPanel dialog
         get {
-            return self._archivePath
+            return self.useiCloudDrive ? self.iCloudDrivePath : self._archivePath
         }
         set {
             guard let newValue = newValue else { return }
+
+            // move archive files
+            if let iCloudDrivePath = self.iCloudDrivePath {
+                self.accessSecurityScope {
+                    self.archiveDelegate?.moveArchivedDocuments(from: iCloudDrivePath, to: newValue)
+                }
+            }
+
             // save the security scope bookmark [https://stackoverflow.com/a/35863729]
             do {
                 let bookmark = try newValue.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
@@ -115,6 +154,9 @@ class Preferences: PreferencesDelegate, Logging {
         if let date = self.archiveModificationDate {
             UserDefaults.standard.set(date, forKey: "archiveModificationDate")
         }
+
+        // save the useiCloudDrive flag
+        UserDefaults.standard.set(self.useiCloudDrive, forKey: "useiCloudDrive")
     }
 
     func load() {
@@ -145,6 +187,9 @@ class Preferences: PreferencesDelegate, Logging {
         if let date = UserDefaults.standard.object(forKey: "archiveModificationDate") as? Date {
             self.archiveModificationDate = date
         }
+
+        // load the useiCloudDrive flag
+        self.useiCloudDrive = UserDefaults.standard.bool(forKey: "useiCloudDrive")
     }
 
     func accessSecurityScope(closure: () -> Void) {

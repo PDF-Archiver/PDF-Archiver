@@ -13,7 +13,10 @@ class Document: NSObject, Logging {
     // structure for PDF documents on disk
     var path: URL
     @objc var name: String
-    @objc var documentDone: String = ""
+    @objc var documentDone: String {
+        return self.alreadyRenamed ? "✔️" : ""
+    }
+    var alreadyRenamed = false
     var date = Date()
     var specification: String? {
         didSet {
@@ -74,22 +77,24 @@ class Document: NSObject, Logging {
     }
 
     @discardableResult
-    func rename(archivePath: URL) -> Bool {
-        let newBasePath: URL
+    func rename(archivePath: URL, slugify: Bool) -> Bool {
+        let foldername: String
         let filename: String
         do {
-            (newBasePath, filename) = try getRenamingPath(archivePath: archivePath)
+            (foldername, filename) = try getRenamingPath(slugifyName: slugify)
         } catch {
             return false
         }
 
         // check, if this path already exists ... create it
-        let newFilepath = newBasePath.appendingPathComponent(filename)
+        let newFilepath = archivePath
+            .appendingPathComponent(foldername)
+            .appendingPathComponent(filename)
         let fileManager = FileManager.default
         do {
-            if !(newBasePath.hasDirectoryPath) {
-                try fileManager.createDirectory(at: newBasePath,
-                                                withIntermediateDirectories: false, attributes: nil)
+            let folderPath = newFilepath.deletingLastPathComponent()
+            if !fileManager.fileExists(atPath: folderPath.path) {
+                try fileManager.createDirectory(at: folderPath, withIntermediateDirectories: true, attributes: nil)
             }
 
             // test if the document name already exists in archive, otherwise move it
@@ -108,7 +113,7 @@ class Document: NSObject, Logging {
         }
         self.name = String(newFilepath.lastPathComponent)
         self.path = newFilepath
-        self.documentDone = "✔️"
+        self.alreadyRenamed = true
 
         do {
             var tags = [String]()
@@ -124,14 +129,14 @@ class Document: NSObject, Logging {
         return true
     }
 
-    internal func getRenamingPath(archivePath: URL) throws -> (new_basepath: URL, filename: String) {
+    internal func getRenamingPath(slugifyName: Bool) throws -> (foldername: String, filename: String) {
         // create a filename and rename the document
         guard self.documentTags.count > 0 else {
             dialogOK(messageKey: "renaming_failed", infoKey: "check_document_tags", style: .warning)
             throw DocumentError.tags
         }
-        guard let description = self.specification,
-              description != "" else {
+        guard var specification = self.specification,
+              specification != "" else {
             dialogOK(messageKey: "renaming_failed", infoKey: "check_document_description", style: .warning)
             throw DocumentError.description
         }
@@ -141,6 +146,11 @@ class Document: NSObject, Logging {
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let dateStr = dateFormatter.string(from: self.date)
 
+        // get description
+        if slugifyName {
+            specification = specification.slugify()
+        }
+
         // get tags
         var tagStr = ""
         for tag in Array(self.documentTags).sorted(by: { $0.name < $1.name }) {
@@ -149,10 +159,9 @@ class Document: NSObject, Logging {
         tagStr = String(tagStr.dropLast(1))
 
         // create new filepath
-        let filename = "\(dateStr)--\(description)__\(tagStr).pdf"
-        let newBasepath = archivePath.appendingPathComponent(String(dateStr.prefix(4)))
-
-        return (newBasepath, filename)
+        let filename = "\(dateStr)--\(specification)__\(tagStr).pdf"
+        let foldername = String(dateStr.prefix(4))
+        return (foldername, filename)
     }
 
     // MARK: - Other Stuff

@@ -14,7 +14,7 @@ extension ViewController {
 
     // MARK: - PDF Archiver Menu
     @IBAction func showPreferencesMenuItem(_ sender: NSMenuItem) {
-        self.performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "prefsSegue"), sender: self)
+        self.performSegue(withIdentifier: "prefsSegue", sender: self)
     }
 
     // MARK: - Window Menu
@@ -56,8 +56,21 @@ extension ViewController {
     }
 
     // MARK: - Help Menu
+
+    @IBAction func showHelp(_ sender: NSMenuItem) {
+        NSWorkspace.shared.open(Constants.WebsiteEndpoints.faq.url)
+    }
+
+    @IBAction func showPrivacy(_ sender: NSMenuItem) {
+        NSWorkspace.shared.open(Constants.WebsiteEndpoints.privacy.url)
+    }
+
+    @IBAction func showImprint(_ sender: NSMenuItem) {
+        NSWorkspace.shared.open(Constants.WebsiteEndpoints.imprint.url)
+    }
+
     @IBAction func showOnboardingMenuItem(_ sender: AnyObject) {
-        self.performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "onboardingSegue"), sender: self)
+        self.performSegue(withIdentifier: "onboardingSegue", sender: self)
     }
 
     @IBAction func updateViewMenuItem(_ sender: AnyObject) {
@@ -65,11 +78,21 @@ extension ViewController {
         self.updateView(updatePDF: true)
     }
 
+    @IBAction func showManageSubscriptions(_ sender: NSMenuItem) {
+        NSWorkspace.shared.open(Constants.manageSubscription)
+    }
+
+    @IBAction func writeAppStoreReview(_ sender: NSMenuItem) {
+        AppStoreReviewRequest.shared.requestReviewManually(for: Constants.appId)
+    }
+
     @IBAction func resetCacheMenuItem(_ sender: NSMenuItem) {
-        // remove preferences - initialize it temporary and kill the app directly afterwards
-        self.dataModelInstance.prefs = Preferences()
         // remove all user defaults
         UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+
+        // remove preferences - initialize it temporary and kill the app directly afterwards
+        self.dataModelInstance.prefs = Preferences()
+
         // close application
         NSApplication.shared.terminate(self)
     }

@@ -13,13 +13,14 @@ extension ViewController {
     // MARK: - segue stuff
     override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
         if let tabViewController = segue.destinationController as? NSTabViewController {
-            for controller in tabViewController.childViewControllers {
+            for controller in tabViewController.children {
                 if let controller = controller as? MainPreferencesVC {
                     controller.preferencesDelegate = self.dataModelInstance.prefs
                     controller.viewControllerDelegate = self
                 } else if let controller = controller as? DonationPreferencesVC {
                     controller.preferencesDelegate = self.dataModelInstance.prefs
                     controller.iAPHelperDelegate = self.dataModelInstance.store
+                    self.dataModelInstance.store.donationPreferencesVCDelegate = controller
                 }
             }
 
@@ -88,17 +89,13 @@ extension ViewController: NSTableViewDelegate {
 
 // MARK: - Selection changes in the description or search field
 extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
-    override func controlTextDidChange(_ notification: Notification) {
+    func controlTextDidChange(_ notification: Notification) {
         guard let identifier = (notification.object as? NSTextField)?.identifier else { return }
         if identifier.rawValue == "documentDescriptionField" {
             guard let textField = notification.object as? NSTextField,
                   let selectedDocument = self.documentAC.selectedObjects.first as? Document else { return }
 
-            var description = textField.stringValue.lowercased()
-            if self.dataModelInstance.prefs.slugifyNames {
-                description = description.slugify()
-            }
-            selectedDocument.specification = description
+            selectedDocument.specification = textField.stringValue.lowercased()
 
         } else if identifier.rawValue == "tagSearchField" {
             guard let searchField = notification.object as? NSSearchField else { return }
@@ -106,14 +103,14 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
         }
     }
 
-    override func controlTextDidEndEditing(_ notification: Notification) {
+    func controlTextDidEndEditing(_ notification: Notification) {
         // check if notification comes from the tagSearchField
         guard let field = notification.object as? NSSearchField,
               field.identifier?.rawValue == "tagSearchField" else { return }
 
         // check if the last key pressed is the Return key
         guard let textMovement = notification.userInfo?["NSTextMovement"] as? Int else { return }
-        if textMovement != NSReturnTextMovement.hashValue {
+        if textMovement != NSReturnTextMovement {
             return
         }
 

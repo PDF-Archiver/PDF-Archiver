@@ -62,7 +62,7 @@
 /* Class = "NSWindow"; title = "PDF Archiver"; ObjectID = "IQv-IB-iLA"; */
 "IQv-IB-iLA.title" = "PDF Archiver";
 
-/* Class = "NSTextFieldCell"; title = "Archive Path"; ObjectID = "Ju7-wj-fHp"; */
+/* Class = "NSTextFieldCell"; title = "Archive Folder"; ObjectID = "Ju7-wj-fHp"; */
 "Ju7-wj-fHp.title" = "Archiv Pfad";
 
 /* Class = "NSMenuItem"; title = "Show All"; ObjectID = "Kd2-mp-pUS"; */
@@ -254,12 +254,6 @@
 /* Class = "NSTextFieldCell"; title = "✔️"; ObjectID = "zWE-Hy-4ww"; */
 "zWE-Hy-4ww.title" = "✔️";
 
-/* Class = "NSTabViewItem"; ibExternalAccessibilityDescription = "Main preferences panel"; ObjectID = "XBq-Fl-zZt"; */
-"XBq-Fl-zZt.ibExternalAccessibilityDescription" = "Hauptseite der Einstellungen";
-
-/* Class = "NSTabViewItem"; ibExternalAccessibilityDescription = "Donation preferences tab"; ObjectID = "qZa-Lf-ldb"; */
-"qZa-Lf-ldb.ibExternalAccessibilityDescription" = "Spendenseite der Einstellungen";
-
 /* Class = "NSTextFieldCell"; title = "Tags"; ObjectID = "Cvq-op-wAk"; */
 "Cvq-op-wAk.title" = "Tags";
 
@@ -355,3 +349,12 @@
 
 /* Class = "NSBox"; title = "Archive"; ObjectID = "qgP-PZ-Vec"; */
 "qgP-PZ-Vec.title" = "Archiv";
+
+/* Class = "NSTextFieldCell"; title = "iCloud"; ObjectID = "urS-Lh-uQS"; */
+"urS-Lh-uQS.title" = "iCloud";
+
+/* Class = "NSButtonCell"; title = "Save Documents in iCloud Drive"; ObjectID = "xlr-HK-YOq"; */
+"xlr-HK-YOq.title" = "Speichert die Dokumente in iCloud Drive";
+
+/* Class = "NSMenuItem"; title = "App Store Review"; ObjectID = "l3h-jx-Ssa"; */
+"l3h-jx-Ssa.title" = "App Store Review";

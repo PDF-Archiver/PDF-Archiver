@@ -48,7 +48,23 @@ class OnboardingViewController: NSViewController {
     }
 
     @IBAction func closeButton(_ sender: NSButton?) {
-        self.dismiss(self)
+        if !(self.iAPHelperDelegate?.appUsagePermitted() ?? false) {
+            // ask for a subscription plan before closing the app
+            let alert = NSAlert()
+            alert.messageText = NSLocalizedString("no-license-title", comment: "No license: Title.")
+            alert.informativeText = NSLocalizedString("no-license-info", comment: "No license: Info.")
+            alert.alertStyle = .informational
+            alert.addButton(withTitle: NSLocalizedString("close", comment: "Close button in OnboardingView popup."))
+            alert.addButton(withTitle: "OK")
+
+            // user has selected the "close" button
+            if alert.runModal() == .alertFirstButtonReturn {
+                self.dismiss(self)
+            }
+        } else {
+            // app usage is permitted - dismiss the onboarding view controller
+            self.dismiss(self)
+        }
     }
 
     override func viewDidLoad() {
@@ -63,12 +79,11 @@ class OnboardingViewController: NSViewController {
 
     override func viewWillAppear() {
         let cornerRadius = CGFloat(3)
-        let customViewColor = NSColor(named: NSColor.Name("DarkGreyBlue"))!.withAlphaComponent(0.05).cgColor
+        let customViewColor = NSColor(named: "CustomViewBackground")!.withAlphaComponent(0.05).cgColor
 
         // set background color
-        self.baseView.wantsLayer = true
-        self.baseView.layer?.backgroundColor = NSColor(named: NSColor.Name("OffWhite"))!.cgColor
-        self.baseView.layer?.cornerRadius = cornerRadius
+        // TODO: do we really need this?
+        self.baseView.layout()
 
         // set background color of the view
         self.customView1.wantsLayer = true
@@ -98,10 +113,10 @@ extension OnboardingViewController: OnboardingVCDelegate {
             // update the locked/unlocked indicator
             if let appUsagePermitted = self.iAPHelperDelegate?.appUsagePermitted(),
                 appUsagePermitted {
-                self.lockIndicator.image = NSImage(named: NSImage.Name("NSLockUnlockedTemplate"))
+                self.lockIndicator.image = NSImage(named: "NSLockUnlockedTemplate")
 
             } else {
-                self.lockIndicator.image = NSImage(named: NSImage.Name("NSLockLockedTemplate"))
+                self.lockIndicator.image = NSImage(named: "NSLockLockedTemplate")
 
                 // update the progress indicator
                 if (self.iAPHelperDelegate?.requestRunning ?? 0) != 0 {
