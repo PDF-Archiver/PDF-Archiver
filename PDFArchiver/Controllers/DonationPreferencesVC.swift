@@ -7,9 +7,9 @@
 //
 
 import Cocoa
-import StoreKit
 import Foundation
 import os.log
+import StoreKit
 
 protocol DonationPreferencesVCDelegate: class {
     func updateGUI()

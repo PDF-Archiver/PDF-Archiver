@@ -56,11 +56,11 @@ class Archive: ArchiveDelegate, Logging {
                 let fileManager = FileManager.default
                 folders = try fileManager.contentsOfDirectory(at: archivePath, includingPropertiesForKeys: [.nameKey], options: .skipsHiddenFiles)
                     // only show folders no files
-                    .filter({ $0.hasDirectoryPath })
+                    .filter { $0.hasDirectoryPath }
                     // only show folders with year numbers
-                    .filter({ URL(fileURLWithPath: $0.path).lastPathComponent.prefix(2) == "20" || URL(fileURLWithPath: $0.path).lastPathComponent.prefix(2) == "19" })
+                    .filter { URL(fileURLWithPath: $0.path).lastPathComponent.prefix(2) == "20" || URL(fileURLWithPath: $0.path).lastPathComponent.prefix(2) == "19" }
                     // sort folders by year
-                    .sorted(by: { $0.path > $1.path })
+                    .sorted { $0.path > $1.path }
 
                 // update the archiveModificationDate
                 let attributes = try fileManager.attributesOfItem(atPath: archivePath.path)
@@ -86,7 +86,7 @@ class Archive: ArchiveDelegate, Logging {
             var tags = Set<Tag>()
             for document in self.dataModelTagsDelegate?.getUntaggedDocuments() ?? [] {
                 for tag in document.documentTags {
-                    if let filteredTag = tags.filter({ $0.name == tag.name }).first {
+                    if let filteredTag = tags.first(where: { $0.name == tag.name }) {
                         filteredTag.count += 1
                     } else {
                         tag.count = 1
@@ -107,7 +107,9 @@ class Archive: ArchiveDelegate, Logging {
     func getPDFs(_ sourceFolder: URL) -> [URL] {
         // get all files in the source folder
         let fileManager = FileManager.default
-        let files = (fileManager.enumerator(at: sourceFolder, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles],
+        let files = (fileManager.enumerator(at: sourceFolder,
+                                            includingPropertiesForKeys: nil,
+                                            options: [.skipsHiddenFiles],
                                             errorHandler: nil)?.allObjects as? [URL]) ?? []
         // pick pdfs and convert pictures
         var firstConvertedDocument = true
@@ -149,10 +151,10 @@ class Archive: ArchiveDelegate, Logging {
 
         // Create a PDF page instance from the image
         let image = NSImage(byReferencing: inPath)
-        let pdfPage = PDFPage(image: image)
+        guard let pdfPage = PDFPage(image: image) else { fatalError("No PDF page found.") }
 
         // Insert the PDF page into your document
-        pdfDocument.insert(pdfPage!, at: 0)
+        pdfDocument.insert(pdfPage, at: 0)
 
         // save the pdf document
         self.preferencesDelegate?.accessSecurityScope {
@@ -163,8 +165,7 @@ class Archive: ArchiveDelegate, Logging {
             do {
                 try fileManager.trashItem(at: inPath, resultingItemURL: nil)
             } catch let error {
-                let log = OSLog(subsystem: Bundle.main.bundleIdentifier!, category: "convertToPDF")
-                os_log("Can not trash file: %@", log: log, type: .debug, error.localizedDescription)
+                os_log("Can not trash file: %@", log: self.log, type: .debug, error.localizedDescription)
             }
         }
     }

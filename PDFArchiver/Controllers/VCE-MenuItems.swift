@@ -6,8 +6,8 @@
 //  Copyright © 2018 Julian Kahnert. All rights reserved.
 //
 
-import Quartz
 import os.log
+import Quartz
 
 // MARK: - Menu Items
 extension ViewController {
@@ -88,7 +88,8 @@ extension ViewController {
 
     @IBAction func resetCacheMenuItem(_ sender: NSMenuItem) {
         // remove all user defaults
-        UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+        guard let bundleIdentifier = Bundle.main.bundleIdentifier else { fatalError("Bundle Identifiert not found.") }
+        UserDefaults.standard.removePersistentDomain(forName: bundleIdentifier)
 
         // remove preferences - initialize it temporary and kill the app directly afterwards
         self.dataModelInstance.prefs = Preferences()

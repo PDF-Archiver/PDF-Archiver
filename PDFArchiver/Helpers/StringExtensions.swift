@@ -22,7 +22,7 @@ extension String {
             .replacingOccurrences(of: "ü", with: "ue")
             .folding(options: .diacriticInsensitive, locale: .current)
             .components(separatedBy: slugCharacterSet.inverted)
-            .filter { $0 != "" }
+            .filter { !$0.isEmpty }
             .joined(separator: separator)
     }
 

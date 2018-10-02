@@ -22,7 +22,7 @@ extension SKProduct {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.locale = priceLocale
-        return formatter.string(from: price)!
+        return formatter.string(from: price) ?? ""
     }
 }
 
@@ -49,7 +49,7 @@ protocol Logging {
 
 extension Logging {
     internal var log: OSLog {
-        return OSLog(subsystem: Bundle.main.bundleIdentifier!,
+        return OSLog(subsystem: Bundle.main.bundleIdentifier ?? "App",
                      category: String(describing: type(of: self)))
     }
 }

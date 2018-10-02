@@ -44,7 +44,8 @@ class OnboardingViewController: NSViewController {
         self.iAPHelperDelegate?.buyProduct("SUBSCRIPTION_YEARLY")
     }
     @IBAction func manageSubscriptionsButtonClicked(_ sender: NSButton) {
-        NSWorkspace.shared.open(URL(string: "https://apps.apple.com/account/subscriptions")!)
+        guard let subscriptionUrl = URL(string: "https://apps.apple.com/account/subscriptions") else { fatalError("Subscription URL not found.") }
+        NSWorkspace.shared.open(subscriptionUrl)
     }
 
     @IBAction func closeButton(_ sender: NSButton?) {
@@ -79,7 +80,7 @@ class OnboardingViewController: NSViewController {
 
     override func viewWillAppear() {
         let cornerRadius = CGFloat(3)
-        let customViewColor = NSColor(named: "CustomViewBackground")!.withAlphaComponent(0.05).cgColor
+        let customViewColor = NSColor(named: "CustomViewBackground")?.withAlphaComponent(0.05).cgColor
 
         // set background color
         // TODO: do we really need this?

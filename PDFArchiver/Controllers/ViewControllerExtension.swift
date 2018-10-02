@@ -6,8 +6,8 @@
 //  Copyright © 2018 Julian Kahnert. All rights reserved.
 //
 
-import Quartz
 import os.log
+import Quartz
 
 extension ViewController {
     // MARK: - segue stuff
@@ -53,7 +53,7 @@ extension ViewController: ViewControllerDelegate {
         self.tagAC.content = self.dataModelInstance.tags
 
         // test if no documents exist in document table view
-        if self.dataModelInstance.untaggedDocuments.count == 0 {
+        if self.dataModelInstance.untaggedDocuments.isEmpty {
             self.pdfContentView.document = nil
             self.datePicker.dateValue = Date()
             self.specificationField.stringValue = ""
@@ -123,8 +123,9 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
         // try to get the selected tag
         var selectedTag: Tag
         let tags = self.tagAC.arrangedObjects as? [Tag] ?? []
-        if tags.count > 0 {
-            selectedTag = tags.first!
+        if !tags.isEmpty,
+            let firstTag = tags.first {
+            selectedTag = firstTag
         } else {
             // no tag selected - get the name of the search field
             var tagName = self.tagSearchField.stringValue.lowercased()

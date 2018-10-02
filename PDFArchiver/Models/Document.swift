@@ -64,7 +64,7 @@ class Document: NSObject, Logging {
 
             // get the available tags of the archive
             for documentTagName in documentTagNames {
-                if let availableTag = availableTags.filter({$0.name == documentTagName}).first {
+                if let availableTag = availableTags.first(where: { $0.name == documentTagName }) {
                     availableTag.count += 1
                     self.documentTags.insert(availableTag)
                 } else {
@@ -131,12 +131,12 @@ class Document: NSObject, Logging {
 
     internal func getRenamingPath(slugifyName: Bool) throws -> (foldername: String, filename: String) {
         // create a filename and rename the document
-        guard self.documentTags.count > 0 else {
+        guard !self.documentTags.isEmpty else {
             dialogOK(messageKey: "renaming_failed", infoKey: "check_document_tags", style: .warning)
             throw DocumentError.tags
         }
         guard var specification = self.specification,
-              specification != "" else {
+              !specification.isEmpty else {
             dialogOK(messageKey: "renaming_failed", infoKey: "check_document_description", style: .warning)
             throw DocumentError.description
         }

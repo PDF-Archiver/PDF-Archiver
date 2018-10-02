@@ -6,8 +6,8 @@
 //  Copyright © 2018 Julian Kahnert. All rights reserved.
 //
 
-import XCTest
 @testable import PDFArchiver
+import XCTest
 
 class DateParserTests: XCTestCase {
     let dateParser = DateParser()
@@ -30,8 +30,7 @@ class DateParserTests: XCTestCase {
     func testDateInvalidDates() {
         for rawDate in ["2010-13-12", "2010-04-31", "2010-13-13", "2010-04-31"] {
             let out = self.dateParser.parse(rawDate)
-            XCTAssertNil(out)
-            XCTAssertNil(out, "Invalid string '\(rawDate)' found, but string parsed: \(out!.date)")
+            XCTAssertNil(out, "Invalid string '\(rawDate)' found, but string parsed: \(out?.date)")
         }
     }
 

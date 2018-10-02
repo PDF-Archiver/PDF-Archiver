@@ -6,8 +6,8 @@
 //  Copyright © 2018 Julian Kahnert. All rights reserved.
 //
 
-import XCTest
 @testable import PDFArchiver
+import XCTest
 
 class DocumentTests: XCTestCase {
 
@@ -42,7 +42,7 @@ class DocumentTests: XCTestCase {
         // tags
         var documentTagNames = [String]()
         var documentTagCounts = [Int]()
-        for tag in document.documentTags.sorted(by: { $0.name < $1.name}) {
+        for tag in document.documentTags.sorted(by: { $0.name < $1.name }) {
             documentTagNames.append(tag.name)
             documentTagCounts.append(tag.count)
         }
@@ -123,7 +123,7 @@ class DocumentTests: XCTestCase {
         document.documentTags = [tag1]
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
-        document.date = dateFormatter.date(from: "2010-05-12")!
+        document.date = dateFormatter.date(from: "2010-05-12") ?? Date()
 
         do {
             let (foldername, filename) = try document.getRenamingPath(slugifyName: true)

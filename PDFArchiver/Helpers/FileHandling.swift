@@ -6,8 +6,8 @@
 //  Copyright © 2018 Julian Kahnert. All rights reserved.
 //
 
-import Quartz
 import os.log
+import Quartz
 
 func getOpenPanel(_ title: String) -> NSOpenPanel {
     let openPanel = NSOpenPanel()

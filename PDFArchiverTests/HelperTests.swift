@@ -6,8 +6,8 @@
 //  Copyright © 2018 Julian Kahnert. All rights reserved.
 //
 
-import XCTest
 @testable import PDFArchiver
+import XCTest
 
 class HelperTests: XCTestCase {
 
