@@ -29,6 +29,7 @@ desc "Build Beta-Version & Upload it to TestFlight."
 lane :beta do
   build_app(
     scheme: "PDFArchiveViewer",
+    workspace: "PDFArchiveViewer.xcworkspace",
     include_bitcode: true)
   changelog_from_git_commits
   upload_to_testflight(

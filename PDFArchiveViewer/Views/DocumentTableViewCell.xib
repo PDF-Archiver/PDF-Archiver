@@ -21,7 +21,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="document name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rUi-If-D6N">
-                        <rect key="frame" x="16" y="11" width="253" height="20"/>
+                        <rect key="frame" x="16" y="11" width="266" height="20"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <color key="textColor" name="TextColor"/>
                         <nil key="highlightedColor"/>
@@ -35,8 +35,8 @@
                         <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="s3Z-bu-JK2">
-                        <rect key="frame" x="274" y="11" width="30" height="38"/>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="s3Z-bu-JK2" userLabel="Download Status View">
+                        <rect key="frame" x="287" y="11" width="30" height="38"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="apple-icloud" adjustsImageSizeForAccessibilityContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MLT-ef-xDl">
                                 <rect key="frame" x="0.0" y="4" width="30" height="30"/>
@@ -62,12 +62,14 @@
                             <constraint firstAttribute="width" constant="30" id="j25-rj-04e"/>
                         </constraints>
                     </view>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="tag1 tag2 tag3" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xVc-PW-jYj">
-                        <rect key="frame" x="109" y="33" width="160" height="16"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                        <color key="textColor" name="TextColor"/>
-                        <nil key="highlightedColor"/>
-                    </label>
+                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iFq-pY-ZNZ" customClass="TagListView" customModule="TagListView">
+                        <rect key="frame" x="111" y="33" width="168" height="16"/>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                <real key="value" value="5"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </view>
                 </subviews>
                 <constraints>
                     <constraint firstItem="rUi-If-D6N" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="2mh-gh-b9B"/>
@@ -76,17 +78,18 @@
                     <constraint firstItem="rUi-If-D6N" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="CR7-Ci-ana"/>
                     <constraint firstItem="EHZ-TF-9ku" firstAttribute="bottom" secondItem="H2p-sc-9uM" secondAttribute="bottomMargin" id="H39-1v-gQ4"/>
                     <constraint firstItem="s3Z-bu-JK2" firstAttribute="leading" secondItem="rUi-If-D6N" secondAttribute="trailing" constant="5" id="HFR-kt-qOr"/>
+                    <constraint firstAttribute="trailing" secondItem="s3Z-bu-JK2" secondAttribute="trailing" constant="3" id="IPb-2f-4UU"/>
                     <constraint firstItem="rUi-If-D6N" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="Niu-bU-hp0"/>
                     <constraint firstItem="s3Z-bu-JK2" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="Nsh-Hs-9QP"/>
-                    <constraint firstItem="xVc-PW-jYj" firstAttribute="leading" secondItem="EHZ-TF-9ku" secondAttribute="trailing" constant="8" id="P52-nl-0oB"/>
+                    <constraint firstItem="s3Z-bu-JK2" firstAttribute="leading" secondItem="iFq-pY-ZNZ" secondAttribute="trailing" constant="8" id="O6V-yR-u2v"/>
                     <constraint firstAttribute="bottomMargin" secondItem="s3Z-bu-JK2" secondAttribute="bottom" id="QS4-jc-pqj"/>
-                    <constraint firstAttribute="trailingMargin" secondItem="s3Z-bu-JK2" secondAttribute="trailing" id="Udx-CM-EuW"/>
                     <constraint firstItem="EHZ-TF-9ku" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="VFD-PK-UZo"/>
                     <constraint firstItem="EHZ-TF-9ku" firstAttribute="bottom" secondItem="H2p-sc-9uM" secondAttribute="bottomMargin" id="XJ7-fU-Civ"/>
                     <constraint firstItem="rUi-If-D6N" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="ZZ7-6K-yHf"/>
-                    <constraint firstItem="xVc-PW-jYj" firstAttribute="bottom" secondItem="s3Z-bu-JK2" secondAttribute="bottom" id="aqp-Dd-VhB"/>
+                    <constraint firstItem="iFq-pY-ZNZ" firstAttribute="top" secondItem="rUi-If-D6N" secondAttribute="bottom" constant="2" id="apb-8N-AwA"/>
+                    <constraint firstItem="iFq-pY-ZNZ" firstAttribute="leading" secondItem="EHZ-TF-9ku" secondAttribute="trailing" constant="10" id="grT-CB-zzL"/>
                     <constraint firstItem="EHZ-TF-9ku" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="k3K-7h-YY2"/>
-                    <constraint firstItem="s3Z-bu-JK2" firstAttribute="leading" secondItem="xVc-PW-jYj" secondAttribute="trailing" constant="5" id="wFK-ow-A0U"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="iFq-pY-ZNZ" secondAttribute="bottom" id="q9J-r0-i9Q"/>
                     <constraint firstItem="EHZ-TF-9ku" firstAttribute="bottom" secondItem="H2p-sc-9uM" secondAttribute="bottomMargin" id="xqK-Be-clb"/>
                 </constraints>
             </tableViewCellContentView>
@@ -95,16 +98,16 @@
                 <outlet property="activityIndicatorView" destination="B24-Ag-Eow" id="tkm-KE-Ai8"/>
                 <outlet property="dateLabel" destination="EHZ-TF-9ku" id="khn-cM-iOd"/>
                 <outlet property="downloadImageView" destination="MLT-ef-xDl" id="JNO-nv-kCs"/>
-                <outlet property="tagLabel" destination="xVc-PW-jYj" id="Jlb-0v-Z9f"/>
+                <outlet property="tagListView" destination="iFq-pY-ZNZ" id="hbG-Jg-X2y"/>
                 <outlet property="tileLabel" destination="rUi-If-D6N" id="ybv-Rz-fmc"/>
             </connections>
             <point key="canvasLocation" x="32" y="141.22938530734635"/>
         </tableViewCell>
     </objects>
     <resources>
-        <image name="apple-icloud" width="48" height="48"/>
+        <image name="apple-icloud" width="204.80000305175781" height="204.80000305175781"/>
         <namedColor name="TextColor">
-            <color red="0.21299999952316284" green="0.24199999868869781" blue="0.28600001335144043" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+            <color red="0.13099999725818634" green="0.17200000584125519" blue="0.23100000619888306" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
     </resources>
 </document>

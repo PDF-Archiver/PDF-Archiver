@@ -22,11 +22,12 @@
 
 import os.log
 import PDFKit
+import TagListView
 import UIKit
 
 class DetailViewController: UIViewController, Logging {
 
-    @IBOutlet weak var detailDescriptionLabel: UILabel!
+    @IBOutlet weak var tagListView: TagListView!
     @IBOutlet weak var documentView: PDFView!
 
     var detailDocument: Document? {
@@ -37,23 +38,35 @@ class DetailViewController: UIViewController, Logging {
 
     func configureView() {
         if let detailDocument = detailDocument,
-            let detailDescriptionLabel = detailDescriptionLabel,
+            let tagListView = tagListView,
             let documentView = documentView {
 
-            detailDescriptionLabel.text = detailDocument.specification
-            // TODO: put PDF or placeholder here
+            // set the title
+            title = detailDocument.specification.replacingOccurrences(of: "-", with: " ")
+
+            // set the subtitle
+            tagListView.removeAllTags()
+            tagListView.addTags(detailDocument.tags.map { String($0.name) })
+
+            // setup the pdf view
             documentView.document = PDFDocument(url: detailDocument.path)
             documentView.goToFirstPage(self)
-            title = detailDocument.folder
         }
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+
+        // setup document view
         documentView.displayMode = .singlePageContinuous
         documentView.autoScales = true
         documentView.interpolationQuality = .low
         documentView.backgroundColor = UIColor(named: "TextColorLight") ?? .darkGray
+
+        // setup tag list view
+        tagListView.tagBackgroundColor = UIColor(named: "TagBackground") ?? .darkGray
+        tagListView.textFont = UIFont.systemFont(ofSize: 16)
+        tagListView.alignment = .center
     }
 
     override func viewDidLoad() {

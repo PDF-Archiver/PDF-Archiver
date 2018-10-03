@@ -39,31 +39,42 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="VgS-Ng-LL7">
-                                <rect key="frame" x="0.0" y="116" width="375" height="551"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="VgS-Ng-LL7">
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                                 <subviews>
-                                    <label clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" text="" textAlignment="center" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="0XM-y9-sOw">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="34"/>
-                                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HhD-0E-Mxc" userLabel="Empty View">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="2"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="34" id="5IE-tV-aWp"/>
+                                            <constraint firstAttribute="height" constant="2" id="kDV-gr-pCc"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" type="system" weight="medium" pointSize="20"/>
-                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
+                                    </view>
+                                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="afv-rn-0La" customClass="TagListView" customModule="TagListView">
+                                        <rect key="frame" x="0.0" y="5" width="375" height="20"/>
+                                        <accessibility key="accessibilityConfiguration">
+                                            <accessibilityTraits key="traits" notEnabled="YES"/>
+                                        </accessibility>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="20" id="LXC-2f-rgZ"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                <real key="value" value="5"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GUi-XC-jug" customClass="PDFView">
-                                        <rect key="frame" x="0.0" y="34" width="375" height="517"/>
+                                        <rect key="frame" x="0.0" y="28" width="375" height="575"/>
                                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </view>
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="GUi-XC-jug" firstAttribute="leading" secondItem="VgS-Ng-LL7" secondAttribute="leading" id="3BM-8i-Nvp"/>
-                                    <constraint firstAttribute="bottom" secondItem="GUi-XC-jug" secondAttribute="bottom" id="FJf-4r-L4u"/>
-                                    <constraint firstItem="GUi-XC-jug" firstAttribute="top" secondItem="0XM-y9-sOw" secondAttribute="bottom" id="PpT-4M-X1B"/>
-                                    <constraint firstAttribute="trailing" secondItem="0XM-y9-sOw" secondAttribute="trailing" id="bhU-19-QgM"/>
+                                    <constraint firstItem="HhD-0E-Mxc" firstAttribute="leading" secondItem="VgS-Ng-LL7" secondAttribute="leading" id="Ieb-cr-qwK"/>
+                                    <constraint firstAttribute="trailing" secondItem="HhD-0E-Mxc" secondAttribute="trailing" id="Tpv-bm-iMd"/>
+                                    <constraint firstAttribute="trailing" secondItem="afv-rn-0La" secondAttribute="trailing" id="ZV8-TI-4b9"/>
                                     <constraint firstAttribute="trailing" secondItem="GUi-XC-jug" secondAttribute="trailing" id="cG4-Cv-aAG"/>
-                                    <constraint firstItem="0XM-y9-sOw" firstAttribute="leading" secondItem="VgS-Ng-LL7" secondAttribute="leading" id="hZP-T4-Ad3"/>
+                                    <constraint firstItem="afv-rn-0La" firstAttribute="leading" secondItem="VgS-Ng-LL7" secondAttribute="leading" id="yy4-rn-zHz"/>
                                 </constraints>
                             </stackView>
                         </subviews>
@@ -76,10 +87,10 @@
                         </constraints>
                     </view>
                     <toolbarItems/>
-                    <navigationItem key="navigationItem" largeTitleDisplayMode="always" id="mOI-FS-AaM"/>
+                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="mOI-FS-AaM"/>
                     <connections>
-                        <outlet property="detailDescriptionLabel" destination="0XM-y9-sOw" id="deQ-Na-JPF"/>
                         <outlet property="documentView" destination="GUi-XC-jug" id="yfW-Uj-PmE"/>
+                        <outlet property="tagListView" destination="afv-rn-0La" id="3yq-NU-iD8"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FJe-Yq-33r" sceneMemberID="firstResponder"/>
@@ -186,5 +197,4 @@
     <inferredMetricsTieBreakers>
         <segue reference="udr-wF-y1K"/>
     </inferredMetricsTieBreakers>
-    <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

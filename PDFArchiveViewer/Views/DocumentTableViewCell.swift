@@ -6,12 +6,13 @@
 //  Copyright © 2018 Julian Kahnert. All rights reserved.
 //
 
+import TagListView
 import UIKit
 
 class DocumentTableViewCell: UITableViewCell {
     @IBOutlet weak var tileLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
-    @IBOutlet weak var tagLabel: UILabel!
+    @IBOutlet weak var tagListView: TagListView!
     @IBOutlet weak var downloadImageView: UIImageView!
     @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
 
@@ -20,10 +21,16 @@ class DocumentTableViewCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         if let document = document {
+
+            // update title + date
             tileLabel.text = document.specification.replacingOccurrences(of: "-", with: " ")
             dateLabel.text = DateFormatter.localizedString(from: document.date, dateStyle: .medium, timeStyle: .none)
-            tagLabel.text = document.tags.map { String($0.name) }.joined(separator: " ")
 
+            // update the document tags
+            tagListView.removeAllTags()
+            tagListView.addTags(document.tags.map { $0.name })
+
+            // update download status
             switch document.downloadStatus {
             case .local:
                 downloadImageView.isHidden = true
@@ -48,6 +55,10 @@ class DocumentTableViewCell: UITableViewCell {
         downloadImageView.isHidden = true
         activityIndicatorView.isHidden = true
         activityIndicatorView.activityIndicatorViewStyle = .gray
+
+        // setup tag list view
+        tagListView.tagBackgroundColor = UIColor(named: "TagBackground") ?? .darkGray
+        tagListView.alignment = .right
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

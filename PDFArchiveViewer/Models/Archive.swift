@@ -14,13 +14,13 @@ struct Archive {
     var availableTags = Set<Tag>()
     var sections = [TableSection<String, Document>]()
 
-    lazy var years: [String] = {
+    var years: [String] {
         var years = Set<String>()
         for document in allDocuments {
             years.insert(document.folder)
         }
         return Array(years.sorted().reversed().prefix(3))
-    }()
+    }
 
     init() {
         sections = TableSection.group(rowItems: allDocuments) { (document) in
