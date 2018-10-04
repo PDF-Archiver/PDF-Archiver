@@ -20,6 +20,7 @@ struct Document: Logging {
     // data from filename
     private(set) var date: Date
     private(set) var specification: String
+    private(set) var specificationCapitalized: String
     private(set) var tags = Set<Tag>()
 
     private(set) var folder: String
@@ -45,6 +46,10 @@ struct Document: Logging {
 
         // parse the document specification
         specification = parts[1]
+        specificationCapitalized = specification
+            .split(separator: "-")
+            .map { String($0).capitalizingFirstLetter() }
+            .joined(separator: " ")
 
         // parse the document tags
         for tagname in parts[2].split(separator: "_") {

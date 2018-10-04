@@ -42,7 +42,7 @@ class DetailViewController: UIViewController, Logging {
             let documentView = documentView {
 
             // set the title
-            title = detailDocument.specification.replacingOccurrences(of: "-", with: " ")
+            title = detailDocument.specificationCapitalized
 
             // set the subtitle
             tagListView.removeAllTags()

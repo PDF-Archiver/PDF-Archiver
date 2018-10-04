@@ -33,10 +33,10 @@ struct Archive {
         allDocuments = documents
     }
 
-    mutating func filterContentForSearchText(_ searchText: String, scope: String = "All") {
+    mutating func filterContentForSearchText(_ searchText: String, scope: String = NSLocalizedString("all", comment: "")) {
         // filter documents
         let filteredDocuments = allDocuments.filter {( document: Document) -> Bool in
-            let doesCategoryMatch = (scope == "All") || (document.folder == scope)
+            let doesCategoryMatch = (scope == NSLocalizedString("all", comment: "")) || (document.folder == scope)
 
             if searchText.isEmpty {
                 return doesCategoryMatch

@@ -23,7 +23,7 @@ class DocumentTableViewCell: UITableViewCell {
         if let document = document {
 
             // update title + date
-            tileLabel.text = document.specification.replacingOccurrences(of: "-", with: " ")
+            tileLabel.text = document.specificationCapitalized
             dateLabel.text = DateFormatter.localizedString(from: document.date, dateStyle: .medium, timeStyle: .none)
 
             // update the document tags

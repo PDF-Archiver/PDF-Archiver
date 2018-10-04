@@ -35,6 +35,7 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
 
     // Table view cells are reused and should be dequeued using a cell identifier.
     private let cellIdentifier = "DocumentTableViewCell"
+    private let allLocal = NSLocalizedString("all", comment: "")
 
     // MARK: - View Setup
     override func viewDidLoad() {
@@ -52,8 +53,9 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
         definesPresentationContext = true
 
         // Setup the Scope Bar
-        searchController.searchBar.scopeButtonTitles = ["All", "2018", "2017", "2016"]
+        searchController.searchBar.scopeButtonTitles = [allLocal, "2018", "2017", "2016"]
         searchController.searchBar.delegate = self
+        searchController.searchBar.placeholder = NSLocalizedString("search-documents", comment: "UISearchBar placeholder")
 
         if let splitViewController = splitViewController {
             let controllers = splitViewController.viewControllers
@@ -154,7 +156,7 @@ extension MasterViewController: DocumentsQueryDelegate {
         }
 
         // setup search toolbar
-        searchController.searchBar.scopeButtonTitles = ["All"] + archive.years
+        searchController.searchBar.scopeButtonTitles = [allLocal] + archive.years
 
         // update the filtered documents
         let searchBar = searchController.searchBar
@@ -162,7 +164,7 @@ extension MasterViewController: DocumentsQueryDelegate {
         if let scopeButtonTitles = searchBar.scopeButtonTitles {
             archive.filterContentForSearchText(searchBarText, scope: scopeButtonTitles[searchBar.selectedScopeButtonIndex])
         } else {
-            archive.filterContentForSearchText(searchBarText, scope: "All")
+            archive.filterContentForSearchText(searchBarText, scope: allLocal)
         }
 
         // reload the table view data

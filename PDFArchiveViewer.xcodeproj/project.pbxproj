@@ -15,7 +15,6 @@
 		7B9327C74253B724FBED77BC /* Pods_PDFArchiveViewerUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8CC869C580192C597A48720 /* Pods_PDFArchiveViewerUITests.framework */; };
 		A301A75621496992003EA382 /* DocumentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A301A75421496992003EA382 /* DocumentTableViewCell.swift */; };
 		A301A75721496992003EA382 /* DocumentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A301A75521496992003EA382 /* DocumentTableViewCell.xib */; };
-		A336837B213DAF7D0011F280 /* EmptyBackgroundView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A336837A213DAF7D0011F280 /* EmptyBackgroundView.xib */; };
 		A34A84F92130A35A0093FAE5 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34A84F52130A35A0093FAE5 /* Document.swift */; };
 		A34A84FA2130A35A0093FAE5 /* DocumentsQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34A84F62130A35A0093FAE5 /* DocumentsQuery.swift */; };
 		A34A84FB2130A35A0093FAE5 /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34A84F72130A35A0093FAE5 /* Tag.swift */; };
@@ -26,6 +25,8 @@
 		A3AD3BBC215FA90A00F4805C /* TableSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3AD3BBB215FA90A00F4805C /* TableSection.swift */; };
 		A3B83719215FCEFA00DA239F /* PDFArchiveViewerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B83718215FCEFA00DA239F /* PDFArchiveViewerUITests.swift */; };
 		A3B83721215FD14A00DA239F /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B83720215FD14A00DA239F /* SnapshotHelper.swift */; };
+		A3EBFE9C21650F58008C34CC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A3EBFE9E21650F58008C34CC /* Localizable.strings */; };
+		A3EBFEA021650FC7008C34CC /* EmptyBackgroundView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A3EBFEA221650FC7008C34CC /* EmptyBackgroundView.xib */; };
 		A3F1C21D2163DCD9002B0141 /* AppStoreReviewRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */; };
 		C531B4DA59C21326779D6C93 /* Pods_PDFArchiveViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 947EC737893707137CE047F1 /* Pods_PDFArchiveViewer.framework */; };
 /* End PBXBuildFile section */
@@ -55,7 +56,6 @@
 		947EC737893707137CE047F1 /* Pods_PDFArchiveViewer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PDFArchiveViewer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A301A75421496992003EA382 /* DocumentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentTableViewCell.swift; sourceTree = "<group>"; };
 		A301A75521496992003EA382 /* DocumentTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DocumentTableViewCell.xib; sourceTree = "<group>"; };
-		A336837A213DAF7D0011F280 /* EmptyBackgroundView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EmptyBackgroundView.xib; sourceTree = "<group>"; };
 		A34A84F52130A35A0093FAE5 /* Document.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
 		A34A84F62130A35A0093FAE5 /* DocumentsQuery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentsQuery.swift; sourceTree = "<group>"; };
 		A34A84F72130A35A0093FAE5 /* Tag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
@@ -69,6 +69,12 @@
 		A3B83718215FCEFA00DA239F /* PDFArchiveViewerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFArchiveViewerUITests.swift; sourceTree = "<group>"; };
 		A3B8371A215FCEFA00DA239F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A3B83720215FD14A00DA239F /* SnapshotHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
+		A3EBFE9721650C65008C34CC /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Main.strings; sourceTree = "<group>"; };
+		A3EBFE9821650C66008C34CC /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		A3EBFE9D21650F58008C34CC /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A3EBFE9F21650F70008C34CC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A3EBFEA121650FC7008C34CC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/EmptyBackgroundView.xib; sourceTree = "<group>"; };
+		A3EBFEA421650FCB008C34CC /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/EmptyBackgroundView.strings; sourceTree = "<group>"; };
 		A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreReviewRequest.swift; sourceTree = "<group>"; };
 		D8CC869C580192C597A48720 /* Pods_PDFArchiveViewerUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PDFArchiveViewerUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -116,6 +122,7 @@
 		171E0C7C1B8E5B84001E6242 /* PDFArchiveViewer */ = {
 			isa = PBXGroup;
 			children = (
+				A3EBFE9E21650F58008C34CC /* Localizable.strings */,
 				171E0C7D1B8E5B84001E6242 /* AppDelegate.swift */,
 				A34A84F12130A28A0093FAE5 /* Models */,
 				A34A84F22130A2900093FAE5 /* Views */,
@@ -161,7 +168,7 @@
 			isa = PBXGroup;
 			children = (
 				171E0C831B8E5B84001E6242 /* Main.storyboard */,
-				A336837A213DAF7D0011F280 /* EmptyBackgroundView.xib */,
+				A3EBFEA221650FC7008C34CC /* EmptyBackgroundView.xib */,
 				A301A75421496992003EA382 /* DocumentTableViewCell.swift */,
 				A301A75521496992003EA382 /* DocumentTableViewCell.xib */,
 			);
@@ -218,6 +225,7 @@
 			buildPhases = (
 				48B868A7BE5C4E8DCAB89D03 /* [CP] Check Pods Manifest.lock */,
 				A3B57CD32130C55C000BA17B /* SwiftLint */,
+				A3EBFE9921650CB1008C34CC /* BartyCrouch */,
 				171E0C761B8E5B84001E6242 /* Sources */,
 				171E0C771B8E5B84001E6242 /* Frameworks */,
 				171E0C781B8E5B84001E6242 /* Resources */,
@@ -264,7 +272,7 @@
 					171E0C791B8E5B84001E6242 = {
 						CreatedOnToolsVersion = 7.0;
 						DevelopmentTeam = 87KNVHZ8C7;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1000;
 						SystemCapabilities = {
 							com.apple.iCloud = {
 								enabled = 1;
@@ -286,6 +294,7 @@
 			knownRegions = (
 				en,
 				Base,
+				de,
 			);
 			mainGroup = 171E0C711B8E5B84001E6242;
 			productRefGroup = 171E0C7B1B8E5B84001E6242 /* Products */;
@@ -304,9 +313,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				A301A75721496992003EA382 /* DocumentTableViewCell.xib in Resources */,
+				A3EBFE9C21650F58008C34CC /* Localizable.strings in Resources */,
 				171E0C8A1B8E5B84001E6242 /* LaunchScreen.storyboard in Resources */,
 				A34A85022130A3870093FAE5 /* Assets.xcassets in Resources */,
-				A336837B213DAF7D0011F280 /* EmptyBackgroundView.xib in Resources */,
+				A3EBFEA021650FC7008C34CC /* EmptyBackgroundView.xib in Resources */,
 				171E0C851B8E5B84001E6242 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -401,6 +411,24 @@
 			shellPath = /bin/sh;
 			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint autocorrect\n    swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi";
 		};
+		A3EBFE9921650CB1008C34CC /* BartyCrouch */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = BartyCrouch;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which bartycrouch > /dev/null; then\n    # Incrementally update all Storyboards/XIBs strings files\n    bartycrouch interfaces -p \"$PROJECT_DIR\"\n\n    # Add new keys to Localizable.strings files from NSLocalizedString in code\n    bartycrouch code -p \"$PROJECT_DIR\" -l \"$PROJECT_DIR\" -a -s\nelse\n    echo \"warning: BartyCrouch not installed, download it from https://github.com/Flinesoft/BartyCrouch\"\nfi\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -447,6 +475,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				171E0C841B8E5B84001E6242 /* Base */,
+				A3EBFE9721650C65008C34CC /* de */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -455,8 +484,27 @@
 			isa = PBXVariantGroup;
 			children = (
 				171E0C891B8E5B84001E6242 /* Base */,
+				A3EBFE9821650C66008C34CC /* de */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		A3EBFE9E21650F58008C34CC /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A3EBFE9D21650F58008C34CC /* de */,
+				A3EBFE9F21650F70008C34CC /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		A3EBFEA221650FC7008C34CC /* EmptyBackgroundView.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A3EBFEA121650FC7008C34CC /* Base */,
+				A3EBFEA421650FCB008C34CC /* de */,
+			);
+			name = EmptyBackgroundView.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -466,6 +514,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -522,6 +571,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
