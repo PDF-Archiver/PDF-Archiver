@@ -54,7 +54,7 @@ class DocumentTableViewCell: UITableViewCell {
         // Initialization code
         downloadImageView.isHidden = true
         activityIndicatorView.isHidden = true
-        activityIndicatorView.activityIndicatorViewStyle = .gray
+        activityIndicatorView.style = .gray
 
         // setup tag list view
         tagListView.tagBackgroundColor = UIColor(named: "TagBackground") ?? .darkGray
