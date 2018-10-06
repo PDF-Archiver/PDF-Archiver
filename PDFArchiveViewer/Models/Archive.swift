@@ -44,7 +44,7 @@ struct Archive {
             if searchText.isEmpty {
                 return doesCategoryMatch
             } else {
-                // TODO: maybe also search in tags/date
+                // TODO: maybe also search in date
                 return doesCategoryMatch &&
                     (document.specification.lowercased().contains(searchText.lowercased()) || !document.tags.intersection(searchedTags).isEmpty)
             }
