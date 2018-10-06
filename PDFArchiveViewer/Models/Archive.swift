@@ -34,6 +34,9 @@ struct Archive {
     }
 
     mutating func filterContentForSearchText(_ searchText: String, scope: String = NSLocalizedString("all", comment: "")) {
+        // filter tags
+        let searchedTags = availableTags.filter { return $0.name.lowercased().contains(searchText.lowercased()) }
+
         // filter documents
         let filteredDocuments = allDocuments.filter {( document: Document) -> Bool in
             let doesCategoryMatch = (scope == NSLocalizedString("all", comment: "")) || (document.folder == scope)
@@ -42,7 +45,8 @@ struct Archive {
                 return doesCategoryMatch
             } else {
                 // TODO: maybe also search in tags/date
-                return doesCategoryMatch && document.specification.lowercased().contains(searchText.lowercased())
+                return doesCategoryMatch &&
+                    (document.specification.lowercased().contains(searchText.lowercased()) || !document.tags.intersection(searchedTags).isEmpty)
             }
         }
 
