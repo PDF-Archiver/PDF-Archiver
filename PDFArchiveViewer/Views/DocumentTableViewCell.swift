@@ -19,7 +19,6 @@ class DocumentTableViewCell: UITableViewCell {
     var document: Document?
 
     override func layoutSubviews() {
-        super.layoutSubviews()
         if let document = document {
 
             // update title + date
@@ -28,7 +27,8 @@ class DocumentTableViewCell: UITableViewCell {
 
             // update the document tags
             tagListView.removeAllTags()
-            tagListView.addTags(document.tags.map { $0.name })
+            let documentTags = Array(document.tags).sorted { $0.name < $1.name }
+            tagListView.addTags(documentTags.map { $0.name })
 
             // update download status
             switch document.downloadStatus {
