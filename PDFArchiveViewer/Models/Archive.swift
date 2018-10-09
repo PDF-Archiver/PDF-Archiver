@@ -6,13 +6,13 @@
 //  Copyright © 2018 Julian Kahnert. All rights reserved.
 //
 
+import Dwifft
 import Foundation
 
 struct Archive {
 
     private var allDocuments = [Document]()
     var availableTags = Set<Tag>()
-    var sections = [TableSection<String, Document>]()
 
     var years: [String] {
         var years = Set<String>()
@@ -22,18 +22,12 @@ struct Archive {
         return Array(years.sorted().reversed().prefix(3))
     }
 
-    init() {
-        sections = TableSection.group(rowItems: allDocuments) { (document) in
-            let calender = Calendar.current
-            return String(calender.component(.year, from: document.date))
-        }.reversed()
-    }
-
     mutating func setAllDocuments(_ documents: [Document]) {
-        allDocuments = documents
+        let steps = Dwifft.diff(allDocuments, documents)
+        allDocuments = Dwifft.apply(diff: steps, toArray: allDocuments)
     }
 
-    mutating func filterContentForSearchText(_ searchText: String, scope: String = NSLocalizedString("all", comment: "")) {
+    func filterContentForSearchText(_ searchText: String, scope: String = NSLocalizedString("all", comment: "")) -> SectionedValues<String, Document> {
         // filter tags
         let searchedTags = availableTags.filter { return $0.name.lowercased().contains(searchText.lowercased()) }
 
@@ -51,10 +45,12 @@ struct Archive {
         }
 
         // create table sections
-        sections = TableSection.group(rowItems: filteredDocuments) { (document) in
-            let calender = Calendar.current
-            return String(calender.component(.year, from: document.date))
-        }.reversed()
+        return SectionedValues(values: filteredDocuments,
+                               valueToSection: { (document) in
+                                let calender = Calendar.current
+                                return String(calender.component(.year, from: document.date)) },
+                               sortSections: { return $0 > $1 },
+                               sortValues: { return $0 > $1 })
     }
 }
 

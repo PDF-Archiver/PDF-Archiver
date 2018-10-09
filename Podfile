@@ -7,6 +7,7 @@ target 'PDFArchiveViewer' do
 
   # Pods for PDFArchiveViewer
   pod 'TagListView', '~> 1.3'
+  pod 'Dwifft', '~> 0.9'
 
   target 'PDFArchiveViewerUITests' do
     inherit! :search_paths

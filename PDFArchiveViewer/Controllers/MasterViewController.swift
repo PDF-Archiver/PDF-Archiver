@@ -20,6 +20,7 @@
  * THE SOFTWARE.
  */
 
+import Dwifft
 import os.log
 import UIKit
 
@@ -36,11 +37,23 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
     // Table view cells are reused and should be dequeued using a cell identifier.
     private let cellIdentifier = "DocumentTableViewCell"
     private let allLocal = NSLocalizedString("all", comment: "")
+    var diffCalculator: TableViewDiffCalculator<String, Document>?
+    var sections: SectionedValues<String, Document> = SectionedValues() {
+        // So, whenever your datasource's array of things changes, just let the diffCalculator know and it'll do the rest.
+        didSet {
+            self.diffCalculator?.sectionedValues = sections
+        }
+    }
 
     // MARK: - View Setup
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(UINib(nibName: cellIdentifier, bundle: nil), forCellReuseIdentifier: cellIdentifier)
+
+        // setup the diffCalculator
+        diffCalculator = TableViewDiffCalculator(tableView: tableView, initialSectionedValues: sections)
+        diffCalculator?.insertionAnimation = .fade
+        diffCalculator?.deletionAnimation = .fade
 
         // setup data delegate
         documentsQuery.delegate = self
@@ -90,7 +103,7 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
             let indexPath = tableView.indexPathForSelectedRow,
             let navigationController = segue.destination as? UINavigationController,
             let controller = navigationController.topViewController as? DetailViewController,
-            let document = getSelectedDocument(from: indexPath) {
+            let document = diffCalculator?.value(atIndexPath: indexPath) {
 
             // "shouldPerformSegue" performs the document download
             if document.downloadStatus != .local {
@@ -107,12 +120,6 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
             // increment the AppStoreReview counter
             AppStoreReviewRequest.shared.incrementCount()
         }
-    }
-
-    // MARK: - Private instance methods
-    private func getSelectedDocument(from indexPath: IndexPath) -> Document? {
-        let tableSection = archive.sections[indexPath.section]
-        return tableSection.rowItems[indexPath.row]
     }
 }
 
@@ -137,14 +144,15 @@ extension MasterViewController: DocumentsQueryDelegate {
         // update the filtered documents
         let searchBar = searchController.searchBar
         let searchBarText = searchBar.text ?? ""
+        var sections: SectionedValues<String, Document>
         if let scopeButtonTitles = searchBar.scopeButtonTitles {
-            archive.filterContentForSearchText(searchBarText, scope: scopeButtonTitles[searchBar.selectedScopeButtonIndex])
+            sections = archive.filterContentForSearchText(searchBarText, scope: scopeButtonTitles[searchBar.selectedScopeButtonIndex])
         } else {
-            archive.filterContentForSearchText(searchBarText, scope: allLocal)
+            sections = archive.filterContentForSearchText(searchBarText, scope: allLocal)
         }
 
-        // reload the table view data
-        tableView.reloadData()
+        // update the table view data
+        self.sections = sections
     }
 }
 
@@ -152,9 +160,7 @@ extension MasterViewController: UITableViewDataSource {
 
     // MARK: - required stubs
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-
-        let tableSection = archive.sections[section]
-        return tableSection.rowItems.count
+        return self.diffCalculator?.numberOfObjects(inSection: section) ?? 0
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -165,26 +171,24 @@ extension MasterViewController: UITableViewDataSource {
         }
 
         // update the cell document and content
-        guard let document = getSelectedDocument(from: indexPath) else {
+        guard let document = diffCalculator?.value(atIndexPath: indexPath) else {
             fatalError("No document found during table cell update.")
         }
         cell.document = document
-        cell.layoutSubviews()
         return cell
     }
 
     // MARK: - optional stubs
     func numberOfSections(in tableView: UITableView) -> Int {
-        return archive.sections.count
+        return self.diffCalculator?.numberOfSections() ?? 0
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let section = archive.sections[section]
-        return section.sectionItem
+        return self.diffCalculator?.value(forSection: section)
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard var document = getSelectedDocument(from: indexPath) else { return }
+        guard var document = diffCalculator?.value(atIndexPath: indexPath) else { return }
         os_log("Selected Document: %@", log: log, type: .debug, document.filename)
 
         // download document if it is not already available
@@ -213,10 +217,9 @@ extension MasterViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
         guard let searchBarText = searchBar.text else { return }
         guard let searchBarScopeButtonTitles = searchBar.scopeButtonTitles else { return }
-        archive.filterContentForSearchText(searchBarText, scope: searchBarScopeButtonTitles[selectedScope])
 
-        // reload the table view data
-        tableView.reloadData()
+        // update the table view data
+        sections = archive.filterContentForSearchText(searchBarText, scope: searchBarScopeButtonTitles[searchBar.selectedScopeButtonIndex])
     }
 }
 
@@ -225,9 +228,8 @@ extension MasterViewController: UISearchResultsUpdating {
         let searchBar = searchController.searchBar
         guard let searchBarText = searchBar.text else { return }
         guard let searchBarScopeButtonTitles = searchBar.scopeButtonTitles else { return }
-        archive.filterContentForSearchText(searchBarText, scope: searchBarScopeButtonTitles[searchBar.selectedScopeButtonIndex])
 
-        // reload the table view data
-        tableView.reloadData()
+        // update the table view data
+        sections = archive.filterContentForSearchText(searchBarText, scope: searchBarScopeButtonTitles[searchBar.selectedScopeButtonIndex])
     }
 }
