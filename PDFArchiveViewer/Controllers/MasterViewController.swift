@@ -84,24 +84,6 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
     }
 
     // MARK: - Segues
-    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
-        if identifier == "showDetails",
-            let indexPath = tableView.indexPathForSelectedRow,
-            var document = getSelectedDocument(from: indexPath) {
-
-            // download document if it is not already available
-            switch document.downloadStatus {
-            case .local:
-                return true
-            case .downloading:
-                return false
-            case .iCloudDrive:
-                document.download()
-                return false
-            }
-        }
-        return true
-    }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showDetails",
@@ -115,6 +97,9 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
                 fatalError("Segue peparation, but the document (status: \(document.downloadStatus)) could not be found locally!")
             }
 
+            // avoid inverted colors in tags by deselecting the cell
+            tableView.deselectRow(at: indexPath, animated: false)
+
             controller.detailDocument = document
             controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
             controller.navigationItem.leftItemsSupplementBackButton = true
@@ -125,15 +110,6 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
     }
 
     // MARK: - Private instance methods
-    private func searchBarIsEmpty() -> Bool {
-        return searchController.searchBar.text?.isEmpty ?? true
-    }
-
-    private func isFiltering() -> Bool {
-        let searchBarScopeIsFiltering = searchController.searchBar.selectedScopeButtonIndex != 0
-        return searchController.isActive && (!searchBarIsEmpty() || searchBarScopeIsFiltering)
-    }
-
     private func getSelectedDocument(from indexPath: IndexPath) -> Document? {
         let tableSection = archive.sections[indexPath.section]
         return tableSection.rowItems[indexPath.row]
@@ -209,7 +185,6 @@ extension MasterViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard var document = getSelectedDocument(from: indexPath) else { return }
-        print(document.filename)
         os_log("Selected Document: %@", log: log, type: .debug, document.filename)
 
         // download document if it is not already available

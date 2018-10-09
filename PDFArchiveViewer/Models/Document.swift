@@ -36,7 +36,7 @@ struct Document: Logging {
         filename = documentPath.lastPathComponent
         folder = documentPath.deletingLastPathComponent().lastPathComponent
 
-        guard let parts = filename.capturedGroups(withRegex: "(\\d{4}-\\d{2}-\\d{2})--(.+)__([\\w\\d_]+)\\.[pdfPDF]{3}$") else { fatalError("Could not parse document filename!") }
+        guard let parts = Document.parseFilename(filename) else { fatalError("Could not parse document filename!") }
 
         // parse the document date
         let dateFormatter = DateFormatter()
@@ -73,11 +73,22 @@ struct Document: Logging {
             os_log("%s", log: log, type: .debug, error.localizedDescription)
         }
     }
+
+    public static func parseFilename(_ filename: String) -> [String]? {
+        return filename.capturedGroups(withRegex: "(\\d{4}-\\d{2}-\\d{2})--(.+)__([\\w\\d_]+)\\.[pdfPDF]{3}$")
+    }
 }
 
 extension Document: Hashable, Comparable, CustomStringConvertible {
     static func < (lhs: Document, rhs: Document) -> Bool {
-        return lhs.date < rhs.date
+
+        // first: sort by date
+        // second: sort by filename
+        if lhs.date != rhs.date {
+            return lhs.date < rhs.date
+        } else {
+            return lhs.filename > rhs.filename
+        }
     }
     static func == (lhs: Document, rhs: Document) -> Bool {
         return lhs.path == rhs.path

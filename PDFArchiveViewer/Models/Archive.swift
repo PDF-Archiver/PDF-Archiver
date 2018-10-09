@@ -46,7 +46,7 @@ struct Archive {
             } else {
                 // TODO: maybe also search in date
                 return doesCategoryMatch &&
-                    (document.specification.lowercased().contains(searchText.lowercased()) || !document.tags.intersection(searchedTags).isEmpty)
+                    (document.specification.lowercased().contains(searchText.lowercased()) || !document.tags.isDisjoint(with: searchedTags))
             }
         }
 

@@ -98,7 +98,8 @@ class DocumentsQuery: NSObject, Logging {
         tags = Set<Tag>()
         for metadataQueryResult in metadataQuery.results as? [NSMetadataItem] ?? [] {
             // get the document path
-            guard let documentPath = metadataQueryResult.value(forAttribute: NSMetadataItemURLKey) as? URL else { continue }
+            guard let documentPath = metadataQueryResult.value(forAttribute: NSMetadataItemURLKey) as? URL,
+                Document.parseFilename(documentPath.lastPathComponent) != nil else { continue }
 
             // Check if it is a local document. These two values are possible for the "NSMetadataUbiquitousItemDownloadingStatusKey":
             // - NSMetadataUbiquitousItemDownloadingStatusCurrent
