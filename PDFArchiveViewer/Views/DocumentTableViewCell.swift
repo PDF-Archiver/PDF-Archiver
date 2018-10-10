@@ -19,6 +19,9 @@ class DocumentTableViewCell: UITableViewCell {
     var document: Document?
 
     override func layoutSubviews() {
+        // layout subviews to get the right separators
+        super.layoutSubviews()
+
         if let document = document {
 
             // update title + date

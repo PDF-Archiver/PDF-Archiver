@@ -74,7 +74,7 @@ struct Document: Logging {
         }
     }
 
-    public static func parseFilename(_ filename: String) -> [String]? {
+    static func parseFilename(_ filename: String) -> [String]? {
         return filename.capturedGroups(withRegex: "(\\d{4}-\\d{2}-\\d{2})--(.+)__([\\w\\d_]+)\\.[pdfPDF]{3}$")
     }
 }
