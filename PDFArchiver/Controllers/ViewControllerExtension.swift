@@ -128,7 +128,7 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
             selectedTag = firstTag
         } else {
             // no tag selected - get the name of the search field
-            var tagName = self.tagSearchField.stringValue.lowercased()
+            var tagName = self.tagSearchField.stringValue   // the string gets normalized in the Tag() constructor
             if self.dataModelInstance.prefs.slugifyNames {
                 tagName = tagName.slugify()
             }

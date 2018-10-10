@@ -14,7 +14,7 @@ class Tag: NSObject {
     @objc var count: Int
 
     init(name: String, count: Int) {
-        self.name = name
+        self.name = name.lowercased().slugify(withSeparator: "")
         self.count = count
     }
 
