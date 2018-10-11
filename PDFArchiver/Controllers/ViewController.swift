@@ -84,9 +84,11 @@ class ViewController: NSViewController, Logging {
     @IBAction func browseFile(sender: AnyObject) {
         let openPanel = getOpenPanel("Choose an observed folder")
         guard let mainWindow = NSApplication.shared.mainWindow else { fatalError("Main Window not found!") }
-        guard let openPanelUrl = openPanel.url else { fatalError("Open panel URL not found!") }
         openPanel.beginSheetModal(for: mainWindow) { response in
-            guard response == NSApplication.ModalResponse.OK else { return }
+
+            guard response == NSApplication.ModalResponse.OK,
+                let openPanelUrl = openPanel.url else { return }
+
             self.dataModelInstance.prefs.observedPath = openPanelUrl
             self.dataModelInstance.addUntaggedDocuments(paths: openPanel.urls)
         }
