@@ -110,9 +110,6 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
                 fatalError("Segue peparation, but the document (status: \(document.downloadStatus)) could not be found locally!")
             }
 
-            // avoid inverted colors in tags by deselecting the cell
-            tableView.deselectRow(at: indexPath, animated: false)
-
             controller.detailDocument = document
             controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
             controller.navigationItem.leftItemsSupplementBackButton = true
@@ -201,6 +198,9 @@ extension MasterViewController: UITableViewDataSource {
             print("Start download ...")
             document.download()
         }
+
+        // avoid inverted colors in tags by deselecting the cell
+        tableView.deselectRow(at: indexPath, animated: false)
     }
 
     // MARK: - optical changes
