@@ -31,3 +31,4 @@ report.xml
 fastlane/screenshots
 Preview.html
 Pods
+.env.default

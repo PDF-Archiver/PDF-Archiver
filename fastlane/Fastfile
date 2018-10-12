@@ -23,6 +23,9 @@ lane :createNewScreenshots do
     force: true,
     skip_binary_upload: true,
     skip_metadata: true)
+
+  upload_symbols_to_sentry(
+    dsym_path: "../build/PDFArchiveViewer.app.dSYM.zip")
 end
 
 desc "Build Beta-Version & Upload it to TestFlight."

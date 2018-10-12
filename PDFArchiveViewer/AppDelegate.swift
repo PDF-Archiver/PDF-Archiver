@@ -20,6 +20,7 @@
  * THE SOFTWARE.
  */
 
+import Sentry
 import UIKit
 
 @UIApplicationMain
@@ -28,6 +29,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+
+        // Create a Sentry client and start crash handler
+        do {
+            Client.shared = try Client(dsn: "https://7adfcae85d8d4b2f946102571b2d4d6c@sentry.io/1299590")
+            try Client.shared?.startCrashHandler()
+        } catch let error {
+            print("\(error)")
+        }
+
         self.window?.tintColor = UIColor(named: "TextColor")
         UISearchBar.appearance().tintColor = UIColor(named: "TextColor")
         UINavigationBar.appearance().tintColor = UIColor(named: "TextColor")
