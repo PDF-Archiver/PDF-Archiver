@@ -87,7 +87,13 @@
                         </constraints>
                     </view>
                     <toolbarItems/>
-                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="mOI-FS-AaM"/>
+                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="mOI-FS-AaM">
+                        <barButtonItem key="rightBarButtonItem" systemItem="action" id="4IU-Dl-iGq">
+                            <connections>
+                                <action selector="shareButtonClicked:" destination="JEX-9P-axG" id="In7-xe-kVO"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="documentView" destination="GUi-XC-jug" id="yfW-Uj-PmE"/>
                         <outlet property="tagListView" destination="afv-rn-0La" id="3yq-NU-iD8"/>

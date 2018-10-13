@@ -2,5 +2,14 @@
 /* No comment provided by engineer. */
 "all" = "All";
 
+/* The title of an error message popup */
+"Error" = "Error";
+
+/* Button confirmation label */
+"OK" = "OK";
+
 /* UISearchBar placeholder */
 "search-documents" = "Search Documents";
+
+/* Error mesage to be displayed when failing to share a document */
+"Unable to share document without the pdf file" = "Unable to share document without the pdf file";
