@@ -5,11 +5,12 @@
 //  Created by Julian Kahnert on 09.07.18.
 //  Copyright © 2018 Julian Kahnert. All rights reserved.
 //
+// swiftlint:disable force_unwrapping
 
 import Foundation
 import Quartz
 
-struct Constants {
+enum Constants {
     static let appId: Int = 1352719750
     static let appURL: String = "https://pdf-archiver.io"
     static let donationCount = URL(string: appURL + "/assets/donations.txt")!
@@ -25,7 +26,7 @@ struct Constants {
         }
     }
 
-    struct  Layout {
+    enum Layout {
         static let wantsLayer = true
         static let cornerRadius = CGFloat(3)
     }

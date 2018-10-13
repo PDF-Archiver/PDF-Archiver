@@ -6,8 +6,8 @@
 //  Copyright © 2018 Julian Kahnert. All rights reserved.
 //
 
-import Quartz
 import os.log
+import Quartz
 
 protocol ViewControllerDelegate: class {
     func setDocuments(documents: [Document])
@@ -83,9 +83,13 @@ class ViewController: NSViewController, Logging {
 
     @IBAction func browseFile(sender: AnyObject) {
         let openPanel = getOpenPanel("Choose an observed folder")
-        openPanel.beginSheetModal(for: NSApplication.shared.mainWindow!) { response in
-            guard response == NSApplication.ModalResponse.OK else { return }
-            self.dataModelInstance.prefs.observedPath = openPanel.url!
+        guard let mainWindow = NSApplication.shared.mainWindow else { fatalError("Main Window not found!") }
+        openPanel.beginSheetModal(for: mainWindow) { response in
+
+            guard response == NSApplication.ModalResponse.OK,
+                let openPanelUrl = openPanel.url else { return }
+
+            self.dataModelInstance.prefs.observedPath = openPanelUrl
             self.dataModelInstance.addUntaggedDocuments(paths: openPanel.urls)
         }
     }
@@ -108,7 +112,7 @@ class ViewController: NSViewController, Logging {
             // select a new document, which is not already done
             var newIndex = 0
             var documents = (self.documentAC.arrangedObjects as? [Document]) ?? []
-            for idx in 0...documents.count-1 where documents[idx].documentDone == "" {
+            for idx in 0...documents.count - 1 where documents[idx].documentDone.isEmpty {
                 newIndex = idx
                 break
             }
@@ -131,7 +135,7 @@ class ViewController: NSViewController, Logging {
                                              NSSortDescriptor(key: "name", ascending: true)]
 
         // set the date picker to canadian local, e.g. YYYY-MM-DD
-        self.datePicker.locale = Locale.init(identifier: "en_CA")
+        self.datePicker.locale = Locale(identifier: "en_CA")
 
         // set some PDF View settings
         self.pdfContentView.displayMode = PDFDisplayMode.singlePage
@@ -169,7 +173,7 @@ class ViewController: NSViewController, Logging {
     override func viewDidDisappear() {
         if let archivePath = self.dataModelInstance.prefs.archivePath {
             // reset the tag count to the archived documents
-            for document in (self.documentAC.arrangedObjects as? [Document]) ?? [] where document.documentDone == "" {
+            for document in (self.documentAC.arrangedObjects as? [Document]) ?? [] where document.documentDone.isEmpty {
                 for tag in document.documentTags {
                     tag.count -= 1
                 }

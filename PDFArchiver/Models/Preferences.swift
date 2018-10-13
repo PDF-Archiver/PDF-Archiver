@@ -16,7 +16,7 @@ protocol PreferencesDelegate: class {
 
     var slugifyNames: Bool { get set }
     var useiCloudDrive: Bool { get set }
-    var iCloudDrivePath: URL? {get}
+    var iCloudDrivePath: URL? { get }
     var analyseAllFolders: Bool { get set }
     var convertPictures: Bool { get set }
 
@@ -36,11 +36,12 @@ class Preferences: PreferencesDelegate, Logging {
     var useiCloudDrive: Bool = false {
         didSet {
 
-            if let iCloudDrivePath = self.iCloudDrivePath,
+            if let archivePath = self._archivePath,
+                let iCloudDrivePath = self.iCloudDrivePath,
                 self.useiCloudDrive {
                 // move archive files
                 self.accessSecurityScope {
-                    self.archiveDelegate?.moveArchivedDocuments(from: self._archivePath!, to: iCloudDrivePath)
+                    self.archiveDelegate?.moveArchivedDocuments(from: archivePath, to: iCloudDrivePath)
                 }
 
                 // create icloud container
@@ -216,7 +217,7 @@ class Preferences: PreferencesDelegate, Logging {
         if let bookmarkData = UserDefaults.standard.object(forKey: scopeBookmarkName) as? Data {
             do {
                 var staleBookmarkData = false
-                let bookmarkPath = try URL.init(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &staleBookmarkData)
+                let bookmarkPath = try URL(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &staleBookmarkData)
                 if staleBookmarkData {
                     os_log("Stale bookmark data!", log: self.log, type: .fault)
                 }

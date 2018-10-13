@@ -26,21 +26,29 @@ class MainPreferencesVC: PreferencesVC {
     }
 
     @IBAction func changeArchivePathButtonClicked(_ sender: Any) {
+        guard let mainWindow = NSApplication.shared.mainWindow else { fatalError("Main Window not found!") }
         let openPanel = getOpenPanel("Choose an archive folder")
-        openPanel.beginSheetModal(for: NSApplication.shared.mainWindow!) { response in
-            guard response == NSApplication.ModalResponse.OK else { return }
-            self.preferencesDelegate?.archivePath = openPanel.url!
-            self.archivePathTextField.stringValue = openPanel.url!.path
+        openPanel.beginSheetModal(for: mainWindow) { response in
+
+            guard response == NSApplication.ModalResponse.OK,
+                let openPanelUrl = openPanel.url else { return }
+
+            self.archivePathTextField.stringValue = openPanelUrl.path
+            self.preferencesDelegate?.archivePath = openPanelUrl
             self.viewControllerDelegate?.updateView(updatePDF: false)
         }
     }
 
     @IBAction func changeObservedPathButtonClicked(_ sender: NSButton) {
+        guard let mainWindow = NSApplication.shared.mainWindow else { fatalError("Main Window not found!") }
         let openPanel = getOpenPanel("Choose an observed folder")
-        openPanel.beginSheetModal(for: NSApplication.shared.mainWindow!) { response in
-            guard response == NSApplication.ModalResponse.OK else { return }
-            self.observedPathTextField.stringValue = openPanel.url!.path
-            self.preferencesDelegate?.observedPath = openPanel.url!
+        openPanel.beginSheetModal(for: mainWindow) { response in
+
+            guard response == NSApplication.ModalResponse.OK,
+                let openPanelUrl = openPanel.url else { return }
+
+            self.observedPathTextField.stringValue = openPanelUrl.path
+            self.preferencesDelegate?.observedPath = openPanelUrl
             // no need to update the view here - it gets updated automatically, when documents are added
         }
     }

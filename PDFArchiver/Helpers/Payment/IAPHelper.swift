@@ -7,8 +7,8 @@
 //  The structure is base on: https://www.raywenderlich.com/122144/in-app-purchase-tutorial
 //
 
-import StoreKit
 import os.log
+import StoreKit
 
 protocol IAPHelperDelegate: class {
     var products: [SKProduct] { get }

@@ -8,16 +8,16 @@
 //  Inspired by: https://developer.apple.com/documentation/storekit/skstorereviewcontroller/requesting_app_store_reviews
 //
 
+import AppKit.NSWorkspace
 import Foundation
 import StoreKit.SKStoreReviewController
-import AppKit.NSWorkspace
 
 private enum UserDefaultsKeys: String {
     case processCompletedCountKey
     case lastVersionPromptedForReviewKey
 }
 
-final class AppStoreReviewRequest {
+public final class AppStoreReviewRequest {
 
     static let shared = AppStoreReviewRequest()
     private let currentVersion: String

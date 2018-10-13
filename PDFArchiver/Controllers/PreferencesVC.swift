@@ -21,7 +21,8 @@ class PreferencesVC: NSViewController, Logging {
     override func viewDidAppear() {
         super.viewDidAppear()
 
-        self.parent?.view.window?.title = self.title!
+        guard let title = self.title else { return }
+        self.parent?.view.window?.title = title
     }
 
     override func viewDidLoad() {

@@ -7,8 +7,8 @@
 //
 
 import Cocoa
-import Quartz.PDFKit.PDFView
 import Foundation
+import Quartz.PDFKit.PDFView
 
 class BackgroundView: NSView {
 
@@ -19,9 +19,9 @@ class BackgroundView: NSView {
         self.wantsLayer = Constants.Layout.wantsLayer
         self.layer?.cornerRadius = Constants.Layout.cornerRadius
         if self.identifier?.rawValue == "MainViewBackground" || self.identifier?.rawValue == "OnboardingBackgroundView" {
-            self.layer?.backgroundColor = NSColor(named: "MainViewBackground")!.cgColor
+            self.layer?.backgroundColor = NSColor(named: "MainViewBackground")?.cgColor
         } else if self.identifier?.rawValue == "CustomViewBackground" {
-            self.layer?.backgroundColor = NSColor(named: "CustomViewBackground")!.withAlphaComponent(0.1).cgColor
+            self.layer?.backgroundColor = NSColor(named: "CustomViewBackground")?.withAlphaComponent(0.1).cgColor
         }
     }
 }
@@ -32,7 +32,8 @@ class PDFContentView: PDFView {
         super.layout()
 
         // set background color of the view
-        self.backgroundColor = NSColor(named: "PDFContentViewBackground")!
+        guard let pdfContentViewBackgroundColor = NSColor(named: "PDFContentViewBackground") else { fatalError("PDFContentViewBackground color not found!") }
+        self.backgroundColor = pdfContentViewBackgroundColor
         self.layer?.cornerRadius = Constants.Layout.cornerRadius
     }
 }
