@@ -10,44 +10,40 @@ import TagListView
 import UIKit
 
 class DocumentTableViewCell: UITableViewCell {
-    @IBOutlet weak var tileLabel: UILabel!
+    @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var tagListView: TagListView!
     @IBOutlet weak var downloadImageView: UIImageView!
     @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
 
-    var document: Document?
+    var document: Document? {
+        didSet {
+            if let document = document {
 
-    override func layoutSubviews() {
+                // update title + date
+                titleLabel.text = document.specificationCapitalized
+                dateLabel.text = DateFormatter.localizedString(from: document.date, dateStyle: .medium, timeStyle: .none)
 
-        // layout subviews to get the right separators
-        super.layoutSubviews()
+                // update the document tags
+                tagListView.removeAllTags()
+                let documentTags = Array(document.tags).sorted { $0.name < $1.name }
+                tagListView.addTags(documentTags.map { $0.name })
 
-        if let document = document {
-
-            // update title + date
-            tileLabel.text = document.specificationCapitalized
-            dateLabel.text = DateFormatter.localizedString(from: document.date, dateStyle: .medium, timeStyle: .none)
-
-            // update the document tags
-            tagListView.removeAllTags()
-            let documentTags = Array(document.tags).sorted { $0.name < $1.name }
-            tagListView.addTags(documentTags.map { $0.name })
-
-            // update download status
-            switch document.downloadStatus {
-            case .local:
-                downloadImageView.isHidden = true
-                activityIndicatorView.isHidden = true
-                activityIndicatorView.stopAnimating()
-            case .iCloudDrive:
-                downloadImageView.isHidden = false
-                activityIndicatorView.isHidden = true
-                activityIndicatorView.stopAnimating()
-            case .downloading:
-                downloadImageView.isHidden = true
-                activityIndicatorView.isHidden = false
-                activityIndicatorView.startAnimating()
+                // update download status
+                switch document.downloadStatus {
+                case .local:
+                    downloadImageView.isHidden = true
+                    activityIndicatorView.isHidden = true
+                    activityIndicatorView.stopAnimating()
+                case .iCloudDrive:
+                    downloadImageView.isHidden = false
+                    activityIndicatorView.isHidden = true
+                    activityIndicatorView.stopAnimating()
+                case .downloading:
+                    downloadImageView.isHidden = true
+                    activityIndicatorView.isHidden = false
+                    activityIndicatorView.startAnimating()
+                }
             }
         }
     }

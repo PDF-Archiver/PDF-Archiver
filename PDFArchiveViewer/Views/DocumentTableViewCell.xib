@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -99,7 +95,7 @@
                 <outlet property="dateLabel" destination="EHZ-TF-9ku" id="khn-cM-iOd"/>
                 <outlet property="downloadImageView" destination="MLT-ef-xDl" id="JNO-nv-kCs"/>
                 <outlet property="tagListView" destination="iFq-pY-ZNZ" id="hbG-Jg-X2y"/>
-                <outlet property="tileLabel" destination="rUi-If-D6N" id="ybv-Rz-fmc"/>
+                <outlet property="titleLabel" destination="rUi-If-D6N" id="ybv-Rz-fmc"/>
             </connections>
             <point key="canvasLocation" x="32" y="141.22938530734635"/>
         </tableViewCell>
