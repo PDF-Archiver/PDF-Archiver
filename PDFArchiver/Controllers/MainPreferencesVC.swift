@@ -29,8 +29,10 @@ class MainPreferencesVC: PreferencesVC {
         guard let mainWindow = NSApplication.shared.mainWindow else { fatalError("Main Window not found!") }
         let openPanel = getOpenPanel("Choose an archive folder")
         openPanel.beginSheetModal(for: mainWindow) { response in
-            guard response == NSApplication.ModalResponse.OK else { return }
-            guard let openPanelUrl = openPanel.url else { fatalError("Open panel URL not found!") }
+
+            guard response == NSApplication.ModalResponse.OK,
+                let openPanelUrl = openPanel.url else { return }
+
             self.archivePathTextField.stringValue = openPanelUrl.path
             self.preferencesDelegate?.archivePath = openPanelUrl
             self.viewControllerDelegate?.updateView(updatePDF: false)
@@ -41,8 +43,10 @@ class MainPreferencesVC: PreferencesVC {
         guard let mainWindow = NSApplication.shared.mainWindow else { fatalError("Main Window not found!") }
         let openPanel = getOpenPanel("Choose an observed folder")
         openPanel.beginSheetModal(for: mainWindow) { response in
-            guard response == NSApplication.ModalResponse.OK else { return }
-            guard let openPanelUrl = openPanel.url else { fatalError("Open panel URL not found!") }
+
+            guard response == NSApplication.ModalResponse.OK,
+                let openPanelUrl = openPanel.url else { return }
+
             self.observedPathTextField.stringValue = openPanelUrl.path
             self.preferencesDelegate?.observedPath = openPanelUrl
             // no need to update the view here - it gets updated automatically, when documents are added
