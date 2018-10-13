@@ -32,7 +32,7 @@ protocol DocumentsQueryDelegate: class {
 class DocumentsQuery: NSObject, Logging {
 
     // MARK: - Properties
-    fileprivate var documents = [Document]()
+    fileprivate var documents = [URL: Document]()
     fileprivate var tags = Set<Tag>()
 
     fileprivate var metadataQuery: NSMetadataQuery
@@ -51,7 +51,8 @@ class DocumentsQuery: NSObject, Logging {
              */
             if !documents.isEmpty {
                 OperationQueue.main.addOperation {
-                    self.delegate?.documentsQueryResultsDidChangeWithResults(documents: self.documents, tags: self.tags)
+                    let documents = self.documents.values.map { $0 }
+                    self.delegate?.documentsQueryResultsDidChangeWithResults(documents: documents, tags: self.tags)
                 }
             }
         }
@@ -94,8 +95,6 @@ class DocumentsQuery: NSObject, Logging {
         os_log("Got iCloud query feedback from '%@'", log: log, type: .debug, notification.name.rawValue)
         metadataQuery.disableUpdates()
 
-        documents = [Document]()
-        tags = Set<Tag>()
         for metadataQueryResult in metadataQuery.results as? [NSMetadataItem] ?? [] {
             // get the document path
             guard let documentPath = metadataQueryResult.value(forAttribute: NSMetadataItemURLKey) as? URL,
@@ -125,15 +124,22 @@ class DocumentsQuery: NSObject, Logging {
             default:
                 fatalError("The downloading status '\(downloadingStatus)' was not handled correctly!")
             }
-            documents.append(Document(path: documentPath,
-                                           downloadStatus: documentStatus,
-                                           availableTags: &tags))
+
+            // update download status or add new document
+            if documents[documentPath] != nil {
+                documents[documentPath]?.downloadStatus = documentStatus
+            } else {
+                documents[documentPath] = Document(path: documentPath,
+                                                   downloadStatus: documentStatus,
+                                                   availableTags: &tags)
+            }
         }
 
         metadataQuery.enableUpdates()
 
         OperationQueue.main.addOperation {
-            self.delegate?.documentsQueryResultsDidChangeWithResults(documents: self.documents, tags: self.tags)
+            let documents = self.documents.values.map { $0 }
+            self.delegate?.documentsQueryResultsDidChangeWithResults(documents: documents, tags: self.tags)
         }
     }
 }
