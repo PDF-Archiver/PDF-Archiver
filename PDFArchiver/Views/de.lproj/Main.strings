@@ -251,8 +251,8 @@
 /* Class = "NSViewController"; title = "Donation"; ObjectID = "rWp-Co-RrU"; */
 "rWp-Co-RrU.title" = "Spenden";
 
-/* Class = "NSTextFieldCell"; title = "✔️"; ObjectID = "zWE-Hy-4ww"; */
-"zWE-Hy-4ww.title" = "✔️";
+/* Class = "NSTextFieldCell"; title = "✔︎"; ObjectID = "zWE-Hy-4ww"; */
+"zWE-Hy-4ww.title" = "✔︎";
 
 /* Class = "NSTextFieldCell"; title = "Tags"; ObjectID = "Cvq-op-wAk"; */
 "Cvq-op-wAk.title" = "Tags";
