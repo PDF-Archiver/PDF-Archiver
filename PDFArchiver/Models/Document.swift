@@ -14,7 +14,7 @@ class Document: NSObject, Logging {
     var path: URL
     @objc var name: String
     @objc var documentDone: String {
-        return self.alreadyRenamed ? "✔️" : ""
+        return self.alreadyRenamed ? "✔︎" : ""
     }
     var alreadyRenamed = false
     var date = Date()

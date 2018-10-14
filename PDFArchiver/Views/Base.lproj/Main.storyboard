@@ -208,8 +208,7 @@ CA
                                                 <action selector="showOnboardingMenuItem:" target="Ady-hI-5gd" id="jYV-jh-BWb"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Update View" id="CDG-jy-mOA" userLabel="Update Tags">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        <menuItem title="Update Documents" keyEquivalent="r" id="CDG-jy-mOA">
                                             <connections>
                                                 <action selector="updateViewMenuItem:" target="Ady-hI-5gd" id="FpV-YG-xgA"/>
                                             </connections>
@@ -1150,7 +1149,7 @@ Help &gt; Show Onboarding</string>
                                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jfD-0d-UT9">
                                                                                     <rect key="frame" x="-2" y="0.0" width="44" height="17"/>
                                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="center" title="✔️" id="zWE-Hy-4ww">
+                                                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="center" title="✔︎" id="zWE-Hy-4ww">
                                                                                         <font key="font" metaFont="system"/>
                                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1541,7 +1540,7 @@ Help &gt; Show Onboarding</string>
                                                     </textField>
                                                     <searchField identifier="tagSearchField" toolTip="Tag input; press return key to add it to the document attributes" wantsLayer="YES" verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WfD-Nd-kM0">
                                                         <rect key="frame" x="0.0" y="274" width="240" height="22"/>
-                                                        <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" id="azW-Co-ROb">
+                                                        <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" placeholderString="Search and add" usesSingleLineMode="YES" bezelStyle="round" id="azW-Co-ROb">
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>

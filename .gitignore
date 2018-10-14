@@ -6,3 +6,5 @@ PDFArchiver/External/OpenSSL/lib/*
 !PDFArchiver/External/OpenSSL/lib/.gitkeep
 PDFArchiver/External/OpenSSL/include/*
 !PDFArchiver/External/OpenSSL/include/.gitkeep
+.env.default
+Pods

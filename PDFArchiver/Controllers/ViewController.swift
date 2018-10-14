@@ -19,7 +19,6 @@ protocol ViewControllerDelegate: class {
 class ViewController: NSViewController, Logging {
     var dataModelInstance = DataModel()
 
-    @IBOutlet weak var pdfDocumentsView: NSView!
     @IBOutlet weak var pdfView: NSView!
     @IBOutlet weak var pdfContentView: PDFView!
     @IBOutlet weak var documentAttributesView: NSView!

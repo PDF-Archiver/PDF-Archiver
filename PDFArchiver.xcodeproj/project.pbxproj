@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0449E8F92059345F80E87586 /* Pods_PDFArchiver.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B450F1A1B7BCF8CAF5560011 /* Pods_PDFArchiver.framework */; };
+		3C9AA7002AAD7CE7CEEF69D8 /* Pods_PDFArchiverUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 542ED38CB61D31AD19B53C2F /* Pods_PDFArchiverUITests.framework */; };
+		71523498E5FD24989D6E71CA /* Pods_PDFArchiverTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B61790CE80AD89E0F0737518 /* Pods_PDFArchiverTests.framework */; };
 		A3050B162101CBFC00F5E90A /* DateParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3050B152101CBFC00F5E90A /* DateParserTests.swift */; };
 		A307BB372014B8530046C391 /* MainPreferencesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A307BB362014B8530046C391 /* MainPreferencesVC.swift */; };
 		A307BB3B2014D5300046C391 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = A307BB3A2014D5300046C391 /* Preferences.swift */; };
@@ -68,6 +71,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2363B89FDD00BD4DC2FF4198 /* Pods-PDFArchiver.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PDFArchiver.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PDFArchiver/Pods-PDFArchiver.debug.xcconfig"; sourceTree = "<group>"; };
+		542ED38CB61D31AD19B53C2F /* Pods_PDFArchiverUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PDFArchiverUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8AA64D97356236ABA9811B31 /* Pods-PDFArchiverTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PDFArchiverTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PDFArchiverTests/Pods-PDFArchiverTests.release.xcconfig"; sourceTree = "<group>"; };
+		A2F19EE1AD66BAC8AF6BF2BC /* Pods-PDFArchiverTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PDFArchiverTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PDFArchiverTests/Pods-PDFArchiverTests.debug.xcconfig"; sourceTree = "<group>"; };
 		A3050B152101CBFC00F5E90A /* DateParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateParserTests.swift; sourceTree = "<group>"; };
 		A307BB362014B8530046C391 /* MainPreferencesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPreferencesVC.swift; sourceTree = "<group>"; };
 		A307BB3A2014D5300046C391 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
@@ -122,6 +129,11 @@
 		A3FC0D9F201B054A0082CD2A /* ViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerExtension.swift; sourceTree = "<group>"; };
 		A3FC0DA3201B05F10082CD2A /* DataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModel.swift; sourceTree = "<group>"; };
 		A3FF275720D0E614007EED90 /* DateParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateParser.swift; sourceTree = "<group>"; };
+		AC191B5265BB091C9336DE20 /* Pods-PDFArchiverUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PDFArchiverUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PDFArchiverUITests/Pods-PDFArchiverUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		B0AEFCD01E3447A2492209A8 /* Pods-PDFArchiver.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PDFArchiver.release.xcconfig"; path = "Pods/Target Support Files/Pods-PDFArchiver/Pods-PDFArchiver.release.xcconfig"; sourceTree = "<group>"; };
+		B450F1A1B7BCF8CAF5560011 /* Pods_PDFArchiver.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PDFArchiver.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B61790CE80AD89E0F0737518 /* Pods_PDFArchiverTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PDFArchiverTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DF231311BB0B958BBE7F00CF /* Pods-PDFArchiverUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PDFArchiverUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PDFArchiverUITests/Pods-PDFArchiverUITests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,6 +144,7 @@
 				A38F98CE20E2A0E5000F27B3 /* libssl.a in Frameworks */,
 				A38F98CF20E2A0E5000F27B3 /* libcrypto.a in Frameworks */,
 				A3797B61207B3684009DEF70 /* StoreKit.framework in Frameworks */,
+				0449E8F92059345F80E87586 /* Pods_PDFArchiver.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -139,6 +152,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				71523498E5FD24989D6E71CA /* Pods_PDFArchiverTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -146,12 +160,26 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3C9AA7002AAD7CE7CEEF69D8 /* Pods_PDFArchiverUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3B0073B1BEEFD979155E76BF /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				2363B89FDD00BD4DC2FF4198 /* Pods-PDFArchiver.debug.xcconfig */,
+				B0AEFCD01E3447A2492209A8 /* Pods-PDFArchiver.release.xcconfig */,
+				A2F19EE1AD66BAC8AF6BF2BC /* Pods-PDFArchiverTests.debug.xcconfig */,
+				8AA64D97356236ABA9811B31 /* Pods-PDFArchiverTests.release.xcconfig */,
+				AC191B5265BB091C9336DE20 /* Pods-PDFArchiverUITests.debug.xcconfig */,
+				DF231311BB0B958BBE7F00CF /* Pods-PDFArchiverUITests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		A315408920C83C41004947CC /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
@@ -201,6 +229,7 @@
 				A31B53061FF694B0007A3D14 /* PDFArchiverUITests */,
 				A31B52E71FF694B0007A3D14 /* Products */,
 				A32D52EE2012B5150032F05C /* Frameworks */,
+				3B0073B1BEEFD979155E76BF /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -259,6 +288,9 @@
 				A38F98CD20E2A0E5000F27B3 /* libcrypto.a */,
 				A38F98CC20E2A0E5000F27B3 /* libssl.a */,
 				A3797B60207B3684009DEF70 /* StoreKit.framework */,
+				B450F1A1B7BCF8CAF5560011 /* Pods_PDFArchiver.framework */,
+				B61790CE80AD89E0F0737518 /* Pods_PDFArchiverTests.framework */,
+				542ED38CB61D31AD19B53C2F /* Pods_PDFArchiverUITests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -304,12 +336,15 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A31B530C1FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "PDFArchiver" */;
 			buildPhases = (
+				B54577FE6F7B4D0C1CA8FF61 /* [CP] Check Pods Manifest.lock */,
 				A3BE5BF120E2A49900AE72CE /* BuildOpenSSL */,
 				A349C8212064E187002633A7 /* BartyCrouch */,
 				A389987A2025078D00C34E0B /* SwiftLint */,
 				A31B52E21FF694B0007A3D14 /* Sources */,
 				A31B52E31FF694B0007A3D14 /* Frameworks */,
 				A31B52E41FF694B0007A3D14 /* Resources */,
+				2AE4DA5F721ADA4D06A99177 /* [CP] Embed Pods Frameworks */,
+				A317FF3C216FCFDF00C27D83 /* Sentry */,
 			);
 			buildRules = (
 			);
@@ -324,6 +359,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A31B530F1FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "PDFArchiverTests" */;
 			buildPhases = (
+				420A6764B03994508BF217FD /* [CP] Check Pods Manifest.lock */,
 				A31B52F41FF694B0007A3D14 /* Sources */,
 				A31B52F51FF694B0007A3D14 /* Frameworks */,
 				A31B52F61FF694B0007A3D14 /* Resources */,
@@ -342,6 +378,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A31B53121FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "PDFArchiverUITests" */;
 			buildPhases = (
+				5851B637C275951D6FA7F6F3 /* [CP] Check Pods Manifest.lock */,
 				A31B52FF1FF694B0007A3D14 /* Sources */,
 				A31B53001FF694B0007A3D14 /* Frameworks */,
 				A31B53011FF694B0007A3D14 /* Resources */,
@@ -447,6 +484,91 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		2AE4DA5F721ADA4D06A99177 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-PDFArchiver/Pods-PDFArchiver-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Sentry/Sentry.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Sentry.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PDFArchiver/Pods-PDFArchiver-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		420A6764B03994508BF217FD /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-PDFArchiverTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5851B637C275951D6FA7F6F3 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-PDFArchiverUITests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A317FF3C216FCFDF00C27D83 /* Sentry */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 8;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
+			);
+			name = Sentry;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "source \"$PROJECT_DIR/.env.default\"\n\nif which sentry-cli >/dev/null; then\n    ERROR=$(sentry-cli upload-dsym 2>&1 >/dev/null)\nif [ ! $? -eq 0 ]; then\n    echo \"warning: sentry-cli - $ERROR\"\nfi\nelse\n    echo \"warning: sentry-cli not installed, download from https://github.com/getsentry/sentry-cli/releases\"\nfi\n";
+		};
 		A349C8212064E187002633A7 /* BartyCrouch */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -473,7 +595,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint autocorrect\n    swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi";
+			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint autocorrect\n    swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
 		};
 		A3BE5BF120E2A49900AE72CE /* BuildOpenSSL */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -488,6 +610,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "bash \"$PROJECT_DIR\"/scripts/build_openssl.sh\n";
+		};
+		B54577FE6F7B4D0C1CA8FF61 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-PDFArchiver-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -707,6 +851,7 @@
 		};
 		A31B530D1FF694B0007A3D14 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2363B89FDD00BD4DC2FF4198 /* Pods-PDFArchiver.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -714,6 +859,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/PDFArchiver/External/OpenSSL/include";
 				INFOPLIST_FILE = "$(SRCROOT)/PDFArchiver/Info.plist";
@@ -732,6 +878,7 @@
 		};
 		A31B530E1FF694B0007A3D14 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B0AEFCD01E3447A2492209A8 /* Pods-PDFArchiver.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -756,6 +903,7 @@
 		};
 		A31B53101FF694B0007A3D14 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A2F19EE1AD66BAC8AF6BF2BC /* Pods-PDFArchiverTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -775,6 +923,7 @@
 		};
 		A31B53111FF694B0007A3D14 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8AA64D97356236ABA9811B31 /* Pods-PDFArchiverTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -794,6 +943,7 @@
 		};
 		A31B53131FF694B0007A3D14 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = AC191B5265BB091C9336DE20 /* Pods-PDFArchiverUITests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
@@ -813,6 +963,7 @@
 		};
 		A31B53141FF694B0007A3D14 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DF231311BB0B958BBE7F00CF /* Pods-PDFArchiverUITests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
