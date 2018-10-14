@@ -38,6 +38,6 @@
 /* No comment provided by engineer. */
 "per_year" = "pro Jahr";
 
-"renaming_failed" = "Umbenennen fehlgeschlagen!";
+"save_failed" = "Speichern fehlgeschlagen!";
 
 "select_preferences" = "Bitte Archiv Pfad in den Einstellungen auswählen.";
