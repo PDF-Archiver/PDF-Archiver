@@ -358,3 +358,6 @@
 
 /* Class = "NSMenuItem"; title = "App Store Review"; ObjectID = "l3h-jx-Ssa"; */
 "l3h-jx-Ssa.title" = "App Store Review";
+
+/* Class = "NSSearchFieldCell"; placeholderString = "Search and Add"; ObjectID = "azW-Co-ROb"; */
+"azW-Co-ROb.placeholderString" = "Suchen und hinzufügen";
