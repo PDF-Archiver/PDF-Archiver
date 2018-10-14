@@ -74,6 +74,12 @@ extension ViewController {
     }
 
     @IBAction func updateViewMenuItem(_ sender: AnyObject) {
+
+        // update files in the observed path
+        if let observedPath = self.dataModelInstance.prefs.observedPath {
+            self.dataModelInstance.addUntaggedDocuments(paths: [observedPath])
+        }
+
         // get tags and update the GUI
         self.updateView(updatePDF: true)
     }

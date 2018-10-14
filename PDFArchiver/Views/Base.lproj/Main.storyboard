@@ -208,8 +208,7 @@ CA
                                                 <action selector="showOnboardingMenuItem:" target="Ady-hI-5gd" id="jYV-jh-BWb"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Update View" id="CDG-jy-mOA" userLabel="Update Tags">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        <menuItem title="Update Documents" keyEquivalent="r" id="CDG-jy-mOA">
                                             <connections>
                                                 <action selector="updateViewMenuItem:" target="Ady-hI-5gd" id="FpV-YG-xgA"/>
                                             </connections>
