@@ -552,7 +552,7 @@
 		};
 		A317FF3C216FCFDF00C27D83 /* Sentry */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			files = (
 			);
 			inputFileListPaths = (
@@ -565,9 +565,9 @@
 			);
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
-			shellScript = "source \"$PROJECT_DIR/.env.default\"\n\nif which sentry-cli >/dev/null; then\nexport SENTRY_ORG=pdf-archiver\nexport SENTRY_PROJECT=pdf-archiver\nexport SENTRY_AUTH_TOKEN=833a9fb1420646f2958b7419832d5f4d1882ff22e500482d8f4b88c568c64a6e\nERROR=$(sentry-cli upload-dsym 2>&1 >/dev/null)\nif [ ! $? -eq 0 ]; then\necho \"warning: sentry-cli - $ERROR\"\nfi\nelse\necho \"warning: sentry-cli not installed, download from https://github.com/getsentry/sentry-cli/releases\"\nfi\n";
+			shellScript = "source \"$PROJECT_DIR/.env.default\"\n\nif which sentry-cli >/dev/null; then\n    ERROR=$(sentry-cli upload-dsym 2>&1 >/dev/null)\nif [ ! $? -eq 0 ]; then\n    echo \"warning: sentry-cli - $ERROR\"\nfi\nelse\n    echo \"warning: sentry-cli not installed, download from https://github.com/getsentry/sentry-cli/releases\"\nfi\n";
 		};
 		A349C8212064E187002633A7 /* BartyCrouch */ = {
 			isa = PBXShellScriptBuildPhase;
