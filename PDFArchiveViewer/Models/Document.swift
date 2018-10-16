@@ -24,10 +24,10 @@ struct Document: Logging {
     private(set) var tags = Set<Tag>()
 
     private(set) var folder: String
-    private(set) var downloadStatus: DownloadStatus
-
     private(set) var filename: String
     private(set) var path: URL
+
+    var downloadStatus: DownloadStatus
 
     init(path documentPath: URL, downloadStatus documentDownloadStatus: DownloadStatus, availableTags: inout Set<Tag>) {
 
@@ -91,7 +91,7 @@ extension Document: Hashable, Comparable, CustomStringConvertible {
         }
     }
     static func == (lhs: Document, rhs: Document) -> Bool {
-        return lhs.path == rhs.path
+        return lhs.path == rhs.path && lhs.downloadStatus == rhs.downloadStatus
     }
     var description: String { return filename }
     var hashValue: Int { return path.hashValue }
