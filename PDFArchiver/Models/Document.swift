@@ -14,7 +14,7 @@ class Document: NSObject, Logging {
     var path: URL
     @objc var name: String
     @objc var documentDone: String {
-        return self.alreadyRenamed ? "✔️" : ""
+        return self.alreadyRenamed ? "✔︎" : ""
     }
     var alreadyRenamed = false
     var date = Date()
@@ -101,14 +101,14 @@ class Document: NSObject, Logging {
             if fileManager.fileExists(atPath: newFilepath.path),
                self.path != newFilepath {
                 os_log("File already exists!", log: self.log, type: .error)
-                dialogOK(messageKey: "renaming_failed", infoKey: "file_already_exists", style: .warning)
+                dialogOK(messageKey: "save_failed", infoKey: "file_already_exists", style: .warning)
                 return false
             } else {
                 try fileManager.moveItem(at: self.path, to: newFilepath)
             }
         } catch let error as NSError {
             os_log("Error while moving file: %@", log: self.log, type: .error, error.description)
-            dialogOK(messageKey: "renaming_failed", infoKey: error.localizedDescription, style: .warning)
+            dialogOK(messageKey: "save_failed", infoKey: error.localizedDescription, style: .warning)
             return false
         }
         self.name = String(newFilepath.lastPathComponent)
@@ -132,12 +132,12 @@ class Document: NSObject, Logging {
     internal func getRenamingPath(slugifyName: Bool) throws -> (foldername: String, filename: String) {
         // create a filename and rename the document
         guard !self.documentTags.isEmpty else {
-            dialogOK(messageKey: "renaming_failed", infoKey: "check_document_tags", style: .warning)
+            dialogOK(messageKey: "save_failed", infoKey: "check_document_tags", style: .warning)
             throw DocumentError.tags
         }
         guard var specification = self.specification,
               !specification.isEmpty else {
-            dialogOK(messageKey: "renaming_failed", infoKey: "check_document_description", style: .warning)
+            dialogOK(messageKey: "save_failed", infoKey: "check_document_description", style: .warning)
             throw DocumentError.description
         }
 

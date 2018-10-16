@@ -32,8 +32,8 @@
 /* Class = "NSMenuItem"; title = "Preferences…"; ObjectID = "BOF-NM-1cW"; */
 "BOF-NM-1cW.title" = "Einstellungen…";
 
-/* Class = "NSMenuItem"; title = "Update View"; ObjectID = "CDG-jy-mOA"; */
-"CDG-jy-mOA.title" = "Ansicht aktualisieren";
+/* Class = "NSMenuItem"; title = "Update Documents"; ObjectID = "CDG-jy-mOA"; */
+"CDG-jy-mOA.title" = "Dokumente aktualisieren";
 
 /* Class = "NSMenuItem"; title = "Close"; ObjectID = "DVo-aG-piG"; */
 "DVo-aG-piG.title" = "Schließen";
@@ -251,8 +251,8 @@
 /* Class = "NSViewController"; title = "Donation"; ObjectID = "rWp-Co-RrU"; */
 "rWp-Co-RrU.title" = "Spenden";
 
-/* Class = "NSTextFieldCell"; title = "✔️"; ObjectID = "zWE-Hy-4ww"; */
-"zWE-Hy-4ww.title" = "✔️";
+/* Class = "NSTextFieldCell"; title = "✔︎"; ObjectID = "zWE-Hy-4ww"; */
+"zWE-Hy-4ww.title" = "✔︎";
 
 /* Class = "NSTextFieldCell"; title = "Tags"; ObjectID = "Cvq-op-wAk"; */
 "Cvq-op-wAk.title" = "Tags";
@@ -358,3 +358,6 @@
 
 /* Class = "NSMenuItem"; title = "App Store Review"; ObjectID = "l3h-jx-Ssa"; */
 "l3h-jx-Ssa.title" = "App Store Review";
+
+/* Class = "NSSearchFieldCell"; placeholderString = "Search and add"; ObjectID = "azW-Co-ROb"; */
+"azW-Co-ROb.placeholderString" = "Suchen und hinzufügen";

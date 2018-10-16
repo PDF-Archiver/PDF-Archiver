@@ -38,6 +38,6 @@
 /* No comment provided by engineer. */
 "per_year" = "per year";
 
-"renaming_failed" = "Renaming failed!";
+"save_failed" = "Save failed!";
 
 "select_preferences" = "Please select a archive path in the preferences.";
