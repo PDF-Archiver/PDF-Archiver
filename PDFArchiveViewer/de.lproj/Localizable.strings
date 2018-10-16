@@ -1,0 +1,15 @@
+
+/* No comment provided by engineer. */
+"all" = "Alle";
+
+/* The title of an error message popup */
+"Error" = "Fehler";
+
+/* Button confirmation label */
+"OK" = "OK";
+
+/* UISearchBar placeholder */
+"search-documents" = "Dokumente durchsuchen";
+
+/* Error mesage to be displayed when failing to share a document */
+"Unable to share document without the pdf file" = "Dokument konnte nicht gefunden werden.";

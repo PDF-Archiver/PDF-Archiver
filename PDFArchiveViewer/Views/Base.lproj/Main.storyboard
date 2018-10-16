@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="H1p-Uh-vWS">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Master-->
+        <scene sceneID="pY4-Hu-kfo">
+            <objects>
+                <navigationController title="Master" id="RMx-3f-FxP" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" largeTitles="YES" id="Pmd-2v-anx">
+                        <rect key="frame" x="0.0" y="20" width="375" height="96"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" name="MainBackgroundColor"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="PIm-xb-9tu" kind="relationship" relationship="rootViewController" id="hZM-UC-X0H"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="8fS-aE-onr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-38" y="-630"/>
+        </scene>
+        <!--Detail-->
+        <scene sceneID="yUG-lL-AsK">
+            <objects>
+                <viewController title="Detail" id="JEX-9P-axG" customClass="DetailViewController" customModule="PDFArchiveViewer" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="SYR-Wa-9uf"/>
+                        <viewControllerLayoutGuide type="bottom" id="GAO-Cl-Wes"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="svH-Pt-448">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="VgS-Ng-LL7">
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HhD-0E-Mxc" userLabel="Empty View">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="2"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="2" id="kDV-gr-pCc"/>
+                                        </constraints>
+                                    </view>
+                                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="afv-rn-0La" customClass="TagListView" customModule="TagListView">
+                                        <rect key="frame" x="0.0" y="5" width="375" height="20"/>
+                                        <accessibility key="accessibilityConfiguration">
+                                            <accessibilityTraits key="traits" notEnabled="YES"/>
+                                        </accessibility>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="20" id="LXC-2f-rgZ"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                <real key="value" value="5"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GUi-XC-jug" customClass="PDFView">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="575"/>
+                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </view>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="GUi-XC-jug" firstAttribute="leading" secondItem="VgS-Ng-LL7" secondAttribute="leading" id="3BM-8i-Nvp"/>
+                                    <constraint firstItem="HhD-0E-Mxc" firstAttribute="leading" secondItem="VgS-Ng-LL7" secondAttribute="leading" id="Ieb-cr-qwK"/>
+                                    <constraint firstAttribute="trailing" secondItem="HhD-0E-Mxc" secondAttribute="trailing" id="Tpv-bm-iMd"/>
+                                    <constraint firstAttribute="trailing" secondItem="afv-rn-0La" secondAttribute="trailing" id="ZV8-TI-4b9"/>
+                                    <constraint firstAttribute="trailing" secondItem="GUi-XC-jug" secondAttribute="trailing" id="cG4-Cv-aAG"/>
+                                    <constraint firstItem="afv-rn-0La" firstAttribute="leading" secondItem="VgS-Ng-LL7" secondAttribute="leading" id="yy4-rn-zHz"/>
+                                </constraints>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="VgS-Ng-LL7" firstAttribute="bottom" secondItem="GAO-Cl-Wes" secondAttribute="top" id="3fy-JI-3E5"/>
+                            <constraint firstItem="VgS-Ng-LL7" firstAttribute="top" secondItem="SYR-Wa-9uf" secondAttribute="bottom" id="8JP-56-Aah"/>
+                            <constraint firstItem="VgS-Ng-LL7" firstAttribute="leading" secondItem="svH-Pt-448" secondAttribute="leading" id="PS0-XX-NfT"/>
+                            <constraint firstAttribute="trailing" secondItem="VgS-Ng-LL7" secondAttribute="trailing" id="hkr-rd-WNt"/>
+                        </constraints>
+                    </view>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="mOI-FS-AaM">
+                        <barButtonItem key="rightBarButtonItem" systemItem="action" id="4IU-Dl-iGq">
+                            <connections>
+                                <action selector="shareButtonClicked:" destination="JEX-9P-axG" id="In7-xe-kVO"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="documentView" destination="GUi-XC-jug" id="yfW-Uj-PmE"/>
+                        <outlet property="tagListView" destination="afv-rn-0La" id="3yq-NU-iD8"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="FJe-Yq-33r" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="709" y="129"/>
+        </scene>
+        <!--Split View Controller-->
+        <scene sceneID="Nki-YV-4Qg">
+            <objects>
+                <splitViewController id="H1p-Uh-vWS" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <connections>
+                        <segue destination="RMx-3f-FxP" kind="relationship" relationship="masterViewController" id="BlO-5A-QYV"/>
+                        <segue destination="vC3-pB-5Vb" kind="relationship" relationship="detailViewController" id="Tll-UG-LXB"/>
+                    </connections>
+                </splitViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cZU-Oi-B1e" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-856" y="-330"/>
+        </scene>
+        <!--Master-->
+        <scene sceneID="CWj-zI-HWz">
+            <objects>
+                <viewController title="Master" id="PIm-xb-9tu" customClass="MasterViewController" customModule="PDFArchiveViewer" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="R6W-vE-F73"/>
+                        <viewControllerLayoutGuide type="bottom" id="sAk-k2-4qg"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="gT4-6C-k5d">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="x1X-8b-rb7">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="PIm-xb-9tu" id="S98-YO-ZOd"/>
+                                    <outlet property="delegate" destination="PIm-xb-9tu" id="IEs-Qh-Gjm"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="x1X-8b-rb7" firstAttribute="top" secondItem="gT4-6C-k5d" secondAttribute="top" id="a61-mq-2hF"/>
+                            <constraint firstItem="sAk-k2-4qg" firstAttribute="top" secondItem="x1X-8b-rb7" secondAttribute="bottom" id="i8W-fX-6zK"/>
+                            <constraint firstAttribute="trailing" secondItem="x1X-8b-rb7" secondAttribute="trailing" id="oDp-5C-z6P"/>
+                            <constraint firstItem="x1X-8b-rb7" firstAttribute="leading" secondItem="gT4-6C-k5d" secondAttribute="leading" id="vyb-8R-3Wx"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="tDQ-Zs-CDK">
+                        <nil key="title"/>
+                        <view key="titleView" contentMode="scaleToFill" id="AaE-IH-1rI">
+                            <rect key="frame" x="67.5" y="5.5" width="240" height="33"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="PDF Archive Viewer" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DSc-hJ-ulG">
+                                    <rect key="frame" x="0.0" y="0.0" width="240" height="33"/>
+                                    <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="25"/>
+                                    <color key="textColor" name="MainTextColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="bottom" secondItem="DSc-hJ-ulG" secondAttribute="bottom" id="HKU-C0-oBv"/>
+                                <constraint firstItem="DSc-hJ-ulG" firstAttribute="top" secondItem="AaE-IH-1rI" secondAttribute="top" id="bha-Xi-wB7"/>
+                                <constraint firstAttribute="trailing" secondItem="DSc-hJ-ulG" secondAttribute="trailing" id="dLL-TO-B7O"/>
+                                <constraint firstItem="DSc-hJ-ulG" firstAttribute="leading" secondItem="AaE-IH-1rI" secondAttribute="leading" id="hkH-3f-0Sj"/>
+                            </constraints>
+                        </view>
+                    </navigationItem>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
+                    <connections>
+                        <outlet property="tableView" destination="x1X-8b-rb7" id="Lu6-7F-2Xi"/>
+                        <outlet property="view" destination="gT4-6C-k5d" id="jxQ-ST-pif"/>
+                        <segue destination="vC3-pB-5Vb" kind="showDetail" identifier="showDetails" id="udr-wF-y1K"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="jXQ-QS-hvg" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="871.20000000000005" y="-630.13493253373315"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="r7l-gg-dq7">
+            <objects>
+                <navigationController id="vC3-pB-5Vb" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" largeTitles="YES" id="DjV-YW-jjY">
+                        <rect key="frame" x="0.0" y="20" width="375" height="96"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" name="MainBackgroundColor"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="JEX-9P-axG" kind="relationship" relationship="rootViewController" id="GKi-kA-LjT"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="SLD-UC-DBI" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-45" y="129"/>
+        </scene>
+    </scenes>
+    <resources>
+        <namedColor name="MainBackgroundColor">
+            <color red="0.98000001907348633" green="0.98000001907348633" blue="0.98000001907348633" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+        </namedColor>
+        <namedColor name="MainTextColor">
+            <color red="0.7929999828338623" green="0.25499999523162842" blue="0.31000000238418579" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+        </namedColor>
+    </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="udr-wF-y1K"/>
+    </inferredMetricsTieBreakers>
+</document>

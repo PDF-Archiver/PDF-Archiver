@@ -1,0 +1,145 @@
+//
+//  DocumentsQuery.swift
+//  PDFArchiveViewer
+//
+//  Created by Julian Kahnert on 23.08.18.
+//  Copyright © 2018 Julian Kahnert. All rights reserved.
+//
+/*
+ Copyright (C) 2016 Apple Inc. All Rights Reserved.
+ See LICENSE.txt for this sample’s licensing information
+ 
+ Abstract:
+ This is the Browser Query which manages results form an `NSMetadataQuery` to compute which documents to show in the Browser UI / animations to display when cells move.
+ */
+
+import os.log
+import UIKit
+
+/**
+ The delegate protocol implemented by the object that receives our results. We
+ pass the updated list of results as well as a set of animations.
+ */
+protocol DocumentsQueryDelegate: class {
+    func documentsQueryResultsDidChangeWithResults(documents: [Document], tags: Set<Tag>)
+}
+
+/**
+ The DocumentBrowserQuery wraps an `NSMetadataQuery` to insulate us from the
+ queueing and animation concerns. It runs the query and computes animations
+ from the results set.
+ */
+class DocumentsQuery: NSObject, Logging {
+
+    // MARK: - Properties
+    fileprivate var documents = [URL: Document]()
+    fileprivate var tags = Set<Tag>()
+
+    fileprivate var metadataQuery: NSMetadataQuery
+    fileprivate var currentQueryObjects: [Document]?
+    fileprivate let workerQueue: OperationQueue = {
+        let workerQueue = OperationQueue()
+        workerQueue.name = (Bundle.main.bundleIdentifier ?? "PDFArchiveViewer") + ".browserdatasource.workerQueue"
+        workerQueue.maxConcurrentOperationCount = 1
+        return workerQueue
+    }()
+    var delegate: DocumentsQueryDelegate? {
+        didSet {
+            /*
+             If we already have results, we send them to the delegate as an
+             initial update.
+             */
+            if !documents.isEmpty {
+                OperationQueue.main.addOperation {
+                    let documents = self.documents.values.map { $0 }
+                    self.delegate?.documentsQueryResultsDidChangeWithResults(documents: documents, tags: self.tags)
+                }
+            }
+        }
+    }
+
+    // MARK: - Initialization
+    override init() {
+        metadataQuery = NSMetadataQuery()
+
+        // Filter only our document type.
+        metadataQuery.predicate = NSPredicate(format: "%K LIKE %@", NSMetadataItemFSNameKey, "*.pdf")
+
+        /*
+         Ask for both in-container documents and external documents so that
+         the user gets to interact with all the documents she or he has ever
+         opened in the application, without having to pull the document picker
+         again and again.
+         */
+        metadataQuery.searchScopes = [
+            NSMetadataQueryUbiquitousDocumentsScope
+        ]
+
+        /*
+         We supply our own serializing queue to the `NSMetadataQuery` so that we
+         can perform our own background work in sync with item discovery.
+         Note that the operationQueue of the `NSMetadataQuery` must be serial.
+         */
+        metadataQuery.operationQueue = workerQueue
+
+        super.init()
+        NotificationCenter.default.addObserver(self, selector: #selector(DocumentsQuery.queryFeedback(_:)), name: NSNotification.Name.NSMetadataQueryDidFinishGathering, object: metadataQuery)
+        NotificationCenter.default.addObserver(self, selector: #selector(DocumentsQuery.queryFeedback(_:)), name: NSNotification.Name.NSMetadataQueryDidUpdate, object: metadataQuery)
+        metadataQuery.start()
+    }
+
+    // MARK: - Notifications
+    @objc
+    func queryFeedback(_ notification: Notification) {
+
+        os_log("Got iCloud query feedback from '%@'", log: log, type: .debug, notification.name.rawValue)
+        metadataQuery.disableUpdates()
+
+        for metadataQueryResult in metadataQuery.results as? [NSMetadataItem] ?? [] {
+            // get the document path
+            guard let documentPath = metadataQueryResult.value(forAttribute: NSMetadataItemURLKey) as? URL,
+                Document.parseFilename(documentPath.lastPathComponent) != nil else { continue }
+
+            // Check if it is a local document. These two values are possible for the "NSMetadataUbiquitousItemDownloadingStatusKey":
+            // - NSMetadataUbiquitousItemDownloadingStatusCurrent
+            // - NSMetadataUbiquitousItemDownloadingStatusNotDownloaded
+            guard let downloadingStatus = metadataQueryResult.value(forAttribute: NSMetadataUbiquitousItemDownloadingStatusKey) as? String else { continue }
+
+            var documentStatus: DownloadStatus
+            switch downloadingStatus {
+            case "NSMetadataUbiquitousItemDownloadingStatusCurrent":
+                documentStatus = .local
+            case "NSMetadataUbiquitousItemDownloadingStatusNotDownloaded":
+
+                if let isDownloading = metadataQueryResult.value(forAttribute: NSMetadataUbiquitousItemIsDownloadingKey) as? Bool,
+                    isDownloading {
+                    let percentDownloaded = Float(truncating: (metadataQueryResult.value(forAttribute: NSMetadataUbiquitousItemPercentDownloadedKey) as? NSNumber) ?? 0)
+
+                    documentStatus = .downloading(percentDownloaded: percentDownloaded)
+                    os_log("Downloading %.1f% ...", log: log, type: .debug, percentDownloaded)
+                } else {
+                    documentStatus = .iCloudDrive
+                }
+
+            default:
+                fatalError("The downloading status '\(downloadingStatus)' was not handled correctly!")
+            }
+
+            // update download status or add new document
+            if documents[documentPath] != nil {
+                documents[documentPath]?.downloadStatus = documentStatus
+            } else {
+                documents[documentPath] = Document(path: documentPath,
+                                                   downloadStatus: documentStatus,
+                                                   availableTags: &tags)
+            }
+        }
+
+        metadataQuery.enableUpdates()
+
+        OperationQueue.main.addOperation {
+            let documents = self.documents.values.map { $0 }
+            self.delegate?.documentsQueryResultsDidChangeWithResults(documents: documents, tags: self.tags)
+        }
+    }
+}

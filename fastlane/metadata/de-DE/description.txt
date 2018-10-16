@@ -1,0 +1,26 @@
+Dokumente einfach anzeigen. Einscannen, mit der macOS App PDF Archiver benennen und anschließend mit PDF Archive Viewer wiederfinden.
+
+
+DER WEG
+
+• Scanne alle Dokumente, Briefe, Rechnungen etc. ein und speichere sie auf deinem Computer.
+• Kümmere dich nicht weiter um die Sortierung der Originale, sondern lege sie in eine Box.
+• Die digitalen Dokumente werden mithilfe der macOS App PDF Archivers mit Datum, Beschreibung und Tags versehen.
+• Diese Dokumente können anschließend mit PDF Archive Viewer betrachtet werden.
+
+
+DAS KONZEPT
+
+Diese Struktur kann unabhängig vom Betriebssystem/Dateisystem verwendet werden und hat viele weitere Vorteile. Sie lässt dich ...
+• ... nach Tags suchen: "_tagname"
+• ... in der Beschreibung suchen: "-beschreibung"
+• ... nach Tag oder Beschreibung suchen: "suchbegriff"
+
+
+FRAGEN
+
+Öffne ein GitHub Issue oder sende eine E-Mail an: mail@pdf-archiver.io
+PDF Archive Viewer ist ein Open Source Projekt (https://github.com/PDF-Archiver/PDF-Archive-Viewer).
+Contributions and feature requests are welcome!
+
+PDF Archive Viewers's Datenschutzerklärung: https://pdf-archiver.io/de/privacy

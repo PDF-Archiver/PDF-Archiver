@@ -1,0 +1,26 @@
+Organize your documents digitally. Just scan them and tag them with the macOS App PDF Archiver.
+
+
+THE WAY
+
+• Scan all incoming documents and save them on your computer/iCloud Drive.
+• Put the original paper documents in a folder, sorted by year. Don't care about bills/insurance papers etc. Just leave all of them in a box.
+• Open the macOS App PDF Archiver and start tagging. Your documents will be moved to your Archive folder.
+• These documents can be viewed with PDF Archive Viewer afterwards.
+
+
+THE CONCEPT
+
+This structure is independent from your OS and filesystem and makes it very easy to search files ...
+• ... by tag via a searchterm like: "_tagname", starting with _
+• ... by description via a searchterm like: "-descriptionword", starting with -
+• ... by tag or description via a searchterm like: "searchword", starting with the term
+
+
+QUESTIONS
+
+Just write a GitHub issue or send an E-Mail ( mail@pdf-archiver.io ).
+PDF Archive Viewer is an Open Source project (https://github.com/PDF-Archiver/PDF-Archive-Viewer).
+Contributions and feature requests are welcome!
+
+PDF Archive Viewers's privacy policy and terms of use: https://pdf-archiver.io/privacy

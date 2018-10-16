@@ -1,0 +1,48 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+desc "Generate new localized screenshots"
+lane :createNewScreenshots do
+  capture_screenshots(
+    scheme: "PDFArchiveViewer")
+  upload_to_app_store(
+    force: true,
+    skip_binary_upload: true,
+    skip_metadata: true)
+
+  upload_symbols_to_sentry(
+    dsym_path: "../build/PDFArchiveViewer.app.dSYM.zip")
+end
+
+desc "Build Beta-Version & Upload it to TestFlight."
+lane :beta do
+  build_app
+  changelog_from_git_commits
+  upload_to_testflight(
+    distribute_external: true,
+    beta_app_description: "A new Preview of the App!",
+    beta_app_feedback_email: "feedback@pdf-archiver.io",
+    groups: ["betatesters"])
+end
+
+desc "Update metadata to App Store Connect."
+lane :metadata do
+  deliver(
+    skip_binary_upload: true,
+    force: true,
+    metadata_path: "./fastlane/metadata")
+end
