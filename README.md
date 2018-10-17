@@ -1,8 +1,10 @@
-<div align="center">
-<a href="https://geo.itunes.apple.com/us/app/pdf-archiver/id1352719750?mt=12&app=apps" target="itunes_store">
-  <img src="assets/AppIcon.svg" width="200px">
-</a><br><br>
-</div>
+<p align="center">
+<a href="https://geo.itunes.apple.com/us/app/pdf-archive-viewer/id1433801905?mt=12&app=apps" target="itunes_store">
+  <img src="assets/AppIcon.svg" width="100px">
+</a>
+<br><br>
+<a href="https://itunes.apple.com/us/app/pdf-archive-viewer/id1433801905?mt=8&app=apps" style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/assets/shared/badges/en-us/appstore-lrg.svg) no-repeat;width:135px;height:40px;"></a>
+</p>
 
 
 # PDF Archive Viewer
