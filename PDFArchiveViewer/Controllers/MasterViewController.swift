@@ -78,7 +78,7 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
         }
 
         // setup background view controller
-        tableView.backgroundView = Bundle.main.loadNibNamed("EmptyBackgroundView", owner: nil, options: nil)?.first as? UIView
+        tableView.backgroundView = Bundle.main.loadNibNamed("LoadingBackgroundView", owner: nil, options: nil)?.first as? UIView
         tableView.separatorStyle = .none
     }
 

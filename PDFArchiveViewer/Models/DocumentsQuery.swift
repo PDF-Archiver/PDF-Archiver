@@ -139,7 +139,7 @@ class DocumentsQuery: NSObject, Logging {
          */
         queryObjects.subtract(removedDocuments)
         queryObjects.formUnion(addedDocuments)
-        
+
         /*
          KNOWN ISSUE: If a document will be renamed in the iCloud Drive folder, the documents query adds a "changedDocument" with the new filename.
          Since there is no reference to the old document, it can not be removed from "previousQueryObjects".
@@ -150,7 +150,7 @@ class DocumentsQuery: NSObject, Logging {
             if let documentIndex = queryObjects.firstIndex(where: { $0.filename == changedResult.filename }) {
                 queryObjects.remove(at: documentIndex)
             }
-            
+
             // insert the new/changed document to update the download status
             queryObjects.insert(changedResult)
         }
