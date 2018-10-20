@@ -33,6 +33,7 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
     var archive = Archive()
     var documentsQuery = DocumentsQuery()
     let searchController = UISearchController(searchResultsController: nil)
+    var selectedDocument: IndexPath?
 
     // Table view cells are reused and should be dequeued using a cell identifier.
     private let cellIdentifier = "DocumentTableViewCell"
@@ -100,7 +101,7 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showDetails",
-            let indexPath = tableView.indexPathForSelectedRow,
+            let indexPath = selectedDocument,
             let navigationController = segue.destination as? UINavigationController,
             let controller = navigationController.topViewController as? DetailViewController,
             let document = diffCalculator?.value(atIndexPath: indexPath) {
@@ -116,6 +117,9 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
 
             // increment the AppStoreReview counter
             AppStoreReviewRequest.shared.incrementCount()
+
+            // avoid inverted colors in tags by deselecting the cell
+            tableView.deselectRow(at: indexPath, animated: false)
         }
     }
 }
@@ -149,6 +153,14 @@ extension MasterViewController: DocumentsQueryDelegate {
 
         // update the table view data
         self.sections = sections
+
+        // perform the segue, if the document was downloaded successfully
+        if let indexPath = selectedDocument,
+            let document = diffCalculator?.value(atIndexPath: indexPath),
+            document.downloadStatus == .local {
+
+            performSegue(withIdentifier: "showDetails", sender: self)
+        }
     }
 }
 
@@ -190,16 +202,15 @@ extension MasterViewController: UITableViewDataSource {
         // download document if it is not already available
         switch document.downloadStatus {
         case .local:
+            selectedDocument = indexPath
             performSegue(withIdentifier: "showDetails", sender: self)
         case .downloading:
             print("Downloading currently ...")
         case .iCloudDrive:
             print("Start download ...")
             document.download()
+            selectedDocument = tableView.indexPathForSelectedRow
         }
-
-        // avoid inverted colors in tags by deselecting the cell
-        tableView.deselectRow(at: indexPath, animated: false)
     }
 
     // MARK: - optical changes
