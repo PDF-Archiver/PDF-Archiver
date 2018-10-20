@@ -122,9 +122,8 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
 
 // MARK: - Delegates
 extension MasterViewController: DocumentsQueryDelegate {
-    func documentsQueryResultsDidChangeWithResults(documents: [Document], tags: Set<Tag>) {
-        archive.setAllDocuments(documents.sorted().reversed())
-        archive.availableTags = tags
+    func documentsQueryResultsDidChangeWithResults(documents: [Document]) {
+        archive.setAllDocuments(documents)
 
         // setup background view controller
         if documents.isEmpty {
