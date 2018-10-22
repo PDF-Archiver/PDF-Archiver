@@ -34,8 +34,14 @@ struct Archive {
     }
 
     func filterContentForSearchText(_ searchText: String, scope: String = NSLocalizedString("all", comment: "")) -> SectionedValues<String, Document> {
-        // filter tags
-        let searchedTags = Archive.availableTags.filter { return $0.name.lowercased().contains(searchText.lowercased()) }
+
+        // slugify searchterms and split them
+        let searchTerms: [String] = searchText.lowercased().slugify(withSeparator: " ").split(separator: " ").map { String($0) }
+
+        // create a set of tags for each searchterm
+        let searchedTagsMap = searchTerms.reduce(into: [String: Set<Tag>]()) {(result, searchTerm) in
+            result[searchTerm] = Archive.availableTags.filter { return $0.name.lowercased().hasPrefix(searchTerm) }
+        }
 
         // filter documents
         let filteredDocuments = allDocuments.filter {( document: Document) -> Bool in
@@ -44,9 +50,15 @@ struct Archive {
             if searchText.isEmpty {
                 return doesCategoryMatch
             } else {
+
                 // TODO: maybe also search in date
-                return doesCategoryMatch &&
-                    (document.specification.lowercased().contains(searchText.lowercased()) || !document.tags.isDisjoint(with: searchedTags))
+                let foundPerSearchterm = searchTerms.reduce(into: true) { (result, searchTerm) in
+                    let foundInSpecification = document.specification.lowercased().contains(searchTerm)
+                    let foundInTags = !document.tags.isDisjoint(with: searchedTagsMap[searchTerm] ?? [])
+                    result = result && (foundInSpecification || foundInTags)
+                }
+
+                return doesCategoryMatch && foundPerSearchterm
             }
         }
 
