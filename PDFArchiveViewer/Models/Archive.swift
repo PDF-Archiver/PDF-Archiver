@@ -38,32 +38,24 @@ struct Archive {
         // slugify searchterms and split them
         let searchTerms: [String] = searchText.lowercased().slugify(withSeparator: " ").split(separator: " ").map { String($0) }
 
-        // create a set of tags for each searchterm
-        let searchedTagsMap = searchTerms.reduce(into: [String: Set<Tag>]()) {(result, searchTerm) in
-            result[searchTerm] = Archive.availableTags.filter { return $0.name.lowercased().hasPrefix(searchTerm) }
+        // filter documents by category
+        var categoryFilteredDocuments: Set<Document>
+        if scope == NSLocalizedString("all", comment: "") {
+            categoryFilteredDocuments = Set(allDocuments)
+        } else {
+            categoryFilteredDocuments = Set(allDocuments.filter { $0.folder == scope })
         }
 
-        // filter documents
-        let filteredDocuments = allDocuments.filter {( document: Document) -> Bool in
-            let doesCategoryMatch = (scope == NSLocalizedString("all", comment: "")) || (document.folder == scope)
-
-            if searchText.isEmpty {
-                return doesCategoryMatch
-            } else {
-
-                // TODO: maybe also search in date
-                let foundPerSearchterm = searchTerms.reduce(into: true) { (result, searchTerm) in
-                    let foundInSpecification = document.specification.lowercased().contains(searchTerm)
-                    let foundInTags = !document.tags.isDisjoint(with: searchedTagsMap[searchTerm] ?? [])
-                    result = result && (foundInSpecification || foundInTags)
-                }
-
-                return doesCategoryMatch && foundPerSearchterm
-            }
+        // filter documents by search term
+        var filteredDocuments: Set<Document>
+        if searchText.isEmpty {
+            filteredDocuments = categoryFilteredDocuments
+        } else {
+            filteredDocuments = categoryFilteredDocuments.intersection(filterBy(searchTerms))
         }
 
         // create table sections
-        return SectionedValues(values: filteredDocuments,
+        return SectionedValues(values: Array(filteredDocuments),
                                valueToSection: { (document) in
                                 let calender = Calendar.current
                                 return String(calender.component(.year, from: document.date)) },
@@ -104,12 +96,18 @@ struct Archive {
     }
 }
 
-struct YearSection: Comparable {
-    static func < (lhs: YearSection, rhs: YearSection) -> Bool {
-        return lhs.year < rhs.year
-    }
+// - MARK: Searcher stubs
+extension Archive: Searcher {
+    typealias Element = Document
+    var allSearchElements: Set<Document> { return Set(allDocuments) }
+}
 
+// - MARK: helper structs/classes
+struct YearSection: Comparable {
     var year: Date
     var headlines: [Document]
 
+    static func < (lhs: YearSection, rhs: YearSection) -> Bool {
+        return lhs.year < rhs.year
+    }
 }
