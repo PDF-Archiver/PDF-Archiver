@@ -15,7 +15,7 @@ enum DownloadStatus: Equatable {
     case local
 }
 
-struct Document: Logging {
+struct Document: Searchable, Logging {
 
     // data from filename
     private(set) var date: Date
@@ -26,6 +26,9 @@ struct Document: Logging {
     private(set) var folder: String
     private(set) var filename: String
     private(set) var path: URL
+
+    // Searchable stubs
+    internal var searchTerm: String { return filename }
 
     var downloadStatus: DownloadStatus
 
