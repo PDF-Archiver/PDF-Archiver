@@ -21,7 +21,7 @@ import UIKit
  pass the updated list of results as well as a set of animations.
  */
 protocol DocumentsQueryDelegate: class {
-    func documentsQueryResultsDidChangeWithResults(documents: [Document], tags: Set<Tag>)
+    func documentsQueryResultsDidChangeWithResults(documents: [Document])
 }
 
 /**
@@ -31,34 +31,22 @@ protocol DocumentsQueryDelegate: class {
  */
 class DocumentsQuery: NSObject, Logging {
 
-    // MARK: - Properties
-    fileprivate var documents = [URL: Document]()
-    fileprivate var tags = Set<Tag>()
+    private var metadataQuery: NSMetadataQuery
+    private var queryObjects = Set<Document>()
 
-    fileprivate var metadataQuery: NSMetadataQuery
-    fileprivate var currentQueryObjects: [Document]?
-    fileprivate let workerQueue: OperationQueue = {
+    private let workerQueue: OperationQueue = {
         let workerQueue = OperationQueue()
+
         workerQueue.name = (Bundle.main.bundleIdentifier ?? "PDFArchiveViewer") + ".browserdatasource.workerQueue"
         workerQueue.maxConcurrentOperationCount = 1
+
         return workerQueue
     }()
-    var delegate: DocumentsQueryDelegate? {
-        didSet {
-            /*
-             If we already have results, we send them to the delegate as an
-             initial update.
-             */
-            if !documents.isEmpty {
-                OperationQueue.main.addOperation {
-                    let documents = self.documents.values.map { $0 }
-                    self.delegate?.documentsQueryResultsDidChangeWithResults(documents: documents, tags: self.tags)
-                }
-            }
-        }
-    }
+
+    weak var delegate: DocumentsQueryDelegate?
 
     // MARK: - Initialization
+
     override init() {
         metadataQuery = NSMetadataQuery()
 
@@ -83,63 +71,92 @@ class DocumentsQuery: NSObject, Logging {
         metadataQuery.operationQueue = workerQueue
 
         super.init()
-        NotificationCenter.default.addObserver(self, selector: #selector(DocumentsQuery.queryFeedback(_:)), name: NSNotification.Name.NSMetadataQueryDidFinishGathering, object: metadataQuery)
-        NotificationCenter.default.addObserver(self, selector: #selector(DocumentsQuery.queryFeedback(_:)), name: NSNotification.Name.NSMetadataQueryDidUpdate, object: metadataQuery)
+
+        NotificationCenter.default.addObserver(self, selector: #selector(DocumentsQuery.finishGathering(notification:)), name: NSNotification.Name.NSMetadataQueryDidFinishGathering, object: metadataQuery)
+        NotificationCenter.default.addObserver(self, selector: #selector(DocumentsQuery.queryUpdated(notification:)), name: NSNotification.Name.NSMetadataQueryDidUpdate, object: metadataQuery)
+
         metadataQuery.start()
+        os_log("Starting the documents query.", log: log, type: .debug)
     }
 
     // MARK: - Notifications
+
     @objc
-    func queryFeedback(_ notification: Notification) {
+    func queryUpdated(notification: NSNotification) {
 
-        os_log("Got iCloud query feedback from '%@'", log: log, type: .debug, notification.name.rawValue)
+        os_log("Documents query update.", log: log, type: .debug)
+
+        let changedMetadataItems = notification.userInfo?[NSMetadataQueryUpdateChangedItemsKey] as? [NSMetadataItem]
+        let removedMetadataItems = notification.userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem]
+        let addedMetadataItems = notification.userInfo?[NSMetadataQueryUpdateAddedItemsKey] as? [NSMetadataItem]
+
+        let changedResults = buildModelObjectSet(objects: changedMetadataItems ?? [])
+        let removedResults = buildModelObjectSet(objects: removedMetadataItems ?? [])
+        let addedResults = buildModelObjectSet(objects: addedMetadataItems ?? [])
+
+        updateWithResults(removedDocuments: removedResults, addedDocuments: addedResults, changedDocuments: changedResults)
+    }
+
+    @objc
+    func finishGathering(notification: NSNotification) {
+
+        os_log("Documents query finished.", log: log, type: .debug)
+        guard let metadataQueryResults = metadataQuery.results as? [NSMetadataItem] else { return }
+
         metadataQuery.disableUpdates()
-
-        for metadataQueryResult in metadataQuery.results as? [NSMetadataItem] ?? [] {
-            // get the document path
-            guard let documentPath = metadataQueryResult.value(forAttribute: NSMetadataItemURLKey) as? URL,
-                Document.parseFilename(documentPath.lastPathComponent) != nil else { continue }
-
-            // Check if it is a local document. These two values are possible for the "NSMetadataUbiquitousItemDownloadingStatusKey":
-            // - NSMetadataUbiquitousItemDownloadingStatusCurrent
-            // - NSMetadataUbiquitousItemDownloadingStatusNotDownloaded
-            guard let downloadingStatus = metadataQueryResult.value(forAttribute: NSMetadataUbiquitousItemDownloadingStatusKey) as? String else { continue }
-
-            var documentStatus: DownloadStatus
-            switch downloadingStatus {
-            case "NSMetadataUbiquitousItemDownloadingStatusCurrent":
-                documentStatus = .local
-            case "NSMetadataUbiquitousItemDownloadingStatusNotDownloaded":
-
-                if let isDownloading = metadataQueryResult.value(forAttribute: NSMetadataUbiquitousItemIsDownloadingKey) as? Bool,
-                    isDownloading {
-                    let percentDownloaded = Float(truncating: (metadataQueryResult.value(forAttribute: NSMetadataUbiquitousItemPercentDownloadedKey) as? NSNumber) ?? 0)
-
-                    documentStatus = .downloading(percentDownloaded: percentDownloaded)
-                    os_log("Downloading %.1f% ...", log: log, type: .debug, percentDownloaded)
-                } else {
-                    documentStatus = .iCloudDrive
-                }
-
-            default:
-                fatalError("The downloading status '\(downloadingStatus)' was not handled correctly!")
-            }
-
-            // update download status or add new document
-            if documents[documentPath] != nil {
-                documents[documentPath]?.downloadStatus = documentStatus
-            } else {
-                documents[documentPath] = Document(path: documentPath,
-                                                   downloadStatus: documentStatus,
-                                                   availableTags: &tags)
-            }
-        }
-
+        let results = buildModelObjectSet(objects: metadataQueryResults)
         metadataQuery.enableUpdates()
 
+        updateWithResults(removedDocuments: Set<Document>(), addedDocuments: results, changedDocuments: Set<Document>())
+    }
+
+    // MARK: - Result handling/animations
+
+    private func buildModelObjectSet(objects: [NSMetadataItem]) -> Set<Document> {
+        // Create an ordered set of model objects.
+        let array = objects.compactMap { Archive.createDocumentFrom($0) }
+
+        return Set(array)
+    }
+
+    private func buildQueryResultSet() -> Set<Document> {
+        /*
+         Create an ordered set of model objects from the query's current
+         result set.
+         */
+        metadataQuery.disableUpdates()
+
+        guard let metadataQueryResults = metadataQuery.results as? [NSMetadataItem] else { fatalError("No metadata query results found.") }
+        let results = buildModelObjectSet(objects: metadataQueryResults)
+
+        metadataQuery.enableUpdates()
+        return results
+    }
+
+    private func updateWithResults(removedDocuments: Set<Document>, addedDocuments: Set<Document>, changedDocuments: Set<Document>) {
+        /*
+         Update the set of query objects.
+         */
+        queryObjects.subtract(removedDocuments)
+        queryObjects.formUnion(addedDocuments)
+
+        /*
+         KNOWN ISSUE: If a document will be renamed in the iCloud Drive folder, the documents query adds a "changedDocument" with the new filename.
+         Since there is no reference to the old document, it can not be removed from "previousQueryObjects".
+         */
+        for changedResult in changedDocuments {
+
+            // remove the changed document, e.g. filename has not changed & download status has changed
+            if let documentIndex = queryObjects.firstIndex(where: { $0.filename == changedResult.filename }) {
+                queryObjects.remove(at: documentIndex)
+            }
+
+            // insert the new/changed document to update the download status
+            queryObjects.insert(changedResult)
+        }
+
         OperationQueue.main.addOperation {
-            let documents = self.documents.values.map { $0 }
-            self.delegate?.documentsQueryResultsDidChangeWithResults(documents: documents, tags: self.tags)
+            self.delegate?.documentsQueryResultsDidChangeWithResults(documents: Array(self.queryObjects))
         }
     }
 }

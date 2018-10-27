@@ -8,11 +8,12 @@
 
 import Dwifft
 import Foundation
+import os.log
 
 struct Archive {
 
     private var allDocuments = [Document]()
-    var availableTags = Set<Tag>()
+    static var availableTags = Set<Tag>()
 
     var years: [String] {
         var years = Set<String>()
@@ -23,43 +24,90 @@ struct Archive {
     }
 
     mutating func setAllDocuments(_ documents: [Document]) {
-        let steps = Dwifft.diff(allDocuments, documents)
-        allDocuments = Dwifft.apply(diff: steps, toArray: allDocuments)
+        allDocuments = documents
+
+        // update the available tags
+        Archive.availableTags.removeAll(keepingCapacity: true)
+        for document in documents {
+            Archive.availableTags.formUnion(document.tags)
+        }
     }
 
     func filterContentForSearchText(_ searchText: String, scope: String = NSLocalizedString("all", comment: "")) -> SectionedValues<String, Document> {
-        // filter tags
-        let searchedTags = availableTags.filter { return $0.name.lowercased().contains(searchText.lowercased()) }
 
-        // filter documents
-        let filteredDocuments = allDocuments.filter {( document: Document) -> Bool in
-            let doesCategoryMatch = (scope == NSLocalizedString("all", comment: "")) || (document.folder == scope)
+        // slugify searchterms and split them
+        let searchTerms: [String] = searchText.lowercased().slugify(withSeparator: " ").split(separator: " ").map { String($0) }
 
-            if searchText.isEmpty {
-                return doesCategoryMatch
-            } else {
-                // TODO: maybe also search in date
-                return doesCategoryMatch &&
-                    (document.specification.lowercased().contains(searchText.lowercased()) || !document.tags.isDisjoint(with: searchedTags))
-            }
+        // filter documents by category
+        var categoryFilteredDocuments: Set<Document>
+        if scope == NSLocalizedString("all", comment: "") {
+            categoryFilteredDocuments = Set(allDocuments)
+        } else {
+            categoryFilteredDocuments = Set(allDocuments.filter { $0.folder == scope })
+        }
+
+        // filter documents by search term
+        var filteredDocuments: Set<Document>
+        if searchText.isEmpty {
+            filteredDocuments = categoryFilteredDocuments
+        } else {
+            filteredDocuments = categoryFilteredDocuments.intersection(filterBy(searchTerms))
         }
 
         // create table sections
-        return SectionedValues(values: filteredDocuments,
+        return SectionedValues(values: Array(filteredDocuments),
                                valueToSection: { (document) in
                                 let calender = Calendar.current
                                 return String(calender.component(.year, from: document.date)) },
                                sortSections: { return $0 > $1 },
                                sortValues: { return $0 > $1 })
     }
+
+    static func createDocumentFrom(_ metadataItem: NSMetadataItem) -> Document? {
+
+        // get the document path
+        guard let documentPath = metadataItem.value(forAttribute: NSMetadataItemURLKey) as? URL,
+            Document.parseFilename(documentPath.lastPathComponent) != nil else { return nil }
+
+        // Check if it is a local document. These two values are possible for the "NSMetadataUbiquitousItemDownloadingStatusKey":
+        // - NSMetadataUbiquitousItemDownloadingStatusCurrent
+        // - NSMetadataUbiquitousItemDownloadingStatusNotDownloaded
+        guard let downloadingStatus = metadataItem.value(forAttribute: NSMetadataUbiquitousItemDownloadingStatusKey) as? String else { return nil }
+
+        var documentStatus: DownloadStatus
+        switch downloadingStatus {
+        case "NSMetadataUbiquitousItemDownloadingStatusCurrent":
+            documentStatus = .local
+        case "NSMetadataUbiquitousItemDownloadingStatusNotDownloaded":
+
+            if let isDownloading = metadataItem.value(forAttribute: NSMetadataUbiquitousItemIsDownloadingKey) as? Bool,
+                isDownloading {
+                let percentDownloaded = Float(truncating: (metadataItem.value(forAttribute: NSMetadataUbiquitousItemPercentDownloadedKey) as? NSNumber) ?? 0)
+
+                documentStatus = .downloading(percentDownloaded: percentDownloaded)
+            } else {
+                documentStatus = .iCloudDrive
+            }
+        default:
+            fatalError("The downloading status '\(downloadingStatus)' was not handled correctly!")
+        }
+
+        return Document(path: documentPath, downloadStatus: documentStatus, availableTags: &availableTags)
+    }
 }
 
-struct YearSection: Comparable {
-    static func < (lhs: YearSection, rhs: YearSection) -> Bool {
-        return lhs.year < rhs.year
-    }
+// - MARK: Searcher stubs
+extension Archive: Searcher {
+    typealias Element = Document
+    var allSearchElements: Set<Document> { return Set(allDocuments) }
+}
 
+// - MARK: helper structs/classes
+struct YearSection: Comparable {
     var year: Date
     var headlines: [Document]
 
+    static func < (lhs: YearSection, rhs: YearSection) -> Bool {
+        return lhs.year < rhs.year
+    }
 }
