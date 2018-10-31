@@ -219,7 +219,7 @@ CA
                                                 <action selector="showManageSubscriptions:" target="Ady-hI-5gd" id="OAj-OM-N4K"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="App Store Review" id="l3h-jx-Ssa" userLabel="App Store Review">
+                                        <menuItem title="Write a Review" id="l3h-jx-Ssa" userLabel="App Store Review">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="writeAppStoreReview:" target="Ady-hI-5gd" id="VJb-Rt-Wdr"/>
@@ -1208,7 +1208,7 @@ Help &gt; Show Onboarding</string>
                                                         </tableView>
                                                     </subviews>
                                                 </clipView>
-                                                <scroller key="horizontalScroller" verticalHuggingPriority="750" doubleValue="0.02" horizontal="YES" id="ujd-lb-X02">
+                                                <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="ujd-lb-X02">
                                                     <rect key="frame" x="1" y="494" width="318" height="15"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
