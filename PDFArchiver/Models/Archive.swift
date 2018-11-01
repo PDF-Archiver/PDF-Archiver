@@ -67,7 +67,7 @@ class Archive: ArchiveDelegate, Logging {
                 self.preferencesDelegate?.archiveModificationDate = attributes[FileAttributeKey.modificationDate] as? Date
 
             } catch {
-                os_log("An error occured while getting the archive year folders.")
+                os_log("An error occured while getting the archive year folders.", log: self.log, type: .error)
             }
 
             // only use the latest two year folders by default

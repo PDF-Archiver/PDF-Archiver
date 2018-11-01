@@ -28,27 +28,27 @@ class OnboardingViewController: NSViewController {
     @IBOutlet weak var monthlySubscriptionButton: NSButton!
     @IBOutlet weak var yearlySubscriptionButton: NSButton!
 
-    @IBAction func privacyButton(_ sender: NSButton) {
+    @IBAction private func privacyButton(_ sender: NSButton) {
         NSWorkspace.shared.open(Constants.WebsiteEndpoints.privacy.url)
     }
 
-    @IBAction func restorePurchasesButton(_ sender: NSButton) {
+    @IBAction private func restorePurchasesButton(_ sender: NSButton) {
         self.iAPHelperDelegate?.restorePurchases()
     }
 
-    @IBAction func monthlySubscriptionButtonClicked(_ sender: NSButton) {
+    @IBAction private func monthlySubscriptionButtonClicked(_ sender: NSButton) {
         self.iAPHelperDelegate?.buyProduct("SUBSCRIPTION_MONTHLY")
     }
 
-    @IBAction func yearlySubscriptionButton(_ sender: NSButton) {
+    @IBAction private func yearlySubscriptionButton(_ sender: NSButton) {
         self.iAPHelperDelegate?.buyProduct("SUBSCRIPTION_YEARLY")
     }
-    @IBAction func manageSubscriptionsButtonClicked(_ sender: NSButton) {
+    @IBAction private func manageSubscriptionsButtonClicked(_ sender: NSButton) {
         guard let subscriptionUrl = URL(string: "https://apps.apple.com/account/subscriptions") else { fatalError("Subscription URL not found.") }
         NSWorkspace.shared.open(subscriptionUrl)
     }
 
-    @IBAction func closeButton(_ sender: NSButton?) {
+    @IBAction private func closeButton(_ sender: NSButton?) {
         if !(self.iAPHelperDelegate?.appUsagePermitted() ?? false) {
             // ask for a subscription plan before closing the app
             let alert = NSAlert()

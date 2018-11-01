@@ -34,7 +34,7 @@ class ViewController: NSViewController, Logging {
     @IBOutlet weak var tagSearchField: NSSearchField!
 
     // outlets
-    @IBAction func datePickDone(_ sender: NSDatePicker) {
+    @IBAction private func datePickDone(_ sender: NSDatePicker) {
         // test if a document is selected
         guard !self.documentAC.selectedObjects.isEmpty,
             let selectedDocument = self.documentAC.selectedObjects.first as? Document else {
@@ -45,7 +45,7 @@ class ViewController: NSViewController, Logging {
         selectedDocument.date = sender.dateValue
     }
 
-    @IBAction func descriptionDone(_ sender: NSTextField) {
+    @IBAction private func descriptionDone(_ sender: NSTextField) {
         // test if a document is selected
         guard !self.documentAC.selectedObjects.isEmpty,
               let selectedDocument = self.documentAC.selectedObjects.first as? Document else {
@@ -56,7 +56,7 @@ class ViewController: NSViewController, Logging {
         self.dataModelInstance.setDocumentDescription(document: selectedDocument, description: sender.stringValue)
     }
 
-    @IBAction func clickedDocumentTagTableView(_ sender: NSTableView) {
+    @IBAction private func clickedDocumentTagTableView(_ sender: NSTableView) {
         // test if the document tag table is empty
         guard !self.documentAC.selectedObjects.isEmpty,
             let selectedDocument = self.documentAC.selectedObjects.first as? Document,
@@ -68,7 +68,7 @@ class ViewController: NSViewController, Logging {
         self.dataModelInstance.remove(tag: selectedTag, from: selectedDocument)
     }
 
-    @IBAction func clickedTagTableView(_ sender: NSTableView) {
+    @IBAction private func clickedTagTableView(_ sender: NSTableView) {
         // add new tag to document table view
         guard let selectedDocument = self.documentAC.selectedObjects.first as? Document,
             let selectedTag = self.tagAC.selectedObjects.first as? Tag else {
@@ -80,7 +80,7 @@ class ViewController: NSViewController, Logging {
         self.dataModelInstance.add(tag: selectedTag, to: selectedDocument)
     }
 
-    @IBAction func browseFile(sender: AnyObject) {
+    @IBAction private func browseFile(sender: AnyObject) {
         let openPanel = getOpenPanel("Choose an observed folder")
         guard let mainWindow = NSApplication.shared.mainWindow else { fatalError("Main Window not found!") }
         openPanel.beginSheetModal(for: mainWindow) { response in
@@ -93,7 +93,7 @@ class ViewController: NSViewController, Logging {
         }
     }
 
-    @IBAction func saveDocumentButton(_ sender: NSButton) {
+    @IBAction private func saveDocumentButton(_ sender: NSButton) {
         // test if a document is selected
         guard !self.documentAC.selectedObjects.isEmpty,
             let selectedDocument = self.documentAC.selectedObjects.first as? Document else {
@@ -165,7 +165,7 @@ class ViewController: NSViewController, Logging {
 
         // show onboarding view
         if !UserDefaults.standard.bool(forKey: "onboardingShown") || isValid == false {
-            self.showOnboardingMenuItem(self)
+            self.performSegue(withIdentifier: "onboardingSegue", sender: self)
         }
     }
 

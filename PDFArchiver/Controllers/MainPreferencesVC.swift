@@ -20,12 +20,12 @@ class MainPreferencesVC: PreferencesVC {
     @IBOutlet weak var tagsCheckButton: NSButton!
     @IBOutlet weak var convertPicturesButton: NSButton!
 
-    @IBAction func iCloudDriveButtonClicked(_ sender: NSButton) {
+    @IBAction private func iCloudDriveButtonClicked(_ sender: NSButton) {
         self.preferencesDelegate?.useiCloudDrive = sender.state == .on
         self.updateArchiveFolderSection()
     }
 
-    @IBAction func changeArchivePathButtonClicked(_ sender: Any) {
+    @IBAction private func changeArchivePathButtonClicked(_ sender: Any) {
         guard let mainWindow = NSApplication.shared.mainWindow else { fatalError("Main Window not found!") }
         let openPanel = getOpenPanel("Choose an archive folder")
         openPanel.beginSheetModal(for: mainWindow) { response in
@@ -39,7 +39,7 @@ class MainPreferencesVC: PreferencesVC {
         }
     }
 
-    @IBAction func changeObservedPathButtonClicked(_ sender: NSButton) {
+    @IBAction private func changeObservedPathButtonClicked(_ sender: NSButton) {
         guard let mainWindow = NSApplication.shared.mainWindow else { fatalError("Main Window not found!") }
         let openPanel = getOpenPanel("Choose an observed folder")
         openPanel.beginSheetModal(for: mainWindow) { response in
@@ -53,14 +53,14 @@ class MainPreferencesVC: PreferencesVC {
         }
     }
 
-    @IBAction func documentSlugifyCheckButtonClicked(_ sender: NSButton) {
+    @IBAction private func documentSlugifyCheckButtonClicked(_ sender: NSButton) {
         self.preferencesDelegate?.slugifyNames = sender.state == .on
     }
 
-    @IBAction func tagsCheckButtonClicked(_ sender: NSButton) {
+    @IBAction private func tagsCheckButtonClicked(_ sender: NSButton) {
         self.preferencesDelegate?.analyseAllFolders = sender.state == .on
     }
-    @IBAction func convertPicturesButtonClicked(_ sender: NSButton) {
+    @IBAction private func convertPicturesButtonClicked(_ sender: NSButton) {
         self.preferencesDelegate?.convertPictures = sender.state == .on
     }
 

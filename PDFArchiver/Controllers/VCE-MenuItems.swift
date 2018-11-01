@@ -13,12 +13,12 @@ import Quartz
 extension ViewController {
 
     // MARK: - PDF Archiver Menu
-    @IBAction func showPreferencesMenuItem(_ sender: NSMenuItem) {
+    @IBAction private func showPreferencesMenuItem(_ sender: NSMenuItem) {
         self.performSegue(withIdentifier: "prefsSegue", sender: self)
     }
 
     // MARK: - Window Menu
-    @IBAction func zoomPDFMenuItem(_ sender: NSMenuItem) {
+    @IBAction private func zoomPDFMenuItem(_ sender: NSMenuItem) {
         guard let identifierName = sender.identifier?.rawValue  else { return }
 
         if identifierName == "ZoomActualSize" {
@@ -33,7 +33,7 @@ extension ViewController {
     }
 
     // MARK: - Edit Menu
-    @IBAction func deleteDocumentMenuItem(_ sender: NSMenuItem) {
+    @IBAction private func deleteDocumentMenuItem(_ sender: NSMenuItem) {
         // select the document which should be deleted
         guard !self.documentAC.selectedObjects.isEmpty,
             let selectedDocument = self.documentAC.selectedObjects.first as? Document else {
@@ -57,23 +57,23 @@ extension ViewController {
 
     // MARK: - Help Menu
 
-    @IBAction func showHelp(_ sender: NSMenuItem) {
+    @IBAction private func showHelp(_ sender: NSMenuItem) {
         NSWorkspace.shared.open(Constants.WebsiteEndpoints.faq.url)
     }
 
-    @IBAction func showPrivacy(_ sender: NSMenuItem) {
+    @IBAction private func showPrivacy(_ sender: NSMenuItem) {
         NSWorkspace.shared.open(Constants.WebsiteEndpoints.privacy.url)
     }
 
-    @IBAction func showImprint(_ sender: NSMenuItem) {
+    @IBAction private func showImprint(_ sender: NSMenuItem) {
         NSWorkspace.shared.open(Constants.WebsiteEndpoints.imprint.url)
     }
 
-    @IBAction func showOnboardingMenuItem(_ sender: AnyObject) {
+    @IBAction private func showOnboardingMenuItem(_ sender: AnyObject) {
         self.performSegue(withIdentifier: "onboardingSegue", sender: self)
     }
 
-    @IBAction func updateViewMenuItem(_ sender: AnyObject) {
+    @IBAction private func updateViewMenuItem(_ sender: AnyObject) {
 
         // update files in the observed path
         if let observedPath = self.dataModelInstance.prefs.observedPath {
@@ -84,15 +84,15 @@ extension ViewController {
         self.updateView(updatePDF: true)
     }
 
-    @IBAction func showManageSubscriptions(_ sender: NSMenuItem) {
+    @IBAction private func showManageSubscriptions(_ sender: NSMenuItem) {
         NSWorkspace.shared.open(Constants.manageSubscription)
     }
 
-    @IBAction func writeAppStoreReview(_ sender: NSMenuItem) {
+    @IBAction private func writeAppStoreReview(_ sender: NSMenuItem) {
         AppStoreReviewRequest.shared.requestReviewManually(for: Constants.appId)
     }
 
-    @IBAction func resetCacheMenuItem(_ sender: NSMenuItem) {
+    @IBAction private func resetCacheMenuItem(_ sender: NSMenuItem) {
         // remove all user defaults
         guard let bundleIdentifier = Bundle.main.bundleIdentifier else { fatalError("Bundle Identifiert not found.") }
         UserDefaults.standard.removePersistentDomain(forName: bundleIdentifier)
