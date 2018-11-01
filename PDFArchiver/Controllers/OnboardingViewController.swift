@@ -60,11 +60,11 @@ class OnboardingViewController: NSViewController {
 
             // user has selected the "close" button
             if alert.runModal() == .alertFirstButtonReturn {
-                self.dismiss(self)
+                self.dismiss(nil)
             }
         } else {
             // app usage is permitted - dismiss the onboarding view controller
-            self.dismiss(self)
+            self.dismiss(nil)
         }
     }
 
