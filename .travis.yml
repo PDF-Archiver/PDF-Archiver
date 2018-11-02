@@ -1,19 +1,28 @@
 language: swift
 os: osx
-osx_image: xcode9.4
-
+osx_image: xcode10.1
 before_install:
-  - brew bundle
-  - gem install xcpretty
-
+- brew bundle
+- pod update
+- pod install
+before_deploy:
+  - sentry-cli upload-dsym --org PDF-Archiver --project PDF-Archiver build/PDFArchiver.app
 install:
-  - bash $TRAVIS_BUILD_DIR/scripts/build_openssl.sh
-
+- bash $TRAVIS_BUILD_DIR/scripts/build_openssl.sh
+- bash $TRAVIS_BUILD_DIR/scripts/build_app.sh
 script:
-  - swiftlint
-  - xcodebuild clean test -project "PDFArchiver.xcodeproj" -scheme "PDFArchiver" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO -quiet | xcpretty && exit ${PIPESTATUS[0]}
-
+- swiftlint
 notifications:
   email:
     on_success: never
     on_failure: change
+deploy:
+  provider: releases
+  api_key:
+    secure: cc3pD61vIIl6+fcgD58PEmrC2J26EmxBxOJq009oq4RkD76CSIutScILic+wQmSZiVfd6J4dJGjZL9mUqzeE5Wsw0b85lFFW4bajiSGmwoGwqIXlPFL+UH/yFKbreAR+2rehoL8+QAVC6PbIphgA04XnCqkls77dueyBGrc5Xng23Wpurdyh4Ns0sUvF5iAE8/XXZbXBO83HHzNm5tpXF6op34Rj6ssV5zjNM41oZJosSBAYTcWsrh/CBs08jDx6eblMmq80cOdWGwgc9tUlBz6uBjN3qLn/S0OfTdnfeghT2nohZ7xboZpwBnKD/GRHjHeonLXLfqjaO9H+dP/LmKeWOaEXuKoXIo7+G25WPQNp2u7BgSBftjNkWXOPiQ8PhH1j9cWQqR3gcUm8y5J5upsYp+ktD/JMwULshWvY1g91ES1vKvtq7RVPe1/dOCZSW7fwCPPT5nf6mwxjFB7grKeihEI0ffIWQeleCkzP/T5xw/6UzrtmqRVxzF1rNMySvMkG5TF47y7CGObJj9KOnV45yOxLP5RnXb0tq4ybM3CsuFXWgXBUi7q6p2oTkweOSs8hZumJSYcfqJk0ihj3Vi9f8zHZNseGd3o/tcZivTEVebtKI/tHjOH4Hox3AK2DrzgWTwj2Of6BJyXMJIO67zAbz2ZBX7+P869iuPLf/Zo=
+  file: build/PDFArchiver.app
+  on:
+    tags: true
+env:
+  global:
+    secure: nb1enrM5x+DSdrFz2SueQ6OfxBpwTIK1Yt6hQuP7UeAT8knxkiTORd0N2fdSKONsu3Ek3hFeQwHjxTJ0gOjKirw69FeUyKlxtKg0+Z5DE9S/nefo/qcVZYI/oGtVT7xZSkQYaib9gnCrrKWMtqH0ynIHUnt7Azsxm8BXxYodsEQsX/DHBg3QFdiynTPdvJJ23nwySrXd+Pil8lPzZ5HM5WH8H3KU+xZF8xuUQZfv2MUDl5gOehzMErO/xq4E2JBhu3BqiXrTqd6VJgKiVC5Pb1Wpap8UdJ3w7TA0kAsx4vbAuA6kmQRBL3VkOFABRdN9oBQ03yLlI136AGx3e6YWIt5SfgzNS5ReeoMFO9/LIiFZEKRbAMywgzk5VgCJX8LY2GatvR8PYkTZZm1t+CFZ7blRU7HCCshqr76+r/gGHhwiUQlMYBbiOw4tVMnIZe0qDp4MxgECDRukzxi+7jy2LsySfaIpHMwlTNdkPZ35QjCydoXkKAUdxv9+KlPuKHywCfeOjx7eU1ivM6yGrR48Jm3O9KP6GOGQiuQV6p0kme4O9fZJeK7VgGX6aj8mU0ftih9YhMOGoZ2Nq14jyhmtXLXXT1zQGzOvpQZ9nzo+pn69kFCpazGPj2jFuc38bZe0XGY5oJZaijCt6DUnbZU5X0T7pl6l1D3Y/mHSn0FtHmI=
