@@ -32,19 +32,19 @@ class DonationPreferencesVC: PreferencesVC, DonationPreferencesVCDelegate {
     weak var preferencesDelegate: PreferencesDelegate?
     weak var iAPHelperDelegate: IAPHelperDelegate?
 
-    @IBAction func donationButton1Clicked(_ sender: NSButton) {
+    @IBAction private func donationButton1Clicked(_ sender: NSButton) {
         self.iAPHelperDelegate?.buyProduct("DONATION_LEVEL1")
     }
 
-    @IBAction func donationButton2Clicked(_ sender: NSButton) {
+    @IBAction private func donationButton2Clicked(_ sender: NSButton) {
         self.iAPHelperDelegate?.buyProduct("DONATION_LEVEL2")
     }
 
-    @IBAction func donationButton3Clicked(_ sender: NSButton) {
+    @IBAction private func donationButton3Clicked(_ sender: NSButton) {
         self.iAPHelperDelegate?.buyProduct("DONATION_LEVEL3")
     }
 
-    @IBAction func statusImageClicked(_ sender: Any) {
+    @IBAction private func statusImageClicked(_ sender: Any) {
         if connectedToNetwork(),
            self.iAPHelperDelegate?.products.isEmpty ?? true {
             self.iAPHelperDelegate?.requestProducts()

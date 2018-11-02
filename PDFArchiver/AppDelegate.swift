@@ -17,6 +17,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         do {
             Client.shared = try Client(dsn: "https://c37dadbfbc6040d2bd2ebcc0c1fd9e3d@sentry.io/1300124")
             try Client.shared?.startCrashHandler()
+            Client.shared?.enableAutomaticBreadcrumbTracking()
         } catch let error {
             print("\(error)")
         }

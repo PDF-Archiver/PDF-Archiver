@@ -213,12 +213,7 @@ extension IAPHelper: SKPaymentTransactionObserver {
                 // fire up a request finished notification
                 self.requestRunning -= 1
 
-                // show thanks message
-                if !transaction.payment.productIdentifier.hasPrefix("SUBSCRIPTION_") {
-                    DispatchQueue.main.async {
-                        dialogOK(messageKey: "payment_complete", infoKey: "payment_thanks", style: .informational)
-                    }
-                }
+                // finish transaction and close the onboarding view
                 queue.finishTransaction(transaction)
                 self.onboardingVCDelegate?.closeOnboardingView()
             case .failed:

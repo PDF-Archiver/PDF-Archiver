@@ -356,8 +356,8 @@
 /* Class = "NSButtonCell"; title = "Save Documents in iCloud Drive"; ObjectID = "xlr-HK-YOq"; */
 "xlr-HK-YOq.title" = "Speichert die Dokumente in iCloud Drive";
 
-/* Class = "NSMenuItem"; title = "App Store Review"; ObjectID = "l3h-jx-Ssa"; */
-"l3h-jx-Ssa.title" = "App Store Review";
+/* Class = "NSMenuItem"; title = "Write a Review"; ObjectID = "l3h-jx-Ssa"; */
+"l3h-jx-Ssa.title" = "Rezension schreiben";
 
 /* Class = "NSSearchFieldCell"; placeholderString = "Search and add"; ObjectID = "azW-Co-ROb"; */
 "azW-Co-ROb.placeholderString" = "Suchen und hinzufügen";
