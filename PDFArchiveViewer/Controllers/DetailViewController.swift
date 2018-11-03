@@ -29,7 +29,7 @@ class DetailViewController: UIViewController, Logging {
 
     @IBOutlet weak var tagListView: TagListView!
     @IBOutlet weak var documentView: PDFView!
-    @IBAction func shareButtonClicked(_ sender: UIBarButtonItem) {
+    @IBAction private func shareButtonClicked(_ sender: UIBarButtonItem) {
         guard let document = detailDocument,
             let pdfDocumentData = NSData(contentsOf: document.path) else {
 
