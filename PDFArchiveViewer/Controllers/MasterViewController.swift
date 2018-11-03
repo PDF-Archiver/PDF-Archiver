@@ -221,7 +221,7 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
                     if let indexPath = self.getIndexPath(of: changedDocument, in: self.currentSections),
                         let cell = self.tableView.cellForRow(at: indexPath) as? DocumentTableViewCell {
 
-                        cell.updateDownloadStatus(document: changedDocument)
+                        cell.updateDownloadStatus(for: changedDocument)
                     }
                 }
 

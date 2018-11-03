@@ -82,7 +82,7 @@ class Archive {
                 isDownloading {
                 let percentDownloaded = Float(truncating: (metadataItem.value(forAttribute: NSMetadataUbiquitousItemPercentDownloadedKey) as? NSNumber) ?? 0)
 
-                documentStatus = .downloading(percentDownloaded: percentDownloaded)
+                documentStatus = .downloading(percentDownloaded: percentDownloaded / 100)
             } else {
                 documentStatus = .iCloudDrive
             }
@@ -90,7 +90,10 @@ class Archive {
             fatalError("The downloading status '\(downloadingStatus)' was not handled correctly!")
         }
 
-        return Document(path: documentPath, downloadStatus: documentStatus, availableTags: &availableTags)
+        // get file size via NSMetadataItemFSSizeKey
+        let size = metadataItem.value(forAttribute: NSMetadataItemFSSizeKey) as? Int64
+
+        return Document(path: documentPath, size: size ?? 0, downloadStatus: documentStatus, availableTags: &availableTags)
     }
 }
 

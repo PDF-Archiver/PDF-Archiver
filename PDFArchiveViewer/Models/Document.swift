@@ -26,16 +26,18 @@ struct Document: Searchable, Logging {
     private(set) var folder: String
     private(set) var filename: String
     private(set) var path: URL
+    private(set) var size: String
 
     // Searchable stubs
     internal var searchTerm: String { return filename }
 
     var downloadStatus: DownloadStatus
 
-    init(path documentPath: URL, downloadStatus documentDownloadStatus: DownloadStatus, availableTags: inout Set<Tag>) {
+    init(path documentPath: URL, size byteSize: Int64, downloadStatus documentDownloadStatus: DownloadStatus, availableTags: inout Set<Tag>) {
 
-        downloadStatus = documentDownloadStatus
         path = documentPath
+        size = ByteCountFormatter.string(fromByteCount: byteSize, countStyle: .file)
+        downloadStatus = documentDownloadStatus
         filename = documentPath.lastPathComponent
         folder = documentPath.deletingLastPathComponent().lastPathComponent
 
