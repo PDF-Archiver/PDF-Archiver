@@ -114,18 +114,43 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
         }
     }
 
+    // MARK: - internal helper functions
+
     private func getDocument(from indexPath: IndexPath) -> Document? {
         let tableSection = currentSections[indexPath.section]
         return tableSection.rowItems[indexPath.row]
     }
 
-    private func getIndexPath(of document: Document) -> IndexPath? {
-        if let sectionIndex = currentSections.firstIndex(where: { $0.sectionItem == document.folder }),
-            let rowIndex = currentSections[sectionIndex].rowItems.firstIndex(where: { $0 == document }) {
+    private func getIndexPath(of document: Document, in sections: [TableSection<String, Document>]) -> IndexPath? {
+        if let sectionIndex = sections.firstIndex(where: { $0.sectionItem == document.folder }),
+            let rowIndex = sections[sectionIndex].rowItems.firstIndex(where: { $0 == document }) {
             return IndexPath(row: rowIndex, section: sectionIndex)
         } else {
             return nil
         }
+    }
+
+    private func diff(_ lhs: [TableSection<String, Document>], with rhs: [TableSection<String, Document>]) -> IndexSet {
+
+        // get baseline section names
+        let rhsNames = Set(rhs.map { $0.sectionItem })
+
+        // compare the baseline with the other sections
+        var indizies = IndexSet()
+        for (index, section) in lhs.enumerated() where !rhsNames.contains(section.sectionItem) {
+            indizies.insert(index)
+        }
+        return indizies
+    }
+
+    private func diff(_ lhs: Set<Document>, with rhs: Set<Document>, in sections: [TableSection<String, Document>]) -> [IndexPath] {
+
+        var indexPaths = [IndexPath]()
+        for document in lhs.subtracting(rhs) {
+            guard let indexPath = getIndexPath(of: document, in: sections) else { print("WARNING!!!!!!!!!!!!\n\n"); continue }
+            indexPaths.append(indexPath)
+        }
+        return indexPaths
     }
 
     func updateDocuments(changed changedDocuments: Set<Document>) {
@@ -174,67 +199,48 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
         /*
          Update the view aka. create animations.
          */
+        let animation = UITableView.RowAnimation.fade
         tableView.performBatchUpdates({
-            let oldSectionNames = Set(oldSections.map { $0.sectionItem })
-            let newSectionNames = Set(newSections.map { $0.sectionItem })
 
-            // new sections
-            var newSectionIndizies = IndexSet()
-            for (index, section) in newSections.enumerated() where !oldSectionNames.contains(section.sectionItem) {
-                newSectionIndizies.insert(index)
-            }
-            tableView.insertSections(newSectionIndizies, with: .automatic)
+            // new sections & documents
+            tableView.insertSections(diff(newSections, with: oldSections), with: animation)
+            tableView.insertRows(at: diff(newDocuments, with: oldDocuments, in: newSections), with: animation)
 
-            // deleted sections
-            var deletedSectionIndizies = IndexSet()
-            for (index, section) in oldSections.enumerated() where !newSectionNames.contains(section.sectionItem) {
-                deletedSectionIndizies.insert(index)
-            }
-            tableView.deleteSections(deletedSectionIndizies, with: .automatic)
-
-            // new documents
-            var newDocumentIndexPaths = [IndexPath]()
-            for document in newDocuments.subtracting(oldDocuments) {
-                guard let indexPath = getIndexPath(of: document) else { continue }
-                newDocumentIndexPaths.append(indexPath)
-            }
-            tableView.insertRows(at: newDocumentIndexPaths, with: .automatic)
-
-            // deleted documents
-            var deletedDocumentIndexPaths = [IndexPath]()
-            for document in oldDocuments.subtracting(newDocuments) {
-                guard let indexPath = getIndexPath(of: document) else { continue }
-                deletedDocumentIndexPaths.append(indexPath)
-            }
-            tableView.deleteRows(at: deletedDocumentIndexPaths, with: .automatic)
+            // deleted sections & documents
+            tableView.deleteSections(diff(oldSections, with: newSections), with: animation)
+            tableView.deleteRows(at: diff(oldDocuments, with: newDocuments, in: currentSections), with: animation)
 
             // Save the results
             self.currentSections = newSections
             self.currentDocuments = newDocuments
-        }, completion: nil)
+        }, completion: {success in
+            if success {
 
-        // update the download status of all changed documents
-        for changedDocument in changedDocuments {
-            if let indexPath = getIndexPath(of: changedDocument),
-                let cell = self.tableView.cellForRow(at: indexPath) as? DocumentTableViewCell {
+                // update the download status of all changed documents
+                for changedDocument in changedDocuments {
+                    if let indexPath = self.getIndexPath(of: changedDocument, in: self.currentSections),
+                        let cell = self.tableView.cellForRow(at: indexPath) as? DocumentTableViewCell {
 
-                cell.updateDownloadStatus(document: changedDocument)
+                        cell.updateDownloadStatus(document: changedDocument)
+                    }
+                }
+
+                // perform the segue, if the document was downloaded successfully
+                if let indexPath = self.tableView.indexPathForSelectedRow,
+                    let document = self.getDocument(from: indexPath),
+                    document.downloadStatus == .local {
+
+                    self.performSegue(withIdentifier: "showDetails", sender: self)
+                }
             }
-        }
-
-        // perform the segue, if the document was downloaded successfully
-        if let indexPath = tableView.indexPathForSelectedRow,
-            let document = getDocument(from: indexPath),
-            document.downloadStatus == .local {
-
-            performSegue(withIdentifier: "showDetails", sender: self)
-        }
+        })
     }
 }
 
+// MARK: -
 extension MasterViewController: UITableViewDataSource {
 
-    // MARK: - required stubs
+    // MARK: required stubs
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return currentSections[section].rowItems.count
     }
@@ -254,7 +260,7 @@ extension MasterViewController: UITableViewDataSource {
         return cell
     }
 
-    // MARK: - optional stubs
+    // MARK: optional stubs
     func numberOfSections(in tableView: UITableView) -> Int {
         return currentSections.count
     }
@@ -281,7 +287,7 @@ extension MasterViewController: UITableViewDataSource {
         }
     }
 
-    // MARK: - optical changes
+    // MARK: optical changes
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         guard let view = view as? UITableViewHeaderFooterView else { return }
 
@@ -291,33 +297,23 @@ extension MasterViewController: UITableViewDataSource {
     }
 }
 
+// MARK: -
+extension MasterViewController: ArchiveDelegate {
+    func documentChangesOccured(changed changedDocuments: Set<Document>) {
+        DispatchQueue.main.async {
+            self.updateDocuments(changed: changedDocuments)
+        }
+    }
+}
+
 extension MasterViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
-//        guard let searchBarText = searchBar.text else { return }
-//        guard let searchBarScopeButtonTitles = searchBar.scopeButtonTitles else { return }
-//
-//        // update the table view data
-//        sections = archive.filterContentForSearchText(searchBarText, scope: searchBarScopeButtonTitles[searchBar.selectedScopeButtonIndex])
         updateDocuments(changed: [])
     }
 }
 
 extension MasterViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-//        let searchBar = searchController.searchBar
-//        guard let searchBarText = searchBar.text else { return }
-//        guard let searchBarScopeButtonTitles = searchBar.scopeButtonTitles else { return }
-//
-//        // update the table view data
-//        sections = archive.filterContentForSearchText(searchBarText, scope: searchBarScopeButtonTitles[searchBar.selectedScopeButtonIndex])
         updateDocuments(changed: [])
-    }
-}
-
-extension MasterViewController: ArchiveDelegate {
-    func documentChangesOccured(changed changedDocuments: Set<Document>) {
-        DispatchQueue.main.sync {
-            self.updateDocuments(changed: changedDocuments)
-        }
     }
 }
