@@ -94,8 +94,11 @@ extension Document: Hashable, Comparable, CustomStringConvertible {
         }
     }
     static func == (lhs: Document, rhs: Document) -> Bool {
-        return lhs.path == rhs.path && lhs.downloadStatus == rhs.downloadStatus
+        // "==" and hashValue must only compare the path to avoid duplicates in sets
+        return lhs.path == rhs.path
     }
-    var description: String { return filename }
+    // "==" and hashValue must only compare the path to avoid duplicates in sets
     var hashValue: Int { return path.hashValue }
+
+    var description: String { return filename }
 }

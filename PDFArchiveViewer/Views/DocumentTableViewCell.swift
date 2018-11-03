@@ -65,4 +65,22 @@ class DocumentTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
         // Configure the view for the selected state
     }
+
+    func updateDownloadStatus(document: Document) {
+        // update download status
+        switch document.downloadStatus {
+        case .local:
+            downloadImageView.isHidden = true
+            activityIndicatorView.isHidden = true
+            activityIndicatorView.stopAnimating()
+        case .iCloudDrive:
+            downloadImageView.isHidden = false
+            activityIndicatorView.isHidden = true
+            activityIndicatorView.stopAnimating()
+        case .downloading:
+            downloadImageView.isHidden = true
+            activityIndicatorView.isHidden = false
+            activityIndicatorView.startAnimating()
+        }
+    }
 }

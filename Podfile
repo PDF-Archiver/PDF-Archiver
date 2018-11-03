@@ -7,7 +7,6 @@ target 'PDFArchiveViewer' do
 
   # Pods for PDFArchiveViewer
   pod 'TagListView', '~> 1.3'
-  pod 'Dwifft', '~> 0.9'
   pod 'Sentry', :git => 'https://github.com/getsentry/sentry-cocoa.git', :tag => '4.1.0'
 
   target 'PDFArchiveViewerUITests' do
