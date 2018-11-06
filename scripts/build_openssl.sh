@@ -21,7 +21,7 @@ cd "$OPENSSL_FOLDER/src"
 make clean
 ./Configure darwin64-x86_64-cc
 echo "Building x86 64 static library..."
-make >> /dev/null 2>&1
+make CXXFLAGS="-mmacosx-version-min=10.12" >> /dev/null 2>&1
 make install >> /dev/null 2>&1
 
 cp "LICENSE" "$OPENSSL_FOLDER"
