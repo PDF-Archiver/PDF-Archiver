@@ -139,7 +139,9 @@ class ViewController: NSViewController, Logging {
         // set some PDF View settings
         self.pdfContentView.displayMode = PDFDisplayMode.singlePage
         self.pdfContentView.autoScales = true
-        self.pdfContentView.acceptsDraggedFiles = false
+        if #available(OSX 10.13, *) {
+            self.pdfContentView.acceptsDraggedFiles = false
+        }
         self.pdfContentView.interpolationQuality = PDFInterpolationQuality.low
 
         // update the view after all the settigns
