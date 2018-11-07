@@ -6,13 +6,17 @@
 //  Copyright © 2018 Julian Kahnert. All rights reserved.
 //
 
-import Dwifft
 import Foundation
 import os.log
 
-struct Archive {
+protocol ArchiveDelegate: class {
+    func documentChangesOccured(changed changedDocuments: Set<Document>)
+}
 
-    private var allDocuments = [Document]()
+class Archive {
+
+    weak var delegate: ArchiveDelegate?
+    var allDocuments = Set<Document>()
     static var availableTags = Set<Tag>()
 
     var years: [String] {
@@ -23,7 +27,7 @@ struct Archive {
         return Array(years.sorted().reversed().prefix(3))
     }
 
-    mutating func setAllDocuments(_ documents: [Document]) {
+    func setAllDocuments(_ documents: Set<Document>) {
         allDocuments = documents
 
         // update the available tags
@@ -33,7 +37,7 @@ struct Archive {
         }
     }
 
-    func filterContentForSearchText(_ searchText: String, scope: String = NSLocalizedString("all", comment: "")) -> SectionedValues<String, Document> {
+    func filterContentForSearchText(_ searchText: String, scope: String = NSLocalizedString("all", comment: "")) -> Set<Document> {
 
         // slugify searchterms and split them
         let searchTerms: [String] = searchText.lowercased().slugify(withSeparator: " ").split(separator: " ").map { String($0) }
@@ -54,13 +58,7 @@ struct Archive {
             filteredDocuments = categoryFilteredDocuments.intersection(filterBy(searchTerms))
         }
 
-        // create table sections
-        return SectionedValues(values: Array(filteredDocuments),
-                               valueToSection: { (document) in
-                                let calender = Calendar.current
-                                return String(calender.component(.year, from: document.date)) },
-                               sortSections: { return $0 > $1 },
-                               sortValues: { return $0 > $1 })
+        return filteredDocuments
     }
 
     static func createDocumentFrom(_ metadataItem: NSMetadataItem) -> Document? {
@@ -84,7 +82,7 @@ struct Archive {
                 isDownloading {
                 let percentDownloaded = Float(truncating: (metadataItem.value(forAttribute: NSMetadataUbiquitousItemPercentDownloadedKey) as? NSNumber) ?? 0)
 
-                documentStatus = .downloading(percentDownloaded: percentDownloaded)
+                documentStatus = .downloading(percentDownloaded: percentDownloaded / 100)
             } else {
                 documentStatus = .iCloudDrive
             }
@@ -92,7 +90,10 @@ struct Archive {
             fatalError("The downloading status '\(downloadingStatus)' was not handled correctly!")
         }
 
-        return Document(path: documentPath, downloadStatus: documentStatus, availableTags: &availableTags)
+        // get file size via NSMetadataItemFSSizeKey
+        let size = metadataItem.value(forAttribute: NSMetadataItemFSSizeKey) as? Int64
+
+        return Document(path: documentPath, size: size ?? 0, downloadStatus: documentStatus, availableTags: &availableTags)
     }
 }
 
@@ -100,6 +101,37 @@ struct Archive {
 extension Archive: Searcher {
     typealias Element = Document
     var allSearchElements: Set<Document> { return Set(allDocuments) }
+}
+
+// MARK: - Delegates
+extension Archive: DocumentsQueryDelegate {
+    func updateWithResults(removedDocuments: Set<Document>, addedDocuments: Set<Document>, changedDocuments: Set<Document>) {
+        /*
+         Update the set of query objects.
+         */
+        allDocuments.subtract(removedDocuments)
+        allDocuments.formUnion(addedDocuments)
+
+        /*
+         KNOWN ISSUE: If a document will be renamed in the iCloud Drive folder, the documents query adds a "changedDocument" with the new filename.
+         Since there is no reference to the old document, it can not be removed from "previousQueryObjects".
+         */
+        for changedResult in changedDocuments {
+
+//            // remove the changed document, e.g. filename has not changed & download status has changed
+//            if let documentIndex = allDocuments.firstIndex(where: { $0.filename == changedResult.filename }) {
+//                allDocuments.remove(at: documentIndex)
+//            }
+//
+//            // insert the new/changed document to update the download status
+//            allDocuments.insert(changedResult)
+//            
+            allDocuments.update(with: changedResult)
+        }
+
+        // show the changes in the archive occured
+        delegate?.documentChangesOccured(changed: changedDocuments)
+    }
 }
 
 // - MARK: helper structs/classes

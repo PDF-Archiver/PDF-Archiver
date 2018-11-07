@@ -24,7 +24,13 @@ lane :createNewScreenshots do
     skip_binary_upload: true,
     skip_metadata: true)
 
-  upload_symbols_to_sentry(
+  sentry_upload_dsym(
+    dsym_path: "../build/PDFArchiveViewer.app.dSYM.zip")
+end
+
+desc "Upload binary to Sentry.io"
+lane :sentry do
+  sentry_upload_dsym(
     dsym_path: "../build/PDFArchiveViewer.app.dSYM.zip")
 end
 
@@ -37,6 +43,9 @@ lane :beta do
     beta_app_description: "A new Preview of the App!",
     beta_app_feedback_email: "feedback@pdf-archiver.io",
     groups: ["betatesters"])
+
+  sentry_upload_dsym(
+    dsym_path: "../build/PDFArchiveViewer.app.dSYM.zip")
 end
 
 desc "Update metadata to App Store Connect."

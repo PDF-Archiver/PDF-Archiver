@@ -25,6 +25,7 @@
 		A34A85022130A3870093FAE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A34A85012130A3870093FAE5 /* Assets.xcassets */; };
 		A3B83719215FCEFA00DA239F /* PDFArchiveViewerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B83718215FCEFA00DA239F /* PDFArchiveViewerUITests.swift */; };
 		A3B83721215FD14A00DA239F /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B83720215FD14A00DA239F /* SnapshotHelper.swift */; };
+		A3B83864218CA7640093C374 /* TableSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B83863218CA7640093C374 /* TableSection.swift */; };
 		A3BCC976217F84DB00C3775E /* PDFArchiveViewerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3BCC975217F84DB00C3775E /* PDFArchiveViewerTests.swift */; };
 		A3BCC97E217F851F00C3775E /* SearchIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3BCC97D217F851F00C3775E /* SearchIndex.swift */; };
 		A3BCC97F217F851F00C3775E /* SearchIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3BCC97D217F851F00C3775E /* SearchIndex.swift */; };
@@ -80,6 +81,7 @@
 		A3B83718215FCEFA00DA239F /* PDFArchiveViewerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFArchiveViewerUITests.swift; sourceTree = "<group>"; };
 		A3B8371A215FCEFA00DA239F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A3B83720215FD14A00DA239F /* SnapshotHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
+		A3B83863218CA7640093C374 /* TableSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableSection.swift; sourceTree = "<group>"; };
 		A3BCC973217F84DB00C3775E /* PDFArchiveViewerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PDFArchiveViewerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A3BCC975217F84DB00C3775E /* PDFArchiveViewerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFArchiveViewerTests.swift; sourceTree = "<group>"; };
 		A3BCC977217F84DB00C3775E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -207,6 +209,7 @@
 				A34A84FE2130A3780093FAE5 /* StringExtensions.swift */,
 				A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */,
 				A3BCC97D217F851F00C3775E /* SearchIndex.swift */,
+				A3B83863218CA7640093C374 /* TableSection.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -451,7 +454,6 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-PDFArchiveViewer/Pods-PDFArchiveViewer-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Dwifft/Dwifft.framework",
 				"${BUILT_PRODUCTS_DIR}/Sentry/Sentry.framework",
 				"${BUILT_PRODUCTS_DIR}/TagListView/TagListView.framework",
 			);
@@ -459,7 +461,6 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Dwifft.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Sentry.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TagListView.framework",
 			);
@@ -507,6 +508,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A3B83864218CA7640093C374 /* TableSection.swift in Sources */,
 				A34A85002130A3780093FAE5 /* StringExtensions.swift in Sources */,
 				A34A84FC2130A35A0093FAE5 /* Archive.swift in Sources */,
 				A3BCC97E217F851F00C3775E /* SearchIndex.swift in Sources */,

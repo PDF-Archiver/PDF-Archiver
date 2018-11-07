@@ -34,6 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         do {
             Client.shared = try Client(dsn: "https://7adfcae85d8d4b2f946102571b2d4d6c@sentry.io/1299590")
             try Client.shared?.startCrashHandler()
+            Client.shared?.enableAutomaticBreadcrumbTracking()
         } catch let error {
             print("\(error)")
         }
