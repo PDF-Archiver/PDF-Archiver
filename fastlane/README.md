@@ -20,6 +20,11 @@ or alternatively using `brew cask install fastlane`
 fastlane createNewScreenshots
 ```
 Generate new localized screenshots
+### sentry
+```
+fastlane sentry
+```
+Upload binary to Sentry.io
 ### beta
 ```
 fastlane beta
