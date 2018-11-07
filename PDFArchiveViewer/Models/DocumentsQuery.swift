@@ -21,7 +21,7 @@ import UIKit
  pass the updated list of results as well as a set of animations.
  */
 protocol DocumentsQueryDelegate: class {
-    func documentsQueryResultsDidChangeWithResults(documents: [Document])
+    func updateWithResults(removedDocuments: Set<Document>, addedDocuments: Set<Document>, changedDocuments: Set<Document>)
 }
 
 /**
@@ -32,7 +32,6 @@ protocol DocumentsQueryDelegate: class {
 class DocumentsQuery: NSObject, Logging {
 
     private var metadataQuery: NSMetadataQuery
-    private var queryObjects = Set<Document>()
 
     private let workerQueue: OperationQueue = {
         let workerQueue = OperationQueue()
@@ -94,7 +93,8 @@ class DocumentsQuery: NSObject, Logging {
         let removedResults = buildModelObjectSet(objects: removedMetadataItems ?? [])
         let addedResults = buildModelObjectSet(objects: addedMetadataItems ?? [])
 
-        updateWithResults(removedDocuments: removedResults, addedDocuments: addedResults, changedDocuments: changedResults)
+        // update the archive
+        self.delegate?.updateWithResults(removedDocuments: removedResults, addedDocuments: addedResults, changedDocuments: changedResults)
     }
 
     @objc
@@ -107,7 +107,8 @@ class DocumentsQuery: NSObject, Logging {
         let results = buildModelObjectSet(objects: metadataQueryResults)
         metadataQuery.enableUpdates()
 
-        updateWithResults(removedDocuments: Set<Document>(), addedDocuments: results, changedDocuments: Set<Document>())
+        // update the archive
+        self.delegate?.updateWithResults(removedDocuments: Set<Document>(), addedDocuments: results, changedDocuments: Set<Document>())
     }
 
     // MARK: - Result handling/animations
@@ -131,32 +132,5 @@ class DocumentsQuery: NSObject, Logging {
 
         metadataQuery.enableUpdates()
         return results
-    }
-
-    private func updateWithResults(removedDocuments: Set<Document>, addedDocuments: Set<Document>, changedDocuments: Set<Document>) {
-        /*
-         Update the set of query objects.
-         */
-        queryObjects.subtract(removedDocuments)
-        queryObjects.formUnion(addedDocuments)
-
-        /*
-         KNOWN ISSUE: If a document will be renamed in the iCloud Drive folder, the documents query adds a "changedDocument" with the new filename.
-         Since there is no reference to the old document, it can not be removed from "previousQueryObjects".
-         */
-        for changedResult in changedDocuments {
-
-            // remove the changed document, e.g. filename has not changed & download status has changed
-            if let documentIndex = queryObjects.firstIndex(where: { $0.filename == changedResult.filename }) {
-                queryObjects.remove(at: documentIndex)
-            }
-
-            // insert the new/changed document to update the download status
-            queryObjects.insert(changedResult)
-        }
-
-        OperationQueue.main.addOperation {
-            self.delegate?.documentsQueryResultsDidChangeWithResults(documents: Array(self.queryObjects))
-        }
     }
 }

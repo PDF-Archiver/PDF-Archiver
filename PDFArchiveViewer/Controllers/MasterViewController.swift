@@ -20,7 +20,6 @@
  * THE SOFTWARE.
  */
 
-import Dwifft
 import os.log
 import UIKit
 
@@ -35,29 +34,21 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
     let searchController = UISearchController(searchResultsController: nil)
     var selectedDocument: IndexPath?
 
+    var currentDocuments = Set<Document>()
+    var currentSections = [TableSection<String, Document>]()
+
     // Table view cells are reused and should be dequeued using a cell identifier.
     private let cellIdentifier = "DocumentTableViewCell"
     private let allLocal = NSLocalizedString("all", comment: "")
-    var diffCalculator: TableViewDiffCalculator<String, Document>?
-    var sections: SectionedValues<String, Document> = SectionedValues() {
-        // So, whenever your datasource's array of things changes, just let the diffCalculator know and it'll do the rest.
-        didSet {
-            self.diffCalculator?.sectionedValues = sections
-        }
-    }
 
     // MARK: - View Setup
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(UINib(nibName: cellIdentifier, bundle: nil), forCellReuseIdentifier: cellIdentifier)
 
-        // setup the diffCalculator
-        diffCalculator = TableViewDiffCalculator(tableView: tableView, initialSectionedValues: sections)
-        diffCalculator?.insertionAnimation = .fade
-        diffCalculator?.deletionAnimation = .fade
-
         // setup data delegate
-        documentsQuery.delegate = self
+        documentsQuery.delegate = archive
+        archive.delegate = self
 
         // Setup the Search Controller
         searchController.searchResultsUpdater = self
@@ -104,7 +95,7 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
             let indexPath = selectedDocument,
             let navigationController = segue.destination as? UINavigationController,
             let controller = navigationController.topViewController as? DetailViewController,
-            let document = diffCalculator?.value(atIndexPath: indexPath) {
+            let document = getDocument(from: indexPath) {
 
             // "shouldPerformSegue" performs the document download
             if document.downloadStatus != .local {
@@ -122,15 +113,54 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
             tableView.deselectRow(at: indexPath, animated: false)
         }
     }
-}
 
-// MARK: - Delegates
-extension MasterViewController: DocumentsQueryDelegate {
-    func documentsQueryResultsDidChangeWithResults(documents: [Document]) {
-        archive.setAllDocuments(documents)
+    // MARK: - internal helper functions
+
+    private func getDocument(from indexPath: IndexPath) -> Document? {
+        let tableSection = currentSections[indexPath.section]
+        return tableSection.rowItems[indexPath.row]
+    }
+
+    private func getIndexPath(of document: Document, in sections: [TableSection<String, Document>]) -> IndexPath? {
+        if let sectionIndex = sections.firstIndex(where: { $0.sectionItem == document.folder }),
+            let rowIndex = sections[sectionIndex].rowItems.firstIndex(where: { $0 == document }) {
+            return IndexPath(row: rowIndex, section: sectionIndex)
+        } else {
+            return nil
+        }
+    }
+
+    private func diff(_ lhs: [TableSection<String, Document>], with rhs: [TableSection<String, Document>]) -> IndexSet {
+
+        // get baseline section names
+        let rhsNames = Set(rhs.map { $0.sectionItem })
+
+        // compare the baseline with the other sections
+        var indizies = IndexSet()
+        for (index, section) in lhs.enumerated() where !rhsNames.contains(section.sectionItem) {
+            indizies.insert(index)
+        }
+        return indizies
+    }
+
+    private func diff(_ lhs: Set<Document>, with rhs: Set<Document>, in sections: [TableSection<String, Document>]) -> [IndexPath] {
+
+        var indexPaths = [IndexPath]()
+        for document in lhs.subtracting(rhs) {
+            guard let indexPath = getIndexPath(of: document, in: sections) else { print("WARNING!!!!!!!!!!!!\n\n"); continue }
+            indexPaths.append(indexPath)
+        }
+        return indexPaths
+    }
+
+    func updateDocuments(changed changedDocuments: Set<Document>) {
+
+        // save the old documents
+        let oldDocuments = currentDocuments
+        let oldSections = currentSections
 
         // setup background view controller
-        if documents.isEmpty {
+        if archive.allDocuments.isEmpty {
             tableView.backgroundView = Bundle.main.loadNibNamed("EmptyBackgroundView", owner: nil, options: nil)?.first as? UIView
             tableView.separatorStyle = .none
         } else {
@@ -138,37 +168,81 @@ extension MasterViewController: DocumentsQueryDelegate {
             tableView.separatorStyle = .singleLine
         }
 
+        /*
+         Filter the documents
+         */
         // setup search toolbar
-        searchController.searchBar.scopeButtonTitles = [allLocal] + archive.years
+        self.searchController.searchBar.scopeButtonTitles = [self.allLocal] + self.archive.years
 
         // update the filtered documents
-        let searchBar = searchController.searchBar
+        let searchBar = self.searchController.searchBar
         let searchBarText = searchBar.text ?? ""
-        var sections: SectionedValues<String, Document>
-        if let scopeButtonTitles = searchBar.scopeButtonTitles {
-            sections = archive.filterContentForSearchText(searchBarText, scope: scopeButtonTitles[searchBar.selectedScopeButtonIndex])
-        } else {
-            sections = archive.filterContentForSearchText(searchBarText, scope: allLocal)
-        }
 
         // update the table view data
-        self.sections = sections
-
-        // perform the segue, if the document was downloaded successfully
-        if let indexPath = selectedDocument,
-            let document = diffCalculator?.value(atIndexPath: indexPath),
-            document.downloadStatus == .local {
-
-            performSegue(withIdentifier: "showDetails", sender: self)
+        var scope: String
+        if let scopeButtonTitles = searchBar.scopeButtonTitles {
+            scope = scopeButtonTitles[searchBar.selectedScopeButtonIndex]
+        } else {
+            scope = self.allLocal
         }
+        let newDocuments = self.archive.filterContentForSearchText(searchBarText, scope: scope)
+
+        // sort documents by Date (descending) and Name (ascending)
+        let sortedDocuments: [Document] = Array(newDocuments).sorted().reversed()
+
+        // create table sections
+        let newSections: [TableSection<String, Document>] = TableSection.group(rowItems: sortedDocuments) { (document) in
+            let calender = Calendar.current
+            return String(calender.component(.year, from: document.date))
+        }.reversed()
+
+        /*
+         Update the view aka. create animations.
+         */
+        let animation = UITableView.RowAnimation.fade
+        tableView.performBatchUpdates({
+
+            // new sections & documents
+            tableView.insertSections(diff(newSections, with: oldSections), with: animation)
+            tableView.insertRows(at: diff(newDocuments, with: oldDocuments, in: newSections), with: animation)
+
+            // deleted sections & documents
+            tableView.deleteSections(diff(oldSections, with: newSections), with: animation)
+            tableView.deleteRows(at: diff(oldDocuments, with: newDocuments, in: currentSections), with: animation)
+
+            // Save the results
+            self.currentSections = newSections
+            self.currentDocuments = newDocuments
+        }, completion: {success in
+            if success {
+
+                // update the download status of all changed documents
+                for changedDocument in changedDocuments {
+                    if let indexPath = self.getIndexPath(of: changedDocument, in: self.currentSections),
+                        let cell = self.tableView.cellForRow(at: indexPath) as? DocumentTableViewCell {
+
+                        cell.updateDownloadStatus(for: changedDocument)
+                    }
+                }
+
+                // perform the segue, if the document was downloaded successfully
+                if let indexPath = self.tableView.indexPathForSelectedRow,
+                    let document = self.getDocument(from: indexPath),
+                    document.downloadStatus == .local {
+
+                    self.performSegue(withIdentifier: "showDetails", sender: self)
+                }
+            }
+        })
     }
 }
 
+// MARK: -
 extension MasterViewController: UITableViewDataSource {
 
-    // MARK: - required stubs
+    // MARK: required stubs
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.diffCalculator?.numberOfObjects(inSection: section) ?? 0
+        return currentSections[section].rowItems.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -179,24 +253,24 @@ extension MasterViewController: UITableViewDataSource {
         }
 
         // update the cell document and content
-        guard let document = diffCalculator?.value(atIndexPath: indexPath) else {
+        guard let document = getDocument(from: indexPath) else {
             fatalError("No document found during table cell update.")
         }
         cell.document = document
         return cell
     }
 
-    // MARK: - optional stubs
+    // MARK: optional stubs
     func numberOfSections(in tableView: UITableView) -> Int {
-        return self.diffCalculator?.numberOfSections() ?? 0
+        return currentSections.count
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return self.diffCalculator?.value(forSection: section)
+        return currentSections[section].sectionItem
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard var document = diffCalculator?.value(atIndexPath: indexPath) else { return }
+        guard var document = getDocument(from: indexPath) else { return }
         os_log("Selected Document: %@", log: log, type: .debug, document.filename)
 
         // download document if it is not already available
@@ -213,7 +287,7 @@ extension MasterViewController: UITableViewDataSource {
         }
     }
 
-    // MARK: - optical changes
+    // MARK: optical changes
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         guard let view = view as? UITableViewHeaderFooterView else { return }
 
@@ -223,23 +297,23 @@ extension MasterViewController: UITableViewDataSource {
     }
 }
 
+// MARK: -
+extension MasterViewController: ArchiveDelegate {
+    func documentChangesOccured(changed changedDocuments: Set<Document>) {
+        DispatchQueue.main.async {
+            self.updateDocuments(changed: changedDocuments)
+        }
+    }
+}
+
 extension MasterViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
-        guard let searchBarText = searchBar.text else { return }
-        guard let searchBarScopeButtonTitles = searchBar.scopeButtonTitles else { return }
-
-        // update the table view data
-        sections = archive.filterContentForSearchText(searchBarText, scope: searchBarScopeButtonTitles[searchBar.selectedScopeButtonIndex])
+        updateDocuments(changed: [])
     }
 }
 
 extension MasterViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        let searchBar = searchController.searchBar
-        guard let searchBarText = searchBar.text else { return }
-        guard let searchBarScopeButtonTitles = searchBar.scopeButtonTitles else { return }
-
-        // update the table view data
-        sections = archive.filterContentForSearchText(searchBarText, scope: searchBarScopeButtonTitles[searchBar.selectedScopeButtonIndex])
+        updateDocuments(changed: [])
     }
 }
