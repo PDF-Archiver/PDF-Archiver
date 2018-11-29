@@ -6,6 +6,7 @@
 //  Copyright © 2018 Julian Kahnert. All rights reserved.
 //
 
+import ArchiveLib
 import Foundation
 import os.log
 
@@ -65,7 +66,7 @@ class Archive {
 
         // get the document path
         guard let documentPath = metadataItem.value(forAttribute: NSMetadataItemURLKey) as? URL,
-            Document.parseFilename(documentPath.lastPathComponent) != nil else { return nil }
+            Document.parseFilename(documentPath) != nil else { return nil }
 
         // Check if it is a local document. These two values are possible for the "NSMetadataUbiquitousItemDownloadingStatusKey":
         // - NSMetadataUbiquitousItemDownloadingStatusCurrent
@@ -93,7 +94,7 @@ class Archive {
         // get file size via NSMetadataItemFSSizeKey
         let size = metadataItem.value(forAttribute: NSMetadataItemFSSizeKey) as? Int64
 
-        return Document(path: documentPath, size: size ?? 0, downloadStatus: documentStatus, availableTags: &availableTags)
+        return Document(path: documentPath, availableTags: &availableTags, size: size ?? 0, downloadStatus: documentStatus)
     }
 }
 

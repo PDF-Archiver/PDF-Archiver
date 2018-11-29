@@ -20,6 +20,7 @@
  * THE SOFTWARE.
  */
 
+import ArchiveLib
 import os.log
 import UIKit
 
@@ -270,11 +271,12 @@ extension MasterViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard var document = getDocument(from: indexPath) else { return }
+        guard var document = getDocument(from: indexPath),
+            let downloadStatus = document.downloadStatus else { return }
         os_log("Selected Document: %@", log: log, type: .debug, document.filename)
 
         // download document if it is not already available
-        switch document.downloadStatus {
+        switch downloadStatus {
         case .local:
             selectedDocument = indexPath
             performSegue(withIdentifier: "showDetails", sender: self)

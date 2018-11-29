@@ -1,0 +1,3 @@
+[submodule "PDFArchiveViewer/External/ArchiveLib"]
+	path = PDFArchiveViewer/External/ArchiveLib
+	url = git@github.com:PDF-Archiver/ArchiveLib.git
