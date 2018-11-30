@@ -13,6 +13,7 @@
  This is the Browser Query which manages results form an `NSMetadataQuery` to compute which documents to show in the Browser UI / animations to display when cells move.
  */
 
+import ArchiveLib
 import os.log
 import UIKit
 

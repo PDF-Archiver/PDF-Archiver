@@ -6,6 +6,7 @@
 //  Copyright © 2018 Julian Kahnert. All rights reserved.
 //
 
+import ArchiveLib
 import TagListView
 import UIKit
 
@@ -68,7 +69,9 @@ class DocumentTableViewCell: UITableViewCell {
 
     func updateDownloadStatus(for document: Document) {
 
-        switch document.downloadStatus {
+        guard let downloadStatus = document.downloadStatus else { return }
+
+        switch downloadStatus {
         case .local:
             downloadStatusView.isHidden = true
             progressView.isHidden = true
