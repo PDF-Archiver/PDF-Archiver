@@ -41,7 +41,7 @@ class Archive {
     func filterContentForSearchText(_ searchText: String, scope: String = NSLocalizedString("all", comment: "")) -> Set<Document> {
 
         // slugify searchterms and split them
-        let searchTerms: [String] = searchText.lowercased().slugify(withSeparator: " ").split(separator: " ").map { String($0) }
+        let searchTerms: [String] = searchText.lowercased().slugified(withSeparator: " ").split(separator: " ").map { String($0) }
 
         // filter documents by category
         var categoryFilteredDocuments: Set<Document>
@@ -65,8 +65,11 @@ class Archive {
     static func createDocumentFrom(_ metadataItem: NSMetadataItem) -> Document? {
 
         // get the document path
-        guard let documentPath = metadataItem.value(forAttribute: NSMetadataItemURLKey) as? URL,
-            Document.parseFilename(documentPath) != nil else { return nil }
+        guard let documentPath = metadataItem.value(forAttribute: NSMetadataItemURLKey) as? URL else { return nil }
+        let output = Document.parseFilename(documentPath)
+        guard output.date != nil,
+            output.specification != nil,
+            output.tagNames != nil else { return nil }
 
         // Check if it is a local document. These two values are possible for the "NSMetadataUbiquitousItemDownloadingStatusKey":
         // - NSMetadataUbiquitousItemDownloadingStatusCurrent

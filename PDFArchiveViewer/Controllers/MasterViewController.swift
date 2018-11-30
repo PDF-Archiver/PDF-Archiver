@@ -100,7 +100,7 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
 
             // "shouldPerformSegue" performs the document download
             if document.downloadStatus != .local {
-                fatalError("Segue peparation, but the document (status: \(document.downloadStatus)) could not be found locally!")
+                fatalError("Segue peparation, but the document (status: \(String(describing: document.downloadStatus))) could not be found locally!")
             }
 
             controller.detailDocument = document
