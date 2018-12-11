@@ -18,7 +18,7 @@
 		A31263E2217B75DC00ACAFA4 /* LoadingBackgroundView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A31263E4217B75DC00ACAFA4 /* LoadingBackgroundView.xib */; };
 		A34A84F92130A35A0093FAE5 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34A84F52130A35A0093FAE5 /* Document.swift */; };
 		A34A84FA2130A35A0093FAE5 /* DocumentsQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34A84F62130A35A0093FAE5 /* DocumentsQuery.swift */; };
-		A34A84FC2130A35A0093FAE5 /* Archive.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34A84F82130A35A0093FAE5 /* Archive.swift */; };
+		A34A84FC2130A35A0093FAE5 /* ArchiveExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34A84F82130A35A0093FAE5 /* ArchiveExtension.swift */; };
 		A34A85022130A3870093FAE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A34A85012130A3870093FAE5 /* Assets.xcassets */; };
 		A385384C21A5EBD200F7056E /* ArchiveLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A352A1B921A49736001DEAC7 /* ArchiveLib.framework */; };
 		A385384D21A5EBD200F7056E /* ArchiveLib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A352A1B921A49736001DEAC7 /* ArchiveLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -82,7 +82,7 @@
 		A31263E6217B75E200ACAFA4 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LoadingBackgroundView.strings; sourceTree = "<group>"; };
 		A34A84F52130A35A0093FAE5 /* Document.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
 		A34A84F62130A35A0093FAE5 /* DocumentsQuery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentsQuery.swift; sourceTree = "<group>"; };
-		A34A84F82130A35A0093FAE5 /* Archive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Archive.swift; sourceTree = "<group>"; };
+		A34A84F82130A35A0093FAE5 /* ArchiveExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArchiveExtension.swift; sourceTree = "<group>"; };
 		A34A85012130A3870093FAE5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A34D8D7A2130A1E200867B65 /* PDFArchiveViewer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PDFArchiveViewer.entitlements; sourceTree = "<group>"; };
 		A352A1B921A49736001DEAC7 /* ArchiveLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ArchiveLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -193,7 +193,7 @@
 		A34A84F12130A28A0093FAE5 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				A34A84F82130A35A0093FAE5 /* Archive.swift */,
+				A34A84F82130A35A0093FAE5 /* ArchiveExtension.swift */,
 				A34A84F52130A35A0093FAE5 /* Document.swift */,
 				A34A84F62130A35A0093FAE5 /* DocumentsQuery.swift */,
 			);
@@ -518,7 +518,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A3B83864218CA7640093C374 /* TableSection.swift in Sources */,
-				A34A84FC2130A35A0093FAE5 /* Archive.swift in Sources */,
+				A34A84FC2130A35A0093FAE5 /* ArchiveExtension.swift in Sources */,
 				A301A75621496992003EA382 /* DocumentTableViewCell.swift in Sources */,
 				171E0C821B8E5B84001E6242 /* DetailViewController.swift in Sources */,
 				171E0C801B8E5B84001E6242 /* MasterViewController.swift in Sources */,

@@ -12,7 +12,7 @@ import os.log
 
 extension Document {
 
-    mutating func download() {
+    func download() {
         do {
             try FileManager.default.startDownloadingUbiquitousItem(at: path)
             downloadStatus = .downloading(percentDownloaded: 0)

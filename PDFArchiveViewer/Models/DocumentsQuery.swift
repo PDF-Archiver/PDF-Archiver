@@ -22,7 +22,7 @@ import UIKit
  pass the updated list of results as well as a set of animations.
  */
 protocol DocumentsQueryDelegate: class {
-    func updateWithResults(removedDocuments: Set<Document>, addedDocuments: Set<Document>, changedDocuments: Set<Document>)
+    func updateWithResults(removedItems: [NSMetadataItem], addedItems: [NSMetadataItem], updatedItems: [NSMetadataItem])
 }
 
 /**
@@ -86,16 +86,12 @@ class DocumentsQuery: NSObject, Logging {
 
         os_log("Documents query update.", log: log, type: .debug)
 
-        let changedMetadataItems = notification.userInfo?[NSMetadataQueryUpdateChangedItemsKey] as? [NSMetadataItem]
-        let removedMetadataItems = notification.userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem]
-        let addedMetadataItems = notification.userInfo?[NSMetadataQueryUpdateAddedItemsKey] as? [NSMetadataItem]
-
-        let changedResults = buildModelObjectSet(objects: changedMetadataItems ?? [])
-        let removedResults = buildModelObjectSet(objects: removedMetadataItems ?? [])
-        let addedResults = buildModelObjectSet(objects: addedMetadataItems ?? [])
+        let changedMetadataItems = (notification.userInfo?[NSMetadataQueryUpdateChangedItemsKey] as? [NSMetadataItem]) ?? []
+        let removedMetadataItems = (notification.userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem]) ?? []
+        let addedMetadataItems = (notification.userInfo?[NSMetadataQueryUpdateAddedItemsKey] as? [NSMetadataItem]) ?? []
 
         // update the archive
-        self.delegate?.updateWithResults(removedDocuments: removedResults, addedDocuments: addedResults, changedDocuments: changedResults)
+        self.delegate?.updateWithResults(removedItems: removedMetadataItems, addedItems: addedMetadataItems, updatedItems: changedMetadataItems)
     }
 
     @objc
@@ -104,34 +100,7 @@ class DocumentsQuery: NSObject, Logging {
         os_log("Documents query finished.", log: log, type: .debug)
         guard let metadataQueryResults = metadataQuery.results as? [NSMetadataItem] else { return }
 
-        metadataQuery.disableUpdates()
-        let results = buildModelObjectSet(objects: metadataQueryResults)
-        metadataQuery.enableUpdates()
-
         // update the archive
-        self.delegate?.updateWithResults(removedDocuments: Set<Document>(), addedDocuments: results, changedDocuments: Set<Document>())
-    }
-
-    // MARK: - Result handling/animations
-
-    private func buildModelObjectSet(objects: [NSMetadataItem]) -> Set<Document> {
-        // Create an ordered set of model objects.
-        let array = objects.compactMap { Archive.createDocumentFrom($0) }
-
-        return Set(array)
-    }
-
-    private func buildQueryResultSet() -> Set<Document> {
-        /*
-         Create an ordered set of model objects from the query's current
-         result set.
-         */
-        metadataQuery.disableUpdates()
-
-        guard let metadataQueryResults = metadataQuery.results as? [NSMetadataItem] else { fatalError("No metadata query results found.") }
-        let results = buildModelObjectSet(objects: metadataQueryResults)
-
-        metadataQuery.enableUpdates()
-        return results
+        self.delegate?.updateWithResults(removedItems: [], addedItems: metadataQueryResults, updatedItems: [])
     }
 }

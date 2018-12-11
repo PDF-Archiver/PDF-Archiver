@@ -48,8 +48,9 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
         tableView.register(UINib(nibName: cellIdentifier, bundle: nil), forCellReuseIdentifier: cellIdentifier)
 
         // setup data delegate
+        // TODO: update this delegate
         documentsQuery.delegate = archive
-        archive.delegate = self
+        archive.archiveDelegate = self
 
         // Setup the Search Controller
         searchController.searchResultsUpdater = self
@@ -161,7 +162,7 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
         let oldSections = currentSections
 
         // setup background view controller
-        if archive.allDocuments.isEmpty {
+        if archive.get(scope: .all, searchterms: [], status: .tagged).isEmpty {
             tableView.backgroundView = Bundle.main.loadNibNamed("EmptyBackgroundView", owner: nil, options: nil)?.first as? UIView
             tableView.separatorStyle = .none
         } else {
@@ -173,7 +174,7 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
          Filter the documents
          */
         // setup search toolbar
-        self.searchController.searchBar.scopeButtonTitles = [self.allLocal] + self.archive.years
+        self.searchController.searchBar.scopeButtonTitles = [allLocal] + Array(archive.years.sorted().reversed().prefix(3))
 
         // update the filtered documents
         let searchBar = self.searchController.searchBar
@@ -271,7 +272,7 @@ extension MasterViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard var document = getDocument(from: indexPath),
+        guard let document = getDocument(from: indexPath),
             let downloadStatus = document.downloadStatus else { return }
         os_log("Selected Document: %@", log: log, type: .debug, document.filename)
 
@@ -301,9 +302,14 @@ extension MasterViewController: UITableViewDataSource {
 
 // MARK: -
 extension MasterViewController: ArchiveDelegate {
-    func documentChangesOccured(changed changedDocuments: Set<Document>) {
-        DispatchQueue.main.async {
-            self.updateDocuments(changed: changedDocuments)
+    func update(_ contentType: ContentType) {
+        switch contentType {
+        case .archivedDocuments(let changedDocuments):
+            DispatchQueue.main.async {
+                self.updateDocuments(changed: changedDocuments)
+            }
+        default:
+            os_log("Type does not match.", log: self.log, type: .debug)
         }
     }
 }
