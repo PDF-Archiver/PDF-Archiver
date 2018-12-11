@@ -1,10 +1,16 @@
 PODS:
+  - OrderedSet (3.0.0)
   - Sentry (4.1.0):
     - Sentry/Core (= 4.1.0)
   - Sentry/Core (4.1.0)
 
 DEPENDENCIES:
+  - OrderedSet (= 3.0)
   - Sentry (from `https://github.com/getsentry/sentry-cocoa.git`, tag `4.1.0`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - OrderedSet
 
 EXTERNAL SOURCES:
   Sentry:
@@ -17,8 +23,9 @@ CHECKOUT OPTIONS:
     :tag: 4.1.0
 
 SPEC CHECKSUMS:
+  OrderedSet: b990e16dcf6b79f1d3826b996b1eb613c696eec0
   Sentry: 44b85e768f435ede4d12ea279af588ff275c3939
 
-PODFILE CHECKSUM: 152da518999276b8fd4e18687551edb88d7fb65e
+PODFILE CHECKSUM: c961fd794069daf07ece235bae2239d124e3c309
 
 COCOAPODS: 1.5.3

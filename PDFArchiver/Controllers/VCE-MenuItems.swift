@@ -35,13 +35,12 @@ extension ViewController {
     // MARK: - Edit Menu
     @IBAction private func deleteDocumentMenuItem(_ sender: NSMenuItem) {
         // select the document which should be deleted
-        guard !self.documentAC.selectedObjects.isEmpty,
-            let selectedDocument = self.documentAC.selectedObjects.first as? Document else {
+        guard let selectedDocument = getSelectedDocument() else {
                 return
         }
 
         // get the index of selected document
-        let idx = self.documentAC.selectionIndex
+        let idx = self.documentTableView.selectedRow
 
         // move the document to trash
         // TODO: feedback if the document can not be trashed
@@ -49,9 +48,11 @@ extension ViewController {
 
         // update the GUI
         if idx < self.dataModelInstance.untaggedDocuments.count {
-            self.documentAC.setSelectionIndex(idx)
+            self.documentTableView.selectRowIndexes(IndexSet([idx]), byExtendingSelection: false)
+//            self.documentAC.setSelectionIndex(idx)
         } else {
-            self.documentAC.setSelectionIndex(self.dataModelInstance.untaggedDocuments.count - 1)
+            self.documentTableView.selectRowIndexes(IndexSet([self.dataModelInstance.untaggedDocuments.count - 1]), byExtendingSelection: false)
+//            self.documentAC.setSelectionIndex(self.dataModelInstance.untaggedDocuments.count - 1)
         }
     }
 

@@ -6,7 +6,9 @@
 //  Copyright © 2018 Julian Kahnert. All rights reserved.
 //
 
+import ArchiveLib
 import Foundation
+import OrderedSet
 import os.log
 
 protocol PreferencesDelegate: class {
@@ -134,7 +136,8 @@ class Preferences: PreferencesDelegate, Logging {
 
         // save the last tags (with count > 0)
         var tags: [String: Int] = [:]
-        for tag in self.dataModelTagsDelegate?.getTagList() ?? Set<Tag>() {
+
+        for tag in self.dataModelTagsDelegate?.getTagManager().getAllAvailableTags() ?? [] {
             tags[tag.name] = tag.count
         }
         for (name, count) in tags where count < 1 {
@@ -169,11 +172,11 @@ class Preferences: PreferencesDelegate, Logging {
 
         // load archive tags
         guard let tagsDict = (UserDefaults.standard.dictionary(forKey: "tags") ?? [:]) as? [String: Int] else { return }
-        var newTagList = Set<Tag>()
+        let newTagList = OrderedSet<Tag>()
         for (name, count) in tagsDict {
-            newTagList.insert(Tag(name: name, count: count))
+            newTagList.append(Tag(name: name, count: count))
         }
-        self.dataModelTagsDelegate?.setTagList(tagList: newTagList)
+        self.dataModelTagsDelegate?.getTagManager().resetTagList(tagList: newTagList)
 
         // load the noSlugify flag
         self.slugifyNames = !(UserDefaults.standard.bool(forKey: "noSlugify"))

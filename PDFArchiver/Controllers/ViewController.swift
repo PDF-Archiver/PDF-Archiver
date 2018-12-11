@@ -6,11 +6,12 @@
 //  Copyright © 2018 Julian Kahnert. All rights reserved.
 //
 
+import ArchiveLib
+import OrderedSet
 import os.log
 import Quartz
 
 protocol ViewControllerDelegate: class {
-    func setDocuments(documents: [Document])
     func clearTagSearchField()
     func closeApp()
     func updateView(updatePDF: Bool)
@@ -19,25 +20,40 @@ protocol ViewControllerDelegate: class {
 class ViewController: NSViewController, Logging {
     var dataModelInstance = DataModel()
 
+    @IBOutlet weak var documentTableView: NSTableView!
+    @IBOutlet weak var documentTagsTableView: NSTableView!
+    @IBOutlet weak var tagTableView: NSTableView!
+
     @IBOutlet weak var pdfView: NSView!
     @IBOutlet weak var pdfContentView: PDFView!
     @IBOutlet weak var documentAttributesView: NSView!
     @IBOutlet weak var tagSearchView: NSView!
-    @IBOutlet weak var tagTableView: NSTableView!
 
-    @IBOutlet var documentAC: NSArrayController!
-    @IBOutlet var tagAC: NSArrayController!
     @IBOutlet var documentTagAC: NSArrayController!
 
     @IBOutlet weak var datePicker: NSDatePicker!
     @IBOutlet weak var specificationField: NSTextField!
     @IBOutlet weak var tagSearchField: NSSearchField!
 
+    // TODO: choose another place for this
+    func getSelectedDocument() -> Document? {
+        let index = self.documentTableView.selectedRow
+        if index >= 0 && index < self.dataModelInstance.untaggedDocuments.count {
+            return self.dataModelInstance.untaggedDocuments[index]
+        } else {
+            return nil
+        }
+    }
+    private func getSelectedTag() -> Tag? {
+        let index = tagTableView.selectedRow
+        return dataModelInstance.tagManager.getPresentedTags()[index]
+    }
+
     // outlets
     @IBAction private func datePickDone(_ sender: NSDatePicker) {
+
         // test if a document is selected
-        guard !self.documentAC.selectedObjects.isEmpty,
-            let selectedDocument = self.documentAC.selectedObjects.first as? Document else {
+        guard let selectedDocument = getSelectedDocument() else {
                 return
         }
 
@@ -47,8 +63,7 @@ class ViewController: NSViewController, Logging {
 
     @IBAction private func descriptionDone(_ sender: NSTextField) {
         // test if a document is selected
-        guard !self.documentAC.selectedObjects.isEmpty,
-              let selectedDocument = self.documentAC.selectedObjects.first as? Document else {
+        guard let selectedDocument = getSelectedDocument() else {
             return
         }
 
@@ -58,8 +73,7 @@ class ViewController: NSViewController, Logging {
 
     @IBAction private func clickedDocumentTagTableView(_ sender: NSTableView) {
         // test if the document tag table is empty
-        guard !self.documentAC.selectedObjects.isEmpty,
-            let selectedDocument = self.documentAC.selectedObjects.first as? Document,
+        guard let selectedDocument = getSelectedDocument(),
             let selectedTag = self.documentTagAC.selectedObjects.first as? Tag else {
                 return
         }
@@ -70,8 +84,8 @@ class ViewController: NSViewController, Logging {
 
     @IBAction private func clickedTagTableView(_ sender: NSTableView) {
         // add new tag to document table view
-        guard let selectedDocument = self.documentAC.selectedObjects.first as? Document,
-            let selectedTag = self.tagAC.selectedObjects.first as? Tag else {
+        guard let selectedDocument = getSelectedDocument(),
+            let selectedTag = getSelectedTag() else {
                 os_log("Please pick documents first!", log: self.log, type: .info)
                 return
         }
@@ -95,8 +109,7 @@ class ViewController: NSViewController, Logging {
 
     @IBAction private func saveDocumentButton(_ sender: NSButton) {
         // test if a document is selected
-        guard !self.documentAC.selectedObjects.isEmpty,
-            let selectedDocument = self.documentAC.selectedObjects.first as? Document else {
+        guard let selectedDocument = getSelectedDocument() else {
                 return
         }
 
@@ -110,12 +123,13 @@ class ViewController: NSViewController, Logging {
         if result {
             // select a new document, which is not already done
             var newIndex = 0
-            var documents = (self.documentAC.arrangedObjects as? [Document]) ?? []
-            for idx in 0...documents.count - 1 where documents[idx].documentDone.isEmpty {
+            var documents = self.dataModelInstance.untaggedDocuments
+            for idx in 0...documents.count - 1 where documents[idx].path.hasParent(self.dataModelInstance.prefs.archivePath) {
                 newIndex = idx
                 break
             }
-            self.documentAC.setSelectionIndex(newIndex)
+//            self.documentAC.setSelectionIndex(newIndex)
+            self.documentTableView.selectRowIndexes(IndexSet([newIndex]), byExtendingSelection: false)
         }
     }
 
@@ -123,13 +137,23 @@ class ViewController: NSViewController, Logging {
         super.viewDidLoad()
 
         // set delegates
+        self.documentTableView.dataSource = self
+        self.documentTableView.delegate = self
+        self.documentTableView.target = self
+//        self.documentTagsTableView.dataSource = self
+//        self.documentTagsTableView.delegate = self
+//        self.documentTagsTableView.target = self
+        self.tagTableView.dataSource = self
+        self.tagTableView.delegate = self
+        self.tagTableView.target = self
+
         self.tagSearchField.delegate = self
         self.specificationField.delegate = self
         self.dataModelInstance.viewControllerDelegate = self
 
         // add sorting
-        self.documentAC.sortDescriptors = [NSSortDescriptor(key: "documentDone", ascending: false),
-                                           NSSortDescriptor(key: "name", ascending: true)]
+        self.documentTableView.sortDescriptors = [NSSortDescriptor(key: "documentDone", ascending: false),
+                                                   NSSortDescriptor(key: "name", ascending: true)]
         self.tagTableView.sortDescriptors = [NSSortDescriptor(key: "count", ascending: false),
                                              NSSortDescriptor(key: "name", ascending: true)]
 
@@ -145,14 +169,20 @@ class ViewController: NSViewController, Logging {
         self.pdfContentView.interpolationQuality = PDFInterpolationQuality.low
 
         // update the view after all the settigns
-        self.documentAC.setSelectionIndex(0)
+//        self.documentAC.setSelectionIndex(0)
+        self.documentTableView.selectRowIndexes(IndexSet([0]), byExtendingSelection: false)
+
+        self.documentTableView.reloadData()
+        self.documentTagsTableView.reloadData()
+        self.tagTableView.reloadData()
     }
 
-    override func viewWillAppear() {
-        // set the array controller
-        self.tagAC.content = self.dataModelInstance.tags
-        self.documentAC.content = self.dataModelInstance.untaggedDocuments
-    }
+//    override func viewWillAppear() {
+//        // set the array controller
+//        self.tagAC.content = self.dataModelInstance.tags
+////        self.documentAC.content = self.dataModelInstance.untaggedDocuments
+//        self.documentTableView.reloadData()
+//    }
 
     override func viewDidAppear() {
         // test if the app needs subscription validation
@@ -174,8 +204,8 @@ class ViewController: NSViewController, Logging {
     override func viewDidDisappear() {
         if let archivePath = self.dataModelInstance.prefs.archivePath {
             // reset the tag count to the archived documents
-            for document in (self.documentAC.arrangedObjects as? [Document]) ?? [] where document.documentDone.isEmpty {
-                for tag in document.documentTags {
+            for document in self.dataModelInstance.untaggedDocuments where document.path.hasParent(self.dataModelInstance.prefs.archivePath) {
+                for tag in document.tags {
                     tag.count -= 1
                 }
             }

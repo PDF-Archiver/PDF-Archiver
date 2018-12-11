@@ -6,30 +6,28 @@
 //  Copyright © 2018 Julian Kahnert. All rights reserved.
 //
 
+import ArchiveLib
 import Foundation
 import os.log
 
 protocol DataModelTagsDelegate: class {
     func updateView(updatePDF: Bool)
-    func setTagList(tagList: Set<Tag>)
-    func getTagList() -> Set<Tag>
     func getUntaggedDocuments() -> [Document]
     func addUntaggedDocuments(paths: [URL])
+//    func getTagManager() -> TagManager
 }
 
 class DataModel: Logging {
     weak var viewControllerDelegate: ViewControllerDelegate?
     weak var onboardingVCDelegate: OnboardingVCDelegate?
     var prefs = Preferences()
-    var archive = Archive()
-    var store = IAPHelper()
-    var tags = Set<Tag>()
-    var untaggedDocuments = [Document]() {
-        didSet {
-            // add documents to the GUI
-            self.viewControllerDelegate?.setDocuments(documents: self.untaggedDocuments)
-        }
-    }
+    let archive = Archive()
+//    let tagManager = TagManager()
+//    let untaggedDocumentsManager = UntaggedDocumentsManager()
+    let store = IAPHelper()
+
+    // TODO: use a set here
+    var untaggedDocuments = [Document]()
 
     init() {
         // set delegates
@@ -54,13 +52,22 @@ class DataModel: Logging {
         if let archivePath = self.prefs.archivePath {
             // rename the document
             var result = false
+
             self.prefs.accessSecurityScope {
-                result = document.rename(archivePath: archivePath, slugify: self.prefs.slugifyNames)
+
+                do {
+                    result = try document.rename(archivePath: archivePath, slugify: self.prefs.slugifyNames)
+                } catch {
+                    // TODO: add error handling here
+//                dialogOK(messageKey: "save_failed", infoKey: "file_already_exists", style: .warning)
+//                dialogOK(messageKey: "save_failed", infoKey: error.localizedDescription, style: .warning)
+                }
             }
 
             if result {
                 // update the documents
-                self.viewControllerDelegate?.setDocuments(documents: self.untaggedDocuments)
+//                self.viewControllerDelegate?.setDocuments(documents: self.untaggedDocuments)
+                viewControllerDelegate?.updateView(updatePDF: true)
 
                 // increment count an request a review?
                 AppStoreReviewRequest.shared.incrementCount()
@@ -73,11 +80,12 @@ class DataModel: Logging {
 
     func trashDocument(_ document: Document) -> Bool {
         var trashed = false
+        guard let index = self.untaggedDocuments.index(of: document) else { return trashed }
         self.prefs.accessSecurityScope {
             let fileManager = FileManager.default
             do {
                 try fileManager.trashItem(at: document.path, resultingItemURL: nil)
-                self.untaggedDocuments.remove(document)
+                self.untaggedDocuments.remove(at: index)
                 trashed = true
 
             } catch let error {
@@ -85,13 +93,6 @@ class DataModel: Logging {
             }
         }
         return trashed
-    }
-
-    func filterTags(prefix: String) -> Set<Tag> {
-        let tags = self.tags.filter { tag in
-            return tag.name.hasPrefix(prefix)
-        }
-        return tags
     }
 
     func setDocumentDescription(document: Document, description: String) {
@@ -105,7 +106,7 @@ class DataModel: Logging {
 
     func remove(tag: Tag, from document: Document) {
         // remove the selected element
-        if document.documentTags.remove(tag) != nil {
+        if document.tags.remove(tag) != nil {
             tag.count -= 1
         }
 
@@ -116,13 +117,13 @@ class DataModel: Logging {
     @discardableResult
     func add(tag: Tag, to document: Document) -> Bool {
         // test if tag already exists in document tags
-        for documentTag in document.documentTags where documentTag.name == tag.name {
+        for documentTag in document.tags where documentTag.name == tag.name {
             os_log("Tag '%@' already found!", log: self.log, type: .error, tag.name)
             return false
         }
 
         // add the new tag
-        document.documentTags.insert(tag)
+        document.tags.insert(tag)
 
         // tag count update
         tag.count += 1
@@ -145,15 +146,6 @@ extension DataModel: DataModelTagsDelegate {
         }
     }
 
-    func setTagList(tagList: Set<Tag>) {
-        self.tags = tagList
-        self.updateView(updatePDF: false)
-    }
-
-    func getTagList() -> Set<Tag> {
-        return self.tags
-    }
-
     func getUntaggedDocuments() -> [Document] {
         return self.untaggedDocuments
     }
@@ -161,7 +153,7 @@ extension DataModel: DataModelTagsDelegate {
     func addUntaggedDocuments(paths: [URL]) {
         // remove the tag count from the old documents
         for document in self.untaggedDocuments {
-            for tag in document.documentTags {
+            for tag in document.tags {
                 tag.count -= 1
             }
         }
@@ -172,11 +164,16 @@ extension DataModel: DataModelTagsDelegate {
             for path in paths {
                 let files = self.archive.getPDFs(path)
                 for file in files {
-                    documents.append(Document(path: file, availableTags: &self.tags))
+                    // TODO: add correct size here?
+                    documents.append(Document(path: file, tagManager: tagManager, size: 0, downloadStatus: .local))
                 }
             }
             self.untaggedDocuments = documents
         }
+    }
+
+    func getTagManager() -> TagManager {
+        return tagManager
     }
 
 }
