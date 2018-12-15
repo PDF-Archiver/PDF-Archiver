@@ -35,7 +35,7 @@ extension ViewController {
     // MARK: - Edit Menu
     @IBAction private func deleteDocumentMenuItem(_ sender: NSMenuItem) {
         // select the document which should be deleted
-        guard let selectedDocument = getSelectedDocument() else {
+        guard let selectedDocument = dataModelInstance.selectedDocument else {
                 return
         }
 
@@ -47,12 +47,10 @@ extension ViewController {
         _ = self.dataModelInstance.trashDocument(selectedDocument)
 
         // update the GUI
-        if idx < self.dataModelInstance.untaggedDocuments.count {
+        if idx < dataModelInstance.sortedDocuments.count {
             self.documentTableView.selectRowIndexes(IndexSet([idx]), byExtendingSelection: false)
-//            self.documentAC.setSelectionIndex(idx)
         } else {
-            self.documentTableView.selectRowIndexes(IndexSet([self.dataModelInstance.untaggedDocuments.count - 1]), byExtendingSelection: false)
-//            self.documentAC.setSelectionIndex(self.dataModelInstance.untaggedDocuments.count - 1)
+            self.documentTableView.selectRowIndexes(IndexSet([dataModelInstance.sortedDocuments.count - 1]), byExtendingSelection: false)
         }
     }
 
@@ -78,11 +76,11 @@ extension ViewController {
 
         // update files in the observed path
         if let observedPath = self.dataModelInstance.prefs.observedPath {
-            self.dataModelInstance.addUntaggedDocuments(paths: [observedPath])
+            self.dataModelInstance.updateUntaggedDocuments(paths: [observedPath])
         }
 
         // get tags and update the GUI
-        self.updateView(updatePDF: true)
+        self.updateView(.all)
     }
 
     @IBAction private func showManageSubscriptions(_ sender: NSMenuItem) {

@@ -1203,7 +1203,7 @@ Help &gt; Show Onboarding</string>
                                                         </tableView>
                                                     </subviews>
                                                 </clipView>
-                                                <scroller key="horizontalScroller" verticalHuggingPriority="750" doubleValue="0.02" horizontal="YES" id="ujd-lb-X02">
+                                                <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="ujd-lb-X02">
                                                     <rect key="frame" x="1" y="494" width="318" height="15"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
@@ -1329,8 +1329,6 @@ Help &gt; Show Onboarding</string>
                                                                     </tableColumns>
                                                                     <connections>
                                                                         <action selector="clickedDocumentTagTableView:" target="XfG-lQ-9wD" id="yF4-Cx-nb1"/>
-                                                                        <binding destination="nlU-Xg-XLm" name="content" keyPath="arrangedObjects" id="dv6-bC-MYw"/>
-                                                                        <binding destination="nlU-Xg-XLm" name="selectionIndexes" keyPath="selectionIndexes" previousBinding="dv6-bC-MYw" id="znt-i6-vBG"/>
                                                                     </connections>
                                                                 </tableView>
                                                             </subviews>
@@ -1449,6 +1447,9 @@ Help &gt; Show Onboarding</string>
                                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                                             </textFieldCell>
+                                                                                            <connections>
+                                                                                                <binding destination="aAj-oT-fzK" name="value" keyPath="objectValue.count" id="ldB-5T-2mf"/>
+                                                                                            </connections>
                                                                                         </textField>
                                                                                     </subviews>
                                                                                     <connections>
@@ -1472,7 +1473,7 @@ Help &gt; Show Onboarding</string>
                                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                             <prototypeCellViews>
                                                                                 <tableCellView identifier="tagNameCell" id="9wq-Yh-6cT">
-                                                                                    <rect key="frame" x="31.5" y="1" width="203" height="17"/>
+                                                                                    <rect key="frame" x="32" y="1" width="203" height="17"/>
                                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                     <subviews>
                                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">
@@ -1482,6 +1483,9 @@ Help &gt; Show Onboarding</string>
                                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                                             </textFieldCell>
+                                                                                            <connections>
+                                                                                                <binding destination="9wq-Yh-6cT" name="value" keyPath="objectValue.name" id="noc-BR-y59"/>
+                                                                                            </connections>
                                                                                         </textField>
                                                                                     </subviews>
                                                                                     <constraints>
@@ -1602,7 +1606,6 @@ Help &gt; Show Onboarding</string>
                         <outlet property="datePicker" destination="NiF-3c-nL6" id="7gV-M9-brh"/>
                         <outlet property="documentAttributesView" destination="N6d-d5-13u" id="07V-6H-j0N"/>
                         <outlet property="documentTableView" destination="6Bq-b9-66z" id="STb-T7-tEP"/>
-                        <outlet property="documentTagAC" destination="nlU-Xg-XLm" id="pRK-x5-tq6"/>
                         <outlet property="documentTagsTableView" destination="3Nb-6r-7ib" id="6us-hK-fr4"/>
                         <outlet property="pdfContentView" destination="80e-Of-Nzi" id="ZfS-9W-TAg"/>
                         <outlet property="pdfView" destination="nVE-OX-PwM" id="Jya-99-dce"/>
@@ -1615,15 +1618,14 @@ Help &gt; Show Onboarding</string>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-                <arrayController objectClassName="Tag" id="nlU-Xg-XLm" userLabel="Document Tag Array Controller"/>
             </objects>
             <point key="canvasLocation" x="75" y="1122"/>
         </scene>
     </scenes>
     <resources>
-        <image name="NSInfo" width="128" height="128"/>
+        <image name="NSInfo" width="32" height="32"/>
         <image name="NSLockLockedTemplate" width="10" height="14"/>
-        <image name="NSPreferencesGeneral" width="128" height="128"/>
+        <image name="NSPreferencesGeneral" width="32" height="32"/>
         <image name="NSStatusNone" width="16" height="16"/>
         <namedColor name="CustomViewBackground">
             <color red="0.13099999725818634" green="0.17200000584125519" blue="0.23100000619888306" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>

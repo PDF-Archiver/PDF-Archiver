@@ -10,27 +10,28 @@ import ArchiveLib
 import os.log
 import Quartz
 
-extension ViewController {
-    // MARK: - segue stuff
-    override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
-        if let tabViewController = segue.destinationController as? NSTabViewController {
-            for controller in tabViewController.children {
-                if let controller = controller as? MainPreferencesVC {
-                    controller.preferencesDelegate = self.dataModelInstance.prefs
-                    controller.viewControllerDelegate = self
-                } else if let controller = controller as? DonationPreferencesVC {
-                    controller.preferencesDelegate = self.dataModelInstance.prefs
-                    controller.iAPHelperDelegate = self.dataModelInstance.store
-                    self.dataModelInstance.store.donationPreferencesVCDelegate = controller
-                }
-            }
+// MARK: - fileprivate helpers
+private enum CellIdentifiers: String {
+    case documentStatusCell
+    case documentNameCell
+    case documentTagCell
+    case tagCountCell
+    case tagNameCell
+}
 
-        } else if let viewController = segue.destinationController as? OnboardingViewController {
-            viewController.iAPHelperDelegate = self.dataModelInstance.store
-            viewController.viewControllerDelegate = self
-            self.dataModelInstance.onboardingVCDelegate = viewController
-            self.dataModelInstance.store.onboardingVCDelegate = viewController
-        }
+public struct UpdateOptions: OptionSet {
+    public let rawValue: Int
+
+    static let documents = UpdateOptions(rawValue: 1 << 0)
+    static let documentAttributes = UpdateOptions(rawValue: 1 << 1)
+    static let pdfView = UpdateOptions(rawValue: 1 << 2)
+    static let tags = UpdateOptions(rawValue: 1 << 3)
+
+    static let selectedDocument: UpdateOptions = [.documentAttributes, .pdfView]
+    static let all: UpdateOptions = [.documents, .documentAttributes, .pdfView, .all]
+
+    public init(rawValue: Int) {
+        self.rawValue = rawValue
     }
 }
 
@@ -38,43 +39,54 @@ extension ViewController {
 extension ViewController: ViewControllerDelegate {
 
     func clearTagSearchField() {
-        self.tagSearchField.stringValue = ""
+        tagSearchField.stringValue = ""
     }
 
     func closeApp() {
         NSApplication.shared.terminate(self)
     }
 
-    func updateView(updatePDF: Bool) {
-        os_log("Update view controller fields and tables.", log: self.log, type: .debug)
+    func updateView(_ options: UpdateOptions) {
+        os_log("Update view with option %i", log: log, type: .debug, options.rawValue)
 
         // test if no documents exist in document table view
-        if self.dataModelInstance.untaggedDocuments.isEmpty {
-            self.pdfContentView.document = nil
-            self.datePicker.dateValue = Date()
-            self.specificationField.stringValue = ""
-            self.documentTagAC.content = nil
+        if dataModelInstance.sortedDocuments.isEmpty {
+            pdfContentView.document = nil
+            datePicker.dateValue = Date()
+            specificationField.stringValue = ""
+            // TODO: reset the documentTagTableView here?
+//            documentTagAC.content = nil
             return
         }
-        if let selectedDocument = getSelectedDocument() {
-            // set the document date, description and tags
-            self.datePicker.dateValue = selectedDocument.date
-            self.specificationField.stringValue = selectedDocument.specification
-            self.documentTagAC.content = selectedDocument.tags
 
-            // access the file system and update pdf view
-            if updatePDF {
-                self.dataModelInstance.prefs.accessSecurityScope {
-                    self.pdfContentView.document = PDFDocument(url: selectedDocument.path)
-                    self.pdfContentView.goToFirstPage(self)
-                }
+        if options.contains(.documentAttributes),
+            let selectedDocument = dataModelInstance.selectedDocument {
+
+            // set the document date, description and tags
+            datePicker.dateValue = selectedDocument.date
+            specificationField.stringValue = selectedDocument.specification
+            documentTagsTableView.reloadData()
+        }
+
+        // access the file system and update pdf view
+        if options.contains(.pdfView),
+            let documentPath = dataModelInstance.selectedDocument?.path {
+
+            dataModelInstance.prefs.accessSecurityScope {
+                pdfContentView.document = PDFDocument(url: documentPath)
+                pdfContentView.goToFirstPage(self)
             }
         }
 
-        // TODO: where is this function called? reload changes selection
-//        documentTableView.reloadData()
-//        tagTableView.reloadData()
-//        documentTagsTableView.reloadData()
+        // update the document table view
+        if options.contains(.documents) {
+            documentTableView.reloadData()
+        }
+
+        // update the tag table view
+        if options.contains(.tags) {
+            tagTableView.reloadData()
+        }
     }
 }
 
@@ -84,65 +96,62 @@ extension ViewController: NSTableViewDataSource {
 
     func numberOfRows(in tableView: NSTableView) -> Int {
         if tableView.identifier?.rawValue == "DocumentTableView" {
-            return self.dataModelInstance.untaggedDocuments.count
-//        } else if tableView.identifier?.rawValue == "DocumentTagsTableView" {
-            // TODO: this should be document specific
-//            return self.dataModelInstance.filteredTags.count
+            return dataModelInstance.sortedDocuments.count
+        } else if tableView.identifier?.rawValue == "DocumentTagsTableView" {
+            return dataModelInstance.selectedDocument?.tags.count ?? 0
         } else if tableView.identifier?.rawValue == "TagsTableView" {
-            return self.dataModelInstance.tagManager.getPresentedTags().count
+            return dataModelInstance.sortedTags.count
         } else {
             return 0
         }
     }
 
-    //    func tableView(_ tableView: NSTableView, sortDescriptorsDidChange oldDescriptors: [NSSortDescriptor]) {
-    //        guard let sortDescriptor = tableView.sortDescriptors.first else {
-    //            return
-    //        }
-    //
-    //        if let order = Directory.FileOrder(rawValue: sortDescriptor.key!) {
-    //            sortOrder = order
-    //            sortAscending = sortDescriptor.ascending
-    //            reloadFileList()
-    //        }
-    //    }
+    func tableView(_ tableView: NSTableView, sortDescriptorsDidChange oldDescriptors: [NSSortDescriptor]) {
+
+        // TODO: switch between the table views
+        guard let sortDescriptor = tableView.sortDescriptors.first else {
+            return
+        }
+
+        if let sortDescriptorKey = sortDescriptor.key,
+            let order = DataModel.DocumentOrder(rawValue: sortDescriptorKey) {
+
+            // TODO: optimize this by only refreshing dataModelInstance.sortedDocuments only once
+            dataModelInstance.documentSortOrder = order
+            dataModelInstance.docuementSortAscending = sortDescriptor.ascending
+        }
+    }
 
 }
 
 extension ViewController: NSTableViewDelegate {
     func tableViewSelectionDidChange(_ notification: Notification) {
+        // TODO: switch between the table views
         if let identifier = (notification.object as? NSTableView)?.identifier?.rawValue,
            identifier == "DocumentTableView" {
-            self.updateView(updatePDF: true)
-        }
-    }
 
-    fileprivate enum CellIdentifiers: String {
-        case documentStatusCell
-        case documentNameCell
-        case documentTagCell
-        case tagCountCell
-        case tagNameCell
+            // save the new selected document
+            let index = documentTableView.selectedRow
+            dataModelInstance.selectedDocument = dataModelInstance.sortedDocuments[index]
+
+            // update the view
+            updateView(.selectedDocument)
+        }
     }
 
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
 
-        // TODO: remove this debug code
-        if let id = tableView.identifier?.rawValue,
-            id != "DocumentTableView" {
-            print(id)
-        }
-
+        // TODO: refactor "tableView.identifier?.rawValue == "DocumentTagsTableView" to an enum
         var text: String = ""
         var cellIdentifier: CellIdentifiers?
 
         if tableView.identifier?.rawValue == "DocumentTableView" {
-            guard row < self.dataModelInstance.untaggedDocuments.count  else { return nil }
-            let document = self.dataModelInstance.untaggedDocuments[row]
+
+            let document = dataModelInstance.sortedDocuments[row]
 
             if tableColumn == tableView.tableColumns[0] {
                 cellIdentifier = .documentStatusCell
-                let alreadyRenamed = document.path.hasParent(self.dataModelInstance.prefs.archivePath)
+                let alreadyRenamed = document.path.hasParent(dataModelInstance.prefs.archivePath)
                 text = alreadyRenamed ? "✔︎" : ""
 
             } else if tableColumn == tableView.tableColumns[1] {
@@ -151,15 +160,16 @@ extension ViewController: NSTableViewDelegate {
             }
 
         } else if tableView.identifier?.rawValue == "DocumentTagsTableView" {
-            guard row < dataModelInstance.tagManager.getPresentedTags().count  else { return nil }
-            let tag = dataModelInstance.tagManager.getPresentedTags()[row]
+
+            // get the right tag for this cell
+            let tag = Array(dataModelInstance.selectedDocument?.tags ?? Set<Tag>()).sorted()[row]
 
             cellIdentifier = .documentTagCell
             text = tag.name
 
         } else if tableView.identifier?.rawValue == "TagsTableView" {
-            guard row < dataModelInstance.tagManager.getPresentedTags().count  else { return nil }
-            let tag = dataModelInstance.tagManager.getPresentedTags()[row]
+
+            let tag = dataModelInstance.sortedTags[row]
 
             if tableColumn == tableView.tableColumns[0] {
                 cellIdentifier = .tagCountCell
@@ -186,14 +196,14 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
         guard let identifier = (notification.object as? NSTextField)?.identifier else { return }
         if identifier.rawValue == "documentDescriptionField" {
             guard let textField = notification.object as? NSTextField,
-                  let selectedDocument = getSelectedDocument() else { return }
+                  let selectedDocument = dataModelInstance.selectedDocument else { return }
 
             selectedDocument.specification = textField.stringValue.lowercased()
 
         } else if identifier.rawValue == "tagSearchField" {
             guard let searchField = notification.object as? NSSearchField else { return }
-            self.dataModelInstance.tagManager.filterTags(prefix: searchField.stringValue)
-            self.tagTableView.reloadData()
+            dataModelInstance.tagFilterTerm = searchField.stringValue
+            tagTableView.reloadData()
         }
     }
 
@@ -208,28 +218,28 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
             return
         }
 
-        // add new tag to document table view
-        guard let selectedDocument = getSelectedDocument() else {
-                os_log("Please pick documents first!", log: self.log, type: .info)
-                return
-        }
-
         // try to get the selected tag
-        var selectedTag: Tag
-        let tags = self.dataModelInstance.tagManager.getPresentedTags()
+        let selectedTagName: String
+        let tags = dataModelInstance.sortedTags
         if !tags.isEmpty,
             let firstTag = tags.first {
-            selectedTag = firstTag
+            selectedTagName = firstTag.name
         } else {
             // no tag selected - get the name of the search field
-            var tagName = self.tagSearchField.stringValue   // the string gets normalized in the Tag() constructor
-            if self.dataModelInstance.prefs.slugifyNames {
+            var tagName = tagSearchField.stringValue   // the string gets normalized in the Tag() constructor
+            if dataModelInstance.prefs.slugifyNames {
                 tagName = tagName.slugify()
             }
-            selectedTag = self.dataModelInstance.tagManager.addTagWith(tagName)
+            selectedTagName = tagName
         }
 
         // add the selected tag to the document
-        self.dataModelInstance.add(tag: selectedTag, to: selectedDocument)
+        dataModelInstance.addTagToSelectedDocument(selectedTagName)
+
+        // clear search field content
+        clearTagSearchField()
+
+        // update the view
+        updateView(.selectedDocument)
     }
 }

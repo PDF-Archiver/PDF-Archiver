@@ -11,13 +11,15 @@ import OrderedSet
 import os.log
 import Quartz
 
-protocol ViewControllerDelegate: class {
+protocol ViewControllerDelegate: AnyObject {
     func clearTagSearchField()
     func closeApp()
-    func updateView(updatePDF: Bool)
+    func updateView(_ options: UpdateOptions)
 }
 
+typealias TableViewChanges = (deleted: IndexSet, inserted: IndexSet)
 class ViewController: NSViewController, Logging {
+
     var dataModelInstance = DataModel()
 
     @IBOutlet weak var documentTableView: NSTableView!
@@ -29,31 +31,15 @@ class ViewController: NSViewController, Logging {
     @IBOutlet weak var documentAttributesView: NSView!
     @IBOutlet weak var tagSearchView: NSView!
 
-    @IBOutlet var documentTagAC: NSArrayController!
-
     @IBOutlet weak var datePicker: NSDatePicker!
     @IBOutlet weak var specificationField: NSTextField!
     @IBOutlet weak var tagSearchField: NSSearchField!
-
-    // TODO: choose another place for this
-    func getSelectedDocument() -> Document? {
-        let index = self.documentTableView.selectedRow
-        if index >= 0 && index < self.dataModelInstance.untaggedDocuments.count {
-            return self.dataModelInstance.untaggedDocuments[index]
-        } else {
-            return nil
-        }
-    }
-    private func getSelectedTag() -> Tag? {
-        let index = tagTableView.selectedRow
-        return dataModelInstance.tagManager.getPresentedTags()[index]
-    }
 
     // outlets
     @IBAction private func datePickDone(_ sender: NSDatePicker) {
 
         // test if a document is selected
-        guard let selectedDocument = getSelectedDocument() else {
+        guard let selectedDocument = dataModelInstance.selectedDocument else {
                 return
         }
 
@@ -63,35 +49,38 @@ class ViewController: NSViewController, Logging {
 
     @IBAction private func descriptionDone(_ sender: NSTextField) {
         // test if a document is selected
-        guard let selectedDocument = getSelectedDocument() else {
+        guard let selectedDocument = dataModelInstance.selectedDocument else {
             return
         }
 
         // set the description of the pdf document
-        self.dataModelInstance.setDocumentDescription(document: selectedDocument, description: sender.stringValue)
+        dataModelInstance.setDocumentDescription(document: selectedDocument, description: sender.stringValue)
     }
 
     @IBAction private func clickedDocumentTagTableView(_ sender: NSTableView) {
+
         // test if the document tag table is empty
-        guard let selectedDocument = getSelectedDocument(),
-            let selectedTag = self.documentTagAC.selectedObjects.first as? Tag else {
+        guard let selectedDocument = dataModelInstance.selectedDocument else {
                 return
         }
 
+        // get the selected tags
+        let selectedTag = dataModelInstance.sortedTags[documentTagsTableView.selectedRow]
+
         // remove the selected element
-        self.dataModelInstance.remove(tag: selectedTag, from: selectedDocument)
+        dataModelInstance.remove(tag: selectedTag, from: selectedDocument)
     }
 
     @IBAction private func clickedTagTableView(_ sender: NSTableView) {
-        // add new tag to document table view
-        guard let selectedDocument = getSelectedDocument(),
-            let selectedTag = getSelectedTag() else {
-                os_log("Please pick documents first!", log: self.log, type: .info)
-                return
-        }
+
+        let index = tagTableView.selectedRow
+        let selectedTag = dataModelInstance.sortedTags[index]
 
         // test if element already exists in document tag table view
-        self.dataModelInstance.add(tag: selectedTag, to: selectedDocument)
+        dataModelInstance.addTagToSelectedDocument(selectedTag.name)
+
+        // update the view
+        updateView(.documentAttributes)
     }
 
     @IBAction private func browseFile(sender: AnyObject) {
@@ -103,33 +92,36 @@ class ViewController: NSViewController, Logging {
                 let openPanelUrl = openPanel.url else { return }
 
             self.dataModelInstance.prefs.observedPath = openPanelUrl
-            self.dataModelInstance.addUntaggedDocuments(paths: openPanel.urls)
+
+            // update the untagged documents
+            self.dataModelInstance.updateUntaggedDocuments(paths: openPanel.urls)
+
+            // reload the data in the table view
+            self.documentTableView.reloadData()
         }
     }
 
     @IBAction private func saveDocumentButton(_ sender: NSButton) {
-        // test if a document is selected
-        guard let selectedDocument = getSelectedDocument() else {
-                return
-        }
 
-        guard self.dataModelInstance.prefs.archivePath != nil else {
+        guard dataModelInstance.prefs.archivePath != nil else {
             dialogOK(messageKey: "no_archive", infoKey: "select_preferences", style: .critical)
             return
         }
 
-        let result = self.dataModelInstance.saveDocumentInArchive(document: selectedDocument)
+        let result = dataModelInstance.saveDocumentInArchive()
 
         if result {
-            // select a new document, which is not already done
-            var newIndex = 0
-            var documents = self.dataModelInstance.untaggedDocuments
-            for idx in 0...documents.count - 1 where documents[idx].path.hasParent(self.dataModelInstance.prefs.archivePath) {
-                newIndex = idx
-                break
-            }
-//            self.documentAC.setSelectionIndex(newIndex)
-            self.documentTableView.selectRowIndexes(IndexSet([newIndex]), byExtendingSelection: false)
+            // TODO: is this saving document method correct
+//            // select a new document, which is not already done
+//            var newIndex = 0
+//            var documents = Array(dataModelInstance.archive.get(scope: .all, searchterms: [], status: .untagged))
+//            for idx in 0...documents.count - 1 where documents[idx].path.hasParent(dataModelInstance.prefs.archivePath) {
+//                newIndex = idx
+//                break
+//            }
+//            documentAC.setSelectionIndex(newIndex)
+            let newIndex = documentTableView.selectedRow + 1
+            documentTableView.selectRowIndexes(IndexSet([newIndex]), byExtendingSelection: false)
         }
     }
 
@@ -137,89 +129,116 @@ class ViewController: NSViewController, Logging {
         super.viewDidLoad()
 
         // set delegates
-        self.documentTableView.dataSource = self
-        self.documentTableView.delegate = self
-        self.documentTableView.target = self
-//        self.documentTagsTableView.dataSource = self
-//        self.documentTagsTableView.delegate = self
-//        self.documentTagsTableView.target = self
-        self.tagTableView.dataSource = self
-        self.tagTableView.delegate = self
-        self.tagTableView.target = self
+        documentTableView.dataSource = self
+        documentTableView.delegate = self
+        documentTableView.target = self
+        documentTagsTableView.dataSource = self
+        documentTagsTableView.delegate = self
+        documentTagsTableView.target = self
+        tagTableView.dataSource = self
+        tagTableView.delegate = self
+        tagTableView.target = self
 
-        self.tagSearchField.delegate = self
-        self.specificationField.delegate = self
-        self.dataModelInstance.viewControllerDelegate = self
+        tagSearchField.delegate = self
+        specificationField.delegate = self
+        dataModelInstance.viewControllerDelegate = self
 
         // add sorting
-        self.documentTableView.sortDescriptors = [NSSortDescriptor(key: "documentDone", ascending: false),
+        documentTableView.tableColumns[0].sortDescriptorPrototype = NSSortDescriptor(key: DataModel.DocumentOrder.status.rawValue, ascending: true)
+        documentTableView.tableColumns[1].sortDescriptorPrototype = NSSortDescriptor(key: DataModel.DocumentOrder.name.rawValue, ascending: true)
+        tagTableView.tableColumns[0].sortDescriptorPrototype = NSSortDescriptor(key: DataModel.TagOrder.count.rawValue, ascending: true)
+        tagTableView.tableColumns[1].sortDescriptorPrototype = NSSortDescriptor(key: DataModel.TagOrder.name.rawValue, ascending: true)
+
+        documentTableView.sortDescriptors = [NSSortDescriptor(key: "documentDone", ascending: false),
                                                    NSSortDescriptor(key: "name", ascending: true)]
-        self.tagTableView.sortDescriptors = [NSSortDescriptor(key: "count", ascending: false),
+        tagTableView.sortDescriptors = [NSSortDescriptor(key: "count", ascending: false),
                                              NSSortDescriptor(key: "name", ascending: true)]
 
         // set the date picker to canadian local, e.g. YYYY-MM-DD
-        self.datePicker.locale = Locale(identifier: "en_CA")
+        datePicker.locale = Locale(identifier: "en_CA")
 
         // set some PDF View settings
-        self.pdfContentView.displayMode = PDFDisplayMode.singlePage
-        self.pdfContentView.autoScales = true
+        pdfContentView.displayMode = PDFDisplayMode.singlePage
+        pdfContentView.autoScales = true
         if #available(OSX 10.13, *) {
-            self.pdfContentView.acceptsDraggedFiles = false
+            pdfContentView.acceptsDraggedFiles = false
         }
-        self.pdfContentView.interpolationQuality = PDFInterpolationQuality.low
+        pdfContentView.interpolationQuality = PDFInterpolationQuality.low
 
         // update the view after all the settigns
-//        self.documentAC.setSelectionIndex(0)
-        self.documentTableView.selectRowIndexes(IndexSet([0]), byExtendingSelection: false)
+//        documentAC.setSelectionIndex(0)
+        documentTableView.selectRowIndexes(IndexSet([0]), byExtendingSelection: false)
 
-        self.documentTableView.reloadData()
-        self.documentTagsTableView.reloadData()
-        self.tagTableView.reloadData()
+        documentTableView.reloadData()
+        documentTagsTableView.reloadData()
+        tagTableView.reloadData()
     }
 
 //    override func viewWillAppear() {
 //        // set the array controller
-//        self.tagAC.content = self.dataModelInstance.tags
-////        self.documentAC.content = self.dataModelInstance.untaggedDocuments
-//        self.documentTableView.reloadData()
+//        tagAC.content = dataModelInstance.tags
+////        documentAC.content = dataModelInstance.untaggedDocuments
+//        documentTableView.reloadData()
 //    }
 
     override func viewDidAppear() {
         // test if the app needs subscription validation
         var isValid: Bool
         #if RELEASE
-            os_log("RELEASE", log: self.log, type: .debug)
-            isValid = self.dataModelInstance.store.appUsagePermitted()
+            os_log("RELEASE", log: log, type: .debug)
+            isValid = dataModelInstance.store.appUsagePermitted()
         #else
-            os_log("NO RELEASE", log: self.log, type: .debug)
+            os_log("NO RELEASE", log: log, type: .debug)
             isValid = true
         #endif
 
         // show onboarding view
         if !UserDefaults.standard.bool(forKey: "onboardingShown") || isValid == false {
-            self.performSegue(withIdentifier: "onboardingSegue", sender: self)
+            performSegue(withIdentifier: "onboardingSegue", sender: self)
         }
     }
 
     override func viewDidDisappear() {
-        if let archivePath = self.dataModelInstance.prefs.archivePath {
+        if let archivePath = dataModelInstance.prefs.archivePath {
             // reset the tag count to the archived documents
-            for document in self.dataModelInstance.untaggedDocuments where document.path.hasParent(self.dataModelInstance.prefs.archivePath) {
+            for document in dataModelInstance.sortedDocuments where document.path.hasParent(dataModelInstance.prefs.archivePath) {
                 for tag in document.tags {
                     tag.count -= 1
                 }
             }
 
             // save the tag count
-            self.dataModelInstance.prefs.save()
-            os_log("Save complete: %@", log: self.log, type: .debug, archivePath.absoluteString)
+            dataModelInstance.savePreferences()
+            os_log("Save complete: %@", log: log, type: .debug, archivePath.absoluteString)
 
         } else {
-            os_log("Save possible.", log: self.log, type: .debug)
+            os_log("Save possible.", log: log, type: .debug)
         }
 
         // quit application if the window disappears
         NSApplication.shared.terminate(self)
     }
 
+    // MARK: - segue stuff
+    override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
+        if let tabViewController = segue.destinationController as? NSTabViewController {
+            for controller in tabViewController.children {
+                if let controller = controller as? MainPreferencesVC {
+                    controller.preferencesDelegate = dataModelInstance.prefs
+                    controller.dataModelDelegate = dataModelInstance
+                    controller.viewControllerDelegate = self
+                } else if let controller = controller as? DonationPreferencesVC {
+                    controller.preferencesDelegate = dataModelInstance.prefs
+                    controller.iAPHelperDelegate = dataModelInstance.store
+                    dataModelInstance.store.donationPreferencesVCDelegate = controller
+                }
+            }
+
+        } else if let viewController = segue.destinationController as? OnboardingViewController {
+            viewController.iAPHelperDelegate = dataModelInstance.store
+            viewController.viewControllerDelegate = self
+            dataModelInstance.onboardingVCDelegate = viewController
+            dataModelInstance.store.onboardingVCDelegate = viewController
+        }
+    }
 }

@@ -10,7 +10,7 @@
 import os.log
 import StoreKit
 
-protocol IAPHelperDelegate: class {
+protocol IAPHelperDelegate: AnyObject {
     var products: [SKProduct] { get }
     var requestRunning: Int { get }
 

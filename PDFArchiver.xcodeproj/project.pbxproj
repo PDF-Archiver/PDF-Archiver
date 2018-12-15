@@ -28,7 +28,7 @@
 		A344D1D220B5FF1000A168B2 /* VCE-MenuItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = A344D1D120B5FF1000A168B2 /* VCE-MenuItems.swift */; };
 		A347FAD72041ACBE001A7925 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A347FAD92041ACBE001A7925 /* Localizable.strings */; };
 		A34A06E120E4120F0097481D /* AppleIncRootCertificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = A34A06E020E4120F0097481D /* AppleIncRootCertificate.cer */; };
-		A34CC6B120F0E81900DB5CBE /* Archive.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34CC6B020F0E81900DB5CBE /* Archive.swift */; };
+		A34CC6B120F0E81900DB5CBE /* ArchiveExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34CC6B020F0E81900DB5CBE /* ArchiveExtension.swift */; };
 		A35601F820E415C7006AC5C8 /* SwiftyLocalReceiptValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35601F720E415C7006AC5C8 /* SwiftyLocalReceiptValidator.swift */; };
 		A359963F202A3CC700CDD6E8 /* MyWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A359963E202A3CC700CDD6E8 /* MyWindow.swift */; };
 		A359E4B7202C376E00A703AF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A359E4B9202C376E00A703AF /* InfoPlist.strings */; };
@@ -113,7 +113,7 @@
 		A347FADA2041AD39001A7925 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A347FADB2041AD3C001A7925 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A34A06E020E4120F0097481D /* AppleIncRootCertificate.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = AppleIncRootCertificate.cer; sourceTree = "<group>"; };
-		A34CC6B020F0E81900DB5CBE /* Archive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Archive.swift; sourceTree = "<group>"; };
+		A34CC6B020F0E81900DB5CBE /* ArchiveExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveExtension.swift; sourceTree = "<group>"; };
 		A3519EA920DE967800D8ACDF /* shim.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = shim.h; sourceTree = "<group>"; };
 		A3519EAA20DE988400D8ACDF /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		A35601F720E415C7006AC5C8 /* SwiftyLocalReceiptValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftyLocalReceiptValidator.swift; sourceTree = "<group>"; };
@@ -335,7 +335,7 @@
 			isa = PBXGroup;
 			children = (
 				A3FC0DA3201B05F10082CD2A /* DataModel.swift */,
-				A34CC6B020F0E81900DB5CBE /* Archive.swift */,
+				A34CC6B020F0E81900DB5CBE /* ArchiveExtension.swift */,
 				A359963E202A3CC700CDD6E8 /* MyWindow.swift */,
 				A307BB3A2014D5300046C391 /* Preferences.swift */,
 			);
@@ -665,7 +665,7 @@
 				A307BB3B2014D5300046C391 /* Preferences.swift in Sources */,
 				A359963F202A3CC700CDD6E8 /* MyWindow.swift in Sources */,
 				A32A128320468A3000CFC81F /* OnboardingViewController.swift in Sources */,
-				A34CC6B120F0E81900DB5CBE /* Archive.swift in Sources */,
+				A34CC6B120F0E81900DB5CBE /* ArchiveExtension.swift in Sources */,
 				A35601F820E415C7006AC5C8 /* SwiftyLocalReceiptValidator.swift in Sources */,
 				A3A4C1C12015177A008BB354 /* NetworkHandling.swift in Sources */,
 				A3FC0DA4201B05F10082CD2A /* DataModel.swift in Sources */,

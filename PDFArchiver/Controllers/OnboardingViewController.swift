@@ -8,7 +8,7 @@
 
 import Cocoa
 
-protocol OnboardingVCDelegate: class {
+protocol OnboardingVCDelegate: AnyObject {
     func updateGUI()
     func closeOnboardingView()
 }
