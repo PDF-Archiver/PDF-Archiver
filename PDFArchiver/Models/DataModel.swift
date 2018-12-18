@@ -12,11 +12,10 @@ import os.log
 import Quartz
 
 protocol DataModelDelegate: AnyObject {
-    func moveArchivedDocuments(from oldArchivePath: URL, to newArchivePath: URL)
     func updateArchivedDocuments()
     func updateUntaggedDocuments(paths: [URL])
+    func moveArchivedDocuments(from oldArchivePath: URL, to newArchivePath: URL)
     func savePreferences()
-    func updateView(_ options: UpdateOptions)
 }
 
 extension DataModel {
@@ -43,19 +42,15 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
 
     // document table view
     public private(set) var sortedDocuments = [Document]()
-    public var documentSortOrder = DataModel.DocumentOrder.name {
-        didSet { refreshDocuments() }
-    }
-    public var docuementSortAscending = true {
+    public var documentSortDescriptors = [NSSortDescriptor(key: DocumentOrder.status.rawValue, ascending: false),
+                                          NSSortDescriptor(key: DocumentOrder.name.rawValue, ascending: true)] {
         didSet { refreshDocuments() }
     }
 
     // tag table view
     public private(set) var sortedTags = [Tag]()
-    public var tagSortOrder = DataModel.TagOrder.count {
-        didSet { refreshTags() }
-    }
-    public var tagSortAscending = true {
+    public var tagSortDescriptors = [NSSortDescriptor(key: TagOrder.count.rawValue, ascending: false),
+                                     NSSortDescriptor(key: TagOrder.name.rawValue, ascending: true)] {
         didSet { refreshTags() }
     }
     public var tagFilterTerm = "" {
@@ -65,36 +60,66 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
     // MARK: - Search Functions
     private func refreshDocuments() {
 
-        // get all documents
-        let allDocuments = archive.get(scope: .all, searchterms: [], status: .untagged)
+        // merge the untagged and already tagged documents
+        let untaggedDocuments = archive.get(scope: .all, searchterms: [], status: .untagged)
+        let allDocuments = Set(sortedDocuments).union(untaggedDocuments)
 
-        // sort documents
-        switch documentSortOrder {
-        case .status:
-            sortedDocuments = allDocuments.sorted { $0.taggingStatus < $1.taggingStatus }
-        case .name:
-            sortedDocuments = allDocuments.sorted { $0.filename < $1.filename }
+        // create the swifty sort descriptors
+        var swiftySortDescriptors = [SortDescriptor<Document>]()
+        for documentSortDescriptor in documentSortDescriptors {
+
+            // get current sort descriptor key
+            guard let key = documentSortDescriptor.key else { continue }
+
+            // create the specified sort descriptor
+            if key == DocumentOrder.name.rawValue {
+
+                let sortByName: SortDescriptor<Document> = sortDescriptor(key: { $0.filename }, ascending: documentSortDescriptor.ascending)
+                swiftySortDescriptors.append(sortByName)
+            } else if key == DocumentOrder.status.rawValue {
+
+                let sortByCount: SortDescriptor<Document> = sortDescriptor(key: { $0.taggingStatus }, ascending: documentSortDescriptor.ascending)
+                swiftySortDescriptors.append(sortByCount)
+            }
         }
-        if docuementSortAscending {
-            sortedTags.reverse()
-        }
+
+        // combine the swifty sort descriptors
+        let combined: SortDescriptor<Document> = combine(sortDescriptors: swiftySortDescriptors)
+
+        // sort and save the tags again
+        sortedDocuments = allDocuments.sorted(by: combined)
     }
 
     private func refreshTags() {
 
         // get all tags
-        let allTags = archive.getAvailableTags(with: [tagFilterTerm])
+        let allTags = Array(archive.getAvailableTags(with: [tagFilterTerm]))
 
-        // sort documents
-        switch tagSortOrder {
-        case .count:
-            sortedTags = allTags.sorted { $0.count < $1.count }
-        case .name:
-            sortedTags = allTags.sorted { $0.name < $1.name }
+        // create the swifty sort descriptors
+        var swiftySortDescriptors = [SortDescriptor<Tag>]()
+
+        for tagSortDescriptor in tagSortDescriptors {
+
+            // get current sort descriptor key
+            guard let key = tagSortDescriptor.key else { continue }
+
+            // create the specified sort descriptor
+            if key == TagOrder.name.rawValue {
+
+                let sortByName: SortDescriptor<Tag> = sortDescriptor(key: { $0.name }, ascending: tagSortDescriptor.ascending)
+                swiftySortDescriptors.append(sortByName)
+            } else if key == TagOrder.count.rawValue {
+
+                let sortByCount: SortDescriptor<Tag> = sortDescriptor(key: { $0.count }, ascending: tagSortDescriptor.ascending)
+                swiftySortDescriptors.append(sortByCount)
+            }
         }
-        if tagSortAscending {
-            sortedTags.reverse()
-        }
+
+        // combine the swifty sort descriptors
+        let combined: SortDescriptor<Tag> = combine(sortDescriptors: swiftySortDescriptors)
+
+        // sort and save the tags again
+        sortedTags = allTags.sorted(by: combined)
     }
 
     override init() {
@@ -124,7 +149,7 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
         }
 
         // access the file system
-        prefs.accessSecurityScope {
+        try? prefs.accessSecurityScope {
 
             // get year archive folders
             var folders = [URL]()
@@ -164,7 +189,9 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
             self.refreshTags()
 
             // update the tag table view
-            self.updateView(.tags)
+            DispatchQueue.main.async {
+                self.viewControllerDelegate?.updateView(.tags)
+            }
         }
     }
 
@@ -174,7 +201,7 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
         archive.removeAll(.untagged)
 
         // access the file system and add documents to the data model
-        self.prefs.accessSecurityScope {
+        try? prefs.accessSecurityScope {
             let convertPictures = prefs.convertPictures
             for path in paths {
                 for file in convertAndGetPDFs(path, convertPictures: convertPictures) {
@@ -193,7 +220,8 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
             return
         }
 
-        prefs.accessSecurityScope {
+        // TODO: handle exception in VC
+        try? prefs.accessSecurityScope {
 
             let fileManager = FileManager.default
             guard let documentsToBeMoved = fileManager.enumerator(at: oldArchivePath,
@@ -223,13 +251,6 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
 
         // add new tag to document
         archive.add(tag: tagName, to: selectedDocument)
-    }
-
-    // TODO: refactor this ... do we need this in the delegate?
-    public func updateView(_ options: UpdateOptions) {
-        DispatchQueue.main.async {
-            self.viewControllerDelegate?.updateView(options)
-        }
     }
 
     // MARK: - Helper Functions
@@ -266,7 +287,9 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
                     // do not update the view after the first document anymore
                     firstConvertedDocument = false
                     // update the view
-                    updateView([.selectedDocument, .documents])
+                    DispatchQueue.main.async {
+                        self.viewControllerDelegate?.updateView([.selectedDocument, .documents])
+                    }
                 } else {
                     // convert all other pictures in the background
                     DispatchQueue.global(qos: .background).async {
@@ -290,22 +313,21 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
         pdfDocument.insert(pdfPage, at: 0)
 
         // save the pdf document
-        prefs.accessSecurityScope {
-            pdfDocument.write(to: outPath)
+        do {
+            try prefs.accessSecurityScope {
+                pdfDocument.write(to: outPath)
 
-            // trash old pdf
-            let fileManager = FileManager.default
-            do {
-                try fileManager.trashItem(at: inPath, resultingItemURL: nil)
-            } catch let error {
-                os_log("Can not trash file: %@", log: self.log, type: .debug, error.localizedDescription)
+                // trash old pdf
+                try FileManager.default.trashItem(at: inPath, resultingItemURL: nil)
             }
+        } catch let error {
+            os_log("Can not trash file: %@", log: self.log, type: .debug, error.localizedDescription)
         }
     }
 
-    // TODO: THE FOLLOWING IS OTHER STUFF
+    // MARK: - other functions
 
-    func saveDocumentInArchive() -> Bool {
+    func saveDocumentInArchive() throws -> Bool {
 
         guard let selectedDocument = selectedDocument else { return false }
 
@@ -313,37 +335,23 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
             // rename the document
             var result = false
 
-            self.prefs.accessSecurityScope {
-
-                do {
-                    result = try selectedDocument.rename(archivePath: archivePath, slugify: self.prefs.slugifyNames)
-                } catch {
-                    // TODO: add error handling here
-//                dialogOK(messageKey: "save_failed", infoKey: "file_already_exists", style: .warning)
-//                dialogOK(messageKey: "save_failed", infoKey: error.localizedDescription, style: .warning)
-                }
+            // try to move the document
+            try prefs.accessSecurityScope {
+                result = try selectedDocument.rename(archivePath: archivePath, slugify: self.prefs.slugifyNames)
             }
-
-            if result {
-                // TODO: select the next document
-
-                // update the documents
-                viewControllerDelegate?.updateView(.all)
-
-                // increment count an request a review?
-                AppStoreReviewRequest.shared.incrementCount()
-
-                return true
-            }
+            return result
         }
         return false
     }
 
+    @discardableResult
     func trashDocument(_ document: Document) -> Bool {
         var trashed = false
 
         archive.remove(Set([document]))
-        self.prefs.accessSecurityScope {
+
+        // TODO: handle exception in VC
+        try? prefs.accessSecurityScope {
             let fileManager = FileManager.default
             do {
                 try fileManager.trashItem(at: document.path, resultingItemURL: nil)
@@ -358,7 +366,7 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
 
     func setDocumentDescription(document: Document, description: String) {
         // set the description of the pdf document
-        if self.prefs.slugifyNames {
+        if prefs.slugifyNames {
             document.specification = description.slugify()
         } else {
             document.specification = description

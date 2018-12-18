@@ -1104,7 +1104,7 @@ Help &gt; Show Onboarding</string>
                                                     <rect key="frame" x="1" y="0.0" width="318" height="494"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
-                                                        <tableView identifier="DocumentTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" headerView="8zw-71-lOb" viewBased="YES" id="6Bq-b9-66z" userLabel="Document Table View">
+                                                        <tableView identifier="documentTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" headerView="8zw-71-lOb" viewBased="YES" id="6Bq-b9-66z" userLabel="Document Table View">
                                                             <rect key="frame" x="0.0" y="0.0" width="368" height="471"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <size key="intercellSpacing" width="3" height="2"/>
@@ -1122,7 +1122,6 @@ Help &gt; Show Onboarding</string>
                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
-                                                                    <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="documentDone"/>
                                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                     <prototypeCellViews>
                                                                         <tableCellView identifier="documentStatusCell" id="XRF-wg-cG8">
@@ -1164,7 +1163,6 @@ Help &gt; Show Onboarding</string>
                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
-                                                                    <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="name"/>
                                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                     <prototypeCellViews>
                                                                         <tableCellView identifier="documentNameCell" id="Ten-tg-2yw">
@@ -1278,7 +1276,7 @@ Help &gt; Show Onboarding</string>
                                                             <rect key="frame" x="1" y="1" width="238" height="133"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
-                                                                <tableView identifier="DocumentTagsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" id="3Nb-6r-7ib" userLabel="Document Tag Table View">
+                                                                <tableView identifier="documentTagsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" id="3Nb-6r-7ib" userLabel="Document Tag Table View">
                                                                     <rect key="frame" x="0.0" y="0.0" width="238" height="133"/>
                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                     <size key="intercellSpacing" width="3" height="2"/>
@@ -1414,7 +1412,7 @@ Help &gt; Show Onboarding</string>
                                                             <rect key="frame" x="1" y="0.0" width="238" height="268"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
-                                                                <tableView identifier="TagsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" headerView="gxi-Wd-NVa" viewBased="YES" id="xpK-mJ-Y4J" userLabel="Tag Table View">
+                                                                <tableView identifier="tagsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" headerView="gxi-Wd-NVa" viewBased="YES" id="xpK-mJ-Y4J" userLabel="Tag Table View">
                                                                     <rect key="frame" x="0.0" y="0.0" width="238" height="245"/>
                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                     <size key="intercellSpacing" width="3" height="2"/>
@@ -1432,7 +1430,6 @@ Help &gt; Show Onboarding</string>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                             </textFieldCell>
-                                                                            <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="count"/>
                                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                             <prototypeCellViews>
                                                                                 <tableCellView identifier="tagCountCell" id="aAj-oT-fzK">
@@ -1469,7 +1466,6 @@ Help &gt; Show Onboarding</string>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                             </textFieldCell>
-                                                                            <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="name"/>
                                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                             <prototypeCellViews>
                                                                                 <tableCellView identifier="tagNameCell" id="9wq-Yh-6cT">

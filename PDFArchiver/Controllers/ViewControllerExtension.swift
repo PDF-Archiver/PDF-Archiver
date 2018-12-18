@@ -10,13 +10,9 @@ import ArchiveLib
 import os.log
 import Quartz
 
-// MARK: - fileprivate helpers
-private enum CellIdentifiers: String {
-    case documentStatusCell
-    case documentNameCell
-    case documentTagCell
-    case tagCountCell
-    case tagNameCell
+protocol ViewControllerDelegate: AnyObject {
+    func closeApp()
+    func updateView(_ options: UpdateOptions)
 }
 
 public struct UpdateOptions: OptionSet {
@@ -28,7 +24,7 @@ public struct UpdateOptions: OptionSet {
     static let tags = UpdateOptions(rawValue: 1 << 3)
 
     static let selectedDocument: UpdateOptions = [.documentAttributes, .pdfView]
-    static let all: UpdateOptions = [.documents, .documentAttributes, .pdfView, .all]
+    static let all: UpdateOptions = [.documents, .documentAttributes, .pdfView, .tags]
 
     public init(rawValue: Int) {
         self.rawValue = rawValue
@@ -37,10 +33,6 @@ public struct UpdateOptions: OptionSet {
 
 // MARK: - view controller delegates
 extension ViewController: ViewControllerDelegate {
-
-    func clearTagSearchField() {
-        tagSearchField.stringValue = ""
-    }
 
     func closeApp() {
         NSApplication.shared.terminate(self)
@@ -54,9 +46,6 @@ extension ViewController: ViewControllerDelegate {
             pdfContentView.document = nil
             datePicker.dateValue = Date()
             specificationField.stringValue = ""
-            // TODO: reset the documentTagTableView here?
-//            documentTagAC.content = nil
-            return
         }
 
         if options.contains(.documentAttributes),
@@ -72,7 +61,7 @@ extension ViewController: ViewControllerDelegate {
         if options.contains(.pdfView),
             let documentPath = dataModelInstance.selectedDocument?.path {
 
-            dataModelInstance.prefs.accessSecurityScope {
+            try? dataModelInstance.prefs.accessSecurityScope {
                 pdfContentView.document = PDFDocument(url: documentPath)
                 pdfContentView.goToFirstPage(self)
             }
@@ -95,11 +84,11 @@ extension ViewController: ViewControllerDelegate {
 extension ViewController: NSTableViewDataSource {
 
     func numberOfRows(in tableView: NSTableView) -> Int {
-        if tableView.identifier?.rawValue == "DocumentTableView" {
+        if tableView.identifier?.rawValue == TableView.documentTableView.rawValue {
             return dataModelInstance.sortedDocuments.count
-        } else if tableView.identifier?.rawValue == "DocumentTagsTableView" {
+        } else if tableView.identifier?.rawValue == TableView.documentTagsTableView.rawValue {
             return dataModelInstance.selectedDocument?.tags.count ?? 0
-        } else if tableView.identifier?.rawValue == "TagsTableView" {
+        } else if tableView.identifier?.rawValue == TableView.tagsTableView.rawValue {
             return dataModelInstance.sortedTags.count
         } else {
             return 0
@@ -107,18 +96,21 @@ extension ViewController: NSTableViewDataSource {
     }
 
     func tableView(_ tableView: NSTableView, sortDescriptorsDidChange oldDescriptors: [NSSortDescriptor]) {
+        if tableView.identifier?.rawValue == TableView.documentTableView.rawValue {
 
-        // TODO: switch between the table views
-        guard let sortDescriptor = tableView.sortDescriptors.first else {
-            return
-        }
+            // apply the new sort descriptors to the documents
+            dataModelInstance.documentSortDescriptors = tableView.sortDescriptors
 
-        if let sortDescriptorKey = sortDescriptor.key,
-            let order = DataModel.DocumentOrder(rawValue: sortDescriptorKey) {
+            // update the document view
+            updateView(.documents)
 
-            // TODO: optimize this by only refreshing dataModelInstance.sortedDocuments only once
-            dataModelInstance.documentSortOrder = order
-            dataModelInstance.docuementSortAscending = sortDescriptor.ascending
+        } else if tableView.identifier?.rawValue == TableView.tagsTableView.rawValue {
+
+            // apply the new sort descriptors to the tags
+            dataModelInstance.tagSortDescriptors = tableView.sortDescriptors
+
+            // update the document view
+            updateView(.tags)
         }
     }
 
@@ -126,13 +118,17 @@ extension ViewController: NSTableViewDataSource {
 
 extension ViewController: NSTableViewDelegate {
     func tableViewSelectionDidChange(_ notification: Notification) {
-        // TODO: switch between the table views
-        if let identifier = (notification.object as? NSTableView)?.identifier?.rawValue,
-           identifier == "DocumentTableView" {
+
+        // Use the table selection change only for the documents view.
+        // DocumentTagsTableView & TagsTableView should only be updated on a user interaction:
+        // * @IBAction private func clickedDocumentTagTableView(_ sender: NSTableView)
+        // * @IBAction private func clickedTagTableView(_ sender: NSTableView)
+        if let tableView = notification.object as? NSTableView,
+            tableView.identifier?.rawValue == TableView.documentTableView.rawValue,
+            documentTableView.selectedRow >= 0 {
 
             // save the new selected document
-            let index = documentTableView.selectedRow
-            dataModelInstance.selectedDocument = dataModelInstance.sortedDocuments[index]
+            dataModelInstance.selectedDocument = dataModelInstance.sortedDocuments[documentTableView.selectedRow]
 
             // update the view
             updateView(.selectedDocument)
@@ -141,25 +137,23 @@ extension ViewController: NSTableViewDelegate {
 
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
 
-        // TODO: refactor "tableView.identifier?.rawValue == "DocumentTagsTableView" to an enum
         var text: String = ""
         var cellIdentifier: CellIdentifiers?
 
-        if tableView.identifier?.rawValue == "DocumentTableView" {
+        if tableView.identifier?.rawValue == TableView.documentTableView.rawValue {
 
             let document = dataModelInstance.sortedDocuments[row]
 
             if tableColumn == tableView.tableColumns[0] {
                 cellIdentifier = .documentStatusCell
-                let alreadyRenamed = document.path.hasParent(dataModelInstance.prefs.archivePath)
-                text = alreadyRenamed ? "✔︎" : ""
+                text = document.taggingStatus == .tagged ? "✔︎" : ""
 
             } else if tableColumn == tableView.tableColumns[1] {
                 cellIdentifier = .documentNameCell
                 text = document.filename
             }
 
-        } else if tableView.identifier?.rawValue == "DocumentTagsTableView" {
+        } else if tableView.identifier?.rawValue == TableView.documentTagsTableView.rawValue {
 
             // get the right tag for this cell
             let tag = Array(dataModelInstance.selectedDocument?.tags ?? Set<Tag>()).sorted()[row]
@@ -167,7 +161,7 @@ extension ViewController: NSTableViewDelegate {
             cellIdentifier = .documentTagCell
             text = tag.name
 
-        } else if tableView.identifier?.rawValue == "TagsTableView" {
+        } else if tableView.identifier?.rawValue == TableView.tagsTableView.rawValue {
 
             let tag = dataModelInstance.sortedTags[row]
 
@@ -237,9 +231,25 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
         dataModelInstance.addTagToSelectedDocument(selectedTagName)
 
         // clear search field content
-        clearTagSearchField()
+        tagSearchField.stringValue = ""
+        dataModelInstance.tagFilterTerm = ""
 
         // update the view
-        updateView(.selectedDocument)
+        updateView([.selectedDocument, .tags])
     }
+}
+
+// MARK: - fileprivate helpers
+private enum CellIdentifiers: String {
+    case documentStatusCell
+    case documentNameCell
+    case documentTagCell
+    case tagCountCell
+    case tagNameCell
+}
+
+private enum TableView: String {
+    case documentTableView
+    case documentTagsTableView
+    case tagsTableView
 }

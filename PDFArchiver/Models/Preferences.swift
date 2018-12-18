@@ -22,7 +22,7 @@ protocol PreferencesDelegate: AnyObject {
     var analyseAllFolders: Bool { get set }
     var convertPictures: Bool { get set }
 
-    func accessSecurityScope(closure: () -> Void)
+    func accessSecurityScope(closure: () throws -> Void) throws
     func save(with tags: Set<Tag>)
 }
 
@@ -42,7 +42,7 @@ class Preferences: PreferencesDelegate, Logging {
                 let iCloudDrivePath = self.iCloudDrivePath,
                 self.useiCloudDrive {
                 // move archive files
-                self.accessSecurityScope {
+                try? accessSecurityScope {
                     self.dataModelDelegate?.moveArchivedDocuments(from: archivePath, to: iCloudDrivePath)
                 }
 
@@ -89,7 +89,7 @@ class Preferences: PreferencesDelegate, Logging {
 
             // move archive files
             if let iCloudDrivePath = self.iCloudDrivePath {
-                self.accessSecurityScope {
+                try? self.accessSecurityScope {
                     dataModelDelegate?.moveArchivedDocuments(from: iCloudDrivePath, to: newValue)
                 }
             }
@@ -176,7 +176,8 @@ class Preferences: PreferencesDelegate, Logging {
         self.useiCloudDrive = UserDefaults.standard.bool(forKey: "useiCloudDrive")
     }
 
-    func accessSecurityScope(closure: () -> Void) {
+    func accessSecurityScope(closure: () throws -> Void) throws {
+
         // start accessing the file system
         if !(self._observedPath?.startAccessingSecurityScopedResource() ?? false) {
             os_log("Accessing Security Scoped Resource of the observed path failed.", log: self.log, type: .fault)
@@ -186,7 +187,17 @@ class Preferences: PreferencesDelegate, Logging {
         }
 
         // run the used code
-        closure()
+        do {
+            try closure()
+        } catch let error {
+
+            // stop accessing the file system, even if an error was thrown
+            self._archivePath?.stopAccessingSecurityScopedResource()
+            self._observedPath?.stopAccessingSecurityScopedResource()
+
+            // rethrow the original error
+            throw error
+        }
 
         // stop accessing the file system
         self._archivePath?.stopAccessingSecurityScopedResource()

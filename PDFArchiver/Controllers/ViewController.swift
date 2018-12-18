@@ -11,12 +11,6 @@ import OrderedSet
 import os.log
 import Quartz
 
-protocol ViewControllerDelegate: AnyObject {
-    func clearTagSearchField()
-    func closeApp()
-    func updateView(_ options: UpdateOptions)
-}
-
 typealias TableViewChanges = (deleted: IndexSet, inserted: IndexSet)
 class ViewController: NSViewController, Logging {
 
@@ -45,6 +39,9 @@ class ViewController: NSViewController, Logging {
 
         // set the date of the pdf document
         selectedDocument.date = sender.dateValue
+
+        // update the document attributes
+        updateView(.documentAttributes)
     }
 
     @IBAction private func descriptionDone(_ sender: NSTextField) {
@@ -55,6 +52,9 @@ class ViewController: NSViewController, Logging {
 
         // set the description of the pdf document
         dataModelInstance.setDocumentDescription(document: selectedDocument, description: sender.stringValue)
+
+        // update the document attributes in case the input string should be slugified
+        updateView(.documentAttributes)
     }
 
     @IBAction private func clickedDocumentTagTableView(_ sender: NSTableView) {
@@ -65,15 +65,22 @@ class ViewController: NSViewController, Logging {
         }
 
         // get the selected tags
-        let selectedTag = dataModelInstance.sortedTags[documentTagsTableView.selectedRow]
+        let tags = Array(dataModelInstance.selectedDocument?.tags ?? Set()).sorted()
+        let selectedTag = tags[documentTagsTableView.selectedRow]
 
         // remove the selected element
         dataModelInstance.remove(tag: selectedTag, from: selectedDocument)
+
+        // update the document attributes
+        updateView(.documentAttributes)
     }
 
     @IBAction private func clickedTagTableView(_ sender: NSTableView) {
 
         let index = tagTableView.selectedRow
+
+        guard index >= 0 else { return }
+
         let selectedTag = dataModelInstance.sortedTags[index]
 
         // test if element already exists in document tag table view
@@ -96,8 +103,8 @@ class ViewController: NSViewController, Logging {
             // update the untagged documents
             self.dataModelInstance.updateUntaggedDocuments(paths: openPanel.urls)
 
-            // reload the data in the table view
-            self.documentTableView.reloadData()
+            // reload the documents in the table view
+            self.updateView(.documents)
         }
     }
 
@@ -108,20 +115,28 @@ class ViewController: NSViewController, Logging {
             return
         }
 
-        let result = dataModelInstance.saveDocumentInArchive()
+        // try to move the selected document
+        var result = false
+        do {
+            result = try dataModelInstance.saveDocumentInArchive()
+        } catch {
+            dialogOK(messageKey: "save_failed", infoKey: "file_already_exists", style: .warning)
+        }
 
         if result {
-            // TODO: is this saving document method correct
-//            // select a new document, which is not already done
-//            var newIndex = 0
-//            var documents = Array(dataModelInstance.archive.get(scope: .all, searchterms: [], status: .untagged))
-//            for idx in 0...documents.count - 1 where documents[idx].path.hasParent(dataModelInstance.prefs.archivePath) {
-//                newIndex = idx
-//                break
-//            }
-//            documentAC.setSelectionIndex(newIndex)
-            let newIndex = documentTableView.selectedRow + 1
+
+            // set the sort descriptors again, to force the new sorting of the documents
+            dataModelInstance.documentSortDescriptors = documentTableView.sortDescriptors
+
+            // update only the documents and tags, since the rest will be updated by the selection change
+            updateView([.documents, .tags])
+
+            // select the first untagged document
+            let newIndex = dataModelInstance.sortedDocuments.firstIndex { $0.taggingStatus == .untagged } ?? 0
             documentTableView.selectRowIndexes(IndexSet([newIndex]), byExtendingSelection: false)
+
+            // increment count an request a review?
+            AppStoreReviewRequest.shared.incrementCount()
         }
     }
 
@@ -149,10 +164,9 @@ class ViewController: NSViewController, Logging {
         tagTableView.tableColumns[0].sortDescriptorPrototype = NSSortDescriptor(key: DataModel.TagOrder.count.rawValue, ascending: true)
         tagTableView.tableColumns[1].sortDescriptorPrototype = NSSortDescriptor(key: DataModel.TagOrder.name.rawValue, ascending: true)
 
-        documentTableView.sortDescriptors = [NSSortDescriptor(key: "documentDone", ascending: false),
-                                                   NSSortDescriptor(key: "name", ascending: true)]
-        tagTableView.sortDescriptors = [NSSortDescriptor(key: "count", ascending: false),
-                                             NSSortDescriptor(key: "name", ascending: true)]
+        // add initial sort descriptors
+        documentTableView.sortDescriptors = dataModelInstance.documentSortDescriptors
+        tagTableView.sortDescriptors = dataModelInstance.tagSortDescriptors
 
         // set the date picker to canadian local, e.g. YYYY-MM-DD
         datePicker.locale = Locale(identifier: "en_CA")
@@ -166,20 +180,12 @@ class ViewController: NSViewController, Logging {
         pdfContentView.interpolationQuality = PDFInterpolationQuality.low
 
         // update the view after all the settigns
-//        documentAC.setSelectionIndex(0)
         documentTableView.selectRowIndexes(IndexSet([0]), byExtendingSelection: false)
 
         documentTableView.reloadData()
         documentTagsTableView.reloadData()
         tagTableView.reloadData()
     }
-
-//    override func viewWillAppear() {
-//        // set the array controller
-//        tagAC.content = dataModelInstance.tags
-////        documentAC.content = dataModelInstance.untaggedDocuments
-//        documentTableView.reloadData()
-//    }
 
     override func viewDidAppear() {
         // test if the app needs subscription validation
