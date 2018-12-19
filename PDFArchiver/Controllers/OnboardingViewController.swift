@@ -87,10 +87,6 @@ class OnboardingViewController: NSViewController {
             customViewColor = NSColor(calibratedRed: 0.131, green: 0.172, blue: 0.231, alpha: 0.05).cgColor
         }
 
-        // set background color
-        // TODO: do we really need this?
-        self.baseView.layout()
-
         // set background color of the view
         self.customView1.wantsLayer = true
         self.customView1.layer?.backgroundColor = customViewColor

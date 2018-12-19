@@ -180,7 +180,7 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
             let convertPictures = prefs.convertPictures
             for folder in folders {
                 for file in convertAndGetPDFs(folder, convertPictures: convertPictures) {
-                    // TODO: add the real document size here?
+
                     archive.add(from: file, size: nil, downloadStatus: .local, status: .tagged)
                 }
             }
@@ -205,7 +205,6 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
             let convertPictures = prefs.convertPictures
             for path in paths {
                 for file in convertAndGetPDFs(path, convertPictures: convertPictures) {
-                    // TODO: add correct size here?
                     archive.add(from: file, size: nil, downloadStatus: .local, status: .untagged)
                 }
             }
@@ -220,9 +219,9 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
             return
         }
 
-        // TODO: handle exception in VC
         try? prefs.accessSecurityScope {
 
+            // get all document folders that should be moved
             let fileManager = FileManager.default
             guard let documentsToBeMoved = fileManager.enumerator(at: oldArchivePath,
                                                                   includingPropertiesForKeys: nil,
@@ -230,6 +229,8 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
                                                                   errorHandler: nil) else { return }
 
             for folder in documentsToBeMoved {
+
+                // get path and move the folder
                 guard let folderPath = folder as? URL else { continue }
                 try? fileManager.moveItem(at: folderPath,
                                           to: newArchivePath.appendingPathComponent(folderPath.lastPathComponent))

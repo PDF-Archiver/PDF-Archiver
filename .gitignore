@@ -8,3 +8,4 @@ PDFArchiver/External/OpenSSL/include/*
 !PDFArchiver/External/OpenSSL/include/.gitkeep
 .env.default
 Pods
+PDFArchiver.xcworkspace/xcuserdata
