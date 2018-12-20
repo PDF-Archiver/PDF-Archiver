@@ -20,8 +20,8 @@ protocol DataModelDelegate: AnyObject {
 
 extension DataModel {
     public enum DocumentOrder: String {
-        case status
-        case name
+        case taggingStatus
+        case filename
     }
 
     public enum TagOrder: String {
@@ -42,8 +42,8 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
 
     // document table view
     public private(set) var sortedDocuments = [Document]()
-    public var documentSortDescriptors = [NSSortDescriptor(key: DocumentOrder.status.rawValue, ascending: false),
-                                          NSSortDescriptor(key: DocumentOrder.name.rawValue, ascending: true)] {
+    public var documentSortDescriptors = [NSSortDescriptor(key: DocumentOrder.taggingStatus.rawValue, ascending: false),
+                                          NSSortDescriptor(key: DocumentOrder.filename.rawValue, ascending: true)] {
         didSet { refreshDocuments() }
     }
 
@@ -62,32 +62,10 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
 
         // merge the untagged and already tagged documents
         let untaggedDocuments = archive.get(scope: .all, searchterms: [], status: .untagged)
-        let allDocuments = Set(sortedDocuments).union(untaggedDocuments)
-
-        // create the swifty sort descriptors
-        var swiftySortDescriptors = [SortDescriptor<Document>]()
-        for documentSortDescriptor in documentSortDescriptors {
-
-            // get current sort descriptor key
-            guard let key = documentSortDescriptor.key else { continue }
-
-            // create the specified sort descriptor
-            if key == DocumentOrder.name.rawValue {
-
-                let sortByName: SortDescriptor<Document> = sortDescriptor(key: { $0.filename }, ascending: documentSortDescriptor.ascending)
-                swiftySortDescriptors.append(sortByName)
-            } else if key == DocumentOrder.status.rawValue {
-
-                let sortByCount: SortDescriptor<Document> = sortDescriptor(key: { $0.taggingStatus }, ascending: documentSortDescriptor.ascending)
-                swiftySortDescriptors.append(sortByCount)
-            }
-        }
-
-        // combine the swifty sort descriptors
-        let combined: SortDescriptor<Document> = combine(sortDescriptors: swiftySortDescriptors)
+        let allDocuments = Array(Set(sortedDocuments).union(untaggedDocuments))
 
         // sort and save the tags again
-        sortedDocuments = allDocuments.sorted(by: combined)
+        sortedDocuments = sort(allDocuments, by: documentSortDescriptors)
     }
 
     private func refreshTags() {
@@ -95,31 +73,8 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
         // get all tags
         let allTags = Array(archive.getAvailableTags(with: [tagFilterTerm]))
 
-        // create the swifty sort descriptors
-        var swiftySortDescriptors = [SortDescriptor<Tag>]()
-
-        for tagSortDescriptor in tagSortDescriptors {
-
-            // get current sort descriptor key
-            guard let key = tagSortDescriptor.key else { continue }
-
-            // create the specified sort descriptor
-            if key == TagOrder.name.rawValue {
-
-                let sortByName: SortDescriptor<Tag> = sortDescriptor(key: { $0.name }, ascending: tagSortDescriptor.ascending)
-                swiftySortDescriptors.append(sortByName)
-            } else if key == TagOrder.count.rawValue {
-
-                let sortByCount: SortDescriptor<Tag> = sortDescriptor(key: { $0.count }, ascending: tagSortDescriptor.ascending)
-                swiftySortDescriptors.append(sortByCount)
-            }
-        }
-
-        // combine the swifty sort descriptors
-        let combined: SortDescriptor<Tag> = combine(sortDescriptors: swiftySortDescriptors)
-
         // sort and save the tags again
-        sortedTags = allTags.sorted(by: combined)
+        sortedTags = sort(allTags, by: tagSortDescriptors)
     }
 
     override init() {
@@ -328,21 +283,16 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
 
     // MARK: - other functions
 
-    func saveDocumentInArchive() throws -> Bool {
+    func saveDocumentInArchive() throws {
 
-        guard let selectedDocument = selectedDocument else { return false }
-
+        guard let selectedDocument = selectedDocument else { throw DataModelError.noDocumentSelected }
         if let archivePath = self.prefs.archivePath {
-            // rename the document
-            var result = false
 
             // try to move the document
             try prefs.accessSecurityScope {
-                result = try selectedDocument.rename(archivePath: archivePath, slugify: self.prefs.slugifyNames)
+                try selectedDocument.rename(archivePath: archivePath, slugify: prefs.slugifyNames)
             }
-            return result
         }
-        return false
     }
 
     @discardableResult
@@ -380,4 +330,8 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
             archive.remove(tag.name)
         }
     }
+}
+
+enum DataModelError: Error {
+    case noDocumentSelected
 }

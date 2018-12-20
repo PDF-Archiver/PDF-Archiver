@@ -115,15 +115,9 @@ class ViewController: NSViewController, Logging {
             return
         }
 
-        // try to move the selected document
-        var result = false
         do {
-            result = try dataModelInstance.saveDocumentInArchive()
-        } catch {
-            dialogOK(messageKey: "save_failed", infoKey: "file_already_exists", style: .warning)
-        }
-
-        if result {
+            // try to move the selected document
+            try dataModelInstance.saveDocumentInArchive()
 
             // set the sort descriptors again, to force the new sorting of the documents
             dataModelInstance.documentSortDescriptors = documentTableView.sortDescriptors
@@ -137,6 +131,12 @@ class ViewController: NSViewController, Logging {
 
             // increment count an request a review?
             AppStoreReviewRequest.shared.incrementCount()
+
+        } catch DataModelError.noDocumentSelected {
+            os_log("No document was selected.", log: log, type: .error)
+        } catch let error {
+            os_log("An error occured while renaming the document: ", log: log, type: .error, error.localizedDescription)
+            dialogOK(messageKey: "save_failed", infoKey: "file_already_exists", style: .warning)
         }
     }
 
@@ -159,8 +159,8 @@ class ViewController: NSViewController, Logging {
         dataModelInstance.viewControllerDelegate = self
 
         // add sorting
-        documentTableView.tableColumns[0].sortDescriptorPrototype = NSSortDescriptor(key: DataModel.DocumentOrder.status.rawValue, ascending: true)
-        documentTableView.tableColumns[1].sortDescriptorPrototype = NSSortDescriptor(key: DataModel.DocumentOrder.name.rawValue, ascending: true)
+        documentTableView.tableColumns[0].sortDescriptorPrototype = NSSortDescriptor(key: DataModel.DocumentOrder.taggingStatus.rawValue, ascending: true)
+        documentTableView.tableColumns[1].sortDescriptorPrototype = NSSortDescriptor(key: DataModel.DocumentOrder.filename.rawValue, ascending: true)
         tagTableView.tableColumns[0].sortDescriptorPrototype = NSSortDescriptor(key: DataModel.TagOrder.count.rawValue, ascending: true)
         tagTableView.tableColumns[1].sortDescriptorPrototype = NSSortDescriptor(key: DataModel.TagOrder.name.rawValue, ascending: true)
 
@@ -206,8 +206,8 @@ class ViewController: NSViewController, Logging {
 
     override func viewDidDisappear() {
         if let archivePath = dataModelInstance.prefs.archivePath {
-            // reset the tag count to the archived documents
-            for document in dataModelInstance.sortedDocuments where document.path.hasParent(dataModelInstance.prefs.archivePath) {
+            // TODO: reset the tag count to the archived documents? WTH?
+            for document in dataModelInstance.sortedDocuments where document.taggingStatus == .tagged {
                 for tag in document.tags {
                     tag.count -= 1
                 }
