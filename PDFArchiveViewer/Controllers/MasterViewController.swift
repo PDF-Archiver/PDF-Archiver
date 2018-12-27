@@ -52,7 +52,6 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
         tableView.register(UINib(nibName: cellIdentifier, bundle: nil), forCellReuseIdentifier: cellIdentifier)
 
         // setup data delegate
-        // TODO: update this delegate
         documentsQuery.documentsQueryDelegate = archive
         documentsQuery.masterViewControllerDelegate = self
 
