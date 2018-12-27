@@ -42,7 +42,7 @@ class DocumentTests: XCTestCase {
         // tags
         var documentTagNames = [String]()
         var documentTagCounts = [Int]()
-        for tag in document.documentTags.sorted(by: { $0.name < $1.name }) {
+        for tag in document.tags.sorted(by: { $0.name < $1.name }) {
             documentTagNames.append(tag.name)
             documentTagCounts.append(tag.count)
         }
@@ -120,7 +120,7 @@ class DocumentTests: XCTestCase {
         let document = Document(path: path, availableTags: &tags)
 
         document.specification = "This is a Test!"
-        document.documentTags = [tag1]
+        document.tags = [tag1]
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         document.date = dateFormatter.date(from: "2010-05-12") ?? Date()

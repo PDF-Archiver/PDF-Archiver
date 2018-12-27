@@ -14,7 +14,7 @@ extension ViewController {
 
     // MARK: - PDF Archiver Menu
     @IBAction private func showPreferencesMenuItem(_ sender: NSMenuItem) {
-        self.performSegue(withIdentifier: "prefsSegue", sender: self)
+        performSegue(withIdentifier: "prefsSegue", sender: self)
     }
 
     // MARK: - Window Menu
@@ -22,36 +22,36 @@ extension ViewController {
         guard let identifierName = sender.identifier?.rawValue  else { return }
 
         if identifierName == "ZoomActualSize" {
-            self.pdfContentView.scaleFactor = 1
+            pdfContentView.scaleFactor = 1
         } else if identifierName == "ZoomToFit" {
-            self.pdfContentView.autoScales = true
+            pdfContentView.autoScales = true
         } else if identifierName == "ZoomIn" {
-            self.pdfContentView.zoomIn(self)
+            pdfContentView.zoomIn(self)
         } else if identifierName == "ZoomOut" {
-            self.pdfContentView.zoomOut(self)
+            pdfContentView.zoomOut(self)
         }
     }
 
     // MARK: - Edit Menu
     @IBAction private func deleteDocumentMenuItem(_ sender: NSMenuItem) {
         // select the document which should be deleted
-        guard !self.documentAC.selectedObjects.isEmpty,
-            let selectedDocument = self.documentAC.selectedObjects.first as? Document else {
-                return
-        }
+        guard let selectedDocument = dataModelInstance.selectedDocument else { return }
 
         // get the index of selected document
-        let idx = self.documentAC.selectionIndex
+        let idx = documentTableView.selectedRow
 
         // move the document to trash
-        // TODO: feedback if the document can not be trashed
-        _ = self.dataModelInstance.trashDocument(selectedDocument)
+        do {
+            try dataModelInstance.trashDocument(selectedDocument)
+        } catch let error {
+            os_log("Can not trash file: %@", log: self.log, type: .debug, error.localizedDescription)
+        }
 
         // update the GUI
-        if idx < self.dataModelInstance.untaggedDocuments.count {
-            self.documentAC.setSelectionIndex(idx)
+        if idx < dataModelInstance.sortedDocuments.count {
+            documentTableView.selectRowIndexes(IndexSet([idx]), byExtendingSelection: false)
         } else {
-            self.documentAC.setSelectionIndex(self.dataModelInstance.untaggedDocuments.count - 1)
+            documentTableView.selectRowIndexes(IndexSet([dataModelInstance.sortedDocuments.count - 1]), byExtendingSelection: false)
         }
     }
 
@@ -70,18 +70,18 @@ extension ViewController {
     }
 
     @IBAction private func showOnboardingMenuItem(_ sender: AnyObject) {
-        self.performSegue(withIdentifier: "onboardingSegue", sender: self)
+        performSegue(withIdentifier: "onboardingSegue", sender: self)
     }
 
     @IBAction private func updateViewMenuItem(_ sender: AnyObject) {
 
         // update files in the observed path
-        if let observedPath = self.dataModelInstance.prefs.observedPath {
-            self.dataModelInstance.addUntaggedDocuments(paths: [observedPath])
+        if let observedPath = dataModelInstance.prefs.observedPath {
+            dataModelInstance.updateUntaggedDocuments(paths: [observedPath])
         }
 
         // get tags and update the GUI
-        self.updateView(updatePDF: true)
+        updateView(.all)
     }
 
     @IBAction private func showManageSubscriptions(_ sender: NSMenuItem) {
@@ -98,7 +98,7 @@ extension ViewController {
         UserDefaults.standard.removePersistentDomain(forName: bundleIdentifier)
 
         // remove preferences - initialize it temporary and kill the app directly afterwards
-        self.dataModelInstance.prefs = Preferences()
+        dataModelInstance.prefs = Preferences()
 
         // close application
         NSApplication.shared.terminate(self)

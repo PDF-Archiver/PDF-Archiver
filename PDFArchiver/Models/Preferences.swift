@@ -6,10 +6,11 @@
 //  Copyright © 2018 Julian Kahnert. All rights reserved.
 //
 
+import ArchiveLib
 import Foundation
 import os.log
 
-protocol PreferencesDelegate: class {
+protocol PreferencesDelegate: AnyObject {
     var archivePath: URL? { get set }
     var observedPath: URL? { get set }
     var archiveModificationDate: Date? { get set }
@@ -20,8 +21,8 @@ protocol PreferencesDelegate: class {
     var analyseAllFolders: Bool { get set }
     var convertPictures: Bool { get set }
 
-    func accessSecurityScope(closure: () -> Void)
-    func save()
+    func accessSecurityScope(closure: () throws -> Void) throws
+    func save(with tags: Set<Tag>)
 }
 
 class Preferences: PreferencesDelegate, Logging {
@@ -29,8 +30,8 @@ class Preferences: PreferencesDelegate, Logging {
     fileprivate var _archivePath: URL?
     fileprivate var _observedPath: URL?
     private(set) var iCloudDrivePath = FileManager.default.url(forUbiquityContainerIdentifier: nil)?.appendingPathComponent("Documents")
-    weak var dataModelTagsDelegate: DataModelTagsDelegate?
-    weak var archiveDelegate: ArchiveDelegate?
+    weak var dataModelDelegate: DataModelDelegate?
+    weak var archiveDelegate: TagManagerHandling?
     var archiveModificationDate: Date?
     var slugifyNames: Bool = true
     var useiCloudDrive: Bool = false {
@@ -40,8 +41,8 @@ class Preferences: PreferencesDelegate, Logging {
                 let iCloudDrivePath = self.iCloudDrivePath,
                 self.useiCloudDrive {
                 // move archive files
-                self.accessSecurityScope {
-                    self.archiveDelegate?.moveArchivedDocuments(from: archivePath, to: iCloudDrivePath)
+                try? accessSecurityScope {
+                    self.dataModelDelegate?.moveArchivedDocuments(from: archivePath, to: iCloudDrivePath)
                 }
 
                 // create icloud container
@@ -56,23 +57,10 @@ class Preferences: PreferencesDelegate, Logging {
                 // save the icloud drive container path as the archive
                 self.archivePath = iCloudDrivePath
             }
-
-            // update documents
-            self.archiveDelegate?.updateDocumentsAndTags()
         }
     }
-    var analyseAllFolders: Bool = false {
-        didSet {
-            self.archiveDelegate?.updateDocumentsAndTags()
-        }
-    }
-    var convertPictures: Bool = false {
-        didSet {
-            if let observedPath = self.observedPath {
-                self.dataModelTagsDelegate?.addUntaggedDocuments(paths: [observedPath])
-            }
-        }
-    }
+    var analyseAllFolders: Bool = false
+    var convertPictures: Bool = false
     var observedPath: URL? {
         // ATTENTION: only set observed path, after an OpenPanel dialog
         get {
@@ -88,9 +76,6 @@ class Preferences: PreferencesDelegate, Logging {
                 os_log("Observed path bookmark Write Fails: %@", log: self.log, type: .error, error.description)
             }
             self._observedPath = newValue
-
-            // update the untagged documents
-            self.dataModelTagsDelegate?.addUntaggedDocuments(paths: [newValue])
         }
     }
     var archivePath: URL? {
@@ -103,8 +88,8 @@ class Preferences: PreferencesDelegate, Logging {
 
             // move archive files
             if let iCloudDrivePath = self.iCloudDrivePath {
-                self.accessSecurityScope {
-                    self.archiveDelegate?.moveArchivedDocuments(from: iCloudDrivePath, to: newValue)
+                try? self.accessSecurityScope {
+                    dataModelDelegate?.moveArchivedDocuments(from: iCloudDrivePath, to: newValue)
                 }
             }
 
@@ -116,11 +101,6 @@ class Preferences: PreferencesDelegate, Logging {
                 os_log("Bookmark Write Fails: %@", log: self.log, type: .error, error.description)
             }
             self._archivePath = newValue
-
-            // update the tags in archive
-            DispatchQueue.global().async {
-                self.archiveDelegate?.updateDocumentsAndTags()
-            }
         }
     }
 
@@ -129,18 +109,19 @@ class Preferences: PreferencesDelegate, Logging {
         self.load()
     }
 
-    func save() {
+    func save(with tags: Set<Tag>) {
         // there is no need to save the archive/observed path here - see the setter of the variable
 
         // save the last tags (with count > 0)
-        var tags: [String: Int] = [:]
-        for tag in self.dataModelTagsDelegate?.getTagList() ?? Set<Tag>() {
-            tags[tag.name] = tag.count
+        var savingTags: [String: Int] = [:]
+
+        for tag in tags {
+            savingTags[tag.name] = tag.count
         }
-        for (name, count) in tags where count < 1 {
-            tags.removeValue(forKey: name)
+        for (name, count) in savingTags where count < 1 {
+            savingTags.removeValue(forKey: name)
         }
-        UserDefaults.standard.set(tags, forKey: "tags")
+        UserDefaults.standard.set(savingTags, forKey: "tags")
 
         // save the slugifyNames flag
         UserDefaults.standard.set(!(self.slugifyNames), forKey: "noSlugify")
@@ -171,9 +152,10 @@ class Preferences: PreferencesDelegate, Logging {
         guard let tagsDict = (UserDefaults.standard.dictionary(forKey: "tags") ?? [:]) as? [String: Int] else { return }
         var newTagList = Set<Tag>()
         for (name, count) in tagsDict {
-            newTagList.insert(Tag(name: name, count: count))
+            if let newTag = archiveDelegate?.add(name, count: count) {
+                newTagList.insert(newTag)
+            }
         }
-        self.dataModelTagsDelegate?.setTagList(tagList: newTagList)
 
         // load the noSlugify flag
         self.slugifyNames = !(UserDefaults.standard.bool(forKey: "noSlugify"))
@@ -193,7 +175,8 @@ class Preferences: PreferencesDelegate, Logging {
         self.useiCloudDrive = UserDefaults.standard.bool(forKey: "useiCloudDrive")
     }
 
-    func accessSecurityScope(closure: () -> Void) {
+    func accessSecurityScope(closure: () throws -> Void) throws {
+
         // start accessing the file system
         if !(self._observedPath?.startAccessingSecurityScopedResource() ?? false) {
             os_log("Accessing Security Scoped Resource of the observed path failed.", log: self.log, type: .fault)
@@ -203,7 +186,17 @@ class Preferences: PreferencesDelegate, Logging {
         }
 
         // run the used code
-        closure()
+        do {
+            try closure()
+        } catch let error {
+
+            // stop accessing the file system, even if an error was thrown
+            self._archivePath?.stopAccessingSecurityScopedResource()
+            self._observedPath?.stopAccessingSecurityScopedResource()
+
+            // rethrow the original error
+            throw error
+        }
 
         // stop accessing the file system
         self._archivePath?.stopAccessingSecurityScopedResource()

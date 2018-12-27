@@ -11,6 +11,7 @@ import Cocoa
 class MainPreferencesVC: PreferencesVC {
     weak var preferencesDelegate: PreferencesDelegate?
     weak var viewControllerDelegate: ViewControllerDelegate?
+    weak var dataModelDelegate: DataModelDelegate?
 
     @IBOutlet weak var useiCloudDrive: NSButton!
     @IBOutlet weak var archivePathTextField: NSTextField!
@@ -21,8 +22,14 @@ class MainPreferencesVC: PreferencesVC {
     @IBOutlet weak var convertPicturesButton: NSButton!
 
     @IBAction private func iCloudDriveButtonClicked(_ sender: NSButton) {
-        self.preferencesDelegate?.useiCloudDrive = sender.state == .on
-        self.updateArchiveFolderSection()
+        preferencesDelegate?.useiCloudDrive = sender.state == .on
+        updateArchiveFolderSection()
+
+        // update archived documents, because they might have changed in the new folder
+        self.dataModelDelegate?.updateArchivedDocuments()
+
+        // update the tag table view
+        self.viewControllerDelegate?.updateView(.tags)
     }
 
     @IBAction private func changeArchivePathButtonClicked(_ sender: Any) {
@@ -35,7 +42,12 @@ class MainPreferencesVC: PreferencesVC {
 
             self.archivePathTextField.stringValue = openPanelUrl.path
             self.preferencesDelegate?.archivePath = openPanelUrl
-            self.viewControllerDelegate?.updateView(updatePDF: false)
+
+            // update the documents of the new archive
+            self.dataModelDelegate?.updateArchivedDocuments()
+
+            // update the tag table view
+            self.viewControllerDelegate?.updateView(.tags)
         }
     }
 
@@ -49,59 +61,80 @@ class MainPreferencesVC: PreferencesVC {
 
             self.observedPathTextField.stringValue = openPanelUrl.path
             self.preferencesDelegate?.observedPath = openPanelUrl
-            // no need to update the view here - it gets updated automatically, when documents are added
+
+            // update the untagged documents
+            self.dataModelDelegate?.updateUntaggedDocuments(paths: [openPanelUrl])
+
+            // update observed documents
+            self.viewControllerDelegate?.updateView(.documents)
         }
     }
 
     @IBAction private func documentSlugifyCheckButtonClicked(_ sender: NSButton) {
-        self.preferencesDelegate?.slugifyNames = sender.state == .on
+        preferencesDelegate?.slugifyNames = sender.state == .on
     }
 
     @IBAction private func tagsCheckButtonClicked(_ sender: NSButton) {
-        self.preferencesDelegate?.analyseAllFolders = sender.state == .on
+        preferencesDelegate?.analyseAllFolders = sender.state == .on
+
+        // update archived documents to get the new tags
+        dataModelDelegate?.updateArchivedDocuments()
+
+        // update the tag table view
+        viewControllerDelegate?.updateView(.tags)
     }
+
     @IBAction private func convertPicturesButtonClicked(_ sender: NSButton) {
-        self.preferencesDelegate?.convertPictures = sender.state == .on
+        preferencesDelegate?.convertPictures = sender.state == .on
+
+        if let observedPath = preferencesDelegate?.observedPath {
+
+            // update and convert pictures
+            dataModelDelegate?.updateUntaggedDocuments(paths: [observedPath])
+
+            // update archived documents to get the new tags
+            viewControllerDelegate?.updateView(.all)
+        }
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // update path field
-        if let observedPath = self.preferencesDelegate?.observedPath {
-            self.observedPathTextField.stringValue = observedPath.path
+        if let observedPath = preferencesDelegate?.observedPath {
+            observedPathTextField.stringValue = observedPath.path
         }
 
         // document slugify
-        self.documentSlugifyCheckButton.state = (self.preferencesDelegate?.slugifyNames ?? true) ? .on : .off
+        documentSlugifyCheckButton.state = (preferencesDelegate?.slugifyNames ?? true) ? .on : .off
 
         // update tags
-        self.tagsCheckButton.state = (self.preferencesDelegate?.analyseAllFolders ?? false) ? .on : .off
+        tagsCheckButton.state = (preferencesDelegate?.analyseAllFolders ?? false) ? .on : .off
 
         // convert pictures
-        self.convertPicturesButton.state = (self.preferencesDelegate?.convertPictures ?? false) ? .on : .off
+        convertPicturesButton.state = (preferencesDelegate?.convertPictures ?? false) ? .on : .off
 
-        self.updateArchiveFolderSection()
+        updateArchiveFolderSection()
     }
 
     override func viewWillDisappear() {
         // save the current paths + tags
-        self.preferencesDelegate?.save()
+        dataModelDelegate?.savePreferences()
     }
 
     private func updateArchiveFolderSection() {
-        if let archivePath = self.preferencesDelegate?.archivePath {
-            self.archivePathTextField.stringValue = archivePath.path
+        if let archivePath = preferencesDelegate?.archivePath {
+            archivePathTextField.stringValue = archivePath.path
         }
 
-        if self.preferencesDelegate?.iCloudDrivePath != nil {
-            self.useiCloudDrive.state = (self.preferencesDelegate?.useiCloudDrive ?? false) ? .on : .off
+        if preferencesDelegate?.iCloudDrivePath != nil {
+            useiCloudDrive.state = (preferencesDelegate?.useiCloudDrive ?? false) ? .on : .off
         } else {
-            self.useiCloudDrive.state = .off
-            self.useiCloudDrive.isEnabled = false
+            useiCloudDrive.state = .off
+            useiCloudDrive.isEnabled = false
         }
 
-        self.archivePathTextField.isEnabled = !(self.preferencesDelegate?.useiCloudDrive ?? false)
-        self.changeArchivePathButton.isEnabled = !(self.preferencesDelegate?.useiCloudDrive ?? false)
+        archivePathTextField.isEnabled = !(preferencesDelegate?.useiCloudDrive ?? false)
+        changeArchivePathButton.isEnabled = !(preferencesDelegate?.useiCloudDrive ?? false)
     }
 }

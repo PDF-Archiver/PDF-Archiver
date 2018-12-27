@@ -11,7 +11,7 @@ import Foundation
 import os.log
 import StoreKit
 
-protocol DonationPreferencesVCDelegate: class {
+protocol DonationPreferencesVCDelegate: AnyObject {
     func updateGUI()
 }
 

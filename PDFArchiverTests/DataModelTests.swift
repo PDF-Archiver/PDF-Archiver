@@ -6,7 +6,7 @@
 //  Copyright © 2018 Julian Kahnert. All rights reserved.
 //
 
-@testable import PDFArchiver
+//@testable import PDFArchiver
 import XCTest
 
 //class DataModelTests: XCTestCase {
