@@ -21,8 +21,8 @@ import UIKit
  The delegate protocol implemented by the object that receives our results. We
  pass the updated list of results as well as a set of animations.
  */
-protocol DocumentsQueryDelegate: class {
-    func updateWithResults(removedItems: [NSMetadataItem], addedItems: [NSMetadataItem], updatedItems: [NSMetadataItem])
+protocol DocumentsQueryDelegate: AnyObject {
+    func updateWithResults(removedItems: [NSMetadataItem], addedItems: [NSMetadataItem], updatedItems: [NSMetadataItem]) -> Set<Document>
 }
 
 /**
@@ -43,7 +43,8 @@ class DocumentsQuery: NSObject, Logging {
         return workerQueue
     }()
 
-    weak var delegate: DocumentsQueryDelegate?
+    weak var documentsQueryDelegate: DocumentsQueryDelegate?
+    weak var masterViewControllerDelegate: MasterViewControllerDelegate?
 
     // MARK: - Initialization
 
@@ -91,7 +92,8 @@ class DocumentsQuery: NSObject, Logging {
         let addedMetadataItems = (notification.userInfo?[NSMetadataQueryUpdateAddedItemsKey] as? [NSMetadataItem]) ?? []
 
         // update the archive
-        self.delegate?.updateWithResults(removedItems: removedMetadataItems, addedItems: addedMetadataItems, updatedItems: changedMetadataItems)
+        let changedDocuments = documentsQueryDelegate?.updateWithResults(removedItems: removedMetadataItems, addedItems: addedMetadataItems, updatedItems: changedMetadataItems)
+        masterViewControllerDelegate?.update(.archivedDocuments(updatedDocuments: changedDocuments ?? []))
     }
 
     @objc
@@ -101,6 +103,7 @@ class DocumentsQuery: NSObject, Logging {
         guard let metadataQueryResults = metadataQuery.results as? [NSMetadataItem] else { return }
 
         // update the archive
-        self.delegate?.updateWithResults(removedItems: [], addedItems: metadataQueryResults, updatedItems: [])
+        let changedDocuments = documentsQueryDelegate?.updateWithResults(removedItems: [], addedItems: metadataQueryResults, updatedItems: [])
+        masterViewControllerDelegate?.update(.archivedDocuments(updatedDocuments: changedDocuments ?? []))
     }
 }

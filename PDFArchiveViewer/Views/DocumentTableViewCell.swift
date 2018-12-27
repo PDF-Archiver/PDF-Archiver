@@ -69,9 +69,7 @@ class DocumentTableViewCell: UITableViewCell {
 
     func updateDownloadStatus(for document: Document) {
 
-        guard let downloadStatus = document.downloadStatus else { return }
-
-        switch downloadStatus {
+        switch document.downloadStatus {
         case .local:
             downloadStatusView.isHidden = true
             progressView.isHidden = true

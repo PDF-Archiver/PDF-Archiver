@@ -16,7 +16,7 @@ enum ArchiveError: Error {
 
 extension Archive: DocumentsQueryDelegate {
 
-    func updateWithResults(removedItems: [NSMetadataItem], addedItems: [NSMetadataItem], updatedItems: [NSMetadataItem]) {
+    func updateWithResults(removedItems: [NSMetadataItem], addedItems: [NSMetadataItem], updatedItems: [NSMetadataItem]) -> Set<Document> {
 
         // handle new documents
         for addedItem in addedItems {
@@ -29,7 +29,7 @@ extension Archive: DocumentsQueryDelegate {
 
         // handle removed documents
         let removedDocuments = matchDocumentsFrom(removedItems, availableDocuments: allDocuments)
-        self.remove(removedDocuments, status: .tagged)
+        self.remove(removedDocuments)
 
         // handle updated documents
         var updatedDocuments = Set<Document>()
@@ -39,9 +39,7 @@ extension Archive: DocumentsQueryDelegate {
                 updatedDocuments.insert(updatedDocument)
             }
         }
-
-        // update documents in view
-        self.archiveDelegate?.update(.archivedDocuments(updatedDocuments: updatedDocuments))
+        return updatedDocuments
     }
 
     func filterContentForSearchText(_ searchText: String, scope: String = NSLocalizedString("all", comment: "")) -> Set<Document> {

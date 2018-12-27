@@ -24,6 +24,10 @@ import ArchiveLib
 import os.log
 import UIKit
 
+public protocol MasterViewControllerDelegate: AnyObject {
+    func update(_ contentType: ContentType)
+}
+
 class MasterViewController: UIViewController, UITableViewDelegate, Logging {
 
     // MARK: - Properties
@@ -49,8 +53,8 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
 
         // setup data delegate
         // TODO: update this delegate
-        documentsQuery.delegate = archive
-        archive.archiveDelegate = self
+        documentsQuery.documentsQueryDelegate = archive
+        documentsQuery.masterViewControllerDelegate = self
 
         // Setup the Search Controller
         searchController.searchResultsUpdater = self
@@ -272,12 +276,11 @@ extension MasterViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let document = getDocument(from: indexPath),
-            let downloadStatus = document.downloadStatus else { return }
+        guard let document = getDocument(from: indexPath) else { return }
         os_log("Selected Document: %@", log: log, type: .debug, document.filename)
 
         // download document if it is not already available
-        switch downloadStatus {
+        switch document.downloadStatus {
         case .local:
             selectedDocument = indexPath
             performSegue(withIdentifier: "showDetails", sender: self)
@@ -301,7 +304,7 @@ extension MasterViewController: UITableViewDataSource {
 }
 
 // MARK: -
-extension MasterViewController: ArchiveDelegate {
+extension MasterViewController: MasterViewControllerDelegate {
     func update(_ contentType: ContentType) {
         switch contentType {
         case .archivedDocuments(let changedDocuments):
