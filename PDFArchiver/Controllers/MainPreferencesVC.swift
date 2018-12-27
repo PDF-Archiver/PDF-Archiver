@@ -26,7 +26,10 @@ class MainPreferencesVC: PreferencesVC {
         updateArchiveFolderSection()
 
         // update archived documents, because they might have changed in the new folder
-        dataModelDelegate?.updateArchivedDocuments()
+        self.dataModelDelegate?.updateArchivedDocuments()
+
+        // update the tag table view
+        self.viewControllerDelegate?.updateView(.tags)
     }
 
     @IBAction private func changeArchivePathButtonClicked(_ sender: Any) {
@@ -42,6 +45,9 @@ class MainPreferencesVC: PreferencesVC {
 
             // update the documents of the new archive
             self.dataModelDelegate?.updateArchivedDocuments()
+
+            // update the tag table view
+            self.viewControllerDelegate?.updateView(.tags)
         }
     }
 
@@ -58,6 +64,9 @@ class MainPreferencesVC: PreferencesVC {
 
             // update the untagged documents
             self.dataModelDelegate?.updateUntaggedDocuments(paths: [openPanelUrl])
+
+            // update observed documents
+            self.viewControllerDelegate?.updateView(.documents)
         }
     }
 
@@ -70,7 +79,11 @@ class MainPreferencesVC: PreferencesVC {
 
         // update archived documents to get the new tags
         dataModelDelegate?.updateArchivedDocuments()
+
+        // update the tag table view
+        viewControllerDelegate?.updateView(.tags)
     }
+
     @IBAction private func convertPicturesButtonClicked(_ sender: NSButton) {
         preferencesDelegate?.convertPictures = sender.state == .on
 

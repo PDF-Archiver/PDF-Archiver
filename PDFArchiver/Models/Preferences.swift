@@ -8,7 +8,6 @@
 
 import ArchiveLib
 import Foundation
-import OrderedSet
 import os.log
 
 protocol PreferencesDelegate: AnyObject {
@@ -151,10 +150,10 @@ class Preferences: PreferencesDelegate, Logging {
 
         // load archive tags
         guard let tagsDict = (UserDefaults.standard.dictionary(forKey: "tags") ?? [:]) as? [String: Int] else { return }
-        let newTagList = OrderedSet<Tag>()
+        var newTagList = Set<Tag>()
         for (name, count) in tagsDict {
             if let newTag = archiveDelegate?.add(name, count: count) {
-                newTagList.append(newTag)
+                newTagList.insert(newTag)
             }
         }
 

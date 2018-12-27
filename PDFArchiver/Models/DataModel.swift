@@ -65,7 +65,7 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
         let allDocuments = Array(Set(sortedDocuments).union(untaggedDocuments))
 
         // sort and save the tags again
-        sortedDocuments = sort(allDocuments, by: documentSortDescriptors)
+        sortedDocuments = (try? sort(allDocuments, by: documentSortDescriptors)) ?? []
     }
 
     private func refreshTags() {
@@ -74,7 +74,7 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
         let allTags = Array(archive.getAvailableTags(with: [tagFilterTerm]))
 
         // sort and save the tags again
-        sortedTags = sort(allTags, by: tagSortDescriptors)
+        sortedTags = (try? sort(allTags, by: tagSortDescriptors)) ?? []
     }
 
     override init() {
@@ -92,6 +92,11 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
         // update the archive documents and tags
         DispatchQueue.global().async {
             self.updateArchivedDocuments()
+
+            // update the tag table view
+            DispatchQueue.main.async {
+                self.viewControllerDelegate?.updateView(.tags)
+            }
         }
     }
 
@@ -126,6 +131,9 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
                 os_log("An error occured while getting the archive year folders.", log: self.log, type: .error)
             }
 
+            // remove all old documents
+            archive.remove(archive.get(scope: .all, searchterms: [], status: .tagged))
+
             // only use the latest two year folders by default
             if !(prefs.analyseAllFolders) {
                 folders = Array(folders.prefix(2))
@@ -142,11 +150,6 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
 
             // refresh the tags
             self.refreshTags()
-
-            // update the tag table view
-            DispatchQueue.main.async {
-                self.viewControllerDelegate?.updateView(.tags)
-            }
         }
     }
 
@@ -295,27 +298,20 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
         }
     }
 
-    @discardableResult
-    func trashDocument(_ document: Document) -> Bool {
-        var trashed = false
+    func trashDocument(_ document: Document) throws {
 
-        archive.remove(Set([document]))
+        try prefs.accessSecurityScope {
 
-        // TODO: handle exception in VC
-        try? prefs.accessSecurityScope {
-            let fileManager = FileManager.default
-            do {
-                try fileManager.trashItem(at: document.path, resultingItemURL: nil)
-                trashed = true
+            // try to delete the document from the file system
+            try FileManager.default.trashItem(at: document.path, resultingItemURL: nil)
 
-            } catch let error {
-                os_log("Can not trash file: %@", log: self.log, type: .debug, error.localizedDescription)
-            }
+            // remove document from the archive
+            archive.remove(Set([document]))
         }
-        return trashed
     }
 
     func setDocumentDescription(document: Document, description: String) {
+
         // set the description of the pdf document
         if prefs.slugifyNames {
             document.specification = description.slugify()
@@ -325,9 +321,10 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
     }
 
     func remove(tag: Tag, from document: Document) {
+
         // remove the selected element
         if document.tags.remove(tag) != nil {
-            archive.remove(tag.name)
+            archive.removeTag(tag.name)
         }
     }
 }

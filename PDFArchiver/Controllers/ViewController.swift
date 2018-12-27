@@ -7,7 +7,6 @@
 //
 
 import ArchiveLib
-import OrderedSet
 import os.log
 import Quartz
 
@@ -206,13 +205,6 @@ class ViewController: NSViewController, Logging {
 
     override func viewDidDisappear() {
         if let archivePath = dataModelInstance.prefs.archivePath {
-            // TODO: reset the tag count to the archived documents? WTH?
-            for document in dataModelInstance.sortedDocuments where document.taggingStatus == .tagged {
-                for tag in document.tags {
-                    tag.count -= 1
-                }
-            }
-
             // save the tag count
             dataModelInstance.savePreferences()
             os_log("Save complete: %@", log: log, type: .debug, archivePath.absoluteString)

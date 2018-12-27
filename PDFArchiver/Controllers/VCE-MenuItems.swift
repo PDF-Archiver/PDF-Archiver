@@ -35,15 +35,17 @@ extension ViewController {
     // MARK: - Edit Menu
     @IBAction private func deleteDocumentMenuItem(_ sender: NSMenuItem) {
         // select the document which should be deleted
-        guard let selectedDocument = dataModelInstance.selectedDocument else {
-                return
-        }
+        guard let selectedDocument = dataModelInstance.selectedDocument else { return }
 
         // get the index of selected document
         let idx = documentTableView.selectedRow
 
         // move the document to trash
-        dataModelInstance.trashDocument(selectedDocument)
+        do {
+            try dataModelInstance.trashDocument(selectedDocument)
+        } catch let error {
+            os_log("Can not trash file: %@", log: self.log, type: .debug, error.localizedDescription)
+        }
 
         // update the GUI
         if idx < dataModelInstance.sortedDocuments.count {
