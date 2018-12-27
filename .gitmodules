@@ -3,4 +3,4 @@
 	url = https://github.com/openssl/openssl.git
 [submodule "PDFArchiver/External/ArchiveLib"]
 	path = PDFArchiver/External/ArchiveLib
-	url = git@github.com:PDF-Archiver/ArchiveLib.git
+	url = https://github.com/PDF-Archiver/ArchiveLib.git
