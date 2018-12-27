@@ -2,8 +2,11 @@
 <a href="https://itunes.apple.com/app/apple-store/id1433801905?pt=118993774&ct=GitHub&mt=8" target="itunes_store">
   <img src="assets/AppIcon.svg" width="100px">
 </a>
-<br><br>
-<a href="https://itunes.apple.com/app/apple-store/id1433801905?pt=118993774&ct=GitHub&mt=8" style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/assets/shared/badges/en-us/appstore-lrg.svg) no-repeat;width:135px;height:40px;"></a>
+<br>
+<br>
+<a href="https://itunes.apple.com/app/apple-store/id1433801905?pt=118993774&ct=GitHub&mt=8">
+<img src="https://linkmaker.itunes.apple.com/assets/shared/badges/en-us/appstore-lrg.svg" width="135px">
+</a>
 </p>
 
 
