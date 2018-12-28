@@ -197,7 +197,9 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
         } else if identifier.rawValue == "tagSearchField" {
             guard let searchField = notification.object as? NSSearchField else { return }
             dataModelInstance.tagFilterTerm = searchField.stringValue
-            tagTableView.reloadData()
+
+            // update tag table view
+            updateView(.tags)
         }
     }
 
@@ -240,7 +242,7 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
 }
 
 // MARK: - fileprivate helpers
-private enum CellIdentifiers: String {
+enum CellIdentifiers: String {
     case documentStatusCell
     case documentNameCell
     case documentTagCell
@@ -248,7 +250,7 @@ private enum CellIdentifiers: String {
     case tagNameCell
 }
 
-private enum TableView: String {
+enum TableView: String {
     case documentTableView
     case documentTagsTableView
     case tagsTableView

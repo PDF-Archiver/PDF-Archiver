@@ -143,7 +143,7 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
             for folder in folders {
                 for file in convertAndGetPDFs(folder, convertPictures: prefs.convertPictures) {
 
-                    archive.add(from: file, size: nil, downloadStatus: .local, status: .tagged, parseContent: true)
+                    archive.add(from: file, size: nil, downloadStatus: .local, status: .tagged, parse: .all)
                 }
             }
 
@@ -162,7 +162,7 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
             let convertPictures = prefs.convertPictures
             for path in paths {
                 for file in convertAndGetPDFs(path, convertPictures: convertPictures) {
-                    archive.add(from: file, size: nil, downloadStatus: .local, status: .untagged, parseContent: true)
+                    archive.add(from: file, size: nil, downloadStatus: .local, status: .untagged, parse: .all)
                 }
             }
 
