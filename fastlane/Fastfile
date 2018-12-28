@@ -31,7 +31,7 @@ end
 desc "Upload binary to Sentry.io"
 lane :sentry do
   sentry_upload_dsym(
-    dsym_path: "../build/PDFArchiveViewer.app.dSYM.zip")
+    dsym_path: "build/PDFArchiveViewer.app.dSYM.zip")
 end
 
 desc "Build Beta-Version & Upload it to TestFlight."
@@ -45,7 +45,7 @@ lane :beta do
     groups: ["betatesters"])
 
   sentry_upload_dsym(
-    dsym_path: "../build/PDFArchiveViewer.app.dSYM.zip")
+    dsym_path: "build/PDFArchiveViewer.app.dSYM.zip")
 end
 
 desc "Update metadata to App Store Connect."

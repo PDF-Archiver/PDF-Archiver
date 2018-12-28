@@ -20,8 +20,13 @@
  * THE SOFTWARE.
  */
 
+import ArchiveLib
 import os.log
 import UIKit
+
+public protocol MasterViewControllerDelegate: AnyObject {
+    func update(_ contentType: ContentType)
+}
 
 class MasterViewController: UIViewController, UITableViewDelegate, Logging {
 
@@ -47,8 +52,8 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
         tableView.register(UINib(nibName: cellIdentifier, bundle: nil), forCellReuseIdentifier: cellIdentifier)
 
         // setup data delegate
-        documentsQuery.delegate = archive
-        archive.delegate = self
+        documentsQuery.documentsQueryDelegate = archive
+        documentsQuery.masterViewControllerDelegate = self
 
         // Setup the Search Controller
         searchController.searchResultsUpdater = self
@@ -99,7 +104,7 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
 
             // "shouldPerformSegue" performs the document download
             if document.downloadStatus != .local {
-                fatalError("Segue peparation, but the document (status: \(document.downloadStatus)) could not be found locally!")
+                fatalError("Segue peparation, but the document (status: \(String(describing: document.downloadStatus))) could not be found locally!")
             }
 
             controller.detailDocument = document
@@ -160,7 +165,7 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
         let oldSections = currentSections
 
         // setup background view controller
-        if archive.allDocuments.isEmpty {
+        if archive.get(scope: .all, searchterms: [], status: .tagged).isEmpty {
             tableView.backgroundView = Bundle.main.loadNibNamed("EmptyBackgroundView", owner: nil, options: nil)?.first as? UIView
             tableView.separatorStyle = .none
         } else {
@@ -172,7 +177,7 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
          Filter the documents
          */
         // setup search toolbar
-        self.searchController.searchBar.scopeButtonTitles = [self.allLocal] + self.archive.years
+        self.searchController.searchBar.scopeButtonTitles = [allLocal] + Array(archive.years.sorted().reversed().prefix(3))
 
         // update the filtered documents
         let searchBar = self.searchController.searchBar
@@ -270,7 +275,7 @@ extension MasterViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard var document = getDocument(from: indexPath) else { return }
+        guard let document = getDocument(from: indexPath) else { return }
         os_log("Selected Document: %@", log: log, type: .debug, document.filename)
 
         // download document if it is not already available
@@ -298,10 +303,15 @@ extension MasterViewController: UITableViewDataSource {
 }
 
 // MARK: -
-extension MasterViewController: ArchiveDelegate {
-    func documentChangesOccured(changed changedDocuments: Set<Document>) {
-        DispatchQueue.main.async {
-            self.updateDocuments(changed: changedDocuments)
+extension MasterViewController: MasterViewControllerDelegate {
+    func update(_ contentType: ContentType) {
+        switch contentType {
+        case .archivedDocuments(let changedDocuments):
+            DispatchQueue.main.async {
+                self.updateDocuments(changed: changedDocuments)
+            }
+        default:
+            os_log("Type does not match.", log: self.log, type: .debug)
         }
     }
 }

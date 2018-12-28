@@ -20,6 +20,7 @@
  * THE SOFTWARE.
  */
 
+import ArchiveLib
 import os.log
 import PDFKit
 import TagListView
