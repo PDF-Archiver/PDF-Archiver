@@ -1104,7 +1104,7 @@ Help &gt; Show Onboarding</string>
                                                     <rect key="frame" x="1" y="0.0" width="318" height="494"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
-                                                        <tableView identifier="DocumentTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" headerView="8zw-71-lOb" viewBased="YES" id="6Bq-b9-66z" userLabel="Document Table View">
+                                                        <tableView identifier="documentTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" headerView="8zw-71-lOb" viewBased="YES" id="6Bq-b9-66z" userLabel="Document Table View">
                                                             <rect key="frame" x="0.0" y="0.0" width="368" height="471"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <size key="intercellSpacing" width="3" height="2"/>
@@ -1122,10 +1122,9 @@ Help &gt; Show Onboarding</string>
                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
-                                                                    <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="documentDone"/>
                                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                     <prototypeCellViews>
-                                                                        <tableCellView id="XRF-wg-cG8">
+                                                                        <tableCellView identifier="documentStatusCell" id="XRF-wg-cG8">
                                                                             <rect key="frame" x="1" y="1" width="40" height="17"/>
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                             <subviews>
@@ -1152,9 +1151,6 @@ Help &gt; Show Onboarding</string>
                                                                             </connections>
                                                                         </tableCellView>
                                                                     </prototypeCellViews>
-                                                                    <connections>
-                                                                        <binding destination="6y2-Gm-cOS" name="value" keyPath="arrangedObjects.documentDone" id="1NY-do-Hwv"/>
-                                                                    </connections>
                                                                 </tableColumn>
                                                                 <tableColumn width="322" minWidth="40" maxWidth="1000" id="t5i-OA-mho" userLabel="Name">
                                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Document">
@@ -1167,10 +1163,9 @@ Help &gt; Show Onboarding</string>
                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
-                                                                    <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="name"/>
                                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                     <prototypeCellViews>
-                                                                        <tableCellView id="Ten-tg-2yw">
+                                                                        <tableCellView identifier="documentNameCell" id="Ten-tg-2yw">
                                                                             <rect key="frame" x="44" y="1" width="322" height="17"/>
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                             <subviews>
@@ -1198,9 +1193,6 @@ Help &gt; Show Onboarding</string>
                                                                             </connections>
                                                                         </tableCellView>
                                                                     </prototypeCellViews>
-                                                                    <connections>
-                                                                        <binding destination="6y2-Gm-cOS" name="value" keyPath="arrangedObjects.name" id="V5b-lN-q3k"/>
-                                                                    </connections>
                                                                 </tableColumn>
                                                             </tableColumns>
                                                             <connections>
@@ -1284,7 +1276,7 @@ Help &gt; Show Onboarding</string>
                                                             <rect key="frame" x="1" y="1" width="238" height="133"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
-                                                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" id="3Nb-6r-7ib" userLabel="Document Tag Table View">
+                                                                <tableView identifier="documentTagsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" id="3Nb-6r-7ib" userLabel="Document Tag Table View">
                                                                     <rect key="frame" x="0.0" y="0.0" width="238" height="133"/>
                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                     <size key="intercellSpacing" width="3" height="2"/>
@@ -1304,7 +1296,7 @@ Help &gt; Show Onboarding</string>
                                                                             </textFieldCell>
                                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                             <prototypeCellViews>
-                                                                                <tableCellView id="x9B-kL-6Ub">
+                                                                                <tableCellView identifier="documentTagCell" id="x9B-kL-6Ub">
                                                                                     <rect key="frame" x="1" y="1" width="235" height="17"/>
                                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                     <subviews>
@@ -1335,8 +1327,6 @@ Help &gt; Show Onboarding</string>
                                                                     </tableColumns>
                                                                     <connections>
                                                                         <action selector="clickedDocumentTagTableView:" target="XfG-lQ-9wD" id="yF4-Cx-nb1"/>
-                                                                        <binding destination="nlU-Xg-XLm" name="content" keyPath="arrangedObjects" id="dv6-bC-MYw"/>
-                                                                        <binding destination="nlU-Xg-XLm" name="selectionIndexes" keyPath="selectionIndexes" previousBinding="dv6-bC-MYw" id="znt-i6-vBG"/>
                                                                     </connections>
                                                                 </tableView>
                                                             </subviews>
@@ -1422,7 +1412,7 @@ Help &gt; Show Onboarding</string>
                                                             <rect key="frame" x="1" y="0.0" width="238" height="268"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
-                                                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" headerView="gxi-Wd-NVa" viewBased="YES" id="xpK-mJ-Y4J" userLabel="Tag Table View">
+                                                                <tableView identifier="tagsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" headerView="gxi-Wd-NVa" viewBased="YES" id="xpK-mJ-Y4J" userLabel="Tag Table View">
                                                                     <rect key="frame" x="0.0" y="0.0" width="238" height="245"/>
                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                     <size key="intercellSpacing" width="3" height="2"/>
@@ -1440,10 +1430,9 @@ Help &gt; Show Onboarding</string>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                             </textFieldCell>
-                                                                            <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="count"/>
                                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                             <prototypeCellViews>
-                                                                                <tableCellView id="aAj-oT-fzK">
+                                                                                <tableCellView identifier="tagCountCell" id="aAj-oT-fzK">
                                                                                     <rect key="frame" x="1" y="1" width="28" height="17"/>
                                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                     <subviews>
@@ -1456,7 +1445,7 @@ Help &gt; Show Onboarding</string>
                                                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                                             </textFieldCell>
                                                                                             <connections>
-                                                                                                <binding destination="aAj-oT-fzK" name="value" keyPath="objectValue.count" id="Pxu-Vm-xie"/>
+                                                                                                <binding destination="aAj-oT-fzK" name="value" keyPath="objectValue.count" id="ldB-5T-2mf"/>
                                                                                             </connections>
                                                                                         </textField>
                                                                                     </subviews>
@@ -1465,9 +1454,6 @@ Help &gt; Show Onboarding</string>
                                                                                     </connections>
                                                                                 </tableCellView>
                                                                             </prototypeCellViews>
-                                                                            <connections>
-                                                                                <binding destination="jrR-pM-UBT" name="value" keyPath="arrangedObjects.count" id="JSl-95-Sk4"/>
-                                                                            </connections>
                                                                         </tableColumn>
                                                                         <tableColumn width="203.5" minWidth="40" maxWidth="1000" id="bgb-vH-5vk">
                                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Tag">
@@ -1480,11 +1466,10 @@ Help &gt; Show Onboarding</string>
                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                             </textFieldCell>
-                                                                            <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="name"/>
                                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                             <prototypeCellViews>
-                                                                                <tableCellView id="9wq-Yh-6cT">
-                                                                                    <rect key="frame" x="32" y="1" width="203" height="17"/>
+                                                                                <tableCellView identifier="tagNameCell" id="9wq-Yh-6cT">
+                                                                                    <rect key="frame" x="31.5" y="1" width="203" height="17"/>
                                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                     <subviews>
                                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">
@@ -1495,7 +1480,7 @@ Help &gt; Show Onboarding</string>
                                                                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                                             </textFieldCell>
                                                                                             <connections>
-                                                                                                <binding destination="9wq-Yh-6cT" name="value" keyPath="objectValue.name" id="BQG-IU-uWu"/>
+                                                                                                <binding destination="9wq-Yh-6cT" name="value" keyPath="objectValue.name" id="noc-BR-y59"/>
                                                                                             </connections>
                                                                                         </textField>
                                                                                     </subviews>
@@ -1510,9 +1495,6 @@ Help &gt; Show Onboarding</string>
                                                                                     </connections>
                                                                                 </tableCellView>
                                                                             </prototypeCellViews>
-                                                                            <connections>
-                                                                                <binding destination="jrR-pM-UBT" name="value" keyPath="arrangedObjects.name" id="SeY-zo-T1X"/>
-                                                                            </connections>
                                                                         </tableColumn>
                                                                     </tableColumns>
                                                                     <connections>
@@ -1618,42 +1600,28 @@ Help &gt; Show Onboarding</string>
                     </view>
                     <connections>
                         <outlet property="datePicker" destination="NiF-3c-nL6" id="7gV-M9-brh"/>
-                        <outlet property="documentAC" destination="6y2-Gm-cOS" id="Yp0-gd-aBN"/>
                         <outlet property="documentAttributesView" destination="N6d-d5-13u" id="07V-6H-j0N"/>
-                        <outlet property="documentTagAC" destination="nlU-Xg-XLm" id="pRK-x5-tq6"/>
+                        <outlet property="documentTableView" destination="6Bq-b9-66z" id="STb-T7-tEP"/>
+                        <outlet property="documentTagsTableView" destination="3Nb-6r-7ib" id="6us-hK-fr4"/>
                         <outlet property="pdfContentView" destination="80e-Of-Nzi" id="ZfS-9W-TAg"/>
                         <outlet property="pdfView" destination="nVE-OX-PwM" id="Jya-99-dce"/>
                         <outlet property="specificationField" destination="WG2-MH-TVV" id="Zpw-ZF-ogL"/>
-                        <outlet property="tagAC" destination="jrR-pM-UBT" id="n34-dd-hGg"/>
                         <outlet property="tagSearchField" destination="WfD-Nd-kM0" id="S7l-y7-2yr"/>
                         <outlet property="tagSearchView" destination="BZd-ly-6BW" id="ULj-Og-MHE"/>
-                        <outlet property="tagTableView" destination="xpK-mJ-Y4J" id="6if-v6-H9T"/>
+                        <outlet property="tagTableView" destination="xpK-mJ-Y4J" id="YS9-X3-IfQ"/>
                         <segue destination="IBN-wm-PS1" kind="sheet" identifier="onboardingSegue" id="PNh-jz-8j4"/>
                         <segue destination="ZqG-df-vaR" kind="modal" identifier="prefsSegue" id="zdd-Hx-5Da"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-                <arrayController objectClassName="Document" automaticallyRearrangesObjects="YES" id="6y2-Gm-cOS" userLabel="Document Array Controller">
-                    <declaredKeys>
-                        <string>documentDone</string>
-                        <string>name</string>
-                    </declaredKeys>
-                </arrayController>
-                <arrayController objectClassName="Tag" automaticallyRearrangesObjects="YES" id="jrR-pM-UBT" userLabel="Tag Array Controller">
-                    <declaredKeys>
-                        <string>count</string>
-                        <string>name</string>
-                    </declaredKeys>
-                </arrayController>
-                <arrayController objectClassName="Tag" id="nlU-Xg-XLm" userLabel="Document Tag Array Controller"/>
             </objects>
             <point key="canvasLocation" x="75" y="1122"/>
         </scene>
     </scenes>
     <resources>
-        <image name="NSInfo" width="128" height="128"/>
+        <image name="NSInfo" width="32" height="32"/>
         <image name="NSLockLockedTemplate" width="10" height="14"/>
-        <image name="NSPreferencesGeneral" width="128" height="128"/>
+        <image name="NSPreferencesGeneral" width="32" height="32"/>
         <image name="NSStatusNone" width="16" height="16"/>
         <namedColor name="CustomViewBackground">
             <color red="0.13099999725818634" green="0.17200000584125519" blue="0.23100000619888306" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
