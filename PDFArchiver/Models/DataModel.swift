@@ -140,11 +140,10 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
             }
 
             // get all PDF files from this year and the last years
-            let convertPictures = prefs.convertPictures
             for folder in folders {
-                for file in convertAndGetPDFs(folder, convertPictures: convertPictures) {
+                for file in convertAndGetPDFs(folder, convertPictures: prefs.convertPictures) {
 
-                    archive.add(from: file, size: nil, downloadStatus: .local, status: .tagged)
+                    archive.add(from: file, size: nil, downloadStatus: .local, status: .tagged, parseContent: true)
                 }
             }
 
@@ -163,7 +162,7 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
             let convertPictures = prefs.convertPictures
             for path in paths {
                 for file in convertAndGetPDFs(path, convertPictures: convertPictures) {
-                    archive.add(from: file, size: nil, downloadStatus: .local, status: .untagged)
+                    archive.add(from: file, size: nil, downloadStatus: .local, status: .untagged, parseContent: true)
                 }
             }
 
