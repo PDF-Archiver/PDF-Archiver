@@ -143,7 +143,7 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
             for folder in folders {
                 for file in convertAndGetPDFs(folder, convertPictures: prefs.convertPictures) {
 
-                    archive.add(from: file, size: nil, downloadStatus: .local, status: .tagged, parse: .all)
+                    archive.add(from: file, size: nil, downloadStatus: .local, status: .tagged, parse: [])
                 }
             }
 
@@ -159,10 +159,20 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
 
         // access the file system and add documents to the data model
         try? prefs.accessSecurityScope {
-            let convertPictures = prefs.convertPictures
+
+            // setup the parsing options for the first document, e.g. use the main thread
+            var paringOptions: ParsingOptions = [.all, .mainThread]
+
             for path in paths {
-                for file in convertAndGetPDFs(path, convertPictures: convertPictures) {
-                    archive.add(from: file, size: nil, downloadStatus: .local, status: .untagged, parse: .all)
+                for file in convertAndGetPDFs(path, convertPictures: prefs.convertPictures) {
+
+                    // add new document
+                    archive.add(from: file, size: nil, downloadStatus: .local, status: .untagged, parse: paringOptions)
+
+                    // use another thread for all other documents
+                    if paringOptions.contains(.mainThread) {
+                        paringOptions = .all
+                    }
                 }
             }
 
