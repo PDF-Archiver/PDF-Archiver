@@ -181,7 +181,7 @@ class Preferences: PreferencesDelegate, Logging {
         if !(self._observedPath?.startAccessingSecurityScopedResource() ?? false) {
             os_log("Accessing Security Scoped Resource of the observed path failed.", log: self.log, type: .fault)
         }
-        if !(self._archivePath?.startAccessingSecurityScopedResource() ?? false) {
+        if !(self._archivePath?.startAccessingSecurityScopedResource() ?? false) && !useiCloudDrive {
             os_log("Accessing Security Scoped Resource of the archive path failed.", log: self.log, type: .fault)
         }
 

@@ -17,6 +17,26 @@ extension ViewController {
         performSegue(withIdentifier: "prefsSegue", sender: self)
     }
 
+    // MARK: - File Menu
+    @IBAction private func updateViewMenuItem(_ sender: AnyObject) {
+
+        // update files in the observed path
+        if let observedPath = dataModelInstance.prefs.observedPath {
+            dataModelInstance.updateUntaggedDocuments(paths: [observedPath])
+        }
+
+        // get tags and update the GUI
+        updateView(.all)
+    }
+
+    @IBAction private func updateArchivedTagsMenuItem(_ sender: AnyObject) {
+
+        // update all tags of the archived documents in the background
+        DispatchQueue.global().async {
+            self.dataModelInstance.updateArchivedTags()
+        }
+    }
+
     // MARK: - Window Menu
     @IBAction private func zoomPDFMenuItem(_ sender: NSMenuItem) {
         guard let identifierName = sender.identifier?.rawValue  else { return }
@@ -44,7 +64,7 @@ extension ViewController {
         do {
             try dataModelInstance.trashDocument(selectedDocument)
         } catch let error {
-            os_log("Can not trash file: %@", log: self.log, type: .debug, error.localizedDescription)
+            os_log("Can not trash file: %@", log: self.log, type: .error, error.localizedDescription)
         }
 
         // update the GUI
@@ -71,17 +91,6 @@ extension ViewController {
 
     @IBAction private func showOnboardingMenuItem(_ sender: AnyObject) {
         performSegue(withIdentifier: "onboardingSegue", sender: self)
-    }
-
-    @IBAction private func updateViewMenuItem(_ sender: AnyObject) {
-
-        // update files in the observed path
-        if let observedPath = dataModelInstance.prefs.observedPath {
-            dataModelInstance.updateUntaggedDocuments(paths: [observedPath])
-        }
-
-        // get tags and update the GUI
-        updateView(.all)
     }
 
     @IBAction private func showManageSubscriptions(_ sender: NSMenuItem) {

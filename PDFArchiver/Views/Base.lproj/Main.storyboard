@@ -72,6 +72,12 @@
                                                 <action selector="updateViewMenuItem:" target="Ady-hI-5gd" id="FpV-YG-xgA"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Update Archived Tags" keyEquivalent="r" id="Y9E-nF-ZZ7">
+                                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="updateArchivedTagsMenuItem:" target="Ady-hI-5gd" id="YT6-wE-U1M"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem isSeparatorItem="YES" id="m54-Is-iLE"/>
                                         <menuItem title="Close" keyEquivalent="w" id="DVo-aG-piG">
                                             <connections>
@@ -1472,7 +1478,7 @@ Help &gt; Show Onboarding</string>
                                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                             <prototypeCellViews>
                                                                                 <tableCellView identifier="tagNameCell" id="9wq-Yh-6cT">
-                                                                                    <rect key="frame" x="32" y="1" width="203" height="17"/>
+                                                                                    <rect key="frame" x="31.5" y="1" width="203" height="17"/>
                                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                     <subviews>
                                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">

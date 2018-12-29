@@ -221,6 +221,20 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
         archive.add(tag: tagName, to: selectedDocument)
     }
 
+    public func updateArchivedTags() {
+
+        // get all tagged documents
+        let documents = archive.get(scope: .all, searchterms: [], status: .tagged)
+
+        // access the file system and add documents to the data model
+        try? prefs.accessSecurityScope {
+
+            for document in documents {
+                document.saveTagsToFilesystem()
+            }
+        }
+    }
+
     // MARK: - Helper Functions
     private func convertAndGetPDFs(_ sourceFolder: URL, convertPictures: Bool) -> [URL] {
         // get all files in the source folder
