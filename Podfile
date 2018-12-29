@@ -7,7 +7,7 @@ target 'PDFArchiveViewer' do
 
   # Pods for PDFArchiveViewer
   pod 'TagListView', '~> 1.3'
-  pod 'Sentry', :git => 'https://github.com/getsentry/sentry-cocoa.git', :tag => '4.1.0'
+  pod 'Sentry', '~> 4.1'
 
   target 'PDFArchiveViewerUITests' do
     inherit! :search_paths
