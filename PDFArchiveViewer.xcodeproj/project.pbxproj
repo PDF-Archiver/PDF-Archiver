@@ -15,6 +15,7 @@
 		7B9327C74253B724FBED77BC /* Pods_PDFArchiveViewerUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8CC869C580192C597A48720 /* Pods_PDFArchiveViewerUITests.framework */; };
 		A301A75621496992003EA382 /* DocumentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A301A75421496992003EA382 /* DocumentTableViewCell.swift */; };
 		A301A75721496992003EA382 /* DocumentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A301A75521496992003EA382 /* DocumentTableViewCell.xib */; };
+		A305AE4821D81E74004DDC1B /* SplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A305AE4721D81E74004DDC1B /* SplitViewController.swift */; };
 		A31263E2217B75DC00ACAFA4 /* LoadingBackgroundView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A31263E4217B75DC00ACAFA4 /* LoadingBackgroundView.xib */; };
 		A337C07521D42EC800821B81 /* ArchiveLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A337C07421D42EC800821B81 /* ArchiveLib.framework */; };
 		A337C07621D42EC800821B81 /* ArchiveLib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A337C07421D42EC800821B81 /* ArchiveLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -78,6 +79,7 @@
 		947EC737893707137CE047F1 /* Pods_PDFArchiveViewer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PDFArchiveViewer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A301A75421496992003EA382 /* DocumentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentTableViewCell.swift; sourceTree = "<group>"; };
 		A301A75521496992003EA382 /* DocumentTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DocumentTableViewCell.xib; sourceTree = "<group>"; };
+		A305AE4721D81E74004DDC1B /* SplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewController.swift; sourceTree = "<group>"; };
 		A31263E3217B75DC00ACAFA4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LoadingBackgroundView.xib; sourceTree = "<group>"; };
 		A31263E6217B75E200ACAFA4 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LoadingBackgroundView.strings; sourceTree = "<group>"; };
 		A337C07421D42EC800821B81 /* ArchiveLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ArchiveLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -226,6 +228,7 @@
 			children = (
 				171E0C811B8E5B84001E6242 /* DetailViewController.swift */,
 				171E0C7F1B8E5B84001E6242 /* MasterViewController.swift */,
+				A305AE4721D81E74004DDC1B /* SplitViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -522,6 +525,7 @@
 				A301A75621496992003EA382 /* DocumentTableViewCell.swift in Sources */,
 				171E0C821B8E5B84001E6242 /* DetailViewController.swift in Sources */,
 				171E0C801B8E5B84001E6242 /* MasterViewController.swift in Sources */,
+				A305AE4821D81E74004DDC1B /* SplitViewController.swift in Sources */,
 				A34A84F92130A35A0093FAE5 /* Document.swift in Sources */,
 				171E0C7E1B8E5B84001E6242 /* AppDelegate.swift in Sources */,
 				A34A84FA2130A35A0093FAE5 /* DocumentsQuery.swift in Sources */,

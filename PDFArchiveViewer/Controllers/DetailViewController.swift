@@ -27,8 +27,16 @@ import UIKit
 
 class DetailViewController: UIViewController, Logging {
 
+    // MARK: - properties
     private var isNavigationBarHidden = false
 
+    var detailDocument: Document? {
+        didSet {
+            configureView()
+        }
+    }
+
+    // MARK: - outlets
     @IBOutlet weak var documentView: PDFView!
 
     @IBAction private func shareButtonClicked(_ sender: UIBarButtonItem) {
@@ -59,25 +67,21 @@ class DetailViewController: UIViewController, Logging {
         self.present(activity, animated: true, completion: nil)
     }
 
-    var detailDocument: Document? {
-        didSet {
-            configureView()
+    @IBAction private func tapGestureRecognizer(_ sender: UITapGestureRecognizer) {
+
+        // change the state of the navigation bar
+        isNavigationBarHidden.toggle()
+
+        // animate the navigation bar
+        navigationController?.setNavigationBarHidden(isNavigationBarHidden, animated: true)
+
+        if let controller = UIApplication.shared.keyWindow?.rootViewController as? SplitViewController {
+            controller.whiteStatusBarText(isNavigationBarHidden)
         }
+
     }
 
-    func configureView() {
-        if let detailDocument = detailDocument,
-            let documentView = documentView {
-
-            // set the title
-            title = detailDocument.specificationCapitalized
-
-            // setup the pdf view
-            documentView.document = PDFDocument(url: detailDocument.path)
-            documentView.goToFirstPage(self)
-        }
-    }
-
+    // MARK: - delegates
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
@@ -91,5 +95,30 @@ class DetailViewController: UIViewController, Logging {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+
+        // change status bar text color
+        if let controller = UIApplication.shared.keyWindow?.rootViewController as? SplitViewController {
+            controller.whiteStatusBarText(false)
+        }
+
+        // cascade viewDidDisappear(:)
+        super.viewDidDisappear(animated)
+    }
+
+    // MARK: - helper functions
+    private func configureView() {
+        if let detailDocument = detailDocument,
+            let documentView = documentView {
+
+            // set the title
+            title = detailDocument.specificationCapitalized
+
+            // setup the pdf view
+            documentView.document = PDFDocument(url: detailDocument.path)
+            documentView.goToFirstPage(self)
+        }
     }
 }
