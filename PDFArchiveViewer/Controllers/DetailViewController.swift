@@ -59,15 +59,6 @@ class DetailViewController: UIViewController, Logging {
         self.present(activity, animated: true, completion: nil)
     }
 
-    @IBAction private func tapGestureRecognizer(_ sender: UITapGestureRecognizer) {
-
-        // change the state of the navigation bar
-        isNavigationBarHidden.toggle()
-
-        // animate the navigation bar
-        navigationController?.setNavigationBarHidden(isNavigationBarHidden, animated: true)
-    }
-
     var detailDocument: Document? {
         didSet {
             configureView()
@@ -101,9 +92,4 @@ class DetailViewController: UIViewController, Logging {
         super.viewDidLoad()
         configureView()
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-    }
-
 }
