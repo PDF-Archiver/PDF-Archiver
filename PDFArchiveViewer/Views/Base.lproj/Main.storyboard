@@ -35,56 +35,14 @@
                         <viewControllerLayoutGuide type="top" id="SYR-Wa-9uf"/>
                         <viewControllerLayoutGuide type="bottom" id="GAO-Cl-Wes"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="svH-Pt-448">
+                    <view key="view" contentMode="scaleToFill" id="svH-Pt-448" customClass="PDFView">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="VgS-Ng-LL7">
-                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
-                                <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HhD-0E-Mxc" userLabel="Empty View">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="2"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="2" id="kDV-gr-pCc"/>
-                                        </constraints>
-                                    </view>
-                                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="afv-rn-0La" customClass="TagListView" customModule="TagListView">
-                                        <rect key="frame" x="0.0" y="5" width="375" height="20"/>
-                                        <accessibility key="accessibilityConfiguration">
-                                            <accessibilityTraits key="traits" notEnabled="YES"/>
-                                        </accessibility>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="20" id="LXC-2f-rgZ"/>
-                                        </constraints>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                                <real key="value" value="5"/>
-                                            </userDefinedRuntimeAttribute>
-                                        </userDefinedRuntimeAttributes>
-                                    </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GUi-XC-jug" customClass="PDFView">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="575"/>
-                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    </view>
-                                </subviews>
-                                <constraints>
-                                    <constraint firstItem="GUi-XC-jug" firstAttribute="leading" secondItem="VgS-Ng-LL7" secondAttribute="leading" id="3BM-8i-Nvp"/>
-                                    <constraint firstItem="HhD-0E-Mxc" firstAttribute="leading" secondItem="VgS-Ng-LL7" secondAttribute="leading" id="Ieb-cr-qwK"/>
-                                    <constraint firstAttribute="trailing" secondItem="HhD-0E-Mxc" secondAttribute="trailing" id="Tpv-bm-iMd"/>
-                                    <constraint firstAttribute="trailing" secondItem="afv-rn-0La" secondAttribute="trailing" id="ZV8-TI-4b9"/>
-                                    <constraint firstAttribute="trailing" secondItem="GUi-XC-jug" secondAttribute="trailing" id="cG4-Cv-aAG"/>
-                                    <constraint firstItem="afv-rn-0La" firstAttribute="leading" secondItem="VgS-Ng-LL7" secondAttribute="leading" id="yy4-rn-zHz"/>
-                                </constraints>
-                            </stackView>
-                        </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <constraints>
-                            <constraint firstItem="VgS-Ng-LL7" firstAttribute="bottom" secondItem="GAO-Cl-Wes" secondAttribute="top" id="3fy-JI-3E5"/>
-                            <constraint firstItem="VgS-Ng-LL7" firstAttribute="top" secondItem="SYR-Wa-9uf" secondAttribute="bottom" id="8JP-56-Aah"/>
-                            <constraint firstItem="VgS-Ng-LL7" firstAttribute="leading" secondItem="svH-Pt-448" secondAttribute="leading" id="PS0-XX-NfT"/>
-                            <constraint firstAttribute="trailing" secondItem="VgS-Ng-LL7" secondAttribute="trailing" id="hkr-rd-WNt"/>
-                        </constraints>
+                        <gestureRecognizers/>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="gOu-b8-06F" appends="YES" id="Em3-O0-Caz"/>
+                        </connections>
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="mOI-FS-AaM">
@@ -95,11 +53,15 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="documentView" destination="GUi-XC-jug" id="yfW-Uj-PmE"/>
-                        <outlet property="tagListView" destination="afv-rn-0La" id="3yq-NU-iD8"/>
+                        <outlet property="documentView" destination="svH-Pt-448" id="gfu-VY-mmZ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FJe-Yq-33r" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="gOu-b8-06F">
+                    <connections>
+                        <action selector="tapGestureRecognizer:" destination="JEX-9P-axG" id="pM8-EE-T2z"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="709" y="129"/>
         </scene>
