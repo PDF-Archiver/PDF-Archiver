@@ -125,7 +125,7 @@ extension ViewController: NSTableViewDelegate {
         // * @IBAction private func clickedTagTableView(_ sender: NSTableView)
         if let tableView = notification.object as? NSTableView,
             tableView.identifier?.rawValue == TableView.documentTableView.rawValue,
-            documentTableView.selectedRow >= 0 {
+            dataModelInstance.sortedDocuments.indices.contains(documentTableView.selectedRow) {
 
             // save the new selected document
             dataModelInstance.selectedDocument = dataModelInstance.sortedDocuments[documentTableView.selectedRow]

@@ -64,11 +64,9 @@ class ViewController: NSViewController, Logging {
 
     @IBAction private func clickedTagTableView(_ sender: NSTableView) {
 
-        let index = tagTableView.selectedRow
-
-        guard index >= 0 else { return }
-
-        let selectedTag = dataModelInstance.sortedTags[index]
+        // validate the table view index
+        guard dataModelInstance.sortedTags.indices.contains(tagTableView.selectedRow) else { return }
+        let selectedTag = dataModelInstance.sortedTags[tagTableView.selectedRow]
 
         // test if element already exists in document tag table view
         dataModelInstance.addTagToSelectedDocument(selectedTag.name)
@@ -255,7 +253,10 @@ class ViewController: NSViewController, Logging {
 
         // get the selected tags
         let tags = Array(dataModelInstance.selectedDocument?.tags ?? Set()).sorted()
-        let selectedTag = tags[documentTagsTableView.selectedRow]
+
+        // validate the table view index
+        guard tags.indices.contains(documentTableView.selectedRow) else { return }
+        let selectedTag = tags[documentTableView.selectedRow]
 
         // remove the selected element
         dataModelInstance.remove(tag: selectedTag, from: selectedDocument)

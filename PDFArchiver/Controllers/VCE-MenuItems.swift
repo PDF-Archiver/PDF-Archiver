@@ -59,6 +59,7 @@ extension ViewController {
 
         // get the index of selected document
         let idx = documentTableView.selectedRow
+        guard idx >= 0 else { return }
 
         // move the document to trash
         do {
