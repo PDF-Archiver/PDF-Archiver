@@ -72,7 +72,7 @@
                                                 <action selector="updateViewMenuItem:" target="Ady-hI-5gd" id="FpV-YG-xgA"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Update Archived Tags" keyEquivalent="r" id="Y9E-nF-ZZ7">
+                                        <menuItem title="Update Finder Tags" keyEquivalent="r" id="Y9E-nF-ZZ7">
                                             <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
                                             <connections>
                                                 <action selector="updateArchivedTagsMenuItem:" target="Ady-hI-5gd" id="YT6-wE-U1M"/>
