@@ -10,7 +10,6 @@
 		0449E8F92059345F80E87586 /* Pods_PDFArchiver.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B450F1A1B7BCF8CAF5560011 /* Pods_PDFArchiver.framework */; };
 		3C9AA7002AAD7CE7CEEF69D8 /* Pods_PDFArchiverUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 542ED38CB61D31AD19B53C2F /* Pods_PDFArchiverUITests.framework */; };
 		71523498E5FD24989D6E71CA /* Pods_PDFArchiverTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B61790CE80AD89E0F0737518 /* Pods_PDFArchiverTests.framework */; };
-		A3050B162101CBFC00F5E90A /* DateParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3050B152101CBFC00F5E90A /* DateParserTests.swift */; };
 		A307BB372014B8530046C391 /* MainPreferencesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A307BB362014B8530046C391 /* MainPreferencesVC.swift */; };
 		A307BB3B2014D5300046C391 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = A307BB3A2014D5300046C391 /* Preferences.swift */; };
 		A315408D20C83DF0004947CC /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A315408C20C83DF0004947CC /* StringExtensions.swift */; };
@@ -21,7 +20,6 @@
 		A31B52EC1FF694B0007A3D14 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B52EB1FF694B0007A3D14 /* ViewController.swift */; };
 		A31B52EE1FF694B0007A3D14 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A31B52ED1FF694B0007A3D14 /* Assets.xcassets */; };
 		A31B52F11FF694B0007A3D14 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A31B52EF1FF694B0007A3D14 /* Main.storyboard */; };
-		A31B52FD1FF694B0007A3D14 /* DocumentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B52FC1FF694B0007A3D14 /* DocumentTests.swift */; };
 		A31B53081FF694B0007A3D14 /* PDFArchiverUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B53071FF694B0007A3D14 /* PDFArchiverUITests.swift */; };
 		A31B53171FF6A6D8007A3D14 /* FileHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B53161FF6A6D8007A3D14 /* FileHandling.swift */; };
 		A32A128320468A3000CFC81F /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32A128220468A3000CFC81F /* OnboardingViewController.swift */; };
@@ -41,7 +39,6 @@
 		A38F98CE20E2A0E5000F27B3 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A38F98CC20E2A0E5000F27B3 /* libssl.a */; };
 		A38F98CF20E2A0E5000F27B3 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A38F98CD20E2A0E5000F27B3 /* libcrypto.a */; };
 		A38FDE7D20DD33540015801E /* IAPHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38FDE7C20DD33540015801E /* IAPHelper.swift */; };
-		A3962D6320C40CA600A80AB5 /* HelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3962D6220C40CA600A80AB5 /* HelperTests.swift */; };
 		A3A4C1C12015177A008BB354 /* NetworkHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3A4C1C02015177A008BB354 /* NetworkHandling.swift */; };
 		A3A99EDF20E15335001566EA /* pkcs7_union_accessors.c in Sources */ = {isa = PBXBuildFile; fileRef = A3A99EDE20E15335001566EA /* pkcs7_union_accessors.c */; };
 		A3C3D06D207744E400E80B1A /* PreferencesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3C3D06C207744E400E80B1A /* PreferencesVC.swift */; };
@@ -88,7 +85,6 @@
 		542ED38CB61D31AD19B53C2F /* Pods_PDFArchiverUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PDFArchiverUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8AA64D97356236ABA9811B31 /* Pods-PDFArchiverTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PDFArchiverTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PDFArchiverTests/Pods-PDFArchiverTests.release.xcconfig"; sourceTree = "<group>"; };
 		A2F19EE1AD66BAC8AF6BF2BC /* Pods-PDFArchiverTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PDFArchiverTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PDFArchiverTests/Pods-PDFArchiverTests.debug.xcconfig"; sourceTree = "<group>"; };
-		A3050B152101CBFC00F5E90A /* DateParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateParserTests.swift; sourceTree = "<group>"; };
 		A307BB362014B8530046C391 /* MainPreferencesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPreferencesVC.swift; sourceTree = "<group>"; };
 		A307BB3A2014D5300046C391 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		A315408C20C83DF0004947CC /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
@@ -101,7 +97,6 @@
 		A31B52F01FF694B0007A3D14 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		A31B52F21FF694B0007A3D14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A31B52F81FF694B0007A3D14 /* PDFArchiverTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PDFArchiverTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		A31B52FC1FF694B0007A3D14 /* DocumentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentTests.swift; sourceTree = "<group>"; };
 		A31B52FE1FF694B0007A3D14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A31B53031FF694B0007A3D14 /* PDFArchiverUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PDFArchiverUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A31B53071FF694B0007A3D14 /* PDFArchiverUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFArchiverUITests.swift; sourceTree = "<group>"; };
@@ -128,7 +123,6 @@
 		A38F98CC20E2A0E5000F27B3 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssl.a; path = PDFArchiver/External/OpenSSL/lib/libssl.a; sourceTree = "<group>"; };
 		A38F98CD20E2A0E5000F27B3 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcrypto.a; path = PDFArchiver/External/OpenSSL/lib/libcrypto.a; sourceTree = "<group>"; };
 		A38FDE7C20DD33540015801E /* IAPHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPHelper.swift; sourceTree = "<group>"; };
-		A3962D6220C40CA600A80AB5 /* HelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelperTests.swift; sourceTree = "<group>"; };
 		A3A4C1C02015177A008BB354 /* NetworkHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkHandling.swift; sourceTree = "<group>"; };
 		A3A4C1C22015381F008BB354 /* PDFArchiver.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PDFArchiver.entitlements; sourceTree = "<group>"; };
 		A3A99EDD20E15335001566EA /* pkcs7_union_accessors.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pkcs7_union_accessors.h; sourceTree = "<group>"; };
@@ -275,9 +269,6 @@
 		A31B52FB1FF694B0007A3D14 /* PDFArchiverTests */ = {
 			isa = PBXGroup;
 			children = (
-				A3050B152101CBFC00F5E90A /* DateParserTests.swift */,
-				A31B52FC1FF694B0007A3D14 /* DocumentTests.swift */,
-				A3962D6220C40CA600A80AB5 /* HelperTests.swift */,
 				A38F4910206952AD00B8164A /* PreferencesTests.swift */,
 				A38F4912206955F600B8164A /* DataModelTests.swift */,
 				A31B52FE1FF694B0007A3D14 /* Info.plist */,
@@ -684,9 +675,6 @@
 			files = (
 				A38F4913206955F600B8164A /* DataModelTests.swift in Sources */,
 				A38F4911206952AD00B8164A /* PreferencesTests.swift in Sources */,
-				A31B52FD1FF694B0007A3D14 /* DocumentTests.swift in Sources */,
-				A3050B162101CBFC00F5E90A /* DateParserTests.swift in Sources */,
-				A3962D6320C40CA600A80AB5 /* HelperTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
