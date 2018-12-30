@@ -62,10 +62,15 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
 
         // merge the untagged and already tagged documents
         let untaggedDocuments = archive.get(scope: .all, searchterms: [], status: .untagged)
-        let allDocuments = Array(Set(sortedDocuments).union(untaggedDocuments))
+
+        // get only already tagged documents (trashed documents would not be removed otherwise)
+        let sortedTaggedDocuments = Set(sortedDocuments.filter { $0.taggingStatus == .tagged })
+
+        // merge these document sets
+        let newSortableDocuments = Array(sortedTaggedDocuments.union(untaggedDocuments))
 
         // sort and save the tags again
-        sortedDocuments = (try? sort(allDocuments, by: documentSortDescriptors)) ?? []
+        sortedDocuments = (try? sort(newSortableDocuments, by: documentSortDescriptors)) ?? []
     }
 
     private func refreshTags() {
@@ -329,7 +334,10 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
             try FileManager.default.trashItem(at: document.path, resultingItemURL: nil)
 
             // remove document from the archive
-            archive.remove(Set([document]))
+            self.archive.remove(Set([document]))
+
+            // update the sorted documents
+            self.refreshDocuments()
         }
     }
 
