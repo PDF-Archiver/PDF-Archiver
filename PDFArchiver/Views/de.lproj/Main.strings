@@ -361,3 +361,6 @@
 
 /* Class = "NSSearchFieldCell"; placeholderString = "Search and add"; ObjectID = "azW-Co-ROb"; */
 "azW-Co-ROb.placeholderString" = "Suchen und hinzufügen";
+
+/* Class = "NSMenuItem"; title = "Update Finder Tags"; ObjectID = "Y9E-nF-ZZ7"; */
+"Y9E-nF-ZZ7.title" = "Aktualisiere Finder Tags";

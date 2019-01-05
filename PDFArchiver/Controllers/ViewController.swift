@@ -58,29 +58,15 @@ class ViewController: NSViewController, Logging {
 
     @IBAction private func clickedDocumentTagTableView(_ sender: NSTableView) {
 
-        // test if the document tag table is empty
-        guard let selectedDocument = dataModelInstance.selectedDocument else {
-                return
-        }
-
-        // get the selected tags
-        let tags = Array(dataModelInstance.selectedDocument?.tags ?? Set()).sorted()
-        let selectedTag = tags[documentTagsTableView.selectedRow]
-
-        // remove the selected element
-        dataModelInstance.remove(tag: selectedTag, from: selectedDocument)
-
-        // update the document attributes
-        updateView(.documentAttributes)
+        // remove the selected tag
+        removeSelectedTagFromSelectedDocument()
     }
 
     @IBAction private func clickedTagTableView(_ sender: NSTableView) {
 
-        let index = tagTableView.selectedRow
-
-        guard index >= 0 else { return }
-
-        let selectedTag = dataModelInstance.sortedTags[index]
+        // validate the table view index
+        guard dataModelInstance.sortedTags.indices.contains(tagTableView.selectedRow) else { return }
+        let selectedTag = dataModelInstance.sortedTags[tagTableView.selectedRow]
 
         // test if element already exists in document tag table view
         dataModelInstance.addTagToSelectedDocument(selectedTag.name)
@@ -238,5 +224,44 @@ class ViewController: NSViewController, Logging {
             dataModelInstance.onboardingVCDelegate = viewController
             dataModelInstance.store.onboardingVCDelegate = viewController
         }
+    }
+
+    override func keyDown(with event: NSEvent) {
+
+        // key code of "backspace" is "51"
+        if event.keyCode == 51,
+            let firstResponder = self.view.window?.firstResponder as? NSTableView,
+            let identifier = firstResponder.identifier,
+            identifier.rawValue == TableView.documentTagsTableView.rawValue {
+
+            // remove the selected tag
+            removeSelectedTagFromSelectedDocument()
+
+        } else {
+            super.keyDown(with: event)
+        }
+    }
+
+    // MARK: - Helper functions
+
+    private func removeSelectedTagFromSelectedDocument() {
+
+        // test if the document tag table is empty
+        guard let selectedDocument = dataModelInstance.selectedDocument else {
+            return
+        }
+
+        // get the selected tags
+        let tags = Array(dataModelInstance.selectedDocument?.tags ?? Set()).sorted()
+
+        // validate the table view index
+        guard tags.indices.contains(documentTagsTableView.selectedRow) else { return }
+        let selectedTag = tags[documentTagsTableView.selectedRow]
+
+        // remove the selected element
+        dataModelInstance.remove(tag: selectedTag, from: selectedDocument)
+
+        // update the document attributes
+        updateView(.documentAttributes)
     }
 }

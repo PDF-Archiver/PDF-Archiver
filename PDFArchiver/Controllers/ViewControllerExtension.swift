@@ -125,7 +125,7 @@ extension ViewController: NSTableViewDelegate {
         // * @IBAction private func clickedTagTableView(_ sender: NSTableView)
         if let tableView = notification.object as? NSTableView,
             tableView.identifier?.rawValue == TableView.documentTableView.rawValue,
-            documentTableView.selectedRow >= 0 {
+            dataModelInstance.sortedDocuments.indices.contains(documentTableView.selectedRow) {
 
             // save the new selected document
             dataModelInstance.selectedDocument = dataModelInstance.sortedDocuments[documentTableView.selectedRow]
@@ -197,7 +197,9 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
         } else if identifier.rawValue == "tagSearchField" {
             guard let searchField = notification.object as? NSSearchField else { return }
             dataModelInstance.tagFilterTerm = searchField.stringValue
-            tagTableView.reloadData()
+
+            // update tag table view
+            updateView(.tags)
         }
     }
 
@@ -235,12 +237,12 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
         dataModelInstance.tagFilterTerm = ""
 
         // update the view
-        updateView([.selectedDocument, .tags])
+        updateView([.documentAttributes, .tags])
     }
 }
 
 // MARK: - fileprivate helpers
-private enum CellIdentifiers: String {
+enum CellIdentifiers: String {
     case documentStatusCell
     case documentNameCell
     case documentTagCell
@@ -248,7 +250,7 @@ private enum CellIdentifiers: String {
     case tagNameCell
 }
 
-private enum TableView: String {
+enum TableView: String {
     case documentTableView
     case documentTagsTableView
     case tagsTableView

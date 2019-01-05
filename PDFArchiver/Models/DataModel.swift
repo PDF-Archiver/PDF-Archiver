@@ -62,10 +62,15 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
 
         // merge the untagged and already tagged documents
         let untaggedDocuments = archive.get(scope: .all, searchterms: [], status: .untagged)
-        let allDocuments = Array(Set(sortedDocuments).union(untaggedDocuments))
+
+        // get only already tagged documents (trashed documents would not be removed otherwise)
+        let sortedTaggedDocuments = Set(sortedDocuments.filter { $0.taggingStatus == .tagged })
+
+        // merge these document sets
+        let newSortableDocuments = Array(sortedTaggedDocuments.union(untaggedDocuments))
 
         // sort and save the tags again
-        sortedDocuments = (try? sort(allDocuments, by: documentSortDescriptors)) ?? []
+        sortedDocuments = (try? sort(newSortableDocuments, by: documentSortDescriptors)) ?? []
     }
 
     private func refreshTags() {
@@ -140,11 +145,10 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
             }
 
             // get all PDF files from this year and the last years
-            let convertPictures = prefs.convertPictures
             for folder in folders {
-                for file in convertAndGetPDFs(folder, convertPictures: convertPictures) {
+                for file in convertAndGetPDFs(folder, convertPictures: prefs.convertPictures) {
 
-                    archive.add(from: file, size: nil, downloadStatus: .local, status: .tagged)
+                    archive.add(from: file, size: nil, downloadStatus: .local, status: .tagged, parse: [])
                 }
             }
 
@@ -160,10 +164,20 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
 
         // access the file system and add documents to the data model
         try? prefs.accessSecurityScope {
-            let convertPictures = prefs.convertPictures
+
+            // setup the parsing options for the first document, e.g. use the main thread
+            var paringOptions: ParsingOptions = [.all, .mainThread]
+
             for path in paths {
-                for file in convertAndGetPDFs(path, convertPictures: convertPictures) {
-                    archive.add(from: file, size: nil, downloadStatus: .local, status: .untagged)
+                for file in convertAndGetPDFs(path, convertPictures: prefs.convertPictures) {
+
+                    // add new document
+                    archive.add(from: file, size: nil, downloadStatus: .local, status: .untagged, parse: paringOptions)
+
+                    // use another thread for all other documents
+                    if paringOptions.contains(.mainThread) {
+                        paringOptions = .all
+                    }
                 }
             }
 
@@ -210,6 +224,20 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
 
         // add new tag to document
         archive.add(tag: tagName, to: selectedDocument)
+    }
+
+    public func updateArchivedTags() {
+
+        // get all tagged documents
+        let documents = archive.get(scope: .all, searchterms: [], status: .tagged)
+
+        // access the file system and add documents to the data model
+        try? prefs.accessSecurityScope {
+
+            for document in documents {
+                document.saveTagsToFilesystem()
+            }
+        }
     }
 
     // MARK: - Helper Functions
@@ -306,7 +334,10 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
             try FileManager.default.trashItem(at: document.path, resultingItemURL: nil)
 
             // remove document from the archive
-            archive.remove(Set([document]))
+            self.archive.remove(Set([document]))
+
+            // update the sorted documents
+            self.refreshDocuments()
         }
     }
 

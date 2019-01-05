@@ -72,6 +72,12 @@
                                                 <action selector="updateViewMenuItem:" target="Ady-hI-5gd" id="FpV-YG-xgA"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Update Finder Tags" keyEquivalent="r" id="Y9E-nF-ZZ7">
+                                            <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                            <connections>
+                                                <action selector="updateArchivedTagsMenuItem:" target="Ady-hI-5gd" id="YT6-wE-U1M"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem isSeparatorItem="YES" id="m54-Is-iLE"/>
                                         <menuItem title="Close" keyEquivalent="w" id="DVo-aG-piG">
                                             <connections>
@@ -1276,7 +1282,7 @@ Help &gt; Show Onboarding</string>
                                                             <rect key="frame" x="1" y="1" width="238" height="133"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
-                                                                <tableView identifier="documentTagsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" id="3Nb-6r-7ib" userLabel="Document Tag Table View">
+                                                                <tableView identifier="documentTagsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" id="3Nb-6r-7ib" userLabel="Document Tag Table View">
                                                                     <rect key="frame" x="0.0" y="0.0" width="238" height="133"/>
                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                     <size key="intercellSpacing" width="3" height="2"/>
@@ -1342,6 +1348,9 @@ Help &gt; Show Onboarding</string>
                                                             <rect key="frame" x="224" y="17" width="15" height="102"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
+                                                        <connections>
+                                                            <outlet property="nextKeyView" destination="WfD-Nd-kM0" id="IpJ-pe-Sfv"/>
+                                                        </connections>
                                                     </scrollView>
                                                     <button toolTip="Save current document in archive" wantsLayer="YES" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="U4W-9l-6vC">
                                                         <rect key="frame" x="85" y="-7" width="70" height="32"/>
@@ -1381,7 +1390,7 @@ Help &gt; Show Onboarding</string>
                                                         </textFieldCell>
                                                         <connections>
                                                             <action selector="descriptionDone:" target="XfG-lQ-9wD" id="Asw-y2-Ksn"/>
-                                                            <outlet property="nextKeyView" destination="WfD-Nd-kM0" id="xAD-eB-rDw"/>
+                                                            <outlet property="nextKeyView" destination="3Nb-6r-7ib" id="vIa-Hy-hXy"/>
                                                         </connections>
                                                     </textField>
                                                 </subviews>
