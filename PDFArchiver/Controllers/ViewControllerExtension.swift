@@ -237,7 +237,7 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
         dataModelInstance.tagFilterTerm = ""
 
         // update the view
-        updateView([.selectedDocument, .tags])
+        updateView([.documentAttributes, .tags])
     }
 }
 

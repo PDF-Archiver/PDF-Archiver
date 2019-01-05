@@ -64,6 +64,10 @@ extension ViewController {
         // move the document to trash
         do {
             try dataModelInstance.trashDocument(selectedDocument)
+
+            // update the view
+            updateView(.documents)
+
         } catch let error {
             os_log("Can not trash file: %@", log: self.log, type: .error, error.localizedDescription)
         }

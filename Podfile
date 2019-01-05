@@ -6,7 +6,7 @@ target 'PDFArchiver' do
   use_frameworks!
 
   # Pods for PDFArchiver
-  pod 'Sentry', :git => 'https://github.com/getsentry/sentry-cocoa.git', :tag => '4.1.0'
+  pod 'Sentry', '~> 4.1'
 
   target 'PDFArchiverTests' do
     inherit! :search_paths

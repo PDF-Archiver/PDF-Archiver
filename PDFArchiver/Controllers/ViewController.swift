@@ -255,8 +255,8 @@ class ViewController: NSViewController, Logging {
         let tags = Array(dataModelInstance.selectedDocument?.tags ?? Set()).sorted()
 
         // validate the table view index
-        guard tags.indices.contains(documentTableView.selectedRow) else { return }
-        let selectedTag = tags[documentTableView.selectedRow]
+        guard tags.indices.contains(documentTagsTableView.selectedRow) else { return }
+        let selectedTag = tags[documentTagsTableView.selectedRow]
 
         // remove the selected element
         dataModelInstance.remove(tag: selectedTag, from: selectedDocument)
