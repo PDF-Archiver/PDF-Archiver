@@ -81,7 +81,7 @@ Or clone the repository and build it:
 
 ## :interrobang: Help
 * Take a look at the [FAQs](https://pdf-archiver.io/faq).
-* Get in contact with us at [Slack](https://pdf-archiver.slack.com).
+* Get in contact with us at [Discord](http://discord.pdf-archiver.io).
 
 ## :octocat: How to contribute
 Rate the App in the [Mac App Store](https://itunes.apple.com/app/id1352719750).

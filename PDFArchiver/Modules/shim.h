@@ -3,7 +3,7 @@
 //  PDFArchiver
 //
 //  Created by Julian Kahnert on 23.06.18.
-//  Copyright © 2018 Julian Kahnert. All rights reserved.
+//  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
 
 #ifndef __OPENSSL_SHIM_H__

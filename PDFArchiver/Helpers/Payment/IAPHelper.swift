@@ -3,7 +3,7 @@
 //  PDFArchiver
 //
 //  Created by Julian Kahnert on 22.06.18.
-//  Copyright © 2018 Julian Kahnert. All rights reserved.
+//  Copyright © 2019 Julian Kahnert. All rights reserved.
 //  The structure is base on: https://www.raywenderlich.com/122144/in-app-purchase-tutorial
 //
 

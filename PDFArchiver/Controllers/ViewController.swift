@@ -3,7 +3,7 @@
 //  Archiver
 //
 //  Created by Julian Kahnert on 29.12.17.
-//  Copyright © 2018 Julian Kahnert. All rights reserved.
+//  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
 
 import ArchiveLib
