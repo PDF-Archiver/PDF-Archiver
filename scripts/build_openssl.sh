@@ -16,6 +16,9 @@ if [ -e "$OPENSSL_LIB_FOLDER/libcrypto.a" ] && [ -e "$OPENSSL_LIB_FOLDER/libssl.
     exit 0
 fi
 
+# cleanup all
+git clean -fdX
+
 # Build OpenSSL
 cd "$OPENSSL_FOLDER/src"
 make clean
