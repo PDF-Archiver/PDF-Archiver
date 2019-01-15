@@ -89,10 +89,6 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
         super.viewWillAppear(animated)
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-    }
-
     // MARK: - Segues
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
