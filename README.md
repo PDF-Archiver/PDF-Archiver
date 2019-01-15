@@ -51,7 +51,7 @@ This structure is independent from your OS and filesystem and makes it very easy
 
 ## :interrobang: Help
 * Take a look at the [FAQs](https://pdf-archiver.io/faq).
-* Get in contact with us at [Slack](https://pdf-archiver.slack.com).
+* Get in contact with us at [Discord](http://discord.pdf-archiver.io).
 
 
 ## :octocat: How to contribute
