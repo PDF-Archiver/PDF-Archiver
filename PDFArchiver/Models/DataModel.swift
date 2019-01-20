@@ -3,7 +3,7 @@
 //  PDF Archiver
 //
 //  Created by Julian Kahnert on 26.01.18.
-//  Copyright © 2018 Julian Kahnert. All rights reserved.
+//  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
 
 import ArchiveLib
@@ -345,7 +345,7 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
 
         // set the description of the pdf document
         if prefs.slugifyNames {
-            document.specification = description.slugify()
+            document.specification = description.slugified()
         } else {
             document.specification = description
         }

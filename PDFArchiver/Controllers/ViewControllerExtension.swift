@@ -3,7 +3,7 @@
 //  PDF Archiver
 //
 //  Created by Julian Kahnert on 26.01.18.
-//  Copyright © 2018 Julian Kahnert. All rights reserved.
+//  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
 
 import ArchiveLib
@@ -224,7 +224,7 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
             // no tag selected - get the name of the search field
             var tagName = tagSearchField.stringValue   // the string gets normalized in the Tag() constructor
             if dataModelInstance.prefs.slugifyNames {
-                tagName = tagName.slugify()
+                tagName = tagName.slugified()
             }
             selectedTagName = tagName
         }

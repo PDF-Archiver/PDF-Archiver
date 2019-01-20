@@ -3,7 +3,7 @@
 //  PDF ArchiverTests
 //
 //  Created by Julian Kahnert on 26.03.18.
-//  Copyright © 2018 Julian Kahnert. All rights reserved.
+//  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
 
 @testable import PDFArchiver

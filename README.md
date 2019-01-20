@@ -1,9 +1,12 @@
 <div align="center">
 <a href="https://geo.itunes.apple.com/us/app/pdf-archiver/id1352719750?mt=12&app=apps" target="itunes_store">
   <img src="assets/AppIcon.svg" width="200px">
-</a><br><br>
-
-<a href="https://geo.itunes.apple.com/us/app/pdf-archiver/id1352719750?mt=12&app=apps" style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/assets/shared/badges/en-us/macappstore-lrg.svg) no-repeat;width:165px;height:40px;background-size:contain;"></a><br>
+</a>
+<br><br>
+<a href="https://geo.itunes.apple.com/us/app/pdf-archiver/id1352719750?mt=12&app=apps">
+<img src="https://linkmaker.itunes.apple.com/en-us/badge-lrg.svg?releaseDate=2018-02-28T00:00:00Z&kind=desktopapp&bubble=macos_apps" width="165px">
+</a>
+<br>
 
 [![Build Status](https://travis-ci.org/PDF-Archiver/PDF-Archiver.svg?branch=master)](https://travis-ci.org/PDF-Archiver/PDF-Archiver)
 [![Maintainability](https://api.codeclimate.com/v1/badges/e460629e748c442f5285/maintainability)](https://codeclimate.com/github/PDF-Archiver/PDF-Archiver/maintainability)
@@ -81,7 +84,7 @@ Or clone the repository and build it:
 
 ## :interrobang: Help
 * Take a look at the [FAQs](https://pdf-archiver.io/faq).
-* Get in contact with us at [Slack](https://pdf-archiver.slack.com).
+* Get in contact with us at [Discord](http://discord.pdf-archiver.io).
 
 ## :octocat: How to contribute
 Rate the App in the [Mac App Store](https://itunes.apple.com/app/id1352719750).

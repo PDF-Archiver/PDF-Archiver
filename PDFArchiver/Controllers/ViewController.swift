@@ -3,7 +3,7 @@
 //  Archiver
 //
 //  Created by Julian Kahnert on 29.12.17.
-//  Copyright © 2018 Julian Kahnert. All rights reserved.
+//  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
 
 import ArchiveLib
@@ -58,8 +58,12 @@ class ViewController: NSViewController, Logging {
 
     @IBAction private func clickedDocumentTagTableView(_ sender: NSTableView) {
 
+        // test if a real tag is selected
+        guard sender.clickedRow >= 0,
+            sender.clickedRow < sender.numberOfRows else { return }
+
         // remove the selected tag
-        removeSelectedTagFromSelectedDocument()
+        removeTagFromSelectedDocument(at: sender.clickedRow)
     }
 
     @IBAction private func clickedTagTableView(_ sender: NSTableView) {
@@ -235,7 +239,7 @@ class ViewController: NSViewController, Logging {
             identifier.rawValue == TableView.documentTagsTableView.rawValue {
 
             // remove the selected tag
-            removeSelectedTagFromSelectedDocument()
+            removeTagFromSelectedDocument(at: documentTagsTableView.selectedRow)
 
         } else {
             super.keyDown(with: event)
@@ -244,7 +248,7 @@ class ViewController: NSViewController, Logging {
 
     // MARK: - Helper functions
 
-    private func removeSelectedTagFromSelectedDocument() {
+    private func removeTagFromSelectedDocument(at index: Int) {
 
         // test if the document tag table is empty
         guard let selectedDocument = dataModelInstance.selectedDocument else {
@@ -255,8 +259,8 @@ class ViewController: NSViewController, Logging {
         let tags = Array(dataModelInstance.selectedDocument?.tags ?? Set()).sorted()
 
         // validate the table view index
-        guard tags.indices.contains(documentTagsTableView.selectedRow) else { return }
-        let selectedTag = tags[documentTagsTableView.selectedRow]
+        guard tags.indices.contains(index) else { return }
+        let selectedTag = tags[index]
 
         // remove the selected element
         dataModelInstance.remove(tag: selectedTag, from: selectedDocument)

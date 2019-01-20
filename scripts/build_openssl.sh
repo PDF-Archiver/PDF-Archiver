@@ -1,6 +1,9 @@
 #!/bin/bash
 # from: https://medium.com/@joncardasis/openssl-swift-everything-you-need-to-know-2a4f9f256462
 
+OSX_DEPLOYMENT_VERSION="10.12"
+
+OSX_SDK=$(xcrun --sdk macosx --show-sdk-path)
 REPO_FOLDER="$(git rev-parse --show-toplevel)"
 OPENSSL_FOLDER="$REPO_FOLDER/PDFArchiver/External/OpenSSL"
 
@@ -20,8 +23,8 @@ fi
 cd "$OPENSSL_FOLDER/src"
 make clean
 ./Configure darwin64-x86_64-cc
+sed -ie "s!^CFLAG=!CFLAG=-isysroot ${OSX_SDK} -arch x86_64 -mmacosx-version-min=${OSX_DEPLOYMENT_VERSION} !" "Makefile"
 echo "Building x86 64 static library..."
-make CXXFLAGS="-mmacosx-version-min=10.12" >> /dev/null 2>&1
 make install >> /dev/null 2>&1
 
 cp "LICENSE" "$OPENSSL_FOLDER"

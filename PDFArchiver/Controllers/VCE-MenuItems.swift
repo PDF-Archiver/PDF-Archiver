@@ -3,7 +3,7 @@
 //  PDF Archiver
 //
 //  Created by Julian Kahnert on 23.05.18.
-//  Copyright © 2018 Julian Kahnert. All rights reserved.
+//  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
 
 import os.log
