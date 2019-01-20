@@ -345,7 +345,7 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
 
         // set the description of the pdf document
         if prefs.slugifyNames {
-            document.specification = description.slugify()
+            document.specification = description.slugified()
         } else {
             document.specification = description
         }

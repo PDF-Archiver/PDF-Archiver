@@ -1,2 +1,2 @@
 brew 'swiftlint'
-brew 'cocoapods'
+
