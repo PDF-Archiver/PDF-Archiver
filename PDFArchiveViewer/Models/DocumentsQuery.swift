@@ -52,7 +52,10 @@ class DocumentsQuery: NSObject, Logging {
         metadataQuery = NSMetadataQuery()
 
         // Filter only our document type.
-        metadataQuery.predicate = NSPredicate(format: "%K LIKE %@", NSMetadataItemFSNameKey, "*.pdf")
+        metadataQuery.predicate = NSPredicate(format: "%K ENDSWITH '.pdf'", NSMetadataItemFSNameKey)
+
+        // update the file status 5 times per second, while downloading
+        metadataQuery.notificationBatchingInterval = 0.2
 
         /*
          Ask for both in-container documents and external documents so that
