@@ -33,6 +33,7 @@ protocol DocumentsQueryDelegate: AnyObject {
 class DocumentsQuery: NSObject, Logging {
 
     private var metadataQuery: NSMetadataQuery
+    private var firstRun = true
 
     private let workerQueue: OperationQueue = {
         let workerQueue = OperationQueue()
@@ -51,8 +52,9 @@ class DocumentsQuery: NSObject, Logging {
     override init() {
         metadataQuery = NSMetadataQuery()
 
-        // Filter only our document type.
-        metadataQuery.predicate = NSPredicate(format: "%K ENDSWITH '.pdf'", NSMetadataItemFSNameKey)
+        // Filter only documents from the current year and the year before
+        let year = Calendar.current.component(.year, from: Date())
+        metadataQuery.predicate = NSPredicate(format: "(%K LIKE '\(year)-*.pdf') OR (%K LIKE '\(year - 1)-*.pdf')", NSMetadataItemFSNameKey, NSMetadataItemFSNameKey)
 
         // update the file status 5 times per second, while downloading
         metadataQuery.notificationBatchingInterval = 0.2
@@ -108,5 +110,11 @@ class DocumentsQuery: NSObject, Logging {
         // update the archive
         let changedDocuments = documentsQueryDelegate?.updateWithResults(removedItems: [], addedItems: metadataQueryResults, updatedItems: [])
         masterViewControllerDelegate?.update(.archivedDocuments(updatedDocuments: changedDocuments ?? []))
+
+        // get all pdf documents
+        if firstRun {
+            metadataQuery.predicate = NSPredicate(format: "%K ENDSWITH '.pdf'", NSMetadataItemFSNameKey)
+            firstRun = false
+        }
     }
 }
