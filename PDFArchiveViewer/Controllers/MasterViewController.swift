@@ -77,6 +77,11 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
         // setup background view controller
         tableView.backgroundView = Bundle.main.loadNibNamed("LoadingBackgroundView", owner: nil, options: nil)?.first as? UIView
         tableView.separatorStyle = .none
+
+        // update the view controller, even if the documents query ends before the view did load
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+            self.updateDocuments(changed: Set())
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
