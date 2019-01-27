@@ -80,7 +80,18 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
 
         // update the view controller, even if the documents query ends before the view did load
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-            self.updateDocuments(changed: Set())
+
+            #if targetEnvironment(simulator)
+                // create simulator data set
+                guard let fileURL = Bundle.main.url(forResource: NSLocalizedString("test_resource_filename", comment: "Simulator test data set"), withExtension: "pdf") else { return }
+
+                self.archive.add(from: URL(fileURLWithPath: NSLocalizedString("test_file1", comment: "Simulator test data set")), size: 1427000, downloadStatus: .local, status: .tagged)
+                self.archive.add(from: URL(fileURLWithPath: NSLocalizedString("test_file2", comment: "Simulator test data set")), size: 232000, downloadStatus: .iCloudDrive, status: .tagged)
+                self.archive.add(from: fileURL, size: 500000, downloadStatus: .local, status: .tagged)
+                self.archive.add(from: URL(fileURLWithPath: NSLocalizedString("test_file3", comment: "Simulator test data set")), size: 764500, downloadStatus: .iCloudDrive, status: .tagged)
+            #endif
+
+            self.updateDocuments(changed: Set<Document>())
         }
     }
 

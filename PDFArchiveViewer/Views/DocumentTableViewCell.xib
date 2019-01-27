@@ -21,16 +21,16 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="document name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rUi-If-D6N">
-                        <rect key="frame" x="16" y="11" width="263" height="15"/>
+                        <rect key="frame" x="16" y="11" width="263" height="20"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="15" id="Fth-Eu-a2A"/>
+                            <constraint firstAttribute="height" constant="20" id="Fth-Eu-a2A"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <color key="textColor" name="TextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="19. Sep 2004" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EHZ-TF-9ku">
-                        <rect key="frame" x="16" y="28" width="85" height="14"/>
+                        <rect key="frame" x="16" y="32" width="85" height="14"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="85" id="bc1-gl-YuJ"/>
                             <constraint firstAttribute="height" constant="14" id="rIS-Tj-uVi"/>
@@ -40,10 +40,10 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.29999999999999999" translatesAutoresizingMaskIntoConstraints="NO" id="Ry1-om-TZ8">
-                        <rect key="frame" x="0.0" y="62" width="320" height="3.5"/>
+                        <rect key="frame" x="0.0" y="63" width="320" height="3.5"/>
                     </progressView>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="s3Z-bu-JK2" userLabel="Download Status View">
-                        <rect key="frame" x="279" y="0.0" width="38" height="42"/>
+                        <rect key="frame" x="279" y="0.0" width="38" height="45"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="apple-icloud" adjustsImageSizeForAccessibilityContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MLT-ef-xDl">
                                 <rect key="frame" x="4" y="0.0" width="30" height="30"/>
@@ -53,7 +53,7 @@
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="size" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5sA-3I-HR2">
-                                <rect key="frame" x="0.0" y="28" width="38" height="12"/>
+                                <rect key="frame" x="0.0" y="31" width="38" height="12"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="12" id="D0K-t3-ksn"/>
                                 </constraints>
@@ -73,7 +73,7 @@
                         </constraints>
                     </view>
                     <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iFq-pY-ZNZ" customClass="TagListView" customModule="TagListView">
-                        <rect key="frame" x="3" y="44" width="314" height="16"/>
+                        <rect key="frame" x="3" y="46" width="314" height="16"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="16" id="2Td-6i-oJC"/>
                         </constraints>
@@ -96,14 +96,14 @@
                 <constraints>
                     <constraint firstItem="iFq-pY-ZNZ" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="3" id="0B1-vi-Zcv"/>
                     <constraint firstItem="rUi-If-D6N" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="2mh-gh-b9B"/>
-                    <constraint firstItem="EHZ-TF-9ku" firstAttribute="top" secondItem="rUi-If-D6N" secondAttribute="bottom" constant="2" id="6d6-Zt-DTV"/>
+                    <constraint firstItem="EHZ-TF-9ku" firstAttribute="top" secondItem="rUi-If-D6N" secondAttribute="bottom" constant="1" id="6d6-Zt-DTV"/>
                     <constraint firstItem="EHZ-TF-9ku" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="Btx-6O-J5i"/>
-                    <constraint firstItem="iFq-pY-ZNZ" firstAttribute="top" secondItem="s3Z-bu-JK2" secondAttribute="bottom" constant="2" id="C1o-J4-lGb"/>
+                    <constraint firstItem="iFq-pY-ZNZ" firstAttribute="top" secondItem="s3Z-bu-JK2" secondAttribute="bottom" constant="1" id="C1o-J4-lGb"/>
                     <constraint firstItem="rUi-If-D6N" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="CR7-Ci-ana"/>
                     <constraint firstItem="s3Z-bu-JK2" firstAttribute="leading" secondItem="rUi-If-D6N" secondAttribute="trailing" id="HFR-kt-qOr"/>
-                    <constraint firstItem="Ry1-om-TZ8" firstAttribute="top" secondItem="iFq-pY-ZNZ" secondAttribute="bottom" constant="2" id="IMa-un-XJ6"/>
+                    <constraint firstItem="Ry1-om-TZ8" firstAttribute="top" secondItem="iFq-pY-ZNZ" secondAttribute="bottom" constant="1" id="IMa-un-XJ6"/>
                     <constraint firstAttribute="trailing" secondItem="s3Z-bu-JK2" secondAttribute="trailing" constant="3" id="IPb-2f-4UU"/>
-                    <constraint firstAttribute="bottom" secondItem="Ry1-om-TZ8" secondAttribute="bottom" constant="2" id="MQM-qH-2Tf"/>
+                    <constraint firstAttribute="bottom" secondItem="Ry1-om-TZ8" secondAttribute="bottom" constant="1" id="MQM-qH-2Tf"/>
                     <constraint firstAttribute="trailing" secondItem="iFq-pY-ZNZ" secondAttribute="trailing" constant="3" id="Ma0-3k-Z5m"/>
                     <constraint firstItem="rUi-If-D6N" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="Niu-bU-hp0"/>
                     <constraint firstAttribute="trailing" secondItem="Ry1-om-TZ8" secondAttribute="trailing" id="TYY-6R-E6N"/>
@@ -112,7 +112,7 @@
                     <constraint firstItem="s3Z-bu-JK2" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="euu-fP-c7r"/>
                     <constraint firstItem="Ry1-om-TZ8" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="jOG-jG-Ol0"/>
                     <constraint firstItem="EHZ-TF-9ku" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="k3K-7h-YY2"/>
-                    <constraint firstItem="iFq-pY-ZNZ" firstAttribute="top" secondItem="EHZ-TF-9ku" secondAttribute="bottom" constant="2" id="maU-jY-zTN"/>
+                    <constraint firstItem="iFq-pY-ZNZ" firstAttribute="top" secondItem="EHZ-TF-9ku" secondAttribute="bottom" id="maU-jY-zTN"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

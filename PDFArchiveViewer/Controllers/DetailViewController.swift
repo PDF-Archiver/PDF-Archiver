@@ -86,7 +86,7 @@ class DetailViewController: UIViewController, Logging {
         super.viewWillAppear(animated)
 
         // setup document view
-        documentView.displayMode = .singlePageContinuous
+        documentView.displayMode = .singlePage
         documentView.autoScales = true
         documentView.interpolationQuality = .low
         documentView.backgroundColor = UIColor(named: "TextColorLight") ?? .darkGray
