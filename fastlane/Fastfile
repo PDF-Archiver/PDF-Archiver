@@ -23,9 +23,6 @@ lane :createNewScreenshots do
     force: true,
     skip_binary_upload: true,
     skip_metadata: true)
-
-  sentry_upload_dsym(
-    dsym_path: "../build/PDFArchiveViewer.app.dSYM.zip")
 end
 
 desc "Upload binary to Sentry.io"

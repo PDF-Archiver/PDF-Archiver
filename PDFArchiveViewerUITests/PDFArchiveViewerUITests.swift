@@ -9,6 +9,7 @@
 import XCTest
 
 class PDFArchiveViewerUITests: XCTestCase {
+    var app: XCUIApplication?
 
     override func setUp() {
         super.setUp()
@@ -16,9 +17,11 @@ class PDFArchiveViewerUITests: XCTestCase {
         continueAfterFailure = true
 
         // Fastlane snapshot Setup.
-        let app = XCUIApplication()
-        setupSnapshot(app)
-        app.launch()
+        app = XCUIApplication()
+        if let app = app {
+            setupSnapshot(app)
+            app.launch()
+        }
     }
 
     override func tearDown() {
@@ -29,7 +32,23 @@ class PDFArchiveViewerUITests: XCTestCase {
     func testExample() {
         // Use recording to get started writing UI tests.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
-       snapshot("01-LaunchScreen")
+
+        if let app = self.app {
+            let cell = app.staticTexts["Tom Tailor Jeans"]
+            let exists = NSPredicate(format: "exists == 1")
+
+            expectation(for: exists, evaluatedWith: cell, handler: nil)
+            waitForExpectations(timeout: 15, handler: nil)
+
+            // take launch screenshot
+            snapshot("01-Launch-Screen")
+
+            // tap on the label
+            cell.tap()
+
+            // take pdf screenshot
+            snapshot("02-PDF-Screen")
+        }
     }
 
 }
