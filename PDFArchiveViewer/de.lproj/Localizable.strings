@@ -11,5 +11,17 @@
 /* UISearchBar placeholder */
 "search-documents" = "Dokumente durchsuchen";
 
+/* No comment provided by engineer. */
+"test_file1" = "2018-04-05--gehalt-april__arbeit_steuer_gehalt.pdf";
+
+/* No comment provided by engineer. */
+"test_file2" = "2017-04-04--gff-info__spenden_steuer.pdf";
+
+/* No comment provided by engineer. */
+"test_file3" = "2003-04-03--versicherung-report__brief_versicherung.pdf";
+
+/* No comment provided by engineer. */
+"test_resource_filename" = "2017-01-17--tom-tailor-jeans__kleidung_rechnung";
+
 /* Error mesage to be displayed when failing to share a document */
 "Unable to share document without the pdf file" = "Dokument konnte nicht gefunden werden.";
