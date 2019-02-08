@@ -101,6 +101,7 @@ Submit pull requests or contribute tutorials - whatever you have to offer, it wo
 * [appgefahren.de](https://www.appgefahren.de/pdf-archiver-praktische-mac-app-hilft-beim-langfristigen-verwalten-von-dokumenten-220759.html) - Mac-App hilft beim langfristigen Verwalten von Dokumenten
 
 ## :book: Thanks and Donations
+* [**The.Swift.Dev.**](https://theswiftdev.com/2018/05/17/how-to-use-icloud-drive-documents/) for a sponsorship option on a blogpost I used while writing this app.
 * [**zngguvnf.org**](https://zngguvnf.org) discussing and creating this archive structure.
 * [**Karl Voit**](http://karl-voit.at/managing-digital-photographs/) for the initial idea of a document naming convention.
 * [**Nick Roach**](https://www.elegantthemes.com) for the [Icon](https://www.iconfinder.com/icons/1055071/document_file_icon).
