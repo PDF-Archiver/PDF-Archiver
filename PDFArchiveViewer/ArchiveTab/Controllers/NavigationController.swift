@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SplitViewController: UISplitViewController {
+class NavigationController: UINavigationController {
 
     private var statusBarStyle = UIStatusBarStyle.default
 

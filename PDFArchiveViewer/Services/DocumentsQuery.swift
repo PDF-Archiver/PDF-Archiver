@@ -45,7 +45,7 @@ class DocumentsQuery: NSObject, Logging {
     }()
 
     weak var documentsQueryDelegate: DocumentsQueryDelegate?
-    weak var masterViewControllerDelegate: MasterViewControllerDelegate?
+    weak var masterViewControllerDelegate: ArchiveViewControllerDelegate?
 
     // MARK: - Initialization
 

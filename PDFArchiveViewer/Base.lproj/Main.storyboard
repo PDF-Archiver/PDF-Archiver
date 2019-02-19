@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="EtT-wd-7Xe">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Documents Tab-->
+        <scene sceneID="D0n-Dx-6tf">
+            <objects>
+                <viewController id="pms-xb-Drg" userLabel="Documents Tab" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="xAq-xl-OUL"/>
+                        <viewControllerLayoutGuide type="bottom" id="Icc-bJ-Hvf"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="qZV-y9-pyC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iSs-31-9JD">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
+                                <connections>
+                                    <segue destination="OIZ-Ju-z8d" kind="embed" id="Zqf-bk-zHK"/>
+                                </connections>
+                            </containerView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="Icc-bJ-Hvf" firstAttribute="top" secondItem="iSs-31-9JD" secondAttribute="bottom" id="Fwq-Wz-mNN"/>
+                            <constraint firstAttribute="trailing" secondItem="iSs-31-9JD" secondAttribute="trailing" id="O1B-eQ-Qew"/>
+                            <constraint firstItem="iSs-31-9JD" firstAttribute="top" secondItem="qZV-y9-pyC" secondAttribute="top" id="a2M-8E-u66"/>
+                            <constraint firstItem="iSs-31-9JD" firstAttribute="leading" secondItem="qZV-y9-pyC" secondAttribute="leading" id="oLp-S9-EHg"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Find" id="6hS-pH-8it"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="xGM-Hk-9BL" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-3114" y="-160"/>
+        </scene>
+        <!--Scan Tab-->
+        <scene sceneID="pF4-dp-d1m">
+            <objects>
+                <viewController id="gE0-vu-vb2" userLabel="Scan Tab" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="X1u-yi-TRk"/>
+                        <viewControllerLayoutGuide type="bottom" id="RwF-Ad-Ykd"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="dPg-lL-Q3c">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Scanning" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EHf-Kd-ScS">
+                                <rect key="frame" x="152" y="323" width="71" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Scan" id="Cdf-Rt-ZTT" userLabel="Scan"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="6rm-kY-Ubg" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-3114" y="-1634"/>
+        </scene>
+        <!--Tab Bar Controller-->
+        <scene sceneID="v3f-Ju-xav">
+            <objects>
+                <tabBarController id="EtT-wd-7Xe" sceneMemberID="viewController">
+                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="feH-Ha-M0L">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="49"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="gE0-vu-vb2" kind="relationship" relationship="viewControllers" id="CmR-WF-49k"/>
+                        <segue destination="tm6-d8-Gh9" kind="relationship" relationship="viewControllers" id="ghK-KX-XdJ"/>
+                        <segue destination="pms-xb-Drg" kind="relationship" relationship="viewControllers" id="NCT-ao-Lei"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dZA-Rx-GXa" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-4159" y="-900"/>
+        </scene>
+        <!--Tag Tab-->
+        <scene sceneID="ZJ4-Fd-MKN">
+            <objects>
+                <viewController id="tm6-d8-Gh9" userLabel="Tag Tab" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="BrH-oz-o3E"/>
+                        <viewControllerLayoutGuide type="bottom" id="ZHA-HD-N9c"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Hz2-Ab-omc">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Tagging" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1fY-QB-Abt">
+                                <rect key="frame" x="152" y="323" width="61" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Tag" id="Y0S-5H-vdU" userLabel="Scan"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DLr-il-RGZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-3114" y="-900"/>
+        </scene>
+        <!--Archive-->
+        <scene sceneID="ycn-zk-WaR">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Archive" id="OIZ-Ju-z8d" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="YVK-mJ-Qp9" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-2038" y="-157"/>
+        </scene>
+    </scenes>
+</document>

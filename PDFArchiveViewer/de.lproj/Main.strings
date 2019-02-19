@@ -1,0 +1,27 @@
+
+/* Class = "UILabel"; text = "PDF Archive Viewer"; ObjectID = "DSc-hJ-ulG"; */
+"DSc-hJ-ulG.text" = "PDF Archive Viewer";
+
+/* Class = "UIViewController"; title = "Detail"; ObjectID = "JEX-9P-axG"; */
+"JEX-9P-axG.title" = "Detail";
+
+/* Class = "UIViewController"; title = "Documents"; ObjectID = "PIm-xb-9tu"; */
+"PIm-xb-9tu.title" = "Dokumente";
+
+/* Class = "UINavigationController"; title = "Documents"; ObjectID = "RMx-3f-FxP"; */
+"RMx-3f-FxP.title" = "Dokumente";
+
+/* Class = "UITabBarItem"; title = "Find"; ObjectID = "6hS-pH-8it"; */
+"6hS-pH-8it.title" = "Find";
+
+/* Class = "UITabBarItem"; title = "Scan"; ObjectID = "Cdf-Rt-ZTT"; */
+"Cdf-Rt-ZTT.title" = "Scan";
+
+/* Class = "UILabel"; text = "Scanning"; ObjectID = "EHf-Kd-ScS"; */
+"EHf-Kd-ScS.text" = "Scanning";
+
+/* Class = "UILabel"; text = "Tagging"; ObjectID = "1fY-QB-Abt"; */
+"1fY-QB-Abt.text" = "Tagging";
+
+/* Class = "UITabBarItem"; title = "Tag"; ObjectID = "Y0S-5H-vdU"; */
+"Y0S-5H-vdU.title" = "Tag";

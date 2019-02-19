@@ -1,24 +1,10 @@
-/**
- * Copyright (c) 2017 Razeware LLC
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
+//
+//  DetailViewController.swift
+//  PDFArchiveViewer
+//
+//  Created by Julian Kahnert on 29.12.18.
+//  Copyright © 2018 Julian Kahnert. All rights reserved.
+//
 
 import ArchiveLib
 import os.log
@@ -75,7 +61,7 @@ class DetailViewController: UIViewController, Logging {
         // animate the navigation bar
         navigationController?.setNavigationBarHidden(isNavigationBarHidden, animated: true)
 
-        if let controller = UIApplication.shared.keyWindow?.rootViewController as? SplitViewController {
+        if let controller = UIApplication.shared.keyWindow?.rootViewController as? NavigationController {
             controller.whiteStatusBarText(isNavigationBarHidden)
         }
 
@@ -83,24 +69,39 @@ class DetailViewController: UIViewController, Logging {
 
     // MARK: - delegates
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
 
         // setup document view
         documentView.displayMode = .singlePage
         documentView.autoScales = true
         documentView.interpolationQuality = .low
         documentView.backgroundColor = UIColor(named: "TextColorLight") ?? .darkGray
+
+        // cascade viewWillAppear(:)
+        super.viewWillAppear(animated)
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
+
+        // hide tab bar controller
+        // TODO: might be changed to https://stackoverflow.com/questions/31367387/detect-if-app-is-running-in-slide-over-or-split-view-mode-in-ios-9
+        if UIDevice.current.userInterfaceIdiom != .pad {
+            self.tabBarController?.tabBar.isHidden = true
+            self.tabBarController?.view.setNeedsLayout()
+            self.tabBarController?.view.layoutIfNeeded()
+        }
     }
 
     override func viewDidDisappear(_ animated: Bool) {
 
+        // show tab bar controller
+        self.tabBarController?.tabBar.isHidden = false
+        self.tabBarController?.view.setNeedsLayout()
+        self.tabBarController?.view.layoutIfNeeded()
+
         // change status bar text color
-        if let controller = UIApplication.shared.keyWindow?.rootViewController as? SplitViewController {
+        if let controller = UIApplication.shared.keyWindow?.rootViewController as? NavigationController {
             controller.whiteStatusBarText(false)
         }
 

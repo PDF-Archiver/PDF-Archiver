@@ -1,41 +1,25 @@
-/**
- * Copyright (c) 2017 Razeware LLC
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
+//
+//  MasterViewController.swift
+//  PDFArchiveViewer
+//
+//  Created by Julian Kahnert on 29.12.18.
+//  Copyright © 2018 Julian Kahnert. All rights reserved.
+//
 
 import ArchiveLib
 import os.log
 import UIKit
 
-public protocol MasterViewControllerDelegate: AnyObject {
+public protocol ArchiveViewControllerDelegate: AnyObject {
     func update(_ contentType: ContentType)
 }
 
-class MasterViewController: UIViewController, UITableViewDelegate, Logging {
+class ArchiveViewController: UIViewController, UITableViewDelegate, Logging {
 
     // MARK: - Properties
     @IBOutlet var tableView: UITableView!
 
     var detailViewController: DetailViewController?
-    var archive = Archive()
-    var documentsQuery = DocumentsQuery()
     let searchController = UISearchController(searchResultsController: nil)
     var selectedDocument: IndexPath?
 
@@ -52,8 +36,7 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
         tableView.register(UINib(nibName: cellIdentifier, bundle: nil), forCellReuseIdentifier: cellIdentifier)
 
         // setup data delegate
-        documentsQuery.documentsQueryDelegate = archive
-        documentsQuery.masterViewControllerDelegate = self
+        DocumentService.documentsQuery.masterViewControllerDelegate = self
 
         // Setup the Search Controller
         searchController.searchResultsUpdater = self
@@ -67,32 +50,28 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
         searchController.searchBar.delegate = self
         searchController.searchBar.placeholder = NSLocalizedString("search-documents", comment: "UISearchBar placeholder")
 
-        if let splitViewController = splitViewController {
-            let controllers = splitViewController.viewControllers
-            // swiftlint:disable force_cast
-            detailViewController = (controllers[controllers.count - 1] as! UINavigationController).topViewController as? DetailViewController
-            // swiftlint:enable force_cast
-        }
-
         // setup background view controller
         tableView.backgroundView = Bundle.main.loadNibNamed("LoadingBackgroundView", owner: nil, options: nil)?.first as? UIView
         tableView.separatorStyle = .none
 
-        // update the view controller, even if the documents query ends before the view did load
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+        // TODO: we might add this for testing
+//        // update the view controller, even if the documents query ends before the view did load
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+//
+//            #if targetEnvironment(simulator)
+//                // create simulator data set
+//                guard let fileURL = Bundle.main.url(forResource: NSLocalizedString("test_resource_filename", comment: "Simulator test data set"), withExtension: "pdf") else { return }
+//
+//                ArchiveService.shared.add(from: URL(fileURLWithPath: NSLocalizedString("test_file1", comment: "Simulator test data set")), size: 1427000, downloadStatus: .local, status: .tagged)
+//                ArchiveService.shared.add(from: URL(fileURLWithPath: NSLocalizedString("test_file2", comment: "Simulator test data set")), size: 232000, downloadStatus: .iCloudDrive, status: .tagged)
+//                ArchiveService.shared.add(from: fileURL, size: 500000, downloadStatus: .local, status: .tagged)
+//                ArchiveService.shared.add(from: URL(fileURLWithPath: NSLocalizedString("test_file3", comment: "Simulator test data set")), size: 764500, downloadStatus: .iCloudDrive, status: .tagged)
+//            #endif
+//
+//            self.updateDocuments(changed: Set<Document>())
+//        }
 
-            #if targetEnvironment(simulator)
-                // create simulator data set
-                guard let fileURL = Bundle.main.url(forResource: NSLocalizedString("test_resource_filename", comment: "Simulator test data set"), withExtension: "pdf") else { return }
-
-                self.archive.add(from: URL(fileURLWithPath: NSLocalizedString("test_file1", comment: "Simulator test data set")), size: 1427000, downloadStatus: .local, status: .tagged)
-                self.archive.add(from: URL(fileURLWithPath: NSLocalizedString("test_file2", comment: "Simulator test data set")), size: 232000, downloadStatus: .iCloudDrive, status: .tagged)
-                self.archive.add(from: fileURL, size: 500000, downloadStatus: .local, status: .tagged)
-                self.archive.add(from: URL(fileURLWithPath: NSLocalizedString("test_file3", comment: "Simulator test data set")), size: 764500, downloadStatus: .iCloudDrive, status: .tagged)
-            #endif
-
-            self.updateDocuments(changed: Set<Document>())
-        }
+        self.updateDocuments(changed: DocumentService.archive.filterContentForSearchText(""))
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -177,7 +156,7 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
         let oldSections = currentSections
 
         // setup background view controller
-        if archive.get(scope: .all, searchterms: [], status: .tagged).isEmpty {
+        if DocumentService.archive.get(scope: .all, searchterms: [], status: .tagged).isEmpty {
             tableView.backgroundView = Bundle.main.loadNibNamed("EmptyBackgroundView", owner: nil, options: nil)?.first as? UIView
             tableView.separatorStyle = .none
         } else {
@@ -189,7 +168,7 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
          Filter the documents
          */
         // setup search toolbar
-        self.searchController.searchBar.scopeButtonTitles = [allLocal] + Array(archive.years.sorted().reversed().prefix(3))
+        self.searchController.searchBar.scopeButtonTitles = [allLocal] + Array(DocumentService.archive.years.sorted().reversed().prefix(3))
 
         // update the filtered documents
         let searchBar = self.searchController.searchBar
@@ -202,7 +181,7 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
         } else {
             scope = self.allLocal
         }
-        let newDocuments = self.archive.filterContentForSearchText(searchBarText, scope: scope)
+        let newDocuments = DocumentService.archive.filterContentForSearchText(searchBarText, scope: scope)
 
         // sort documents by Date (descending) and Name (ascending)
         let sortedDocuments: [Document] = Array(newDocuments).sorted().reversed()
@@ -255,7 +234,7 @@ class MasterViewController: UIViewController, UITableViewDelegate, Logging {
 }
 
 // MARK: -
-extension MasterViewController: UITableViewDataSource {
+extension ArchiveViewController: UITableViewDataSource {
 
     // MARK: required stubs
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -315,7 +294,7 @@ extension MasterViewController: UITableViewDataSource {
 }
 
 // MARK: -
-extension MasterViewController: MasterViewControllerDelegate {
+extension ArchiveViewController: ArchiveViewControllerDelegate {
     func update(_ contentType: ContentType) {
         switch contentType {
         case .archivedDocuments(let changedDocuments):
@@ -328,13 +307,13 @@ extension MasterViewController: MasterViewControllerDelegate {
     }
 }
 
-extension MasterViewController: UISearchBarDelegate {
+extension ArchiveViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
         updateDocuments(changed: [])
     }
 }
 
-extension MasterViewController: UISearchResultsUpdating {
+extension ArchiveViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         updateDocuments(changed: [])
     }

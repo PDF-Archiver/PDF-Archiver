@@ -8,24 +8,25 @@
 
 /* Begin PBXBuildFile section */
 		171E0C7E1B8E5B84001E6242 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171E0C7D1B8E5B84001E6242 /* AppDelegate.swift */; };
-		171E0C801B8E5B84001E6242 /* MasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171E0C7F1B8E5B84001E6242 /* MasterViewController.swift */; };
+		171E0C801B8E5B84001E6242 /* ArchiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171E0C7F1B8E5B84001E6242 /* ArchiveViewController.swift */; };
 		171E0C821B8E5B84001E6242 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171E0C811B8E5B84001E6242 /* DetailViewController.swift */; };
 		171E0C851B8E5B84001E6242 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171E0C831B8E5B84001E6242 /* Main.storyboard */; };
 		171E0C8A1B8E5B84001E6242 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171E0C881B8E5B84001E6242 /* LaunchScreen.storyboard */; };
 		7B9327C74253B724FBED77BC /* Pods_PDFArchiveViewerUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8CC869C580192C597A48720 /* Pods_PDFArchiveViewerUITests.framework */; };
 		A301A75621496992003EA382 /* DocumentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A301A75421496992003EA382 /* DocumentTableViewCell.swift */; };
 		A301A75721496992003EA382 /* DocumentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A301A75521496992003EA382 /* DocumentTableViewCell.xib */; };
-		A305AE4821D81E74004DDC1B /* SplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A305AE4721D81E74004DDC1B /* SplitViewController.swift */; };
+		A305AE4821D81E74004DDC1B /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A305AE4721D81E74004DDC1B /* NavigationController.swift */; };
 		A31263E2217B75DC00ACAFA4 /* LoadingBackgroundView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A31263E4217B75DC00ACAFA4 /* LoadingBackgroundView.xib */; };
 		A32777E421FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A32777E321FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf */; };
 		A32777E521FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A32777E321FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf */; };
 		A32777E621FDD7BF0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A32777E321FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf */; };
 		A337C07521D42EC800821B81 /* ArchiveLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A337C07421D42EC800821B81 /* ArchiveLib.framework */; };
 		A337C07621D42EC800821B81 /* ArchiveLib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A337C07421D42EC800821B81 /* ArchiveLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		A34A84F92130A35A0093FAE5 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34A84F52130A35A0093FAE5 /* Document.swift */; };
+		A34A84F92130A35A0093FAE5 /* DocumentExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34A84F52130A35A0093FAE5 /* DocumentExtension.swift */; };
 		A34A84FA2130A35A0093FAE5 /* DocumentsQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34A84F62130A35A0093FAE5 /* DocumentsQuery.swift */; };
 		A34A84FC2130A35A0093FAE5 /* ArchiveExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34A84F82130A35A0093FAE5 /* ArchiveExtension.swift */; };
 		A34A85022130A3870093FAE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A34A85012130A3870093FAE5 /* Assets.xcassets */; };
+		A378C433221B3929007D1419 /* DocumentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A378C432221B3929007D1419 /* DocumentService.swift */; };
 		A39A807821FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
 		A39A807921FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
 		A39A807A21FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
@@ -36,6 +37,8 @@
 		A3EBFE9C21650F58008C34CC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A3EBFE9E21650F58008C34CC /* Localizable.strings */; };
 		A3EBFEA021650FC7008C34CC /* EmptyBackgroundView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A3EBFEA221650FC7008C34CC /* EmptyBackgroundView.xib */; };
 		A3F1C21D2163DCD9002B0141 /* AppStoreReviewRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */; };
+		A3F30D8E221C968E0063D173 /* SplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F30D8D221C968E0063D173 /* SplitViewController.swift */; };
+		A3F30D94221C9C360063D173 /* Archive.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A3F30D93221C9C360063D173 /* Archive.storyboard */; };
 		C531B4DA59C21326779D6C93 /* Pods_PDFArchiveViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 947EC737893707137CE047F1 /* Pods_PDFArchiveViewer.framework */; };
 /* End PBXBuildFile section */
 
@@ -74,7 +77,7 @@
 		11C9BA2A739A3A3401862491 /* Pods-PDFArchiveViewer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PDFArchiveViewer.release.xcconfig"; path = "Pods/Target Support Files/Pods-PDFArchiveViewer/Pods-PDFArchiveViewer.release.xcconfig"; sourceTree = "<group>"; };
 		171E0C7A1B8E5B84001E6242 /* PDFArchiveViewer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PDFArchiveViewer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		171E0C7D1B8E5B84001E6242 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		171E0C7F1B8E5B84001E6242 /* MasterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterViewController.swift; sourceTree = "<group>"; };
+		171E0C7F1B8E5B84001E6242 /* ArchiveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveViewController.swift; sourceTree = "<group>"; };
 		171E0C811B8E5B84001E6242 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		171E0C841B8E5B84001E6242 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		171E0C891B8E5B84001E6242 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -85,16 +88,17 @@
 		947EC737893707137CE047F1 /* Pods_PDFArchiveViewer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PDFArchiveViewer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A301A75421496992003EA382 /* DocumentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentTableViewCell.swift; sourceTree = "<group>"; };
 		A301A75521496992003EA382 /* DocumentTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DocumentTableViewCell.xib; sourceTree = "<group>"; };
-		A305AE4721D81E74004DDC1B /* SplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewController.swift; sourceTree = "<group>"; };
+		A305AE4721D81E74004DDC1B /* NavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
 		A31263E3217B75DC00ACAFA4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LoadingBackgroundView.xib; sourceTree = "<group>"; };
 		A31263E6217B75E200ACAFA4 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LoadingBackgroundView.strings; sourceTree = "<group>"; };
 		A32777E321FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf"; sourceTree = "<group>"; };
 		A337C07421D42EC800821B81 /* ArchiveLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ArchiveLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		A34A84F52130A35A0093FAE5 /* Document.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
+		A34A84F52130A35A0093FAE5 /* DocumentExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentExtension.swift; sourceTree = "<group>"; };
 		A34A84F62130A35A0093FAE5 /* DocumentsQuery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentsQuery.swift; sourceTree = "<group>"; };
 		A34A84F82130A35A0093FAE5 /* ArchiveExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArchiveExtension.swift; sourceTree = "<group>"; };
 		A34A85012130A3870093FAE5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A34D8D7A2130A1E200867B65 /* PDFArchiveViewer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PDFArchiveViewer.entitlements; sourceTree = "<group>"; };
+		A378C432221B3929007D1419 /* DocumentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentService.swift; sourceTree = "<group>"; };
 		A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf"; sourceTree = "<group>"; };
 		A3B83716215FCEFA00DA239F /* PDFArchiveViewerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PDFArchiveViewerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A3B83718215FCEFA00DA239F /* PDFArchiveViewerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFArchiveViewerUITests.swift; sourceTree = "<group>"; };
@@ -111,6 +115,8 @@
 		A3EBFEA121650FC7008C34CC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/EmptyBackgroundView.xib; sourceTree = "<group>"; };
 		A3EBFEA421650FCB008C34CC /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/EmptyBackgroundView.strings; sourceTree = "<group>"; };
 		A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreReviewRequest.swift; sourceTree = "<group>"; };
+		A3F30D8D221C968E0063D173 /* SplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewController.swift; sourceTree = "<group>"; };
+		A3F30D93221C9C360063D173 /* Archive.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Archive.storyboard; sourceTree = "<group>"; };
 		A3F3DACA21B1E4080004EFF6 /* ArchiveLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ArchiveLib.framework; path = "../../../../../Library/Developer/Xcode/DerivedData/PDFArchiveViewer-bbskspzizlnpcpajkyzthtlwcnfa/Build/Products/Debug-iphoneos/ArchiveLib.framework"; sourceTree = "<group>"; };
 		D8CC869C580192C597A48720 /* Pods_PDFArchiveViewerUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PDFArchiveViewerUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -169,11 +175,13 @@
 		171E0C7C1B8E5B84001E6242 /* PDFArchiveViewer */ = {
 			isa = PBXGroup;
 			children = (
+				A3F30D90221C99F80063D173 /* ScanTab */,
+				A3F30D8F221C99ED0063D173 /* TagTag */,
+				A3F30D91221C9A030063D173 /* ArchiveTab */,
 				A3EBFE9E21650F58008C34CC /* Localizable.strings */,
 				171E0C7D1B8E5B84001E6242 /* AppDelegate.swift */,
-				A34A84F12130A28A0093FAE5 /* Models */,
-				A34A84F22130A2900093FAE5 /* Views */,
-				A34A84F42130A2CC0093FAE5 /* Controllers */,
+				171E0C831B8E5B84001E6242 /* Main.storyboard */,
+				A34A84F12130A28A0093FAE5 /* Services */,
 				A34A84F32130A2A70093FAE5 /* Helpers */,
 				A3FECF952130A0220053F2E4 /* Resources */,
 			);
@@ -200,20 +208,20 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		A34A84F12130A28A0093FAE5 /* Models */ = {
+		A34A84F12130A28A0093FAE5 /* Services */ = {
 			isa = PBXGroup;
 			children = (
 				A34A84F82130A35A0093FAE5 /* ArchiveExtension.swift */,
-				A34A84F52130A35A0093FAE5 /* Document.swift */,
+				A34A84F52130A35A0093FAE5 /* DocumentExtension.swift */,
 				A34A84F62130A35A0093FAE5 /* DocumentsQuery.swift */,
+				A378C432221B3929007D1419 /* DocumentService.swift */,
 			);
-			path = Models;
+			path = Services;
 			sourceTree = "<group>";
 		};
 		A34A84F22130A2900093FAE5 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				171E0C831B8E5B84001E6242 /* Main.storyboard */,
 				A3EBFEA221650FC7008C34CC /* EmptyBackgroundView.xib */,
 				A301A75421496992003EA382 /* DocumentTableViewCell.swift */,
 				A301A75521496992003EA382 /* DocumentTableViewCell.xib */,
@@ -235,8 +243,9 @@
 			isa = PBXGroup;
 			children = (
 				171E0C811B8E5B84001E6242 /* DetailViewController.swift */,
-				171E0C7F1B8E5B84001E6242 /* MasterViewController.swift */,
-				A305AE4721D81E74004DDC1B /* SplitViewController.swift */,
+				171E0C7F1B8E5B84001E6242 /* ArchiveViewController.swift */,
+				A305AE4721D81E74004DDC1B /* NavigationController.swift */,
+				A3F30D8D221C968E0063D173 /* SplitViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -258,6 +267,30 @@
 				A3BCC977217F84DB00C3775E /* Info.plist */,
 			);
 			path = PDFArchiveViewerTests;
+			sourceTree = "<group>";
+		};
+		A3F30D8F221C99ED0063D173 /* TagTag */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = TagTag;
+			sourceTree = "<group>";
+		};
+		A3F30D90221C99F80063D173 /* ScanTab */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ScanTab;
+			sourceTree = "<group>";
+		};
+		A3F30D91221C9A030063D173 /* ArchiveTab */ = {
+			isa = PBXGroup;
+			children = (
+				A3F30D93221C9C360063D173 /* Archive.storyboard */,
+				A34A84F22130A2900093FAE5 /* Views */,
+				A34A84F42130A2CC0093FAE5 /* Controllers */,
+			);
+			path = ArchiveTab;
 			sourceTree = "<group>";
 		};
 		A3FECF952130A0220053F2E4 /* Resources */ = {
@@ -401,6 +434,7 @@
 				171E0C8A1B8E5B84001E6242 /* LaunchScreen.storyboard in Resources */,
 				A34A85022130A3870093FAE5 /* Assets.xcassets in Resources */,
 				A39A807821FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */,
+				A3F30D94221C9C360063D173 /* Archive.storyboard in Resources */,
 				A31263E2217B75DC00ACAFA4 /* LoadingBackgroundView.xib in Resources */,
 				A32777E621FDD7BF0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf in Resources */,
 				A3EBFEA021650FC7008C34CC /* EmptyBackgroundView.xib in Resources */,
@@ -481,7 +515,7 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-PDFArchiveViewer/Pods-PDFArchiveViewer-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-PDFArchiveViewer/Pods-PDFArchiveViewer-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Sentry/Sentry.framework",
 				"${BUILT_PRODUCTS_DIR}/TagListView/TagListView.framework",
 			);
@@ -494,7 +528,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PDFArchiveViewer/Pods-PDFArchiveViewer-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PDFArchiveViewer/Pods-PDFArchiveViewer-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A3B57CD32130C55C000BA17B /* SwiftLint */ = {
@@ -540,12 +574,14 @@
 				A34A84FC2130A35A0093FAE5 /* ArchiveExtension.swift in Sources */,
 				A301A75621496992003EA382 /* DocumentTableViewCell.swift in Sources */,
 				171E0C821B8E5B84001E6242 /* DetailViewController.swift in Sources */,
-				171E0C801B8E5B84001E6242 /* MasterViewController.swift in Sources */,
-				A305AE4821D81E74004DDC1B /* SplitViewController.swift in Sources */,
-				A34A84F92130A35A0093FAE5 /* Document.swift in Sources */,
+				171E0C801B8E5B84001E6242 /* ArchiveViewController.swift in Sources */,
+				A305AE4821D81E74004DDC1B /* NavigationController.swift in Sources */,
+				A34A84F92130A35A0093FAE5 /* DocumentExtension.swift in Sources */,
+				A378C433221B3929007D1419 /* DocumentService.swift in Sources */,
 				171E0C7E1B8E5B84001E6242 /* AppDelegate.swift in Sources */,
 				A34A84FA2130A35A0093FAE5 /* DocumentsQuery.swift in Sources */,
 				A3F1C21D2163DCD9002B0141 /* AppStoreReviewRequest.swift in Sources */,
+				A3F30D8E221C968E0063D173 /* SplitViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
