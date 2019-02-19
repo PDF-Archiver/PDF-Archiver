@@ -36,7 +36,7 @@
                             <constraint firstItem="iSs-31-9JD" firstAttribute="leading" secondItem="qZV-y9-pyC" secondAttribute="leading" id="oLp-S9-EHg"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Find" id="6hS-pH-8it"/>
+                    <tabBarItem key="tabBarItem" title="Archive" image="Archive" landscapeImage="Archive" largeContentSizeImage="Archive" id="6hS-pH-8it"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xGM-Hk-9BL" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -64,7 +64,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Scan" id="Cdf-Rt-ZTT" userLabel="Scan"/>
+                    <tabBarItem key="tabBarItem" title="Scan" image="File" landscapeImage="File" largeContentSizeImage="File" id="Cdf-Rt-ZTT" userLabel="Scan"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6rm-kY-Ubg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -111,7 +111,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Tag" id="Y0S-5H-vdU" userLabel="Scan"/>
+                    <tabBarItem key="tabBarItem" title="Tag" image="Tag" landscapeImage="Tag" largeContentSizeImage="Tag" id="Y0S-5H-vdU" userLabel="Scan"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DLr-il-RGZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -126,4 +126,9 @@
             <point key="canvasLocation" x="-2038" y="-157"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="Archive" width="30" height="30"/>
+        <image name="File" width="30" height="30"/>
+        <image name="Tag" width="30" height="30"/>
+    </resources>
 </document>
