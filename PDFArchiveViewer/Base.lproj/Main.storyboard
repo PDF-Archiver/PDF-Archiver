@@ -30,10 +30,10 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="Icc-bJ-Hvf" firstAttribute="top" secondItem="iSs-31-9JD" secondAttribute="bottom" id="Fwq-Wz-mNN"/>
-                            <constraint firstAttribute="trailing" secondItem="iSs-31-9JD" secondAttribute="trailing" id="O1B-eQ-Qew"/>
-                            <constraint firstItem="iSs-31-9JD" firstAttribute="top" secondItem="qZV-y9-pyC" secondAttribute="top" id="a2M-8E-u66"/>
-                            <constraint firstItem="iSs-31-9JD" firstAttribute="leading" secondItem="qZV-y9-pyC" secondAttribute="leading" id="oLp-S9-EHg"/>
+                            <constraint firstItem="iSs-31-9JD" firstAttribute="leading" secondItem="qZV-y9-pyC" secondAttribute="leading" id="6Vb-NY-e0W"/>
+                            <constraint firstAttribute="trailing" secondItem="iSs-31-9JD" secondAttribute="trailing" id="CXZ-dJ-bbj"/>
+                            <constraint firstItem="iSs-31-9JD" firstAttribute="top" secondItem="qZV-y9-pyC" secondAttribute="top" id="EYh-Xp-Js0"/>
+                            <constraint firstItem="Icc-bJ-Hvf" firstAttribute="top" secondItem="iSs-31-9JD" secondAttribute="bottom" id="vxR-K5-r28"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Archive" image="Archive" landscapeImage="Archive" largeContentSizeImage="Archive" id="6hS-pH-8it"/>

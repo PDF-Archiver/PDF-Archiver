@@ -19,7 +19,6 @@ class ArchiveViewController: UIViewController, UITableViewDelegate, Logging {
     // MARK: - Properties
     @IBOutlet var tableView: UITableView!
 
-    var detailViewController: DetailViewController?
     let searchController = UISearchController(searchResultsController: nil)
     var selectedDocument: IndexPath?
 

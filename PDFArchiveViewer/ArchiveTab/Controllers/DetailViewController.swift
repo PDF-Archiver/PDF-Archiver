@@ -69,6 +69,10 @@ class DetailViewController: UIViewController, Logging {
 
     // MARK: - delegates
     override func viewWillAppear(_ animated: Bool) {
+        print("viewWillAppear()")
+
+        // cascade viewWillAppear(:)
+        super.viewWillAppear(animated)
 
         // setup document view
         documentView.displayMode = .singlePage
@@ -76,24 +80,27 @@ class DetailViewController: UIViewController, Logging {
         documentView.interpolationQuality = .low
         documentView.backgroundColor = UIColor(named: "TextColorLight") ?? .darkGray
 
-        // cascade viewWillAppear(:)
-        super.viewWillAppear(animated)
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        configureView()
-
         // hide tab bar controller
         // TODO: might be changed to https://stackoverflow.com/questions/31367387/detect-if-app-is-running-in-slide-over-or-split-view-mode-in-ios-9
-        if UIDevice.current.userInterfaceIdiom != .pad {
+        if detailDocument != nil,
+            UIDevice.current.userInterfaceIdiom != .pad {
             self.tabBarController?.tabBar.isHidden = true
             self.tabBarController?.view.setNeedsLayout()
             self.tabBarController?.view.layoutIfNeeded()
         }
     }
 
-    override func viewDidDisappear(_ animated: Bool) {
+    override func viewDidLoad() {
+        print("viewDidLoad()")
+        super.viewDidLoad()
+        configureView()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        print("viewWillDisappear()")
+
+        // cascade viewDidDisappear(:)
+        super.viewWillDisappear(animated)
 
         // show tab bar controller
         self.tabBarController?.tabBar.isHidden = false
@@ -104,9 +111,6 @@ class DetailViewController: UIViewController, Logging {
         if let controller = UIApplication.shared.keyWindow?.rootViewController as? NavigationController {
             controller.whiteStatusBarText(false)
         }
-
-        // cascade viewDidDisappear(:)
-        super.viewDidDisappear(animated)
     }
 
     // MARK: - helper functions
