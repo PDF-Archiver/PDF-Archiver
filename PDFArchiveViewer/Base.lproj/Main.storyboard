@@ -54,21 +54,26 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Scanning" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EHf-Kd-ScS">
-                                <rect key="frame" x="152" y="323" width="71" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EAu-73-xte">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
+                                <connections>
+                                    <segue destination="hDf-Ig-xf8" kind="embed" id="gNc-Eq-URl"/>
+                                </connections>
+                            </containerView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="EAu-73-xte" secondAttribute="trailing" id="ZQZ-9o-fSi"/>
+                            <constraint firstItem="EAu-73-xte" firstAttribute="top" secondItem="dPg-lL-Q3c" secondAttribute="top" id="grr-ND-oTn"/>
+                            <constraint firstItem="RwF-Ad-Ykd" firstAttribute="top" secondItem="EAu-73-xte" secondAttribute="bottom" id="jET-Y4-NWL"/>
+                            <constraint firstItem="EAu-73-xte" firstAttribute="leading" secondItem="dPg-lL-Q3c" secondAttribute="leading" id="pYJ-MG-Djl"/>
+                        </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Scan" image="File" landscapeImage="File" largeContentSizeImage="File" id="Cdf-Rt-ZTT" userLabel="Scan"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6rm-kY-Ubg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3114" y="-1634"/>
+            <point key="canvasLocation" x="-3114.4000000000001" y="-1634.0329835082459"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="v3f-Ju-xav">
@@ -124,6 +129,40 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YVK-mJ-Qp9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-2038" y="-157"/>
+        </scene>
+        <!--Scan View Controller-->
+        <scene sceneID="55Q-OM-BZt">
+            <objects>
+                <viewController id="hDf-Ig-xf8" customClass="ScanViewController" customModule="PDFArchiveViewer" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="rvH-9J-xQ7">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0bC-Rn-Vxf">
+                                <rect key="frame" x="67" y="309" width="240" height="128"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <gestureRecognizers/>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="YZT-b6-GO9" appends="YES" id="BM8-BC-bQm"/>
+                        </connections>
+                    </view>
+                    <connections>
+                        <outlet property="cameraView" destination="rvH-9J-xQ7" id="BeX-Tp-vJc"/>
+                        <outlet property="highlightView" destination="0bC-Rn-Vxf" id="fPe-Oa-dV8"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="zWW-BX-g8r" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="YZT-b6-GO9">
+                    <connections>
+                        <action selector="userTapped:" destination="hDf-Ig-xf8" id="AEX-ay-UOa"/>
+                    </connections>
+                </tapGestureRecognizer>
+            </objects>
+            <point key="canvasLocation" x="-2191" y="-1634"/>
         </scene>
     </scenes>
     <resources>

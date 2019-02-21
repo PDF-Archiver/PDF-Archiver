@@ -26,6 +26,8 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>$(PRODUCT_NAME) camera use</string>
 	<key>NSUbiquitousContainers</key>
 	<dict>
 		<key>iCloud.de.JulianKahnert.PDFArchiver</key>
