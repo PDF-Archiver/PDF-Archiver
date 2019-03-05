@@ -74,6 +74,8 @@ class ArchiveViewController: UIViewController, UITableViewDelegate, Logging {
     }
 
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
         if let splitViewController = splitViewController,
             splitViewController.isCollapsed {
             if let selectionIndexPath = tableView.indexPathForSelectedRow {

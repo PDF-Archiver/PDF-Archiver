@@ -8,6 +8,7 @@ target 'PDFArchiveViewer' do
   # Pods for PDFArchiveViewer
   pod 'TagListView', '~> 1.3'
   pod 'Sentry', '~> 4.2'
+  pod 'WeScan', '~> 1.0'
 
   target 'PDFArchiveViewerUITests' do
     inherit! :search_paths

@@ -61,6 +61,7 @@ class DetailViewController: UIViewController, Logging {
         // animate the navigation bar
         navigationController?.setNavigationBarHidden(isNavigationBarHidden, animated: true)
 
+        // TODO: fix the color change
         if let controller = UIApplication.shared.keyWindow?.rootViewController as? NavigationController {
             controller.whiteStatusBarText(isNavigationBarHidden)
         }
@@ -108,6 +109,7 @@ class DetailViewController: UIViewController, Logging {
         self.tabBarController?.view.layoutIfNeeded()
 
         // change status bar text color
+        // TODO: fix the color change
         if let controller = UIApplication.shared.keyWindow?.rootViewController as? NavigationController {
             controller.whiteStatusBarText(false)
         }

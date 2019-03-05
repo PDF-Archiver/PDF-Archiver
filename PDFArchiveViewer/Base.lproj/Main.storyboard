@@ -54,21 +54,26 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Scanning" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EHf-Kd-ScS">
-                                <rect key="frame" x="152" y="323" width="71" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RMn-TJ-20F">
+                                <rect key="frame" x="0.0" y="20" width="375" height="598"/>
+                                <connections>
+                                    <segue destination="evb-gb-Gyk" kind="embed" id="Feh-ac-wrn"/>
+                                </connections>
+                            </containerView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="RMn-TJ-20F" firstAttribute="top" secondItem="X1u-yi-TRk" secondAttribute="bottom" id="N3w-VC-d5D"/>
+                            <constraint firstItem="RMn-TJ-20F" firstAttribute="leading" secondItem="dPg-lL-Q3c" secondAttribute="leading" id="Vhb-LU-j2r"/>
+                            <constraint firstAttribute="trailing" secondItem="RMn-TJ-20F" secondAttribute="trailing" id="t2O-f7-VSn"/>
+                            <constraint firstItem="RwF-Ad-Ykd" firstAttribute="top" secondItem="RMn-TJ-20F" secondAttribute="bottom" id="x0A-WN-VDe"/>
+                        </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Scan" image="File" landscapeImage="File" largeContentSizeImage="File" id="Cdf-Rt-ZTT" userLabel="Scan"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6rm-kY-Ubg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3114" y="-1634"/>
+            <point key="canvasLocation" x="-3114.4000000000001" y="-1634.0329835082459"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="v3f-Ju-xav">
@@ -125,10 +130,29 @@
             </objects>
             <point key="canvasLocation" x="-2038" y="-157"/>
         </scene>
+        <!--Scan View Controller-->
+        <scene sceneID="kFW-QY-weq">
+            <objects>
+                <viewController id="evb-gb-Gyk" customClass="ScanViewController" customModule="PDFArchiveViewer" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="lkg-8E-1yt">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="598"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </view>
+                    <connections>
+                        <segue destination="tm6-d8-Gh9" kind="show" identifier="showTabVC" id="gQa-7j-0VG"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="TZn-38-4Hb" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+        </scene>
     </scenes>
     <resources>
         <image name="Archive" width="30" height="30"/>
         <image name="File" width="30" height="30"/>
         <image name="Tag" width="30" height="30"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="ghK-KX-XdJ"/>
+    </inferredMetricsTieBreakers>
 </document>
