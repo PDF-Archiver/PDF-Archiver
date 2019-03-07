@@ -82,7 +82,7 @@ class DocumentsQuery: NSObject, Logging {
         NotificationCenter.default.addObserver(self, selector: #selector(DocumentsQuery.queryUpdated(notification:)), name: NSNotification.Name.NSMetadataQueryDidUpdate, object: metadataQuery)
 
         metadataQuery.start()
-        os_log("Starting the documents query.", log: log, type: .debug)
+        os_log("Starting the documents query.", log: DocumentsQuery.log, type: .debug)
     }
 
     // MARK: - Notifications
@@ -90,7 +90,7 @@ class DocumentsQuery: NSObject, Logging {
     @objc
     func queryUpdated(notification: NSNotification) {
 
-        os_log("Documents query update.", log: log, type: .debug)
+        os_log("Documents query update.", log: DocumentsQuery.log, type: .debug)
 
         let changedMetadataItems = (notification.userInfo?[NSMetadataQueryUpdateChangedItemsKey] as? [NSMetadataItem]) ?? []
         let removedMetadataItems = (notification.userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem]) ?? []
@@ -104,7 +104,7 @@ class DocumentsQuery: NSObject, Logging {
     @objc
     func finishGathering(notification: NSNotification) {
 
-        os_log("Documents query finished.", log: log, type: .debug)
+        os_log("Documents query finished.", log: DocumentsQuery.log, type: .debug)
         guard let metadataQueryResults = metadataQuery.results as? [NSMetadataItem] else { return }
 
         // update the archive

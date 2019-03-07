@@ -17,7 +17,7 @@ extension Document {
             try FileManager.default.startDownloadingUbiquitousItem(at: path)
             downloadStatus = .downloading(percentDownloaded: 0)
         } catch {
-            os_log("%s", log: self.log, type: .debug, error.localizedDescription)
+            os_log("%s", log: Document.log, type: .debug, error.localizedDescription)
         }
     }
 }

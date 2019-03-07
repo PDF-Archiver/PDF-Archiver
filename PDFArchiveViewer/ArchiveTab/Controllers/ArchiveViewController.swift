@@ -268,7 +268,7 @@ extension ArchiveViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let document = getDocument(from: indexPath) else { return }
-        os_log("Selected Document: %@", log: log, type: .debug, document.filename)
+        os_log("Selected Document: %@", log: ArchiveViewController.log, type: .debug, document.filename)
 
         // download document if it is not already available
         switch document.downloadStatus {
@@ -303,7 +303,7 @@ extension ArchiveViewController: ArchiveViewControllerDelegate {
                 self.updateDocuments(changed: changedDocuments)
             }
         default:
-            os_log("Type does not match.", log: self.log, type: .debug)
+            os_log("Type does not match.", log: ArchiveViewController.log, type: .debug)
         }
     }
 }

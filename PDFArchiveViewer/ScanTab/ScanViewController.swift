@@ -34,7 +34,7 @@ extension ScanViewController: ImageScannerControllerDelegate {
 
     func imageScannerController(_ scanner: ImageScannerController, didFailWithError error: Error) {
         // You are responsible for carefully handling the error
-        os_log("Selected Document: %@", log: log, type: .error, error.localizedDescription)
+        os_log("Selected Document: %@", log: ScanViewController.log, type: .error, error.localizedDescription)
     }
 
     func imageScannerController(_ scanner: ImageScannerController, didFinishScanningWithResults results: ImageScannerResults) {
@@ -54,24 +54,29 @@ extension ScanViewController: ImageScannerControllerDelegate {
             image = results.scannedImage
         }
 
-        // save image
+        guard let containerUrl = FileManager.default.url(forUbiquityContainerIdentifier: nil) else { fatalError("Could not find a iCloud Drive url.") }
+
+        // convert and save image on a background thread
+        DispatchQueue.global(qos: .background).async {
+            ImageConverter.process(image, saveAt: containerUrl.appendingPathComponent("Documents").appendingPathComponent("untagged"))
+        }
 
         // process finished: jump to other tab
         jumpToTagTab()
 
         // TODO: add alert view if we want to scan another document
-//        let actionSheet = UIAlertController(title: "Would you like to scan another image or start tagging?", message: nil, preferredStyle: .actionSheet)
-//
-//        let tagAction = UIAlertAction(title: "Scan", style: .default, handler: nil)
-//
-//        let scanAction = UIAlertAction(title: "Select", style: .default) { (_) in
-//            self.jumpToTagTab()
-//        }
-//
-//        actionSheet.addAction(tagAction)
-//        actionSheet.addAction(scanAction)
-//
-//        present(actionSheet, animated: true)
+        //        let actionSheet = UIAlertController(title: "Would you like to scan another image or start tagging?", message: nil, preferredStyle: .actionSheet)
+        //
+        //        let tagAction = UIAlertAction(title: "Scan", style: .default, handler: nil)
+        //
+        //        let scanAction = UIAlertAction(title: "Select", style: .default) { (_) in
+        //            self.jumpToTagTab()
+        //        }
+        //
+        //        actionSheet.addAction(tagAction)
+        //        actionSheet.addAction(scanAction)
+        //
+        //        present(actionSheet, animated: true)
     }
 
     func imageScannerControllerDidCancel(_ scanner: ImageScannerController) {
