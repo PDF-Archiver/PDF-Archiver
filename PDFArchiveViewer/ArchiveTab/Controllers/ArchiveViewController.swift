@@ -82,7 +82,10 @@ class ArchiveViewController: UIViewController, UITableViewDelegate, Logging {
                 tableView.deselectRow(at: selectionIndexPath, animated: animated)
             }
         }
-        super.viewWillAppear(animated)
+
+        self.tabBarController?.tabBar.isHidden = false
+        self.tabBarController?.view.setNeedsLayout()
+        self.tabBarController?.view.layoutIfNeeded()
     }
 
     // MARK: - Segues

@@ -14,7 +14,18 @@ import UIKit
 class DetailViewController: UIViewController, Logging {
 
     // MARK: - properties
-    private var isNavigationBarHidden = false
+    // TODO: might only need prefersStatusBarHidden?!
+    private var isNavigationBarHidden = false {
+        didSet {
+            DispatchQueue.main.async {
+                self.setNeedsStatusBarAppearanceUpdate()
+            }
+        }
+    }
+
+    override var prefersStatusBarHidden: Bool {
+        return isNavigationBarHidden
+    }
 
     var detailDocument: Document? {
         didSet {
