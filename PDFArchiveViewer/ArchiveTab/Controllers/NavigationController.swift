@@ -16,10 +16,11 @@ class NavigationController: UINavigationController {
         return statusBarStyle
     }
 
-    func whiteStatusBarText(_ isWhiteContent: Bool) {
+    override func setNavigationBarHidden(_ hidden: Bool, animated: Bool) {
+        super.setNavigationBarHidden(hidden, animated: animated)
 
         // setup ne status bar style
-        statusBarStyle = isWhiteContent ? .lightContent : .default
+        statusBarStyle = hidden ? .lightContent : .default
 
         // update status bar appearance
         setNeedsStatusBarAppearanceUpdate()

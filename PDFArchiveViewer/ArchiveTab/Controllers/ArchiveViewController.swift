@@ -83,9 +83,9 @@ class ArchiveViewController: UIViewController, UITableViewDelegate, Logging {
             }
         }
 
-        self.tabBarController?.tabBar.isHidden = false
-        self.tabBarController?.view.setNeedsLayout()
-        self.tabBarController?.view.layoutIfNeeded()
+//        self.tabBarController?.tabBar.isHidden = false
+//        self.tabBarController?.view.setNeedsLayout()
+//        self.tabBarController?.view.layoutIfNeeded()
     }
 
     // MARK: - Segues

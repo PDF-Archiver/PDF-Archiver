@@ -12,21 +12,23 @@ import WeScan
 
 class ScanViewController: UIViewController, Logging {
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    private let scannerViewController = ImageScannerController()
 
-        let scannerViewController = ImageScannerController()
-        scannerViewController.imageScannerDelegate = self
-        present(scannerViewController, animated: animated)
-        // TODO: this might only be presented in the current view
+    @IBOutlet private var scanView: UIView!
+
+    @IBAction private func scanButtonTapped(_ sender: UIButton) {
+        present(scannerViewController, animated: true)
     }
 
-    fileprivate func jumpToTagTab() {
-        // switch to the tag view controller
+    @IBAction private func tagButtonTapped(_ sender: UIButton) {
         self.tabBarController?.selectedIndex = 1
+    }
 
-        // TODO: animation looks crappy
-        // TODO: index should not be hardcoded
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        scannerViewController.imageScannerDelegate = self
+        scanView.subviews.forEach { $0.layer.cornerRadius = 10 }
     }
 }
 
@@ -60,30 +62,11 @@ extension ScanViewController: ImageScannerControllerDelegate {
         DispatchQueue.global(qos: .background).async {
             ImageConverter.process(image, saveAt: containerUrl.appendingPathComponent("Documents").appendingPathComponent("untagged"))
         }
-
-        // process finished: jump to other tab
-        jumpToTagTab()
-
-        // TODO: add alert view if we want to scan another document
-        //        let actionSheet = UIAlertController(title: "Would you like to scan another image or start tagging?", message: nil, preferredStyle: .actionSheet)
-        //
-        //        let tagAction = UIAlertAction(title: "Scan", style: .default, handler: nil)
-        //
-        //        let scanAction = UIAlertAction(title: "Select", style: .default) { (_) in
-        //            self.jumpToTagTab()
-        //        }
-        //
-        //        actionSheet.addAction(tagAction)
-        //        actionSheet.addAction(scanAction)
-        //
-        //        present(actionSheet, animated: true)
     }
 
     func imageScannerControllerDidCancel(_ scanner: ImageScannerController) {
         // The user tapped 'Cancel' on the scanner
         // You are responsible for dismissing the ImageScannerController
         scanner.dismiss(animated: true)
-
-        jumpToTagTab()
     }
 }

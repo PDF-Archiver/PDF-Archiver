@@ -70,18 +70,12 @@ class DetailViewController: UIViewController, Logging {
         isNavigationBarHidden.toggle()
 
         // animate the navigation bar
-        navigationController?.setNavigationBarHidden(isNavigationBarHidden, animated: true)
-
         // TODO: fix the color change
-        if let controller = UIApplication.shared.keyWindow?.rootViewController as? NavigationController {
-            controller.whiteStatusBarText(isNavigationBarHidden)
-        }
-
+        navigationController?.setNavigationBarHidden(isNavigationBarHidden, animated: true)
     }
 
     // MARK: - delegates
     override func viewWillAppear(_ animated: Bool) {
-        print("viewWillAppear()")
 
         // cascade viewWillAppear(:)
         super.viewWillAppear(animated)
@@ -91,39 +85,21 @@ class DetailViewController: UIViewController, Logging {
         documentView.autoScales = true
         documentView.interpolationQuality = .low
         documentView.backgroundColor = UIColor(named: "TextColorLight") ?? .darkGray
-
-        // hide tab bar controller
-        // TODO: might be changed to https://stackoverflow.com/questions/31367387/detect-if-app-is-running-in-slide-over-or-split-view-mode-in-ios-9
-        if detailDocument != nil,
-            UIDevice.current.userInterfaceIdiom != .pad {
-            self.tabBarController?.tabBar.isHidden = true
-            self.tabBarController?.view.setNeedsLayout()
-            self.tabBarController?.view.layoutIfNeeded()
-        }
     }
 
     override func viewDidLoad() {
-        print("viewDidLoad()")
         super.viewDidLoad()
         configureView()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
-        print("viewWillDisappear()")
 
         // cascade viewDidDisappear(:)
         super.viewWillDisappear(animated)
 
-        // show tab bar controller
-        self.tabBarController?.tabBar.isHidden = false
-        self.tabBarController?.view.setNeedsLayout()
-        self.tabBarController?.view.layoutIfNeeded()
-
         // change status bar text color
         // TODO: fix the color change
-        if let controller = UIApplication.shared.keyWindow?.rootViewController as? NavigationController {
-            controller.whiteStatusBarText(false)
-        }
+        navigationController?.setNavigationBarHidden(false, animated: true)
     }
 
     // MARK: - helper functions
