@@ -18,10 +18,22 @@ extension Archive: DocumentsQueryDelegate {
 
     func updateWithResults(removedItems: [NSMetadataItem], addedItems: [NSMetadataItem], updatedItems: [NSMetadataItem]) -> Set<Document> {
 
+        let regex = "^(\\d{4}-\\d{2}-\\d{2}--[^_]+__[\\w\\d_]+.[pdfPDF]{3})$"
+
         // handle new documents
         for addedItem in addedItems {
             if let output = try? parseMetadataItem(addedItem) {
-                self.add(from: output.path, size: output.size, downloadStatus: output.status, status: .tagged)
+
+                let status: TaggingStatus
+                if let groups = output.path.lastPathComponent.capturedGroups(withRegex: regex),
+                    !groups.isEmpty {
+                    status = .tagged
+                } else {
+                    status = .untagged
+                }
+
+                // add document to archive
+                self.add(from: output.path, size: output.size, downloadStatus: output.status, status: status)
             }
         }
 
@@ -71,10 +83,7 @@ extension Archive: DocumentsQueryDelegate {
     private func parseMetadataItem(_ metadataItem: NSMetadataItem) throws -> (path: URL, size: Int64?, status: DownloadStatus) {
 
         // get the document path
-        let regex = "^(\\d{4}-\\d{2}-\\d{2}--[^_]+__[\\w\\d_]+.[pdfPDF]{3})$"
-        guard let documentPath = metadataItem.value(forAttribute: NSMetadataItemURLKey) as? URL,
-            let groups = documentPath.lastPathComponent.capturedGroups(withRegex: regex),
-            !groups.isEmpty else { throw ArchiveError.parsingError }
+        guard let documentPath = metadataItem.value(forAttribute: NSMetadataItemURLKey) as? URL else { throw ArchiveError.parsingError }
 
         // Check if it is a local document. These two values are possible for the "NSMetadataUbiquitousItemDownloadingStatusKey":
         // - NSMetadataUbiquitousItemDownloadingStatusCurrent

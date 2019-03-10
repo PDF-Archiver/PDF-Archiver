@@ -6,11 +6,13 @@
 //  Copyright © 2018 Julian Kahnert. All rights reserved.
 //
 
+import ArchiveLib
+import os.log
 import Sentry
 import UIKit
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
 
     var window: UIWindow?
 
@@ -26,7 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             try Client.shared?.startCrashHandler()
             Client.shared?.enableAutomaticBreadcrumbTracking()
         } catch let error {
-            print("\(error)")
+            os_log("%@", log: AppDelegate.log, type: .error, error.localizedDescription)
         }
 
         self.window?.tintColor = UIColor(named: "TextColor")

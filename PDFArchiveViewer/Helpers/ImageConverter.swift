@@ -52,8 +52,7 @@ public struct ImageConverter: Logging {
             do {
                 try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true, attributes: nil)
             } catch {
-                print(error.localizedDescription)
-                os_log("Selected Document: %@", log: log, type: .error, error.localizedDescription)
+                os_log("Directory creation error: %@", log: log, type: .error, error.localizedDescription)
             }
         }
 

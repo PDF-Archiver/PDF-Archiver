@@ -147,7 +147,7 @@ class ArchiveViewController: UIViewController, UITableViewDelegate, Logging {
 
         var indexPaths = [IndexPath]()
         for document in lhs.subtracting(rhs) {
-            guard let indexPath = getIndexPath(of: document, in: sections) else { print("WARNING!!!!!!!!!!!!\n\n"); continue }
+            guard let indexPath = getIndexPath(of: document, in: sections) else { os_log("No index path found for document: %@", log: ArchiveViewController.log, type: .error, document.filename); continue }
             indexPaths.append(indexPath)
         }
         return indexPaths
@@ -279,9 +279,9 @@ extension ArchiveViewController: UITableViewDataSource {
             selectedDocument = indexPath
             performSegue(withIdentifier: "showDetails", sender: self)
         case .downloading:
-            print("Downloading currently ...")
+            os_log("Downloading currently ...", log: ArchiveViewController.log, type: .debug)
         case .iCloudDrive:
-            print("Start download ...")
+            os_log("Start download ...", log: ArchiveViewController.log, type: .debug)
             document.download()
             selectedDocument = tableView.indexPathForSelectedRow
         }
