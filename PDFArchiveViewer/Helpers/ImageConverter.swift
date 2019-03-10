@@ -41,6 +41,12 @@ public struct ImageConverter: Logging {
     }
 
     private static func getFilenameFrom(_ image: UIImage) -> String {
+
+        // get OCR content
+        let content = OCRHelper.createOCR(image)
+        
+        // TODO: parse filename form content
+
         return ""
     }
 

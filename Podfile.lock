@@ -3,24 +3,28 @@ PODS:
     - Sentry/Core (= 4.2.1)
   - Sentry/Core (4.2.1)
   - TagListView (1.3.2)
+  - TesseractOCRiOS (5.0.1)
   - WeScan (1.0.0)
 
 DEPENDENCIES:
   - Sentry (~> 4.2)
   - TagListView (~> 1.3)
+  - TesseractOCRiOS (~> 5.0)
   - WeScan (~> 1.0)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - Sentry
     - TagListView
+    - TesseractOCRiOS
     - WeScan
 
 SPEC CHECKSUMS:
   Sentry: b4efbf4f0d1d18681954fa861d154f79196c4b58
   TagListView: 0c7e9c26b9aff858224ee6b155f5fcacd9e27c83
+  TesseractOCRiOS: 2c189465f86abb030d0c5141c90da9705b647854
   WeScan: a049a4a2a0eb1c4560cf649ebd933d07b0d9ef4c
 
-PODFILE CHECKSUM: 40d7204b214464c57c9287e9d759fbc50234ada8
+PODFILE CHECKSUM: a734f47d0f894348d36abf6994c4f7c5f0e15e72
 
 COCOAPODS: 1.6.1

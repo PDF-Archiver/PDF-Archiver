@@ -29,10 +29,15 @@
 		A378C433221B3929007D1419 /* DocumentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A378C432221B3929007D1419 /* DocumentService.swift */; };
 		A381CF21222F0B5D00FAFA7C /* ImageConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A381CF20222F0B5D00FAFA7C /* ImageConverter.swift */; };
 		A381D1A522319D9B00434790 /* TagViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A381D1A422319D9B00434790 /* TagViewController.swift */; };
+		A388C82122351800000D52CB /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A388C82022351800000D52CB /* libz.tbd */; };
+		A388C8232235195B000D52CB /* OCRHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A388C8222235195B000D52CB /* OCRHelper.swift */; };
+		A388C82522351FDD000D52CB /* tessdata in Resources */ = {isa = PBXBuildFile; fileRef = A388C82422351FDD000D52CB /* tessdata */; };
 		A3932824221EF7DC00858461 /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3932823221EF7DC00858461 /* ScanViewController.swift */; };
 		A39A807821FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
 		A39A807921FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
 		A39A807A21FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
+		A3B13783223516B200C91BB1 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3B13782223516B200C91BB1 /* CoreImage.framework */; };
+		A3B13785223516ED00C91BB1 /* TesseractOCR.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3B13784223516ED00C91BB1 /* TesseractOCR.framework */; };
 		A3B83719215FCEFA00DA239F /* PDFArchiveViewerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B83718215FCEFA00DA239F /* PDFArchiveViewerUITests.swift */; };
 		A3B83721215FD14A00DA239F /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B83720215FD14A00DA239F /* SnapshotHelper.swift */; };
 		A3B83864218CA7640093C374 /* TableSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B83863218CA7640093C374 /* TableSection.swift */; };
@@ -104,8 +109,13 @@
 		A378C432221B3929007D1419 /* DocumentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentService.swift; sourceTree = "<group>"; };
 		A381CF20222F0B5D00FAFA7C /* ImageConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageConverter.swift; sourceTree = "<group>"; };
 		A381D1A422319D9B00434790 /* TagViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagViewController.swift; sourceTree = "<group>"; };
+		A388C82022351800000D52CB /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		A388C8222235195B000D52CB /* OCRHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRHelper.swift; sourceTree = "<group>"; };
+		A388C82422351FDD000D52CB /* tessdata */ = {isa = PBXFileReference; lastKnownFileType = folder; path = tessdata; sourceTree = "<group>"; };
 		A3932823221EF7DC00858461 /* ScanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
 		A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf"; sourceTree = "<group>"; };
+		A3B13782223516B200C91BB1 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
+		A3B13784223516ED00C91BB1 /* TesseractOCR.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = TesseractOCR.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A3B83716215FCEFA00DA239F /* PDFArchiveViewerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PDFArchiveViewerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A3B83718215FCEFA00DA239F /* PDFArchiveViewerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFArchiveViewerUITests.swift; sourceTree = "<group>"; };
 		A3B8371A215FCEFA00DA239F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -132,6 +142,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A388C82122351800000D52CB /* libz.tbd in Frameworks */,
+				A3B13785223516ED00C91BB1 /* TesseractOCR.framework in Frameworks */,
+				A3B13783223516B200C91BB1 /* CoreImage.framework in Frameworks */,
 				C531B4DA59C21326779D6C93 /* Pods_PDFArchiveViewer.framework in Frameworks */,
 				A337C07521D42EC800821B81 /* ArchiveLib.framework in Frameworks */,
 			);
@@ -197,6 +210,9 @@
 		2C90F6DAB110A4A6FF569E3A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A388C82022351800000D52CB /* libz.tbd */,
+				A3B13784223516ED00C91BB1 /* TesseractOCR.framework */,
+				A3B13782223516B200C91BB1 /* CoreImage.framework */,
 				947EC737893707137CE047F1 /* Pods_PDFArchiveViewer.framework */,
 				D8CC869C580192C597A48720 /* Pods_PDFArchiveViewerUITests.framework */,
 			);
@@ -242,6 +258,7 @@
 				A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */,
 				A3B83863218CA7640093C374 /* TableSection.swift */,
 				A381CF20222F0B5D00FAFA7C /* ImageConverter.swift */,
+				A388C8222235195B000D52CB /* OCRHelper.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -305,6 +322,7 @@
 		A3FECF952130A0220053F2E4 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A388C82422351FDD000D52CB /* tessdata */,
 				A32777E321FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf */,
 				A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */,
 				A3F3DACA21B1E4080004EFF6 /* ArchiveLib.framework */,
@@ -441,6 +459,7 @@
 				A301A75721496992003EA382 /* DocumentTableViewCell.xib in Resources */,
 				A3EBFE9C21650F58008C34CC /* Localizable.strings in Resources */,
 				171E0C8A1B8E5B84001E6242 /* LaunchScreen.storyboard in Resources */,
+				A388C82522351FDD000D52CB /* tessdata in Resources */,
 				A34A85022130A3870093FAE5 /* Assets.xcassets in Resources */,
 				A39A807821FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */,
 				A3F30D94221C9C360063D173 /* Archive.storyboard in Resources */,
@@ -527,6 +546,7 @@
 				"${PODS_ROOT}/Target Support Files/Pods-PDFArchiveViewer/Pods-PDFArchiveViewer-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Sentry/Sentry.framework",
 				"${BUILT_PRODUCTS_DIR}/TagListView/TagListView.framework",
+				"${BUILT_PRODUCTS_DIR}/TesseractOCRiOS/TesseractOCR.framework",
 				"${BUILT_PRODUCTS_DIR}/WeScan/WeScan.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -535,6 +555,7 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Sentry.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TagListView.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TesseractOCR.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WeScan.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -595,6 +616,7 @@
 				A34A84FA2130A35A0093FAE5 /* DocumentsQuery.swift in Sources */,
 				A381D1A522319D9B00434790 /* TagViewController.swift in Sources */,
 				A3F1C21D2163DCD9002B0141 /* AppStoreReviewRequest.swift in Sources */,
+				A388C8232235195B000D52CB /* OCRHelper.swift in Sources */,
 				A3F30D8E221C968E0063D173 /* SplitViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -795,6 +817,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/PDFArchiveViewer/Resources/PDFArchiveViewer.entitlements";
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/PDFArchiveViewer/Resources/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -811,6 +834,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/PDFArchiveViewer/Resources/PDFArchiveViewer.entitlements";
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/PDFArchiveViewer/Resources/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
