@@ -20,6 +20,7 @@ enum OCRHelper {
             // could not find any german "tessdata cube" files, therefore we use "tesseractOnly" mode
             tesseract.engineMode = .tesseractOnly
             tesseract.pageSegmentationMode = .auto
+            tesseract.image = image.g8_blackAndWhite()
             tesseract.recognize()
             content = tesseract.recognizedText
         }

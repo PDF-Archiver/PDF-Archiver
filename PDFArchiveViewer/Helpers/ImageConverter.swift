@@ -21,7 +21,7 @@ public struct ImageConverter: Logging {
 
         // generate filename by analysing the image
         let filename = getFilenameFrom(image)
-        let filepath = path.appendingPathComponent(filename).appendingPathExtension("pdf")
+        let filepath = path.appendingPathComponent(filename)
 
         // save PDF
         savePDF(pdfDocument, at: filepath)
@@ -40,14 +40,26 @@ public struct ImageConverter: Logging {
         return pdfDocument
     }
 
-    private static func getFilenameFrom(_ image: UIImage) -> String {
+    static func getFilenameFrom(_ image: UIImage) -> String {
 
         // get OCR content
         let content = OCRHelper.createOCR(image)
-        
-        // TODO: parse filename form content
 
-        return ""
+        // parse the date
+        let parsedDate = DateParser.parse(content)
+        let date = parsedDate?.date ?? Date()
+
+        // parse the tags
+        var newTags = TagParser.parse(content)
+        if newTags.isEmpty {
+            newTags.insert("ocr")
+            newTags.insert("scan")
+        }
+
+        // get default specification
+        let specification = Date().timeIntervalSince1970.description
+
+        return Document.createFilename(date: date, specification: specification, tags: newTags)
     }
 
     private static func savePDF(_ pdfDocument: PDFDocument, at path: URL) {

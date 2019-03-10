@@ -25,7 +25,8 @@ extension Archive: DocumentsQueryDelegate {
             if let output = try? parseMetadataItem(addedItem) {
 
                 let status: TaggingStatus
-                if let groups = output.path.lastPathComponent.capturedGroups(withRegex: regex),
+                if !output.path.deletingLastPathComponent().lastPathComponent.contains("untagged"),
+                    let groups = output.path.lastPathComponent.capturedGroups(withRegex: regex),
                     !groups.isEmpty {
                     status = .tagged
                 } else {

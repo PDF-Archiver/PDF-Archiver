@@ -6,12 +6,29 @@
 //  Copyright © 2018 Julian Kahnert. All rights reserved.
 //
 
+import ArchiveLib
+@testable import PDFArchiveViewer
+import PDFKit
 import XCTest
 
 class PDFArchiveViewerTests: XCTestCase {
 
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testOCRContentParsing() {
+
+        guard let image = UIImage(named: "test-ocr-data.png") else { return XCTFail("Could not find image!") }
+
+        // get OCR content
+        let content = OCRHelper.createOCR(image)
+
+        // parse the date
+        let parsedDate = DateParser.parse(content)
+
+        // parse the tags
+        let newTags = TagParser.parse(content)
+
+        print(content)
+        XCTAssertFalse(content.isEmpty)
+        XCTAssertFalse(newTags.isEmpty)
+        XCTAssertNotNil(parsedDate)
     }
 }
