@@ -200,6 +200,10 @@
         <scene sceneID="Alk-7W-AHX">
             <objects>
                 <viewController id="T5S-hk-qlt" customClass="TagViewController" customModule="PDFArchiveViewer" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="xod-oC-VXe"/>
+                        <viewControllerLayoutGuide type="bottom" id="U5q-OW-roT"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="kxM-LF-4yd">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="1200"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -242,7 +246,7 @@
                                                     <action selector="scanButtonTapped:" destination="evb-gb-Gyk" eventType="touchUpInside" id="u6J-0w-Ipk"/>
                                                 </connections>
                                             </button>
-                                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3FF-NI-nZN">
+                                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3FF-NI-nZN" customClass="PDFView">
                                                 <rect key="frame" x="25" y="71" width="325" height="744"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" name="TextColor"/>
@@ -282,6 +286,7 @@
                     <size key="freeformSize" width="375" height="1200"/>
                     <connections>
                         <outlet property="datePicker" destination="kpn-Ji-dFk" id="lG3-zh-Zq6"/>
+                        <outlet property="documentView" destination="3FF-NI-nZN" id="9wV-Um-cvr"/>
                         <outlet property="specificationTextField" destination="BmQ-GG-lcY" id="xrS-T0-MCg"/>
                         <outlet property="tagsTextField" destination="Oup-aE-1ES" id="xnQ-f7-gYT"/>
                         <outlet property="untaggedDocumentsCount" destination="9Md-XA-IBH" id="olh-Fd-kaX"/>
