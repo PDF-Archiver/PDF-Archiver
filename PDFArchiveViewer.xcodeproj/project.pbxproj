@@ -12,7 +12,6 @@
 		171E0C821B8E5B84001E6242 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171E0C811B8E5B84001E6242 /* DetailViewController.swift */; };
 		171E0C851B8E5B84001E6242 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171E0C831B8E5B84001E6242 /* Main.storyboard */; };
 		171E0C8A1B8E5B84001E6242 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171E0C881B8E5B84001E6242 /* LaunchScreen.storyboard */; };
-		7B9327C74253B724FBED77BC /* Pods_PDFArchiveViewerUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8CC869C580192C597A48720 /* Pods_PDFArchiveViewerUITests.framework */; };
 		A301A75621496992003EA382 /* DocumentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A301A75421496992003EA382 /* DocumentTableViewCell.swift */; };
 		A301A75721496992003EA382 /* DocumentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A301A75521496992003EA382 /* DocumentTableViewCell.xib */; };
 		A305AE4821D81E74004DDC1B /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A305AE4721D81E74004DDC1B /* NavigationController.swift */; };
@@ -20,8 +19,6 @@
 		A32777E421FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A32777E321FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf */; };
 		A32777E521FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A32777E321FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf */; };
 		A32777E621FDD7BF0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A32777E321FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf */; };
-		A337C07521D42EC800821B81 /* ArchiveLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A337C07421D42EC800821B81 /* ArchiveLib.framework */; };
-		A337C07621D42EC800821B81 /* ArchiveLib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A337C07421D42EC800821B81 /* ArchiveLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A34A84F92130A35A0093FAE5 /* DocumentExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34A84F52130A35A0093FAE5 /* DocumentExtension.swift */; };
 		A34A84FA2130A35A0093FAE5 /* DocumentsQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34A84F62130A35A0093FAE5 /* DocumentsQuery.swift */; };
 		A34A84FC2130A35A0093FAE5 /* ArchiveExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34A84F82130A35A0093FAE5 /* ArchiveExtension.swift */; };
@@ -29,7 +26,6 @@
 		A378C433221B3929007D1419 /* DocumentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A378C432221B3929007D1419 /* DocumentService.swift */; };
 		A381CF21222F0B5D00FAFA7C /* ImageConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A381CF20222F0B5D00FAFA7C /* ImageConverter.swift */; };
 		A381D1A522319D9B00434790 /* TagViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A381D1A422319D9B00434790 /* TagViewController.swift */; };
-		A388C82122351800000D52CB /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A388C82022351800000D52CB /* libz.tbd */; };
 		A388C8232235195B000D52CB /* OCRHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A388C8222235195B000D52CB /* OCRHelper.swift */; };
 		A388C82522351FDD000D52CB /* tessdata in Resources */ = {isa = PBXBuildFile; fileRef = A388C82422351FDD000D52CB /* tessdata */; };
 		A388C8272235330F000D52CB /* test-ocr-data.png in Resources */ = {isa = PBXBuildFile; fileRef = A388C8262235330F000D52CB /* test-ocr-data.png */; };
@@ -37,8 +33,6 @@
 		A39A807821FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
 		A39A807921FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
 		A39A807A21FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
-		A3B13783223516B200C91BB1 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3B13782223516B200C91BB1 /* CoreImage.framework */; };
-		A3B13785223516ED00C91BB1 /* TesseractOCR.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3B13784223516ED00C91BB1 /* TesseractOCR.framework */; };
 		A3B83719215FCEFA00DA239F /* PDFArchiveViewerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B83718215FCEFA00DA239F /* PDFArchiveViewerUITests.swift */; };
 		A3B83721215FD14A00DA239F /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B83720215FD14A00DA239F /* SnapshotHelper.swift */; };
 		A3B83864218CA7640093C374 /* TableSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B83863218CA7640093C374 /* TableSection.swift */; };
@@ -48,7 +42,8 @@
 		A3F1C21D2163DCD9002B0141 /* AppStoreReviewRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */; };
 		A3F30D8E221C968E0063D173 /* SplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F30D8D221C968E0063D173 /* SplitViewController.swift */; };
 		A3F30D94221C9C360063D173 /* Archive.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A3F30D93221C9C360063D173 /* Archive.storyboard */; };
-		C531B4DA59C21326779D6C93 /* Pods_PDFArchiveViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 947EC737893707137CE047F1 /* Pods_PDFArchiveViewer.framework */; };
+		DE445E48730FBF40AFCF42DB /* Pods_PDFArchiveViewerUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50ADA4E30B607E1F6631A716 /* Pods_PDFArchiveViewerUITests.framework */; };
+		F024B33ED56BB0990D46C9A7 /* Pods_PDFArchiveViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A25EBE56D8E845513A0822F /* Pods_PDFArchiveViewer.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,7 +70,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				A337C07621D42EC800821B81 /* ArchiveLib.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -92,16 +86,16 @@
 		171E0C891B8E5B84001E6242 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		171E0C8B1B8E5B84001E6242 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		241D1A9152A9E16AD7783A46 /* Pods-PDFArchiveViewerUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PDFArchiveViewerUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PDFArchiveViewerUITests/Pods-PDFArchiveViewerUITests.release.xcconfig"; sourceTree = "<group>"; };
+		2A25EBE56D8E845513A0822F /* Pods_PDFArchiveViewer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PDFArchiveViewer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		30695EDF113E5913A4D7E741 /* Pods-PDFArchiveViewerUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PDFArchiveViewerUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PDFArchiveViewerUITests/Pods-PDFArchiveViewerUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		445848DF002FD7CB545E7732 /* Pods-PDFArchiveViewer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PDFArchiveViewer.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PDFArchiveViewer/Pods-PDFArchiveViewer.debug.xcconfig"; sourceTree = "<group>"; };
-		947EC737893707137CE047F1 /* Pods_PDFArchiveViewer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PDFArchiveViewer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		50ADA4E30B607E1F6631A716 /* Pods_PDFArchiveViewerUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PDFArchiveViewerUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A301A75421496992003EA382 /* DocumentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentTableViewCell.swift; sourceTree = "<group>"; };
 		A301A75521496992003EA382 /* DocumentTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DocumentTableViewCell.xib; sourceTree = "<group>"; };
 		A305AE4721D81E74004DDC1B /* NavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
 		A31263E3217B75DC00ACAFA4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LoadingBackgroundView.xib; sourceTree = "<group>"; };
 		A31263E6217B75E200ACAFA4 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LoadingBackgroundView.strings; sourceTree = "<group>"; };
 		A32777E321FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf"; sourceTree = "<group>"; };
-		A337C07421D42EC800821B81 /* ArchiveLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ArchiveLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A34A84F52130A35A0093FAE5 /* DocumentExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentExtension.swift; sourceTree = "<group>"; };
 		A34A84F62130A35A0093FAE5 /* DocumentsQuery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentsQuery.swift; sourceTree = "<group>"; };
 		A34A84F82130A35A0093FAE5 /* ArchiveExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArchiveExtension.swift; sourceTree = "<group>"; };
@@ -110,14 +104,12 @@
 		A378C432221B3929007D1419 /* DocumentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentService.swift; sourceTree = "<group>"; };
 		A381CF20222F0B5D00FAFA7C /* ImageConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageConverter.swift; sourceTree = "<group>"; };
 		A381D1A422319D9B00434790 /* TagViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagViewController.swift; sourceTree = "<group>"; };
-		A388C82022351800000D52CB /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		A388C8222235195B000D52CB /* OCRHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRHelper.swift; sourceTree = "<group>"; };
 		A388C82422351FDD000D52CB /* tessdata */ = {isa = PBXFileReference; lastKnownFileType = folder; path = tessdata; sourceTree = "<group>"; };
 		A388C8262235330F000D52CB /* test-ocr-data.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "test-ocr-data.png"; sourceTree = "<group>"; };
 		A3932823221EF7DC00858461 /* ScanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
 		A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf"; sourceTree = "<group>"; };
 		A3B13782223516B200C91BB1 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
-		A3B13784223516ED00C91BB1 /* TesseractOCR.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = TesseractOCR.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A3B83716215FCEFA00DA239F /* PDFArchiveViewerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PDFArchiveViewerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A3B83718215FCEFA00DA239F /* PDFArchiveViewerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFArchiveViewerUITests.swift; sourceTree = "<group>"; };
 		A3B8371A215FCEFA00DA239F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -136,7 +128,6 @@
 		A3F30D8D221C968E0063D173 /* SplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewController.swift; sourceTree = "<group>"; };
 		A3F30D93221C9C360063D173 /* Archive.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Archive.storyboard; sourceTree = "<group>"; };
 		A3F3DACA21B1E4080004EFF6 /* ArchiveLib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ArchiveLib.framework; path = "../../../../../Library/Developer/Xcode/DerivedData/PDFArchiveViewer-bbskspzizlnpcpajkyzthtlwcnfa/Build/Products/Debug-iphoneos/ArchiveLib.framework"; sourceTree = "<group>"; };
-		D8CC869C580192C597A48720 /* Pods_PDFArchiveViewerUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PDFArchiveViewerUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -144,11 +135,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A388C82122351800000D52CB /* libz.tbd in Frameworks */,
-				A3B13785223516ED00C91BB1 /* TesseractOCR.framework in Frameworks */,
-				A3B13783223516B200C91BB1 /* CoreImage.framework in Frameworks */,
-				C531B4DA59C21326779D6C93 /* Pods_PDFArchiveViewer.framework in Frameworks */,
-				A337C07521D42EC800821B81 /* ArchiveLib.framework in Frameworks */,
+				F024B33ED56BB0990D46C9A7 /* Pods_PDFArchiveViewer.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -156,7 +143,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7B9327C74253B724FBED77BC /* Pods_PDFArchiveViewerUITests.framework in Frameworks */,
+				DE445E48730FBF40AFCF42DB /* Pods_PDFArchiveViewerUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -178,7 +165,6 @@
 				A3B83717215FCEFA00DA239F /* PDFArchiveViewerUITests */,
 				171E0C7B1B8E5B84001E6242 /* Products */,
 				778DE403AE2BDEFAAB7AE643 /* Pods */,
-				A337C07421D42EC800821B81 /* ArchiveLib.framework */,
 				2C90F6DAB110A4A6FF569E3A /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -212,11 +198,9 @@
 		2C90F6DAB110A4A6FF569E3A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				A388C82022351800000D52CB /* libz.tbd */,
-				A3B13784223516ED00C91BB1 /* TesseractOCR.framework */,
 				A3B13782223516B200C91BB1 /* CoreImage.framework */,
-				947EC737893707137CE047F1 /* Pods_PDFArchiveViewer.framework */,
-				D8CC869C580192C597A48720 /* Pods_PDFArchiveViewerUITests.framework */,
+				2A25EBE56D8E845513A0822F /* Pods_PDFArchiveViewer.framework */,
+				50ADA4E30B607E1F6631A716 /* Pods_PDFArchiveViewerUITests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -412,7 +396,7 @@
 					171E0C791B8E5B84001E6242 = {
 						CreatedOnToolsVersion = 7.0;
 						DevelopmentTeam = 87KNVHZ8C7;
-						LastSwiftMigration = 1000;
+						LastSwiftMigration = 1010;
 						SystemCapabilities = {
 							com.apple.iCloud = {
 								enabled = 1;
@@ -422,12 +406,14 @@
 					A3B83715215FCEFA00DA239F = {
 						CreatedOnToolsVersion = 10.0;
 						DevelopmentTeam = 87KNVHZ8C7;
+						LastSwiftMigration = 1010;
 						ProvisioningStyle = Automatic;
 						TestTargetID = 171E0C791B8E5B84001E6242;
 					};
 					A3BCC972217F84DB00C3775E = {
 						CreatedOnToolsVersion = 10.0;
 						DevelopmentTeam = 87KNVHZ8C7;
+						LastSwiftMigration = 1010;
 						ProvisioningStyle = Automatic;
 						TestTargetID = 171E0C791B8E5B84001E6242;
 					};
@@ -550,7 +536,6 @@
 				"${PODS_ROOT}/Target Support Files/Pods-PDFArchiveViewer/Pods-PDFArchiveViewer-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Sentry/Sentry.framework",
 				"${BUILT_PRODUCTS_DIR}/TagListView/TagListView.framework",
-				"${BUILT_PRODUCTS_DIR}/TesseractOCRiOS/TesseractOCR.framework",
 				"${BUILT_PRODUCTS_DIR}/WeScan/WeScan.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -559,7 +544,6 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Sentry.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TagListView.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TesseractOCR.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WeScan.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -819,14 +803,39 @@
 			baseConfigurationReference = 445848DF002FD7CB545E7732 /* Pods-PDFArchiveViewer.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/PDFArchiveViewer/Resources/PDFArchiveViewer.entitlements";
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
-				ENABLE_BITCODE = NO;
+				ENABLE_BITCODE = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = "$(SRCROOT)/PDFArchiveViewer/Resources/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/lib",
+				);
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-l\"c++\"",
+					"-l\"z\"",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"Sentry\"",
+					"-framework",
+					"\"TagListView\"",
+					"-framework",
+					"\"WeScan\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
@@ -836,14 +845,38 @@
 			baseConfigurationReference = 11C9BA2A739A3A3401862491 /* Pods-PDFArchiveViewer.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/PDFArchiveViewer/Resources/PDFArchiveViewer.entitlements";
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
-				ENABLE_BITCODE = NO;
+				ENABLE_BITCODE = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = "$(SRCROOT)/PDFArchiveViewer/Resources/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/lib",
+				);
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-l\"c++\"",
+					"-l\"z\"",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"Sentry\"",
+					"-framework",
+					"\"TagListView\"",
+					"-framework",
+					"\"WeScan\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
@@ -855,12 +888,17 @@
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = PDFArchiveViewerUITests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
@@ -870,6 +908,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = de.juliankahnert.PDFArchiveViewerUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = PDFArchiveViewer;
@@ -883,12 +923,17 @@
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = PDFArchiveViewerUITests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
@@ -896,6 +941,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = de.juliankahnert.PDFArchiveViewerUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = PDFArchiveViewer;
@@ -909,12 +955,17 @@
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = PDFArchiveViewerTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
@@ -924,6 +975,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = de.juliankahnert.PDFArchiveViewerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PDFArchiveViewer.app/PDFArchiveViewer";
@@ -937,12 +990,17 @@
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = PDFArchiveViewerTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
@@ -950,6 +1008,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = de.juliankahnert.PDFArchiveViewerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PDFArchiveViewer.app/PDFArchiveViewer";

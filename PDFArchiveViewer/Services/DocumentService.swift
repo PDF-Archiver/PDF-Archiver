@@ -10,7 +10,7 @@ import ArchiveLib
 import Foundation
 
 /// Singleton responsible for accessing and searching documents.
-final class DocumentService {
+enum DocumentService {
 
     static let archive = Archive()
 
