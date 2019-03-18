@@ -1,12 +1,14 @@
 PODS:
-  - Sentry (4.2.1):
-    - Sentry/Core (= 4.2.1)
-  - Sentry/Core (4.2.1)
+  - Sentry (4.3.1):
+    - Sentry/Core (= 4.3.1)
+  - Sentry/Core (4.3.1)
+  - SwiftyTesseract (2.1.0)
   - TagListView (1.3.2)
   - WeScan (1.0.0)
 
 DEPENDENCIES:
   - Sentry (~> 4.2)
+  - SwiftyTesseract (from `https://github.com/PDF-Archiver/SwiftyTesseract.git`, branch `master`)
   - TagListView (~> 1.3)
   - WeScan (~> 1.0)
 
@@ -16,11 +18,22 @@ SPEC REPOS:
     - TagListView
     - WeScan
 
+EXTERNAL SOURCES:
+  SwiftyTesseract:
+    :branch: master
+    :git: https://github.com/PDF-Archiver/SwiftyTesseract.git
+
+CHECKOUT OPTIONS:
+  SwiftyTesseract:
+    :commit: f9c6daacb7c9bf1918f4da17184fcea3e6586b2b
+    :git: https://github.com/PDF-Archiver/SwiftyTesseract.git
+
 SPEC CHECKSUMS:
-  Sentry: b4efbf4f0d1d18681954fa861d154f79196c4b58
+  Sentry: 5267d493a398663538317e4dcc438c12c66202ed
+  SwiftyTesseract: e3404b09f982790ec1538b5071e57b97c8cb4007
   TagListView: 0c7e9c26b9aff858224ee6b155f5fcacd9e27c83
   WeScan: a049a4a2a0eb1c4560cf649ebd933d07b0d9ef4c
 
-PODFILE CHECKSUM: 40d7204b214464c57c9287e9d759fbc50234ada8
+PODFILE CHECKSUM: 0b2234be74cf27fa572e4bf0e569f75512fba6a7
 
 COCOAPODS: 1.6.1

@@ -10,40 +10,73 @@ import ArchiveLib
 import Foundation
 import os.log
 import PDFKit
+import SwiftyTesseract
 import UIKit
 
 public struct ImageConverter: Logging {
 
-    public static func process(_ image: UIImage, saveAt path: URL) {
+    private static let languages: [RecognitionLanguage] = [.german, .english, .italian, .french, .swedish, .russian]
+//    private static let languages: [RecognitionLanguage] = {
+//        var langs: [RecognitionLanguage] = [.german, .english]
+//
+//        if Locale.current.identifier.starts(with: "it") {
+//            langs.append(.italian)
+//        } else if Locale.current.identifier.starts(with: "fr") {
+//            langs.append(.french)
+//        } else if Locale.current.identifier.starts(with: "sv") {
+//            langs.append(.swedish)
+//        } else if Locale.current.identifier.starts(with: "ru") {
+//            langs.append(.russian)
+//        }
+//        return langs
+//    }()
+
+    public static func process(_ images: [UIImage], saveAt path: URL) {
 
         // convert image to pdf
-        let pdfDocument = convertToPDF(image)
+        let pdfDocument = createPDF(from: images)
 
         // generate filename by analysing the image
-        let filename = getFilenameFrom(image)
+        let filename = getFilename(from: pdfDocument)
         let filepath = path.appendingPathComponent(filename)
 
-        // save PDF
-        savePDF(pdfDocument, at: filepath)
+        // save PDF document
+        save(pdfDocument, at: filepath)
     }
 
-    private static func convertToPDF(_ image: UIImage) -> PDFDocument {
-        // Create an empty PDF document
-        let pdfDocument = PDFDocument()
+    static func createPDF(from images: [UIImage]) -> PDFDocument {
 
-        // Create a PDF page instance from the image
-        guard let pdfPage = PDFPage(image: image) else { fatalError("No PDF page found.") }
+        let document: PDFDocument
 
-        // Insert the PDF page into your document
-        pdfDocument.insert(pdfPage, at: 0)
+        // try to create a pdf document from
+        let swiftyTesseract = SwiftyTesseract(languages: languages, bundle: .main, engineMode: .lstmOnly)
+        if let data = try? swiftyTesseract.createPDF(from: images),
+            let newDocument = PDFDocument(data: data) {
+            document = newDocument
 
-        return pdfDocument
+        } else {
+            // Create an empty PDF document
+            let newDocument = PDFDocument()
+
+            for (index, image) in images.enumerated() {
+
+                // Create a PDF page instance from the image
+                guard let pdfPage = PDFPage(image: image) else { continue }
+
+                // Insert the PDF page into your document
+                newDocument.insert(pdfPage, at: index)
+            }
+
+            document = newDocument
+        }
+
+        return document
     }
 
-    static func getFilenameFrom(_ image: UIImage) -> String {
+    static func getFilename(from document: PDFDocument) -> String {
 
         // get OCR content
-        let content = OCRHelper.createOCR(image)
+        guard let content = document.string else { return "" }
 
         // parse the date
         let parsedDate = DateParser.parse(content)
@@ -62,7 +95,7 @@ public struct ImageConverter: Logging {
         return Document.createFilename(date: date, specification: specification, tags: newTags)
     }
 
-    private static func savePDF(_ pdfDocument: PDFDocument, at path: URL) {
+    private static func save(_ pdfDocument: PDFDocument, at path: URL) {
 
         // check if the parent folder exists
         let folder = path.deletingLastPathComponent()
@@ -77,5 +110,4 @@ public struct ImageConverter: Logging {
         // save PDF document
         pdfDocument.write(to: path)
     }
-
 }

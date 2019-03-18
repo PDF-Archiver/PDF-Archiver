@@ -60,7 +60,7 @@ extension ScanViewController: ImageScannerControllerDelegate {
 
         // convert and save image on a background thread
         DispatchQueue.global(qos: .background).async {
-            ImageConverter.process(image, saveAt: containerUrl.appendingPathComponent("Documents").appendingPathComponent("untagged"))
+            ImageConverter.process([image], saveAt: containerUrl.appendingPathComponent("Documents").appendingPathComponent("untagged"))
         }
     }
 

@@ -18,7 +18,8 @@ class PDFArchiveViewerTests: XCTestCase {
         guard let image = UIImage(named: "test-ocr-data.png") else { return XCTFail("Could not find image!") }
 
         // get OCR content
-        let content = OCRHelper.createOCR(image)
+        let document = ImageConverter.createPDF(from: [image])
+        guard let content = document.string else { return XCTFail("Could create PDF and/or parse content.") }
 
         // parse the date
         let parsedDate = DateParser.parse(content)
@@ -26,9 +27,11 @@ class PDFArchiveViewerTests: XCTestCase {
         // parse the tags
         let newTags = TagParser.parse(content)
 
-        print(content)
+        XCTAssertNotNil(document)
         XCTAssertFalse(content.isEmpty)
         XCTAssertFalse(newTags.isEmpty)
         XCTAssertNotNil(parsedDate)
+
+        XCTAssertTrue(content.contains("TAILOR"))
     }
 }

@@ -9,6 +9,7 @@ target 'PDFArchiveViewer' do
   pod 'TagListView', '~> 1.3'
   pod 'Sentry', '~> 4.2'
   pod 'WeScan', '~> 1.0'
+  pod 'SwiftyTesseract', :git => 'https://github.com/PDF-Archiver/SwiftyTesseract.git', :branch => 'master'
 
   target 'PDFArchiveViewerUITests' do
     inherit! :search_paths
