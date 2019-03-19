@@ -12,11 +12,16 @@ import WeScan
 
 class ScanViewController: UIViewController, Logging {
 
-    private let scannerViewController = ImageScannerController()
+    private var scannerViewController: ImageScannerController?
 
     @IBOutlet private var scanView: UIView!
 
     @IBAction private func scanButtonTapped(_ sender: UIButton) {
+
+        scannerViewController = ImageScannerController()
+
+        guard let scannerViewController = scannerViewController else { return }
+        scannerViewController.imageScannerDelegate = self
         present(scannerViewController, animated: true)
     }
 
@@ -26,8 +31,6 @@ class ScanViewController: UIViewController, Logging {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
-        scannerViewController.imageScannerDelegate = self
         scanView.subviews.forEach { $0.layer.cornerRadius = 10 }
     }
 }
@@ -59,7 +62,7 @@ extension ScanViewController: ImageScannerControllerDelegate {
         guard let containerUrl = FileManager.default.url(forUbiquityContainerIdentifier: nil) else { fatalError("Could not find a iCloud Drive url.") }
 
         // convert and save image on a background thread
-        DispatchQueue.global(qos: .background).async {
+        DispatchQueue.global(qos: .userInitiated).async {
             ImageConverter.process([image], saveAt: containerUrl.appendingPathComponent("Documents").appendingPathComponent("untagged"))
         }
     }
