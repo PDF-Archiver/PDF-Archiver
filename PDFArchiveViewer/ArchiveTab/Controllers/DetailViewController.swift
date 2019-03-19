@@ -37,8 +37,7 @@ class DetailViewController: UIViewController, Logging {
     @IBOutlet weak var documentView: PDFView!
 
     @IBAction private func shareButtonClicked(_ sender: UIBarButtonItem) {
-        guard let document = detailDocument,
-            let pdfDocumentData = NSData(contentsOf: document.path) else {
+        guard let document = detailDocument else {
 
             // pop up an alert dialogue letting us know it has failed
             let alertTitle = NSLocalizedString("Error", comment: "The title of an error message popup")
@@ -58,7 +57,7 @@ class DetailViewController: UIViewController, Logging {
             return
         }
         // creating the sharing activity view controller
-        let activity = UIActivityViewController(activityItems: [pdfDocumentData],
+        let activity = UIActivityViewController(activityItems: [document.path],
                                                 applicationActivities: nil)
         // presenting it
         self.present(activity, animated: true, completion: nil)
