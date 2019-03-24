@@ -11,6 +11,12 @@
 /* UISearchBar placeholder */
 "search-documents" = "Dokumente durchsuchen";
 
+/* Subscription View Controller description text. */
+"subscription.text" = "• Testen Sie die App 1 Monat als Demo kostenlos. Wählen Sie hierfür eine Abo-Modell auf der rechten Seite aus.\n• Ihr Apple-Account wird innerhalb der letzten 24 Stunden der Laufzeit des laufenden Abos für den nächsten Zeitraum belastet.\n• Das Abo verlängert sich automatisch, wenn die Verlängerung nicht wenigstens 24 Stunden vor Ablauf in den Konto-Einstellungen in iTunes oder im App Store deaktiviert wird.";
+
+/* Subscription View Controller title. */
+"subscription.title" = "Abo";
+
 /* No comment provided by engineer. */
 "test_file1" = "2018-04-05--gehalt-april__arbeit_steuer_gehalt.pdf";
 

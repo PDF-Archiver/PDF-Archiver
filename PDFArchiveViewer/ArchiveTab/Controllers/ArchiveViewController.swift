@@ -292,8 +292,8 @@ extension ArchiveViewController: UITableViewDataSource {
         guard let view = view as? UITableViewHeaderFooterView else { return }
 
         // change colors
-        view.textLabel?.textColor = UIColor(named: "MainTextColor")
-        view.backgroundView?.backgroundColor = UIColor(named: "MainBackgroundColor")
+        view.textLabel?.textColor = .paDarkRed
+        view.backgroundView?.backgroundColor = .paWhite
     }
 }
 

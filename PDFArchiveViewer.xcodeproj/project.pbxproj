@@ -34,6 +34,7 @@
 		A39A807821FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
 		A39A807921FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
 		A39A807A21FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
+		A3B3F3FC22417E21009ED4A6 /* SubscriptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B3F3FB22417E21009ED4A6 /* SubscriptionViewController.swift */; };
 		A3B83719215FCEFA00DA239F /* PDFArchiveViewerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B83718215FCEFA00DA239F /* PDFArchiveViewerUITests.swift */; };
 		A3B83721215FD14A00DA239F /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B83720215FD14A00DA239F /* SnapshotHelper.swift */; };
 		A3B83864218CA7640093C374 /* TableSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B83863218CA7640093C374 /* TableSection.swift */; };
@@ -43,6 +44,7 @@
 		A3F1C21D2163DCD9002B0141 /* AppStoreReviewRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */; };
 		A3F30D8E221C968E0063D173 /* SplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F30D8D221C968E0063D173 /* SplitViewController.swift */; };
 		A3F30D94221C9C360063D173 /* Archive.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A3F30D93221C9C360063D173 /* Archive.storyboard */; };
+		A3FF63A022478FC10089E66A /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF639F22478FC10089E66A /* UIColor.swift */; };
 		DE445E48730FBF40AFCF42DB /* Pods_PDFArchiveViewerUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50ADA4E30B607E1F6631A716 /* Pods_PDFArchiveViewerUITests.framework */; };
 		F024B33ED56BB0990D46C9A7 /* Pods_PDFArchiveViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A25EBE56D8E845513A0822F /* Pods_PDFArchiveViewer.framework */; };
 /* End PBXBuildFile section */
@@ -112,6 +114,7 @@
 		A3932823221EF7DC00858461 /* ScanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
 		A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf"; sourceTree = "<group>"; };
 		A3B13782223516B200C91BB1 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
+		A3B3F3FB22417E21009ED4A6 /* SubscriptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionViewController.swift; sourceTree = "<group>"; };
 		A3B83716215FCEFA00DA239F /* PDFArchiveViewerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PDFArchiveViewerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A3B83718215FCEFA00DA239F /* PDFArchiveViewerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFArchiveViewerUITests.swift; sourceTree = "<group>"; };
 		A3B8371A215FCEFA00DA239F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -129,6 +132,7 @@
 		A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreReviewRequest.swift; sourceTree = "<group>"; };
 		A3F30D8D221C968E0063D173 /* SplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewController.swift; sourceTree = "<group>"; };
 		A3F30D93221C9C360063D173 /* Archive.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Archive.storyboard; sourceTree = "<group>"; };
+		A3FF639F22478FC10089E66A /* UIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -247,6 +251,8 @@
 				A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */,
 				A3B83863218CA7640093C374 /* TableSection.swift */,
 				A381CF20222F0B5D00FAFA7C /* ImageConverter.swift */,
+				A3B3F3FB22417E21009ED4A6 /* SubscriptionViewController.swift */,
+				A3FF639F22478FC10089E66A /* UIColor.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -599,6 +605,7 @@
 				171E0C821B8E5B84001E6242 /* DetailViewController.swift in Sources */,
 				A3932824221EF7DC00858461 /* ScanViewController.swift in Sources */,
 				171E0C801B8E5B84001E6242 /* ArchiveViewController.swift in Sources */,
+				A3FF63A022478FC10089E66A /* UIColor.swift in Sources */,
 				A305AE4821D81E74004DDC1B /* NavigationController.swift in Sources */,
 				A34A84F92130A35A0093FAE5 /* DocumentExtension.swift in Sources */,
 				A381CF21222F0B5D00FAFA7C /* ImageConverter.swift in Sources */,
@@ -607,6 +614,7 @@
 				A34A84FA2130A35A0093FAE5 /* DocumentsQuery.swift in Sources */,
 				A381D1A522319D9B00434790 /* TagViewController.swift in Sources */,
 				A3F1C21D2163DCD9002B0141 /* AppStoreReviewRequest.swift in Sources */,
+				A3B3F3FC22417E21009ED4A6 /* SubscriptionViewController.swift in Sources */,
 				A3F30D8E221C968E0063D173 /* SplitViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

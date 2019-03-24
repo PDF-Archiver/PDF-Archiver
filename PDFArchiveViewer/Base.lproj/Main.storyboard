@@ -139,7 +139,7 @@
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UQe-pf-RdV">
                                 <rect key="frame" x="36" y="566" width="303" height="55"/>
-                                <color key="backgroundColor" name="TextColor"/>
+                                <color key="backgroundColor" name="DarkGray"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="55" id="t2U-qg-hxO"/>
                                 </constraints>
@@ -209,7 +209,7 @@
                                             </label>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3FF-NI-nZN" customClass="PDFView">
                                                 <rect key="frame" x="0.0" y="55" width="375" height="250"/>
-                                                <color key="backgroundColor" name="TextColor"/>
+                                                <color key="backgroundColor" name="DarkGray"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="250" id="oh4-sK-k2b"/>
                                                 </constraints>
@@ -237,7 +237,7 @@
                                             </textField>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vzp-Dk-2NX">
                                                 <rect key="frame" x="30" y="615" width="315" height="30"/>
-                                                <color key="backgroundColor" name="TextColor"/>
+                                                <color key="backgroundColor" name="DarkGray"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="30" id="RWC-bH-DLy"/>
                                                 </constraints>
@@ -303,7 +303,7 @@
         <image name="File" width="30" height="30"/>
         <image name="Logo" width="409.60000610351562" height="409.60000610351562"/>
         <image name="Tag" width="30" height="30"/>
-        <namedColor name="TextColor">
+        <namedColor name="DarkGray">
             <color red="0.13099999725818634" green="0.17200000584125519" blue="0.23100000619888306" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
     </resources>

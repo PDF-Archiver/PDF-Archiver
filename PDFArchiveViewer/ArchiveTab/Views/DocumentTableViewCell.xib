@@ -26,7 +26,7 @@
                             <constraint firstAttribute="height" constant="20" id="Fth-Eu-a2A"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                        <color key="textColor" name="TextColor"/>
+                        <color key="textColor" name="DarkGray"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="19. Sep 2004" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EHZ-TF-9ku">
@@ -85,10 +85,10 @@
                                 <color key="value" name="TagBackground"/>
                             </userDefinedRuntimeAttribute>
                             <userDefinedRuntimeAttribute type="color" keyPath="tagSelectedBackgroundColor">
-                                <color key="value" name="MainTextColor"/>
+                                <color key="value" name="DarkRed"/>
                             </userDefinedRuntimeAttribute>
                             <userDefinedRuntimeAttribute type="color" keyPath="tagHighlightedBackgroundColor">
-                                <color key="value" name="MainTextColor"/>
+                                <color key="value" name="DarkRed"/>
                             </userDefinedRuntimeAttribute>
                         </userDefinedRuntimeAttributes>
                     </view>
@@ -129,13 +129,13 @@
     </objects>
     <resources>
         <image name="apple-icloud" width="204.80000305175781" height="204.80000305175781"/>
-        <namedColor name="MainTextColor">
+        <namedColor name="DarkRed">
             <color red="0.7929999828338623" green="0.25499999523162842" blue="0.31000000238418579" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
         <namedColor name="TagBackground">
             <color red="0.90299999713897705" green="0.41200000047683716" blue="0.40400001406669617" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
-        <namedColor name="TextColor">
+        <namedColor name="DarkGray">
             <color red="0.13099999725818634" green="0.17200000584125519" blue="0.23100000619888306" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
     </resources>

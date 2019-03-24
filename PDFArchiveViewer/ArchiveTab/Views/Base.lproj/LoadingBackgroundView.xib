@@ -23,7 +23,7 @@
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Loading your Documents ..." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RjC-x4-tDS">
                     <rect key="frame" x="55.5" y="270" width="209.5" height="20.5"/>
                     <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="17"/>
-                    <color key="textColor" name="TextColor"/>
+                    <color key="textColor" name="DarkGray"/>
                     <nil key="highlightedColor"/>
                 </label>
             </subviews>
@@ -39,7 +39,7 @@
         </view>
     </objects>
     <resources>
-        <namedColor name="TextColor">
+        <namedColor name="DarkGray">
             <color red="0.13099999725818634" green="0.17200000584125519" blue="0.23100000619888306" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
     </resources>

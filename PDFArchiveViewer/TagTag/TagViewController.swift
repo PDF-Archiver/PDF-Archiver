@@ -18,7 +18,7 @@ class TagViewController: UIViewController {
     @IBOutlet weak var specificationTextField: UITextField!
     @IBOutlet weak var tagsTextField: UITextField!
 
-    @IBAction func saveButtonTapped(_ sender: UIButton) {
+    @IBAction private func saveButtonTapped(_ sender: UIButton) {
         print("Save button tapped.")
     }
 
@@ -31,7 +31,7 @@ class TagViewController: UIViewController {
         documentView.displayMode = .singlePage
         documentView.autoScales = true
         documentView.interpolationQuality = .low
-        documentView.backgroundColor = UIColor(named: "TextColorLight") ?? .darkGray
+        documentView.backgroundColor = .paLightGray
     }
 
     override func viewWillAppear(_ animated: Bool) {

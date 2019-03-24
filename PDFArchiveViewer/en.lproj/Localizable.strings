@@ -11,6 +11,12 @@
 /* UISearchBar placeholder */
 "search-documents" = "Search Documents";
 
+/* Subscription View Controller description text. */
+"subscription.text" = "• Try the app for free! You can try the app in a free trial period of 1 month by choosing a subscription. You can try the app without any costs in this period.\n• Your Apple account will be charged for the next subscriptioon period within the final 24 hours of the current period.\n• The subscription will renew automatically if you do not deactivate the renewal in the account setting in iTunes or the App Store at least 24 hours before the end of the subscription period.";
+
+/* Subscription View Controller title. */
+"subscription.title" = "Subscription";
+
 /* No comment provided by engineer. */
 "test_file1" = "2018-04-05--salary-april__tax_work.pdf";
 

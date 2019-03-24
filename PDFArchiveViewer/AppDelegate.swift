@@ -31,9 +31,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
             os_log("%@", log: AppDelegate.log, type: .error, error.localizedDescription)
         }
 
-        self.window?.tintColor = UIColor(named: "TextColor")
-        UISearchBar.appearance().tintColor = UIColor(named: "TextColor")
-        UINavigationBar.appearance().tintColor = UIColor(named: "TextColor")
+        self.window?.tintColor = .paDarkGray
+        UISearchBar.appearance().tintColor = .paDarkGray
+        UINavigationBar.appearance().tintColor = .paDarkGray
 
         return true
     }
