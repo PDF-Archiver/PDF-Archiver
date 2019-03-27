@@ -7,6 +7,7 @@
 //
 
 import ArchiveLib
+import Keys
 import os.log
 import Sentry
 import UIKit
@@ -18,13 +19,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
-        // start document service
-        _ = DocumentService.archive
-        _ = DocumentService.documentsQuery
+        DispatchQueue.global().async {
+            // start IAP service
+            _ = IAP.service
+
+            // start document service
+            _ = DocumentService.archive
+            _ = DocumentService.documentsQuery
+        }
 
         // Create a Sentry client and start crash handler
         do {
-            Client.shared = try Client(dsn: "https://7adfcae85d8d4b2f946102571b2d4d6c@sentry.io/1299590")
+            Client.shared = try Client(dsn: PDFArchiveViewerKeys().sentryDSN)
             try Client.shared?.startCrashHandler()
             Client.shared?.enableAutomaticBreadcrumbTracking()
         } catch let error {

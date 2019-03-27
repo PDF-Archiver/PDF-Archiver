@@ -8,6 +8,7 @@
 
 import ArchiveLib
 import os.log
+import StoreKit
 import WeScan
 
 class ScanViewController: UIViewController, Logging {
@@ -25,13 +26,27 @@ class ScanViewController: UIViewController, Logging {
         present(scannerViewController, animated: true)
     }
 
-    @IBAction private func tagButtonTapped(_ sender: UIButton) {
-        self.tabBarController?.selectedIndex = 1
-    }
+//    @IBAction private func tagButtonTapped(_ sender: UIButton) {
+//        self.tabBarController?.selectedIndex = 1
+//    }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         scanView.subviews.forEach { $0.layer.cornerRadius = 10 }
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        // show subscription view controller, if no subscription was found
+        if !IAP.service.isUnlocked {
+            let viewController = SubscriptionViewController {
+                if !IAP.service.isUnlocked {
+                    self.tabBarController?.selectedIndex = self.tabBarController?.getViewControllerIndex(with: "ArchiveTab") ?? 2
+                }
+            }
+            present(viewController, animated: animated)
+        }
     }
 }
 
@@ -71,5 +86,11 @@ extension ScanViewController: ImageScannerControllerDelegate {
         // The user tapped 'Cancel' on the scanner
         // You are responsible for dismissing the ImageScannerController
         scanner.dismiss(animated: true)
+    }
+}
+
+extension  UITabBarController {
+    func getViewControllerIndex(with restorationIdentifier: String) -> Int? {
+        return viewControllers?.firstIndex { $0.restorationIdentifier == restorationIdentifier }
     }
 }

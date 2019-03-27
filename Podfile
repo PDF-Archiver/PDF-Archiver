@@ -10,6 +10,7 @@ target 'PDFArchiveViewer' do
   pod 'Sentry', '~> 4.2'
   pod 'WeScan', '~> 1.0'
   pod 'SwiftyTesseract', :git => 'https://github.com/PDF-Archiver/SwiftyTesseract.git', :branch => 'master'
+  pod 'SwiftyStoreKit', '~> 0.14.2'
 
   target 'PDFArchiveViewerUITests' do
     inherit! :search_paths
@@ -17,3 +18,10 @@ target 'PDFArchiveViewer' do
   end
 
 end
+
+plugin 'cocoapods-keys', {
+  :project => "PDFArchiveViewer",
+  :keys => [
+    "AppstoreConnectSharedSecret",
+    "SentryDSN"
+  ]}

@@ -26,7 +26,6 @@ class TagViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        print("viewDidLoad()")
         // setup document view
         documentView.displayMode = .singlePage
         documentView.autoScales = true
@@ -36,10 +35,24 @@ class TagViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print("viewWillAppear()")
-
         updateView()
     }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        // show subscription view controller, if no subscription was found
+        if !IAP.service.isUnlocked {
+            let viewController = SubscriptionViewController {
+                if !IAP.service.isUnlocked {
+                    self.tabBarController?.selectedIndex = self.tabBarController?.getViewControllerIndex(with: "ArchiveTab") ?? 2
+                }
+            }
+            present(viewController, animated: animated)
+        }
+    }
+
+    // MARK: - Helper Functions
 
     private func updateView() {
         let untaggedDocuments = DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged)

@@ -7,9 +7,23 @@
 //
 // swiftlint:disable function_body_length
 
+import StoreKit
 import UIKit
 
 class SubscriptionViewController: UIViewController {
+
+    let completion: (() -> Void)
+
+    init(completion: @escaping (() -> Void)) {
+        self.completion = completion
+
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    @available(*, unavailable)
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override var modalPresentationStyle: UIModalPresentationStyle {
         get { return .overCurrentContext }
@@ -64,19 +78,39 @@ class SubscriptionViewController: UIViewController {
 
     private lazy var level1Button: UIButton = {
         let button = UIButton()
+
+        let title: String
+        if let product = IAP.service.products.first(where: { $0.productIdentifier == "SUBSCRIPTION_MONTHLY_IOS" }) {
+            // TODO: this should be the "localizedTitle"
+            title = product.productIdentifier
+        } else {
+            title = NSLocalizedString("subscription.level1", tableName: nil, bundle: .main, value: "Level 1", comment: "Subscription Level 1.")
+        }
+        button.setTitle(title, for: .normal)
+
         button.setTitleColor(.paWhite, for: UIControl.State.normal)
-        button.setTitle(NSLocalizedString("subscription.level1", tableName: nil, bundle: .main, value: "Level 1", comment: "Subscription Level 1."), for: .normal)
         button.layer.backgroundColor = UIColor.paDarkGray.cgColor
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(subscribeLevel1), for: .touchUpInside)
         return button
     }()
 
     private lazy var level2Button: UIButton = {
         let button = UIButton()
+
+        let title: String
+        if let product = IAP.service.products.first(where: { $0.productIdentifier == "SUBSCRIPTION_YEARLY_IOS" }) {
+            // TODO: this should be the "localizedTitle"
+            title = product.productIdentifier
+        } else {
+            title = NSLocalizedString("subscription.level2", tableName: nil, bundle: .main, value: "Level 2", comment: "Subscription Level 1.")
+        }
+        button.setTitle(title, for: .normal)
+
         button.setTitleColor(.paWhite, for: UIControl.State.normal)
-        button.setTitle(NSLocalizedString("subscription.level2", tableName: nil, bundle: .main, value: "Level 2", comment: "Subscription Level 2."), for: .normal)
         button.layer.backgroundColor = UIColor.paLightGray.cgColor
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(subscribeLevel2), for: .touchUpInside)
         return button
     }()
 
@@ -85,15 +119,32 @@ class SubscriptionViewController: UIViewController {
         button.setTitleColor(.paDarkGray, for: UIControl.State.normal)
         button.setTitle(NSLocalizedString("subscription.cancel", tableName: nil, bundle: .main, value: "Cancel", comment: "The cancel button"), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(cancelImageScannerController), for: .touchUpInside)
+        button.addTarget(self, action: #selector(cancel), for: .touchUpInside)
         return button
     }()
 
     // MARK: - Actions
 
     @objc
-    private func cancelImageScannerController() {
-        self.dismiss(animated: true, completion: nil)
+    private func subscribeLevel1() {
+        IAP.service.buyProduct("SUBSCRIPTION_MONTHLY_IOS")
+    }
+
+    @objc
+    private func subscribeLevel2() {
+        IAP.service.buyProduct("SUBSCRIPTION_YEARLY_IOS")
+    }
+
+    @objc
+    private func cancel() {
+        self.dismiss(animated: true, completion: completion)
+
+//        if let completion = completion {
+//            self.dismiss(animated: true, completion: completion(true))
+//        } else {
+//
+//        }
+
     }
 
     // MARK: - Helper Functions
@@ -157,6 +208,8 @@ class SubscriptionViewController: UIViewController {
             level2Button.bottomAnchor.constraint(equalTo: cancelButton.topAnchor)
         ]
 
+        // TODO: implement restore button
+
         let cancelButtonConstraints: [NSLayoutConstraint] = [
             cancelButton.heightAnchor.constraint(equalToConstant: buttonHeight),
             cancelButton.leadingAnchor.constraint(equalTo: actionView.leadingAnchor),
@@ -165,5 +218,11 @@ class SubscriptionViewController: UIViewController {
         ]
 
         NSLayoutConstraint.activate(blurViewConstraints + actionViewConstraints + textViewConstraints + titleViewConstraints + level1ButtonConstraints + level2ButtonConstraints + cancelButtonConstraints)
+    }
+}
+
+extension SubscriptionViewController: IAPServiceDelegate {
+    func unlocked() {
+        self.cancel()
     }
 }

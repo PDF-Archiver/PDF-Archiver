@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="EtT-wd-7Xe">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="EtT-wd-7Xe">
     <device id="retina5_9" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -14,7 +14,7 @@
         <!--Documents Tab-->
         <scene sceneID="D0n-Dx-6tf">
             <objects>
-                <viewController id="pms-xb-Drg" userLabel="Documents Tab" sceneMemberID="viewController">
+                <viewController restorationIdentifier="ArchiveTab" storyboardIdentifier="ArchiveTab" id="pms-xb-Drg" userLabel="Documents Tab" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="qZV-y9-pyC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -44,7 +44,7 @@
         <!--Scan Tab-->
         <scene sceneID="pF4-dp-d1m">
             <objects>
-                <viewController id="gE0-vu-vb2" userLabel="Scan Tab" sceneMemberID="viewController">
+                <viewController restorationIdentifier="ScanTab" storyboardIdentifier="ScanTab" id="gE0-vu-vb2" userLabel="Scan Tab" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="dPg-lL-Q3c">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -93,7 +93,7 @@
         <!--Tag Tab-->
         <scene sceneID="ZJ4-Fd-MKN">
             <objects>
-                <viewController id="tm6-d8-Gh9" userLabel="Tag Tab" sceneMemberID="viewController">
+                <viewController restorationIdentifier="TagTab" storyboardIdentifier="TagTab" id="tm6-d8-Gh9" userLabel="Tag Tab" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Hz2-Ab-omc">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -301,7 +301,7 @@
     <resources>
         <image name="Archive" width="30" height="30"/>
         <image name="File" width="30" height="30"/>
-        <image name="Logo" width="409.60000610351562" height="409.60000610351562"/>
+        <image name="Logo" width="256" height="256"/>
         <image name="Tag" width="30" height="30"/>
         <namedColor name="DarkGray">
             <color red="0.13099999725818634" green="0.17200000584125519" blue="0.23100000619888306" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
