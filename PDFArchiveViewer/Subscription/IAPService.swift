@@ -8,14 +8,13 @@
 //
 
 //import ArchiveLib
+import ArchiveLib
 import Keys
 import os.log
 import StoreKit
 import SwiftyStoreKit
 
 public protocol IAPServiceDelegate: AnyObject {
-    func unlocked()
-
     func found(products: Set<SKProduct>)
     func found(requestsRunning: Int)
 }
@@ -26,11 +25,26 @@ public extension IAPServiceDelegate {
     func found(requestsRunning: Int) {}
 }
 
-public class IAPService: NSObject {
+public class IAPService: NSObject, Logging {
 
-    private var log = OSLog(subsystem: Bundle.main.bundleIdentifier ?? "IAP", category: "IAPService")
     private static let productIdentifiers = Set(["SUBSCRIPTION_MONTHLY_IOS", "SUBSCRIPTION_YEARLY_IOS"])
-    private var hasExpired = false
+    private static let subscriptionExpiryDateKey = "SubscriptionExpiryDate"
+
+    private var _expiryDate: Date?
+    private var expiryDate: Date? {
+        get {
+            if _expiryDate == nil {
+                _expiryDate = UserDefaults.standard.object(forKey: IAPService.subscriptionExpiryDateKey) as? Date
+                os_log("Getting new expiry date: %@", log: IAPService.log, type: .debug, _expiryDate?.description ?? "NULL")
+            }
+            return _expiryDate
+        }
+        set {
+            os_log("Setting new expiry date: %@", log: IAPService.log, type: .debug, newValue?.description ?? "NULL")
+            _expiryDate = newValue
+            UserDefaults.standard.set(newValue, forKey: IAPService.subscriptionExpiryDateKey)
+        }
+    }
 
     public weak var delegate: IAPServiceDelegate?
 
@@ -40,12 +54,6 @@ public class IAPService: NSObject {
     public private(set) var requestsRunning: Int = 0 {
         didSet { delegate?.found(requestsRunning: requestsRunning) }
     }
-    public private(set) var isUnlocked: Bool = false {
-        didSet {
-            guard isUnlocked else { return }
-            delegate?.unlocked()
-        }
-    }
 
     override public init() {
 
@@ -53,9 +61,6 @@ public class IAPService: NSObject {
 
         // TODO: use release compiler flag
 //        #if RELEASE
-
-        // TODO: compare current date with the last receipt expiration date
-        hasExpired = true
 
         // Start SwiftyStoreKit and complete transactions
         SwiftyStoreKit.completeTransactions(atomically: true) { purchases in
@@ -66,9 +71,7 @@ public class IAPService: NSObject {
                         // Deliver content from server, then:
                         SwiftyStoreKit.finishTransaction(purchase.transaction)
                     }
-
                     // Unlock content
-                    self.isUnlocked = IAPService.productIdentifiers.contains(purchase.productId)
 
                 default:
                     break // do nothing
@@ -79,18 +82,34 @@ public class IAPService: NSObject {
         // get products
         requestProducts()
 
-        // validate purchases
-        isUnlocked = appUsagePermitted(appStart: true)
+        // fetch receipt
+        fetchReceipt(appStart: true)
 
 //        #else
-//        isUnlocked = true
+//        delegate?.unlocked()
 //        #endif
     }
 
     // MARK: - StoreKit API
 
+    public func appUsagePermitted(appStart: Bool = false) -> Bool {
+
+        if let expiryDate = self.expiryDate,
+            expiryDate > Date() {
+            return true
+
+        } else {
+
+            // get local or remote receipt
+            fetchReceipt(appStart: appStart)
+
+            // validate receipt and check expiration date
+            return hasValidReceipt()
+        }
+    }
+
     public func buyProduct(_ product: SKProduct) {
-        os_log("Buying %@ ...", log: log, type: .info, product.productIdentifier)
+        os_log("Buying %@ ...", log: IAPService.log, type: .info, product.productIdentifier)
 
         let semaphore = DispatchSemaphore(value: 1)
         requestsRunning += 1
@@ -102,8 +121,9 @@ public class IAPService: NSObject {
             self.requestsRunning -= 1
             switch result {
             case .success(let purchase):
-                os_log("Purchase Success: %@", log: self.log, type: .debug, purchase.productId)
-                self.isUnlocked = self.appUsagePermitted()
+                os_log("Purchase Success: %@", log: IAPService.log, type: .debug, purchase.productId)
+                self.fetchReceipt()
+                self.hasValidReceipt()
 
             case .error(let error):
                 // TODO: remove prints
@@ -130,7 +150,7 @@ public class IAPService: NSObject {
         if let product = products.first(where: { $0.productIdentifier == productIdentifier }) {
             buyProduct(product)
         } else {
-            os_log("Could not find any product for id: %@", log: log, type: .error, productIdentifier)
+            os_log("Could not find any product for id: %@", log: IAPService.log, type: .error, productIdentifier)
         }
     }
 
@@ -139,32 +159,16 @@ public class IAPService: NSObject {
         SwiftyStoreKit.restorePurchases(atomically: true) { results in
             self.requestsRunning -= 1
             if !results.restoreFailedPurchases.isEmpty {
-                os_log("Restore Failed: : %@", log: self.log, type: .error, results.restoreFailedPurchases)
+                os_log("Restore Failed: : %@", log: IAPService.log, type: .error, results.restoreFailedPurchases)
             } else if !results.restoredPurchases.isEmpty {
-                os_log("Restore Success: %@", log: self.log, type: .debug, results.restoredPurchases)
-                self.isUnlocked = self.appUsagePermitted()
+                os_log("Restore Success: %@", log: IAPService.log, type: .debug, results.restoredPurchases)
             } else {
-                os_log("Nothing to Restore", log: self.log, type: .info)
+                os_log("Nothing to Restore", log: IAPService.log, type: .info)
             }
         }
     }
 
     // MARK: - Helper Functions
-
-    fileprivate func appUsagePermitted(appStart: Bool = false) -> Bool {
-
-        if isUnlocked || !hasExpired {
-            return true
-
-        } else {
-
-            // get local or remote receipt
-            fetchReceipt(appStart: true)
-
-            // validate receipt and check expiration date
-            return hasValidReceipt()
-        }
-    }
 
     fileprivate func hasValidReceipt() -> Bool {
         let semaphore = DispatchSemaphore(value: 1)
@@ -187,18 +191,20 @@ public class IAPService: NSObject {
                     let purchaseResult = SwiftyStoreKit.verifySubscription(ofType: .autoRenewable, productId: productId, inReceipt: receipt)
 
                     switch purchaseResult {
-                    case .purchased(let expiryDate, let items):
-                        print("\(productId) is valid until \(expiryDate)\n\(items)\n")
+                    case .purchased(let expiryDate, _):
+
+                        os_log("%@ is valid until %@", log: IAPService.log, type: .debug, productId, expiryDate.description)
                         receiptIsValid = true
 
-                        // TODO: set ne expiration date
+                        // set new expiration date
+                        self.expiryDate = expiryDate
 
                         return
 
-                    case .expired(let expiryDate, let items):
-                        print("\(productId) is expired since \(expiryDate)\n\(items)\n")
+                    case .expired(let expiryDate, _):
+                        os_log("%@ has expired since %@", log: IAPService.log, type: .debug, productId, expiryDate.description)
                     case .notPurchased:
-                        print("The user has never purchased \(productId)")
+                        os_log("The user has never purchased %@", log: IAPService.log, type: .debug, productId)
                     }
                 }
 
@@ -207,8 +213,8 @@ public class IAPService: NSObject {
             }
         }
 
-        let waitTimeout = semaphore.wait(timeout: .now() + 5)
-        print(waitTimeout)
+        // wait until the receipt is validated
+        _ = semaphore.wait(timeout: .now() + 10)
 
         return receiptIsValid
     }
@@ -225,24 +231,23 @@ public class IAPService: NSObject {
 
             switch result {
             case .success:
-                os_log("Fetching receipt was successful.", log: self.log, type: .debug)
+                os_log("Fetching receipt was successful.", log: IAPService.log, type: .debug)
             case .error(let error):
                 print("Fetch receipt failed: \(error)")
-                self.isUnlocked = false
                 if appStart {
-                    os_log("Receipt not found, exit the app!", log: self.log, type: .error)
+                    os_log("Receipt not found, exit the app!", log: IAPService.log, type: .error)
                     exit(173)
 
                 } else if !forceRefresh {
                     // we do not run in an infinite recurse situation since this will only be reached, if no forceRefresh was issued
-                    os_log("Receipt not found, refreshing receipt.", log: self.log, type: .info)
+                    os_log("Receipt not found, refreshing receipt.", log: IAPService.log, type: .info)
                     self.fetchReceipt(forceRefresh: true, appStart: false)
                 }
             }
         }
 
-        let waitTimeout = semaphore.wait(timeout: .now() + 20)
-        print(waitTimeout)
+        // wait until the receipt is fetched
+        _ = semaphore.wait(timeout: .now() + 10)
     }
 
     private func requestProducts() {
@@ -252,11 +257,11 @@ public class IAPService: NSObject {
             self.products = result.retrievedProducts
 
             if !result.retrievedProducts.isEmpty {
-                os_log("Found %@ products.", log: self.log, type: .debug, String(result.retrievedProducts.count))
+                os_log("Found %@ products.", log: IAPService.log, type: .debug, String(result.retrievedProducts.count))
             } else if let invalidProductId = result.invalidProductIDs.first {
-                os_log("Invalid product identifier:  %@", log: self.log, type: .info, invalidProductId)
+                os_log("Invalid product identifier:  %@", log: IAPService.log, type: .info, invalidProductId)
             } else {
-                os_log("Retrieving product infos errored:  %@", log: self.log, type: .info, result.error?.localizedDescription ?? "")
+                os_log("Retrieving product infos errored:  %@", log: IAPService.log, type: .info, result.error?.localizedDescription ?? "")
             }
         }
     }

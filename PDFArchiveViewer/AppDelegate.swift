@@ -13,7 +13,9 @@ import Sentry
 import UIKit
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, Logging {
+class AppDelegate: UIResponder, UIApplicationDelegate {
+
+    static let log = OSLog(subsystem: Bundle.main.bundleIdentifier ?? "PDFArchiveViewer", category: "AppDelegate")
 
     var window: UIWindow?
 

@@ -7,10 +7,12 @@
 //
 // swiftlint:disable function_body_length
 
+import ArchiveLib
+import os.log
 import StoreKit
 import UIKit
 
-class SubscriptionViewController: UIViewController {
+class SubscriptionViewController: UIViewController, Logging {
 
     let completion: (() -> Void)
 
@@ -40,6 +42,17 @@ class SubscriptionViewController: UIViewController {
         // optical changes in view
         view.backgroundColor = .clear
         view.isOpaque = false
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        // setup delegate
+        IAP.service.delegate = self
+
+        // setup button names
+        guard !IAP.service.products.isEmpty else { return }
+        updateButtonNames(with: IAP.service.products)
     }
 
     private lazy var blurEffectView: UIVisualEffectView = {
@@ -78,16 +91,7 @@ class SubscriptionViewController: UIViewController {
 
     private lazy var level1Button: UIButton = {
         let button = UIButton()
-
-        let title: String
-        if let product = IAP.service.products.first(where: { $0.productIdentifier == "SUBSCRIPTION_MONTHLY_IOS" }) {
-            // TODO: this should be the "localizedTitle"
-            title = product.productIdentifier
-        } else {
-            title = NSLocalizedString("subscription.level1", tableName: nil, bundle: .main, value: "Level 1", comment: "Subscription Level 1.")
-        }
-        button.setTitle(title, for: .normal)
-
+        button.setTitle("Level 1", for: .normal)
         button.setTitleColor(.paWhite, for: UIControl.State.normal)
         button.layer.backgroundColor = UIColor.paDarkGray.cgColor
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -97,20 +101,20 @@ class SubscriptionViewController: UIViewController {
 
     private lazy var level2Button: UIButton = {
         let button = UIButton()
-
-        let title: String
-        if let product = IAP.service.products.first(where: { $0.productIdentifier == "SUBSCRIPTION_YEARLY_IOS" }) {
-            // TODO: this should be the "localizedTitle"
-            title = product.productIdentifier
-        } else {
-            title = NSLocalizedString("subscription.level2", tableName: nil, bundle: .main, value: "Level 2", comment: "Subscription Level 1.")
-        }
-        button.setTitle(title, for: .normal)
-
+        button.setTitle("Level 2", for: .normal)
         button.setTitleColor(.paWhite, for: UIControl.State.normal)
         button.layer.backgroundColor = UIColor.paLightGray.cgColor
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(subscribeLevel2), for: .touchUpInside)
+        return button
+    }()
+
+    private lazy var restoreButton: UIButton = {
+        let button = UIButton()
+        button.setTitleColor(.paDarkGray, for: UIControl.State.normal)
+        button.setTitle(NSLocalizedString("subscription.restore", tableName: nil, bundle: .main, value: "Restore", comment: "The restore button"), for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(restore), for: .touchUpInside)
         return button
     }()
 
@@ -128,23 +132,33 @@ class SubscriptionViewController: UIViewController {
     @objc
     private func subscribeLevel1() {
         IAP.service.buyProduct("SUBSCRIPTION_MONTHLY_IOS")
+        cancel()
     }
 
     @objc
     private func subscribeLevel2() {
         IAP.service.buyProduct("SUBSCRIPTION_YEARLY_IOS")
+        cancel()
+    }
+
+    @objc
+    private func restore() {
+        IAP.service.restorePurchases()
+        cancel()
+
+        if IAP.service.appUsagePermitted() {
+            cancel()
+        }
     }
 
     @objc
     private func cancel() {
-        self.dismiss(animated: true, completion: completion)
 
-//        if let completion = completion {
-//            self.dismiss(animated: true, completion: completion(true))
-//        } else {
-//
-//        }
-
+        if !IAP.service.appUsagePermitted() {
+            self.dismiss(animated: true, completion: completion)
+        } else {
+            self.dismiss(animated: true, completion: nil)
+        }
     }
 
     // MARK: - Helper Functions
@@ -208,7 +222,12 @@ class SubscriptionViewController: UIViewController {
             level2Button.bottomAnchor.constraint(equalTo: cancelButton.topAnchor)
         ]
 
-        // TODO: implement restore button
+        let restoreButtonConstraints: [NSLayoutConstraint] = [
+            cancelButton.heightAnchor.constraint(equalToConstant: buttonHeight),
+            cancelButton.leadingAnchor.constraint(equalTo: actionView.leadingAnchor),
+            cancelButton.trailingAnchor.constraint(equalTo: actionView.trailingAnchor),
+            cancelButton.bottomAnchor.constraint(equalTo: actionView.bottomAnchor)
+        ]
 
         let cancelButtonConstraints: [NSLayoutConstraint] = [
             cancelButton.heightAnchor.constraint(equalToConstant: buttonHeight),
@@ -217,12 +236,31 @@ class SubscriptionViewController: UIViewController {
             cancelButton.bottomAnchor.constraint(equalTo: actionView.bottomAnchor)
         ]
 
-        NSLayoutConstraint.activate(blurViewConstraints + actionViewConstraints + textViewConstraints + titleViewConstraints + level1ButtonConstraints + level2ButtonConstraints + cancelButtonConstraints)
+        NSLayoutConstraint.activate(blurViewConstraints + actionViewConstraints + textViewConstraints + titleViewConstraints + level1ButtonConstraints + level2ButtonConstraints + restoreButtonConstraints + cancelButtonConstraints)
+    }
+
+    private func updateButtonNames(with products: Set<SKProduct>) {
+        for product in products {
+            switch product.productIdentifier {
+            case "SUBSCRIPTION_MONTHLY_IOS":
+                guard let localizedPrice = product.localizedPrice else { continue }
+                level1Button.setTitle(localizedPrice + " " + NSLocalizedString("per_month", comment: ""), for: .normal)
+            case "SUBSCRIPTION_YEARLY_IOS":
+                guard let localizedPrice = product.localizedPrice else { continue }
+                level2Button.setTitle(localizedPrice + " " + NSLocalizedString("per_year", comment: ""), for: .normal)
+            default:
+                os_log("Could not find product:  %@", log: SubscriptionViewController.log, type: .error, product)
+            }
+        }
     }
 }
 
 extension SubscriptionViewController: IAPServiceDelegate {
     func unlocked() {
         self.cancel()
+    }
+
+    func found(products: Set<SKProduct>) {
+        self.updateButtonNames(with: products)
     }
 }

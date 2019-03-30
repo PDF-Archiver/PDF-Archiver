@@ -39,11 +39,9 @@ class ScanViewController: UIViewController, Logging {
         super.viewDidAppear(animated)
 
         // show subscription view controller, if no subscription was found
-        if !IAP.service.isUnlocked {
+        if !IAP.service.appUsagePermitted() {
             let viewController = SubscriptionViewController {
-                if !IAP.service.isUnlocked {
-                    self.tabBarController?.selectedIndex = self.tabBarController?.getViewControllerIndex(with: "ArchiveTab") ?? 2
-                }
+                self.tabBarController?.selectedIndex = self.tabBarController?.getViewControllerIndex(with: "ArchiveTab") ?? 2
             }
             present(viewController, animated: animated)
         }
