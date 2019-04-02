@@ -59,9 +59,6 @@ public class IAPService: NSObject, Logging {
 
         super.init()
 
-        // TODO: use release compiler flag
-//        #if RELEASE
-
         // Start SwiftyStoreKit and complete transactions
         SwiftyStoreKit.completeTransactions(atomically: true) { purchases in
             for purchase in purchases {
@@ -82,17 +79,20 @@ public class IAPService: NSObject, Logging {
         // get products
         requestProducts()
 
-        // fetch receipt
-        fetchReceipt(appStart: true)
-
-//        #else
-//        delegate?.unlocked()
-//        #endif
+        // release only: fetch receipt
+        if !IAPService.isSimulatorOrTestFlightOrDebug() {
+            fetchReceipt(appStart: true)
+        }
     }
 
     // MARK: - StoreKit API
 
     public func appUsagePermitted(appStart: Bool = false) -> Bool {
+
+        // debug/simulator/testflight: app usage is always permitted
+        if IAPService.isSimulatorOrTestFlightOrDebug() {
+            return true
+        }
 
         if let expiryDate = self.expiryDate,
             expiryDate > Date() {
@@ -264,5 +264,19 @@ public class IAPService: NSObject, Logging {
                 os_log("Retrieving product infos errored:  %@", log: IAPService.log, type: .info, result.error?.localizedDescription ?? "")
             }
         }
+    }
+
+    private static func isSimulatorOrTestFlightOrDebug() -> Bool {
+
+        // return early, if we have a debug build
+        #if DEBUG
+        return true
+        #endif
+
+        // source from: https://stackoverflow.com/a/38984554
+        guard let path = Bundle.main.appStoreReceiptURL?.path else {
+            return false
+        }
+        return path.contains("CoreSimulator") || path.contains("sandboxReceipt")
     }
 }
