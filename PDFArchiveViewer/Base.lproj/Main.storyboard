@@ -39,7 +39,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xGM-Hk-9BL" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3114" y="-23"/>
+            <point key="canvasLocation" x="-3113" y="-305"/>
         </scene>
         <!--Scan Tab-->
         <scene sceneID="pF4-dp-d1m">
@@ -95,13 +95,13 @@
             <objects>
                 <viewController restorationIdentifier="TagTab" storyboardIdentifier="TagTab" id="tm6-d8-Gh9" userLabel="Tag Tab" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Hz2-Ab-omc">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="685"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tmT-rj-nlC">
-                                <rect key="frame" x="0.0" y="44" width="375" height="685"/>
+                                <rect key="frame" x="0.0" y="44" width="375" height="607"/>
                                 <connections>
-                                    <segue destination="T5S-hk-qlt" kind="embed" id="1u1-GS-rQR"/>
+                                    <segue destination="N8I-6P-ayn" kind="embed" id="1u1-GS-rQR"/>
                                 </connections>
                             </containerView>
                         </subviews>
@@ -127,7 +127,7 @@
                 <viewControllerPlaceholder storyboardName="Archive" id="OIZ-Ju-z8d" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YVK-mJ-Qp9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2576" y="-23"/>
+            <point key="canvasLocation" x="-2195" y="-305"/>
         </scene>
         <!--Scan View Controller-->
         <scene sceneID="kFW-QY-weq">
@@ -184,118 +184,13 @@
             </objects>
             <point key="canvasLocation" x="-2194" y="-1634"/>
         </scene>
-        <!--Tag View Controller-->
-        <scene sceneID="Alk-7W-AHX">
+        <!--TagTab-->
+        <scene sceneID="3Uo-tT-MH3">
             <objects>
-                <viewController id="T5S-hk-qlt" customClass="TagViewController" customModule="PDFArchiveViewer" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="kxM-LF-4yd">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="695"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" keyboardDismissMode="onDrag" translatesAutoresizingMaskIntoConstraints="NO" id="m8f-Cv-6fj">
-                                <rect key="frame" x="0.0" y="24" width="375" height="637"/>
-                                <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="25" translatesAutoresizingMaskIntoConstraints="NO" id="Rsq-jh-JAt">
-                                        <rect key="frame" x="0.0" y="-4" width="375" height="645"/>
-                                        <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Untaged Documents: 0" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Md-XA-IBH">
-                                                <rect key="frame" x="30" y="0.0" width="315" height="30"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="30" id="NzQ-Qg-6ag"/>
-                                                </constraints>
-                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                <nil key="textColor"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3FF-NI-nZN" customClass="PDFView">
-                                                <rect key="frame" x="0.0" y="55" width="375" height="250"/>
-                                                <color key="backgroundColor" name="DarkGray"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="250" id="oh4-sK-k2b"/>
-                                                </constraints>
-                                            </view>
-                                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="kpn-Ji-dFk">
-                                                <rect key="frame" x="27.666666666666657" y="330" width="320" height="150"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="150" id="Zmb-We-pm9"/>
-                                                </constraints>
-                                                <date key="date" timeIntervalSinceReferenceDate="573858963.71947896">
-                                                    <!--2019-03-09 21:16:03 +0000-->
-                                                </date>
-                                            </datePicker>
-                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Description" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="BmQ-GG-lcY">
-                                                <rect key="frame" x="30" y="505" width="315" height="30"/>
-                                                <nil key="textColor"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                <textInputTraits key="textInputTraits"/>
-                                            </textField>
-                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Tags" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Oup-aE-1ES">
-                                                <rect key="frame" x="30" y="560" width="315" height="30"/>
-                                                <nil key="textColor"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                <textInputTraits key="textInputTraits"/>
-                                            </textField>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vzp-Dk-2NX">
-                                                <rect key="frame" x="30" y="615" width="315" height="30"/>
-                                                <color key="backgroundColor" name="DarkGray"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="30" id="RWC-bH-DLy"/>
-                                                </constraints>
-                                                <state key="normal" title="Save"/>
-                                                <connections>
-                                                    <action selector="saveButtonTapped:" destination="tm6-d8-Gh9" eventType="touchUpInside" id="NOM-R3-OMb"/>
-                                                    <action selector="saveButtonTapped:" destination="T5S-hk-qlt" eventType="touchUpInside" id="nAG-fC-Mbx"/>
-                                                    <action selector="scanButtonTapped:" destination="evb-gb-Gyk" eventType="touchUpInside" id="u6J-0w-Ipk"/>
-                                                </connections>
-                                            </button>
-                                        </subviews>
-                                        <constraints>
-                                            <constraint firstItem="Oup-aE-1ES" firstAttribute="height" secondItem="9Md-XA-IBH" secondAttribute="height" id="3S5-fv-3my"/>
-                                            <constraint firstItem="3FF-NI-nZN" firstAttribute="leading" secondItem="Rsq-jh-JAt" secondAttribute="leading" id="7Zc-bd-yzL"/>
-                                            <constraint firstAttribute="trailing" secondItem="3FF-NI-nZN" secondAttribute="trailing" id="Az8-BB-b3S"/>
-                                            <constraint firstItem="Oup-aE-1ES" firstAttribute="leading" secondItem="9Md-XA-IBH" secondAttribute="leading" id="CIr-bm-OID"/>
-                                            <constraint firstItem="Vzp-Dk-2NX" firstAttribute="trailing" secondItem="9Md-XA-IBH" secondAttribute="trailing" id="ECx-w7-Nah"/>
-                                            <constraint firstItem="Vzp-Dk-2NX" firstAttribute="leading" secondItem="9Md-XA-IBH" secondAttribute="leading" id="HL8-uy-fTI"/>
-                                            <constraint firstItem="Oup-aE-1ES" firstAttribute="trailing" secondItem="9Md-XA-IBH" secondAttribute="trailing" id="Loy-kh-EA1"/>
-                                            <constraint firstItem="BmQ-GG-lcY" firstAttribute="height" secondItem="9Md-XA-IBH" secondAttribute="height" id="V5x-wz-jsC"/>
-                                            <constraint firstItem="BmQ-GG-lcY" firstAttribute="leading" secondItem="9Md-XA-IBH" secondAttribute="leading" id="X0z-RZ-bxq"/>
-                                            <constraint firstAttribute="trailing" secondItem="9Md-XA-IBH" secondAttribute="trailing" constant="30" id="hJ1-Xt-HK5"/>
-                                            <constraint firstItem="9Md-XA-IBH" firstAttribute="leading" secondItem="Rsq-jh-JAt" secondAttribute="leading" constant="30" id="shb-yc-6mt"/>
-                                            <constraint firstItem="BmQ-GG-lcY" firstAttribute="trailing" secondItem="9Md-XA-IBH" secondAttribute="trailing" id="tfR-4R-ukH"/>
-                                        </constraints>
-                                    </stackView>
-                                </subviews>
-                                <constraints>
-                                    <constraint firstAttribute="bottom" secondItem="Rsq-jh-JAt" secondAttribute="bottom" constant="186.5" id="1kx-ND-qK7"/>
-                                    <constraint firstAttribute="trailing" secondItem="Rsq-jh-JAt" secondAttribute="trailing" id="Jv9-3n-Mka"/>
-                                    <constraint firstItem="Rsq-jh-JAt" firstAttribute="width" secondItem="m8f-Cv-6fj" secondAttribute="width" id="NNF-Oe-u5j"/>
-                                    <constraint firstItem="Rsq-jh-JAt" firstAttribute="leading" secondItem="m8f-Cv-6fj" secondAttribute="leading" id="XIQ-qr-Lkb"/>
-                                    <constraint firstItem="Rsq-jh-JAt" firstAttribute="centerY" secondItem="m8f-Cv-6fj" secondAttribute="centerY" id="chb-EV-dq7"/>
-                                </constraints>
-                            </scrollView>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstItem="IjN-OT-6SS" firstAttribute="bottom" secondItem="m8f-Cv-6fj" secondAttribute="bottom" id="2KN-i4-FMA"/>
-                            <constraint firstItem="IjN-OT-6SS" firstAttribute="trailing" secondItem="m8f-Cv-6fj" secondAttribute="trailing" id="DaD-vA-ACV"/>
-                            <constraint firstItem="m8f-Cv-6fj" firstAttribute="leading" secondItem="IjN-OT-6SS" secondAttribute="leading" id="uK2-oQ-bek"/>
-                            <constraint firstItem="m8f-Cv-6fj" firstAttribute="top" secondItem="IjN-OT-6SS" secondAttribute="top" constant="-20" id="yYo-1t-KKn"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="IjN-OT-6SS"/>
-                    </view>
-                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <size key="freeformSize" width="375" height="695"/>
-                    <connections>
-                        <outlet property="datePicker" destination="kpn-Ji-dFk" id="lG3-zh-Zq6"/>
-                        <outlet property="documentView" destination="3FF-NI-nZN" id="9wV-Um-cvr"/>
-                        <outlet property="specificationTextField" destination="BmQ-GG-lcY" id="xrS-T0-MCg"/>
-                        <outlet property="tagsTextField" destination="Oup-aE-1ES" id="xnQ-f7-gYT"/>
-                        <outlet property="untaggedDocumentsCount" destination="9Md-XA-IBH" id="olh-Fd-kaX"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="rVO-69-jTK" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <viewControllerPlaceholder storyboardName="TagTab" id="N8I-6P-ayn" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ifF-ZI-rNi" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2194.4000000000001" y="-661.16941529235385"/>
+            <point key="canvasLocation" x="-2195" y="-902"/>
         </scene>
     </scenes>
     <resources>
@@ -308,6 +203,6 @@
         </namedColor>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="ghK-KX-XdJ"/>
+        <segue reference="gQa-7j-0VG"/>
     </inferredMetricsTieBreakers>
 </document>
