@@ -11,6 +11,6 @@
 silent(true)
 clean(true)
 output_directory("./build")
-scheme("PDFArchiveViewer")
-workspace("PDFArchiveViewer.xcworkspace")
+scheme("PDFArchiver")
+workspace("PDFArchiver.xcworkspace")
 include_bitcode(true)
