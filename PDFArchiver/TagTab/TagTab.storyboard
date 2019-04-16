@@ -50,7 +50,7 @@
                                                     <action selector="datePicker:" destination="T5S-hk-qlt" eventType="valueChanged" id="YJH-bb-129"/>
                                                 </connections>
                                             </datePicker>
-                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Description" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="BmQ-GG-lcY">
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Description" textAlignment="natural" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="BmQ-GG-lcY">
                                                 <rect key="frame" x="30" y="535.33333333333337" width="315" height="30"/>
                                                 <nil key="textColor"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -208,18 +208,6 @@
                                                                         <real key="value" value="12"/>
                                                                     </userDefinedRuntimeAttribute>
                                                                     <userDefinedRuntimeAttribute type="boolean" keyPath="enableRemoveButton" value="YES"/>
-                                                                    <userDefinedRuntimeAttribute type="number" keyPath="shadowRadius">
-                                                                        <real key="value" value="2"/>
-                                                                    </userDefinedRuntimeAttribute>
-                                                                    <userDefinedRuntimeAttribute type="color" keyPath="shadowColor">
-                                                                        <color key="value" name="DarkGray"/>
-                                                                    </userDefinedRuntimeAttribute>
-                                                                    <userDefinedRuntimeAttribute type="number" keyPath="shadowOpacity">
-                                                                        <real key="value" value="0.40000000000000002"/>
-                                                                    </userDefinedRuntimeAttribute>
-                                                                    <userDefinedRuntimeAttribute type="size" keyPath="shadowOffset">
-                                                                        <size key="value" width="1" height="1"/>
-                                                                    </userDefinedRuntimeAttribute>
                                                                 </userDefinedRuntimeAttributes>
                                                             </view>
                                                         </subviews>
@@ -244,7 +232,7 @@
                                                     <constraint firstAttribute="trailing" secondItem="0kh-vJ-wgU" secondAttribute="trailing" id="wZe-5y-VNb"/>
                                                 </constraints>
                                             </view>
-                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Tag Name" textAlignment="natural" clearsOnBeginEditing="YES" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="xch-Tp-6M2">
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Tag Name" textAlignment="natural" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="xch-Tp-6M2">
                                                 <rect key="frame" x="30" y="157.33333333333334" width="315" height="30"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="30" id="cYX-do-3s3"/>
@@ -253,6 +241,7 @@
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
                                                 <connections>
+                                                    <action selector="textFieldDidChange:" destination="cRG-zP-4nO" eventType="editingChanged" id="AX8-eH-MYJ"/>
                                                     <action selector="textFieldReturn:" destination="cRG-zP-4nO" eventType="primaryActionTriggered" id="INy-rD-Ok3"/>
                                                 </connections>
                                             </textField>
@@ -301,18 +290,6 @@
                                                                     </userDefinedRuntimeAttribute>
                                                                     <userDefinedRuntimeAttribute type="number" keyPath="marginX">
                                                                         <real key="value" value="15"/>
-                                                                    </userDefinedRuntimeAttribute>
-                                                                    <userDefinedRuntimeAttribute type="number" keyPath="shadowRadius">
-                                                                        <real key="value" value="2"/>
-                                                                    </userDefinedRuntimeAttribute>
-                                                                    <userDefinedRuntimeAttribute type="color" keyPath="shadowColor">
-                                                                        <color key="value" name="DarkGray"/>
-                                                                    </userDefinedRuntimeAttribute>
-                                                                    <userDefinedRuntimeAttribute type="size" keyPath="shadowOffset">
-                                                                        <size key="value" width="1" height="1"/>
-                                                                    </userDefinedRuntimeAttribute>
-                                                                    <userDefinedRuntimeAttribute type="number" keyPath="shadowOpacity">
-                                                                        <real key="value" value="0.40000000000000002"/>
                                                                     </userDefinedRuntimeAttribute>
                                                                 </userDefinedRuntimeAttributes>
                                                             </view>

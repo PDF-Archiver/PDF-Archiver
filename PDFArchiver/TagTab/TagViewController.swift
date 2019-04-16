@@ -14,7 +14,26 @@ import UIKit
 
 class TagViewController: UIViewController, Logging {
 
-    private var suggestedTags = Set<String>()
+    // these properties will be set by the DateDescriptionViewController
+    var document: Document?
+    var suggestedTags: Set<String>?
+
+    private var documentViewTags = Set<String>() {
+        didSet {
+            // remove old tags and add the new ones
+            documentTagsView.updateTags(documentViewTags)
+
+            guard let document = document else { return }
+            DocumentService.archive.update(documentViewTags, on: document)
+        }
+    }
+
+    private var suggestedViewTags = Set<String>() {
+        didSet {
+            // remove old tags and add the new ones
+            suggestedTagsView.updateTags(suggestedViewTags)
+        }
+    }
 
     @IBOutlet weak var documentTagsView: TagListView!
     @IBOutlet weak var tagSearchTextField: UITextField!
@@ -23,10 +42,25 @@ class TagViewController: UIViewController, Logging {
     @IBOutlet weak var suggestedTagBorderView: UIView!
     @IBOutlet weak var scrollView: UIScrollView!
 
+    @IBAction private func textFieldDidChange(_ sender: UITextField) {
+
+        guard let tagName = sender.text,
+            !tagName.isEmpty else {
+                suggestedTagsView.updateTags(suggestedTags ?? [])
+                return
+        }
+
+        let tags = DocumentService.archive.getAvailableTags(with: [tagName]).map { $0.name }
+        guard !tags.isEmpty else { return }
+
+        // remove old tags and add the new ones
+        suggestedViewTags = Set(tags)
+    }
+
     @IBAction private func textFieldReturn(_ sender: UITextField) {
         guard let tagName = sender.text else { return }
-        documentTagsView.addTag(tagName)
-        tagSearchTextField.text = nil
+        documentViewTags.insert(tagName.slugified(withSeparator: "_"))
+        resetSuggestedTags()
     }
 
     @IBAction private func backButtonTapped(_ sender: UIButton) {
@@ -45,8 +79,6 @@ class TagViewController: UIViewController, Logging {
         }
         self.navigationController?.popViewController(animated: true)
     }
-
-    var document: Document?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,38 +102,22 @@ class TagViewController: UIViewController, Logging {
         setupTags()
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        // setup document tags
-        documentTagsView.removeAllTags()
-        guard let documentTags = document?.tags.map({ $0.name }) else { return }
-        documentTagsView.addTags(documentTags)
-
-        // setup suggested tags
-        suggestedTagsView.removeAllTags()
-        suggestedTagsView.addTags(Array(suggestedTags))
-    }
-
     // MARK: - Helper Functions
 
     private func setupTags() {
 
         // get document tags
         guard let documentTags = document?.tags.map({ $0.name }) else { return }
-        documentTagsView.addTags(documentTags)
+        documentViewTags = Set(documentTags)
 
-        // get tags from OCR content
-        guard let path = document?.path,
-            let pdfDocument = PDFDocument(url: path) else { return }
-        var text = ""
-        for index in 0 ..< pdfDocument.pageCount {
-            guard let page = pdfDocument.page(at: index),
-                let pageContent = page.string else { return }
+        // setup suggested tags
+        suggestedViewTags = suggestedTags ?? []
+    }
 
-            text += pageContent
-        }
-        suggestedTags = TagParser.parse(text).subtracting(documentTags)
+    private func resetSuggestedTags() {
+        // clear up search tag field
+        tagSearchTextField.text = nil
+        suggestedViewTags = suggestedTags ?? []
     }
 
     // MARK: Keyboard Presentation
@@ -140,11 +156,13 @@ extension TagViewController: TagListViewDelegate {
     }
 
     private func switchTag(_ title: String, from sender: TagListView) {
-        sender.removeTag(title)
         if sender == documentTagsView {
-            suggestedTagsView.addTag(title)
+            documentViewTags.remove(title)
         } else {
-            documentTagsView.addTag(title)
+            suggestedViewTags.remove(title)
+            documentViewTags.insert(title)
+
+            resetSuggestedTags()
         }
     }
 }

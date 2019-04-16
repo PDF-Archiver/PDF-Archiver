@@ -46,6 +46,7 @@
 		A3EBFE9C21650F58008C34CC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A3EBFE9E21650F58008C34CC /* Localizable.strings */; };
 		A3EBFEA021650FC7008C34CC /* EmptyBackgroundView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A3EBFEA221650FC7008C34CC /* EmptyBackgroundView.xib */; };
 		A3ECBC9622496BA000A626AE /* IAP.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3ECBC9522496BA000A626AE /* IAP.swift */; };
+		A3ED932322666BE800DFC2D9 /* TagListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3ED932222666BE800DFC2D9 /* TagListView.swift */; };
 		A3F1C21D2163DCD9002B0141 /* AppStoreReviewRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */; };
 		A3F30D8E221C968E0063D173 /* SplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F30D8D221C968E0063D173 /* SplitViewController.swift */; };
 		A3F30D94221C9C360063D173 /* Archive.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A3F30D93221C9C360063D173 /* Archive.storyboard */; };
@@ -143,6 +144,7 @@
 		A3EBFEA121650FC7008C34CC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/EmptyBackgroundView.xib; sourceTree = "<group>"; };
 		A3EBFEA421650FCB008C34CC /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/EmptyBackgroundView.strings; sourceTree = "<group>"; };
 		A3ECBC9522496BA000A626AE /* IAP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAP.swift; sourceTree = "<group>"; };
+		A3ED932222666BE800DFC2D9 /* TagListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagListView.swift; sourceTree = "<group>"; };
 		A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreReviewRequest.swift; sourceTree = "<group>"; };
 		A3F30D8D221C968E0063D173 /* SplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewController.swift; sourceTree = "<group>"; };
 		A3F30D93221C9C360063D173 /* Archive.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Archive.storyboard; sourceTree = "<group>"; };
@@ -276,6 +278,7 @@
 				A3FF639F22478FC10089E66A /* UIColor.swift */,
 				A314A29A225542360099681D /* CustomButton.swift */,
 				A363E85B225DFC68007BE48B /* Constants.swift */,
+				A3ED932222666BE800DFC2D9 /* TagListView.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -650,6 +653,7 @@
 				171E0C821B8E5B84001E6242 /* DetailViewController.swift in Sources */,
 				A3DBC695224974380048E681 /* IAPService.swift in Sources */,
 				A363E85C225DFC68007BE48B /* Constants.swift in Sources */,
+				A3ED932322666BE800DFC2D9 /* TagListView.swift in Sources */,
 				A3A071682253ED660093E7A4 /* TagViewController.swift in Sources */,
 				A3932824221EF7DC00858461 /* ScanViewController.swift in Sources */,
 				171E0C801B8E5B84001E6242 /* ArchiveViewController.swift in Sources */,

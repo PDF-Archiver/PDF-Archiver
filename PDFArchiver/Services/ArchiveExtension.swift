@@ -30,10 +30,15 @@ extension Archive: DocumentsQueryDelegate {
             }
         }
 
-        let allDocuments = self.get(scope: .all, searchterms: [], status: .tagged)
+        // get first 10 untagged documents
+        let untaggedDocuments = Array(self.get(scope: .all, searchterms: [], status: .untagged)).sorted().prefix(10)
+        for document in untaggedDocuments where document.downloadStatus == .iCloudDrive {
+            document.download()
+        }
 
         // handle removed documents
-        let removedDocuments = matchDocumentsFrom(removedItems, availableDocuments: allDocuments)
+        let taggedDocuments = self.get(scope: .all, searchterms: [], status: .tagged)
+        let removedDocuments = matchDocumentsFrom(removedItems, availableDocuments: taggedDocuments)
         self.remove(removedDocuments)
 
         // handle updated documents

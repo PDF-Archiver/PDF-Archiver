@@ -28,17 +28,38 @@ class DateDescriptionViewController: UIViewController {
         document?.specification = text
     }
 
-    var document: Document?
+    private var suggestedTags = Set<String>()
+    var document: Document? {
+        didSet {
+            DispatchQueue.global().async {
+
+                // get tags and save them in the background, they will be passed to the TagViewController
+                guard let path = self.document?.path,
+                    let pdfDocument = PDFDocument(url: path) else { return }
+                var text = ""
+                for index in 0 ..< pdfDocument.pageCount {
+                    guard let page = pdfDocument.page(at: index),
+                        let pageContent = page.string else { return }
+
+                    text += pageContent
+                }
+                self.suggestedTags = TagParser.parse(text)
+            }
+        }
+    }
 
     // MARK: - View Setup
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // setup document view
-        documentView.displayMode = .singlePage
+        documentView.displayMode = .singlePageContinuous
         documentView.autoScales = true
         documentView.interpolationQuality = .low
         documentView.backgroundColor = .paLightGray
+
+        documentView.goToFirstPage(self)
+        documentView.sizeToFit()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -49,7 +70,7 @@ class DateDescriptionViewController: UIViewController {
 
         // get documents from archive
         let untaggedDocuments = DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged)
-        document = untaggedDocuments.min()
+        document = Array(untaggedDocuments).sorted().min()
 
         // update untagged documents label
         untaggedDocumentsCount.text = "Untagged Documents: \(untaggedDocuments.count)"
@@ -73,6 +94,7 @@ class DateDescriptionViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard let destinationVC = segue.destination as? TagViewController else { return }
         destinationVC.document = document
+        destinationVC.suggestedTags = suggestedTags
     }
 
     // MARK: - Helper Functions

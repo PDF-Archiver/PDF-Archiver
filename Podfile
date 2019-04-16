@@ -8,9 +8,8 @@ target 'PDFArchiver' do
   # Pods for PDFArchiver
   pod 'TagListView', '~> 1.3'
   pod 'Sentry', '~> 4.2'
-  # pod 'WeScan', '~> 1.1'
   pod 'WeScan', :git => 'https://github.com/PDF-Archiver/WeScan', :branch => 'master'
-  pod 'SwiftyTesseract', :git => 'https://github.com/PDF-Archiver/SwiftyTesseract.git', :branch => 'master'
+  pod 'SwiftyTesseract', '~> 2.2'
   pod 'SwiftyStoreKit', '~> 0.14.2'
 
   target 'PDFArchiverUITests' do

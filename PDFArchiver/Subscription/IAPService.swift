@@ -81,7 +81,7 @@ public class IAPService: NSObject, Logging {
 
         // release only: fetch receipt
         if !IAPService.isSimulatorOrTestFlightOrDebug() {
-            fetchReceipt(appStart: true)
+            _ = self.appUsagePermitted(appStart: true)
         }
     }
 
@@ -100,30 +100,32 @@ public class IAPService: NSObject, Logging {
 
         } else {
 
-            // get local or remote receipt
-            fetchReceipt(appStart: appStart)
+            // could not found a valid exipryDate locally, so we have to fetch receipts and validate them
+            // in a background thread
+            DispatchQueue.global(qos: .userInitiated).async {
+                // get local or remote receipt
+                self.fetchReceipt(appStart: appStart)
 
-            // validate receipt and check expiration date
-            return hasValidReceipt()
+                // validate receipt and check expiration date
+                _ = self.saveNewExpiryDateOfReceipt()
+            }
+            return false
         }
     }
 
     public func buyProduct(_ product: SKProduct) {
         os_log("Buying %@ ...", log: IAPService.log, type: .info, product.productIdentifier)
 
-        let semaphore = DispatchSemaphore(value: 1)
         requestsRunning += 1
         SwiftyStoreKit.purchaseProduct(product, quantity: 1, atomically: true) { result in
-            defer {
-                semaphore.signal()
-            }
-
             self.requestsRunning -= 1
             switch result {
             case .success(let purchase):
                 os_log("Purchase Success: %@", log: IAPService.log, type: .debug, purchase.productId)
                 self.fetchReceipt()
-                self.hasValidReceipt()
+
+                // validate receipt and save new expiry date
+                _ = self.saveNewExpiryDateOfReceipt()
 
             case .error(let error):
                 // TODO: remove prints
@@ -141,9 +143,6 @@ public class IAPService: NSObject, Logging {
                 }
             }
         }
-
-        let waitTimeout = semaphore.wait(timeout: .now() + 20)
-        print(waitTimeout)
     }
 
     public func buyProduct(_ productIdentifier: String) {
@@ -170,18 +169,17 @@ public class IAPService: NSObject, Logging {
 
     // MARK: - Helper Functions
 
-    fileprivate func hasValidReceipt() -> Bool {
-        let semaphore = DispatchSemaphore(value: 1)
+    fileprivate func saveNewExpiryDateOfReceipt() {
+        os_log("external start", log: IAPService.log, type: .info)
 
-        // TODO: switch between production and sandbox
         // create apple validator
         let appleValidator = AppleReceiptValidator(service: .production, sharedSecret: PDFArchiverKeys().appstoreConnectSharedSecret)
 
-        var receiptIsValid = false
         SwiftyStoreKit.verifyReceipt(using: appleValidator) { result in
             defer {
-                semaphore.signal()
+                os_log("Internal end", log: IAPService.log, type: .info)
             }
+            os_log("Internal start", log: IAPService.log, type: .info)
 
             switch result {
             case .success(let receipt):
@@ -194,7 +192,6 @@ public class IAPService: NSObject, Logging {
                     case .purchased(let expiryDate, _):
 
                         os_log("%@ is valid until %@", log: IAPService.log, type: .debug, productId, expiryDate.description)
-                        receiptIsValid = true
 
                         // set new expiration date
                         self.expiryDate = expiryDate
@@ -212,22 +209,12 @@ public class IAPService: NSObject, Logging {
                 print("Receipt verification failed: \(error)")
             }
         }
-
-        // wait until the receipt is validated
-        _ = semaphore.wait(timeout: .now() + 10)
-
-        return receiptIsValid
     }
 
     fileprivate func fetchReceipt(forceRefresh: Bool = false, appStart: Bool = false) {
 
-        let semaphore = DispatchSemaphore(value: 1)
-
         // refresh receipt if not reachable
         SwiftyStoreKit.fetchReceipt(forceRefresh: forceRefresh) { result in
-            defer {
-                semaphore.signal()
-            }
 
             switch result {
             case .success:
@@ -245,9 +232,6 @@ public class IAPService: NSObject, Logging {
                 }
             }
         }
-
-        // wait until the receipt is fetched
-        _ = semaphore.wait(timeout: .now() + 10)
     }
 
     private func requestProducts() {

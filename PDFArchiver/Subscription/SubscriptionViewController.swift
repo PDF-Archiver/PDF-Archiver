@@ -145,10 +145,6 @@ class SubscriptionViewController: UIViewController, Logging {
     private func restore() {
         IAP.service.restorePurchases()
         cancel()
-
-        if IAP.service.appUsagePermitted() {
-            cancel()
-        }
     }
 
     @objc
@@ -169,6 +165,7 @@ class SubscriptionViewController: UIViewController, Logging {
         actionView.addSubview(textView)
         actionView.addSubview(level1Button)
         actionView.addSubview(level2Button)
+        actionView.addSubview(restoreButton)
         actionView.addSubview(cancelButton)
         view.addSubview(actionView)
     }
@@ -219,14 +216,14 @@ class SubscriptionViewController: UIViewController, Logging {
             level2Button.heightAnchor.constraint(equalToConstant: buttonHeight),
             level2Button.leadingAnchor.constraint(equalTo: actionView.leadingAnchor),
             level2Button.trailingAnchor.constraint(equalTo: actionView.trailingAnchor),
-            level2Button.bottomAnchor.constraint(equalTo: cancelButton.topAnchor)
+            level2Button.bottomAnchor.constraint(equalTo: restoreButton.topAnchor)
         ]
 
         let restoreButtonConstraints: [NSLayoutConstraint] = [
-            cancelButton.heightAnchor.constraint(equalToConstant: buttonHeight),
-            cancelButton.leadingAnchor.constraint(equalTo: actionView.leadingAnchor),
-            cancelButton.trailingAnchor.constraint(equalTo: actionView.trailingAnchor),
-            cancelButton.bottomAnchor.constraint(equalTo: actionView.bottomAnchor)
+            restoreButton.heightAnchor.constraint(equalToConstant: buttonHeight),
+            restoreButton.leadingAnchor.constraint(equalTo: actionView.leadingAnchor),
+            restoreButton.trailingAnchor.constraint(equalTo: actionView.trailingAnchor),
+            restoreButton.bottomAnchor.constraint(equalTo: cancelButton.topAnchor)
         ]
 
         let cancelButtonConstraints: [NSLayoutConstraint] = [
