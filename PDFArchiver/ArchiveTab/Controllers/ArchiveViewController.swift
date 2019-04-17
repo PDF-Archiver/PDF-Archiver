@@ -302,7 +302,8 @@ extension ArchiveViewController: ArchiveViewControllerDelegate {
     func update(_ contentType: ContentType) {
         switch contentType {
         case .archivedDocuments(let changedDocuments):
-            DispatchQueue.global().async {
+            // these documents must be updated on the main thread, since it changes ui elements
+            DispatchQueue.main.async {
                 self.updateDocuments(changed: changedDocuments)
             }
         default:

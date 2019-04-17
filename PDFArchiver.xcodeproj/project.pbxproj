@@ -24,6 +24,7 @@
 		A34A84FA2130A35A0093FAE5 /* DocumentsQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34A84F62130A35A0093FAE5 /* DocumentsQuery.swift */; };
 		A34A84FC2130A35A0093FAE5 /* ArchiveExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34A84F82130A35A0093FAE5 /* ArchiveExtension.swift */; };
 		A34A85022130A3870093FAE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A34A85012130A3870093FAE5 /* Assets.xcassets */; };
+		A34DEF922267699700E12EE5 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A34DEF912267699700E12EE5 /* Settings.bundle */; };
 		A363E858225D30D3007BE48B /* ArchiveLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A335D4BA223D0B3400443A53 /* ArchiveLib.framework */; };
 		A363E859225D30D3007BE48B /* ArchiveLib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A335D4BA223D0B3400443A53 /* ArchiveLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A363E85C225DFC68007BE48B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A363E85B225DFC68007BE48B /* Constants.swift */; };
@@ -50,7 +51,6 @@
 		A3F1C21D2163DCD9002B0141 /* AppStoreReviewRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */; };
 		A3F30D8E221C968E0063D173 /* SplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F30D8D221C968E0063D173 /* SplitViewController.swift */; };
 		A3F30D94221C9C360063D173 /* Archive.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A3F30D93221C9C360063D173 /* Archive.storyboard */; };
-		A3FAA127224C0FD900C90B43 /* SubscriptionViewController+IAPServiceDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FAA126224C0FD900C90B43 /* SubscriptionViewController+IAPServiceDelegate.swift */; };
 		A3FF63A022478FC10089E66A /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF639F22478FC10089E66A /* UIColor.swift */; };
 		A3FF63AA2247A39E0089E66A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3FF63A92247A39E0089E66A /* StoreKit.framework */; };
 		A3FF63D02247AF570089E66A /* SubscriptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF63CF2247AF570089E66A /* SubscriptionViewController.swift */; };
@@ -117,6 +117,7 @@
 		A34A84F82130A35A0093FAE5 /* ArchiveExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArchiveExtension.swift; sourceTree = "<group>"; };
 		A34A85012130A3870093FAE5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A34D8D7A2130A1E200867B65 /* PDFArchiver.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PDFArchiver.entitlements; sourceTree = "<group>"; };
+		A34DEF912267699700E12EE5 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		A363E85B225DFC68007BE48B /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		A378C432221B3929007D1419 /* DocumentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentService.swift; sourceTree = "<group>"; };
 		A381CF20222F0B5D00FAFA7C /* ImageConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageConverter.swift; sourceTree = "<group>"; };
@@ -148,7 +149,6 @@
 		A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreReviewRequest.swift; sourceTree = "<group>"; };
 		A3F30D8D221C968E0063D173 /* SplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewController.swift; sourceTree = "<group>"; };
 		A3F30D93221C9C360063D173 /* Archive.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Archive.storyboard; sourceTree = "<group>"; };
-		A3FAA126224C0FD900C90B43 /* SubscriptionViewController+IAPServiceDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SubscriptionViewController+IAPServiceDelegate.swift"; sourceTree = "<group>"; };
 		A3FF639F22478FC10089E66A /* UIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
 		A3FF63A92247A39E0089E66A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		A3FF63CF2247AF570089E66A /* SubscriptionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriptionViewController.swift; sourceTree = "<group>"; };
@@ -352,6 +352,7 @@
 				171E0C8B1B8E5B84001E6242 /* Info.plist */,
 				171E0C881B8E5B84001E6242 /* LaunchScreen.storyboard */,
 				A34A85012130A3870093FAE5 /* Assets.xcassets */,
+				A34DEF912267699700E12EE5 /* Settings.bundle */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -361,7 +362,6 @@
 			children = (
 				A3DBC690224974380048E681 /* IAPService.swift */,
 				A3FF63CF2247AF570089E66A /* SubscriptionViewController.swift */,
-				A3FAA126224C0FD900C90B43 /* SubscriptionViewController+IAPServiceDelegate.swift */,
 			);
 			path = Subscription;
 			sourceTree = "<group>";
@@ -379,6 +379,7 @@
 				171E0C761B8E5B84001E6242 /* Sources */,
 				171E0C771B8E5B84001E6242 /* Frameworks */,
 				171E0C781B8E5B84001E6242 /* Resources */,
+				A34DEF932267B25800E12EE5 /* SettingsVersion */,
 				7068FD7F74E26C05F4A30501 /* [CP] Embed Pods Frameworks */,
 				A363E85A225D30D3007BE48B /* Embed Frameworks */,
 			);
@@ -500,6 +501,7 @@
 				171E0C8A1B8E5B84001E6242 /* LaunchScreen.storyboard in Resources */,
 				A388C82522351FDD000D52CB /* tessdata in Resources */,
 				A388C8272235330F000D52CB /* test-ocr-data.png in Resources */,
+				A34DEF922267699700E12EE5 /* Settings.bundle in Resources */,
 				A34A85022130A3870093FAE5 /* Assets.xcassets in Resources */,
 				A39A807821FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */,
 				A3F30D94221C9C360063D173 /* Archive.storyboard in Resources */,
@@ -607,6 +609,24 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PDFArchiver/Pods-PDFArchiver-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		A34DEF932267B25800E12EE5 /* SettingsVersion */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SettingsVersion;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Source: https://stackoverflow.com/a/39030153\ncd \"${BUILT_PRODUCTS_DIR}\"\nversion=$(/usr/libexec/PlistBuddy -c \"Print CFBundleShortVersionString\" \"${INFOPLIST_PATH}\")\nbuild=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"${INFOPLIST_PATH}\")\n/usr/libexec/PlistBuddy -c \"Set PreferenceSpecifiers:0:DefaultValue $version ($build)\" \"${WRAPPER_NAME}/Settings.bundle/Root.plist\"\n";
+		};
 		A3B57CD32130C55C000BA17B /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -637,7 +657,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which bartycrouch > /dev/null; then\n    # Incrementally update all Storyboards/XIBs strings files\n    bartycrouch interfaces -p \"$PROJECT_DIR\"\n\n    # Add new keys to Localizable.strings files from NSLocalizedString in code\n    bartycrouch code -p \"$PROJECT_DIR\" -l \"$PROJECT_DIR\" -a -s\nelse\n    echo \"warning: BartyCrouch not installed, download it from https://github.com/Flinesoft/BartyCrouch\"\nfi\n";
+			shellScript = "if which bartycrouch > /dev/null; then\n    # Incrementally update all Storyboards/XIBs strings files\n    bartycrouch interfaces -p \"$PROJECT_DIR\"\n\n    # Add new keys to Localizable.strings files from NSLocalizedString in code\n    bartycrouch code -p \"$PROJECT_DIR\" -l \"$PROJECT_DIR\" -a --sort-by-keys --default-to-keys --override-comments\n\n    # lint localization files\n    bartycrouch lint -p \"$PROJECT_DIR\" --empty-values --duplicate-keys\nelse\n    echo \"warning: BartyCrouch not installed, download it from https://github.com/Flinesoft/BartyCrouch\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -669,7 +689,6 @@
 				A314A29B225542360099681D /* CustomButton.swift in Sources */,
 				A3F1C21D2163DCD9002B0141 /* AppStoreReviewRequest.swift in Sources */,
 				A3F30D8E221C968E0063D173 /* SplitViewController.swift in Sources */,
-				A3FAA127224C0FD900C90B43 /* SubscriptionViewController+IAPServiceDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

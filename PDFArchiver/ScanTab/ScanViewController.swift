@@ -7,6 +7,7 @@
 //
 
 import ArchiveLib
+import AVFoundation
 import os.log
 import StoreKit
 import WeScan
@@ -27,11 +28,17 @@ class ScanViewController: UIViewController, Logging {
 
     @IBAction private func scanButtonTapped(_ sender: UIButton) {
 
-        scannerViewController = ImageScannerController()
+        let authorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
+        if authorizationStatus ==  .denied || authorizationStatus == .restricted {
+            os_log("Authorization status blocks camera access. Switch to preferences.", log: ScanViewController.log, type: .info)
+            alertCameraAccessNeeded()
+        } else {
+            scannerViewController = ImageScannerController()
 
-        guard let scannerViewController = scannerViewController else { return }
-        scannerViewController.imageScannerDelegate = self
-        present(scannerViewController, animated: true)
+            guard let scannerViewController = scannerViewController else { return }
+            scannerViewController.imageScannerDelegate = self
+            present(scannerViewController, animated: true)
+        }
     }
 
     override func viewDidLoad() {
@@ -49,6 +56,23 @@ class ScanViewController: UIViewController, Logging {
             }
             present(viewController, animated: animated)
         }
+    }
+
+    private func alertCameraAccessNeeded() {
+
+        let alert = UIAlertController(
+            title: NSLocalizedString("Need Camera Access", comment: "Camera access in ScanViewController."),
+            message: NSLocalizedString("Camera access is required to scan documents.", comment: "Camera access in ScanViewController."),
+            preferredStyle: .alert
+        )
+
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Camera access in ScanViewController."), style: .default, handler: nil))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Grant Access", comment: "Camera access in ScanViewController."), style: .cancel) { (_) -> Void in
+            guard let settingsAppURL = URL(string: UIApplication.openSettingsURLString) else { return }
+            UIApplication.shared.open(settingsAppURL, options: [:], completionHandler: nil)
+        })
+
+        present(alert, animated: true, completion: nil)
     }
 }
 

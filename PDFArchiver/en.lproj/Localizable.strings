@@ -2,8 +2,20 @@
 /* No comment provided by engineer. */
 "all" = "All";
 
+/* Camera access in ScanViewController. */
+"Camera access is required to scan documents." = "Camera access is required to scan documents.";
+
+/* Camera access in ScanViewController. */
+"Cancel" = "Cancel";
+
 /* The title of an error message popup */
 "Error" = "Error";
+
+/* Camera access in ScanViewController. */
+"Grant Access" = "Grant Access";
+
+/* Camera access in ScanViewController. */
+"Need Camera Access" = "Need Camera Access";
 
 /* Button confirmation label */
 "OK" = "OK";
@@ -23,16 +35,16 @@
 /* Subscription View Controller title. */
 "subscription.title" = "Subscription";
 
-/* No comment provided by engineer. */
+/* Simulator test data set */
 "test_file1" = "2018-04-05--salary-april__tax_work.pdf";
 
-/* No comment provided by engineer. */
+/* Simulator test data set */
 "test_file2" = "2017-04-04--gff-info__donation_tax.pdf";
 
-/* No comment provided by engineer. */
+/* Simulator test data set */
 "test_file3" = "2003-04-03--insurance-report__letter_insurance.pdf";
 
-/* No comment provided by engineer. */
+/* Simulator test data set */
 "test_resource_filename" = "2017-01-17--tom-tailor-jeans__bill_clothes_shopping";
 
 /* Error mesage to be displayed when failing to share a document */

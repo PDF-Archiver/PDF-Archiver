@@ -60,3 +60,15 @@ Rate the App in the [App Store](https://itunes.apple.com/app/apple-store/id14338
 All [contributions](https://github.com/PDF-Archiver/PDF-Archiver/blob/develop/.github/CONTRIBUTING.md) are welcome!
 Feel free to contribute to this project.
 Submit pull requests or contribute tutorials - whatever you have to offer, it would be appreciated!
+
+
+## :exclamation::question: Other
+
+#### License Update
+```bash
+# installation
+brew install mono0926/license-plist/license-plist
+
+# update license files
+license-plist --add-version-numbers --output-path PDFArchiver/Resources/Settings.bundle --suppress-opening-directory
+```
