@@ -179,7 +179,7 @@
                                     <constraint firstAttribute="width" secondItem="dfp-6b-AoF" secondAttribute="height" multiplier="1:1" id="oYu-Xk-5OL"/>
                                 </constraints>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Scan your documents, tag them and find them sorted in your iCloud Drive." lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CaD-Pk-b8x">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Scan your documents, tag them and find them sorted in your iCloud Drive." lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CaD-Pk-b8x">
                                 <rect key="frame" x="46" y="347" width="283" height="36"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="36" id="Joz-ws-ES9"/>

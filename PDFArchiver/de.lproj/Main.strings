@@ -1,27 +1,24 @@
 
-/* Class = "UILabel"; text = "PDF Archive Viewer"; ObjectID = "DSc-hJ-ulG"; */
-"DSc-hJ-ulG.text" = "PDF Archive Viewer";
-
-/* Class = "UIViewController"; title = "Detail"; ObjectID = "JEX-9P-axG"; */
-"JEX-9P-axG.title" = "Detail";
-
-/* Class = "UIViewController"; title = "Documents"; ObjectID = "PIm-xb-9tu"; */
-"PIm-xb-9tu.title" = "Dokumente";
-
-/* Class = "UINavigationController"; title = "Documents"; ObjectID = "RMx-3f-FxP"; */
-"RMx-3f-FxP.title" = "Dokumente";
-
-/* Class = "UITabBarItem"; title = "Find"; ObjectID = "6hS-pH-8it"; */
-"6hS-pH-8it.title" = "Find";
+/* Class = "UITabBarItem"; title = "Archive"; ObjectID = "6hS-pH-8it"; */
+"6hS-pH-8it.title" = "Archiv";
 
 /* Class = "UITabBarItem"; title = "Scan"; ObjectID = "Cdf-Rt-ZTT"; */
 "Cdf-Rt-ZTT.title" = "Scan";
 
-/* Class = "UILabel"; text = "Scanning"; ObjectID = "EHf-Kd-ScS"; */
-"EHf-Kd-ScS.text" = "Scanning";
-
-/* Class = "UILabel"; text = "Tagging"; ObjectID = "1fY-QB-Abt"; */
-"1fY-QB-Abt.text" = "Tagging";
-
 /* Class = "UITabBarItem"; title = "Tag"; ObjectID = "Y0S-5H-vdU"; */
 "Y0S-5H-vdU.title" = "Tag";
+
+/* Class = "UILabel"; text = "Welcome to"; ObjectID = "9Fl-hk-5bp"; */
+"9Fl-hk-5bp.text" = "Willkommen bei";
+
+/* Class = "UILabel"; text = "Scan your documents, tag them and find them sorted in your iCloud Drive."; ObjectID = "CaD-Pk-b8x"; */
+"CaD-Pk-b8x.text" = "Scanne und tagge Dokumente und finde sie anschließend in iCloud Drive.";
+
+/* Class = "UIButton"; normalTitle = "Scan next"; ObjectID = "UQe-pf-RdV"; */
+"UQe-pf-RdV.normalTitle" = "Nächster Scan";
+
+/* Class = "UILabel"; text = "Processing documents."; ObjectID = "VnS-hp-NRS"; */
+"VnS-hp-NRS.text" = "Verarbeite Dokumente.";
+
+/* Class = "UILabel"; text = "PDF Archiver"; ObjectID = "kSx-MV-ggo"; */
+"kSx-MV-ggo.text" = "PDF Archiver";

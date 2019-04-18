@@ -73,7 +73,8 @@ class DateDescriptionViewController: UIViewController {
         document = Array(untaggedDocuments).sorted().min()
 
         // update untagged documents label
-        untaggedDocumentsCount.text = "Untagged Documents: \(untaggedDocuments.count)"
+        let prefix = NSLocalizedString("tagging.date-description.untagged-documents", comment: "")
+        untaggedDocumentsCount.text = prefix + ": \(untaggedDocuments.count)"
 
         // update view with the current document state
         updateView()
