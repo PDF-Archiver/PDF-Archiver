@@ -1,7 +1,7 @@
 PODS:
-  - Sentry (4.1.1):
-    - Sentry/Core (= 4.1.1)
-  - Sentry/Core (4.1.1)
+  - Sentry (4.3.3):
+    - Sentry/Core (= 4.3.3)
+  - Sentry/Core (4.3.3)
 
 DEPENDENCIES:
   - Sentry (~> 4.1)
@@ -11,8 +11,8 @@ SPEC REPOS:
     - Sentry
 
 SPEC CHECKSUMS:
-  Sentry: c9d0543c7223ddec036027f4c7391ea057ba9856
+  Sentry: e5e1d4434cf8cc5c62c16c37ceb90ac746948623
 
 PODFILE CHECKSUM: b043798bee744923df5a5c00fd400ce8dbe78823
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.6.1

@@ -1,0 +1,34 @@
+[update]
+tasks = ["interfaces", "code", "transform", "normalize"]
+
+[update.interfaces]
+path = "PDFArchiver/"
+defaultToBase = false
+ignoreEmptyStrings = false
+unstripped = false
+
+[update.code]
+codePath = "PDFArchiver/"
+localizablePath = "."
+defaultToKeys = false
+additive = true
+unstripped = false
+
+[update.transform]
+codePath = "PDFArchiver/"
+localizablePath = "PDFArchiver/Localizable.strings"
+transformer = "foundation"
+supportedLanguageEnumPath = "PDFArchiver/Helpers/BartyCrouch.swift"
+typeName = "BartyCrouch"
+translateMethodName = "translate"
+
+[update.normalize]
+path = "PDFArchiver/"
+sourceLocale = "en"
+harmonizeWithSource = true
+sortByKeys = true
+
+[lint]
+path = "PDFArchiver/"
+duplicateKeys = true
+emptyValues = true

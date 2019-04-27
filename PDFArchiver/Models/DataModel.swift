@@ -253,7 +253,7 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
         var pdfURLs = [URL]()
         // sort files like documentAC sortDescriptors
         for file in files.sorted(by: { $0.lastPathComponent < $1.lastPathComponent }) {
-            if file.pathExtension == "pdf" {
+            if file.pathExtension.lowercased() == "pdf" {
 
                 // add PDF
                 pdfURLs.append(file)
