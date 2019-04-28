@@ -11,20 +11,11 @@
 /* Class = "UIButton"; normalTitle = ">"; ObjectID = "Vzp-Dk-2NX"; */
 "Vzp-Dk-2NX.normalTitle" = ">";
 
-/* Class = "UILabel"; text = "Document"; ObjectID = "bXr-2J-ZON"; */
-"bXr-2J-ZON.text" = "Dokument";
-
 /* Class = "UIButton"; normalTitle = "Save"; ObjectID = "dlx-d7-y8l"; */
 "dlx-d7-y8l.normalTitle" = "Speichern";
 
 /* Class = "UILabel"; text = "Date & Description"; ObjectID = "lvw-s9-fVK"; */
 "lvw-s9-fVK.text" = "Datum & Beschreibung";
 
-/* Class = "UILabel"; text = "Suggested"; ObjectID = "o7f-Dg-oOO"; */
-"o7f-Dg-oOO.text" = "Vorgeschlagen";
-
 /* Class = "UILabel"; text = "Tags"; ObjectID = "veT-n1-fDa"; */
 "veT-n1-fDa.text" = "Tags";
-
-/* Class = "UITextField"; placeholder = "Tag Name"; ObjectID = "xch-Tp-6M2"; */
-"xch-Tp-6M2.placeholder" = "Tag Name";

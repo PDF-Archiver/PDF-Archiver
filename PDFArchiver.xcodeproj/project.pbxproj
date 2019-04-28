@@ -36,6 +36,7 @@
 		A381D1A522319D9B00434790 /* DateDescriptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A381D1A422319D9B00434790 /* DateDescriptionViewController.swift */; };
 		A388C82522351FDD000D52CB /* tessdata in Resources */ = {isa = PBXBuildFile; fileRef = A388C82422351FDD000D52CB /* tessdata */; };
 		A388C8272235330F000D52CB /* test-ocr-data.png in Resources */ = {isa = PBXBuildFile; fileRef = A388C8262235330F000D52CB /* test-ocr-data.png */; };
+		A389789B2274FD4600DC13B9 /* CustomInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A389789A2274FD4600DC13B9 /* CustomInputView.swift */; };
 		A3932824221EF7DC00858461 /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3932823221EF7DC00858461 /* ScanViewController.swift */; };
 		A39A807821FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
 		A39A807921FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
@@ -130,6 +131,7 @@
 		A381D1A422319D9B00434790 /* DateDescriptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateDescriptionViewController.swift; sourceTree = "<group>"; };
 		A388C82422351FDD000D52CB /* tessdata */ = {isa = PBXFileReference; lastKnownFileType = folder; path = tessdata; sourceTree = "<group>"; };
 		A388C8262235330F000D52CB /* test-ocr-data.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "test-ocr-data.png"; sourceTree = "<group>"; };
+		A389789A2274FD4600DC13B9 /* CustomInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomInputView.swift; sourceTree = "<group>"; };
 		A3932823221EF7DC00858461 /* ScanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
 		A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf"; sourceTree = "<group>"; };
 		A3A071672253ED660093E7A4 /* TagViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagViewController.swift; sourceTree = "<group>"; };
@@ -282,6 +284,7 @@
 				A314A29A225542360099681D /* CustomButton.swift */,
 				A363E85B225DFC68007BE48B /* Constants.swift */,
 				A3ED932222666BE800DFC2D9 /* TagListView.swift */,
+				A389789A2274FD4600DC13B9 /* CustomInputView.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -595,6 +598,7 @@
 				"${BUILT_PRODUCTS_DIR}/SwiftyStoreKit/SwiftyStoreKit.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyTesseract/SwiftyTesseract.framework",
 				"${BUILT_PRODUCTS_DIR}/TagListView/TagListView.framework",
+				"${BUILT_PRODUCTS_DIR}/WSTagsField/WSTagsField.framework",
 				"${BUILT_PRODUCTS_DIR}/WeScan/WeScan.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -606,6 +610,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyStoreKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyTesseract.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TagListView.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WSTagsField.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WeScan.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -643,7 +648,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint autocorrect\n    swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+			shellScript = "if which swiftlint >/dev/null; then\n#swiftlint autocorrect\n    swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
 		};
 		A3EBFE9921650CB1008C34CC /* BartyCrouch */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -688,6 +693,7 @@
 				A381CF21222F0B5D00FAFA7C /* ImageConverter.swift in Sources */,
 				A3FF63D02247AF570089E66A /* SubscriptionViewController.swift in Sources */,
 				A378C433221B3929007D1419 /* DocumentService.swift in Sources */,
+				A389789B2274FD4600DC13B9 /* CustomInputView.swift in Sources */,
 				171E0C7E1B8E5B84001E6242 /* AppDelegate.swift in Sources */,
 				A34A84FA2130A35A0093FAE5 /* DocumentsQuery.swift in Sources */,
 				A381D1A522319D9B00434790 /* DateDescriptionViewController.swift in Sources */,
