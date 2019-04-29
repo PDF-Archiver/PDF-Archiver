@@ -158,8 +158,23 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mU6-MC-8s4" userLabel="Content View">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="695"/>
                                         <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tags" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="veT-n1-fDa">
+                                                <rect key="frame" x="30" y="4.9999999999999982" width="315" height="31.333333333333329"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="31.329999999999998" id="Jy0-KB-I1g"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
+                                                <color key="textColor" name="DarkGray"/>
+                                                <color key="highlightedColor" name="LightGray"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Document" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LRW-Ih-UUf">
+                                                <rect key="frame" x="35" y="51.333333333333336" width="310" height="18.000000000000007"/>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                                <color key="textColor" name="LightGray"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Rz6-gz-wLo" userLabel="Document Tags">
-                                                <rect key="frame" x="30" y="41.333333333333343" width="315" height="150"/>
+                                                <rect key="frame" x="30" y="72.333333333333314" width="315" height="150"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="150" id="M25-QN-Tho"/>
@@ -192,8 +207,50 @@
                                                     <userDefinedRuntimeAttribute type="boolean" keyPath="enableRemoveButton" value="YES"/>
                                                 </userDefinedRuntimeAttributes>
                                             </view>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Suggestions" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VwQ-7i-9zW">
+                                                <rect key="frame" x="35" y="242.33333333333334" width="310" height="18.000000000000028"/>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                                <color key="textColor" name="LightGray"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Jl1-vr-ydn" userLabel="Suggested Tags">
+                                                <rect key="frame" x="30" y="263.33333333333331" width="315" height="100"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="100" id="o3l-47-Rud"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="tagBackgroundColor">
+                                                        <color key="value" name="LightRed"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="tagHighlightedBackgroundColor">
+                                                        <color key="value" name="LightRed"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="tagSelectedBackgroundColor">
+                                                        <color key="value" name="LightRed"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                        <real key="value" value="5"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                                        <real key="value" value="0.0"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="paddingY">
+                                                        <real key="value" value="10"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="paddingX">
+                                                        <real key="value" value="10"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="marginY">
+                                                        <real key="value" value="15"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="marginX">
+                                                        <real key="value" value="15"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                            </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="r36-BN-fsE" userLabel="Navigation View">
-                                                <rect key="frame" x="30" y="331.33333333333331" width="315" height="45"/>
+                                                <rect key="frame" x="30" y="383.33333333333331" width="315" height="45"/>
                                                 <subviews>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AAw-Fe-pyu" customClass="CustomButton" customModule="PDFArchiver" customModuleProvider="target">
                                                         <rect key="frame" x="0.0" y="0.0" width="45" height="45"/>
@@ -239,66 +296,27 @@
                                                     <constraint firstItem="AAw-Fe-pyu" firstAttribute="leading" secondItem="r36-BN-fsE" secondAttribute="leading" id="zn4-dm-KrV"/>
                                                 </constraints>
                                             </view>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Jl1-vr-ydn" userLabel="Suggested Tags">
-                                                <rect key="frame" x="30" y="211.33333333333337" width="315" height="100"/>
-                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="100" id="o3l-47-Rud"/>
-                                                </constraints>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="tagBackgroundColor">
-                                                        <color key="value" name="LightRed"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="tagHighlightedBackgroundColor">
-                                                        <color key="value" name="LightRed"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="tagSelectedBackgroundColor">
-                                                        <color key="value" name="LightRed"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                                        <real key="value" value="5"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
-                                                        <real key="value" value="0.0"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="paddingY">
-                                                        <real key="value" value="10"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="paddingX">
-                                                        <real key="value" value="10"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="marginY">
-                                                        <real key="value" value="15"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="marginX">
-                                                        <real key="value" value="15"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                </userDefinedRuntimeAttributes>
-                                            </view>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tags" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="veT-n1-fDa">
-                                                <rect key="frame" x="30" y="4.9999999999999982" width="315" height="31.333333333333329"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="31.329999999999998" id="Jy0-KB-I1g"/>
-                                                </constraints>
-                                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
-                                                <color key="textColor" name="DarkGray"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstItem="veT-n1-fDa" firstAttribute="leading" secondItem="mU6-MC-8s4" secondAttribute="leading" constant="30" id="1Y8-Lv-3fI"/>
                                             <constraint firstItem="r36-BN-fsE" firstAttribute="leading" secondItem="veT-n1-fDa" secondAttribute="leading" id="38F-Ny-23Q"/>
                                             <constraint firstItem="Rz6-gz-wLo" firstAttribute="leading" secondItem="veT-n1-fDa" secondAttribute="leading" id="4st-V2-cOL"/>
+                                            <constraint firstItem="LRW-Ih-UUf" firstAttribute="trailing" secondItem="veT-n1-fDa" secondAttribute="trailing" id="9eI-Ta-JP5"/>
                                             <constraint firstItem="veT-n1-fDa" firstAttribute="top" secondItem="mU6-MC-8s4" secondAttribute="top" constant="5" id="Csi-wq-SUI"/>
-                                            <constraint firstItem="Jl1-vr-ydn" firstAttribute="top" secondItem="Rz6-gz-wLo" secondAttribute="bottom" constant="20" id="JN4-cw-IrZ"/>
-                                            <constraint firstItem="Rz6-gz-wLo" firstAttribute="top" secondItem="veT-n1-fDa" secondAttribute="bottom" constant="5" id="RLF-da-mjE"/>
+                                            <constraint firstItem="LRW-Ih-UUf" firstAttribute="top" secondItem="veT-n1-fDa" secondAttribute="bottom" constant="15" id="EiZ-Tm-eKG"/>
+                                            <constraint firstItem="VwQ-7i-9zW" firstAttribute="trailing" secondItem="veT-n1-fDa" secondAttribute="trailing" id="J6C-Cs-Evu"/>
+                                            <constraint firstItem="VwQ-7i-9zW" firstAttribute="top" secondItem="Rz6-gz-wLo" secondAttribute="bottom" constant="20" id="JN4-cw-IrZ"/>
+                                            <constraint firstItem="Rz6-gz-wLo" firstAttribute="top" secondItem="LRW-Ih-UUf" secondAttribute="bottom" constant="3" id="RLF-da-mjE"/>
                                             <constraint firstAttribute="trailing" secondItem="veT-n1-fDa" secondAttribute="trailing" constant="30" id="S8A-we-Zdx"/>
                                             <constraint firstItem="Rz6-gz-wLo" firstAttribute="trailing" secondItem="veT-n1-fDa" secondAttribute="trailing" id="TJA-14-On9"/>
                                             <constraint firstItem="Jl1-vr-ydn" firstAttribute="leading" secondItem="veT-n1-fDa" secondAttribute="leading" id="TLG-Ru-OOd"/>
                                             <constraint firstItem="Jl1-vr-ydn" firstAttribute="trailing" secondItem="veT-n1-fDa" secondAttribute="trailing" id="TUu-Nr-ZLJ"/>
+                                            <constraint firstItem="LRW-Ih-UUf" firstAttribute="leading" secondItem="veT-n1-fDa" secondAttribute="leading" constant="5" id="VQz-3G-U1a"/>
                                             <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="r36-BN-fsE" secondAttribute="bottom" constant="30" id="bkK-CG-Tqz"/>
+                                            <constraint firstItem="Jl1-vr-ydn" firstAttribute="top" secondItem="VwQ-7i-9zW" secondAttribute="bottom" constant="3" id="eGT-XU-JVb"/>
                                             <constraint firstItem="r36-BN-fsE" firstAttribute="trailing" secondItem="veT-n1-fDa" secondAttribute="trailing" id="gVc-gI-t8h"/>
+                                            <constraint firstItem="VwQ-7i-9zW" firstAttribute="leading" secondItem="veT-n1-fDa" secondAttribute="leading" constant="5" id="lvi-AV-cvn"/>
                                             <constraint firstItem="r36-BN-fsE" firstAttribute="top" secondItem="Jl1-vr-ydn" secondAttribute="bottom" constant="20" id="qNu-fU-fgj"/>
                                         </constraints>
                                     </view>
@@ -358,6 +376,9 @@
     <resources>
         <namedColor name="DarkGray">
             <color red="0.13099999725818634" green="0.17200000584125519" blue="0.23100000619888306" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+        </namedColor>
+        <namedColor name="LightGray">
+            <color red="0.21299999952316284" green="0.24199999868869781" blue="0.28600001335144043" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
         <namedColor name="LightRed">
             <color red="0.90299999713897705" green="0.41200000047683716" blue="0.40400001406669617" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>

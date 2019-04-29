@@ -19,3 +19,9 @@
 
 /* Class = "UILabel"; text = "Tags"; ObjectID = "veT-n1-fDa"; */
 "veT-n1-fDa.text" = "Tags";
+
+/* Class = "UILabel"; text = "Document"; ObjectID = "LRW-Ih-UUf"; */
+"LRW-Ih-UUf.text" = "Dokument";
+
+/* Class = "UILabel"; text = "Suggestions"; ObjectID = "VwQ-7i-9zW"; */
+"VwQ-7i-9zW.text" = "Vorschläge";

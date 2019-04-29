@@ -21,7 +21,7 @@ class TagViewController: UIViewController, Logging {
 
     private let documentTagField = WSTagsField()
     private let suggestedTagField = WSTagsField()
-    
+
     // view controller that sits on top of the default keygoard
     private let suggestionVC = SuggestionInputView(nibName: nil, bundle: nil)
 
@@ -118,7 +118,7 @@ class TagViewController: UIViewController, Logging {
         super.viewDidLayoutSubviews()
         documentTagField.frame = documentTagsView.bounds
         suggestedTagField.frame = suggestedTagsView.bounds
-        
+
         suggestionVC.view.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 50)
     }
 
@@ -130,9 +130,9 @@ class TagViewController: UIViewController, Logging {
 
         field.layer.borderColor = UIColor.paLightGray.cgColor
         field.layer.borderWidth = 1
-        field.layer.cornerRadius = 5
+        field.layer.cornerRadius = 10
 
-        field.cornerRadius = 3.0
+        field.cornerRadius = 5.0
         field.spaceBetweenLines = 10
         field.spaceBetweenTags = 10
 
@@ -142,7 +142,7 @@ class TagViewController: UIViewController, Logging {
         field.layoutMargins = UIEdgeInsets(top: 2, left: 6, bottom: 2, right: 6)
         field.contentInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10) //old padding
 
-        field.placeholder = "Enter a tag"
+        field.placeholder = NSLocalizedString("tagvc.enter-tag", comment: "Placeholder in Tagging Screen.")
         field.placeholderColor = .paDarkGray
         field.textColor = .paWhite
         field.placeholderAlwaysVisible = true

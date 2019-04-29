@@ -44,6 +44,9 @@
 /* No comment provided by engineer. */
 "tagging.date-description.untagged-documents" = "Verbleibende Dokumente";
 
+/* Placeholder in Tagging Screen. */
+"tagvc.enter-tag" = "Tag eingeben";
+
 /* Simulator test data set */
 "test_file1" = "2018-04-05--gehalt-april__arbeit_steuer_gehalt.pdf";
 
