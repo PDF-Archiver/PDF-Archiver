@@ -15,6 +15,16 @@ import UIKit
 
 public struct ImageConverter: Logging {
 
+    private static let workerQueue: OperationQueue = {
+        let workerQueue = OperationQueue()
+
+        workerQueue.qualityOfService = .userInitiated
+        workerQueue.name = (Bundle.main.bundleIdentifier ?? "PDFArchiver") + ".ImageConverter.workerQueue"
+        workerQueue.maxConcurrentOperationCount = 1
+
+        return workerQueue
+    }()
+
     private static let languages: [RecognitionLanguage] = [.german, .english, .italian, .french, .swedish, .russian]
 //    private static let languages: [RecognitionLanguage] = {
 //        var langs: [RecognitionLanguage] = [.german, .english]
@@ -31,21 +41,30 @@ public struct ImageConverter: Logging {
 //        return langs
 //    }()
 
-    public static func process(_ images: [UIImage], saveAt path: URL) {
+    public static func process(_ images: [UIImage], saveAt path: URL, completion: @escaping (() -> Void)) {
         os_log("Start processing images", log: log, type: .debug)
 
-        // convert image to pdf
-        let pdfDocument = createPDF(from: images)
+        workerQueue.addOperation {
+            // convert image to pdf
+            let pdfDocument = createPDF(from: images)
 
-        // generate filename by analysing the image
-        let filename = getFilename(from: pdfDocument)
-        let filepath = path.appendingPathComponent(filename)
+            // generate filename by analysing the image
+            let filename = getFilename(from: pdfDocument)
+            let filepath = path.appendingPathComponent(filename)
 
-        // save PDF document
-        save(pdfDocument, at: filepath)
+            // save PDF document
+            save(pdfDocument, at: filepath)
+
+            // run completion handler
+            completion()
+        }
     }
 
-    static func createPDF(from images: [UIImage]) -> PDFDocument {
+    public static func getOperationCount() -> Int {
+        return workerQueue.operationCount
+    }
+
+    private static func createPDF(from images: [UIImage]) -> PDFDocument {
         os_log("Creating PDF from images", log: log, type: .debug)
 
         let document: PDFDocument
@@ -75,7 +94,7 @@ public struct ImageConverter: Logging {
         return document
     }
 
-    static func getFilename(from document: PDFDocument) -> String {
+    private static func getFilename(from document: PDFDocument) -> String {
         os_log("Creating filename", log: log, type: .debug)
 
         // get OCR content

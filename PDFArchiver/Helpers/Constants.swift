@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit.UIAlertController
 
 enum Constants {
 
@@ -23,4 +24,10 @@ enum Constants {
     }()
 
     static let documentDescriptionPlaceholder = "PDF-ARCHIVER-TEMP-DESCRIPTION-"
+
+    static let alertController: UIAlertController = {
+        let alert = UIAlertController(title: NSLocalizedString("not-found.icloud-drive.title", comment: "Alert VC: Title"), message: NSLocalizedString("not-found.icloud-drive.text", comment: "Could not find a iCloud Drive Path."), preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        return alert
+    }()
 }

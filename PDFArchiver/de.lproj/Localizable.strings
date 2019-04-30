@@ -17,6 +17,12 @@
 /* Camera access in ScanViewController. */
 "Need Camera Access" = "Kamera Zugriff benötigt";
 
+/* Could not found a iCloud Drive Path. */
+"not-found.icloud-drive.text" = "iCloud Drive konnte nicht gefunden werden.";
+
+/* Alert VC: Title */
+"not-found.icloud-drive.title" = "Achtung";
+
 /* Button confirmation label */
 "OK" = "OK";
 

@@ -34,8 +34,13 @@ class TagViewController: UIViewController, Logging {
     }
 
     @IBAction private func saveButtonTapped(_ sender: UIButton) {
-        // TODO: use error handling here
-        guard let path = Constants.archivePath else { fatalError("Could not get the iCloud Drive Archive Path.") }
+
+        guard let path = Constants.archivePath else {
+            assertionFailure("Could not find a iCloud Drive url.")
+            self.present(Constants.alertController, animated: true, completion: nil)
+            return
+        }
+
         do {
             guard let document = document else { fatalError("Could not find document that should be saved. This should not happen!") }
             try document.rename(archivePath: path, slugify: true)

@@ -14,17 +14,9 @@ import WeScan
 
 class ScanViewController: UIViewController, Logging {
 
-    @IBOutlet weak var processoingIndeicatorView: UIView!
-
     private var scannerViewController: ImageScannerController?
 
-    private var numberOfImageProcesses = 0 {
-        didSet {
-            DispatchQueue.main.async {
-                self.processoingIndeicatorView.isHidden = self.numberOfImageProcesses == 0
-            }
-        }
-    }
+    @IBOutlet weak var processingIndicatorView: UIView!
 
     @IBAction private func scanButtonTapped(_ sender: UIButton) {
 
@@ -43,11 +35,14 @@ class ScanViewController: UIViewController, Logging {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        processoingIndeicatorView.isHidden = true
+        processingIndicatorView.isHidden = true
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+
+        // show the processing indicator, if documents are currently processed
+        updateProcessingIndicator()
 
         // show subscription view controller, if no subscription was found
         if !IAP.service.appUsagePermitted() {
@@ -55,6 +50,14 @@ class ScanViewController: UIViewController, Logging {
                 self.tabBarController?.selectedIndex = self.tabBarController?.getViewControllerIndex(with: "ArchiveTab") ?? 2
             }
             present(viewController, animated: animated)
+        }
+    }
+
+    // MARK: - Helper Functions
+
+    private func updateProcessingIndicator() {
+        DispatchQueue.main.async {
+            self.processingIndicatorView.isHidden = ImageConverter.getOperationCount() == 0
         }
     }
 
@@ -100,15 +103,20 @@ extension ScanViewController: ImageScannerControllerDelegate {
             image = results.scannedImage
         }
 
-        // TODO: use error handling here
-        guard let untaggedPath = Constants.untaggedPath else { fatalError("Could not find a iCloud Drive url.") }
+        guard let untaggedPath = Constants.untaggedPath else {
+            assertionFailure("Could not find a iCloud Drive url.")
+            self.present(Constants.alertController, animated: true, completion: nil)
+            return
+        }
 
         // convert and save image on a background thread
-        DispatchQueue.global(qos: .userInitiated).async {
-            self.numberOfImageProcesses += 1
-            ImageConverter.process([image], saveAt: untaggedPath)
-            self.numberOfImageProcesses -= 1
+        ImageConverter.process([image], saveAt: untaggedPath) {
+            // hide processing indicator after the processing has completed
+            self.updateProcessingIndicator()
         }
+
+        // show processing indicator instantly
+        updateProcessingIndicator()
     }
 
     func imageScannerControllerDidCancel(_ scanner: ImageScannerController) {

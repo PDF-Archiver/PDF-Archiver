@@ -54,7 +54,7 @@ class DocumentsQuery: NSObject, Logging {
 
         // Filter only documents from the current year and the year before
         let year = Calendar.current.component(.year, from: Date())
-        metadataQuery.predicate = NSPredicate(format: "(%K LIKE '\(year)-*.pdf') OR (%K LIKE '\(year - 1)-*.pdf')", NSMetadataItemFSNameKey, NSMetadataItemFSNameKey)
+        metadataQuery.predicate = NSPredicate(format: "(%K LIKE[c] '\(year)-*.pdf') OR (%K LIKE[c] '\(year - 1)-*.pdf')", NSMetadataItemFSNameKey, NSMetadataItemFSNameKey)
 
         // update the file status 5 times per second, while downloading
         metadataQuery.notificationBatchingInterval = 0.2
@@ -113,7 +113,7 @@ class DocumentsQuery: NSObject, Logging {
 
         // get all pdf documents
         if firstRun {
-            metadataQuery.predicate = NSPredicate(format: "%K ENDSWITH '.pdf'", NSMetadataItemFSNameKey)
+            metadataQuery.predicate = NSPredicate(format: "%K ENDSWITH[c] '.pdf'", NSMetadataItemFSNameKey)
             firstRun = false
         }
     }
