@@ -8,8 +8,13 @@
 
 import UIKit
 
+protocol SuggestionInputViewDelegate: class {
+    func suggestionInputView(_ suggestionInputView: SuggestionInputView, userTabbed button: UIButton)
+}
+
 class SuggestionInputView: UIViewController {
 
+    weak var delegate: SuggestionInputViewDelegate?
     var suggestions = [String]() {
         didSet {
             setupButtonTitles()
@@ -37,6 +42,7 @@ class SuggestionInputView: UIViewController {
             button.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
             button.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
             SuggestionInputView.customize(button)
+            button.addTarget(self, action: #selector(action(sender:)), for: .touchUpInside)
         }
 
         button1.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
@@ -85,6 +91,11 @@ class SuggestionInputView: UIViewController {
 
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.paDarkGray.cgColor
+    }
+
+    @objc
+    private func action(sender: UIButton) {
+        delegate?.suggestionInputView(self, userTabbed: sender)
     }
 }
 

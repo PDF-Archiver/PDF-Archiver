@@ -44,10 +44,6 @@ class TagViewController: UIViewController, Logging {
             os_log("Error occurred while renaming Document: %@", log: TagViewController.log, type: .error, error.localizedDescription)
         }
         self.navigationController?.popViewController(animated: true)
-
-        // TODO: remove this
-        let out = try? document?.getRenamingPath()
-        print(out?.filename)
     }
 
     override func viewDidLoad() {
@@ -56,6 +52,7 @@ class TagViewController: UIViewController, Logging {
         TagViewController.customise(documentTagField)
         documentTagsView.addSubview(documentTagField)
         documentTagField.textDelegate = self
+        suggestionVC.delegate = self
 
         TagViewController.customise(suggestedTagField)
         suggestedTagsView.addSubview(suggestedTagField)
@@ -67,37 +64,45 @@ class TagViewController: UIViewController, Logging {
         registerNotifications()
 
         // get document tags
-        if let documentTags = document?.tags.map({ $0.name }) {
-            documentTagField.addTags(documentTags)
-        }
+        let documentTags = document?.tags.map { $0.name } ?? []
+        documentTagField.addTags(documentTags.sorted())
 
         // setup suggested tags
-        suggestedTagField.addTags(Array(suggestedTags ?? []))
+        let displayedSuggestedTags = (suggestedTags ?? []).subtracting(documentTags)
+        suggestedTagField.addTags(Array(displayedSuggestedTags).sorted())
 
         documentTagField.onDidSelectTagView = { _, view in
-
             self.documentTagField.removeTag(view.displayText)
-            self.suggestedTagField.addTag(view.displayText)
-
             self.documentTagField.beginEditing()
-
             guard let document = self.document,
                 let tag = document.tags.first(where: { $0.name == view.displayText }) else { return }
             DocumentService.archive.remove(tag, from: document)
         }
 
-        documentTagField.onDidAddTag = {field, tag in
+        documentTagField.onDidAddTag = {_, tag in
             guard let document = self.document else { return }
             DocumentService.archive.add(tag: tag.text, to: document)
+            self.suggestedTagField.removeTag(tag.text)
         }
 
-        documentTagField.onDidChangeText = {field, text in
-            // TODO: use real tags here
+        documentTagField.onDidRemoveTag = {_, tag in
+            if self.suggestedTags?.contains(tag.text) ?? false {
+                self.suggestedTagField.addTag(tag.text)
+                self.suggestedTagField.sortTags()
+            }
+        }
+
+        documentTagField.onDidChangeText = {_, text in
             if let tagName = text,
                 !tagName.isEmpty {
 
-                let tags = DocumentService.archive.getAvailableTags(with: [tagName]).map { $0.name }
-                self.suggestionVC.suggestions = Array(tags.sorted().prefix(3))
+                let documentTags = Set(self.documentTagField.tags.map { $0.text })
+                let tags = DocumentService.archive.getAvailableTags(with: [tagName])
+                    .filter { !documentTags.contains($0.name) }
+                    .sorted { $0.count > $1.count }
+                    .map { $0.name }
+                    .prefix(3)
+                self.suggestionVC.suggestions = Array(tags)
             } else {
                 self.suggestionVC.suggestions = []
             }
@@ -105,7 +110,11 @@ class TagViewController: UIViewController, Logging {
 
         suggestedTagField.onDidSelectTagView = {_, view in
             self.documentTagField.addTag(view.displayText)
-            self.suggestedTagField.removeTag(view.displayText)
+            self.documentTagField.sortTags()
+        }
+
+        suggestedTagField.onDidAddTag = {_, tag in
+            self.documentTagField.removeTag(tag.text)
         }
     }
 
@@ -177,10 +186,26 @@ class TagViewController: UIViewController, Logging {
     }
 }
 
+// MARK: - UITextFieldDelegate
+
 extension TagViewController: UITextFieldDelegate {
 
     func textFieldDidBeginEditing(_ textField: UITextField) {
         textField.autocorrectionType = .no
         textField.inputAccessoryView = self.suggestionVC.view
+    }
+}
+
+// MARK: - SuggestionInputViewDelegate
+
+extension TagViewController: SuggestionInputViewDelegate {
+
+    func suggestionInputView(_ suggestionInputView: SuggestionInputView, userTabbed button: UIButton) {
+
+        guard let tagName = button.currentTitle,
+            !documentTagField.contains(tagName) else { return }
+
+        documentTagField.addTag(tagName)
+        documentTagField.sortTags()
     }
 }
