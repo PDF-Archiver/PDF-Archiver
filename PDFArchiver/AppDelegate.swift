@@ -40,8 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         self.window?.tintColor = .paDarkGray
-        UISearchBar.appearance().tintColor = .paDarkGray
-        UINavigationBar.appearance().tintColor = .paDarkGray
+        UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.paDarkGray]
 
         return true
     }
