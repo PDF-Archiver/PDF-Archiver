@@ -103,11 +103,6 @@ class ArchiveViewController: UIViewController, UITableViewDelegate, Logging {
             }
 
             controller.detailDocument = document
-            controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
-            controller.navigationItem.leftItemsSupplementBackButton = true
-
-            // increment the AppStoreReview counter
-            AppStoreReviewRequest.shared.incrementCount()
 
             // avoid inverted colors in tags by deselecting the cell
             tableView.deselectRow(at: indexPath, animated: false)

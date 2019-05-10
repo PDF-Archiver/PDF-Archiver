@@ -36,6 +36,10 @@ class DetailViewController: UIViewController, Logging {
     // MARK: - outlets
     @IBOutlet weak var documentView: PDFView!
 
+    @IBAction private func cancelButtonClicked(_ sender: UIBarButtonItem) {
+        self.dismiss(animated: true, completion: nil)
+    }
+
     @IBAction private func shareButtonClicked(_ sender: UIBarButtonItem) {
         guard let document = detailDocument else {
 

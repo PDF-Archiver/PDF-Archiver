@@ -46,9 +46,14 @@
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="mOI-FS-AaM">
+                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="DHX-qF-VZy">
+                            <connections>
+                                <action selector="cancelButtonClicked:" destination="JEX-9P-axG" id="4dX-oP-hwD"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="action" id="4IU-Dl-iGq">
                             <connections>
-                                <action selector="shareButtonClicked:" destination="JEX-9P-axG" id="In7-xe-kVO"/>
+                                <action selector="shareButtonClicked:" destination="JEX-9P-axG" id="ISa-VC-rEw"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -113,7 +118,7 @@
                     <connections>
                         <outlet property="tableView" destination="x1X-8b-rb7" id="Lu6-7F-2Xi"/>
                         <outlet property="view" destination="gT4-6C-k5d" id="jxQ-ST-pif"/>
-                        <segue destination="vC3-pB-5Vb" kind="showDetail" identifier="showDetails" id="udr-wF-y1K"/>
+                        <segue destination="vC3-pB-5Vb" kind="presentation" identifier="showDetails" id="udr-wF-y1K"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jXQ-QS-hvg" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -125,7 +130,7 @@
             <objects>
                 <navigationController hidesBottomBarWhenPushed="YES" id="vC3-pB-5Vb" customClass="NavigationController" customModule="PDFArchiver" customModuleProvider="target" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" largeTitles="YES" id="DjV-YW-jjY">
-                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <rect key="frame" x="0.0" y="20" width="375" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="barTintColor" name="White"/>
                     </navigationBar>
@@ -147,6 +152,6 @@
         </namedColor>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="Tll-UG-LXB"/>
+        <segue reference="udr-wF-y1K"/>
     </inferredMetricsTieBreakers>
 </document>
