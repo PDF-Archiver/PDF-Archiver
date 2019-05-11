@@ -23,6 +23,12 @@
 /* Alert VC: Title */
 "not-found.icloud-drive.title" = "Attention";
 
+/* Could not save taken images locally. */
+"not-saved-images.text" = "The pictures could not be saved.";
+
+/* Alert VC: Title */
+"not-saved-images.title" = "Save failed!";
+
 /* Button confirmation label */
 "OK" = "OK";
 
@@ -67,9 +73,3 @@
 
 /* Error mesage to be displayed when failing to share a document */
 "Unable to share document without the pdf file" = "Unable to share document without the pdf file";
-
-/* Could not save taken images locally. */
-"not-saved-images.text" = "";
-
-/* Alert VC: Title */
-"not-saved-images.title" = "";
