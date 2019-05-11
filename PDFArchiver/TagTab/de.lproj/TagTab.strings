@@ -2,26 +2,17 @@
 /* Class = "UILabel"; text = "Untagged Documents: 0"; ObjectID = "9Md-XA-IBH"; */
 "9Md-XA-IBH.text" = "Verbleibende Dokumente: 0";
 
-/* Class = "UIButton"; normalTitle = "<"; ObjectID = "AAw-Fe-pyu"; */
-"AAw-Fe-pyu.normalTitle" = "<";
-
 /* Class = "UITextField"; placeholder = "Description"; ObjectID = "BmQ-GG-lcY"; */
 "BmQ-GG-lcY.placeholder" = "Beschreibung";
-
-/* Class = "UIButton"; normalTitle = ">"; ObjectID = "Vzp-Dk-2NX"; */
-"Vzp-Dk-2NX.normalTitle" = ">";
-
-/* Class = "UIButton"; normalTitle = "Save"; ObjectID = "dlx-d7-y8l"; */
-"dlx-d7-y8l.normalTitle" = "Speichern";
-
-/* Class = "UILabel"; text = "Date & Description"; ObjectID = "lvw-s9-fVK"; */
-"lvw-s9-fVK.text" = "Datum & Beschreibung";
-
-/* Class = "UILabel"; text = "Tags"; ObjectID = "veT-n1-fDa"; */
-"veT-n1-fDa.text" = "Tags";
 
 /* Class = "UILabel"; text = "Document"; ObjectID = "LRW-Ih-UUf"; */
 "LRW-Ih-UUf.text" = "Dokument";
 
 /* Class = "UILabel"; text = "Suggestions"; ObjectID = "VwQ-7i-9zW"; */
 "VwQ-7i-9zW.text" = "Vorschläge";
+
+/* Class = "UINavigationItem"; title = "Tags"; ObjectID = "J25-wE-uoT"; */
+"J25-wE-uoT.title" = "Tags";
+
+/* Class = "UINavigationItem"; title = "Date & Description"; ObjectID = "6wi-9R-I4b"; */
+"6wi-9R-I4b.title" = "Datum & Beschreibung";

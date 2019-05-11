@@ -51,8 +51,6 @@ class SuggestionInputView: UIViewController {
         button3.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         button1.widthAnchor.constraint(equalTo: button2.widthAnchor).isActive = true
         button1.widthAnchor.constraint(equalTo: button3.widthAnchor).isActive = true
-
-        view.backgroundColor = .paLightGray
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -85,12 +83,9 @@ class SuggestionInputView: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
 
         button.contentMode = .center
-        button.backgroundColor = .paLightGray
-        button.setTitleColor(.paWhite, for: .normal)
+        button.backgroundColor = .paWhite
+        button.setTitleColor(.paDarkGray, for: .normal)
         button.titleLabel?.lineBreakMode = .byTruncatingTail
-
-        button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor.paDarkGray.cgColor
     }
 
     @objc

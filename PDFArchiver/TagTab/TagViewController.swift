@@ -29,11 +29,11 @@ class TagViewController: UIViewController, Logging {
     @IBOutlet weak var suggestedTagsView: UIView!
     @IBOutlet weak var scrollView: UIScrollView!
 
-    @IBAction private func backButtonTapped(_ sender: UIButton) {
-        self.navigationController?.popViewController(animated: true)
+    @IBAction private func backButtonTapped(_ sender: Any) {
+        dismiss(animated: true, completion: nil)
     }
 
-    @IBAction private func saveButtonTapped(_ sender: UIButton) {
+    @IBAction private func saveButtonTapped(_ sender: Any) {
 
         guard let path = Constants.archivePath else {
             assertionFailure("Could not find a iCloud Drive url.")
@@ -49,6 +49,10 @@ class TagViewController: UIViewController, Logging {
             os_log("Error occurred while renaming Document: %@", log: TagViewController.log, type: .error, error.localizedDescription)
         }
         self.navigationController?.popViewController(animated: true)
+
+        // increment the AppStoreReview counter
+        AppStoreReviewRequest.shared.incrementCount()
+
     }
 
     override func viewDidLoad() {
@@ -63,7 +67,6 @@ class TagViewController: UIViewController, Logging {
         suggestedTagsView.addSubview(suggestedTagField)
         suggestedTagField.placeholder = ""
         suggestedTagField.textDelegate = self
-//        suggestedTagField.readOnly = true
 
         // register keyboard notification
         registerNotifications()

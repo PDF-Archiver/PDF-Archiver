@@ -9,15 +9,34 @@
 import ArchiveLib
 import PDFKit
 import UIKit
+import os.log
 
-class DateDescriptionViewController: UIViewController {
+class DateDescriptionViewController: UIViewController, Logging {
 
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var untaggedDocumentsCount: UILabel!
     @IBOutlet weak var documentView: PDFView!
     @IBOutlet weak var datePicker: UIDatePicker!
     @IBOutlet weak var descriptionTextField: UITextField!
-    @IBOutlet weak var nextButton: UIButton!
+
+    @IBAction private func trashNavButtonTapped(_ sender: Any) {
+        guard let document = document else { return }
+        do {
+            os_log("Deleting file: %@", log: DateDescriptionViewController.log, type: .debug, document.path.path)
+            try FileManager.default.trashItem(at: document.path, resultingItemURL: nil)
+            DocumentService.archive.remove(Set([document]))
+        } catch {
+            os_log("Failed to delete: %@", log: DateDescriptionViewController.log, type: .error, error.localizedDescription)
+        }
+    }
+
+    @IBAction private func editNavButtonTapped(_ sender: Any) {
+        guard let modelVC = self.storyboard?.instantiateViewController(withIdentifier: "tags") as? TagViewController else { return }
+        modelVC.document = document
+        modelVC.suggestedTags = suggestedTags
+        let navBarOnModal = UINavigationController(rootViewController: modelVC)
+        self.present(navBarOnModal, animated: true, completion: nil)
+    }
 
     @IBAction private func datePicker(_ sender: UIDatePicker) {
         document?.date = datePicker.date
@@ -59,7 +78,6 @@ class DateDescriptionViewController: UIViewController {
         documentView.backgroundColor = .paLightGray
 
         documentView.goToFirstPage(self)
-        documentView.sizeToFit()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -92,10 +110,8 @@ class DateDescriptionViewController: UIViewController {
         }
     }
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let destinationVC = segue.destination as? TagViewController else { return }
-        destinationVC.document = document
-        destinationVC.suggestedTags = suggestedTags
+    override func viewDidLayoutSubviews() {
+        documentView.sizeToFit()
     }
 
     // MARK: - Helper Functions
