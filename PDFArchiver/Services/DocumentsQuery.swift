@@ -17,19 +17,19 @@ import ArchiveLib
 import os.log
 import UIKit
 
-/**
- The delegate protocol implemented by the object that receives our results. We
- pass the updated list of results as well as a set of animations.
- */
+/// Protocol to handle file changes from the DocumentsQuery class.
+///
+/// The delegate protocol implemented by the object that receives our results. We
+/// pass the updated list of results as well as a set of animations.
 protocol DocumentsQueryDelegate: AnyObject {
     func updateWithResults(removedItems: [NSMetadataItem], addedItems: [NSMetadataItem], updatedItems: [NSMetadataItem]) -> Set<Document>
 }
 
-/**
- The DocumentBrowserQuery wraps an `NSMetadataQuery` to insulate us from the
- queueing and animation concerns. It runs the query and computes animations
- from the results set.
- */
+/// Receive file changes from the OS.
+///
+/// The DocumentBrowserQuery wraps an `NSMetadataQuery` to insulate us from the
+/// queueing and animation concerns. It runs the query and computes animations
+/// from the results set.
 class DocumentsQuery: NSObject, Logging {
 
     private var metadataQuery: NSMetadataQuery

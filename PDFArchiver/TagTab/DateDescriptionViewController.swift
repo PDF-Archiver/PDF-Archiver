@@ -23,8 +23,12 @@ class DateDescriptionViewController: UIViewController, Logging {
         guard let document = document else { return }
         do {
             os_log("Deleting file: %@", log: DateDescriptionViewController.log, type: .debug, document.path.path)
+
+            // trash file - the archive will be informed by the filesystem aka. DocumentsQuery
             try FileManager.default.trashItem(at: document.path, resultingItemURL: nil)
-            DocumentService.archive.remove(Set([document]))
+
+            updateView()
+
         } catch {
             os_log("Failed to delete: %@", log: DateDescriptionViewController.log, type: .error, error.localizedDescription)
         }
@@ -83,16 +87,11 @@ class DateDescriptionViewController: UIViewController, Logging {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
+        // setup data delegate
+        DocumentService.archive.delegate = self
+
         // register keyboard notification
         registerNotifications()
-
-        // get documents from archive
-        let untaggedDocuments = DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged)
-        document = Array(untaggedDocuments).sorted().min()
-
-        // update untagged documents label
-        let prefix = NSLocalizedString("tagging.date-description.untagged-documents", comment: "")
-        untaggedDocumentsCount.text = prefix + ": \(untaggedDocuments.count)"
 
         // update view with the current document state
         updateView()
@@ -118,6 +117,13 @@ class DateDescriptionViewController: UIViewController, Logging {
 
     private func updateView() {
 
+        // get documents from archive
+        let untaggedDocuments = DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged)
+        document = Array(untaggedDocuments).sorted().min()
+
+        // update untagged documents label
+        updateDocumentsCount()
+
         if document?.specification.starts(with: StorageHelper.Paths.documentDescriptionPlaceholder) ?? false {
             document?.specification = ""
         }
@@ -132,6 +138,15 @@ class DateDescriptionViewController: UIViewController, Logging {
             datePicker.date = Date()
             descriptionTextField.text = nil
         }
+    }
+
+    private func updateDocumentsCount() {
+        // get documents from archive
+        let untaggedDocuments = DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged)
+
+        // update untagged documents label
+        let prefix = NSLocalizedString("tagging.date-description.untagged-documents", comment: "")
+        untaggedDocumentsCount.text = prefix + ": \(untaggedDocuments.count)"
     }
 
     // MARK: - Keyboard Presentation
@@ -156,5 +171,30 @@ class DateDescriptionViewController: UIViewController, Logging {
     @objc
     func keyboardWillHide(notification: NSNotification) {
         scrollView.contentInset.bottom = 0
+    }
+}
+
+extension DateDescriptionViewController: ArchiveDelegate {
+
+    func archive(_ archive: Archive, didAddDocument document: Document) {
+        if document.taggingStatus != .untagged {
+            return
+        }
+
+        DispatchQueue.main.async {
+            self.updateDocumentsCount()
+        }
+    }
+
+    func archive(_ archive: Archive, didRemoveDocuments documents: Set<Document>) {
+
+        let untaggedDocuments = documents.filter { $0.taggingStatus == .untagged }
+        if untaggedDocuments.isEmpty {
+            return
+        }
+
+        DispatchQueue.main.async {
+            self.updateDocumentsCount()
+        }
     }
 }
