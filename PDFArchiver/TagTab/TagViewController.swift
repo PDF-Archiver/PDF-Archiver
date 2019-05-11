@@ -35,9 +35,9 @@ class TagViewController: UIViewController, Logging {
 
     @IBAction private func saveButtonTapped(_ sender: Any) {
 
-        guard let path = Constants.archivePath else {
+        guard let path = StorageHelper.Paths.archivePath else {
             assertionFailure("Could not find a iCloud Drive url.")
-            self.present(Constants.alertController, animated: true, completion: nil)
+            self.present(StorageHelper.Paths.iCloudDriveAlertController, animated: true, completion: nil)
             return
         }
 

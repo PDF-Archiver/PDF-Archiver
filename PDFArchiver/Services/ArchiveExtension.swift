@@ -71,7 +71,7 @@ extension Archive: DocumentsQueryDelegate {
     private static func getTaggingStatus(of url: URL) -> TaggingStatus {
         let regex = "^(\\d{4}-\\d{2}-\\d{2}--[^_]+__[\\w\\d_]+.[pdfPDF]{3})$"
 
-        guard !url.deletingLastPathComponent().lastPathComponent.contains(Constants.untaggedFolderName),
+        guard !url.deletingLastPathComponent().lastPathComponent.contains(StorageHelper.Paths.untaggedFolderName),
             let groups = url.lastPathComponent.capturedGroups(withRegex: regex),
             !groups.isEmpty else { return .untagged }
 

@@ -36,13 +36,21 @@ class ScanViewController: UIViewController, Logging {
     override func viewDidLoad() {
         super.viewDidLoad()
         processingIndicatorView.isHidden = true
+
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(imageQueueLengthChange),
+                                               name: .imageProcessingQueueLength,
+                                               object: nil)
+
+        // trigger processing (if temp images exist)
+        triggerProcessing()
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
         // show the processing indicator, if documents are currently processed
-        updateProcessingIndicator()
+        updateProcessingIndicator(with: ImageConverter.getOperationCount())
 
         // show subscription view controller, if no subscription was found
         if !IAP.service.appUsagePermitted() {
@@ -55,9 +63,20 @@ class ScanViewController: UIViewController, Logging {
 
     // MARK: - Helper Functions
 
-    private func updateProcessingIndicator() {
+    @objc
+    private func imageQueueLengthChange(_ notification: Notification) {
+        guard let count = notification.object as? Int else {
+            let object = notification.object as Any
+            assertionFailure("Invalid object: \(object)")
+            return
+        }
+
+        updateProcessingIndicator(with: count)
+    }
+
+    private func updateProcessingIndicator(with count: Int) {
         DispatchQueue.main.async {
-            self.processingIndicatorView.isHidden = ImageConverter.getOperationCount() == 0
+            self.processingIndicatorView.isHidden = count < 1
         }
     }
 
@@ -76,6 +95,15 @@ class ScanViewController: UIViewController, Logging {
         })
 
         present(alert, animated: true, completion: nil)
+    }
+
+    private func triggerProcessing() {
+        guard let untaggedPath = StorageHelper.Paths.untaggedPath else {
+            assertionFailure("Could not find a iCloud Drive url.")
+            self.present(StorageHelper.Paths.iCloudDriveAlertController, animated: true, completion: nil)
+            return
+        }
+        ImageConverter.saveProcessAndSaveTempImages(at: untaggedPath)
     }
 }
 
@@ -103,27 +131,27 @@ extension ScanViewController: ImageScannerControllerDelegate {
             image = results.scannedImage
         }
 
-        guard let untaggedPath = Constants.untaggedPath else {
-            assertionFailure("Could not find a iCloud Drive url.")
-            self.present(Constants.alertController, animated: true, completion: nil)
-            return
+        // save image
+        do {
+            try StorageHelper.save([image])
+        } catch {
+            let alert = UIAlertController(title: NSLocalizedString("not-saved-images.title", comment: "Alert VC: Title"), message: NSLocalizedString("not-saved-images.text", comment: "Could not save taken images locally."), preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
         }
 
-        // convert and save image on a background thread
-        ImageConverter.process([image], saveAt: untaggedPath) {
-            // hide processing indicator after the processing has completed
-            self.updateProcessingIndicator()
-        }
+        // notify ImageConverter
+        triggerProcessing()
 
         // show processing indicator instantly
-        updateProcessingIndicator()
+        updateProcessingIndicator(with: ImageConverter.getOperationCount())
     }
 
     func imageScannerControllerDidCancel(_ scanner: ImageScannerController) {
-        // The user tapped 'Cancel' on the scanner
-        // You are responsible for dismissing the ImageScannerController
+        // user tapped 'Cancel' on the scanner
         scanner.dismiss(animated: true)
     }
+
 }
 
 extension  UITabBarController {

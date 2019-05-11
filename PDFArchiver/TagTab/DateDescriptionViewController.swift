@@ -7,9 +7,9 @@
 //
 
 import ArchiveLib
+import os.log
 import PDFKit
 import UIKit
-import os.log
 
 class DateDescriptionViewController: UIViewController, Logging {
 
@@ -118,7 +118,7 @@ class DateDescriptionViewController: UIViewController, Logging {
 
     private func updateView() {
 
-        if document?.specification.starts(with: Constants.documentDescriptionPlaceholder) ?? false {
+        if document?.specification.starts(with: StorageHelper.Paths.documentDescriptionPlaceholder) ?? false {
             document?.specification = ""
         }
 

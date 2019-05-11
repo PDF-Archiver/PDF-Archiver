@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol SuggestionInputViewDelegate: class {
+protocol SuggestionInputViewDelegate: AnyObject {
     func suggestionInputView(_ suggestionInputView: SuggestionInputView, userTabbed button: UIButton)
 }
 

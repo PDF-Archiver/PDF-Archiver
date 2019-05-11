@@ -67,3 +67,9 @@
 
 /* Error mesage to be displayed when failing to share a document */
 "Unable to share document without the pdf file" = "Dokument konnte nicht gefunden werden.";
+
+/* Could not save taken images locally. */
+"not-saved-images.text" = "";
+
+/* Alert VC: Title */
+"not-saved-images.title" = "";
