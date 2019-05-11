@@ -119,7 +119,7 @@ class DateDescriptionViewController: UIViewController, Logging {
 
         // get documents from archive
         let untaggedDocuments = DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged)
-        document = Array(untaggedDocuments).sorted().min()
+        document = Array(untaggedDocuments).sorted().max()
 
         // update untagged documents label
         updateDocumentsCount()
@@ -182,7 +182,13 @@ extension DateDescriptionViewController: ArchiveDelegate {
         }
 
         DispatchQueue.main.async {
-            self.updateDocumentsCount()
+
+            // test if the document is already available, update view with the recently added document otherwise
+            if self.document == nil {
+                self.updateView()
+            } else {
+                self.updateDocumentsCount()
+            }
         }
     }
 
@@ -194,7 +200,11 @@ extension DateDescriptionViewController: ArchiveDelegate {
         }
 
         DispatchQueue.main.async {
-            self.updateDocumentsCount()
+            if let document = self.document, untaggedDocuments.contains(document) {
+                self.updateView()
+            } else {
+                self.updateDocumentsCount()
+            }
         }
     }
 }

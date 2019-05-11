@@ -20,10 +20,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" keyboardDismissMode="interactive" translatesAutoresizingMaskIntoConstraints="NO" id="m8f-Cv-6fj">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="549.33333333333337"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="557"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Rsq-jh-JAt">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="549.33333333333337"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="557"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3FF-NI-nZN" customClass="PDFView">
                                                 <rect key="frame" x="0.0" y="0.0" width="375" height="330"/>
@@ -45,9 +45,9 @@
                                                 </connections>
                                             </datePicker>
                                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Description" textAlignment="natural" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="BmQ-GG-lcY">
-                                                <rect key="frame" x="30" y="496" width="315" height="25"/>
+                                                <rect key="frame" x="30" y="496" width="315" height="35"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" constant="25" id="5kP-cQ-6kM"/>
+                                                    <constraint firstAttribute="height" constant="35" id="5kP-cQ-6kM"/>
                                                 </constraints>
                                                 <nil key="textColor"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -57,9 +57,9 @@
                                                 </connections>
                                             </textField>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Untagged Documents: 0" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Md-XA-IBH">
-                                                <rect key="frame" x="30" y="529" width="315" height="20.333333333333371"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                <color key="textColor" name="DarkGray"/>
+                                                <rect key="frame" x="15" y="539" width="345" height="18"/>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                                <color key="textColor" name="LightGray"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
@@ -70,10 +70,10 @@
                                             <constraint firstItem="3FF-NI-nZN" firstAttribute="leading" secondItem="Rsq-jh-JAt" secondAttribute="leading" id="JXi-R8-dJ4"/>
                                             <constraint firstItem="3FF-NI-nZN" firstAttribute="top" secondItem="Rsq-jh-JAt" secondAttribute="top" id="K4F-9s-yZQ"/>
                                             <constraint firstItem="kpn-Ji-dFk" firstAttribute="top" secondItem="3FF-NI-nZN" secondAttribute="bottom" constant="8" id="aZW-4j-UiS"/>
-                                            <constraint firstItem="9Md-XA-IBH" firstAttribute="leading" secondItem="Rsq-jh-JAt" secondAttribute="leading" constant="30" id="cdG-px-8oR"/>
+                                            <constraint firstItem="9Md-XA-IBH" firstAttribute="leading" secondItem="Rsq-jh-JAt" secondAttribute="leading" constant="15" id="cdG-px-8oR"/>
                                             <constraint firstItem="kpn-Ji-dFk" firstAttribute="leading" secondItem="Rsq-jh-JAt" secondAttribute="leading" id="eme-Mo-5Ed"/>
                                             <constraint firstItem="BmQ-GG-lcY" firstAttribute="leading" secondItem="Rsq-jh-JAt" secondAttribute="leading" constant="30" id="ukB-Lc-N8o"/>
-                                            <constraint firstAttribute="trailing" secondItem="9Md-XA-IBH" secondAttribute="trailing" constant="30" id="vHL-0Q-T2Y"/>
+                                            <constraint firstAttribute="trailing" secondItem="9Md-XA-IBH" secondAttribute="trailing" constant="15" id="vHL-0Q-T2Y"/>
                                         </constraints>
                                     </stackView>
                                 </subviews>
