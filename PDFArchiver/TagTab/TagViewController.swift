@@ -24,75 +24,35 @@ class TagViewController: UIViewController, Logging {
     var suggestedTags: Set<String>?
     weak var delegate: TagViewControllerDelegate?
 
-    private let documentTagField = WSTagsField()
-    private let suggestedTagField = WSTagsField()
+    private lazy var documentTagField: WSTagsField = {
+        let field = WSTagsField()
+        TagViewController.customise(field)
 
-    // view controller that sits on top of the default keygoard
-    private let suggestionVC = SuggestionInputView(nibName: nil, bundle: nil)
-
-    @IBOutlet weak var documentTagsView: UIView!
-    @IBOutlet weak var suggestedTagsView: UIView!
-    @IBOutlet weak var scrollView: UIScrollView!
-
-    @IBAction private func backButtonTapped(_ sender: Any) {
-        dismiss(animated: true, completion: nil)
-    }
-
-    @IBAction private func saveButtonTapped(_ sender: Any) {
-
-        // dismiss the current VC
-        if let document = document {
-            delegate?.tagViewController(self, didSaveFor: document)
-        }
-        dismiss(animated: true, completion: nil)
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        TagViewController.customise(documentTagField)
-        documentTagsView.addSubview(documentTagField)
-        documentTagField.textDelegate = self
-        suggestionVC.delegate = self
-
-        TagViewController.customise(suggestedTagField)
-        suggestedTagsView.addSubview(suggestedTagField)
-        suggestedTagField.placeholder = ""
-        suggestedTagField.textDelegate = self
-
-        // register keyboard notification
-        registerNotifications()
-
-        // get document tags
-        let documentTags = document?.tags.map { $0.name } ?? []
-        documentTagField.addTags(documentTags.sorted())
-
-        // setup suggested tags
-        let displayedSuggestedTags = (suggestedTags ?? []).subtracting(documentTags)
-        suggestedTagField.addTags(Array(displayedSuggestedTags).sorted())
-
-        documentTagField.onDidSelectTagView = { _, view in
+        field.onDidSelectTagView = { _, view in
             self.documentTagField.removeTag(view.displayText)
             self.documentTagField.beginEditing()
             guard let document = self.document,
                 let tag = document.tags.first(where: { $0.name == view.displayText }) else { return }
             DocumentService.archive.remove(tag, from: document)
+
+            self.selectionFeedback.prepare()
+            self.selectionFeedback.selectionChanged()
         }
 
-        documentTagField.onDidAddTag = {_, tag in
+        field.onDidAddTag = {_, tag in
             guard let document = self.document else { return }
             DocumentService.archive.add(tag: tag.text, to: document)
             self.suggestedTagField.removeTag(tag.text)
         }
 
-        documentTagField.onDidRemoveTag = {_, tag in
+        field.onDidRemoveTag = {_, tag in
             if self.suggestedTags?.contains(tag.text) ?? false {
                 self.suggestedTagField.addTag(tag.text)
                 self.suggestedTagField.sortTags()
             }
         }
 
-        documentTagField.onDidChangeText = {_, text in
+        field.onDidChangeText = {_, text in
             if let tagName = text,
                 !tagName.isEmpty {
 
@@ -107,15 +67,70 @@ class TagViewController: UIViewController, Logging {
                 self.suggestionVC.suggestions = []
             }
         }
+        return field
+    }()
 
-        suggestedTagField.onDidSelectTagView = {_, view in
+    private lazy var suggestedTagField: WSTagsField = {
+        let field = WSTagsField()
+        TagViewController.customise(field)
+        field.placeholder = ""
+
+        field.onDidSelectTagView = {_, view in
             self.documentTagField.addTag(view.displayText)
             self.documentTagField.sortTags()
+
+            self.selectionFeedback.prepare()
+            self.selectionFeedback.selectionChanged()
         }
 
-        suggestedTagField.onDidAddTag = {_, tag in
+        field.onDidAddTag = {_, tag in
             self.documentTagField.removeTag(tag.text)
         }
+        return field
+    }()
+
+    private let selectionFeedback = UISelectionFeedbackGenerator()
+
+    // view controller that sits on top of the default keygoard
+    private let suggestionVC = SuggestionInputView(nibName: nil, bundle: nil)
+
+    @IBOutlet weak var documentTagsView: UIView!
+    @IBOutlet weak var suggestedTagsView: UIView!
+    @IBOutlet weak var scrollView: UIScrollView!
+
+    @IBAction private func backButtonTapped(_ sender: Any) {
+        dismiss(animated: false, completion: nil)
+    }
+
+    @IBAction private func saveButtonTapped(_ sender: Any) {
+
+        // dismiss the current VC
+        if let document = document {
+            delegate?.tagViewController(self, didSaveFor: document)
+        }
+        dismiss(animated: true, completion: nil)
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        documentTagsView.addSubview(documentTagField)
+        documentTagField.textDelegate = self
+        suggestionVC.delegate = self
+
+        suggestedTagsView.addSubview(suggestedTagField)
+        suggestedTagField.textDelegate = self
+
+        // register keyboard notification
+        registerNotifications()
+
+        // get document tags
+        let documentTags = document?.tags.map { $0.name } ?? []
+        documentTagField.addTags(documentTags.sorted())
+
+        // setup suggested tags
+        let displayedSuggestedTags = (suggestedTags ?? []).subtracting(documentTags)
+        suggestedTagField.addTags(Array(displayedSuggestedTags).sorted())
     }
 
     override func viewDidAppear(_ animated: Bool) {

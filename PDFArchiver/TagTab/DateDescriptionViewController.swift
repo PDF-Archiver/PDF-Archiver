@@ -13,6 +13,30 @@ import UIKit
 
 class DateDescriptionViewController: UIViewController, Logging {
 
+    private let notificationFeedback = UINotificationFeedbackGenerator()
+    private let selectionFeedback = UISelectionFeedbackGenerator()
+
+    private var suggestedTags = Set<String>()
+    var document: Document? {
+        didSet {
+
+            DispatchQueue.global().async {
+
+                // get tags and save them in the background, they will be passed to the TagViewController
+                guard let path = self.document?.path,
+                    let pdfDocument = PDFDocument(url: path) else { return }
+                var text = ""
+                for index in 0 ..< pdfDocument.pageCount {
+                    guard let page = pdfDocument.page(at: index),
+                        let pageContent = page.string else { return }
+
+                    text += pageContent
+                }
+                self.suggestedTags = TagParser.parse(text)
+            }
+        }
+    }
+
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var untaggedDocumentsCount: UILabel!
     @IBOutlet weak var documentView: PDFView!
@@ -20,6 +44,7 @@ class DateDescriptionViewController: UIViewController, Logging {
     @IBOutlet weak var descriptionTextField: UITextField!
 
     @IBAction private func trashNavButtonTapped(_ sender: Any) {
+        notificationFeedback.prepare()
         guard let document = document else { return }
         do {
             os_log("Deleting file: %@", log: DateDescriptionViewController.log, type: .debug, document.path.path)
@@ -27,10 +52,14 @@ class DateDescriptionViewController: UIViewController, Logging {
             // trash file - the archive will be informed by the filesystem aka. DocumentsQuery
             try FileManager.default.trashItem(at: document.path, resultingItemURL: nil)
 
+            // send haptic feedback
+            notificationFeedback.notificationOccurred(.success)
+
             updateView()
 
         } catch {
             os_log("Failed to delete: %@", log: DateDescriptionViewController.log, type: .error, error.localizedDescription)
+            notificationFeedback.notificationOccurred(.error)
         }
     }
 
@@ -50,26 +79,6 @@ class DateDescriptionViewController: UIViewController, Logging {
     @IBAction private func descriptionTextField(_ sender: UITextField) {
         guard let text = descriptionTextField.text else { return }
         document?.specification = text
-    }
-
-    private var suggestedTags = Set<String>()
-    var document: Document? {
-        didSet {
-            DispatchQueue.global().async {
-
-                // get tags and save them in the background, they will be passed to the TagViewController
-                guard let path = self.document?.path,
-                    let pdfDocument = PDFDocument(url: path) else { return }
-                var text = ""
-                for index in 0 ..< pdfDocument.pageCount {
-                    guard let page = pdfDocument.page(at: index),
-                        let pageContent = page.string else { return }
-
-                    text += pageContent
-                }
-                self.suggestedTags = TagParser.parse(text)
-            }
-        }
     }
 
     // MARK: - View Setup
@@ -124,6 +133,12 @@ class DateDescriptionViewController: UIViewController, Logging {
             document = Array(untaggedDocuments).max()
             if document?.downloadStatus == .iCloudDrive {
                 document?.download()
+            }
+
+            if document != nil {
+                // send haptic feedback
+                selectionFeedback.prepare()
+                selectionFeedback.selectionChanged()
             }
         }
 
@@ -218,6 +233,8 @@ extension DateDescriptionViewController: ArchiveDelegate {
 extension DateDescriptionViewController: TagViewControllerDelegate {
     func tagViewController(_ tagViewController: TagViewController, didSaveFor document: Document) {
 
+        notificationFeedback.prepare()
+
         // save document in archive
         guard let path = StorageHelper.Paths.archivePath else {
             assertionFailure("Could not find a iCloud Drive url.")
@@ -231,8 +248,12 @@ extension DateDescriptionViewController: TagViewControllerDelegate {
             // set current document to nil, to get a new document in updateView()
             self.document = nil
 
+            // send haptic feedback
+            notificationFeedback.notificationOccurred(.success)
+
         } catch {
             os_log("Error occurred while renaming Document: %@", log: TagViewController.log, type: .error, error.localizedDescription)
+            notificationFeedback.notificationOccurred(.error)
         }
 
         // update the view to get a new document

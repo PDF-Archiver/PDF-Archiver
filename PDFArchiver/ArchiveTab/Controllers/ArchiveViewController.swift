@@ -29,6 +29,8 @@ class ArchiveViewController: UIViewController, UITableViewDelegate, Logging {
     private let cellIdentifier = "DocumentTableViewCell"
     private let allLocal = NSLocalizedString("all", comment: "")
 
+    private let notificationFeedback = UINotificationFeedbackGenerator()
+
     // MARK: - View Setup
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -103,6 +105,10 @@ class ArchiveViewController: UIViewController, UITableViewDelegate, Logging {
             }
 
             controller.detailDocument = document
+
+            // send haptic feedback
+            notificationFeedback.prepare()
+            notificationFeedback.notificationOccurred(.success)
 
             // avoid inverted colors in tags by deselecting the cell
             tableView.deselectRow(at: indexPath, animated: false)
