@@ -13,11 +13,16 @@ import TagListView
 import UIKit
 import WSTagsField
 
+protocol TagViewControllerDelegate: AnyObject {
+    func tagViewController(_ tagViewController: TagViewController, didSaveFor document: Document)
+}
+
 class TagViewController: UIViewController, Logging {
 
     // these properties will be set by the DateDescriptionViewController
     var document: Document?
     var suggestedTags: Set<String>?
+    weak var delegate: TagViewControllerDelegate?
 
     private let documentTagField = WSTagsField()
     private let suggestedTagField = WSTagsField()
@@ -35,24 +40,11 @@ class TagViewController: UIViewController, Logging {
 
     @IBAction private func saveButtonTapped(_ sender: Any) {
 
-        guard let path = StorageHelper.Paths.archivePath else {
-            assertionFailure("Could not find a iCloud Drive url.")
-            self.present(StorageHelper.Paths.iCloudDriveAlertController, animated: true, completion: nil)
-            return
+        // dismiss the current VC
+        if let document = document {
+            delegate?.tagViewController(self, didSaveFor: document)
         }
-
-        do {
-            guard let document = document else { fatalError("Could not find document that should be saved. This should not happen!") }
-            try document.rename(archivePath: path, slugify: true)
-            DocumentService.archive.archive(document)
-        } catch let error as NSError {
-            os_log("Error occurred while renaming Document: %@", log: TagViewController.log, type: .error, error.localizedDescription)
-        }
-        self.navigationController?.popViewController(animated: true)
-
-        // increment the AppStoreReview counter
-        AppStoreReviewRequest.shared.incrementCount()
-
+        dismiss(animated: true, completion: nil)
     }
 
     override func viewDidLoad() {

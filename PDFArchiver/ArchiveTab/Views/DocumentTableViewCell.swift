@@ -22,9 +22,11 @@ class DocumentTableViewCell: UITableViewCell {
         didSet {
             if let document = document {
 
+                guard let date = document.date else { fatalError("Document has no date.") }
+
                 // update title + date
                 titleLabel.text = document.specificationCapitalized
-                dateLabel.text = DateFormatter.localizedString(from: document.date, dateStyle: .medium, timeStyle: .none)
+                dateLabel.text = DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none)
                 sizeLabel.text = document.size
 
                 // update the document tags

@@ -45,7 +45,7 @@ extension Archive: DocumentsQueryDelegate {
 
         // get first 10 untagged documents
         let untaggedDocuments = self.get(scope: .all, searchterms: [], status: .untagged)
-        for document in Array(untaggedDocuments).sorted().prefix(10) where document.downloadStatus == .iCloudDrive {
+        for document in Array(untaggedDocuments).sorted().reversed().prefix(10) where document.downloadStatus == .iCloudDrive {
             document.download()
         }
 

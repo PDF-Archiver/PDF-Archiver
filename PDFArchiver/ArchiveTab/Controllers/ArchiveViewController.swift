@@ -188,7 +188,8 @@ class ArchiveViewController: UIViewController, UITableViewDelegate, Logging {
         // create table sections
         let newSections: [TableSection<String, Document>] = TableSection.group(rowItems: sortedDocuments) { (document) in
             let calender = Calendar.current
-            return String(calender.component(.year, from: document.date))
+            guard let date = document.date else { fatalError("Document has no date.") }
+            return String(calender.component(.year, from: date))
         }.reversed()
 
         /*

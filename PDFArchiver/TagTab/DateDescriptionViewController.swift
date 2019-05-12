@@ -38,6 +38,7 @@ class DateDescriptionViewController: UIViewController, Logging {
         guard let modelVC = self.storyboard?.instantiateViewController(withIdentifier: "tags") as? TagViewController else { return }
         modelVC.document = document
         modelVC.suggestedTags = suggestedTags
+        modelVC.delegate = self
         let navBarOnModal = UINavigationController(rootViewController: modelVC)
         self.present(navBarOnModal, animated: true, completion: nil)
     }
@@ -117,9 +118,14 @@ class DateDescriptionViewController: UIViewController, Logging {
 
     private func updateView() {
 
-        // get documents from archive
-        let untaggedDocuments = DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged)
-        document = Array(untaggedDocuments).sorted().max()
+        // set a new document, if it does not exist already
+        if document == nil {
+            let untaggedDocuments = DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged)
+            document = Array(untaggedDocuments).max()
+            if document?.downloadStatus == .iCloudDrive {
+                document?.download()
+            }
+        }
 
         // update untagged documents label
         updateDocumentsCount()
@@ -131,7 +137,7 @@ class DateDescriptionViewController: UIViewController, Logging {
         if let document = self.document {
             documentView.document = PDFDocument(url: document.path)
             documentView.goToFirstPage(self)
-            datePicker.date = document.date
+            datePicker.date = document.date ?? Date()
             descriptionTextField.text = document.specification
         } else {
             documentView.document = nil
@@ -206,5 +212,33 @@ extension DateDescriptionViewController: ArchiveDelegate {
                 self.updateDocumentsCount()
             }
         }
+    }
+}
+
+extension DateDescriptionViewController: TagViewControllerDelegate {
+    func tagViewController(_ tagViewController: TagViewController, didSaveFor document: Document) {
+
+        // save document in archive
+        guard let path = StorageHelper.Paths.archivePath else {
+            assertionFailure("Could not find a iCloud Drive url.")
+            self.present(StorageHelper.Paths.iCloudDriveAlertController, animated: true, completion: nil)
+            return
+        }
+        do {
+            try document.rename(archivePath: path, slugify: true)
+            DocumentService.archive.archive(document)
+
+            // set current document to nil, to get a new document in updateView()
+            self.document = nil
+
+        } catch {
+            os_log("Error occurred while renaming Document: %@", log: TagViewController.log, type: .error, error.localizedDescription)
+        }
+
+        // update the view to get a new document
+        updateView()
+
+        // increment the AppStoreReview counter
+        AppStoreReviewRequest.shared.incrementCount()
     }
 }
