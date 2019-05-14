@@ -154,12 +154,11 @@ public struct ImageConverter: Logging {
         // parse the tags
         var newTags = TagParser.parse(content)
         if newTags.isEmpty {
-            newTags.insert("ocr")
-            newTags.insert("scan")
+            newTags.insert(Constants.documentTagPlaceholder)
         }
 
         // get default specification
-        let specification = StorageHelper.Paths.documentDescriptionPlaceholder + Date().timeIntervalSince1970.description
+        let specification = Constants.documentDescriptionPlaceholder + Date().timeIntervalSince1970.description
 
         return Document.createFilename(date: date, specification: specification, tags: newTags)
     }

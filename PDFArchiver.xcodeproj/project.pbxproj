@@ -37,6 +37,7 @@
 		A388C8272235330F000D52CB /* test-ocr-data.png in Resources */ = {isa = PBXBuildFile; fileRef = A388C8262235330F000D52CB /* test-ocr-data.png */; };
 		A389789B2274FD4600DC13B9 /* CustomInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A389789A2274FD4600DC13B9 /* CustomInputView.swift */; };
 		A3932824221EF7DC00858461 /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3932823221EF7DC00858461 /* ScanViewController.swift */; };
+		A39942BA228B3ACE00FFC16B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39942B9228B3ACE00FFC16B /* Constants.swift */; };
 		A39A807821FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
 		A39A807921FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
 		A39A807A21FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
@@ -136,6 +137,7 @@
 		A388C8262235330F000D52CB /* test-ocr-data.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "test-ocr-data.png"; sourceTree = "<group>"; };
 		A389789A2274FD4600DC13B9 /* CustomInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomInputView.swift; sourceTree = "<group>"; };
 		A3932823221EF7DC00858461 /* ScanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
+		A39942B9228B3ACE00FFC16B /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf"; sourceTree = "<group>"; };
 		A3A071672253ED660093E7A4 /* TagViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagViewController.swift; sourceTree = "<group>"; };
 		A3B13782223516B200C91BB1 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
@@ -295,6 +297,7 @@
 				A3DFA7262278D9CF00E0F362 /* WSTagsField.swift */,
 				A3B57B7E228720240078F7A4 /* Storage */,
 				A3B57B82228750CF0078F7A4 /* FileManager.swift */,
+				A39942B9228B3ACE00FFC16B /* Constants.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -700,6 +703,7 @@
 				A3400DE12268902200097A3F /* BartyCrouch.swift in Sources */,
 				A3ECBC9622496BA000A626AE /* IAP.swift in Sources */,
 				A301A75621496992003EA382 /* DocumentTableViewCell.swift in Sources */,
+				A39942BA228B3ACE00FFC16B /* Constants.swift in Sources */,
 				171E0C821B8E5B84001E6242 /* DetailViewController.swift in Sources */,
 				A3DBC695224974380048E681 /* IAPService.swift in Sources */,
 				A3ED932322666BE800DFC2D9 /* TagListView.swift in Sources */,

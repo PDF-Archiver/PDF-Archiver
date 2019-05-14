@@ -20,6 +20,18 @@ class DateDescriptionViewController: UIViewController, Logging {
     var document: Document? {
         didSet {
 
+            if let document = document {
+                // remove PDF Archive default decription and tags
+                if document.specification.starts(with: Constants.documentDescriptionPlaceholder) {
+                    document.specification = ""
+                }
+                if let placeholderTag = document.tags.first(where: { $0.name == Constants.documentTagPlaceholder }) {
+                    document.tags.remove(placeholderTag)
+                } else {
+                    suggestedTags = Set(document.tags.map { $0.name })
+                }
+            }
+
             DispatchQueue.global().async {
                 // get tags and save them in the background, they will be passed to the TagViewController
                 guard let path = self.document?.path,
@@ -31,7 +43,7 @@ class DateDescriptionViewController: UIViewController, Logging {
 
                     text += pageContent
                 }
-                self.suggestedTags = TagParser.parse(text)
+                self.suggestedTags.formUnion(TagParser.parse(text))
             }
         }
     }
@@ -139,8 +151,9 @@ class DateDescriptionViewController: UIViewController, Logging {
 
     private func updateView() {
 
-        // set a new document, if it does not exist already
         if document == nil {
+
+            // set a new document, if it does not exist already - placeholder description/tags will be removed by didSet of the document
             let untaggedDocuments = DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged).filter { $0.downloadStatus == .local }
             document = Array(untaggedDocuments).max()
 
@@ -158,9 +171,6 @@ class DateDescriptionViewController: UIViewController, Logging {
             FileManager.default.fileExists(atPath: document.path.path),
             document.downloadStatus == .local {
 
-            if document.specification.starts(with: StorageHelper.Paths.documentDescriptionPlaceholder) {
-                document.specification = ""
-            }
             deleteNavButton.isEnabled = true
             editNavButton.isEnabled = true
             documentView.document = PDFDocument(url: document.path)
