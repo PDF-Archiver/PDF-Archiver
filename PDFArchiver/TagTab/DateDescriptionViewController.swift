@@ -21,7 +21,6 @@ class DateDescriptionViewController: UIViewController, Logging {
         didSet {
 
             DispatchQueue.global().async {
-
                 // get tags and save them in the background, they will be passed to the TagViewController
                 guard let path = self.document?.path,
                     let pdfDocument = PDFDocument(url: path) else { return }
@@ -42,6 +41,8 @@ class DateDescriptionViewController: UIViewController, Logging {
     @IBOutlet weak var documentView: PDFView!
     @IBOutlet weak var datePicker: UIDatePicker!
     @IBOutlet weak var descriptionTextField: UITextField!
+    @IBOutlet weak var deleteNavButton: UIBarButtonItem!
+    @IBOutlet weak var editNavButton: UIBarButtonItem!
 
     @IBAction private func deleteNavButtonTapped(_ sender: Any) {
 
@@ -52,6 +53,8 @@ class DateDescriptionViewController: UIViewController, Logging {
                 os_log("Deleting file: %@", log: DateDescriptionViewController.log, type: .debug, document.path.path)
                 // trash file - the archive will be informed by the filesystem aka. DocumentsQuery
                 try FileManager.default.removeItem(at: document.path)
+                DocumentService.archive.remove(Set([document]))
+                self.document = nil
 
                 // send haptic feedback
                 self.notificationFeedback.notificationOccurred(.success)
@@ -138,11 +141,8 @@ class DateDescriptionViewController: UIViewController, Logging {
 
         // set a new document, if it does not exist already
         if document == nil {
-            let untaggedDocuments = DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged)
+            let untaggedDocuments = DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged).filter { $0.downloadStatus == .local }
             document = Array(untaggedDocuments).max()
-            if document?.downloadStatus == .iCloudDrive {
-                document?.download()
-            }
 
             if document != nil {
                 // send haptic feedback
@@ -154,16 +154,23 @@ class DateDescriptionViewController: UIViewController, Logging {
         // update untagged documents label
         updateDocumentsCount()
 
-        if document?.specification.starts(with: StorageHelper.Paths.documentDescriptionPlaceholder) ?? false {
-            document?.specification = ""
-        }
+        if let document = self.document,
+            FileManager.default.fileExists(atPath: document.path.path),
+            document.downloadStatus == .local {
 
-        if let document = self.document {
+            if document.specification.starts(with: StorageHelper.Paths.documentDescriptionPlaceholder) {
+                document.specification = ""
+            }
+            deleteNavButton.isEnabled = true
+            editNavButton.isEnabled = true
             documentView.document = PDFDocument(url: document.path)
             documentView.goToFirstPage(self)
             datePicker.date = document.date ?? Date()
             descriptionTextField.text = document.specification
+
         } else {
+            deleteNavButton.isEnabled = false
+            editNavButton.isEnabled = false
             documentView.document = nil
             datePicker.date = Date()
             descriptionTextField.text = nil
@@ -172,7 +179,7 @@ class DateDescriptionViewController: UIViewController, Logging {
 
     private func updateDocumentsCount() {
         // get documents from archive
-        let untaggedDocuments = DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged)
+        let untaggedDocuments = DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged).filter { $0.downloadStatus == .local }
 
         // update untagged documents label
         let prefix = NSLocalizedString("tagging.date-description.untagged-documents", comment: "")

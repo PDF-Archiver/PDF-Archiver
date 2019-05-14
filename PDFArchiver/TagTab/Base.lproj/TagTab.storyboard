@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="ppu-9f-OMe">
+    <device id="retina5_9" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -11,8 +15,8 @@
         <scene sceneID="Alk-7W-AHX">
             <objects>
                 <viewController id="T5S-hk-qlt" userLabel="Date Description View Controller" customClass="DateDescriptionViewController" customModule="PDFArchiver" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" misplaced="YES" id="kxM-LF-4yd">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="695"/>
+                    <view key="view" contentMode="scaleToFill" id="kxM-LF-4yd">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="607"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" keyboardDismissMode="interactive" translatesAutoresizingMaskIntoConstraints="NO" id="m8f-Cv-6fj">
@@ -46,7 +50,7 @@
                                                     <constraint firstAttribute="height" constant="35" id="5kP-cQ-6kM"/>
                                                 </constraints>
                                                 <nil key="textColor"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <textInputTraits key="textInputTraits"/>
                                                 <connections>
                                                     <action selector="descriptionTextField:" destination="T5S-hk-qlt" eventType="editingChanged" id="mRu-IT-UGg"/>
@@ -107,8 +111,10 @@
                     <size key="freeformSize" width="375" height="695"/>
                     <connections>
                         <outlet property="datePicker" destination="kpn-Ji-dFk" id="lG3-zh-Zq6"/>
+                        <outlet property="deleteNavButton" destination="OHS-It-190" id="jBu-Ik-sUh"/>
                         <outlet property="descriptionTextField" destination="BmQ-GG-lcY" id="xrS-T0-MCg"/>
                         <outlet property="documentView" destination="3FF-NI-nZN" id="9wV-Um-cvr"/>
+                        <outlet property="editNavButton" destination="QO0-1m-NCY" id="Zqh-gh-MaF"/>
                         <outlet property="scrollView" destination="m8f-Cv-6fj" id="IAX-Hh-M0c"/>
                         <outlet property="untaggedDocumentsCount" destination="9Md-XA-IBH" id="olh-Fd-kaX"/>
                     </connections>
@@ -121,8 +127,8 @@
         <scene sceneID="m0T-kh-yYj">
             <objects>
                 <viewController storyboardIdentifier="tags" id="cRG-zP-4nO" customClass="TagViewController" customModule="PDFArchiver" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" misplaced="YES" id="pQ4-96-C2t">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="695"/>
+                    <view key="view" contentMode="scaleToFill" id="pQ4-96-C2t">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="607"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" keyboardDismissMode="onDrag" translatesAutoresizingMaskIntoConstraints="NO" id="Rxj-eQ-KnD">
@@ -292,7 +298,6 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="a5g-KR-9jc">
-                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </toolbar>
                     <connections>
