@@ -93,7 +93,7 @@ public struct ImageConverter: Logging {
         let success = save(pdfDocument, at: filepath)
         if success {
             for path in paths {
-                try? FileManager.default.trashItem(at: path, resultingItemURL: nil)
+                try? FileManager.default.removeItem(at: path)
             }
         } else {
             os_log("Document could not be saved.", log: log, type: .error)

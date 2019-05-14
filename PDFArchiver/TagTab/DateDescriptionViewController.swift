@@ -43,24 +43,33 @@ class DateDescriptionViewController: UIViewController, Logging {
     @IBOutlet weak var datePicker: UIDatePicker!
     @IBOutlet weak var descriptionTextField: UITextField!
 
-    @IBAction private func trashNavButtonTapped(_ sender: Any) {
-        notificationFeedback.prepare()
-        guard let document = document else { return }
-        do {
-            os_log("Deleting file: %@", log: DateDescriptionViewController.log, type: .debug, document.path.path)
+    @IBAction private func deleteNavButtonTapped(_ sender: Any) {
 
-            // trash file - the archive will be informed by the filesystem aka. DocumentsQuery
-            try FileManager.default.trashItem(at: document.path, resultingItemURL: nil)
+        let deleteActionHandler: (UIAlertAction) -> Void = {(_) in
+            guard let document = self.document else { return }
+            self.notificationFeedback.prepare()
+            do {
+                os_log("Deleting file: %@", log: DateDescriptionViewController.log, type: .debug, document.path.path)
+                // trash file - the archive will be informed by the filesystem aka. DocumentsQuery
+                try FileManager.default.removeItem(at: document.path)
 
-            // send haptic feedback
-            notificationFeedback.notificationOccurred(.success)
+                // send haptic feedback
+                self.notificationFeedback.notificationOccurred(.success)
 
-            updateView()
+                self.updateView()
 
-        } catch {
-            os_log("Failed to delete: %@", log: DateDescriptionViewController.log, type: .error, error.localizedDescription)
-            notificationFeedback.notificationOccurred(.error)
+            } catch {
+                os_log("Failed to delete: %@", log: DateDescriptionViewController.log, type: .error, error.localizedDescription)
+                self.notificationFeedback.notificationOccurred(.error)
+            }
         }
+
+        let alert = UIAlertController(title: NSLocalizedString("Do you really want to delete this document?", comment: "Camera access in ScanViewController."),
+                                      message: nil,
+                                      preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Delete", comment: "Delete document."), style: .destructive, handler: deleteActionHandler))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel deletion."), style: .cancel, handler: nil))
+        present(alert, animated: true, completion: nil)
     }
 
     @IBAction private func editNavButtonTapped(_ sender: Any) {

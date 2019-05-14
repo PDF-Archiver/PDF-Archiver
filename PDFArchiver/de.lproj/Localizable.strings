@@ -8,6 +8,12 @@
 /* Camera access in ScanViewController. */
 "Cancel" = "Abbrechen";
 
+/* Delete document. */
+"Delete" = "Dokument löschen";
+
+/* Camera access in ScanViewController. */
+"Do you really want to delete this document?" = "Möchtest du dieses Dokument wirklich löschen?";
+
 /* The title of an error message popup */
 "Error" = "Fehler";
 
