@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PreferenceSpecifiers</key>
+	<array>
+		<dict>
+			<key>FooterText</key>
+			<string>
+Scan icon from 'Yannick':
+https://www.flaticon.com/authors/yannick
+
+Bookmark icon from 'Those Icons':
+https://www.flaticon.com/authors/those-icons
+
+File icon from 'Freepik':
+https://www.flaticon.com/free-icon/file_1150592
+
+Rocket icon from 'Freepik':
+https://www.flaticon.com/free-icon/start-up_1421358
+</string>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+		</dict>
+	</array>
+</dict>
+</plist>

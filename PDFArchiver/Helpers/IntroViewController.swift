@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 14.05.19.
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
+// swiftlint:disable force_unwrapping
 
 import paper_onboarding
 import UIKit
