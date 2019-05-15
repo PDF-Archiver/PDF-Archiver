@@ -20,6 +20,30 @@
 /* Camera access in ScanViewController. */
 "Grant Access" = "Grant Access";
 
+/* Intro: Find Description */
+"intro.find.description" = "You can find your documents quickly and easily at any time via the archive or the iCloud Drive app\n-\nso you always have your most important information in your pocket!";
+
+/* Intro: Find Title */
+"intro.find.title" = "Find it.";
+
+/* Intro: Last Page Description */
+"intro.last.description" = "And now have fun archiving with\nPDF Archiver!";
+
+/* Intro: Last Page Title */
+"intro.last.title" = "Let's go!";
+
+/* Intro: Scan Description */
+"intro.scan.description" = "Scan your documents, letters or invoices easily and with just two clicks with PDF Archiver. The app recognizes the text in your documents and saves it securely as a PDF file in iCloud Drive.";
+
+/* Intro: Scan Title */
+"intro.scan.title" = "Scan it.";
+
+/* Intro: Tag Description */
+"intro.tag.description" = "You have some time in between?\nTag your documents and find them quickly at any time. The intelligent text recognition automatically suggests the date and matching tags.\nDescribe your document e.g. with\n'Blue Favorite Sweater'\and save it in your archive.";
+
+/* Intro: Tag Title */
+"intro.tag.title" = "Tag it.";
+
 /* Camera access in ScanViewController. */
 "Need Camera Access" = "Need Camera Access";
 

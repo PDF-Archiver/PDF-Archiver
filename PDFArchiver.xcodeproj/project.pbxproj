@@ -38,6 +38,7 @@
 		A389789B2274FD4600DC13B9 /* CustomInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A389789A2274FD4600DC13B9 /* CustomInputView.swift */; };
 		A3932824221EF7DC00858461 /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3932823221EF7DC00858461 /* ScanViewController.swift */; };
 		A39942BA228B3ACE00FFC16B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39942B9228B3ACE00FFC16B /* Constants.swift */; };
+		A39942BE228B422E00FFC16B /* IntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39942BD228B422E00FFC16B /* IntroViewController.swift */; };
 		A39A807821FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
 		A39A807921FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
 		A39A807A21FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
@@ -138,6 +139,7 @@
 		A389789A2274FD4600DC13B9 /* CustomInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomInputView.swift; sourceTree = "<group>"; };
 		A3932823221EF7DC00858461 /* ScanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
 		A39942B9228B3ACE00FFC16B /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		A39942BD228B422E00FFC16B /* IntroViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntroViewController.swift; sourceTree = "<group>"; };
 		A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf"; sourceTree = "<group>"; };
 		A3A071672253ED660093E7A4 /* TagViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagViewController.swift; sourceTree = "<group>"; };
 		A3B13782223516B200C91BB1 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
@@ -287,6 +289,7 @@
 		A34A84F32130A2A70093FAE5 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				A39942BD228B422E00FFC16B /* IntroViewController.swift */,
 				A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */,
 				A3B83863218CA7640093C374 /* TableSection.swift */,
 				A381CF20222F0B5D00FAFA7C /* ImageConverter.swift */,
@@ -623,6 +626,7 @@
 				"${BUILT_PRODUCTS_DIR}/TagListView/TagListView.framework",
 				"${BUILT_PRODUCTS_DIR}/WSTagsField/WSTagsField.framework",
 				"${BUILT_PRODUCTS_DIR}/WeScan/WeScan.framework",
+				"${BUILT_PRODUCTS_DIR}/paper-onboarding/paper_onboarding.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
@@ -635,6 +639,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TagListView.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WSTagsField.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WeScan.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/paper_onboarding.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -719,6 +724,7 @@
 				A381CF21222F0B5D00FAFA7C /* ImageConverter.swift in Sources */,
 				A3FF63D02247AF570089E66A /* SubscriptionViewController.swift in Sources */,
 				A378C433221B3929007D1419 /* DocumentService.swift in Sources */,
+				A39942BE228B422E00FFC16B /* IntroViewController.swift in Sources */,
 				A389789B2274FD4600DC13B9 /* CustomInputView.swift in Sources */,
 				171E0C7E1B8E5B84001E6242 /* AppDelegate.swift in Sources */,
 				A3B57B7B22871F170078F7A4 /* StorageHelper.swift in Sources */,

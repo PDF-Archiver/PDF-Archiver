@@ -11,4 +11,9 @@ import Foundation
 enum Constants {
     static let documentDescriptionPlaceholder = "PDF-ARCHIVER-TEMP-DESCRIPTION-"
     static let documentTagPlaceholder = "PDFARCHIVERTEMPTAG"
+
+    // MARK: - UserDefaults Keys
+    enum UserDefaults: String {
+        case tutorialShown
+    }
 }

@@ -52,6 +52,14 @@ class ScanViewController: UIViewController, Logging {
         // show the processing indicator, if documents are currently processed
         updateProcessingIndicator(with: ImageConverter.getOperationCount())
 
+        let tutorialShown = UserDefaults.standard.bool(forKey: Constants.UserDefaults.tutorialShown.rawValue)
+        if !tutorialShown {
+            let introVC = IntroViewController()
+            present(introVC, animated: false, completion: nil)
+            UserDefaults.standard.set(true, forKey: Constants.UserDefaults.tutorialShown.rawValue)
+        }
+
+
         // show subscription view controller, if no subscription was found
         if !IAP.service.appUsagePermitted() {
             let viewController = SubscriptionViewController {
