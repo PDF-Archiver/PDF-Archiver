@@ -39,7 +39,7 @@
 "intro.scan.title" = "Scan it.";
 
 /* Intro: Tag Description */
-"intro.tag.description" = "You have some time in between?\nTag your documents and find them quickly at any time. The intelligent text recognition automatically suggests the date and matching tags.\nDescribe your document e.g. with\n'Blue Favorite Sweater'\and save it in your archive.";
+"intro.tag.description" = "You have some time in between?\nTag your documents and find them quickly at any time. The intelligent text recognition automatically suggests the date and matching tags.\nDescribe your document e.g. with\n'Blue Favorite Sweater'\nand save it in your archive.";
 
 /* Intro: Tag Title */
 "intro.tag.title" = "Tag it.";
