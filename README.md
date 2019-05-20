@@ -16,13 +16,6 @@ The PDF Archive Viewer shows documents in iCloud Drive.
 It is a helper of the macOS App [PDF Archiver](https://github.com/pdf-Archiver/pdf-archiver).
 
 
-## :rocket: Usage
-
-Test the Beta-Version with [Testflight](https://testflight.apple.com/join/luoTZhap) <a href="https://testflight.apple.com/join/luoTZhap" target="itunes_store">
-  <img src="https://developer.apple.com/assets/elements/icons/testflight/testflight-128x128_2x.png" width="20px">
-</a>.
-
-
 ## :scroll: Convention
 * **Date:** `yyyy-mm-dd` Date of the document content.
 * **Description:** `--ikea-tradfri-gateway` Meaningful description of the document.
