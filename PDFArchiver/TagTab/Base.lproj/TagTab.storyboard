@@ -6,7 +6,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
-        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -14,277 +13,30 @@
         <!--Date Description View Controller-->
         <scene sceneID="Alk-7W-AHX">
             <objects>
-                <viewController id="T5S-hk-qlt" userLabel="Date Description View Controller" customClass="DateDescriptionViewController" customModule="PDFArchiver" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="T5S-hk-qlt" userLabel="Date Description View Controller" customClass="DocumentHandleViewController" customModule="PDFArchiver" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="kxM-LF-4yd">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="607"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="724"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" keyboardDismissMode="interactive" translatesAutoresizingMaskIntoConstraints="NO" id="m8f-Cv-6fj">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="557"/>
-                                <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Rsq-jh-JAt">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="557"/>
-                                        <subviews>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3FF-NI-nZN" customClass="PDFView">
-                                                <rect key="frame" x="0.0" y="0.0" width="375" height="330"/>
-                                                <color key="backgroundColor" name="DarkGray"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="330" id="oh4-sK-k2b"/>
-                                                </constraints>
-                                            </view>
-                                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="kpn-Ji-dFk">
-                                                <rect key="frame" x="0.0" y="338" width="375" height="150"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="150" id="Zmb-We-pm9"/>
-                                                </constraints>
-                                                <date key="date" timeIntervalSinceReferenceDate="573858963.71947896">
-                                                    <!--2019-03-09 21:16:03 +0000-->
-                                                </date>
-                                                <connections>
-                                                    <action selector="datePicker:" destination="T5S-hk-qlt" eventType="valueChanged" id="YJH-bb-129"/>
-                                                </connections>
-                                            </datePicker>
-                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Description" textAlignment="natural" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="BmQ-GG-lcY">
-                                                <rect key="frame" x="30" y="496" width="315" height="35"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="35" id="5kP-cQ-6kM"/>
-                                                </constraints>
-                                                <nil key="textColor"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                <textInputTraits key="textInputTraits"/>
-                                                <connections>
-                                                    <action selector="descriptionTextField:" destination="T5S-hk-qlt" eventType="editingChanged" id="mRu-IT-UGg"/>
-                                                </connections>
-                                            </textField>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Untagged Documents: 0" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Md-XA-IBH">
-                                                <rect key="frame" x="15" y="539" width="345" height="18"/>
-                                                <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
-                                                <color key="textColor" name="LightGray"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                        </subviews>
-                                        <constraints>
-                                            <constraint firstAttribute="trailing" secondItem="3FF-NI-nZN" secondAttribute="trailing" id="8Yq-cs-cTm"/>
-                                            <constraint firstAttribute="trailing" secondItem="BmQ-GG-lcY" secondAttribute="trailing" constant="30" id="8uL-os-yil"/>
-                                            <constraint firstAttribute="trailing" secondItem="kpn-Ji-dFk" secondAttribute="trailing" id="9Mv-Bc-TJA"/>
-                                            <constraint firstItem="3FF-NI-nZN" firstAttribute="leading" secondItem="Rsq-jh-JAt" secondAttribute="leading" id="JXi-R8-dJ4"/>
-                                            <constraint firstItem="3FF-NI-nZN" firstAttribute="top" secondItem="Rsq-jh-JAt" secondAttribute="top" id="K4F-9s-yZQ"/>
-                                            <constraint firstItem="kpn-Ji-dFk" firstAttribute="top" secondItem="3FF-NI-nZN" secondAttribute="bottom" constant="8" id="aZW-4j-UiS"/>
-                                            <constraint firstItem="9Md-XA-IBH" firstAttribute="leading" secondItem="Rsq-jh-JAt" secondAttribute="leading" constant="15" id="cdG-px-8oR"/>
-                                            <constraint firstItem="kpn-Ji-dFk" firstAttribute="leading" secondItem="Rsq-jh-JAt" secondAttribute="leading" id="eme-Mo-5Ed"/>
-                                            <constraint firstItem="BmQ-GG-lcY" firstAttribute="leading" secondItem="Rsq-jh-JAt" secondAttribute="leading" constant="30" id="ukB-Lc-N8o"/>
-                                            <constraint firstAttribute="trailing" secondItem="9Md-XA-IBH" secondAttribute="trailing" constant="15" id="vHL-0Q-T2Y"/>
-                                        </constraints>
-                                    </stackView>
-                                </subviews>
-                                <constraints>
-                                    <constraint firstItem="Rsq-jh-JAt" firstAttribute="leading" secondItem="m8f-Cv-6fj" secondAttribute="leading" id="5yi-86-YhC"/>
-                                    <constraint firstAttribute="bottom" secondItem="Rsq-jh-JAt" secondAttribute="bottom" id="Xhn-lg-e7s"/>
-                                    <constraint firstItem="Rsq-jh-JAt" firstAttribute="width" secondItem="m8f-Cv-6fj" secondAttribute="width" id="c5A-24-kSE"/>
-                                    <constraint firstAttribute="trailing" secondItem="Rsq-jh-JAt" secondAttribute="trailing" id="iKj-6P-92Q"/>
-                                    <constraint firstItem="Rsq-jh-JAt" firstAttribute="height" secondItem="m8f-Cv-6fj" secondAttribute="height" id="r3A-zi-g94"/>
-                                    <constraint firstItem="Rsq-jh-JAt" firstAttribute="top" secondItem="m8f-Cv-6fj" secondAttribute="top" id="tBW-QO-bOn"/>
-                                </constraints>
-                            </scrollView>
-                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstItem="uZ6-gz-Tdv" firstAttribute="top" secondItem="m8f-Cv-6fj" secondAttribute="top" id="6H0-nG-jRR"/>
-                            <constraint firstItem="m8f-Cv-6fj" firstAttribute="leading" secondItem="uZ6-gz-Tdv" secondAttribute="leading" id="Iax-qb-RPa"/>
-                            <constraint firstItem="m8f-Cv-6fj" firstAttribute="width" secondItem="kxM-LF-4yd" secondAttribute="width" id="XX8-T9-uyk"/>
-                        </constraints>
                         <viewLayoutGuide key="safeArea" id="uZ6-gz-Tdv"/>
                     </view>
                     <navigationItem key="navigationItem" title="Date &amp; Description" id="6wi-9R-I4b">
                         <barButtonItem key="leftBarButtonItem" systemItem="trash" id="OHS-It-190">
                             <connections>
-                                <action selector="deleteNavButtonTapped:" destination="T5S-hk-qlt" id="eTL-1M-cUa"/>
+                                <action selector="trashButtonTapped:" destination="T5S-hk-qlt" id="WhP-0z-4Yu"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="compose" id="QO0-1m-NCY">
+                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="QO0-1m-NCY">
                             <connections>
-                                <action selector="editNavButtonTapped:" destination="T5S-hk-qlt" id="zsE-YW-Z0p"/>
+                                <action selector="saveButtonTapped:" destination="T5S-hk-qlt" id="Xyh-7k-zBy"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
-                    <size key="freeformSize" width="375" height="695"/>
-                    <connections>
-                        <outlet property="datePicker" destination="kpn-Ji-dFk" id="lG3-zh-Zq6"/>
-                        <outlet property="deleteNavButton" destination="OHS-It-190" id="jBu-Ik-sUh"/>
-                        <outlet property="descriptionTextField" destination="BmQ-GG-lcY" id="xrS-T0-MCg"/>
-                        <outlet property="documentView" destination="3FF-NI-nZN" id="9wV-Um-cvr"/>
-                        <outlet property="editNavButton" destination="QO0-1m-NCY" id="Zqh-gh-MaF"/>
-                        <outlet property="scrollView" destination="m8f-Cv-6fj" id="IAX-Hh-M0c"/>
-                        <outlet property="untaggedDocumentsCount" destination="9Md-XA-IBH" id="olh-Fd-kaX"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rVO-69-jTK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1512.3188405797102" y="-663.28125"/>
-        </scene>
-        <!--Tags-->
-        <scene sceneID="m0T-kh-yYj">
-            <objects>
-                <viewController storyboardIdentifier="tags" id="cRG-zP-4nO" customClass="TagViewController" customModule="PDFArchiver" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="pQ4-96-C2t">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="607"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" keyboardDismissMode="onDrag" translatesAutoresizingMaskIntoConstraints="NO" id="Rxj-eQ-KnD">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="352"/>
-                                <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mU6-MC-8s4" userLabel="Content View">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="352"/>
-                                        <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Document" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LRW-Ih-UUf">
-                                                <rect key="frame" x="35" y="20" width="310" height="18"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="18" id="x2f-Xz-9Hi"/>
-                                                </constraints>
-                                                <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
-                                                <color key="textColor" name="LightGray"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Rz6-gz-wLo" userLabel="Document Tags">
-                                                <rect key="frame" x="30" y="41" width="315" height="150"/>
-                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="150" id="eYP-E3-Sns"/>
-                                                </constraints>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="tagBackgroundColor">
-                                                        <color key="value" name="LightRed"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="tagHighlightedBackgroundColor">
-                                                        <color key="value" name="LightRed"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="tagSelectedBackgroundColor">
-                                                        <color key="value" name="LightRed"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                                        <real key="value" value="5"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="paddingY">
-                                                        <real key="value" value="8"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="paddingX">
-                                                        <real key="value" value="8"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="marginY">
-                                                        <real key="value" value="12"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="marginX">
-                                                        <real key="value" value="12"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="enableRemoveButton" value="YES"/>
-                                                </userDefinedRuntimeAttributes>
-                                            </view>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Suggestions" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VwQ-7i-9zW">
-                                                <rect key="frame" x="35" y="211" width="310" height="18"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="18" id="oNf-vm-ldh"/>
-                                                </constraints>
-                                                <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
-                                                <color key="textColor" name="LightGray"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Jl1-vr-ydn" userLabel="Suggested Tags">
-                                                <rect key="frame" x="30" y="232" width="315" height="100"/>
-                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="100" id="DFn-5l-vyi"/>
-                                                </constraints>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="tagBackgroundColor">
-                                                        <color key="value" name="LightRed"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="tagHighlightedBackgroundColor">
-                                                        <color key="value" name="LightRed"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="tagSelectedBackgroundColor">
-                                                        <color key="value" name="LightRed"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                                        <real key="value" value="5"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
-                                                        <real key="value" value="0.0"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="paddingY">
-                                                        <real key="value" value="10"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="paddingX">
-                                                        <real key="value" value="10"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="marginY">
-                                                        <real key="value" value="15"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="marginX">
-                                                        <real key="value" value="15"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                </userDefinedRuntimeAttributes>
-                                            </view>
-                                        </subviews>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <constraints>
-                                            <constraint firstItem="LRW-Ih-UUf" firstAttribute="leading" secondItem="mU6-MC-8s4" secondAttribute="leading" constant="35" id="9Z9-Bz-N1G"/>
-                                            <constraint firstAttribute="bottom" secondItem="Jl1-vr-ydn" secondAttribute="bottom" constant="20" id="BiS-aV-06a"/>
-                                            <constraint firstItem="VwQ-7i-9zW" firstAttribute="top" secondItem="Rz6-gz-wLo" secondAttribute="bottom" constant="20" id="Hsw-Hh-eJz"/>
-                                            <constraint firstItem="Jl1-vr-ydn" firstAttribute="top" secondItem="VwQ-7i-9zW" secondAttribute="bottom" constant="3" id="LrO-ma-1gJ"/>
-                                            <constraint firstItem="LRW-Ih-UUf" firstAttribute="top" secondItem="mU6-MC-8s4" secondAttribute="top" constant="20" symbolic="YES" id="XmM-7O-C9g"/>
-                                            <constraint firstAttribute="trailing" secondItem="LRW-Ih-UUf" secondAttribute="trailing" constant="30" id="aPY-mN-E14"/>
-                                            <constraint firstItem="Rz6-gz-wLo" firstAttribute="leading" secondItem="mU6-MC-8s4" secondAttribute="leading" constant="30" id="bNf-ei-nIt"/>
-                                            <constraint firstAttribute="trailing" secondItem="VwQ-7i-9zW" secondAttribute="trailing" constant="30" id="brm-zp-ebZ"/>
-                                            <constraint firstAttribute="trailing" secondItem="Jl1-vr-ydn" secondAttribute="trailing" constant="30" id="jAS-dR-ciC"/>
-                                            <constraint firstItem="VwQ-7i-9zW" firstAttribute="leading" secondItem="mU6-MC-8s4" secondAttribute="leading" constant="35" id="nqM-QW-4bz"/>
-                                            <constraint firstItem="Rz6-gz-wLo" firstAttribute="top" secondItem="LRW-Ih-UUf" secondAttribute="bottom" constant="3" id="rue-UE-ddn"/>
-                                            <constraint firstItem="Jl1-vr-ydn" firstAttribute="leading" secondItem="mU6-MC-8s4" secondAttribute="leading" constant="30" id="yuJ-Hp-vuo"/>
-                                            <constraint firstAttribute="trailing" secondItem="Rz6-gz-wLo" secondAttribute="trailing" constant="30" id="zRc-0H-Jzi"/>
-                                        </constraints>
-                                    </view>
-                                </subviews>
-                                <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="mU6-MC-8s4" secondAttribute="trailing" id="9uv-29-XOW"/>
-                                    <constraint firstItem="mU6-MC-8s4" firstAttribute="top" secondItem="Rxj-eQ-KnD" secondAttribute="top" id="D78-Lc-RmN"/>
-                                    <constraint firstItem="mU6-MC-8s4" firstAttribute="height" secondItem="Rxj-eQ-KnD" secondAttribute="height" id="Vey-Bz-GPX"/>
-                                    <constraint firstAttribute="bottom" secondItem="mU6-MC-8s4" secondAttribute="bottom" id="cA8-H1-40E"/>
-                                    <constraint firstItem="mU6-MC-8s4" firstAttribute="leading" secondItem="Rxj-eQ-KnD" secondAttribute="leading" id="gEu-mx-MTC"/>
-                                    <constraint firstItem="mU6-MC-8s4" firstAttribute="width" secondItem="Rxj-eQ-KnD" secondAttribute="width" id="haT-Il-viz"/>
-                                </constraints>
-                            </scrollView>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstItem="Rxj-eQ-KnD" firstAttribute="leading" secondItem="OEU-PT-NKE" secondAttribute="leading" id="3Yq-IJ-6Hz"/>
-                            <constraint firstItem="Rxj-eQ-KnD" firstAttribute="width" secondItem="pQ4-96-C2t" secondAttribute="width" id="LYM-N3-X0S"/>
-                            <constraint firstItem="Rxj-eQ-KnD" firstAttribute="top" secondItem="OEU-PT-NKE" secondAttribute="top" id="mWw-KZ-HXE"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="OEU-PT-NKE"/>
-                    </view>
-                    <navigationItem key="navigationItem" title="Tags" id="J25-wE-uoT">
-                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="O38-fe-2s3">
-                            <connections>
-                                <action selector="backButtonTapped:" destination="cRG-zP-4nO" id="PvA-Sh-Tp4"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="VpB-Su-hhk">
-                            <connections>
-                                <action selector="saveButtonTapped:" destination="cRG-zP-4nO" id="o2T-tr-v6F"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
-                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
-                    <size key="freeformSize" width="375" height="695"/>
-                    <connections>
-                        <outlet property="documentTagsView" destination="Rz6-gz-wLo" id="sBg-oY-heS"/>
-                        <outlet property="scrollView" destination="Rxj-eQ-KnD" id="iKL-W9-bjb"/>
-                        <outlet property="suggestedTagsView" destination="Jl1-vr-ydn" id="J4a-tA-sOt"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="BpM-zG-mar" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-479.19999999999999" y="-663.17733990147781"/>
+            <point key="canvasLocation" x="-1796" y="-664"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="kEf-g6-Lp5">
@@ -309,15 +61,4 @@
             <point key="canvasLocation" x="-2593" y="-664"/>
         </scene>
     </scenes>
-    <resources>
-        <namedColor name="DarkGray">
-            <color red="0.13099999725818634" green="0.17200000584125519" blue="0.23100000619888306" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-        </namedColor>
-        <namedColor name="LightGray">
-            <color red="0.21299999952316284" green="0.24199999868869781" blue="0.28600001335144043" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-        </namedColor>
-        <namedColor name="LightRed">
-            <color red="0.90299999713897705" green="0.41200000047683716" blue="0.40400001406669617" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-        </namedColor>
-    </resources>
 </document>

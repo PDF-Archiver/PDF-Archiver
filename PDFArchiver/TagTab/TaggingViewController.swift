@@ -1,5 +1,5 @@
 //
-//  DateDescriptionViewController.swift
+//  TaggingViewController.swift
 //  PDFArchiver
 //
 //  Created by Julian Kahnert on 21.05.19.
@@ -8,10 +8,8 @@
 
 import UIKit
 
-class DateDescriptionViewController: UIViewController {
+class TaggingViewController: UIViewController {
 
-    @IBOutlet weak var datePickerView: UIDatePicker!
-    @IBOutlet weak var descriptionTextField: UITextField!
     override func viewDidLoad() {
         super.viewDidLoad()
 

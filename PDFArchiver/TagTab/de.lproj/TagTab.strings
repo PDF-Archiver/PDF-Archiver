@@ -1,18 +1,3 @@
 
-/* Class = "UILabel"; text = "Untagged Documents: 0"; ObjectID = "9Md-XA-IBH"; */
-"9Md-XA-IBH.text" = "Verbleibende Dokumente: 0";
-
-/* Class = "UITextField"; placeholder = "Description"; ObjectID = "BmQ-GG-lcY"; */
-"BmQ-GG-lcY.placeholder" = "Beschreibung";
-
-/* Class = "UILabel"; text = "Document"; ObjectID = "LRW-Ih-UUf"; */
-"LRW-Ih-UUf.text" = "Dokument";
-
-/* Class = "UILabel"; text = "Suggestions"; ObjectID = "VwQ-7i-9zW"; */
-"VwQ-7i-9zW.text" = "Vorschläge";
-
-/* Class = "UINavigationItem"; title = "Tags"; ObjectID = "J25-wE-uoT"; */
-"J25-wE-uoT.title" = "Tags";
-
 /* Class = "UINavigationItem"; title = "Date & Description"; ObjectID = "6wi-9R-I4b"; */
 "6wi-9R-I4b.title" = "Datum & Beschreibung";

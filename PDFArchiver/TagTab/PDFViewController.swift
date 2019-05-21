@@ -1,17 +1,18 @@
 //
-//  DateDescriptionViewController.swift
+//  PDFViewController.swift
 //  PDFArchiver
 //
 //  Created by Julian Kahnert on 21.05.19.
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
 
+import PDFKit
 import UIKit
 
-class DateDescriptionViewController: UIViewController {
+class PDFViewController: UIViewController {
 
-    @IBOutlet weak var datePickerView: UIDatePicker!
-    @IBOutlet weak var descriptionTextField: UITextField!
+    @IBOutlet var pdfView: PDFView!
+
     override func viewDidLoad() {
         super.viewDidLoad()
 

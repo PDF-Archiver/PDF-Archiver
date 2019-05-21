@@ -17,6 +17,7 @@
 		A305AE4821D81E74004DDC1B /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A305AE4721D81E74004DDC1B /* NavigationController.swift */; };
 		A31263E2217B75DC00ACAFA4 /* LoadingBackgroundView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A31263E4217B75DC00ACAFA4 /* LoadingBackgroundView.xib */; };
 		A314A29B225542360099681D /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A314A29A225542360099681D /* CustomButton.swift */; };
+		A316F36622946ED70099BA26 /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A316F36522946ED70099BA26 /* UIViewController.swift */; };
 		A32777E421FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A32777E321FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf */; };
 		A32777E521FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A32777E321FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf */; };
 		A32777E621FDD7BF0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A32777E321FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf */; };
@@ -32,7 +33,7 @@
 		A363E859225D30D3007BE48B /* ArchiveLib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A335D4BA223D0B3400443A53 /* ArchiveLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A378C433221B3929007D1419 /* DocumentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A378C432221B3929007D1419 /* DocumentService.swift */; };
 		A381CF21222F0B5D00FAFA7C /* ImageConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A381CF20222F0B5D00FAFA7C /* ImageConverter.swift */; };
-		A381D1A522319D9B00434790 /* DateDescriptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A381D1A422319D9B00434790 /* DateDescriptionViewController.swift */; };
+		A381D1A522319D9B00434790 /* DateDescriptionViewController2.swift in Sources */ = {isa = PBXBuildFile; fileRef = A381D1A422319D9B00434790 /* DateDescriptionViewController2.swift */; };
 		A388C82522351FDD000D52CB /* tessdata in Resources */ = {isa = PBXBuildFile; fileRef = A388C82422351FDD000D52CB /* tessdata */; };
 		A388C8272235330F000D52CB /* test-ocr-data.png in Resources */ = {isa = PBXBuildFile; fileRef = A388C8262235330F000D52CB /* test-ocr-data.png */; };
 		A389789B2274FD4600DC13B9 /* CustomInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A389789A2274FD4600DC13B9 /* CustomInputView.swift */; };
@@ -59,6 +60,14 @@
 		A3ED932322666BE800DFC2D9 /* TagListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3ED932222666BE800DFC2D9 /* TagListView.swift */; };
 		A3F1C21D2163DCD9002B0141 /* AppStoreReviewRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */; };
 		A3F30D8E221C968E0063D173 /* SplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F30D8D221C968E0063D173 /* SplitViewController.swift */; };
+		A3FDD33B229457260054FFFC /* PDFViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FDD339229457260054FFFC /* PDFViewController.swift */; };
+		A3FDD33F229457410054FFFC /* TaggingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FDD33D229457410054FFFC /* TaggingViewController.swift */; };
+		A3FDD3432294578D0054FFFC /* DateDescriptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FDD3412294578D0054FFFC /* DateDescriptionViewController.swift */; };
+		A3FDD345229459B10054FFFC /* PDFViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A3FDD347229459B10054FFFC /* PDFViewController.xib */; };
+		A3FDD34A229459BD0054FFFC /* DateDescriptionViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A3FDD34C229459BD0054FFFC /* DateDescriptionViewController.xib */; };
+		A3FDD34F229459C40054FFFC /* TaggingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A3FDD351229459C40054FFFC /* TaggingViewController.xib */; };
+		A3FDD355229467590054FFFC /* DocumentHandleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FDD354229467590054FFFC /* DocumentHandleViewController.swift */; };
+		A3FDD3572294678A0054FFFC /* DocumentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FDD3562294678A0054FFFC /* DocumentViewController.swift */; };
 		A3FF63A022478FC10089E66A /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF639F22478FC10089E66A /* UIColor.swift */; };
 		A3FF63AA2247A39E0089E66A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3FF63A92247A39E0089E66A /* StoreKit.framework */; };
 		A3FF63D02247AF570089E66A /* SubscriptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF63CF2247AF570089E66A /* SubscriptionViewController.swift */; };
@@ -117,6 +126,7 @@
 		A31263E3217B75DC00ACAFA4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LoadingBackgroundView.xib; sourceTree = "<group>"; };
 		A31263E6217B75E200ACAFA4 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LoadingBackgroundView.strings; sourceTree = "<group>"; };
 		A314A29A225542360099681D /* CustomButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
+		A316F36522946ED70099BA26 /* UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewController.swift; sourceTree = "<group>"; };
 		A32777E321FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf"; sourceTree = "<group>"; };
 		A32997CF224826AB000B78D0 /* IAPService_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = IAPService_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A335D4BA223D0B3400443A53 /* ArchiveLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ArchiveLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -133,7 +143,7 @@
 		A34DEF912267699700E12EE5 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		A378C432221B3929007D1419 /* DocumentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentService.swift; sourceTree = "<group>"; };
 		A381CF20222F0B5D00FAFA7C /* ImageConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageConverter.swift; sourceTree = "<group>"; };
-		A381D1A422319D9B00434790 /* DateDescriptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateDescriptionViewController.swift; sourceTree = "<group>"; };
+		A381D1A422319D9B00434790 /* DateDescriptionViewController2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateDescriptionViewController2.swift; sourceTree = "<group>"; };
 		A388C82422351FDD000D52CB /* tessdata */ = {isa = PBXFileReference; lastKnownFileType = folder; path = tessdata; sourceTree = "<group>"; };
 		A388C8262235330F000D52CB /* test-ocr-data.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "test-ocr-data.png"; sourceTree = "<group>"; };
 		A389789A2274FD4600DC13B9 /* CustomInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomInputView.swift; sourceTree = "<group>"; };
@@ -166,6 +176,17 @@
 		A3ED932222666BE800DFC2D9 /* TagListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagListView.swift; sourceTree = "<group>"; };
 		A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreReviewRequest.swift; sourceTree = "<group>"; };
 		A3F30D8D221C968E0063D173 /* SplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewController.swift; sourceTree = "<group>"; };
+		A3FDD339229457260054FFFC /* PDFViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFViewController.swift; sourceTree = "<group>"; };
+		A3FDD33D229457410054FFFC /* TaggingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaggingViewController.swift; sourceTree = "<group>"; };
+		A3FDD3412294578D0054FFFC /* DateDescriptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateDescriptionViewController.swift; sourceTree = "<group>"; };
+		A3FDD346229459B10054FFFC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/PDFViewController.xib; sourceTree = "<group>"; };
+		A3FDD349229459B70054FFFC /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/PDFViewController.strings; sourceTree = "<group>"; };
+		A3FDD34B229459BD0054FFFC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/DateDescriptionViewController.xib; sourceTree = "<group>"; };
+		A3FDD34E229459C00054FFFC /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/DateDescriptionViewController.strings; sourceTree = "<group>"; };
+		A3FDD350229459C40054FFFC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/TaggingViewController.xib; sourceTree = "<group>"; };
+		A3FDD353229459C80054FFFC /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/TaggingViewController.strings; sourceTree = "<group>"; };
+		A3FDD354229467590054FFFC /* DocumentHandleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentHandleViewController.swift; sourceTree = "<group>"; };
+		A3FDD3562294678A0054FFFC /* DocumentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentViewController.swift; sourceTree = "<group>"; };
 		A3FF639F22478FC10089E66A /* UIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
 		A3FF63A92247A39E0089E66A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		A3FF63CF2247AF570089E66A /* SubscriptionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriptionViewController.swift; sourceTree = "<group>"; };
@@ -301,6 +322,7 @@
 				A3B57B7E228720240078F7A4 /* Storage */,
 				A3B57B82228750CF0078F7A4 /* FileManager.swift */,
 				A39942B9228B3ACE00FFC16B /* Constants.swift */,
+				A316F36522946ED70099BA26 /* UIViewController.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -349,8 +371,16 @@
 			isa = PBXGroup;
 			children = (
 				A3400DD822688C2100097A3F /* TagTab.storyboard */,
-				A381D1A422319D9B00434790 /* DateDescriptionViewController.swift */,
+				A3FDD354229467590054FFFC /* DocumentHandleViewController.swift */,
+				A3FDD3562294678A0054FFFC /* DocumentViewController.swift */,
+				A381D1A422319D9B00434790 /* DateDescriptionViewController2.swift */,
 				A3A071672253ED660093E7A4 /* TagViewController.swift */,
+				A3FDD339229457260054FFFC /* PDFViewController.swift */,
+				A3FDD347229459B10054FFFC /* PDFViewController.xib */,
+				A3FDD3412294578D0054FFFC /* DateDescriptionViewController.swift */,
+				A3FDD34C229459BD0054FFFC /* DateDescriptionViewController.xib */,
+				A3FDD33D229457410054FFFC /* TaggingViewController.swift */,
+				A3FDD351229459C40054FFFC /* TaggingViewController.xib */,
 			);
 			path = TagTab;
 			sourceTree = "<group>";
@@ -529,6 +559,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A3400DD622688C2100097A3F /* TagTab.storyboard in Resources */,
+				A3FDD34A229459BD0054FFFC /* DateDescriptionViewController.xib in Resources */,
 				A301A75721496992003EA382 /* DocumentTableViewCell.xib in Resources */,
 				A3EBFE9C21650F58008C34CC /* Localizable.strings in Resources */,
 				171E0C8A1B8E5B84001E6242 /* LaunchScreen.storyboard in Resources */,
@@ -538,6 +569,8 @@
 				A34A85022130A3870093FAE5 /* Assets.xcassets in Resources */,
 				A39A807821FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */,
 				A3400DDB22688C4300097A3F /* Archive.storyboard in Resources */,
+				A3FDD34F229459C40054FFFC /* TaggingViewController.xib in Resources */,
+				A3FDD345229459B10054FFFC /* PDFViewController.xib in Resources */,
 				A31263E2217B75DC00ACAFA4 /* LoadingBackgroundView.xib in Resources */,
 				A32777E621FDD7BF0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf in Resources */,
 				A3EBFEA021650FC7008C34CC /* EmptyBackgroundView.xib in Resources */,
@@ -703,6 +736,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A3FDD355229467590054FFFC /* DocumentHandleViewController.swift in Sources */,
 				A3B83864218CA7640093C374 /* TableSection.swift in Sources */,
 				A34A84FC2130A35A0093FAE5 /* ArchiveExtension.swift in Sources */,
 				A3400DE12268902200097A3F /* BartyCrouch.swift in Sources */,
@@ -714,6 +748,9 @@
 				A3ED932322666BE800DFC2D9 /* TagListView.swift in Sources */,
 				A3A071682253ED660093E7A4 /* TagViewController.swift in Sources */,
 				A3932824221EF7DC00858461 /* ScanViewController.swift in Sources */,
+				A3FDD3432294578D0054FFFC /* DateDescriptionViewController.swift in Sources */,
+				A316F36622946ED70099BA26 /* UIViewController.swift in Sources */,
+				A3FDD33B229457260054FFFC /* PDFViewController.swift in Sources */,
 				171E0C801B8E5B84001E6242 /* ArchiveViewController.swift in Sources */,
 				A3B57B83228750CF0078F7A4 /* FileManager.swift in Sources */,
 				A3FF63A022478FC10089E66A /* UIColor.swift in Sources */,
@@ -730,10 +767,12 @@
 				A3B57B7B22871F170078F7A4 /* StorageHelper.swift in Sources */,
 				A34A84FA2130A35A0093FAE5 /* DocumentsQuery.swift in Sources */,
 				A3DFA7272278D9CF00E0F362 /* WSTagsField.swift in Sources */,
-				A381D1A522319D9B00434790 /* DateDescriptionViewController.swift in Sources */,
+				A381D1A522319D9B00434790 /* DateDescriptionViewController2.swift in Sources */,
 				A314A29B225542360099681D /* CustomButton.swift in Sources */,
 				A3F1C21D2163DCD9002B0141 /* AppStoreReviewRequest.swift in Sources */,
+				A3FDD3572294678A0054FFFC /* DocumentViewController.swift in Sources */,
 				A3F30D8E221C968E0063D173 /* SplitViewController.swift in Sources */,
+				A3FDD33F229457410054FFFC /* TaggingViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -831,6 +870,33 @@
 				A3EBFEA421650FCB008C34CC /* de */,
 			);
 			name = EmptyBackgroundView.xib;
+			sourceTree = "<group>";
+		};
+		A3FDD347229459B10054FFFC /* PDFViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A3FDD346229459B10054FFFC /* Base */,
+				A3FDD349229459B70054FFFC /* de */,
+			);
+			name = PDFViewController.xib;
+			sourceTree = "<group>";
+		};
+		A3FDD34C229459BD0054FFFC /* DateDescriptionViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A3FDD34B229459BD0054FFFC /* Base */,
+				A3FDD34E229459C00054FFFC /* de */,
+			);
+			name = DateDescriptionViewController.xib;
+			sourceTree = "<group>";
+		};
+		A3FDD351229459C40054FFFC /* TaggingViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A3FDD350229459C40054FFFC /* Base */,
+				A3FDD353229459C80054FFFC /* de */,
+			);
+			name = TaggingViewController.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
