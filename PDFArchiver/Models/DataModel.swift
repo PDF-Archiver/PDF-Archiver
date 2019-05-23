@@ -363,3 +363,26 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
 enum DataModelError: Error {
     case noDocumentSelected
 }
+
+extension DataModelError: LocalizedError {
+    var errorDescription: String? {
+        switch self {
+        case .noDocumentSelected:
+            return NSLocalizedString("document_error_description__no_document_selected", comment: "")
+        }
+    }
+
+    var failureReason: String? {
+        switch self {
+        case .noDocumentSelected:
+            return NSLocalizedString("document_failure_reason__no_document_selected", comment: "")
+        }
+    }
+
+    var recoverySuggestion: String? {
+        switch self {
+        case .noDocumentSelected:
+            return NSLocalizedString("document_error_description__no_document_selected", comment: "")
+        }
+    }
+}

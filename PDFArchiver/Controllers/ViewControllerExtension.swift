@@ -52,7 +52,7 @@ extension ViewController: ViewControllerDelegate {
             let selectedDocument = dataModelInstance.selectedDocument {
 
             // set the document date, description and tags
-            datePicker.dateValue = selectedDocument.date
+            datePicker.dateValue = selectedDocument.date ?? Date()
             specificationField.stringValue = selectedDocument.specification
             documentTagsTableView.reloadData()
         }

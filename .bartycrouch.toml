@@ -18,7 +18,7 @@ unstripped = false
 codePath = "PDFArchiver/"
 localizablePath = "PDFArchiver/Localizable.strings"
 transformer = "foundation"
-supportedLanguageEnumPath = "PDFArchiver/Helpers/BartyCrouch.swift"
+supportedLanguageEnumPath = "PDFArchiver/Helpers/"
 typeName = "BartyCrouch"
 translateMethodName = "translate"
 

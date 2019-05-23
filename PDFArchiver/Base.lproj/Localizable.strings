@@ -39,3 +39,48 @@
 "save_failed" = "Save failed!";
 
 "select_preferences" = "Please select a archive path in the preferences.";
+
+/* No description could be found, e.g. while renaming the document. */
+"document_error_description__description_missing" = "Description Missing";
+
+/* No comment provided by engineer. */
+"document_error_description__no_document_selected" = "Document Missing";
+
+/* No tags could be found, e.g. while renaming the document. */
+"document_error_description__tags_missing" = "Tags Missing";
+
+/* No description could be found, e.g. while renaming the document. */
+"document_failure_reason__description_missing" = "No document description could be found.";
+
+/* No comment provided by engineer. */
+"document_failure_reason__no_document_selected" = "No document was selected.";
+
+/* Rename failed. */
+"document_error_description__rename_failed_file_already_exists" = "Renaming Failed";
+
+/* Rename failed. */
+"document_failure_reason__rename_failed_file_already_exists" = "The renaming of the document failed.";
+
+/* No tags could be found, e.g. while renaming the document. */
+"document_failure_reason__tags_missing" = "No tags were entered for the document.";
+
+/* No description could be found, e.g. while renaming the document. */
+"document_recovery_suggestion__description_missing" = "Please provide a description.";
+
+/* Rename failed - file already exists. */
+"document_recovery_suggestion__rename_failed_file_already_exists" = "Please change e.g. the description of the document.";
+
+/* No tags could be found, e.g. while renaming the document. */
+"document_recovery_suggestion__tags_missing" = "Please add tags.";
+
+/* Fallback when no localized error was found. */
+"error_message_fallback" = "Something went terribly wrong here!";
+
+/* No date could be found, e.g. while renaming the document. */
+"document_error_description__date_missing" = "Date Missing";
+
+/* No date could be found, e.g. while renaming the document. */
+"document_failure_reason__date_missing" = "No document date could be found.";
+
+/* No date could be found, e.g. while renaming the document. */
+"document_recovery_suggestion__date_missing" = "Please add a date.";
