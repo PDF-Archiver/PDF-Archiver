@@ -93,7 +93,15 @@ All [contributions](https://github.com/PDF-Archiver/PDF-Archiver/blob/develop/.g
 Feel free to contribute to this project.
 Submit pull requests or contribute tutorials - whatever you have to offer, it would be appreciated!
 
+## :newspaper_roll: Featured on
+* [Macobserver](https://www.macobserver.com/reviews/quick-look/review-pdf-archiver/) - How to Archive PDFs with PDF Archiver
+* [iFun](https://www.ifun.de/pdf-archiver-kostenloser-ios-kompagnon-ergaenzt-die-mac-app-128930/) - Kostenloser iOS-Kompagnon ergänzt die Mac-App
+* [Netzwelt](https://www.netzwelt.de/download/24613-pdf-archiver.html) - PDF-Dokumente einfach verwalten
+* [Sir Apfelot](https://www.sir-apfelot.de/pdf-archiver-22021/) - PDFs verschlagworten, ordnen und archivieren
+* [appgefahren.de](https://www.appgefahren.de/pdf-archiver-praktische-mac-app-hilft-beim-langfristigen-verwalten-von-dokumenten-220759.html) - Mac-App hilft beim langfristigen Verwalten von Dokumenten
+
 ## :book: Thanks and Donations
+* [**The.Swift.Dev.**](https://theswiftdev.com/2018/05/17/how-to-use-icloud-drive-documents/) for a sponsorship option on a blogpost I used while writing this app.
 * [**zngguvnf.org**](https://zngguvnf.org) discussing and creating this archive structure.
 * [**Karl Voit**](http://karl-voit.at/managing-digital-photographs/) for the initial idea of a document naming convention.
 * [**Nick Roach**](https://www.elegantthemes.com) for the [Icon](https://www.iconfinder.com/icons/1055071/document_file_icon).

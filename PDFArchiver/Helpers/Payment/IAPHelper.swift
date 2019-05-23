@@ -18,7 +18,6 @@ protocol IAPHelperDelegate: AnyObject {
     func buyProduct(_ product: SKProduct)
     func buyProduct(_ productIdentifier: String)
     func appUsagePermitted() -> Bool
-    func preSubscriptionPurchase() -> Bool
     func restorePurchases()
 }
 
@@ -34,7 +33,7 @@ class IAPHelper: NSObject, IAPHelperDelegate, Logging {
             self.donationPreferencesVCDelegate?.updateGUI()
         }
     }
-    var receipt: ParsedReceipt?
+    private var receipt: ParsedReceipt?
     var requestRunning: Int = 0 {
         didSet {
             self.onboardingVCDelegate?.updateGUI()
@@ -125,7 +124,7 @@ extension IAPHelper {
         #endif
     }
 
-    public func preSubscriptionPurchase() -> Bool {
+    fileprivate func preSubscriptionPurchase() -> Bool {
         #if RELEASE
         guard let receipt = self.receipt,
             let originalAppVersion = receipt.originalAppVersion else { return false }
