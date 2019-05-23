@@ -33,7 +33,6 @@
 		A363E859225D30D3007BE48B /* ArchiveLib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A335D4BA223D0B3400443A53 /* ArchiveLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A378C433221B3929007D1419 /* DocumentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A378C432221B3929007D1419 /* DocumentService.swift */; };
 		A381CF21222F0B5D00FAFA7C /* ImageConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A381CF20222F0B5D00FAFA7C /* ImageConverter.swift */; };
-		A381D1A522319D9B00434790 /* DateDescriptionViewController2.swift in Sources */ = {isa = PBXBuildFile; fileRef = A381D1A422319D9B00434790 /* DateDescriptionViewController2.swift */; };
 		A388C82522351FDD000D52CB /* tessdata in Resources */ = {isa = PBXBuildFile; fileRef = A388C82422351FDD000D52CB /* tessdata */; };
 		A388C8272235330F000D52CB /* test-ocr-data.png in Resources */ = {isa = PBXBuildFile; fileRef = A388C8262235330F000D52CB /* test-ocr-data.png */; };
 		A389789B2274FD4600DC13B9 /* CustomInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A389789A2274FD4600DC13B9 /* CustomInputView.swift */; };
@@ -43,7 +42,7 @@
 		A39A807821FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
 		A39A807921FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
 		A39A807A21FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
-		A3A071682253ED660093E7A4 /* TagViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3A071672253ED660093E7A4 /* TagViewController.swift */; };
+		A3A071682253ED660093E7A4 /* TaggingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3A071672253ED660093E7A4 /* TaggingViewController.swift */; };
 		A3B57B7B22871F170078F7A4 /* StorageHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B57B7A22871F170078F7A4 /* StorageHelper.swift */; };
 		A3B57B7D228720090078F7A4 /* StorageHelper+Paths.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B57B7C228720090078F7A4 /* StorageHelper+Paths.swift */; };
 		A3B57B81228720410078F7A4 /* StorageHelper+Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B57B80228720410078F7A4 /* StorageHelper+Errors.swift */; };
@@ -61,7 +60,6 @@
 		A3F1C21D2163DCD9002B0141 /* AppStoreReviewRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */; };
 		A3F30D8E221C968E0063D173 /* SplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F30D8D221C968E0063D173 /* SplitViewController.swift */; };
 		A3FDD33B229457260054FFFC /* PDFViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FDD339229457260054FFFC /* PDFViewController.swift */; };
-		A3FDD33F229457410054FFFC /* TaggingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FDD33D229457410054FFFC /* TaggingViewController.swift */; };
 		A3FDD3432294578D0054FFFC /* DateDescriptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FDD3412294578D0054FFFC /* DateDescriptionViewController.swift */; };
 		A3FDD345229459B10054FFFC /* PDFViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A3FDD347229459B10054FFFC /* PDFViewController.xib */; };
 		A3FDD34A229459BD0054FFFC /* DateDescriptionViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A3FDD34C229459BD0054FFFC /* DateDescriptionViewController.xib */; };
@@ -143,7 +141,6 @@
 		A34DEF912267699700E12EE5 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		A378C432221B3929007D1419 /* DocumentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentService.swift; sourceTree = "<group>"; };
 		A381CF20222F0B5D00FAFA7C /* ImageConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageConverter.swift; sourceTree = "<group>"; };
-		A381D1A422319D9B00434790 /* DateDescriptionViewController2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateDescriptionViewController2.swift; sourceTree = "<group>"; };
 		A388C82422351FDD000D52CB /* tessdata */ = {isa = PBXFileReference; lastKnownFileType = folder; path = tessdata; sourceTree = "<group>"; };
 		A388C8262235330F000D52CB /* test-ocr-data.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "test-ocr-data.png"; sourceTree = "<group>"; };
 		A389789A2274FD4600DC13B9 /* CustomInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomInputView.swift; sourceTree = "<group>"; };
@@ -151,7 +148,7 @@
 		A39942B9228B3ACE00FFC16B /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		A39942BD228B422E00FFC16B /* IntroViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntroViewController.swift; sourceTree = "<group>"; };
 		A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf"; sourceTree = "<group>"; };
-		A3A071672253ED660093E7A4 /* TagViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagViewController.swift; sourceTree = "<group>"; };
+		A3A071672253ED660093E7A4 /* TaggingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaggingViewController.swift; sourceTree = "<group>"; };
 		A3B13782223516B200C91BB1 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
 		A3B57B7A22871F170078F7A4 /* StorageHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageHelper.swift; sourceTree = "<group>"; };
 		A3B57B7C228720090078F7A4 /* StorageHelper+Paths.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageHelper+Paths.swift"; sourceTree = "<group>"; };
@@ -177,7 +174,6 @@
 		A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreReviewRequest.swift; sourceTree = "<group>"; };
 		A3F30D8D221C968E0063D173 /* SplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewController.swift; sourceTree = "<group>"; };
 		A3FDD339229457260054FFFC /* PDFViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFViewController.swift; sourceTree = "<group>"; };
-		A3FDD33D229457410054FFFC /* TaggingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaggingViewController.swift; sourceTree = "<group>"; };
 		A3FDD3412294578D0054FFFC /* DateDescriptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateDescriptionViewController.swift; sourceTree = "<group>"; };
 		A3FDD346229459B10054FFFC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/PDFViewController.xib; sourceTree = "<group>"; };
 		A3FDD349229459B70054FFFC /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/PDFViewController.strings; sourceTree = "<group>"; };
@@ -373,13 +369,11 @@
 				A3400DD822688C2100097A3F /* TagTab.storyboard */,
 				A3FDD354229467590054FFFC /* DocumentHandleViewController.swift */,
 				A3FDD3562294678A0054FFFC /* DocumentViewController.swift */,
-				A381D1A422319D9B00434790 /* DateDescriptionViewController2.swift */,
-				A3A071672253ED660093E7A4 /* TagViewController.swift */,
 				A3FDD339229457260054FFFC /* PDFViewController.swift */,
 				A3FDD347229459B10054FFFC /* PDFViewController.xib */,
 				A3FDD3412294578D0054FFFC /* DateDescriptionViewController.swift */,
 				A3FDD34C229459BD0054FFFC /* DateDescriptionViewController.xib */,
-				A3FDD33D229457410054FFFC /* TaggingViewController.swift */,
+				A3A071672253ED660093E7A4 /* TaggingViewController.swift */,
 				A3FDD351229459C40054FFFC /* TaggingViewController.xib */,
 			);
 			path = TagTab;
@@ -746,7 +740,7 @@
 				171E0C821B8E5B84001E6242 /* DetailViewController.swift in Sources */,
 				A3DBC695224974380048E681 /* IAPService.swift in Sources */,
 				A3ED932322666BE800DFC2D9 /* TagListView.swift in Sources */,
-				A3A071682253ED660093E7A4 /* TagViewController.swift in Sources */,
+				A3A071682253ED660093E7A4 /* TaggingViewController.swift in Sources */,
 				A3932824221EF7DC00858461 /* ScanViewController.swift in Sources */,
 				A3FDD3432294578D0054FFFC /* DateDescriptionViewController.swift in Sources */,
 				A316F36622946ED70099BA26 /* UIViewController.swift in Sources */,
@@ -767,12 +761,10 @@
 				A3B57B7B22871F170078F7A4 /* StorageHelper.swift in Sources */,
 				A34A84FA2130A35A0093FAE5 /* DocumentsQuery.swift in Sources */,
 				A3DFA7272278D9CF00E0F362 /* WSTagsField.swift in Sources */,
-				A381D1A522319D9B00434790 /* DateDescriptionViewController2.swift in Sources */,
 				A314A29B225542360099681D /* CustomButton.swift in Sources */,
 				A3F1C21D2163DCD9002B0141 /* AppStoreReviewRequest.swift in Sources */,
 				A3FDD3572294678A0054FFFC /* DocumentViewController.swift in Sources */,
 				A3F30D8E221C968E0063D173 /* SplitViewController.swift in Sources */,
-				A3FDD33F229457410054FFFC /* TaggingViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

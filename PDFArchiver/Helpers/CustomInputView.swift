@@ -9,10 +9,10 @@
 import UIKit
 
 protocol SuggestionInputViewDelegate: AnyObject {
-    func suggestionInputView(_ suggestionInputView: SuggestionInputView, userTabbed button: UIButton)
+    func suggestionInputViewController(_ suggestionInputViewController: SuggestionInputViewController, userTabbed button: UIButton)
 }
 
-class SuggestionInputView: UIViewController {
+class SuggestionInputViewController: UIViewController {
 
     weak var delegate: SuggestionInputViewDelegate?
     var suggestions = [String]() {
@@ -41,7 +41,7 @@ class SuggestionInputView: UIViewController {
             view.addSubview(button)
             button.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
             button.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-            SuggestionInputView.customize(button)
+            SuggestionInputViewController.customize(button)
             button.addTarget(self, action: #selector(action(sender:)), for: .touchUpInside)
         }
 
@@ -83,14 +83,14 @@ class SuggestionInputView: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
 
         button.contentMode = .center
-        button.backgroundColor = .paWhite
+        button.backgroundColor = .paKeyboardBackground
         button.setTitleColor(.paDarkGray, for: .normal)
         button.titleLabel?.lineBreakMode = .byTruncatingTail
     }
 
     @objc
     private func action(sender: UIButton) {
-        delegate?.suggestionInputView(self, userTabbed: sender)
+        delegate?.suggestionInputViewController(self, userTabbed: sender)
     }
 }
 
