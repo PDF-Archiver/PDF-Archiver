@@ -13,8 +13,10 @@ class PDFViewController: UIViewController {
 
     @IBOutlet private var pdfView: PDFView!
 
+    private let pdfDocument: PDFDocument
+
     init(pdfDocument: PDFDocument) {
-        self.pdfView.document = pdfDocument
+        self.pdfDocument = pdfDocument
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -26,6 +28,7 @@ class PDFViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        pdfView.document = pdfDocument
         pdfView.displayMode = .singlePageContinuous
         pdfView.autoScales = true
         pdfView.interpolationQuality = .low

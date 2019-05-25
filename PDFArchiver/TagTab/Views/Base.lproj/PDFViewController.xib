@@ -12,20 +12,20 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PDFViewController" customModule="PDFArchiver" customModuleProvider="target">
             <connections>
-                <outlet property="pdfView" destination="LIW-sw-TGs" id="KBL-XG-zDb"/>
-                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+                <outlet property="pdfView" destination="LIW-sw-TGs" id="wRw-Ze-3hT"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="n9B-9F-Hej"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
-            <rect key="frame" x="0.0" y="0.0" width="396" height="450"/>
+            <rect key="frame" x="0.0" y="0.0" width="396" height="300"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LIW-sw-TGs" customClass="PDFView">
-                    <rect key="frame" x="0.0" y="0.0" width="396" height="450"/>
+                    <rect key="frame" x="0.0" y="0.0" width="396" height="300"/>
                     <color key="backgroundColor" name="DarkGray"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="450" id="xk4-yf-fOZ"/>
+                        <constraint firstAttribute="height" constant="300" id="xk4-yf-fOZ"/>
                     </constraints>
                 </view>
             </subviews>
@@ -36,7 +36,7 @@
                 <constraint firstAttribute="trailing" secondItem="LIW-sw-TGs" secondAttribute="trailing" id="kfz-nH-UIR"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="118.84057971014494" y="295.3125"/>
+            <point key="canvasLocation" x="118.84057971014494" y="245.08928571428569"/>
         </view>
     </objects>
     <resources>

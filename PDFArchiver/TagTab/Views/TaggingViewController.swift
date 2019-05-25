@@ -92,34 +92,35 @@ class TaggingViewController: UIViewController, Logging {
 
     @IBOutlet weak var documentTagsView: UIView!
     @IBOutlet weak var suggestedTagsView: UIView!
-    @IBOutlet weak var scrollView: UIScrollView!
-
-    @IBAction private func backButtonTapped(_ sender: Any) {
-        dismiss(animated: false, completion: nil)
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        documentTagField.frame = documentTagsView.bounds
         documentTagsView.addSubview(documentTagField)
         documentTagField.textDelegate = self
 
+        suggestedTagField.frame = suggestedTagsView.bounds
         suggestedTagsView.addSubview(suggestedTagField)
         suggestedTagField.textDelegate = self
 
         suggestionVC.delegate = self
-
-        documentTagField.addTags(Array(documentTags).sorted())
-        suggestedTagField.addTags(Array(suggestedTags).sorted())
     }
 
-    // TODO: viewWillLayoutSubviews instead??
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         documentTagField.frame = documentTagsView.bounds
         suggestedTagField.frame = suggestedTagsView.bounds
-        suggestionVC.view.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 50)
+        suggestionVC.view.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 45)
     }
+
+    // TODO: load tags
+//    override func viewDidAppear(_ animated: Bool) {
+//        super.viewDidAppear(animated)
+//
+//        documentTagField.addTags(Array(documentTags).sorted())
+//        suggestedTagField.addTags(Array(suggestedTags).sorted())
+//    }
 
     func update(suggestedTags: Set<String>) {
         self.suggestedTags.formUnion(suggestedTags)
@@ -164,6 +165,14 @@ extension TaggingViewController: UITextFieldDelegate {
         textField.autocorrectionType = .no
         textField.inputAccessoryView = self.suggestionVC.view
     }
+
+//    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+//        if textField == documentTagField {
+//            //            anotherField.becomeFirstResponder()
+//            textField.resignFirstResponder()
+//        }
+//        return true
+//    }
 }
 
 // MARK: - SuggestionInputViewDelegate

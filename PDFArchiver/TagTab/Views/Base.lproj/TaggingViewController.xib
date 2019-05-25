@@ -12,6 +12,8 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="TaggingViewController" customModule="PDFArchiver" customModuleProvider="target">
             <connections>
+                <outlet property="documentTagsView" destination="XWq-Yc-jXb" id="rOK-b5-3PT"/>
+                <outlet property="suggestedTagsView" destination="eBy-UA-0iG" id="OII-DA-vuZ"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>

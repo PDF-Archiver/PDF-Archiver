@@ -13,6 +13,8 @@ class DocumentHandleViewController: UIViewController {
 
     private let selectionFeedback = UISelectionFeedbackGenerator()
     private var documentViewController: DocumentViewController?
+    @IBOutlet weak var trashButton: UIBarButtonItem!
+    @IBOutlet weak var saveButton: UIBarButtonItem!
 
     @IBAction private func trashButtonTapped(_ sender: UIBarButtonItem) {
         print("TRASH")
@@ -104,8 +106,8 @@ class DocumentHandleViewController: UIViewController {
             documentViewController = nil
         }
 
-        deleteNavButton.isEnabled = documentViewController != nil
-        editNavButton.isEnabled = documentViewController != nil
+        trashButton.isEnabled = documentViewController != nil
+        saveButton.isEnabled = documentViewController != nil
 
         // setup data delegate
         DocumentService.archive.delegate = self
@@ -148,10 +150,9 @@ extension DocumentHandleViewController: ArchiveDelegate {
         DispatchQueue.main.async {
 
             // test if the document is already available, update view with the recently added document otherwise
-            if self.document == nil {
-                self.updateView()
-            } else {
-                self.updateDocumentsCount()
+            if self.documentViewController == nil {
+                print("UPDATE VIEW")
+//                self.updateView()
             }
         }
     }
@@ -164,10 +165,9 @@ extension DocumentHandleViewController: ArchiveDelegate {
         }
 
         DispatchQueue.main.async {
-            if let document = self.document, untaggedDocuments.contains(document) {
-                self.updateView()
-            } else {
-                self.updateDocumentsCount()
+            if self.documentViewController == nil {
+                print("UPDATE VIEW: archive()")
+//                self.updateView()
             }
         }
     }

@@ -363,18 +363,26 @@
 			path = PDFArchiverTests;
 			sourceTree = "<group>";
 		};
-		A3F30D8F221C99ED0063D173 /* TagTab */ = {
+		A3EF865922982CE400288B8C /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				A3400DD822688C2100097A3F /* TagTab.storyboard */,
-				A3FDD354229467590054FFFC /* DocumentHandleViewController.swift */,
-				A3FDD3562294678A0054FFFC /* DocumentViewController.swift */,
 				A3FDD339229457260054FFFC /* PDFViewController.swift */,
 				A3FDD347229459B10054FFFC /* PDFViewController.xib */,
 				A3FDD3412294578D0054FFFC /* DateDescriptionViewController.swift */,
 				A3FDD34C229459BD0054FFFC /* DateDescriptionViewController.xib */,
 				A3A071672253ED660093E7A4 /* TaggingViewController.swift */,
 				A3FDD351229459C40054FFFC /* TaggingViewController.xib */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A3F30D8F221C99ED0063D173 /* TagTab */ = {
+			isa = PBXGroup;
+			children = (
+				A3400DD822688C2100097A3F /* TagTab.storyboard */,
+				A3FDD354229467590054FFFC /* DocumentHandleViewController.swift */,
+				A3FDD3562294678A0054FFFC /* DocumentViewController.swift */,
+				A3EF865922982CE400288B8C /* Views */,
 			);
 			path = TagTab;
 			sourceTree = "<group>";

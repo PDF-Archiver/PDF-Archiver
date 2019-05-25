@@ -14,10 +14,14 @@ protocol DateDescriptionViewControllerDelegate: AnyObject {
 
 class DateDescriptionViewController: UIViewController {
 
+    private let date: Date
+    private let specification: String?
+
     init(date: Date, description: String?) {
+        self.date = date
+        self.specification = description
+
         super.init(nibName: nil, bundle: nil)
-        datePickerView.date = date
-        descriptionTextField.text = description
     }
 
     @available(*, unavailable)
@@ -40,11 +44,18 @@ class DateDescriptionViewController: UIViewController {
         delegate?.updateDateDescription(datePickerView.date, text)
     }
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        datePickerView.date = date
+        descriptionTextField.text = specification
+    }
+
     func update(date: Date?, description: String?) {
         datePickerView.date = date ?? Date()
 
         // remove PDF Archive default decription and tags
-        if description?.starts(with: Constants.documentDescriptionPlaceholder) ?? false{
+        if description?.starts(with: Constants.documentDescriptionPlaceholder) ?? false {
             descriptionTextField.text = ""
         } else {
             descriptionTextField.text = description

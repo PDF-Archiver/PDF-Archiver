@@ -33,6 +33,10 @@
                         </barButtonItem>
                     </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
+                    <connections>
+                        <outlet property="saveButton" destination="QO0-1m-NCY" id="bN7-f1-g1r"/>
+                        <outlet property="trashButton" destination="OHS-It-190" id="hpY-b2-51a"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rVO-69-jTK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

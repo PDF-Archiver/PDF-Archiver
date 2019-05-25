@@ -77,17 +77,17 @@ class DocumentViewController: UIViewController, Logging {
         }
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
 
         // register keyboard notification
         registerNotifications()
+        unregisterNotifications()
     }
 
     private let scrollView: UIScrollView = {
         let view = UIScrollView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .cyan
         return view
     }()
 
