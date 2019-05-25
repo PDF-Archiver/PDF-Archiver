@@ -31,7 +31,7 @@ extension Array where Element: NSObject {
 
     @discardableResult
     mutating func remove(_ element: Element) -> Element? {
-        if let idx = self.index(of: element) {
+        if let idx = self.firstIndex(of: element) {
             return self.remove(at: idx)
         } else {
             return nil

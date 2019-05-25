@@ -27,7 +27,7 @@
 "AYu-sK-qS6.title" = "Hauptmenü";
 
 /* Class = "NSTextFieldCell"; title = "Select an Archive Path in preferences:\n\nSelect untagged documents:\n\nTag your document and save  it:"; ObjectID = "AlK-ae-Y1M"; */
-"AlK-ae-Y1M.title" = "Setze den Archiv Pfad in den Einstellungen:\n\nWähle Dokumente aus:\n\nVersehe deine Dokumente mit Tags und speichere sie:";
+"AlK-ae-Y1M.title" = "Setze den Archiv Ordner in den Einstellungen:\n\nWähle Dokumente aus:\n\nVersehe deine Dokumente mit Tags und speichere sie:";
 
 /* Class = "NSMenuItem"; title = "Preferences…"; ObjectID = "BOF-NM-1cW"; */
 "BOF-NM-1cW.title" = "Einstellungen…";
@@ -63,7 +63,7 @@
 "IQv-IB-iLA.title" = "PDF Archiver";
 
 /* Class = "NSTextFieldCell"; title = "Archive Folder"; ObjectID = "Ju7-wj-fHp"; */
-"Ju7-wj-fHp.title" = "Archiv Pfad";
+"Ju7-wj-fHp.title" = "Archiv Ordner";
 
 /* Class = "NSMenuItem"; title = "Show All"; ObjectID = "Kd2-mp-pUS"; */
 "Kd2-mp-pUS.title" = "Alle einblenden";
@@ -138,10 +138,10 @@
 "dMs-cI-mzQ.title" = "Ablage";
 
 /* Class = "NSTextFieldCell"; ibExternalAccessibilityHelp = "Archive Path"; ObjectID = "gtQ-4r-22c"; */
-"gtQ-4r-22c.ibExternalAccessibilityHelp" = "Archiv Pfad";
+"gtQ-4r-22c.ibExternalAccessibilityHelp" = "Archiv Ordner";
 
 /* Class = "NSTextFieldCell"; placeholderString = "Please set the archive path …"; ObjectID = "gtQ-4r-22c"; */
-"gtQ-4r-22c.placeholderString" = "Bitte Archiv Pfad setzen …";
+"gtQ-4r-22c.placeholderString" = "Bitte Archiv Ordner setzen …";
 
 /* Class = "NSTextFieldCell"; title = "⌘ o"; ObjectID = "m4z-q1-wQ4"; */
 "m4z-q1-wQ4.title" = "⌘ o";

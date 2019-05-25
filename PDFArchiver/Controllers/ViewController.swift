@@ -121,11 +121,9 @@ class ViewController: NSViewController, Logging {
             // increment count an request a review?
             AppStoreReviewRequest.shared.incrementCount()
 
-        } catch DataModelError.noDocumentSelected {
-            os_log("No document was selected.", log: log, type: .error)
         } catch let error {
-            os_log("An error occured while renaming the document: ", log: log, type: .error, error.localizedDescription)
-            dialogOK(messageKey: "save_failed", infoKey: "file_already_exists", style: .warning)
+            os_log("No document was selected.", log: log, type: .error, error.localizedDescription)
+            dialog(error, style: .warning)
         }
     }
 

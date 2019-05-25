@@ -52,7 +52,7 @@ extension ViewController: ViewControllerDelegate {
             let selectedDocument = dataModelInstance.selectedDocument {
 
             // set the document date, description and tags
-            datePicker.dateValue = selectedDocument.date
+            datePicker.dateValue = selectedDocument.date ?? Date()
             specificationField.stringValue = selectedDocument.specification
             documentTagsTableView.reloadData()
         }
@@ -196,7 +196,7 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
 
         } else if identifier.rawValue == "tagSearchField" {
             guard let searchField = notification.object as? NSSearchField else { return }
-            dataModelInstance.tagFilterTerm = searchField.stringValue
+            dataModelInstance.tagFilterTerm = searchField.stringValue.lowercased()
 
             // update tag table view
             updateView(.tags)
@@ -224,7 +224,7 @@ extension ViewController: NSSearchFieldDelegate, NSTextFieldDelegate {
             // no tag selected - get the name of the search field
             var tagName = tagSearchField.stringValue   // the string gets normalized in the Tag() constructor
             if dataModelInstance.prefs.slugifyNames {
-                tagName = tagName.slugified()
+                tagName = tagName.lowercased().slugified()
             }
             selectedTagName = tagName
         }

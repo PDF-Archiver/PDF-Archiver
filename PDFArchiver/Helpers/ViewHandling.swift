@@ -19,3 +19,29 @@ func dialogOK(messageKey: String, infoKey: String, style: NSAlert.Style) {
         alert.runModal()
     }
 }
+
+func dialog(_ error: Error, style: NSAlert.Style) {
+    DispatchQueue.main.async {
+
+        var messageText: String = NSLocalizedString("error_message_fallback", comment: "Fallback when no localized error was found.")
+        var informativeText = error.localizedDescription
+        if let error = error as? LocalizedError {
+            informativeText = [
+                error.failureReason,
+                error.recoverySuggestion
+            ].compactMap { $0 }
+                .joined(separator: "\n\n")
+
+            if let errorDescription = error.errorDescription {
+                messageText = errorDescription
+            }
+        }
+
+        let alert = NSAlert()
+        alert.messageText = messageText
+        alert.informativeText = informativeText
+        alert.alertStyle = style
+        alert.addButton(withTitle: "OK")
+        alert.runModal()
+    }
+}
