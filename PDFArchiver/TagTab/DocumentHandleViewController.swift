@@ -7,107 +7,96 @@
 //
 
 import ArchiveLib
+import os.log
 import UIKit
 
-class DocumentHandleViewController: UIViewController {
+class DocumentHandleViewController: UIViewController, Logging {
 
     private let selectionFeedback = UISelectionFeedbackGenerator()
+    private let notificationFeedback = UINotificationFeedbackGenerator()
+    private let placeholderViewController = PlaceholderViewController(text: NSLocalizedString("tag_tab.background_placeholder", comment: "Placeholder that is shown, when no untagged documents can be found."))
     private var documentViewController: DocumentViewController?
+
     @IBOutlet weak var trashButton: UIBarButtonItem!
     @IBOutlet weak var saveButton: UIBarButtonItem!
 
     @IBAction private func trashButtonTapped(_ sender: UIBarButtonItem) {
-        print("TRASH")
 
-//        let deleteActionHandler: (UIAlertAction) -> Void = {(_) in
-//            guard let document = self.document else { return }
-//            self.notificationFeedback.prepare()
-//            do {
-//                os_log("Deleting file: %@", log: DateDescriptionViewController2.log, type: .debug, document.path.path)
-//                // trash file - the archive will be informed by the filesystem aka. DocumentsQuery
-//                try FileManager.default.removeItem(at: document.path)
-//                DocumentService.archive.remove(Set([document]))
-//                self.document = nil
-//
-//                // send haptic feedback
-//                self.notificationFeedback.notificationOccurred(.success)
-//
-//                self.updateView()
-//
-//            } catch {
-//                os_log("Failed to delete: %@", log: DateDescriptionViewController2.log, type: .error, error.localizedDescription)
-//                self.notificationFeedback.notificationOccurred(.error)
-//            }
-//        }
-//
-//        let alert = UIAlertController(title: NSLocalizedString("Do you really want to delete this document?", comment: "Camera access in ScanViewController."),
-//                                      message: nil,
-//                                      preferredStyle: .actionSheet)
-//        alert.addAction(UIAlertAction(title: NSLocalizedString("Delete", comment: "Delete document."), style: .destructive, handler: deleteActionHandler))
-//        alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel deletion."), style: .cancel, handler: nil))
-//        present(alert, animated: true, completion: nil)
+        let deleteActionHandler: (UIAlertAction) -> Void = {(_) in
+            guard let document = self.documentViewController?.document else { return }
+            self.notificationFeedback.prepare()
+
+            do {
+                os_log("Deleting file: %@", log: DocumentHandleViewController.log, type: .debug, document.path.path)
+                // trash file - the archive will be informed by the filesystem aka. DocumentsQuery
+                try FileManager.default.removeItem(at: document.path)
+                DocumentService.archive.remove(Set([document]))
+
+                // TODO: why is this not dismissed?
+                self.documentViewController?.dismiss(animated: true, completion: nil)
+                self.documentViewController = nil
+
+                self.notificationFeedback.notificationOccurred(.success)
+                self.updateContent()
+
+            } catch {
+                os_log("Failed to delete: %@", log: DocumentHandleViewController.log, type: .error, error.localizedDescription)
+                self.notificationFeedback.notificationOccurred(.error)
+            }
+        }
+
+        let alert = UIAlertController(title: NSLocalizedString("Do you really want to delete this document?", comment: "Camera access in ScanViewController."),
+                                      message: nil,
+                                      preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Delete", comment: "Delete document."), style: .destructive, handler: deleteActionHandler))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel deletion."), style: .cancel, handler: nil))
+        present(alert, animated: true, completion: nil)
     }
 
     @IBAction private func saveButtonTapped(_ sender: UIBarButtonItem) {
-        print("SAVE")
 
-//        guard let document = document else { return }
-//        guard let path = StorageHelper.Paths.archivePath else {
-//            assertionFailure("Could not find a iCloud Drive url.")
-//            self.present(StorageHelper.Paths.iCloudDriveAlertController, animated: true, completion: nil)
-//            return
-//        }
-//
-//        notificationFeedback.prepare()
-//        do {
-//            try document.rename(archivePath: path, slugify: true)
-//            DocumentService.archive.archive(document)
-//
-//            // set current document to nil, to get a new document in updateView()
-//            self.document = nil
-//
-//            // send haptic feedback
-//            notificationFeedback.notificationOccurred(.success)
-//
-//        } catch {
-//            os_log("Error occurred while renaming Document: %@", log: TagggingViewController.log, type: .error, error.localizedDescription)
-//            notificationFeedback.notificationOccurred(.error)
-//        }
-//
-//        // update the view to get a new document
-//        updateView()
-//
-//        // increment the AppStoreReview counter
-//        AppStoreReviewRequest.shared.incrementCount()
+        guard let document = documentViewController?.document else { return }
+        guard let path = StorageHelper.Paths.archivePath else {
+            assertionFailure("Could not find a iCloud Drive url.")
+            self.present(StorageHelper.Paths.iCloudDriveAlertController, animated: true, completion: nil)
+            return
+        }
+
+        notificationFeedback.prepare()
+        do {
+            try document.rename(archivePath: path, slugify: true)
+            DocumentService.archive.archive(document)
+
+            // set current document to nil, to get a new document in updateView()
+            // TODO: why is this not dismissed?
+            self.documentViewController?.dismiss(animated: true, completion: nil)
+            self.documentViewController = nil
+
+            // send haptic feedback
+            notificationFeedback.notificationOccurred(.success)
+
+        } catch {
+            os_log("Error occurred while renaming Document: %@", log: DocumentHandleViewController.log, type: .error, error.localizedDescription)
+            notificationFeedback.notificationOccurred(.error)
+        }
+
+        // update the view to get a new document
+        updateContent()
+
+        // increment the AppStoreReview counter
+        AppStoreReviewRequest.shared.incrementCount()
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-
+        addVcAndView(placeholderViewController)
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        let documents = DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged).filter { $0.downloadStatus == .local }
-
-        if let document = Array(documents).max(),
-            let viewController = DocumentViewController(document: document) {
-
-            // show document view controller
-            addVcAndView(viewController)
-            documentViewController = viewController
-            setupConstraints()
-
-            selectionFeedback.prepare()
-            selectionFeedback.selectionChanged()
-        } else {
-            documentViewController = nil
-        }
-
-        trashButton.isEnabled = documentViewController != nil
-        saveButton.isEnabled = documentViewController != nil
+        updateContent()
 
         // setup data delegate
         DocumentService.archive.delegate = self
@@ -125,7 +114,34 @@ class DocumentHandleViewController: UIViewController {
         }
     }
 
+    override func viewDidLayoutSubviews() {
+        placeholderViewController.view.bounds = view.bounds
+    }
+
     // MARK: - Helper Function
+
+    private func updateContent() {
+        let documents = DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged).filter { $0.downloadStatus == .local }
+
+        if let document = Array(documents).max(),
+            let viewController = DocumentViewController(document: document) {
+
+            // show document view controller
+            addVcAndView(viewController)
+            documentViewController = viewController
+            setupConstraints()
+
+            selectionFeedback.prepare()
+            selectionFeedback.selectionChanged()
+        } else {
+            documentViewController?.dismiss(animated: true, completion: nil)
+            documentViewController = nil
+        }
+
+        placeholderViewController.view.isHidden = documentViewController != nil
+        trashButton.isEnabled = documentViewController != nil
+        saveButton.isEnabled = documentViewController != nil
+    }
 
     private func setupConstraints() {
         guard let viewController = documentViewController else { return }
@@ -148,11 +164,9 @@ extension DocumentHandleViewController: ArchiveDelegate {
         }
 
         DispatchQueue.main.async {
-
             // test if the document is already available, update view with the recently added document otherwise
             if self.documentViewController == nil {
-                print("UPDATE VIEW")
-//                self.updateView()
+                self.updateContent()
             }
         }
     }
@@ -166,8 +180,7 @@ extension DocumentHandleViewController: ArchiveDelegate {
 
         DispatchQueue.main.async {
             if self.documentViewController == nil {
-                print("UPDATE VIEW: archive()")
-//                self.updateView()
+                self.updateContent()
             }
         }
     }

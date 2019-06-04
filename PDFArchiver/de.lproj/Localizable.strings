@@ -2,6 +2,9 @@
 /* No comment provided by engineer. */
 "all" = "Alle";
 
+/* Placeholder that is shown, when no document can be found. */
+"archive_tab.background_placeholder" = "Keine iCloud Drive Dokumente gefunden. Bitte scanne und tagge zuerst Dokumente.";
+
 /* Camera access in ScanViewController. */
 "Camera access is required to scan documents." = "Der Zugriff auf die Kamera wird benötig, um Dokumente scannen zu können.";
 
@@ -127,6 +130,9 @@
 
 /* Subscription View Controller title. */
 "subscription.title" = "Abo";
+
+/* Placeholder that is shown, when no untagged documents can be found. */
+"tag_tab.background_placeholder" = "Keine neuen Dokumente gefunden. Bitte scanne zuerst Dokumente.";
 
 /* No comment provided by engineer. */
 "tagging.date-description.untagged-documents" = "Verbleibende Dokumente";

@@ -28,6 +28,7 @@ class ArchiveViewController: UIViewController, UITableViewDelegate, Logging {
     // Table view cells are reused and should be dequeued using a cell identifier.
     private let cellIdentifier = "DocumentTableViewCell"
     private let allLocal = NSLocalizedString("all", comment: "")
+    private let placeholderViewController = PlaceholderViewController(text: NSLocalizedString("archive_tab.background_placeholder", comment: "Placeholder that is shown, when no document can be found."))
 
     private let notificationFeedback = UINotificationFeedbackGenerator()
 
@@ -162,7 +163,7 @@ class ArchiveViewController: UIViewController, UITableViewDelegate, Logging {
 
         // setup background view controller
         if DocumentService.archive.get(scope: .all, searchterms: [], status: .tagged).isEmpty {
-            tableView.backgroundView = Bundle.main.loadNibNamed("EmptyBackgroundView", owner: nil, options: nil)?.first as? UIView
+            tableView.backgroundView = placeholderViewController.view
             tableView.separatorStyle = .none
         } else {
             tableView.backgroundView = nil

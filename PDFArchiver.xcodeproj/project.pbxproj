@@ -31,6 +31,7 @@
 		A34DEF922267699700E12EE5 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A34DEF912267699700E12EE5 /* Settings.bundle */; };
 		A363E858225D30D3007BE48B /* ArchiveLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A335D4BA223D0B3400443A53 /* ArchiveLib.framework */; };
 		A363E859225D30D3007BE48B /* ArchiveLib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A335D4BA223D0B3400443A53 /* ArchiveLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		A36AE3A822A70149001D534E /* PlaceholderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36AE3A722A70149001D534E /* PlaceholderViewController.swift */; };
 		A378C433221B3929007D1419 /* DocumentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A378C432221B3929007D1419 /* DocumentService.swift */; };
 		A381CF21222F0B5D00FAFA7C /* ImageConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A381CF20222F0B5D00FAFA7C /* ImageConverter.swift */; };
 		A388C82522351FDD000D52CB /* tessdata in Resources */ = {isa = PBXBuildFile; fileRef = A388C82422351FDD000D52CB /* tessdata */; };
@@ -54,7 +55,6 @@
 		A3DBC695224974380048E681 /* IAPService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3DBC690224974380048E681 /* IAPService.swift */; };
 		A3DFA7272278D9CF00E0F362 /* WSTagsField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3DFA7262278D9CF00E0F362 /* WSTagsField.swift */; };
 		A3EBFE9C21650F58008C34CC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A3EBFE9E21650F58008C34CC /* Localizable.strings */; };
-		A3EBFEA021650FC7008C34CC /* EmptyBackgroundView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A3EBFEA221650FC7008C34CC /* EmptyBackgroundView.xib */; };
 		A3ECBC9622496BA000A626AE /* IAP.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3ECBC9522496BA000A626AE /* IAP.swift */; };
 		A3ED932322666BE800DFC2D9 /* TagListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3ED932222666BE800DFC2D9 /* TagListView.swift */; };
 		A3F1C21D2163DCD9002B0141 /* AppStoreReviewRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */; };
@@ -139,6 +139,7 @@
 		A34A85012130A3870093FAE5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A34D8D7A2130A1E200867B65 /* PDFArchiver.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PDFArchiver.entitlements; sourceTree = "<group>"; };
 		A34DEF912267699700E12EE5 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		A36AE3A722A70149001D534E /* PlaceholderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderViewController.swift; sourceTree = "<group>"; };
 		A378C432221B3929007D1419 /* DocumentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentService.swift; sourceTree = "<group>"; };
 		A381CF20222F0B5D00FAFA7C /* ImageConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageConverter.swift; sourceTree = "<group>"; };
 		A388C82422351FDD000D52CB /* tessdata */ = {isa = PBXFileReference; lastKnownFileType = folder; path = tessdata; sourceTree = "<group>"; };
@@ -167,8 +168,6 @@
 		A3EBFE9721650C65008C34CC /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Main.strings; sourceTree = "<group>"; };
 		A3EBFE9D21650F58008C34CC /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A3EBFE9F21650F70008C34CC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		A3EBFEA121650FC7008C34CC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/EmptyBackgroundView.xib; sourceTree = "<group>"; };
-		A3EBFEA421650FCB008C34CC /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/EmptyBackgroundView.strings; sourceTree = "<group>"; };
 		A3ECBC9522496BA000A626AE /* IAP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAP.swift; sourceTree = "<group>"; };
 		A3ED932222666BE800DFC2D9 /* TagListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagListView.swift; sourceTree = "<group>"; };
 		A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreReviewRequest.swift; sourceTree = "<group>"; };
@@ -295,7 +294,6 @@
 		A34A84F22130A2900093FAE5 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				A3EBFEA221650FC7008C34CC /* EmptyBackgroundView.xib */,
 				A301A75421496992003EA382 /* DocumentTableViewCell.swift */,
 				A301A75521496992003EA382 /* DocumentTableViewCell.xib */,
 				A31263E4217B75DC00ACAFA4 /* LoadingBackgroundView.xib */,
@@ -319,6 +317,7 @@
 				A3B57B82228750CF0078F7A4 /* FileManager.swift */,
 				A39942B9228B3ACE00FFC16B /* Constants.swift */,
 				A316F36522946ED70099BA26 /* UIViewController.swift */,
+				A36AE3A722A70149001D534E /* PlaceholderViewController.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -575,7 +574,6 @@
 				A3FDD345229459B10054FFFC /* PDFViewController.xib in Resources */,
 				A31263E2217B75DC00ACAFA4 /* LoadingBackgroundView.xib in Resources */,
 				A32777E621FDD7BF0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf in Resources */,
-				A3EBFEA021650FC7008C34CC /* EmptyBackgroundView.xib in Resources */,
 				171E0C851B8E5B84001E6242 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -766,6 +764,7 @@
 				A39942BE228B422E00FFC16B /* IntroViewController.swift in Sources */,
 				A389789B2274FD4600DC13B9 /* CustomInputView.swift in Sources */,
 				171E0C7E1B8E5B84001E6242 /* AppDelegate.swift in Sources */,
+				A36AE3A822A70149001D534E /* PlaceholderViewController.swift in Sources */,
 				A3B57B7B22871F170078F7A4 /* StorageHelper.swift in Sources */,
 				A34A84FA2130A35A0093FAE5 /* DocumentsQuery.swift in Sources */,
 				A3DFA7272278D9CF00E0F362 /* WSTagsField.swift in Sources */,
@@ -861,15 +860,6 @@
 				A3EBFE9F21650F70008C34CC /* en */,
 			);
 			name = Localizable.strings;
-			sourceTree = "<group>";
-		};
-		A3EBFEA221650FC7008C34CC /* EmptyBackgroundView.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				A3EBFEA121650FC7008C34CC /* Base */,
-				A3EBFEA421650FCB008C34CC /* de */,
-			);
-			name = EmptyBackgroundView.xib;
 			sourceTree = "<group>";
 		};
 		A3FDD347229459B10054FFFC /* PDFViewController.xib */ = {

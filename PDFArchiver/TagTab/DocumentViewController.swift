@@ -13,7 +13,7 @@ import UIKit
 
 class DocumentViewController: UIViewController, Logging {
 
-    private let document: Document
+    let document: Document
     private let pdfVC: PDFViewController
     private let dateDescriptionVC: DateDescriptionViewController
     private let tagVC: TaggingViewController
