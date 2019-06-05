@@ -29,17 +29,15 @@ class TaggingViewController: UIViewController, Logging {
 
     private lazy var documentTagField: WSTagsField = {
         let field = WSTagsField()
-        TaggingViewController.customise(field)
+        field.placeholder = NSLocalizedString("tagvc.enter-tag", comment: "Placeholder in Tagging Screen.")
 
         field.onDidSelectTagView = { _, view in
             self.documentTagField.removeTag(view.displayText)
-            self.documentTagField.beginEditing()
             self.selectionFeedback.prepare()
             self.selectionFeedback.selectionChanged()
         }
 
         field.onDidAddTag = { tagsField, tag in
-            tagsField.sortTags()
             let tags = Set(tagsField.tags.map { $0.text })
             self.delegate?.taggingViewController(updated: tags)
             self.suggestedTagField.removeTag(tag.text)
@@ -51,6 +49,7 @@ class TaggingViewController: UIViewController, Logging {
 
             if self.suggestedTags.contains(tag.text) {
                 self.suggestedTagField.addTag(tag.text)
+                self.suggestedTagField.sortTags()
             }
         }
 
@@ -64,18 +63,14 @@ class TaggingViewController: UIViewController, Logging {
 
     private lazy var suggestedTagField: WSTagsField = {
         let field = WSTagsField()
-        TaggingViewController.customise(field)
         field.placeholder = ""
 
         field.onDidSelectTagView = { tagsField, view in
             self.documentTagField.addTag(view.displayText)
+            self.documentTagField.sortTags()
             tagsField.removeTag(view.displayText)
             self.selectionFeedback.prepare()
             self.selectionFeedback.selectionChanged()
-        }
-
-        field.onDidAddTag = { tagsField, tag in
-            tagsField.sortTags()
         }
         return field
     }()
@@ -96,61 +91,54 @@ class TaggingViewController: UIViewController, Logging {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        documentTagField.frame = documentTagsView.bounds
         documentTagsView.addSubview(documentTagField)
-        documentTagField.textDelegate = self
+        TaggingViewController.customise(documentTagField, in: documentTagsView)
 
-        suggestedTagField.frame = suggestedTagsView.bounds
         suggestedTagsView.addSubview(suggestedTagField)
-        suggestedTagField.textDelegate = self
+        TaggingViewController.customise(suggestedTagField, in: suggestedTagsView)
 
+        documentTagField.textDelegate = self
+        suggestedTagField.textDelegate = self
         suggestionVC.delegate = self
+
+        documentTagField.addTags(Array(documentTags).sorted())
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        documentTagField.frame = documentTagsView.bounds
-        suggestedTagField.frame = suggestedTagsView.bounds
         suggestionVC.view.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 45)
     }
 
-    // TODO: load tags
-//    override func viewDidAppear(_ animated: Bool) {
-//        super.viewDidAppear(animated)
-//
-//        documentTagField.addTags(Array(documentTags).sorted())
-//        suggestedTagField.addTags(Array(suggestedTags).sorted())
-//    }
-
     func update(suggestedTags: Set<String>) {
         self.suggestedTags.formUnion(suggestedTags)
+        self.suggestedTags.subtract(documentTags)
+        DispatchQueue.main.async {
+            self.suggestedTagField.addTags(Array(self.suggestedTags).sorted())
+        }
     }
 
     // MARK: - Helper Functions
 
-    private static func customise(_ field: WSTagsField) {
+    private static func customise(_ field: WSTagsField, in view: UIView) {
 
         field.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            field.topAnchor.constraint(equalTo: view.topAnchor),
+            field.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            field.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            field.bottomAnchor.constraint(equalTo: view.bottomAnchor)])
 
         field.layer.borderColor = UIColor.paLightGray.cgColor
         field.layer.borderWidth = 1
         field.layer.cornerRadius = 10
-
         field.cornerRadius = 5.0
         field.spaceBetweenLines = 10
         field.spaceBetweenTags = 10
-
-//        field.numberOfLines = 3
-//        field.maxHeight = 100.0
-
         field.layoutMargins = UIEdgeInsets(top: 2, left: 6, bottom: 2, right: 6)
         field.contentInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10) //old padding
-
-        field.placeholder = NSLocalizedString("tagvc.enter-tag", comment: "Placeholder in Tagging Screen.")
         field.placeholderColor = .paPlaceholderGray
         field.textColor = .paWhite
         field.placeholderAlwaysVisible = true
-
         field.tintColor = .paLightRed
         field.returnKeyType = .next
         field.delimiter = ""
@@ -165,14 +153,6 @@ extension TaggingViewController: UITextFieldDelegate {
         textField.autocorrectionType = .no
         textField.inputAccessoryView = self.suggestionVC.view
     }
-
-//    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-//        if textField == documentTagField {
-//            //            anotherField.becomeFirstResponder()
-//            textField.resignFirstResponder()
-//        }
-//        return true
-//    }
 }
 
 // MARK: - SuggestionInputViewDelegate

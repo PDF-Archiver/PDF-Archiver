@@ -115,7 +115,7 @@ class DocumentHandleViewController: UIViewController, Logging {
         // show subscription view controller, if no subscription was found
         if !IAP.service.appUsagePermitted() {
             let viewController = SubscriptionViewController {
-                tabBarController?.selectedIndex = tabBarController?.getViewControllerIndex(with: "ArchiveTab") ?? 2
+                self.tabBarController?.selectedIndex = self.tabBarController?.getViewControllerIndex(with: "ArchiveTab") ?? 2
             }
             present(viewController, animated: animated)
         }
