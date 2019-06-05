@@ -144,7 +144,7 @@ extension ScanViewController: ImageScannerControllerDelegate {
             try StorageHelper.save([image])
         } catch {
             let alert = UIAlertController(title: NSLocalizedString("not-saved-images.title", comment: "Alert VC: Title"), message: NSLocalizedString("not-saved-images.text", comment: "Could not save taken images locally."), preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Button confirmation label"), style: .default, handler: nil))
             self.present(alert, animated: true, completion: nil)
         }
 

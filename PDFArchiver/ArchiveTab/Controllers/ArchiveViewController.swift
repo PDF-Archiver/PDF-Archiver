@@ -275,15 +275,18 @@ extension ArchiveViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let document = getDocument(from: indexPath) else { return }
         os_log("Selected Document: %@", log: ArchiveViewController.log, type: .debug, document.filename)
+        notificationFeedback.prepare()
 
         // download document if it is not already available
         switch document.downloadStatus {
         case .local:
+            notificationFeedback.notificationOccurred(.success)
             selectedDocument = indexPath
             performSegue(withIdentifier: "showDetails", sender: self)
         case .downloading:
             os_log("Downloading currently ...", log: ArchiveViewController.log, type: .debug)
         case .iCloudDrive:
+            notificationFeedback.notificationOccurred(.success)
             os_log("Start download ...", log: ArchiveViewController.log, type: .debug)
             document.download()
             selectedDocument = tableView.indexPathForSelectedRow

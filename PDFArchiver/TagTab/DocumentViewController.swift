@@ -18,9 +18,6 @@ class DocumentViewController: UIViewController, Logging {
     private let dateDescriptionVC: DateDescriptionViewController
     private let tagVC: TaggingViewController
 
-    private let notificationFeedback = UINotificationFeedbackGenerator()
-    private let selectionFeedback = UISelectionFeedbackGenerator()
-
     init?(document: Document) {
 
         guard let pdfDocument = PDFDocument(url: document.path) else { fatalError("Could not find document at:\n\(document.path.path)") }

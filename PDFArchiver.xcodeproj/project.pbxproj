@@ -38,6 +38,7 @@
 		A388C8272235330F000D52CB /* test-ocr-data.png in Resources */ = {isa = PBXBuildFile; fileRef = A388C8262235330F000D52CB /* test-ocr-data.png */; };
 		A389789B2274FD4600DC13B9 /* CustomInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A389789A2274FD4600DC13B9 /* CustomInputView.swift */; };
 		A3932824221EF7DC00858461 /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3932823221EF7DC00858461 /* ScanViewController.swift */; };
+		A393A28322A8486000D6DAF9 /* UIAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A393A28222A8486000D6DAF9 /* UIAlertController.swift */; };
 		A39942BA228B3ACE00FFC16B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39942B9228B3ACE00FFC16B /* Constants.swift */; };
 		A39942BE228B422E00FFC16B /* IntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39942BD228B422E00FFC16B /* IntroViewController.swift */; };
 		A39A807821FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
@@ -146,6 +147,7 @@
 		A388C8262235330F000D52CB /* test-ocr-data.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "test-ocr-data.png"; sourceTree = "<group>"; };
 		A389789A2274FD4600DC13B9 /* CustomInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomInputView.swift; sourceTree = "<group>"; };
 		A3932823221EF7DC00858461 /* ScanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
+		A393A28222A8486000D6DAF9 /* UIAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAlertController.swift; sourceTree = "<group>"; };
 		A39942B9228B3ACE00FFC16B /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		A39942BD228B422E00FFC16B /* IntroViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntroViewController.swift; sourceTree = "<group>"; };
 		A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf"; sourceTree = "<group>"; };
@@ -318,6 +320,7 @@
 				A39942B9228B3ACE00FFC16B /* Constants.swift */,
 				A316F36522946ED70099BA26 /* UIViewController.swift */,
 				A36AE3A722A70149001D534E /* PlaceholderViewController.swift */,
+				A393A28222A8486000D6DAF9 /* UIAlertController.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -748,6 +751,7 @@
 				A3ED932322666BE800DFC2D9 /* TagListView.swift in Sources */,
 				A3A071682253ED660093E7A4 /* TaggingViewController.swift in Sources */,
 				A3932824221EF7DC00858461 /* ScanViewController.swift in Sources */,
+				A393A28322A8486000D6DAF9 /* UIAlertController.swift in Sources */,
 				A3FDD3432294578D0054FFFC /* DateDescriptionViewController.swift in Sources */,
 				A316F36622946ED70099BA26 /* UIViewController.swift in Sources */,
 				A3FDD33B229457260054FFFC /* PDFViewController.swift in Sources */,

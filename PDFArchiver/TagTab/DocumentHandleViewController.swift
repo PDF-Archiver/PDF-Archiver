@@ -58,7 +58,7 @@ class DocumentHandleViewController: UIViewController, Logging {
         guard let document = documentViewController?.document else { return }
         guard let path = StorageHelper.Paths.archivePath else {
             assertionFailure("Could not find a iCloud Drive url.")
-            self.present(StorageHelper.Paths.iCloudDriveAlertController, animated: true, completion: nil)
+            present(StorageHelper.Paths.iCloudDriveAlertController, animated: true, completion: nil)
             return
         }
 
@@ -69,22 +69,29 @@ class DocumentHandleViewController: UIViewController, Logging {
 
             // set current document to nil, to get a new document in updateView()
             // TODO: why is this not dismissed?
-            self.documentViewController?.dismiss(animated: true, completion: nil)
-            self.documentViewController = nil
+            documentViewController?.dismiss(animated: true, completion: nil)
+            documentViewController = nil
 
             // send haptic feedback
             notificationFeedback.notificationOccurred(.success)
 
+            // update the view to get a new document
+            updateContent()
+
+            // increment the AppStoreReview counter
+            AppStoreReviewRequest.shared.incrementCount()
+
+        } catch let error as LocalizedError {
+            os_log("Error occurred while renaming Document: %@", log: DocumentHandleViewController.log, type: .error, error.localizedDescription)
+            let alertController = UIAlertController(error, preferredStyle: .alert)
+            present(alertController, animated: true, completion: nil)
+            notificationFeedback.notificationOccurred(.error)
         } catch {
             os_log("Error occurred while renaming Document: %@", log: DocumentHandleViewController.log, type: .error, error.localizedDescription)
+            let alertController = UIAlertController(title: NSLocalizedString("error_message_fallback", comment: "Fallback when no localized error was found."), message: error.localizedDescription, preferredStyle: .alert)
+            present(alertController, animated: true, completion: nil)
             notificationFeedback.notificationOccurred(.error)
         }
-
-        // update the view to get a new document
-        updateContent()
-
-        // increment the AppStoreReview counter
-        AppStoreReviewRequest.shared.incrementCount()
     }
 
     override func viewDidLoad() {
@@ -108,7 +115,7 @@ class DocumentHandleViewController: UIViewController, Logging {
         // show subscription view controller, if no subscription was found
         if !IAP.service.appUsagePermitted() {
             let viewController = SubscriptionViewController {
-                self.tabBarController?.selectedIndex = self.tabBarController?.getViewControllerIndex(with: "ArchiveTab") ?? 2
+                tabBarController?.selectedIndex = tabBarController?.getViewControllerIndex(with: "ArchiveTab") ?? 2
             }
             present(viewController, animated: animated)
         }
@@ -121,6 +128,10 @@ class DocumentHandleViewController: UIViewController, Logging {
     // MARK: - Helper Function
 
     private func updateContent() {
+
+        // test if the document is already available, update view with the recently added document otherwise
+        guard documentViewController == nil else { return }
+
         let documents = DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged).filter { $0.downloadStatus == .local }
 
         if let document = Array(documents).max(),
@@ -164,10 +175,7 @@ extension DocumentHandleViewController: ArchiveDelegate {
         }
 
         DispatchQueue.main.async {
-            // test if the document is already available, update view with the recently added document otherwise
-            if self.documentViewController == nil {
-                self.updateContent()
-            }
+            self.updateContent()
         }
     }
 
@@ -179,9 +187,7 @@ extension DocumentHandleViewController: ArchiveDelegate {
         }
 
         DispatchQueue.main.async {
-            if self.documentViewController == nil {
-                self.updateContent()
-            }
+            self.updateContent()
         }
     }
 }

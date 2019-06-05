@@ -18,52 +18,52 @@
 "Do you really want to delete this document?" = "Möchtest du dieses Dokument wirklich löschen?";
 
 /* No date could be found, e.g. while renaming the document. */
-"document_error_description__date_missing" = "Date Missing";
+"document_error_description__date_missing" = "Datum Fehlt";
 
-/* No description could be found, e.g. while renaming the document. */
-"document_error_description__description_missing" = "Description Missing";
-
-/* No comment provided by engineer. */
-"document_error_description__no_document_selected" = "Document Missing";
-
-/* Rename failed. */
-"document_error_description__rename_failed_file_already_exists" = "Renaming Failed";
-
-/* No tags could be found, e.g. while renaming the document. */
-"document_error_description__tags_missing" = "Tags Missing";
-
-/* No date could be found, e.g. while renaming the document. */
-"document_failure_reason__date_missing" = "No document date could be found.";
-
-/* No description could be found, e.g. while renaming the document. */
-"document_failure_reason__description_missing" = "No document description could be found.";
+/* No description found could be found, e.g. while renaming the document. */
+"document_error_description__description_missing" = "Beschreibung Fehlt";
 
 /* No comment provided by engineer. */
-"document_failure_reason__no_document_selected" = "No document was selected.";
+"document_error_description__no_document_selected" = "Dokument Fehlt";
 
 /* Rename failed. */
-"document_failure_reason__rename_failed_file_already_exists" = "The renaming of the document failed.";
+"document_error_description__rename_failed_file_already_exists" = "Umbenennung Fehlgeschlagen";
 
 /* No tags could be found, e.g. while renaming the document. */
-"document_failure_reason__tags_missing" = "No tags were entered for the document.";
+"document_error_description__tags_missing" = "Tags Fehlen";
 
 /* No date could be found, e.g. while renaming the document. */
-"document_recovery_suggestion__date_missing" = "Please add a date.";
+"document_failure_reason__date_missing" = "Das Datum des Dokumentes wurde nicht angegeben.";
 
-/* No description could be found, e.g. while renaming the document. */
-"document_recovery_suggestion__description_missing" = "Please provide a description.";
+/* No description found could be found, e.g. while renaming the document. */
+"document_failure_reason__description_missing" = "Es konnte keine Dokumentenbeschreibung gefunden werden.";
+
+/* No comment provided by engineer. */
+"document_failure_reason__no_document_selected" = "Es wurde kein Dokument ausgewählt.";
+
+/* Rename failed. */
+"document_failure_reason__rename_failed_file_already_exists" = "Das Umbenennen des Dokumentes ist fehlgeschlagen.";
+
+/* No tags could be found, e.g. while renaming the document. */
+"document_failure_reason__tags_missing" = "Es wurden keine Tags für das Dokument eingegeben.";
+
+/* No date could be found, e.g. while renaming the document. */
+"document_recovery_suggestion__date_missing" = "Bitte fügen Sie ein Datum hinzu.";
+
+/* No description found could be found, e.g. while renaming the document. */
+"document_recovery_suggestion__description_missing" = "Bitte geben Sie eine Beschreibung ein.";
 
 /* Rename failed - file already exists. */
-"document_recovery_suggestion__rename_failed_file_already_exists" = "Please change e.g. the description of the document.";
+"document_recovery_suggestion__rename_failed_file_already_exists" = "Bitte ändern Sie z.B. die Beschreibung des Dokumentes.";
 
 /* No tags could be found, e.g. while renaming the document. */
-"document_recovery_suggestion__tags_missing" = "Please add tags.";
+"document_recovery_suggestion__tags_missing" = "Bitte fügen Sie Tags hinzu.";
 
 /* The title of an error message popup */
 "Error" = "Fehler";
 
 /* Fallback when no localized error was found. */
-"error_message_fallback" = "Something went terribly wrong here!";
+"error_message_fallback" = "Hier lief etwas schief!";
 
 /* Camera access in ScanViewController. */
 "Grant Access" = "Erlauben";

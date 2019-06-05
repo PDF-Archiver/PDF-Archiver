@@ -18,4 +18,5 @@ extension UIColor {
     static var paDarkRed: UIColor { return UIColor(named: "DarkRed")! }
     static var paLightRed: UIColor { return UIColor(named: "LightRed")! }
     static var paKeyboardBackground: UIColor { return UIColor(named: "KeyboardBackground")! }
+    static var paPlaceholderGray: UIColor { return UIColor(named: "PlaceholderGray")! }
 }

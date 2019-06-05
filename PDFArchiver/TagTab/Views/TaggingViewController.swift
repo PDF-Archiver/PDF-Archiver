@@ -147,7 +147,7 @@ class TaggingViewController: UIViewController, Logging {
         field.contentInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10) //old padding
 
         field.placeholder = NSLocalizedString("tagvc.enter-tag", comment: "Placeholder in Tagging Screen.")
-        field.placeholderColor = .paDarkGray
+        field.placeholderColor = .paPlaceholderGray
         field.textColor = .paWhite
         field.placeholderAlwaysVisible = true
 
