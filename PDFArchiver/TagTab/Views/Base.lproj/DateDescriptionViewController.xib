@@ -22,7 +22,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="AqT-z3-fKT">
-                    <rect key="frame" x="0.0" y="0.0" width="443" height="120"/>
+                    <rect key="frame" x="20" y="0.0" width="403" height="120"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="120" id="lFd-2r-Grc"/>
                     </constraints>
@@ -48,12 +48,12 @@
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="AqT-z3-fKT" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="2Hs-rk-N8d"/>
+                <constraint firstItem="AqT-z3-fKT" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="2Hs-rk-N8d"/>
                 <constraint firstItem="AqT-z3-fKT" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="5k8-yu-kxC"/>
                 <constraint firstAttribute="trailing" secondItem="zEb-ls-9OY" secondAttribute="trailing" constant="20" id="85b-We-gsy"/>
                 <constraint firstItem="zEb-ls-9OY" firstAttribute="top" secondItem="AqT-z3-fKT" secondAttribute="bottom" constant="8" id="HF7-uX-xfQ"/>
                 <constraint firstItem="zEb-ls-9OY" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="RUS-pM-4mN"/>
-                <constraint firstAttribute="trailing" secondItem="AqT-z3-fKT" secondAttribute="trailing" id="WlU-BG-RPT"/>
+                <constraint firstAttribute="trailing" secondItem="AqT-z3-fKT" secondAttribute="trailing" constant="20" id="WlU-BG-RPT"/>
                 <constraint firstAttribute="bottom" secondItem="zEb-ls-9OY" secondAttribute="bottom" id="jdC-uO-CPA"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>

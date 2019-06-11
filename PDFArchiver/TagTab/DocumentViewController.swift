@@ -43,6 +43,7 @@ class DocumentViewController: UIViewController, Logging {
         add(dateDescriptionVC)
         add(tagVC)
 
+        scrollView.delegate = self
         dateDescriptionVC.delegate = self
         tagVC.delegate = self
     }
@@ -60,9 +61,10 @@ class DocumentViewController: UIViewController, Logging {
         setupConstraints()
 
         // try to parse suggestions from document content
-        DispatchQueue.global().async {
+        DispatchQueue.global().async { [weak self] in
             // get tags and save them in the background, they will be passed to the TagViewController
-            guard let pdfDocument = PDFDocument(url: self.document.path) else { return }
+            guard let path = self?.document.path,
+                let pdfDocument = PDFDocument(url: path) else { return }
             var text = ""
             for index in 0 ..< pdfDocument.pageCount {
                 guard let page = pdfDocument.page(at: index),
@@ -70,16 +72,25 @@ class DocumentViewController: UIViewController, Logging {
 
                 text += pageContent
             }
-            self.tagVC.update(suggestedTags: TagParser.parse(text))
+            self?.tagVC.update(suggestedTags: TagParser.parse(text))
         }
+
+        hideKeyboardWhenTappedAround()
+        scrollView.keyboardDismissMode = .interactive
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
 
-        // register keyboard notification
-        registerNotifications()
-        unregisterNotifications()
+        NotificationCenter.default.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 
     private let scrollView: UIScrollView = {
@@ -110,44 +121,46 @@ class DocumentViewController: UIViewController, Logging {
 
     private func setupConstraints() {
 
-        scrollView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         scrollView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        scrollView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-
-        stackView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        stackView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
 
         stackView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
         stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
-    }
-
-    // MARK: - Keyboard Presentation
-
-    private func registerNotifications() {
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
-
-    private func unregisterNotifications() {
-        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+        stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
+        stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor).isActive = true
+        stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor).isActive = true
     }
 
     @objc
-    func keyboardWillShow(notification: NSNotification) {
-        guard let userInfo = notification.userInfo,
-            let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
-        scrollView.contentInset.bottom = view.convert(keyboardFrame.cgRectValue, from: nil).size.height
-    }
+    func adjustForKeyboard(notification: Notification) {
+        guard let keyboardValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
 
-    @objc
-    func keyboardWillHide(notification: NSNotification) {
-        scrollView.contentInset.bottom = 0
+        let keyboardScreenEndFrame = keyboardValue.cgRectValue
+        let keyboardViewEndFrame = view.convert(keyboardScreenEndFrame, from: view.window)
+
+        let contentInset: UIEdgeInsets
+        if notification.name == UIResponder.keyboardWillHideNotification {
+            contentInset = .zero
+        } else {
+            let spacing = CGFloat(5)
+            let bottomInset = tabBarController?.tabBar.frame.height
+            contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardViewEndFrame.height - (bottomInset ?? 0) + spacing, right: 0)
+        }
+        scrollView.contentInset = contentInset
+        scrollView.scrollIndicatorInsets = contentInset
     }
 }
 
 // MARK: - Delegates
+
+extension DocumentViewController: UIScrollViewDelegate {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        // fixes this problem: https://stackoverflow.com/a/34101920
+        scrollView.endEditing(true)
+    }
+}
 
 extension DocumentViewController: DateDescriptionViewControllerDelegate {
     func updateDateDescription(_ date: Date, _ description: String?) {

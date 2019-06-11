@@ -158,12 +158,11 @@ class DocumentHandleViewController: UIViewController, Logging {
         guard let viewController = documentViewController else { return }
 
         viewController.view.translatesAutoresizingMaskIntoConstraints = false
-        let margins = view.layoutMarginsGuide
-        let guide = view.safeAreaLayoutGuide
-        viewController.view.leadingAnchor.constraint(equalTo: margins.leadingAnchor).isActive = true
-        viewController.view.trailingAnchor.constraint(equalTo: margins.trailingAnchor).isActive = true
-        viewController.view.topAnchor.constraint(equalToSystemSpacingBelow: guide.topAnchor, multiplier: 1.0).isActive = true
-        guide.bottomAnchor.constraint(equalToSystemSpacingBelow: viewController.view.bottomAnchor, multiplier: 1.0).isActive = true
+
+        viewController.view.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        viewController.view.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        viewController.view.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        viewController.view.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
     }
 }
 
