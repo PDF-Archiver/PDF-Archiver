@@ -49,6 +49,9 @@ class DateDescriptionViewController: UIViewController {
 
         datePickerView.date = date
         descriptionTextField.text = specification
+
+        descriptionTextField.borderStyle = .none
+        descriptionTextField.clearButtonMode = .always
     }
 
     func update(date: Date?, description: String?) {

@@ -30,6 +30,7 @@ class TaggingViewController: UIViewController, Logging {
     private lazy var documentTagField: WSTagsField = {
         let field = WSTagsField()
         field.placeholder = NSLocalizedString("tagvc.enter-tag", comment: "Placeholder in Tagging Screen.")
+        field.enableScrolling = false
 
         field.onDidSelectTagView = { _, view in
             self.documentTagField.removeTag(view.displayText)
@@ -64,6 +65,7 @@ class TaggingViewController: UIViewController, Logging {
     private lazy var suggestedTagField: WSTagsField = {
         let field = WSTagsField()
         field.placeholder = ""
+        field.enableScrolling = false
 
         field.onDidSelectTagView = { tagsField, view in
             self.documentTagField.addTag(view.displayText)
@@ -129,7 +131,7 @@ class TaggingViewController: UIViewController, Logging {
             field.bottomAnchor.constraint(equalTo: view.bottomAnchor)])
 
         field.layer.borderColor = UIColor.paLightGray.cgColor
-        field.layer.borderWidth = 1
+        field.layer.borderWidth = 0
         field.layer.cornerRadius = 10
         field.cornerRadius = 5.0
         field.spaceBetweenLines = 10

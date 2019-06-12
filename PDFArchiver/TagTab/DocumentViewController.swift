@@ -105,17 +105,28 @@ class DocumentViewController: UIViewController, Logging {
         view.axis = .vertical
         view.distribution = .equalSpacing
         view.alignment = .fill
-        view.spacing = 15
+        view.spacing = 5
         return view
     }()
 
+    private func createHairLine(in view: UIView) -> UIView {
+        let hline = UIView(frame: .zero)
+        hline.leadingAnchor.constraint(equalTo: stackView.leadingAnchor).isActive = true
+        hline.trailingAnchor.constraint(equalTo: stackView.trailingAnchor).isActive = true
+        hline.heightAnchor.constraint(equalToConstant: 1 / UIScreen.main.scale).isActive = true
+        hline.backgroundColor = .paLightGray
+        return hline
+    }
+    
     private func setupViews() {
 
         view.addSubview(scrollView)
         scrollView.addSubview(stackView)
 
         stackView.addArrangedSubview(pdfVC.view)
+        stackView.addArrangedSubview(createHairLine(in: stackView))
         stackView.addArrangedSubview(dateDescriptionVC.view)
+        stackView.addArrangedSubview(createHairLine(in: stackView))
         stackView.addArrangedSubview(tagVC.view)
     }
 
@@ -134,7 +145,7 @@ class DocumentViewController: UIViewController, Logging {
     }
 
     @objc
-    func adjustForKeyboard(notification: Notification) {
+    private func adjustForKeyboard(notification: Notification) {
         guard let keyboardValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
 
         let keyboardScreenEndFrame = keyboardValue.cgRectValue

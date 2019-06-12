@@ -12,6 +12,7 @@
 		171E0C821B8E5B84001E6242 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171E0C811B8E5B84001E6242 /* DetailViewController.swift */; };
 		171E0C851B8E5B84001E6242 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171E0C831B8E5B84001E6242 /* Main.storyboard */; };
 		171E0C8A1B8E5B84001E6242 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171E0C881B8E5B84001E6242 /* LaunchScreen.storyboard */; };
+		34CA739F22B15056009FD591 /* TagTab.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A3400DD822688C2100097A3F /* TagTab.storyboard */; };
 		A301A75621496992003EA382 /* DocumentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A301A75421496992003EA382 /* DocumentTableViewCell.swift */; };
 		A301A75721496992003EA382 /* DocumentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A301A75521496992003EA382 /* DocumentTableViewCell.xib */; };
 		A305AE4821D81E74004DDC1B /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A305AE4721D81E74004DDC1B /* NavigationController.swift */; };
@@ -21,7 +22,6 @@
 		A32777E421FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A32777E321FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf */; };
 		A32777E521FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A32777E321FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf */; };
 		A32777E621FDD7BF0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A32777E321FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf */; };
-		A3400DD622688C2100097A3F /* TagTab.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A3400DD822688C2100097A3F /* TagTab.storyboard */; };
 		A3400DDB22688C4300097A3F /* Archive.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A3400DDD22688C4300097A3F /* Archive.storyboard */; };
 		A3400DE12268902200097A3F /* BartyCrouch.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3400DE02268902200097A3F /* BartyCrouch.swift */; };
 		A34A84F92130A35A0093FAE5 /* DocumentExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34A84F52130A35A0093FAE5 /* DocumentExtension.swift */; };
@@ -130,7 +130,6 @@
 		A32997CF224826AB000B78D0 /* IAPService_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = IAPService_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A335D4BA223D0B3400443A53 /* ArchiveLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ArchiveLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A3400DD722688C2100097A3F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/TagTab.storyboard; sourceTree = "<group>"; };
-		A3400DDA22688C2E00097A3F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/TagTab.strings; sourceTree = "<group>"; };
 		A3400DDC22688C4300097A3F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Archive.storyboard; sourceTree = "<group>"; };
 		A3400DDF22688C4A00097A3F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Archive.strings; sourceTree = "<group>"; };
 		A3400DE02268902200097A3F /* BartyCrouch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BartyCrouch.swift; sourceTree = "<group>"; };
@@ -562,7 +561,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A3400DD622688C2100097A3F /* TagTab.storyboard in Resources */,
+				34CA739F22B15056009FD591 /* TagTab.storyboard in Resources */,
 				A3FDD34A229459BD0054FFFC /* DateDescriptionViewController.xib in Resources */,
 				A301A75721496992003EA382 /* DocumentTableViewCell.xib in Resources */,
 				A3EBFE9C21650F58008C34CC /* Localizable.strings in Resources */,
@@ -842,10 +841,9 @@
 			isa = PBXVariantGroup;
 			children = (
 				A3400DD722688C2100097A3F /* Base */,
-				A3400DDA22688C2E00097A3F /* de */,
 			);
 			name = TagTab.storyboard;
-			path = "/Users/juka/Documents/GIT/pdf-archive-viewer/PDFArchiver/TagTab";
+			path = "/Users/juliankahnert/Documents/GIT/pdf-archive-viewer/PDFArchiver/TagTab";
 			sourceTree = "<absolute>";
 		};
 		A3400DDD22688C4300097A3F /* Archive.storyboard */ = {
