@@ -15,13 +15,13 @@ import WSTagsField
 
 protocol TaggingViewControllerDelegate: AnyObject {
     func taggingViewController(updated tags: Set<String>)
-    func taggingViewController(didChangeText text: String)
 }
 
 class TaggingViewController: UIViewController, Logging {
 
     weak var delegate: TaggingViewControllerDelegate?
     private var documentTags: Set<String>
+    private let textChangeHandler: ((_ text: String) -> [String])
     private var suggestedTags = Set<String>()
     private let selectionFeedback = UISelectionFeedbackGenerator()
     // view controller that sits on top of the default keygoard
@@ -55,9 +55,12 @@ class TaggingViewController: UIViewController, Logging {
         }
 
         field.onDidChangeText = {_, text in
-            guard let tagName = text,
-                !tagName.isEmpty else { return }
-            self.delegate?.taggingViewController(didChangeText: tagName)
+            if let tagName = text,
+                !tagName.isEmpty {
+                self.suggestionVC.suggestions = self.textChangeHandler(tagName)
+            } else {
+                self.suggestionVC.suggestions = []
+            }
         }
         return field
     }()
@@ -77,8 +80,9 @@ class TaggingViewController: UIViewController, Logging {
         return field
     }()
 
-    init(documentTags: Set<String>) {
+    init(documentTags: Set<String>, onDidChange textChangeHandler: @escaping ((_ text: String) -> [String])) {
         self.documentTags = documentTags
+        self.textChangeHandler = textChangeHandler
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -130,9 +134,7 @@ class TaggingViewController: UIViewController, Logging {
             field.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             field.bottomAnchor.constraint(equalTo: view.bottomAnchor)])
 
-        field.layer.borderColor = UIColor.paLightGray.cgColor
         field.layer.borderWidth = 0
-        field.layer.cornerRadius = 10
         field.cornerRadius = 5.0
         field.spaceBetweenLines = 10
         field.spaceBetweenTags = 10
@@ -144,6 +146,7 @@ class TaggingViewController: UIViewController, Logging {
         field.tintColor = .paLightRed
         field.returnKeyType = .next
         field.delimiter = ""
+        field.font = .paText
     }
 }
 

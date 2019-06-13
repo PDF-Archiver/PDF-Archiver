@@ -12,7 +12,6 @@
 		171E0C821B8E5B84001E6242 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171E0C811B8E5B84001E6242 /* DetailViewController.swift */; };
 		171E0C851B8E5B84001E6242 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171E0C831B8E5B84001E6242 /* Main.storyboard */; };
 		171E0C8A1B8E5B84001E6242 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171E0C881B8E5B84001E6242 /* LaunchScreen.storyboard */; };
-		34CA739F22B15056009FD591 /* TagTab.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A3400DD822688C2100097A3F /* TagTab.storyboard */; };
 		A301A75621496992003EA382 /* DocumentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A301A75421496992003EA382 /* DocumentTableViewCell.swift */; };
 		A301A75721496992003EA382 /* DocumentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A301A75521496992003EA382 /* DocumentTableViewCell.xib */; };
 		A305AE4821D81E74004DDC1B /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A305AE4721D81E74004DDC1B /* NavigationController.swift */; };
@@ -53,6 +52,8 @@
 		A3B83721215FD14A00DA239F /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B83720215FD14A00DA239F /* SnapshotHelper.swift */; };
 		A3B83864218CA7640093C374 /* TableSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B83863218CA7640093C374 /* TableSection.swift */; };
 		A3BCC976217F84DB00C3775E /* PDFArchiverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3BCC975217F84DB00C3775E /* PDFArchiverTests.swift */; };
+		A3BE7B3122B16EC2004A1ADE /* TagTab.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A3400DD822688C2100097A3F /* TagTab.storyboard */; };
+		A3BE7B3622B29AB8004A1ADE /* UIFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3BE7B3522B29AB8004A1ADE /* UIFont.swift */; };
 		A3DBC695224974380048E681 /* IAPService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3DBC690224974380048E681 /* IAPService.swift */; };
 		A3DFA7272278D9CF00E0F362 /* WSTagsField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3DFA7262278D9CF00E0F362 /* WSTagsField.swift */; };
 		A3EBFE9C21650F58008C34CC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A3EBFE9E21650F58008C34CC /* Localizable.strings */; };
@@ -164,6 +165,8 @@
 		A3BCC973217F84DB00C3775E /* PDFArchiverTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PDFArchiverTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A3BCC975217F84DB00C3775E /* PDFArchiverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFArchiverTests.swift; sourceTree = "<group>"; };
 		A3BCC977217F84DB00C3775E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A3BE7B3222B17651004A1ADE /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/TagTab.strings; sourceTree = "<group>"; };
+		A3BE7B3522B29AB8004A1ADE /* UIFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFont.swift; sourceTree = "<group>"; };
 		A3DBC690224974380048E681 /* IAPService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPService.swift; sourceTree = "<group>"; };
 		A3DFA7262278D9CF00E0F362 /* WSTagsField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WSTagsField.swift; sourceTree = "<group>"; };
 		A3EBFE9721650C65008C34CC /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Main.strings; sourceTree = "<group>"; };
@@ -320,6 +323,7 @@
 				A316F36522946ED70099BA26 /* UIViewController.swift */,
 				A36AE3A722A70149001D534E /* PlaceholderViewController.swift */,
 				A393A28222A8486000D6DAF9 /* UIAlertController.swift */,
+				A3BE7B3522B29AB8004A1ADE /* UIFont.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -561,7 +565,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				34CA739F22B15056009FD591 /* TagTab.storyboard in Resources */,
 				A3FDD34A229459BD0054FFFC /* DateDescriptionViewController.xib in Resources */,
 				A301A75721496992003EA382 /* DocumentTableViewCell.xib in Resources */,
 				A3EBFE9C21650F58008C34CC /* Localizable.strings in Resources */,
@@ -573,6 +576,7 @@
 				A39A807821FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */,
 				A3400DDB22688C4300097A3F /* Archive.storyboard in Resources */,
 				A3FDD34F229459C40054FFFC /* TaggingViewController.xib in Resources */,
+				A3BE7B3122B16EC2004A1ADE /* TagTab.storyboard in Resources */,
 				A3FDD345229459B10054FFFC /* PDFViewController.xib in Resources */,
 				A31263E2217B75DC00ACAFA4 /* LoadingBackgroundView.xib in Resources */,
 				A32777E621FDD7BF0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf in Resources */,
@@ -656,6 +660,7 @@
 				"${PODS_ROOT}/Target Support Files/Pods-PDFArchiver/Pods-PDFArchiver-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Keys/Keys.framework",
 				"${BUILT_PRODUCTS_DIR}/Sentry/Sentry.framework",
+				"${BUILT_PRODUCTS_DIR}/SkyFloatingLabelTextField/SkyFloatingLabelTextField.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyStoreKit/SwiftyStoreKit.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyTesseract/SwiftyTesseract.framework",
 				"${BUILT_PRODUCTS_DIR}/TagListView/TagListView.framework",
@@ -669,6 +674,7 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Keys.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Sentry.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SkyFloatingLabelTextField.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyStoreKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyTesseract.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TagListView.framework",
@@ -748,6 +754,7 @@
 				171E0C821B8E5B84001E6242 /* DetailViewController.swift in Sources */,
 				A3DBC695224974380048E681 /* IAPService.swift in Sources */,
 				A3ED932322666BE800DFC2D9 /* TagListView.swift in Sources */,
+				A3BE7B3622B29AB8004A1ADE /* UIFont.swift in Sources */,
 				A3A071682253ED660093E7A4 /* TaggingViewController.swift in Sources */,
 				A3932824221EF7DC00858461 /* ScanViewController.swift in Sources */,
 				A393A28322A8486000D6DAF9 /* UIAlertController.swift in Sources */,
@@ -841,10 +848,10 @@
 			isa = PBXVariantGroup;
 			children = (
 				A3400DD722688C2100097A3F /* Base */,
+				A3BE7B3222B17651004A1ADE /* de */,
 			);
 			name = TagTab.storyboard;
-			path = "/Users/juliankahnert/Documents/GIT/pdf-archive-viewer/PDFArchiver/TagTab";
-			sourceTree = "<absolute>";
+			sourceTree = "<group>";
 		};
 		A3400DDD22688C4300097A3F /* Archive.storyboard */ = {
 			isa = PBXVariantGroup;

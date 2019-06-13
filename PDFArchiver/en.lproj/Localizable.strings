@@ -17,6 +17,12 @@
 /* Camera access in ScanViewController. */
 "Do you really want to delete this document?" = "Do you really want to delete this document?";
 
+/* Document label text field placeholder. */
+"document_description.placeholder" = "Enter description";
+
+/* Document label text field title. */
+"document_description.title" = "Description";
+
 /* No date could be found, e.g. while renaming the document. */
 "document_error_description__date_missing" = "Datum Fehlt";
 

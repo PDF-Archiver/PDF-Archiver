@@ -18,7 +18,7 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
-            <rect key="frame" x="0.0" y="0.0" width="396" height="300"/>
+            <rect key="frame" x="0.0" y="0.0" width="396" height="301"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LIW-sw-TGs" customClass="PDFView">
@@ -28,15 +28,25 @@
                         <constraint firstAttribute="height" constant="300" id="xk4-yf-fOZ"/>
                     </constraints>
                 </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Nbh-1T-Zdc">
+                    <rect key="frame" x="0.0" y="300" width="396" height="1"/>
+                    <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="1" id="zLn-qb-prK"/>
+                    </constraints>
+                </view>
             </subviews>
             <constraints>
-                <constraint firstAttribute="bottom" secondItem="LIW-sw-TGs" secondAttribute="bottom" id="1mT-jk-C8M"/>
+                <constraint firstAttribute="bottom" secondItem="Nbh-1T-Zdc" secondAttribute="bottom" id="EFZ-ER-O2u"/>
                 <constraint firstItem="LIW-sw-TGs" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="KZj-pI-L29"/>
                 <constraint firstItem="LIW-sw-TGs" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="NB0-iJ-uwH"/>
+                <constraint firstItem="Nbh-1T-Zdc" firstAttribute="top" secondItem="LIW-sw-TGs" secondAttribute="bottom" id="gNe-YB-VW4"/>
                 <constraint firstAttribute="trailing" secondItem="LIW-sw-TGs" secondAttribute="trailing" id="kfz-nH-UIR"/>
+                <constraint firstAttribute="trailing" secondItem="Nbh-1T-Zdc" secondAttribute="trailing" id="sqZ-hw-ZEd"/>
+                <constraint firstItem="Nbh-1T-Zdc" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="u6a-Z7-06Y"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="118.84057971014494" y="245.08928571428569"/>
+            <point key="canvasLocation" x="118.84057971014494" y="245.42410714285714"/>
         </view>
     </objects>
     <resources>

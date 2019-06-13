@@ -16,26 +16,38 @@ class DocumentViewController: UIViewController, Logging {
     let document: Document
     private let pdfVC: PDFViewController
     private let dateDescriptionVC: DateDescriptionViewController
-    private let tagVC: TaggingViewController
+    private lazy var tagVC: TaggingViewController = {
+        let tags = Set(document.tags.map { $0.name })
+        let textChangeHandler: ((_ text: String) -> [String]) = { [weak self] (_ tagName: String) in
+            let documentTags = Set(self?.document.tags.map { $0.name } ?? [])
+            let tags = DocumentService.archive.getAvailableTags(with: [tagName])
+                .filter { !documentTags.contains($0.name) }
+                .sorted { $0.count > $1.count }
+                .map { $0.name }
+                .prefix(3)
+            return Array(tags)
+        }
+        return TaggingViewController(documentTags: tags, onDidChange: textChangeHandler)
+    }()
 
     init?(document: Document) {
 
-        guard let pdfDocument = PDFDocument(url: document.path) else { fatalError("Could not find document at:\n\(document.path.path)") }
+        guard let pdfDocument = PDFDocument(url: document.path) else {
+            assertionFailure("Could not find document at:\n\(document.path.path)")
+            return nil
+        }
 
         // remove PDF Archive default decription and tags
         let description: String
         if document.description.starts(with: Constants.documentDescriptionPlaceholder) {
             description = ""
         } else {
-            description = document.description
+            description = document.specification
         }
-        let tags = Set(document.tags.map { $0.name })
 
         pdfVC = PDFViewController(pdfDocument: pdfDocument)
         dateDescriptionVC = DateDescriptionViewController(date: document.date ?? Date(),
                                                           description: description)
-        tagVC = TaggingViewController(documentTags: tags)
-
         self.document = document
         super.init(nibName: nil, bundle: nil)
 
@@ -109,24 +121,23 @@ class DocumentViewController: UIViewController, Logging {
         return view
     }()
 
-    private func createHairLine(in view: UIView) -> UIView {
+    private func createHairLine(in view: UIStackView) {
         let hline = UIView(frame: .zero)
-        hline.leadingAnchor.constraint(equalTo: stackView.leadingAnchor).isActive = true
-        hline.trailingAnchor.constraint(equalTo: stackView.trailingAnchor).isActive = true
-        hline.heightAnchor.constraint(equalToConstant: 1 / UIScreen.main.scale).isActive = true
-        hline.backgroundColor = .paLightGray
-        return hline
+        view.addArrangedSubview(hline)
+        hline.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        hline.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        hline.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        hline.backgroundColor = .groupTableViewBackground
     }
-    
+
     private func setupViews() {
 
         view.addSubview(scrollView)
         scrollView.addSubview(stackView)
 
         stackView.addArrangedSubview(pdfVC.view)
-        stackView.addArrangedSubview(createHairLine(in: stackView))
         stackView.addArrangedSubview(dateDescriptionVC.view)
-        stackView.addArrangedSubview(createHairLine(in: stackView))
+        createHairLine(in: stackView)
         stackView.addArrangedSubview(tagVC.view)
     }
 
@@ -155,7 +166,7 @@ class DocumentViewController: UIViewController, Logging {
         if notification.name == UIResponder.keyboardWillHideNotification {
             contentInset = .zero
         } else {
-            let spacing = CGFloat(5)
+            let spacing = CGFloat(15)
             let bottomInset = tabBarController?.tabBar.frame.height
             contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardViewEndFrame.height - (bottomInset ?? 0) + spacing, right: 0)
         }
@@ -192,23 +203,5 @@ extension DocumentViewController: TaggingViewControllerDelegate {
         for tag in tags.subtracting(documentTags) {
             DocumentService.archive.add(tag: tag, to: document)
         }
-    }
-
-    func taggingViewController(didChangeText text: String) {
-
-        // TODO: update suggestions
-//        if let tagName = text,
-//            !tagName.isEmpty {
-//
-//            let documentTags = Set(self.documentTagField.tags.map { $0.text })
-//            let tags = DocumentService.archive.getAvailableTags(with: [tagName])
-//                .filter { !documentTags.contains($0.name) }
-//                .sorted { $0.count > $1.count }
-//                .map { $0.name }
-//                .prefix(3)
-//            self.suggestionVC.suggestions = Array(tags)
-//        } else {
-//            self.suggestionVC.suggestions = []
-//        }
     }
 }

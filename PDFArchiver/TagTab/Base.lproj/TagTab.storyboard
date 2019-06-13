@@ -20,7 +20,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="uZ6-gz-Tdv"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Date &amp; Description" id="6wi-9R-I4b">
+                    <navigationItem key="navigationItem" id="6wi-9R-I4b">
                         <barButtonItem key="leftBarButtonItem" systemItem="trash" id="OHS-It-190">
                             <connections>
                                 <action selector="trashButtonTapped:" destination="T5S-hk-qlt" id="WhP-0z-4Yu"/>

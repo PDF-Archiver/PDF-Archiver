@@ -32,7 +32,7 @@ class DocumentHandleViewController: UIViewController, Logging {
                 try FileManager.default.removeItem(at: document.path)
                 DocumentService.archive.remove(Set([document]))
 
-                // TODO: why is this not dismissed?
+                self.documentViewController?.remove()
                 self.documentViewController?.dismiss(animated: true, completion: nil)
                 self.documentViewController = nil
 
@@ -68,7 +68,7 @@ class DocumentHandleViewController: UIViewController, Logging {
             DocumentService.archive.archive(document)
 
             // set current document to nil, to get a new document in updateView()
-            // TODO: why is this not dismissed?
+            documentViewController?.remove()
             documentViewController?.dismiss(animated: true, completion: nil)
             documentViewController = nil
 

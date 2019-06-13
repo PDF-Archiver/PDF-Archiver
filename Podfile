@@ -13,6 +13,7 @@ target 'PDFArchiver' do
   pod 'SwiftyTesseract', '~> 2.2'
   pod 'SwiftyStoreKit', '~> 0.14.2'
   pod 'paper-onboarding', '~> 6.1.3'
+  pod 'SkyFloatingLabelTextField', '~> 3.7'
 
   target 'PDFArchiverUITests' do
     inherit! :search_paths

@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -18,7 +19,7 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
-            <rect key="frame" x="0.0" y="0.0" width="443" height="158"/>
+            <rect key="frame" x="0.0" y="0.0" width="443" height="176"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="AqT-z3-fKT">
@@ -33,14 +34,40 @@
                         <action selector="datePickerChanged:" destination="-1" eventType="valueChanged" id="LDe-71-2St"/>
                     </connections>
                 </datePicker>
-                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Description" textAlignment="natural" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="zEb-ls-9OY">
-                    <rect key="frame" x="20" y="128" width="403" height="30"/>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9rp-i5-uqy">
+                    <rect key="frame" x="0.0" y="125" width="443" height="1"/>
+                    <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="30" id="auc-h7-A2y"/>
+                        <constraint firstAttribute="height" constant="1" id="JRf-BW-H8s"/>
+                    </constraints>
+                </view>
+                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Description" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="zEb-ls-9OY" customClass="SkyFloatingLabelTextField" customModule="SkyFloatingLabelTextField">
+                    <rect key="frame" x="23" y="131" width="397" height="45"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="45" id="auc-h7-A2y"/>
                     </constraints>
                     <nil key="textColor"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <textInputTraits key="textInputTraits"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="string" keyPath="placeholder" value="Enter Description "/>
+                        <userDefinedRuntimeAttribute type="string" keyPath="title" value="Description"/>
+                        <userDefinedRuntimeAttribute type="color" keyPath="titleColor">
+                            <color key="value" name="LightGray"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="color" keyPath="textColor">
+                            <color key="value" name="DarkGray"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="color" keyPath="selectedTitleColor">
+                            <color key="value" name="LightGray"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="color" keyPath="selectedLineColor">
+                            <color key="value" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="color" keyPath="lineColor">
+                            <color key="value" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
                     <connections>
                         <action selector="descriptionTextFieldChanged:" destination="-1" eventType="valueChanged" id="gJD-PO-BqV"/>
                     </connections>
@@ -48,16 +75,27 @@
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
+                <constraint firstAttribute="trailing" secondItem="9rp-i5-uqy" secondAttribute="trailing" id="0R2-6R-Q6U"/>
                 <constraint firstItem="AqT-z3-fKT" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="2Hs-rk-N8d"/>
                 <constraint firstItem="AqT-z3-fKT" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="5k8-yu-kxC"/>
-                <constraint firstAttribute="trailing" secondItem="zEb-ls-9OY" secondAttribute="trailing" constant="20" id="85b-We-gsy"/>
-                <constraint firstItem="zEb-ls-9OY" firstAttribute="top" secondItem="AqT-z3-fKT" secondAttribute="bottom" constant="8" id="HF7-uX-xfQ"/>
-                <constraint firstItem="zEb-ls-9OY" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="RUS-pM-4mN"/>
+                <constraint firstAttribute="trailing" secondItem="zEb-ls-9OY" secondAttribute="trailing" constant="23" id="85b-We-gsy"/>
+                <constraint firstItem="zEb-ls-9OY" firstAttribute="top" secondItem="9rp-i5-uqy" secondAttribute="bottom" constant="5" id="EZN-wI-53u"/>
+                <constraint firstItem="9rp-i5-uqy" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="LJQ-fP-VKO"/>
+                <constraint firstItem="zEb-ls-9OY" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="23" id="RUS-pM-4mN"/>
+                <constraint firstItem="9rp-i5-uqy" firstAttribute="top" secondItem="AqT-z3-fKT" secondAttribute="bottom" constant="5" id="VYD-vN-oNq"/>
                 <constraint firstAttribute="trailing" secondItem="AqT-z3-fKT" secondAttribute="trailing" constant="20" id="WlU-BG-RPT"/>
                 <constraint firstAttribute="bottom" secondItem="zEb-ls-9OY" secondAttribute="bottom" id="jdC-uO-CPA"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="152.89855072463769" y="105.80357142857143"/>
+            <point key="canvasLocation" x="152.89855072463769" y="106.80803571428571"/>
         </view>
     </objects>
+    <resources>
+        <namedColor name="DarkGray">
+            <color red="0.13099999725818634" green="0.17200000584125519" blue="0.23100000619888306" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+        </namedColor>
+        <namedColor name="LightGray">
+            <color red="0.21299999952316284" green="0.24199999868869781" blue="0.28600001335144043" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+        </namedColor>
+    </resources>
 </document>

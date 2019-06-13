@@ -59,7 +59,6 @@ class ScanViewController: UIViewController, Logging {
             UserDefaults.standard.set(true, forKey: Constants.UserDefaults.tutorialShown.rawValue)
         }
 
-
         // show subscription view controller, if no subscription was found
         if !IAP.service.appUsagePermitted() {
             let viewController = SubscriptionViewController {

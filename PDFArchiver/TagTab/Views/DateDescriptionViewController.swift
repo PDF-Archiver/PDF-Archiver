@@ -6,6 +6,7 @@
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
 
+import SkyFloatingLabelTextField
 import UIKit
 
 protocol DateDescriptionViewControllerDelegate: AnyObject {
@@ -33,7 +34,7 @@ class DateDescriptionViewController: UIViewController {
 
     @IBOutlet weak var datePickerView: UIDatePicker!
 
-    @IBOutlet weak var descriptionTextField: UITextField!
+    @IBOutlet weak var descriptionTextField: SkyFloatingLabelTextField!
 
     @IBAction private func datePickerChanged(_ sender: UIDatePicker) {
         delegate?.updateDateDescription(datePickerView.date, descriptionTextField.text)
@@ -49,6 +50,12 @@ class DateDescriptionViewController: UIViewController {
 
         datePickerView.date = date
         descriptionTextField.text = specification
+        descriptionTextField.titleFormatter = { $0 }
+        descriptionTextField.titleFont = .paLabelTitle
+        descriptionTextField.titleColor = .paLightGray
+        descriptionTextField.placeholder = NSLocalizedString("document_description.placeholder", comment: "Document label text field placeholder.")
+        descriptionTextField.title = NSLocalizedString("document_description.title", comment: "Document label text field title.")
+        descriptionTextField.placeholderColor = .paPlaceholderGray
 
         descriptionTextField.borderStyle = .none
         descriptionTextField.clearButtonMode = .always
