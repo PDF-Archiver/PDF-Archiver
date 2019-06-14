@@ -93,7 +93,7 @@
 "intro.scan.title" = "Scan it.";
 
 /* Intro: Tag Description */
-"intro.tag.description" = "Du hast zwischendurch etwas Zeit?\nTagge deine Dokumente und finde sie jederzeit schnell wieder. Durch die intelligente Texterkennung werden dir Datum und passende Tags automatisch vorgeschlagen.\nBeschreibe dein Dokument z.B. mit\n'Blauer Lieblingspullover'\nund speichere es im Archiv.";
+"intro.tag.description" = "Du hast zwischendurch etwas Zeit?\nTagge nun deine Dokumente.\nDie intelligente Texterkennung schlägt dir Datum und Tags vor.\nBeschreibe dein Dokument z.B.\n'Blauer Lieblingspullover'\nund speichere es im Archiv.";
 
 /* Intro: Tag Title */
 "intro.tag.title" = "Tag it.";
