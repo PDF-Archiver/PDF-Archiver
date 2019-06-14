@@ -16,7 +16,7 @@ class DocumentViewController: UIViewController, Logging {
     let document: Document
     private let pdfVC: PDFViewController
     private let dateDescriptionVC: DateDescriptionViewController
-    private lazy var tagVC: TaggingViewController = {
+    private lazy var taggingVC: TaggingViewController = {
         let tags = Set(document.tags.map { $0.name })
         let textChangeHandler: ((_ text: String) -> [String]) = { [weak self] (_ tagName: String) in
             let documentTags = Set(self?.document.tags.map { $0.name } ?? [])
@@ -53,11 +53,11 @@ class DocumentViewController: UIViewController, Logging {
 
         add(pdfVC)
         add(dateDescriptionVC)
-        add(tagVC)
+        add(taggingVC)
 
         scrollView.delegate = self
         dateDescriptionVC.delegate = self
-        tagVC.delegate = self
+        taggingVC.delegate = self
     }
 
     @available(*, unavailable)
@@ -84,7 +84,7 @@ class DocumentViewController: UIViewController, Logging {
 
                 text += pageContent
             }
-            self?.tagVC.update(suggestedTags: TagParser.parse(text))
+            self?.taggingVC.update(suggestedTags: TagParser.parse(text))
         }
 
         hideKeyboardWhenTappedAround()
@@ -138,7 +138,7 @@ class DocumentViewController: UIViewController, Logging {
         stackView.addArrangedSubview(pdfVC.view)
         stackView.addArrangedSubview(dateDescriptionVC.view)
         createHairLine(in: stackView)
-        stackView.addArrangedSubview(tagVC.view)
+        stackView.addArrangedSubview(taggingVC.view)
     }
 
     private func setupConstraints() {
@@ -185,11 +185,18 @@ extension DocumentViewController: UIScrollViewDelegate {
 }
 
 extension DocumentViewController: DateDescriptionViewControllerDelegate {
-    func updateDateDescription(_ date: Date, _ description: String?) {
+
+    func dateDescriptionView(_ sender: DateDescriptionViewController, didChangeDate date: Date) {
         document.date = date
-        if let description = description {
-            document.specification = description
-        }
+    }
+
+    func dateDescriptionView(_ sender: DateDescriptionViewController, didChangeDescription description: String) {
+        document.specification = description
+    }
+
+    func dateDescriptionView(_ sender: DateDescriptionViewController, shouldReturnFrom textField: UITextField) {
+        textField.resignFirstResponder()
+        taggingVC.beginEditing()
     }
 }
 

@@ -91,8 +91,8 @@ class TaggingViewController: UIViewController, Logging {
         fatalError("init(coder:) has not been implemented")
     }
 
-    @IBOutlet weak var documentTagsView: UIView!
-    @IBOutlet weak var suggestedTagsView: UIView!
+    @IBOutlet private weak var documentTagsView: UIView!
+    @IBOutlet private weak var suggestedTagsView: UIView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -121,6 +121,10 @@ class TaggingViewController: UIViewController, Logging {
         DispatchQueue.main.async {
             self.suggestedTagField.addTags(Array(self.suggestedTags).sorted())
         }
+    }
+
+    func beginEditing() {
+        documentTagField.beginEditing()
     }
 
     // MARK: - Helper Functions

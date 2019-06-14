@@ -10,7 +10,9 @@ import SkyFloatingLabelTextField
 import UIKit
 
 protocol DateDescriptionViewControllerDelegate: AnyObject {
-    func updateDateDescription(_ date: Date, _ description: String?)
+    func dateDescriptionView(_ sender: DateDescriptionViewController, didChangeDate date: Date)
+    func dateDescriptionView(_ sender: DateDescriptionViewController, didChangeDescription description: String)
+    func dateDescriptionView(_ sender: DateDescriptionViewController, shouldReturnFrom textField: UITextField)
 }
 
 class DateDescriptionViewController: UIViewController {
@@ -37,12 +39,7 @@ class DateDescriptionViewController: UIViewController {
     @IBOutlet weak var descriptionTextField: SkyFloatingLabelTextField!
 
     @IBAction private func datePickerChanged(_ sender: UIDatePicker) {
-        delegate?.updateDateDescription(datePickerView.date, descriptionTextField.text)
-    }
-
-    @IBAction private func descriptionTextFieldChanged(_ sender: UITextField) {
-        guard let text = sender.text else { return }
-        delegate?.updateDateDescription(datePickerView.date, text)
+        delegate?.dateDescriptionView(self, didChangeDate: datePickerView.date)
     }
 
     override func viewDidLoad() {
@@ -56,19 +53,22 @@ class DateDescriptionViewController: UIViewController {
         descriptionTextField.placeholder = NSLocalizedString("document_description.placeholder", comment: "Document label text field placeholder.")
         descriptionTextField.title = NSLocalizedString("document_description.title", comment: "Document label text field title.")
         descriptionTextField.placeholderColor = .paPlaceholderGray
-
         descriptionTextField.borderStyle = .none
         descriptionTextField.clearButtonMode = .always
+        descriptionTextField.addTarget(self, action: #selector(descriptionDidChange(_:)), for: .editingChanged)
+        descriptionTextField.delegate = self
     }
 
-    func update(date: Date?, description: String?) {
-        datePickerView.date = date ?? Date()
+    @objc
+    private func descriptionDidChange(_ sender: SkyFloatingLabelTextField) {
+        guard let text = sender.text else { return }
+        delegate?.dateDescriptionView(self, didChangeDescription: text)
+    }
+}
 
-        // remove PDF Archive default decription and tags
-        if description?.starts(with: Constants.documentDescriptionPlaceholder) ?? false {
-            descriptionTextField.text = ""
-        } else {
-            descriptionTextField.text = description
-        }
+extension DateDescriptionViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        delegate?.dateDescriptionView(self, shouldReturnFrom: textField)
+        return true
     }
 }
