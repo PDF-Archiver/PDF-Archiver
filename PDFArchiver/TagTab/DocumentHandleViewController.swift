@@ -135,7 +135,7 @@ class DocumentHandleViewController: UIViewController, Logging {
         let documents = DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged).filter { $0.downloadStatus == .local }
 
         if let document = Array(documents).max(),
-            let viewController = DocumentViewController(document: document) {
+            let viewController = DocumentViewController(document: document.cleaned()) {
 
             // show document view controller
             addVcAndView(viewController)

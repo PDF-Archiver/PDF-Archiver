@@ -54,6 +54,7 @@
 		A3BCC976217F84DB00C3775E /* PDFArchiverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3BCC975217F84DB00C3775E /* PDFArchiverTests.swift */; };
 		A3BE7B3122B16EC2004A1ADE /* TagTab.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A3400DD822688C2100097A3F /* TagTab.storyboard */; };
 		A3BE7B3622B29AB8004A1ADE /* UIFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3BE7B3522B29AB8004A1ADE /* UIFont.swift */; };
+		A3BE7B3A22B3DE05004A1ADE /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3BE7B3922B3DE05004A1ADE /* Document.swift */; };
 		A3DBC695224974380048E681 /* IAPService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3DBC690224974380048E681 /* IAPService.swift */; };
 		A3DFA7272278D9CF00E0F362 /* WSTagsField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3DFA7262278D9CF00E0F362 /* WSTagsField.swift */; };
 		A3EBFE9C21650F58008C34CC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A3EBFE9E21650F58008C34CC /* Localizable.strings */; };
@@ -167,6 +168,7 @@
 		A3BCC977217F84DB00C3775E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A3BE7B3222B17651004A1ADE /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/TagTab.strings; sourceTree = "<group>"; };
 		A3BE7B3522B29AB8004A1ADE /* UIFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFont.swift; sourceTree = "<group>"; };
+		A3BE7B3922B3DE05004A1ADE /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
 		A3DBC690224974380048E681 /* IAPService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPService.swift; sourceTree = "<group>"; };
 		A3DFA7262278D9CF00E0F362 /* WSTagsField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WSTagsField.swift; sourceTree = "<group>"; };
 		A3EBFE9721650C65008C34CC /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Main.strings; sourceTree = "<group>"; };
@@ -324,6 +326,7 @@
 				A36AE3A722A70149001D534E /* PlaceholderViewController.swift */,
 				A393A28222A8486000D6DAF9 /* UIAlertController.swift */,
 				A3BE7B3522B29AB8004A1ADE /* UIFont.swift */,
+				A3BE7B3922B3DE05004A1ADE /* Document.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -779,6 +782,7 @@
 				A34A84FA2130A35A0093FAE5 /* DocumentsQuery.swift in Sources */,
 				A3DFA7272278D9CF00E0F362 /* WSTagsField.swift in Sources */,
 				A314A29B225542360099681D /* CustomButton.swift in Sources */,
+				A3BE7B3A22B3DE05004A1ADE /* Document.swift in Sources */,
 				A3F1C21D2163DCD9002B0141 /* AppStoreReviewRequest.swift in Sources */,
 				A3FDD3572294678A0054FFFC /* DocumentViewController.swift in Sources */,
 				A3F30D8E221C968E0063D173 /* SplitViewController.swift in Sources */,
