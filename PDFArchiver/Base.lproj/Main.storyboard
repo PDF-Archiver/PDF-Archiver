@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="EtT-wd-7Xe">
+    <device id="retina5_9" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Documents Tab-->
+        <scene sceneID="D0n-Dx-6tf">
+            <objects>
+                <viewController restorationIdentifier="ArchiveTab" storyboardIdentifier="ArchiveTab" id="pms-xb-Drg" userLabel="Documents Tab" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="qZV-y9-pyC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iSs-31-9JD">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="729"/>
+                                <connections>
+                                    <segue destination="OIZ-Ju-z8d" kind="embed" id="Zqf-bk-zHK"/>
+                                </connections>
+                            </containerView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="iSs-31-9JD" firstAttribute="leading" secondItem="plH-CR-DnL" secondAttribute="leading" id="6Vb-NY-e0W"/>
+                            <constraint firstItem="plH-CR-DnL" firstAttribute="trailing" secondItem="iSs-31-9JD" secondAttribute="trailing" id="CXZ-dJ-bbj"/>
+                            <constraint firstItem="iSs-31-9JD" firstAttribute="top" secondItem="qZV-y9-pyC" secondAttribute="top" id="EYh-Xp-Js0"/>
+                            <constraint firstItem="plH-CR-DnL" firstAttribute="bottom" secondItem="iSs-31-9JD" secondAttribute="bottom" id="vxR-K5-r28"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="plH-CR-DnL"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Archive" image="Archive" landscapeImage="Archive" largeContentSizeImage="Archive" id="6hS-pH-8it"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="xGM-Hk-9BL" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-3113" y="-305"/>
+        </scene>
+        <!--Scan Tab-->
+        <scene sceneID="pF4-dp-d1m">
+            <objects>
+                <viewController restorationIdentifier="ScanTab" storyboardIdentifier="ScanTab" id="gE0-vu-vb2" userLabel="Scan Tab" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="dPg-lL-Q3c">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RMn-TJ-20F">
+                                <rect key="frame" x="0.0" y="44" width="375" height="685"/>
+                                <connections>
+                                    <segue destination="evb-gb-Gyk" kind="embed" id="Feh-ac-wrn"/>
+                                </connections>
+                            </containerView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="RMn-TJ-20F" firstAttribute="top" secondItem="hQr-UH-kcB" secondAttribute="top" id="N3w-VC-d5D"/>
+                            <constraint firstItem="RMn-TJ-20F" firstAttribute="leading" secondItem="hQr-UH-kcB" secondAttribute="leading" id="Vhb-LU-j2r"/>
+                            <constraint firstItem="hQr-UH-kcB" firstAttribute="trailing" secondItem="RMn-TJ-20F" secondAttribute="trailing" id="t2O-f7-VSn"/>
+                            <constraint firstItem="hQr-UH-kcB" firstAttribute="bottom" secondItem="RMn-TJ-20F" secondAttribute="bottom" id="x0A-WN-VDe"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="hQr-UH-kcB"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Scan" image="File" landscapeImage="File" largeContentSizeImage="File" id="Cdf-Rt-ZTT" userLabel="Scan"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="6rm-kY-Ubg" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-3114.4000000000001" y="-1634.0329835082459"/>
+        </scene>
+        <!--Tab Bar Controller-->
+        <scene sceneID="v3f-Ju-xav">
+            <objects>
+                <tabBarController id="EtT-wd-7Xe" sceneMemberID="viewController">
+                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="feH-Ha-M0L">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="49"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="gE0-vu-vb2" kind="relationship" relationship="viewControllers" id="CmR-WF-49k"/>
+                        <segue destination="tm6-d8-Gh9" kind="relationship" relationship="viewControllers" id="ghK-KX-XdJ"/>
+                        <segue destination="pms-xb-Drg" kind="relationship" relationship="viewControllers" id="NCT-ao-Lei"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dZA-Rx-GXa" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-4159" y="-900"/>
+        </scene>
+        <!--Tag Tab-->
+        <scene sceneID="ZJ4-Fd-MKN">
+            <objects>
+                <viewController restorationIdentifier="TagTab" storyboardIdentifier="TagTab" id="tm6-d8-Gh9" userLabel="Tag Tab" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Hz2-Ab-omc">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="685"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tmT-rj-nlC">
+                                <rect key="frame" x="0.0" y="44" width="375" height="607"/>
+                                <connections>
+                                    <segue destination="N8I-6P-ayn" kind="embed" id="1u1-GS-rQR"/>
+                                </connections>
+                            </containerView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="GDP-nm-ao5" firstAttribute="bottom" secondItem="tmT-rj-nlC" secondAttribute="bottom" id="Akx-2W-Xmp"/>
+                            <constraint firstItem="tmT-rj-nlC" firstAttribute="leading" secondItem="GDP-nm-ao5" secondAttribute="leading" id="Tkl-Jl-7eJ"/>
+                            <constraint firstItem="tmT-rj-nlC" firstAttribute="top" secondItem="GDP-nm-ao5" secondAttribute="top" id="aQm-pr-0Fz"/>
+                            <constraint firstItem="GDP-nm-ao5" firstAttribute="trailing" secondItem="tmT-rj-nlC" secondAttribute="trailing" id="pOq-se-WUy"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="GDP-nm-ao5"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Tag" image="Tag" landscapeImage="Tag" largeContentSizeImage="Tag" id="Y0S-5H-vdU" userLabel="Scan"/>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DLr-il-RGZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-3114.4000000000001" y="-901.47783251231533"/>
+        </scene>
+        <!--Archive-->
+        <scene sceneID="ycn-zk-WaR">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Archive" id="OIZ-Ju-z8d" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="YVK-mJ-Qp9" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-2195" y="-305"/>
+        </scene>
+        <!--Scan View Controller-->
+        <scene sceneID="kFW-QY-weq">
+            <objects>
+                <viewController id="evb-gb-Gyk" customClass="ScanViewController" customModule="PDFArchiver" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="lkg-8E-1yt">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="685"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UQe-pf-RdV" customClass="CustomButton" customModule="PDFArchiver" customModuleProvider="target">
+                                <rect key="frame" x="46" y="576" width="283" height="45"/>
+                                <color key="backgroundColor" name="DarkGray"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="29" id="Pk5-Be-k87"/>
+                                    <constraint firstAttribute="height" priority="750" constant="45" id="t2U-qg-hxO"/>
+                                </constraints>
+                                <state key="normal" title="Scan next"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                        <real key="value" value="10"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="scanButtonTapped:" destination="evb-gb-Gyk" eventType="touchUpInside" id="BZg-xi-SPh"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome to" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Fl-hk-5bp">
+                                <rect key="frame" x="46" y="289" width="137.66666666666666" height="29"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="29" id="L1Z-t7-9fU"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="24"/>
+                                <color key="textColor" name="LightGray"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="PDF Archiver" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kSx-MV-ggo">
+                                <rect key="frame" x="46" y="318" width="152" height="29"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="29" id="N1r-aq-kBz"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="24"/>
+                                <color key="textColor" name="DarkRed"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Logo" translatesAutoresizingMaskIntoConstraints="NO" id="dfp-6b-AoF">
+                                <rect key="frame" x="46" y="174" width="100" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="100" id="UAr-lo-kjc"/>
+                                    <constraint firstAttribute="width" secondItem="dfp-6b-AoF" secondAttribute="height" multiplier="1:1" id="oYu-Xk-5OL"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Scan your documents, tag them and find them sorted in your iCloud Drive." lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CaD-Pk-b8x">
+                                <rect key="frame" x="46" y="347" width="283" height="60"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="60" id="Joz-ws-ES9"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <color key="textColor" name="LightGray"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6gC-38-OQN" userLabel="Processing Indicator View">
+                                <rect key="frame" x="46" y="532" width="283" height="29"/>
+                                <subviews>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="VV0-qA-yGJ">
+                                        <rect key="frame" x="0.0" y="4.6666666666666288" width="20" height="20"/>
+                                        <color key="color" name="DarkGray"/>
+                                    </activityIndicatorView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Processing documents." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VnS-hp-NRS">
+                                        <rect key="frame" x="30" y="5.6666666666666288" width="161" height="18"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="VnS-hp-NRS" firstAttribute="leading" secondItem="VV0-qA-yGJ" secondAttribute="trailing" constant="10" id="IUy-gD-WA6"/>
+                                    <constraint firstAttribute="height" constant="29" id="Stw-1A-4Bg"/>
+                                    <constraint firstItem="VV0-qA-yGJ" firstAttribute="leading" secondItem="6gC-38-OQN" secondAttribute="leading" id="UJi-QA-wRd"/>
+                                    <constraint firstItem="VnS-hp-NRS" firstAttribute="centerY" secondItem="6gC-38-OQN" secondAttribute="centerY" id="i6x-GA-EzF"/>
+                                    <constraint firstItem="VV0-qA-yGJ" firstAttribute="centerY" secondItem="6gC-38-OQN" secondAttribute="centerY" id="zU8-Yq-EKl"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="N7x-nw-edk" firstAttribute="bottom" secondItem="UQe-pf-RdV" secondAttribute="bottom" constant="30" id="0SF-Im-FBX"/>
+                            <constraint firstItem="UQe-pf-RdV" firstAttribute="trailing" secondItem="6gC-38-OQN" secondAttribute="trailing" id="1yp-vo-FdV"/>
+                            <constraint firstItem="CaD-Pk-b8x" firstAttribute="top" secondItem="kSx-MV-ggo" secondAttribute="bottom" id="27m-dv-Tgh"/>
+                            <constraint firstItem="UQe-pf-RdV" firstAttribute="leading" secondItem="6gC-38-OQN" secondAttribute="leading" id="2Ya-L6-3BY"/>
+                            <constraint firstItem="9Fl-hk-5bp" firstAttribute="top" secondItem="dfp-6b-AoF" secondAttribute="bottom" constant="15" id="2fP-YP-Pxn"/>
+                            <constraint firstItem="UQe-pf-RdV" firstAttribute="leading" secondItem="kSx-MV-ggo" secondAttribute="leading" id="5FG-QD-Awb"/>
+                            <constraint firstItem="UQe-pf-RdV" firstAttribute="leading" secondItem="CaD-Pk-b8x" secondAttribute="leading" id="Ams-0d-WEA"/>
+                            <constraint firstItem="UQe-pf-RdV" firstAttribute="trailing" secondItem="CaD-Pk-b8x" secondAttribute="trailing" priority="750" id="HVL-rG-Ou9"/>
+                            <constraint firstItem="UQe-pf-RdV" firstAttribute="leading" secondItem="9Fl-hk-5bp" secondAttribute="leading" id="Kyc-jS-1iO"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="UQe-pf-RdV" secondAttribute="trailing" constant="30" id="LMA-U5-J1M"/>
+                            <constraint firstItem="dfp-6b-AoF" firstAttribute="top" relation="greaterThanOrEqual" secondItem="N7x-nw-edk" secondAttribute="top" constant="15" id="QVy-nC-A5C"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="CaD-Pk-b8x" secondAttribute="trailing" constant="30" id="Rsr-hf-F5M"/>
+                            <constraint firstItem="6gC-38-OQN" firstAttribute="top" relation="greaterThanOrEqual" secondItem="CaD-Pk-b8x" secondAttribute="bottom" constant="10" id="Xro-aH-Bks"/>
+                            <constraint firstItem="UQe-pf-RdV" firstAttribute="top" secondItem="6gC-38-OQN" secondAttribute="bottom" constant="15" id="aCT-im-aw2"/>
+                            <constraint firstItem="UQe-pf-RdV" firstAttribute="leading" secondItem="dfp-6b-AoF" secondAttribute="leading" id="ag6-7w-yLf"/>
+                            <constraint firstItem="dfp-6b-AoF" firstAttribute="top" secondItem="N7x-nw-edk" secondAttribute="top" priority="750" constant="130" id="ecy-5G-Ela"/>
+                            <constraint firstItem="UQe-pf-RdV" firstAttribute="leading" secondItem="lkg-8E-1yt" secondAttribute="leadingMargin" constant="30" id="jRb-je-Hp4"/>
+                            <constraint firstItem="kSx-MV-ggo" firstAttribute="top" secondItem="9Fl-hk-5bp" secondAttribute="bottom" id="pbG-Mu-Htn"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="N7x-nw-edk"/>
+                    </view>
+                    <connections>
+                        <outlet property="processingIndicatorView" destination="6gC-38-OQN" id="Km2-EO-WnR"/>
+                        <segue destination="tm6-d8-Gh9" kind="show" identifier="showTabVC" id="gQa-7j-0VG"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="TZn-38-4Hb" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-2195.625" y="-1634.6830985915494"/>
+        </scene>
+        <!--TagTab-->
+        <scene sceneID="3Uo-tT-MH3">
+            <objects>
+                <viewControllerPlaceholder storyboardName="TagTab" id="N8I-6P-ayn" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ifF-ZI-rNi" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-2195" y="-902"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="Archive" width="30" height="30"/>
+        <image name="File" width="30" height="30"/>
+        <image name="Logo" width="256" height="256"/>
+        <image name="Tag" width="30" height="30"/>
+        <namedColor name="DarkGray">
+            <color red="0.13099999725818634" green="0.17200000584125519" blue="0.23100000619888306" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+        </namedColor>
+        <namedColor name="DarkRed">
+            <color red="0.72941176470588232" green="0.29411764705882354" blue="0.32156862745098042" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+        </namedColor>
+        <namedColor name="LightGray">
+            <color red="0.21299999952316284" green="0.24199999868869781" blue="0.28600001335144043" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+        </namedColor>
+    </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="gQa-7j-0VG"/>
+    </inferredMetricsTieBreakers>
+</document>

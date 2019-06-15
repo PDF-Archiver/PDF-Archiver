@@ -1,0 +1,165 @@
+
+/* No comment provided by engineer. */
+"all" = "All";
+
+/* Placeholder that is shown, when no document can be found. */
+"archive_tab.background_placeholder" = "No iCloud Drive documents found. Please scan and tag documents first.";
+
+/* Camera access in ScanViewController. */
+"Camera access is required to scan documents." = "Camera access is required to scan documents.";
+
+/* Camera access in ScanViewController. */
+"Cancel" = "Cancel";
+
+/* Delete document. */
+"Delete" = "Delete document";
+
+/* Camera access in ScanViewController. */
+"Do you really want to delete this document?" = "Do you really want to delete this document?";
+
+/* Document label text field placeholder. */
+"document_description.placeholder" = "Enter description";
+
+/* Document label text field title. */
+"document_description.title" = "Description";
+
+/* No date could be found, e.g. while renaming the document. */
+"document_error_description__date_missing" = "Datum Fehlt";
+
+/* No description found could be found, e.g. while renaming the document. */
+"document_error_description__description_missing" = "Beschreibung Fehlt";
+
+/* No comment provided by engineer. */
+"document_error_description__no_document_selected" = "Dokument Fehlt";
+
+/* Rename failed. */
+"document_error_description__rename_failed_file_already_exists" = "Umbenennung Fehlgeschlagen";
+
+/* No tags could be found, e.g. while renaming the document. */
+"document_error_description__tags_missing" = "Tags Fehlen";
+
+/* No date could be found, e.g. while renaming the document. */
+"document_failure_reason__date_missing" = "Das Datum des Dokumentes wurde nicht angegeben.";
+
+/* No description found could be found, e.g. while renaming the document. */
+"document_failure_reason__description_missing" = "Es konnte keine Dokumentenbeschreibung gefunden werden.";
+
+/* No comment provided by engineer. */
+"document_failure_reason__no_document_selected" = "Es wurde kein Dokument ausgewählt.";
+
+/* Rename failed. */
+"document_failure_reason__rename_failed_file_already_exists" = "Das Umbenennen des Dokumentes ist fehlgeschlagen.";
+
+/* No tags could be found, e.g. while renaming the document. */
+"document_failure_reason__tags_missing" = "Es wurden keine Tags für das Dokument eingegeben.";
+
+/* Title of the document handle view controller. */
+"document_handle_view_controller.title" = "New Documents";
+
+/* No date could be found, e.g. while renaming the document. */
+"document_recovery_suggestion__date_missing" = "Bitte fügen Sie ein Datum hinzu.";
+
+/* No description found could be found, e.g. while renaming the document. */
+"document_recovery_suggestion__description_missing" = "Bitte geben Sie eine Beschreibung ein.";
+
+/* Rename failed - file already exists. */
+"document_recovery_suggestion__rename_failed_file_already_exists" = "Bitte ändern Sie z.B. die Beschreibung des Dokumentes.";
+
+/* No tags could be found, e.g. while renaming the document. */
+"document_recovery_suggestion__tags_missing" = "Bitte fügen Sie Tags hinzu.";
+
+/* The title of an error message popup */
+"Error" = "Error";
+
+/* Fallback when no localized error was found. */
+"error_message_fallback" = "Hier lief etwas schief!";
+
+/* Camera access in ScanViewController. */
+"Grant Access" = "Grant Access";
+
+/* Intro: Find Description */
+"intro.find.description" = "You can find your documents quickly and easily at any time via the archive or the iCloud Drive app\n-\nso you always have your most important information in your pocket!";
+
+/* Intro: Find Title */
+"intro.find.title" = "Find it.";
+
+/* Intro: Last Page Description */
+"intro.last.description" = "And now have fun archiving with\nPDF Archiver!";
+
+/* Intro: Last Page Title */
+"intro.last.title" = "Let's go!";
+
+/* Intro: Scan Description */
+"intro.scan.description" = "Scan your documents, letters or invoices easily and with just two clicks with PDF Archiver. The app recognizes the text in your documents and saves it securely as a PDF file in iCloud Drive.";
+
+/* Intro: Scan Title */
+"intro.scan.title" = "Scan it.";
+
+/* Intro: Tag Description */
+"intro.tag.description" = "You have some time in between?\nTag your documents and find them quickly at any time. The intelligent text recognition automatically suggests the date and matching tags.\nDescribe your document e.g. with\n'Blue Favorite Sweater'\nand save it in your archive.";
+
+/* Intro: Tag Title */
+"intro.tag.title" = "Tag it.";
+
+/* Camera access in ScanViewController. */
+"Need Camera Access" = "Need Camera Access";
+
+/* Could not found a iCloud Drive Path. */
+"not-found.icloud-drive.text" = "Could not find iCloud Drive.";
+
+/* Alert VC: Title */
+"not-found.icloud-drive.title" = "Attention";
+
+/* Could not save taken images locally. */
+"not-saved-images.text" = "The pictures could not be saved.";
+
+/* Alert VC: Title */
+"not-saved-images.title" = "Save failed!";
+
+/* Button confirmation label */
+"OK" = "OK";
+
+/* No comment provided by engineer. */
+"per_month" = "per month";
+
+/* No comment provided by engineer. */
+"per_year" = "per year";
+
+/* UISearchBar placeholder */
+"search-documents" = "Search Documents";
+
+/* The cancel button */
+"subscription.cancel" = "Cancel";
+
+/* The restore button */
+"subscription.restore" = "Restore";
+
+/* Subscription View Controller description text. */
+"subscription.text" = "• Try the app for free! You can try the app in a free trial period of 1 month by choosing a subscription. You can try the app without any costs in this period.\n• Your Apple account will be charged for the next subscriptioon period within the final 24 hours of the current period.\n• The subscription will renew automatically if you do not deactivate the renewal in the account setting in iTunes or the App Store at least 24 hours before the end of the subscription period.";
+
+/* Subscription View Controller title. */
+"subscription.title" = "Subscription";
+
+/* Placeholder that is shown, when no untagged documents can be found. */
+"tag_tab.background_placeholder" = "No untagged documents found. Please scan documents first.";
+
+/* No comment provided by engineer. */
+"tagging.date-description.untagged-documents" = "Untagged Documents";
+
+/* Placeholder in Tagging Screen. */
+"tagvc.enter-tag" = "Enter a tag";
+
+/* Simulator test data set */
+"test_file1" = "archive/2018/2018-04-05--salary-april__tax_work.pdf";
+
+/* Simulator test data set */
+"test_file2" = "archive/2017/2017-04-04--gff-info__donation_tax.pdf";
+
+/* Simulator test data set */
+"test_file3" = "archive/2016/2016-04-03--insurance-report__letter_insurance.pdf";
+
+/* Simulator test data set */
+"test_resource_filename" = "2017-01-17--tom-tailor-jeans__bill_clothes_shopping";
+
+/* Error mesage to be displayed when failing to share a document */
+"Unable to share document without the pdf file" = "Unable to share document without the pdf file";

@@ -16,13 +16,6 @@ The PDF Archive Viewer shows documents in iCloud Drive.
 It is a helper of the macOS App [PDF Archiver](https://github.com/pdf-Archiver/pdf-archiver).
 
 
-## :rocket: Usage
-
-Test the Beta-Version with [Testflight](https://testflight.apple.com/join/luoTZhap) <a href="https://testflight.apple.com/join/luoTZhap" target="itunes_store">
-  <img src="https://developer.apple.com/assets/elements/icons/testflight/testflight-128x128_2x.png" width="20px">
-</a>.
-
-
 ## :scroll: Convention
 * **Date:** `yyyy-mm-dd` Date of the document content.
 * **Description:** `--ikea-tradfri-gateway` Meaningful description of the document.
@@ -60,3 +53,15 @@ Rate the App in the [App Store](https://itunes.apple.com/app/apple-store/id14338
 All [contributions](https://github.com/PDF-Archiver/PDF-Archiver/blob/develop/.github/CONTRIBUTING.md) are welcome!
 Feel free to contribute to this project.
 Submit pull requests or contribute tutorials - whatever you have to offer, it would be appreciated!
+
+
+## :exclamation::question: Other
+
+#### License Update
+```bash
+# installation
+brew install mono0926/license-plist/license-plist
+
+# update license files
+license-plist --add-version-numbers --output-path PDFArchiver/Resources/Settings.bundle --suppress-opening-directory
+```

@@ -1,4 +1,4 @@
-app_identifier("de.JulianKahnert.PDFArchiveViewer") # The bundle identifier of your app
+app_identifier("de.JulianKahnert.PDFArchiver-ios") # The bundle identifier of your app
 apple_id("mail@juliankahnert.de") # Your Apple email address
 
 itc_team_id("118993774") # App Store Connect Team ID

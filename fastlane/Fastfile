@@ -18,17 +18,16 @@ default_platform(:ios)
 desc "Generate new localized screenshots"
 lane :createNewScreenshots do
   capture_screenshots(
-    scheme: "PDFArchiveViewer")
-  upload_to_app_store(
-    force: true,
-    skip_binary_upload: true,
-    skip_metadata: true)
+    scheme: "PDFArchiver")
+  # upload_to_app_store(
+  #   force: true,
+  #   skip_binary_upload: true,
+  #   skip_metadata: true)
 end
 
 desc "Upload binary to Sentry.io"
 lane :sentry do
-  sentry_upload_dsym(
-    dsym_path: "build/PDFArchiveViewer.app.dSYM.zip")
+  sentry_upload_dsym
 end
 
 desc "Build Beta-Version & Upload it to TestFlight."
@@ -39,10 +38,8 @@ lane :beta do
     distribute_external: true,
     beta_app_description: "A new Preview of the App!",
     beta_app_feedback_email: "feedback@pdf-archiver.io",
-    groups: ["betatesters"])
-
-  sentry_upload_dsym(
-    dsym_path: "build/PDFArchiveViewer.app.dSYM.zip")
+    groups: ["alphatester"])
+  sentry_upload_dsym
 end
 
 desc "Update metadata to App Store Connect."
