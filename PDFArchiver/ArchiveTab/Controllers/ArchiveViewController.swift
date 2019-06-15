@@ -56,24 +56,26 @@ class ArchiveViewController: UIViewController, UITableViewDelegate, Logging {
         tableView.backgroundView = Bundle.main.loadNibNamed("LoadingBackgroundView", owner: nil, options: nil)?.first as? UIView
         tableView.separatorStyle = .none
 
-        // TODO: we might add this for testing
-//        // update the view controller, even if the documents query ends before the view did load
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-//
-//            #if targetEnvironment(simulator)
-//                // create simulator data set
-//                guard let fileURL = Bundle.main.url(forResource: NSLocalizedString("test_resource_filename", comment: "Simulator test data set"), withExtension: "pdf") else { return }
-//
-//                ArchiveService.shared.add(from: URL(fileURLWithPath: NSLocalizedString("test_file1", comment: "Simulator test data set")), size: 1427000, downloadStatus: .local, status: .tagged)
-//                ArchiveService.shared.add(from: URL(fileURLWithPath: NSLocalizedString("test_file2", comment: "Simulator test data set")), size: 232000, downloadStatus: .iCloudDrive, status: .tagged)
-//                ArchiveService.shared.add(from: fileURL, size: 500000, downloadStatus: .local, status: .tagged)
-//                ArchiveService.shared.add(from: URL(fileURLWithPath: NSLocalizedString("test_file3", comment: "Simulator test data set")), size: 764500, downloadStatus: .iCloudDrive, status: .tagged)
-//            #endif
-//
-//            self.updateDocuments(changed: Set<Document>())
-//        }
+        // update the view controller, even if the documents query ends before the view did load
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+            self.updateDocuments(changed: Set<Document>())
+        }
 
-        self.updateDocuments(changed: DocumentService.archive.filterContentForSearchText(""))
+        #if targetEnvironment(simulator)
+        // create simulator data set
+        if let fileURL = Bundle.main.url(forResource: NSLocalizedString("test_resource_filename", comment: "Simulator test data set"), withExtension: "pdf") {
+
+            DocumentService.archive.add(from: fileURL, size: 1427000, downloadStatus: .local, status: .untagged)
+            DocumentService.archive.add(from: URL(fileURLWithPath: NSLocalizedString("test_file1", comment: "Simulator test data set")), size: 1427000, downloadStatus: .local, status: .tagged)
+            DocumentService.archive.add(from: URL(fileURLWithPath: NSLocalizedString("test_file2", comment: "Simulator test data set")), size: 232000, downloadStatus: .iCloudDrive, status: .tagged)
+            DocumentService.archive.add(from: fileURL, size: 500000, downloadStatus: .local, status: .tagged)
+            DocumentService.archive.add(from: URL(fileURLWithPath: NSLocalizedString("test_file3", comment: "Simulator test data set")), size: 764500, downloadStatus: .iCloudDrive, status: .tagged)
+        } else {
+            assertionFailure("Could not load resurces")
+        }
+        #endif
+
+        updateDocuments(changed: DocumentService.archive.filterContentForSearchText(""))
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -85,10 +87,6 @@ class ArchiveViewController: UIViewController, UITableViewDelegate, Logging {
                 tableView.deselectRow(at: selectionIndexPath, animated: animated)
             }
         }
-
-//        self.tabBarController?.tabBar.isHidden = false
-//        self.tabBarController?.view.setNeedsLayout()
-//        self.tabBarController?.view.layoutIfNeeded()
     }
 
     // MARK: - Segues
@@ -175,6 +173,9 @@ class ArchiveViewController: UIViewController, UITableViewDelegate, Logging {
          */
         // setup search toolbar
         self.searchController.searchBar.scopeButtonTitles = [allLocal] + Array(DocumentService.archive.years.sorted().reversed().prefix(3))
+        #if targetEnvironment(simulator)
+        self.searchController.searchBar.scopeButtonTitles = [allLocal, "2018", "2017", "2016"]
+        #endif
 
         // update the filtered documents
         let searchBar = self.searchController.searchBar

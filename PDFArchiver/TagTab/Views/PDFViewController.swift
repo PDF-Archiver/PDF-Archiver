@@ -29,7 +29,7 @@ class PDFViewController: UIViewController {
         super.viewDidLoad()
 
         pdfView.document = pdfDocument
-        pdfView.displayMode = .singlePageContinuous
+        pdfView.displayMode = .singlePage
         pdfView.autoScales = true
         pdfView.interpolationQuality = .low
         pdfView.backgroundColor = .paLightGray

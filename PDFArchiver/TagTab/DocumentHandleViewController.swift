@@ -97,6 +97,7 @@ class DocumentHandleViewController: UIViewController, Logging {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        title = NSLocalizedString("document_handle_view_controller.title", comment: "Title of the document handle view controller.")
         addVcAndView(placeholderViewController)
     }
 

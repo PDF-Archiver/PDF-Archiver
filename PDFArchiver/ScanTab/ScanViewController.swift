@@ -106,7 +106,6 @@ class ScanViewController: UIViewController, Logging {
 
     private func triggerProcessing() {
         guard let untaggedPath = StorageHelper.Paths.untaggedPath else {
-            assertionFailure("Could not find a iCloud Drive url.")
             self.present(StorageHelper.Paths.iCloudDriveAlertController, animated: true, completion: nil)
             return
         }

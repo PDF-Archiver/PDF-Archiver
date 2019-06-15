@@ -53,6 +53,9 @@
 /* No tags could be found, e.g. while renaming the document. */
 "document_failure_reason__tags_missing" = "Es wurden keine Tags für das Dokument eingegeben.";
 
+/* Title of the document handle view controller. */
+"document_handle_view_controller.title" = "Neue Dokumente";
+
 /* No date could be found, e.g. while renaming the document. */
 "document_recovery_suggestion__date_missing" = "Bitte fügen Sie ein Datum hinzu.";
 
@@ -147,13 +150,13 @@
 "tagvc.enter-tag" = "Tag eingeben";
 
 /* Simulator test data set */
-"test_file1" = "2018-04-05--gehalt-april__arbeit_steuer_gehalt.pdf";
+"test_file1" = "archive/2018/2018-04-05--gehalt-april__arbeit_steuer_gehalt.pdf";
 
 /* Simulator test data set */
-"test_file2" = "2017-04-04--gff-info__spenden_steuer.pdf";
+"test_file2" = "archive/2017/2017-04-04--gff-info__spenden_steuer.pdf";
 
 /* Simulator test data set */
-"test_file3" = "2003-04-03--versicherung-report__brief_versicherung.pdf";
+"test_file3" = "archive/2016/2016-04-03--versicherung-report__brief_versicherung.pdf";
 
 /* Simulator test data set */
 "test_resource_filename" = "2017-01-17--tom-tailor-jeans__kleidung_rechnung";
