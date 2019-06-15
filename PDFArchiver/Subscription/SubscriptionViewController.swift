@@ -71,7 +71,7 @@ class SubscriptionViewController: UIViewController, Logging {
 
     private lazy var titleView: UILabel = {
         let view = UILabel()
-        view.font = .systemFont(ofSize: 30, weight: .bold)
+        view.font = .subscriptionTitle
         view.textAlignment = .center
         view.text = NSLocalizedString("subscription.title", comment: "Subscription View Controller title.")
         view.textColor = .paDarkGray
@@ -81,6 +81,7 @@ class SubscriptionViewController: UIViewController, Logging {
 
     private lazy var textView: UITextView = {
         let view = UITextView()
+        view.font = .paText
         view.isScrollEnabled = false
         view.text = NSLocalizedString("subscription.text", comment: "Subscription View Controller description text.")
         view.textColor = .paLightGray
@@ -91,6 +92,7 @@ class SubscriptionViewController: UIViewController, Logging {
 
     private lazy var level1Button: UIButton = {
         let button = UIButton()
+        button.titleLabel?.font = .subscriptionButton
         button.setTitle("Level 1", for: .normal)
         button.setTitleColor(.paWhite, for: .normal)
         button.layer.backgroundColor = UIColor.paDarkGray.cgColor
@@ -101,6 +103,7 @@ class SubscriptionViewController: UIViewController, Logging {
 
     private lazy var level2Button: UIButton = {
         let button = UIButton()
+        button.titleLabel?.font = .subscriptionButton
         button.setTitle("Level 2", for: .normal)
         button.setTitleColor(.paWhite, for: .normal)
         button.layer.backgroundColor = UIColor.paLightGray.cgColor
@@ -111,6 +114,7 @@ class SubscriptionViewController: UIViewController, Logging {
 
     private lazy var restoreButton: UIButton = {
         let button = UIButton()
+        button.titleLabel?.font = .paText
         button.setTitleColor(.paDarkGray, for: .normal)
         button.layer.backgroundColor = UIColor.paLightGray.cgColor.copy(alpha: 0.3)
         button.setTitle(NSLocalizedString("subscription.restore", tableName: nil, bundle: .main, value: "Restore", comment: "The restore button"), for: .normal)
@@ -121,6 +125,7 @@ class SubscriptionViewController: UIViewController, Logging {
 
     private lazy var cancelButton: UIButton = {
         let button = UIButton()
+        button.titleLabel?.font = .paText
         button.setTitleColor(.paDarkGray, for: .normal)
         button.setTitle(NSLocalizedString("subscription.cancel", tableName: nil, bundle: .main, value: "Cancel", comment: "The cancel button"), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false

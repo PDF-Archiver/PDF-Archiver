@@ -39,7 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             os_log("%@", log: AppDelegate.log, type: .error, error.localizedDescription)
         }
 
-        self.window?.tintColor = .paDarkGray
+        window?.tintColor = .paDarkGray
         UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.paDarkGray]
 
         return true

@@ -15,6 +15,7 @@ class PlaceholderViewController: UIViewController {
 
     init(text: String) {
         label.text = text
+        label.font = .paText
         super.init(nibName: nil, bundle: nil)
     }
 
