@@ -240,17 +240,15 @@ public class IAPService: NSObject, Logging {
 
     private static func isSimulatorOrTestFlightOrDebug() -> Bool {
 
+        // return early, if we have a debug build
+        #if DEBUG
         return true
+        #endif
 
-//        // return early, if we have a debug build
-//        #if DEBUG
-//        return true
-//        #endif
-//
-//        // source from: https://stackoverflow.com/a/38984554
-//        guard let path = Bundle.main.appStoreReceiptURL?.path else {
-//            return false
-//        }
-//        return path.contains("CoreSimulator") || path.contains("sandboxReceipt")
+        // source from: https://stackoverflow.com/a/38984554
+        guard let path = Bundle.main.appStoreReceiptURL?.path else {
+            return false
+        }
+        return path.contains("CoreSimulator") || path.contains("sandboxReceipt")
     }
 }

@@ -27,7 +27,7 @@
                     <constraints>
                         <constraint firstAttribute="height" constant="18" id="yVa-jW-lMA"/>
                     </constraints>
-                    <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                    <fontDescription key="fontDescription" type="system" weight="ultraLight" pointSize="12"/>
                     <color key="textColor" name="LightGray"/>
                     <nil key="highlightedColor"/>
                 </label>
@@ -43,7 +43,7 @@
                     <constraints>
                         <constraint firstAttribute="height" constant="18" id="68j-sG-oux"/>
                     </constraints>
-                    <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                    <fontDescription key="fontDescription" type="system" weight="ultraLight" pointSize="12"/>
                     <color key="textColor" name="LightGray"/>
                     <nil key="highlightedColor"/>
                 </label>
