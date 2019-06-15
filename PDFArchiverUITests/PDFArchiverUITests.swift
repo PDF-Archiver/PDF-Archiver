@@ -34,20 +34,20 @@ class PDFArchiverUITests: XCTestCase {
         // Use XCTAssert and related functions to verify your tests produce the correct results.
 
         if let app = self.app {
-            let cell = app.staticTexts["Tom Tailor Jeans"]
-            let exists = NSPredicate(format: "exists == 1")
-
-            expectation(for: exists, evaluatedWith: cell, handler: nil)
-            waitForExpectations(timeout: 15, handler: nil)
 
             // take launch screenshot
-            snapshot("01-Launch-Screen")
+            snapshot("01-Scan-Screen")
 
-            // tap on the label
-            cell.tap()
+            let tabBarsQuery = app.tabBars
+            tabBarsQuery.buttons["Archive"].tap()
+            let cell = app.staticTexts["Tom Tailor Jeans"]
+            let exists = NSPredicate(format: "exists == 1")
+            expectation(for: exists, evaluatedWith: cell, handler: nil)
+            waitForExpectations(timeout: 15, handler: nil)
+            snapshot("03-Archive-Screen")
 
-            // take pdf screenshot
-            snapshot("02-PDF-Screen")
+            tabBarsQuery.buttons["Tag"].tap()
+            snapshot("02-Tag-Screen")
         }
     }
 

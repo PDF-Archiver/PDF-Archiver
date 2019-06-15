@@ -15,11 +15,6 @@ target 'PDFArchiver' do
   pod 'paper-onboarding', '~> 6.1.3'
   pod 'SkyFloatingLabelTextField', '~> 3.7'
 
-  target 'PDFArchiverUITests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-
 end
 
 plugin 'cocoapods-keys', {
