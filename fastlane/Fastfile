@@ -19,10 +19,10 @@ desc "Generate new localized screenshots"
 lane :createNewScreenshots do
   capture_screenshots(
     scheme: "PDFArchiver")
-  upload_to_app_store(
-    force: true,
-    skip_binary_upload: true,
-    skip_metadata: true)
+  # upload_to_app_store(
+  #   force: true,
+  #   skip_binary_upload: true,
+  #   skip_metadata: true)
 end
 
 desc "Upload binary to Sentry.io"

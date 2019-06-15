@@ -40,6 +40,7 @@ class PDFArchiverUITests: XCTestCase {
 
             let tabBarsQuery = app.tabBars
             tabBarsQuery.buttons["Archive"].tap()
+//            tabBarsQuery.buttons["Archiv"].tap()
             let cell = app.staticTexts["Tom Tailor Jeans"]
             let exists = NSPredicate(format: "exists == 1")
             expectation(for: exists, evaluatedWith: cell, handler: nil)
