@@ -28,7 +28,7 @@ Transfer the sorted documents to your smartphone or make a backup within seconds
 * Open the **PDF Archiver** and start tagging. Your documents will be moved from the *untagged* to your *Archive* folder.
 
 ## :rocket: Usage
-* Scan your documents, e.g. with [Scanbot](https://scanbot.io)
+* Scan your documents with [PDF Archiver for iOS](https://github.com/pdf-Archiver/pdf-archive-viewer)
 * Create an `Archive` folder in your iCloud Drive
 * Select it in the *Preferences* panel (`⌘ ,` ...obviously)
 * Start tagging your files
@@ -71,12 +71,10 @@ Or clone the repository and build it:
 * Start **PDF Archiver** :rocket: (You might start the app a second time because of some app validation steps.)
 
 ## <a name="pro-tips"></a>:mortar_board: Pro Tips
-### Scanbot
-* **Easy document sync:** save your scans in iCloud Drive
-* **Enable PDF content searching:** buy [Scanbot Pro](https://scanbot.io) and turn on [OCR](https://en.wikipedia.org/wiki/Optical_character_recognition)
-* **Let PDF Archiver recognize the scan date:** set a compatible filename template
-    * In your Scanbot App go to: `Preferences > Advanced Settings > Filename Template`
-    * Choose: `[year]-[month]-[day]--Scanbot-[Hours][Minutes][Seconds]`
+### PDF Archiver for iOS
+* Scan your documents with the [iOS App](https://github.com/pdf-Archiver/pdf-archive-viewer)
+* Use the text recognition from PDF Archiver and use the tag/date suggestions
+* Validate the suggestions and save the document in your archive with the [iOS App](https://github.com/pdf-Archiver/pdf-archive-viewer) or [macOS App](https://github.com/pdf-Archiver/pdf-archiver) 
 
 ### PDF Archiver
 * Use the `↹` key for fast field switching
