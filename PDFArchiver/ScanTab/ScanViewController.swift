@@ -97,7 +97,7 @@ class ScanViewController: UIViewController, Logging {
 
         alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Camera access in ScanViewController."), style: .default, handler: nil))
         alert.addAction(UIAlertAction(title: NSLocalizedString("Grant Access", comment: "Camera access in ScanViewController."), style: .cancel) { (_) -> Void in
-            guard let settingsAppURL = URL(string: UIApplication.openSettingsURLString) else { return }
+            guard let settingsAppURL = URL(string: UIApplication.openSettingsURLString) else { fatalError("Could not find settings url!") }
             UIApplication.shared.open(settingsAppURL, options: [:], completionHandler: nil)
         })
 

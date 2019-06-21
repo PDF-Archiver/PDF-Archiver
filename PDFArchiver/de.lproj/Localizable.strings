@@ -101,6 +101,12 @@
 /* Intro: Tag Title */
 "intro.tag.title" = "Tag it.";
 
+/* No comment provided by engineer. */
+"MoreTableViewController.imprintCell.url" = "https://pdf-archiver.io/de/imprint/";
+
+/* No comment provided by engineer. */
+"MoreTableViewController.privacyPolicyCell.url" = "https://pdf-archiver.io/de/privacy/";
+
 /* Camera access in ScanViewController. */
 "Need Camera Access" = "Kamera Zugriff benötigt";
 
