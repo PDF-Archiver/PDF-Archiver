@@ -16,7 +16,10 @@ extension StorageHelper {
         static let tempFolderName = ".temp"
 
         static var archivePath: URL? = {
-            guard let containerUrl = FileManager.default.url(forUbiquityContainerIdentifier: nil) else { return nil }
+            guard let containerUrl = FileManager.default.url(forUbiquityContainerIdentifier: nil) else {
+                assertionFailure("Could not find default container identifier.")
+                return nil
+            }
             return containerUrl.appendingPathComponent("Documents")
         }()
 

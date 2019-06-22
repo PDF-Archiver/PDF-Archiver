@@ -116,9 +116,6 @@
 /* Alert VC: Title */
 "not-found.icloud-drive.title" = "Achtung";
 
-/* Could not save taken images locally. */
-"not-saved-images.text" = "Die Bilder konnten nicht gespeichert werden.";
-
 /* Alert VC: Title */
 "not-saved-images.title" = "Speichern fehlgeschlagen!";
 
