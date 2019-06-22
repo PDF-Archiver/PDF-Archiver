@@ -1027,13 +1027,13 @@
 					"\"WeScan\"",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -DDEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = "de.JulianKahnert.PDFArchiver-ios";
+				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -1071,12 +1071,12 @@
 					"\"WeScan\"",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -DRELEASE";
-				PRODUCT_BUNDLE_IDENTIFIER = "de.JulianKahnert.PDFArchiver-ios";
+				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

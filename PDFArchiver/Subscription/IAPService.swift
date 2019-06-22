@@ -27,7 +27,7 @@ public extension IAPServiceDelegate {
 
 public class IAPService: NSObject, Logging {
 
-    private static let productIdentifiers = Set(["MONTHLY_SUBSCRIPTION_IOS", "YEARLY_SUBSCRIPTION_IOS"])
+    private static let productIdentifiers = Set(["SUBSCRIPTION_MONTHLY_IOS", "SUBSCRIPTION_YEARLY_IOS_NEW"])
     private static let subscriptionExpiryDateKey = "SubscriptionExpiryDate"
 
     private var _expiryDate: Date?
