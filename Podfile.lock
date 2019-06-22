@@ -43,7 +43,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   SwiftyTesseract:
-    :commit: 27330611a6d979a8a75a879eff23c6dd1029fe43
+    :commit: 8b557a3c029d46a668de8b18cba907a32a501024
     :git: https://github.com/PDF-Archiver/SwiftyTesseract
   WeScan:
     :commit: d4890e6f85ff0665e669f4852bbd48663656d946
