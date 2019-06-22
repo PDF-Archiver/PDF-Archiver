@@ -76,14 +76,8 @@ class DocumentViewController: UIViewController, Logging {
         DispatchQueue.global().async { [weak self] in
             // get tags and save them in the background, they will be passed to the TagViewController
             guard let path = self?.document.path,
-                let pdfDocument = PDFDocument(url: path) else { return }
-            var text = ""
-            for index in 0 ..< pdfDocument.pageCount {
-                guard let page = pdfDocument.page(at: index),
-                    let pageContent = page.string else { return }
-
-                text += pageContent
-            }
+                let pdfDocument = PDFDocument(url: path),
+                let text = pdfDocument.string else { return }
             self?.taggingVC.update(suggestedTags: TagParser.parse(text))
         }
 

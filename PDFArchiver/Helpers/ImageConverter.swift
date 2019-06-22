@@ -61,7 +61,12 @@ public struct ImageConverter: Logging {
             workerQueue.addOperation {
 
                 // process one document as one operation, so that operationCount == numOfDocuments
-                process(paths, saveAt: path)
+                do {
+                    try process(paths, saveAt: path)
+                } catch {
+                    assertionFailure("Could not process images:\n\(error.localizedDescription)")
+                    os_log("Could not process images.", log: log, type: .error)
+                }
 
                 // notify after the pdf has been saved
                 NotificationCenter.default.post(name: .imageProcessingQueueLength, object: workerQueue.operationCount - 1)
@@ -73,72 +78,53 @@ public struct ImageConverter: Logging {
         return workerQueue.operationCount
     }
 
-    private static func process(_ paths: [URL], saveAt path: URL) {
+    private static func process(_ paths: [URL], saveAt path: URL) throws {
+
+        guard !paths.isEmpty else {
+            assertionFailure("Empty paths for processing.")
+            return
+        }
+
+        // check if the parent folder exists
+        try FileManager.default.createFolderIfNotExists(path)
 
         // load image from file
         var images = [UIImage]()
-        for path in paths {
+        for path in paths where path.pathExtension.lowercased() != "pdf" {
             guard let image = getImage(from: path) else { fatalError("Could not get image at \(path).") }
             images.append(image)
         }
 
         // convert image to pdf
-        let pdfDocument = createPDF(from: images)
+        let tempFilepath = paths[0].deletingPathExtension()
+        try createPDF(from: images, at: tempFilepath)
 
         // generate filename by analysing the image
+        guard let pdfDocument = PDFDocument(url: tempFilepath.appendingPathExtension("pdf")) else { fatalError("Could not find PDF document.") }
         let filename = getFilename(from: pdfDocument)
         let filepath = path.appendingPathComponent(filename)
 
-        // save PDF document
-        let success = save(pdfDocument, at: filepath)
-        if success {
-            for path in paths {
-                try? FileManager.default.removeItem(at: path)
-            }
-        } else {
-            os_log("Document could not be saved.", log: log, type: .error)
+        // save PDF document and delete original images
+        try FileManager.default.moveItem(at: tempFilepath.appendingPathExtension("pdf"), to: filepath)
+        for path in paths {
+            try? FileManager.default.removeItem(at: path)
         }
     }
 
-    private static func createPDF(from images: [UIImage]) -> PDFDocument {
+    private static func createPDF(from images: [UIImage], at filepath: URL) throws {
         os_log("Creating PDF from images", log: log, type: .debug)
-
-        let document: PDFDocument
 
         let swiftyTesseract = SwiftyTesseract(languages: languages, bundle: .main, engineMode: .lstmOnly)
 
         // try to create a pdf document from
-        let tmpData: Data?
         if #available(iOS 12.0, *) {
             let signpostID = OSSignpostID(log: log, object: images as AnyObject)
             os_signpost(.begin, log: log, name: "Process Images", signpostID: signpostID)
-            tmpData = try? swiftyTesseract.createPDF(from: images)
+            try swiftyTesseract.createPDF(from: images, at: filepath)
             os_signpost(.end, log: log, name: "Process Images", signpostID: signpostID)
         } else {
-            tmpData = try? swiftyTesseract.createPDF(from: images)
+            try swiftyTesseract.createPDF(from: images, at: filepath)
         }
-
-        if let data = tmpData,
-            let newDocument = PDFDocument(data: data) {
-            document = newDocument
-
-        } else {
-            // Create an empty PDF document
-            let newDocument = PDFDocument()
-
-            for (index, image) in images.enumerated() {
-
-                // Create a PDF page instance from the image
-                guard let pdfPage = PDFPage(image: image) else { continue }
-
-                // Insert the PDF page into your document
-                newDocument.insert(pdfPage, at: index)
-            }
-
-            document = newDocument
-        }
-
-        return document
     }
 
     private static func getFilename(from document: PDFDocument) -> String {
@@ -148,19 +134,23 @@ public struct ImageConverter: Logging {
         guard let content = document.string else { return "" }
 
         // parse the date
-        let parsedDate = DateParser.parse(content)
-        let date = parsedDate?.date ?? Date()
+        let parsedDate = DateParser.parse(content)?.date ?? Date()
 
         // parse the tags
         var newTags = TagParser.parse(content)
         if newTags.isEmpty {
             newTags.insert(Constants.documentTagPlaceholder)
+        } else {
+
+            // only use tags that are already in the archive
+            let archiveTags = DocumentService.archive.getAvailableTags(with: []).map { $0.name }
+            newTags = Set(newTags.intersection(Set(archiveTags)).prefix(5))
         }
 
         // get default specification
         let specification = Constants.documentDescriptionPlaceholder + Date().timeIntervalSince1970.description
 
-        return Document.createFilename(date: date, specification: specification, tags: newTags)
+        return Document.createFilename(date: parsedDate, specification: specification, tags: newTags)
     }
 
     private static func getImage(from path: URL) -> UIImage? {
@@ -172,24 +162,5 @@ public struct ImageConverter: Logging {
         guard let image = UIImage(data: imageData) else { return nil }
 
         return image
-    }
-
-    private static func save(_ pdfDocument: PDFDocument, at path: URL) -> Bool {
-        os_log("Saving PDF document", log: log, type: .debug)
-
-        // check if the parent folder exists
-        try? FileManager.default.createFolderIfNotExists(path.deletingLastPathComponent())
-
-        // save PDF document
-        guard let data = pdfDocument.dataRepresentation() else { return false }
-
-        var success = false
-        do {
-            try data.write(to: path)
-            success = true
-        } catch {
-            os_log("Failed to save pdf document: %@", log: log, type: .error, error.localizedDescription)
-        }
-        return success
     }
 }
