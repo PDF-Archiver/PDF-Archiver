@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="TaggingViewController" customModule="PDFArchiver" customModuleProvider="target">
+            <connections>
+                <outlet property="documentTagsView" destination="XWq-Yc-jXb" id="rOK-b5-3PT"/>
+                <outlet property="suggestedTagsView" destination="eBy-UA-0iG" id="OII-DA-vuZ"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="458" height="357"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Document Tags" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yaZ-7S-N5H">
+                    <rect key="frame" x="25" y="0.0" width="408" height="18"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="18" id="yVa-jW-lMA"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" weight="ultraLight" pointSize="12"/>
+                    <color key="textColor" name="LightGray"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XWq-Yc-jXb" userLabel="Document Tags">
+                    <rect key="frame" x="15" y="26" width="428" height="145"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="30" id="nRj-U6-7OA"/>
+                    </constraints>
+                </view>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="More Suggestions" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DwP-KA-tHq">
+                    <rect key="frame" x="25" y="211" width="408" height="18"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="18" id="68j-sG-oux"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" weight="ultraLight" pointSize="12"/>
+                    <color key="textColor" name="LightGray"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eBy-UA-0iG" userLabel="Suggested Tags">
+                    <rect key="frame" x="15" y="232" width="428" height="120"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="height" relation="greaterThanOrEqual" priority="750" constant="30" id="Tml-Aa-fVY"/>
+                    </constraints>
+                </view>
+                <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QxQ-Eu-VdB">
+                    <rect key="frame" x="0.0" y="202" width="458" height="1"/>
+                    <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="1" id="BTB-Eb-K5g"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="DwP-KA-tHq" firstAttribute="top" secondItem="QxQ-Eu-VdB" secondAttribute="bottom" constant="5" id="EB4-ID-ubc"/>
+                <constraint firstItem="XWq-Yc-jXb" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="15" id="FwN-nv-qGW"/>
+                <constraint firstItem="eBy-UA-0iG" firstAttribute="top" secondItem="DwP-KA-tHq" secondAttribute="bottom" constant="3" id="Loz-Um-6mP"/>
+                <constraint firstItem="yaZ-7S-N5H" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="25" id="RYp-Ny-CwY"/>
+                <constraint firstItem="yaZ-7S-N5H" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="XnN-Z6-JDx"/>
+                <constraint firstAttribute="trailing" secondItem="XWq-Yc-jXb" secondAttribute="trailing" constant="15" id="cKy-Hf-ZKW"/>
+                <constraint firstItem="QxQ-Eu-VdB" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="f1o-4S-Vqg"/>
+                <constraint firstAttribute="trailing" secondItem="eBy-UA-0iG" secondAttribute="trailing" constant="15" id="gh1-9X-Ykw"/>
+                <constraint firstAttribute="trailing" secondItem="QxQ-Eu-VdB" secondAttribute="trailing" id="jDB-g0-ACe"/>
+                <constraint firstAttribute="bottom" secondItem="eBy-UA-0iG" secondAttribute="bottom" id="kJo-Eo-YEd"/>
+                <constraint firstAttribute="trailing" secondItem="yaZ-7S-N5H" secondAttribute="trailing" constant="25" id="l5D-t8-0XH"/>
+                <constraint firstItem="eBy-UA-0iG" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="15" id="nz1-5a-uIa"/>
+                <constraint firstItem="XWq-Yc-jXb" firstAttribute="top" secondItem="yaZ-7S-N5H" secondAttribute="bottom" constant="3" id="rT6-Nv-qHB"/>
+                <constraint firstAttribute="trailing" secondItem="DwP-KA-tHq" secondAttribute="trailing" constant="25" id="uDb-2B-x4I"/>
+                <constraint firstItem="DwP-KA-tHq" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="25" id="vKW-jd-IHq"/>
+                <constraint firstItem="QxQ-Eu-VdB" firstAttribute="top" secondItem="XWq-Yc-jXb" secondAttribute="bottom" constant="5" id="z6d-6w-AS4"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="114.49275362318842" y="25.78125"/>
+        </view>
+    </objects>
+    <resources>
+        <namedColor name="LightGray">
+            <color red="0.21299999952316284" green="0.24199999868869781" blue="0.28600001335144043" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+        </namedColor>
+    </resources>
+</document>

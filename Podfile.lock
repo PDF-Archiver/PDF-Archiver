@@ -1,22 +1,65 @@
 PODS:
-  - Sentry (4.1.1):
-    - Sentry/Core (= 4.1.1)
-  - Sentry/Core (4.1.1)
-  - TagListView (1.3.2)
+  - Keys (1.0.1)
+  - paper-onboarding (6.1.3)
+  - Sentry (4.3.4):
+    - Sentry/Core (= 4.3.4)
+  - Sentry/Core (4.3.4)
+  - SkyFloatingLabelTextField (3.7.0)
+  - SwiftyStoreKit (0.14.2)
+  - SwiftyTesseract (2.2.0)
+  - TagListView (1.4.0)
+  - WeScan (1.1.0)
+  - WSTagsField (4.1.0)
 
 DEPENDENCIES:
-  - Sentry (~> 4.1)
+  - Keys (from `Pods/CocoaPodsKeys`)
+  - paper-onboarding (~> 6.1.3)
+  - Sentry (~> 4.2)
+  - SkyFloatingLabelTextField (~> 3.7)
+  - SwiftyStoreKit (~> 0.14.2)
+  - SwiftyTesseract (from `https://github.com/PDF-Archiver/SwiftyTesseract`, branch `master`)
   - TagListView (~> 1.3)
+  - WeScan (from `https://github.com/PDF-Archiver/WeScan`, branch `master`)
+  - WSTagsField (~> 4.1)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
+    - paper-onboarding
     - Sentry
+    - SkyFloatingLabelTextField
+    - SwiftyStoreKit
     - TagListView
+    - WSTagsField
+
+EXTERNAL SOURCES:
+  Keys:
+    :path: Pods/CocoaPodsKeys
+  SwiftyTesseract:
+    :branch: master
+    :git: https://github.com/PDF-Archiver/SwiftyTesseract
+  WeScan:
+    :branch: master
+    :git: https://github.com/PDF-Archiver/WeScan
+
+CHECKOUT OPTIONS:
+  SwiftyTesseract:
+    :commit: 8b557a3c029d46a668de8b18cba907a32a501024
+    :git: https://github.com/PDF-Archiver/SwiftyTesseract
+  WeScan:
+    :commit: d4890e6f85ff0665e669f4852bbd48663656d946
+    :git: https://github.com/PDF-Archiver/WeScan
 
 SPEC CHECKSUMS:
-  Sentry: c9d0543c7223ddec036027f4c7391ea057ba9856
-  TagListView: 0c7e9c26b9aff858224ee6b155f5fcacd9e27c83
+  Keys: a576f4c9c1c641ca913a959a9c62ed3f215a8de9
+  paper-onboarding: 47ded9ede6ae9dd7ec135dddd8bd3e170b79d799
+  Sentry: 26f0e6492b103e87434d1a5eea2d241a36f2c2a2
+  SkyFloatingLabelTextField: 4b46db0ab1ccde0919cded29c656e6b4805eda04
+  SwiftyStoreKit: cc399645796b094022fb650c148a0aed25995873
+  SwiftyTesseract: 44a8f4b2b7e5f22b997919f935261d22d28a4917
+  TagListView: 987b0bdbb16cd9d9e7c0e2ec32aff37ecba8b173
+  WeScan: cd84147083281e54b5d625b155776d160978382b
+  WSTagsField: 269da4be929d8945adf7195e3822b70826c1c1a4
 
-PODFILE CHECKSUM: eaff047c6e967c0507408bbb00ac42e82f9ecd4f
+PODFILE CHECKSUM: 03a270535d9c7df40b522e3d6a4fb600d5f3abc8
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.6.1
