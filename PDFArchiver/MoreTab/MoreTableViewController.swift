@@ -19,8 +19,11 @@ class MoreTableViewController: UITableViewController {
     @IBOutlet private weak var privacyPolicyCell: UITableViewCell!
     @IBOutlet private weak var imprintCell: UITableViewCell!
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        // save the selected index for the next app start
+        UserDefaults.standard.set(tabBarController?.selectedIndex ?? 2, forKey: Constants.UserDefaults.lastSelectedTabIndex.rawValue)
     }
 
     // MARK: - Table view delegate

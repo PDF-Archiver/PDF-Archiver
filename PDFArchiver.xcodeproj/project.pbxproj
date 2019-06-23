@@ -15,6 +15,7 @@
 		A301A75621496992003EA382 /* DocumentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A301A75421496992003EA382 /* DocumentTableViewCell.swift */; };
 		A301A75721496992003EA382 /* DocumentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A301A75521496992003EA382 /* DocumentTableViewCell.xib */; };
 		A305AE4821D81E74004DDC1B /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A305AE4721D81E74004DDC1B /* NavigationController.swift */; };
+		A30D767722BF914B00862224 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30D767622BF914B00862224 /* MainTabBarController.swift */; };
 		A31263E2217B75DC00ACAFA4 /* LoadingBackgroundView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A31263E4217B75DC00ACAFA4 /* LoadingBackgroundView.xib */; };
 		A314A29B225542360099681D /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A314A29A225542360099681D /* CustomButton.swift */; };
 		A316F36622946ED70099BA26 /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A316F36522946ED70099BA26 /* UIViewController.swift */; };
@@ -121,6 +122,7 @@
 		A301A75421496992003EA382 /* DocumentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentTableViewCell.swift; sourceTree = "<group>"; };
 		A301A75521496992003EA382 /* DocumentTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DocumentTableViewCell.xib; sourceTree = "<group>"; };
 		A305AE4721D81E74004DDC1B /* NavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
+		A30D767622BF914B00862224 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		A31263E3217B75DC00ACAFA4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LoadingBackgroundView.xib; sourceTree = "<group>"; };
 		A31263E6217B75E200ACAFA4 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LoadingBackgroundView.strings; sourceTree = "<group>"; };
 		A314A29A225542360099681D /* CustomButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
@@ -254,6 +256,7 @@
 				A34A84F12130A28A0093FAE5 /* Services */,
 				A34A84F32130A2A70093FAE5 /* Helpers */,
 				A3FECF952130A0220053F2E4 /* Resources */,
+				A30D767622BF914B00862224 /* MainTabBarController.swift */,
 			);
 			path = PDFArchiver;
 			sourceTree = "<group>";
@@ -728,6 +731,7 @@
 			files = (
 				A3FDD355229467590054FFFC /* DocumentHandleViewController.swift in Sources */,
 				A3B83864218CA7640093C374 /* TableSection.swift in Sources */,
+				A30D767722BF914B00862224 /* MainTabBarController.swift in Sources */,
 				A34A84FC2130A35A0093FAE5 /* ArchiveExtension.swift in Sources */,
 				A3400DE12268902200097A3F /* BartyCrouch.swift in Sources */,
 				A3ECBC9622496BA000A626AE /* IAP.swift in Sources */,
