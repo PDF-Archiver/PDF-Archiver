@@ -137,13 +137,13 @@ class SubscriptionViewController: UIViewController, Logging {
 
     @objc
     private func subscribeLevel1() {
-        IAP.service.buyProduct("MONTHLY_SUBSCRIPTION_IOS")
+        IAP.service.buyProduct("SUBSCRIPTION_MONTHLY_IOS")
         cancel()
     }
 
     @objc
     private func subscribeLevel2() {
-        IAP.service.buyProduct("YEARLY_SUBSCRIPTION_IOS")
+        IAP.service.buyProduct("SUBSCRIPTION_YEARLY_IOS_NEW")
         cancel()
     }
 
@@ -245,10 +245,10 @@ class SubscriptionViewController: UIViewController, Logging {
     private func updateButtonNames(with products: Set<SKProduct>) {
         for product in products {
             switch product.productIdentifier {
-            case "MONTHLY_SUBSCRIPTION_IOS":
+            case "SUBSCRIPTION_MONTHLY_IOS":
                 guard let localizedPrice = product.localizedPrice else { continue }
                 level1Button.setTitle(localizedPrice + " " + NSLocalizedString("per_month", comment: ""), for: .normal)
-            case "YEARLY_SUBSCRIPTION_IOS":
+            case "SUBSCRIPTION_YEARLY_IOS_NEW":
                 guard let localizedPrice = product.localizedPrice else { continue }
                 level2Button.setTitle(localizedPrice + " " + NSLocalizedString("per_year", comment: ""), for: .normal)
             default:

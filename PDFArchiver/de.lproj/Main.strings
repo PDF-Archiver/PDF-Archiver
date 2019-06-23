@@ -22,3 +22,27 @@
 
 /* Class = "UILabel"; text = "PDF Archiver"; ObjectID = "kSx-MV-ggo"; */
 "kSx-MV-ggo.text" = "PDF Archiver";
+
+/* Class = "UITableViewSection"; headerTitle = "ℹ️ More Information"; ObjectID = "8Jl-0n-RSA"; */
+"8Jl-0n-RSA.headerTitle" = "ℹ️ Mehr Informationen";
+
+/* Class = "UITableViewSection"; headerTitle = "🛠 Preferences"; ObjectID = "A3a-aR-JbF"; */
+"A3a-aR-JbF.headerTitle" = "🛠 Einstellungen";
+
+/* Class = "UILabel"; text = "Terms of Use & Privacy Policy"; ObjectID = "QFG-nR-9DX"; */
+"QFG-nR-9DX.text" = "Datenschutzerklärung";
+
+/* Class = "UILabel"; text = "Show App Permissions"; ObjectID = "btP-D5-3qd"; */
+"btP-D5-3qd.text" = "Berechtigungen anzeigen";
+
+/* Class = "UILabel"; text = "Show Intro"; ObjectID = "rdF-5x-xEi"; */
+"rdF-5x-xEi.text" = "Intro anzeigen";
+
+/* Class = "UILabel"; text = "Manage Subscription"; ObjectID = "x7g-yy-wB4"; */
+"x7g-yy-wB4.text" = "Abo verwalten";
+
+/* Class = "UILabel"; text = "Imprint"; ObjectID = "yfI-wR-oFr"; */
+"yfI-wR-oFr.text" = "Impressum";
+
+/* Class = "UILabel"; text = "PDF Archiver (macOS) 🖥"; ObjectID = "ckq-IA-j4V"; */
+"ckq-IA-j4V.text" = "PDF Archiver (macOS) 🖥";

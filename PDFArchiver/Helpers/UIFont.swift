@@ -16,5 +16,5 @@ extension UIFont {
     static let subscriptionTitle: UIFont = .systemFont(ofSize: 30, weight: .bold)
     static let subscriptionButton: UIFont = .systemFont(ofSize: 17, weight: .medium)
     static let paText: UIFont = .systemFont(ofSize: 17)
-    static let paLabelTitle: UIFont = .systemFont(ofSize: 13, weight: .medium)
+    static let paLabelTitle: UIFont = .systemFont(ofSize: 12, weight: .ultraLight)
 }

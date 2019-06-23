@@ -97,7 +97,7 @@ class ScanViewController: UIViewController, Logging {
 
         alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Camera access in ScanViewController."), style: .default, handler: nil))
         alert.addAction(UIAlertAction(title: NSLocalizedString("Grant Access", comment: "Camera access in ScanViewController."), style: .cancel) { (_) -> Void in
-            guard let settingsAppURL = URL(string: UIApplication.openSettingsURLString) else { return }
+            guard let settingsAppURL = URL(string: UIApplication.openSettingsURLString) else { fatalError("Could not find settings url!") }
             UIApplication.shared.open(settingsAppURL, options: [:], completionHandler: nil)
         })
 
@@ -141,9 +141,10 @@ extension ScanViewController: ImageScannerControllerDelegate {
         do {
             try StorageHelper.save([image])
         } catch {
-            let alert = UIAlertController(title: NSLocalizedString("not-saved-images.title", comment: "Alert VC: Title"), message: NSLocalizedString("not-saved-images.text", comment: "Could not save taken images locally."), preferredStyle: .alert)
+            assertionFailure("Could not save temp images with error:\n\(error.localizedDescription)")
+            let alert = UIAlertController(title: NSLocalizedString("not-saved-images.title", comment: "Alert VC: Title"), message: error.localizedDescription, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Button confirmation label"), style: .default, handler: nil))
-            self.present(alert, animated: true, completion: nil)
+            present(alert, animated: true, completion: nil)
         }
 
         // notify ImageConverter

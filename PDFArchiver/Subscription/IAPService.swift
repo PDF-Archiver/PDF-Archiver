@@ -27,7 +27,7 @@ public extension IAPServiceDelegate {
 
 public class IAPService: NSObject, Logging {
 
-    private static let productIdentifiers = Set(["MONTHLY_SUBSCRIPTION_IOS", "YEARLY_SUBSCRIPTION_IOS"])
+    private static let productIdentifiers = Set(["SUBSCRIPTION_MONTHLY_IOS", "SUBSCRIPTION_YEARLY_IOS_NEW"])
     private static let subscriptionExpiryDateKey = "SubscriptionExpiryDate"
 
     private var _expiryDate: Date?
@@ -240,17 +240,15 @@ public class IAPService: NSObject, Logging {
 
     private static func isSimulatorOrTestFlightOrDebug() -> Bool {
 
+        // return early, if we have a debug build
+        #if DEBUG
         return true
+        #endif
 
-//        // return early, if we have a debug build
-//        #if DEBUG
-//        return true
-//        #endif
-//
-//        // source from: https://stackoverflow.com/a/38984554
-//        guard let path = Bundle.main.appStoreReceiptURL?.path else {
-//            return false
-//        }
-//        return path.contains("CoreSimulator") || path.contains("sandboxReceipt")
+        // source from: https://stackoverflow.com/a/38984554
+        guard let path = Bundle.main.appStoreReceiptURL?.path else {
+            return false
+        }
+        return path.contains("CoreSimulator") || path.contains("sandboxReceipt")
     }
 }

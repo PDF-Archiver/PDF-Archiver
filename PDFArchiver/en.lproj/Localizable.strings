@@ -101,6 +101,12 @@
 /* Intro: Tag Title */
 "intro.tag.title" = "Tag it.";
 
+/* No comment provided by engineer. */
+"MoreTableViewController.imprintCell.url" = "https://pdf-archiver.io/imprint";
+
+/* No comment provided by engineer. */
+"MoreTableViewController.privacyPolicyCell.url" = "https://pdf-archiver.io/privacy";
+
 /* Camera access in ScanViewController. */
 "Need Camera Access" = "Need Camera Access";
 
@@ -109,9 +115,6 @@
 
 /* Alert VC: Title */
 "not-found.icloud-drive.title" = "Attention";
-
-/* Could not save taken images locally. */
-"not-saved-images.text" = "The pictures could not be saved.";
 
 /* Alert VC: Title */
 "not-saved-images.title" = "Save failed!";
