@@ -1,1 +1,1 @@
-pdf,archiver,pdfarchiver,archive,tag,tags,document,bill,letter,scan,finder,sort,drive
+pdf,scan,scanner,archiver,pdfarchiver,archive,tag,tags,document,bill,letter,scan,finder,sort,drive

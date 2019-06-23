@@ -1,1 +1,5 @@
++++ "PDF Archive Viewer" wird zu "PDF Archiver" +++
+Mit dieser Version landen nun die Feature der macOS Variante auf deinem Handy! Darüber hinaus können Dokumente nun einfach mit deinem iPhone eingescannt und verarbeitet werden. Die intelligente Texterkennung hilft dir anschließenden bei dem Taggen der Dokumente. Sie schlägt dir Tags und das Datum vor, sodass du nur noch eine Beschreibung eingeben musst und das Dokument archivieren kannst.
 
+• Die letzte App Ansicht wird für den nächsten App Start gespeichert.
+• Optische Anpassungen
