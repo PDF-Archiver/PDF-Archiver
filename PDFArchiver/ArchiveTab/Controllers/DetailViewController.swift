@@ -84,10 +84,11 @@ class DetailViewController: UIViewController, Logging {
         super.viewWillAppear(animated)
 
         // setup document view
-        documentView.displayMode = .singlePage
+        documentView.displayMode = .singlePageContinuous
         documentView.autoScales = true
         documentView.interpolationQuality = .low
         documentView.backgroundColor = .paLightGray
+        documentView.sizeToFit()
     }
 
     override func viewDidLoad() {
