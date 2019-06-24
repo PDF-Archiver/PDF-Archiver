@@ -10,8 +10,10 @@
 #     https://docs.fastlane.tools/plugins/available-plugins
 #
 
+setup_travis
+
 # Uncomment the line if you want fastlane to automatically update itself
-# update_fastlane
+update_fastlane
 
 default_platform(:ios)
 
@@ -27,7 +29,13 @@ end
 
 desc "Upload binary to Sentry.io"
 lane :sentry do
-  sentry_upload_dsym
+  download_dsyms(
+    version: "latest",
+    output_directory: "build/"
+  )
+  sentry_upload_dsym(
+    dsym_path: "build/"
+  )
 end
 
 desc "Build Beta-Version & Upload it to TestFlight."
@@ -39,7 +47,7 @@ lane :beta do
     beta_app_description: "A new Preview of the App!",
     beta_app_feedback_email: "feedback@pdf-archiver.io",
     groups: ["alphatester"])
-  sentry_upload_dsym
+  sentry
 end
 
 desc "Update metadata to App Store Connect."
