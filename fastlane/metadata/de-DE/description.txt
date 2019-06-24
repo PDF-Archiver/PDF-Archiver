@@ -1,20 +1,44 @@
-Dokumente einfach anzeigen. Einscannen, mit der macOS App PDF Archiver benennen und anschließend mit PDF Archive Viewer wiederfinden.
+Verwalte deine Dokumente mit PDF Archiver. Scanne und tagge sie, um anschließend jederzeit auf sie zugreifen zu können. Die intelligente Texterkennung liefert dir Vorschläge und hilft bei der Sortierung.
 
 
-DER WEG
+DIE FEATURE
 
-• Scanne alle Dokumente, Briefe, Rechnungen etc. ein und speichere sie auf deinem Computer.
+• 100% OpenSource (github.com/pdf-archiver)
+• Intelligente Texterkennung
+• Textverarbeitung ausschließlich auf deinem iPhone/iPad (keine Cloud Dienste)
+• Synchronisation via iCloud Drive
+
+
+DER WORKFLOW
+
+• Scanne alle Dokumente, Briefe, Rechnungen etc. mit PDF Archiver.
 • Kümmere dich nicht weiter um die Sortierung der Originale, sondern lege sie in eine Box.
-• Die digitalen Dokumente werden mithilfe der macOS App PDF Archivers mit Datum, Beschreibung und Tags versehen.
-• Diese Dokumente können anschließend mit PDF Archive Viewer betrachtet werden.
+• Die digitalen Dokumente werden von PDF Archiver auf deinem iPhone analysiert. Anschließend werden dir Tags und das Datum vorgeschlagen.
+• Speichere deine Dokumente in deinem Archiv in iCloud Drive.
+• Diese Dokumente können jederzeit mit PDF Archiver oder in iCloud Drive angesehen werden.
 
 
 DAS KONZEPT
+
+PDF Archiver speichert deine Dokumente nach der folgenden Namenskonvention:
+
+2017-01-02--das-ist-ein-wichtiges-dokument__rechnung_urlaub.pdf
+2018-04-30--mittagessen-berlin__arbeit_rechnung.pdf
 
 Diese Struktur kann unabhängig vom Betriebssystem/Dateisystem verwendet werden und hat viele weitere Vorteile. Sie lässt dich ...
 • ... nach Tags suchen: "_tagname"
 • ... in der Beschreibung suchen: "-beschreibung"
 • ... nach Tag oder Beschreibung suchen: "suchbegriff"
+
+
+ABO­MO­DELL
+
+Die­se App re­spek­tiert dei­ne Pri­vat­sphä­re und ver­mei­det z.B. die Ver­wen­dung von Wer­be­platt­for­men. Um die Wei­ter­ent­wick­lung die­ser App zu un­ter­stüt­zen, verwende ich ei­n Abo­mo­dell.
+
+Be­vor du PDF Ar­chi­ver kaufst, kannst du die App ei­nen Mo­nat kos­ten­los tes­ten! An­schlie­ßend ste­hen dir zwei Op­tio­nen zur Ver­fü­gung, um die App wei­ter zu ver­wen­den:
+• 1,99€ mo­nat­lich
+• 4,99€ jähr­lich (begrenztes Einführungsangebot, sonst 7.99€)
+Bei­de Abomög­lich­kei­ten schlie­ßen Sie per In-App-Kauf ab. Die Be­zah­lung er­folgt über den iTunes Ac­count. Er wird 24 Stun­den vor Be­en­di­gung des Abos be­las­tet. Die­se au­to­ma­ti­sche Er­neue­rung kann je­der­zeit über die Ein­stel­lun­gen des iTunes Stores ab­ge­schal­tet wer­den.
 
 
 FRAGEN

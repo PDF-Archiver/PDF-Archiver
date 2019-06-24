@@ -29,18 +29,15 @@ class PDFViewController: UIViewController {
         super.viewDidLoad()
 
         pdfView.document = pdfDocument
-        pdfView.displayMode = .singlePage
+        pdfView.displayMode = .singlePageContinuous
         pdfView.autoScales = true
         pdfView.interpolationQuality = .low
         pdfView.backgroundColor = .paLightGray
-
-        pdfView.maxScaleFactor = 4.0
-        pdfView.minScaleFactor = pdfView.scaleFactorForSizeToFit
-        pdfView.scaleFactor = pdfView.scaleFactorForSizeToFit
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         pdfView.goToFirstPage(self)
+        pdfView.sizeToFit()
     }
 }

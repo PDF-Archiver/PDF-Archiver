@@ -81,10 +81,13 @@ class SubscriptionViewController: UIViewController, Logging {
 
     private lazy var textView: UITextView = {
         let view = UITextView()
-        view.font = .paText
-        view.isScrollEnabled = false
-        view.text = NSLocalizedString("subscription.text", comment: "Subscription View Controller description text.")
+        view.font = UIFont.preferredFont(forTextStyle: .body)
+        view.adjustsFontForContentSizeCategory = true
         view.textColor = .paLightGray
+        view.text = NSLocalizedString("subscription.text", comment: "Subscription View Controller description text.")
+        view.isScrollEnabled = true
+        view.isSelectable = false
+        view.isEditable = false
         view.translatesAutoresizingMaskIntoConstraints = false
         view.heightAnchor.constraint(equalToConstant: view.sizeThatFits(view.contentSize).height)
         return view
@@ -193,6 +196,7 @@ class SubscriptionViewController: UIViewController, Logging {
         let actionViewConstraints: [NSLayoutConstraint] = [
             maxWidth,
             defaultWidth,
+            actionView.heightAnchor.constraint(lessThanOrEqualTo: view.heightAnchor, multiplier: 0.9),
             actionView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             actionView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ]
@@ -204,7 +208,10 @@ class SubscriptionViewController: UIViewController, Logging {
             titleView.trailingAnchor.constraint(equalTo: actionView.trailingAnchor)
         ]
 
+        let textHeight = textView.heightAnchor.constraint(equalTo: titleView.heightAnchor, multiplier: 10)
+        textHeight.priority = UILayoutPriority(rawValue: 750)
         let textViewConstraints: [NSLayoutConstraint] = [
+            textHeight,
             textView.topAnchor.constraint(equalTo: titleView.bottomAnchor, constant: 8),
             textView.bottomAnchor.constraint(equalTo: level1Button.topAnchor, constant: -8),
             textView.leadingAnchor.constraint(equalTo: actionView.leadingAnchor, constant: 8),
