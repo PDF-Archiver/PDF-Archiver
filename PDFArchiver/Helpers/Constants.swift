@@ -16,5 +16,6 @@ enum Constants {
     // MARK: - UserDefaults Keys
     enum UserDefaults: String {
         case tutorialShown
+        case lastSelectedTabIndex
     }
 }

@@ -1,26 +1,49 @@
-Organize your documents digitally. Just scan them and tag them with the macOS App PDF Archiver.
+Organize your documents digitally. Just scan and tag them with the PDF Archiver.
+
+THE FEATURES
+
+• 100% OpenSource (github.com/pdf-archiver)
+• Intelligent Textrecognition
+• Text processing only on your iPhone/iPad (no cloud involved)
+• Synchronisation via iCloud Drive
 
 
-THE WAY
+THE WORKFLOW
 
-• Scan all incoming documents and save them on your computer/iCloud Drive.
+• Scan all incoming documents with PDF Archiver.
 • Put the original paper documents in a folder, sorted by year. Don't care about bills/insurance papers etc. Just leave all of them in a box.
-• Open the macOS App PDF Archiver and start tagging. Your documents will be moved to your Archive folder.
-• These documents can be viewed with PDF Archive Viewer afterwards.
+• PDF Archiver analysis the document locally and suggests tags and the document date.
+• Save your documents to your archive folder in iCloud Drive.
+• You can view these documents at any time from within PDF Archiver or in iCloud Drive.
 
 
 THE CONCEPT
 
+PDF Archiver saves your documents by the following naming convention:
+
+2017-01-02--blue-jeans__bill_clothes.pdf
+2018-04-30--launch-in-berlin__work_travel.pdf
+
 This structure is independent from your OS and filesystem and makes it very easy to search files ...
 • ... by tag via a searchterm like: "_tagname", starting with _
-• ... by description via a searchterm like: "-descriptionword", starting with -
+• ... by description via a searchterm like: "-descriptionword", starting with "-"
 • ... by tag or description via a searchterm like: "searchword", starting with the term
+
+
+SUB­SCRIP­TI­ON
+
+This App re­spects your pri­va­cy and avo­ids e.g. ad­ver­ti­sing plat­forms. To help the fur­ther de­ve­lop­ment of this app, I use a sub­scrip­ti­on mo­del.
+
+Be­fo­re purcha­sing for PDF Ar­chi­ver, you can use it wi­t­hin a 1-month free tri­al pe­ri­od! Af­ter­wards, you have two op­ti­ons to con­ti­nue using the app:
+• $1.99 USD per month
+• $4.49 USD per year (limited introductory offer, otherwise $7.49 USD)
+The pri­ces may vary from coun­try to coun­try. Pay­ment will be char­ged to your iTunes ac­count. Your ac­count will be char­ged for re­ne­wal 24 hours pri­or to the end of the cur­rent sub­scrip­ti­on. Auto-re­ne­wal may be tur­ned off at any time by go­ing to your set­tings in the iTunes Store af­ter purcha­se.
 
 
 QUESTIONS
 
 Just write a GitHub issue or send an E-Mail ( mail@pdf-archiver.io ).
-PDF Archive Viewer is an Open Source project (https://github.com/PDF-Archiver/PDF-Archive-Viewer).
+PDF Archiver is an Open Source project (https://github.com/PDF-Archiver/PDF-Archive-Viewer).
 Contributions and feature requests are welcome!
 
-PDF Archive Viewers's privacy policy and terms of use: https://pdf-archiver.io/privacy
+PDF Archiver's privacy policy and terms of use: https://pdf-archiver.io/privacy
