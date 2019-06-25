@@ -17,6 +17,11 @@ enum Log {
         guard let event = Event(.info, msg: message, file: file, line: line, function: function) else { return }
         shared?.send(event: event, completion: nil)
     }
+
+    static func error(_ message: String, file: String = #file, line: Int = #line, function: String = #function) {
+        guard let event = Event(.error, msg: message, file: file, line: line, function: function) else { return }
+        shared?.send(event: event, completion: nil)
+    }
 }
 
 extension Event {

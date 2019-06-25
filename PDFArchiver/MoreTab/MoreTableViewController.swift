@@ -13,8 +13,9 @@ class MoreTableViewController: UITableViewController {
     // Section: preferences
     @IBOutlet private weak var showIntroCell: UITableViewCell!
     @IBOutlet private weak var showPermissionsCell: UITableViewCell!
+    @IBOutlet private weak var resetAppCell: UITableViewCell!
     // Section: more information
-    @IBOutlet weak var macOSAppCell: UITableViewCell!
+    @IBOutlet private weak var macOSAppCell: UITableViewCell!
     @IBOutlet private weak var manageSubscriptionCell: UITableViewCell!
     @IBOutlet private weak var privacyPolicyCell: UITableViewCell!
     @IBOutlet private weak var imprintCell: UITableViewCell!
@@ -43,6 +44,9 @@ class MoreTableViewController: UITableViewController {
             guard let link = URL(string: UIApplication.openSettingsURLString) else { fatalError("Could not find settings url!") }
             UIApplication.shared.open(link)
 
+        case resetAppCell:
+            resetApp()
+
         case macOSAppCell:
             guard let link = URL(string: "https://macos.pdf-archiver.io") else { fatalError("Could not parse macOS app url.") }
             UIApplication.shared.open(link)
@@ -61,6 +65,22 @@ class MoreTableViewController: UITableViewController {
 
         default:
             fatalError("Could not find the table view cell \(cell?.description ?? "")!")
+        }
+    }
+
+    private func resetApp() {
+        // remove all temporary files
+        if let tempImagePath = StorageHelper.Paths.tempImagePath {
+            try? FileManager.default.removeItem(at: tempImagePath)
+        } else {
+            Log.error("Could not find tempImagePath.")
+        }
+
+        // remove all user defaults
+        if let bundleIdentifier = Bundle.main.bundleIdentifier {
+            UserDefaults.standard.removePersistentDomain(forName: bundleIdentifier)
+        } else {
+            Log.error("Bundle Identifiert not found.")
         }
     }
 }

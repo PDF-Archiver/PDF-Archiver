@@ -50,7 +50,6 @@ public struct ImageConverter: Logging {
     public static func saveProcessAndSaveTempImages(at path: URL) {
         os_log("Start processing images", log: log, type: .debug)
 
-        NotificationCenter.default.post(name: .imageProcessingQueueLength, object: workerQueue.operationCount + 1)
         let groupedPaths = StorageHelper.loadImages()
         guard !groupedPaths.isEmpty else {
             os_log("Could not find new images to process. Skipping ...", log: log, type: .info)
@@ -58,7 +57,12 @@ public struct ImageConverter: Logging {
         }
 
         for paths in groupedPaths {
+
+            NotificationCenter.default.post(name: .imageProcessingQueueLength, object: workerQueue.operationCount + 1)
+
             workerQueue.addOperation {
+
+                Log.info("Process a document.")
 
                 // process one document as one operation, so that operationCount == numOfDocuments
                 do {
@@ -66,6 +70,10 @@ public struct ImageConverter: Logging {
                 } catch {
                     assertionFailure("Could not process images:\n\(error.localizedDescription)")
                     os_log("Could not process images.", log: log, type: .error)
+                    Log.error("Could not process images.")
+                    for path in paths {
+                        try? FileManager.default.removeItem(at: path)
+                    }
                 }
 
                 // notify after the pdf has been saved

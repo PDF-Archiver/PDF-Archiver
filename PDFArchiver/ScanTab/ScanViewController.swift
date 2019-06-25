@@ -107,7 +107,9 @@ class ScanViewController: UIViewController, Logging {
             self.present(StorageHelper.Paths.iCloudDriveAlertController, animated: true, completion: nil)
             return
         }
-        ImageConverter.saveProcessAndSaveTempImages(at: untaggedPath)
+        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 2)  {
+            ImageConverter.saveProcessAndSaveTempImages(at: untaggedPath)
+        }
     }
 }
 
