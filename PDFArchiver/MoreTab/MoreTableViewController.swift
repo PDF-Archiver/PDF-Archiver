@@ -82,5 +82,11 @@ class MoreTableViewController: UITableViewController {
         } else {
             Log.error("Bundle Identifiert not found.")
         }
+
+        let alert = UIAlertController(title: NSLocalizedString("MoreTableViewController.reset_app.title", comment: ""),
+                                      message: NSLocalizedString("MoreTableViewController.reset_app.message", comment: ""),
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
     }
 }

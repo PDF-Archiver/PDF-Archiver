@@ -84,7 +84,7 @@
 "intro.find.title" = "Find it.";
 
 /* Intro: Last Page Description */
-"intro.last.description" = "Und nun viel Spaß beim Archivierung mit\nPDF Archiver!";
+"intro.last.description" = "Und nun viel Spaß beim Archivieren mit\nPDF Archiver!";
 
 /* Intro: Last Page Title */
 "intro.last.title" = "Let's go!";
@@ -106,6 +106,12 @@
 
 /* No comment provided by engineer. */
 "MoreTableViewController.privacyPolicyCell.url" = "https://pdf-archiver.io/de/privacy/";
+
+/* No comment provided by engineer. */
+"MoreTableViewController.reset_app.message" = "Bitte starte die App neu, um das Zurücksetzen abzuschließen.";
+
+/* No comment provided by engineer. */
+"MoreTableViewController.reset_app.title" = "App zurücksetzen";
 
 /* Camera access in ScanViewController. */
 "Need Camera Access" = "Kamera Zugriff benötigt";

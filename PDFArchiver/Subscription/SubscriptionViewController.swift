@@ -89,7 +89,6 @@ class SubscriptionViewController: UIViewController, Logging {
         view.isSelectable = false
         view.isEditable = false
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.heightAnchor.constraint(equalToConstant: view.sizeThatFits(view.contentSize).height)
         return view
     }()
 
