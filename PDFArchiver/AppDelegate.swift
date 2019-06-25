@@ -35,6 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             Client.shared = try Client(dsn: PDFArchiverKeys().sentryDSN)
             try Client.shared?.startCrashHandler()
             Client.shared?.enableAutomaticBreadcrumbTracking()
+            Client.shared?.trackMemoryPressureAsEvent()
         } catch let error {
             os_log("%@", log: AppDelegate.log, type: .error, error.localizedDescription)
         }
@@ -42,6 +43,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.tintColor = .paDarkGray
         UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.paDarkGray]
 
+        Log.info("Application did finish launching.")
+
         return true
+    }
+
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        Log.info("Application did entry background.")
+    }
+
+    func applicationDidReceiveMemoryWarning(_ application: UIApplication) {
+        Log.info("Application did receive memory warning.")
     }
 }

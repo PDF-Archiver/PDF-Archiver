@@ -25,6 +25,8 @@ class ScanViewController: UIViewController, Logging {
             os_log("Authorization status blocks camera access. Switch to preferences.", log: ScanViewController.log, type: .info)
             alertCameraAccessNeeded()
         } else {
+
+            Log.info("Start scanning a document.")
             scannerViewController = ImageScannerController()
 
             guard let scannerViewController = scannerViewController else { return }
@@ -117,6 +119,9 @@ extension ScanViewController: ImageScannerControllerDelegate {
     }
 
     func imageScannerController(_ scanner: ImageScannerController, didFinishScanningWithResults results: ImageScannerResults) {
+
+        Log.info("Did finish scanning with result.")
+
         // The user successfully scanned an image, which is available in the ImageScannerResults
         // You are responsible for dismissing the ImageScannerController
         scanner.dismiss(animated: true)

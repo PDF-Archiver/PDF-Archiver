@@ -10,8 +10,6 @@
 #     https://docs.fastlane.tools/plugins/available-plugins
 #
 
-setup_travis
-
 # Uncomment the line if you want fastlane to automatically update itself
 update_fastlane
 
@@ -44,9 +42,9 @@ lane :beta do
   changelog_from_git_commits
   upload_to_testflight(
     distribute_external: true,
-    beta_app_description: "A new Preview of the App!",
-    beta_app_feedback_email: "feedback@pdf-archiver.io",
-    groups: ["alphatester"])
+    beta_app_description: "Current preview of the App!",
+    beta_app_feedback_email: "beta@pdf-archiver.io",
+    groups: ["alphatesters"])
   sentry
 end
 

@@ -80,6 +80,8 @@ class DetailViewController: UIViewController, Logging {
     // MARK: - delegates
     override func viewWillAppear(_ animated: Bool) {
 
+        Log.info("ArchiveTab: Presenting a document.")
+
         // cascade viewWillAppear(:)
         super.viewWillAppear(animated)
 

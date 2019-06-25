@@ -22,6 +22,8 @@ class DocumentHandleViewController: UIViewController, Logging {
 
     @IBAction private func trashButtonTapped(_ sender: UIBarButtonItem) {
 
+        Log.info("Trash a document.")
+
         let deleteActionHandler: (UIAlertAction) -> Void = {(_) in
             guard let document = self.documentViewController?.document else { return }
             self.notificationFeedback.prepare()
@@ -54,6 +56,8 @@ class DocumentHandleViewController: UIViewController, Logging {
     }
 
     @IBAction private func saveButtonTapped(_ sender: UIBarButtonItem) {
+
+        Log.info("Did finish scanning with result.")
 
         guard let document = documentViewController?.document else { return }
         guard let path = StorageHelper.Paths.archivePath else {
