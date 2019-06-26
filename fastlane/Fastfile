@@ -28,7 +28,7 @@ end
 desc "Upload binary to Sentry.io"
 lane :sentry do
   download_dsyms(
-    version: "latest",
+    min_version: "2.0.0",
     output_directory: "build/"
   )
   sentry_upload_dsym(
@@ -45,7 +45,13 @@ lane :beta do
     beta_app_description: "Current preview of the App!",
     beta_app_feedback_email: "beta@pdf-archiver.io",
     groups: ["alphatesters"])
-  sentry
+  download_dsyms(
+    version: "latest",
+    output_directory: "build/"
+  )
+  sentry_upload_dsym(
+    dsym_path: "build/"
+  )
 end
 
 desc "Update metadata to App Store Connect."

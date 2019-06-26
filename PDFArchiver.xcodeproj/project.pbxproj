@@ -56,6 +56,7 @@
 		A3BE7B3122B16EC2004A1ADE /* TagTab.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A3400DD822688C2100097A3F /* TagTab.storyboard */; };
 		A3BE7B3622B29AB8004A1ADE /* UIFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3BE7B3522B29AB8004A1ADE /* UIFont.swift */; };
 		A3BE7B3A22B3DE05004A1ADE /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3BE7B3922B3DE05004A1ADE /* Document.swift */; };
+		A3CF79BE22C3FA0A008711E4 /* PDFProcessing.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CF79BD22C3FA0A008711E4 /* PDFProcessing.swift */; };
 		A3D0999822BD15F0003D16E5 /* MoreTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3D0999722BD15F0003D16E5 /* MoreTableViewController.swift */; };
 		A3DBC695224974380048E681 /* IAPService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3DBC690224974380048E681 /* IAPService.swift */; };
 		A3DFA7272278D9CF00E0F362 /* WSTagsField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3DFA7262278D9CF00E0F362 /* WSTagsField.swift */; };
@@ -169,6 +170,7 @@
 		A3BE7B3222B17651004A1ADE /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/TagTab.strings; sourceTree = "<group>"; };
 		A3BE7B3522B29AB8004A1ADE /* UIFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFont.swift; sourceTree = "<group>"; };
 		A3BE7B3922B3DE05004A1ADE /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
+		A3CF79BD22C3FA0A008711E4 /* PDFProcessing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFProcessing.swift; sourceTree = "<group>"; };
 		A3D0999722BD15F0003D16E5 /* MoreTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreTableViewController.swift; sourceTree = "<group>"; };
 		A3DBC690224974380048E681 /* IAPService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPService.swift; sourceTree = "<group>"; };
 		A3DFA7262278D9CF00E0F362 /* WSTagsField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WSTagsField.swift; sourceTree = "<group>"; };
@@ -288,6 +290,7 @@
 		A34A84F12130A28A0093FAE5 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				A3CF79BC22C3F9F3008711E4 /* PDFRendering */,
 				A34A84F82130A35A0093FAE5 /* ArchiveExtension.swift */,
 				A34A84F62130A35A0093FAE5 /* DocumentsQuery.swift */,
 				A378C432221B3929007D1419 /* DocumentService.swift */,
@@ -369,6 +372,14 @@
 				A3BCC977217F84DB00C3775E /* Info.plist */,
 			);
 			path = PDFArchiverTests;
+			sourceTree = "<group>";
+		};
+		A3CF79BC22C3F9F3008711E4 /* PDFRendering */ = {
+			isa = PBXGroup;
+			children = (
+				A3CF79BD22C3FA0A008711E4 /* PDFProcessing.swift */,
+			);
+			path = PDFRendering;
 			sourceTree = "<group>";
 		};
 		A3D0999622BD15C7003D16E5 /* MoreTab */ = {
@@ -749,6 +760,7 @@
 				A393A28322A8486000D6DAF9 /* UIAlertController.swift in Sources */,
 				A3FDD3432294578D0054FFFC /* DateDescriptionViewController.swift in Sources */,
 				A316F36622946ED70099BA26 /* UIViewController.swift in Sources */,
+				A3CF79BE22C3FA0A008711E4 /* PDFProcessing.swift in Sources */,
 				A3FDD33B229457260054FFFC /* PDFViewController.swift in Sources */,
 				171E0C801B8E5B84001E6242 /* ArchiveViewController.swift in Sources */,
 				A3B57B83228750CF0078F7A4 /* FileManager.swift in Sources */,

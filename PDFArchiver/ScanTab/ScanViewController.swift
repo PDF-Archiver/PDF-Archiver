@@ -41,7 +41,7 @@ class ScanViewController: UIViewController, Logging {
 
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(imageQueueLengthChange),
-                                               name: .imageProcessingQueueLength,
+                                               name: .imageProcessingQueue,
                                                object: nil)
 
         // trigger processing (if temp images exist)
@@ -107,7 +107,7 @@ class ScanViewController: UIViewController, Logging {
             self.present(StorageHelper.Paths.iCloudDriveAlertController, animated: true, completion: nil)
             return
         }
-        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 2)  {
+        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 2) {
             ImageConverter.saveProcessAndSaveTempImages(at: untaggedPath)
         }
     }
