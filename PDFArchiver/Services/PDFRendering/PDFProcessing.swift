@@ -51,10 +51,15 @@ class PDFProcessing: Operation {
             }
 
             // text recognition (OCR)
+            let transform = CGAffineTransform.identity.scaledBy(x: image.size.width, y: image.size.height)
             var results = [TextObservationResult]()
             for textBox in textBoxes {
-                guard let cgImage = cgImage.cropping(to: textBox) else { fatalError("Could not crop image.") }
-                let croppedImage = UIImage(cgImage: cgImage)
+
+                // scale from 0...1 to 0...$size
+                let transformedTextBox = textBox.applying(transform)
+
+                guard let croppedCgImage = cgImage.cropping(to: transformedTextBox) else { fatalError("Could not crop image.") }
+                let croppedImage = UIImage(cgImage: croppedCgImage)
                 tesseract.performOCR(on: croppedImage) { text in
                     guard let text = text,
                         !text.isEmpty else { return }
