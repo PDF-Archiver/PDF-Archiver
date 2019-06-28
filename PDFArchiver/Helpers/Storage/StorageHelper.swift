@@ -24,7 +24,7 @@ enum StorageHelper {
         let uuid = UUID()
         for (index, image) in images.enumerated() {
             // get jpg data from image
-            guard let data = image.jpegData(compressionQuality: 1) else { throw StorageError.jpgConversion }
+            guard let data = image.jpegData(compressionQuality: 0.8) else { throw StorageError.jpgConversion }
 
             // Attempt to write the data
             try data.write(to: tempImagePath.appendingPathComponent("\(uuid.uuidString)\(seperator)\(index).jpg"))
