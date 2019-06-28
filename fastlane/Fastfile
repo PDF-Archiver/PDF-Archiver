@@ -54,10 +54,28 @@ lane :beta do
   )
 end
 
-desc "Update metadata to App Store Connect."
-lane :metadata do
+desc "Download metadata from App Store Connect."
+lane :meta_download do
+  sh 'deliver download_metadata'
+  # sh 'deliver download_screenshots'
+end
+
+desc "Upload metadata to App Store Connect."
+lane :meta_upload do
   deliver(
     skip_binary_upload: true,
+    force: true,
+    metadata_path: "./fastlane/metadata")
+end
+
+desc "Submit the latest build to the review prozess."
+lane :submit_review do
+
+  sh 'deliver download_metadata'
+
+  deliver(
+    skip_binary_upload: true,
+    submit_for_review: true,
     force: true,
     metadata_path: "./fastlane/metadata")
 end
