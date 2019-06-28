@@ -59,6 +59,7 @@
 		A3CF79BE22C3FA0A008711E4 /* PDFProcessing.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CF79BD22C3FA0A008711E4 /* PDFProcessing.swift */; };
 		A3D0999822BD15F0003D16E5 /* MoreTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3D0999722BD15F0003D16E5 /* MoreTableViewController.swift */; };
 		A3DBC695224974380048E681 /* IAPService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3DBC690224974380048E681 /* IAPService.swift */; };
+		A3DC071D22C6C6D10073A877 /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3DC071C22C6C6D10073A877 /* UIImage.swift */; };
 		A3DFA7272278D9CF00E0F362 /* WSTagsField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3DFA7262278D9CF00E0F362 /* WSTagsField.swift */; };
 		A3EBFE9C21650F58008C34CC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A3EBFE9E21650F58008C34CC /* Localizable.strings */; };
 		A3ECBC9622496BA000A626AE /* IAP.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3ECBC9522496BA000A626AE /* IAP.swift */; };
@@ -173,6 +174,7 @@
 		A3CF79BD22C3FA0A008711E4 /* PDFProcessing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFProcessing.swift; sourceTree = "<group>"; };
 		A3D0999722BD15F0003D16E5 /* MoreTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreTableViewController.swift; sourceTree = "<group>"; };
 		A3DBC690224974380048E681 /* IAPService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPService.swift; sourceTree = "<group>"; };
+		A3DC071C22C6C6D10073A877 /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
 		A3DFA7262278D9CF00E0F362 /* WSTagsField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WSTagsField.swift; sourceTree = "<group>"; };
 		A3EBFE9721650C65008C34CC /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Main.strings; sourceTree = "<group>"; };
 		A3EBFE9D21650F58008C34CC /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -227,12 +229,12 @@
 		171E0C711B8E5B84001E6242 = {
 			isa = PBXGroup;
 			children = (
+				2C90F6DAB110A4A6FF569E3A /* Frameworks */,
 				171E0C7C1B8E5B84001E6242 /* PDFArchiver */,
 				A3BCC974217F84DB00C3775E /* PDFArchiverTests */,
 				A3B83717215FCEFA00DA239F /* PDFArchiverUITests */,
-				171E0C7B1B8E5B84001E6242 /* Products */,
 				778DE403AE2BDEFAAB7AE643 /* Pods */,
-				2C90F6DAB110A4A6FF569E3A /* Frameworks */,
+				171E0C7B1B8E5B84001E6242 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -312,24 +314,25 @@
 		A34A84F32130A2A70093FAE5 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				A39942BD228B422E00FFC16B /* IntroViewController.swift */,
 				A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */,
-				A3B83863218CA7640093C374 /* TableSection.swift */,
-				A381CF20222F0B5D00FAFA7C /* ImageConverter.swift */,
-				A3FF639F22478FC10089E66A /* UIColor.swift */,
-				A314A29A225542360099681D /* CustomButton.swift */,
-				A3ED932222666BE800DFC2D9 /* TagListView.swift */,
-				A389789A2274FD4600DC13B9 /* CustomInputView.swift */,
-				A3DFA7262278D9CF00E0F362 /* WSTagsField.swift */,
-				A3B57B7E228720240078F7A4 /* Storage */,
-				A3B57B82228750CF0078F7A4 /* FileManager.swift */,
 				A39942B9228B3ACE00FFC16B /* Constants.swift */,
-				A316F36522946ED70099BA26 /* UIViewController.swift */,
-				A36AE3A722A70149001D534E /* PlaceholderViewController.swift */,
-				A393A28222A8486000D6DAF9 /* UIAlertController.swift */,
-				A3BE7B3522B29AB8004A1ADE /* UIFont.swift */,
+				A314A29A225542360099681D /* CustomButton.swift */,
+				A389789A2274FD4600DC13B9 /* CustomInputView.swift */,
 				A3BE7B3922B3DE05004A1ADE /* Document.swift */,
+				A3B57B82228750CF0078F7A4 /* FileManager.swift */,
+				A381CF20222F0B5D00FAFA7C /* ImageConverter.swift */,
+				A39942BD228B422E00FFC16B /* IntroViewController.swift */,
 				A307B05522C28C1100C9A348 /* Log.swift */,
+				A36AE3A722A70149001D534E /* PlaceholderViewController.swift */,
+				A3B57B7E228720240078F7A4 /* Storage */,
+				A3B83863218CA7640093C374 /* TableSection.swift */,
+				A3ED932222666BE800DFC2D9 /* TagListView.swift */,
+				A393A28222A8486000D6DAF9 /* UIAlertController.swift */,
+				A3FF639F22478FC10089E66A /* UIColor.swift */,
+				A3BE7B3522B29AB8004A1ADE /* UIFont.swift */,
+				A3DC071C22C6C6D10073A877 /* UIImage.swift */,
+				A316F36522946ED70099BA26 /* UIViewController.swift */,
+				A3DFA7262278D9CF00E0F362 /* WSTagsField.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -776,6 +779,7 @@
 				A389789B2274FD4600DC13B9 /* CustomInputView.swift in Sources */,
 				171E0C7E1B8E5B84001E6242 /* AppDelegate.swift in Sources */,
 				A36AE3A822A70149001D534E /* PlaceholderViewController.swift in Sources */,
+				A3DC071D22C6C6D10073A877 /* UIImage.swift in Sources */,
 				A3B57B7B22871F170078F7A4 /* StorageHelper.swift in Sources */,
 				A34A84FA2130A35A0093FAE5 /* DocumentsQuery.swift in Sources */,
 				A3DFA7272278D9CF00E0F362 /* WSTagsField.swift in Sources */,

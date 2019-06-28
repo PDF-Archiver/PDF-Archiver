@@ -77,25 +77,28 @@ class DetailViewController: UIViewController, Logging {
         navigationController?.setNavigationBarHidden(isNavigationBarHidden, animated: true)
     }
 
-    // MARK: - delegates
-    override func viewWillAppear(_ animated: Bool) {
-
-        Log.info("ArchiveTab: Presenting a document.")
-
-        // cascade viewWillAppear(:)
-        super.viewWillAppear(animated)
+    override func viewDidLoad() {
+        super.viewDidLoad()
 
         // setup document view
         documentView.displayMode = .singlePageContinuous
         documentView.autoScales = true
         documentView.interpolationQuality = .low
         documentView.backgroundColor = .paLightGray
-        documentView.sizeToFit()
+
+        configureView()
     }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        configureView()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        Log.info("ArchiveTab: Presenting a document.")
+        documentView.goToFirstPage(self)
+
+        // show the whole document in the view
+        documentView.maxScaleFactor = 4.0
+        documentView.minScaleFactor = documentView.scaleFactorForSizeToFit
+        documentView.scaleFactor = documentView.scaleFactorForSizeToFit
     }
 
     override func viewWillDisappear(_ animated: Bool) {

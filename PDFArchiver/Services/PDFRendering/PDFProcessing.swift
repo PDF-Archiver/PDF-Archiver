@@ -21,7 +21,7 @@ class PDFProcessing: Operation {
     private let images: [UIImage]
     private let documentSavePath: URL
 
-    private var textBoxes = [CGRect]()
+    private var detectTextRectangleObservations = [VNTextObservation]()
 
     init(_ images: [UIImage], documentSavePath: URL) {
         self.images = images
@@ -40,7 +40,7 @@ class PDFProcessing: Operation {
 
             guard let cgImage = image.cgImage else { fatalError("Could not get the cgImage.") }
             let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-            textBoxes = [CGRect]()
+            detectTextRectangleObservations = [VNTextObservation]()
 
             // text rectangle recognition
             do {
@@ -51,19 +51,16 @@ class PDFProcessing: Operation {
             }
 
             // text recognition (OCR)
-            let transform = CGAffineTransform.identity.scaledBy(x: image.size.width, y: image.size.height)
             var results = [TextObservationResult]()
-            for textBox in textBoxes {
+            for observation in detectTextRectangleObservations {
 
-                // scale from 0...1 to 0...$size
-                let transformedTextBox = textBox.applying(transform)
-
-                guard let croppedCgImage = cgImage.cropping(to: transformedTextBox) else { fatalError("Could not crop image.") }
-                let croppedImage = UIImage(cgImage: croppedCgImage)
-                tesseract.performOCR(on: croppedImage) { text in
-                    guard let text = text,
-                        !text.isEmpty else { return }
-                    results.append(TextObservationResult(rect: textBox, text: text))
+                let textBox = transform(observation: observation, in: image)
+                if let croppedImage = image.crop(rectangle: textBox) {
+                    tesseract.performOCR(on: croppedImage) { text in
+                        guard let text = text,
+                            !text.isEmpty else { return }
+                        results.append(TextObservationResult(rect: textBox, text: text))
+                    }
                 }
             }
 
@@ -107,10 +104,23 @@ class PDFProcessing: Operation {
             }
 
             for observation in observations where observation.confidence > self.confidenceThreshold {
-                self.textBoxes.append(observation.boundingBox)
+                self.detectTextRectangleObservations.append(observation)
             }
         }
         return [detectTextRectangleRequest]
+    }
+
+    private func transform(observation: VNTextObservation, in image: UIImage) -> CGRect {
+
+        // special thanks to: https://github.com/g-r-a-n-t/serial-vision/
+        var transform = CGAffineTransform.identity
+        transform = transform.scaledBy(x: image.size.width, y: -image.size.height)
+        transform = transform.translatedBy(x: 0, y: -1 )
+
+        return CGRect(x: observation.boundingBox.applying(transform).origin.x,
+                      y: observation.boundingBox.applying(transform).origin.y,
+                      width: observation.boundingBox.applying(transform).width,
+                      height: observation.boundingBox.applying(transform).height)
     }
 
     // MARK: - Helper Types
@@ -152,7 +162,7 @@ extension NSAttributedString {
     static func createCleared(from text: String, with size: CGSize) -> NSAttributedString {
 
         let fontName = UIFont.systemFont(ofSize: 0).fontName
-        var attributes: [NSAttributedString.Key: Any] = [NSAttributedString.Key.foregroundColor: UIColor.red]
+        var attributes: [NSAttributedString.Key: Any] = [NSAttributedString.Key.foregroundColor: UIColor.clear]
         attributes[.font] = UIFont(named: fontName, fitting: text, into: size, with: attributes, options: .usesFontLeading)
 
         return NSAttributedString(string: text, attributes: attributes)
