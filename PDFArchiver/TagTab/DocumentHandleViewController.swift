@@ -87,8 +87,9 @@ class DocumentHandleViewController: UIViewController, Logging {
 
         } catch let error as LocalizedError {
             os_log("Error occurred while renaming Document: %@", log: DocumentHandleViewController.log, type: .error, error.localizedDescription)
+
+            // OK button will be created by the convenience initializer
             let alertController = UIAlertController(error, preferredStyle: .alert)
-            alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Button confirmation label"), style: .default, handler: nil))
             present(alertController, animated: true, completion: nil)
             notificationFeedback.notificationOccurred(.error)
         } catch {

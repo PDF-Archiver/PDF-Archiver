@@ -141,7 +141,7 @@ class PDFProcessing: Operation {
 }
 
 extension UIFont {
-    convenience init?(named fontName: String, fitting text: String, into targetSize: CGSize, with attributes: [NSAttributedString.Key: Any], options: NSStringDrawingOptions) {
+    fileprivate convenience init?(named fontName: String, fitting text: String, into targetSize: CGSize, with attributes: [NSAttributedString.Key: Any], options: NSStringDrawingOptions) {
         var attributes = attributes
         let fontSize = targetSize.height
 
@@ -159,7 +159,7 @@ extension UIFont {
 }
 
 extension NSAttributedString {
-    static func createCleared(from text: String, with size: CGSize) -> NSAttributedString {
+    fileprivate static func createCleared(from text: String, with size: CGSize) -> NSAttributedString {
 
         let fontName = UIFont.systemFont(ofSize: 0).fontName
         var attributes: [NSAttributedString.Key: Any] = [NSAttributedString.Key.foregroundColor: UIColor.clear]

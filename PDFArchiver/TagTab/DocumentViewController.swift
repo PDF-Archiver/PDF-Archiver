@@ -45,6 +45,11 @@ class DocumentViewController: UIViewController, Logging {
             description = document.specification
         }
 
+        // use the current date, if no date was set
+        if document.date == nil {
+            document.date = Date()
+        }
+
         pdfVC = PDFViewController(pdfDocument: pdfDocument)
         dateDescriptionVC = DateDescriptionViewController(date: document.date ?? Date(),
                                                           description: description)
