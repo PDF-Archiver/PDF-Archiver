@@ -57,7 +57,7 @@ class DocumentHandleViewController: UIViewController, Logging {
 
     @IBAction private func saveButtonTapped(_ sender: UIBarButtonItem) {
 
-        Log.info("Did finish scanning with result.")
+        Log.info("Save a document in archive.")
 
         guard let document = documentViewController?.document else { return }
         guard let path = StorageHelper.Paths.archivePath else {
