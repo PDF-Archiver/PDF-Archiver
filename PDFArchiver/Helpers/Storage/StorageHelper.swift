@@ -54,7 +54,7 @@ enum StorageHelper {
 
         guard let tempImagePath = StorageHelper.Paths.tempImagePath else { fatalError("Could not find temp image path.") }
 
-        let paths = try? FileManager.default.contentsOfDirectory(at: tempImagePath, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)
-        return paths ?? []
+        let paths = (try? FileManager.default.contentsOfDirectory(at: tempImagePath, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)) ?? []
+        return paths.filter { $0.pathExtension.lowercased() != "pdf" }
     }
 }

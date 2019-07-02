@@ -36,6 +36,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             try Client.shared?.startCrashHandler()
             Client.shared?.enableAutomaticBreadcrumbTracking()
             Client.shared?.trackMemoryPressureAsEvent()
+
+            // I am not interested in this kind of data
+            Client.shared?.beforeSerializeEvent = { event in
+                event.fingerprint = nil
+                event.context?.deviceContext?["storage_size"] = nil
+                event.context?.deviceContext?["free_memory"] = nil
+                event.context?.deviceContext?["memory_size"] = nil
+                event.context?.deviceContext?["boot_time"] = nil
+                event.context?.deviceContext?["timezone"] = nil
+                event.context?.deviceContext?["usable_memory"] = nil
+                event.context?.appContext?["device_app_hash"] = nil
+                event.context?.appContext?["app_id"] = nil
+            }
+
         } catch let error {
             os_log("%@", log: AppDelegate.log, type: .error, error.localizedDescription)
         }
@@ -43,16 +57,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.tintColor = .paDarkGray
         UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.paDarkGray]
 
-        Log.info("Application did finish launching.")
-
         return true
-    }
-
-    func applicationDidEnterBackground(_ application: UIApplication) {
-        Log.info("Application did entry background.")
-    }
-
-    func applicationDidReceiveMemoryWarning(_ application: UIApplication) {
-        Log.info("Application did receive memory warning.")
     }
 }

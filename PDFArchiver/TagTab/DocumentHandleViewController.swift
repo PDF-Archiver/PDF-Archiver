@@ -57,7 +57,7 @@ class DocumentHandleViewController: UIViewController, Logging {
 
     @IBAction private func saveButtonTapped(_ sender: UIBarButtonItem) {
 
-        Log.info("Did finish scanning with result.")
+        Log.info("Save a document in archive.")
 
         guard let document = documentViewController?.document else { return }
         guard let path = StorageHelper.Paths.archivePath else {
@@ -87,12 +87,15 @@ class DocumentHandleViewController: UIViewController, Logging {
 
         } catch let error as LocalizedError {
             os_log("Error occurred while renaming Document: %@", log: DocumentHandleViewController.log, type: .error, error.localizedDescription)
+
+            // OK button will be created by the convenience initializer
             let alertController = UIAlertController(error, preferredStyle: .alert)
             present(alertController, animated: true, completion: nil)
             notificationFeedback.notificationOccurred(.error)
         } catch {
             os_log("Error occurred while renaming Document: %@", log: DocumentHandleViewController.log, type: .error, error.localizedDescription)
             let alertController = UIAlertController(title: NSLocalizedString("error_message_fallback", comment: "Fallback when no localized error was found."), message: error.localizedDescription, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Button confirmation label"), style: .default, handler: nil))
             present(alertController, animated: true, completion: nil)
             notificationFeedback.notificationOccurred(.error)
         }
