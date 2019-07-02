@@ -80,7 +80,7 @@ public struct ImageConverter: Logging {
                 // notify after the pdf has been saved
                 NotificationCenter.default.post(name: .imageProcessingQueue, object: workerQueue.operationCount - 1)
                 let timeDiff = Date().timeIntervalSinceReferenceDate - start.timeIntervalSinceReferenceDate
-                Log.info("Processing took \(timeDiff) seconds")
+                Log.info("Processing completed", extra: ["processing_time": timeDiff])
             }
         }
     }

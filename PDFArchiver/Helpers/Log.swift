@@ -13,33 +13,32 @@ enum Log {
 
     private static let shared = Client.shared
 
-    static func info(_ message: String, file: String = #file, line: Int = #line, function: String = #function) {
+    static func info(_ message: String, extra data: [String: Any] = [:], file: String = #file, line: Int = #line, function: String = #function) {
         #if DEBUG
         return
         #else
-        guard let event = Event(.info, msg: message, file: file, line: line, function: function) else { return }
+        guard let event = Event(.info, msg: message, extra: data, file: file, line: line, function: function) else { return }
         shared?.send(event: event, completion: nil)
         #endif
     }
 
-    static func error(_ message: String, file: String = #file, line: Int = #line, function: String = #function) {
+    static func error(_ message: String, extra data: [String: Any] = [:], file: String = #file, line: Int = #line, function: String = #function) {
         #if DEBUG
         return
         #else
-        guard let event = Event(.error, msg: message, file: file, line: line, function: function) else { return }
+        guard let event = Event(.error, msg: message, extra: data, file: file, line: line, function: function) else { return }
         shared?.send(event: event, completion: nil)
         #endif
     }
 }
 
 extension Event {
-    fileprivate convenience init?(_ level: SentrySeverity, msg message: String, file: String, line: Int, function: String) {
+    fileprivate convenience init?(_ level: SentrySeverity, msg message: String, extra: [String: Any], file: String, line: Int, function: String) {
         self.init(level: level)
         self.message = message
-        self.extra = [
-            "file": file,
-            "line": line,
-            "function": function
-        ]
+        self.extra = extra
+        self.extra?["file"] = file
+        self.extra?["line"] = line
+        self.extra?["function"] = function
     }
 }
