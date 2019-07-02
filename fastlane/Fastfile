@@ -11,7 +11,7 @@
 #
 
 # Uncomment the line if you want fastlane to automatically update itself
-# update_fastlane
+update_fastlane
 
 default_platform(:ios)
 
@@ -27,7 +27,13 @@ end
 
 desc "Upload binary to Sentry.io"
 lane :sentry do
-  sentry_upload_dsym
+  download_dsyms(
+    min_version: "2.0.0",
+    output_directory: "build/"
+  )
+  sentry_upload_dsym(
+    dsym_path: "build/"
+  )
 end
 
 desc "Build Beta-Version & Upload it to TestFlight."
@@ -36,16 +42,40 @@ lane :beta do
   changelog_from_git_commits
   upload_to_testflight(
     distribute_external: true,
-    beta_app_description: "A new Preview of the App!",
-    beta_app_feedback_email: "feedback@pdf-archiver.io",
-    groups: ["alphatester"])
-  sentry_upload_dsym
+    beta_app_description: "Current preview of the App!",
+    beta_app_feedback_email: "beta@pdf-archiver.io",
+    groups: ["alphatesters"])
+  download_dsyms(
+    version: "latest",
+    output_directory: "build/"
+  )
+  sentry_upload_dsym(
+    dsym_path: "build/"
+  )
 end
 
-desc "Update metadata to App Store Connect."
-lane :metadata do
+desc "Download metadata from App Store Connect."
+lane :meta_download do
+  sh 'deliver download_metadata'
+  # sh 'deliver download_screenshots'
+end
+
+desc "Upload metadata to App Store Connect."
+lane :meta_upload do
   deliver(
     skip_binary_upload: true,
+    force: true,
+    metadata_path: "./fastlane/metadata")
+end
+
+desc "Submit the latest build to the review prozess."
+lane :submit_review do
+
+  sh 'deliver download_metadata'
+
+  deliver(
+    skip_binary_upload: true,
+    submit_for_review: true,
     force: true,
     metadata_path: "./fastlane/metadata")
 end

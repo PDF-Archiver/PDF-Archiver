@@ -35,6 +35,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             Client.shared = try Client(dsn: PDFArchiverKeys().sentryDSN)
             try Client.shared?.startCrashHandler()
             Client.shared?.enableAutomaticBreadcrumbTracking()
+            Client.shared?.trackMemoryPressureAsEvent()
+
+            // I am not interested in this kind of data
+            Client.shared?.beforeSerializeEvent = { event in
+                event.fingerprint = nil
+                event.context?.deviceContext?["storage_size"] = nil
+                event.context?.deviceContext?["free_memory"] = nil
+                event.context?.deviceContext?["memory_size"] = nil
+                event.context?.deviceContext?["boot_time"] = nil
+                event.context?.deviceContext?["timezone"] = nil
+                event.context?.deviceContext?["usable_memory"] = nil
+                event.context?.appContext?["device_app_hash"] = nil
+                event.context?.appContext?["app_id"] = nil
+            }
+
         } catch let error {
             os_log("%@", log: AppDelegate.log, type: .error, error.localizedDescription)
         }

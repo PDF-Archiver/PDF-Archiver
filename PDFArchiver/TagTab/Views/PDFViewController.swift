@@ -38,6 +38,10 @@ class PDFViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         pdfView.goToFirstPage(self)
-        pdfView.sizeToFit()
+
+        // show the whole document in the view
+        pdfView.maxScaleFactor = 4.0
+        pdfView.minScaleFactor = pdfView.scaleFactorForSizeToFit
+        pdfView.scaleFactor = pdfView.scaleFactorForSizeToFit
     }
 }

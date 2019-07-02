@@ -1,0 +1,24 @@
+language: swift
+os: osx
+osx_image: xcode10.2
+before_install:
+  - bundle install
+  - brew update
+  - brew upgrade swiftlint &> /dev/null
+  - brew install getsentry/tools/sentry-cli
+  - pod update
+  - bundle exec pod keys set SentryDSN $SENTRY_DSN
+  - bundle exec pod keys set AppstoreConnectSharedSecret $APPSTORE_CONNECT_SHARED_SECRET
+install:
+  - pod install
+script:
+  - swiftlint
+  - bundle exec fastlane sentry
+notifications:
+  email:
+    on_success: never
+    on_failure: change
+env:
+  global:
+  - secure: JOq4vlQZjr+9dX7vjKSTqm9W24E026q//JFAG6Trbj+T0xawg1f18JL9pr41yewG1ciJqs3KtuHsQFBG1xTw8EpcL78mNPM7kqtEAacPMyrIAx2ES9ComzcZxOht7WVjYWBwjBe3fPSypQCJ/KtHFKmHZaYkCw3ojcxMF/rIHSRk2uAgplcoq89obPJlWQusSy35DyyFwc+fD7OJXjYaxLrheFWCCMS+Tb8ktUnNL8bx39FBVdf091rA4cJp8BU9ZrQI7181vAOcwl5najAt9y43Xa4/hW5UnT/He8MF3hCp4r8c0etf1tBszN1xWanz4hvg1/+3ePHu2wO2WTnEmMhkwh1lmtrhPqMCrWjeiC8ffL/uKx3uzHxKfSGZSE15HFEe88REbynltvolG2dFp0Y3vNgRbZVVCvlKvRgXONJxfB12Gd7PWOhvtbxAXl+66A+ZC4IKQatc3kiVPn/2OpOt00t7iA8M9YnVZbTXgEUpXZ12svWOuR/0MvUEV/xPrMW8TCGRJsG1SewiFTKmnFVOcYtlzKfhGAleAuVaW/PiN3/zrbl7De3Eb/cueCqkaKw/e+hhhgetxCOxWHGpSfUKww8VMc0bHkQU/IX0eodGZhcDfQlpIOeoZrrRDhGUJn1cSYlM4+cOIJuiuIgwgWQLBRcVcT2jegEAXJwq/Ng=
+  - secure: WkR46FOebS08byBbhD6rWdGCZcado+rKmISrnuTSozBY14+XSgGmJQ/tpIbC8WvBYs2iSklmR912bqiG39GuRh1Uv9rrs2U0ud3ax8M3puF/a70ClUMDtjeW6vbTfSBWWLTZ5t56z2egJAv+dpSYc0uGQY6pNsqXkjsXdRUnv+9K4JpIWTXbe0BuNXjFU142UpiiWV4xEESE0zPB0wNtGCAxBQmyILDSSZsM+uWT0bgQ5bdmyQQSWdG2r7IGL/0G+WrQKKrWcefuhhllu0NSOWSIOB1lDo9iaPN6E3C1BiQTuaww/x8oru5vJOjJNp2UX280g4vGYTIqPXoZbVF8nHJCncM2un1se34ZZitibQU3gU2BCR7kBiAFo2YWFxjOv5cr3IMMaS74kvzrin1/a68krhACrFqdqkf3eantP755mCwVZZXsYQ5tex6GkxHoL+6BONsGyWSC29ug0x7pnMucEq3tR6w6cHaagtF1U5TspMCZzZLP+SrL+3tYejKLqH028neJhGPWO6DMO8sRJ/VgrW4jL+4j/fU9Go1Ost+5r+SWl1igwwsyNX5LZgcRDCvXcCiEtt/BFs0qVGhvbde7eJyS9s4F/KLqmLzj2lSSxAuWSStUpGsCZ9TKkFG7wSwoi9B9auXz3gwmRu+Ur7H9N6Ee/ga4Tq3qsxNcG08=

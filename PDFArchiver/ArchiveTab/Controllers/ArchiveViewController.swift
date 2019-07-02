@@ -94,6 +94,7 @@ class ArchiveViewController: UIViewController, UITableViewDelegate, Logging {
 
         // save the selected index for the next app start
         UserDefaults.standard.set(tabBarController?.selectedIndex ?? 2, forKey: Constants.UserDefaults.lastSelectedTabIndex.rawValue)
+        Log.info("ArchiveTab: Show archived documents.")
     }
 
     // MARK: - Segues

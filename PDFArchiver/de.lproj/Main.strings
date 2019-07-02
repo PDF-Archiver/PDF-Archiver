@@ -46,3 +46,6 @@
 
 /* Class = "UILabel"; text = "PDF Archiver (macOS) 🖥"; ObjectID = "ckq-IA-j4V"; */
 "ckq-IA-j4V.text" = "PDF Archiver (macOS) 🖥";
+
+/* Class = "UILabel"; text = "Reset App Preferences"; ObjectID = "4zW-n1-Fc1"; */
+"4zW-n1-Fc1.text" = "App Einstellungen zurücksetzen";

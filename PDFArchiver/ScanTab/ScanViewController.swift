@@ -25,6 +25,8 @@ class ScanViewController: UIViewController, Logging {
             os_log("Authorization status blocks camera access. Switch to preferences.", log: ScanViewController.log, type: .info)
             alertCameraAccessNeeded()
         } else {
+
+            Log.info("Start scanning a document.")
             scannerViewController = ImageScannerController()
 
             guard let scannerViewController = scannerViewController else { return }
@@ -39,7 +41,7 @@ class ScanViewController: UIViewController, Logging {
 
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(imageQueueLengthChange),
-                                               name: .imageProcessingQueueLength,
+                                               name: .imageProcessingQueue,
                                                object: nil)
 
         // trigger processing (if temp images exist)
@@ -105,7 +107,9 @@ class ScanViewController: UIViewController, Logging {
             self.present(StorageHelper.Paths.iCloudDriveAlertController, animated: true, completion: nil)
             return
         }
-        ImageConverter.saveProcessAndSaveTempImages(at: untaggedPath)
+        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 2) {
+            ImageConverter.saveProcessAndSaveTempImages(at: untaggedPath)
+        }
     }
 }
 
@@ -117,6 +121,9 @@ extension ScanViewController: ImageScannerControllerDelegate {
     }
 
     func imageScannerController(_ scanner: ImageScannerController, didFinishScanningWithResults results: ImageScannerResults) {
+
+        Log.info("Did finish scanning with result.")
+
         // The user successfully scanned an image, which is available in the ImageScannerResults
         // You are responsible for dismissing the ImageScannerController
         scanner.dismiss(animated: true)

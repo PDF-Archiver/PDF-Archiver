@@ -107,6 +107,12 @@
 /* No comment provided by engineer. */
 "MoreTableViewController.privacyPolicyCell.url" = "https://pdf-archiver.io/privacy";
 
+/* No comment provided by engineer. */
+"MoreTableViewController.reset_app.message" = "Please restart the app to complete the reset.";
+
+/* No comment provided by engineer. */
+"MoreTableViewController.reset_app.title" = "Reset app";
+
 /* Camera access in ScanViewController. */
 "Need Camera Access" = "Need Camera Access";
 

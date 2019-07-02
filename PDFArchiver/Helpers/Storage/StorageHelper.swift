@@ -24,7 +24,7 @@ enum StorageHelper {
         let uuid = UUID()
         for (index, image) in images.enumerated() {
             // get jpg data from image
-            guard let data = image.jpegData(compressionQuality: 1) else { throw StorageError.jpgConversion }
+            guard let data = image.jpegData(compressionQuality: 0.8) else { throw StorageError.jpgConversion }
 
             // Attempt to write the data
             try data.write(to: tempImagePath.appendingPathComponent("\(uuid.uuidString)\(seperator)\(index).jpg"))
@@ -54,7 +54,7 @@ enum StorageHelper {
 
         guard let tempImagePath = StorageHelper.Paths.tempImagePath else { fatalError("Could not find temp image path.") }
 
-        let paths = try? FileManager.default.contentsOfDirectory(at: tempImagePath, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)
-        return paths ?? []
+        let paths = (try? FileManager.default.contentsOfDirectory(at: tempImagePath, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)) ?? []
+        return paths.filter { $0.pathExtension.lowercased() != "pdf" }
     }
 }

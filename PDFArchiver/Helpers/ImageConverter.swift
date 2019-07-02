@@ -12,9 +12,10 @@ import os.log
 import PDFKit
 import SwiftyTesseract
 import UIKit
+import Vision
 
 extension Notification.Name {
-    static var imageProcessingQueueLength: Notification.Name {
+    static var imageProcessingQueue: Notification.Name {
         return .init(rawValue: "ImageConverter.queueLength")
     }
 }
@@ -50,7 +51,6 @@ public struct ImageConverter: Logging {
     public static func saveProcessAndSaveTempImages(at path: URL) {
         os_log("Start processing images", log: log, type: .debug)
 
-        NotificationCenter.default.post(name: .imageProcessingQueueLength, object: workerQueue.operationCount + 1)
         let groupedPaths = StorageHelper.loadImages()
         guard !groupedPaths.isEmpty else {
             os_log("Could not find new images to process. Skipping ...", log: log, type: .info)
@@ -58,7 +58,12 @@ public struct ImageConverter: Logging {
         }
 
         for paths in groupedPaths {
+
+            NotificationCenter.default.post(name: .imageProcessingQueue, object: workerQueue.operationCount + 1)
+
             workerQueue.addOperation {
+                let start = Date()
+                Log.info("Process a document.")
 
                 // process one document as one operation, so that operationCount == numOfDocuments
                 do {
@@ -66,10 +71,16 @@ public struct ImageConverter: Logging {
                 } catch {
                     assertionFailure("Could not process images:\n\(error.localizedDescription)")
                     os_log("Could not process images.", log: log, type: .error)
+                    Log.error("Could not process images.")
+                    for path in paths {
+                        try? FileManager.default.removeItem(at: path)
+                    }
                 }
 
                 // notify after the pdf has been saved
-                NotificationCenter.default.post(name: .imageProcessingQueueLength, object: workerQueue.operationCount - 1)
+                NotificationCenter.default.post(name: .imageProcessingQueue, object: workerQueue.operationCount - 1)
+                let timeDiff = Date().timeIntervalSinceReferenceDate - start.timeIntervalSinceReferenceDate
+                Log.info("Processing completed", extra: ["processing_time": timeDiff])
             }
         }
     }
@@ -96,34 +107,34 @@ public struct ImageConverter: Logging {
         }
 
         // convert image to pdf
-        let tempFilepath = paths[0].deletingPathExtension()
-        try createPDF(from: images, at: tempFilepath)
+        let tempFilepath = paths[0].deletingPathExtension().appendingPathExtension("pdf")
+        createPDF(from: images, at: tempFilepath)
 
         // generate filename by analysing the image
-        guard let pdfDocument = PDFDocument(url: tempFilepath.appendingPathExtension("pdf")) else { fatalError("Could not find PDF document.") }
+        guard let pdfDocument = PDFDocument(url: tempFilepath) else { fatalError("Could not find PDF document.") }
         let filename = getFilename(from: pdfDocument)
         let filepath = path.appendingPathComponent(filename)
 
         // save PDF document and delete original images
-        try FileManager.default.moveItem(at: tempFilepath.appendingPathExtension("pdf"), to: filepath)
+        try FileManager.default.moveItem(at: tempFilepath, to: filepath)
         for path in paths {
             try? FileManager.default.removeItem(at: path)
         }
     }
 
-    private static func createPDF(from images: [UIImage], at filepath: URL) throws {
+    private static func createPDF(from images: [UIImage], at filepath: URL) {
         os_log("Creating PDF from images", log: log, type: .debug)
 
-        let swiftyTesseract = SwiftyTesseract(languages: languages, bundle: .main, engineMode: .lstmOnly)
+        let operation = PDFProcessing(images, documentSavePath: filepath)
 
         // try to create a pdf document from
         if #available(iOS 12.0, *) {
             let signpostID = OSSignpostID(log: log, object: images as AnyObject)
             os_signpost(.begin, log: log, name: "Process Images", signpostID: signpostID)
-            try swiftyTesseract.createPDF(from: images, at: filepath)
+            operation.main()
             os_signpost(.end, log: log, name: "Process Images", signpostID: signpostID)
         } else {
-            try swiftyTesseract.createPDF(from: images, at: filepath)
+            operation.main()
         }
     }
 
