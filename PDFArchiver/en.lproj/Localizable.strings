@@ -78,7 +78,7 @@
 "Grant Access" = "Grant Access";
 
 /* Intro: Find Description */
-"intro.find.description" = "You can find your documents quickly and easily at any time via the archive or the iCloud Drive app\n-\nso you always have your most important information in your pocket!";
+"intro.find.description" = "You can find your documents quickly and easily at any time via the archive or the iCloud Drive app\n\nso you always have your most important information in your pocket!";
 
 /* Intro: Find Title */
 "intro.find.title" = "Find it.";
@@ -94,6 +94,12 @@
 
 /* Intro: Scan Title */
 "intro.scan.title" = "Scan it.";
+
+/* Intro: Subscription Description */
+"intro.subscription.description" = "I'm a single indie developer and work on the app in my spare time. Sign up for a monthly or annual subscription to support this and unlock all features of the app.\n\n\Many thanks for your help! ☺️";
+
+/* Intro: Subscription Title */
+"intro.subscription.title" = "Another Subscription?!\n😡🤬🤭";
 
 /* Intro: Tag Description */
 "intro.tag.description" = "You have some time in between?\nTag your documents and find them quickly at any time. The intelligent text recognition automatically suggests the date and matching tags.\nDescribe your document e.g. with\n'Blue Favorite Sweater'\nand save it in your archive.";

@@ -78,7 +78,7 @@
 "Grant Access" = "Erlauben";
 
 /* Intro: Find Description */
-"intro.find.description" = "Über das Archiv oder die iCloud Drive App kannst du deine Dokumente schnell und einfach jederzeit finden\n-\nso hast du deine wichtigsten Informationen immer in deiner Tasche!";
+"intro.find.description" = "Über das Archiv oder die iCloud Drive App kannst du deine Dokumente schnell und einfach jederzeit finden\n\nso hast du deine wichtigsten Informationen immer in deiner Tasche!";
 
 /* Intro: Find Title */
 "intro.find.title" = "Find it.";
@@ -94,6 +94,12 @@
 
 /* Intro: Scan Title */
 "intro.scan.title" = "Scan it.";
+
+/* Intro: Subscription Description */
+"intro.subscription.description" = "Ich bin ein einzelner Indie-Entwickler und arbeite an der App in meiner Freizeit. Schließe ein monatliches oder jährliches Abo ab, um dies zu unterstützen und alle Feature der App freizuschalten.\n\nVielen Dank für deine Hilfe! ☺️";
+
+/* Intro: Subscription Title */
+"intro.subscription.title" = "Noch'n Abo?!\n😡🤬🤭";
 
 /* Intro: Tag Description */
 "intro.tag.description" = "Du hast zwischendurch etwas Zeit?\nTagge nun deine Dokumente.\nDie intelligente Texterkennung schlägt dir Datum und Tags vor.\nBeschreibe dein Dokument z.B.\n'Blauer Lieblingspullover'\nund speichere es im Archiv.";
