@@ -13,7 +13,8 @@ import UIKit
 
 class DetailViewController: UIViewController, Logging {
 
-    // MARK: - properties
+    private var viewControllerShown: Date?
+
     // TODO: might only need prefersStatusBarHidden?!
     private var isNavigationBarHidden = false {
         didSet {
@@ -92,13 +93,14 @@ class DetailViewController: UIViewController, Logging {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        Log.info("ArchiveTab: Presenting a document.")
         documentView.goToFirstPage(self)
 
         // show the whole document in the view
         documentView.maxScaleFactor = 4.0
         documentView.minScaleFactor = documentView.scaleFactorForSizeToFit
         documentView.scaleFactor = documentView.scaleFactorForSizeToFit
+
+        viewControllerShown = Date()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -109,6 +111,11 @@ class DetailViewController: UIViewController, Logging {
         // change status bar text color
         // TODO: fix the color change
         navigationController?.setNavigationBarHidden(false, animated: true)
+
+        if let viewControllerShown = viewControllerShown {
+            let timeDiff = Date().timeIntervalSinceReferenceDate - viewControllerShown.timeIntervalSinceReferenceDate
+            Log.info("ArchiveTab: Presenting a document.", extra: ["presented_time": timeDiff])
+        }
     }
 
     // MARK: - helper functions
