@@ -96,10 +96,10 @@
 "intro.scan.title" = "Scan it.";
 
 /* Intro: Subscription Description */
-"intro.subscription.description" = "I'm a single indie developer and work on the app in my spare time. Sign up for a monthly or annual subscription to support this and unlock all features of the app.\n\n\Many thanks for your help! ☺️";
+"intro.subscription.description" = "I'm an indie developer and work on the app in my spare time. Support the development and unlock all features by signing up for a monthly or annual subscription.\n\nThanks for your help! ☺️️";
 
 /* Intro: Subscription Title */
-"intro.subscription.title" = "Another Subscription?!\n😡🤬🤭";
+"intro.subscription.title" = "Another Subscription?!\n😡 🤬 🤭";
 
 /* Intro: Tag Description */
 "intro.tag.description" = "You have some time in between?\nTag your documents and find them quickly at any time. The intelligent text recognition automatically suggests the date and matching tags.\nDescribe your document e.g. with\n'Blue Favorite Sweater'\nand save it in your archive.";
@@ -148,6 +148,12 @@
 
 /* The restore button */
 "subscription.restore" = "Restore";
+
+/* No comment provided by engineer. */
+"subscription.restore.popup.message" = "Active subscriptions will be restored from the App Store.\nPlease contact me if you have any problems:\nMore > Support";
+
+/* No comment provided by engineer. */
+"subscription.restore.popup.title" = "Subscription";
 
 /* Subscription View Controller description text. */
 "subscription.text" = "• Try the app for free! You can try the app in a free trial period of 1 month by choosing a subscription. You can try the app without any costs in this period.\n• Your Apple account will be charged for the next subscriptioon period within the final 24 hours of the current period.\n• The subscription will renew automatically if you do not deactivate the renewal in the account setting in iTunes or the App Store at least 24 hours before the end of the subscription period.";

@@ -157,7 +157,13 @@ class SubscriptionViewController: UIViewController, Logging {
     private func restore() {
         Log.info("SubscriptionViewController - Restore purchases.")
         IAP.service.restorePurchases()
-        cancel()
+        let alert = UIAlertController(title: NSLocalizedString("subscription.restore.popup.title", comment: ""),
+                                      message: NSLocalizedString("subscription.restore.popup.message", comment: ""),
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default) {_ in
+            self.cancel()
+        })
+        present(alert, animated: true, completion: nil)
     }
 
     @objc

@@ -96,10 +96,10 @@
 "intro.scan.title" = "Scan it.";
 
 /* Intro: Subscription Description */
-"intro.subscription.description" = "Ich bin ein einzelner Indie-Entwickler und arbeite an der App in meiner Freizeit. Schließe ein monatliches oder jährliches Abo ab, um dies zu unterstützen und alle Feature der App freizuschalten.\n\nVielen Dank für deine Hilfe! ☺️";
+"intro.subscription.description" = "Ich bin ein Indie-Entwickler und arbeite an der App in meiner Freizeit. Unterstütze die Weiterentwicklung und schalte alle Feature frei, indem du ein monatliches oder jährliches Abo abschließt.\n\nVielen Dank für deine Hilfe! ☺️";
 
 /* Intro: Subscription Title */
-"intro.subscription.title" = "Noch'n Abo?!\n😡🤬🤭";
+"intro.subscription.title" = "Noch'n Abo?!\n😡 🤬 🤭";
 
 /* Intro: Tag Description */
 "intro.tag.description" = "Du hast zwischendurch etwas Zeit?\nTagge nun deine Dokumente.\nDie intelligente Texterkennung schlägt dir Datum und Tags vor.\nBeschreibe dein Dokument z.B.\n'Blauer Lieblingspullover'\nund speichere es im Archiv.";
@@ -148,6 +148,12 @@
 
 /* The restore button */
 "subscription.restore" = "Wiederherstellen";
+
+/* No comment provided by engineer. */
+"subscription.restore.popup.message" = "Aktive Abos werden über den App Store wiederhergestellt.\nMelde dich bitte falls es zu Problemen kommen sollte:\nMehr > Support";
+
+/* No comment provided by engineer. */
+"subscription.restore.popup.title" = "Abo";
 
 /* Subscription View Controller description text. */
 "subscription.text" = "• Testen Sie die App 1 Monat als Demo kostenlos. Wählen Sie hierfür eine Abo-Modell auf der rechten Seite aus.\n• Ihr Apple-Account wird innerhalb der letzten 24 Stunden der Laufzeit des laufenden Abos für den nächsten Zeitraum belastet.\n• Das Abo verlängert sich automatisch, wenn die Verlängerung nicht wenigstens 24 Stunden vor Ablauf in den Konto-Einstellungen in iTunes oder im App Store deaktiviert wird.";
