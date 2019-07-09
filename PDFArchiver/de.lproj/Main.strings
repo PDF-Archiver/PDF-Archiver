@@ -44,8 +44,11 @@
 /* Class = "UILabel"; text = "Imprint"; ObjectID = "yfI-wR-oFr"; */
 "yfI-wR-oFr.text" = "Impressum";
 
-/* Class = "UILabel"; text = "PDF Archiver (macOS) 🖥"; ObjectID = "ckq-IA-j4V"; */
-"ckq-IA-j4V.text" = "PDF Archiver (macOS) 🖥";
+/* Class = "UILabel"; text = "PDF Archiver (macOS)  🖥"; ObjectID = "ckq-IA-j4V"; */
+"ckq-IA-j4V.text" = "PDF Archiver (macOS)  🖥";
 
 /* Class = "UILabel"; text = "Reset App Preferences"; ObjectID = "4zW-n1-Fc1"; */
 "4zW-n1-Fc1.text" = "App Einstellungen zurücksetzen";
+
+/* Class = "UILabel"; text = "Support  🚑"; ObjectID = "zci-RM-2u9"; */
+"zci-RM-2u9.text" = "Support  🚑";

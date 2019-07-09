@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MessageUI
 
 class MoreTableViewController: UITableViewController {
 
@@ -19,6 +20,7 @@ class MoreTableViewController: UITableViewController {
     @IBOutlet private weak var manageSubscriptionCell: UITableViewCell!
     @IBOutlet private weak var privacyPolicyCell: UITableViewCell!
     @IBOutlet private weak var imprintCell: UITableViewCell!
+    @IBOutlet weak var supportCell: UITableViewCell!
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -63,6 +65,23 @@ class MoreTableViewController: UITableViewController {
             guard let link = URL(string: NSLocalizedString("MoreTableViewController.imprintCell.url", comment: "")) else { fatalError("Could not parse privacyPolicyCell url.") }
             UIApplication.shared.open(link)
 
+        case supportCell:
+            if MFMailComposeViewController.canSendMail() {
+                let mail = MFMailComposeViewController()
+                mail.mailComposeDelegate = self
+                mail.setToRecipients(["support@pdf-archiver.io"])
+                mail.setSubject("PDF Archiver: iOS Support")
+
+                present(mail, animated: true)
+            } else {
+                guard let url = URL(string: "https://pdf-archiver.io/faq") else { fatalError("Could not generate the FAQ url.") }
+                UIApplication.shared.open(url)
+            }
+
+            func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+                controller.dismiss(animated: true)
+            }
+
         default:
             fatalError("Could not find the table view cell \(cell?.description ?? "")!")
         }
@@ -88,5 +107,12 @@ class MoreTableViewController: UITableViewController {
                                       preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
+    }
+}
+
+extension MoreTableViewController: MFMailComposeViewControllerDelegate {
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        Log.info("Did finish MailComposeViewController.", extra: ["result": result, "error": error?.localizedDescription ?? ""])
+        controller.dismiss(animated: true)
     }
 }
