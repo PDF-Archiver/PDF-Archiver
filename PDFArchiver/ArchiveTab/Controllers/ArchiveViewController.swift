@@ -310,7 +310,7 @@ extension ArchiveViewController: UITableViewDataSource {
         let delete = UITableViewRowAction(style: .destructive, title: "🗑") { _, _ in
             guard let document = self.getDocument(from: indexPath) else { return }
             do {
-                try FileManager.default.trashItem(at: document.path, resultingItemURL: nil)
+                try FileManager.default.removeItem(at: document.path)
             } catch {
                 let alert = UIAlertController(title: NSLocalizedString("ArchiveViewController.delete_failed.title", comment: ""), message: error.localizedDescription, preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Button confirmation label"), style: .default, handler: nil))
