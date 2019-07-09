@@ -280,6 +280,10 @@ extension ArchiveViewController: UITableViewDataSource {
         return currentSections[section].sectionItem
     }
 
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let document = getDocument(from: indexPath) else { return }
         os_log("Selected Document: %@", log: ArchiveViewController.log, type: .debug, document.filename)
@@ -299,6 +303,23 @@ extension ArchiveViewController: UITableViewDataSource {
             document.download()
             selectedDocument = tableView.indexPathForSelectedRow
         }
+    }
+
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+
+        let delete = UITableViewRowAction(style: .destructive, title: "🗑") { _, _ in
+            guard let document = self.getDocument(from: indexPath) else { return }
+            do {
+                try FileManager.default.trashItem(at: document.path, resultingItemURL: nil)
+            } catch {
+                let alert = UIAlertController(title: NSLocalizedString("ArchiveViewController.delete_failed.title", comment: ""), message: error.localizedDescription, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Button confirmation label"), style: .default, handler: nil))
+                self.present(alert, animated: true, completion: nil)
+            }
+        }
+        delete.backgroundColor = .paPlaceholderGray
+
+        return [delete]
     }
 
     // MARK: optical changes

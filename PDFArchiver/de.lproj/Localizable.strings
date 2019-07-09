@@ -5,6 +5,9 @@
 /* Placeholder that is shown, when no document can be found. */
 "archive_tab.background_placeholder" = "Keine iCloud Drive Dokumente gefunden. Bitte scanne und tagge zuerst Dokumente.";
 
+/* No comment provided by engineer. */
+"ArchiveViewController.delete_failed.title" = "Löschen fehlgeschlagen";
+
 /* Camera access in ScanViewController. */
 "Camera access is required to scan documents." = "Der Zugriff auf die Kamera wird benötig, um Dokumente scannen zu können.";
 

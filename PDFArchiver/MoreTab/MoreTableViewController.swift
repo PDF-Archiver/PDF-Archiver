@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 21.06.19.
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
+// swiftlint:disable cyclomatic_complexity function_body_length
 
 import MessageUI
 import UIKit
