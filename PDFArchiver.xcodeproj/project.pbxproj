@@ -66,6 +66,8 @@
 		A3ED932322666BE800DFC2D9 /* TagListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3ED932222666BE800DFC2D9 /* TagListView.swift */; };
 		A3F1C21D2163DCD9002B0141 /* AppStoreReviewRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */; };
 		A3F30D8E221C968E0063D173 /* SplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F30D8D221C968E0063D173 /* SplitViewController.swift */; };
+		A3F87E6D22D52EFB00A47710 /* AboutMeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F87E6B22D52EFB00A47710 /* AboutMeViewController.swift */; };
+		A3F87E6F22D5310700A47710 /* AboutMeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A3F87E7122D5310700A47710 /* AboutMeViewController.xib */; };
 		A3FDD33B229457260054FFFC /* PDFViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FDD339229457260054FFFC /* PDFViewController.swift */; };
 		A3FDD3432294578D0054FFFC /* DateDescriptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FDD3412294578D0054FFFC /* DateDescriptionViewController.swift */; };
 		A3FDD345229459B10054FFFC /* PDFViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A3FDD347229459B10054FFFC /* PDFViewController.xib */; };
@@ -183,6 +185,9 @@
 		A3ED932222666BE800DFC2D9 /* TagListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagListView.swift; sourceTree = "<group>"; };
 		A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreReviewRequest.swift; sourceTree = "<group>"; };
 		A3F30D8D221C968E0063D173 /* SplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewController.swift; sourceTree = "<group>"; };
+		A3F87E6B22D52EFB00A47710 /* AboutMeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutMeViewController.swift; sourceTree = "<group>"; };
+		A3F87E7022D5310700A47710 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/AboutMeViewController.xib; sourceTree = "<group>"; };
+		A3F87E7422D5311700A47710 /* de */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = de; path = de.lproj/AboutMeViewController.xib; sourceTree = "<group>"; };
 		A3FDD339229457260054FFFC /* PDFViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFViewController.swift; sourceTree = "<group>"; };
 		A3FDD3412294578D0054FFFC /* DateDescriptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateDescriptionViewController.swift; sourceTree = "<group>"; };
 		A3FDD346229459B10054FFFC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/PDFViewController.xib; sourceTree = "<group>"; };
@@ -389,6 +394,8 @@
 			isa = PBXGroup;
 			children = (
 				A3D0999722BD15F0003D16E5 /* MoreTableViewController.swift */,
+				A3F87E6B22D52EFB00A47710 /* AboutMeViewController.swift */,
+				A3F87E7122D5310700A47710 /* AboutMeViewController.xib */,
 			);
 			path = MoreTab;
 			sourceTree = "<group>";
@@ -593,6 +600,7 @@
 				A301A75721496992003EA382 /* DocumentTableViewCell.xib in Resources */,
 				A3EBFE9C21650F58008C34CC /* Localizable.strings in Resources */,
 				171E0C8A1B8E5B84001E6242 /* LaunchScreen.storyboard in Resources */,
+				A3F87E6F22D5310700A47710 /* AboutMeViewController.xib in Resources */,
 				A388C82522351FDD000D52CB /* tessdata in Resources */,
 				A388C8272235330F000D52CB /* test-ocr-data.png in Resources */,
 				A34DEF922267699700E12EE5 /* Settings.bundle in Resources */,
@@ -756,6 +764,7 @@
 				A39942BA228B3ACE00FFC16B /* Constants.swift in Sources */,
 				171E0C821B8E5B84001E6242 /* DetailViewController.swift in Sources */,
 				A3DBC695224974380048E681 /* IAPService.swift in Sources */,
+				A3F87E6D22D52EFB00A47710 /* AboutMeViewController.swift in Sources */,
 				A3ED932322666BE800DFC2D9 /* TagListView.swift in Sources */,
 				A3BE7B3622B29AB8004A1ADE /* UIFont.swift in Sources */,
 				A3A071682253ED660093E7A4 /* TaggingViewController.swift in Sources */,
@@ -876,6 +885,15 @@
 				A3EBFE9F21650F70008C34CC /* en */,
 			);
 			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		A3F87E7122D5310700A47710 /* AboutMeViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A3F87E7022D5310700A47710 /* Base */,
+				A3F87E7422D5311700A47710 /* de */,
+			);
+			name = AboutMeViewController.xib;
 			sourceTree = "<group>";
 		};
 		A3FDD347229459B10054FFFC /* PDFViewController.xib */ = {

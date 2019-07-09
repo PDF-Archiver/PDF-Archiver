@@ -52,3 +52,6 @@
 
 /* Class = "UILabel"; text = "Support  🚑"; ObjectID = "zci-RM-2u9"; */
 "zci-RM-2u9.text" = "Support  🚑";
+
+/* Class = "UILabel"; text = "About  👤"; ObjectID = "ft9-SO-jn5"; */
+"ft9-SO-jn5.text" = "Über  👤";

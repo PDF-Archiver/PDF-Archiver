@@ -6,8 +6,8 @@
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
 
-import UIKit
 import MessageUI
+import UIKit
 
 class MoreTableViewController: UITableViewController {
 
@@ -15,12 +15,13 @@ class MoreTableViewController: UITableViewController {
     @IBOutlet private weak var showIntroCell: UITableViewCell!
     @IBOutlet private weak var showPermissionsCell: UITableViewCell!
     @IBOutlet private weak var resetAppCell: UITableViewCell!
-    // Section: more information
-    @IBOutlet private weak var macOSAppCell: UITableViewCell!
     @IBOutlet private weak var manageSubscriptionCell: UITableViewCell!
+    // Section: more information
+    @IBOutlet private weak var aboutCell: UITableViewCell!
+    @IBOutlet private weak var macOSAppCell: UITableViewCell!
     @IBOutlet private weak var privacyPolicyCell: UITableViewCell!
     @IBOutlet private weak var imprintCell: UITableViewCell!
-    @IBOutlet weak var supportCell: UITableViewCell!
+    @IBOutlet private weak var supportCell: UITableViewCell!
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -49,12 +50,16 @@ class MoreTableViewController: UITableViewController {
         case resetAppCell:
             resetApp()
 
-        case macOSAppCell:
-            guard let link = URL(string: "https://macos.pdf-archiver.io") else { fatalError("Could not parse macOS app url.") }
-            UIApplication.shared.open(link)
-
         case manageSubscriptionCell:
             guard let link = URL(string: "https://apps.apple.com/account/subscriptions") else { fatalError("Could not parse subscription url.") }
+            UIApplication.shared.open(link)
+
+        case aboutCell:
+            let controller = AboutMeViewController()
+            navigationController?.pushViewController(controller, animated: true)
+
+        case macOSAppCell:
+            guard let link = URL(string: "https://macos.pdf-archiver.io") else { fatalError("Could not parse macOS app url.") }
             UIApplication.shared.open(link)
 
         case privacyPolicyCell:
