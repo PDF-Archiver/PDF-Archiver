@@ -20,9 +20,13 @@ extension Notification.Name {
     }
 }
 
-public struct ImageConverter: Logging {
+public class ImageConverter: Logging {
 
-    private static let workerQueue: OperationQueue = {
+    static let shared = ImageConverter()
+
+    private(set) var totalDocumentCount = 0
+    private var observation: NSKeyValueObservation?
+    private let workerQueue: OperationQueue = {
         let workerQueue = OperationQueue()
 
         workerQueue.qualityOfService = .userInitiated
@@ -32,7 +36,7 @@ public struct ImageConverter: Logging {
         return workerQueue
     }()
 
-    private static let languages: [RecognitionLanguage] = [.german, .english, .italian, .french, .swedish, .russian]
+    private let languages: [RecognitionLanguage] = [.german, .english, .italian, .french, .swedish, .russian]
 //    private static let languages: [RecognitionLanguage] = {
 //        var langs: [RecognitionLanguage] = [.german, .english]
 //
@@ -48,18 +52,19 @@ public struct ImageConverter: Logging {
 //        return langs
 //    }()
 
-    public static func saveProcessAndSaveTempImages(at path: URL) {
-        os_log("Start processing images", log: log, type: .debug)
+    private init() {}
+
+    public func saveProcessAndSaveTempImages(at path: URL) {
+        os_log("Start processing images", log: ImageConverter.log, type: .debug)
 
         let groupedPaths = StorageHelper.loadImages()
         guard !groupedPaths.isEmpty else {
-            os_log("Could not find new images to process. Skipping ...", log: log, type: .info)
+            os_log("Could not find new images to process. Skipping ...", log: ImageConverter.log, type: .info)
             return
         }
 
+        totalDocumentCount = groupedPaths.count
         for paths in groupedPaths {
-
-            NotificationCenter.default.post(name: .imageProcessingQueue, object: workerQueue.operationCount + 1)
 
             workerQueue.addOperation {
                 let start = Date()
@@ -67,29 +72,39 @@ public struct ImageConverter: Logging {
 
                 // process one document as one operation, so that operationCount == numOfDocuments
                 do {
-                    try process(paths, saveAt: path)
+                    try self.process(paths, saveAt: path)
                 } catch {
                     assertionFailure("Could not process images:\n\(error.localizedDescription)")
-                    os_log("Could not process images.", log: log, type: .error)
+                    os_log("Could not process images.", log: ImageConverter.log, type: .error)
                     Log.error("Could not process images.")
                     for path in paths {
                         try? FileManager.default.removeItem(at: path)
                     }
                 }
 
-                // notify after the pdf has been saved
-                NotificationCenter.default.post(name: .imageProcessingQueue, object: workerQueue.operationCount - 1)
+                // log the processing time
                 let timeDiff = Date().timeIntervalSinceReferenceDate - start.timeIntervalSinceReferenceDate
                 Log.info("Processing completed", extra: ["processing_time": timeDiff])
             }
         }
+
+        observation = workerQueue.observe(\.operationCount, options: [.new]) { (_, change) in
+            if change.newValue == nil || change.newValue == 0 {
+                // Do something here when your queue has completed
+                self.observation = nil
+
+                // signal that all operations are done
+                NotificationCenter.default.post(name: .imageProcessingQueue, object: nil)
+                self.totalDocumentCount = 0
+            }
+        }
     }
 
-    public static func getOperationCount() -> Int {
+    public func getOperationCount() -> Int {
         return workerQueue.operationCount
     }
 
-    private static func process(_ paths: [URL], saveAt path: URL) throws {
+    private func process(_ paths: [URL], saveAt path: URL) throws {
 
         guard !paths.isEmpty else {
             assertionFailure("Empty paths for processing.")
@@ -122,24 +137,26 @@ public struct ImageConverter: Logging {
         }
     }
 
-    private static func createPDF(from images: [UIImage], at filepath: URL) {
-        os_log("Creating PDF from images", log: log, type: .debug)
+    private func createPDF(from images: [UIImage], at filepath: URL) {
+        os_log("Creating PDF from images", log: ImageConverter.log, type: .debug)
 
-        let operation = PDFProcessing(images, documentSavePath: filepath)
+        let operation = PDFProcessing(images, documentSavePath: filepath) { progress in
+            NotificationCenter.default.post(name: .imageProcessingQueue, object: progress)
+        }
 
         // try to create a pdf document from
         if #available(iOS 12.0, *) {
-            let signpostID = OSSignpostID(log: log, object: images as AnyObject)
-            os_signpost(.begin, log: log, name: "Process Images", signpostID: signpostID)
+            let signpostID = OSSignpostID(log: ImageConverter.log, object: images as AnyObject)
+            os_signpost(.begin, log: ImageConverter.log, name: "Process Images", signpostID: signpostID)
             operation.main()
-            os_signpost(.end, log: log, name: "Process Images", signpostID: signpostID)
+            os_signpost(.end, log: ImageConverter.log, name: "Process Images", signpostID: signpostID)
         } else {
             operation.main()
         }
     }
 
-    private static func getFilename(from document: PDFDocument) -> String {
-        os_log("Creating filename", log: log, type: .debug)
+    private func getFilename(from document: PDFDocument) -> String {
+        os_log("Creating filename", log: ImageConverter.log, type: .debug)
 
         // get OCR content
         guard let content = document.string else { return "" }
@@ -164,7 +181,7 @@ public struct ImageConverter: Logging {
         return Document.createFilename(date: parsedDate, specification: specification, tags: newTags)
     }
 
-    private static func getImage(from path: URL) -> UIImage? {
+    private func getImage(from path: URL) -> UIImage? {
 
         // Get the data from this file; exit if we fail
         guard let imageData = try? Data(contentsOf: path) else { return nil }

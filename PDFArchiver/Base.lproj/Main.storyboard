@@ -383,26 +383,28 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6gC-38-OQN" userLabel="Processing Indicator View">
-                                <rect key="frame" x="46" y="532" width="283" height="29"/>
+                                <rect key="frame" x="46" y="521" width="283" height="40"/>
                                 <subviews>
-                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="VV0-qA-yGJ">
-                                        <rect key="frame" x="0.0" y="4.6666666666666288" width="20" height="20"/>
-                                        <color key="color" name="DarkGray"/>
-                                    </activityIndicatorView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Processing documents." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VnS-hp-NRS">
-                                        <rect key="frame" x="30" y="5.6666666666666288" width="161" height="18"/>
+                                        <rect key="frame" x="20" y="0.0" width="243" height="28"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="35w-Pq-Odj">
+                                        <rect key="frame" x="20" y="33" width="243" height="2"/>
+                                    </progressView>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstItem="VnS-hp-NRS" firstAttribute="leading" secondItem="VV0-qA-yGJ" secondAttribute="trailing" constant="10" id="IUy-gD-WA6"/>
-                                    <constraint firstAttribute="height" constant="29" id="Stw-1A-4Bg"/>
-                                    <constraint firstItem="VV0-qA-yGJ" firstAttribute="leading" secondItem="6gC-38-OQN" secondAttribute="leading" id="UJi-QA-wRd"/>
-                                    <constraint firstItem="VnS-hp-NRS" firstAttribute="centerY" secondItem="6gC-38-OQN" secondAttribute="centerY" id="i6x-GA-EzF"/>
-                                    <constraint firstItem="VV0-qA-yGJ" firstAttribute="centerY" secondItem="6gC-38-OQN" secondAttribute="centerY" id="zU8-Yq-EKl"/>
+                                    <constraint firstItem="35w-Pq-Odj" firstAttribute="top" secondItem="VnS-hp-NRS" secondAttribute="bottom" constant="5" id="Ed7-Zg-it2"/>
+                                    <constraint firstItem="VnS-hp-NRS" firstAttribute="leading" secondItem="6gC-38-OQN" secondAttribute="leading" constant="20" id="QjK-De-II3"/>
+                                    <constraint firstAttribute="height" constant="40" id="Stw-1A-4Bg"/>
+                                    <constraint firstAttribute="bottom" secondItem="35w-Pq-Odj" secondAttribute="bottom" constant="5" id="dKa-rN-X4U"/>
+                                    <constraint firstItem="35w-Pq-Odj" firstAttribute="leading" secondItem="6gC-38-OQN" secondAttribute="leading" constant="20" id="dph-DF-gMb"/>
+                                    <constraint firstItem="VnS-hp-NRS" firstAttribute="top" secondItem="6gC-38-OQN" secondAttribute="top" id="kKA-MN-mJN"/>
+                                    <constraint firstAttribute="trailing" secondItem="VnS-hp-NRS" secondAttribute="trailing" constant="20" id="vUw-Z8-TJ4"/>
+                                    <constraint firstAttribute="trailing" secondItem="35w-Pq-Odj" secondAttribute="trailing" constant="20" id="zUk-37-xKx"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -431,12 +433,13 @@
                     </view>
                     <connections>
                         <outlet property="processingIndicatorView" destination="6gC-38-OQN" id="Km2-EO-WnR"/>
+                        <outlet property="progressView" destination="35w-Pq-Odj" id="BHn-8C-1af"/>
                         <segue destination="tm6-d8-Gh9" kind="show" identifier="showTabVC" id="gQa-7j-0VG"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TZn-38-4Hb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2195.625" y="-1634.6830985915494"/>
+            <point key="canvasLocation" x="-2196" y="-1634.8522167487686"/>
         </scene>
         <!--TagTab-->
         <scene sceneID="3Uo-tT-MH3">

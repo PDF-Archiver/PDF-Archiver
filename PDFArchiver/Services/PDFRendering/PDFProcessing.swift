@@ -14,26 +14,36 @@ import Vision
 
 class PDFProcessing: Operation {
 
+    typealias ProgressHandler = ((Float) -> Void)
+
     private let log = OSLog(subsystem: "DocumentProcessing", category: "DocumentProcessing")
     private let tesseract = SwiftyTesseract(languages: [.german, .english, .italian, .french, .swedish, .russian], bundle: .main, engineMode: .lstmOnly)
 
     private let confidenceThreshold = Float(0)
     private let images: [UIImage]
+    private let progressHandler: ProgressHandler?
     private let documentSavePath: URL
+    private let ocrProcessingQueue = DispatchQueue.global(qos: .background)
+    // TODO: change the timeout
+    private let ocrProcessingTimeout = 1
 
     private var detectTextRectangleObservations = [VNTextObservation]()
 
-    init(_ images: [UIImage], documentSavePath: URL) {
+    init(_ images: [UIImage], documentSavePath: URL, progressHandler: ProgressHandler?) {
         self.images = images
         self.documentSavePath = documentSavePath
+        self.progressHandler = progressHandler
     }
 
     override func main() {
 
+        // signal the start of the operation
+        progressHandler?(Float(0))
+
         let textBoxRequests = setupTextBoxRequests()
 
         var textObservations = [TextObservation]()
-        for image in images {
+        for (imageIndex, image) in images.enumerated() {
             if isCancelled {
                 return
             }
@@ -52,16 +62,32 @@ class PDFProcessing: Operation {
 
             // text recognition (OCR)
             var results = [TextObservationResult]()
-            for observation in detectTextRectangleObservations {
+            for (observationIndex, observation) in detectTextRectangleObservations.enumerated() {
 
-                let textBox = transform(observation: observation, in: image)
-                if let croppedImage = image.crop(rectangle: textBox) {
-                    tesseract.performOCR(on: croppedImage) { text in
-                        guard let text = text,
-                            !text.isEmpty else { return }
-                        results.append(TextObservationResult(rect: textBox, text: text))
+                // build and start processing of one observation
+                let semaphore = DispatchSemaphore(value: 0)
+                let item = DispatchWorkItem {
+                    let textBox = self.transform(observation: observation, in: image)
+                    if let croppedImage = image.crop(rectangle: textBox) {
+                        self.tesseract.performOCR(on: croppedImage) { text in
+                            guard let text = text,
+                                !text.isEmpty else { return }
+                            results.append(TextObservationResult(rect: textBox, text: text))
+                        }
                     }
+                    semaphore.signal()
                 }
+                ocrProcessingQueue.async(execute: item)
+
+                // cancel operation if it timed out
+                let result = semaphore.wait(wallTimeout: .now() + .seconds(ocrProcessingTimeout))
+                if result == .timedOut {
+                    item.cancel()
+                }
+
+                // update the progress view
+                let progress = Float(Float(imageIndex) + Float(observationIndex) / Float(detectTextRectangleObservations.count)) / Float(images.count)
+                progressHandler?(progress)
             }
 
             // append results
