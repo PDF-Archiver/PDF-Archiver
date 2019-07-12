@@ -83,7 +83,6 @@ class ScanViewController: UIViewController, Logging {
             let totalDocumentCount = Float(ImageConverter.shared.totalDocumentCount)
             let progress = (totalDocumentCount - operationCount + documentProgress) / totalDocumentCount
 
-            print(progress)
             updateProcessingIndicator(with: progress)
         } else {
             updateProcessingIndicator(with: nil)
