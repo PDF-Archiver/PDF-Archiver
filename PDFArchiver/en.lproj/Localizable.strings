@@ -143,6 +143,9 @@
 /* No comment provided by engineer. */
 "per_year" = "per year";
 
+/* No comment provided by engineer. */
+"ScanViewController.processing" = "Processing: ";
+
 /* UISearchBar placeholder */
 "search-documents" = "Search Documents";
 

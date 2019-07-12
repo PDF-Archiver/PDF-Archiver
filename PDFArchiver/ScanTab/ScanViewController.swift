@@ -17,6 +17,7 @@ class ScanViewController: UIViewController, Logging {
     private var scannerViewController: ImageScannerController?
 
     @IBOutlet private weak var processingIndicatorView: UIView!
+    @IBOutlet private weak var progressLabel: UILabel!
     @IBOutlet private weak var progressView: UIProgressView!
 
     @IBAction private func scanButtonTapped(_ sender: UIButton) {
@@ -45,6 +46,11 @@ class ScanViewController: UIViewController, Logging {
                                                name: .imageProcessingQueue,
                                                object: nil)
 
+        // show the processing indicator, if documents are currently processed
+        if ImageConverter.shared.totalDocumentCount != 0 {
+            updateProcessingIndicator(with: 0)
+        }
+
         // trigger processing (if temp images exist)
         triggerProcessing()
     }
@@ -54,15 +60,6 @@ class ScanViewController: UIViewController, Logging {
 
         // save the selected index for the next app start
         UserDefaults.standard.set(tabBarController?.selectedIndex ?? 2, forKey: Constants.UserDefaults.lastSelectedTabIndex.rawValue)
-
-        let totalCount = ImageConverter.shared.totalDocumentCount
-        if totalCount != 0 {
-            // show the processing indicator, if documents are currently processed
-            let operationCount = Float(ImageConverter.shared.getOperationCount())
-            let totalDocumentCount = Float(totalCount)
-            let progress = (totalDocumentCount - operationCount) / totalDocumentCount
-            updateProcessingIndicator(with: progress)
-        }
 
         // show subscription view controller, if no subscription was found
         if !IAP.service.appUsagePermitted() {
@@ -79,24 +76,28 @@ class ScanViewController: UIViewController, Logging {
     private func imageQueueLengthChange(_ notification: Notification) {
 
         if let documentProgress = notification.object as? Float {
-            let operationCount = Float(ImageConverter.shared.getOperationCount())
-            let totalDocumentCount = Float(ImageConverter.shared.totalDocumentCount)
-            let progress = (totalDocumentCount - operationCount + documentProgress) / totalDocumentCount
-
-            updateProcessingIndicator(with: progress)
+            updateProcessingIndicator(with: documentProgress)
         } else {
             updateProcessingIndicator(with: nil)
         }
     }
 
-    private func updateProcessingIndicator(with progress: Float?) {
+    private func updateProcessingIndicator(with documentProgress: Float?) {
         DispatchQueue.main.async {
-            if let progress = progress {
+            if let documentProgress = documentProgress {
+
+                let totalDocuments = ImageConverter.shared.totalDocumentCount
+                let completedDocuments = ImageConverter.shared.getOperationCount() - totalDocuments
+                let progress = (Float(completedDocuments) + documentProgress) / Float(totalDocuments)
+                let progressString = "\(min(completedDocuments + 1, totalDocuments))/\(totalDocuments) (\(Int(progress * 100))%)"
+
                 self.processingIndicatorView.isHidden = false
                 self.progressView.progress = progress
+                self.progressLabel.text = NSLocalizedString("ScanViewController.processing", comment: "") + progressString
             } else {
                 self.processingIndicatorView.isHidden = true
                 self.progressView.progress = 0
+                self.progressLabel.text = NSLocalizedString("ScanViewController.processing", comment: "") + "0%"
             }
         }
     }

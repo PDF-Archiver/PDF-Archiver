@@ -57,12 +57,12 @@
                     </accessibility>
                     <mutableString key="text">Hallo 🤗
 
-ich bin Julian - der Entwickler von PDF Archiver. Ich habe dieses Projekt 2017 mit der macOS App gestartet und steckt seitdem viel Herzblut hinein. 🙄
-Freunde von mir und ich 👨🏻‍💻 haben nach einem Weg gesucht Dokumente digital zu sortieren, sodass sie einfach wiedergefunden werden können. 🕵🏻‍♂️ Hierbei wollten wir keine Cloud Lösung verwenden, bei der unsere Dokumente in irgendeiner Datenbank verschwinden. Es musste ein Konzept her, bei dem möglichst viele Informationen im Dateinamen gespeichert werden können. 💾 So legten wir das folgende Namenschema fest:
+ich bin Julian - der Entwickler von PDF Archiver. Ich habe dieses Projekt 2017 mit der macOS App gestartet und stecke seitdem viel Herzblut hinein. 🙄
+Freunde von mir und ich 👨🏻‍💻 haben nach einem Weg gesucht Dokumente digital zu sortieren, sodass sie einfach wiedergefunden werden können. 🕵🏻‍♂️ Hierbei wollten wir keine Cloud Lösung verwenden, bei der unsere Dokumente in irgendeiner Datenbank verschwinden. Es sollte ein Konzept her, bei dem möglichst viele Informationen im Dateinamen gespeichert werden können. 💾 So legten wir das folgende Namensschema fest:
 
 2019-07-04--blauer-lieblingspullover__kleidung_rechnung.pdf
 
-Es enthält ein Datum, eine Beschreibung und Tags die vergeben werden können. Alles zusammen bildet den Dateinamen, der auf den verschiedensten System einfach durchsucht werden kann.
+Es enthält ein Datum, eine Beschreibung und Tags. Alles zusammen bildet den Dateinamen, der auf den verschiedensten Betriebssystemen einfach durchsucht werden kann.
 Um diese Sortierung so einfach wie möglich zu gestalten habe ich PDF Archiver auf das iPhone gebracht. Hier können Dokumente nun eingescannt und anschließend automatisch analysiert werden. 🤯 Die intelligente Texterkennung findet ausschließlich auf deinem Gerät statt, sodass keine privaten Informationen dein Gerät verlassen! 🔒
 
 PDF Archiver ist als Hilfsmittel für deinen persönlichen Dokumenten Workflow gedacht. Falls also auch du etwas Zeit bei der Archivierung sparen konntest oder wenn es einen Moment gab, bei dem du froh warst all deine Dokumente auf dem iPhone zu haben, schreib gerne einen kurzen Kommentar im App Store. 🖋

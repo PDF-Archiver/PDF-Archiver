@@ -385,7 +385,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6gC-38-OQN" userLabel="Processing Indicator View">
                                 <rect key="frame" x="46" y="521" width="283" height="40"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Processing documents." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VnS-hp-NRS">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Processing: 1/3 (42%)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VnS-hp-NRS">
                                         <rect key="frame" x="20" y="0.0" width="243" height="28"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                         <nil key="textColor"/>
@@ -433,6 +433,7 @@
                     </view>
                     <connections>
                         <outlet property="processingIndicatorView" destination="6gC-38-OQN" id="Km2-EO-WnR"/>
+                        <outlet property="progressLabel" destination="VnS-hp-NRS" id="1VU-ET-fiQ"/>
                         <outlet property="progressView" destination="35w-Pq-Odj" id="BHn-8C-1af"/>
                         <segue destination="tm6-d8-Gh9" kind="show" identifier="showTabVC" id="gQa-7j-0VG"/>
                     </connections>
