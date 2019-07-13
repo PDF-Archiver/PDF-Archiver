@@ -86,7 +86,8 @@ class PDFProcessing: Operation {
 
                 // update the progress view
                 let progress = Float(Float(imageIndex) + Float(observationIndex) / Float(detectTextRectangleObservations.count)) / Float(images.count)
-                progressHandler?(progress)
+                let borderedProgress = min(max(progress, 0), 1)
+                progressHandler?(borderedProgress)
             }
 
             // append results
