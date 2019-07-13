@@ -307,7 +307,8 @@ extension ArchiveViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
 
-        let delete = UITableViewRowAction(style: .destructive, title: "🗑") { _, _ in
+        let title = NSLocalizedString("delete", comment: "")
+        let delete = UITableViewRowAction(style: .destructive, title: title) { _, _ in
             guard let document = self.getDocument(from: indexPath) else { return }
             do {
                 try FileManager.default.removeItem(at: document.path)
@@ -317,7 +318,7 @@ extension ArchiveViewController: UITableViewDataSource {
                 self.present(alert, animated: true, completion: nil)
             }
         }
-        delete.backgroundColor = .paPlaceholderGray
+        delete.backgroundColor = .paDelete
 
         return [delete]
     }

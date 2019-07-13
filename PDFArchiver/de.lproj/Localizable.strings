@@ -17,6 +17,9 @@
 /* Delete document. */
 "Delete" = "Dokument löschen";
 
+/* No comment provided by engineer. */
+"delete" = "Löschen";
+
 /* Camera access in ScanViewController. */
 "Do you really want to delete this document?" = "Möchtest du dieses Dokument wirklich löschen?";
 
