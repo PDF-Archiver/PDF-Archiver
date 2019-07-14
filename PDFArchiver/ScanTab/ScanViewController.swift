@@ -84,15 +84,18 @@ class ScanViewController: UIViewController, Logging {
 
     private func updateProcessingIndicator(with documentProgress: Float?) {
         DispatchQueue.main.async {
-            if let documentProgress = documentProgress {
 
-                let totalDocuments = ImageConverter.shared.totalDocumentCount
+            // we do not need a progress view, if the number of total documents is 0
+            let totalDocuments = ImageConverter.shared.totalDocumentCount
+            let tmpDocumentProgress = totalDocuments == 0 ? nil : documentProgress
+
+            if let documentProgress = tmpDocumentProgress {
+
                 let completedDocuments = ImageConverter.shared.getOperationCount() - totalDocuments
-                let progress = (Float(completedDocuments) + documentProgress) / Float(totalDocuments)
                 let progressString = "\(min(completedDocuments + 1, totalDocuments))/\(totalDocuments) (\(Int(documentProgress * 100))%)"
 
                 self.processingIndicatorView.isHidden = false
-                self.progressView.progress = progress
+                self.progressView.progress = (Float(completedDocuments) + documentProgress) / Float(totalDocuments)
                 self.progressLabel.text = NSLocalizedString("ScanViewController.processing", comment: "") + progressString
             } else {
                 self.processingIndicatorView.isHidden = true

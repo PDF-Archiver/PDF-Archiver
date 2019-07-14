@@ -23,7 +23,7 @@ class PDFProcessing: Operation {
     private let images: [UIImage]
     private let progressHandler: ProgressHandler?
     private let documentSavePath: URL
-    private let ocrProcessingQueue = DispatchQueue.global(qos: .background)
+    private let ocrProcessingQueue = DispatchQueue.global(qos: .userInitiated)
     private let ocrProcessingTimeout = 60   // in seconds
 
     private var detectTextRectangleObservations = [VNTextObservation]()
