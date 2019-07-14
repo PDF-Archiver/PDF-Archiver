@@ -13,7 +13,7 @@ extension StorageHelper {
     enum Paths {
 
         static let untaggedFolderName = "untagged"
-        static let tempFolderName = ".temp"
+        static let tempFolderName = "temp"
 
         static var archivePath: URL? = {
             guard let containerUrl = FileManager.default.url(forUbiquityContainerIdentifier: nil) else {
@@ -29,8 +29,9 @@ extension StorageHelper {
         }()
 
         static var tempImagePath: URL? = {
-            guard let untaggedPath = untaggedPath else { return nil }
-            return untaggedPath.appendingPathComponent(tempFolderName)
+            let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+            let documentsDirectory = paths[0]
+            return documentsDirectory.appendingPathComponent(tempFolderName)
         }()
 
         static let iCloudDriveAlertController: UIAlertController = {
