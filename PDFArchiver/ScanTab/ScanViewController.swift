@@ -89,7 +89,7 @@ class ScanViewController: UIViewController, Logging {
                 let totalDocuments = ImageConverter.shared.totalDocumentCount
                 let completedDocuments = ImageConverter.shared.getOperationCount() - totalDocuments
                 let progress = (Float(completedDocuments) + documentProgress) / Float(totalDocuments)
-                let progressString = "\(min(completedDocuments + 1, totalDocuments))/\(totalDocuments) (\(Int(progress * 100))%)"
+                let progressString = "\(min(completedDocuments + 1, totalDocuments))/\(totalDocuments) (\(Int(documentProgress * 100))%)"
 
                 self.processingIndicatorView.isHidden = false
                 self.progressView.progress = progress
