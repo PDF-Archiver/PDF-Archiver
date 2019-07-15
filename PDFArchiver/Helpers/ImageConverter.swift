@@ -104,6 +104,14 @@ public class ImageConverter: Logging {
         return workerQueue.operationCount
     }
 
+    public func stopProcessing() {
+        workerQueue.isSuspended = true
+    }
+
+    public func startProcessing() {
+        workerQueue.isSuspended = false
+    }
+
     private func process(_ paths: [URL], saveAt path: URL) throws {
 
         guard !paths.isEmpty else {

@@ -34,6 +34,9 @@ class ScanViewController: UIViewController, Logging {
             guard let scannerViewController = scannerViewController else { return }
             scannerViewController.imageScannerDelegate = self
             present(scannerViewController, animated: true)
+
+            // stop current image processing
+            ImageConverter.shared.stopProcessing()
         }
     }
 
@@ -136,11 +139,16 @@ class ScanViewController: UIViewController, Logging {
 extension ScanViewController: ImageScannerControllerDelegate {
 
     func imageScannerController(_ scanner: ImageScannerController, didFailWithError error: Error) {
+
+        ImageConverter.shared.startProcessing()
+
         // You are responsible for carefully handling the error
         os_log("Selected Document: %@", log: ScanViewController.log, type: .error, error.localizedDescription)
     }
 
     func imageScannerController(_ scanner: ImageScannerController, didFinishScanningWithResults results: ImageScannerResults) {
+
+        ImageConverter.shared.startProcessing()
 
         Log.info("Did finish scanning with result.")
 
@@ -178,6 +186,9 @@ extension ScanViewController: ImageScannerControllerDelegate {
     }
 
     func imageScannerControllerDidCancel(_ scanner: ImageScannerController) {
+
+        ImageConverter.shared.startProcessing()
+
         // user tapped 'Cancel' on the scanner
         scanner.dismiss(animated: true)
     }
