@@ -14,21 +14,15 @@ enum Log {
     private static let shared = Client.shared
 
     static func info(_ message: String, extra data: [String: Any] = [:], file: String = #file, line: Int = #line, function: String = #function) {
-        #if DEBUG
-        return
-        #else
-        guard let event = Event(.info, msg: message, extra: data, file: file, line: line, function: function) else { return }
+        guard Environment.get() != .develop,
+            let event = Event(.info, msg: message, extra: data, file: file, line: line, function: function) else { return }
         shared?.send(event: event, completion: nil)
-        #endif
     }
 
     static func error(_ message: String, extra data: [String: Any] = [:], file: String = #file, line: Int = #line, function: String = #function) {
-        #if DEBUG
-        return
-        #else
-        guard let event = Event(.error, msg: message, extra: data, file: file, line: line, function: function) else { return }
+        guard Environment.get() != .develop,
+            let event = Event(.error, msg: message, extra: data, file: file, line: line, function: function) else { return }
         shared?.send(event: event, completion: nil)
-        #endif
     }
 }
 

@@ -32,7 +32,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Create a Sentry client and start crash handler
         do {
-            Client.shared = try Client(dsn: PDFArchiverKeys().sentryDSN)
+            Client.shared = try Client(options: [
+                "dsn": PDFArchiverKeys().sentryDSN,
+                "environment": Environment.get().rawValue
+            ])
             try Client.shared?.startCrashHandler()
             Client.shared?.enableAutomaticBreadcrumbTracking()
             Client.shared?.trackMemoryPressureAsEvent()
