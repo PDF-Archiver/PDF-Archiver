@@ -50,7 +50,7 @@ class ScanViewController: UIViewController, Logging {
                                                object: nil)
 
         // show the processing indicator, if documents are currently processed
-        if ImageConverter.shared.totalDocumentCount != 0 {
+        if ImageConverter.shared.totalDocumentCount.value != 0 {
             updateProcessingIndicator(with: 0)
         }
 
@@ -89,12 +89,12 @@ class ScanViewController: UIViewController, Logging {
         DispatchQueue.main.async {
 
             // we do not need a progress view, if the number of total documents is 0
-            let totalDocuments = ImageConverter.shared.totalDocumentCount
+            let totalDocuments = ImageConverter.shared.totalDocumentCount.value
             let tmpDocumentProgress = totalDocuments == 0 ? nil : documentProgress
 
             if let documentProgress = tmpDocumentProgress {
 
-                let completedDocuments = ImageConverter.shared.getOperationCount() - totalDocuments
+                let completedDocuments = totalDocuments - ImageConverter.shared.getOperationCount()
                 let progressString = "\(min(completedDocuments + 1, totalDocuments))/\(totalDocuments) (\(Int(documentProgress * 100))%)"
 
                 self.processingIndicatorView.isHidden = false
@@ -130,9 +130,7 @@ class ScanViewController: UIViewController, Logging {
             self.present(StorageHelper.Paths.iCloudDriveAlertController, animated: true, completion: nil)
             return
         }
-        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 2) {
-            ImageConverter.shared.saveProcessAndSaveTempImages(at: untaggedPath)
-        }
+        ImageConverter.shared.saveProcessAndSaveTempImages(at: untaggedPath)
     }
 }
 

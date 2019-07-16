@@ -31,6 +31,7 @@
 		A34A84FC2130A35A0093FAE5 /* ArchiveExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34A84F82130A35A0093FAE5 /* ArchiveExtension.swift */; };
 		A34A85022130A3870093FAE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A34A85012130A3870093FAE5 /* Assets.xcassets */; };
 		A34DEF922267699700E12EE5 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A34DEF912267699700E12EE5 /* Settings.bundle */; };
+		A356115F22DE517B00A9092F /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = A356115E22DE517B00A9092F /* Atomic.swift */; };
 		A363E858225D30D3007BE48B /* ArchiveLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A335D4BA223D0B3400443A53 /* ArchiveLib.framework */; };
 		A363E859225D30D3007BE48B /* ArchiveLib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A335D4BA223D0B3400443A53 /* ArchiveLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A36AE3A822A70149001D534E /* PlaceholderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36AE3A722A70149001D534E /* PlaceholderViewController.swift */; };
@@ -147,6 +148,7 @@
 		A34A85012130A3870093FAE5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A34D8D7A2130A1E200867B65 /* PDFArchiver.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PDFArchiver.entitlements; sourceTree = "<group>"; };
 		A34DEF912267699700E12EE5 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		A356115E22DE517B00A9092F /* Atomic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Atomic.swift; sourceTree = "<group>"; };
 		A36AE3A722A70149001D534E /* PlaceholderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderViewController.swift; sourceTree = "<group>"; };
 		A378C432221B3929007D1419 /* DocumentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentService.swift; sourceTree = "<group>"; };
 		A381CF20222F0B5D00FAFA7C /* ImageConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageConverter.swift; sourceTree = "<group>"; };
@@ -341,6 +343,7 @@
 				A316F36522946ED70099BA26 /* UIViewController.swift */,
 				A3DFA7262278D9CF00E0F362 /* WSTagsField.swift */,
 				A306BCE522DE356F0051D745 /* Environment.swift */,
+				A356115E22DE517B00A9092F /* Atomic.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -779,6 +782,7 @@
 				A3CF79BE22C3FA0A008711E4 /* PDFProcessing.swift in Sources */,
 				A3FDD33B229457260054FFFC /* PDFViewController.swift in Sources */,
 				171E0C801B8E5B84001E6242 /* ArchiveViewController.swift in Sources */,
+				A356115F22DE517B00A9092F /* Atomic.swift in Sources */,
 				A3B57B83228750CF0078F7A4 /* FileManager.swift in Sources */,
 				A307B05622C28C1100C9A348 /* Log.swift in Sources */,
 				A3FF63A022478FC10089E66A /* UIColor.swift in Sources */,
