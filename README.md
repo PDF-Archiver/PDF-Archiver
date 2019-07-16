@@ -1,10 +1,10 @@
 <p align="center">
-<a href="https://itunes.apple.com/app/apple-store/id1433801905?pt=118993774&ct=GitHub&mt=8" target="itunes_store">
+<a href="https://apps.apple.com/app/apple-store/id1433801905?pt=118993774&ct=GitHub&mt=8" target="itunes_store">
   <img src="assets/AppIcon.svg" width="100px">
 </a>
 <br>
 <br>
-<a href="https://itunes.apple.com/app/apple-store/id1433801905?pt=118993774&ct=GitHub&mt=8">
+<a href="https://apps.apple.com/app/apple-store/id1433801905?pt=118993774&ct=GitHub&mt=8">
 <img src="https://linkmaker.itunes.apple.com/assets/shared/badges/en-us/appstore-lrg.svg" width="135px">
 </a>
 </p>
@@ -48,7 +48,7 @@ This structure is independent from your OS and filesystem and makes it very easy
 
 
 ## :octocat: How to contribute
-Rate the App in the [App Store](https://itunes.apple.com/app/apple-store/id1433801905?pt=118993774&ct=GitHub&mt=8&action=write-review).
+Rate the App in the [App Store](https://apps.apple.com/app/apple-store/id1433801905?pt=118993774&ct=GitHub&mt=8&action=write-review).
 
 All [contributions](https://github.com/PDF-Archiver/PDF-Archiver/blob/develop/.github/CONTRIBUTING.md) are welcome!
 Feel free to contribute to this project.
