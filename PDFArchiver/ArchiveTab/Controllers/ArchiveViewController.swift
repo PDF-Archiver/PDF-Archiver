@@ -94,7 +94,6 @@ class ArchiveViewController: UIViewController, UITableViewDelegate, Logging {
 
         // save the selected index for the next app start
         UserDefaults.standard.set(tabBarController?.selectedIndex ?? 2, forKey: Constants.UserDefaults.lastSelectedTabIndex.rawValue)
-        Log.info("ArchiveTab: Show archived documents.")
     }
 
     // MARK: - Segues
@@ -281,6 +280,10 @@ extension ArchiveViewController: UITableViewDataSource {
         return currentSections[section].sectionItem
     }
 
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let document = getDocument(from: indexPath) else { return }
         os_log("Selected Document: %@", log: ArchiveViewController.log, type: .debug, document.filename)
@@ -300,6 +303,37 @@ extension ArchiveViewController: UITableViewDataSource {
             document.download()
             selectedDocument = tableView.indexPathForSelectedRow
         }
+    }
+
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+
+        let title = NSLocalizedString("delete", comment: "")
+        let delete = UITableViewRowAction(style: .destructive, title: title) { _, _ in
+            guard let document = self.getDocument(from: indexPath) else { return }
+
+            let path: URL
+            if document.downloadStatus == .local {
+                path = document.path
+            } else {
+                let iCloudFilename = ".\(document.filename).icloud"
+                path = document.path.deletingLastPathComponent().appendingPathComponent(iCloudFilename)
+            }
+
+            do {
+                try FileManager.default.removeItem(at: path)
+
+                let removedDocument = Set([document])
+                DocumentService.archive.remove(removedDocument)
+                self.updateDocuments(changed: removedDocument)
+            } catch {
+                let alert = UIAlertController(title: NSLocalizedString("ArchiveViewController.delete_failed.title", comment: ""), message: error.localizedDescription, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Button confirmation label"), style: .default, handler: nil))
+                self.present(alert, animated: true, completion: nil)
+            }
+        }
+        delete.backgroundColor = .paDelete
+
+        return [delete]
     }
 
     // MARK: optical changes

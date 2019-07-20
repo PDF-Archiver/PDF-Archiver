@@ -5,6 +5,9 @@
 /* Placeholder that is shown, when no document can be found. */
 "archive_tab.background_placeholder" = "No iCloud Drive documents found. Please scan and tag documents first.";
 
+/* No comment provided by engineer. */
+"ArchiveViewController.delete_failed.title" = "Delete failed";
+
 /* Camera access in ScanViewController. */
 "Camera access is required to scan documents." = "Camera access is required to scan documents.";
 
@@ -13,6 +16,9 @@
 
 /* Delete document. */
 "Delete" = "Delete document";
+
+/* No comment provided by engineer. */
+"delete" = "Delete";
 
 /* Camera access in ScanViewController. */
 "Do you really want to delete this document?" = "Do you really want to delete this document?";
@@ -78,7 +84,7 @@
 "Grant Access" = "Grant Access";
 
 /* Intro: Find Description */
-"intro.find.description" = "You can find your documents quickly and easily at any time via the archive or the iCloud Drive app\n-\nso you always have your most important information in your pocket!";
+"intro.find.description" = "You can find your documents quickly and easily at any time via the archive or the iCloud Drive app\n\nso you always have your most important information in your pocket!";
 
 /* Intro: Find Title */
 "intro.find.title" = "Find it.";
@@ -94,6 +100,12 @@
 
 /* Intro: Scan Title */
 "intro.scan.title" = "Scan it.";
+
+/* Intro: Subscription Description */
+"intro.subscription.description" = "I'm an indie developer and work on the app in my spare time. Support the development and unlock all features by signing up for a monthly or annual subscription.\n\nThanks for your help! ☺️️";
+
+/* Intro: Subscription Title */
+"intro.subscription.title" = "Another Subscription?!\n😡 🤬 🤭";
 
 /* Intro: Tag Description */
 "intro.tag.description" = "You have some time in between?\nTag your documents and find them quickly at any time. The intelligent text recognition automatically suggests the date and matching tags.\nDescribe your document e.g. with\n'Blue Favorite Sweater'\nand save it in your archive.";
@@ -134,6 +146,9 @@
 /* No comment provided by engineer. */
 "per_year" = "per year";
 
+/* No comment provided by engineer. */
+"ScanViewController.processing" = "Processing: ";
+
 /* UISearchBar placeholder */
 "search-documents" = "Search Documents";
 
@@ -142,6 +157,12 @@
 
 /* The restore button */
 "subscription.restore" = "Restore";
+
+/* No comment provided by engineer. */
+"subscription.restore.popup.message" = "Active subscriptions will be restored from the App Store.\nPlease contact me if you have any problems:\nMore > Support";
+
+/* No comment provided by engineer. */
+"subscription.restore.popup.title" = "Subscription";
 
 /* Subscription View Controller description text. */
 "subscription.text" = "• Try the app for free! You can try the app in a free trial period of 1 month by choosing a subscription. You can try the app without any costs in this period.\n• Your Apple account will be charged for the next subscriptioon period within the final 24 hours of the current period.\n• The subscription will renew automatically if you do not deactivate the renewal in the account setting in iTunes or the App Store at least 24 hours before the end of the subscription period.";

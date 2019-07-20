@@ -12,6 +12,58 @@ import UIKit
 
 class IntroViewController: UIViewController {
 
+    private let items = [
+        OnboardingItemInfo(informationImage: #imageLiteral(resourceName: "scan"),
+                           title: NSLocalizedString("intro.scan.title", comment: "Intro: Scan Title"),
+                           description: NSLocalizedString("intro.scan.description", comment: "Intro: Scan Description"),
+                           pageIcon: #imageLiteral(resourceName: "File").imageWithBorder(width: 10, color: .clear)!,
+                           color: .paWhite,
+                           titleColor: .paDarkRed,
+                           descriptionColor: .paDarkGray,
+                           titleFont: .introTitle,
+                           descriptionFont: .introDescription),
+
+        OnboardingItemInfo(informationImage: #imageLiteral(resourceName: "tag-1"),
+                           title: NSLocalizedString("intro.tag.title", comment: "Intro: Tag Title"),
+                           description: NSLocalizedString("intro.tag.description", comment: "Intro: Tag Description"),
+                           pageIcon: #imageLiteral(resourceName: "Tag").imageWithBorder(width: 10, color: .clear)!,
+                           color: .paWhite,
+                           titleColor: .paDarkRed,
+                           descriptionColor: .paDarkGray,
+                           titleFont: .introTitle,
+                           descriptionFont: .introDescription),
+
+        OnboardingItemInfo(informationImage: #imageLiteral(resourceName: "find"),
+                           title: NSLocalizedString("intro.find.title", comment: "Intro: Find Title"),
+                           description: NSLocalizedString("intro.find.description", comment: "Intro: Find Description"),
+                           pageIcon: #imageLiteral(resourceName: "Archive").imageWithBorder(width: 10, color: .clear)!,
+                           color: .paWhite,
+                           titleColor: .paDarkRed,
+                           descriptionColor: .paDarkGray,
+                           titleFont: .introTitle,
+                           descriptionFont: .introDescription),
+
+        OnboardingItemInfo(informationImage: #imageLiteral(resourceName: "piggy-bank"),
+                           title: NSLocalizedString("intro.subscription.title", comment: "Intro: Subscription Title"),
+                           description: NSLocalizedString("intro.subscription.description", comment: "Intro: Subscription Description"),
+                           pageIcon: #imageLiteral(resourceName: "coin").imageWithBorder(width: 3, color: .clear)!,
+                           color: .paWhite,
+                           titleColor: .paDarkRed,
+                           descriptionColor: .paDarkGray,
+                           titleFont: .introTitle,
+                           descriptionFont: .introDescription),
+
+        OnboardingItemInfo(informationImage: #imageLiteral(resourceName: "start"),
+                           title: NSLocalizedString("intro.last.title", comment: "Intro: Last Page Title"),
+                           description: NSLocalizedString("intro.last.description", comment: "Intro: Last Page Description"),
+                           pageIcon: #imageLiteral(resourceName: "Logo"),
+                           color: .paWhite,
+                           titleColor: .paDarkRed,
+                           descriptionColor: .paDarkGray,
+                           titleFont: .introTitle,
+                           descriptionFont: .introDescription)
+    ]
+
     init() {
         super.init(nibName: nil, bundle: nil)
     }
@@ -42,51 +94,10 @@ class IntroViewController: UIViewController {
 
 extension IntroViewController: PaperOnboardingDataSource {
     func onboardingItemsCount() -> Int {
-        return 4
+        return items.count
     }
 
     func onboardingItem(at index: Int) -> OnboardingItemInfo {
-        let items = [
-            OnboardingItemInfo(informationImage: #imageLiteral(resourceName: "scan"),
-                               title: NSLocalizedString("intro.scan.title", comment: "Intro: Scan Title"),
-                               description: NSLocalizedString("intro.scan.description", comment: "Intro: Scan Description"),
-                               pageIcon: #imageLiteral(resourceName: "File").imageWithBorder(width: 10, color: .clear)!,
-                               color: .paWhite,
-                               titleColor: .paDarkRed,
-                               descriptionColor: .paDarkGray,
-                               titleFont: .introTitle,
-                               descriptionFont: .introDescription),
-
-            OnboardingItemInfo(informationImage: #imageLiteral(resourceName: "tag-1"),
-                               title: NSLocalizedString("intro.tag.title", comment: "Intro: Tag Title"),
-                               description: NSLocalizedString("intro.tag.description", comment: "Intro: Tag Description"),
-                               pageIcon: #imageLiteral(resourceName: "Tag").imageWithBorder(width: 10, color: .clear)!,
-                               color: .paWhite,
-                               titleColor: .paDarkRed,
-                               descriptionColor: .paDarkGray,
-                               titleFont: .introTitle,
-                               descriptionFont: .introDescription),
-
-            OnboardingItemInfo(informationImage: #imageLiteral(resourceName: "find"),
-                               title: NSLocalizedString("intro.find.title", comment: "Intro: Find Title"),
-                               description: NSLocalizedString("intro.find.description", comment: "Intro: Find Description"),
-                               pageIcon: #imageLiteral(resourceName: "Archive").imageWithBorder(width: 10, color: .clear)!,
-                               color: .paWhite,
-                               titleColor: .paDarkRed,
-                               descriptionColor: .paDarkGray,
-                               titleFont: .introTitle,
-                               descriptionFont: .introDescription),
-
-            OnboardingItemInfo(informationImage: #imageLiteral(resourceName: "start"),
-                               title: NSLocalizedString("intro.last.title", comment: "Intro: Last Page Title"),
-                               description: NSLocalizedString("intro.last.description", comment: "Intro: Last Page Description"),
-                               pageIcon: #imageLiteral(resourceName: "Logo"),
-                               color: .paWhite,
-                               titleColor: .paDarkRed,
-                               descriptionColor: .paDarkGray,
-                               titleFont: .introTitle,
-                               descriptionFont: .introDescription)
-        ]
         return items[index]
     }
 

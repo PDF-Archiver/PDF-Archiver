@@ -17,7 +17,7 @@
 /* Class = "UIButton"; normalTitle = "Scan next"; ObjectID = "UQe-pf-RdV"; */
 "UQe-pf-RdV.normalTitle" = "Nächster Scan";
 
-/* Class = "UILabel"; text = "Processing documents."; ObjectID = "VnS-hp-NRS"; */
+/* Class = "UILabel"; text = "Processing: 1/3 (42%)"; ObjectID = "VnS-hp-NRS"; */
 "VnS-hp-NRS.text" = "Verarbeite Dokumente.";
 
 /* Class = "UILabel"; text = "PDF Archiver"; ObjectID = "kSx-MV-ggo"; */
@@ -44,8 +44,14 @@
 /* Class = "UILabel"; text = "Imprint"; ObjectID = "yfI-wR-oFr"; */
 "yfI-wR-oFr.text" = "Impressum";
 
-/* Class = "UILabel"; text = "PDF Archiver (macOS) 🖥"; ObjectID = "ckq-IA-j4V"; */
-"ckq-IA-j4V.text" = "PDF Archiver (macOS) 🖥";
+/* Class = "UILabel"; text = "PDF Archiver (macOS)  🖥"; ObjectID = "ckq-IA-j4V"; */
+"ckq-IA-j4V.text" = "PDF Archiver (macOS)  🖥";
 
 /* Class = "UILabel"; text = "Reset App Preferences"; ObjectID = "4zW-n1-Fc1"; */
 "4zW-n1-Fc1.text" = "App Einstellungen zurücksetzen";
+
+/* Class = "UILabel"; text = "Support  🚑"; ObjectID = "zci-RM-2u9"; */
+"zci-RM-2u9.text" = "Support  🚑";
+
+/* Class = "UILabel"; text = "About  👤"; ObjectID = "ft9-SO-jn5"; */
+"ft9-SO-jn5.text" = "Über  👤";

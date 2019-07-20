@@ -5,7 +5,9 @@
 //  Created by Julian Kahnert on 21.06.19.
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
+// swiftlint:disable cyclomatic_complexity function_body_length
 
+import MessageUI
 import UIKit
 
 class MoreTableViewController: UITableViewController {
@@ -14,11 +16,13 @@ class MoreTableViewController: UITableViewController {
     @IBOutlet private weak var showIntroCell: UITableViewCell!
     @IBOutlet private weak var showPermissionsCell: UITableViewCell!
     @IBOutlet private weak var resetAppCell: UITableViewCell!
-    // Section: more information
-    @IBOutlet private weak var macOSAppCell: UITableViewCell!
     @IBOutlet private weak var manageSubscriptionCell: UITableViewCell!
+    // Section: more information
+    @IBOutlet private weak var aboutCell: UITableViewCell!
+    @IBOutlet private weak var macOSAppCell: UITableViewCell!
     @IBOutlet private weak var privacyPolicyCell: UITableViewCell!
     @IBOutlet private weak var imprintCell: UITableViewCell!
+    @IBOutlet private weak var supportCell: UITableViewCell!
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -37,31 +41,61 @@ class MoreTableViewController: UITableViewController {
         let cell = tableView.cellForRow(at: indexPath)
         switch cell {
         case showIntroCell:
+            Log.info("More table view show: intro")
             let controller = IntroViewController()
             present(controller, animated: true, completion: nil)
 
         case showPermissionsCell:
+            Log.info("More table view show: app permissions")
             guard let link = URL(string: UIApplication.openSettingsURLString) else { fatalError("Could not find settings url!") }
             UIApplication.shared.open(link)
 
         case resetAppCell:
+            Log.info("More table view show: reset app")
             resetApp()
 
-        case macOSAppCell:
-            guard let link = URL(string: "https://macos.pdf-archiver.io") else { fatalError("Could not parse macOS app url.") }
-            UIApplication.shared.open(link)
-
         case manageSubscriptionCell:
+            Log.info("More table view show: manage subscription")
             guard let link = URL(string: "https://apps.apple.com/account/subscriptions") else { fatalError("Could not parse subscription url.") }
             UIApplication.shared.open(link)
 
+        case aboutCell:
+            Log.info("More table view show: About me")
+            let controller = AboutMeViewController()
+            navigationController?.pushViewController(controller, animated: true)
+
+        case macOSAppCell:
+            Log.info("More table view show: macOS App")
+            guard let link = URL(string: "https://macos.pdf-archiver.io") else { fatalError("Could not parse macOS app url.") }
+            UIApplication.shared.open(link)
+
         case privacyPolicyCell:
+            Log.info("More table view show: privacy")
             guard let link = URL(string: NSLocalizedString("MoreTableViewController.privacyPolicyCell.url", comment: "")) else { fatalError("Could not parse termsOfUseCell url.") }
             UIApplication.shared.open(link)
 
         case imprintCell:
+            Log.info("More table view show: imprint")
             guard let link = URL(string: NSLocalizedString("MoreTableViewController.imprintCell.url", comment: "")) else { fatalError("Could not parse privacyPolicyCell url.") }
             UIApplication.shared.open(link)
+
+        case supportCell:
+            Log.info("More table view show: support")
+            if MFMailComposeViewController.canSendMail() {
+                let mail = MFMailComposeViewController()
+                mail.mailComposeDelegate = self
+                mail.setToRecipients(["support@pdf-archiver.io"])
+                mail.setSubject("PDF Archiver: iOS Support")
+
+                present(mail, animated: true)
+            } else {
+                guard let url = URL(string: "https://pdf-archiver.io/faq") else { fatalError("Could not generate the FAQ url.") }
+                UIApplication.shared.open(url)
+            }
+
+            func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+                controller.dismiss(animated: true)
+            }
 
         default:
             fatalError("Could not find the table view cell \(cell?.description ?? "")!")
@@ -88,5 +122,12 @@ class MoreTableViewController: UITableViewController {
                                       preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
+    }
+}
+
+extension MoreTableViewController: MFMailComposeViewControllerDelegate {
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        Log.info("Did finish MailComposeViewController.", extra: ["result": result, "error": error?.localizedDescription ?? ""])
+        controller.dismiss(animated: true)
     }
 }
