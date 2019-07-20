@@ -10,6 +10,19 @@ import UIKit
 
 class MainTabBarController: UITabBarController {
 
+    override var selectedIndex: Int {
+        didSet {
+            saveSelectedIndex()
+        }
+
+    }
+
+    override var selectedViewController: UIViewController? {
+        didSet {
+            saveSelectedIndex()
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -31,5 +44,10 @@ class MainTabBarController: UITabBarController {
             present(introVC, animated: false, completion: nil)
             UserDefaults.standard.set(true, forKey: Constants.UserDefaults.tutorialShown.rawValue)
         }
+    }
+
+    private func saveSelectedIndex() {
+        // save the selected index for the next app start
+        UserDefaults.standard.set(selectedIndex ?? 2, forKey: Constants.UserDefaults.lastSelectedTabIndex.rawValue)
     }
 }

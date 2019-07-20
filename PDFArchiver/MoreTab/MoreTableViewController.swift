@@ -24,13 +24,6 @@ class MoreTableViewController: UITableViewController {
     @IBOutlet private weak var imprintCell: UITableViewCell!
     @IBOutlet private weak var supportCell: UITableViewCell!
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
-        // save the selected index for the next app start
-        UserDefaults.standard.set(tabBarController?.selectedIndex ?? 2, forKey: Constants.UserDefaults.lastSelectedTabIndex.rawValue)
-    }
-
     // MARK: - Table view delegate
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

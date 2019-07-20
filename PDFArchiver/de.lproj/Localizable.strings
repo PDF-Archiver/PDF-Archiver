@@ -14,6 +14,9 @@
 /* Camera access in ScanViewController. */
 "Cancel" = "Abbrechen";
 
+/* No comment provided by engineer. */
+"cancel" = "Abbrechen";
+
 /* Delete document. */
 "Delete" = "Dokument löschen";
 
@@ -145,6 +148,12 @@
 
 /* No comment provided by engineer. */
 "per_year" = "pro Jahr";
+
+/* No comment provided by engineer. */
+"ScanViewController.noSubscription.message" = "Es konnte kein aktives Abo gefunden werden. Dein Dokument wird daher nicht gespeichert!\nUnterstütze die App und schließe ein Abo ab.";
+
+/* No comment provided by engineer. */
+"ScanViewController.noSubscription.title" = "Abo inaktiv";
 
 /* No comment provided by engineer. */
 "ScanViewController.processing" = "Verarbeite: ";

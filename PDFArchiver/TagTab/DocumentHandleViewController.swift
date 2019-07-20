@@ -123,9 +123,6 @@ class DocumentHandleViewController: UIViewController, Logging {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        // save the selected index for the next app start
-        UserDefaults.standard.set(tabBarController?.selectedIndex ?? 2, forKey: Constants.UserDefaults.lastSelectedTabIndex.rawValue)
-
         // show subscription view controller, if no subscription was found
         if !IAP.service.appUsagePermitted() {
             let viewController = SubscriptionViewController {
