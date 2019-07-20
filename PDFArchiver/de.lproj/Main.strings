@@ -17,7 +17,7 @@
 /* Class = "UIButton"; normalTitle = "Scan next"; ObjectID = "UQe-pf-RdV"; */
 "UQe-pf-RdV.normalTitle" = "Nächster Scan";
 
-/* Class = "UILabel"; text = "Processing documents."; ObjectID = "VnS-hp-NRS"; */
+/* Class = "UILabel"; text = "Processing: 1/3 (42%)"; ObjectID = "VnS-hp-NRS"; */
 "VnS-hp-NRS.text" = "Verarbeite Dokumente.";
 
 /* Class = "UILabel"; text = "PDF Archiver"; ObjectID = "kSx-MV-ggo"; */

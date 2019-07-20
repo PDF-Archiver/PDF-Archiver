@@ -307,17 +307,31 @@ extension ArchiveViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
 
-        let delete = UITableViewRowAction(style: .destructive, title: "🗑") { _, _ in
+        let title = NSLocalizedString("delete", comment: "")
+        let delete = UITableViewRowAction(style: .destructive, title: title) { _, _ in
             guard let document = self.getDocument(from: indexPath) else { return }
+
+            let path: URL
+            if document.downloadStatus == .local {
+                path = document.path
+            } else {
+                let iCloudFilename = ".\(document.filename).icloud"
+                path = document.path.deletingLastPathComponent().appendingPathComponent(iCloudFilename)
+            }
+
             do {
-                try FileManager.default.trashItem(at: document.path, resultingItemURL: nil)
+                try FileManager.default.removeItem(at: path)
+
+                let removedDocument = Set([document])
+                DocumentService.archive.remove(removedDocument)
+                self.updateDocuments(changed: removedDocument)
             } catch {
                 let alert = UIAlertController(title: NSLocalizedString("ArchiveViewController.delete_failed.title", comment: ""), message: error.localizedDescription, preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Button confirmation label"), style: .default, handler: nil))
                 self.present(alert, animated: true, completion: nil)
             }
         }
-        delete.backgroundColor = .paPlaceholderGray
+        delete.backgroundColor = .paDelete
 
         return [delete]
     }

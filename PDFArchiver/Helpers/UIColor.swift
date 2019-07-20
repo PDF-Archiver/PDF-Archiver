@@ -12,6 +12,7 @@ import UIKit.UIColor
 
 extension UIColor {
 
+    static var paDelete: UIColor { return UIColor(named: "Delete")! }
     static var paDarkGray: UIColor { return UIColor(named: "DarkGray")! }
     static var paLightGray: UIColor { return UIColor(named: "LightGray")! }
     static var paWhite: UIColor { return UIColor(named: "White")! }

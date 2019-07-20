@@ -31,21 +31,17 @@ enum StorageHelper {
         }
     }
 
-    static func loadImages() -> [[URL]] {
+    static func loadImageIds() -> Set<UUID> {
 
-        let tempImagePaths = getImagePaths()
-        let uuids = Set(tempImagePaths.compactMap { $0.lastPathComponent.components(separatedBy: seperator).first })
+        guard let tempImagePath = StorageHelper.Paths.tempImagePath else { fatalError("Could not find temp image path.") }
 
-        var groupedPaths = [[URL]]()
-        for uuid in uuids {
+        let paths = (try? FileManager.default.contentsOfDirectory(at: tempImagePath, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)) ?? []
+        let imageIds = paths
+            .filter { $0.pathExtension.lowercased() != "pdf" }
+            .compactMap { $0.lastPathComponent.components(separatedBy: seperator).first }
+            .compactMap { UUID(uuidString: $0) }
 
-            // select images with the same id
-            let documentPaths = tempImagePaths.filter { $0.lastPathComponent.starts(with: String(uuid)) }
-            guard !documentPaths.isEmpty else { fatalError("Could not find images for id \(uuid) in paths:\n\(tempImagePaths)") }
-            groupedPaths.append(documentPaths)
-        }
-
-        return groupedPaths
+        return Set(imageIds)
     }
 
     // MARK: - Helper functions

@@ -66,7 +66,7 @@ public final class AppStoreReviewRequest {
     }
 
     public func requestReviewManually(for appId: Int) {
-        guard let writeReviewURL = URL(string: "https://itunes.apple.com/app/id\(appId)?action=write-review")
+        guard let writeReviewURL = URL(string: "https://apps.apple.com/app/id\(appId)?action=write-review")
             else { fatalError("Expected a valid URL") }
         UIApplication.shared.open(writeReviewURL, options: [:], completionHandler: nil)
     }

@@ -17,6 +17,9 @@
 /* Delete document. */
 "Delete" = "Delete document";
 
+/* No comment provided by engineer. */
+"delete" = "Delete";
+
 /* Camera access in ScanViewController. */
 "Do you really want to delete this document?" = "Do you really want to delete this document?";
 
@@ -142,6 +145,9 @@
 
 /* No comment provided by engineer. */
 "per_year" = "per year";
+
+/* No comment provided by engineer. */
+"ScanViewController.processing" = "Processing: ";
 
 /* UISearchBar placeholder */
 "search-documents" = "Search Documents";

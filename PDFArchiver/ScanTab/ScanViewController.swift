@@ -16,7 +16,9 @@ class ScanViewController: UIViewController, Logging {
 
     private var scannerViewController: ImageScannerController?
 
-    @IBOutlet weak var processingIndicatorView: UIView!
+    @IBOutlet private weak var processingIndicatorView: UIView!
+    @IBOutlet private weak var progressLabel: UILabel!
+    @IBOutlet private weak var progressView: UIProgressView!
 
     @IBAction private func scanButtonTapped(_ sender: UIButton) {
 
@@ -32,6 +34,9 @@ class ScanViewController: UIViewController, Logging {
             guard let scannerViewController = scannerViewController else { return }
             scannerViewController.imageScannerDelegate = self
             present(scannerViewController, animated: true)
+
+            // stop current image processing
+            ImageConverter.shared.stopProcessing()
         }
     }
 
@@ -44,6 +49,11 @@ class ScanViewController: UIViewController, Logging {
                                                name: .imageProcessingQueue,
                                                object: nil)
 
+        // show the processing indicator, if documents are currently processed
+        if ImageConverter.shared.totalDocumentCount.value != 0 {
+            updateProcessingIndicator(with: 0)
+        }
+
         // trigger processing (if temp images exist)
         triggerProcessing()
     }
@@ -53,9 +63,6 @@ class ScanViewController: UIViewController, Logging {
 
         // save the selected index for the next app start
         UserDefaults.standard.set(tabBarController?.selectedIndex ?? 2, forKey: Constants.UserDefaults.lastSelectedTabIndex.rawValue)
-
-        // show the processing indicator, if documents are currently processed
-        updateProcessingIndicator(with: ImageConverter.getOperationCount())
 
         // show subscription view controller, if no subscription was found
         if !IAP.service.appUsagePermitted() {
@@ -70,18 +77,34 @@ class ScanViewController: UIViewController, Logging {
 
     @objc
     private func imageQueueLengthChange(_ notification: Notification) {
-        guard let count = notification.object as? Int else {
-            let object = notification.object as Any
-            assertionFailure("Invalid object: \(object)")
-            return
-        }
 
-        updateProcessingIndicator(with: count)
+        if let documentProgress = notification.object as? Float {
+            updateProcessingIndicator(with: documentProgress)
+        } else {
+            updateProcessingIndicator(with: nil)
+        }
     }
 
-    private func updateProcessingIndicator(with count: Int) {
+    private func updateProcessingIndicator(with documentProgress: Float?) {
         DispatchQueue.main.async {
-            self.processingIndicatorView.isHidden = count < 1
+
+            // we do not need a progress view, if the number of total documents is 0
+            let totalDocuments = ImageConverter.shared.totalDocumentCount.value
+            let tmpDocumentProgress = totalDocuments == 0 ? nil : documentProgress
+
+            if let documentProgress = tmpDocumentProgress {
+
+                let completedDocuments = totalDocuments - ImageConverter.shared.getOperationCount()
+                let progressString = "\(min(completedDocuments + 1, totalDocuments))/\(totalDocuments) (\(Int(documentProgress * 100))%)"
+
+                self.processingIndicatorView.isHidden = false
+                self.progressView.progress = (Float(completedDocuments) + documentProgress) / Float(totalDocuments)
+                self.progressLabel.text = NSLocalizedString("ScanViewController.processing", comment: "") + progressString
+            } else {
+                self.processingIndicatorView.isHidden = true
+                self.progressView.progress = 0
+                self.progressLabel.text = NSLocalizedString("ScanViewController.processing", comment: "") + "0%"
+            }
         }
     }
 
@@ -107,20 +130,23 @@ class ScanViewController: UIViewController, Logging {
             self.present(StorageHelper.Paths.iCloudDriveAlertController, animated: true, completion: nil)
             return
         }
-        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 2) {
-            ImageConverter.saveProcessAndSaveTempImages(at: untaggedPath)
-        }
+        ImageConverter.shared.saveProcessAndSaveTempImages(at: untaggedPath)
     }
 }
 
 extension ScanViewController: ImageScannerControllerDelegate {
 
     func imageScannerController(_ scanner: ImageScannerController, didFailWithError error: Error) {
+
+        ImageConverter.shared.startProcessing()
+
         // You are responsible for carefully handling the error
         os_log("Selected Document: %@", log: ScanViewController.log, type: .error, error.localizedDescription)
     }
 
     func imageScannerController(_ scanner: ImageScannerController, didFinishScanningWithResults results: ImageScannerResults) {
+
+        ImageConverter.shared.startProcessing()
 
         Log.info("Did finish scanning with result.")
 
@@ -154,10 +180,13 @@ extension ScanViewController: ImageScannerControllerDelegate {
         triggerProcessing()
 
         // show processing indicator instantly
-        updateProcessingIndicator(with: ImageConverter.getOperationCount())
+        updateProcessingIndicator(with: Float(0))
     }
 
     func imageScannerControllerDidCancel(_ scanner: ImageScannerController) {
+
+        ImageConverter.shared.startProcessing()
+
         // user tapped 'Cancel' on the scanner
         scanner.dismiss(animated: true)
     }

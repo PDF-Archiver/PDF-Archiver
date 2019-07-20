@@ -52,6 +52,9 @@ class DocumentHandleViewController: UIViewController, Logging {
                                       preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: NSLocalizedString("Delete", comment: "Delete document."), style: .destructive, handler: deleteActionHandler))
         alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel deletion."), style: .cancel, handler: nil))
+
+        // set a location in the popoverPresentationController that will be used on iPads
+        alert.popoverPresentationController?.barButtonItem = sender
         present(alert, animated: true, completion: nil)
     }
 

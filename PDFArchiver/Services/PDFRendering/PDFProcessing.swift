@@ -6,6 +6,7 @@
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
 
+import ArchiveLib
 import os.log
 import PDFKit
 import SwiftyTesseract
@@ -14,28 +15,52 @@ import Vision
 
 class PDFProcessing: Operation {
 
+    typealias ProgressHandler = ((Float) -> Void)
+
     private let log = OSLog(subsystem: "DocumentProcessing", category: "DocumentProcessing")
     private let tesseract = SwiftyTesseract(languages: [.german, .english, .italian, .french, .swedish, .russian], bundle: .main, engineMode: .lstmOnly)
 
+    let documentId: UUID
+    private let progressHandler: ProgressHandler?
     private let confidenceThreshold = Float(0)
-    private let images: [UIImage]
-    private let documentSavePath: URL
 
     private var detectTextRectangleObservations = [VNTextObservation]()
 
-    init(_ images: [UIImage], documentSavePath: URL) {
-        self.images = images
-        self.documentSavePath = documentSavePath
+    init(of documentId: UUID, progressHandler: ProgressHandler?) {
+        self.documentId = documentId
+        self.progressHandler = progressHandler
     }
 
     override func main() {
 
+        // signal the start of the operation
+        let start = Date()
+        Log.info("Process a document.")
+        progressHandler?(Float(0))
+
+        // initial setup
         let textBoxRequests = setupTextBoxRequests()
+        guard let tempImagePath = StorageHelper.Paths.tempImagePath else { fatalError("Could not find temp image path.") }
+        guard let untaggedPath = StorageHelper.Paths.untaggedPath else { fatalError("Could not find untagged documents path.") }
+        do {
+            // check if the parent folder exists
+            try FileManager.default.createFolderIfNotExists(untaggedPath)
+        } catch {
+            fatalError("Could not create unttaged documents folder.")
+        }
+
+        let contentPaths = (try? FileManager.default.contentsOfDirectory(at: tempImagePath, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])) ?? []
+        let imageUrls = contentPaths.filter { $0.lastPathComponent.starts(with: documentId.uuidString) }
 
         var textObservations = [TextObservation]()
-        for image in images {
+        for (imageIndex, imageUrl) in imageUrls.enumerated() {
+
             if isCancelled {
                 return
+            }
+
+            guard let image = UIImage(contentsOfFile: imageUrl.path) else {
+                fatalError("Could not find image at \(imageUrl.path)")
             }
 
             guard let cgImage = image.cgImage else { fatalError("Could not get the cgImage.") }
@@ -52,16 +77,22 @@ class PDFProcessing: Operation {
 
             // text recognition (OCR)
             var results = [TextObservationResult]()
-            for observation in detectTextRectangleObservations {
+            for (observationIndex, observation) in detectTextRectangleObservations.enumerated() {
 
-                let textBox = transform(observation: observation, in: image)
+                // build and start processing of one observation
+                let textBox = self.transform(observation: observation, in: image)
                 if let croppedImage = image.crop(rectangle: textBox) {
-                    tesseract.performOCR(on: croppedImage) { text in
+                    self.tesseract.performOCR(on: croppedImage) { text in
                         guard let text = text,
                             !text.isEmpty else { return }
                         results.append(TextObservationResult(rect: textBox, text: text))
                     }
                 }
+
+                // update the progress view
+                let progress = Float(Float(imageIndex) + Float(observationIndex) / Float(detectTextRectangleObservations.count)) / Float(imageUrls.count)
+                let borderedProgress = min(max(progress, 0), 1)
+                progressHandler?(borderedProgress)
             }
 
             // append results
@@ -70,7 +101,27 @@ class PDFProcessing: Operation {
 
         // save the pdf
         let document = PDFProcessing.renderPdf(from: textObservations)
-        document.write(to: documentSavePath)
+
+        if isCancelled {
+            return
+        }
+
+        // generate filename by analysing the image
+        let filename = getFilename(from: document)
+        let filepath = untaggedPath.appendingPathComponent(filename)
+
+        // save document
+        document.write(to: filepath)
+
+        // delete original images
+        for imageUrl in imageUrls {
+            try? FileManager.default.removeItem(at: imageUrl)
+        }
+
+        // log the processing time
+        let timeDiff = Date().timeIntervalSinceReferenceDate - start.timeIntervalSinceReferenceDate
+        Log.info("Processing completed", extra: ["processing_time": timeDiff])
+        progressHandler?(Float(1))
     }
 
     // MARK: - Helper Functions
@@ -91,6 +142,34 @@ class PDFProcessing: Operation {
         }
         guard let document = PDFDocument(data: data) else { fatalError("Could not generate PDF document.") }
         return document
+    }
+
+    private func getFilename(from document: PDFDocument) -> String {
+        os_log("Creating filename", log: ImageConverter.log, type: .debug)
+
+        // get default specification
+        let specification = Constants.documentDescriptionPlaceholder + Date().timeIntervalSince1970.description
+
+        // get OCR content
+        guard let content = document.string else {
+            return Document.createFilename(date: Date(), specification: specification, tags: Set([Constants.documentTagPlaceholder]))
+        }
+
+        // parse the date
+        let parsedDate = DateParser.parse(content)?.date ?? Date()
+
+        // parse the tags
+        var newTags = TagParser.parse(content)
+        if newTags.isEmpty {
+            newTags.insert(Constants.documentTagPlaceholder)
+        } else {
+
+            // only use tags that are already in the archive
+            let archiveTags = DocumentService.archive.getAvailableTags(with: []).map { $0.name }
+            newTags = Set(newTags.intersection(Set(archiveTags)).prefix(5))
+        }
+
+        return Document.createFilename(date: parsedDate, specification: specification, tags: newTags)
     }
 
     private func setupTextBoxRequests() -> [VNRequest] {

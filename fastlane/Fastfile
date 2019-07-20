@@ -11,7 +11,7 @@
 #
 
 # Uncomment the line if you want fastlane to automatically update itself
-update_fastlane
+# update_fastlane
 
 default_platform(:ios)
 
@@ -74,8 +74,10 @@ lane :submit_review do
   sh 'deliver download_metadata'
 
   deliver(
+    skip_metadata: true,
     skip_binary_upload: true,
+    skip_screenshots: true,
     submit_for_review: true,
     force: true,
-    metadata_path: "./fastlane/metadata")
+    automatic_release: false)
 end
