@@ -77,6 +77,12 @@
 /* No tags could be found, e.g. while renaming the document. */
 "document_recovery_suggestion__tags_missing" = "Bitte fügen Sie Tags hinzu.";
 
+/* No comment provided by engineer. */
+"download" = "Download";
+
+/* No comment provided by engineer. */
+"edit" = "Bearbeiten";
+
 /* The title of an error message popup */
 "Error" = "Fehler";
 

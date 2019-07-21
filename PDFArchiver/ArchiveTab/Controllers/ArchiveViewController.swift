@@ -29,6 +29,7 @@ class ArchiveViewController: UIViewController, UITableViewDelegate, Logging {
     private let cellIdentifier = "DocumentTableViewCell"
     private let allLocal = NSLocalizedString("all", comment: "")
     private let placeholderViewController = PlaceholderViewController(text: NSLocalizedString("archive_tab.background_placeholder", comment: "Placeholder that is shown, when no document can be found."))
+    private var editViewController: DocumentViewController?
 
     private let notificationFeedback = UINotificationFeedbackGenerator()
 
@@ -155,10 +156,6 @@ class ArchiveViewController: UIViewController, UITableViewDelegate, Logging {
 
     func updateDocuments(changed changedDocuments: Set<Document>) {
 
-        // save the old documents
-        let oldDocuments = currentDocuments
-        let oldSections = currentSections
-
         // setup background view controller
         if DocumentService.archive.get(scope: .all, searchterms: [], status: .tagged).isEmpty {
             tableView.backgroundView = placeholderViewController.view
@@ -206,13 +203,17 @@ class ArchiveViewController: UIViewController, UITableViewDelegate, Logging {
         let animation = UITableView.RowAnimation.fade
         tableView.performBatchUpdates({
 
-            // new sections & documents
-            tableView.insertSections(diff(newSections, with: oldSections), with: animation)
-            tableView.insertRows(at: diff(newDocuments, with: oldDocuments, in: newSections), with: animation)
+            // save the old documents
+            let oldDocuments = currentDocuments
+            let oldSections = currentSections
 
             // deleted sections & documents
+            tableView.deleteRows(at: diff(oldDocuments, with: newDocuments, in: oldSections), with: animation)
             tableView.deleteSections(diff(oldSections, with: newSections), with: animation)
-            tableView.deleteRows(at: diff(oldDocuments, with: newDocuments, in: currentSections), with: animation)
+
+            // new sections & documents
+            tableView.insertRows(at: diff(newDocuments, with: oldDocuments, in: newSections), with: animation)
+            tableView.insertSections(diff(newSections, with: oldSections), with: animation)
 
             // Save the results
             self.currentSections = newSections
@@ -300,33 +301,37 @@ extension ArchiveViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
 
-        let title = NSLocalizedString("delete", comment: "")
-        let delete = UITableViewRowAction(style: .destructive, title: title) { _, _ in
-            guard let document = self.getDocument(from: indexPath) else { return }
+        var actions = [UITableViewRowAction]()
+        guard let document = self.getDocument(from: indexPath) else { return actions }
 
-            let path: URL
-            if document.downloadStatus == .local {
-                path = document.path
-            } else {
-                let iCloudFilename = ".\(document.filename).icloud"
-                path = document.path.deletingLastPathComponent().appendingPathComponent(iCloudFilename)
+        if document.downloadStatus != .local {
+            // action: download
+            let download = UITableViewRowAction(style: .destructive, title: NSLocalizedString("download", comment: "")) { _, _ in
+                guard document.downloadStatus != .local else {
+                    assertionFailure("Try to download local document. This should not happen!")
+                    return
+                }
+                document.download()
             }
-
-            do {
-                try FileManager.default.removeItem(at: path)
-
-                let removedDocument = Set([document])
-                DocumentService.archive.remove(removedDocument)
-                self.updateDocuments(changed: removedDocument)
-            } catch {
-                let alert = UIAlertController(title: NSLocalizedString("ArchiveViewController.delete_failed.title", comment: ""), message: error.localizedDescription, preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Button confirmation label"), style: .default, handler: nil))
-                self.present(alert, animated: true, completion: nil)
+            download.backgroundColor = .paLightGray
+            actions.append(download)
+        } else {
+            // action: edit
+            let edit = UITableViewRowAction(style: .destructive, title: NSLocalizedString("edit", comment: "")) { _, _ in
+                self.edit(document)
             }
+            edit.backgroundColor = .paLightGray
+            actions.append(edit)
+        }
+
+        // action: delete
+        let delete = UITableViewRowAction(style: .destructive, title: NSLocalizedString("delete", comment: "")) { _, _ in
+            self.delete(document)
         }
         delete.backgroundColor = .paDelete
+        actions.append(delete)
 
-        return [delete]
+        return actions.reversed()
     }
 
     // MARK: optical changes
@@ -336,6 +341,81 @@ extension ArchiveViewController: UITableViewDataSource {
         // change colors
         view.textLabel?.textColor = .paDarkRed
         view.backgroundView?.backgroundColor = .paWhite
+    }
+
+    private func delete(_ document: Document) {
+
+        let path: URL
+        if document.downloadStatus == .local {
+            path = document.path
+        } else {
+            let iCloudFilename = ".\(document.filename).icloud"
+            path = document.path.deletingLastPathComponent().appendingPathComponent(iCloudFilename)
+        }
+
+        do {
+            try FileManager.default.removeItem(at: path)
+
+            let removedDocument = Set([document])
+            DocumentService.archive.remove(removedDocument)
+            self.updateDocuments(changed: removedDocument)
+        } catch {
+            let alert = UIAlertController(title: NSLocalizedString("ArchiveViewController.delete_failed.title", comment: ""), message: error.localizedDescription, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Button confirmation label"), style: .default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+        }
+    }
+
+    private func edit(_ document: Document) {
+        guard let controller = DocumentViewController(document: document) else { fatalError("Could not create DocumentViewController!") }
+        controller.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(dismissEdit))
+        controller.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(saveEdit))
+        editViewController = controller
+
+        let navigationController = UINavigationController(rootViewController: controller)
+        navigationController.view.backgroundColor = .white
+        self.present(navigationController, animated: true, completion: nil)
+    }
+
+    @objc
+    private func dismissEdit() {
+        editViewController?.navigationController?.dismiss(animated: true, completion: nil)
+    }
+
+    @objc
+    private func saveEdit() {
+
+        Log.info("Save edited document in archive.")
+
+        guard let document = editViewController?.document else { fatalError("Could not get document from edit DocumentViewController.") }
+        guard let path = StorageHelper.Paths.archivePath else {
+            assertionFailure("Could not find a iCloud Drive url.")
+            present(StorageHelper.Paths.iCloudDriveAlertController, animated: true, completion: nil)
+            return
+        }
+
+        notificationFeedback.prepare()
+        do {
+            try document.rename(archivePath: path, slugify: true)
+
+            // send haptic feedback
+            notificationFeedback.notificationOccurred(.success)
+            editViewController?.navigationController?.dismiss(animated: true, completion: nil)
+
+        } catch let error as LocalizedError {
+            os_log("Error occurred while renaming Document: %@", log: DocumentHandleViewController.log, type: .error, error.localizedDescription)
+
+            // OK button will be created by the convenience initializer
+            let alertController = UIAlertController(error, preferredStyle: .alert)
+            present(alertController, animated: true, completion: nil)
+            notificationFeedback.notificationOccurred(.error)
+        } catch {
+            os_log("Error occurred while renaming Document: %@", log: DocumentHandleViewController.log, type: .error, error.localizedDescription)
+            let alertController = UIAlertController(title: NSLocalizedString("error_message_fallback", comment: "Fallback when no localized error was found."), message: error.localizedDescription, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Button confirmation label"), style: .default, handler: nil))
+            present(alertController, animated: true, completion: nil)
+            notificationFeedback.notificationOccurred(.error)
+        }
     }
 }
 
