@@ -57,15 +57,19 @@ class DetailViewController: UIViewController, Logging {
                                        handler: nil)
             alert.addAction(action)
 
-            self.present(alert, animated: true, completion: nil)
+            present(alert, animated: true, completion: nil)
 
             return
         }
         // creating the sharing activity view controller
         let activity = UIActivityViewController(activityItems: [document.path],
                                                 applicationActivities: nil)
+
+        // set a location in the popoverPresentationController that will be used on iPads
+        activity.popoverPresentationController?.barButtonItem = sender
+
         // presenting it
-        self.present(activity, animated: true, completion: nil)
+        present(activity, animated: true, completion: nil)
     }
 
     @IBAction private func tapGestureRecognizer(_ sender: UITapGestureRecognizer) {

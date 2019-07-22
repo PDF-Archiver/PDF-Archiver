@@ -58,21 +58,6 @@ class ScanViewController: UIViewController, Logging {
         triggerProcessing()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
-        // save the selected index for the next app start
-        UserDefaults.standard.set(tabBarController?.selectedIndex ?? 2, forKey: Constants.UserDefaults.lastSelectedTabIndex.rawValue)
-
-        // show subscription view controller, if no subscription was found
-        if !IAP.service.appUsagePermitted() {
-            let viewController = SubscriptionViewController {
-                self.tabBarController?.selectedIndex = self.tabBarController?.getViewControllerIndex(with: "ArchiveTab") ?? 2
-            }
-            present(viewController, animated: animated)
-        }
-    }
-
     // MARK: - Helper Functions
 
     @objc
@@ -132,6 +117,34 @@ class ScanViewController: UIViewController, Logging {
         }
         ImageConverter.shared.saveProcessAndSaveTempImages(at: untaggedPath)
     }
+
+    private func testAppUsagePermitted() -> Bool {
+
+        let isPermitted = IAP.service.appUsagePermitted()
+
+        // show subscription view controller, if no subscription was found
+        if !isPermitted {
+            DispatchQueue.main.async {
+
+                let alert = UIAlertController(title: NSLocalizedString("ScanViewController.noSubscription.title", comment: ""),
+                                              message: NSLocalizedString("ScanViewController.noSubscription.message", comment: ""),
+                                              preferredStyle: .alert)
+
+                alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
+                    let viewController = SubscriptionViewController {
+                        self.tabBarController?.selectedIndex = self.tabBarController?.getViewControllerIndex(with: "ArchiveTab") ?? 2
+                    }
+                    self.present(viewController, animated: true)
+                })
+                alert.addAction(UIAlertAction(title: NSLocalizedString("cancel", comment: ""), style: .cancel) { _ in
+                    self.tabBarController?.selectedIndex = self.tabBarController?.getViewControllerIndex(with: "ArchiveTab") ?? 2
+                })
+                self.present(alert, animated: true, completion: nil)
+            }
+        }
+
+        return isPermitted
+    }
 }
 
 extension ScanViewController: ImageScannerControllerDelegate {
@@ -165,6 +178,9 @@ extension ScanViewController: ImageScannerControllerDelegate {
             // use cropped and deskewed image otherwise
             image = results.scannedImage
         }
+
+        // validate subscription
+        guard testAppUsagePermitted() else { return }
 
         // save image
         do {
