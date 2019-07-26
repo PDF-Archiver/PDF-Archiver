@@ -34,7 +34,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         do {
             Client.shared = try Client(options: [
                 "dsn": PDFArchiverKeys().sentryDSN,
-                "environment": Environment.get().rawValue
+                "environment": Environment.get().rawValue,
+                "release": Environment.getVersion()
             ])
             try Client.shared?.startCrashHandler()
             Client.shared?.enableAutomaticBreadcrumbTracking()
