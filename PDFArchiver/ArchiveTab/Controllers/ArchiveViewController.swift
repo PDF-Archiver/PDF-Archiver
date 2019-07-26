@@ -367,6 +367,9 @@ extension ArchiveViewController: UITableViewDataSource {
     }
 
     private func edit(_ document: Document) {
+        DocumentService.archive.remove(Set([document]))
+        selectedDocument = nil
+
         guard let controller = DocumentViewController(document: document) else { fatalError("Could not create DocumentViewController!") }
         controller.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(dismissEdit))
         controller.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(saveEdit))
@@ -374,11 +377,19 @@ extension ArchiveViewController: UITableViewDataSource {
 
         let navigationController = UINavigationController(rootViewController: controller)
         navigationController.view.backgroundColor = .white
-        self.present(navigationController, animated: true, completion: nil)
+        present(navigationController, animated: true) {
+            self.updateDocuments(changed: [])
+        }
     }
 
     @objc
     private func dismissEdit() {
+        if let document = editViewController?.document {
+            print(document)
+            // TODO: add document to the archive again
+//            DocumentService.archive.add(document)
+        }
+
         editViewController?.navigationController?.dismiss(animated: true, completion: nil)
     }
 
