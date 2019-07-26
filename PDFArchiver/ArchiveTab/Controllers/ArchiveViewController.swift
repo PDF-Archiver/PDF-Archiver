@@ -314,14 +314,17 @@ extension ArchiveViewController: UITableViewDataSource {
                 document.download()
             }
             download.backgroundColor = .paLightGray
-            actions.append(download)
+
+            // this might be used on iOS 13
+//            actions.append(download)
         } else {
             // action: edit
             let edit = UITableViewRowAction(style: .destructive, title: NSLocalizedString("edit", comment: "")) { _, _ in
                 self.edit(document)
             }
             edit.backgroundColor = .paLightGray
-            actions.append(edit)
+            // this might be used on iOS 13
+//            actions.append(edit)
         }
 
         // action: delete
