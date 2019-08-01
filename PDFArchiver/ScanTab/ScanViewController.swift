@@ -111,11 +111,11 @@ class ScanViewController: UIViewController, Logging {
     }
 
     private func triggerProcessing() {
-        guard let untaggedPath = StorageHelper.Paths.untaggedPath else {
-            self.present(StorageHelper.Paths.iCloudDriveAlertController, animated: true, completion: nil)
-            return
+        do {
+            try StorageHelper.triggerProcessing()
+        } catch {
+            present(StorageHelper.Paths.iCloudDriveAlertController, animated: true, completion: nil)
         }
-        ImageConverter.shared.saveProcessAndSaveTempImages(at: untaggedPath)
     }
 
     private func testAppUsagePermitted() -> Bool {
