@@ -19,38 +19,15 @@ enum StorageHelper {
 
     private static let seperator = "----"
 
-    static func handle(_ url: URL) {
+    static func handle(_ url: URL) throws {
 
-        do {
-            if let image = UIImage(contentsOfFile: url.path) {
+        if let image = UIImage(contentsOfFile: url.path) {
 
-                try StorageHelper.save([image])
-                try StorageHelper.triggerProcessing()
+            try StorageHelper.save([image])
+            try StorageHelper.triggerProcessing()
 
-            } else if let document = PDFDocument(url: url) {
-                if document.string?.isEmpty ?? true {
-
-                    // TODO: handle empty PDFs
-                    assertionFailure("Not yet implemented")
-
-                } else {
-
-                    guard let untaggedPath = Paths.untaggedPath else { throw StorageHelperError.iCloudDriveNotFound }
-
-                    // could find content in the pdf => use id and save pdf in untagged folder
-                    try FileManager.default.moveItem(at: url, to: untaggedPath.appendingPathComponent(url.lastPathComponent))
-
-                }
-            } else {
-                throw StorageHelperError.invalidType
-            }
-        } catch {
-            Log.error("Unable to handle file.", extra: ["filetype": url.pathExtension, "error": error.localizedDescription])
-            try? FileManager.default.removeItem(at: url)
-            try? FileManager.default.removeItem(at: url.deletingLastPathComponent())
-
-            // TODO: show errors to the user
-            assertionFailure("Not yet implemented")
+        } else {
+            ImageConverter.shared.processPdf(at: url)
         }
     }
 

@@ -19,10 +19,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
 
         Log.info("Handling shared document", extra: ["filetype": url.pathExtension])
-        StorageHelper.handle(url)
+
+        DispatchQueue.global(qos: .userInitiated).async {
+            do {
+                try StorageHelper.handle(url)
+            } catch let error {
+                Log.error("Unable to handle file.", extra: ["filetype": url.pathExtension, "error": error.localizedDescription])
+                try? FileManager.default.removeItem(at: url)
+                try? FileManager.default.removeItem(at: url.deletingLastPathComponent())
+
+                DispatchQueue.main.async {
+                    let alert = UIAlertController(error, preferredStyle: .alert)
+                    self.window?.rootViewController?.present(alert, animated: true, completion: nil)
+                }
+            }
+        }
 
         return true
     }

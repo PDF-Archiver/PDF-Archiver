@@ -206,5 +206,8 @@
 /* Simulator test data set */
 "test_resource_filename" = "2017-01-17--tom-tailor-jeans__bill_clothes_shopping";
 
+/* No comment provided by engineer. */
+"UIAlertController.default.title" = "Something went wrong";
+
 /* Error mesage to be displayed when failing to share a document */
 "Unable to share document without the pdf file" = "Unable to share document without the pdf file";

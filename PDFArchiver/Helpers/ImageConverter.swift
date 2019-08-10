@@ -57,19 +57,6 @@ public class ImageConverter: Logging {
     public func saveProcessAndSaveTempImages(at path: URL) {
         os_log("Start processing images", log: ImageConverter.log, type: .debug)
 
-        if queue.operationCount == 0 {
-            observation = queue.observe(\.operationCount, options: [.new]) { (_, change) in
-                if change.newValue == nil || change.newValue == 0 {
-                    // Do something here when your queue has completed
-                    self.observation = nil
-
-                    // signal that all operations are done
-                    NotificationCenter.default.post(name: .imageProcessingQueue, object: nil)
-                    self.totalDocumentCount.mutate { $0 = 0 }
-                }
-            }
-        }
-
         let currentlyProcessingImageIds = queue.operations.compactMap { ($0 as? PDFProcessing)?.documentId }
         let imageIds = StorageHelper.loadImageIds().subtracting(currentlyProcessingImageIds)
         guard !imageIds.isEmpty else {
@@ -77,14 +64,20 @@ public class ImageConverter: Logging {
             return
         }
 
-        for imageId in imageIds {
+        imageIds.forEach { addOperation(with: .images($0)) }
+    }
 
-            let operation = PDFProcessing(of: imageId) { progress in
-                NotificationCenter.default.post(name: .imageProcessingQueue, object: progress)
-            }
-            queue.addOperation(operation)
-            totalDocumentCount.mutate { $0 += 1 }
+    public func processPdf(at path: URL) {
+        addOperation(with: .pdf(path))
+    }
+
+    private func addOperation(with mode: PDFProcessing.Mode) {
+        triggerObservation()
+        let operation = PDFProcessing(of: mode) { progress in
+            NotificationCenter.default.post(name: .imageProcessingQueue, object: progress)
         }
+        queue.addOperation(operation)
+        totalDocumentCount.mutate { $0 += 1 }
     }
 
     public func getOperationCount() -> Int {
@@ -97,5 +90,20 @@ public class ImageConverter: Logging {
 
     public func startProcessing() {
         queue.isSuspended = false
+    }
+
+    private func triggerObservation() {
+        if queue.operationCount == 0 {
+            observation = queue.observe(\.operationCount, options: [.new]) { (_, change) in
+                if change.newValue == nil || change.newValue == 0 {
+                    // Do something here when your queue has completed
+                    self.observation = nil
+
+                    // signal that all operations are done
+                    NotificationCenter.default.post(name: .imageProcessingQueue, object: nil)
+                    self.totalDocumentCount.mutate { $0 = 0 }
+                }
+            }
+        }
     }
 }
