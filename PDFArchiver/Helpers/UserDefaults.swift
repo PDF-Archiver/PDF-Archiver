@@ -54,6 +54,7 @@ extension UserDefaults {
             return level
         }
         set {
+            Log.info("PDF Quality Changed.", extra: ["quality": newValue.rawValue])
             UserDefaults.standard.set(newValue.rawValue, forKey: Names.pdfQuality.rawValue)
         }
     }
