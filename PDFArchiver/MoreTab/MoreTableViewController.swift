@@ -13,6 +13,7 @@ import UIKit
 class MoreTableViewController: UITableViewController {
 
     // Section: preferences
+    @IBOutlet private weak var pdfQualityCell: UITableViewCell!
     @IBOutlet private weak var showIntroCell: UITableViewCell!
     @IBOutlet private weak var showPermissionsCell: UITableViewCell!
     @IBOutlet private weak var resetAppCell: UITableViewCell!
@@ -33,6 +34,9 @@ class MoreTableViewController: UITableViewController {
 
         let cell = tableView.cellForRow(at: indexPath)
         switch cell {
+        case pdfQualityCell:
+            return
+
         case showIntroCell:
             Log.info("More table view show: intro")
             let controller = IntroViewController()

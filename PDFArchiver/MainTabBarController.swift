@@ -26,9 +26,8 @@ class MainTabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let tutorialShown = UserDefaults.standard.bool(forKey: Constants.UserDefaults.tutorialShown.rawValue)
-        if tutorialShown {
-            selectedIndex = UserDefaults.standard.integer(forKey: Constants.UserDefaults.lastSelectedTabIndex.rawValue)
+        if UserDefaults.standard.tutorialShown {
+            selectedIndex = UserDefaults.standard.lastSelectedTabIndex
         } else {
             selectedIndex = 2
         }
@@ -38,16 +37,15 @@ class MainTabBarController: UITabBarController {
         super.viewDidAppear(animated)
 
         // we have to show the tutorial here, because the AppDelegate starts this ViewController if the app usage is not permitted
-        let tutorialShown = UserDefaults.standard.bool(forKey: Constants.UserDefaults.tutorialShown.rawValue)
-        if !tutorialShown {
+        if !UserDefaults.standard.tutorialShown {
             let introVC = IntroViewController()
             present(introVC, animated: false, completion: nil)
-            UserDefaults.standard.set(true, forKey: Constants.UserDefaults.tutorialShown.rawValue)
+            UserDefaults.standard.tutorialShown = true
         }
     }
 
     private func saveSelectedIndex() {
         // save the selected index for the next app start
-        UserDefaults.standard.set(selectedIndex ?? 2, forKey: Constants.UserDefaults.lastSelectedTabIndex.rawValue)
+        UserDefaults.standard.lastSelectedTabIndex = selectedIndex ?? 2
     }
 }

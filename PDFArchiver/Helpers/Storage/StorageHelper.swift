@@ -39,10 +39,12 @@ enum StorageHelper {
             try fileManager.createDirectory(at: tempImagePath, withIntermediateDirectories: true, attributes: nil)
         }
 
+        let quality = CGFloat(UserDefaults.standard.pdfQuality.rawValue)
         let uuid = UUID()
         for (index, image) in images.enumerated() {
+
             // get jpg data from image
-            guard let data = image.jpegData(compressionQuality: 0.8) else { throw StorageError.jpgConversion }
+            guard let data = image.jpegData(compressionQuality: quality) else { throw StorageError.jpgConversion }
 
             // Attempt to write the data
             try data.write(to: tempImagePath.appendingPathComponent("\(uuid.uuidString)\(seperator)\(index).jpg"))
