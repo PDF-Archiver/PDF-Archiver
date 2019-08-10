@@ -38,7 +38,12 @@ public class DataModel: NSObject, DataModelDelegate, Logging {
     let store = IAPHelper()
 
     // selected document
-    public var selectedDocument: Document?
+    public var selectedDocument: Document? {
+        didSet {
+            guard let selectedDocument = selectedDocument else { return }
+            archive.cancelOperations(on: selectedDocument)
+        }
+    }
 
     // document table view
     public private(set) var sortedDocuments = [Document]()
