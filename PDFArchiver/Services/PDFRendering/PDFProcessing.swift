@@ -102,7 +102,7 @@ class PDFProcessing: Operation {
 
         // get OCR content
         var content = ""
-        for pageNumber in 0..<max(document.pageCount, 3) {
+        for pageNumber in 0..<min(document.pageCount, 3) {
             content += document.page(at: pageNumber)?.string ?? ""
         }
 
