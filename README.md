@@ -1,9 +1,9 @@
 <div align="center">
-<a href="https://geo.itunes.apple.com/us/app/pdf-archiver/id1352719750?mt=12&app=apps" target="itunes_store">
+<a href="https://apps.apple.com/app/pdf-archiver/id1352719750?mt=12&app=apps" target="itunes_store">
   <img src="assets/AppIcon.svg" width="200px">
 </a>
 <br><br>
-<a href="https://geo.itunes.apple.com/us/app/pdf-archiver/id1352719750?mt=12&app=apps">
+<a href="https://apps.apple.com/app/pdf-archiver/id1352719750?mt=12&app=apps">
 <img src="https://linkmaker.itunes.apple.com/en-us/badge-lrg.svg?releaseDate=2018-02-28T00:00:00Z&kind=desktopapp&bubble=macos_apps" width="165px">
 </a>
 <br>
@@ -28,7 +28,7 @@ Transfer the sorted documents to your smartphone or make a backup within seconds
 * Open the **PDF Archiver** and start tagging. Your documents will be moved from the *untagged* to your *Archive* folder.
 
 ## :rocket: Usage
-* Scan your documents, e.g. with [Scanbot](https://scanbot.io)
+* Scan your documents with [PDF Archiver for iOS](https://github.com/pdf-Archiver/pdf-archive-viewer)
 * Create an `Archive` folder in your iCloud Drive
 * Select it in the *Preferences* panel (`⌘ ,` ...obviously)
 * Start tagging your files
@@ -62,21 +62,19 @@ This structure is independent from your OS and filesystem and makes it very easy
 ## :floppy_disk: Installation
 Download it from the Mac App Store:
 
-<a href="https://geo.itunes.apple.com/us/app/pdf-archiver/id1352719750?mt=12&app=apps" style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/assets/shared/badges/en-us/macappstore-lrg.svg) no-repeat;width:165px;height:40px;background-size:contain;"></a>
+<a href="https://apps.apple.com/app/pdf-archiver/id1352719750?mt=12&app=apps" style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/assets/shared/badges/en-us/macappstore-lrg.svg) no-repeat;width:165px;height:40px;background-size:contain;"></a>
 
 Or clone the repository and build it:
-* Downloaded and install [Xcode.app](https://itunes.apple.com/app/xcode/id497799835)
+* Downloaded and install [Xcode.app](https://apps.apple.com/app/xcode/id497799835)
 * Get the project: `git clone --recurse-submodules https://github.com/PDF-Archiver/PDF-Archiver.git`
 * Install the app: `cd PDF-Archiver && bash scripts/install_app.sh`
 * Start **PDF Archiver** :rocket: (You might start the app a second time because of some app validation steps.)
 
 ## <a name="pro-tips"></a>:mortar_board: Pro Tips
-### Scanbot
-* **Easy document sync:** save your scans in iCloud Drive
-* **Enable PDF content searching:** buy [Scanbot Pro](https://scanbot.io) and turn on [OCR](https://en.wikipedia.org/wiki/Optical_character_recognition)
-* **Let PDF Archiver recognize the scan date:** set a compatible filename template
-    * In your Scanbot App go to: `Preferences > Advanced Settings > Filename Template`
-    * Choose: `[year]-[month]-[day]--Scanbot-[Hours][Minutes][Seconds]`
+### PDF Archiver for iOS
+* Scan your documents with the [iOS App](https://github.com/pdf-Archiver/pdf-archive-viewer)
+* Use the text recognition from PDF Archiver and use the tag/date suggestions
+* Validate the suggestions and save the document in your archive with the [iOS App](https://github.com/pdf-Archiver/pdf-archive-viewer) or [macOS App](https://github.com/pdf-Archiver/pdf-archiver)
 
 ### PDF Archiver
 * Use the `↹` key for fast field switching
@@ -87,7 +85,7 @@ Or clone the repository and build it:
 * Get in contact with us at [Discord](http://discord.pdf-archiver.io).
 
 ## :octocat: How to contribute
-Rate the App in the [Mac App Store](https://itunes.apple.com/app/id1352719750).
+Rate the App in the [Mac App Store](https://apps.apple.com/app/id1352719750).
 
 All [contributions](https://github.com/PDF-Archiver/PDF-Archiver/blob/develop/.github/CONTRIBUTING.md) are welcome!
 Feel free to contribute to this project.

@@ -40,9 +40,6 @@
 
 "select_preferences" = "Bitte Archiv Pfad in den Einstellungen auswählen.";
 
-/* Error message, when no document was selected by the user. */
-"no_document_selected" = "Kein Dokument ausg";
-
 /* Fallback when no localized error was found. */
 "error_message_fallback" = "Hier lief etwas schief!";
 
