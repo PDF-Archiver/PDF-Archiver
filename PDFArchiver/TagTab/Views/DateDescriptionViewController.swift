@@ -64,6 +64,10 @@ class DateDescriptionViewController: UIViewController {
         guard let text = sender.text else { return }
         delegate?.dateDescriptionView(self, didChangeDescription: text)
     }
+
+    func update(date: Date) {
+        datePickerView.setDate(date, animated: true)
+    }
 }
 
 extension DateDescriptionViewController: UITextFieldDelegate {
