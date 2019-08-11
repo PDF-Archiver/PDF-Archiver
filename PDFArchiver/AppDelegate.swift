@@ -25,8 +25,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         DispatchQueue.global(qos: .userInitiated).async {
             do {
-                try StorageHelper.handle(url)
+                if url.startAccessingSecurityScopedResource() {
+                    try StorageHelper.handle(url)
+                    url.stopAccessingSecurityScopedResource()
+                }
             } catch let error {
+                url.stopAccessingSecurityScopedResource()
                 Log.error("Unable to handle file.", extra: ["filetype": url.pathExtension, "error": error.localizedDescription])
                 try? FileManager.default.removeItem(at: url)
                 try? FileManager.default.removeItem(at: url.deletingLastPathComponent())
