@@ -20,6 +20,10 @@ class SubscriptionViewController: UIViewController, Logging {
         self.completion = completion
 
         super.init(nibName: nil, bundle: nil)
+
+        // adapt to iOS 13 presentation defaults
+        modalPresentationStyle = .fullScreen
+        isModalInPresentation = true
     }
 
     @available(*, unavailable)
