@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14854.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14806.4"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -17,11 +14,11 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="68"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="67.5"/>
+                <rect key="frame" x="0.0" y="0.0" width="320" height="68"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="document name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rUi-If-D6N">
-                        <rect key="frame" x="16" y="11" width="263" height="20"/>
+                        <rect key="frame" x="15" y="11" width="264" height="20"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="20" id="Fth-Eu-a2A"/>
                         </constraints>
@@ -30,7 +27,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="19. Sep 2004" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EHZ-TF-9ku">
-                        <rect key="frame" x="16" y="32" width="85" height="14"/>
+                        <rect key="frame" x="15" y="32" width="85" height="14"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="85" id="bc1-gl-YuJ"/>
                             <constraint firstAttribute="height" constant="14" id="rIS-Tj-uVi"/>
@@ -40,13 +37,13 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.29999999999999999" translatesAutoresizingMaskIntoConstraints="NO" id="Ry1-om-TZ8">
-                        <rect key="frame" x="0.0" y="63" width="320" height="3.5"/>
+                        <rect key="frame" x="0.0" y="63" width="320" height="4"/>
                     </progressView>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="s3Z-bu-JK2" userLabel="Download Status View">
                         <rect key="frame" x="279" y="0.0" width="38" height="45"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="apple-icloud" adjustsImageSizeForAccessibilityContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MLT-ef-xDl">
-                                <rect key="frame" x="4" y="0.0" width="30" height="30"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icloud" catalog="system" adjustsImageSizeForAccessibilityContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MLT-ef-xDl">
+                                <rect key="frame" x="4" y="2" width="30" height="27"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="MLT-ef-xDl" secondAttribute="height" multiplier="1:1" id="HXE-hD-puZ"/>
                                     <constraint firstAttribute="width" constant="30" id="zo6-oq-eRK"/>
@@ -62,7 +59,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="MLT-ef-xDl" firstAttribute="top" secondItem="s3Z-bu-JK2" secondAttribute="top" id="byl-ru-Uge"/>
                             <constraint firstItem="MLT-ef-xDl" firstAttribute="centerX" secondItem="s3Z-bu-JK2" secondAttribute="centerX" id="fjy-OC-3yH"/>
@@ -128,9 +125,9 @@
         </tableViewCell>
     </objects>
     <resources>
-        <image name="apple-icloud" width="128" height="128"/>
+        <image name="icloud" catalog="system" width="64" height="44"/>
         <namedColor name="DarkGray">
-            <color red="0.13099999725818634" green="0.17200000584125519" blue="0.23100000619888306" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+            <color red="0.98039215800000001" green="0.9803922772" blue="0.98039215800000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
         <namedColor name="LightRed">
             <color red="0.90299999713897705" green="0.41200000047683716" blue="0.40400001406669617" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>

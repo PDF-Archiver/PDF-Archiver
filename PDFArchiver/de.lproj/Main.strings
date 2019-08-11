@@ -73,3 +73,6 @@
 
 /* Class = "UILabel"; text = "Good 👌"; ObjectID = "xtP-zp-Gpd"; */
 "xtP-zp-Gpd.text" = "75% - Gut 👌";
+
+/* Class = "UINavigationItem"; title = "More"; ObjectID = "Vap-fi-wgE"; */
+"Vap-fi-wgE.title" = "Mehr";

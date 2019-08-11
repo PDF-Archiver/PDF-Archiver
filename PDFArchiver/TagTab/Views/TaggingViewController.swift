@@ -145,12 +145,13 @@ class TaggingViewController: UIViewController, Logging {
         field.layoutMargins = UIEdgeInsets(top: 2, left: 6, bottom: 2, right: 6)
         field.contentInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10) //old padding
         field.placeholderColor = .paPlaceholderGray
-        field.textColor = .paWhite
+        field.textColor = .white
         field.placeholderAlwaysVisible = true
         field.tintColor = .paLightRed
         field.returnKeyType = .next
         field.delimiter = ""
         field.font = .paText
+        field.fieldTextColor = .paDarkGray
     }
 }
 
