@@ -65,11 +65,11 @@
 /* Class = "UITableViewController"; title = "PDF Quality"; ObjectID = "kgo-je-x3q"; */
 "kgo-je-x3q.title" = "PDF Qualität";
 
-/* Class = "UILabel"; text = "Small 💾"; ObjectID = "oNn-pD-wRs"; */
+/* Class = "UILabel"; text = "25% - Small 💾"; ObjectID = "oNn-pD-wRs"; */
 "oNn-pD-wRs.text" = "25% - Klein 💾";
 
-/* Class = "UILabel"; text = "Normal 👍"; ObjectID = "wXv-ej-9ae"; */
+/* Class = "UILabel"; text = "50% - Normal 👍"; ObjectID = "wXv-ej-9ae"; */
 "wXv-ej-9ae.text" = "50% - Normal 👍";
 
-/* Class = "UILabel"; text = "Good 👌"; ObjectID = "xtP-zp-Gpd"; */
-"xtP-zp-Gpd.text" = "75% - Gut 👌";
+/* Class = "UILabel"; text = "75% - Good (Default)👌"; ObjectID = "xtP-zp-Gpd"; */
+"xtP-zp-Gpd.text" = "75% - Gut (Standard) 👌";
