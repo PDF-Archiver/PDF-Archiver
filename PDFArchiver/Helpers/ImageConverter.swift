@@ -10,7 +10,6 @@ import ArchiveLib
 import Foundation
 import os.log
 import PDFKit
-import SwiftyTesseract
 import UIKit
 import Vision
 
@@ -35,22 +34,6 @@ public class ImageConverter: Logging {
 
         return queue
     }()
-
-    private let languages: [RecognitionLanguage] = [.german, .english, .italian, .french, .swedish, .russian]
-//    private static let languages: [RecognitionLanguage] = {
-//        var langs: [RecognitionLanguage] = [.german, .english]
-//
-//        if Locale.current.identifier.starts(with: "it") {
-//            langs.append(.italian)
-//        } else if Locale.current.identifier.starts(with: "fr") {
-//            langs.append(.french)
-//        } else if Locale.current.identifier.starts(with: "sv") {
-//            langs.append(.swedish)
-//        } else if Locale.current.identifier.starts(with: "ru") {
-//            langs.append(.russian)
-//        }
-//        return langs
-//    }()
 
     private init() {}
 
