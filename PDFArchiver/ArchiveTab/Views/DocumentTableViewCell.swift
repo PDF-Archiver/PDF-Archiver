@@ -7,13 +7,12 @@
 //
 
 import ArchiveLib
-import TagListView
 import UIKit
 
 class DocumentTableViewCell: UITableViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
-    @IBOutlet weak var tagListView: TagListView!
+    @IBOutlet weak var tagListView: UISearchTextField!
     @IBOutlet weak var downloadStatusView: UIView!
     @IBOutlet weak var progressView: UIProgressView!
     @IBOutlet weak var sizeLabel: UILabel!
@@ -30,9 +29,10 @@ class DocumentTableViewCell: UITableViewCell {
                 sizeLabel.text = document.size
 
                 // update the document tags
-                tagListView.removeAllTags()
-                let documentTags = Array(document.tags).sorted { $0.name < $1.name }
-                tagListView.addTags(documentTags.map { $0.name })
+                let image = UIImage(systemName: "tag")
+                tagListView.tokens = Array(document.tags)
+                    .sorted { $0.name < $1.name }
+                    .map { UISearchToken(icon: image, text: $0.name) }
 
                 // update download status
                 updateDownloadStatus(for: document)
@@ -48,25 +48,7 @@ class DocumentTableViewCell: UITableViewCell {
         progressView.isHidden = true
 
         // setup tag list view
-        tagListView.alignment = .right
-    }
-
-    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
-        super.setHighlighted(highlighted, animated: animated)
-
-        // cascade highlight
-        tagListView.tagViews.forEach {
-            $0.isSelected = highlighted
-        }
-    }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // cascade selection
-        tagListView.tagViews.forEach {
-            $0.isSelected = selected
-        }
+        tagListView.tokenBackgroundColor = .paLightRed
     }
 
     func updateDownloadStatus(for document: Document) {

@@ -6,7 +6,6 @@ target 'PDFArchiver' do
   use_frameworks!
 
   # Pods for PDFArchiver
-  pod 'TagListView', '~> 1.3'
   pod 'WSTagsField', '~> 5.0'
   pod 'Sentry', '~> 4.3'
   pod 'SwiftyStoreKit', '~> 0.15'
