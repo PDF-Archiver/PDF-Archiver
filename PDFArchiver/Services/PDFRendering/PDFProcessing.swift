@@ -24,11 +24,6 @@ class PDFProcessing: Operation {
     private let progressHandler: ProgressHandler?
     private let confidenceThreshold = Float(0)
 
-    private let untaggedPath: URL = {
-        guard let path = StorageHelper.Paths.untaggedPath else { fatalError("Could not find untagged documents path.") }
-        return path
-    }()
-
     private var detectTextRectangleObservations = [VNTextObservation]()
 
     var documentId: UUID? {
@@ -49,6 +44,7 @@ class PDFProcessing: Operation {
         if isCancelled {
             return
         }
+        guard let untaggedPath = StorageHelper.Paths.untaggedPath else { fatalError("Could not find untagged documents path.") }
 
         // signal the start of the operation
         let start = Date()
@@ -102,7 +98,7 @@ class PDFProcessing: Operation {
 
         // get OCR content
         var content = ""
-        for pageNumber in 0..<max(document.pageCount, 3) {
+        for pageNumber in 0..<min(document.pageCount, 3) {
             content += document.page(at: pageNumber)?.string ?? ""
         }
 
@@ -134,7 +130,7 @@ class PDFProcessing: Operation {
         guard let tempImagePath = StorageHelper.Paths.tempImagePath else { fatalError("Could not find temp image path.") }
         do {
             // check if the parent folder exists
-            try FileManager.default.createFolderIfNotExists(untaggedPath)
+            try FileManager.default.createFolderIfNotExists(tempImagePath)
         } catch {
             fatalError("Could not create unttaged documents folder.")
         }
@@ -189,7 +185,7 @@ class PDFProcessing: Operation {
         let document = PDFProcessing.renderPdf(from: textObservations)
 
         // save document
-        let tempfilepath = untaggedPath.appendingPathComponent(documentId.uuidString).appendingPathExtension("pdf")
+        let tempfilepath = tempImagePath.appendingPathComponent(documentId.uuidString).appendingPathExtension("pdf")
         document.write(to: tempfilepath)
 
         // delete original images
