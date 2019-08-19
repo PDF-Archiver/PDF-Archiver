@@ -5,11 +5,11 @@
 //  Created by Julian Kahnert on 18.06.19.
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
+// swiftlint:disable cyclomatic_complexity function_body_length
 
 import ArchiveLib
 import os.log
 import PDFKit
-import SwiftyTesseract
 import UIKit
 import Vision
 
@@ -18,13 +18,10 @@ class PDFProcessing: Operation {
     typealias ProgressHandler = ((Float) -> Void)
 
     private let log = OSLog(subsystem: "DocumentProcessing", category: "DocumentProcessing")
-    private let tesseract = SwiftyTesseract(languages: [.german, .english, .italian, .french, .swedish, .russian], bundle: .main, engineMode: .lstmOnly)
 
     private let mode: Mode
     private let progressHandler: ProgressHandler?
     private let confidenceThreshold = Float(0)
-
-    private var detectTextRectangleObservations = [VNTextObservation]()
 
     var documentId: UUID? {
         if case Mode.images(let documentId) = mode {
@@ -126,7 +123,6 @@ class PDFProcessing: Operation {
 
     private func createPdf(of documentId: UUID) -> URL {
         // initial setup
-        let textBoxRequests = setupTextBoxRequests()
         guard let tempImagePath = StorageHelper.Paths.tempImagePath else { fatalError("Could not find temp image path.") }
         do {
             // check if the parent folder exists
@@ -147,28 +143,60 @@ class PDFProcessing: Operation {
 
             guard let cgImage = image.cgImage else { fatalError("Could not get the cgImage.") }
             let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-            detectTextRectangleObservations = [VNTextObservation]()
+            var detectTextRectangleObservations = [VNTextObservation]()
+            let textBoxRequests = VNDetectTextRectanglesRequest { (request, error) in
+
+                if let error = error {
+                    Log.error("Error in text recognition.", extra: ["error": error.localizedDescription])
+                    return
+                }
+
+                for observation in (request.results as? [VNTextObservation] ?? []) where observation.confidence > self.confidenceThreshold {
+                    detectTextRectangleObservations.append(observation)
+                }
+            }
 
             // text rectangle recognition
             do {
-                try requestHandler.perform(textBoxRequests)
+                try requestHandler.perform([textBoxRequests])
             } catch {
                 os_log("Failed to perform dectectTextBoxRequest with error: %@", log: log, type: .error, error.localizedDescription)
                 assertionFailure("Failed to perform dectectTextBoxRequest with error: \(error.localizedDescription)")
             }
 
-            // text recognition (OCR)
-            var results = [TextObservationResult]()
+            var textObservationResults = [TextObservationResult]()
             for (observationIndex, observation) in detectTextRectangleObservations.enumerated() {
 
                 // build and start processing of one observation
                 let textBox = self.transform(observation: observation, in: image)
-                if let croppedImage = image.crop(rectangle: textBox) {
-                    self.tesseract.performOCR(on: croppedImage) { text in
-                        guard let text = text,
-                            !text.isEmpty else { return }
-                        results.append(TextObservationResult(rect: textBox, text: text))
+                if let croppedImage = image.crop(rectangle: textBox),
+                    let cgImage = croppedImage.cgImage {
+
+                    // text recognition (OCR)
+                    let textRecognitionRequest = VNRecognizeTextRequest { (request, error) in
+
+                        if let error = error {
+                            Log.error("Error in text recognition.", extra: ["error": error.localizedDescription])
+                            return
+                        }
+
+                        if let results = request.results,
+                            !results.isEmpty {
+
+                            for observation in (request.results as? [VNRecognizedTextObservation] ?? []) {
+                                guard let candidate = observation.topCandidates(1).first,
+                                    !candidate.string.isEmpty else { continue }
+
+                                textObservationResults.append(TextObservationResult(rect: textBox, text: candidate.string))
+                            }
+                        }
                     }
+                    // This doesn't require OCR on a live camera feed, select accurate for more accurate results.
+                    textRecognitionRequest.recognitionLevel = .accurate
+                    textRecognitionRequest.usesLanguageCorrection = true
+
+                    let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+                    try? handler.perform([textRecognitionRequest])
                 }
 
                 // update the progress view
@@ -178,7 +206,7 @@ class PDFProcessing: Operation {
             }
 
             // append results
-            textObservations.append(TextObservation(image: image, results: results))
+            textObservations.append(TextObservation(image: image, results: textObservationResults))
         }
 
         // save the pdf
@@ -212,23 +240,6 @@ class PDFProcessing: Operation {
         }
         guard let document = PDFDocument(data: data) else { fatalError("Could not generate PDF document.") }
         return document
-    }
-
-    private func setupTextBoxRequests() -> [VNRequest] {
-        let detectTextRectangleRequest = VNDetectTextRectanglesRequest { [weak self] (request, error) in
-
-            guard error == nil else { fatalError("VNDetectTextRectanglesRequest errored:\n\(error?.localizedDescription ?? "")") }
-            guard let self = self else { return }
-            guard let observations = request.results as? [VNTextObservation] else {
-                assertionFailure("The observations are of an unexpected type.")
-                return
-            }
-
-            for observation in observations where observation.confidence > self.confidenceThreshold {
-                self.detectTextRectangleObservations.append(observation)
-            }
-        }
-        return [detectTextRectangleRequest]
     }
 
     private func transform(observation: VNTextObservation, in image: UIImage) -> CGRect {

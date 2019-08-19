@@ -10,11 +10,11 @@ import ArchiveLib
 import AVFoundation
 import os.log
 import StoreKit
-import WeScan
+import VisionKit
 
 class ScanViewController: UIViewController, Logging {
 
-    private var scannerViewController: ImageScannerController?
+    private var scannerViewController: VNDocumentCameraViewController?
 
     @IBOutlet private weak var processingIndicatorView: UIView!
     @IBOutlet private weak var progressLabel: UILabel!
@@ -29,10 +29,10 @@ class ScanViewController: UIViewController, Logging {
         } else {
 
             Log.info("Start scanning a document.")
-            scannerViewController = ImageScannerController()
+            scannerViewController = VNDocumentCameraViewController()
 
             guard let scannerViewController = scannerViewController else { return }
-            scannerViewController.imageScannerDelegate = self
+            scannerViewController.delegate = self
             present(scannerViewController, animated: true)
 
             // stop current image processing
@@ -147,17 +147,9 @@ class ScanViewController: UIViewController, Logging {
     }
 }
 
-extension ScanViewController: ImageScannerControllerDelegate {
+extension ScanViewController: VNDocumentCameraViewControllerDelegate {
 
-    func imageScannerController(_ scanner: ImageScannerController, didFailWithError error: Error) {
-
-        ImageConverter.shared.startProcessing()
-
-        // You are responsible for carefully handling the error
-        os_log("Selected Document: %@", log: ScanViewController.log, type: .error, error.localizedDescription)
-    }
-
-    func imageScannerController(_ scanner: ImageScannerController, didFinishScanningWithResults results: ImageScannerResults) {
+    func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
 
         ImageConverter.shared.startProcessing()
 
@@ -165,18 +157,12 @@ extension ScanViewController: ImageScannerControllerDelegate {
 
         // The user successfully scanned an image, which is available in the ImageScannerResults
         // You are responsible for dismissing the ImageScannerController
-        scanner.dismiss(animated: true)
+        controller.dismiss(animated: true)
 
-        let image: UIImage
-        if results.doesUserPreferEnhancedImage,
-            let enhancedImage = results.enhancedImage {
-
-            // try to get the greyscaled and enhanced image, if the user
-            image = enhancedImage
-        } else {
-
-            // use cropped and deskewed image otherwise
-            image = results.scannedImage
+        var images = [UIImage]()
+        for index in 0..<scan.pageCount {
+            let image = scan.imageOfPage(at: index)
+            images.append(image)
         }
 
         // validate subscription
@@ -184,7 +170,7 @@ extension ScanViewController: ImageScannerControllerDelegate {
 
         // save image
         do {
-            try StorageHelper.save([image])
+            try StorageHelper.save(images)
         } catch {
             assertionFailure("Could not save temp images with error:\n\(error.localizedDescription)")
             let alert = UIAlertController(title: NSLocalizedString("not-saved-images.title", comment: "Alert VC: Title"), message: error.localizedDescription, preferredStyle: .alert)
@@ -199,14 +185,21 @@ extension ScanViewController: ImageScannerControllerDelegate {
         updateProcessingIndicator(with: Float(0))
     }
 
-    func imageScannerControllerDidCancel(_ scanner: ImageScannerController) {
-
+    func documentCameraViewControllerDidCancel(_ controller: VNDocumentCameraViewController) {
         ImageConverter.shared.startProcessing()
 
         // user tapped 'Cancel' on the scanner
-        scanner.dismiss(animated: true)
+        controller.dismiss(animated: true)
     }
 
+    func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFailWithError error: Error) {
+        ImageConverter.shared.startProcessing()
+
+        // You are responsible for carefully handling the error
+        os_log("Selected Document: %@", log: ScanViewController.log, type: .error, error.localizedDescription)
+        Log.error("Scan did fail with error.", extra: ["error": error.localizedDescription])
+        controller.dismiss(animated: true)
+    }
 }
 
 extension  UITabBarController {

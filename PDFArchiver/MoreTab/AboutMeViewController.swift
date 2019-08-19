@@ -16,6 +16,7 @@ class AboutMeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        view.backgroundColor = .systemBackground
         imageView.layer.cornerRadius = imageView.frame.width / 4
     }
 

@@ -16,7 +16,7 @@ class IntroViewController: UIViewController {
         OnboardingItemInfo(informationImage: #imageLiteral(resourceName: "scan"),
                            title: NSLocalizedString("intro.scan.title", comment: "Intro: Scan Title"),
                            description: NSLocalizedString("intro.scan.description", comment: "Intro: Scan Description"),
-                           pageIcon: #imageLiteral(resourceName: "File").imageWithBorder(width: 10, color: .clear)!,
+                           pageIcon: UIImage(systemName: "doc.text.viewfinder")!.imageWithBorder(width: 7, color: .clear)!,
                            color: .paWhite,
                            titleColor: .paDarkRed,
                            descriptionColor: .paDarkGray,
@@ -26,7 +26,7 @@ class IntroViewController: UIViewController {
         OnboardingItemInfo(informationImage: #imageLiteral(resourceName: "tag-1"),
                            title: NSLocalizedString("intro.tag.title", comment: "Intro: Tag Title"),
                            description: NSLocalizedString("intro.tag.description", comment: "Intro: Tag Description"),
-                           pageIcon: #imageLiteral(resourceName: "Tag").imageWithBorder(width: 10, color: .clear)!,
+                           pageIcon: UIImage(systemName: "tag")!.imageWithBorder(width: 7, color: .clear)!,
                            color: .paWhite,
                            titleColor: .paDarkRed,
                            descriptionColor: .paDarkGray,
@@ -36,7 +36,7 @@ class IntroViewController: UIViewController {
         OnboardingItemInfo(informationImage: #imageLiteral(resourceName: "find"),
                            title: NSLocalizedString("intro.find.title", comment: "Intro: Find Title"),
                            description: NSLocalizedString("intro.find.description", comment: "Intro: Find Description"),
-                           pageIcon: #imageLiteral(resourceName: "Archive").imageWithBorder(width: 10, color: .clear)!,
+                           pageIcon: UIImage(systemName: "archivebox")!.imageWithBorder(width: 7, color: .clear)!,
                            color: .paWhite,
                            titleColor: .paDarkRed,
                            descriptionColor: .paDarkGray,
@@ -46,7 +46,7 @@ class IntroViewController: UIViewController {
         OnboardingItemInfo(informationImage: #imageLiteral(resourceName: "piggy-bank"),
                            title: NSLocalizedString("intro.subscription.title", comment: "Intro: Subscription Title"),
                            description: NSLocalizedString("intro.subscription.description", comment: "Intro: Subscription Description"),
-                           pageIcon: #imageLiteral(resourceName: "coin").imageWithBorder(width: 3, color: .clear)!,
+                           pageIcon: UIImage(systemName: "dollarsign.circle")!.imageWithBorder(width: 0, color: .clear)!,
                            color: .paWhite,
                            titleColor: .paDarkRed,
                            descriptionColor: .paDarkGray,
@@ -56,7 +56,7 @@ class IntroViewController: UIViewController {
         OnboardingItemInfo(informationImage: #imageLiteral(resourceName: "start"),
                            title: NSLocalizedString("intro.last.title", comment: "Intro: Last Page Title"),
                            description: NSLocalizedString("intro.last.description", comment: "Intro: Last Page Description"),
-                           pageIcon: #imageLiteral(resourceName: "Logo"),
+                           pageIcon: UIImage(systemName: "chevron.right.circle")!.imageWithBorder(width: 0, color: .clear)!,
                            color: .paWhite,
                            titleColor: .paDarkRed,
                            descriptionColor: .paDarkGray,
@@ -66,6 +66,10 @@ class IntroViewController: UIViewController {
 
     init() {
         super.init(nibName: nil, bundle: nil)
+
+        // adapt to iOS 13 presentation defaults
+        modalPresentationStyle = .fullScreen
+        isModalInPresentation = true
     }
 
     @available(*, unavailable)
