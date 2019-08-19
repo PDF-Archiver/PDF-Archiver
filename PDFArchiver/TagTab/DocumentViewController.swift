@@ -45,16 +45,16 @@ class DocumentViewController: UIViewController, Logging {
             description = document.specification
         }
 
-        // use the current date, if no date was set
-        if document.date == nil {
-            document.date = Date()
-        }
-
         pdfVC = PDFViewController(pdfDocument: pdfDocument)
-        dateDescriptionVC = DateDescriptionViewController(date: document.date ?? Date(),
+
+        let shouldUpdateDate = document.date == nil
+        let displayDate = document.date ?? Date()
+        dateDescriptionVC = DateDescriptionViewController(date: displayDate,
                                                           description: description)
         self.document = document
         super.init(nibName: nil, bundle: nil)
+
+        parseContentIfNeeded(of: pdfDocument, updateDate: shouldUpdateDate)
 
         add(pdfVC)
         add(dateDescriptionVC)
@@ -76,16 +76,6 @@ class DocumentViewController: UIViewController, Logging {
         // basic setup
         setupViews()
         setupConstraints()
-
-        // try to parse suggestions from document content
-        DispatchQueue.global().async { [weak self] in
-            // get tags and save them in the background, they will be passed to the TagViewController
-            guard let path = self?.document.path,
-                let pdfDocument = PDFDocument(url: path),
-                let text = pdfDocument.string else { return }
-            self?.taggingVC.update(suggestedTags: TagParser.parse(text))
-        }
-
         hideKeyboardWhenTappedAround()
         scrollView.keyboardDismissMode = .interactive
     }
@@ -119,6 +109,34 @@ class DocumentViewController: UIViewController, Logging {
         view.spacing = 5
         return view
     }()
+
+    private func parseContentIfNeeded(of pdfDocument: PDFDocument, updateDate: Bool) {
+
+        // ATTENTION: this will be used in the init on the main thread - use dispatch queues here!
+
+        // use the current date, if no date was set
+        if updateDate {
+
+            // try to get the date from document content
+            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                // get tags and save them in the background, they will be passed to the TagViewController
+                guard let text = pdfDocument.string,
+                    let date = DateParser.parse(text)?.date else { return }
+
+                DispatchQueue.main.async {
+                    self?.dateDescriptionVC.update(date: date)
+                    self?.document.date = date
+                }
+            }
+        }
+
+        // try to parse suggestions from document content
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            // get tags and save them in the background, they will be passed to the TagViewController
+            guard let text = pdfDocument.string else { return }
+            self?.taggingVC.update(suggestedTags: TagParser.parse(text))
+        }
+    }
 
     private func createHairLine(in view: UIStackView) {
         let hline = UIView(frame: .zero)

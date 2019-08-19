@@ -17,8 +17,7 @@ enum Environment: String {
         // return early, if we have a debug build
         #if DEBUG
         return .develop
-        #endif
-
+        #else
         // source from: https://stackoverflow.com/a/38984554
         if let url = Bundle.main.appStoreReceiptURL {
             if url.path.contains("CoreSimulator") {
@@ -28,5 +27,13 @@ enum Environment: String {
             }
         }
         return .production
+        #endif
+    }
+
+    static func getVersion() -> String {
+        guard let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
+            let buildNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String else { fatalError("Could not find version or build number.") }
+
+        return "\(version) (\(buildNumber))"
     }
 }

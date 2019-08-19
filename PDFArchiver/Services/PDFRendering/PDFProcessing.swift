@@ -20,31 +20,117 @@ class PDFProcessing: Operation {
     private let log = OSLog(subsystem: "DocumentProcessing", category: "DocumentProcessing")
     private let tesseract = SwiftyTesseract(languages: [.german, .english, .italian, .french, .swedish, .russian], bundle: .main, engineMode: .lstmOnly)
 
-    let documentId: UUID
+    private let mode: Mode
     private let progressHandler: ProgressHandler?
     private let confidenceThreshold = Float(0)
 
     private var detectTextRectangleObservations = [VNTextObservation]()
 
-    init(of documentId: UUID, progressHandler: ProgressHandler?) {
-        self.documentId = documentId
+    var documentId: UUID? {
+        if case Mode.images(let documentId) = mode {
+            return documentId
+        } else {
+            return nil
+        }
+    }
+
+    init(of mode: Mode, progressHandler: ProgressHandler?) {
+        self.mode = mode
         self.progressHandler = progressHandler
     }
 
     override func main() {
+
+        if isCancelled {
+            return
+        }
+        guard let untaggedPath = StorageHelper.Paths.untaggedPath else { fatalError("Could not find untagged documents path.") }
 
         // signal the start of the operation
         let start = Date()
         Log.info("Process a document.")
         progressHandler?(Float(0))
 
+        let path: URL
+        switch mode {
+        case .images(let documentId):
+
+            // apply OCR and create a PDF
+            path = createPdf(of: documentId)
+        case .pdf(let inputPath):
+
+            // just use the input PDF
+            path = inputPath
+        }
+
+        if isCancelled {
+            return
+        }
+
+        guard let document = PDFDocument(url: path) else {
+            assertAndLog("Could not find a valid PDF in url.")
+            return
+        }
+
+        // generate filename by analysing the image
+        let filename = PDFProcessing.getFilename(from: document)
+        let filepath = untaggedPath.appendingPathComponent(filename)
+
+        do {
+            try FileManager.default.moveItem(at: path, to: filepath)
+        } catch {
+            assertAndLog("Could not move pdf file.", extra: ["error": error.localizedDescription])
+        }
+
+        // log the processing time
+        let timeDiff = Date().timeIntervalSinceReferenceDate - start.timeIntervalSinceReferenceDate
+        Log.info("Processing completed", extra: ["processing_time": timeDiff])
+        progressHandler?(Float(1))
+    }
+
+    // MARK: - Helper Functions
+
+    private static func getFilename(from document: PDFDocument) -> String {
+        os_log("Creating filename", log: ImageConverter.log, type: .debug)
+
+        // get default specification
+        let specification = Constants.documentDescriptionPlaceholder + Date().timeIntervalSince1970.description
+
+        // get OCR content
+        var content = ""
+        for pageNumber in 0..<min(document.pageCount, 3) {
+            content += document.page(at: pageNumber)?.string ?? ""
+        }
+
+        // use the default filename if no content could be found
+        guard !content.isEmpty else {
+            return Document.createFilename(date: Date(), specification: specification, tags: Set([Constants.documentTagPlaceholder]))
+        }
+
+        // parse the date
+        let parsedDate = DateParser.parse(content)?.date ?? Date()
+
+        // parse the tags
+        var newTags = TagParser.parse(content)
+        if newTags.isEmpty {
+            newTags.insert(Constants.documentTagPlaceholder)
+        } else {
+
+            // only use tags that are already in the archive
+            let archiveTags = DocumentService.archive.getAvailableTags(with: []).map { $0.name }
+            newTags = Set(newTags.intersection(Set(archiveTags)).prefix(5))
+        }
+
+        return Document.createFilename(date: parsedDate, specification: specification, tags: newTags)
+    }
+
+    private func createPdf(of documentId: UUID) -> URL {
         // initial setup
         let textBoxRequests = setupTextBoxRequests()
         guard let tempImagePath = StorageHelper.Paths.tempImagePath else { fatalError("Could not find temp image path.") }
-        guard let untaggedPath = StorageHelper.Paths.untaggedPath else { fatalError("Could not find untagged documents path.") }
         do {
             // check if the parent folder exists
-            try FileManager.default.createFolderIfNotExists(untaggedPath)
+            try FileManager.default.createFolderIfNotExists(tempImagePath)
         } catch {
             fatalError("Could not create unttaged documents folder.")
         }
@@ -54,10 +140,6 @@ class PDFProcessing: Operation {
 
         var textObservations = [TextObservation]()
         for (imageIndex, imageUrl) in imageUrls.enumerated() {
-
-            if isCancelled {
-                return
-            }
 
             guard let image = UIImage(contentsOfFile: imageUrl.path) else {
                 fatalError("Could not find image at \(imageUrl.path)")
@@ -102,29 +184,17 @@ class PDFProcessing: Operation {
         // save the pdf
         let document = PDFProcessing.renderPdf(from: textObservations)
 
-        if isCancelled {
-            return
-        }
-
-        // generate filename by analysing the image
-        let filename = getFilename(from: document)
-        let filepath = untaggedPath.appendingPathComponent(filename)
-
         // save document
-        document.write(to: filepath)
+        let tempfilepath = tempImagePath.appendingPathComponent(documentId.uuidString).appendingPathExtension("pdf")
+        document.write(to: tempfilepath)
 
         // delete original images
         for imageUrl in imageUrls {
             try? FileManager.default.removeItem(at: imageUrl)
         }
 
-        // log the processing time
-        let timeDiff = Date().timeIntervalSinceReferenceDate - start.timeIntervalSinceReferenceDate
-        Log.info("Processing completed", extra: ["processing_time": timeDiff])
-        progressHandler?(Float(1))
+        return tempfilepath
     }
-
-    // MARK: - Helper Functions
 
     private static func renderPdf(from observations: [TextObservation]) -> PDFDocument {
         let renderer = UIGraphicsPDFRenderer(bounds: .zero)
@@ -142,34 +212,6 @@ class PDFProcessing: Operation {
         }
         guard let document = PDFDocument(data: data) else { fatalError("Could not generate PDF document.") }
         return document
-    }
-
-    private func getFilename(from document: PDFDocument) -> String {
-        os_log("Creating filename", log: ImageConverter.log, type: .debug)
-
-        // get default specification
-        let specification = Constants.documentDescriptionPlaceholder + Date().timeIntervalSince1970.description
-
-        // get OCR content
-        guard let content = document.string else {
-            return Document.createFilename(date: Date(), specification: specification, tags: Set([Constants.documentTagPlaceholder]))
-        }
-
-        // parse the date
-        let parsedDate = DateParser.parse(content)?.date ?? Date()
-
-        // parse the tags
-        var newTags = TagParser.parse(content)
-        if newTags.isEmpty {
-            newTags.insert(Constants.documentTagPlaceholder)
-        } else {
-
-            // only use tags that are already in the archive
-            let archiveTags = DocumentService.archive.getAvailableTags(with: []).map { $0.name }
-            newTags = Set(newTags.intersection(Set(archiveTags)).prefix(5))
-        }
-
-        return Document.createFilename(date: parsedDate, specification: specification, tags: newTags)
     }
 
     private func setupTextBoxRequests() -> [VNRequest] {
@@ -202,7 +244,17 @@ class PDFProcessing: Operation {
                       height: observation.boundingBox.applying(transform).height)
     }
 
+    private func assertAndLog(_ message: String, extra: [String: Any] = [:]) {
+        assertionFailure(message)
+        Log.error(message, extra: extra)
+    }
+
     // MARK: - Helper Types
+
+    enum Mode {
+        case pdf(URL)
+        case images(UUID)
+    }
 
     private struct TextObservationResult {
         let rect: CGRect

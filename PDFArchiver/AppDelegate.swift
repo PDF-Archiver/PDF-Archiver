@@ -19,6 +19,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
+
+        Log.info("Handling shared document", extra: ["filetype": url.pathExtension])
+
+        DispatchQueue.global(qos: .userInitiated).async {
+            do {
+                if url.startAccessingSecurityScopedResource() {
+                    try StorageHelper.handle(url)
+                    url.stopAccessingSecurityScopedResource()
+                }
+            } catch let error {
+                url.stopAccessingSecurityScopedResource()
+                Log.error("Unable to handle file.", extra: ["filetype": url.pathExtension, "error": error.localizedDescription])
+                try? FileManager.default.removeItem(at: url)
+                try? FileManager.default.removeItem(at: url.deletingLastPathComponent())
+
+                DispatchQueue.main.async {
+                    let alert = UIAlertController(error, preferredStyle: .alert)
+                    self.window?.rootViewController?.present(alert, animated: true, completion: nil)
+                }
+            }
+        }
+
+        return true
+    }
+
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         DispatchQueue.global().async {
@@ -34,7 +60,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         do {
             Client.shared = try Client(options: [
                 "dsn": PDFArchiverKeys().sentryDSN,
-                "environment": Environment.get().rawValue
+                "environment": Environment.get().rawValue,
+                "release": Environment.getVersion()
             ])
             try Client.shared?.startCrashHandler()
             Client.shared?.enableAutomaticBreadcrumbTracking()

@@ -55,3 +55,21 @@
 
 /* Class = "UILabel"; text = "About  👤"; ObjectID = "ft9-SO-jn5"; */
 "ft9-SO-jn5.text" = "Über  👤";
+
+/* Class = "UILabel"; text = "PDF Quality"; ObjectID = "5gi-wT-fO2"; */
+"5gi-wT-fO2.text" = "PDF Qualität";
+
+/* Class = "UILabel"; text = "100% - Lossless 🤯"; ObjectID = "ZYY-5N-wsG"; */
+"ZYY-5N-wsG.text" = "100% - Lossless 🤯";
+
+/* Class = "UITableViewController"; title = "PDF Quality"; ObjectID = "kgo-je-x3q"; */
+"kgo-je-x3q.title" = "PDF Qualität";
+
+/* Class = "UILabel"; text = "25% - Small 💾"; ObjectID = "oNn-pD-wRs"; */
+"oNn-pD-wRs.text" = "25% - Klein 💾";
+
+/* Class = "UILabel"; text = "50% - Normal 👍"; ObjectID = "wXv-ej-9ae"; */
+"wXv-ej-9ae.text" = "50% - Normal 👍";
+
+/* Class = "UILabel"; text = "75% - Good (Default)👌"; ObjectID = "xtP-zp-Gpd"; */
+"xtP-zp-Gpd.text" = "75% - Gut (Standard) 👌";

@@ -122,6 +122,7 @@ public class IAPService: NSObject, Logging {
             self.requestsRunning -= 1
             switch result {
             case .success(let purchase):
+                Log.info("Purchse successfull: \(purchase.productId)")
                 os_log("Purchase successfull: %@", log: IAPService.log, type: .debug, purchase.productId)
                 self.fetchReceipt()
 

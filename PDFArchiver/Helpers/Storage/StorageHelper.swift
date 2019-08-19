@@ -7,11 +7,29 @@
 //
 
 import Foundation
+import PDFKit.PDFDocument
 import UIKit.UIImage
+
+enum StorageHelperError: Error {
+    case invalidType
+    case iCloudDriveNotFound
+}
 
 enum StorageHelper {
 
     private static let seperator = "----"
+
+    static func handle(_ url: URL) throws {
+
+        if let image = UIImage(contentsOfFile: url.path) {
+
+            try StorageHelper.save([image])
+            try StorageHelper.triggerProcessing()
+
+        } else {
+            ImageConverter.shared.processPdf(at: url)
+        }
+    }
 
     static func save(_ images: [UIImage]) throws {
 
@@ -21,10 +39,12 @@ enum StorageHelper {
             try fileManager.createDirectory(at: tempImagePath, withIntermediateDirectories: true, attributes: nil)
         }
 
+        let quality = CGFloat(UserDefaults.standard.pdfQuality.rawValue)
         let uuid = UUID()
         for (index, image) in images.enumerated() {
+
             // get jpg data from image
-            guard let data = image.jpegData(compressionQuality: 0.8) else { throw StorageError.jpgConversion }
+            guard let data = image.jpegData(compressionQuality: quality) else { throw StorageError.jpgConversion }
 
             // Attempt to write the data
             try data.write(to: tempImagePath.appendingPathComponent("\(uuid.uuidString)\(seperator)\(index).jpg"))
@@ -42,6 +62,11 @@ enum StorageHelper {
             .compactMap { UUID(uuidString: $0) }
 
         return Set(imageIds)
+    }
+
+    static func triggerProcessing() throws {
+        guard let untaggedPath = StorageHelper.Paths.untaggedPath else { throw StorageHelperError.iCloudDriveNotFound }
+        ImageConverter.shared.saveProcessAndSaveTempImages(at: untaggedPath)
     }
 
     // MARK: - Helper functions

@@ -16,12 +16,10 @@ final class Atomic<A> {
     }
 
     var value: A {
-        get {
-            return queue.sync { self._value }
-        }
+        return queue.sync { self._value }
     }
 
-    func mutate(_ transform: (inout A) -> ()) {
+    func mutate(_ transform: (inout A) -> Void) {
         queue.sync {
             transform(&self._value)
         }

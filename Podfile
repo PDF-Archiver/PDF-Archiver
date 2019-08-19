@@ -10,7 +10,7 @@ target 'PDFArchiver' do
   pod 'WSTagsField', '~> 5.0'
   pod 'Sentry', '~> 4.3'
   pod 'WeScan', :git => 'https://github.com/PDF-Archiver/WeScan', :branch => 'master'
-  pod 'SwiftyTesseract', '~> 2.2'
+  pod 'SwiftyTesseract', :git => 'https://github.com/PDF-Archiver/SwiftyTesseract', :branch => 'master'
   pod 'SwiftyStoreKit', '~> 0.15'
   pod 'paper-onboarding', '~> 6.1'
   pod 'SkyFloatingLabelTextField', '~> 3.7'

@@ -17,7 +17,7 @@ DEPENDENCIES:
   - Sentry (~> 4.3)
   - SkyFloatingLabelTextField (~> 3.7)
   - SwiftyStoreKit (~> 0.15)
-  - SwiftyTesseract (~> 2.2)
+  - SwiftyTesseract (from `https://github.com/PDF-Archiver/SwiftyTesseract`, branch `master`)
   - TagListView (~> 1.3)
   - WeScan (from `https://github.com/PDF-Archiver/WeScan`, branch `master`)
   - WSTagsField (~> 5.0)
@@ -28,18 +28,23 @@ SPEC REPOS:
     - Sentry
     - SkyFloatingLabelTextField
     - SwiftyStoreKit
-    - SwiftyTesseract
     - TagListView
     - WSTagsField
 
 EXTERNAL SOURCES:
   Keys:
     :path: Pods/CocoaPodsKeys
+  SwiftyTesseract:
+    :branch: master
+    :git: https://github.com/PDF-Archiver/SwiftyTesseract
   WeScan:
     :branch: master
     :git: https://github.com/PDF-Archiver/WeScan
 
 CHECKOUT OPTIONS:
+  SwiftyTesseract:
+    :commit: 38eac8129d1395c64bd9ac92e94baecb80eab18f
+    :git: https://github.com/PDF-Archiver/SwiftyTesseract
   WeScan:
     :commit: d4890e6f85ff0665e669f4852bbd48663656d946
     :git: https://github.com/PDF-Archiver/WeScan
@@ -52,9 +57,9 @@ SPEC CHECKSUMS:
   SwiftyStoreKit: 033d06b6f87955405d3f844a18a7687c2438592a
   SwiftyTesseract: 44a8f4b2b7e5f22b997919f935261d22d28a4917
   TagListView: 987b0bdbb16cd9d9e7c0e2ec32aff37ecba8b173
-  WeScan: cd84147083281e54b5d625b155776d160978382b
+  WeScan: f1b82b36fd84eec6a98ad5e8fa0ac4f354b70a07
   WSTagsField: 5963db79f251c2a87ecfcf5dbfa36d05efc3d548
 
-PODFILE CHECKSUM: 90c282c951503ef9e602e0c5e76d84d03ec6ba73
+PODFILE CHECKSUM: 0865b7fa0d563828b7a9ba434c29613cf5f7e48a
 
-COCOAPODS: 1.6.1
+COCOAPODS: 1.7.5

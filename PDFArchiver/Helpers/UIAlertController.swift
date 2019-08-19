@@ -23,4 +23,12 @@ extension UIAlertController {
 
         self.addAction(UIAlertAction(title: "OK", style: .default))
     }
+
+    convenience init(_ error: Error, preferredStyle: UIAlertController.Style) {
+        self.init(title: NSLocalizedString("UIAlertController.default.title", comment: ""),
+                  message: error.localizedDescription,
+                  preferredStyle: preferredStyle)
+
+        self.addAction(UIAlertAction(title: "OK", style: .default))
+    }
 }

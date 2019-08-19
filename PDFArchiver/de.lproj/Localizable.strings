@@ -77,6 +77,12 @@
 /* No tags could be found, e.g. while renaming the document. */
 "document_recovery_suggestion__tags_missing" = "Bitte fügen Sie Tags hinzu.";
 
+/* No comment provided by engineer. */
+"download" = "Download";
+
+/* No comment provided by engineer. */
+"edit" = "Bearbeiten";
+
 /* The title of an error message popup */
 "Error" = "Fehler";
 
@@ -199,6 +205,9 @@
 
 /* Simulator test data set */
 "test_resource_filename" = "2017-01-17--tom-tailor-jeans__kleidung_rechnung";
+
+/* No comment provided by engineer. */
+"UIAlertController.default.title" = "Etwas ist schief gelaufen";
 
 /* Error mesage to be displayed when failing to share a document */
 "Unable to share document without the pdf file" = "Dokument konnte nicht gefunden werden.";
