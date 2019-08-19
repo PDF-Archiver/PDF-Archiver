@@ -143,8 +143,8 @@ class DocumentViewController: UIViewController, Logging {
         view.addArrangedSubview(hline)
         hline.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         hline.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        hline.heightAnchor.constraint(equalToConstant: 1).isActive = true
-        hline.backgroundColor = .groupTableViewBackground
+        hline.heightAnchor.constraint(equalToConstant: HairlineConstraint.height).isActive = true
+        hline.backgroundColor = .paPlaceholderGray
     }
 
     private func setupViews() {

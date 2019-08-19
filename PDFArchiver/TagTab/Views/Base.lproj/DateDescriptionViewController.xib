@@ -32,7 +32,7 @@
                     <rect key="frame" x="0.0" y="125" width="443" height="1"/>
                     <color key="backgroundColor" name="PlaceholderGray"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="1" id="JRf-BW-H8s"/>
+                        <constraint firstAttribute="height" constant="1" id="JRf-BW-H8s" customClass="HairlineConstraint" customModule="PDFArchiver" customModuleProvider="target"/>
                     </constraints>
                 </view>
                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Description" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="zEb-ls-9OY" customClass="SkyFloatingLabelTextField" customModule="SkyFloatingLabelTextField">
@@ -86,7 +86,7 @@
     </objects>
     <resources>
         <namedColor name="DarkGray">
-            <color red="0.98039215800000001" green="0.9803922772" blue="0.98039215800000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+            <color red="0.98000001907348633" green="0.98000001907348633" blue="0.98000001907348633" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
         <namedColor name="LightGray">
             <color red="0.81568627450980391" green="0.82745098039215681" blue="0.85098039215686272" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>

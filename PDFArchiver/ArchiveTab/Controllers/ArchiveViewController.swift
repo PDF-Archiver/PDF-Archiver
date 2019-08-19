@@ -299,14 +299,14 @@ extension ArchiveViewController: UITableViewDataSource {
         }
     }
 
-    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 
-        var actions = [UITableViewRowAction]()
-        guard let document = self.getDocument(from: indexPath) else { return actions }
+        var actions = [UIContextualAction]()
+        guard let document = self.getDocument(from: indexPath) else { return nil }
 
         if document.downloadStatus != .local {
             // action: download
-            let download = UITableViewRowAction(style: .destructive, title: NSLocalizedString("download", comment: "")) { _, _ in
+            let download = UIContextualAction(style: .destructive, title: NSLocalizedString("download", comment: "")) { _, _, _  in
                 guard document.downloadStatus != .local else {
                     assertionFailure("Try to download local document. This should not happen!")
                     return
@@ -319,7 +319,7 @@ extension ArchiveViewController: UITableViewDataSource {
 //            actions.append(download)
         } else {
             // action: edit
-            let edit = UITableViewRowAction(style: .destructive, title: NSLocalizedString("edit", comment: "")) { _, _ in
+            let edit = UIContextualAction(style: .destructive, title: NSLocalizedString("edit", comment: "")) { _, _, _  in
                 self.edit(document)
             }
             edit.backgroundColor = .paLightGray
@@ -328,13 +328,13 @@ extension ArchiveViewController: UITableViewDataSource {
         }
 
         // action: delete
-        let delete = UITableViewRowAction(style: .destructive, title: NSLocalizedString("delete", comment: "")) { _, _ in
+        let delete = UIContextualAction(style: .destructive, title: NSLocalizedString("delete", comment: "")) { _, _, _  in
             self.delete(document)
         }
         delete.backgroundColor = .paDelete
         actions.append(delete)
 
-        return actions.reversed()
+        return UISwipeActionsConfiguration(actions: actions.reversed())
     }
 
     // MARK: optical changes

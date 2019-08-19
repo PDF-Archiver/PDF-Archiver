@@ -28,15 +28,15 @@
                     <color key="textColor" name="LightGray"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XWq-Yc-jXb" userLabel="Document Tags">
-                    <rect key="frame" x="15" y="26" width="428" height="145"/>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XWq-Yc-jXb" userLabel="Document Tags">
+                    <rect key="frame" x="15" y="21" width="428" height="184"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="30" id="nRj-U6-7OA"/>
                     </constraints>
                 </view>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="More Suggestions" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DwP-KA-tHq">
-                    <rect key="frame" x="25" y="211" width="408" height="18"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="More Suggestions" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DwP-KA-tHq">
+                    <rect key="frame" x="25" y="216" width="408" height="18"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="18" id="68j-sG-oux"/>
                     </constraints>
@@ -44,18 +44,18 @@
                     <color key="textColor" name="LightGray"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eBy-UA-0iG" userLabel="Suggested Tags">
-                    <rect key="frame" x="15" y="232" width="428" height="120"/>
+                <view contentMode="scaleToFill" placeholderIntrinsicWidth="428" placeholderIntrinsicHeight="120" translatesAutoresizingMaskIntoConstraints="NO" id="eBy-UA-0iG" userLabel="Suggested Tags">
+                    <rect key="frame" x="15" y="237" width="428" height="120"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstAttribute="height" relation="greaterThanOrEqual" priority="750" constant="30" id="Tml-Aa-fVY"/>
                     </constraints>
                 </view>
-                <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QxQ-Eu-VdB">
-                    <rect key="frame" x="0.0" y="202" width="458" height="1"/>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QxQ-Eu-VdB">
+                    <rect key="frame" x="0.0" y="210" width="458" height="1"/>
                     <color key="backgroundColor" name="PlaceholderGray"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="1" id="BTB-Eb-K5g"/>
+                        <constraint firstAttribute="height" constant="1" id="BTB-Eb-K5g" customClass="HairlineConstraint" customModule="PDFArchiver" customModuleProvider="target"/>
                     </constraints>
                 </view>
             </subviews>

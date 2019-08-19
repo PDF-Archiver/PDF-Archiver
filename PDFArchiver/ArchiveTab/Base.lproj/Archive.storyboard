@@ -33,7 +33,7 @@
                         <viewControllerLayoutGuide type="bottom" id="GAO-Cl-Wes"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="svH-Pt-448" customClass="PDFView">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <gestureRecognizers/>
                         <connections>
@@ -125,7 +125,7 @@
             <objects>
                 <navigationController hidesBottomBarWhenPushed="YES" id="vC3-pB-5Vb" customClass="NavigationController" customModule="PDFArchiver" customModuleProvider="target" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" largeTitles="YES" id="DjV-YW-jjY">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="108"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="barTintColor" name="White"/>
                     </navigationBar>
@@ -140,10 +140,10 @@
     </scenes>
     <resources>
         <namedColor name="White">
-            <color red="0.12941176470588237" green="0.16862745098039217" blue="0.22745098039215686" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+            <color red="0.1289999932050705" green="0.16899999976158142" blue="0.22699999809265137" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="Tll-UG-LXB"/>
+        <segue reference="udr-wF-y1K"/>
     </inferredMetricsTieBreakers>
 </document>
