@@ -15,19 +15,6 @@ class DetailViewController: UIViewController, Logging {
 
     private var viewControllerShown: Date?
 
-    // TODO: might only need prefersStatusBarHidden?!
-    private var isNavigationBarHidden = false {
-        didSet {
-            DispatchQueue.main.async {
-                self.setNeedsStatusBarAppearanceUpdate()
-            }
-        }
-    }
-
-    override var prefersStatusBarHidden: Bool {
-        return isNavigationBarHidden
-    }
-
     var detailDocument: Document? {
         didSet {
             configureView()
@@ -72,16 +59,6 @@ class DetailViewController: UIViewController, Logging {
         present(activity, animated: true, completion: nil)
     }
 
-    @IBAction private func tapGestureRecognizer(_ sender: UITapGestureRecognizer) {
-
-        // change the state of the navigation bar
-        isNavigationBarHidden.toggle()
-
-        // animate the navigation bar
-        // TODO: fix the color change
-        navigationController?.setNavigationBarHidden(isNavigationBarHidden, animated: true)
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -111,10 +88,6 @@ class DetailViewController: UIViewController, Logging {
 
         // cascade viewDidDisappear(:)
         super.viewWillDisappear(animated)
-
-        // change status bar text color
-        // TODO: fix the color change
-        navigationController?.setNavigationBarHidden(false, animated: true)
 
         if let viewControllerShown = viewControllerShown {
             let timeDiff = Date().timeIntervalSinceReferenceDate - viewControllerShown.timeIntervalSinceReferenceDate

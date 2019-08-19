@@ -14,7 +14,6 @@
 		171E0C8A1B8E5B84001E6242 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171E0C881B8E5B84001E6242 /* LaunchScreen.storyboard */; };
 		A301A75621496992003EA382 /* DocumentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A301A75421496992003EA382 /* DocumentTableViewCell.swift */; };
 		A301A75721496992003EA382 /* DocumentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A301A75521496992003EA382 /* DocumentTableViewCell.xib */; };
-		A305AE4821D81E74004DDC1B /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A305AE4721D81E74004DDC1B /* NavigationController.swift */; };
 		A306BCE622DE356F0051D745 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A306BCE522DE356F0051D745 /* Environment.swift */; };
 		A307B05622C28C1100C9A348 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = A307B05522C28C1100C9A348 /* Log.swift */; };
 		A30D767722BF914B00862224 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30D767622BF914B00862224 /* MainTabBarController.swift */; };
@@ -130,7 +129,6 @@
 		50ADA4E30B607E1F6631A716 /* Pods_PDFArchiverUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PDFArchiverUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A301A75421496992003EA382 /* DocumentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentTableViewCell.swift; sourceTree = "<group>"; };
 		A301A75521496992003EA382 /* DocumentTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DocumentTableViewCell.xib; sourceTree = "<group>"; };
-		A305AE4721D81E74004DDC1B /* NavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
 		A306BCE522DE356F0051D745 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		A307B05522C28C1100C9A348 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		A30D767622BF914B00862224 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
@@ -358,7 +356,6 @@
 			isa = PBXGroup;
 			children = (
 				A3F30D8D221C968E0063D173 /* SplitViewController.swift */,
-				A305AE4721D81E74004DDC1B /* NavigationController.swift */,
 				171E0C7F1B8E5B84001E6242 /* ArchiveViewController.swift */,
 				171E0C811B8E5B84001E6242 /* DetailViewController.swift */,
 			);
@@ -785,7 +782,6 @@
 				A307B05622C28C1100C9A348 /* Log.swift in Sources */,
 				A3A2A72222FF51BF00747DDB /* UserDefaults.swift in Sources */,
 				A3FF63A022478FC10089E66A /* UIColor.swift in Sources */,
-				A305AE4821D81E74004DDC1B /* NavigationController.swift in Sources */,
 				A3B57B7D228720090078F7A4 /* StorageHelper+Paths.swift in Sources */,
 				A3B57B81228720410078F7A4 /* StorageHelper+Errors.swift in Sources */,
 				A381CF21222F0B5D00FAFA7C /* ImageConverter.swift in Sources */,

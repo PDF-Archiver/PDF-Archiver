@@ -10,7 +10,7 @@
         <!--Documents-->
         <scene sceneID="pY4-Hu-kfo">
             <objects>
-                <navigationController title="Documents" id="RMx-3f-FxP" customClass="NavigationController" customModule="PDFArchiver" customModuleProvider="target" sceneMemberID="viewController">
+                <navigationController title="Documents" id="RMx-3f-FxP" sceneMemberID="viewController">
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
                     <navigationBar key="navigationBar" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translucent="NO" largeTitles="YES" id="Pmd-2v-anx">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="96"/>
@@ -123,7 +123,7 @@
         <!--Navigation Controller-->
         <scene sceneID="r7l-gg-dq7">
             <objects>
-                <navigationController hidesBottomBarWhenPushed="YES" id="vC3-pB-5Vb" customClass="NavigationController" customModule="PDFArchiver" customModuleProvider="target" sceneMemberID="viewController">
+                <navigationController hidesBottomBarWhenPushed="YES" id="vC3-pB-5Vb" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" largeTitles="YES" id="DjV-YW-jjY">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="108"/>
                         <autoresizingMask key="autoresizingMask"/>
