@@ -33,7 +33,7 @@
                         <viewControllerLayoutGuide type="bottom" id="GAO-Cl-Wes"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="svH-Pt-448" customClass="PDFView">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <gestureRecognizers/>
                         <connections>
@@ -58,11 +58,7 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FJe-Yq-33r" sceneMemberID="firstResponder"/>
-                <tapGestureRecognizer id="Lg5-fX-SsD">
-                    <connections>
-                        <action selector="tapGestureRecognizer:" destination="JEX-9P-axG" id="EO7-KF-ynr"/>
-                    </connections>
-                </tapGestureRecognizer>
+                <tapGestureRecognizer id="Lg5-fX-SsD"/>
             </objects>
             <point key="canvasLocation" x="-473" y="301"/>
         </scene>
@@ -113,7 +109,7 @@
                     <connections>
                         <outlet property="tableView" destination="x1X-8b-rb7" id="Lu6-7F-2Xi"/>
                         <outlet property="view" destination="gT4-6C-k5d" id="jxQ-ST-pif"/>
-                        <segue destination="vC3-pB-5Vb" kind="presentation" identifier="showDetails" id="udr-wF-y1K"/>
+                        <segue destination="vC3-pB-5Vb" kind="presentation" identifier="showDetails" modalPresentationStyle="fullScreen" id="udr-wF-y1K"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jXQ-QS-hvg" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -125,7 +121,7 @@
             <objects>
                 <navigationController hidesBottomBarWhenPushed="YES" id="vC3-pB-5Vb" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" largeTitles="YES" id="DjV-YW-jjY">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="108"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="barTintColor" name="White"/>
                     </navigationBar>

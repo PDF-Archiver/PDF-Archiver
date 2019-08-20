@@ -62,19 +62,19 @@ class ArchiveViewController: UIViewController, UITableViewDelegate, Logging {
             self.updateDocuments(changed: Set<Document>())
         }
 
-        #if targetEnvironment(simulator)
-        // create simulator data set
-        if let fileURL = Bundle.main.url(forResource: NSLocalizedString("test_resource_filename", comment: "Simulator test data set"), withExtension: "pdf") {
-
-            DocumentService.archive.add(from: fileURL, size: 1427000, downloadStatus: .local, status: .untagged)
-            DocumentService.archive.add(from: URL(fileURLWithPath: NSLocalizedString("test_file1", comment: "Simulator test data set")), size: 1427000, downloadStatus: .local, status: .tagged)
-            DocumentService.archive.add(from: URL(fileURLWithPath: NSLocalizedString("test_file2", comment: "Simulator test data set")), size: 232000, downloadStatus: .iCloudDrive, status: .tagged)
-            DocumentService.archive.add(from: fileURL, size: 500000, downloadStatus: .local, status: .tagged)
-            DocumentService.archive.add(from: URL(fileURLWithPath: NSLocalizedString("test_file3", comment: "Simulator test data set")), size: 764500, downloadStatus: .iCloudDrive, status: .tagged)
-        } else {
-            assertionFailure("Could not load resurces")
-        }
-        #endif
+//        #if targetEnvironment(simulator)
+//        // create simulator data set
+//        if let fileURL = Bundle.main.url(forResource: NSLocalizedString("test_resource_filename", comment: "Simulator test data set"), withExtension: "pdf") {
+//
+//            DocumentService.archive.add(from: fileURL, size: 1427000, downloadStatus: .local, status: .untagged)
+//            DocumentService.archive.add(from: URL(fileURLWithPath: NSLocalizedString("test_file1", comment: "Simulator test data set")), size: 1427000, downloadStatus: .local, status: .tagged)
+//            DocumentService.archive.add(from: URL(fileURLWithPath: NSLocalizedString("test_file2", comment: "Simulator test data set")), size: 232000, downloadStatus: .iCloudDrive, status: .tagged)
+//            DocumentService.archive.add(from: fileURL, size: 500000, downloadStatus: .local, status: .tagged)
+//            DocumentService.archive.add(from: URL(fileURLWithPath: NSLocalizedString("test_file3", comment: "Simulator test data set")), size: 764500, downloadStatus: .iCloudDrive, status: .tagged)
+//        } else {
+//            assertionFailure("Could not load resurces")
+//        }
+//        #endif
 
         updateDocuments(changed: DocumentService.archive.filterContentForSearchText(""))
     }
@@ -266,6 +266,11 @@ extension ArchiveViewController: UITableViewDataSource {
     }
 
     // MARK: optional stubs
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return CGFloat(84)
+    }
+
     func numberOfSections(in tableView: UITableView) -> Int {
         return currentSections.count
     }

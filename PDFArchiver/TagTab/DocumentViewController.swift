@@ -21,7 +21,7 @@ class DocumentViewController: UIViewController, Logging {
         let textChangeHandler: ((_ text: String) -> [String]) = { [weak self] (_ tagName: String) in
             let documentTags = Set(self?.document.tags.map { $0.name } ?? [])
             let tags = DocumentService.archive.getAvailableTags(with: [tagName])
-                .filter { !documentTags.contains($0.name) }
+                .filter { !documentTags.contains($0.name) && $0.name != Constants.documentTagPlaceholder }
                 .sorted { $0.count > $1.count }
                 .map { $0.name }
                 .prefix(3)

@@ -44,7 +44,12 @@ class PlaceholderViewController: UIViewController {
         imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         imageView.bottomAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor).isActive = true
-        imageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.33).isActive = true
+        let width1 = imageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.33)
+        width1.priority = .defaultHigh
+        width1.isActive = true
+        let width2 = imageView.widthAnchor.constraint(lessThanOrEqualToConstant: 150)
+        width2.priority = .required
+        width2.isActive = true
 
         label.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 10).isActive = true
         label.centerXAnchor.constraint(equalTo: imageView.centerXAnchor).isActive = true
