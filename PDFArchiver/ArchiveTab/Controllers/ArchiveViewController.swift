@@ -38,6 +38,9 @@ class ArchiveViewController: UIViewController, UITableViewDelegate, Logging {
         super.viewDidLoad()
         tableView.register(UINib(nibName: cellIdentifier, bundle: nil), forCellReuseIdentifier: cellIdentifier)
 
+        navigationController?.navigationBar.barStyle = .black
+        navigationController?.navigationBar.barTintColor = .paWhite
+
         // setup data delegate
         DocumentService.documentsQuery.masterViewControllerDelegate = self
 

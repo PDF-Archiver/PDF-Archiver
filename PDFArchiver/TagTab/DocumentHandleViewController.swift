@@ -108,6 +108,8 @@ class DocumentHandleViewController: UIViewController, Logging {
         super.viewDidLoad()
 
         title = NSLocalizedString("document_handle_view_controller.title", comment: "Title of the document handle view controller.")
+        navigationController?.navigationBar.barStyle = .black
+        navigationController?.navigationBar.barTintColor = .paWhite
         addVcAndView(placeholderViewController)
     }
 
