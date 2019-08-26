@@ -13,6 +13,11 @@ import PDFKit
 import UIKit
 import Vision
 
+enum PDFProcessingError: Error {
+    case unttaggedDocumentsPathNotFound
+    case pdfNotFound
+}
+
 class PDFProcessing: Operation {
 
     typealias ProgressHandler = ((Float) -> Void)
@@ -23,6 +28,7 @@ class PDFProcessing: Operation {
     private let progressHandler: ProgressHandler?
     private let confidenceThreshold = Float(0)
 
+    private(set) var error: Error?
     var documentId: UUID? {
         if case Mode.images(let documentId) = mode {
             return documentId
@@ -38,52 +44,49 @@ class PDFProcessing: Operation {
 
     override func main() {
 
-        if isCancelled {
-            return
-        }
-        guard let untaggedPath = StorageHelper.Paths.untaggedPath else { fatalError("Could not find untagged documents path.") }
-
-        // signal the start of the operation
-        let start = Date()
-        Log.info("Process a document.")
-        progressHandler?(Float(0))
-
-        let path: URL
-        switch mode {
-        case .images(let documentId):
-
-            // apply OCR and create a PDF
-            path = createPdf(of: documentId)
-        case .pdf(let inputPath):
-
-            // just use the input PDF
-            path = inputPath
-        }
-
-        if isCancelled {
-            return
-        }
-
-        guard let document = PDFDocument(url: path) else {
-            assertAndLog("Could not find a valid PDF in url.")
-            return
-        }
-
-        // generate filename by analysing the image
-        let filename = PDFProcessing.getFilename(from: document)
-        let filepath = untaggedPath.appendingPathComponent(filename)
-
         do {
-            try FileManager.default.createFolderIfNotExists(filepath.deletingLastPathComponent())
-            try FileManager.default.moveItem(at: path, to: filepath)
-        } catch let error {
-            assertAndLog("Could not move pdf file.", extra: ["error": error.localizedDescription])
-        }
+            if isCancelled {
+                return
+            }
+            guard let untaggedPath = StorageHelper.Paths.untaggedPath else { throw PDFProcessingError.unttaggedDocumentsPathNotFound }
+            try FileManager.default.createFolderIfNotExists(untaggedPath)
 
-        // log the processing time
-        let timeDiff = Date().timeIntervalSinceReferenceDate - start.timeIntervalSinceReferenceDate
-        Log.info("Processing completed", extra: ["processing_time": timeDiff])
-        progressHandler?(Float(1))
+            // signal the start of the operation
+            let start = Date()
+            Log.info("Process a document.")
+            progressHandler?(Float(0))
+
+            let path: URL
+            switch mode {
+            case .images(let documentId):
+
+                // apply OCR and create a PDF
+                try path = createPdf(of: documentId)
+            case .pdf(let inputPath):
+
+                // just use the input PDF
+                path = inputPath
+            }
+
+            if isCancelled {
+                return
+            }
+
+            guard let document = PDFDocument(url: path) else { throw PDFProcessingError.pdfNotFound }
+
+            // generate filename by analysing the image
+            let filename = PDFProcessing.getFilename(from: document)
+            let filepath = untaggedPath.appendingPathComponent(filename)
+
+            try FileManager.default.moveItem(at: path, to: filepath)
+
+            // log the processing time
+            let timeDiff = Date().timeIntervalSinceReferenceDate - start.timeIntervalSinceReferenceDate
+            Log.info("Processing completed", extra: ["processing_time": timeDiff])
+            progressHandler?(Float(1))
+        } catch let error {
+            self.error = error
+        }
     }
 
     // MARK: - Helper Functions
@@ -122,15 +125,12 @@ class PDFProcessing: Operation {
         return Document.createFilename(date: parsedDate, specification: specification, tags: newTags)
     }
 
-    private func createPdf(of documentId: UUID) -> URL {
+    private func createPdf(of documentId: UUID) throws -> URL {
         // initial setup
         guard let tempImagePath = StorageHelper.Paths.tempImagePath else { fatalError("Could not find temp image path.") }
-        do {
-            // check if the parent folder exists
-            try FileManager.default.createFolderIfNotExists(tempImagePath)
-        } catch {
-            fatalError("Could not create unttaged documents folder.")
-        }
+
+        // check if the parent folder exists
+        try FileManager.default.createFolderIfNotExists(tempImagePath)
 
         let contentPaths = (try? FileManager.default.contentsOfDirectory(at: tempImagePath, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])) ?? []
         let imageUrls = contentPaths.filter { $0.lastPathComponent.starts(with: documentId.uuidString) }
@@ -158,11 +158,7 @@ class PDFProcessing: Operation {
             }
 
             // text rectangle recognition
-            do {
-                try requestHandler.perform([textBoxRequests])
-            } catch {
-                assertAndLog("Failed to perform dectectTextBoxRequest.", extra: ["error": error.localizedDescription])
-            }
+            try requestHandler.perform([textBoxRequests])
 
             var textObservationResults = [TextObservationResult]()
             for (observationIndex, observation) in detectTextRectangleObservations.enumerated() {

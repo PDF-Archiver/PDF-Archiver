@@ -9,6 +9,15 @@
 import UIKit.UIAlertController
 
 extension UIAlertController {
+
+    static func create(with error: Error) {
+        DispatchQueue.main.async {
+            Log.error("Error in PDFProcessing!", extra: ["error": error])
+            let alertController = UIAlertController(error, preferredStyle: .alert)
+            UIApplication.shared.windows.first?.rootViewController?.present(alertController, animated: true, completion: nil)
+        }
+    }
+
     convenience init(_ error: LocalizedError, preferredStyle: UIAlertController.Style) {
         let title = error.errorDescription
         let message = [

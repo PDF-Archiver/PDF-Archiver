@@ -59,6 +59,10 @@ public class ImageConverter: Logging {
         let operation = PDFProcessing(of: mode) { progress in
             NotificationCenter.default.post(name: .imageProcessingQueue, object: progress)
         }
+        operation.completionBlock = {
+            guard let error = operation.error else { return }
+            UIAlertController.create(with: error)
+        }
         queue.addOperation(operation)
         totalDocumentCount.mutate { $0 += 1 }
     }
