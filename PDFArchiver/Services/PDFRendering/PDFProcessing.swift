@@ -74,8 +74,9 @@ class PDFProcessing: Operation {
         let filepath = untaggedPath.appendingPathComponent(filename)
 
         do {
+            try FileManager.default.createFolderIfNotExists(filepath.deletingLastPathComponent())
             try FileManager.default.moveItem(at: path, to: filepath)
-        } catch {
+        } catch let error {
             assertAndLog("Could not move pdf file.", extra: ["error": error.localizedDescription])
         }
 
@@ -160,8 +161,7 @@ class PDFProcessing: Operation {
             do {
                 try requestHandler.perform([textBoxRequests])
             } catch {
-                os_log("Failed to perform dectectTextBoxRequest with error: %@", log: log, type: .error, error.localizedDescription)
-                assertionFailure("Failed to perform dectectTextBoxRequest with error: \(error.localizedDescription)")
+                assertAndLog("Failed to perform dectectTextBoxRequest.", extra: ["error": error.localizedDescription])
             }
 
             var textObservationResults = [TextObservationResult]()
@@ -256,8 +256,8 @@ class PDFProcessing: Operation {
     }
 
     private func assertAndLog(_ message: String, extra: [String: Any] = [:]) {
-        assertionFailure(message)
         Log.error(message, extra: extra)
+        assertionFailure(message)
     }
 
     // MARK: - Helper Types
