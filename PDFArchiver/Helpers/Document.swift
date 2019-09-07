@@ -32,7 +32,7 @@ extension Document {
 
     func cleaned() -> Document {
         // cleanup the found document
-        if let tag = tags.first(where: { $0.name == Constants.documentTagPlaceholder }) {
+        if let tag = tags.first(where: { $0 == Constants.documentTagPlaceholder }) {
             tags.remove(tag)
         }
         if specification.contains(Constants.documentDescriptionPlaceholder) {

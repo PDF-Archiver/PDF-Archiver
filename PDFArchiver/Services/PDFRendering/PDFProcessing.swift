@@ -118,7 +118,7 @@ class PDFProcessing: Operation {
         } else {
 
             // only use tags that are already in the archive
-            let archiveTags = DocumentService.archive.getAvailableTags(with: []).map { $0.name }
+            let archiveTags = DocumentService.archive.getAvailableTags(with: [])
             newTags = Set(newTags.intersection(Set(archiveTags)).prefix(5))
         }
 

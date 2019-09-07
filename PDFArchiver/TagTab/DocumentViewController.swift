@@ -17,17 +17,15 @@ class DocumentViewController: UIViewController, Logging {
     private let pdfVC: PDFViewController
     private let dateDescriptionVC: DateDescriptionViewController
     private lazy var taggingVC: TaggingViewController = {
-        let tags = Set(document.tags.map { $0.name })
         let textChangeHandler: ((_ text: String) -> [String]) = { [weak self] (_ tagName: String) in
-            let documentTags = Set(self?.document.tags.map { $0.name } ?? [])
             let tags = DocumentService.archive.getAvailableTags(with: [tagName])
-                .filter { !documentTags.contains($0.name) && $0.name != Constants.documentTagPlaceholder }
-                .sorted { $0.count > $1.count }
-                .map { $0.name }
+                .subtracting(self?.document.tags ?? [])
+                .filter { $0 != Constants.documentTagPlaceholder }
+                .map { $0 }
                 .prefix(3)
             return Array(tags)
         }
-        return TaggingViewController(documentTags: tags, onDidChange: textChangeHandler)
+        return TaggingViewController(documentTags: document.tags, onDidChange: textChangeHandler)
     }()
 
     init?(document: Document) {
@@ -39,7 +37,7 @@ class DocumentViewController: UIViewController, Logging {
 
         // remove PDF Archive default decription and tags
         let description: String
-        if document.description.starts(with: Constants.documentDescriptionPlaceholder) {
+        if document.specification.lowercased().starts(with: Constants.documentDescriptionPlaceholder.lowercased()) {
             description = ""
         } else {
             description = document.specification
@@ -219,13 +217,6 @@ extension DocumentViewController: DateDescriptionViewControllerDelegate {
 
 extension DocumentViewController: TaggingViewControllerDelegate {
     func taggingViewController(updated tags: Set<String>) {
-        for tag in document.tags where !tags.contains(tag.name) {
-            DocumentService.archive.remove(tag, from: document)
-        }
-
-        let documentTags = Set(document.tags.map { $0.name })
-        for tag in tags.subtracting(documentTags) {
-            DocumentService.archive.add(tag: tag, to: document)
-        }
+        document.tags = tags
     }
 }

@@ -38,9 +38,6 @@ class ArchiveViewController: UIViewController, UITableViewDelegate, Logging {
         super.viewDidLoad()
         tableView.register(UINib(nibName: cellIdentifier, bundle: nil), forCellReuseIdentifier: cellIdentifier)
 
-        navigationController?.navigationBar.barStyle = .black
-        navigationController?.navigationBar.barTintColor = .paWhite
-
         // setup data delegate
         DocumentService.documentsQuery.masterViewControllerDelegate = self
 
@@ -49,12 +46,14 @@ class ArchiveViewController: UIViewController, UITableViewDelegate, Logging {
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "Search Documents"
         navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
         definesPresentationContext = true
 
         // Setup the Scope Bar
         searchController.searchBar.scopeButtonTitles = [allLocal, "2018", "2017", "2016"]
         searchController.searchBar.delegate = self
         searchController.searchBar.placeholder = NSLocalizedString("search-documents", comment: "UISearchBar placeholder")
+        searchController.searchBar.barStyle = .default
 
         // setup background view controller
         tableView.backgroundView = Bundle.main.loadNibNamed("LoadingBackgroundView", owner: nil, options: nil)?.first as? UIView

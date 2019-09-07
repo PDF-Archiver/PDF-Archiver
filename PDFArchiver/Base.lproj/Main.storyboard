@@ -259,7 +259,7 @@
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="iEm-pl-6Wd">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <color key="backgroundColor" name="White"/>
                         <sections>
                             <tableViewSection id="85o-IT-s19">
                                 <cells>
@@ -403,7 +403,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tmT-rj-nlC">
-                                <rect key="frame" x="0.0" y="44" width="375" height="685"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                                 <connections>
                                     <segue destination="N8I-6P-ayn" kind="embed" id="1u1-GS-rQR"/>
                                 </connections>
@@ -411,15 +411,14 @@
                         </subviews>
                         <color key="backgroundColor" name="White"/>
                         <constraints>
-                            <constraint firstItem="GDP-nm-ao5" firstAttribute="bottom" secondItem="tmT-rj-nlC" secondAttribute="bottom" id="Akx-2W-Xmp"/>
+                            <constraint firstAttribute="bottom" secondItem="tmT-rj-nlC" secondAttribute="bottom" id="Akx-2W-Xmp"/>
                             <constraint firstItem="tmT-rj-nlC" firstAttribute="leading" secondItem="GDP-nm-ao5" secondAttribute="leading" id="Tkl-Jl-7eJ"/>
-                            <constraint firstItem="tmT-rj-nlC" firstAttribute="top" secondItem="GDP-nm-ao5" secondAttribute="top" id="aQm-pr-0Fz"/>
+                            <constraint firstItem="tmT-rj-nlC" firstAttribute="top" secondItem="Hz2-Ab-omc" secondAttribute="top" id="Uxh-ZG-ZnA"/>
                             <constraint firstItem="GDP-nm-ao5" firstAttribute="trailing" secondItem="tmT-rj-nlC" secondAttribute="trailing" id="pOq-se-WUy"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="GDP-nm-ao5"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="Tag" image="tag" catalog="system" landscapeImage="tag" largeContentSizeImage="tag" id="Y0S-5H-vdU" userLabel="Scan"/>
-                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DLr-il-RGZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

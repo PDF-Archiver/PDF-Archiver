@@ -30,9 +30,9 @@ class DocumentTableViewCell: UITableViewCell {
 
                 // update the document tags
                 let image = UIImage(systemName: "tag")
-                tagListView.tokens = Array(document.tags)
-                    .sorted { $0.name < $1.name }
-                    .map { UISearchToken(icon: image, text: $0.name) }
+                tagListView.tokens = document.tags
+                    .sorted()
+                    .map { UISearchToken(icon: image, text: $0) }
 
                 // update download status
                 updateDownloadStatus(for: document)

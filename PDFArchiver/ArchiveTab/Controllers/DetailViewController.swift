@@ -62,9 +62,6 @@ class DetailViewController: UIViewController, Logging {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationController?.navigationBar.barStyle = .black
-        navigationController?.navigationBar.barTintColor = .paWhite
-
         // setup document view
         documentView.displayMode = .singlePageContinuous
         documentView.autoScales = true
