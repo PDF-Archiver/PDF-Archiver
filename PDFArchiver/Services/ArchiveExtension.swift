@@ -39,27 +39,27 @@ extension Archive: DocumentsQueryDelegate {
                 let status = Archive.getTaggingStatus(of: output.path)
 
                 // add document to archive
-                self.add(from: output.path, size: output.size, downloadStatus: output.status, status: status)
+                add(from: output.path, size: output.size, downloadStatus: output.status, status: status)
             }
         }
 
         // get first 10 untagged documents
-        let untaggedDocuments = self.get(scope: .all, searchterms: [], status: .untagged)
+        let untaggedDocuments = get(scope: .all, searchterms: [], status: .untagged)
         for document in Array(untaggedDocuments).sorted().reversed().prefix(10) where document.downloadStatus == .iCloudDrive {
             document.download()
         }
 
         // handle removed documents
-        let taggedDocuments = self.get(scope: .all, searchterms: [], status: .tagged)
+        let taggedDocuments = get(scope: .all, searchterms: [], status: .tagged)
         let removedDocuments = matchDocumentsFrom(tmpRemovedItems, availableDocuments: taggedDocuments.union(untaggedDocuments))
-        self.remove(removedDocuments)
+        remove(removedDocuments)
 
         // handle updated documents
         var updatedDocuments = Set<Document>()
         for tmpUpdatedItem in tmpUpdatedItems {
             if let output = try? parseMetadataItem(tmpUpdatedItem) {
                 let status = Archive.getTaggingStatus(of: output.path)
-                let updatedDocument = self.update(from: output.path, size: output.size, downloadStatus: output.status, status: status)
+                let updatedDocument = update(from: output.path, size: output.size, downloadStatus: output.status, status: status)
                 updatedDocuments.insert(updatedDocument)
             }
         }
@@ -73,9 +73,9 @@ extension Archive: DocumentsQueryDelegate {
 
         // add category to search terms
         if scope == NSLocalizedString("all", comment: "") {
-            return self.get(scope: .all, searchterms: searchTerms, status: .tagged)
+            return get(scope: .all, searchterms: searchTerms, status: .tagged)
         } else {
-            return self.get(scope: .year(year: scope), searchterms: searchTerms, status: .tagged)
+            return get(scope: .year(year: scope), searchterms: searchTerms, status: .tagged)
         }
     }
 
