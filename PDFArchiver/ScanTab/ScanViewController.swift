@@ -159,6 +159,7 @@ extension ScanViewController: VNDocumentCameraViewControllerDelegate {
         // You are responsible for dismissing the ImageScannerController
         controller.dismiss(animated: true)
 
+        // The scanned pages seemed to be reversed!
         var images = [UIImage]()
         for index in 0..<scan.pageCount {
             let image = scan.imageOfPage(at: index)
@@ -168,9 +169,9 @@ extension ScanViewController: VNDocumentCameraViewControllerDelegate {
         // validate subscription
         guard testAppUsagePermitted() else { return }
 
-        // save image
+        // save images in reversed order to fix the API output order
         do {
-            try StorageHelper.save(images)
+            try StorageHelper.save(images.reversed())
         } catch {
             assertionFailure("Could not save temp images with error:\n\(error.localizedDescription)")
             let alert = UIAlertController(title: NSLocalizedString("not-saved-images.title", comment: "Alert VC: Title"), message: error.localizedDescription, preferredStyle: .alert)
