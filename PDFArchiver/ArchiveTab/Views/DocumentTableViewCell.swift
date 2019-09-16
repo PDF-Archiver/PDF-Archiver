@@ -33,6 +33,7 @@ class DocumentTableViewCell: UITableViewCell {
                 tagListView.tokens = document.tags
                     .sorted()
                     .map { UISearchToken(icon: image, text: $0) }
+                tagListView.sizeToFit()
 
                 // update download status
                 updateDownloadStatus(for: document)
