@@ -59,7 +59,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
-	<true/>
+	<false/>
 	<key>NSCameraUsageDescription</key>
 	<string>$(PRODUCT_NAME) uses the camera to scan documents.</string>
 	<key>NSUbiquitousContainers</key>
@@ -99,5 +99,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>UIFileSharingEnabled</key>
+	<false/>
 </dict>
 </plist>
