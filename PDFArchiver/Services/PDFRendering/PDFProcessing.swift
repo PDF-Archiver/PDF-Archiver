@@ -132,8 +132,9 @@ class PDFProcessing: Operation {
         // check if the parent folder exists
         try FileManager.default.createFolderIfNotExists(tempImagePath)
 
-        let contentPaths = (try? FileManager.default.contentsOfDirectory(at: tempImagePath, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])) ?? []
-        let imageUrls = contentPaths.filter { $0.lastPathComponent.starts(with: documentId.uuidString) }
+        let imageUrls = (try? FileManager.default.contentsOfDirectory(at: tempImagePath, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])) ?? []
+            .filter { $0.lastPathComponent.starts(with: documentId.uuidString) }
+            .sorted { $0.lastPathComponent < $1.lastPathComponent }
 
         var textObservations = [TextObservation]()
         for (imageIndex, imageUrl) in imageUrls.enumerated() {

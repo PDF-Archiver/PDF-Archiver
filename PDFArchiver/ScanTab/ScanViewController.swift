@@ -171,7 +171,7 @@ extension ScanViewController: VNDocumentCameraViewControllerDelegate {
 
         // save images in reversed order to fix the API output order
         do {
-            try StorageHelper.save(images.reversed())
+            try StorageHelper.save(images)
         } catch {
             assertionFailure("Could not save temp images with error:\n\(error.localizedDescription)")
             let alert = UIAlertController(title: NSLocalizedString("not-saved-images.title", comment: "Alert VC: Title"), message: error.localizedDescription, preferredStyle: .alert)
