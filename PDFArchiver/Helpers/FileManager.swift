@@ -10,8 +10,8 @@ import Foundation
 
 extension FileManager {
     func createFolderIfNotExists(_ folder: URL) throws {
-        if !self.fileExists(atPath: folder.path, isDirectory: nil) {
-            try self.createDirectory(at: folder, withIntermediateDirectories: true, attributes: nil)
+        if !fileExists(atPath: folder.path, isDirectory: nil) {
+            try createDirectory(at: folder, withIntermediateDirectories: true, attributes: nil)
         }
     }
 }

@@ -34,10 +34,7 @@ enum StorageHelper {
     static func save(_ images: [UIImage]) throws {
 
         guard let tempImagePath = Paths.tempImagePath else { throw StorageError.noPathToSave }
-        let fileManager = FileManager.default
-        if !fileManager.fileExists(atPath: tempImagePath.path) {
-            try fileManager.createDirectory(at: tempImagePath, withIntermediateDirectories: true, attributes: nil)
-        }
+        try FileManager.default.createFolderIfNotExists(tempImagePath)
 
         let quality = CGFloat(UserDefaults.standard.pdfQuality.rawValue)
         let uuid = UUID()
@@ -46,8 +43,11 @@ enum StorageHelper {
             // get jpg data from image
             guard let data = image.jpegData(compressionQuality: quality) else { throw StorageError.jpgConversion }
 
+            // create a filename, e.g. 576951A0-88B9-44E4-B118-BDEC3556014A----0002.jpg
+            let filename = "\(uuid.uuidString)\(seperator)\(String(format: "%04d", index)).jpg"
+
             // Attempt to write the data
-            try data.write(to: tempImagePath.appendingPathComponent("\(uuid.uuidString)\(seperator)\(index).jpg"))
+            try data.write(to: tempImagePath.appendingPathComponent(filename))
         }
     }
 
