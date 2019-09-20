@@ -132,12 +132,16 @@ class PDFProcessing: Operation {
         // check if the parent folder exists
         try FileManager.default.createFolderIfNotExists(tempImagePath)
 
-        let imageUrls = (try? FileManager.default.contentsOfDirectory(at: tempImagePath, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])) ?? []
+        // STEP I: get all image urls
+        let allImageUrls = (try? FileManager.default.contentsOfDirectory(at: tempImagePath, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])) ?? []
+
+        // STEP II: filter and sort those urls in a second step to avoid shuffeling around pages
+        let sortedDocumentUrls = allImageUrls
             .filter { $0.lastPathComponent.starts(with: documentId.uuidString) }
-            .sorted { $0.absoluteString < $1.absoluteString }
+            .sorted { $0.lastPathComponent < $1.lastPathComponent }
 
         var textObservations = [TextObservation]()
-        for (imageIndex, imageUrl) in imageUrls.enumerated() {
+        for (imageIndex, imageUrl) in sortedDocumentUrls.enumerated() {
 
             guard let image = UIImage(contentsOfFile: imageUrl.path) else {
                 fatalError("Could not find image at \(imageUrl.path)")
@@ -197,7 +201,7 @@ class PDFProcessing: Operation {
                 }
 
                 // update the progress view
-                let progress = Float(Float(imageIndex) + Float(observationIndex) / Float(detectTextRectangleObservations.count)) / Float(imageUrls.count)
+                let progress = Float(Float(imageIndex) + Float(observationIndex) / Float(detectTextRectangleObservations.count)) / Float(sortedDocumentUrls.count)
                 let borderedProgress = min(max(progress, 0), 1)
                 progressHandler?(borderedProgress)
             }
@@ -214,8 +218,8 @@ class PDFProcessing: Operation {
         document.write(to: tempfilepath)
 
         // delete original images
-        for imageUrl in imageUrls {
-            try? FileManager.default.removeItem(at: imageUrl)
+        for sortedDocumentUrl in sortedDocumentUrls {
+            try? FileManager.default.removeItem(at: sortedDocumentUrl)
         }
 
         return tempfilepath
