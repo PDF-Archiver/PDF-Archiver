@@ -38,7 +38,7 @@ class TaggingViewController: UIViewController, Logging {
         }
 
         field.onDidAddTag = { tagsField, tag in
-            let tags = Set(tagsField.tags.map { $0.text.slugified(withSeparator: "") })
+            let tags = Set(tagsField.tags.map { $0.text.slugified(withSeparator: "").lowercased() })
             self.delegate?.taggingViewController(updated: tags)
             self.suggestedTagField.removeTag(tag.text)
         }
