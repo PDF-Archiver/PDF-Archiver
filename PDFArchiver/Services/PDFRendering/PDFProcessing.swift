@@ -134,7 +134,7 @@ class PDFProcessing: Operation {
 
         let imageUrls = (try? FileManager.default.contentsOfDirectory(at: tempImagePath, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])) ?? []
             .filter { $0.lastPathComponent.starts(with: documentId.uuidString) }
-            .sorted { $0.lastPathComponent < $1.lastPathComponent }
+            .sorted { $0.absoluteString < $1.absoluteString }
 
         var textObservations = [TextObservation]()
         for (imageIndex, imageUrl) in imageUrls.enumerated() {
