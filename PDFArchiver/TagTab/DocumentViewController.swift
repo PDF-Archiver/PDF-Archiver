@@ -45,7 +45,8 @@ class DocumentViewController: UIViewController, Logging {
 
         pdfVC = PDFViewController(pdfDocument: pdfDocument)
 
-        let shouldUpdateDate = document.date == nil
+        // update document date, if it is currently nil or is not the PDF Archiver naming schema, e.g. "2019-09-21--..."
+        let shouldUpdateDate = document.date == nil || !(document.filename.contains("--") && document.filename.contains("__"))
         let displayDate = document.date ?? Date()
         dateDescriptionVC = DateDescriptionViewController(date: displayDate,
                                                           description: description)
