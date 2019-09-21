@@ -128,6 +128,7 @@ extension Archive: DocumentsQueryDelegate {
                 documentStatus = .iCloudDrive
             }
         default:
+            Log.error("Unkown download status.", extra: ["status": downloadingStatus])
             fatalError("The downloading status '\(downloadingStatus)' was not handled correctly!")
         }
 
