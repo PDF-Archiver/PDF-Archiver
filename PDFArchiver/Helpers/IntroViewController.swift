@@ -17,7 +17,7 @@ class IntroViewController: UIViewController {
                            title: NSLocalizedString("intro.scan.title", comment: "Intro: Scan Title"),
                            description: NSLocalizedString("intro.scan.description", comment: "Intro: Scan Description"),
                            pageIcon: UIImage(systemName: "doc.text.viewfinder")!.imageWithBorder(width: 7, color: .clear)!,
-                           color: .paWhite,
+                           color: .paBackground,
                            titleColor: .paDarkRed,
                            descriptionColor: .paDarkGray,
                            titleFont: .introTitle,
@@ -27,7 +27,7 @@ class IntroViewController: UIViewController {
                            title: NSLocalizedString("intro.tag.title", comment: "Intro: Tag Title"),
                            description: NSLocalizedString("intro.tag.description", comment: "Intro: Tag Description"),
                            pageIcon: UIImage(systemName: "tag")!.imageWithBorder(width: 7, color: .clear)!,
-                           color: .paWhite,
+                           color: .paBackground,
                            titleColor: .paDarkRed,
                            descriptionColor: .paDarkGray,
                            titleFont: .introTitle,
@@ -37,7 +37,7 @@ class IntroViewController: UIViewController {
                            title: NSLocalizedString("intro.find.title", comment: "Intro: Find Title"),
                            description: NSLocalizedString("intro.find.description", comment: "Intro: Find Description"),
                            pageIcon: UIImage(systemName: "archivebox")!.imageWithBorder(width: 7, color: .clear)!,
-                           color: .paWhite,
+                           color: .paBackground,
                            titleColor: .paDarkRed,
                            descriptionColor: .paDarkGray,
                            titleFont: .introTitle,
@@ -47,7 +47,7 @@ class IntroViewController: UIViewController {
                            title: NSLocalizedString("intro.subscription.title", comment: "Intro: Subscription Title"),
                            description: NSLocalizedString("intro.subscription.description", comment: "Intro: Subscription Description"),
                            pageIcon: UIImage(systemName: "dollarsign.circle")!.imageWithBorder(width: 0, color: .clear)!,
-                           color: .paWhite,
+                           color: .paBackground,
                            titleColor: .paDarkRed,
                            descriptionColor: .paDarkGray,
                            titleFont: .introTitle,
@@ -57,7 +57,7 @@ class IntroViewController: UIViewController {
                            title: NSLocalizedString("intro.last.title", comment: "Intro: Last Page Title"),
                            description: NSLocalizedString("intro.last.description", comment: "Intro: Last Page Description"),
                            pageIcon: UIImage(systemName: "chevron.right.circle")!.imageWithBorder(width: 0, color: .clear)!,
-                           color: .paWhite,
+                           color: .paBackground,
                            titleColor: .paDarkRed,
                            descriptionColor: .paDarkGray,
                            titleFont: .introTitle,
@@ -81,12 +81,12 @@ class IntroViewController: UIViewController {
         super.viewDidLoad()
 
         let onboarding = PaperOnboarding(pageViewBottomConstant: 100)
-        onboarding.backgroundColor = .paWhite
+        onboarding.backgroundColor = .paBackground
         onboarding.delegate = self
         onboarding.dataSource = self
         onboarding.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(onboarding)
-        view.backgroundColor = .paWhite
+        view.backgroundColor = .paBackground
 
         // add constraints
         onboarding.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0).isActive = true

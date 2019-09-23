@@ -32,7 +32,7 @@ class PDFViewController: UIViewController {
         pdfView.displayMode = .singlePageContinuous
         pdfView.autoScales = true
         pdfView.interpolationQuality = .low
-        pdfView.backgroundColor = .paLightGray
+        pdfView.backgroundColor = .paPDFBackground
     }
 
     override func viewWillAppear(_ animated: Bool) {

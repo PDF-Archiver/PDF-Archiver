@@ -73,6 +73,7 @@ class DocumentViewController: UIViewController, Logging {
         super.viewDidLoad()
 
         // basic setup
+        stackView.spacing = 0.0
         setupViews()
         setupConstraints()
         hideKeyboardWhenTappedAround()

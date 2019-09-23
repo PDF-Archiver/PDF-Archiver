@@ -23,7 +23,7 @@
                                 </connections>
                             </containerView>
                         </subviews>
-                        <color key="backgroundColor" name="White"/>
+                        <color key="backgroundColor" name="Background"/>
                         <constraints>
                             <constraint firstItem="iSs-31-9JD" firstAttribute="leading" secondItem="plH-CR-DnL" secondAttribute="leading" id="6Vb-NY-e0W"/>
                             <constraint firstItem="plH-CR-DnL" firstAttribute="trailing" secondItem="iSs-31-9JD" secondAttribute="trailing" id="CXZ-dJ-bbj"/>
@@ -53,7 +53,7 @@
                                 </connections>
                             </containerView>
                         </subviews>
-                        <color key="backgroundColor" name="White"/>
+                        <color key="backgroundColor" name="Background"/>
                         <constraints>
                             <constraint firstItem="RMn-TJ-20F" firstAttribute="top" secondItem="hQr-UH-kcB" secondAttribute="top" id="N3w-VC-d5D"/>
                             <constraint firstItem="RMn-TJ-20F" firstAttribute="leading" secondItem="hQr-UH-kcB" secondAttribute="leading" id="Vhb-LU-j2r"/>
@@ -103,7 +103,7 @@
                                 </connections>
                             </containerView>
                         </subviews>
-                        <color key="backgroundColor" name="White"/>
+                        <color key="backgroundColor" name="Background"/>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="tmT-rj-nlC" secondAttribute="bottom" id="Akx-2W-Xmp"/>
                             <constraint firstItem="tmT-rj-nlC" firstAttribute="leading" secondItem="GDP-nm-ao5" secondAttribute="leading" id="Tkl-Jl-7eJ"/>
@@ -290,6 +290,9 @@
         <image name="archivebox" catalog="system" width="64" height="54"/>
         <image name="doc.text.viewfinder" catalog="system" width="64" height="58"/>
         <image name="tag" catalog="system" width="64" height="58"/>
+        <namedColor name="Background">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </namedColor>
         <namedColor name="DarkGray">
             <color red="0.98000001907348633" green="0.98000001907348633" blue="0.98000001907348633" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14854.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14806.4"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -16,7 +16,7 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
-            <rect key="frame" x="0.0" y="0.0" width="443" height="176"/>
+            <rect key="frame" x="0.0" y="0.0" width="443" height="178"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" translatesAutoresizingMaskIntoConstraints="NO" id="AqT-z3-fKT">
@@ -29,18 +29,17 @@
                     </connections>
                 </datePicker>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9rp-i5-uqy">
-                    <rect key="frame" x="0.0" y="125" width="443" height="1"/>
+                    <rect key="frame" x="0.0" y="124" width="443" height="1"/>
                     <color key="backgroundColor" name="PlaceholderGray"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="1" id="JRf-BW-H8s" customClass="HairlineConstraint" customModule="PDFArchiver" customModuleProvider="target"/>
                     </constraints>
                 </view>
                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Description" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="zEb-ls-9OY" customClass="SkyFloatingLabelTextField" customModule="SkyFloatingLabelTextField">
-                    <rect key="frame" x="23" y="131" width="397" height="45"/>
+                    <rect key="frame" x="23" y="129" width="397" height="45"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="45" id="auc-h7-A2y"/>
                     </constraints>
-                    <nil key="textColor"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <textInputTraits key="textInputTraits"/>
                     <userDefinedRuntimeAttributes>
@@ -67,21 +66,21 @@
                     </connections>
                 </textField>
             </subviews>
-            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <color key="backgroundColor" name="SecondaryBackground"/>
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="9rp-i5-uqy" secondAttribute="trailing" id="0R2-6R-Q6U"/>
                 <constraint firstItem="AqT-z3-fKT" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="2Hs-rk-N8d"/>
                 <constraint firstItem="AqT-z3-fKT" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="5k8-yu-kxC"/>
                 <constraint firstAttribute="trailing" secondItem="zEb-ls-9OY" secondAttribute="trailing" constant="23" id="85b-We-gsy"/>
-                <constraint firstItem="zEb-ls-9OY" firstAttribute="top" secondItem="9rp-i5-uqy" secondAttribute="bottom" constant="5" id="EZN-wI-53u"/>
+                <constraint firstItem="zEb-ls-9OY" firstAttribute="top" secondItem="9rp-i5-uqy" secondAttribute="bottom" constant="4" id="EZN-wI-53u"/>
                 <constraint firstItem="9rp-i5-uqy" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="LJQ-fP-VKO"/>
                 <constraint firstItem="zEb-ls-9OY" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="23" id="RUS-pM-4mN"/>
-                <constraint firstItem="9rp-i5-uqy" firstAttribute="top" secondItem="AqT-z3-fKT" secondAttribute="bottom" constant="5" id="VYD-vN-oNq"/>
+                <constraint firstItem="9rp-i5-uqy" firstAttribute="top" secondItem="AqT-z3-fKT" secondAttribute="bottom" constant="4" id="VYD-vN-oNq"/>
                 <constraint firstAttribute="trailing" secondItem="AqT-z3-fKT" secondAttribute="trailing" constant="20" id="WlU-BG-RPT"/>
-                <constraint firstAttribute="bottom" secondItem="zEb-ls-9OY" secondAttribute="bottom" id="jdC-uO-CPA"/>
+                <constraint firstAttribute="bottom" secondItem="zEb-ls-9OY" secondAttribute="bottom" constant="4" id="jdC-uO-CPA"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="152.89855072463769" y="106.80803571428571"/>
+            <point key="canvasLocation" x="152.89855072463769" y="108.48214285714285"/>
         </view>
     </objects>
     <resources>
@@ -92,7 +91,10 @@
             <color red="0.81568627450980391" green="0.82745098039215681" blue="0.85098039215686272" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
         <namedColor name="PlaceholderGray">
-            <color red="0.7803921568627451" green="0.7803921568627451" blue="0.80392156862745101" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.40000000596046448" green="0.40000000596046448" blue="0.40000000596046448" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="SecondaryBackground">
+            <color red="0.10999999940395355" green="0.10999999940395355" blue="0.11800000071525574" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>

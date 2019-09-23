@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14854.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14806.4"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -20,7 +20,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Document Tags" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yaZ-7S-N5H">
-                    <rect key="frame" x="25" y="0.0" width="408" height="18"/>
+                    <rect key="frame" x="25" y="4" width="408" height="18"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="18" id="yVa-jW-lMA"/>
                     </constraints>
@@ -29,14 +29,14 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XWq-Yc-jXb" userLabel="Document Tags">
-                    <rect key="frame" x="15" y="21" width="428" height="184"/>
+                    <rect key="frame" x="15" y="25" width="428" height="176"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="30" id="nRj-U6-7OA"/>
                     </constraints>
                 </view>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="More Suggestions" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DwP-KA-tHq">
-                    <rect key="frame" x="25" y="216" width="408" height="18"/>
+                    <rect key="frame" x="25" y="212" width="408" height="18"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="18" id="68j-sG-oux"/>
                     </constraints>
@@ -45,14 +45,14 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <view contentMode="scaleToFill" placeholderIntrinsicWidth="428" placeholderIntrinsicHeight="120" translatesAutoresizingMaskIntoConstraints="NO" id="eBy-UA-0iG" userLabel="Suggested Tags">
-                    <rect key="frame" x="15" y="237" width="428" height="120"/>
+                    <rect key="frame" x="15" y="233" width="428" height="120"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstAttribute="height" relation="greaterThanOrEqual" priority="750" constant="30" id="Tml-Aa-fVY"/>
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QxQ-Eu-VdB">
-                    <rect key="frame" x="0.0" y="210" width="458" height="1"/>
+                    <rect key="frame" x="0.0" y="206" width="458" height="1"/>
                     <color key="backgroundColor" name="PlaceholderGray"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="1" id="BTB-Eb-K5g" customClass="HairlineConstraint" customModule="PDFArchiver" customModuleProvider="target"/>
@@ -65,12 +65,12 @@
                 <constraint firstItem="XWq-Yc-jXb" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="15" id="FwN-nv-qGW"/>
                 <constraint firstItem="eBy-UA-0iG" firstAttribute="top" secondItem="DwP-KA-tHq" secondAttribute="bottom" constant="3" id="Loz-Um-6mP"/>
                 <constraint firstItem="yaZ-7S-N5H" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="25" id="RYp-Ny-CwY"/>
-                <constraint firstItem="yaZ-7S-N5H" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="XnN-Z6-JDx"/>
+                <constraint firstItem="yaZ-7S-N5H" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="4" id="XnN-Z6-JDx"/>
                 <constraint firstAttribute="trailing" secondItem="XWq-Yc-jXb" secondAttribute="trailing" constant="15" id="cKy-Hf-ZKW"/>
                 <constraint firstItem="QxQ-Eu-VdB" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="f1o-4S-Vqg"/>
                 <constraint firstAttribute="trailing" secondItem="eBy-UA-0iG" secondAttribute="trailing" constant="15" id="gh1-9X-Ykw"/>
                 <constraint firstAttribute="trailing" secondItem="QxQ-Eu-VdB" secondAttribute="trailing" id="jDB-g0-ACe"/>
-                <constraint firstAttribute="bottom" secondItem="eBy-UA-0iG" secondAttribute="bottom" id="kJo-Eo-YEd"/>
+                <constraint firstAttribute="bottom" secondItem="eBy-UA-0iG" secondAttribute="bottom" constant="4" id="kJo-Eo-YEd"/>
                 <constraint firstAttribute="trailing" secondItem="yaZ-7S-N5H" secondAttribute="trailing" constant="25" id="l5D-t8-0XH"/>
                 <constraint firstItem="eBy-UA-0iG" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="15" id="nz1-5a-uIa"/>
                 <constraint firstItem="XWq-Yc-jXb" firstAttribute="top" secondItem="yaZ-7S-N5H" secondAttribute="bottom" constant="3" id="rT6-Nv-qHB"/>
@@ -87,7 +87,7 @@
             <color red="0.81568627450980391" green="0.82745098039215681" blue="0.85098039215686272" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
         <namedColor name="PlaceholderGray">
-            <color red="0.7803921568627451" green="0.7803921568627451" blue="0.80392156862745101" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.40000000596046448" green="0.40000000596046448" blue="0.40000000596046448" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>

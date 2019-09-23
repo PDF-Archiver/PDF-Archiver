@@ -96,7 +96,7 @@
                                 </connections>
                             </tableView>
                         </subviews>
-                        <color key="backgroundColor" name="White"/>
+                        <color key="backgroundColor" name="Background"/>
                         <constraints>
                             <constraint firstItem="x1X-8b-rb7" firstAttribute="top" secondItem="gT4-6C-k5d" secondAttribute="top" id="a61-mq-2hF"/>
                             <constraint firstItem="sAk-k2-4qg" firstAttribute="top" secondItem="x1X-8b-rb7" secondAttribute="bottom" id="i8W-fX-6zK"/>
@@ -134,11 +134,11 @@
         </scene>
     </scenes>
     <resources>
-        <namedColor name="White">
-            <color red="0.066666666666666666" green="0.10196078431372549" blue="0.14117647058823529" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+        <namedColor name="Background">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </namedColor>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="udr-wF-y1K"/>
+        <segue reference="Tll-UG-LXB"/>
     </inferredMetricsTieBreakers>
 </document>

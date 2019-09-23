@@ -18,6 +18,10 @@ extension UIColor {
     static var paWhite: UIColor { return UIColor(named: "White")! }
     static var paDarkRed: UIColor { return UIColor(named: "DarkRed")! }
     static var paLightRed: UIColor { return UIColor(named: "LightRed")! }
+
+    static var paPDFBackground: UIColor { return UIColor(named: "PDFBackground")! }
+    static var paBackground: UIColor { return UIColor(named: "Background")! }
+    static var paSecondaryBackground: UIColor { return UIColor(named: "SecondaryBackground")! }
     static var paKeyboardBackground: UIColor { return UIColor(named: "KeyboardBackground")! }
     static var paPlaceholderGray: UIColor { return UIColor(named: "PlaceholderGray")! }
 }

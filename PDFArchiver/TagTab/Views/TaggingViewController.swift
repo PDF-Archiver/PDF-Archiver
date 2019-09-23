@@ -96,6 +96,8 @@ class TaggingViewController: UIViewController, Logging {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        view.backgroundColor = .paSecondaryBackground
+
         documentTagsView.addSubview(documentTagField)
         TaggingViewController.customise(documentTagField, in: documentTagsView)
 

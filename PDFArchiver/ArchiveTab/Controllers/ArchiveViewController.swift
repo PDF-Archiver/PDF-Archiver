@@ -350,7 +350,7 @@ extension ArchiveViewController: UITableViewDataSource {
 
         // change colors
         view.textLabel?.textColor = .paDarkRed
-        view.backgroundView?.backgroundColor = .paWhite
+        view.backgroundView?.backgroundColor = .paBackground
     }
 
     private func delete(_ document: Document) {

@@ -66,7 +66,7 @@ class DetailViewController: UIViewController, Logging {
         documentView.displayMode = .singlePageContinuous
         documentView.autoScales = true
         documentView.interpolationQuality = .low
-        documentView.backgroundColor = .paLightGray
+        documentView.backgroundColor = .paPDFBackground
 
         configureView()
     }

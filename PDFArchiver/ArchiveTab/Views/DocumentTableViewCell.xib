@@ -102,7 +102,7 @@
                     <constraint firstItem="iFq-pY-ZNZ" firstAttribute="top" secondItem="EHZ-TF-9ku" secondAttribute="bottom" constant="4" id="maU-jY-zTN"/>
                 </constraints>
             </tableViewCellContentView>
-            <color key="backgroundColor" name="White"/>
+            <color key="backgroundColor" name="SecondaryBackground"/>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="dateLabel" destination="EHZ-TF-9ku" id="khn-cM-iOd"/>
@@ -120,8 +120,8 @@
         <namedColor name="DarkGray">
             <color red="0.98000001907348633" green="0.98000001907348633" blue="0.98000001907348633" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
-        <namedColor name="White">
-            <color red="0.066666666666666666" green="0.10196078431372549" blue="0.14117647058823529" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+        <namedColor name="SecondaryBackground">
+            <color red="0.10999999940395355" green="0.10999999940395355" blue="0.11800000071525574" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>
