@@ -18,5 +18,7 @@ plugin 'cocoapods-keys', {
   :project => "PDFArchiver",
   :keys => [
     "AppstoreConnectSharedSecret",
-    "SentryDSN"
+    "SentryDSN",
+    "LogUser",
+    "LogPassword"
   ]}

@@ -7,13 +7,17 @@
 //
 // swiftlint:disable force_unwrapping
 
+import Keys
 import LoggingKit
 import LogModel
 import UIKit
 
 enum Log {
 
-    private static let shared = Logger(endpoint: Log.endpoint, shouldSend: Log.shouldSend)
+    private static let shared = Logger(endpoint: Log.endpoint,
+                                       username: PDFArchiverKeys().logUser,
+                                       password: PDFArchiverKeys().logPassword,
+                                       shouldSend: Log.shouldSend)
     private static let operationQueue = OperationQueue()
     private static let environment = AppEnvironment.get()
     private static let endpoint: URL = {
