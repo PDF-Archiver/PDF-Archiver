@@ -22,18 +22,13 @@ class SubscriptionViewController: UIViewController, Logging {
         super.init(nibName: nil, bundle: nil)
 
         // adapt to iOS 13 presentation defaults
-        modalPresentationStyle = .fullScreen
+        modalPresentationStyle = .overCurrentContext
         isModalInPresentation = true
     }
 
     @available(*, unavailable)
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    override var modalPresentationStyle: UIModalPresentationStyle {
-        get { return .overCurrentContext }
-        set { print("value that should be set: \(newValue)") }
     }
 
     override func viewDidLoad() {
