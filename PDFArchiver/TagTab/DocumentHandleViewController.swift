@@ -22,7 +22,7 @@ class DocumentHandleViewController: UIViewController, Logging {
 
     @IBAction private func trashButtonTapped(_ sender: UIBarButtonItem) {
 
-        Log.info("Trash a document.")
+        Log.send(.info, "Trash a document.")
 
         let deleteActionHandler: (UIAlertAction) -> Void = {(_) in
             guard let document = self.documentViewController?.document else { return }
@@ -60,7 +60,7 @@ class DocumentHandleViewController: UIViewController, Logging {
 
     @IBAction private func saveButtonTapped(_ sender: UIBarButtonItem) {
 
-        Log.info("Save a document in archive.")
+        Log.send(.info, "Save a document in archive.")
 
         guard let document = documentViewController?.document else { return }
         guard let path = StorageHelper.Paths.archivePath else {

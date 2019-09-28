@@ -1,38 +1,48 @@
 //
-//  Logger.swift
+//  Log.swift
 //  PDFArchiver
 //
-//  Created by Julian Kahnert on 25.06.19.
+//  Created by Julian Kahnert on 28.09.19.
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
+// swiftlint:disable force_unwrapping
 
-import Foundation
-import Sentry
+import LoggingKit
+import LogModel
+import UIKit
 
 enum Log {
 
-    private static let shared = Client.shared
-
-    static func info(_ message: String, extra data: [String: Any] = [:], file: String = #file, line: Int = #line, function: String = #function) {
-        guard Environment.get() != .develop,
-            let event = Event(.info, msg: message, extra: data, file: file, line: line, function: function) else { return }
-        shared?.send(event: event, completion: nil)
+    private static let shared = Logger(endpoint: Log.endpoint, shouldSend: Log.shouldSend)
+    private static let operationQueue = OperationQueue()
+    private static let environment = AppEnvironment.get()
+    private static let endpoint = URL(string: "https://logs.pdf-archiver.io/v1/addBatch")!
+    private static let shouldSend: (() -> Bool) = {
+        return environment != .develop
     }
 
-    static func error(_ message: String, extra data: [String: Any] = [:], file: String = #file, line: Int = #line, function: String = #function) {
-        guard Environment.get() != .develop,
-            let event = Event(.error, msg: message, extra: data, file: file, line: line, function: function) else { return }
-        shared?.send(event: event, completion: nil)
+    static func send(_ level: LoggerLevel, _ message: String, extra data: [String: String] = [:], file: String = #file, line: Int = #line, function: String = #function) {
+        shared.send(level, message, extra: data, file: file, line: line, function: function)
+    }
+
+    static func sendOrPersistInBackground(_ application: UIApplication) {
+
+        // source: https://developer.apple.com/videos/play/wwdc2019/707
+        let operation = SendOperation()
+        let identifier = application.beginBackgroundTask {
+            operation.cancel()
+        }
+        operation.completionBlock = {
+            application.endBackgroundTask(identifier)
+        }
+        operationQueue.addOperation(operation)
     }
 }
 
-extension Event {
-    fileprivate convenience init?(_ level: SentrySeverity, msg message: String, extra: [String: Any], file: String, line: Int, function: String) {
-        self.init(level: level)
-        self.message = message
-        self.extra = extra
-        self.extra?["file"] = file
-        self.extra?["line"] = line
-        self.extra?["function"] = function
+extension Log {
+    fileprivate class SendOperation: Operation {
+        override func main() {
+            Log.shared.sendOrPersist()
+        }
     }
 }

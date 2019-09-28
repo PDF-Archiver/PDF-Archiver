@@ -8,6 +8,7 @@
 
 import ArchiveLib
 import Keys
+import LogModel
 import os.log
 import Sentry
 import UIKit
@@ -21,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
 
-        Log.info("Handling shared document", extra: ["filetype": url.pathExtension])
+        Log.send(.info, "Handling shared document", extra: ["filetype": url.pathExtension])
 
         DispatchQueue.global(qos: .userInitiated).async {
             do {
@@ -30,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 url.stopAccessingSecurityScopedResource()
             } catch let error {
                 url.stopAccessingSecurityScopedResource()
-                Log.error("Unable to handle file.", extra: ["filetype": url.pathExtension, "error": error.localizedDescription])
+                Log.send(.error, "Unable to handle file.", extra: ["filetype": url.pathExtension, "error": error.localizedDescription])
                 try? FileManager.default.removeItem(at: url)
                 try? FileManager.default.removeItem(at: url.deletingLastPathComponent())
 
@@ -47,6 +48,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         DispatchQueue.global().async {
+
+            // start logging service by sending old events (if needed)
+            Log.sendOrPersistInBackground(application)
+
             // start IAP service
             _ = IAP.service
 
@@ -59,8 +64,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         do {
             Client.shared = try Client(options: [
                 "dsn": PDFArchiverKeys().sentryDSN,
-                "environment": Environment.get().rawValue,
-                "release": Environment.getVersion()
+                "environment": AppEnvironment.get().rawValue,
+                "release": AppEnvironment.getFullVersion()
             ])
             try Client.shared?.startCrashHandler()
             Client.shared?.enableAutomaticBreadcrumbTracking()
@@ -87,5 +92,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.paDarkGray]
 
         return true
+    }
+
+    func applicationWillResignActive(_ application: UIApplication) {
+
+        // send logs in background
+        Log.sendOrPersistInBackground(application)
     }
 }

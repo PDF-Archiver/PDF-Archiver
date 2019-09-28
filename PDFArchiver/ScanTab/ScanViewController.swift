@@ -28,7 +28,7 @@ class ScanViewController: UIViewController, Logging {
             alertCameraAccessNeeded()
         } else {
 
-            Log.info("Start scanning a document.")
+            Log.send(.info, "Start scanning a document.")
             scannerViewController = VNDocumentCameraViewController()
 
             guard let scannerViewController = scannerViewController else { return }
@@ -153,7 +153,7 @@ extension ScanViewController: VNDocumentCameraViewControllerDelegate {
 
         ImageConverter.shared.startProcessing()
 
-        Log.info("Did finish scanning with result.")
+        Log.send(.info, "Did finish scanning with result.")
 
         // The user successfully scanned an image, which is available in the ImageScannerResults
         // You are responsible for dismissing the ImageScannerController
@@ -198,7 +198,7 @@ extension ScanViewController: VNDocumentCameraViewControllerDelegate {
 
         // You are responsible for carefully handling the error
         os_log("Selected Document: %@", log: ScanViewController.log, type: .error, error.localizedDescription)
-        Log.error("Scan did fail with error.", extra: ["error": error.localizedDescription])
+        Log.send(.error, "Scan did fail with error.", extra: ["error": error.localizedDescription])
         controller.dismiss(animated: true)
     }
 }

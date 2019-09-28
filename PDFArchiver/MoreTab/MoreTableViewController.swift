@@ -38,46 +38,46 @@ class MoreTableViewController: UITableViewController {
             return
 
         case showIntroCell:
-            Log.info("More table view show: intro")
+            Log.send(.info, "More table view show: intro")
             let controller = IntroViewController()
             present(controller, animated: true, completion: nil)
 
         case showPermissionsCell:
-            Log.info("More table view show: app permissions")
+            Log.send(.info, "More table view show: app permissions")
             guard let link = URL(string: UIApplication.openSettingsURLString) else { fatalError("Could not find settings url!") }
             UIApplication.shared.open(link)
 
         case resetAppCell:
-            Log.info("More table view show: reset app")
+            Log.send(.info, "More table view show: reset app")
             resetApp()
 
         case manageSubscriptionCell:
-            Log.info("More table view show: manage subscription")
+            Log.send(.info, "More table view show: manage subscription")
             guard let link = URL(string: "https://apps.apple.com/account/subscriptions") else { fatalError("Could not parse subscription url.") }
             UIApplication.shared.open(link)
 
         case aboutCell:
-            Log.info("More table view show: About me")
+            Log.send(.info, "More table view show: About me")
             let controller = AboutMeViewController()
             navigationController?.pushViewController(controller, animated: true)
 
         case macOSAppCell:
-            Log.info("More table view show: macOS App")
+            Log.send(.info, "More table view show: macOS App")
             guard let link = URL(string: "https://macos.pdf-archiver.io") else { fatalError("Could not parse macOS app url.") }
             UIApplication.shared.open(link)
 
         case privacyPolicyCell:
-            Log.info("More table view show: privacy")
+            Log.send(.info, "More table view show: privacy")
             guard let link = URL(string: NSLocalizedString("MoreTableViewController.privacyPolicyCell.url", comment: "")) else { fatalError("Could not parse termsOfUseCell url.") }
             UIApplication.shared.open(link)
 
         case imprintCell:
-            Log.info("More table view show: imprint")
+            Log.send(.info, "More table view show: imprint")
             guard let link = URL(string: NSLocalizedString("MoreTableViewController.imprintCell.url", comment: "")) else { fatalError("Could not parse privacyPolicyCell url.") }
             UIApplication.shared.open(link)
 
         case supportCell:
-            Log.info("More table view show: support")
+            Log.send(.info, "More table view show: support")
             if MFMailComposeViewController.canSendMail() {
                 let mail = MFMailComposeViewController()
                 mail.mailComposeDelegate = self
@@ -104,14 +104,14 @@ class MoreTableViewController: UITableViewController {
         if let tempImagePath = StorageHelper.Paths.tempImagePath {
             try? FileManager.default.removeItem(at: tempImagePath)
         } else {
-            Log.error("Could not find tempImagePath.")
+            Log.send(.error, "Could not find tempImagePath.")
         }
 
         // remove all user defaults
         if let bundleIdentifier = Bundle.main.bundleIdentifier {
             UserDefaults.standard.removePersistentDomain(forName: bundleIdentifier)
         } else {
-            Log.error("Bundle Identifiert not found.")
+            Log.send(.error, "Bundle Identifiert not found.")
         }
 
         let alert = UIAlertController(title: NSLocalizedString("MoreTableViewController.reset_app.title", comment: ""),
@@ -124,7 +124,7 @@ class MoreTableViewController: UITableViewController {
 
 extension MoreTableViewController: MFMailComposeViewControllerDelegate {
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
-        Log.info("Did finish MailComposeViewController.", extra: ["result": result, "error": error?.localizedDescription ?? ""])
+        Log.send(.info, "Did finish MailComposeViewController.", extra: ["result": String(result.rawValue), "error": error?.localizedDescription ?? ""])
         controller.dismiss(animated: true)
     }
 }

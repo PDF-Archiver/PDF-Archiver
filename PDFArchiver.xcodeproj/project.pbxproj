@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -14,8 +14,6 @@
 		171E0C8A1B8E5B84001E6242 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171E0C881B8E5B84001E6242 /* LaunchScreen.storyboard */; };
 		A301A75621496992003EA382 /* DocumentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A301A75421496992003EA382 /* DocumentTableViewCell.swift */; };
 		A301A75721496992003EA382 /* DocumentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A301A75521496992003EA382 /* DocumentTableViewCell.xib */; };
-		A306BCE622DE356F0051D745 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A306BCE522DE356F0051D745 /* Environment.swift */; };
-		A307B05622C28C1100C9A348 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = A307B05522C28C1100C9A348 /* Log.swift */; };
 		A30D767722BF914B00862224 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30D767622BF914B00862224 /* MainTabBarController.swift */; };
 		A31263E2217B75DC00ACAFA4 /* LoadingBackgroundView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A31263E4217B75DC00ACAFA4 /* LoadingBackgroundView.xib */; };
 		A314A29B225542360099681D /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A314A29A225542360099681D /* CustomButton.swift */; };
@@ -34,6 +32,8 @@
 		A363E858225D30D3007BE48B /* ArchiveLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A335D4BA223D0B3400443A53 /* ArchiveLib.framework */; };
 		A363E859225D30D3007BE48B /* ArchiveLib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A335D4BA223D0B3400443A53 /* ArchiveLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A3645422230C443D002042AC /* test-ocr-data.png in Resources */ = {isa = PBXBuildFile; fileRef = A388C8262235330F000D52CB /* test-ocr-data.png */; };
+		A36611BE233FDB460092DB19 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36611BD233FDB460092DB19 /* Log.swift */; };
+		A36611C4233FDDB40092DB19 /* LoggingKit in Frameworks */ = {isa = PBXBuildFile; productRef = A36611C3233FDDB40092DB19 /* LoggingKit */; };
 		A36AE3A822A70149001D534E /* PlaceholderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36AE3A722A70149001D534E /* PlaceholderViewController.swift */; };
 		A378C433221B3929007D1419 /* DocumentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A378C432221B3929007D1419 /* DocumentService.swift */; };
 		A381CF21222F0B5D00FAFA7C /* ImageConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A381CF20222F0B5D00FAFA7C /* ImageConverter.swift */; };
@@ -125,8 +125,6 @@
 		50ADA4E30B607E1F6631A716 /* Pods_PDFArchiverUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PDFArchiverUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A301A75421496992003EA382 /* DocumentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentTableViewCell.swift; sourceTree = "<group>"; };
 		A301A75521496992003EA382 /* DocumentTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DocumentTableViewCell.xib; sourceTree = "<group>"; };
-		A306BCE522DE356F0051D745 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
-		A307B05522C28C1100C9A348 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		A30D767622BF914B00862224 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		A31263E3217B75DC00ACAFA4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LoadingBackgroundView.xib; sourceTree = "<group>"; };
 		A31263E6217B75E200ACAFA4 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LoadingBackgroundView.strings; sourceTree = "<group>"; };
@@ -147,6 +145,7 @@
 		A356115E22DE517B00A9092F /* Atomic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Atomic.swift; sourceTree = "<group>"; };
 		A358CA702336E0C30038634E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MoreViewController.storyboard; sourceTree = "<group>"; };
 		A361F3C4230B137C00C52F40 /* HairlineConstraint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HairlineConstraint.swift; sourceTree = "<group>"; };
+		A36611BD233FDB460092DB19 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		A36AE3A722A70149001D534E /* PlaceholderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderViewController.swift; sourceTree = "<group>"; };
 		A378C432221B3929007D1419 /* DocumentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentService.swift; sourceTree = "<group>"; };
 		A381CF20222F0B5D00FAFA7C /* ImageConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageConverter.swift; sourceTree = "<group>"; };
@@ -212,6 +211,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A363E858225D30D3007BE48B /* ArchiveLib.framework in Frameworks */,
+				A36611C4233FDDB40092DB19 /* LoggingKit in Frameworks */,
 				A3FF63AA2247A39E0089E66A /* StoreKit.framework in Frameworks */,
 				F024B33ED56BB0990D46C9A7 /* Pods_PDFArchiver.framework in Frameworks */,
 			);
@@ -259,18 +259,18 @@
 		171E0C7C1B8E5B84001E6242 /* PDFArchiver */ = {
 			isa = PBXGroup;
 			children = (
-				A3F30D90221C99F80063D173 /* ScanTab */,
-				A3F30D8F221C99ED0063D173 /* TagTab */,
-				A3F30D91221C9A030063D173 /* ArchiveTab */,
-				A3D0999622BD15C7003D16E5 /* MoreTab */,
-				A3EBFE9E21650F58008C34CC /* Localizable.strings */,
 				171E0C7D1B8E5B84001E6242 /* AppDelegate.swift */,
-				171E0C831B8E5B84001E6242 /* Main.storyboard */,
-				A3FF63A22247A1A60089E66A /* Subscription */,
-				A34A84F12130A28A0093FAE5 /* Services */,
-				A34A84F32130A2A70093FAE5 /* Helpers */,
-				A3FECF952130A0220053F2E4 /* Resources */,
 				A30D767622BF914B00862224 /* MainTabBarController.swift */,
+				A3F30D91221C9A030063D173 /* ArchiveTab */,
+				A34A84F32130A2A70093FAE5 /* Helpers */,
+				A3EBFE9E21650F58008C34CC /* Localizable.strings */,
+				171E0C831B8E5B84001E6242 /* Main.storyboard */,
+				A3D0999622BD15C7003D16E5 /* MoreTab */,
+				A3FECF952130A0220053F2E4 /* Resources */,
+				A3F30D90221C99F80063D173 /* ScanTab */,
+				A34A84F12130A28A0093FAE5 /* Services */,
+				A3FF63A22247A1A60089E66A /* Subscription */,
+				A3F30D8F221C99ED0063D173 /* TagTab */,
 			);
 			path = PDFArchiver;
 			sourceTree = "<group>";
@@ -328,13 +328,12 @@
 				A314A29A225542360099681D /* CustomButton.swift */,
 				A389789A2274FD4600DC13B9 /* CustomInputView.swift */,
 				A3BE7B3922B3DE05004A1ADE /* Document.swift */,
-				A306BCE522DE356F0051D745 /* Environment.swift */,
 				A3B57B82228750CF0078F7A4 /* FileManager.swift */,
+				A361F3C4230B137C00C52F40 /* HairlineConstraint.swift */,
 				A381CF20222F0B5D00FAFA7C /* ImageConverter.swift */,
 				A39942BD228B422E00FFC16B /* IntroViewController.swift */,
-				A307B05522C28C1100C9A348 /* Log.swift */,
+				A36611BD233FDB460092DB19 /* Log.swift */,
 				A36AE3A722A70149001D534E /* PlaceholderViewController.swift */,
-				A3B57B7E228720240078F7A4 /* Storage */,
 				A3B83863218CA7640093C374 /* TableSection.swift */,
 				A393A28222A8486000D6DAF9 /* UIAlertController.swift */,
 				A3FF639F22478FC10089E66A /* UIColor.swift */,
@@ -343,7 +342,7 @@
 				A316F36522946ED70099BA26 /* UIViewController.swift */,
 				A3A2A72122FF51BF00747DDB /* UserDefaults.swift */,
 				A3DFA7262278D9CF00E0F362 /* WSTagsField.swift */,
-				A361F3C4230B137C00C52F40 /* HairlineConstraint.swift */,
+				A3B57B7E228720240078F7A4 /* Storage */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -401,11 +400,11 @@
 		A3D0999622BD15C7003D16E5 /* MoreTab */ = {
 			isa = PBXGroup;
 			children = (
-				A358CA712336E0C30038634E /* MoreViewController.storyboard */,
-				A3D0999722BD15F0003D16E5 /* MoreTableViewController.swift */,
 				A3F87E6B22D52EFB00A47710 /* AboutMeViewController.swift */,
-				A3F87E7122D5310700A47710 /* AboutMeViewController.xib */,
+				A3D0999722BD15F0003D16E5 /* MoreTableViewController.swift */,
 				A3A2A71D22FF4B2400747DDB /* PDFQualityViewController.swift */,
+				A3F87E7122D5310700A47710 /* AboutMeViewController.xib */,
+				A358CA712336E0C30038634E /* MoreViewController.storyboard */,
 			);
 			path = MoreTab;
 			sourceTree = "<group>";
@@ -496,6 +495,9 @@
 			dependencies = (
 			);
 			name = PDFArchiver;
+			packageProductDependencies = (
+				A36611C3233FDDB40092DB19 /* LoggingKit */,
+			);
 			productName = CandySearch;
 			productReference = 171E0C7A1B8E5B84001E6242 /* PDFArchiver.app */;
 			productType = "com.apple.product-type.application";
@@ -586,6 +588,9 @@
 				de,
 			);
 			mainGroup = 171E0C711B8E5B84001E6242;
+			packageReferences = (
+				A36611C2233FDDB40092DB19 /* XCRemoteSwiftPackageReference "LoggingKit" */,
+			);
 			productRefGroup = 171E0C7B1B8E5B84001E6242 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -750,7 +755,6 @@
 				A3B83864218CA7640093C374 /* TableSection.swift in Sources */,
 				A30D767722BF914B00862224 /* MainTabBarController.swift in Sources */,
 				A34A84FC2130A35A0093FAE5 /* ArchiveExtension.swift in Sources */,
-				A306BCE622DE356F0051D745 /* Environment.swift in Sources */,
 				A361F3C5230B137C00C52F40 /* HairlineConstraint.swift in Sources */,
 				A3400DE12268902200097A3F /* BartyCrouch.swift in Sources */,
 				A3ECBC9622496BA000A626AE /* IAP.swift in Sources */,
@@ -770,8 +774,8 @@
 				171E0C801B8E5B84001E6242 /* ArchiveViewController.swift in Sources */,
 				A356115F22DE517B00A9092F /* Atomic.swift in Sources */,
 				A3B57B83228750CF0078F7A4 /* FileManager.swift in Sources */,
-				A307B05622C28C1100C9A348 /* Log.swift in Sources */,
 				A3A2A72222FF51BF00747DDB /* UserDefaults.swift in Sources */,
+				A36611BE233FDB460092DB19 /* Log.swift in Sources */,
 				A3FF63A022478FC10089E66A /* UIColor.swift in Sources */,
 				A3B57B7D228720090078F7A4 /* StorageHelper+Paths.swift in Sources */,
 				A3B57B81228720410078F7A4 /* StorageHelper+Errors.swift in Sources */,
@@ -1032,7 +1036,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -1058,7 +1063,10 @@
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/PDFArchiver/Resources/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MARKETING_VERSION = 2.1.0;
 				OTHER_CFLAGS = "";
@@ -1100,7 +1108,10 @@
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/PDFArchiver/Resources/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MARKETING_VERSION = 2.1.0;
 				OTHER_CFLAGS = "";
@@ -1144,7 +1155,11 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = PDFArchiverUITests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = de.juliankahnert.PDFArchiverUITests;
@@ -1179,7 +1194,11 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = PDFArchiverUITests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = de.juliankahnert.PDFArchiverUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1212,7 +1231,11 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = PDFArchiverTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = de.juliankahnert.PDFArchiverTests;
@@ -1248,7 +1271,11 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = PDFArchiverTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = de.juliankahnert.PDFArchiverTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1299,6 +1326,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A36611C2233FDDB40092DB19 /* XCRemoteSwiftPackageReference "LoggingKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/PDF-Archiver/LoggingKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A36611C3233FDDB40092DB19 /* LoggingKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A36611C2233FDDB40092DB19 /* XCRemoteSwiftPackageReference "LoggingKit" */;
+			productName = LoggingKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 171E0C721B8E5B84001E6242 /* Project object */;
 }

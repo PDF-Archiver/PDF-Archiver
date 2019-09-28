@@ -7,9 +7,9 @@
 //  The structure is base on: https://www.raywenderlich.com/122144/in-app-purchase-tutorial
 //
 
-//import ArchiveLib
 import ArchiveLib
 import Keys
+import LogModel
 import os.log
 import StoreKit
 import SwiftyStoreKit
@@ -80,7 +80,7 @@ public class IAPService: NSObject, Logging {
         requestProducts()
 
         // release only: fetch receipt
-        if Environment.get() == .production {
+        if AppEnvironment.get() == .production {
             _ = self.appUsagePermitted(appStart: true)
         }
     }
@@ -90,7 +90,7 @@ public class IAPService: NSObject, Logging {
     public func appUsagePermitted(appStart: Bool = false) -> Bool {
 
         // debug/simulator/testflight: app usage is always permitted
-        let environment = Environment.get()
+        let environment = AppEnvironment.get()
         if environment == .develop || environment == .testflight {
             return true
         }
@@ -122,7 +122,7 @@ public class IAPService: NSObject, Logging {
             self.requestsRunning -= 1
             switch result {
             case .success(let purchase):
-                Log.info("Purchse successfull: \(purchase.productId)")
+                Log.send(.info, "Purchse successfull: \(purchase.productId)")
                 os_log("Purchase successfull: %@", log: IAPService.log, type: .debug, purchase.productId)
                 self.fetchReceipt()
 

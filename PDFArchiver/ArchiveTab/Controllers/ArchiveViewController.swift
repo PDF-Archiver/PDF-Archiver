@@ -156,7 +156,7 @@ class ArchiveViewController: UIViewController, UITableViewDelegate, Logging {
         return indexPaths
     }
 
-    func updateDocuments(changed changedDocuments: Set<Document>) {
+    private func updateDocuments(changed changedDocuments: Set<Document>) {
 
         // setup background view controller
         if DocumentService.archive.get(scope: .all, searchterms: [], status: .tagged).isEmpty {
@@ -406,7 +406,7 @@ extension ArchiveViewController: UITableViewDataSource {
     @objc
     private func saveEdit() {
 
-        Log.info("Save edited document in archive.")
+        Log.send(.info, "Save edited document in archive.")
 
         guard let document = editViewController?.document else { fatalError("Could not get document from edit DocumentViewController.") }
         guard let path = StorageHelper.Paths.archivePath else {

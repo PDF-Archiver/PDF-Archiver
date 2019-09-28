@@ -51,7 +51,7 @@ class SubscriptionViewController: UIViewController, Logging {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        Log.info("SubscriptionViewController presented.")
+        Log.send(.info, "SubscriptionViewController presented.")
 
         // setup delegate
         IAP.service.delegate = self
@@ -145,21 +145,21 @@ class SubscriptionViewController: UIViewController, Logging {
 
     @objc
     private func subscribeLevel1() {
-        Log.info("SubscriptionViewController - buy: Monthly subscription.")
+        Log.send(.info, "SubscriptionViewController - buy: Monthly subscription.")
         IAP.service.buyProduct("SUBSCRIPTION_MONTHLY_IOS")
         cancel()
     }
 
     @objc
     private func subscribeLevel2() {
-        Log.info("SubscriptionViewController - buy: Yearly subscription.")
+        Log.send(.info, "SubscriptionViewController - buy: Yearly subscription.")
         IAP.service.buyProduct("SUBSCRIPTION_YEARLY_IOS_NEW")
         cancel()
     }
 
     @objc
     private func restore() {
-        Log.info("SubscriptionViewController - Restore purchases.")
+        Log.send(.info, "SubscriptionViewController - Restore purchases.")
         IAP.service.restorePurchases()
         let alert = UIAlertController(title: NSLocalizedString("subscription.restore.popup.title", comment: ""),
                                       message: NSLocalizedString("subscription.restore.popup.message", comment: ""),
@@ -172,7 +172,7 @@ class SubscriptionViewController: UIViewController, Logging {
 
     @objc
     private func cancel() {
-        Log.info("SubscriptionViewController - Cancel subscription view.")
+        Log.send(.info, "SubscriptionViewController - Cancel subscription view.")
         if !IAP.service.appUsagePermitted() {
             self.dismiss(animated: true, completion: completion)
         } else {

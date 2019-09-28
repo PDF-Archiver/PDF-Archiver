@@ -1,0 +1,25 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "LoggingKit",
+        "repositoryURL": "https://github.com/PDF-Archiver/LoggingKit",
+        "state": {
+          "branch": null,
+          "revision": "1cc87f2085a026570aa26decc0ab6a722f14279a",
+          "version": "1.0.0"
+        }
+      },
+      {
+        "package": "LogModel",
+        "repositoryURL": "https://github.com/PDF-Archiver/LogModel.git",
+        "state": {
+          "branch": null,
+          "revision": "2274d4044dbae36cfaa7b95b04069db7ef4601a7",
+          "version": "0.0.1"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

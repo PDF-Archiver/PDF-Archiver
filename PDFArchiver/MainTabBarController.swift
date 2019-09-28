@@ -47,5 +47,6 @@ class MainTabBarController: UITabBarController {
     private func saveSelectedIndex() {
         // save the selected index for the next app start
         UserDefaults.standard.lastSelectedTabIndex = selectedIndex
+        Log.send(.info, "Changed tab.")
     }
 }

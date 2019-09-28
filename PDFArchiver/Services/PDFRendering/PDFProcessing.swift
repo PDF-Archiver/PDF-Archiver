@@ -53,7 +53,7 @@ class PDFProcessing: Operation {
 
             // signal the start of the operation
             let start = Date()
-            Log.info("Process a document.")
+            Log.send(.info, "Process a document.")
             progressHandler?(Float(0))
 
             let path: URL
@@ -82,7 +82,7 @@ class PDFProcessing: Operation {
 
             // log the processing time
             let timeDiff = Date().timeIntervalSinceReferenceDate - start.timeIntervalSinceReferenceDate
-            Log.info("Processing completed", extra: ["processing_time": timeDiff])
+            Log.send(.info, "Processing completed", extra: ["processing_time": String(timeDiff)])
             progressHandler?(Float(1))
         } catch let error {
             self.error = error
@@ -153,7 +153,7 @@ class PDFProcessing: Operation {
             let textBoxRequests = VNDetectTextRectanglesRequest { (request, error) in
 
                 if let error = error {
-                    Log.error("Error in text recognition.", extra: ["error": error.localizedDescription])
+                    Log.send(.error, "Error in text recognition.", extra: ["error": error.localizedDescription])
                     return
                 }
 
@@ -177,7 +177,7 @@ class PDFProcessing: Operation {
                     let textRecognitionRequest = VNRecognizeTextRequest { (request, error) in
 
                         if let error = error {
-                            Log.error("Error in text recognition.", extra: ["error": error.localizedDescription])
+                            Log.send(.error, "Error in text recognition.", extra: ["error": error.localizedDescription])
                             return
                         }
 
@@ -256,8 +256,8 @@ class PDFProcessing: Operation {
                       height: observation.boundingBox.applying(transform).height)
     }
 
-    private func assertAndLog(_ message: String, extra: [String: Any] = [:]) {
-        Log.error(message, extra: extra)
+    private func assertAndLog(_ message: String, extra: [String: String] = [:]) {
+        Log.send(.error, message, extra: extra)
         assertionFailure(message)
     }
 

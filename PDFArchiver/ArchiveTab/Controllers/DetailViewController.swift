@@ -91,7 +91,7 @@ class DetailViewController: UIViewController, Logging {
 
         if let viewControllerShown = viewControllerShown {
             let timeDiff = Date().timeIntervalSinceReferenceDate - viewControllerShown.timeIntervalSinceReferenceDate
-            Log.info("ArchiveTab: Presenting a document.", extra: ["presented_time": timeDiff])
+            Log.send(.info, "ArchiveTab: Presenting a document.", extra: ["presented_time": String(timeDiff)])
         }
     }
 
