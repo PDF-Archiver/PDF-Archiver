@@ -33,7 +33,7 @@
 		A363E859225D30D3007BE48B /* ArchiveLib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A335D4BA223D0B3400443A53 /* ArchiveLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A3645422230C443D002042AC /* test-ocr-data.png in Resources */ = {isa = PBXBuildFile; fileRef = A388C8262235330F000D52CB /* test-ocr-data.png */; };
 		A36611BE233FDB460092DB19 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36611BD233FDB460092DB19 /* Log.swift */; };
-		A36611C4233FDDB40092DB19 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = A36611C3233FDDB40092DB19 /* SwiftPackageProductDependency */; };
+		A36611C4233FDDB40092DB19 /* LoggingKit in Frameworks */ = {isa = PBXBuildFile; productRef = A36611C3233FDDB40092DB19 /* LoggingKit */; };
 		A36AE3A822A70149001D534E /* PlaceholderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36AE3A722A70149001D534E /* PlaceholderViewController.swift */; };
 		A378C433221B3929007D1419 /* DocumentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A378C432221B3929007D1419 /* DocumentService.swift */; };
 		A381CF21222F0B5D00FAFA7C /* ImageConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A381CF20222F0B5D00FAFA7C /* ImageConverter.swift */; };
@@ -211,7 +211,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A363E858225D30D3007BE48B /* ArchiveLib.framework in Frameworks */,
-				A36611C4233FDDB40092DB19 /* BuildFile in Frameworks */,
+				A36611C4233FDDB40092DB19 /* LoggingKit in Frameworks */,
 				A3FF63AA2247A39E0089E66A /* StoreKit.framework in Frameworks */,
 				F024B33ED56BB0990D46C9A7 /* Pods_PDFArchiver.framework in Frameworks */,
 			);
@@ -496,7 +496,7 @@
 			);
 			name = PDFArchiver;
 			packageProductDependencies = (
-				A36611C3233FDDB40092DB19 /* SwiftPackageProductDependency */,
+				A36611C3233FDDB40092DB19 /* LoggingKit */,
 			);
 			productName = CandySearch;
 			productReference = 171E0C7A1B8E5B84001E6242 /* PDFArchiver.app */;
@@ -589,7 +589,7 @@
 			);
 			mainGroup = 171E0C711B8E5B84001E6242;
 			packageReferences = (
-				A36611C2233FDDB40092DB19 /* RemoteSwiftPackageReference */,
+				A36611C2233FDDB40092DB19 /* XCRemoteSwiftPackageReference "LoggingKit" */,
 			);
 			productRefGroup = 171E0C7B1B8E5B84001E6242 /* Products */;
 			projectDirPath = "";
@@ -1042,7 +1042,7 @@
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/PDFArchiver/Resources/PDFArchiver.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 17;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_BITCODE = YES;
@@ -1088,7 +1088,7 @@
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/PDFArchiver/Resources/PDFArchiver.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1317,7 +1317,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		A36611C2233FDDB40092DB19 /* RemoteSwiftPackageReference */ = {
+		A36611C2233FDDB40092DB19 /* XCRemoteSwiftPackageReference "LoggingKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/PDF-Archiver/LoggingKit";
 			requirement = {
@@ -1328,9 +1328,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		A36611C3233FDDB40092DB19 /* SwiftPackageProductDependency */ = {
+		A36611C3233FDDB40092DB19 /* LoggingKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = A36611C2233FDDB40092DB19 /* RemoteSwiftPackageReference */;
+			package = A36611C2233FDDB40092DB19 /* XCRemoteSwiftPackageReference "LoggingKit" */;
 			productName = LoggingKit;
 		};
 /* End XCSwiftPackageProductDependency section */
