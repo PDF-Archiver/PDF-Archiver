@@ -16,9 +16,15 @@ enum Log {
     private static let shared = Logger(endpoint: Log.endpoint, shouldSend: Log.shouldSend)
     private static let operationQueue = OperationQueue()
     private static let environment = AppEnvironment.get()
-    private static let endpoint = URL(string: "https://logs.pdf-archiver.io/v1/addBatch")!
+    private static let endpoint: URL = {
+        if environment == .develop {
+            return URL(string: "https://logs-develop.pdf-archiver.io/v1/addBatch")!
+        }
+        return URL(string: "https://logs.pdf-archiver.io/v1/addBatch")!
+    }()
     private static let shouldSend: (() -> Bool) = {
-        return environment != .develop
+        // return environment != .develop
+        return true
     }
 
     static func send(_ level: LoggerLevel, _ message: String, extra data: [String: String] = [:], file: String = #file, line: Int = #line, function: String = #function) {
