@@ -82,7 +82,7 @@ class PDFProcessing: Operation {
 
             // log the processing time
             let timeDiff = Date().timeIntervalSinceReferenceDate - start.timeIntervalSinceReferenceDate
-            Log.send(.info, "Processing completed", extra: ["processing_time": String(timeDiff)])
+            Log.send(.info, "Processing completed", extra: ["processing_time": String(timeDiff), "document_page_count": String(document.pageCount)])
             progressHandler?(Float(1))
         } catch let error {
             self.error = error
