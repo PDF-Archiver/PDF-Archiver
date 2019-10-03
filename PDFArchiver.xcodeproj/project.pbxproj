@@ -153,8 +153,8 @@
 		A389789A2274FD4600DC13B9 /* CustomInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomInputView.swift; sourceTree = "<group>"; };
 		A38BDC2C2346340D003668C3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/AboutMeViewController.xib; sourceTree = "<group>"; };
 		A38BDC2E2346340D003668C3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MoreViewController.storyboard; sourceTree = "<group>"; };
-		A38BDC322346341D003668C3 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/MoreViewController.strings; sourceTree = "<group>"; };
-		A38BDC3423463422003668C3 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/AboutMeViewController.strings; sourceTree = "<group>"; };
+		A38BDC3523463BD4003668C3 /* de */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = de; path = de.lproj/MoreViewController.storyboard; sourceTree = "<group>"; };
+		A38BDC3623463BE4003668C3 /* de */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = de; path = de.lproj/AboutMeViewController.xib; sourceTree = "<group>"; };
 		A3932823221EF7DC00858461 /* ScanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
 		A393A28222A8486000D6DAF9 /* UIAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAlertController.swift; sourceTree = "<group>"; };
 		A39942B9228B3ACE00FFC16B /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -882,7 +882,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				A38BDC2C2346340D003668C3 /* Base */,
-				A38BDC3423463422003668C3 /* de */,
+				A38BDC3623463BE4003668C3 /* de */,
 			);
 			name = AboutMeViewController.xib;
 			sourceTree = "<group>";
@@ -891,7 +891,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				A38BDC2E2346340D003668C3 /* Base */,
-				A38BDC322346341D003668C3 /* de */,
+				A38BDC3523463BD4003668C3 /* de */,
 			);
 			name = MoreViewController.storyboard;
 			sourceTree = "<group>";
