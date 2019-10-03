@@ -94,6 +94,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
+    func applicationDidReceiveMemoryWarning(_ application: UIApplication) {
+        Log.send(.warning, "Did receive memory warning.")
+    }
+
     func applicationWillResignActive(_ application: UIApplication) {
 
         // send logs in background
