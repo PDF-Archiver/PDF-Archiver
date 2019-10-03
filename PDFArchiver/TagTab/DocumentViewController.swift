@@ -184,8 +184,8 @@ class DocumentViewController: UIViewController, SystemLogging {
             contentInset = .zero
         } else {
             let spacing = CGFloat(15)
-            let bottomInset = tabBarController?.tabBar.frame.height
-            contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardViewEndFrame.height - (bottomInset ?? 0) + spacing, right: 0)
+            let bottomInset = tabBarController?.tabBar.frame.height ?? 0
+            contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardViewEndFrame.height - bottomInset + SuggestionInputViewController.height + spacing, right: 0)
         }
         scrollView.contentInset = contentInset
         scrollView.scrollIndicatorInsets = contentInset

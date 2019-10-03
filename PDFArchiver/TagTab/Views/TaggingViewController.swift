@@ -113,7 +113,7 @@ class TaggingViewController: UIViewController, SystemLogging {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        suggestionVC.view.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 45)
+        suggestionVC.view.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: SuggestionInputViewController.height)
     }
 
     func update(suggestedTags: Set<String>) {
