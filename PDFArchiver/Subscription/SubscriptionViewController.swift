@@ -12,7 +12,7 @@ import os.log
 import StoreKit
 import UIKit
 
-class SubscriptionViewController: UIViewController, Logging {
+class SubscriptionViewController: UIViewController, SystemLogging {
 
     let completion: (() -> Void)
 

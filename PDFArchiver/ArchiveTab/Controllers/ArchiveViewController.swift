@@ -14,7 +14,7 @@ public protocol ArchiveViewControllerDelegate: AnyObject {
     func update(_ contentType: ContentType)
 }
 
-class ArchiveViewController: UIViewController, UITableViewDelegate, Logging {
+class ArchiveViewController: UIViewController, UITableViewDelegate, SystemLogging {
 
     // MARK: - Properties
     @IBOutlet var tableView: UITableView!

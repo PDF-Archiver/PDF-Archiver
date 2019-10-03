@@ -25,7 +25,7 @@ public extension IAPServiceDelegate {
     func found(requestsRunning: Int) {}
 }
 
-public class IAPService: NSObject, Logging {
+public class IAPService: NSObject, SystemLogging {
 
     private static let productIdentifiers = Set(["SUBSCRIPTION_MONTHLY_IOS", "SUBSCRIPTION_YEARLY_IOS_NEW"])
     private static let subscriptionExpiryDateKey = "SubscriptionExpiryDate"

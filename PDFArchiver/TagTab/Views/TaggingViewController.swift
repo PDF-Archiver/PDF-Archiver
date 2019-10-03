@@ -16,7 +16,7 @@ protocol TaggingViewControllerDelegate: AnyObject {
     func taggingViewController(updated tags: Set<String>)
 }
 
-class TaggingViewController: UIViewController, Logging {
+class TaggingViewController: UIViewController, SystemLogging {
 
     weak var delegate: TaggingViewControllerDelegate?
     private var documentTags: Set<String>

@@ -11,7 +11,7 @@ import os.log
 import PDFKit
 import UIKit
 
-class DetailViewController: UIViewController, Logging {
+class DetailViewController: UIViewController, SystemLogging {
 
     private var viewControllerShown: Date?
 

@@ -5,9 +5,6 @@
       location = "group:PDFArchiver.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:PDFArchiver/External/ArchiveLib/ArchiveLib.xcodeproj">
-   </FileRef>
-   <FileRef
       location = "group:Pods/Pods.xcodeproj">
    </FileRef>
 </Workspace>

@@ -8,16 +8,17 @@
 // swiftlint:disable force_unwrapping
 
 import Keys
+import Logging
 import LoggingKit
 import LogModel
 import UIKit
 
 enum Log {
 
-    private static let shared = Logger(endpoint: Log.endpoint,
-                                       username: PDFArchiverKeys().logUser,
-                                       password: PDFArchiverKeys().logPassword,
-                                       shouldSend: Log.shouldSend)
+    private static let shared = RestLogger(endpoint: Log.endpoint,
+                                           username: PDFArchiverKeys().logUser,
+                                           password: PDFArchiverKeys().logPassword,
+                                           shouldSend: Log.shouldSend)
     private static let operationQueue = OperationQueue()
     private static let environment = AppEnvironment.get()
     private static let endpoint: URL = {
@@ -31,8 +32,13 @@ enum Log {
         return true
     }
 
-    static func send(_ level: LoggerLevel, _ message: String, extra data: [String: String] = [:], file: String = #file, line: Int = #line, function: String = #function) {
-        shared.send(level, message, extra: data, file: file, line: line, function: function)
+    static func send(_ level: Logger.Level, _ message: String, extra data: [String: String] = [:], file: String = #file, line: UInt = #line, function: String = #function) {
+        let message = Logger.Message(stringLiteral: message)
+        var metadata = Logger.Metadata()
+        for (key, value) in data {
+            metadata[key] = Logger.MetadataValue(stringLiteral: value)
+        }
+        shared.log(level: level, message: message, metadata: metadata, file: file, function: function, line: line)
     }
 
     static func sendOrPersistInBackground(_ application: UIApplication) {

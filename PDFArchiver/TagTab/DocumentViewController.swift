@@ -11,7 +11,7 @@ import os.log
 import PDFKit.PDFDocument
 import UIKit
 
-class DocumentViewController: UIViewController, Logging {
+class DocumentViewController: UIViewController, SystemLogging {
 
     let document: Document
     private let pdfVC: PDFViewController
