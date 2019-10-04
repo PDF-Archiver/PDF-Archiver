@@ -7,6 +7,7 @@
 //
 // swiftlint:disable cyclomatic_complexity function_body_length
 
+import LogModel
 import MessageUI
 import UIKit
 
@@ -96,6 +97,14 @@ class MoreTableViewController: UITableViewController {
 
         default:
             fatalError("Could not find the table view cell \(cell?.description ?? "")!")
+        }
+    }
+
+    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        if section == 1 {
+            return "PDF Archiver \(AppEnvironment.getFullVersion())"
+        } else {
+            return nil
         }
     }
 
