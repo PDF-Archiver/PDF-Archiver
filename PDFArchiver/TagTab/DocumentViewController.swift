@@ -11,7 +11,7 @@ import os.log
 import PDFKit.PDFDocument
 import UIKit
 
-class DocumentViewController: UIViewController, Logging {
+class DocumentViewController: UIViewController, SystemLogging {
 
     let document: Document
     private let pdfVC: PDFViewController
@@ -183,9 +183,7 @@ class DocumentViewController: UIViewController, Logging {
         if notification.name == UIResponder.keyboardWillHideNotification {
             contentInset = .zero
         } else {
-            let spacing = CGFloat(15)
-            let bottomInset = tabBarController?.tabBar.frame.height
-            contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardViewEndFrame.height - (bottomInset ?? 0) + spacing, right: 0)
+            contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardViewEndFrame.height, right: 0)
         }
         scrollView.contentInset = contentInset
         scrollView.scrollIndicatorInsets = contentInset

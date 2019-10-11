@@ -37,3 +37,6 @@ PDFArchiver.xcodeproj/xcshareddata
 
 fastlane/README.md
 Gemfile
+vendor
+Gemfile.lock
+.bundle

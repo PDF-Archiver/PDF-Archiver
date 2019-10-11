@@ -12,7 +12,7 @@ import os.log
 import StoreKit
 import VisionKit
 
-class ScanViewController: UIViewController, Logging {
+class ScanViewController: UIViewController, SystemLogging {
 
     private var scannerViewController: VNDocumentCameraViewController?
 

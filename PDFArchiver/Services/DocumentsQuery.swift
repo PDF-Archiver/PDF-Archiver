@@ -30,7 +30,7 @@ protocol DocumentsQueryDelegate: AnyObject {
 /// The DocumentBrowserQuery wraps an `NSMetadataQuery` to insulate us from the
 /// queueing and animation concerns. It runs the query and computes animations
 /// from the results set.
-class DocumentsQuery: NSObject, Logging {
+class DocumentsQuery: NSObject, SystemLogging {
 
     private let notContainsTempPath = NSPredicate(format: "(NOT (%K CONTAINS[c] %@)) AND (NOT (%K CONTAINS[c] %@))", NSMetadataItemPathKey, "/\(StorageHelper.Paths.tempFolderName)/", NSMetadataItemPathKey, "/.Trash/")
     private var metadataQuery: NSMetadataQuery

@@ -82,11 +82,13 @@ extension Archive: DocumentsQueryDelegate {
     // MARK: - Helper Functions
 
     private static func getTaggingStatus(of url: URL) -> TaggingStatus {
-        let regex = "^(\\d{4}-\\d{2}-\\d{2}--[^_]+__[\\w\\d_]+.[pdfPDF]{3})$"
 
-        guard !url.deletingLastPathComponent().lastPathComponent.contains(StorageHelper.Paths.untaggedFolderName),
-            let groups = url.lastPathComponent.capturedGroups(withRegex: regex),
-            !groups.isEmpty else { return .untagged }
+        // Could document be found in the untagged folder?
+        guard !url.pathComponents.contains(StorageHelper.Paths.untaggedFolderName) else { return .untagged }
+
+        // Do "--" and "__" exist in filename?
+        guard url.lastPathComponent.contains("--"),
+            url.lastPathComponent.contains("__")  else { return .untagged }
 
         return .tagged
     }

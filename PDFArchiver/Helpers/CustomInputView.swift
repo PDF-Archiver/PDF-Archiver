@@ -14,6 +14,8 @@ protocol SuggestionInputViewDelegate: AnyObject {
 
 class SuggestionInputViewController: UIViewController {
 
+    static let height = CGFloat(45)
+
     weak var delegate: SuggestionInputViewDelegate?
     var suggestions = [String]() {
         didSet {

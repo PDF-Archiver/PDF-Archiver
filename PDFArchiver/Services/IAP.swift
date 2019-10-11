@@ -7,7 +7,6 @@
 //
 
 import Foundation
-//import IAPService_iOS
 
 /// Singleton responsible for all App Store requests.
 enum IAP {

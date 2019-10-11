@@ -10,7 +10,7 @@ import ArchiveLib
 import os.log
 import UIKit
 
-class DocumentHandleViewController: UIViewController, Logging {
+class DocumentHandleViewController: UIViewController, SystemLogging {
 
     private let selectionFeedback = UISelectionFeedbackGenerator()
     private let notificationFeedback = UINotificationFeedbackGenerator()

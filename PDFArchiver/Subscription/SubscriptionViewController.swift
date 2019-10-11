@@ -12,7 +12,7 @@ import os.log
 import StoreKit
 import UIKit
 
-class SubscriptionViewController: UIViewController, Logging {
+class SubscriptionViewController: UIViewController, SystemLogging {
 
     let completion: (() -> Void)
 
@@ -57,14 +57,15 @@ class SubscriptionViewController: UIViewController, Logging {
     }
 
     private lazy var blurEffectView: UIVisualEffectView = {
-        let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
+        let style: UIBlurEffect.Style = self.traitCollection.userInterfaceStyle == .dark ? .light : .dark
+        let blurView = UIVisualEffectView(effect: UIBlurEffect(style: style))
         blurView.translatesAutoresizingMaskIntoConstraints = false
         return blurView
     }()
 
     private lazy var actionView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = .paWhite
         view.layer.cornerRadius = 10
         view.translatesAutoresizingMaskIntoConstraints = false
         return view

@@ -27,17 +27,20 @@
 		A34A85022130A3870093FAE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A34A85012130A3870093FAE5 /* Assets.xcassets */; };
 		A34DEF922267699700E12EE5 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A34DEF912267699700E12EE5 /* Settings.bundle */; };
 		A356115F22DE517B00A9092F /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = A356115E22DE517B00A9092F /* Atomic.swift */; };
-		A358CA742336E1340038634E /* MoreViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A358CA712336E0C30038634E /* MoreViewController.storyboard */; };
 		A361F3C5230B137C00C52F40 /* HairlineConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = A361F3C4230B137C00C52F40 /* HairlineConstraint.swift */; };
-		A363E858225D30D3007BE48B /* ArchiveLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A335D4BA223D0B3400443A53 /* ArchiveLib.framework */; };
-		A363E859225D30D3007BE48B /* ArchiveLib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A335D4BA223D0B3400443A53 /* ArchiveLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A3645422230C443D002042AC /* test-ocr-data.png in Resources */ = {isa = PBXBuildFile; fileRef = A388C8262235330F000D52CB /* test-ocr-data.png */; };
 		A36611BE233FDB460092DB19 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36611BD233FDB460092DB19 /* Log.swift */; };
 		A36611C4233FDDB40092DB19 /* LoggingKit in Frameworks */ = {isa = PBXBuildFile; productRef = A36611C3233FDDB40092DB19 /* LoggingKit */; };
 		A36AE3A822A70149001D534E /* PlaceholderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36AE3A722A70149001D534E /* PlaceholderViewController.swift */; };
 		A378C433221B3929007D1419 /* DocumentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A378C432221B3929007D1419 /* DocumentService.swift */; };
+		A3811C0A2346150B00AF6CFA /* SwiftyStoreKit in Frameworks */ = {isa = PBXBuildFile; productRef = A3811C092346150B00AF6CFA /* SwiftyStoreKit */; };
+		A3811C0D2346156F00AF6CFA /* WSTagsField in Frameworks */ = {isa = PBXBuildFile; productRef = A3811C0C2346156F00AF6CFA /* WSTagsField */; };
 		A381CF21222F0B5D00FAFA7C /* ImageConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A381CF20222F0B5D00FAFA7C /* ImageConverter.swift */; };
 		A389789B2274FD4600DC13B9 /* CustomInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A389789A2274FD4600DC13B9 /* CustomInputView.swift */; };
+		A38BDC2323462E34003668C3 /* SkyFloatingLabelTextField in Frameworks */ = {isa = PBXBuildFile; productRef = A38BDC2223462E34003668C3 /* SkyFloatingLabelTextField */; };
+		A38BDC26234632F6003668C3 /* ArchiveLib in Frameworks */ = {isa = PBXBuildFile; productRef = A38BDC25234632F6003668C3 /* ArchiveLib */; };
+		A38BDC2F2346340D003668C3 /* AboutMeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A38BDC2B2346340D003668C3 /* AboutMeViewController.xib */; };
+		A38BDC302346340D003668C3 /* MoreViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A38BDC2D2346340D003668C3 /* MoreViewController.storyboard */; };
 		A3932824221EF7DC00858461 /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3932823221EF7DC00858461 /* ScanViewController.swift */; };
 		A393A28322A8486000D6DAF9 /* UIAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A393A28222A8486000D6DAF9 /* UIAlertController.swift */; };
 		A39942BA228B3ACE00FFC16B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39942B9228B3ACE00FFC16B /* Constants.swift */; };
@@ -66,7 +69,6 @@
 		A3F1C21D2163DCD9002B0141 /* AppStoreReviewRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */; };
 		A3F30D8E221C968E0063D173 /* SplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F30D8D221C968E0063D173 /* SplitViewController.swift */; };
 		A3F87E6D22D52EFB00A47710 /* AboutMeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F87E6B22D52EFB00A47710 /* AboutMeViewController.swift */; };
-		A3F87E6F22D5310700A47710 /* AboutMeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A3F87E7122D5310700A47710 /* AboutMeViewController.xib */; };
 		A3FDD33B229457260054FFFC /* PDFViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FDD339229457260054FFFC /* PDFViewController.swift */; };
 		A3FDD3432294578D0054FFFC /* DateDescriptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FDD3412294578D0054FFFC /* DateDescriptionViewController.swift */; };
 		A3FDD345229459B10054FFFC /* PDFViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A3FDD347229459B10054FFFC /* PDFViewController.xib */; };
@@ -104,7 +106,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				A363E859225D30D3007BE48B /* ArchiveLib.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -143,7 +144,6 @@
 		A34D8D7A2130A1E200867B65 /* PDFArchiver.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PDFArchiver.entitlements; sourceTree = "<group>"; };
 		A34DEF912267699700E12EE5 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		A356115E22DE517B00A9092F /* Atomic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Atomic.swift; sourceTree = "<group>"; };
-		A358CA702336E0C30038634E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MoreViewController.storyboard; sourceTree = "<group>"; };
 		A361F3C4230B137C00C52F40 /* HairlineConstraint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HairlineConstraint.swift; sourceTree = "<group>"; };
 		A36611BD233FDB460092DB19 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		A36AE3A722A70149001D534E /* PlaceholderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderViewController.swift; sourceTree = "<group>"; };
@@ -151,6 +151,10 @@
 		A381CF20222F0B5D00FAFA7C /* ImageConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageConverter.swift; sourceTree = "<group>"; };
 		A388C8262235330F000D52CB /* test-ocr-data.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "test-ocr-data.png"; sourceTree = "<group>"; };
 		A389789A2274FD4600DC13B9 /* CustomInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomInputView.swift; sourceTree = "<group>"; };
+		A38BDC2C2346340D003668C3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/AboutMeViewController.xib; sourceTree = "<group>"; };
+		A38BDC2E2346340D003668C3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MoreViewController.storyboard; sourceTree = "<group>"; };
+		A38BDC3523463BD4003668C3 /* de */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = de; path = de.lproj/MoreViewController.storyboard; sourceTree = "<group>"; };
+		A38BDC3623463BE4003668C3 /* de */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = de; path = de.lproj/AboutMeViewController.xib; sourceTree = "<group>"; };
 		A3932823221EF7DC00858461 /* ScanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
 		A393A28222A8486000D6DAF9 /* UIAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAlertController.swift; sourceTree = "<group>"; };
 		A39942B9228B3ACE00FFC16B /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -159,7 +163,6 @@
 		A3A071672253ED660093E7A4 /* TaggingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaggingViewController.swift; sourceTree = "<group>"; };
 		A3A2A71D22FF4B2400747DDB /* PDFQualityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFQualityViewController.swift; sourceTree = "<group>"; };
 		A3A2A72122FF51BF00747DDB /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
-		A3AC13232336E3C400FC7DFB /* de */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = de; path = de.lproj/MoreViewController.storyboard; sourceTree = "<group>"; };
 		A3B13782223516B200C91BB1 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
 		A3B57B7A22871F170078F7A4 /* StorageHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageHelper.swift; sourceTree = "<group>"; };
 		A3B57B7C228720090078F7A4 /* StorageHelper+Paths.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageHelper+Paths.swift"; sourceTree = "<group>"; };
@@ -188,8 +191,6 @@
 		A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreReviewRequest.swift; sourceTree = "<group>"; };
 		A3F30D8D221C968E0063D173 /* SplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewController.swift; sourceTree = "<group>"; };
 		A3F87E6B22D52EFB00A47710 /* AboutMeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutMeViewController.swift; sourceTree = "<group>"; };
-		A3F87E7022D5310700A47710 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/AboutMeViewController.xib; sourceTree = "<group>"; };
-		A3F87E7422D5311700A47710 /* de */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = de; path = de.lproj/AboutMeViewController.xib; sourceTree = "<group>"; };
 		A3FDD339229457260054FFFC /* PDFViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFViewController.swift; sourceTree = "<group>"; };
 		A3FDD3412294578D0054FFFC /* DateDescriptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateDescriptionViewController.swift; sourceTree = "<group>"; };
 		A3FDD346229459B10054FFFC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/PDFViewController.xib; sourceTree = "<group>"; };
@@ -210,8 +211,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A363E858225D30D3007BE48B /* ArchiveLib.framework in Frameworks */,
+				A3811C0D2346156F00AF6CFA /* WSTagsField in Frameworks */,
 				A36611C4233FDDB40092DB19 /* LoggingKit in Frameworks */,
+				A3811C0A2346150B00AF6CFA /* SwiftyStoreKit in Frameworks */,
+				A38BDC2323462E34003668C3 /* SkyFloatingLabelTextField in Frameworks */,
+				A38BDC26234632F6003668C3 /* ArchiveLib in Frameworks */,
 				A3FF63AA2247A39E0089E66A /* StoreKit.framework in Frameworks */,
 				F024B33ED56BB0990D46C9A7 /* Pods_PDFArchiver.framework in Frameworks */,
 			);
@@ -403,8 +407,8 @@
 				A3F87E6B22D52EFB00A47710 /* AboutMeViewController.swift */,
 				A3D0999722BD15F0003D16E5 /* MoreTableViewController.swift */,
 				A3A2A71D22FF4B2400747DDB /* PDFQualityViewController.swift */,
-				A3F87E7122D5310700A47710 /* AboutMeViewController.xib */,
-				A358CA712336E0C30038634E /* MoreViewController.storyboard */,
+				A38BDC2B2346340D003668C3 /* AboutMeViewController.xib */,
+				A38BDC2D2346340D003668C3 /* MoreViewController.storyboard */,
 			);
 			path = MoreTab;
 			sourceTree = "<group>";
@@ -497,6 +501,10 @@
 			name = PDFArchiver;
 			packageProductDependencies = (
 				A36611C3233FDDB40092DB19 /* LoggingKit */,
+				A3811C092346150B00AF6CFA /* SwiftyStoreKit */,
+				A3811C0C2346156F00AF6CFA /* WSTagsField */,
+				A38BDC2223462E34003668C3 /* SkyFloatingLabelTextField */,
+				A38BDC25234632F6003668C3 /* ArchiveLib */,
 			);
 			productName = CandySearch;
 			productReference = 171E0C7A1B8E5B84001E6242 /* PDFArchiver.app */;
@@ -590,6 +598,10 @@
 			mainGroup = 171E0C711B8E5B84001E6242;
 			packageReferences = (
 				A36611C2233FDDB40092DB19 /* XCRemoteSwiftPackageReference "LoggingKit" */,
+				A3811C082346150B00AF6CFA /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */,
+				A3811C0B2346156F00AF6CFA /* XCRemoteSwiftPackageReference "WSTagsField" */,
+				A38BDC2123462E34003668C3 /* XCRemoteSwiftPackageReference "SkyFloatingLabelTextField" */,
+				A38BDC24234632F6003668C3 /* XCRemoteSwiftPackageReference "ArchiveLib" */,
 			);
 			productRefGroup = 171E0C7B1B8E5B84001E6242 /* Products */;
 			projectDirPath = "";
@@ -608,16 +620,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				A3FDD34A229459BD0054FFFC /* DateDescriptionViewController.xib in Resources */,
+				A38BDC2F2346340D003668C3 /* AboutMeViewController.xib in Resources */,
 				A301A75721496992003EA382 /* DocumentTableViewCell.xib in Resources */,
 				A3EBFE9C21650F58008C34CC /* Localizable.strings in Resources */,
 				171E0C8A1B8E5B84001E6242 /* LaunchScreen.storyboard in Resources */,
-				A3F87E6F22D5310700A47710 /* AboutMeViewController.xib in Resources */,
 				A34DEF922267699700E12EE5 /* Settings.bundle in Resources */,
 				A34A85022130A3870093FAE5 /* Assets.xcassets in Resources */,
 				A3400DDB22688C4300097A3F /* Archive.storyboard in Resources */,
 				A3FDD34F229459C40054FFFC /* TaggingViewController.xib in Resources */,
 				A3BE7B3122B16EC2004A1ADE /* TagTab.storyboard in Resources */,
-				A358CA742336E1340038634E /* MoreViewController.storyboard in Resources */,
+				A38BDC302346340D003668C3 /* MoreViewController.storyboard in Resources */,
 				A3FDD345229459B10054FFFC /* PDFViewController.xib in Resources */,
 				A31263E2217B75DC00ACAFA4 /* LoadingBackgroundView.xib in Resources */,
 				171E0C851B8E5B84001E6242 /* Main.storyboard in Resources */,
@@ -866,15 +878,23 @@
 			name = Archive.storyboard;
 			sourceTree = "<group>";
 		};
-		A358CA712336E0C30038634E /* MoreViewController.storyboard */ = {
+		A38BDC2B2346340D003668C3 /* AboutMeViewController.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				A358CA702336E0C30038634E /* Base */,
-				A3AC13232336E3C400FC7DFB /* de */,
+				A38BDC2C2346340D003668C3 /* Base */,
+				A38BDC3623463BE4003668C3 /* de */,
+			);
+			name = AboutMeViewController.xib;
+			sourceTree = "<group>";
+		};
+		A38BDC2D2346340D003668C3 /* MoreViewController.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A38BDC2E2346340D003668C3 /* Base */,
+				A38BDC3523463BD4003668C3 /* de */,
 			);
 			name = MoreViewController.storyboard;
-			path = "/Users/juka/Documents/GIT/pdf-archive-viewer/PDFArchiver/MoreTab";
-			sourceTree = "<absolute>";
+			sourceTree = "<group>";
 		};
 		A3EBFE9E21650F58008C34CC /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
@@ -883,15 +903,6 @@
 				A3EBFE9F21650F70008C34CC /* en */,
 			);
 			name = Localizable.strings;
-			sourceTree = "<group>";
-		};
-		A3F87E7122D5310700A47710 /* AboutMeViewController.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				A3F87E7022D5310700A47710 /* Base */,
-				A3F87E7422D5311700A47710 /* de */,
-			);
-			name = AboutMeViewController.xib;
 			sourceTree = "<group>";
 		};
 		A3FDD347229459B10054FFFC /* PDFViewController.xib */ = {
@@ -1042,7 +1053,7 @@
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/PDFArchiver/Resources/PDFArchiver.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 17;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_BITCODE = YES;
@@ -1057,7 +1068,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 2.1.0;
+				MARKETING_VERSION = 2.1.1;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1088,7 +1099,7 @@
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/PDFArchiver/Resources/PDFArchiver.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 17;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1102,7 +1113,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 2.1.0;
+				MARKETING_VERSION = 2.1.1;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1321,8 +1332,40 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/PDF-Archiver/LoggingKit";
 			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+		A3811C082346150B00AF6CFA /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/bizz84/SwiftyStoreKit";
+			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
+				minimumVersion = 0.15.0;
+			};
+		};
+		A3811C0B2346156F00AF6CFA /* XCRemoteSwiftPackageReference "WSTagsField" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/whitesmith/WSTagsField";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.1.1;
+			};
+		};
+		A38BDC2123462E34003668C3 /* XCRemoteSwiftPackageReference "SkyFloatingLabelTextField" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/acecilia/SkyFloatingLabelTextField";
+			requirement = {
+				branch = "feature/swift-package-manager";
+				kind = branch;
+			};
+		};
+		A38BDC24234632F6003668C3 /* XCRemoteSwiftPackageReference "ArchiveLib" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/PDF-Archiver/ArchiveLib";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.4;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -1332,6 +1375,26 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A36611C2233FDDB40092DB19 /* XCRemoteSwiftPackageReference "LoggingKit" */;
 			productName = LoggingKit;
+		};
+		A3811C092346150B00AF6CFA /* SwiftyStoreKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A3811C082346150B00AF6CFA /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */;
+			productName = SwiftyStoreKit;
+		};
+		A3811C0C2346156F00AF6CFA /* WSTagsField */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A3811C0B2346156F00AF6CFA /* XCRemoteSwiftPackageReference "WSTagsField" */;
+			productName = WSTagsField;
+		};
+		A38BDC2223462E34003668C3 /* SkyFloatingLabelTextField */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A38BDC2123462E34003668C3 /* XCRemoteSwiftPackageReference "SkyFloatingLabelTextField" */;
+			productName = SkyFloatingLabelTextField;
+		};
+		A38BDC25234632F6003668C3 /* ArchiveLib */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A38BDC24234632F6003668C3 /* XCRemoteSwiftPackageReference "ArchiveLib" */;
+			productName = ArchiveLib;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

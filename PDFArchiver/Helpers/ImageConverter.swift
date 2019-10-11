@@ -19,7 +19,7 @@ extension Notification.Name {
     }
 }
 
-public class ImageConverter: Logging {
+public class ImageConverter: SystemLogging {
 
     static let shared = ImageConverter()
 
