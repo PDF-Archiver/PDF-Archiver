@@ -7,7 +7,6 @@
 //
 
 import ArchiveLib
-import Keys
 import LogModel
 import os.log
 import Sentry
@@ -63,7 +62,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Create a Sentry client and start crash handler
         do {
             Client.shared = try Client(options: [
-                "dsn": PDFArchiverKeys().sentryDSN,
+                "dsn": Constants.sentryDsn,
                 "environment": AppEnvironment.get().rawValue,
                 "release": AppEnvironment.getFullVersion()
             ])

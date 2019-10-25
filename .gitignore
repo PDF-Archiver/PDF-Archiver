@@ -40,3 +40,4 @@ Gemfile
 vendor
 Gemfile.lock
 .bundle
+Config.xcconfig

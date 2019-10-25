@@ -7,7 +7,7 @@
 //
 // swiftlint:disable force_unwrapping
 
-import paper_onboarding
+import PaperOnboarding
 import UIKit
 
 class IntroViewController: UIViewController {

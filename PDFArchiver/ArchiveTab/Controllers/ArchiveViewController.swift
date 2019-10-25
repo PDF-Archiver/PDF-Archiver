@@ -459,6 +459,10 @@ extension ArchiveViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
         updateDocuments(changed: [])
     }
+
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.selectedScopeButtonIndex = 0
+    }
 }
 
 extension ArchiveViewController: UISearchResultsUpdating {
