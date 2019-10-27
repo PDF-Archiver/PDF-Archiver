@@ -8,9 +8,9 @@
 
 import ArchiveLib
 import LogModel
+import MetricKit
 import os.log
 import Sentry
-import MetricKit
 import UIKit
 
 @UIApplicationMain
@@ -23,6 +23,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
 
         Log.send(.info, "Handling shared document", extra: ["filetype": url.pathExtension])
+
+        // show scan tab with document processing, after importing a document
+        (window?.rootViewController as? MainTabBarController)?.selectedIndex = 0
 
         DispatchQueue.global(qos: .userInitiated).async {
             do {
