@@ -10,6 +10,7 @@ import ArchiveLib
 import LogModel
 import os.log
 import Sentry
+import MetricKit
 import UIKit
 
 @UIApplicationMain
@@ -46,6 +47,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
+        MXMetricManager.shared.add(self)
         DispatchQueue.global().async {
 
             // start logging service by sending old events (if needed)
@@ -101,5 +103,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // send logs in background
         Log.sendOrPersistInBackground(application)
+    }
+
+    func applicationWillTerminate(_ application: UIApplication) {
+        MXMetricManager.shared.remove(self)
+    }
+}
+
+extension AppDelegate: MXMetricManagerSubscriber {
+    func didReceive(_ payloads: [MXMetricPayload]) {
+        for payload in payloads {
+
+            var extra: [String: String] = [:]
+            extra["appBuildVersion"] = payload.metaData?.applicationBuildVersion
+            extra["osVersion"] = payload.metaData?.osVersion
+            extra["regionFormat"] = payload.metaData?.regionFormat
+            extra["deviceType"] = payload.metaData?.deviceType
+            extra["appVersion"] = payload.latestApplicationVersion
+            extra["timeStampBegin"] = payload.timeStampBegin.description
+            extra["timeStampEnd"] = payload.timeStampEnd.description
+            extra["cumulativeCPUTime"] = payload.cpuMetrics?.cumulativeCPUTime.description
+            extra["raw"] = String(data: payload.jsonRepresentation(), encoding: .utf8)
+
+            Log.send(.info, "MXMetricPayload", extra: extra)
+        }
     }
 }
