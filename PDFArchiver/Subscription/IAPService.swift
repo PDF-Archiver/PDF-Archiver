@@ -8,7 +8,6 @@
 //
 
 import ArchiveLib
-import Keys
 import LogModel
 import os.log
 import StoreKit
@@ -163,7 +162,7 @@ public class IAPService: NSObject, SystemLogging {
         os_log("external start", log: IAPService.log, type: .info)
 
         // create apple validator
-        let appleValidator = AppleReceiptValidator(service: .production, sharedSecret: PDFArchiverKeys().appstoreConnectSharedSecret)
+        let appleValidator = AppleReceiptValidator(service: .production, sharedSecret: Constants.appStoreConnectSharedSecret)
 
         SwiftyStoreKit.verifyReceipt(using: appleValidator) { result in
             defer {

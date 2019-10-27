@@ -128,7 +128,7 @@ class DocumentHandleViewController: UIViewController, SystemLogging {
             let viewController = SubscriptionViewController {
                 self.tabBarController?.selectedIndex = self.tabBarController?.getViewControllerIndex(with: "ArchiveTab") ?? 2
             }
-            present(viewController, animated: animated)
+            (self.tabBarController ?? self).present(viewController, animated: animated)
         }
     }
 

@@ -27,10 +27,14 @@
 		A34A85022130A3870093FAE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A34A85012130A3870093FAE5 /* Assets.xcassets */; };
 		A34DEF922267699700E12EE5 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A34DEF912267699700E12EE5 /* Settings.bundle */; };
 		A356115F22DE517B00A9092F /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = A356115E22DE517B00A9092F /* Atomic.swift */; };
+		A35B7D04235C718A002F7716 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = A35B7D03235C718A002F7716 /* Sentry */; };
+		A35B7D07235C71C8002F7716 /* PaperOnboarding in Frameworks */ = {isa = PBXBuildFile; productRef = A35B7D06235C71C8002F7716 /* PaperOnboarding */; };
+		A35B7D09235C723F002F7716 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = A35B7D08235C7239002F7716 /* Config.xcconfig */; };
 		A361F3C5230B137C00C52F40 /* HairlineConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = A361F3C4230B137C00C52F40 /* HairlineConstraint.swift */; };
 		A3645422230C443D002042AC /* test-ocr-data.png in Resources */ = {isa = PBXBuildFile; fileRef = A388C8262235330F000D52CB /* test-ocr-data.png */; };
 		A36611BE233FDB460092DB19 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36611BD233FDB460092DB19 /* Log.swift */; };
 		A36611C4233FDDB40092DB19 /* LoggingKit in Frameworks */ = {isa = PBXBuildFile; productRef = A36611C3233FDDB40092DB19 /* LoggingKit */; };
+		A3689778235C754300F429AC /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3689777235C754300F429AC /* Configuration.swift */; };
 		A36AE3A822A70149001D534E /* PlaceholderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36AE3A722A70149001D534E /* PlaceholderViewController.swift */; };
 		A378C433221B3929007D1419 /* DocumentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A378C432221B3929007D1419 /* DocumentService.swift */; };
 		A3811C0A2346150B00AF6CFA /* SwiftyStoreKit in Frameworks */ = {isa = PBXBuildFile; productRef = A3811C092346150B00AF6CFA /* SwiftyStoreKit */; };
@@ -79,7 +83,6 @@
 		A3FF63A022478FC10089E66A /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF639F22478FC10089E66A /* UIColor.swift */; };
 		A3FF63AA2247A39E0089E66A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3FF63A92247A39E0089E66A /* StoreKit.framework */; };
 		A3FF63D02247AF570089E66A /* SubscriptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF63CF2247AF570089E66A /* SubscriptionViewController.swift */; };
-		F024B33ED56BB0990D46C9A7 /* Pods_PDFArchiver.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A25EBE56D8E845513A0822F /* Pods_PDFArchiver.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -113,7 +116,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		11C9BA2A739A3A3401862491 /* Pods-PDFArchiver.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PDFArchiver.release.xcconfig"; path = "Pods/Target Support Files/Pods-PDFArchiver/Pods-PDFArchiver.release.xcconfig"; sourceTree = "<group>"; };
 		171E0C7A1B8E5B84001E6242 /* PDFArchiver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PDFArchiver.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		171E0C7D1B8E5B84001E6242 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		171E0C7F1B8E5B84001E6242 /* ArchiveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveViewController.swift; sourceTree = "<group>"; };
@@ -121,9 +123,6 @@
 		171E0C841B8E5B84001E6242 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		171E0C891B8E5B84001E6242 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		171E0C8B1B8E5B84001E6242 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		2A25EBE56D8E845513A0822F /* Pods_PDFArchiver.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PDFArchiver.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		445848DF002FD7CB545E7732 /* Pods-PDFArchiver.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PDFArchiver.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PDFArchiver/Pods-PDFArchiver.debug.xcconfig"; sourceTree = "<group>"; };
-		50ADA4E30B607E1F6631A716 /* Pods_PDFArchiverUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PDFArchiverUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A301A75421496992003EA382 /* DocumentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentTableViewCell.swift; sourceTree = "<group>"; };
 		A301A75521496992003EA382 /* DocumentTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DocumentTableViewCell.xib; sourceTree = "<group>"; };
 		A30D767622BF914B00862224 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
@@ -144,8 +143,10 @@
 		A34D8D7A2130A1E200867B65 /* PDFArchiver.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PDFArchiver.entitlements; sourceTree = "<group>"; };
 		A34DEF912267699700E12EE5 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		A356115E22DE517B00A9092F /* Atomic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Atomic.swift; sourceTree = "<group>"; };
+		A35B7D08235C7239002F7716 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		A361F3C4230B137C00C52F40 /* HairlineConstraint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HairlineConstraint.swift; sourceTree = "<group>"; };
 		A36611BD233FDB460092DB19 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		A3689777235C754300F429AC /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		A36AE3A722A70149001D534E /* PlaceholderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderViewController.swift; sourceTree = "<group>"; };
 		A378C432221B3929007D1419 /* DocumentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentService.swift; sourceTree = "<group>"; };
 		A381CF20222F0B5D00FAFA7C /* ImageConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageConverter.swift; sourceTree = "<group>"; };
@@ -213,11 +214,12 @@
 			files = (
 				A3811C0D2346156F00AF6CFA /* WSTagsField in Frameworks */,
 				A36611C4233FDDB40092DB19 /* LoggingKit in Frameworks */,
+				A35B7D07235C71C8002F7716 /* PaperOnboarding in Frameworks */,
 				A3811C0A2346150B00AF6CFA /* SwiftyStoreKit in Frameworks */,
+				A35B7D04235C718A002F7716 /* Sentry in Frameworks */,
 				A38BDC2323462E34003668C3 /* SkyFloatingLabelTextField in Frameworks */,
 				A38BDC26234632F6003668C3 /* ArchiveLib in Frameworks */,
 				A3FF63AA2247A39E0089E66A /* StoreKit.framework in Frameworks */,
-				F024B33ED56BB0990D46C9A7 /* Pods_PDFArchiver.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -245,7 +247,6 @@
 				171E0C7C1B8E5B84001E6242 /* PDFArchiver */,
 				A3BCC974217F84DB00C3775E /* PDFArchiverTests */,
 				A3B83717215FCEFA00DA239F /* PDFArchiverUITests */,
-				778DE403AE2BDEFAAB7AE643 /* Pods */,
 				171E0C7B1B8E5B84001E6242 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -286,19 +287,8 @@
 				A3FF63A92247A39E0089E66A /* StoreKit.framework */,
 				A335D4BA223D0B3400443A53 /* ArchiveLib.framework */,
 				A3B13782223516B200C91BB1 /* CoreImage.framework */,
-				2A25EBE56D8E845513A0822F /* Pods_PDFArchiver.framework */,
-				50ADA4E30B607E1F6631A716 /* Pods_PDFArchiverUITests.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		778DE403AE2BDEFAAB7AE643 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				445848DF002FD7CB545E7732 /* Pods-PDFArchiver.debug.xcconfig */,
-				11C9BA2A739A3A3401862491 /* Pods-PDFArchiver.release.xcconfig */,
-			);
-			name = Pods;
 			sourceTree = "<group>";
 		};
 		A34A84F12130A28A0093FAE5 /* Services */ = {
@@ -347,6 +337,7 @@
 				A3A2A72122FF51BF00747DDB /* UserDefaults.swift */,
 				A3DFA7262278D9CF00E0F362 /* WSTagsField.swift */,
 				A3B57B7E228720240078F7A4 /* Storage */,
+				A3689777235C754300F429AC /* Configuration.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -464,6 +455,7 @@
 				A34A85012130A3870093FAE5 /* Assets.xcassets */,
 				A34DEF912267699700E12EE5 /* Settings.bundle */,
 				A3400DE02268902200097A3F /* BartyCrouch.swift */,
+				A35B7D08235C7239002F7716 /* Config.xcconfig */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -484,14 +476,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 171E0CA41B8E5B84001E6242 /* Build configuration list for PBXNativeTarget "PDFArchiver" */;
 			buildPhases = (
-				48B868A7BE5C4E8DCAB89D03 /* [CP] Check Pods Manifest.lock */,
 				A3B57CD32130C55C000BA17B /* SwiftLint */,
 				A3EBFE9921650CB1008C34CC /* BartyCrouch */,
 				171E0C761B8E5B84001E6242 /* Sources */,
 				171E0C771B8E5B84001E6242 /* Frameworks */,
 				171E0C781B8E5B84001E6242 /* Resources */,
 				A34DEF932267B25800E12EE5 /* SettingsVersion */,
-				7068FD7F74E26C05F4A30501 /* [CP] Embed Pods Frameworks */,
 				A363E85A225D30D3007BE48B /* Embed Frameworks */,
 			);
 			buildRules = (
@@ -505,6 +495,8 @@
 				A3811C0C2346156F00AF6CFA /* WSTagsField */,
 				A38BDC2223462E34003668C3 /* SkyFloatingLabelTextField */,
 				A38BDC25234632F6003668C3 /* ArchiveLib */,
+				A35B7D03235C718A002F7716 /* Sentry */,
+				A35B7D06235C71C8002F7716 /* PaperOnboarding */,
 			);
 			productName = CandySearch;
 			productReference = 171E0C7A1B8E5B84001E6242 /* PDFArchiver.app */;
@@ -602,6 +594,8 @@
 				A3811C0B2346156F00AF6CFA /* XCRemoteSwiftPackageReference "WSTagsField" */,
 				A38BDC2123462E34003668C3 /* XCRemoteSwiftPackageReference "SkyFloatingLabelTextField" */,
 				A38BDC24234632F6003668C3 /* XCRemoteSwiftPackageReference "ArchiveLib" */,
+				A35B7D02235C718A002F7716 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
+				A35B7D05235C71C8002F7716 /* XCRemoteSwiftPackageReference "paper-onboarding" */,
 			);
 			productRefGroup = 171E0C7B1B8E5B84001E6242 /* Products */;
 			projectDirPath = "";
@@ -620,6 +614,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A3FDD34A229459BD0054FFFC /* DateDescriptionViewController.xib in Resources */,
+				A35B7D09235C723F002F7716 /* Config.xcconfig in Resources */,
 				A38BDC2F2346340D003668C3 /* AboutMeViewController.xib in Resources */,
 				A301A75721496992003EA382 /* DocumentTableViewCell.xib in Resources */,
 				A3EBFE9C21650F58008C34CC /* Localizable.strings in Resources */,
@@ -656,45 +651,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		48B868A7BE5C4E8DCAB89D03 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-PDFArchiver-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		7068FD7F74E26C05F4A30501 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-PDFArchiver/Pods-PDFArchiver-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-PDFArchiver/Pods-PDFArchiver-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PDFArchiver/Pods-PDFArchiver-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		A34DEF932267B25800E12EE5 /* SettingsVersion */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -786,6 +742,7 @@
 				A39942BE228B422E00FFC16B /* IntroViewController.swift in Sources */,
 				A389789B2274FD4600DC13B9 /* CustomInputView.swift in Sources */,
 				171E0C7E1B8E5B84001E6242 /* AppDelegate.swift in Sources */,
+				A3689778235C754300F429AC /* Configuration.swift in Sources */,
 				A36AE3A822A70149001D534E /* PlaceholderViewController.swift in Sources */,
 				A3DC071D22C6C6D10073A877 /* UIImage.swift in Sources */,
 				A3B57B7B22871F170078F7A4 /* StorageHelper.swift in Sources */,
@@ -937,6 +894,7 @@
 /* Begin XCBuildConfiguration section */
 		171E0CA21B8E5B84001E6242 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A35B7D08235C7239002F7716 /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -994,6 +952,7 @@
 		};
 		171E0CA31B8E5B84001E6242 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A35B7D08235C7239002F7716 /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -1046,7 +1005,6 @@
 		};
 		171E0CA51B8E5B84001E6242 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 445848DF002FD7CB545E7732 /* Pods-PDFArchiver.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1068,7 +1026,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 2.1.3;
+				MARKETING_VERSION = 2.1.4;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1076,8 +1034,6 @@
 					"-l\"z\"",
 					"-framework",
 					"\"Foundation\"",
-					"-framework",
-					"\"Sentry\"",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer;
@@ -1092,7 +1048,6 @@
 		};
 		171E0CA61B8E5B84001E6242 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 11C9BA2A739A3A3401862491 /* Pods-PDFArchiver.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1113,7 +1068,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 2.1.3;
+				MARKETING_VERSION = 2.1.4;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1121,8 +1076,6 @@
 					"-l\"z\"",
 					"-framework",
 					"\"Foundation\"",
-					"-framework",
-					"\"Sentry\"",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer;
@@ -1328,6 +1281,22 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		A35B7D02235C718A002F7716 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/JonathanDowning/sentry-cocoa";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+		A35B7D05235C71C8002F7716 /* XCRemoteSwiftPackageReference "paper-onboarding" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Ramotion/paper-onboarding";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.1.4;
+			};
+		};
 		A36611C2233FDDB40092DB19 /* XCRemoteSwiftPackageReference "LoggingKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/PDF-Archiver/LoggingKit";
@@ -1371,6 +1340,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		A35B7D03235C718A002F7716 /* Sentry */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A35B7D02235C718A002F7716 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
+			productName = Sentry;
+		};
+		A35B7D06235C71C8002F7716 /* PaperOnboarding */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A35B7D05235C71C8002F7716 /* XCRemoteSwiftPackageReference "paper-onboarding" */;
+			productName = PaperOnboarding;
+		};
 		A36611C3233FDDB40092DB19 /* LoggingKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = A36611C2233FDDB40092DB19 /* XCRemoteSwiftPackageReference "LoggingKit" */;

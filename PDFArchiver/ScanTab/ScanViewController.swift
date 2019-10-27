@@ -134,7 +134,7 @@ class ScanViewController: UIViewController, SystemLogging {
                     let viewController = SubscriptionViewController {
                         self.tabBarController?.selectedIndex = self.tabBarController?.getViewControllerIndex(with: "ArchiveTab") ?? 2
                     }
-                    self.present(viewController, animated: true)
+                    (self.tabBarController ?? self).present(viewController, animated: true)
                 })
                 alert.addAction(UIAlertAction(title: NSLocalizedString("cancel", comment: ""), style: .cancel) { _ in
                     self.tabBarController?.selectedIndex = self.tabBarController?.getViewControllerIndex(with: "ArchiveTab") ?? 2
