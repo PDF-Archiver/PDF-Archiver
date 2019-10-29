@@ -29,13 +29,16 @@
 		A356115F22DE517B00A9092F /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = A356115E22DE517B00A9092F /* Atomic.swift */; };
 		A35B7D04235C718A002F7716 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = A35B7D03235C718A002F7716 /* Sentry */; };
 		A35B7D07235C71C8002F7716 /* PaperOnboarding in Frameworks */ = {isa = PBXBuildFile; productRef = A35B7D06235C71C8002F7716 /* PaperOnboarding */; };
-		A35B7D09235C723F002F7716 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = A35B7D08235C7239002F7716 /* Config.xcconfig */; };
 		A361F3C5230B137C00C52F40 /* HairlineConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = A361F3C4230B137C00C52F40 /* HairlineConstraint.swift */; };
 		A3645422230C443D002042AC /* test-ocr-data.png in Resources */ = {isa = PBXBuildFile; fileRef = A388C8262235330F000D52CB /* test-ocr-data.png */; };
 		A36611BE233FDB460092DB19 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36611BD233FDB460092DB19 /* Log.swift */; };
 		A36611C4233FDDB40092DB19 /* LoggingKit in Frameworks */ = {isa = PBXBuildFile; productRef = A36611C3233FDDB40092DB19 /* LoggingKit */; };
 		A3689778235C754300F429AC /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3689777235C754300F429AC /* Configuration.swift */; };
 		A36AE3A822A70149001D534E /* PlaceholderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36AE3A722A70149001D534E /* PlaceholderViewController.swift */; };
+		A36C42C22365E3F000F379FE /* ArchiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36C42C12365E3F000F379FE /* ArchiveView.swift */; };
+		A36C42C42365E3FB00F379FE /* ArchiveViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36C42C32365E3FB00F379FE /* ArchiveViewModel.swift */; };
+		A36C42C62365E43D00F379FE /* SearchField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36C42C52365E43D00F379FE /* SearchField.swift */; };
+		A36C42C8236780F700F379FE /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36C42C7236780F700F379FE /* TestViewController.swift */; };
 		A378C433221B3929007D1419 /* DocumentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A378C432221B3929007D1419 /* DocumentService.swift */; };
 		A3811C0A2346150B00AF6CFA /* SwiftyStoreKit in Frameworks */ = {isa = PBXBuildFile; productRef = A3811C092346150B00AF6CFA /* SwiftyStoreKit */; };
 		A3811C0D2346156F00AF6CFA /* WSTagsField in Frameworks */ = {isa = PBXBuildFile; productRef = A3811C0C2346156F00AF6CFA /* WSTagsField */; };
@@ -148,6 +151,10 @@
 		A36611BD233FDB460092DB19 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		A3689777235C754300F429AC /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		A36AE3A722A70149001D534E /* PlaceholderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderViewController.swift; sourceTree = "<group>"; };
+		A36C42C12365E3F000F379FE /* ArchiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveView.swift; sourceTree = "<group>"; };
+		A36C42C32365E3FB00F379FE /* ArchiveViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveViewModel.swift; sourceTree = "<group>"; };
+		A36C42C52365E43D00F379FE /* SearchField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchField.swift; sourceTree = "<group>"; };
+		A36C42C7236780F700F379FE /* TestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		A378C432221B3929007D1419 /* DocumentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentService.swift; sourceTree = "<group>"; };
 		A381CF20222F0B5D00FAFA7C /* ImageConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageConverter.swift; sourceTree = "<group>"; };
 		A388C8262235330F000D52CB /* test-ocr-data.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "test-ocr-data.png"; sourceTree = "<group>"; };
@@ -309,6 +316,7 @@
 				A301A75421496992003EA382 /* DocumentTableViewCell.swift */,
 				A301A75521496992003EA382 /* DocumentTableViewCell.xib */,
 				A31263E4217B75DC00ACAFA4 /* LoadingBackgroundView.xib */,
+				A36C42C52365E43D00F379FE /* SearchField.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -442,6 +450,9 @@
 				A3400DDD22688C4300097A3F /* Archive.storyboard */,
 				A34A84F22130A2900093FAE5 /* Views */,
 				A34A84F42130A2CC0093FAE5 /* Controllers */,
+				A36C42C12365E3F000F379FE /* ArchiveView.swift */,
+				A36C42C32365E3FB00F379FE /* ArchiveViewModel.swift */,
+				A36C42C7236780F700F379FE /* TestViewController.swift */,
 			);
 			path = ArchiveTab;
 			sourceTree = "<group>";
@@ -545,7 +556,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1000;
-				LastUpgradeCheck = 0940;
+				LastUpgradeCheck = 1120;
 				ORGANIZATIONNAME = "Julian Kahnert";
 				TargetAttributes = {
 					171E0C791B8E5B84001E6242 = {
@@ -614,7 +625,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				A3FDD34A229459BD0054FFFC /* DateDescriptionViewController.xib in Resources */,
-				A35B7D09235C723F002F7716 /* Config.xcconfig in Resources */,
 				A38BDC2F2346340D003668C3 /* AboutMeViewController.xib in Resources */,
 				A301A75721496992003EA382 /* DocumentTableViewCell.xib in Resources */,
 				A3EBFE9C21650F58008C34CC /* Localizable.strings in Resources */,
@@ -714,6 +724,7 @@
 				A34A84FC2130A35A0093FAE5 /* ArchiveExtension.swift in Sources */,
 				A361F3C5230B137C00C52F40 /* HairlineConstraint.swift in Sources */,
 				A3400DE12268902200097A3F /* BartyCrouch.swift in Sources */,
+				A36C42C62365E43D00F379FE /* SearchField.swift in Sources */,
 				A3ECBC9622496BA000A626AE /* IAP.swift in Sources */,
 				A301A75621496992003EA382 /* DocumentTableViewCell.swift in Sources */,
 				A39942BA228B3ACE00FFC16B /* Constants.swift in Sources */,
@@ -726,13 +737,16 @@
 				A393A28322A8486000D6DAF9 /* UIAlertController.swift in Sources */,
 				A3FDD3432294578D0054FFFC /* DateDescriptionViewController.swift in Sources */,
 				A316F36622946ED70099BA26 /* UIViewController.swift in Sources */,
+				A36C42C8236780F700F379FE /* TestViewController.swift in Sources */,
 				A3CF79BE22C3FA0A008711E4 /* PDFProcessing.swift in Sources */,
 				A3FDD33B229457260054FFFC /* PDFViewController.swift in Sources */,
 				171E0C801B8E5B84001E6242 /* ArchiveViewController.swift in Sources */,
 				A356115F22DE517B00A9092F /* Atomic.swift in Sources */,
 				A3B57B83228750CF0078F7A4 /* FileManager.swift in Sources */,
 				A3A2A72222FF51BF00747DDB /* UserDefaults.swift in Sources */,
+				A36C42C42365E3FB00F379FE /* ArchiveViewModel.swift in Sources */,
 				A36611BE233FDB460092DB19 /* Log.swift in Sources */,
+				A36C42C22365E3F000F379FE /* ArchiveView.swift in Sources */,
 				A3FF63A022478FC10089E66A /* UIColor.swift in Sources */,
 				A3B57B7D228720090078F7A4 /* StorageHelper+Paths.swift in Sources */,
 				A3B57B81228720410078F7A4 /* StorageHelper+Errors.swift in Sources */,

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="EtT-wd-7Xe">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="EtT-wd-7Xe">
     <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15508"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -19,7 +19,7 @@
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iSs-31-9JD">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="729"/>
                                 <connections>
-                                    <segue destination="OIZ-Ju-z8d" kind="embed" id="Zqf-bk-zHK"/>
+                                    <segue destination="OIZ-Ju-z8d" kind="show" id="XL5-zC-eN9"/>
                                 </connections>
                             </containerView>
                         </subviews>
@@ -121,7 +121,9 @@
         <!--Archive-->
         <scene sceneID="ycn-zk-WaR">
             <objects>
-                <viewControllerPlaceholder storyboardName="Archive" id="OIZ-Ju-z8d" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardName="Archive" id="OIZ-Ju-z8d" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="mmf-qL-hV0"/>
+                </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YVK-mJ-Qp9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-2195" y="-305"/>
@@ -280,7 +282,7 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="cF8-ry-iXD" kind="relationship" relationship="rootViewController" id="BSP-8D-mdD"/>
+                        <segue destination="t7e-Xg-bI8" kind="relationship" relationship="rootViewController" id="btC-6B-ZR3"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iWo-1H-Zi5" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -295,7 +297,23 @@
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4vc-1W-J4O" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2194" y="386"/>
+            <point key="canvasLocation" x="-2490" y="386"/>
+        </scene>
+        <!--Test View Controller-->
+        <scene sceneID="UgR-Ua-fC1">
+            <objects>
+                <viewController id="t7e-Xg-bI8" customClass="TestViewController" customModule="PDFArchiver" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="rUW-6P-hiG">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="zgB-di-Fx8"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="zBo-KN-0f4"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ZWP-UN-3Gq" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1646" y="333"/>
         </scene>
     </scenes>
     <resources>
@@ -304,16 +322,16 @@
         <image name="doc.text.viewfinder" catalog="system" width="64" height="56"/>
         <image name="tag" catalog="system" width="64" height="58"/>
         <namedColor name="Background">
-            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <color red="0.98000001907348633" green="0.98000001907348633" blue="0.98000001907348633" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
         <namedColor name="DarkGray">
-            <color red="0.98000001907348633" green="0.98000001907348633" blue="0.98000001907348633" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+            <color red="0.13099999725818634" green="0.17200000584125519" blue="0.23100000619888306" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
         <namedColor name="DarkRed">
             <color red="0.72941176470588232" green="0.29411764705882354" blue="0.32156862745098042" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
         <namedColor name="White">
-            <color red="0.067000001668930054" green="0.10199999809265137" blue="0.14100000262260437" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+            <color red="0.98000001907348633" green="0.98000001907348633" blue="0.98000001907348633" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
     </resources>
     <inferredMetricsTieBreakers>
