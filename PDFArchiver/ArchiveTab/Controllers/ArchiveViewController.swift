@@ -10,10 +10,6 @@ import ArchiveLib
 import os.log
 import UIKit
 
-public protocol ArchiveViewControllerDelegate: AnyObject {
-    func update(_ contentType: ContentType)
-}
-
 class ArchiveViewController: UIViewController, UITableViewDelegate, SystemLogging {
 
     // MARK: - Properties
@@ -37,9 +33,6 @@ class ArchiveViewController: UIViewController, UITableViewDelegate, SystemLoggin
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(UINib(nibName: cellIdentifier, bundle: nil), forCellReuseIdentifier: cellIdentifier)
-
-        // setup data delegate
-        DocumentService.documentsQuery.masterViewControllerDelegate = self
 
         // Setup the Search Controller
         searchController.searchResultsUpdater = self
@@ -441,19 +434,6 @@ extension ArchiveViewController: UITableViewDataSource {
 }
 
 // MARK: -
-extension ArchiveViewController: ArchiveViewControllerDelegate {
-    func update(_ contentType: ContentType) {
-        switch contentType {
-        case .archivedDocuments(let changedDocuments):
-            // these documents must be updated on the main thread, since it changes ui elements
-            DispatchQueue.main.async {
-                self.updateDocuments(changed: changedDocuments)
-            }
-        default:
-            os_log("Type does not match.", log: ArchiveViewController.log, type: .debug)
-        }
-    }
-}
 
 extension ArchiveViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {

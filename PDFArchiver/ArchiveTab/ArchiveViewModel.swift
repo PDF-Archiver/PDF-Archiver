@@ -11,42 +11,22 @@ import Combine
 import Foundation
 
 class ArchiveViewModel: ObservableObject {
-//    typealias Element = Document
 
     @Published private(set) var documents: [Document] = []
     @Published var years: [String] = ["all", "2019", "2018", "2017"]
     @Published var scopeSelecton: Int = 0
-
     @Published var searchText = ""
-    @Published var searchScope = "all"
 
-//    private var allDocuments: [Document] = [] {
-//        didSet {
-//            let allFoldeNames = self.allDocuments
-//                .map { $0.folder }
-//                .filter { CharacterSet.decimalDigits.isSuperset(of: CharacterSet(charactersIn: $0)) }
-//
-//            let folderNames = Set(allFoldeNames)
-//                .sorted()
-//                .reversed()
-//                .prefix(3)
-//
-//            self.years = Array(folderNames)
-//        }
-//    }
     private var disposables = Set<AnyCancellable>()
-//    var allSearchElements: Set<Document> {
-//        Set(allDocuments)
-//    }
 
     init() {
-        // filter documents
-        $searchText
+
+        // filter documents, get input from Notification, searchText or searchCcope
+        NotificationCenter.default.publisher(for: Notification.Name.documentChanges)
             .debounce(for: .milliseconds(200), scheduler: DispatchQueue.global(qos: .userInitiated))
             .removeDuplicates()
-            .combineLatest($scopeSelecton)
-            .map { (searchterm, searchscopeSelection) -> Set<Document> in
-//                self.filter(by: [searchterm, searchscope])
+            .combineLatest($searchText, $scopeSelecton)
+            .map { (_, searchterm, searchscopeSelection) -> [Document] in
 
                 let searchscope = self.years[searchscopeSelection]
                 let scope: SearchScope
@@ -63,23 +43,27 @@ class ArchiveViewModel: ObservableObject {
                     searchterms = [searchterm]
                 }
 
-//                let tmp = DocumentService.archive.get(scope: scope, searchterms: searchterms, status: .tagged)
                 return DocumentService.archive.get(scope: scope, searchterms: searchterms, status: .tagged)
+                    .sorted()
+                    .reversed()
             }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] documents in
                 guard let self = self else { return }
 
-                // seems to improve the performance A LOT - from: https://stackoverflow.com/a/58329615
-                // => no need to build a diff
-                self.documents = []
-                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) {
-                    self.documents = Array(documents).sorted().reversed()
+                // workaround to skip creation of large SwiftUI List Diffs
+                // TODO: should be tested on low end devices
+                if self.documents.count + documents.count < 500 {
+                    self.documents = documents
+                } else {
+                    // seems to improve the performance A LOT - from: https://stackoverflow.com/a/58329615
+                    // => no need to build a diff
+                    self.documents = []
+                    DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(10)) {
+                        self.documents = documents
+                    }
                 }
             }
             .store(in: &disposables)
-
-        // get all documents
-//        allDocuments = Array(DocumentService.archive.get(scope: .all, searchterms: [], status: .tagged))
     }
 }

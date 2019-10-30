@@ -33,7 +33,7 @@ struct ArchiveView: View {
     var documentsView: some View {
         List {
             ForEach(viewModel.documents) { document in
-                Text(document.filename)
+                DocumentView(viewModel: DocumentViewModel(document))
             }
         }
     }

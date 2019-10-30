@@ -14,6 +14,10 @@
 		171E0C8A1B8E5B84001E6242 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171E0C881B8E5B84001E6242 /* LaunchScreen.storyboard */; };
 		A301A75621496992003EA382 /* DocumentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A301A75421496992003EA382 /* DocumentTableViewCell.swift */; };
 		A301A75721496992003EA382 /* DocumentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A301A75521496992003EA382 /* DocumentTableViewCell.xib */; };
+		A30CB4172368D6C700D3063E /* DocumentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30CB4162368D6C700D3063E /* DocumentView.swift */; };
+		A30CB439236978E400D3063E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30CB438236978E300D3063E /* SceneDelegate.swift */; };
+		A30CB43B2369792900D3063E /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30CB43A2369792900D3063E /* MainTabView.swift */; };
+		A30CB43D23697C1800D3063E /* MainTabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30CB43C23697C1800D3063E /* MainTabViewModel.swift */; };
 		A30D767722BF914B00862224 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30D767622BF914B00862224 /* MainTabBarController.swift */; };
 		A31263E2217B75DC00ACAFA4 /* LoadingBackgroundView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A31263E4217B75DC00ACAFA4 /* LoadingBackgroundView.xib */; };
 		A314A29B225542360099681D /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A314A29A225542360099681D /* CustomButton.swift */; };
@@ -50,6 +54,9 @@
 		A38BDC302346340D003668C3 /* MoreViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A38BDC2D2346340D003668C3 /* MoreViewController.storyboard */; };
 		A3932824221EF7DC00858461 /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3932823221EF7DC00858461 /* ScanViewController.swift */; };
 		A393A28322A8486000D6DAF9 /* UIAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A393A28222A8486000D6DAF9 /* UIAlertController.swift */; };
+		A394E4C1236A2B6100C81CC2 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = A394E4C0236A2B6100C81CC2 /* Notification.swift */; };
+		A394E4C3236A310C00C81CC2 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A394E4C2236A310C00C81CC2 /* ProgressView.swift */; };
+		A394E4C5236A350000C81CC2 /* DocumentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A394E4C4236A350000C81CC2 /* DocumentViewModel.swift */; };
 		A39942BA228B3ACE00FFC16B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39942B9228B3ACE00FFC16B /* Constants.swift */; };
 		A39942BE228B422E00FFC16B /* IntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39942BD228B422E00FFC16B /* IntroViewController.swift */; };
 		A39A807A21FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
@@ -116,6 +123,16 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A394E4BF236A291E00C81CC2 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -128,6 +145,10 @@
 		171E0C8B1B8E5B84001E6242 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A301A75421496992003EA382 /* DocumentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentTableViewCell.swift; sourceTree = "<group>"; };
 		A301A75521496992003EA382 /* DocumentTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DocumentTableViewCell.xib; sourceTree = "<group>"; };
+		A30CB4162368D6C700D3063E /* DocumentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentView.swift; sourceTree = "<group>"; };
+		A30CB438236978E300D3063E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		A30CB43A2369792900D3063E /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		A30CB43C23697C1800D3063E /* MainTabViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabViewModel.swift; sourceTree = "<group>"; };
 		A30D767622BF914B00862224 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		A31263E3217B75DC00ACAFA4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LoadingBackgroundView.xib; sourceTree = "<group>"; };
 		A31263E6217B75E200ACAFA4 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LoadingBackgroundView.strings; sourceTree = "<group>"; };
@@ -165,6 +186,12 @@
 		A38BDC3623463BE4003668C3 /* de */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = de; path = de.lproj/AboutMeViewController.xib; sourceTree = "<group>"; };
 		A3932823221EF7DC00858461 /* ScanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
 		A393A28222A8486000D6DAF9 /* UIAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAlertController.swift; sourceTree = "<group>"; };
+		A394E4B3236A291E00C81CC2 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
+		A394E4B6236A291E00C81CC2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		A394E4B8236A291E00C81CC2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A394E4C0236A2B6100C81CC2 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
+		A394E4C2236A310C00C81CC2 /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
+		A394E4C4236A350000C81CC2 /* DocumentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentViewModel.swift; sourceTree = "<group>"; };
 		A39942B9228B3ACE00FFC16B /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		A39942BD228B422E00FFC16B /* IntroViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntroViewController.swift; sourceTree = "<group>"; };
 		A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf"; sourceTree = "<group>"; };
@@ -250,6 +277,7 @@
 		171E0C711B8E5B84001E6242 = {
 			isa = PBXGroup;
 			children = (
+				A394E4B2236A291E00C81CC2 /* PDFArchiverShareExtension */,
 				2C90F6DAB110A4A6FF569E3A /* Frameworks */,
 				171E0C7C1B8E5B84001E6242 /* PDFArchiver */,
 				A3BCC974217F84DB00C3775E /* PDFArchiverTests */,
@@ -273,6 +301,7 @@
 			children = (
 				171E0C7D1B8E5B84001E6242 /* AppDelegate.swift */,
 				A30D767622BF914B00862224 /* MainTabBarController.swift */,
+				A30CB438236978E300D3063E /* SceneDelegate.swift */,
 				A3F30D91221C9A030063D173 /* ArchiveTab */,
 				A34A84F32130A2A70093FAE5 /* Helpers */,
 				A3EBFE9E21650F58008C34CC /* Localizable.strings */,
@@ -283,6 +312,8 @@
 				A34A84F12130A28A0093FAE5 /* Services */,
 				A3FF63A22247A1A60089E66A /* Subscription */,
 				A3F30D8F221C99ED0063D173 /* TagTab */,
+				A30CB43A2369792900D3063E /* MainTabView.swift */,
+				A30CB43C23697C1800D3063E /* MainTabViewModel.swift */,
 			);
 			path = PDFArchiver;
 			sourceTree = "<group>";
@@ -346,6 +377,7 @@
 				A3DFA7262278D9CF00E0F362 /* WSTagsField.swift */,
 				A3B57B7E228720240078F7A4 /* Storage */,
 				A3689777235C754300F429AC /* Configuration.swift */,
+				A394E4C0236A2B6100C81CC2 /* Notification.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -358,6 +390,16 @@
 				171E0C811B8E5B84001E6242 /* DetailViewController.swift */,
 			);
 			path = Controllers;
+			sourceTree = "<group>";
+		};
+		A394E4B2236A291E00C81CC2 /* PDFArchiverShareExtension */ = {
+			isa = PBXGroup;
+			children = (
+				A394E4B3236A291E00C81CC2 /* ShareViewController.swift */,
+				A394E4B5236A291E00C81CC2 /* MainInterface.storyboard */,
+				A394E4B8236A291E00C81CC2 /* Info.plist */,
+			);
+			path = PDFArchiverShareExtension;
 			sourceTree = "<group>";
 		};
 		A3B57B7E228720240078F7A4 /* Storage */ = {
@@ -453,6 +495,9 @@
 				A36C42C12365E3F000F379FE /* ArchiveView.swift */,
 				A36C42C32365E3FB00F379FE /* ArchiveViewModel.swift */,
 				A36C42C7236780F700F379FE /* TestViewController.swift */,
+				A30CB4162368D6C700D3063E /* DocumentView.swift */,
+				A394E4C2236A310C00C81CC2 /* ProgressView.swift */,
+				A394E4C4236A350000C81CC2 /* DocumentViewModel.swift */,
 			);
 			path = ArchiveTab;
 			sourceTree = "<group>";
@@ -494,6 +539,7 @@
 				171E0C781B8E5B84001E6242 /* Resources */,
 				A34DEF932267B25800E12EE5 /* SettingsVersion */,
 				A363E85A225D30D3007BE48B /* Embed Frameworks */,
+				A394E4BF236A291E00C81CC2 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
@@ -555,7 +601,7 @@
 		171E0C721B8E5B84001E6242 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1000;
+				LastSwiftUpdateCheck = 1120;
 				LastUpgradeCheck = 1120;
 				ORGANIZATIONNAME = "Julian Kahnert";
 				TargetAttributes = {
@@ -737,7 +783,10 @@
 				A393A28322A8486000D6DAF9 /* UIAlertController.swift in Sources */,
 				A3FDD3432294578D0054FFFC /* DateDescriptionViewController.swift in Sources */,
 				A316F36622946ED70099BA26 /* UIViewController.swift in Sources */,
+				A30CB4172368D6C700D3063E /* DocumentView.swift in Sources */,
 				A36C42C8236780F700F379FE /* TestViewController.swift in Sources */,
+				A394E4C5236A350000C81CC2 /* DocumentViewModel.swift in Sources */,
+				A30CB43D23697C1800D3063E /* MainTabViewModel.swift in Sources */,
 				A3CF79BE22C3FA0A008711E4 /* PDFProcessing.swift in Sources */,
 				A3FDD33B229457260054FFFC /* PDFViewController.swift in Sources */,
 				171E0C801B8E5B84001E6242 /* ArchiveViewController.swift in Sources */,
@@ -745,10 +794,13 @@
 				A3B57B83228750CF0078F7A4 /* FileManager.swift in Sources */,
 				A3A2A72222FF51BF00747DDB /* UserDefaults.swift in Sources */,
 				A36C42C42365E3FB00F379FE /* ArchiveViewModel.swift in Sources */,
+				A30CB439236978E400D3063E /* SceneDelegate.swift in Sources */,
+				A30CB43B2369792900D3063E /* MainTabView.swift in Sources */,
 				A36611BE233FDB460092DB19 /* Log.swift in Sources */,
 				A36C42C22365E3F000F379FE /* ArchiveView.swift in Sources */,
 				A3FF63A022478FC10089E66A /* UIColor.swift in Sources */,
 				A3B57B7D228720090078F7A4 /* StorageHelper+Paths.swift in Sources */,
+				A394E4C3236A310C00C81CC2 /* ProgressView.swift in Sources */,
 				A3B57B81228720410078F7A4 /* StorageHelper+Errors.swift in Sources */,
 				A381CF21222F0B5D00FAFA7C /* ImageConverter.swift in Sources */,
 				A3FF63D02247AF570089E66A /* SubscriptionViewController.swift in Sources */,
@@ -766,6 +818,7 @@
 				A3D0999822BD15F0003D16E5 /* MoreTableViewController.swift in Sources */,
 				A314A29B225542360099681D /* CustomButton.swift in Sources */,
 				A3BE7B3A22B3DE05004A1ADE /* Document.swift in Sources */,
+				A394E4C1236A2B6100C81CC2 /* Notification.swift in Sources */,
 				A3F1C21D2163DCD9002B0141 /* AppStoreReviewRequest.swift in Sources */,
 				A3FDD3572294678A0054FFFC /* DocumentViewController.swift in Sources */,
 				A3F30D8E221C968E0063D173 /* SplitViewController.swift in Sources */,
@@ -865,6 +918,14 @@
 				A38BDC3523463BD4003668C3 /* de */,
 			);
 			name = MoreViewController.storyboard;
+			sourceTree = "<group>";
+		};
+		A394E4B5236A291E00C81CC2 /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A394E4B6236A291E00C81CC2 /* Base */,
+			);
+			name = MainInterface.storyboard;
 			sourceTree = "<group>";
 		};
 		A3EBFE9E21650F58008C34CC /* Localizable.strings */ = {
@@ -1020,6 +1081,7 @@
 		171E0CA51B8E5B84001E6242 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/PDFArchiver/Resources/PDFArchiver.entitlements";
@@ -1063,6 +1125,7 @@
 		171E0CA61B8E5B84001E6242 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/PDFArchiver/Resources/PDFArchiver.entitlements";

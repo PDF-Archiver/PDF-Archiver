@@ -46,7 +46,6 @@ class DocumentsQuery: NSObject, SystemLogging {
     }()
 
     weak var documentsQueryDelegate: DocumentsQueryDelegate?
-    weak var masterViewControllerDelegate: ArchiveViewControllerDelegate?
 
     // MARK: - Initialization
 
@@ -99,8 +98,8 @@ class DocumentsQuery: NSObject, SystemLogging {
         let addedMetadataItems = (notification.userInfo?[NSMetadataQueryUpdateAddedItemsKey] as? [NSMetadataItem]) ?? []
 
         // update the archive
-        let changedDocuments = documentsQueryDelegate?.updateWithResults(removedItems: removedMetadataItems, addedItems: addedMetadataItems, updatedItems: changedMetadataItems)
-        masterViewControllerDelegate?.update(.archivedDocuments(updatedDocuments: changedDocuments ?? []))
+        _ = documentsQueryDelegate?.updateWithResults(removedItems: removedMetadataItems, addedItems: addedMetadataItems, updatedItems: changedMetadataItems)
+        NotificationCenter.default.post(Notification(name: .documentChanges))
     }
 
     @objc
@@ -110,8 +109,8 @@ class DocumentsQuery: NSObject, SystemLogging {
         guard let metadataQueryResults = metadataQuery.results as? [NSMetadataItem] else { return }
 
         // update the archive
-        let changedDocuments = documentsQueryDelegate?.updateWithResults(removedItems: [], addedItems: metadataQueryResults, updatedItems: [])
-        masterViewControllerDelegate?.update(.archivedDocuments(updatedDocuments: changedDocuments ?? []))
+        _ = documentsQueryDelegate?.updateWithResults(removedItems: [], addedItems: metadataQueryResults, updatedItems: [])
+        NotificationCenter.default.post(Notification(name: .documentChanges))
 
         // get all pdf documents
         if firstRun {
