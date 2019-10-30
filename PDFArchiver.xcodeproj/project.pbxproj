@@ -57,6 +57,9 @@
 		A394E4C1236A2B6100C81CC2 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = A394E4C0236A2B6100C81CC2 /* Notification.swift */; };
 		A394E4C3236A310C00C81CC2 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A394E4C2236A310C00C81CC2 /* ProgressView.swift */; };
 		A394E4C5236A350000C81CC2 /* DocumentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A394E4C4236A350000C81CC2 /* DocumentViewModel.swift */; };
+		A394E4C7236A462500C81CC2 /* DocumentDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A394E4C6236A462500C81CC2 /* DocumentDetailView.swift */; };
+		A394E4C9236A463C00C81CC2 /* DocumentDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A394E4C8236A463C00C81CC2 /* DocumentDetailViewModel.swift */; };
+		A394E4CB236A519300C81CC2 /* PDFCustomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A394E4CA236A519300C81CC2 /* PDFCustomView.swift */; };
 		A39942BA228B3ACE00FFC16B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39942B9228B3ACE00FFC16B /* Constants.swift */; };
 		A39942BE228B422E00FFC16B /* IntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39942BD228B422E00FFC16B /* IntroViewController.swift */; };
 		A39A807A21FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
@@ -192,6 +195,9 @@
 		A394E4C0236A2B6100C81CC2 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		A394E4C2236A310C00C81CC2 /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
 		A394E4C4236A350000C81CC2 /* DocumentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentViewModel.swift; sourceTree = "<group>"; };
+		A394E4C6236A462500C81CC2 /* DocumentDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentDetailView.swift; sourceTree = "<group>"; };
+		A394E4C8236A463C00C81CC2 /* DocumentDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentDetailViewModel.swift; sourceTree = "<group>"; };
+		A394E4CA236A519300C81CC2 /* PDFCustomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFCustomView.swift; sourceTree = "<group>"; };
 		A39942B9228B3ACE00FFC16B /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		A39942BD228B422E00FFC16B /* IntroViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntroViewController.swift; sourceTree = "<group>"; };
 		A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf"; sourceTree = "<group>"; };
@@ -498,6 +504,9 @@
 				A30CB4162368D6C700D3063E /* DocumentView.swift */,
 				A394E4C2236A310C00C81CC2 /* ProgressView.swift */,
 				A394E4C4236A350000C81CC2 /* DocumentViewModel.swift */,
+				A394E4C6236A462500C81CC2 /* DocumentDetailView.swift */,
+				A394E4C8236A463C00C81CC2 /* DocumentDetailViewModel.swift */,
+				A394E4CA236A519300C81CC2 /* PDFCustomView.swift */,
 			);
 			path = ArchiveTab;
 			sourceTree = "<group>";
@@ -767,6 +776,7 @@
 				A3FDD355229467590054FFFC /* DocumentHandleViewController.swift in Sources */,
 				A3B83864218CA7640093C374 /* TableSection.swift in Sources */,
 				A30D767722BF914B00862224 /* MainTabBarController.swift in Sources */,
+				A394E4CB236A519300C81CC2 /* PDFCustomView.swift in Sources */,
 				A34A84FC2130A35A0093FAE5 /* ArchiveExtension.swift in Sources */,
 				A361F3C5230B137C00C52F40 /* HairlineConstraint.swift in Sources */,
 				A3400DE12268902200097A3F /* BartyCrouch.swift in Sources */,
@@ -786,6 +796,7 @@
 				A30CB4172368D6C700D3063E /* DocumentView.swift in Sources */,
 				A36C42C8236780F700F379FE /* TestViewController.swift in Sources */,
 				A394E4C5236A350000C81CC2 /* DocumentViewModel.swift in Sources */,
+				A394E4C9236A463C00C81CC2 /* DocumentDetailViewModel.swift in Sources */,
 				A30CB43D23697C1800D3063E /* MainTabViewModel.swift in Sources */,
 				A3CF79BE22C3FA0A008711E4 /* PDFProcessing.swift in Sources */,
 				A3FDD33B229457260054FFFC /* PDFViewController.swift in Sources */,
@@ -817,6 +828,7 @@
 				A3DFA7272278D9CF00E0F362 /* WSTagsField.swift in Sources */,
 				A3D0999822BD15F0003D16E5 /* MoreTableViewController.swift in Sources */,
 				A314A29B225542360099681D /* CustomButton.swift in Sources */,
+				A394E4C7236A462500C81CC2 /* DocumentDetailView.swift in Sources */,
 				A3BE7B3A22B3DE05004A1ADE /* Document.swift in Sources */,
 				A394E4C1236A2B6100C81CC2 /* Notification.swift in Sources */,
 				A3F1C21D2163DCD9002B0141 /* AppStoreReviewRequest.swift in Sources */,

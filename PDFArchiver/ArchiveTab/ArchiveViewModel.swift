@@ -9,24 +9,76 @@
 import ArchiveLib
 import Combine
 import Foundation
+import os.log
 
-class ArchiveViewModel: ObservableObject {
+class ArchiveViewModel: ObservableObject, SystemLogging {
+
+    static func createDetail(with document: Document) -> DocumentDetailView {
+        let viewModel = DocumentDetailViewModel(document)
+        return DocumentDetailView(viewModel: viewModel)
+    }
 
     @Published private(set) var documents: [Document] = []
     @Published var years: [String] = ["all", "2019", "2018", "2017"]
     @Published var scopeSelecton: Int = 0
     @Published var searchText = ""
 
+//    @Published var showAlert = false
+//    @Published var alertMessage: String = "Something went wrong"
+
     private var disposables = Set<AnyCancellable>()
 
     init() {
+        buildCombineStuff()
+    }
+
+    func tapped(_ document: Document) {
+        switch document.downloadStatus {
+        case .iCloudDrive:
+            document.download()
+        case .local:
+            os_log("Already local", log: ArchiveViewModel.log, type: .error)
+        case .downloading(percentDownloaded: _):
+            os_log("Already downloading", log: ArchiveViewModel.log, type: .error)
+        }
+    }
+
+    func delete(at offsets: IndexSet) {
+        for index in offsets {
+            let deletedDocument = documents.remove(at: index)
+            delete(deletedDocument)
+        }
+    }
+
+    private func delete(_ document: Document) {
+        let path: URL
+        if document.downloadStatus == .local {
+            path = document.path
+        } else {
+            let iCloudFilename = ".\(document.filename).icloud"
+            path = document.path.deletingLastPathComponent().appendingPathComponent(iCloudFilename)
+        }
+
+        do {
+            try FileManager.default.removeItem(at: path)
+            DocumentService.archive.remove(Set([document]))
+
+        } catch {
+            // TODO: handle error
+//            let alert = UIAlertController(title: NSLocalizedString("ArchiveViewController.delete_failed.title", comment: ""), message: error.localizedDescription, preferredStyle: .alert)
+//            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Button confirmation label"), style: .default, handler: nil))
+//            self.present(alert, animated: true, completion: nil)
+        }
+    }
+
+    private func buildCombineStuff() {
 
         // filter documents, get input from Notification, searchText or searchCcope
-        NotificationCenter.default.publisher(for: Notification.Name.documentChanges)
-            .debounce(for: .milliseconds(200), scheduler: DispatchQueue.global(qos: .userInitiated))
+        $searchText
+            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.global(qos: .userInitiated))
             .removeDuplicates()
-            .combineLatest($searchText, $scopeSelecton)
-            .map { (_, searchterm, searchscopeSelection) -> [Document] in
+            .combineLatest($scopeSelecton, NotificationCenter.default.publisher(for: Notification.Name.documentChanges))
+            .map { (searchterm, searchscopeSelection, _) -> [Document] in
 
                 let searchscope = self.years[searchscopeSelection]
                 let scope: SearchScope

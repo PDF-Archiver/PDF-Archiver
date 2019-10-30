@@ -33,8 +33,17 @@ struct ArchiveView: View {
     var documentsView: some View {
         List {
             ForEach(viewModel.documents) { document in
-                DocumentView(viewModel: DocumentViewModel(document))
-            }
+                if document.downloadStatus == .local {
+                    NavigationLink(destination: ArchiveViewModel.createDetail(with: document)) {
+                        DocumentView(viewModel: DocumentViewModel(document))
+                    }
+                } else {
+                    DocumentView(viewModel: DocumentViewModel(document))
+                        .onTapGesture {
+                            self.viewModel.tapped(document)
+                        }
+                }
+            }.onDelete(perform: viewModel.delete(at:))
         }
     }
 }

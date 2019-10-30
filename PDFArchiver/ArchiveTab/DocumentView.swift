@@ -28,7 +28,7 @@ struct DocumentView: View {
                 ProgressView(value: viewModel.downloadStatus)
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: 65.0)
     }
 
     var titleSubtitle: some View {
