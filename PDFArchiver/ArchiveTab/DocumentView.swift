@@ -53,12 +53,16 @@ struct DocumentView: View {
     var tags: some View {
         HStack {
             ForEach(viewModel.sortedTags, id: \.self) { tag in
-                Text(tag)
-                    .lineLimit(1)
-                    .padding(EdgeInsets(top: 2.0, leading: 5.0, bottom: 2.0, trailing: 5.0))
-                    .foregroundColor(.white)
-                    .background(Color.red)
-                    .cornerRadius(8.0)
+                HStack {
+                    Image(systemName: "tag")
+                    Text(tag)
+                        .lineLimit(1)
+                }
+                .font(.caption)
+                .padding(EdgeInsets(top: 2.0, leading: 5.0, bottom: 2.0, trailing: 5.0))
+                .foregroundColor(.white)
+                .background(Color(.paDarkRed))
+                .cornerRadius(8.0)
             }
         }
     }

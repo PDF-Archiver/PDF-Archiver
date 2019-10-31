@@ -13,7 +13,7 @@ struct MainTabView: View {
 
     var body: some View {
         TabView(selection: $viewModel.currentTab) {
-            Text("Scan Tab")
+            ScanTabView()
                 .tabItem {
                     VStack {
                         Image(systemName: "doc.text.viewfinder")
@@ -34,7 +34,7 @@ struct MainTabView: View {
                         Text("Archive")
                     }
                 }.tag(3)
-            Text("More Tab")
+            MoreTabViewController()
                 .tabItem {
                     VStack {
                         Image(systemName: "ellipsis")

@@ -23,13 +23,16 @@ class ArchiveViewModel: ObservableObject, SystemLogging {
     @Published var scopeSelecton: Int = 0
     @Published var searchText = ""
 
-//    @Published var showAlert = false
-//    @Published var alertMessage: String = "Something went wrong"
-
     private var disposables = Set<AnyCancellable>()
 
     init() {
         buildCombineStuff()
+
+        // Trigger creation of documents array, if no documents could be found.
+        // This might happen, when we start in another view and all previous notifications were not caught.
+        if documents.isEmpty {
+            NotificationCenter.default.post(Notification(name: .documentChanges))
+        }
     }
 
     func tapped(_ document: Document) {
