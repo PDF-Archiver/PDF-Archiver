@@ -23,6 +23,8 @@
 		A314A29B225542360099681D /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A314A29A225542360099681D /* CustomButton.swift */; };
 		A316F36622946ED70099BA26 /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A316F36522946ED70099BA26 /* UIViewController.swift */; };
 		A32777E521FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A32777E321FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf */; };
+		A334A646236E163A004D960C /* TagTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A334A645236E163A004D960C /* TagTabView.swift */; };
+		A334A648236E1DE4004D960C /* ScanTabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A334A647236E1DE4004D960C /* ScanTabViewModel.swift */; };
 		A3400DDB22688C4300097A3F /* Archive.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A3400DDD22688C4300097A3F /* Archive.storyboard */; };
 		A3400DE12268902200097A3F /* BartyCrouch.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3400DE02268902200097A3F /* BartyCrouch.swift */; };
 		A3490B9B22B5486D00C4BFB3 /* PDFArchiverUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B83718215FCEFA00DA239F /* PDFArchiverUITests.swift */; };
@@ -43,6 +45,7 @@
 		A36C42C42365E3FB00F379FE /* ArchiveViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36C42C32365E3FB00F379FE /* ArchiveViewModel.swift */; };
 		A36C42C62365E43D00F379FE /* SearchField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36C42C52365E43D00F379FE /* SearchField.swift */; };
 		A36C42C8236780F700F379FE /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36C42C7236780F700F379FE /* TestViewController.swift */; };
+		A377C907236E07CD000877EA /* DocumentCameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A377C906236E07CD000877EA /* DocumentCameraView.swift */; };
 		A378C433221B3929007D1419 /* DocumentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A378C432221B3929007D1419 /* DocumentService.swift */; };
 		A3811C0A2346150B00AF6CFA /* SwiftyStoreKit in Frameworks */ = {isa = PBXBuildFile; productRef = A3811C092346150B00AF6CFA /* SwiftyStoreKit */; };
 		A3811C0D2346156F00AF6CFA /* WSTagsField in Frameworks */ = {isa = PBXBuildFile; productRef = A3811C0C2346156F00AF6CFA /* WSTagsField */; };
@@ -61,7 +64,7 @@
 		A394E4C9236A463C00C81CC2 /* DocumentDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A394E4C8236A463C00C81CC2 /* DocumentDetailViewModel.swift */; };
 		A394E4CB236A519300C81CC2 /* PDFCustomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A394E4CA236A519300C81CC2 /* PDFCustomView.swift */; };
 		A394E4CD236A5C6C00C81CC2 /* MoreTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A394E4CC236A5C6C00C81CC2 /* MoreTabViewController.swift */; };
-		A394E4CF236A5F9300C81CC2 /* ScanTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A394E4CE236A5F9300C81CC2 /* ScanTabViewController.swift */; };
+		A394E4CF236A5F9300C81CC2 /* ScanTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A394E4CE236A5F9300C81CC2 /* ScanTabView.swift */; };
 		A39942BA228B3ACE00FFC16B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39942B9228B3ACE00FFC16B /* Constants.swift */; };
 		A39942BE228B422E00FFC16B /* IntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39942BD228B422E00FFC16B /* IntroViewController.swift */; };
 		A39A807A21FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
@@ -161,6 +164,8 @@
 		A316F36522946ED70099BA26 /* UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewController.swift; sourceTree = "<group>"; };
 		A32777E321FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf"; sourceTree = "<group>"; };
 		A32997CF224826AB000B78D0 /* IAPService_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = IAPService_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A334A645236E163A004D960C /* TagTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagTabView.swift; sourceTree = "<group>"; };
+		A334A647236E1DE4004D960C /* ScanTabViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanTabViewModel.swift; sourceTree = "<group>"; };
 		A335D4BA223D0B3400443A53 /* ArchiveLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ArchiveLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A3400DD722688C2100097A3F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/TagTab.storyboard; sourceTree = "<group>"; };
 		A3400DDC22688C4300097A3F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Archive.storyboard; sourceTree = "<group>"; };
@@ -181,6 +186,7 @@
 		A36C42C32365E3FB00F379FE /* ArchiveViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveViewModel.swift; sourceTree = "<group>"; };
 		A36C42C52365E43D00F379FE /* SearchField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchField.swift; sourceTree = "<group>"; };
 		A36C42C7236780F700F379FE /* TestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
+		A377C906236E07CD000877EA /* DocumentCameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentCameraView.swift; sourceTree = "<group>"; };
 		A378C432221B3929007D1419 /* DocumentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentService.swift; sourceTree = "<group>"; };
 		A381CF20222F0B5D00FAFA7C /* ImageConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageConverter.swift; sourceTree = "<group>"; };
 		A388C8262235330F000D52CB /* test-ocr-data.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "test-ocr-data.png"; sourceTree = "<group>"; };
@@ -201,7 +207,7 @@
 		A394E4C8236A463C00C81CC2 /* DocumentDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentDetailViewModel.swift; sourceTree = "<group>"; };
 		A394E4CA236A519300C81CC2 /* PDFCustomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFCustomView.swift; sourceTree = "<group>"; };
 		A394E4CC236A5C6C00C81CC2 /* MoreTabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreTabViewController.swift; sourceTree = "<group>"; };
-		A394E4CE236A5F9300C81CC2 /* ScanTabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanTabViewController.swift; sourceTree = "<group>"; };
+		A394E4CE236A5F9300C81CC2 /* ScanTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanTabView.swift; sourceTree = "<group>"; };
 		A39942B9228B3ACE00FFC16B /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		A39942BD228B422E00FFC16B /* IntroViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntroViewController.swift; sourceTree = "<group>"; };
 		A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf"; sourceTree = "<group>"; };
@@ -322,7 +328,6 @@
 				A3FECF952130A0220053F2E4 /* Resources */,
 				A3F30D90221C99F80063D173 /* ScanTab */,
 				A34A84F12130A28A0093FAE5 /* Services */,
-				A3FF63A22247A1A60089E66A /* Subscription */,
 				A3F30D8F221C99ED0063D173 /* TagTab */,
 			);
 			path = PDFArchiver;
@@ -485,6 +490,7 @@
 				A3FDD354229467590054FFFC /* DocumentHandleViewController.swift */,
 				A3FDD3562294678A0054FFFC /* DocumentViewController.swift */,
 				A3EF865922982CE400288B8C /* Views */,
+				A334A645236E163A004D960C /* TagTabView.swift */,
 			);
 			path = TagTab;
 			sourceTree = "<group>";
@@ -493,7 +499,10 @@
 			isa = PBXGroup;
 			children = (
 				A3932823221EF7DC00858461 /* ScanViewController.swift */,
-				A394E4CE236A5F9300C81CC2 /* ScanTabViewController.swift */,
+				A394E4CE236A5F9300C81CC2 /* ScanTabView.swift */,
+				A377C906236E07CD000877EA /* DocumentCameraView.swift */,
+				A3FF63A22247A1A60089E66A /* Subscription */,
+				A334A647236E1DE4004D960C /* ScanTabViewModel.swift */,
 			);
 			path = ScanTab;
 			sourceTree = "<group>";
@@ -799,6 +808,8 @@
 				A3932824221EF7DC00858461 /* ScanViewController.swift in Sources */,
 				A393A28322A8486000D6DAF9 /* UIAlertController.swift in Sources */,
 				A3FDD3432294578D0054FFFC /* DateDescriptionViewController.swift in Sources */,
+				A334A646236E163A004D960C /* TagTabView.swift in Sources */,
+				A377C907236E07CD000877EA /* DocumentCameraView.swift in Sources */,
 				A316F36622946ED70099BA26 /* UIViewController.swift in Sources */,
 				A30CB4172368D6C700D3063E /* DocumentView.swift in Sources */,
 				A36C42C8236780F700F379FE /* TestViewController.swift in Sources */,
@@ -808,10 +819,11 @@
 				A3CF79BE22C3FA0A008711E4 /* PDFProcessing.swift in Sources */,
 				A3FDD33B229457260054FFFC /* PDFViewController.swift in Sources */,
 				171E0C801B8E5B84001E6242 /* ArchiveViewController.swift in Sources */,
+				A334A648236E1DE4004D960C /* ScanTabViewModel.swift in Sources */,
 				A356115F22DE517B00A9092F /* Atomic.swift in Sources */,
 				A3B57B83228750CF0078F7A4 /* FileManager.swift in Sources */,
 				A3A2A72222FF51BF00747DDB /* UserDefaults.swift in Sources */,
-				A394E4CF236A5F9300C81CC2 /* ScanTabViewController.swift in Sources */,
+				A394E4CF236A5F9300C81CC2 /* ScanTabView.swift in Sources */,
 				A36C42C42365E3FB00F379FE /* ArchiveViewModel.swift in Sources */,
 				A30CB439236978E400D3063E /* SceneDelegate.swift in Sources */,
 				A30CB43B2369792900D3063E /* MainTabView.swift in Sources */,

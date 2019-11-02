@@ -12,6 +12,8 @@ import UIKit
 struct MoreTabViewController: UIViewControllerRepresentable {
 
     func makeUIViewController(context: Context) -> MoreTableViewController {
+        // TODO: fix about page
+        // TODO: navigation bar, e.g. when switching to "PDF quality"
         let storyboard = UIStoryboard(name: "MoreViewController", bundle: nil)
         guard let controller = storyboard.instantiateInitialViewController() as? MoreTableViewController else { fatalError("Could not instantiate MoreViewController.") }
 

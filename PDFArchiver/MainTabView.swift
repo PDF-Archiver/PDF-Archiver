@@ -13,34 +13,34 @@ struct MainTabView: View {
 
     var body: some View {
         TabView(selection: $viewModel.currentTab) {
-            ScanTabView()
+            ScanTabView(viewModel: viewModel.scanViewModel)
                 .tabItem {
                     VStack {
                         Image(systemName: "doc.text.viewfinder")
                         Text("Scan")
                     }
-                }.tag(1)
-            Text("Tagging Tab")
+                }.tag(0)
+            TagTabView()
                 .tabItem {
                     VStack {
                         Image(systemName: "tag")
                         Text("Tag")
                     }
-                }.tag(2)
+                }.tag(1)
             ArchiveView(viewModel: viewModel.archiveViewModel)
                 .tabItem {
                     VStack {
                         Image(systemName: "archivebox")
                         Text("Archive")
                     }
-                }.tag(3)
+                }.tag(2)
             MoreTabViewController()
                 .tabItem {
                     VStack {
                         Image(systemName: "ellipsis")
                         Text("More")
                     }
-                }.tag(4)
+                }.tag(3)
         }
     }
 }

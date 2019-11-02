@@ -10,17 +10,17 @@ import Combine
 import SwiftUI
 
 class MainTabViewModel: ObservableObject {
-    @Published var currentTab = 0
+    @Published var currentTab = UserDefaults.standard.lastSelectedTabIndex
     @Published var shouldPresentTutorial = !UserDefaults.standard.tutorialShown
 
     @Published var archiveViewModel = ArchiveViewModel()
+    @Published var scanViewModel = ScanTabViewModel()
 
     private var disposables = Set<AnyCancellable>()
 
     init() {
-        if UserDefaults.standard.tutorialShown {
-            currentTab = UserDefaults.standard.lastSelectedTabIndex
-        } else {
+
+        if !UserDefaults.standard.tutorialShown {
             currentTab = 2
         }
 

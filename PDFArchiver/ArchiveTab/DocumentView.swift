@@ -61,7 +61,7 @@ struct DocumentView: View {
                 .font(.caption)
                 .padding(EdgeInsets(top: 2.0, leading: 5.0, bottom: 2.0, trailing: 5.0))
                 .foregroundColor(.white)
-                .background(Color(.paDarkRed))
+                .background(Color(.paLightRed))
                 .cornerRadius(8.0)
             }
         }

@@ -11,7 +11,7 @@
         <!--Date Description View Controller-->
         <scene sceneID="Alk-7W-AHX">
             <objects>
-                <viewController automaticallyAdjustsScrollViewInsets="NO" id="T5S-hk-qlt" userLabel="Date Description View Controller" customClass="DocumentHandleViewController" customModule="PDFArchiver" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="DocumentHandleViewController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="T5S-hk-qlt" userLabel="Date Description View Controller" customClass="DocumentHandleViewController" customModule="PDFArchiver" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="kxM-LF-4yd">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
