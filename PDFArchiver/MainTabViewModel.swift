@@ -13,8 +13,9 @@ class MainTabViewModel: ObservableObject {
     @Published var currentTab = UserDefaults.standard.lastSelectedTabIndex
     @Published var shouldPresentTutorial = !UserDefaults.standard.tutorialShown
 
-    @Published var archiveViewModel = ArchiveViewModel()
     @Published var scanViewModel = ScanTabViewModel()
+    @Published var tagViewModel = TagTabViewModel()
+    @Published var archiveViewModel = ArchiveViewModel()
 
     private var disposables = Set<AnyCancellable>()
 

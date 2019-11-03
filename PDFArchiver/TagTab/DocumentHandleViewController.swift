@@ -83,6 +83,7 @@ class DocumentHandleViewController: UIViewController, SystemLogging {
             notificationFeedback.notificationOccurred(.success)
 
             // update the view to get a new document
+
             updateContent()
 
             // increment the AppStoreReview counter

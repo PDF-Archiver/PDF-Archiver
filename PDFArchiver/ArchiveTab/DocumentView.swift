@@ -14,7 +14,7 @@ struct DocumentView: View {
     let viewModel: DocumentViewModel
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4.0) {
+        VStack(alignment: HorizontalAlignment.leading, spacing: 4.0) {
             HStack {
                 titleSubtitle
                 Spacer()
@@ -51,20 +51,8 @@ struct DocumentView: View {
     }
 
     var tags: some View {
-        HStack {
-            ForEach(viewModel.sortedTags, id: \.self) { tag in
-                HStack {
-                    Image(systemName: "tag")
-                    Text(tag)
-                        .lineLimit(1)
-                }
-                .font(.caption)
-                .padding(EdgeInsets(top: 2.0, leading: 5.0, bottom: 2.0, trailing: 5.0))
-                .foregroundColor(.white)
-                .background(Color(.paLightRed))
-                .cornerRadius(8.0)
-            }
-        }
+        TagListView(tags: .constant(viewModel.sortedTags), isEditable: false, isMultiLine: false)
+            .font(.caption)
     }
 }
 

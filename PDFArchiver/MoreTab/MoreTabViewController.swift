@@ -20,7 +20,5 @@ struct MoreTabViewController: UIViewControllerRepresentable {
         return controller
     }
 
-    func updateUIViewController(_ uiViewController: MoreTableViewController, context: Context) {
-        print("UPDATING")
-    }
+    func updateUIViewController(_ uiViewController: MoreTableViewController, context: Context) { }
 }

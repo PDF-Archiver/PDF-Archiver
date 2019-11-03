@@ -25,6 +25,8 @@
 		A32777E521FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A32777E321FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf */; };
 		A334A646236E163A004D960C /* TagTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A334A645236E163A004D960C /* TagTabView.swift */; };
 		A334A648236E1DE4004D960C /* ScanTabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A334A647236E1DE4004D960C /* ScanTabViewModel.swift */; };
+		A33EC92B236E3CCA00471F98 /* TagTabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A33EC92A236E3CCA00471F98 /* TagTabViewModel.swift */; };
+		A33EC92D236E403A00471F98 /* TagListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A33EC92C236E403A00471F98 /* TagListView.swift */; };
 		A3400DDB22688C4300097A3F /* Archive.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A3400DDD22688C4300097A3F /* Archive.storyboard */; };
 		A3400DE12268902200097A3F /* BartyCrouch.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3400DE02268902200097A3F /* BartyCrouch.swift */; };
 		A3490B9B22B5486D00C4BFB3 /* PDFArchiverUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B83718215FCEFA00DA239F /* PDFArchiverUITests.swift */; };
@@ -167,6 +169,8 @@
 		A334A645236E163A004D960C /* TagTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagTabView.swift; sourceTree = "<group>"; };
 		A334A647236E1DE4004D960C /* ScanTabViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanTabViewModel.swift; sourceTree = "<group>"; };
 		A335D4BA223D0B3400443A53 /* ArchiveLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ArchiveLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A33EC92A236E3CCA00471F98 /* TagTabViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagTabViewModel.swift; sourceTree = "<group>"; };
+		A33EC92C236E403A00471F98 /* TagListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagListView.swift; sourceTree = "<group>"; };
 		A3400DD722688C2100097A3F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/TagTab.storyboard; sourceTree = "<group>"; };
 		A3400DDC22688C4300097A3F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Archive.storyboard; sourceTree = "<group>"; };
 		A3400DDF22688C4A00097A3F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Archive.strings; sourceTree = "<group>"; };
@@ -393,6 +397,7 @@
 				A3B57B7E228720240078F7A4 /* Storage */,
 				A3689777235C754300F429AC /* Configuration.swift */,
 				A394E4C0236A2B6100C81CC2 /* Notification.swift */,
+				A33EC92C236E403A00471F98 /* TagListView.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -491,6 +496,7 @@
 				A3FDD3562294678A0054FFFC /* DocumentViewController.swift */,
 				A3EF865922982CE400288B8C /* Views */,
 				A334A645236E163A004D960C /* TagTabView.swift */,
+				A33EC92A236E3CCA00471F98 /* TagTabViewModel.swift */,
 			);
 			path = TagTab;
 			sourceTree = "<group>";
@@ -796,8 +802,10 @@
 				A361F3C5230B137C00C52F40 /* HairlineConstraint.swift in Sources */,
 				A3400DE12268902200097A3F /* BartyCrouch.swift in Sources */,
 				A36C42C62365E43D00F379FE /* SearchField.swift in Sources */,
+				A33EC92B236E3CCA00471F98 /* TagTabViewModel.swift in Sources */,
 				A3ECBC9622496BA000A626AE /* IAP.swift in Sources */,
 				A394E4CD236A5C6C00C81CC2 /* MoreTabViewController.swift in Sources */,
+				A33EC92D236E403A00471F98 /* TagListView.swift in Sources */,
 				A301A75621496992003EA382 /* DocumentTableViewCell.swift in Sources */,
 				A39942BA228B3ACE00FFC16B /* Constants.swift in Sources */,
 				171E0C821B8E5B84001E6242 /* DetailViewController.swift in Sources */,

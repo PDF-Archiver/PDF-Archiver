@@ -20,7 +20,7 @@ struct MainTabView: View {
                         Text("Scan")
                     }
                 }.tag(0)
-            TagTabView()
+            TagTabView(viewModel: viewModel.tagViewModel)
                 .tabItem {
                     VStack {
                         Image(systemName: "tag")

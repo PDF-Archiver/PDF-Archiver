@@ -8,14 +8,62 @@
 
 import SwiftUI
 
-struct TagTabView: UIViewControllerRepresentable {
+struct TagTabView: View {
+    @ObservedObject var viewModel: TagTabViewModel
 
-    func makeUIViewController(context: Context) -> DocumentHandleViewController {
-        let storyboard = UIStoryboard(name: "TagTab", bundle: nil)
-        return storyboard.instantiateViewController(identifier: "DocumentHandleViewController")
+    var body: some View {
+        // TODO: make this view scrollable
+//        ScrollView(.vertical, showsIndicators: true) {
+        VStack(alignment: .leading, spacing: 8.0) {
+            pdfView
+            datePicker
+            specification
+            documentTags
+            suggestedTags
+        }
+//        }
+        .padding(EdgeInsets(top: 32.0, leading: 16.0, bottom: 32.0, trailing: 16.0))
     }
 
-    func updateUIViewController(_ uiViewController: DocumentHandleViewController, context: Context) {
+    private var pdfView: some View {
+        PDFCustomView(viewModel.pdfDocument)
+            .frame(maxWidth: .infinity, idealHeight: 450.0, alignment: .center)
+    }
 
+    private var datePicker: some View {
+        DatePicker(selection: $viewModel.date,
+                   displayedComponents: .date) {
+                    EmptyView()
+            }
+            .frame(maxWidth: .infinity, maxHeight: 120.0, alignment: .center)
+    }
+
+    private var specification: some View {
+        VStack(alignment: .leading) {
+            Text("Description")
+                .font(.caption)
+            TextField("Enter Description",
+                      text: $viewModel.specification)
+        }
+    }
+
+    private var documentTags: some View {
+        VStack(alignment: .leading) {
+            Text("Document Tags")
+                .font(.caption)
+            TagListView(tags: $viewModel.documentTags, isEditable: true, isMultiLine: true)
+                .font(.body)
+//            TextField("Enter Tag",
+//                text: $viewModel.documentTags)
+        }
+    }
+
+    private var suggestedTags: some View {
+        VStack(alignment: .leading) {
+            Text("Suggested Tags")
+                .font(.caption)
+            TagListView(tags: $viewModel.suggestedTags, isEditable: false, isMultiLine: true)
+                .font(.body)
+        }
     }
 }

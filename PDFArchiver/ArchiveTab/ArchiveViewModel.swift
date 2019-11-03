@@ -24,14 +24,16 @@ class ArchiveViewModel: ObservableObject, SystemLogging {
     @Published var searchText = ""
 
     private var disposables = Set<AnyCancellable>()
+    private let archive: Archive
 
-    init() {
+    init(_ archive: Archive = DocumentService.archive) {
+        self.archive = archive
         buildCombineStuff()
 
         // Trigger creation of documents array, if no documents could be found.
         // This might happen, when we start in another view and all previous notifications were not caught.
         if documents.isEmpty {
-            NotificationCenter.default.post(Notification(name: .documentChanges))
+            triggerUpdate()
         }
     }
 
@@ -39,6 +41,8 @@ class ArchiveViewModel: ObservableObject, SystemLogging {
         switch document.downloadStatus {
         case .iCloudDrive:
             document.download()
+            archive.update(document)
+            triggerUpdate()
         case .local:
             os_log("Already local", log: ArchiveViewModel.log, type: .error)
         case .downloading(percentDownloaded: _):
@@ -53,6 +57,10 @@ class ArchiveViewModel: ObservableObject, SystemLogging {
         }
     }
 
+    private func triggerUpdate() {
+        NotificationCenter.default.post(Notification(name: .documentChanges))
+    }
+
     private func delete(_ document: Document) {
         let path: URL
         if document.downloadStatus == .local {
@@ -64,7 +72,7 @@ class ArchiveViewModel: ObservableObject, SystemLogging {
 
         do {
             try FileManager.default.removeItem(at: path)
-            DocumentService.archive.remove(Set([document]))
+            archive.remove(Set([document]))
 
         } catch {
             // TODO: handle error
@@ -98,7 +106,7 @@ class ArchiveViewModel: ObservableObject, SystemLogging {
                     searchterms = [searchterm]
                 }
 
-                return DocumentService.archive.get(scope: scope, searchterms: searchterms, status: .tagged)
+                return self.archive.get(scope: scope, searchterms: searchterms, status: .tagged)
                     .sorted()
                     .reversed()
             }
@@ -108,6 +116,7 @@ class ArchiveViewModel: ObservableObject, SystemLogging {
 
                 // workaround to skip creation of large SwiftUI List Diffs
                 // TODO: should be tested on low end devices
+                // TODO: add sections to improve diffing?
                 if self.documents.count + documents.count < 500 {
                     self.documents = documents
                 } else {
