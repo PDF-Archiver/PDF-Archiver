@@ -56,6 +56,7 @@ struct DocumentView: View {
     }
 }
 
+#if DEBUG
 struct DocumentView_Previews: PreviewProvider {
     static let documentViewModel = DocumentViewModel(specification: "Ikea Bill",
                                                      formattedDate: "30.10.2019",
@@ -68,3 +69,4 @@ struct DocumentView_Previews: PreviewProvider {
             .padding()
     }
 }
+#endif

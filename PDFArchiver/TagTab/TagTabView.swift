@@ -13,16 +13,44 @@ struct TagTabView: View {
 
     var body: some View {
         // TODO: make this view scrollable
-//        ScrollView(.vertical, showsIndicators: true) {
-        VStack(alignment: .leading, spacing: 8.0) {
-            pdfView
-            datePicker
-            specification
-            documentTags
-            suggestedTags
+        NavigationView {
+    //        ScrollView(.vertical, showsIndicators: true) {
+            VStack(alignment: .leading, spacing: 8.0) {
+                pdfView
+                datePicker
+                specification
+                documentTags
+                suggestedTags
+            }
+    //        }
+            .padding(EdgeInsets(top: 32.0, leading: 16.0, bottom: 32.0, trailing: 16.0))
+            .navigationBarTitle("Tag", displayMode: .inline)
+            .navigationBarItems(leading: deleteNavBarView, trailing: saveNavBarView)
         }
-//        }
-        .padding(EdgeInsets(top: 32.0, leading: 16.0, bottom: 32.0, trailing: 16.0))
+    }
+
+    private var deleteNavBarView: some View {
+        Button(action: {
+            print("Delete")
+        }, label: {
+            VStack {
+                Image(systemName: "trash")
+                Text("Delete")
+                    .font(.system(size: 11.0))
+            }
+        })
+    }
+
+    private var saveNavBarView: some View {
+        Button(action: {
+            print("save")
+        }, label: {
+            VStack {
+                Image(systemName: "square.and.arrow.down")
+                Text("Save")
+                    .font(.system(size: 11.0))
+            }
+        })
     }
 
     private var pdfView: some View {

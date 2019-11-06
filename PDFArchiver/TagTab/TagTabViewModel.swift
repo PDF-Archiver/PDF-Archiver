@@ -40,7 +40,10 @@ class TagTabViewModel: ObservableObject {
                     DispatchQueue.global(qos: .userInitiated).async { [weak self] in
                         // get tags and save them in the background, they will be passed to the TagViewController
                         guard let text = pdfDocument.string else { return }
-                        self?.suggestedTags = TagParser.parse(text).sorted()
+                        let tags = TagParser.parse(text).sorted()
+                        DispatchQueue.main.async {
+                            self?.suggestedTags = tags
+                        }
                     }
                 } else {
                     Log.send(.error, "Could not present document.")
