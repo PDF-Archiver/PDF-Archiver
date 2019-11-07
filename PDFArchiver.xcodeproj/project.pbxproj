@@ -14,6 +14,7 @@
 		171E0C8A1B8E5B84001E6242 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171E0C881B8E5B84001E6242 /* LaunchScreen.storyboard */; };
 		A301A75621496992003EA382 /* DocumentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A301A75421496992003EA382 /* DocumentTableViewCell.swift */; };
 		A301A75721496992003EA382 /* DocumentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A301A75521496992003EA382 /* DocumentTableViewCell.xib */; };
+		A30A4B05237366F8001843B1 /* LaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30A4B04237366F8001843B1 /* LaunchTests.swift */; };
 		A30CB4172368D6C700D3063E /* DocumentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30CB4162368D6C700D3063E /* DocumentView.swift */; };
 		A30CB439236978E400D3063E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30CB438236978E300D3063E /* SceneDelegate.swift */; };
 		A30CB43B2369792900D3063E /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30CB43A2369792900D3063E /* MainTabView.swift */; };
@@ -155,6 +156,7 @@
 		171E0C8B1B8E5B84001E6242 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A301A75421496992003EA382 /* DocumentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentTableViewCell.swift; sourceTree = "<group>"; };
 		A301A75521496992003EA382 /* DocumentTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DocumentTableViewCell.xib; sourceTree = "<group>"; };
+		A30A4B04237366F8001843B1 /* LaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchTests.swift; sourceTree = "<group>"; };
 		A30CB4162368D6C700D3063E /* DocumentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentView.swift; sourceTree = "<group>"; };
 		A30CB438236978E300D3063E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		A30CB43A2369792900D3063E /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
@@ -201,9 +203,6 @@
 		A38BDC3623463BE4003668C3 /* de */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = de; path = de.lproj/AboutMeViewController.xib; sourceTree = "<group>"; };
 		A3932823221EF7DC00858461 /* ScanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
 		A393A28222A8486000D6DAF9 /* UIAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAlertController.swift; sourceTree = "<group>"; };
-		A394E4B3236A291E00C81CC2 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
-		A394E4B6236A291E00C81CC2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
-		A394E4B8236A291E00C81CC2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A394E4C0236A2B6100C81CC2 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		A394E4C2236A310C00C81CC2 /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
 		A394E4C4236A350000C81CC2 /* DocumentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentViewModel.swift; sourceTree = "<group>"; };
@@ -297,11 +296,10 @@
 		171E0C711B8E5B84001E6242 = {
 			isa = PBXGroup;
 			children = (
-				A394E4B2236A291E00C81CC2 /* PDFArchiverShareExtension */,
-				2C90F6DAB110A4A6FF569E3A /* Frameworks */,
 				171E0C7C1B8E5B84001E6242 /* PDFArchiver */,
 				A3BCC974217F84DB00C3775E /* PDFArchiverTests */,
 				A3B83717215FCEFA00DA239F /* PDFArchiverUITests */,
+				2C90F6DAB110A4A6FF569E3A /* Frameworks */,
 				171E0C7B1B8E5B84001E6242 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -412,16 +410,6 @@
 			path = Controllers;
 			sourceTree = "<group>";
 		};
-		A394E4B2236A291E00C81CC2 /* PDFArchiverShareExtension */ = {
-			isa = PBXGroup;
-			children = (
-				A394E4B3236A291E00C81CC2 /* ShareViewController.swift */,
-				A394E4B5236A291E00C81CC2 /* MainInterface.storyboard */,
-				A394E4B8236A291E00C81CC2 /* Info.plist */,
-			);
-			path = PDFArchiverShareExtension;
-			sourceTree = "<group>";
-		};
 		A3B57B7E228720240078F7A4 /* Storage */ = {
 			isa = PBXGroup;
 			children = (
@@ -438,6 +426,7 @@
 				A3B83718215FCEFA00DA239F /* PDFArchiverUITests.swift */,
 				A3B8371A215FCEFA00DA239F /* Info.plist */,
 				A3B83720215FD14A00DA239F /* SnapshotHelper.swift */,
+				A30A4B04237366F8001843B1 /* LaunchTests.swift */,
 			);
 			path = PDFArchiverUITests;
 			sourceTree = "<group>";
@@ -870,6 +859,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A3490B9B22B5486D00C4BFB3 /* PDFArchiverUITests.swift in Sources */,
+				A30A4B05237366F8001843B1 /* LaunchTests.swift in Sources */,
 				A3B83721215FD14A00DA239F /* SnapshotHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -958,14 +948,6 @@
 				A38BDC3523463BD4003668C3 /* de */,
 			);
 			name = MoreViewController.storyboard;
-			sourceTree = "<group>";
-		};
-		A394E4B5236A291E00C81CC2 /* MainInterface.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				A394E4B6236A291E00C81CC2 /* Base */,
-			);
-			name = MainInterface.storyboard;
 			sourceTree = "<group>";
 		};
 		A3EBFE9E21650F58008C34CC /* Localizable.strings */ = {
@@ -1418,8 +1400,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/PDF-Archiver/LoggingKit";
 			requirement = {
-				branch = master;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.3;
 			};
 		};
 		A3811C082346150B00AF6CFA /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */ = {

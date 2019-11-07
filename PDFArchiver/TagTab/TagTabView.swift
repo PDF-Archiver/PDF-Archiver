@@ -12,20 +12,24 @@ struct TagTabView: View {
     @ObservedObject var viewModel: TagTabViewModel
 
     var body: some View {
-        // TODO: make this view scrollable
         NavigationView {
-    //        ScrollView(.vertical, showsIndicators: true) {
-            VStack(alignment: .leading, spacing: 8.0) {
-                pdfView
-                datePicker
-                specification
-                documentTags
-                suggestedTags
+            if viewModel.currentDocument != nil {
+            ScrollView(.vertical, showsIndicators: true) {
+                VStack(alignment: .leading, spacing: 8.0) {
+                    pdfView
+                    datePicker
+                    specification
+                    documentTags
+                    suggestedTags
+                }
             }
-    //        }
-            .padding(EdgeInsets(top: 32.0, leading: 16.0, bottom: 32.0, trailing: 16.0))
+            .padding(EdgeInsets(top: 0.0, leading: 16.0, bottom: 32.0, trailing: 16.0))
             .navigationBarTitle("Tag", displayMode: .inline)
             .navigationBarItems(leading: deleteNavBarView, trailing: saveNavBarView)
+            } else {
+                // TODO: add an empty view
+                Text("Empty View")
+            }
         }
     }
 
@@ -62,8 +66,8 @@ struct TagTabView: View {
         DatePicker(selection: $viewModel.date,
                    displayedComponents: .date) {
                     EmptyView()
-            }
-            .frame(maxWidth: .infinity, maxHeight: 120.0, alignment: .center)
+                }
+                .frame(maxWidth: .infinity, maxHeight: 120.0, alignment: .center)
     }
 
     private var specification: some View {
@@ -81,8 +85,15 @@ struct TagTabView: View {
                 .font(.caption)
             TagListView(tags: $viewModel.documentTags, isEditable: true, isMultiLine: true)
                 .font(.body)
-//            TextField("Enter Tag",
-//                text: $viewModel.documentTags)
+            // TODO: add action
+            TextField("Enter Tag",
+                text: $viewModel.documentTagInput,
+                onEditingChanged: {value in
+
+                },
+                onCommit: {
+                    print("Input finished!")
+                })
         }
     }
 

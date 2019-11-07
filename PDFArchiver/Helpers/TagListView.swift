@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 02.11.19.
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
+// swiftlint:disable identifier_name
 
 import SwiftUI
 
@@ -69,8 +70,15 @@ extension String: Identifiable {
     public var id: String { self }
 }
 
-
 // source: https://github.com/objcio/collection-view-swiftui/tree/master/FlowLayoutST
+//
+//  ContentView.swift
+//  FlowLayoutST
+//
+//  Created by Chris Eidhof on 22.08.19.
+//  Copyright © 2019 Chris Eidhof. All rights reserved.
+//
+
 struct FlowLayout {
     let spacing: UIOffset
     let containerSize: CGSize

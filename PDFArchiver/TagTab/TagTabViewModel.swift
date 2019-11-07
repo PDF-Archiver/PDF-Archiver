@@ -12,10 +12,12 @@ import PDFKit
 import SwiftUI
 
 class TagTabViewModel: ObservableObject {
+    @Published var currentDocument: Document?
     @Published var pdfDocument = PDFDocument()
     @Published var date = Date()
     @Published var specification = ""
     @Published var documentTags = [String]()
+    @Published var documentTagInput = ""
     @Published var suggestedTags = [String]()
 
     private let archive: Archive
@@ -26,10 +28,20 @@ class TagTabViewModel: ObservableObject {
 
         NotificationCenter.default.publisher(for: .documentChanges)
             .compactMap { _ in
-                DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged)
+                let documents = DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged)
+                guard self.currentDocument == nil || !documents.contains(self.currentDocument!)  else { return nil }
+                return documents
                     .filter { $0.downloadStatus == .local }
                     .max()?.cleaned()
             }
+            .receive(on: DispatchQueue.main)
+            .sink { document in
+                self.currentDocument = document
+            }
+            .store(in: &disposables)
+
+        $currentDocument
+            .compactMap { $0 }
             .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .sink { document in
