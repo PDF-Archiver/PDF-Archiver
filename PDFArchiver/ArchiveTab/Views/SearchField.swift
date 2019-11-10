@@ -42,14 +42,9 @@ struct SearchField: View {
 
     var segmentedControl: some View {
         Picker(selection: $selectionIndex, label: Text("")) {
-            Text(scopes[0]).tag(0)
-            Text(scopes[1]).tag(1)
-            Text(scopes[2]).tag(2)
-            Text(scopes[3]).tag(3)
-//            ForEach(scopes) { value in
-//            ForEach(0..<$scopes.count) { index in
-//                Text($scopes[index]).tag(index)
-//            }
+            ForEach(0..<self.scopes.count) { index in
+                Text(self.scopes[index]).tag(index)
+            }
         }
         .pickerStyle(SegmentedPickerStyle())
     }

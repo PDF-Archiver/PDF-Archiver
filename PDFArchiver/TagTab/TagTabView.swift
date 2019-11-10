@@ -6,6 +6,7 @@
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
 
+import KeyboardObserving
 import SwiftUI
 
 struct TagTabView: View {
@@ -14,18 +15,20 @@ struct TagTabView: View {
     var body: some View {
         NavigationView {
             if viewModel.currentDocument != nil {
-            ScrollView(.vertical, showsIndicators: true) {
-                VStack(alignment: .leading, spacing: 8.0) {
+                VStack {
                     pdfView
-                    datePicker
-                    specification
-                    documentTags
-                    suggestedTags
+                    Form {
+                        DatePicker("Date",
+                                   selection: $viewModel.date,
+                                   displayedComponents: .date)
+                        TextField("Description", text: $viewModel.specification)
+                        documentTags
+                        suggestedTags
+                    }
                 }
-            }
-            .padding(EdgeInsets(top: 0.0, leading: 16.0, bottom: 32.0, trailing: 16.0))
-            .navigationBarTitle("Tag", displayMode: .inline)
-            .navigationBarItems(leading: deleteNavBarView, trailing: saveNavBarView)
+                .keyboardObserving()
+                .navigationBarTitle(Text("Document"), displayMode: .inline)
+                .navigationBarItems(leading: deleteNavBarView, trailing: saveNavBarView)
             } else {
                 // TODO: add an empty view
                 Text("Empty View")
@@ -51,31 +54,16 @@ struct TagTabView: View {
         }, label: {
             VStack {
                 Image(systemName: "square.and.arrow.down")
-                Text("Save")
+                Text("Add")
                     .font(.system(size: 11.0))
             }
         })
     }
 
     private var pdfView: some View {
-        PDFCustomView(viewModel.pdfDocument)
-            .frame(maxWidth: .infinity, idealHeight: 450.0, alignment: .center)
-    }
-
-    private var datePicker: some View {
-        DatePicker(selection: $viewModel.date,
-                   displayedComponents: .date) {
-                    EmptyView()
-                }
-                .frame(maxWidth: .infinity, maxHeight: 120.0, alignment: .center)
-    }
-
-    private var specification: some View {
-        VStack(alignment: .leading) {
-            Text("Description")
-                .font(.caption)
-            TextField("Enter Description",
-                      text: $viewModel.specification)
+        GeometryReader { proxy in
+            PDFCustomView(self.viewModel.pdfDocument)
+                .frame(maxWidth: .infinity, idealHeight: proxy.size.height * 0.40, alignment: .center)
         }
     }
 

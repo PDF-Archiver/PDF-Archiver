@@ -19,7 +19,7 @@ struct ArchiveView: View {
                 searchView
                 documentsView
             }
-            .navigationBarTitle(Text("Search"))
+            .navigationBarTitle(Text("Documents"))
         }
     }
 

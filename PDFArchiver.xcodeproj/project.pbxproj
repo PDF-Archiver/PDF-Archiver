@@ -92,6 +92,7 @@
 		A3EBFE9C21650F58008C34CC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A3EBFE9E21650F58008C34CC /* Localizable.strings */; };
 		A3ECBC9622496BA000A626AE /* IAP.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3ECBC9522496BA000A626AE /* IAP.swift */; };
 		A3F1C21D2163DCD9002B0141 /* AppStoreReviewRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */; };
+		A3F28ABC23759A7900E6D184 /* KeyboardObserving in Frameworks */ = {isa = PBXBuildFile; productRef = A3F28ABB23759A7900E6D184 /* KeyboardObserving */; };
 		A3F30D8E221C968E0063D173 /* SplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F30D8D221C968E0063D173 /* SplitViewController.swift */; };
 		A3F87E6D22D52EFB00A47710 /* AboutMeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F87E6B22D52EFB00A47710 /* AboutMeViewController.swift */; };
 		A3FDD33B229457260054FFFC /* PDFViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FDD339229457260054FFFC /* PDFViewController.swift */; };
@@ -267,6 +268,7 @@
 			files = (
 				A3811C0D2346156F00AF6CFA /* WSTagsField in Frameworks */,
 				A36611C4233FDDB40092DB19 /* LoggingKit in Frameworks */,
+				A3F28ABC23759A7900E6D184 /* KeyboardObserving in Frameworks */,
 				A35B7D07235C71C8002F7716 /* PaperOnboarding in Frameworks */,
 				A3811C0A2346150B00AF6CFA /* SwiftyStoreKit in Frameworks */,
 				A35B7D04235C718A002F7716 /* Sentry in Frameworks */,
@@ -573,6 +575,7 @@
 				A38BDC25234632F6003668C3 /* ArchiveLib */,
 				A35B7D03235C718A002F7716 /* Sentry */,
 				A35B7D06235C71C8002F7716 /* PaperOnboarding */,
+				A3F28ABB23759A7900E6D184 /* KeyboardObserving */,
 			);
 			productName = CandySearch;
 			productReference = 171E0C7A1B8E5B84001E6242 /* PDFArchiver.app */;
@@ -672,6 +675,7 @@
 				A38BDC24234632F6003668C3 /* XCRemoteSwiftPackageReference "ArchiveLib" */,
 				A35B7D02235C718A002F7716 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 				A35B7D05235C71C8002F7716 /* XCRemoteSwiftPackageReference "paper-onboarding" */,
+				A3F28ABA23759A7900E6D184 /* XCRemoteSwiftPackageReference "KeyboardObserving" */,
 			);
 			productRefGroup = 171E0C7B1B8E5B84001E6242 /* Products */;
 			projectDirPath = "";
@@ -1436,6 +1440,14 @@
 				minimumVersion = 2.0.6;
 			};
 		};
+		A3F28ABA23759A7900E6D184 /* XCRemoteSwiftPackageReference "KeyboardObserving" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/nickffox/KeyboardObserving";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.2.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1473,6 +1485,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A38BDC24234632F6003668C3 /* XCRemoteSwiftPackageReference "ArchiveLib" */;
 			productName = ArchiveLib;
+		};
+		A3F28ABB23759A7900E6D184 /* KeyboardObserving */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A3F28ABA23759A7900E6D184 /* XCRemoteSwiftPackageReference "KeyboardObserving" */;
+			productName = KeyboardObserving;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
