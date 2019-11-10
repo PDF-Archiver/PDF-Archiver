@@ -11,16 +11,14 @@ import Foundation
 import os.log
 import VisionKit
 
-class ScanTabViewModel: NSObject, ObservableObject {
+class ScanTabViewModel: ObservableObject {
     @Published var showDocumentScan: Bool = false
     @Published var progressValue: Float = 0.0
     @Published var progressLabel: String = ""
 
     private var disposables = Set<AnyCancellable>()
 
-    override init() {
-        super.init()
-
+    init() {
         // show the processing indicator, if documents are currently processed
         if ImageConverter.shared.totalDocumentCount.value != 0 {
             updateProcessingIndicator(with: 0)
@@ -42,7 +40,7 @@ class ScanTabViewModel: NSObject, ObservableObject {
 
     func startScanning() {
         Log.send(.info, "Start scanning a document.")
-        showDocumentScan.toggle()
+        showDocumentScan = true
 
         // stop current image processing
         ImageConverter.shared.stopProcessing()

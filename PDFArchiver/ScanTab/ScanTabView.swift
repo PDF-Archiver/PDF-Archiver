@@ -11,7 +11,6 @@ import UIKit
 
 struct ScanTabView: View {
 
-    // TODO: add subscription permission test
     @ObservedObject var viewModel: ScanTabViewModel
 
     var body: some View {
@@ -67,9 +66,6 @@ struct ScanTabView: View {
                 .background(Color(.paDarkGray))
                 .cornerRadius(8.0)
         })
-        .sheet(isPresented: $viewModel.showDocumentScan) {
-            DocumentCameraView(completionHandler: self.viewModel.process)
-        }
     }
 }
 

@@ -12,35 +12,45 @@ struct MainTabView: View {
     @ObservedObject var viewModel: MainTabViewModel
 
     var body: some View {
-        TabView(selection: $viewModel.currentTab) {
-            ScanTabView(viewModel: viewModel.scanViewModel)
-                .tabItem {
-                    VStack {
-                        Image(systemName: "doc.text.viewfinder")
-                        Text("Scan")
-                    }
-                }.tag(0)
-            TagTabView(viewModel: viewModel.tagViewModel)
-                .tabItem {
-                    VStack {
-                        Image(systemName: "tag")
-                        Text("Tag")
-                    }
-                }.tag(1)
-            ArchiveView(viewModel: viewModel.archiveViewModel)
-                .tabItem {
-                    VStack {
-                        Image(systemName: "archivebox")
-                        Text("Archive")
-                    }
-                }.tag(2)
-            MoreTabViewController()
-                .tabItem {
-                    VStack {
-                        Image(systemName: "ellipsis")
-                        Text("More")
-                    }
-                }.tag(3)
+        ZStack {
+            TabView(selection: $viewModel.currentTab) {
+                ScanTabView(viewModel: viewModel.scanViewModel)
+                    .tabItem {
+                        VStack {
+                            Image(systemName: "doc.text.viewfinder")
+                            Text("Scan")
+                        }
+                    }.tag(0)
+                TagTabView(viewModel: viewModel.tagViewModel)
+                    .tabItem {
+                        VStack {
+                            Image(systemName: "tag")
+                            Text("Tag")
+                        }
+                    }.tag(1)
+                ArchiveView(viewModel: viewModel.archiveViewModel)
+                    .tabItem {
+                        VStack {
+                            Image(systemName: "archivebox")
+                            Text("Archive")
+                        }
+                    }.tag(2)
+                MoreTabViewController()
+                    .tabItem {
+                        VStack {
+                            Image(systemName: "ellipsis")
+                            Text("More")
+                        }
+                    }.tag(3)
+            }
+
+            if viewModel.showDocumentScan {
+                DocumentCameraView(completionHandler: viewModel.scanViewModel.process)
+                    .edgesIgnoringSafeArea(.all)
+                    .statusBar(hidden: true)
+            }
+
+            // TODO: add subscription permission test
         }
     }
 }
