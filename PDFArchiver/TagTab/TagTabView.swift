@@ -15,18 +15,17 @@ struct TagTabView: View {
     var body: some View {
         NavigationView {
             if viewModel.currentDocument != nil {
-                VStack {
-                    pdfView
-                    Form {
-                        DatePicker("Date",
-                                   selection: $viewModel.date,
-                                   displayedComponents: .date)
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 16.0) {
+                        pdfView
+                        datePicker
                         TextField("Description", text: $viewModel.specification)
                         documentTags
                         suggestedTags
                     }
                 }
                 .keyboardObserving()
+                .padding(EdgeInsets(top: 0.0, leading: 8.0, bottom: 0.0, trailing: 8.0))
                 .navigationBarTitle(Text("Document"), displayMode: .inline)
                 .navigationBarItems(leading: deleteNavBarView, trailing: saveNavBarView)
             } else {
@@ -34,11 +33,14 @@ struct TagTabView: View {
                 Text("Empty View")
             }
         }
+        .onTapGesture {
+            self.endEditing(true)
+        }
     }
 
     private var deleteNavBarView: some View {
         Button(action: {
-            print("Delete")
+            self.viewModel.deleteDocument()
         }, label: {
             VStack {
                 Image(systemName: "trash")
@@ -50,7 +52,7 @@ struct TagTabView: View {
 
     private var saveNavBarView: some View {
         Button(action: {
-            print("save")
+            self.viewModel.saveDocument()
         }, label: {
             VStack {
                 Image(systemName: "square.and.arrow.down")
@@ -61,27 +63,29 @@ struct TagTabView: View {
     }
 
     private var pdfView: some View {
-        GeometryReader { proxy in
-            PDFCustomView(self.viewModel.pdfDocument)
-                .frame(maxWidth: .infinity, idealHeight: proxy.size.height * 0.40, alignment: .center)
-        }
+        PDFCustomView(self.viewModel.pdfDocument)
+            .frame(maxWidth: .infinity, minHeight: 325.0, maxHeight: 325.0, alignment: .center)
+    }
+
+    private var datePicker: some View {
+        CustomDatePicker(date: $viewModel.date)
+            .frame(maxWidth: .infinity, alignment: .center)
     }
 
     private var documentTags: some View {
         VStack(alignment: .leading) {
             Text("Document Tags")
                 .font(.caption)
-            TagListView(tags: $viewModel.documentTags, isEditable: true, isMultiLine: true)
+            TagListView(tags: $viewModel.documentTags, isEditable: true, isMultiLine: true, tapHandler: viewModel.documentTagTapped(_:))
                 .font(.body)
-            // TODO: add action
-            TextField("Enter Tag",
-                text: $viewModel.documentTagInput,
-                onEditingChanged: {value in
-
-                },
-                onCommit: {
-                    print("Input finished!")
-                })
+            CustomTextField(text: $viewModel.documentTagInput,
+                            placeholder: "Enter Tag",
+                            suggestionView: UIView(),
+                            onCommit: { _ in
+                                self.viewModel.saveTag()
+                            },
+                            isFirstResponder: true)
+                .padding(EdgeInsets(top: 4.0, leading: 0.0, bottom: 4.0, trailing: 0.0))
         }
     }
 
@@ -89,7 +93,7 @@ struct TagTabView: View {
         VStack(alignment: .leading) {
             Text("Suggested Tags")
                 .font(.caption)
-            TagListView(tags: $viewModel.suggestedTags, isEditable: false, isMultiLine: true)
+            TagListView(tags: $viewModel.suggestedTags, isEditable: false, isMultiLine: true, tapHandler: viewModel.suggestedTagTapped(_:))
                 .font(.body)
         }
     }

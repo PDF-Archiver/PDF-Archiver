@@ -14,6 +14,7 @@ struct TagListView: View {
     @Binding var tags: [String]
     let isEditable: Bool
     let isMultiLine: Bool
+    let tapHandler: ((String) -> Void)?
 
     @ViewBuilder
     var body: some View {
@@ -27,7 +28,9 @@ struct TagListView: View {
     private var singleLineView: some View {
         HStack {
             ForEach(tags, id: \.self) { tagName in
-                TagView(tagName: tagName, isEditable: self.isEditable)
+                TagView(tagName: tagName,
+                        isEditable: self.isEditable,
+                        tapHandler: self.tapHandler)
             }
         }
     }
@@ -36,43 +39,23 @@ struct TagListView: View {
         ForEach(0...tags.count / 3, id: \.self) { rowIndex in
             HStack {
                 if (rowIndex * 3 + 0) < self.tags.count {
-                TagView(tagName: self.tags[rowIndex * 3 + 0], isEditable: self.isEditable)
+                    TagView(tagName: self.tags[rowIndex * 3 + 0], isEditable: self.isEditable, tapHandler: self.tapHandler)
                 }
                 if (rowIndex * 3 + 1) < self.tags.count {
-                TagView(tagName: self.tags[rowIndex * 3 + 1], isEditable: self.isEditable)
+                    TagView(tagName: self.tags[rowIndex * 3 + 1], isEditable: self.isEditable, tapHandler: self.tapHandler)
                 }
                 if (rowIndex * 3 + 2) < self.tags.count {
-                TagView(tagName: self.tags[rowIndex * 3 + 2], isEditable: self.isEditable)
+                    TagView(tagName: self.tags[rowIndex * 3 + 2], isEditable: self.isEditable, tapHandler: self.tapHandler)
                 }
             }
         }
-    }
-}
-
-struct TagView: View {
-    let tagName: String
-    let isEditable: Bool
-
-    var body: some View {
-        HStack {
-            Image(systemName: "tag")
-            Text(tagName)
-                .lineLimit(1)
-            if self.isEditable {
-                Image(systemName: "xmark.circle.fill")
-            }
-        }
-        .padding(EdgeInsets(top: 2.0, leading: 5.0, bottom: 2.0, trailing: 5.0))
-        .foregroundColor(.white)
-        .background(Color(.paLightRed))
-        .cornerRadius(8.0)
     }
 }
 
 struct TagListView_Previews: PreviewProvider {
     @State static var tags = ["tag1", "tag2", "tag3", "tag4"]
     static var previews: some View {
-        TagListView(tags: $tags, isEditable: true, isMultiLine: true)
+        TagListView(tags: $tags, isEditable: true, isMultiLine: true, tapHandler: nil)
     }
 }
 

@@ -51,7 +51,7 @@ struct DocumentView: View {
     }
 
     var tags: some View {
-        TagListView(tags: .constant(viewModel.sortedTags), isEditable: false, isMultiLine: false)
+        TagListView(tags: .constant(viewModel.sortedTags), isEditable: false, isMultiLine: false, tapHandler: nil)
             .font(.caption)
     }
 }

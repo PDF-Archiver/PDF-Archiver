@@ -53,6 +53,10 @@
 		A3811C0A2346150B00AF6CFA /* SwiftyStoreKit in Frameworks */ = {isa = PBXBuildFile; productRef = A3811C092346150B00AF6CFA /* SwiftyStoreKit */; };
 		A3811C0D2346156F00AF6CFA /* WSTagsField in Frameworks */ = {isa = PBXBuildFile; productRef = A3811C0C2346156F00AF6CFA /* WSTagsField */; };
 		A381CF21222F0B5D00FAFA7C /* ImageConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A381CF20222F0B5D00FAFA7C /* ImageConverter.swift */; };
+		A387EFED23786FE2003FB3B7 /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A387EFEC23786FE2003FB3B7 /* CustomTextField.swift */; };
+		A387EFEF237879EB003FB3B7 /* TagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A387EFEE237879EB003FB3B7 /* TagView.swift */; };
+		A387EFF123788442003FB3B7 /* CustomDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A387EFF023788442003FB3B7 /* CustomDatePicker.swift */; };
+		A387EFF32378BE19003FB3B7 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = A387EFF22378BE19003FB3B7 /* View.swift */; };
 		A389789B2274FD4600DC13B9 /* CustomInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A389789A2274FD4600DC13B9 /* CustomInputView.swift */; };
 		A38BDC2323462E34003668C3 /* SkyFloatingLabelTextField in Frameworks */ = {isa = PBXBuildFile; productRef = A38BDC2223462E34003668C3 /* SkyFloatingLabelTextField */; };
 		A38BDC26234632F6003668C3 /* ArchiveLib in Frameworks */ = {isa = PBXBuildFile; productRef = A38BDC25234632F6003668C3 /* ArchiveLib */; };
@@ -196,6 +200,10 @@
 		A377C906236E07CD000877EA /* DocumentCameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentCameraView.swift; sourceTree = "<group>"; };
 		A378C432221B3929007D1419 /* DocumentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentService.swift; sourceTree = "<group>"; };
 		A381CF20222F0B5D00FAFA7C /* ImageConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageConverter.swift; sourceTree = "<group>"; };
+		A387EFEC23786FE2003FB3B7 /* CustomTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextField.swift; sourceTree = "<group>"; };
+		A387EFEE237879EB003FB3B7 /* TagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagView.swift; sourceTree = "<group>"; };
+		A387EFF023788442003FB3B7 /* CustomDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDatePicker.swift; sourceTree = "<group>"; };
+		A387EFF22378BE19003FB3B7 /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
 		A388C8262235330F000D52CB /* test-ocr-data.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "test-ocr-data.png"; sourceTree = "<group>"; };
 		A389789A2274FD4600DC13B9 /* CustomInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomInputView.swift; sourceTree = "<group>"; };
 		A38BDC2C2346340D003668C3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/AboutMeViewController.xib; sourceTree = "<group>"; };
@@ -398,6 +406,7 @@
 				A3689777235C754300F429AC /* Configuration.swift */,
 				A394E4C0236A2B6100C81CC2 /* Notification.swift */,
 				A33EC92C236E403A00471F98 /* TagListView.swift */,
+				A387EFF22378BE19003FB3B7 /* View.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -475,6 +484,8 @@
 				A3FDD34C229459BD0054FFFC /* DateDescriptionViewController.xib */,
 				A3A071672253ED660093E7A4 /* TaggingViewController.swift */,
 				A3FDD351229459C40054FFFC /* TaggingViewController.xib */,
+				A387EFEC23786FE2003FB3B7 /* CustomTextField.swift */,
+				A387EFF023788442003FB3B7 /* CustomDatePicker.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -488,6 +499,7 @@
 				A3EF865922982CE400288B8C /* Views */,
 				A334A645236E163A004D960C /* TagTabView.swift */,
 				A33EC92A236E3CCA00471F98 /* TagTabViewModel.swift */,
+				A387EFEE237879EB003FB3B7 /* TagView.swift */,
 			);
 			path = TagTab;
 			sourceTree = "<group>";
@@ -798,6 +810,7 @@
 				A33EC92B236E3CCA00471F98 /* TagTabViewModel.swift in Sources */,
 				A3ECBC9622496BA000A626AE /* IAP.swift in Sources */,
 				A394E4CD236A5C6C00C81CC2 /* MoreTabViewController.swift in Sources */,
+				A387EFEF237879EB003FB3B7 /* TagView.swift in Sources */,
 				A33EC92D236E403A00471F98 /* TagListView.swift in Sources */,
 				A301A75621496992003EA382 /* DocumentTableViewCell.swift in Sources */,
 				A39942BA228B3ACE00FFC16B /* Constants.swift in Sources */,
@@ -818,6 +831,7 @@
 				A394E4C9236A463C00C81CC2 /* DocumentDetailViewModel.swift in Sources */,
 				A30CB43D23697C1800D3063E /* MainTabViewModel.swift in Sources */,
 				A3CF79BE22C3FA0A008711E4 /* PDFProcessing.swift in Sources */,
+				A387EFF32378BE19003FB3B7 /* View.swift in Sources */,
 				A3FDD33B229457260054FFFC /* PDFViewController.swift in Sources */,
 				171E0C801B8E5B84001E6242 /* ArchiveViewController.swift in Sources */,
 				A334A648236E1DE4004D960C /* ScanTabViewModel.swift in Sources */,
@@ -837,6 +851,7 @@
 				A381CF21222F0B5D00FAFA7C /* ImageConverter.swift in Sources */,
 				A3FF63D02247AF570089E66A /* SubscriptionViewController.swift in Sources */,
 				A378C433221B3929007D1419 /* DocumentService.swift in Sources */,
+				A387EFED23786FE2003FB3B7 /* CustomTextField.swift in Sources */,
 				A39942BE228B422E00FFC16B /* IntroViewController.swift in Sources */,
 				A389789B2274FD4600DC13B9 /* CustomInputView.swift in Sources */,
 				171E0C7E1B8E5B84001E6242 /* AppDelegate.swift in Sources */,
@@ -845,6 +860,7 @@
 				A3DC071D22C6C6D10073A877 /* UIImage.swift in Sources */,
 				A3B57B7B22871F170078F7A4 /* StorageHelper.swift in Sources */,
 				A3A2A71F22FF4B2400747DDB /* PDFQualityViewController.swift in Sources */,
+				A387EFF123788442003FB3B7 /* CustomDatePicker.swift in Sources */,
 				A34A84FA2130A35A0093FAE5 /* DocumentsQuery.swift in Sources */,
 				A3DFA7272278D9CF00E0F362 /* WSTagsField.swift in Sources */,
 				A3D0999822BD15F0003D16E5 /* MoreTableViewController.swift in Sources */,

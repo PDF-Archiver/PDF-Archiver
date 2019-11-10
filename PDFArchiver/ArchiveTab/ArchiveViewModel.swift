@@ -53,33 +53,12 @@ class ArchiveViewModel: ObservableObject, SystemLogging {
     func delete(at offsets: IndexSet) {
         for index in offsets {
             let deletedDocument = documents.remove(at: index)
-            delete(deletedDocument)
+            deletedDocument.delete(in: archive)
         }
     }
 
     private func triggerUpdate() {
         NotificationCenter.default.post(Notification(name: .documentChanges))
-    }
-
-    private func delete(_ document: Document) {
-        let path: URL
-        if document.downloadStatus == .local {
-            path = document.path
-        } else {
-            let iCloudFilename = ".\(document.filename).icloud"
-            path = document.path.deletingLastPathComponent().appendingPathComponent(iCloudFilename)
-        }
-
-        do {
-            try FileManager.default.removeItem(at: path)
-            archive.remove(Set([document]))
-
-        } catch {
-            // TODO: handle error
-//            let alert = UIAlertController(title: NSLocalizedString("ArchiveViewController.delete_failed.title", comment: ""), message: error.localizedDescription, preferredStyle: .alert)
-//            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Button confirmation label"), style: .default, handler: nil))
-//            self.present(alert, animated: true, completion: nil)
-        }
     }
 
     private func buildCombineStuff() {
