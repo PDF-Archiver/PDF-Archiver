@@ -117,7 +117,7 @@ extension Archive: DocumentsQueryDelegate {
 
         var documentStatus: DownloadStatus
         switch downloadingStatus {
-        case "NSMetadataUbiquitousItemDownloadingStatusCurrent":
+        case "NSMetadataUbiquitousItemDownloadingStatusCurrent", "NSMetadataUbiquitousItemDownloadingStatusDownloaded":
             documentStatus = .local
         case "NSMetadataUbiquitousItemDownloadingStatusNotDownloaded":
 
