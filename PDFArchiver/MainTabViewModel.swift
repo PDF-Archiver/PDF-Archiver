@@ -16,6 +16,7 @@ class MainTabViewModel: ObservableObject {
     let scanViewModel = ScanTabViewModel()
     let tagViewModel = TagTabViewModel()
     let archiveViewModel = ArchiveViewModel()
+    let moreViewModel = MoreTabViewModel()
 
     @Published var showDocumentScan: Bool = false
 

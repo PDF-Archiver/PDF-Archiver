@@ -35,7 +35,7 @@ struct MainTabView: View {
                             Text("Archive")
                         }
                     }.tag(2)
-                MoreTabViewController()
+                MoreTabView(viewModel: viewModel.moreViewModel)
                     .tabItem {
                         VStack {
                             Image(systemName: "ellipsis")

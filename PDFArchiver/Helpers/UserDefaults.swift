@@ -21,6 +21,13 @@ extension UserDefaults {
         case good = 0.75
         case normal = 0.5
         case small = 0.25
+
+        static let defaultQualityIndex = 1  // e.g. "good"
+
+        static func toIndex(_ quality: PDFQuality) -> Int {
+            let allCases = UserDefaults.PDFQuality.allCases
+            return allCases.firstIndex(of: quality) ?? defaultQualityIndex
+        }
     }
 
     var tutorialShown: Bool {
@@ -47,7 +54,7 @@ extension UserDefaults {
 
             // set default to 0.75
             if value == 0.0 {
-                value = 0.75
+                value = PDFQuality.allCases[PDFQuality.defaultQualityIndex].rawValue
             }
 
             guard let level = PDFQuality(rawValue: value) else { fatalError("Could not parse level from value \(value).") }
