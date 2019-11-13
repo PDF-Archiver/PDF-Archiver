@@ -34,6 +34,7 @@ struct TagTabView: View {
                 Text("Empty View")
             }
         }
+        .navigationViewStyle(StackNavigationViewStyle())
         .onTapGesture {
             self.endEditing(true)
         }

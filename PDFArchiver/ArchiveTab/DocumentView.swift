@@ -14,7 +14,7 @@ struct DocumentView: View {
     let viewModel: DocumentViewModel
 
     var body: some View {
-        VStack(alignment: HorizontalAlignment.leading, spacing: 4.0) {
+        VStack(alignment: .leading, spacing: 4.0) {
             HStack {
                 titleSubtitle
                 Spacer()

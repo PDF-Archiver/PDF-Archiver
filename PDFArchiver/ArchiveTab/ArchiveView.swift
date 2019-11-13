@@ -19,14 +19,16 @@ struct ArchiveView: View {
                 documentsView
             }
             .navigationBarTitle(Text("Documents"))
+            emptyView
         }
+        // force list show: https://stackoverflow.com/a/58371424/10026834
+        .padding()
     }
 
     var searchView: some View {
         SearchField(searchText: $viewModel.searchText,
                     scopes: $viewModel.years,
                     selectionIndex: $viewModel.scopeSelecton)
-            .padding(EdgeInsets(top: 0.0, leading: 16.0, bottom: 0.0, trailing: 16.0))
     }
 
     var documentsView: some View {
@@ -44,6 +46,11 @@ struct ArchiveView: View {
                 }
             }.onDelete(perform: viewModel.delete(at:))
         }
+    }
+
+    var emptyView: some View {
+        // TODO: add real empty view
+        Text("Empty View")
     }
 }
 

@@ -68,6 +68,7 @@ class ArchiveViewModel: ObservableObject, SystemLogging {
             .debounce(for: .milliseconds(300), scheduler: DispatchQueue.global(qos: .userInitiated))
             .removeDuplicates()
             .combineLatest($scopeSelecton, NotificationCenter.default.publisher(for: Notification.Name.documentChanges))
+            // TODO: debounce here? would it delay all other steps? fix: stop flickering after multiple notifications
             .map { (searchterm, searchscopeSelection, _) -> [Document] in
 
                 let searchscope = self.years[searchscopeSelection]
