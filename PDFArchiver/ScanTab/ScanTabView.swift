@@ -10,7 +10,6 @@ import SwiftUI
 import UIKit
 
 struct ScanTabView: View {
-
     @ObservedObject var viewModel: ScanTabViewModel
 
     var body: some View {
@@ -60,12 +59,7 @@ struct ScanTabView: View {
             self.viewModel.startScanning()
         }, label: {
             Text("Scan")
-                .padding(12.0)
-                .frame(maxWidth: .infinity)
-                .foregroundColor(Color(.paWhite))
-                .background(Color(.paDarkGray))
-                .cornerRadius(8.0)
-        })
+        }).buttonStyle(FilledButtonStyle())
     }
 }
 

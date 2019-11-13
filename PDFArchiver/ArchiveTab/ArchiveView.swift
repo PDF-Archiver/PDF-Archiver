@@ -10,7 +10,6 @@ import ArchiveLib
 import SwiftUI
 
 struct ArchiveView: View {
-
     @ObservedObject var viewModel: ArchiveViewModel
 
     var body: some View {

@@ -70,13 +70,6 @@ class MoreTabViewModel: ObservableObject {
         UIApplication.shared.open(link)
     }
 
-    func showAboutCell() {
-        Log.send(.info, "More table view show: About me")
-        // TODO: Add this
-//        let controller = AboutMeViewController()
-//        navigationController?.pushViewController(controller, animated: true)
-    }
-
     func showMacOSApp() {
         Log.send(.info, "More table view show: macOS App")
         guard let link = URL(string: "https://macos.pdf-archiver.io") else { fatalError("Could not parse macOS app url.") }

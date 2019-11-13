@@ -22,6 +22,9 @@
 		A328CF40237C4C6F003D60AD /* AboutMeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A328CF3F237C4C6F003D60AD /* AboutMeView.swift */; };
 		A328CF44237C5152003D60AD /* DetailRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A328CF43237C5152003D60AD /* DetailRowView.swift */; };
 		A328CF47237C9B85003D60AD /* TextView in Frameworks */ = {isa = PBXBuildFile; productRef = A328CF46237C9B85003D60AD /* TextView */; };
+		A328CF4E237CAECA003D60AD /* IAPViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A328CF4D237CAECA003D60AD /* IAPViewModel.swift */; };
+		A328CF50237CAF29003D60AD /* IAPView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A328CF4F237CAF29003D60AD /* IAPView.swift */; };
+		A328CF53237CB161003D60AD /* FilledButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A328CF52237CB161003D60AD /* FilledButtonStyle.swift */; };
 		A334A646236E163A004D960C /* TagTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A334A645236E163A004D960C /* TagTabView.swift */; };
 		A334A648236E1DE4004D960C /* ScanTabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A334A647236E1DE4004D960C /* ScanTabViewModel.swift */; };
 		A33EC92B236E3CCA00471F98 /* TagTabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A33EC92A236E3CCA00471F98 /* TagTabViewModel.swift */; };
@@ -81,7 +84,6 @@
 		A3F28ABC23759A7900E6D184 /* KeyboardObserving in Frameworks */ = {isa = PBXBuildFile; productRef = A3F28ABB23759A7900E6D184 /* KeyboardObserving */; };
 		A3FF63A022478FC10089E66A /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF639F22478FC10089E66A /* UIColor.swift */; };
 		A3FF63AA2247A39E0089E66A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3FF63A92247A39E0089E66A /* StoreKit.framework */; };
-		A3FF63D02247AF570089E66A /* SubscriptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF63CF2247AF570089E66A /* SubscriptionViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -141,6 +143,9 @@
 		A328CF3C237C3C8E003D60AD /* MailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailView.swift; sourceTree = "<group>"; };
 		A328CF3F237C4C6F003D60AD /* AboutMeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutMeView.swift; sourceTree = "<group>"; };
 		A328CF43237C5152003D60AD /* DetailRowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailRowView.swift; sourceTree = "<group>"; };
+		A328CF4D237CAECA003D60AD /* IAPViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPViewModel.swift; sourceTree = "<group>"; };
+		A328CF4F237CAF29003D60AD /* IAPView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPView.swift; sourceTree = "<group>"; };
+		A328CF52237CB161003D60AD /* FilledButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilledButtonStyle.swift; sourceTree = "<group>"; };
 		A32997CF224826AB000B78D0 /* IAPService_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = IAPService_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A334A645236E163A004D960C /* TagTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagTabView.swift; sourceTree = "<group>"; };
 		A334A647236E1DE4004D960C /* ScanTabViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanTabViewModel.swift; sourceTree = "<group>"; };
@@ -204,7 +209,6 @@
 		A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreReviewRequest.swift; sourceTree = "<group>"; };
 		A3FF639F22478FC10089E66A /* UIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
 		A3FF63A92247A39E0089E66A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
-		A3FF63CF2247AF570089E66A /* SubscriptionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriptionViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -278,6 +282,8 @@
 				A3F30D90221C99F80063D173 /* ScanTab */,
 				A34A84F12130A28A0093FAE5 /* Services */,
 				A3F30D8F221C99ED0063D173 /* TagTab */,
+				A328CF4D237CAECA003D60AD /* IAPViewModel.swift */,
+				A328CF4F237CAF29003D60AD /* IAPView.swift */,
 			);
 			path = PDFArchiver;
 			sourceTree = "<group>";
@@ -313,9 +319,16 @@
 				A389789A2274FD4600DC13B9 /* CustomInputView.swift */,
 				A39942BD228B422E00FFC16B /* IntroViewController.swift */,
 				A36AE3A722A70149001D534E /* PlaceholderViewController.swift */,
-				A3FF63CF2247AF570089E66A /* SubscriptionViewController.swift */,
 			);
 			path = OLD;
+			sourceTree = "<group>";
+		};
+		A328CF51237CB14B003D60AD /* Design */ = {
+			isa = PBXGroup;
+			children = (
+				A328CF52237CB161003D60AD /* FilledButtonStyle.swift */,
+			);
+			path = Design;
 			sourceTree = "<group>";
 		};
 		A34A84F12130A28A0093FAE5 /* Services */ = {
@@ -334,6 +347,7 @@
 		A34A84F32130A2A70093FAE5 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				A328CF51237CB14B003D60AD /* Design */,
 				A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */,
 				A356115E22DE517B00A9092F /* Atomic.swift */,
 				A3689777235C754300F429AC /* Configuration.swift */,
@@ -685,6 +699,7 @@
 				A30D767722BF914B00862224 /* MainTabBarController.swift in Sources */,
 				A394E4CB236A519300C81CC2 /* PDFCustomView.swift in Sources */,
 				A328CF3D237C3C8E003D60AD /* MailView.swift in Sources */,
+				A328CF50237CAF29003D60AD /* IAPView.swift in Sources */,
 				A34A84FC2130A35A0093FAE5 /* ArchiveExtension.swift in Sources */,
 				A36C42C62365E43D00F379FE /* SearchField.swift in Sources */,
 				A33EC92B236E3CCA00471F98 /* TagTabViewModel.swift in Sources */,
@@ -706,6 +721,7 @@
 				A3CF79BE22C3FA0A008711E4 /* PDFProcessing.swift in Sources */,
 				A387EFF32378BE19003FB3B7 /* View.swift in Sources */,
 				A334A648236E1DE4004D960C /* ScanTabViewModel.swift in Sources */,
+				A328CF4E237CAECA003D60AD /* IAPViewModel.swift in Sources */,
 				A356115F22DE517B00A9092F /* Atomic.swift in Sources */,
 				A3B57B83228750CF0078F7A4 /* FileManager.swift in Sources */,
 				A3A2A72222FF51BF00747DDB /* UserDefaults.swift in Sources */,
@@ -721,9 +737,9 @@
 				A394E4C3236A310C00C81CC2 /* ProgressView.swift in Sources */,
 				A3B57B81228720410078F7A4 /* StorageHelper+Errors.swift in Sources */,
 				A381CF21222F0B5D00FAFA7C /* ImageConverter.swift in Sources */,
-				A3FF63D02247AF570089E66A /* SubscriptionViewController.swift in Sources */,
 				A378C433221B3929007D1419 /* DocumentService.swift in Sources */,
 				A387EFED23786FE2003FB3B7 /* CustomTextField.swift in Sources */,
+				A328CF53237CB161003D60AD /* FilledButtonStyle.swift in Sources */,
 				A39942BE228B422E00FFC16B /* IntroViewController.swift in Sources */,
 				A389789B2274FD4600DC13B9 /* CustomInputView.swift in Sources */,
 				171E0C7E1B8E5B84001E6242 /* AppDelegate.swift in Sources */,

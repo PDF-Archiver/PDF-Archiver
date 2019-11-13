@@ -13,6 +13,7 @@ struct TagTabView: View {
     @ObservedObject var viewModel: TagTabViewModel
 
     var body: some View {
+        // TODO: profile laggy first initialization
         NavigationView {
             if viewModel.currentDocument != nil {
                 ScrollView {
@@ -68,8 +69,11 @@ struct TagTabView: View {
     }
 
     private var datePicker: some View {
-        CustomDatePicker(date: $viewModel.date)
-            .frame(maxWidth: .infinity, alignment: .center)
+        HStack {
+            Spacer()
+            CustomDatePicker(date: $viewModel.date)
+            Spacer()
+        }
     }
 
     private var documentTags: some View {
@@ -84,7 +88,7 @@ struct TagTabView: View {
                             onCommit: { _ in
                                 self.viewModel.saveTag()
                             },
-                            isFirstResponder: true)
+                            isFirstResponder: false)
                 .padding(EdgeInsets(top: 4.0, leading: 0.0, bottom: 4.0, trailing: 0.0))
         }
     }

@@ -13,45 +13,56 @@ struct MainTabView: View {
 
     var body: some View {
         ZStack {
-            TabView(selection: $viewModel.currentTab) {
-                ScanTabView(viewModel: viewModel.scanViewModel)
-                    .tabItem {
-                        VStack {
-                            Image(systemName: "doc.text.viewfinder")
-                            Text("Scan")
-                        }
-                    }.tag(0)
-                TagTabView(viewModel: viewModel.tagViewModel)
-                    .tabItem {
-                        VStack {
-                            Image(systemName: "tag")
-                            Text("Tag")
-                        }
-                    }.tag(1)
-                ArchiveView(viewModel: viewModel.archiveViewModel)
-                    .tabItem {
-                        VStack {
-                            Image(systemName: "archivebox")
-                            Text("Archive")
-                        }
-                    }.tag(2)
-                MoreTabView(viewModel: viewModel.moreViewModel)
-                    .tabItem {
-                        VStack {
-                            Image(systemName: "ellipsis")
-                            Text("More")
-                        }
-                    }.tag(3)
-            }
-
+            tabViews
             if viewModel.showDocumentScan {
-                DocumentCameraView(completionHandler: viewModel.scanViewModel.process)
-                    .edgesIgnoringSafeArea(.all)
-                    .statusBar(hidden: true)
+                documentCameraView
             }
-
-            // TODO: add subscription permission test
         }
+        .sheet(isPresented: $viewModel.showSubscriptionView,
+               onDismiss: {
+                self.viewModel.showSubscriptionDismissed()
+        }, content: {
+            IAPView(viewModel: self.viewModel.iapViewModel)
+        })
+    }
+
+    private var tabViews: some View {
+        TabView(selection: $viewModel.currentTab) {
+            ScanTabView(viewModel: viewModel.scanViewModel)
+                .tabItem {
+                    VStack {
+                        Image(systemName: "doc.text.viewfinder")
+                        Text("Scan")
+                    }
+                }.tag(0)
+            TagTabView(viewModel: viewModel.tagViewModel)
+                .tabItem {
+                    VStack {
+                        Image(systemName: "tag")
+                        Text("Tag")
+                    }
+                }.tag(1)
+            ArchiveView(viewModel: viewModel.archiveViewModel)
+                .tabItem {
+                    VStack {
+                        Image(systemName: "archivebox")
+                        Text("Archive")
+                    }
+                }.tag(2)
+            MoreTabView(viewModel: viewModel.moreViewModel)
+                .tabItem {
+                    VStack {
+                        Image(systemName: "ellipsis")
+                        Text("More")
+                    }
+                }.tag(3)
+        }
+    }
+
+    private var documentCameraView: some View {
+        DocumentCameraView(completionHandler: viewModel.scanViewModel.process)
+            .edgesIgnoringSafeArea(.all)
+            .statusBar(hidden: true)
     }
 }
 

@@ -18,7 +18,10 @@ class MainTabViewModel: ObservableObject {
     let archiveViewModel = ArchiveViewModel()
     let moreViewModel = MoreTabViewModel()
 
+    let iapViewModel = IAPViewModel()
+
     @Published var showDocumentScan: Bool = false
+    @Published var showSubscriptionView: Bool = false
 
     private var disposables = Set<AnyCancellable>()
 
@@ -51,5 +54,15 @@ class MainTabViewModel: ObservableObject {
             }
             .store(in: &disposables)
 
+        $currentTab
+            .sink { selectedIndex in
+                self.showSubscriptionView = !IAP.service.appUsagePermitted() && (selectedIndex == 0 || selectedIndex == 1)
+            }
+            .store(in: &disposables)
+    }
+
+    func showSubscriptionDismissed() {
+        guard !IAP.service.appUsagePermitted() else { return }
+        currentTab = 2
     }
 }
