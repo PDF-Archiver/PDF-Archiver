@@ -17,6 +17,9 @@ struct MainTabView: View {
             if viewModel.showDocumentScan {
                 documentCameraView
             }
+            if viewModel.showTutorial {
+                introView
+            }
         }
         .sheet(isPresented: $viewModel.showSubscriptionView,
                onDismiss: {
@@ -61,6 +64,12 @@ struct MainTabView: View {
 
     private var documentCameraView: some View {
         DocumentCameraView(completionHandler: viewModel.scanViewModel.process)
+            .edgesIgnoringSafeArea(.all)
+            .statusBar(hidden: true)
+    }
+
+    private var introView: some View {
+        IntroView()
             .edgesIgnoringSafeArea(.all)
             .statusBar(hidden: true)
     }

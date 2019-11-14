@@ -53,8 +53,12 @@ class DocumentsQuery: NSObject, SystemLogging {
         metadataQuery = NSMetadataQuery()
 
         // Filter only documents from the current year and the year before
-        let year = Calendar.current.component(.year, from: Date())
-        let predicate = NSPredicate(format: "(%K LIKE[c] '\(year)-*.pdf') OR (%K LIKE[c] '\(year - 1)-*.pdf')", NSMetadataItemFSNameKey, NSMetadataItemFSNameKey)
+//        let year = Calendar.current.component(.year, from: Date())
+//        let predicate = NSPredicate(format: "(%K LIKE[c] '\(year)-*.pdf') OR (%K LIKE[c] '\(year - 1)-*.pdf')", NSMetadataItemFSNameKey, NSMetadataItemFSNameKey)
+
+        // get all pdf documents
+        let predicate = NSPredicate(format: "%K ENDSWITH[c] '.pdf'", NSMetadataItemFSNameKey)
+
         metadataQuery.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, notContainsTempPath] )
 
         // update the file status 5 times per second, while downloading
@@ -113,10 +117,10 @@ class DocumentsQuery: NSObject, SystemLogging {
         NotificationCenter.default.post(Notification(name: .documentChanges))
 
         // get all pdf documents
-        if firstRun {
-            let predicate = NSPredicate(format: "%K ENDSWITH[c] '.pdf'", NSMetadataItemFSNameKey)
-            metadataQuery.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, notContainsTempPath] )
-            firstRun = false
-        }
+//        if firstRun {
+//            let predicate = NSPredicate(format: "%K ENDSWITH[c] '.pdf'", NSMetadataItemFSNameKey)
+//            metadataQuery.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, notContainsTempPath] )
+//            firstRun = false
+//        }
     }
 }

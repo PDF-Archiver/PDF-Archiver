@@ -13,7 +13,7 @@ struct FilledButtonStyle: ButtonStyle {
     func makeBody(configuration: Self.Configuration) -> some View {
         configuration.label
             .padding(12.0)
-            .frame(maxWidth: .infinity)
+            .frame(maxWidth: 350.0)
             .foregroundColor(Color(.paWhite))
             .background(Color(.paDarkGray))
             .cornerRadius(8.0)

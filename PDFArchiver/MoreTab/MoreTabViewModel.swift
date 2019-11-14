@@ -34,9 +34,7 @@ class MoreTabViewModel: ObservableObject {
 
     func showIntro() {
         Log.send(.info, "More table view show: intro")
-        // TODO: show this
-//        let controller = IntroViewController()
-//        present(controller, animated: true, completion: nil)
+        NotificationCenter.default.post(name: .introChanges, object: true)
     }
 
     func showPermissions() {

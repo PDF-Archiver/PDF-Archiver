@@ -38,6 +38,7 @@ struct SearchField: View {
             RoundedRectangle(cornerRadius: 8)
                 .stroke(Color.gray, lineWidth: 1)
         )
+        .padding(EdgeInsets(top: 0.0, leading: 2.0, bottom: 0.0, trailing: 2.0))
     }
 
     var segmentedControl: some View {

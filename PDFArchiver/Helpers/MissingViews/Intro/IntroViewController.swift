@@ -126,6 +126,7 @@ extension IntroViewController: PaperOnboardingDelegate {
 
     func onboardingWillTransitonToLeaving() {
         dismiss(animated: true, completion: nil)
+        NotificationCenter.default.post(name: .introChanges, object: false)
     }
 
     func onboardingConfigurationItem(_ item: OnboardingContentViewItem, index _: Int) {

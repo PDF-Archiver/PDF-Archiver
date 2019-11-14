@@ -11,7 +11,7 @@ import SwiftUI
 
 class MainTabViewModel: ObservableObject {
     @Published var currentTab = UserDefaults.standard.lastSelectedTabIndex
-    @Published var shouldPresentTutorial = !UserDefaults.standard.tutorialShown
+    @Published var showTutorial = !UserDefaults.standard.tutorialShown
 
     let scanViewModel = ScanTabViewModel()
     let tagViewModel = TagTabViewModel()
@@ -40,9 +40,15 @@ class MainTabViewModel: ObservableObject {
             currentTab = 2
         }
 
-        $shouldPresentTutorial
+        $showTutorial
             .sink { shouldPresentTutorial in
                 UserDefaults.standard.tutorialShown = !shouldPresentTutorial
+            }
+            .store(in: &disposables)
+
+        NotificationCenter.default.publisher(for: .introChanges)
+            .sink { notification in
+                self.showTutorial = (notification.object as? Bool) ?? false
             }
             .store(in: &disposables)
 

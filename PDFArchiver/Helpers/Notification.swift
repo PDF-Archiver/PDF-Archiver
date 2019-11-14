@@ -10,4 +10,5 @@ import Foundation
 
 extension Notification.Name {
     static let documentChanges = Notification.Name("document-changes")
+    static let introChanges = Notification.Name("intro-changes")
 }

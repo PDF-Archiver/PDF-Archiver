@@ -55,11 +55,15 @@ struct ScanTabView: View {
     }
 
     var scanButton: some View {
-        Button(action: {
-            self.viewModel.startScanning()
-        }, label: {
-            Text("Scan")
-        }).buttonStyle(FilledButtonStyle())
+        HStack {
+            Spacer()
+            Button(action: {
+                self.viewModel.startScanning()
+            }, label: {
+                Text("Scan")
+            }).buttonStyle(FilledButtonStyle())
+            Spacer()
+        }
     }
 }
 

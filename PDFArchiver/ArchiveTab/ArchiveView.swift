@@ -22,7 +22,7 @@ struct ArchiveView: View {
             emptyView
         }
         // force list show: https://stackoverflow.com/a/58371424/10026834
-        .padding()
+        .padding(EdgeInsets(top: 0.0, leading: 8.0, bottom: 0.0, trailing: 8.0))
     }
 
     var searchView: some View {
@@ -49,8 +49,13 @@ struct ArchiveView: View {
     }
 
     var emptyView: some View {
-        // TODO: add real empty view
-        Text("Empty View")
+        let name: LocalizedStringKey
+        if viewModel.documents.isEmpty {
+            name = "No iCloud Drive documents found. Please scan and tag documents first or change filter."
+        } else {
+            name = "Select a document."
+        }
+        return PlaceholderView(name: name)
     }
 }
 
