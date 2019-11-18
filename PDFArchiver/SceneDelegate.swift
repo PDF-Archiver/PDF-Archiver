@@ -13,6 +13,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        for urlContext in URLContexts {
+            handle(url: urlContext.url)
+        }
+    }
+
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -59,5 +65,30 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
+    }
+
+    private func handle(url: URL) {
+        Log.send(.info, "Handling shared document", extra: ["filetype": url.pathExtension])
+
+        // show scan tab with document processing, after importing a document
+        (window?.rootViewController as? MainTabBarController)?.selectedIndex = 0
+
+        DispatchQueue.global(qos: .userInitiated).async {
+            do {
+                _ = url.startAccessingSecurityScopedResource()
+                try StorageHelper.handle(url)
+                url.stopAccessingSecurityScopedResource()
+            } catch let error {
+                url.stopAccessingSecurityScopedResource()
+                Log.send(.error, "Unable to handle file.", extra: ["filetype": url.pathExtension, "error": error.localizedDescription])
+                try? FileManager.default.removeItem(at: url)
+                try? FileManager.default.removeItem(at: url.deletingLastPathComponent())
+
+                DispatchQueue.main.async {
+                    let alert = UIAlertController(error, preferredStyle: .alert)
+                    self.window?.rootViewController?.present(alert, animated: true, completion: nil)
+                }
+            }
+        }
     }
 }

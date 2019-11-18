@@ -16,37 +16,7 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    static let log = OSLog(subsystem: Bundle.main.bundleIdentifier ?? "PDFArchiver", category: "AppDelegate")
-
     var window: UIWindow?
-
-    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-
-        Log.send(.info, "Handling shared document", extra: ["filetype": url.pathExtension])
-
-        // show scan tab with document processing, after importing a document
-        (window?.rootViewController as? MainTabBarController)?.selectedIndex = 0
-
-        DispatchQueue.global(qos: .userInitiated).async {
-            do {
-                _ = url.startAccessingSecurityScopedResource()
-                try StorageHelper.handle(url)
-                url.stopAccessingSecurityScopedResource()
-            } catch let error {
-                url.stopAccessingSecurityScopedResource()
-                Log.send(.error, "Unable to handle file.", extra: ["filetype": url.pathExtension, "error": error.localizedDescription])
-                try? FileManager.default.removeItem(at: url)
-                try? FileManager.default.removeItem(at: url.deletingLastPathComponent())
-
-                DispatchQueue.main.async {
-                    let alert = UIAlertController(error, preferredStyle: .alert)
-                    self.window?.rootViewController?.present(alert, animated: true, completion: nil)
-                }
-            }
-        }
-
-        return true
-    }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
@@ -89,7 +59,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
 
         } catch let error {
-            os_log("%@", log: AppDelegate.log, type: .error, error.localizedDescription)
+            Log.send(.error, "Error while starting.", extra: ["error": error.localizedDescription])
         }
 
         window?.tintColor = .paDarkGray
