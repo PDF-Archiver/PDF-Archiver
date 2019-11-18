@@ -6,12 +6,14 @@
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
 
-import  MessageUI
+import LogModel
+import MessageUI
 import SwiftUI
 
 struct MoreTabView: View {
 
     @ObservedObject var viewModel: MoreTabViewModel
+    private static let appVersion = AppEnvironment.getFullVersion()
 
     var body: some View {
         NavigationView {
@@ -58,7 +60,7 @@ struct MoreTabView: View {
     }
 
     private var moreInformation: some View {
-        Section(header: Text("⁉️ More Information"), footer: Text("TODO App Version")) {
+        Section(header: Text("⁉️ More Information"), footer: Text("Version \(MoreTabView.appVersion)")) {
             NavigationLink(destination: AboutMeView()) {
                 Text("About  👤")
             }

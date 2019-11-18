@@ -24,29 +24,21 @@ class IAPViewModel: ObservableObject {
     }
 
     func tapped(button: IAPButton) {
-        // TODO: implement this
-        print("Tapped button \(button)")
 
-
-
-//        @objc
-//        private func subscribeLevel1() {
-//            Log.send(.info, "SubscriptionViewController - buy: Monthly subscription.")
-//            IAP.service.buyProduct("SUBSCRIPTION_MONTHLY_IOS")
-//            cancel()
-//        }
-//
-//        @objc
-//        private func subscribeLevel2() {
-//            Log.send(.info, "SubscriptionViewController - buy: Yearly subscription.")
-//            IAP.service.buyProduct("SUBSCRIPTION_YEARLY_IOS_NEW")
-//            cancel()
-//        }
-//
-//        @objc
-//        private func restore() {
-//            Log.send(.info, "SubscriptionViewController - Restore purchases.")
-//            IAP.service.restorePurchases()
+        // TODO: test this
+        switch button {
+        case .level1:
+            Log.send(.info, "SubscriptionViewController - buy: Monthly subscription.")
+            IAP.service.buyProduct("SUBSCRIPTION_MONTHLY_IOS")
+            cancel()
+        case .level2:
+            Log.send(.info, "SubscriptionViewController - buy: Yearly subscription.")
+            IAP.service.buyProduct("SUBSCRIPTION_YEARLY_IOS_NEW")
+            cancel()
+        case .restore:
+            Log.send(.info, "SubscriptionViewController - Restore purchases.")
+            IAP.service.restorePurchases()
+            // TODO: add this
 //            let alert = UIAlertController(title: NSLocalizedString("subscription.restore.popup.title", comment: ""),
 //                                          message: NSLocalizedString("subscription.restore.popup.message", comment: ""),
 //                                          preferredStyle: .alert)
@@ -54,19 +46,14 @@ class IAPViewModel: ObservableObject {
 //                self.cancel()
 //            })
 //            present(alert, animated: true, completion: nil)
-//        }
-//
-//        @objc
-//        private func cancel() {
-//            Log.send(.info, "SubscriptionViewController - Cancel subscription view.")
-//            if !IAP.service.appUsagePermitted() {
-//                self.dismiss(animated: true, completion: completion)
-//            } else {
-//                self.dismiss(animated: true, completion: nil)
-//            }
-//        }
+        case .cancel:
+            Log.send(.info, "SubscriptionViewController - Cancel subscription view.")
+            cancel()
+        }
+    }
 
-
+    private func cancel() {
+        NotificationCenter.default.post(Notification(name: .subscriptionChanges))
     }
 
     private func updateButtonNames(with products: Set<SKProduct>) {

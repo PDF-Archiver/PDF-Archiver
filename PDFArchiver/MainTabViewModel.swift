@@ -62,7 +62,14 @@ class MainTabViewModel: ObservableObject {
 
         $currentTab
             .sink { selectedIndex in
-                self.showSubscriptionView = !IAP.service.appUsagePermitted() && (selectedIndex == 0 || selectedIndex == 1)
+                self.validateSubscriptionState(of: selectedIndex)
+            }
+            .store(in: &disposables)
+
+        NotificationCenter.default.publisher(for: .subscriptionChanges)
+            .sink { _ in
+                self.showSubscriptionDismissed()
+                self.validateSubscriptionState(of: self.currentTab)
             }
             .store(in: &disposables)
     }
@@ -70,5 +77,9 @@ class MainTabViewModel: ObservableObject {
     func showSubscriptionDismissed() {
         guard !IAP.service.appUsagePermitted() else { return }
         currentTab = 2
+    }
+
+    private func validateSubscriptionState(of selectedIndex: Int) {
+        self.showSubscriptionView = !IAP.service.appUsagePermitted() && (selectedIndex == 0 || selectedIndex == 1)
     }
 }

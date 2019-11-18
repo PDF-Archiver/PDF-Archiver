@@ -23,6 +23,9 @@ struct ArchiveView: View {
         }
         // force list show: https://stackoverflow.com/a/58371424/10026834
         .padding(EdgeInsets(top: 0.0, leading: 8.0, bottom: 0.0, trailing: 8.0))
+        .onTapGesture {
+            self.endEditing(true)
+        }
     }
 
     var searchView: some View {

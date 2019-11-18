@@ -30,8 +30,7 @@ struct TagTabView: View {
                 .navigationBarTitle(Text("Document"), displayMode: .inline)
                 .navigationBarItems(leading: deleteNavBarView, trailing: saveNavBarView)
             } else {
-                // TODO: add an empty view
-                Text("Empty View")
+                PlaceholderView(name: "No iCloud Drive documents found. Please scan and tag documents first.")
             }
         }
         .navigationViewStyle(StackNavigationViewStyle())
