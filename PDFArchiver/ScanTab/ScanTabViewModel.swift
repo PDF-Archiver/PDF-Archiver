@@ -13,7 +13,7 @@ import VisionKit
 
 class ScanTabViewModel: ObservableObject {
     @Published var showDocumentScan: Bool = false
-    @Published var progressValue: Float = 0.0
+    @Published var progressValue: CGFloat = 0.0
     @Published var progressLabel: String = ""
 
     private var disposables = Set<AnyCancellable>()
@@ -97,7 +97,7 @@ class ScanTabViewModel: ObservableObject {
                 let completedDocuments = totalDocuments - ImageConverter.shared.getOperationCount()
                 let progressString = "\(min(completedDocuments + 1, totalDocuments))/\(totalDocuments) (\(Int(documentProgress * 100))%)"
 
-                self.progressValue = (Float(completedDocuments) + documentProgress) / Float(totalDocuments)
+                self.progressValue = (CGFloat(completedDocuments) + CGFloat(documentProgress)) / CGFloat(totalDocuments)
                 self.progressLabel = NSLocalizedString("ScanViewController.processing", comment: "") + progressString
             } else {
                 self.progressValue = 0

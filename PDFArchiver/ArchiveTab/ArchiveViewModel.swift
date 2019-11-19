@@ -19,9 +19,10 @@ class ArchiveViewModel: ObservableObject, SystemLogging {
     }
 
     @Published private(set) var documents: [Document] = []
-    @Published var years: [String] = ["all", "2019", "2018", "2017"]
+    @Published var years: [String] = ["All", "2019", "2018", "2017"]
     @Published var scopeSelecton: Int = 0
     @Published var searchText = ""
+    @Published var showLoadingView = true
 
     private var disposables = Set<AnyCancellable>()
     private let archive: Archive
@@ -62,6 +63,13 @@ class ArchiveViewModel: ObservableObject, SystemLogging {
     }
 
     private func buildCombineStuff() {
+
+        $documents
+            .dropFirst()
+            .sink { _ in
+                self.showLoadingView = false
+            }
+            .store(in: &disposables)
 
         // filter documents, get input from Notification, searchText or searchCcope
         $searchText

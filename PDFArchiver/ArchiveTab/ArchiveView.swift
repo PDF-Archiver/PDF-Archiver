@@ -8,23 +8,33 @@
 
 import ArchiveLib
 import SwiftUI
+import SwiftUIX
 
 struct ArchiveView: View {
     @ObservedObject var viewModel: ArchiveViewModel
 
     var body: some View {
         NavigationView {
-            VStack {
-                searchView
-                documentsView
+            if viewModel.showLoadingView {
+                loadingView
+            } else {
+                VStack {
+                    searchView
+                    documentsView
+                }
+                .navigationBarTitle(Text("Documents"))
             }
-            .navigationBarTitle(Text("Documents"))
             emptyView
         }
         // force list show: https://stackoverflow.com/a/58371424/10026834
         .padding(EdgeInsets(top: 0.0, leading: 8.0, bottom: 0.0, trailing: 8.0))
-        .onTapGesture {
-            self.endEditing(true)
+    }
+
+    var loadingView: some View {
+        VStack(alignment: .center, spacing: 32.0) {
+            ActivityIndicator()
+                .animated(true)
+            Text("Loading documents ...")
         }
     }
 
@@ -48,6 +58,9 @@ struct ArchiveView: View {
                         }
                 }
             }.onDelete(perform: viewModel.delete(at:))
+        }
+        .onTapGesture {
+            self.endEditing(true)
         }
     }
 

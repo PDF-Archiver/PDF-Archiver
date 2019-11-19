@@ -8,6 +8,7 @@
 
 import ArchiveLib
 import Foundation
+import CoreGraphics
 
 class DocumentViewModel: ObservableObject {
 
@@ -21,7 +22,7 @@ class DocumentViewModel: ObservableObject {
     @Published var formattedDate: String
     @Published var formattedSize: String
     @Published var sortedTags: [String]
-    @Published var downloadStatus: Float
+    @Published var downloadStatus: CGFloat
 
     init(_ document: Document) {
         specification = document.specificationCapitalized
@@ -34,7 +35,7 @@ class DocumentViewModel: ObservableObject {
         sortedTags = document.tags.sorted()
         switch document.downloadStatus {
         case .downloading(percentDownloaded: let value):
-            downloadStatus = value
+            downloadStatus = CGFloat(value)
         case .iCloudDrive:
             downloadStatus = 0
         case .local:
@@ -44,7 +45,7 @@ class DocumentViewModel: ObservableObject {
 
     #if DEBUG
     /// This should only be used for testing!
-    init(specification: String, formattedDate: String, formattedSize: String, sortedTags: [String], downloadStatus: Float) {
+    init(specification: String, formattedDate: String, formattedSize: String, sortedTags: [String], downloadStatus: CGFloat) {
         self.specification = specification
         self.formattedDate = formattedDate
         self.formattedSize = formattedSize

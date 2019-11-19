@@ -8,6 +8,7 @@
 
 import ArchiveLib
 import SwiftUI
+import SwiftUIX
 
 struct DocumentView: View {
 
@@ -25,7 +26,8 @@ struct DocumentView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             tags
             if viewModel.downloadStatus > 0.0 && viewModel.downloadStatus < 1.0 {
-                ProgressView(value: viewModel.downloadStatus)
+                LinearProgressBar(viewModel.downloadStatus)
+                    .foregroundColor(Color(.paDarkGray))
             }
         }
         .frame(maxWidth: .infinity, maxHeight: 65.0)
@@ -62,7 +64,7 @@ struct DocumentView_Previews: PreviewProvider {
                                                      formattedDate: "30.10.2019",
                                                      formattedSize: "1,2 MB",
                                                      sortedTags: ["bill", "ikea"],
-                                                     downloadStatus: Float(0.33))
+                                                     downloadStatus: CGFloat(0.33))
     static var previews: some View {
         DocumentView(viewModel: documentViewModel)
             .frame(minWidth: 0.0, maxWidth: .infinity, minHeight: 0, maxHeight: 45.0)

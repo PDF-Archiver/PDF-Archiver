@@ -16,7 +16,11 @@ struct IAPView: View {
         VStack(alignment: .leading, spacing: 32.0) {
             title
             text
-            buttons
+            HStack {
+                Spacer()
+                buttons
+                Spacer()
+            }
         }.padding(EdgeInsets(top: 32.0, leading: 16.0, bottom: 32.0, trailing: 16.0))
     }
 

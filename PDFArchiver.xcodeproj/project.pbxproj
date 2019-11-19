@@ -15,6 +15,7 @@
 		A30CB43B2369792900D3063E /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30CB43A2369792900D3063E /* MainTabView.swift */; };
 		A30CB43D23697C1800D3063E /* MainTabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30CB43C23697C1800D3063E /* MainTabViewModel.swift */; };
 		A30D767722BF914B00862224 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30D767622BF914B00862224 /* MainTabBarController.swift */; };
+		A31B3C4023849E1E0066CB86 /* SwiftUIX in Frameworks */ = {isa = PBXBuildFile; productRef = A31B3C3F23849E1E0066CB86 /* SwiftUIX */; };
 		A32777E521FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A32777E321FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf */; };
 		A328CF39237BF2E4003D60AD /* MoreTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A328CF38237BF2E4003D60AD /* MoreTabView.swift */; };
 		A328CF3B237C3597003D60AD /* MoreTabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A328CF3A237C3597003D60AD /* MoreTabViewModel.swift */; };
@@ -59,7 +60,6 @@
 		A38BDC26234632F6003668C3 /* ArchiveLib in Frameworks */ = {isa = PBXBuildFile; productRef = A38BDC25234632F6003668C3 /* ArchiveLib */; };
 		A393A28322A8486000D6DAF9 /* UIAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A393A28222A8486000D6DAF9 /* UIAlertController.swift */; };
 		A394E4C1236A2B6100C81CC2 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = A394E4C0236A2B6100C81CC2 /* Notification.swift */; };
-		A394E4C3236A310C00C81CC2 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A394E4C2236A310C00C81CC2 /* ProgressView.swift */; };
 		A394E4C5236A350000C81CC2 /* DocumentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A394E4C4236A350000C81CC2 /* DocumentViewModel.swift */; };
 		A394E4C7236A462500C81CC2 /* DocumentDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A394E4C6236A462500C81CC2 /* DocumentDetailView.swift */; };
 		A394E4C9236A463C00C81CC2 /* DocumentDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A394E4C8236A463C00C81CC2 /* DocumentDetailViewModel.swift */; };
@@ -180,7 +180,6 @@
 		A389789A2274FD4600DC13B9 /* CustomInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomInputView.swift; sourceTree = "<group>"; };
 		A393A28222A8486000D6DAF9 /* UIAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAlertController.swift; sourceTree = "<group>"; };
 		A394E4C0236A2B6100C81CC2 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
-		A394E4C2236A310C00C81CC2 /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
 		A394E4C4236A350000C81CC2 /* DocumentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentViewModel.swift; sourceTree = "<group>"; };
 		A394E4C6236A462500C81CC2 /* DocumentDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentDetailView.swift; sourceTree = "<group>"; };
 		A394E4C8236A463C00C81CC2 /* DocumentDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentDetailViewModel.swift; sourceTree = "<group>"; };
@@ -220,6 +219,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A31B3C4023849E1E0066CB86 /* SwiftUIX in Frameworks */,
 				A36611C4233FDDB40092DB19 /* LoggingKit in Frameworks */,
 				A328CF47237C9B85003D60AD /* TextView in Frameworks */,
 				A3F28ABC23759A7900E6D184 /* KeyboardObserving in Frameworks */,
@@ -459,7 +459,6 @@
 				A36C42C12365E3F000F379FE /* ArchiveView.swift */,
 				A36C42C32365E3FB00F379FE /* ArchiveViewModel.swift */,
 				A30CB4162368D6C700D3063E /* DocumentView.swift */,
-				A394E4C2236A310C00C81CC2 /* ProgressView.swift */,
 				A394E4C4236A350000C81CC2 /* DocumentViewModel.swift */,
 				A394E4C6236A462500C81CC2 /* DocumentDetailView.swift */,
 				A394E4C8236A463C00C81CC2 /* DocumentDetailViewModel.swift */,
@@ -510,6 +509,7 @@
 				A35B7D06235C71C8002F7716 /* PaperOnboarding */,
 				A3F28ABB23759A7900E6D184 /* KeyboardObserving */,
 				A328CF46237C9B85003D60AD /* TextView */,
+				A31B3C3F23849E1E0066CB86 /* SwiftUIX */,
 			);
 			productName = CandySearch;
 			productReference = 171E0C7A1B8E5B84001E6242 /* PDFArchiver.app */;
@@ -609,6 +609,7 @@
 				A35B7D05235C71C8002F7716 /* XCRemoteSwiftPackageReference "paper-onboarding" */,
 				A3F28ABA23759A7900E6D184 /* XCRemoteSwiftPackageReference "KeyboardObserving" */,
 				A328CF45237C9B84003D60AD /* XCRemoteSwiftPackageReference "TextView" */,
+				A31B3C3E23849E1E0066CB86 /* XCRemoteSwiftPackageReference "SwiftUIX" */,
 			);
 			productRefGroup = 171E0C7B1B8E5B84001E6242 /* Products */;
 			projectDirPath = "";
@@ -750,7 +751,6 @@
 				A328CF44237C5152003D60AD /* DetailRowView.swift in Sources */,
 				A3FF63A022478FC10089E66A /* UIColor.swift in Sources */,
 				A3B57B7D228720090078F7A4 /* StorageHelper+Paths.swift in Sources */,
-				A394E4C3236A310C00C81CC2 /* ProgressView.swift in Sources */,
 				A3B57B81228720410078F7A4 /* StorageHelper+Errors.swift in Sources */,
 				A381CF21222F0B5D00FAFA7C /* ImageConverter.swift in Sources */,
 				A378C433221B3929007D1419 /* DocumentService.swift in Sources */,
@@ -1218,6 +1218,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		A31B3C3E23849E1E0066CB86 /* XCRemoteSwiftPackageReference "SwiftUIX" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftUIX/SwiftUIX";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 		A328CF45237C9B84003D60AD /* XCRemoteSwiftPackageReference "TextView" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/kenmueller/TextView";
@@ -1277,6 +1285,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		A31B3C3F23849E1E0066CB86 /* SwiftUIX */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A31B3C3E23849E1E0066CB86 /* XCRemoteSwiftPackageReference "SwiftUIX" */;
+			productName = SwiftUIX;
+		};
 		A328CF46237C9B85003D60AD /* TextView */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = A328CF45237C9B84003D60AD /* XCRemoteSwiftPackageReference "TextView" */;

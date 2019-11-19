@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import SwiftUIX
 import UIKit
 
 struct ScanTabView: View {
@@ -20,11 +21,13 @@ struct ScanTabView: View {
             VStack(alignment: .leading) {
                 if viewModel.progressValue > 0.0 {
                     Text(viewModel.progressLabel)
-                    ProgressView(value: viewModel.progressValue)
+                    LinearProgressBar(viewModel.progressValue)
+                        .foregroundColor(Color(.paDarkGray))
                 } else {
                     Text(viewModel.progressLabel)
                         .hidden()
-                    ProgressView(value: viewModel.progressValue)
+                    LinearProgressBar(viewModel.progressValue)
+                        .foregroundColor(Color(.paDarkGray))
                         .hidden()
                 }
                 scanButton
