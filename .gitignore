@@ -32,8 +32,6 @@ Preview.html
 Pods
 .env.default
 screenshots.html
-PDFArchiver.xcodeproj/project.xcworkspace/xcshareddata
-PDFArchiver.xcodeproj/xcshareddata
 
 fastlane/README.md
 Gemfile
@@ -41,3 +39,4 @@ vendor
 Gemfile.lock
 .bundle
 Config.xcconfig
+PDFArchiver.xcodeproj/xcshareddata/xcbaselines

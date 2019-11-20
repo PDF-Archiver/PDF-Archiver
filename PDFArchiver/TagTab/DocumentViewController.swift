@@ -21,7 +21,21 @@ class DocumentViewController: UIViewController, SystemLogging {
             let tags = DocumentService.archive.getAvailableTags(with: [tagName])
                 .subtracting(self?.document.tags ?? [])
                 .filter { $0 != Constants.documentTagPlaceholder }
-                .map { $0 }
+                .sorted { lhs, rhs in
+                    if lhs.starts(with: tagName) {
+                        if rhs.starts(with: tagName) {
+                            return lhs < rhs
+                        } else {
+                            return true
+                        }
+                    } else {
+                        if rhs.starts(with: tagName) {
+                            return false
+                        } else {
+                            return lhs < rhs
+                        }
+                    }
+                }
                 .prefix(3)
             return Array(tags)
         }
