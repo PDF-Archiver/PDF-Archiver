@@ -64,7 +64,9 @@ class TagTabViewModel: ObservableObject {
                 }
                 self.date = document.date ?? Date()
                 self.specification = document.specification
-                self.documentTags = Array(document.tags).sorted()
+                self.documentTags = Array(document.tags)
+                    .filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+                    .sorted()
                 self.suggestedTags = []
             }
             .store(in: &disposables)
@@ -91,6 +93,7 @@ class TagTabViewModel: ObservableObject {
         guard let index = suggestedTags.firstIndex(of: tagName) else { return }
         suggestedTags.remove(at: index)
 
+        guard !tagName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
         documentTags.append(tagName)
         documentTags.sort()
     }
