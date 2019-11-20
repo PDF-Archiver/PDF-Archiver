@@ -46,7 +46,6 @@ class DocumentsQuery: NSObject, SystemLogging {
     }()
 
     weak var documentsQueryDelegate: DocumentsQueryDelegate?
-    weak var masterViewControllerDelegate: ArchiveViewControllerDelegate?
 
     // MARK: - Initialization
 
@@ -54,8 +53,12 @@ class DocumentsQuery: NSObject, SystemLogging {
         metadataQuery = NSMetadataQuery()
 
         // Filter only documents from the current year and the year before
-        let year = Calendar.current.component(.year, from: Date())
-        let predicate = NSPredicate(format: "(%K LIKE[c] '\(year)-*.pdf') OR (%K LIKE[c] '\(year - 1)-*.pdf')", NSMetadataItemFSNameKey, NSMetadataItemFSNameKey)
+//        let year = Calendar.current.component(.year, from: Date())
+//        let predicate = NSPredicate(format: "(%K LIKE[c] '\(year)-*.pdf') OR (%K LIKE[c] '\(year - 1)-*.pdf')", NSMetadataItemFSNameKey, NSMetadataItemFSNameKey)
+
+        // get all pdf documents
+        let predicate = NSPredicate(format: "%K ENDSWITH[c] '.pdf'", NSMetadataItemFSNameKey)
+
         metadataQuery.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, notContainsTempPath] )
 
         // update the file status 5 times per second, while downloading
@@ -99,8 +102,8 @@ class DocumentsQuery: NSObject, SystemLogging {
         let addedMetadataItems = (notification.userInfo?[NSMetadataQueryUpdateAddedItemsKey] as? [NSMetadataItem]) ?? []
 
         // update the archive
-        let changedDocuments = documentsQueryDelegate?.updateWithResults(removedItems: removedMetadataItems, addedItems: addedMetadataItems, updatedItems: changedMetadataItems)
-        masterViewControllerDelegate?.update(.archivedDocuments(updatedDocuments: changedDocuments ?? []))
+        _ = documentsQueryDelegate?.updateWithResults(removedItems: removedMetadataItems, addedItems: addedMetadataItems, updatedItems: changedMetadataItems)
+        NotificationCenter.default.post(.documentChanges)
     }
 
     @objc
@@ -110,14 +113,14 @@ class DocumentsQuery: NSObject, SystemLogging {
         guard let metadataQueryResults = metadataQuery.results as? [NSMetadataItem] else { return }
 
         // update the archive
-        let changedDocuments = documentsQueryDelegate?.updateWithResults(removedItems: [], addedItems: metadataQueryResults, updatedItems: [])
-        masterViewControllerDelegate?.update(.archivedDocuments(updatedDocuments: changedDocuments ?? []))
+        _ = documentsQueryDelegate?.updateWithResults(removedItems: [], addedItems: metadataQueryResults, updatedItems: [])
+        NotificationCenter.default.post(.documentChanges)
 
         // get all pdf documents
-        if firstRun {
-            let predicate = NSPredicate(format: "%K ENDSWITH[c] '.pdf'", NSMetadataItemFSNameKey)
-            metadataQuery.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, notContainsTempPath] )
-            firstRun = false
-        }
+//        if firstRun {
+//            let predicate = NSPredicate(format: "%K ENDSWITH[c] '.pdf'", NSMetadataItemFSNameKey)
+//            metadataQuery.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, notContainsTempPath] )
+//            firstRun = false
+//        }
     }
 }

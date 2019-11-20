@@ -51,4 +51,25 @@ extension Document {
             os_log("%s", log: Document.log, type: .debug, error.localizedDescription)
         }
     }
+
+    func delete(in archive: Archive) {
+        let documentPath: URL
+        if downloadStatus == .local {
+            documentPath = path
+        } else {
+            let iCloudFilename = ".\(filename).icloud"
+            documentPath = path.deletingLastPathComponent().appendingPathComponent(iCloudFilename)
+        }
+
+        do {
+            try FileManager.default.removeItem(at: documentPath)
+            archive.remove(Set([self]))
+
+        } catch {
+            AlertViewModel.createAndPost(title: "Delete failed",
+                                         message: error,
+                                         primaryButtonTitle: "OK")
+
+        }
+    }
 }

@@ -61,7 +61,7 @@ public class ImageConverter: SystemLogging {
         }
         operation.completionBlock = {
             guard let error = operation.error else { return }
-            UIAlertController.create(with: error)
+            AlertViewModel.createAndPost(message: error, primaryButtonTitle: "OK")
         }
         queue.addOperation(operation)
         totalDocumentCount.mutate { $0 += 1 }
