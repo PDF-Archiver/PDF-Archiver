@@ -103,7 +103,7 @@ class DocumentsQuery: NSObject, SystemLogging {
 
         // update the archive
         _ = documentsQueryDelegate?.updateWithResults(removedItems: removedMetadataItems, addedItems: addedMetadataItems, updatedItems: changedMetadataItems)
-        NotificationCenter.default.post(Notification(name: .documentChanges))
+        NotificationCenter.default.post(.documentChanges)
     }
 
     @objc
@@ -114,7 +114,7 @@ class DocumentsQuery: NSObject, SystemLogging {
 
         // update the archive
         _ = documentsQueryDelegate?.updateWithResults(removedItems: [], addedItems: metadataQueryResults, updatedItems: [])
-        NotificationCenter.default.post(Notification(name: .documentChanges))
+        NotificationCenter.default.post(.documentChanges)
 
         // get all pdf documents
 //        if firstRun {

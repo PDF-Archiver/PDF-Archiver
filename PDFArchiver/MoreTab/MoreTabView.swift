@@ -22,7 +22,6 @@ struct MoreTabView: View {
                 moreInformation
             }.listStyle(GroupedListStyle())
             .alert(isPresented: $viewModel.isShowingResetAlert) {
-                // TODO: add localization
                 Alert(title: Text("Reset App"),
                       message: Text("Please restart the app to complete the reset."),
                       dismissButton: .default(Text("OK")))

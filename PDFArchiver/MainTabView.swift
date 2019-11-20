@@ -27,6 +27,9 @@ struct MainTabView: View {
         }, content: {
             IAPView(viewModel: self.viewModel.iapViewModel)
         })
+        .alert(isPresented: $viewModel.showAlert) {
+            Alert(viewModel: viewModel.alertViewModel)
+        }
     }
 
     private var tabViews: some View {

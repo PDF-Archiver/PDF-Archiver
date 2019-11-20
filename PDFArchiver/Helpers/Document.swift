@@ -66,10 +66,10 @@ extension Document {
             archive.remove(Set([self]))
 
         } catch {
-// TODO: handle error
-//            let alert = UIAlertController(title: NSLocalizedString("ArchiveViewController.delete_failed.title", comment: ""), message: error.localizedDescription, preferredStyle: .alert)
-//            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Button confirmation label"), style: .default, handler: nil))
-//            self.present(alert, animated: true, completion: nil)
+            AlertViewModel.createAndPost(title: "Delete failed",
+                                         message: error,
+                                         primaryButtonTitle: "OK")
+
         }
     }
 }

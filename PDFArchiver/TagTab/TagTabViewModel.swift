@@ -99,8 +99,9 @@ class TagTabViewModel: ObservableObject {
         guard let document = currentDocument else { return }
         guard let path = StorageHelper.Paths.archivePath else {
             assertionFailure("Could not find a iCloud Drive url.")
-            // TODO: handle error
-//            present(StorageHelper.Paths.iCloudDriveAlertController, animated: true, completion: nil)
+            AlertViewModel.createAndPost(title: "Attention",
+                                         message: "Could not find iCloud Drive.",
+                                         primaryButtonTitle: "OK")
             return
         }
 
@@ -117,19 +118,13 @@ class TagTabViewModel: ObservableObject {
             // increment the AppStoreReview counter
             AppStoreReviewRequest.shared.incrementCount()
 
-            // TODO: handle error
-//        } catch let error as LocalizedError {
-//            os_log("Error occurred while renaming Document: %@", log: DocumentHandleViewController.log, type: .error, error.localizedDescription)
-//
-//            // OK button will be created by the convenience initializer
-//            let alertController = UIAlertController(error, preferredStyle: .alert)
-//            present(alertController, animated: true, completion: nil)
-//            notificationFeedback.notificationOccurred(.error)
         } catch {
-//            os_log("Error occurred while renaming Document: %@", log: DocumentHandleViewController.log, type: .error, error.localizedDescription)
-//            let alertController = UIAlertController(title: NSLocalizedString("error_message_fallback", comment: "Fallback when no localized error was found."), message: error.localizedDescription, preferredStyle: .alert)
-//            alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Button confirmation label"), style: .default, handler: nil))
-//            present(alertController, animated: true, completion: nil)
+            Log.send(.error, "Error in PDFProcessing!", extra: ["error": error.localizedDescription])
+            AlertViewModel.createAndPost(title: "Delete failed",
+                                         message: error,
+                                         primaryButtonTitle: "OK")
+
+            // TODO: add feedback
 //            notificationFeedback.notificationOccurred(.error)
         }
     }

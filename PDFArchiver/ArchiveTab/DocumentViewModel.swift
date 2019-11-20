@@ -7,8 +7,8 @@
 //
 
 import ArchiveLib
-import Foundation
 import CoreGraphics
+import Foundation
 
 class DocumentViewModel: ObservableObject {
 

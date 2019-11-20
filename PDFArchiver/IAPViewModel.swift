@@ -53,7 +53,7 @@ class IAPViewModel: ObservableObject {
     }
 
     private func cancel() {
-        NotificationCenter.default.post(Notification(name: .subscriptionChanges))
+        NotificationCenter.default.post(.subscriptionChanges)
     }
 
     private func updateButtonNames(with products: Set<SKProduct>) {

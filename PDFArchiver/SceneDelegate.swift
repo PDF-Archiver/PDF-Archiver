@@ -84,10 +84,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 try? FileManager.default.removeItem(at: url)
                 try? FileManager.default.removeItem(at: url.deletingLastPathComponent())
 
-                DispatchQueue.main.async {
-                    let alert = UIAlertController(error, preferredStyle: .alert)
-                    self.window?.rootViewController?.present(alert, animated: true, completion: nil)
-                }
+                AlertViewModel.createAndPost(message: error, primaryButtonTitle: "OK")
             }
         }
     }

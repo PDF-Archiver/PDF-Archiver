@@ -6,9 +6,11 @@
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
 
+import AVKit
 import Combine
 import Foundation
 import os.log
+import SwiftUI
 import VisionKit
 
 class ScanTabViewModel: ObservableObject {
@@ -39,11 +41,27 @@ class ScanTabViewModel: ObservableObject {
     }
 
     func startScanning() {
-        Log.send(.info, "Start scanning a document.")
-        showDocumentScan = true
 
-        // stop current image processing
-        ImageConverter.shared.stopProcessing()
+        let authorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
+        if authorizationStatus ==  .denied || authorizationStatus == .restricted {
+            Log.send(.info, "Authorization status blocks camera access. Switch to preferences.")
+
+            AlertViewModel.createAndPost(title: "Need Camera Access",
+                                         message: "Camera access is required to scan documents.",
+                                         primaryButton: .default(Text("Grant Access"),
+                                                                 action: {
+                                                                    guard let settingsAppURL = URL(string: UIApplication.openSettingsURLString) else { fatalError("Could not find settings url!") }
+                                                                    UIApplication.shared.open(settingsAppURL, options: [:], completionHandler: nil)
+                                         }),
+                                         secondaryButton: .cancel())
+        } else {
+
+            Log.send(.info, "Start scanning a document.")
+            showDocumentScan = true
+
+            // stop current image processing
+            ImageConverter.shared.stopProcessing()
+        }
     }
 
     func process(_ images: [UIImage]?) {
@@ -60,11 +78,10 @@ class ScanTabViewModel: ObservableObject {
         do {
             try StorageHelper.save(images)
         } catch {
-            // TODO: handle error
-//            assertionFailure("Could not save temp images with error:\n\(error.localizedDescription)")
-//            let alert = UIAlertController(title: NSLocalizedString("not-saved-images.title", comment: "Alert VC: Title"), message: error.localizedDescription, preferredStyle: .alert)
-//            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Button confirmation label"), style: .default, handler: nil))
-//            present(alert, animated: true, completion: nil)
+            assertionFailure("Could not save temp images with error:\n\(error.localizedDescription)")
+            AlertViewModel.createAndPost(title: "Save failed!",
+                                         message: error,
+                                         primaryButtonTitle: "OK")
         }
 
         // notify ImageConverter
@@ -80,8 +97,9 @@ class ScanTabViewModel: ObservableObject {
         do {
             try StorageHelper.triggerProcessing()
         } catch {
-            // TODO: handle error
-//            present(StorageHelper.Paths.iCloudDriveAlertController, animated: true, completion: nil)
+            AlertViewModel.createAndPost(title: "Attention",
+                                         message: "Could not find iCloud Drive.",
+                                         primaryButtonTitle: "OK")
         }
     }
 
@@ -111,66 +129,19 @@ class ScanTabViewModel: ObservableObject {
         let isPermitted = IAP.service.appUsagePermitted()
 
         // show subscription view controller, if no subscription was found
-//        if !isPermitted {
-//            // TODO: handle permission error
-//            DispatchQueue.main.async {
-//
-//                let alert = UIAlertController(title: NSLocalizedString("ScanViewController.noSubscription.title", comment: ""),
-//                                              message: NSLocalizedString("ScanViewController.noSubscription.message", comment: ""),
-//                                              preferredStyle: .alert)
-//
-//                alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
-//                    let viewController = SubscriptionViewController {
-//                        self.tabBarController?.selectedIndex = self.tabBarController?.getViewControllerIndex(with: "ArchiveTab") ?? 2
-//                    }
-//                    (self.tabBarController ?? self).present(viewController, animated: true)
-//                })
-//                alert.addAction(UIAlertAction(title: NSLocalizedString("cancel", comment: ""), style: .cancel) { _ in
-//                    self.tabBarController?.selectedIndex = self.tabBarController?.getViewControllerIndex(with: "ArchiveTab") ?? 2
-//                })
-//                self.present(alert, animated: true, completion: nil)
-//            }
-//        }
+        if !isPermitted {
+            AlertViewModel.createAndPost(title: "No Subscription",
+                                         message: "No active subscription could be found. Your document will therefore not be saved.\nPlease support the app and subscribe.",
+                                         primaryButton: .default(Text("OK"), action: {
+                                            // show the subscription view
+                                            NotificationCenter.default.post(.showSubscriptionView)
+                                         }),
+                                         secondaryButton: .cancel({
+                                            // cancel this alert and validate subscription state
+                                            NotificationCenter.default.post(.subscriptionChanges)
+                                         }))
+        }
 
         return isPermitted
     }
 }
-
-
-
-//    @IBAction private func scanButtonTapped(_ sender: UIButton) {
-//
-//        let authorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
-//        if authorizationStatus ==  .denied || authorizationStatus == .restricted {
-//            os_log("Authorization status blocks camera access. Switch to preferences.", log: ScanViewController.log, type: .info)
-//            alertCameraAccessNeeded()
-//        } else {
-//
-//            Log.send(.info, "Start scanning a document.")
-//            scannerViewController = VNDocumentCameraViewController()
-//
-//            guard let scannerViewController = scannerViewController else { return }
-//            scannerViewController.delegate = self
-//            present(scannerViewController, animated: true)
-//
-//            // stop current image processing
-//            ImageConverter.shared.stopProcessing()
-//        }
-//    }
-//
-//    private func alertCameraAccessNeeded() {
-//
-//        let alert = UIAlertController(
-//            title: NSLocalizedString("Need Camera Access", comment: "Camera access in ScanViewController."),
-//            message: NSLocalizedString("Camera access is required to scan documents.", comment: "Camera access in ScanViewController."),
-//            preferredStyle: .alert
-//        )
-//
-//        alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Camera access in ScanViewController."), style: .default, handler: nil))
-//        alert.addAction(UIAlertAction(title: NSLocalizedString("Grant Access", comment: "Camera access in ScanViewController."), style: .cancel) { (_) -> Void in
-//            guard let settingsAppURL = URL(string: UIApplication.openSettingsURLString) else { fatalError("Could not find settings url!") }
-//            UIApplication.shared.open(settingsAppURL, options: [:], completionHandler: nil)
-//        })
-//
-//        present(alert, animated: true, completion: nil)
-//    }

@@ -5,9 +5,6 @@
 /* Placeholder that is shown, when no document can be found. */
 "archive_tab.background_placeholder" = "Keine iCloud Drive Dokumente gefunden. Bitte scanne und tagge zuerst Dokumente.";
 
-/* No comment provided by engineer. */
-"ArchiveViewController.delete_failed.title" = "Löschen fehlgeschlagen";
-
 /* Camera access in ScanViewController. */
 "Camera access is required to scan documents." = "Der Zugriff auf die Kamera wird benötig, um Dokumente scannen zu können.";
 
@@ -89,9 +86,6 @@
 /* Fallback when no localized error was found. */
 "error_message_fallback" = "Hier lief etwas schief!";
 
-/* Camera access in ScanViewController. */
-"Grant Access" = "Erlauben";
-
 /* Intro: Find Description */
 "intro.find.description" = "Über das Archiv oder die iCloud Drive App kannst du deine Dokumente schnell und einfach jederzeit finden\n\nso hast du deine wichtigsten Informationen immer in deiner Tasche!";
 
@@ -134,18 +128,6 @@
 /* No comment provided by engineer. */
 "MoreTableViewController.reset_app.title" = "App zurücksetzen";
 
-/* Camera access in ScanViewController. */
-"Need Camera Access" = "Kamera Zugriff benötigt";
-
-/* Could not found a iCloud Drive Path. */
-"not-found.icloud-drive.text" = "iCloud Drive konnte nicht gefunden werden.";
-
-/* Alert VC: Title */
-"not-found.icloud-drive.title" = "Achtung";
-
-/* Alert VC: Title */
-"not-saved-images.title" = "Speichern fehlgeschlagen!";
-
 /* Button confirmation label */
 "OK" = "OK";
 
@@ -154,12 +136,6 @@
 
 /* No comment provided by engineer. */
 "per_year" = "pro Jahr";
-
-/* No comment provided by engineer. */
-"ScanViewController.noSubscription.message" = "Es konnte kein aktives Abo gefunden werden. Dein Dokument wird daher nicht gespeichert!\nUnterstütze die App und schließe ein Abo ab.";
-
-/* No comment provided by engineer. */
-"ScanViewController.noSubscription.title" = "Abo inaktiv";
 
 /* No comment provided by engineer. */
 "ScanViewController.processing" = "Verarbeite: ";
@@ -221,3 +197,27 @@
 "All" = "Alle";
 
 "Loading documents ..." = "Dokumente werden geladen ...";
+
+"Reset App" = "App Zurücksetzen";
+
+"Please restart the app to complete the reset." = "Bitte starte die App neu, um das Zurücksetzen abzuschließen.";
+
+"Something went wrong!" = "Hier lief etwas schief!";
+
+"Please try again and contact support if the problem occurs again." = "Bitte versuche es erneut und kontaktiere den Support, wenn das Problem erneut auftritt.";
+
+"Save failed!" = "Speichern fehlgeschlagen!";
+
+"Attention" = "Achtung";
+
+"Could not find iCloud Drive." = "iCloud Drive konnte nicht gefunden werden.";
+
+"Delete failed" = "Löschen fehlgeschlagen";
+
+"No Subscription" = "Abo inaktiv";
+
+"No active subscription could be found. Your document will therefore not be saved.\nPlease support the app and subscribe." = "Es konnte kein aktives Abo gefunden werden. Dein Dokument wird daher nicht gespeichert!\nUnterstütze die App und schließe ein Abo ab.";
+
+"Need Camera Access" = "Kamera Zugriff benötigt";
+
+"Grant Access" = "Erlauben";

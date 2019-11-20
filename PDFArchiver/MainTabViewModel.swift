@@ -22,6 +22,8 @@ class MainTabViewModel: ObservableObject {
 
     @Published var showDocumentScan: Bool = false
     @Published var showSubscriptionView: Bool = false
+    @Published var showAlert: Bool = false
+    @Published var alertViewModel: AlertViewModel?
 
     private var disposables = Set<AnyCancellable>()
 
@@ -36,10 +38,20 @@ class MainTabViewModel: ObservableObject {
             }
             .store(in: &disposables)
 
+        // MARK: UserDefaults
         if !UserDefaults.standard.tutorialShown {
             currentTab = 2
         }
 
+        $currentTab
+            .sink { selectedIndex in
+                // save the selected index for the next app start
+                UserDefaults.standard.lastSelectedTabIndex = selectedIndex
+                Log.send(.info, "Changed tab.", extra: ["selectedTab": String(selectedIndex)])
+            }
+            .store(in: &disposables)
+
+        // MARK: Intro
         $showTutorial
             .sink { shouldPresentTutorial in
                 UserDefaults.standard.tutorialShown = !shouldPresentTutorial
@@ -52,14 +64,7 @@ class MainTabViewModel: ObservableObject {
             }
             .store(in: &disposables)
 
-        $currentTab
-            .sink { selectedIndex in
-                // save the selected index for the next app start
-                UserDefaults.standard.lastSelectedTabIndex = selectedIndex
-                Log.send(.info, "Changed tab.", extra: ["selectedTab": String(selectedIndex)])
-            }
-            .store(in: &disposables)
-
+        // MARK: Subscription
         $currentTab
             .sink { selectedIndex in
                 self.validateSubscriptionState(of: selectedIndex)
@@ -72,14 +77,28 @@ class MainTabViewModel: ObservableObject {
                 self.validateSubscriptionState(of: self.currentTab)
             }
             .store(in: &disposables)
+
+        // MARK: Alerts
+        $alertViewModel
+            .receive(on: DispatchQueue.main)
+            .sink { viewModel in
+                self.showAlert = viewModel != nil
+            }
+            .store(in: &disposables)
+
+        NotificationCenter.default.publisher(for: .showError)
+            .sink { notification in
+                self.alertViewModel = notification.object as? AlertViewModel
+            }
+            .store(in: &disposables)
     }
 
     func showSubscriptionDismissed() {
-        guard !IAP.service.appUsagePermitted() else { return }
+        guard !IAP.service.appUsagePermitted() && currentTab == 1 else { return }
         currentTab = 2
     }
 
     private func validateSubscriptionState(of selectedIndex: Int) {
-        self.showSubscriptionView = !IAP.service.appUsagePermitted() && (selectedIndex == 0 || selectedIndex == 1)
+        self.showSubscriptionView = !IAP.service.appUsagePermitted() && selectedIndex == 1
     }
 }
