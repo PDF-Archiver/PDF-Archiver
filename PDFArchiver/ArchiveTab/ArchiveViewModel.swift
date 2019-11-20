@@ -71,6 +71,11 @@ class ArchiveViewModel: ObservableObject, SystemLogging {
             }
             .store(in: &disposables)
 
+        // we assume that all documents should be loaded after 10 seconds
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) {
+            self.showLoadingView = false
+        }
+
         // filter documents, get input from Notification, searchText or searchCcope
         $searchText
             .debounce(for: .milliseconds(300), scheduler: DispatchQueue.global(qos: .userInitiated))

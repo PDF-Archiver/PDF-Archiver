@@ -59,15 +59,14 @@ struct ArchiveView: View {
                 }
             }.onDelete(perform: viewModel.delete(at:))
         }
-        .onTapGesture {
-            self.endEditing(true)
-        }
     }
 
     var emptyView: some View {
         let name: LocalizedStringKey
-        if viewModel.documents.isEmpty {
-            name = "No iCloud Drive documents found. Please scan and tag documents first or change filter."
+        if viewModel.showLoadingView {
+            name = ""
+        } else if viewModel.documents.isEmpty {
+            name = "No iCloud Drive documents found.\nPlease scan and tag documents first or change filter."
         } else {
             name = "Select a document."
         }
