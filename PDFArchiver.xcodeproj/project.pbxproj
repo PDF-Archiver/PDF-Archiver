@@ -24,7 +24,6 @@
 		A328CF3D237C3C8E003D60AD /* MailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A328CF3C237C3C8E003D60AD /* MailView.swift */; };
 		A328CF40237C4C6F003D60AD /* AboutMeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A328CF3F237C4C6F003D60AD /* AboutMeView.swift */; };
 		A328CF44237C5152003D60AD /* DetailRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A328CF43237C5152003D60AD /* DetailRowView.swift */; };
-		A328CF47237C9B85003D60AD /* TextView in Frameworks */ = {isa = PBXBuildFile; productRef = A328CF46237C9B85003D60AD /* TextView */; };
 		A328CF4E237CAECA003D60AD /* IAPViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A328CF4D237CAECA003D60AD /* IAPViewModel.swift */; };
 		A328CF50237CAF29003D60AD /* IAPView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A328CF4F237CAF29003D60AD /* IAPView.swift */; };
 		A328CF53237CB161003D60AD /* FilledButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A328CF52237CB161003D60AD /* FilledButtonStyle.swift */; };
@@ -221,7 +220,6 @@
 			files = (
 				A31B3C4023849E1E0066CB86 /* SwiftUIX in Frameworks */,
 				A36611C4233FDDB40092DB19 /* LoggingKit in Frameworks */,
-				A328CF47237C9B85003D60AD /* TextView in Frameworks */,
 				A3F28ABC23759A7900E6D184 /* KeyboardObserving in Frameworks */,
 				A35B7D07235C71C8002F7716 /* PaperOnboarding in Frameworks */,
 				A3811C0A2346150B00AF6CFA /* SwiftyStoreKit in Frameworks */,
@@ -508,7 +506,6 @@
 				A35B7D03235C718A002F7716 /* Sentry */,
 				A35B7D06235C71C8002F7716 /* PaperOnboarding */,
 				A3F28ABB23759A7900E6D184 /* KeyboardObserving */,
-				A328CF46237C9B85003D60AD /* TextView */,
 				A31B3C3F23849E1E0066CB86 /* SwiftUIX */,
 			);
 			productName = CandySearch;
@@ -608,7 +605,6 @@
 				A35B7D02235C718A002F7716 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 				A35B7D05235C71C8002F7716 /* XCRemoteSwiftPackageReference "paper-onboarding" */,
 				A3F28ABA23759A7900E6D184 /* XCRemoteSwiftPackageReference "KeyboardObserving" */,
-				A328CF45237C9B84003D60AD /* XCRemoteSwiftPackageReference "TextView" */,
 				A31B3C3E23849E1E0066CB86 /* XCRemoteSwiftPackageReference "SwiftUIX" */,
 			);
 			productRefGroup = 171E0C7B1B8E5B84001E6242 /* Products */;
@@ -947,7 +943,7 @@
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/PDFArchiver/Resources/PDFArchiver.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_BITCODE = YES;
@@ -962,7 +958,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 2.1.5;
+				MARKETING_VERSION = 2.2.0;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -991,7 +987,7 @@
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/PDFArchiver/Resources/PDFArchiver.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1005,7 +1001,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 2.1.5;
+				MARKETING_VERSION = 2.2.0;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1226,14 +1222,6 @@
 				kind = branch;
 			};
 		};
-		A328CF45237C9B84003D60AD /* XCRemoteSwiftPackageReference "TextView" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/kenmueller/TextView";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
 		A35B7D02235C718A002F7716 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/JonathanDowning/sentry-cocoa";
@@ -1289,11 +1277,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A31B3C3E23849E1E0066CB86 /* XCRemoteSwiftPackageReference "SwiftUIX" */;
 			productName = SwiftUIX;
-		};
-		A328CF46237C9B85003D60AD /* TextView */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = A328CF45237C9B84003D60AD /* XCRemoteSwiftPackageReference "TextView" */;
-			productName = TextView;
 		};
 		A35B7D03235C718A002F7716 /* Sentry */ = {
 			isa = XCSwiftPackageProductDependency;
