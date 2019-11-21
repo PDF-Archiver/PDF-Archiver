@@ -26,6 +26,7 @@ class MainTabViewModel: ObservableObject {
     @Published var alertViewModel: AlertViewModel?
 
     private var disposables = Set<AnyCancellable>()
+    private let selectionFeedback = UISelectionFeedbackGenerator()
 
     init() {
 
@@ -44,10 +45,14 @@ class MainTabViewModel: ObservableObject {
         }
 
         $currentTab
+            .dropFirst()
             .sink { selectedIndex in
                 // save the selected index for the next app start
                 UserDefaults.standard.lastSelectedTabIndex = selectedIndex
                 Log.send(.info, "Changed tab.", extra: ["selectedTab": String(selectedIndex)])
+
+                self.selectionFeedback.prepare()
+                self.selectionFeedback.selectionChanged()
             }
             .store(in: &disposables)
 

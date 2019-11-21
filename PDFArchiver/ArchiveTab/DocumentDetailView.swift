@@ -18,6 +18,7 @@ struct DocumentDetailView: View {
         }
         .navigationBarTitle("Document", displayMode: .inline)
         .navigationBarItems(trailing: shareNavigationButton)
+        .onAppear(perform: viewModel.viewAppeared)
     }
 
     var shareNavigationButton: some View {

@@ -19,6 +19,7 @@ class ScanTabViewModel: ObservableObject {
     @Published var progressLabel: String = ""
 
     private var disposables = Set<AnyCancellable>()
+    private let notificationFeedback = UINotificationFeedbackGenerator()
 
     init() {
         // show the processing indicator, if documents are currently processed
@@ -41,11 +42,12 @@ class ScanTabViewModel: ObservableObject {
     }
 
     func startScanning() {
-
+        notificationFeedback.prepare()
         let authorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
         if authorizationStatus ==  .denied || authorizationStatus == .restricted {
             Log.send(.info, "Authorization status blocks camera access. Switch to preferences.")
 
+            notificationFeedback.notificationOccurred(.warning)
             AlertViewModel.createAndPost(title: "Need Camera Access",
                                          message: "Camera access is required to scan documents.",
                                          primaryButton: .default(Text("Grant Access"),
@@ -58,6 +60,7 @@ class ScanTabViewModel: ObservableObject {
 
             Log.send(.info, "Start scanning a document.")
             showDocumentScan = true
+            notificationFeedback.notificationOccurred(.success)
 
             // stop current image processing
             ImageConverter.shared.stopProcessing()

@@ -23,6 +23,8 @@ class TagTabViewModel: ObservableObject {
 
     private let archive: Archive
     private var disposables = Set<AnyCancellable>()
+    private let notificationFeedback = UINotificationFeedbackGenerator()
+    private let selectionFeedback = UISelectionFeedbackGenerator()
 
     init(archive: Archive = DocumentService.archive) {
         self.archive = archive
@@ -38,6 +40,16 @@ class TagTabViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .sink { document in
                 self.currentDocument = document
+            }
+            .store(in: &disposables)
+
+        $currentDocument
+            .compactMap { $0 }
+            .removeDuplicates()
+            .dropFirst()
+            .sink { _ in
+                self.selectionFeedback.prepare()
+                self.selectionFeedback.selectionChanged()
             }
             .store(in: &disposables)
 
@@ -87,6 +99,9 @@ class TagTabViewModel: ObservableObject {
 
         suggestedTags.append(tagName)
         suggestedTags.sort()
+
+        selectionFeedback.prepare()
+        selectionFeedback.selectionChanged()
     }
 
     func suggestedTagTapped(_ tagName: String) {
@@ -96,6 +111,9 @@ class TagTabViewModel: ObservableObject {
         guard !tagName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
         documentTags.append(tagName)
         documentTags.sort()
+
+        selectionFeedback.prepare()
+        selectionFeedback.selectionChanged()
     }
 
     func saveDocument() {
@@ -112,11 +130,14 @@ class TagTabViewModel: ObservableObject {
         document.specification = specification.slugified(withSeparator: "-")
         document.tags = Set(documentTags.map { $0.slugified(withSeparator: "") })
 
+        notificationFeedback.prepare()
         do {
             try document.rename(archivePath: path, slugify: true)
             DocumentService.archive.archive(document)
 
             currentDocument = nil
+
+            notificationFeedback.notificationOccurred(.success)
 
             // increment the AppStoreReview counter
             AppStoreReviewRequest.shared.incrementCount()
@@ -127,12 +148,13 @@ class TagTabViewModel: ObservableObject {
                                          message: error,
                                          primaryButtonTitle: "OK")
 
-            // TODO: add feedback
-//            notificationFeedback.notificationOccurred(.error)
+            notificationFeedback.notificationOccurred(.error)
         }
     }
 
     func deleteDocument() {
+        notificationFeedback.prepare()
         currentDocument?.delete(in: DocumentService.archive)
+        notificationFeedback.notificationOccurred(.success)
     }
 }

@@ -12,11 +12,16 @@ import PDFKit
 
 class DocumentDetailViewModel: ObservableObject {
     let document: Document
-
     @Published var pdfDocument: PDFDocument?
+    private let selectionFeedback = UISelectionFeedbackGenerator()
 
     init(_ document: Document) {
         self.document = document
         pdfDocument = PDFDocument(url: document.path)
+    }
+
+    func viewAppeared() {
+        selectionFeedback.prepare()
+        selectionFeedback.selectionChanged()
     }
 }

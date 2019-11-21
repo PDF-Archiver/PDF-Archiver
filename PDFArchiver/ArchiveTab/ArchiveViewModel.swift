@@ -10,6 +10,7 @@ import ArchiveLib
 import Combine
 import Foundation
 import os.log
+import UIKit
 
 class ArchiveViewModel: ObservableObject, SystemLogging {
 
@@ -26,6 +27,8 @@ class ArchiveViewModel: ObservableObject, SystemLogging {
 
     private var disposables = Set<AnyCancellable>()
     private let archive: Archive
+    private let notificationFeedback = UINotificationFeedbackGenerator()
+    private let selectionFeedback = UISelectionFeedbackGenerator()
 
     init(_ archive: Archive = DocumentService.archive) {
         self.archive = archive
@@ -43,6 +46,14 @@ class ArchiveViewModel: ObservableObject, SystemLogging {
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) {
             self.showLoadingView = false
         }
+
+        $scopeSelecton
+            .dropFirst()
+            .sink { _ in
+                self.selectionFeedback.prepare()
+                self.selectionFeedback.selectionChanged()
+            }
+            .store(in: &disposables)
 
         // filter documents, get input from Notification, searchText or searchCcope
         $searchText
@@ -104,6 +115,8 @@ class ArchiveViewModel: ObservableObject, SystemLogging {
             archive.update(document)
             NotificationCenter.default.post(Notification(name: .documentChanges))
 
+            notificationFeedback.notificationOccurred(.success)
+
         case .local:
             os_log("Already local", log: ArchiveViewModel.log, type: .error)
         case .downloading(percentDownloaded: _):
@@ -112,9 +125,11 @@ class ArchiveViewModel: ObservableObject, SystemLogging {
     }
 
     func delete(at offsets: IndexSet) {
+        notificationFeedback.prepare()
         for index in offsets {
             let deletedDocument = documents.remove(at: index)
             deletedDocument.delete(in: archive)
         }
+        notificationFeedback.notificationOccurred(.success)
     }
 }
