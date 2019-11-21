@@ -29,41 +29,8 @@ class ArchiveViewModel: ObservableObject, SystemLogging {
 
     init(_ archive: Archive = DocumentService.archive) {
         self.archive = archive
-        buildCombineStuff()
 
-        // Trigger creation of documents array, if no documents could be found.
-        // This might happen, when we start in another view and all previous notifications were not caught.
-        if documents.isEmpty {
-            triggerUpdate()
-        }
-    }
-
-    func tapped(_ document: Document) {
-        switch document.downloadStatus {
-        case .iCloudDrive:
-            document.download()
-            archive.update(document)
-            triggerUpdate()
-        case .local:
-            os_log("Already local", log: ArchiveViewModel.log, type: .error)
-        case .downloading(percentDownloaded: _):
-            os_log("Already downloading", log: ArchiveViewModel.log, type: .error)
-        }
-    }
-
-    func delete(at offsets: IndexSet) {
-        for index in offsets {
-            let deletedDocument = documents.remove(at: index)
-            deletedDocument.delete(in: archive)
-        }
-    }
-
-    private func triggerUpdate() {
-        NotificationCenter.default.post(Notification(name: .documentChanges))
-    }
-
-    private func buildCombineStuff() {
-
+        // MARK: - Combine Stuff
         $documents
             .dropFirst()
             .sink { _ in
@@ -72,6 +39,7 @@ class ArchiveViewModel: ObservableObject, SystemLogging {
             .store(in: &disposables)
 
         // we assume that all documents should be loaded after 10 seconds
+        // force the disappear of the loading view
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) {
             self.showLoadingView = false
         }
@@ -121,5 +89,32 @@ class ArchiveViewModel: ObservableObject, SystemLogging {
                 }
             }
             .store(in: &disposables)
+    }
+
+    func tapped(_ document: Document) {
+        switch document.downloadStatus {
+        case .iCloudDrive:
+
+            // trigger download of the selected document
+            document.download()
+
+            // update the UI directly, by setting/updating the download status of this document
+            // and triggering a notification
+            document.downloadStatus = .downloading(percentDownloaded: 0.0)
+            archive.update(document)
+            NotificationCenter.default.post(Notification(name: .documentChanges))
+
+        case .local:
+            os_log("Already local", log: ArchiveViewModel.log, type: .error)
+        case .downloading(percentDownloaded: _):
+            os_log("Already downloading", log: ArchiveViewModel.log, type: .error)
+        }
+    }
+
+    func delete(at offsets: IndexSet) {
+        for index in offsets {
+            let deletedDocument = documents.remove(at: index)
+            deletedDocument.delete(in: archive)
+        }
     }
 }

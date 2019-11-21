@@ -22,7 +22,7 @@ class DocumentViewModel: ObservableObject {
     @Published var formattedDate: String
     @Published var formattedSize: String
     @Published var sortedTags: [String]
-    @Published var downloadStatus: CGFloat
+    @Published var downloadStatus: DownloadStatus
 
     init(_ document: Document) {
         specification = document.specificationCapitalized
@@ -33,19 +33,12 @@ class DocumentViewModel: ObservableObject {
         }
         formattedSize = document.size ?? ""
         sortedTags = document.tags.sorted()
-        switch document.downloadStatus {
-        case .downloading(percentDownloaded: let value):
-            downloadStatus = CGFloat(value)
-        case .iCloudDrive:
-            downloadStatus = 0
-        case .local:
-            downloadStatus = 1.0
-        }
+        downloadStatus = document.downloadStatus
     }
 
     #if DEBUG
     /// This should only be used for testing!
-    init(specification: String, formattedDate: String, formattedSize: String, sortedTags: [String], downloadStatus: CGFloat) {
+    init(specification: String, formattedDate: String, formattedSize: String, sortedTags: [String], downloadStatus: DownloadStatus) {
         self.specification = specification
         self.formattedDate = formattedDate
         self.formattedSize = formattedSize
