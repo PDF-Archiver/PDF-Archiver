@@ -27,7 +27,7 @@ struct ArchiveView: View {
             emptyView
         }
         // force list show: https://stackoverflow.com/a/58371424/10026834
-        .padding(EdgeInsets(top: 0.0, leading: 8.0, bottom: 0.0, trailing: 8.0))
+        .padding(1.0)
     }
 
     var loadingView: some View {
@@ -42,6 +42,7 @@ struct ArchiveView: View {
         SearchField(searchText: $viewModel.searchText,
                     scopes: $viewModel.years,
                     selectionIndex: $viewModel.scopeSelecton)
+            .padding(EdgeInsets(top: 0.0, leading: 8.0, bottom: 0.0, trailing: 8.0))
     }
 
     var documentsView: some View {

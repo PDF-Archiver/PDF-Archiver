@@ -13,7 +13,6 @@ struct TagTabView: View {
     @ObservedObject var viewModel: TagTabViewModel
 
     var body: some View {
-        // TODO: profile laggy first initialization
         NavigationView {
             if viewModel.currentDocument != nil {
                 ScrollView {

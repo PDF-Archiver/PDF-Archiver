@@ -153,8 +153,14 @@ class TagTabViewModel: ObservableObject {
     }
 
     func deleteDocument() {
+
         notificationFeedback.prepare()
-        currentDocument?.delete(in: DocumentService.archive)
         notificationFeedback.notificationOccurred(.success)
+
+        // delete document in archive
+        currentDocument?.delete(in: DocumentService.archive)
+
+        // remove the current document and clear the vie
+        currentDocument = nil
     }
 }
