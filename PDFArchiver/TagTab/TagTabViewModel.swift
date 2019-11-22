@@ -20,6 +20,7 @@ class TagTabViewModel: ObservableObject {
 
     @Published var documentTagInput = ""
     @Published var suggestedTags = [String]()
+    @Published var inputAccessoryViewSuggestions = [String]()
 
     private let archive: Archive
     private var disposables = Set<AnyCancellable>()
@@ -28,6 +29,35 @@ class TagTabViewModel: ObservableObject {
 
     init(archive: Archive = DocumentService.archive) {
         self.archive = archive
+
+        $documentTagInput
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }
+            .filter { !$0.isEmpty }
+            .removeDuplicates()
+            .map { tagName in
+                // lowercasing is necessary for sorting!
+                let sortedTags = archive.getAvailableTags(with: [tagName])
+                    .subtracting(self.currentDocument?.tags ?? [])
+                    .subtracting(Set([Constants.documentTagPlaceholder]))
+                    .sorted { lhs, rhs in
+                        if lhs.starts(with: tagName) {
+                            if rhs.starts(with: tagName) {
+                                return lhs < rhs
+                            } else {
+                                return true
+                            }
+                        } else {
+                            if rhs.starts(with: tagName) {
+                                return false
+                            } else {
+                                return lhs < rhs
+                            }
+                        }
+                    }
+                return Array(Array(sortedTags).prefix(5))
+            }
+            .assign(to: \.inputAccessoryViewSuggestions, on: self)
+            .store(in: &disposables)
 
         NotificationCenter.default.publisher(for: .documentChanges)
             .compactMap { _ in
@@ -84,13 +114,14 @@ class TagTabViewModel: ObservableObject {
             .store(in: &disposables)
     }
 
-    func saveTag() {
-        let input = documentTagInput.lowercased().slugified(withSeparator: "")
+    func saveTag(_ tagName: String) {
         documentTagInput = ""
+
+        let input = tagName.lowercased().slugified(withSeparator: "")
         guard !input.isEmpty else { return }
-        var tags = documentTags
-        tags.append(input)
-        documentTags = tags.sorted()
+        var tags = Set(documentTags)
+        tags.insert(input)
+        documentTags = Array(tags).sorted()
     }
 
     func documentTagTapped(_ tagName: String) {

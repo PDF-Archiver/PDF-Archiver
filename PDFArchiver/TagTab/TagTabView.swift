@@ -83,11 +83,9 @@ struct TagTabView: View {
                 .font(.body)
             CustomTextField(text: $viewModel.documentTagInput,
                             placeholder: "Enter Tag",
-                            suggestionView: UIView(),
-                            onCommit: { _ in
-                                self.viewModel.saveTag()
-                            },
-                            isFirstResponder: false)
+                            onCommit: viewModel.saveTag,
+                            isFirstResponder: false,
+                            suggestions: viewModel.inputAccessoryViewSuggestions)
                 .padding(EdgeInsets(top: 4.0, leading: 0.0, bottom: 4.0, trailing: 0.0))
         }
     }

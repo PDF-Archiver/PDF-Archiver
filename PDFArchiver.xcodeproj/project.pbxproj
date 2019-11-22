@@ -56,7 +56,6 @@
 		A387EFEF237879EB003FB3B7 /* TagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A387EFEE237879EB003FB3B7 /* TagView.swift */; };
 		A387EFF123788442003FB3B7 /* CustomDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A387EFF023788442003FB3B7 /* CustomDatePicker.swift */; };
 		A387EFF32378BE19003FB3B7 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = A387EFF22378BE19003FB3B7 /* View.swift */; };
-		A389789B2274FD4600DC13B9 /* CustomInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A389789A2274FD4600DC13B9 /* CustomInputView.swift */; };
 		A38BDC26234632F6003668C3 /* ArchiveLib in Frameworks */ = {isa = PBXBuildFile; productRef = A38BDC25234632F6003668C3 /* ArchiveLib */; };
 		A394E4C1236A2B6100C81CC2 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = A394E4C0236A2B6100C81CC2 /* Notification.swift */; };
 		A394E4C5236A350000C81CC2 /* DocumentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A394E4C4236A350000C81CC2 /* DocumentViewModel.swift */; };
@@ -177,7 +176,6 @@
 		A387EFF023788442003FB3B7 /* CustomDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDatePicker.swift; sourceTree = "<group>"; };
 		A387EFF22378BE19003FB3B7 /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
 		A388C8262235330F000D52CB /* test-ocr-data.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "test-ocr-data.png"; sourceTree = "<group>"; };
-		A389789A2274FD4600DC13B9 /* CustomInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomInputView.swift; sourceTree = "<group>"; };
 		A394E4C0236A2B6100C81CC2 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		A394E4C4236A350000C81CC2 /* DocumentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentViewModel.swift; sourceTree = "<group>"; };
 		A394E4C6236A462500C81CC2 /* DocumentDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentDetailView.swift; sourceTree = "<group>"; };
@@ -279,7 +277,6 @@
 				A34A84F32130A2A70093FAE5 /* Helpers */,
 				A3EBFE9E21650F58008C34CC /* Localizable.strings */,
 				A3D0999622BD15C7003D16E5 /* MoreTab */,
-				A328CF48237CA225003D60AD /* OLD */,
 				A3FECF952130A0220053F2E4 /* Resources */,
 				A3F30D90221C99F80063D173 /* ScanTab */,
 				A34A84F12130A28A0093FAE5 /* Services */,
@@ -315,14 +312,6 @@
 				A31B3C412384A8660066CB86 /* Alert.swift */,
 			);
 			path = MissingViews;
-			sourceTree = "<group>";
-		};
-		A328CF48237CA225003D60AD /* OLD */ = {
-			isa = PBXGroup;
-			children = (
-				A389789A2274FD4600DC13B9 /* CustomInputView.swift */,
-			);
-			path = OLD;
 			sourceTree = "<group>";
 		};
 		A328CF51237CB14B003D60AD /* Design */ = {
@@ -753,7 +742,6 @@
 				A387EFED23786FE2003FB3B7 /* CustomTextField.swift in Sources */,
 				A328CF53237CB161003D60AD /* FilledButtonStyle.swift in Sources */,
 				A39942BE228B422E00FFC16B /* IntroViewController.swift in Sources */,
-				A389789B2274FD4600DC13B9 /* CustomInputView.swift in Sources */,
 				171E0C7E1B8E5B84001E6242 /* AppDelegate.swift in Sources */,
 				A328CF39237BF2E4003D60AD /* MoreTabView.swift in Sources */,
 				A3689778235C754300F429AC /* Configuration.swift in Sources */,
