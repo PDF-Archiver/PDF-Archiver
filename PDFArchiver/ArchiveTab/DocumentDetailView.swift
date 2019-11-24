@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct DocumentDetailView: View {
-    let viewModel: DocumentDetailViewModel
+    @ObservedObject var viewModel: DocumentDetailViewModel
     var body: some View {
         VStack {
             DocumentView(viewModel: DocumentViewModel(viewModel.document))
@@ -19,19 +19,16 @@ struct DocumentDetailView: View {
         .navigationBarTitle("Document", displayMode: .inline)
         .navigationBarItems(trailing: shareNavigationButton)
         .onAppear(perform: viewModel.viewAppeared)
+        .sheet(isPresented: $viewModel.showActivityView) {
+            ActivityView(activityItems: self.viewModel.activityItems)
+        }
     }
 
     var shareNavigationButton: some View {
         Button(action: {
-            print("share button tapped!")
+            self.viewModel.showActivityView = true
         }, label: {
             Image(systemName: "square.and.arrow.up")
         })
     }
 }
-
-//struct DocumentDetailView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        DocumentDetailView()
-//    }
-//}

@@ -15,7 +15,7 @@ class MoreTabViewModel: ObservableObject {
     static let mailRecipients = ["support@pdf-archiver.io"]
     static let mailSubject = "PDF Archiver: iOS Support"
 
-    @Published var qualities = ["100% - Lossless 🤯", "75% - Good 👌 (Default)", "50% - Normal 👍", "25% - Small 💾"]
+    @Published var qualities: [LocalizedStringKey]  = ["100% - Lossless 🤯", "75% - Good 👌 (Default)", "50% - Normal 👍", "25% - Small 💾"]
     @Published var selectedQualityIndex = UserDefaults.PDFQuality.toIndex(UserDefaults.standard.pdfQuality)
 
     @Published var isShowingResetAlert: Bool = false

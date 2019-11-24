@@ -13,6 +13,10 @@ import PDFKit
 class DocumentDetailViewModel: ObservableObject {
     let document: Document
     @Published var pdfDocument: PDFDocument?
+    @Published var showActivityView: Bool = false
+    var activityItems: [Any] {
+        [document.path]
+    }
     private let selectionFeedback = UISelectionFeedbackGenerator()
 
     init(_ document: Document) {

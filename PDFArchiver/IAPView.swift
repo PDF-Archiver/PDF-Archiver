@@ -22,12 +22,21 @@ struct IAPView: View {
                 Spacer()
             }
         }.padding(EdgeInsets(top: 32.0, leading: 16.0, bottom: 32.0, trailing: 16.0))
+        .background(Color(.systemBackground))
     }
 
     var title: some View {
-        Text("Subscription")
-            .font(.largeTitle)
-            .foregroundColor(Color(.paDarkGray))
+        HStack {
+            Image("Logo")
+                .resizable()
+                .frame(width: 75.0, height: 75.0, alignment: .center)
+            Spacer()
+                .frame(width: 24, alignment: .center)
+            Text("Subscription")
+                .font(.largeTitle)
+                .foregroundColor(Color(.paDarkGray))
+            Spacer()
+        }.padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
     }
 
     var text: some View {
@@ -59,7 +68,7 @@ struct IAPView: View {
                 self.viewModel.tapped(button: .cancel)
             }, label: {
                 Text("Cancel")
-                    .foregroundColor(Color(.paDarkRed))
+                    .foregroundColor(Color(.paLightRed))
             })
         }.buttonStyle(FilledButtonStyle())
     }

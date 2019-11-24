@@ -17,16 +17,13 @@ struct MainTabView: View {
             if viewModel.showDocumentScan {
                 documentCameraView
             }
+            if viewModel.showSubscriptionView {
+                IAPView(viewModel: self.viewModel.iapViewModel)
+            }
             if viewModel.showTutorial {
                 introView
             }
         }
-        .sheet(isPresented: $viewModel.showSubscriptionView,
-               onDismiss: {
-                self.viewModel.showSubscriptionDismissed()
-        }, content: {
-            IAPView(viewModel: self.viewModel.iapViewModel)
-        })
         .alert(isPresented: $viewModel.showAlert) {
             Alert(viewModel: viewModel.alertViewModel)
         }

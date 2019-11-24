@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 30.10.19.
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
+// swiftlint:disable function_body_length
 
 import Combine
 import SwiftUI
@@ -46,6 +47,7 @@ class MainTabViewModel: ObservableObject {
 
         $currentTab
             .dropFirst()
+            .removeDuplicates()
             .sink { selectedIndex in
                 // save the selected index for the next app start
                 UserDefaults.standard.lastSelectedTabIndex = selectedIndex

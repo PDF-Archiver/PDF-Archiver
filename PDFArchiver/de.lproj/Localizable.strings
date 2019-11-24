@@ -1,90 +1,11 @@
 
-/* No comment provided by engineer. */
-"all" = "Alle";
-
-/* Placeholder that is shown, when no document can be found. */
-"archive_tab.background_placeholder" = "Keine iCloud Drive Dokumente gefunden. Bitte scanne und tagge zuerst Dokumente.";
-
-/* Camera access in ScanViewController. */
 "Camera access is required to scan documents." = "Der Zugriff auf die Kamera wird benötig, um Dokumente scannen zu können.";
 
 /* Camera access in ScanViewController. */
 "Cancel" = "Abbrechen";
 
-/* No comment provided by engineer. */
-"cancel" = "Abbrechen";
-
-/* Delete document. */
-"Delete" = "Dokument löschen";
-
-/* No comment provided by engineer. */
-"delete" = "Löschen";
-
 /* Camera access in ScanViewController. */
 "Do you really want to delete this document?" = "Möchtest du dieses Dokument wirklich löschen?";
-
-/* Document label text field placeholder. */
-"document_description.placeholder" = "Beschreibung eingeben";
-
-/* Document label text field title. */
-"document_description.title" = "Beschreibung";
-
-/* No date could be found, e.g. while renaming the document. */
-"document_error_description__date_missing" = "Datum Fehlt";
-
-/* No description found could be found, e.g. while renaming the document. */
-"document_error_description__description_missing" = "Beschreibung Fehlt";
-
-/* No comment provided by engineer. */
-"document_error_description__no_document_selected" = "Dokument Fehlt";
-
-/* Rename failed. */
-"document_error_description__rename_failed_file_already_exists" = "Umbenennung Fehlgeschlagen";
-
-/* No tags could be found, e.g. while renaming the document. */
-"document_error_description__tags_missing" = "Tags Fehlen";
-
-/* No date could be found, e.g. while renaming the document. */
-"document_failure_reason__date_missing" = "Das Datum des Dokumentes wurde nicht angegeben.";
-
-/* No description found could be found, e.g. while renaming the document. */
-"document_failure_reason__description_missing" = "Es konnte keine Dokumentenbeschreibung gefunden werden.";
-
-/* No comment provided by engineer. */
-"document_failure_reason__no_document_selected" = "Es wurde kein Dokument ausgewählt.";
-
-/* Rename failed. */
-"document_failure_reason__rename_failed_file_already_exists" = "Das Umbenennen des Dokumentes ist fehlgeschlagen.";
-
-/* No tags could be found, e.g. while renaming the document. */
-"document_failure_reason__tags_missing" = "Es wurden keine Tags für das Dokument eingegeben.";
-
-/* Title of the document handle view controller. */
-"document_handle_view_controller.title" = "Neue Dokumente";
-
-/* No date could be found, e.g. while renaming the document. */
-"document_recovery_suggestion__date_missing" = "Bitte fügen Sie ein Datum hinzu.";
-
-/* No description found could be found, e.g. while renaming the document. */
-"document_recovery_suggestion__description_missing" = "Bitte geben Sie eine Beschreibung ein.";
-
-/* Rename failed - file already exists. */
-"document_recovery_suggestion__rename_failed_file_already_exists" = "Bitte ändern Sie z.B. die Beschreibung des Dokumentes.";
-
-/* No tags could be found, e.g. while renaming the document. */
-"document_recovery_suggestion__tags_missing" = "Bitte fügen Sie Tags hinzu.";
-
-/* No comment provided by engineer. */
-"download" = "Download";
-
-/* No comment provided by engineer. */
-"edit" = "Bearbeiten";
-
-/* The title of an error message popup */
-"Error" = "Fehler";
-
-/* Fallback when no localized error was found. */
-"error_message_fallback" = "Hier lief etwas schief!";
 
 /* Intro: Find Description */
 "intro.find.description" = "Über das Archiv oder die iCloud Drive App kannst du deine Dokumente schnell und einfach jederzeit finden\n\nso hast du deine wichtigsten Informationen immer in deiner Tasche!";
@@ -123,15 +44,6 @@
 "MoreTableViewController.privacyPolicyCell.url" = "https://pdf-archiver.io/de/privacy/";
 
 /* No comment provided by engineer. */
-"MoreTableViewController.reset_app.message" = "Bitte starte die App neu, um das Zurücksetzen abzuschließen.";
-
-/* No comment provided by engineer. */
-"MoreTableViewController.reset_app.title" = "App zurücksetzen";
-
-/* Button confirmation label */
-"OK" = "OK";
-
-/* No comment provided by engineer. */
 "per_month" = "pro Monat";
 
 /* No comment provided by engineer. */
@@ -139,36 +51,6 @@
 
 /* No comment provided by engineer. */
 "ScanViewController.processing" = "Verarbeite: ";
-
-/* UISearchBar placeholder */
-"search-documents" = "Dokumente durchsuchen";
-
-/* The cancel button */
-"subscription.cancel" = "Abbrechen";
-
-/* The restore button */
-"subscription.restore" = "Wiederherstellen";
-
-/* No comment provided by engineer. */
-"subscription.restore.popup.message" = "Aktive Abos werden über den App Store wiederhergestellt.\nMelde dich bitte falls es zu Problemen kommen sollte:\nMehr > Support";
-
-/* No comment provided by engineer. */
-"subscription.restore.popup.title" = "Abo";
-
-/* Subscription View Controller description text. */
-"subscription.text" = "• Testen Sie die App 1 Monat als Demo kostenlos. Wählen Sie hierfür eine Abo-Modell auf der rechten Seite aus.\n• Ihr Apple-Account wird innerhalb der letzten 24 Stunden der Laufzeit des laufenden Abos für den nächsten Zeitraum belastet.\n• Das Abo verlängert sich automatisch, wenn die Verlängerung nicht wenigstens 24 Stunden vor Ablauf in den Konto-Einstellungen in iTunes oder im App Store deaktiviert wird.";
-
-/* Subscription View Controller title. */
-"subscription.title" = "Abo";
-
-/* Placeholder that is shown, when no untagged documents can be found. */
-"tag_tab.background_placeholder" = "Keine neuen Dokumente gefunden. Bitte scanne zuerst Dokumente.";
-
-/* No comment provided by engineer. */
-"tagging.date-description.untagged-documents" = "Verbleibende Dokumente";
-
-/* Placeholder in Tagging Screen. */
-"tagvc.enter-tag" = "Tag eingeben";
 
 /* Simulator test data set */
 "test_file1" = "archive/2018/2018-04-05--gehalt-april__arbeit_steuer_gehalt.pdf";
@@ -181,9 +63,6 @@
 
 /* Simulator test data set */
 "test_resource_filename" = "2017-01-17--tom-tailor-jeans__kleidung_rechnung";
-
-/* No comment provided by engineer. */
-"UIAlertController.default.title" = "Etwas ist schief gelaufen";
 
 /* Error mesage to be displayed when failing to share a document */
 "Unable to share document without the pdf file" = "Dokument konnte nicht gefunden werden.";
@@ -214,6 +93,8 @@
 
 "Delete failed" = "Löschen fehlgeschlagen";
 
+"Documents" = "Dokumente";
+
 "No Subscription" = "Abo inaktiv";
 
 "No active subscription could be found. Your document will therefore not be saved.\nPlease support the app and subscribe." = "Es konnte kein aktives Abo gefunden werden. Dein Dokument wird daher nicht gespeichert!\nUnterstütze die App und schließe ein Abo ab.";
@@ -221,3 +102,43 @@
 "Need Camera Access" = "Kamera Zugriff benötigt";
 
 "Grant Access" = "Erlauben";
+
+"Subscription" = "Abo";
+
+"Active subscriptions will be restored from the App Store.\nPlease contact me if you have any problems:\nMore > Support" = "Aktive Abos werden über den App Store wiederhergestellt.\nMelde dich bitte falls es zu Problemen kommen sollte:\nMehr > Support";
+
+"Search" = "Suchen";
+
+"More" = "Mehr";
+
+"Preferences & More" = "Einstellungen & Mehr";
+
+"🛠 Preferences" = "🛠 Einstellungen";
+
+"⁉️ More Information" = "⁉️ Mehr Informationen";
+
+"Show Intro" = "Intro anzeigen";
+
+"Show Permissions" = "Einstellungen anzeigen";
+
+"Reset App Preferences" = "Einstellungen zurücksetzen";
+
+"Manage Subscription" = "Abo verwalten";
+
+"About  👤" = "Über  👤";
+
+"Terms of Use & Privacy Policy" = "Datenschutzerklärung";
+
+"Imprint" = "Impressum";
+
+"75% - Good 👌 (Default)" = "75% - Gut 👌 (Standard)";
+
+"25% - Small 💾" = "25% - Klein 💾";
+
+"No iCloud Drive documents found. Please scan and tag documents first." = "Keine iCloud Drive Dokumente gefunden. Bitte scanne und tagge zuerst Dokumente.";
+
+"Welcome to" = "Willkommen bei";
+
+"Scan your documents, tag them and find them sorted in your iCloud Drive." = "Scanne und tagge Dokumente und finde sie anschließend in iCloud Drive.";
+
+"PDF Quality" = "PDF Qualität";

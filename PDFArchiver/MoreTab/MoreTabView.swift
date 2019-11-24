@@ -37,7 +37,7 @@ struct MoreTabView: View {
     }
 
     private var preferences: some View {
-        Section(header: Text("⚒ Preferences")) {
+        Section(header: Text("🛠 Preferences")) {
             Picker(selection: $viewModel.selectedQualityIndex, label: Text("PDF Quality")) {
                 ForEach(0..<viewModel.qualities.count, id: \.self) {
                     Text(self.viewModel.qualities[$0])

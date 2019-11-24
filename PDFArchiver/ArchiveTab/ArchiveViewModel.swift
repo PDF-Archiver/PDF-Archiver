@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 27.10.19.
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
+// swiftlint:disable function_body_length
 
 import ArchiveLib
 import Combine

@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 02.11.19.
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
+// swiftlint:disable force_unwrapping
 
 import ArchiveLib
 import Combine
@@ -12,12 +13,15 @@ import PDFKit
 import SwiftUI
 
 class TagTabViewModel: ObservableObject {
+
+    // set this property manually
     @Published var currentDocument: Document?
+
+    // there properties will be set be some combine actions
     @Published var pdfDocument = PDFDocument()
     @Published var date = Date()
     @Published var specification = ""
     @Published var documentTags = [String]()
-
     @Published var documentTagInput = ""
     @Published var suggestedTags = [String]()
     @Published var inputAccessoryViewSuggestions = [String]()
@@ -30,88 +34,9 @@ class TagTabViewModel: ObservableObject {
     init(archive: Archive = DocumentService.archive) {
         self.archive = archive
 
-        $documentTagInput
-            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }
-            .filter { !$0.isEmpty }
-            .removeDuplicates()
-            .map { tagName in
-                // lowercasing is necessary for sorting!
-                let sortedTags = archive.getAvailableTags(with: [tagName])
-                    .subtracting(self.currentDocument?.tags ?? [])
-                    .subtracting(Set([Constants.documentTagPlaceholder]))
-                    .sorted { lhs, rhs in
-                        if lhs.starts(with: tagName) {
-                            if rhs.starts(with: tagName) {
-                                return lhs < rhs
-                            } else {
-                                return true
-                            }
-                        } else {
-                            if rhs.starts(with: tagName) {
-                                return false
-                            } else {
-                                return lhs < rhs
-                            }
-                        }
-                    }
-                return Array(Array(sortedTags).prefix(5))
-            }
-            .assign(to: \.inputAccessoryViewSuggestions, on: self)
-            .store(in: &disposables)
-
-        NotificationCenter.default.publisher(for: .documentChanges)
-            .compactMap { _ in
-                let documents = DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged)
-                guard self.currentDocument == nil || !documents.contains(self.currentDocument!)  else { return nil }
-                return documents
-                    .filter { $0.downloadStatus == .local }
-                    .max()?.cleaned()
-            }
-            .receive(on: DispatchQueue.main)
-            .sink { document in
-                self.currentDocument = document
-            }
-            .store(in: &disposables)
-
-        $currentDocument
-            .compactMap { $0 }
-            .removeDuplicates()
-            .dropFirst()
-            .sink { _ in
-                self.selectionFeedback.prepare()
-                self.selectionFeedback.selectionChanged()
-            }
-            .store(in: &disposables)
-
-        $currentDocument
-            .compactMap { $0 }
-            .removeDuplicates()
-            .receive(on: DispatchQueue.main)
-            .sink { document in
-                if let pdfDocument = PDFDocument(url: document.path) {
-                    self.pdfDocument = pdfDocument
-
-                    // try to parse suggestions from document content
-                    DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-                        // get tags and save them in the background, they will be passed to the TagViewController
-                        guard let text = pdfDocument.string else { return }
-                        let tags = TagParser.parse(text).sorted()
-                        DispatchQueue.main.async {
-                            self?.suggestedTags = Array(tags.prefix(12))
-                        }
-                    }
-                } else {
-                    Log.send(.error, "Could not present document.")
-                    self.pdfDocument = PDFDocument()
-                }
-                self.date = document.date ?? Date()
-                self.specification = document.specification
-                self.documentTags = Array(document.tags)
-                    .filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
-                    .sorted()
-                self.suggestedTags = []
-            }
-            .store(in: &disposables)
+        bindSearchFieldChanges()
+        handleDocumentChanges()
+        bindCurrentDocumentChanges()
     }
 
     func saveTag(_ tagName: String) {
@@ -166,7 +91,7 @@ class TagTabViewModel: ObservableObject {
             try document.rename(archivePath: path, slugify: true)
             DocumentService.archive.archive(document)
 
-            currentDocument = nil
+            currentDocument = DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged).first
 
             notificationFeedback.notificationOccurred(.success)
 
@@ -175,7 +100,7 @@ class TagTabViewModel: ObservableObject {
 
         } catch {
             Log.send(.error, "Error in PDFProcessing!", extra: ["error": error.localizedDescription])
-            AlertViewModel.createAndPost(title: "Delete failed",
+            AlertViewModel.createAndPost(title: "Save failed!",
                                          message: error,
                                          primaryButtonTitle: "OK")
 
@@ -192,6 +117,95 @@ class TagTabViewModel: ObservableObject {
         currentDocument?.delete(in: DocumentService.archive)
 
         // remove the current document and clear the vie
-        currentDocument = nil
+        currentDocument = DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged).first
+    }
+
+    private func bindSearchFieldChanges() {
+        $documentTagInput
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }
+            .filter { !$0.isEmpty }
+            .removeDuplicates()
+            .map { tagName in
+                // lowercasing is necessary for sorting!
+                let sortedTags = self.archive.getAvailableTags(with: [tagName])
+                    .subtracting(self.currentDocument?.tags ?? [])
+                    .subtracting(Set([Constants.documentTagPlaceholder]))
+                    .sorted { lhs, rhs in
+                        if lhs.starts(with: tagName) {
+                            if rhs.starts(with: tagName) {
+                                return lhs < rhs
+                            } else {
+                                return true
+                            }
+                        } else {
+                            if rhs.starts(with: tagName) {
+                                return false
+                            } else {
+                                return lhs < rhs
+                            }
+                        }
+                    }
+                return Array(Array(sortedTags).prefix(5))
+            }
+            .assign(to: \.inputAccessoryViewSuggestions, on: self)
+            .store(in: &disposables)
+    }
+
+    private func handleDocumentChanges() {
+        NotificationCenter.default.publisher(for: .documentChanges)
+            .compactMap { _ in
+                let documents = DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged)
+                guard self.currentDocument == nil || !documents.contains(self.currentDocument!)  else { return nil }
+                return documents
+                    .filter { $0.downloadStatus == .local }
+                    .max()?.cleaned()
+            }
+            .receive(on: DispatchQueue.main)
+            .sink { document in
+                self.currentDocument = document
+            }
+            .store(in: &disposables)
+    }
+
+    private func bindCurrentDocumentChanges() {
+        $currentDocument
+            .compactMap { $0 }
+            .removeDuplicates()
+            .dropFirst()
+            .sink { _ in
+                self.selectionFeedback.prepare()
+                self.selectionFeedback.selectionChanged()
+            }
+            .store(in: &disposables)
+
+        $currentDocument
+            .compactMap { $0 }
+            .removeDuplicates()
+            .receive(on: DispatchQueue.main)
+            .sink { document in
+                if let pdfDocument = PDFDocument(url: document.path) {
+                    self.pdfDocument = pdfDocument
+
+                    // try to parse suggestions from document content
+                    DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                        // get tags and save them in the background, they will be passed to the TagViewController
+                        guard let text = pdfDocument.string else { return }
+                        let tags = TagParser.parse(text).sorted()
+                        DispatchQueue.main.async {
+                            self?.suggestedTags = Array(tags.prefix(12))
+                        }
+                    }
+                } else {
+                    Log.send(.error, "Could not present document.")
+                    self.pdfDocument = PDFDocument()
+                }
+                self.date = document.date ?? Date()
+                self.specification = document.specification
+                self.documentTags = Array(document.tags)
+                    .filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+                    .sorted()
+                self.suggestedTags = []
+            }
+            .store(in: &disposables)
     }
 }

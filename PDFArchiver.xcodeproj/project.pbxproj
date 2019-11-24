@@ -66,6 +66,7 @@
 		A39942BA228B3ACE00FFC16B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39942B9228B3ACE00FFC16B /* Constants.swift */; };
 		A39942BE228B422E00FFC16B /* IntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39942BD228B422E00FFC16B /* IntroViewController.swift */; };
 		A39A807A21FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
+		A3A0FD952389E145002C9D6E /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3A0FD942389E145002C9D6E /* ActivityView.swift */; };
 		A3A2A72222FF51BF00747DDB /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3A2A72122FF51BF00747DDB /* UserDefaults.swift */; };
 		A3B57B7B22871F170078F7A4 /* StorageHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B57B7A22871F170078F7A4 /* StorageHelper.swift */; };
 		A3B57B7D228720090078F7A4 /* StorageHelper+Paths.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B57B7C228720090078F7A4 /* StorageHelper+Paths.swift */; };
@@ -185,6 +186,7 @@
 		A39942B9228B3ACE00FFC16B /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		A39942BD228B422E00FFC16B /* IntroViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntroViewController.swift; sourceTree = "<group>"; };
 		A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf"; sourceTree = "<group>"; };
+		A3A0FD942389E145002C9D6E /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
 		A3A2A72122FF51BF00747DDB /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		A3B13782223516B200C91BB1 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
 		A3B57B7A22871F170078F7A4 /* StorageHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageHelper.swift; sourceTree = "<group>"; };
@@ -310,6 +312,7 @@
 				A356DF79237DF0F600CAD132 /* Intro */,
 				A356DF7A237DF1C000CAD132 /* PlaceholderView.swift */,
 				A31B3C412384A8660066CB86 /* Alert.swift */,
+				A3A0FD942389E145002C9D6E /* ActivityView.swift */,
 			);
 			path = MissingViews;
 			sourceTree = "<group>";
@@ -729,6 +732,7 @@
 				A3A2A72222FF51BF00747DDB /* UserDefaults.swift in Sources */,
 				A394E4CF236A5F9300C81CC2 /* ScanTabView.swift in Sources */,
 				A36C42C42365E3FB00F379FE /* ArchiveViewModel.swift in Sources */,
+				A3A0FD952389E145002C9D6E /* ActivityView.swift in Sources */,
 				A30CB439236978E400D3063E /* SceneDelegate.swift in Sources */,
 				A30CB43B2369792900D3063E /* MainTabView.swift in Sources */,
 				A36611BE233FDB460092DB19 /* Log.swift in Sources */,

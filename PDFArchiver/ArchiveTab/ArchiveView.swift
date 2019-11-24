@@ -41,7 +41,8 @@ struct ArchiveView: View {
     var searchView: some View {
         SearchField(searchText: $viewModel.searchText,
                     scopes: $viewModel.years,
-                    selectionIndex: $viewModel.scopeSelecton)
+                    selectionIndex: $viewModel.scopeSelecton,
+                    placeholder: "Search")
             .padding(EdgeInsets(top: 0.0, leading: 8.0, bottom: 0.0, trailing: 8.0))
     }
 
