@@ -1,3 +1,47 @@
+/* No date could be found, e.g. while renaming the document. */
+"document_error_description__date_missing" = "Datum Fehlt";
+
+/* No description found could be found, e.g. while renaming the document. */
+"document_error_description__description_missing" = "Beschreibung Fehlt";
+
+/* No comment provided by engineer. */
+"document_error_description__no_document_selected" = "Dokument Fehlt";
+
+/* Rename failed. */
+"document_error_description__rename_failed_file_already_exists" = "Umbenennung Fehlgeschlagen";
+
+/* No tags could be found, e.g. while renaming the document. */
+"document_error_description__tags_missing" = "Tags Fehlen";
+
+/* No date could be found, e.g. while renaming the document. */
+"document_failure_reason__date_missing" = "Das Datum des Dokumentes wurde nicht angegeben.";
+
+/* No description found could be found, e.g. while renaming the document. */
+"document_failure_reason__description_missing" = "Es konnte keine Dokumentenbeschreibung gefunden werden.";
+
+/* No comment provided by engineer. */
+"document_failure_reason__no_document_selected" = "Es wurde kein Dokument ausgewählt.";
+
+/* Rename failed. */
+"document_failure_reason__rename_failed_file_already_exists" = "Das Umbenennen des Dokumentes ist fehlgeschlagen.";
+
+/* No tags could be found, e.g. while renaming the document. */
+"document_failure_reason__tags_missing" = "Es wurden keine Tags für das Dokument eingegeben.";
+
+/* Title of the document handle view controller. */
+"document_handle_view_controller.title" = "New Documents";
+
+/* No date could be found, e.g. while renaming the document. */
+"document_recovery_suggestion__date_missing" = "Bitte fügen Sie ein Datum hinzu.";
+
+/* No description found could be found, e.g. while renaming the document. */
+"document_recovery_suggestion__description_missing" = "Bitte geben Sie eine Beschreibung ein.";
+
+/* Rename failed - file already exists. */
+"document_recovery_suggestion__rename_failed_file_already_exists" = "Bitte ändern Sie z.B. die Beschreibung des Dokumentes.";
+
+/* No tags could be found, e.g. while renaming the document. */
+"document_recovery_suggestion__tags_missing" = "Bitte fügen Sie Tags hinzu.";
 
 "Camera access is required to scan documents." = "Der Zugriff auf die Kamera wird benötig, um Dokumente scannen zu können.";
 
@@ -142,3 +186,17 @@
 "Scan your documents, tag them and find them sorted in your iCloud Drive." = "Scanne und tagge Dokumente und finde sie anschließend in iCloud Drive.";
 
 "PDF Quality" = "PDF Qualität";
+
+"Document Tags" = "Dokumenten Tags";
+
+"Description" = "Beschreibung";
+
+"Enter Tag" = "Tag eingeben";
+
+"Suggested Tags" = "Tag-Vorschläge";
+
+"Delete" = "Löschen";
+
+"Add" = "Sichern";
+
+"Document" = "Dokument";

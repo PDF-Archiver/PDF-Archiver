@@ -1,3 +1,47 @@
+/* No date could be found, e.g. while renaming the document. */
+"document_error_description__date_missing" = "Date missing";
+
+/* No description found could be found, e.g. while renaming the document. */
+"document_error_description__description_missing" = "Description missing";
+
+/* No comment provided by engineer. */
+"document_error_description__no_document_selected" = "Document missing";
+
+/* Rename failed. */
+"document_error_description__rename_failed_file_already_exists" = "Renaming Failed";
+
+/* No tags could be found, e.g. while renaming the document. */
+"document_error_description__tags_missing" = "Missing tags";
+
+/* No date could be found, e.g. while renaming the document. */
+"document_failure_reason__date_missing" = "The date of the document was not specified.";
+
+/* No description found could be found, e.g. while renaming the document. */
+"document_failure_reason__description_missing" = "No document description could be found.";
+
+/* No comment provided by engineer. */
+"document_failure_reason__no_document_selected" = "No document was selected.";
+
+/* Rename failed. */
+"document_failure_reason__rename_failed_file_already_exists" = "Renaming the document failed.";
+
+/* No tags could be found, e.g. while renaming the document. */
+"document_failure_reason__tags_missing" = "No tags were entered for the document.";
+
+/* Title of the document handle view controller. */
+"document_handle_view_controller.title" = "New Documents";
+
+/* No date could be found, e.g. while renaming the document. */
+"document_recovery_suggestion__date_missing" = "Please add a date.";
+
+/* No description found could be found, e.g. while renaming the document. */
+"document_recovery_suggestion__description_missing" = "Please enter a description.";
+
+/* Rename failed - file already exists. */
+"document_recovery_suggestion__rename_failed_file_already_exists" = "Please change e.g. the description of the document.";
+
+/* No tags could be found, e.g. while renaming the document. */
+"document_recovery_suggestion__tags_missing" = "Please add tags.";
 
 /* Intro: Find Description */
 "intro.find.description" = "You can find your documents quickly and easily at any time via the archive or the iCloud Drive app\n\nso you always have your most important information in your pocket!";

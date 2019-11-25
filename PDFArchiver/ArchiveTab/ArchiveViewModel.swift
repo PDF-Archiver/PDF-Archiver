@@ -35,11 +35,10 @@ class ArchiveViewModel: ObservableObject, SystemLogging {
         self.archive = archive
 
         // MARK: - Combine Stuff
-        $documents
-            .dropFirst()
-            .sink { _ in
-                self.showLoadingView = false
-            }
+        NotificationCenter.default.publisher(for: .documentChanges)
+            .receive(on: DispatchQueue.main)
+            .map { _ in false }
+            .assign(to: \.showLoadingView, on: self)
             .store(in: &disposables)
 
         // we assume that all documents should be loaded after 10 seconds

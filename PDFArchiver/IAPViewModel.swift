@@ -25,7 +25,6 @@ class IAPViewModel: ObservableObject {
 
     func tapped(button: IAPButton) {
 
-        // TODO: test this
         switch button {
         case .level1:
             Log.send(.info, "SubscriptionViewController - buy: Monthly subscription.")

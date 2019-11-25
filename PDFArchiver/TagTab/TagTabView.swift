@@ -14,22 +14,26 @@ struct TagTabView: View {
 
     var body: some View {
         NavigationView {
-            if viewModel.currentDocument != nil {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 16.0) {
-                        pdfView
-                        datePicker
-                        TextField("Description", text: $viewModel.specification)
-                        documentTags
-                        suggestedTags
-                    }
-                }
-                .keyboardObserving()
-                .padding(EdgeInsets(top: 0.0, leading: 8.0, bottom: 0.0, trailing: 8.0))
-                .navigationBarTitle(Text("Document"), displayMode: .inline)
-                .navigationBarItems(leading: deleteNavBarView, trailing: saveNavBarView)
+            if viewModel.showLoadingView {
+                LoadingView()
             } else {
-                PlaceholderView(name: "No iCloud Drive documents found. Please scan and tag documents first.")
+                if viewModel.currentDocument != nil {
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 16.0) {
+                            pdfView
+                            datePicker
+                            TextField("Description", text: $viewModel.specification)
+                            documentTags
+                            suggestedTags
+                        }
+                    }
+                    .keyboardObserving()
+                    .padding(EdgeInsets(top: 0.0, leading: 8.0, bottom: 0.0, trailing: 8.0))
+                    .navigationBarTitle(Text("Document"), displayMode: .inline)
+                    .navigationBarItems(leading: deleteNavBarView, trailing: saveNavBarView)
+                } else {
+                    PlaceholderView(name: "No iCloud Drive documents found. Please scan and tag documents first.")
+                }
             }
         }
         .navigationViewStyle(StackNavigationViewStyle())

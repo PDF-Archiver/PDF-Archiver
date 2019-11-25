@@ -16,7 +16,7 @@ struct ArchiveView: View {
     var body: some View {
         NavigationView {
             if viewModel.showLoadingView {
-                loadingView
+                LoadingView()
             } else {
                 VStack {
                     searchView
@@ -28,14 +28,6 @@ struct ArchiveView: View {
         }
         // force list show: https://stackoverflow.com/a/58371424/10026834
         .padding(1.0)
-    }
-
-    var loadingView: some View {
-        VStack(alignment: .center, spacing: 32.0) {
-            ActivityIndicator()
-                .animated(true)
-            Text("Loading documents ...")
-        }
     }
 
     var searchView: some View {

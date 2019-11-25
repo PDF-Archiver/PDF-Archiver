@@ -50,7 +50,7 @@ struct CustomTextField: UIViewRepresentable {
     func makeUIView(context: UIViewRepresentableContext<CustomTextField>) -> UITextField {
         let textField = UITextField(frame: .zero)
         textField.delegate = context.coordinator
-        textField.placeholder = placeholder
+        textField.placeholder = NSLocalizedString(placeholder, comment: "")
         return textField
     }
 

@@ -17,6 +17,8 @@ class TagTabViewModel: ObservableObject {
     // set this property manually
     @Published var currentDocument: Document?
 
+    @Published var showLoadingView = true
+
     // there properties will be set be some combine actions
     @Published var pdfDocument = PDFDocument()
     @Published var date = Date()
@@ -37,6 +39,19 @@ class TagTabViewModel: ObservableObject {
         bindSearchFieldChanges()
         handleDocumentChanges()
         bindCurrentDocumentChanges()
+
+        // MARK: - Combine Stuff
+        NotificationCenter.default.publisher(for: .documentChanges)
+            .receive(on: DispatchQueue.main)
+            .map { _ in false }
+            .assign(to: \.showLoadingView, on: self)
+            .store(in: &disposables)
+
+        // we assume that all documents should be loaded after 10 seconds
+        // force the disappear of the loading view
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) {
+            self.showLoadingView = false
+        }
     }
 
     func saveTag(_ tagName: String) {
@@ -156,6 +171,16 @@ class TagTabViewModel: ObservableObject {
             .compactMap { _ in
                 let documents = DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged)
                 guard self.currentDocument == nil || !documents.contains(self.currentDocument!)  else { return nil }
+
+                // downlaod new documents
+                let notCloudDocuments = documents
+                    .filter { $0.downloadStatus != .iCloudDrive }
+                if notCloudDocuments.count <= 5 {
+                    documents
+                        .filter { $0.downloadStatus == .iCloudDrive }
+                        .forEach { $0.download() }
+                }
+
                 return documents
                     .filter { $0.downloadStatus == .local }
                     .max()?.cleaned()
@@ -200,7 +225,7 @@ class TagTabViewModel: ObservableObject {
                     self.pdfDocument = PDFDocument()
                 }
                 self.date = document.date ?? Date()
-                self.specification = document.specification
+                self.specification = document.specification.starts(with: Constants.documentDescriptionPlaceholder) ? "" : document.specification
                 self.documentTags = Array(document.tags)
                     .filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
                     .sorted()

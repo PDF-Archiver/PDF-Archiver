@@ -60,6 +60,8 @@ struct MainTabView: View {
                     }
                 }.tag(3)
         }
+        // fix status bar appearance: https://stackoverflow.com/a/58388039/10026834
+        .edgesIgnoringSafeArea(.top)
     }
 
     private var documentCameraView: some View {
