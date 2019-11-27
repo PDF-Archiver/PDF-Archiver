@@ -5,7 +5,7 @@
 //  Created by Julian Kahnert on 02.11.19.
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
-// swiftlint:disable force_unwrapping
+// swiftlint:disable force_unwrapping function_body_length
 
 import ArchiveLib
 import Combine
@@ -36,10 +36,6 @@ class TagTabViewModel: ObservableObject {
     init(archive: Archive = DocumentService.archive) {
         self.archive = archive
 
-        bindSearchFieldChanges()
-        handleDocumentChanges()
-        bindCurrentDocumentChanges()
-
         // MARK: - Combine Stuff
         NotificationCenter.default.publisher(for: .documentChanges)
             .receive(on: DispatchQueue.main)
@@ -52,6 +48,110 @@ class TagTabViewModel: ObservableObject {
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) {
             self.showLoadingView = false
         }
+
+        $documentTagInput
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }
+            .filter { !$0.isEmpty }
+            .removeDuplicates()
+            .map { tagName in
+                // lowercasing is necessary for sorting!
+                let sortedTags = self.archive.getAvailableTags(with: [tagName])
+                    .subtracting(self.currentDocument?.tags ?? [])
+                    .subtracting(Set([Constants.documentTagPlaceholder]))
+                    .sorted { lhs, rhs in
+                        if lhs.starts(with: tagName) {
+                            if rhs.starts(with: tagName) {
+                                return lhs < rhs
+                            } else {
+                                return true
+                            }
+                        } else {
+                            if rhs.starts(with: tagName) {
+                                return false
+                            } else {
+                                return lhs < rhs
+                            }
+                        }
+                    }
+                return Array(Array(sortedTags).prefix(5))
+            }
+            .assign(to: \.inputAccessoryViewSuggestions, on: self)
+            .store(in: &disposables)
+
+        NotificationCenter.default.publisher(for: .documentChanges)
+            .compactMap { _ in
+                let documents = DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged)
+                guard self.currentDocument == nil || !documents.contains(self.currentDocument!)  else { return nil }
+
+                // downlaod new documents
+                let notCloudDocuments = documents
+                    .filter { $0.downloadStatus != .iCloudDrive }
+                if notCloudDocuments.count <= 5 {
+                    documents
+                        .filter { $0.downloadStatus == .iCloudDrive }
+                        .forEach { $0.download() }
+                }
+
+                return self.getNewDocument()
+            }
+            .receive(on: DispatchQueue.main)
+            .sink { document in
+                self.currentDocument = document
+            }
+            .store(in: &disposables)
+
+        $currentDocument
+            .compactMap { $0 }
+            .removeDuplicates()
+            .dropFirst()
+            .sink { _ in
+                self.selectionFeedback.prepare()
+                self.selectionFeedback.selectionChanged()
+            }
+            .store(in: &disposables)
+
+        $currentDocument
+            .compactMap { $0 }
+            .removeDuplicates()
+            .receive(on: DispatchQueue.main)
+            .sink { document in
+                if let pdfDocument = PDFDocument(url: document.path) {
+                    self.pdfDocument = pdfDocument
+
+                    // try to parse suggestions from document content
+                    DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                        // get tags and save them in the background, they will be passed to the TagTabView
+                        guard let text = pdfDocument.string else { return }
+                        let tags = TagParser.parse(text).sorted()
+                        DispatchQueue.main.async {
+                            self?.suggestedTags = Array(tags.prefix(12))
+                        }
+
+                        // parse date from document content
+                        let documentDate: Date
+                        if document.date == nil,
+                            let output = DateParser.parse(text) {
+                            documentDate = output.date
+                        } else {
+                            documentDate = Date()
+                        }
+                        DispatchQueue.main.async {
+                            self?.date = documentDate
+                        }
+                    }
+
+                } else {
+                    Log.send(.error, "Could not present document.")
+                    self.pdfDocument = PDFDocument()
+                    assertionFailure("Could not present document.")
+                }
+                self.specification = document.specification.starts(with: Constants.documentDescriptionPlaceholder) ? "" : document.specification
+                self.documentTags = Array(document.tags)
+                    .filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+                    .sorted()
+                self.suggestedTags = []
+            }
+            .store(in: &disposables)
     }
 
     func saveTag(_ tagName: String) {
@@ -106,7 +206,7 @@ class TagTabViewModel: ObservableObject {
             try document.rename(archivePath: path, slugify: true)
             DocumentService.archive.archive(document)
 
-            currentDocument = DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged).first
+            currentDocument = getNewDocument()
 
             notificationFeedback.notificationOccurred(.success)
 
@@ -132,105 +232,11 @@ class TagTabViewModel: ObservableObject {
         currentDocument?.delete(in: DocumentService.archive)
 
         // remove the current document and clear the vie
-        currentDocument = DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged).first
+        currentDocument = getNewDocument()
     }
 
-    private func bindSearchFieldChanges() {
-        $documentTagInput
-            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }
-            .filter { !$0.isEmpty }
-            .removeDuplicates()
-            .map { tagName in
-                // lowercasing is necessary for sorting!
-                let sortedTags = self.archive.getAvailableTags(with: [tagName])
-                    .subtracting(self.currentDocument?.tags ?? [])
-                    .subtracting(Set([Constants.documentTagPlaceholder]))
-                    .sorted { lhs, rhs in
-                        if lhs.starts(with: tagName) {
-                            if rhs.starts(with: tagName) {
-                                return lhs < rhs
-                            } else {
-                                return true
-                            }
-                        } else {
-                            if rhs.starts(with: tagName) {
-                                return false
-                            } else {
-                                return lhs < rhs
-                            }
-                        }
-                    }
-                return Array(Array(sortedTags).prefix(5))
-            }
-            .assign(to: \.inputAccessoryViewSuggestions, on: self)
-            .store(in: &disposables)
-    }
-
-    private func handleDocumentChanges() {
-        NotificationCenter.default.publisher(for: .documentChanges)
-            .compactMap { _ in
-                let documents = DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged)
-                guard self.currentDocument == nil || !documents.contains(self.currentDocument!)  else { return nil }
-
-                // downlaod new documents
-                let notCloudDocuments = documents
-                    .filter { $0.downloadStatus != .iCloudDrive }
-                if notCloudDocuments.count <= 5 {
-                    documents
-                        .filter { $0.downloadStatus == .iCloudDrive }
-                        .forEach { $0.download() }
-                }
-
-                return documents
-                    .filter { $0.downloadStatus == .local }
-                    .max()?.cleaned()
-            }
-            .receive(on: DispatchQueue.main)
-            .sink { document in
-                self.currentDocument = document
-            }
-            .store(in: &disposables)
-    }
-
-    private func bindCurrentDocumentChanges() {
-        $currentDocument
-            .compactMap { $0 }
-            .removeDuplicates()
-            .dropFirst()
-            .sink { _ in
-                self.selectionFeedback.prepare()
-                self.selectionFeedback.selectionChanged()
-            }
-            .store(in: &disposables)
-
-        $currentDocument
-            .compactMap { $0 }
-            .removeDuplicates()
-            .receive(on: DispatchQueue.main)
-            .sink { document in
-                if let pdfDocument = PDFDocument(url: document.path) {
-                    self.pdfDocument = pdfDocument
-
-                    // try to parse suggestions from document content
-                    DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-                        // get tags and save them in the background, they will be passed to the TagViewController
-                        guard let text = pdfDocument.string else { return }
-                        let tags = TagParser.parse(text).sorted()
-                        DispatchQueue.main.async {
-                            self?.suggestedTags = Array(tags.prefix(12))
-                        }
-                    }
-                } else {
-                    Log.send(.error, "Could not present document.")
-                    self.pdfDocument = PDFDocument()
-                }
-                self.date = document.date ?? Date()
-                self.specification = document.specification.starts(with: Constants.documentDescriptionPlaceholder) ? "" : document.specification
-                self.documentTags = Array(document.tags)
-                    .filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
-                    .sorted()
-                self.suggestedTags = []
-            }
-            .store(in: &disposables)
+    private func getNewDocument() -> Document? {
+        DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged)
+            .first { $0.downloadStatus == .local }
     }
 }
