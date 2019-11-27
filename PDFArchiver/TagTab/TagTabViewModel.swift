@@ -68,8 +68,8 @@ class TagTabViewModel: ObservableObject {
         guard let index = documentTags.firstIndex(of: tagName) else { return }
         documentTags.remove(at: index)
 
-        suggestedTags.append(tagName)
-        suggestedTags.sort()
+        let newTags = Set(suggestedTags).union([tagName])
+        suggestedTags = Array(newTags).sorted()
 
         selectionFeedback.prepare()
         selectionFeedback.selectionChanged()
