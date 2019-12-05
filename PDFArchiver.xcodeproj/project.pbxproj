@@ -39,7 +39,6 @@
 		A356115F22DE517B00A9092F /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = A356115E22DE517B00A9092F /* Atomic.swift */; };
 		A356DF78237DE69400CAD132 /* IntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A356DF77237DE69400CAD132 /* IntroView.swift */; };
 		A356DF7B237DF1C000CAD132 /* PlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A356DF7A237DF1C000CAD132 /* PlaceholderView.swift */; };
-		A35B7D04235C718A002F7716 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = A35B7D03235C718A002F7716 /* Sentry */; };
 		A35B7D07235C71C8002F7716 /* PaperOnboarding in Frameworks */ = {isa = PBXBuildFile; productRef = A35B7D06235C71C8002F7716 /* PaperOnboarding */; };
 		A3645422230C443D002042AC /* test-ocr-data.png in Resources */ = {isa = PBXBuildFile; fileRef = A388C8262235330F000D52CB /* test-ocr-data.png */; };
 		A36611BE233FDB460092DB19 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36611BD233FDB460092DB19 /* Log.swift */; };
@@ -67,6 +66,7 @@
 		A39942BA228B3ACE00FFC16B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39942B9228B3ACE00FFC16B /* Constants.swift */; };
 		A39942BE228B422E00FFC16B /* IntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39942BD228B422E00FFC16B /* IntroViewController.swift */; };
 		A39A807A21FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
+		A39B0EE72399A58D002624D1 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = A39B0EE62399A58D002624D1 /* Sentry */; };
 		A3A0FD952389E145002C9D6E /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3A0FD942389E145002C9D6E /* ActivityView.swift */; };
 		A3A0FD97238C7803002C9D6E /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3A0FD96238C7803002C9D6E /* LoadingView.swift */; };
 		A3A2A72222FF51BF00747DDB /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3A2A72122FF51BF00747DDB /* UserDefaults.swift */; };
@@ -225,9 +225,9 @@
 				A31B3C4023849E1E0066CB86 /* SwiftUIX in Frameworks */,
 				A36611C4233FDDB40092DB19 /* LoggingKit in Frameworks */,
 				A3F28ABC23759A7900E6D184 /* KeyboardObserving in Frameworks */,
+				A39B0EE72399A58D002624D1 /* Sentry in Frameworks */,
 				A35B7D07235C71C8002F7716 /* PaperOnboarding in Frameworks */,
 				A3811C0A2346150B00AF6CFA /* SwiftyStoreKit in Frameworks */,
-				A35B7D04235C718A002F7716 /* Sentry in Frameworks */,
 				A38BDC26234632F6003668C3 /* ArchiveLib in Frameworks */,
 				A3FF63AA2247A39E0089E66A /* StoreKit.framework in Frameworks */,
 			);
@@ -501,10 +501,10 @@
 				A36611C3233FDDB40092DB19 /* LoggingKit */,
 				A3811C092346150B00AF6CFA /* SwiftyStoreKit */,
 				A38BDC25234632F6003668C3 /* ArchiveLib */,
-				A35B7D03235C718A002F7716 /* Sentry */,
 				A35B7D06235C71C8002F7716 /* PaperOnboarding */,
 				A3F28ABB23759A7900E6D184 /* KeyboardObserving */,
 				A31B3C3F23849E1E0066CB86 /* SwiftUIX */,
+				A39B0EE62399A58D002624D1 /* Sentry */,
 			);
 			productName = CandySearch;
 			productReference = 171E0C7A1B8E5B84001E6242 /* PDFArchiver.app */;
@@ -600,10 +600,10 @@
 				A36611C2233FDDB40092DB19 /* XCRemoteSwiftPackageReference "LoggingKit" */,
 				A3811C082346150B00AF6CFA /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */,
 				A38BDC24234632F6003668C3 /* XCRemoteSwiftPackageReference "ArchiveLib" */,
-				A35B7D02235C718A002F7716 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 				A35B7D05235C71C8002F7716 /* XCRemoteSwiftPackageReference "paper-onboarding" */,
 				A3F28ABA23759A7900E6D184 /* XCRemoteSwiftPackageReference "KeyboardObserving" */,
 				A31B3C3E23849E1E0066CB86 /* XCRemoteSwiftPackageReference "SwiftUIX" */,
+				A39B0EE52399A58D002624D1 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 			);
 			productRefGroup = 171E0C7B1B8E5B84001E6242 /* Products */;
 			projectDirPath = "";
@@ -1222,14 +1222,6 @@
 				kind = branch;
 			};
 		};
-		A35B7D02235C718A002F7716 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/JonathanDowning/sentry-cocoa";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
 		A35B7D05235C71C8002F7716 /* XCRemoteSwiftPackageReference "paper-onboarding" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Ramotion/paper-onboarding";
@@ -1262,6 +1254,14 @@
 				minimumVersion = 2.0.11;
 			};
 		};
+		A39B0EE52399A58D002624D1 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/getsentry/sentry-cocoa";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.4.3;
+			};
+		};
 		A3F28ABA23759A7900E6D184 /* XCRemoteSwiftPackageReference "KeyboardObserving" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/nickffox/KeyboardObserving";
@@ -1277,11 +1277,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A31B3C3E23849E1E0066CB86 /* XCRemoteSwiftPackageReference "SwiftUIX" */;
 			productName = SwiftUIX;
-		};
-		A35B7D03235C718A002F7716 /* Sentry */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = A35B7D02235C718A002F7716 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
-			productName = Sentry;
 		};
 		A35B7D06235C71C8002F7716 /* PaperOnboarding */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -1302,6 +1297,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A38BDC24234632F6003668C3 /* XCRemoteSwiftPackageReference "ArchiveLib" */;
 			productName = ArchiveLib;
+		};
+		A39B0EE62399A58D002624D1 /* Sentry */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A39B0EE52399A58D002624D1 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
+			productName = Sentry;
 		};
 		A3F28ABB23759A7900E6D184 /* KeyboardObserving */ = {
 			isa = XCSwiftPackageProductDependency;

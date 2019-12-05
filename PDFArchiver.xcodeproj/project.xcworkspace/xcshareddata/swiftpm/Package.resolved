@@ -48,11 +48,11 @@
       },
       {
         "package": "Sentry",
-        "repositoryURL": "https://github.com/JonathanDowning/sentry-cocoa",
+        "repositoryURL": "https://github.com/getsentry/sentry-cocoa",
         "state": {
-          "branch": "master",
-          "revision": "31d8731267825d162836f34fbaa239f7584e9d87",
-          "version": null
+          "branch": null,
+          "revision": "bb3c1d852980432907cd314e4fa984fc9a78c9f3",
+          "version": "4.4.3"
         }
       },
       {
