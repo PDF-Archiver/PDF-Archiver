@@ -11,7 +11,7 @@ import SwiftUI
 extension Alert {
     init(viewModel: AlertViewModel?) {
         if let viewModel = viewModel {
-            Log.send(.error, "An error was presented", extra: ["type": "custom", "title": "\(viewModel.title)", "message": "\(viewModel.message)"])
+            Log.send(.error, "An error was presented", extra: ["type": "custom", "title": "\(viewModel.title)"])
 
             if let secondaryButton = viewModel.secondaryButton {
                 self.init(title: Text(viewModel.title),

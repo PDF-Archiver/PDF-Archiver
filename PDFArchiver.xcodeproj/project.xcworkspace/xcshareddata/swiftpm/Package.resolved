@@ -12,11 +12,11 @@
       },
       {
         "package": "KeyboardObserving",
-        "repositoryURL": "https://github.com/nickffox/KeyboardObserving",
+        "repositoryURL": "https://github.com/JulianKahnert/KeyboardObserving",
         "state": {
-          "branch": null,
-          "revision": "6d043ee2402ea4b827601f9b8edcc52a88aabff2",
-          "version": "0.2.1"
+          "branch": "master",
+          "revision": "a8c6d2ce7aa1a4da2a352ba55a8dfb115eaea90b",
+          "version": null
         }
       },
       {

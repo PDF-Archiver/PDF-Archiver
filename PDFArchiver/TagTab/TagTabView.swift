@@ -27,7 +27,7 @@ struct TagTabView: View {
                             suggestedTags
                         }
                     }
-                    .keyboardObserving()
+                    .keyboardObserving(offset: 16.0)
                     .padding(EdgeInsets(top: 0.0, leading: 8.0, bottom: 0.0, trailing: 8.0))
                     .navigationBarTitle(Text("Document"), displayMode: .inline)
                     .navigationBarItems(leading: deleteNavBarView, trailing: saveNavBarView)

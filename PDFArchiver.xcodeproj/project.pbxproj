@@ -67,6 +67,7 @@
 		A39942BE228B422E00FFC16B /* IntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39942BD228B422E00FFC16B /* IntroViewController.swift */; };
 		A39A807A21FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
 		A39B0EE72399A58D002624D1 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = A39B0EE62399A58D002624D1 /* Sentry */; };
+		A39B0EEA2399A94C002624D1 /* KeyboardObserving in Frameworks */ = {isa = PBXBuildFile; productRef = A39B0EE92399A94C002624D1 /* KeyboardObserving */; };
 		A3A0FD952389E145002C9D6E /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3A0FD942389E145002C9D6E /* ActivityView.swift */; };
 		A3A0FD97238C7803002C9D6E /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3A0FD96238C7803002C9D6E /* LoadingView.swift */; };
 		A3A2A72222FF51BF00747DDB /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3A2A72122FF51BF00747DDB /* UserDefaults.swift */; };
@@ -84,7 +85,6 @@
 		A3EBFE9C21650F58008C34CC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A3EBFE9E21650F58008C34CC /* Localizable.strings */; };
 		A3ECBC9622496BA000A626AE /* IAP.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3ECBC9522496BA000A626AE /* IAP.swift */; };
 		A3F1C21D2163DCD9002B0141 /* AppStoreReviewRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */; };
-		A3F28ABC23759A7900E6D184 /* KeyboardObserving in Frameworks */ = {isa = PBXBuildFile; productRef = A3F28ABB23759A7900E6D184 /* KeyboardObserving */; };
 		A3FF63A022478FC10089E66A /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF639F22478FC10089E66A /* UIColor.swift */; };
 		A3FF63AA2247A39E0089E66A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3FF63A92247A39E0089E66A /* StoreKit.framework */; };
 /* End PBXBuildFile section */
@@ -223,8 +223,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				A31B3C4023849E1E0066CB86 /* SwiftUIX in Frameworks */,
+				A39B0EEA2399A94C002624D1 /* KeyboardObserving in Frameworks */,
 				A36611C4233FDDB40092DB19 /* LoggingKit in Frameworks */,
-				A3F28ABC23759A7900E6D184 /* KeyboardObserving in Frameworks */,
 				A39B0EE72399A58D002624D1 /* Sentry in Frameworks */,
 				A35B7D07235C71C8002F7716 /* PaperOnboarding in Frameworks */,
 				A3811C0A2346150B00AF6CFA /* SwiftyStoreKit in Frameworks */,
@@ -502,9 +502,9 @@
 				A3811C092346150B00AF6CFA /* SwiftyStoreKit */,
 				A38BDC25234632F6003668C3 /* ArchiveLib */,
 				A35B7D06235C71C8002F7716 /* PaperOnboarding */,
-				A3F28ABB23759A7900E6D184 /* KeyboardObserving */,
 				A31B3C3F23849E1E0066CB86 /* SwiftUIX */,
 				A39B0EE62399A58D002624D1 /* Sentry */,
+				A39B0EE92399A94C002624D1 /* KeyboardObserving */,
 			);
 			productName = CandySearch;
 			productReference = 171E0C7A1B8E5B84001E6242 /* PDFArchiver.app */;
@@ -601,9 +601,9 @@
 				A3811C082346150B00AF6CFA /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */,
 				A38BDC24234632F6003668C3 /* XCRemoteSwiftPackageReference "ArchiveLib" */,
 				A35B7D05235C71C8002F7716 /* XCRemoteSwiftPackageReference "paper-onboarding" */,
-				A3F28ABA23759A7900E6D184 /* XCRemoteSwiftPackageReference "KeyboardObserving" */,
 				A31B3C3E23849E1E0066CB86 /* XCRemoteSwiftPackageReference "SwiftUIX" */,
 				A39B0EE52399A58D002624D1 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
+				A39B0EE82399A94C002624D1 /* XCRemoteSwiftPackageReference "KeyboardObserving" */,
 			);
 			productRefGroup = 171E0C7B1B8E5B84001E6242 /* Products */;
 			projectDirPath = "";
@@ -1262,12 +1262,12 @@
 				minimumVersion = 4.4.3;
 			};
 		};
-		A3F28ABA23759A7900E6D184 /* XCRemoteSwiftPackageReference "KeyboardObserving" */ = {
+		A39B0EE82399A94C002624D1 /* XCRemoteSwiftPackageReference "KeyboardObserving" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/nickffox/KeyboardObserving";
+			repositoryURL = "https://github.com/JulianKahnert/KeyboardObserving";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.2.0;
+				branch = master;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -1303,9 +1303,9 @@
 			package = A39B0EE52399A58D002624D1 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
 			productName = Sentry;
 		};
-		A3F28ABB23759A7900E6D184 /* KeyboardObserving */ = {
+		A39B0EE92399A94C002624D1 /* KeyboardObserving */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = A3F28ABA23759A7900E6D184 /* XCRemoteSwiftPackageReference "KeyboardObserving" */;
+			package = A39B0EE82399A94C002624D1 /* XCRemoteSwiftPackageReference "KeyboardObserving" */;
 			productName = KeyboardObserving;
 		};
 /* End XCSwiftPackageProductDependency section */
