@@ -18,7 +18,6 @@ class MoreTabViewModel: ObservableObject {
     @Published var qualities: [LocalizedStringKey]  = ["100% - Lossless 🤯", "75% - Good 👌 (Default)", "50% - Normal 👍", "25% - Small 💾"]
     @Published var selectedQualityIndex = UserDefaults.PDFQuality.toIndex(UserDefaults.standard.pdfQuality)
 
-    @Published var isShowingResetAlert: Bool = false
     @Published var isShowingMailView: Bool = false
     @Published var result: Result<MFMailComposeResult, Error>?
 
@@ -59,7 +58,7 @@ class MoreTabViewModel: ObservableObject {
             Log.send(.error, "Bundle Identifier not found.")
         }
 
-        isShowingResetAlert = true
+        AlertViewModel.createAndPost(title: "Reset App", message: "Please restart the app to complete the reset.", primaryButtonTitle: "OK")
     }
 
     func showManageSubscription() {

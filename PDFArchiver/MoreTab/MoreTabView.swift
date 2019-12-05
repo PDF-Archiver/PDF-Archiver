@@ -21,11 +21,6 @@ struct MoreTabView: View {
                 preferences
                 moreInformation
             }.listStyle(GroupedListStyle())
-            .alert(isPresented: $viewModel.isShowingResetAlert) {
-                Alert(title: Text("Reset App"),
-                      message: Text("Please restart the app to complete the reset."),
-                      dismissButton: .default(Text("OK")))
-            }
             .disabled(!MFMailComposeViewController.canSendMail())
             .sheet(isPresented: $viewModel.isShowingMailView) {
                 MailView(subject: MoreTabViewModel.mailSubject,

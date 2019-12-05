@@ -48,6 +48,7 @@
 		A36C42C22365E3F000F379FE /* ArchiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36C42C12365E3F000F379FE /* ArchiveView.swift */; };
 		A36C42C42365E3FB00F379FE /* ArchiveViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36C42C32365E3FB00F379FE /* ArchiveViewModel.swift */; };
 		A36C42C62365E43D00F379FE /* SearchField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36C42C52365E43D00F379FE /* SearchField.swift */; };
+		A3766063238F851F00840CFB /* ClearingTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3766062238F851F00840CFB /* ClearingTextField.swift */; };
 		A377C907236E07CD000877EA /* DocumentCameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A377C906236E07CD000877EA /* DocumentCameraView.swift */; };
 		A378C433221B3929007D1419 /* DocumentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A378C432221B3929007D1419 /* DocumentService.swift */; };
 		A3811C0A2346150B00AF6CFA /* SwiftyStoreKit in Frameworks */ = {isa = PBXBuildFile; productRef = A3811C092346150B00AF6CFA /* SwiftyStoreKit */; };
@@ -170,6 +171,7 @@
 		A36C42C12365E3F000F379FE /* ArchiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveView.swift; sourceTree = "<group>"; };
 		A36C42C32365E3FB00F379FE /* ArchiveViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveViewModel.swift; sourceTree = "<group>"; };
 		A36C42C52365E43D00F379FE /* SearchField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchField.swift; sourceTree = "<group>"; };
+		A3766062238F851F00840CFB /* ClearingTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearingTextField.swift; sourceTree = "<group>"; };
 		A377C906236E07CD000877EA /* DocumentCameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentCameraView.swift; sourceTree = "<group>"; };
 		A378C432221B3929007D1419 /* DocumentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentService.swift; sourceTree = "<group>"; };
 		A381CF20222F0B5D00FAFA7C /* ImageConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageConverter.swift; sourceTree = "<group>"; };
@@ -316,6 +318,7 @@
 				A31B3C412384A8660066CB86 /* Alert.swift */,
 				A3A0FD942389E145002C9D6E /* ActivityView.swift */,
 				A3A0FD96238C7803002C9D6E /* LoadingView.swift */,
+				A3766062238F851F00840CFB /* ClearingTextField.swift */,
 			);
 			path = MissingViews;
 			sourceTree = "<group>";
@@ -707,6 +710,7 @@
 				A328CF3D237C3C8E003D60AD /* MailView.swift in Sources */,
 				A328CF50237CAF29003D60AD /* IAPView.swift in Sources */,
 				A34A84FC2130A35A0093FAE5 /* ArchiveExtension.swift in Sources */,
+				A3766063238F851F00840CFB /* ClearingTextField.swift in Sources */,
 				A36C42C62365E43D00F379FE /* SearchField.swift in Sources */,
 				A33EC92B236E3CCA00471F98 /* TagTabViewModel.swift in Sources */,
 				A3ECBC9622496BA000A626AE /* IAP.swift in Sources */,
@@ -1255,7 +1259,7 @@
 			repositoryURL = "https://github.com/PDF-Archiver/ArchiveLib";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.6;
+				minimumVersion = 2.0.11;
 			};
 		};
 		A3F28ABA23759A7900E6D184 /* XCRemoteSwiftPackageReference "KeyboardObserving" */ = {

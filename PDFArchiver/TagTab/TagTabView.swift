@@ -18,11 +18,11 @@ struct TagTabView: View {
                 LoadingView()
             } else {
                 if viewModel.currentDocument != nil {
-                    ScrollView {
+                    ScrollView(showsIndicators: false) {
                         VStack(alignment: .leading, spacing: 16.0) {
                             pdfView
                             datePicker
-                            TextField("Description", text: $viewModel.specification)
+                            ClearingTextField(placeholder: "Description", text: $viewModel.specification)
                             documentTags
                             suggestedTags
                         }
