@@ -10,10 +10,11 @@ import Foundation
 
 extension UserDefaults {
 
-    enum Names: String {
+    private enum Names: String {
         case tutorialShown = "tutorial-v1"
         case lastSelectedTabIndex
         case pdfQuality
+        case subscriptionExpiryDate = "SubscriptionExpiryDate"
     }
 
     enum PDFQuality: Float, CaseIterable {
@@ -63,6 +64,16 @@ extension UserDefaults {
         set {
             Log.send(.info, "PDF Quality Changed.", extra: ["quality": String(newValue.rawValue)])
             UserDefaults.standard.set(newValue.rawValue, forKey: Names.pdfQuality.rawValue)
+        }
+    }
+
+    var subscriptionExpiryDate: Date? {
+        get {
+            return UserDefaults.standard.object(forKey: Names.subscriptionExpiryDate.rawValue) as? Date
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: Names.subscriptionExpiryDate.rawValue)
+
         }
     }
 }

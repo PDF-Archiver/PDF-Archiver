@@ -27,21 +27,16 @@ public extension IAPServiceDelegate {
 public class IAPService: NSObject, SystemLogging {
 
     private static let productIdentifiers = Set(["SUBSCRIPTION_MONTHLY_IOS", "SUBSCRIPTION_YEARLY_IOS_NEW"])
-    private static let subscriptionExpiryDateKey = "SubscriptionExpiryDate"
 
-    private var _expiryDate: Date?
     private var expiryDate: Date? {
         get {
-            if _expiryDate == nil {
-                _expiryDate = UserDefaults.standard.object(forKey: IAPService.subscriptionExpiryDateKey) as? Date
-                os_log("Getting new expiry date: %@", log: IAPService.log, type: .debug, _expiryDate?.description ?? "NULL")
-            }
-            return _expiryDate
+            let expiryDate = UserDefaults.standard.subscriptionExpiryDate
+            os_log("Getting new expiry date: %@", log: IAPService.log, type: .debug, expiryDate?.description ?? "NULL")
+            return expiryDate
         }
         set {
             os_log("Setting new expiry date: %@", log: IAPService.log, type: .debug, newValue?.description ?? "NULL")
-            _expiryDate = newValue
-            UserDefaults.standard.set(newValue, forKey: IAPService.subscriptionExpiryDateKey)
+            UserDefaults.standard.subscriptionExpiryDate = newValue
         }
     }
 
