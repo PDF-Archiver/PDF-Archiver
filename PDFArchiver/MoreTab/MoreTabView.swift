@@ -23,7 +23,7 @@ struct MoreTabView: View {
             }.listStyle(GroupedListStyle())
             .disabled(!MFMailComposeViewController.canSendMail())
             .sheet(isPresented: $viewModel.isShowingMailView) {
-                MailView(subject: MoreTabViewModel.mailSubject,
+                SupportMailView(subject: MoreTabViewModel.mailSubject,
                          recipients: MoreTabViewModel.mailRecipients,
                          result: self.$viewModel.result)
             }

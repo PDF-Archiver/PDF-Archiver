@@ -11,6 +11,15 @@
         }
       },
       {
+        "package": "Diagnostics",
+        "repositoryURL": "https://github.com/WeTransfer/Diagnostics",
+        "state": {
+          "branch": null,
+          "revision": "7c0740d1793789b38854cfa55bc820dd7a7afd05",
+          "version": "1.0.1"
+        }
+      },
+      {
         "package": "KeyboardObserving",
         "repositoryURL": "https://github.com/JulianKahnert/KeyboardObserving",
         "state": {
