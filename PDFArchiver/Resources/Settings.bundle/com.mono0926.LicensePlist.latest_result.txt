@@ -1,27 +1,23 @@
-name: Keys, nameSpecified: 
-body: MIT LICENSE Found in…
-version: 1.0.1
+name: ArchiveLib, nameSpecified: , owner: PDF-Archiver, version: 2.0.11
 
-name: paper-onboarding, nameSpecified: 
-body: The MIT License (MIT…
-version: 6.1.3
+name: Diagnostics, nameSpecified: , owner: WeTransfer, version: 1.0.1
 
-name: Sentry, nameSpecified: 
-body: The MIT License (MIT…
-version: 4.3.3
+name: KeyboardObserving, nameSpecified: , owner: JulianKahnert, version: 
 
-name: SwiftyStoreKit, nameSpecified: 
-body: Copyright (c) 2015-2…
-version: 0.14.2
+name: LoggingKit, nameSpecified: , owner: PDF-Archiver, version: 1.1.4
 
-name: TagListView, nameSpecified: 
-body: The MIT License (MIT…
-version: 1.3.2
+name: LogModel, nameSpecified: , owner: PDF-Archiver, version: 0.0.4
 
-name: WSTagsField, nameSpecified: 
-body: The MIT License (MIT…
-version: 4.1.0
+name: paper-onboarding, nameSpecified: , owner: Ramotion, version: 6.1.4
+
+name: sentry-cocoa, nameSpecified: , owner: getsentry, version: 4.4.3
+
+name: swift-log, nameSpecified: , owner: apple, version: 1.2.0
+
+name: SwiftUIX, nameSpecified: , owner: SwiftUIX, version: 
+
+name: SwiftyStoreKit, nameSpecified: , owner: bizz84, version: 0.15.0
 
 add-version-numbers: true
 
-LicensePlist Version: 1.8.3
+LicensePlist Version: 2.9.0

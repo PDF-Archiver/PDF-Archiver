@@ -66,19 +66,6 @@ extension Archive: DocumentsQueryDelegate {
         return updatedDocuments
     }
 
-    func filterContentForSearchText(_ searchText: String, scope: String = NSLocalizedString("all", comment: "")) -> Set<Document> {
-
-        // slugify searchterms and split them
-        let searchTerms: [String] = searchText.lowercased().slugified(withSeparator: " ").split(separator: " ").map { String($0) }
-
-        // add category to search terms
-        if scope == NSLocalizedString("all", comment: "") {
-            return get(scope: .all, searchterms: searchTerms, status: .tagged)
-        } else {
-            return get(scope: .year(year: scope), searchterms: searchTerms, status: .tagged)
-        }
-    }
-
     // MARK: - Helper Functions
 
     private static func getTaggingStatus(of url: URL) -> TaggingStatus {
@@ -137,15 +124,5 @@ extension Archive: DocumentsQueryDelegate {
         // get file size via NSMetadataItemFSSizeKey
         let size = metadataItem.value(forAttribute: NSMetadataItemFSSizeKey) as? Int64
         return (documentPath, size, documentStatus)
-    }
-}
-
-// - MARK: helper structs/classes
-struct YearSection: Comparable {
-    var year: Date
-    var headlines: [Document]
-
-    static func < (lhs: YearSection, rhs: YearSection) -> Bool {
-        return lhs.year < rhs.year
     }
 }

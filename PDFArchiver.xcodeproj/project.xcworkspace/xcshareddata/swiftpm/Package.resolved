@@ -6,17 +6,35 @@
         "repositoryURL": "https://github.com/PDF-Archiver/ArchiveLib",
         "state": {
           "branch": null,
-          "revision": "21736c275babe573648d1eb2e2126fe05caaaee0",
-          "version": "2.0.8"
+          "revision": "f46ada6502df75e86e486b62b586344d9bd4bbc2",
+          "version": "2.0.11"
+        }
+      },
+      {
+        "package": "Diagnostics",
+        "repositoryURL": "https://github.com/WeTransfer/Diagnostics",
+        "state": {
+          "branch": null,
+          "revision": "7c0740d1793789b38854cfa55bc820dd7a7afd05",
+          "version": "1.0.1"
+        }
+      },
+      {
+        "package": "KeyboardObserving",
+        "repositoryURL": "https://github.com/JulianKahnert/KeyboardObserving",
+        "state": {
+          "branch": "master",
+          "revision": "a8c6d2ce7aa1a4da2a352ba55a8dfb115eaea90b",
+          "version": null
         }
       },
       {
         "package": "LoggingKit",
         "repositoryURL": "https://github.com/PDF-Archiver/LoggingKit",
         "state": {
-          "branch": "master",
+          "branch": null,
           "revision": "69e313a70f6dc330a050663aa1ac8719b5bbfab5",
-          "version": null
+          "version": "1.1.4"
         }
       },
       {
@@ -39,20 +57,11 @@
       },
       {
         "package": "Sentry",
-        "repositoryURL": "https://github.com/JonathanDowning/sentry-cocoa",
+        "repositoryURL": "https://github.com/getsentry/sentry-cocoa",
         "state": {
-          "branch": "master",
-          "revision": "31d8731267825d162836f34fbaa239f7584e9d87",
-          "version": null
-        }
-      },
-      {
-        "package": "SkyFloatingLabelTextField",
-        "repositoryURL": "https://github.com/acecilia/SkyFloatingLabelTextField",
-        "state": {
-          "branch": "feature/swift-package-manager",
-          "revision": "1a6c155e65ccc6e9c304f48f9602c71003862ef9",
-          "version": null
+          "branch": null,
+          "revision": "bb3c1d852980432907cd314e4fa984fc9a78c9f3",
+          "version": "4.4.3"
         }
       },
       {
@@ -65,21 +74,21 @@
         }
       },
       {
+        "package": "SwiftUIX",
+        "repositoryURL": "https://github.com/SwiftUIX/SwiftUIX",
+        "state": {
+          "branch": "master",
+          "revision": "5dd5a8a8befdaaa04ac02fb6158aa0d68066db78",
+          "version": null
+        }
+      },
+      {
         "package": "SwiftyStoreKit",
         "repositoryURL": "https://github.com/bizz84/SwiftyStoreKit",
         "state": {
           "branch": null,
           "revision": "d830aaac6822a70245aa62ea1c51548e4fc90bad",
           "version": "0.15.0"
-        }
-      },
-      {
-        "package": "WSTagsField",
-        "repositoryURL": "https://github.com/whitesmith/WSTagsField",
-        "state": {
-          "branch": null,
-          "revision": "ebcd26275c427f2741ede24d3089dae6a13a22e3",
-          "version": "5.2.0"
         }
       }
     ]

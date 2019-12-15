@@ -10,10 +10,11 @@ import Foundation
 
 extension UserDefaults {
 
-    enum Names: String {
+    private enum Names: String {
         case tutorialShown = "tutorial-v1"
         case lastSelectedTabIndex
         case pdfQuality
+        case subscriptionExpiryDate = "SubscriptionExpiryDate"
     }
 
     enum PDFQuality: Float, CaseIterable {
@@ -21,6 +22,13 @@ extension UserDefaults {
         case good = 0.75
         case normal = 0.5
         case small = 0.25
+
+        static let defaultQualityIndex = 1  // e.g. "good"
+
+        static func toIndex(_ quality: PDFQuality) -> Int {
+            let allCases = UserDefaults.PDFQuality.allCases
+            return allCases.firstIndex(of: quality) ?? defaultQualityIndex
+        }
     }
 
     var tutorialShown: Bool {
@@ -47,7 +55,7 @@ extension UserDefaults {
 
             // set default to 0.75
             if value == 0.0 {
-                value = 0.75
+                value = PDFQuality.allCases[PDFQuality.defaultQualityIndex].rawValue
             }
 
             guard let level = PDFQuality(rawValue: value) else { fatalError("Could not parse level from value \(value).") }
@@ -56,6 +64,16 @@ extension UserDefaults {
         set {
             Log.send(.info, "PDF Quality Changed.", extra: ["quality": String(newValue.rawValue)])
             UserDefaults.standard.set(newValue.rawValue, forKey: Names.pdfQuality.rawValue)
+        }
+    }
+
+    var subscriptionExpiryDate: Date? {
+        get {
+            return UserDefaults.standard.object(forKey: Names.subscriptionExpiryDate.rawValue) as? Date
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: Names.subscriptionExpiryDate.rawValue)
+
         }
     }
 }

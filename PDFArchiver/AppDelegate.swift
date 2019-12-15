@@ -7,7 +7,9 @@
 //
 
 import ArchiveLib
+import Diagnostics
 import LogModel
+import MetricKit
 import os.log
 import Sentry
 import UIKit
@@ -15,36 +17,16 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    static let log = OSLog(subsystem: Bundle.main.bundleIdentifier ?? "PDFArchiver", category: "AppDelegate")
-
     var window: UIWindow?
 
-    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-
-        Log.send(.info, "Handling shared document", extra: ["filetype": url.pathExtension])
-
-        DispatchQueue.global(qos: .userInitiated).async {
-            do {
-                _ = url.startAccessingSecurityScopedResource()
-                try StorageHelper.handle(url)
-                url.stopAccessingSecurityScopedResource()
-            } catch let error {
-                url.stopAccessingSecurityScopedResource()
-                Log.send(.error, "Unable to handle file.", extra: ["filetype": url.pathExtension, "error": error.localizedDescription])
-                try? FileManager.default.removeItem(at: url)
-                try? FileManager.default.removeItem(at: url.deletingLastPathComponent())
-
-                DispatchQueue.main.async {
-                    let alert = UIAlertController(error, preferredStyle: .alert)
-                    self.window?.rootViewController?.present(alert, animated: true, completion: nil)
-                }
-            }
-        }
-
-        return true
-    }
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+
+        MXMetricManager.shared.add(self)
+        do {
+            try DiagnosticsLogger.setup()
+        } catch {
+            Log.send(.warning, "Failed to setup the Diagnostics Logger")
+        }
 
         DispatchQueue.global().async {
 
@@ -84,7 +66,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
 
         } catch let error {
-            os_log("%@", log: AppDelegate.log, type: .error, error.localizedDescription)
+            Log.send(.error, "Error while starting.", extra: ["error": error.localizedDescription])
         }
 
         window?.tintColor = .paDarkGray
@@ -101,5 +83,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // send logs in background
         Log.sendOrPersistInBackground(application)
+    }
+
+    func applicationWillTerminate(_ application: UIApplication) {
+        MXMetricManager.shared.remove(self)
+    }
+}
+
+extension AppDelegate: MXMetricManagerSubscriber {
+    func didReceive(_ payloads: [MXMetricPayload]) {
+        for payload in payloads {
+
+            var extra: [String: String] = [:]
+            extra["appBuildVersion"] = payload.metaData?.applicationBuildVersion
+            extra["osVersion"] = payload.metaData?.osVersion
+            extra["regionFormat"] = payload.metaData?.regionFormat
+            extra["deviceType"] = payload.metaData?.deviceType
+            extra["appVersion"] = payload.latestApplicationVersion
+            extra["timeStampBegin"] = payload.timeStampBegin.description
+            extra["timeStampEnd"] = payload.timeStampEnd.description
+            extra["cumulativeCPUTime"] = payload.cpuMetrics?.cumulativeCPUTime.description
+            extra["raw"] = String(data: payload.jsonRepresentation(), encoding: .utf8)
+
+            Log.send(.info, "MXMetricPayload", extra: extra)
+        }
     }
 }
