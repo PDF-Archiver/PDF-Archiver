@@ -12,56 +12,73 @@ struct CustomTextField: UIViewRepresentable {
 
     class Coordinator: NSObject, UITextFieldDelegate {
 
-        @Binding var text: String
-        var suggestionView: UIView
-        var onCommit: (UITextField) -> Void
         var didBecomeFirstResponder = false
+        let customTextField: CustomTextField
 
-        init(text: Binding<String>, suggestionView: UIView, onCommit: @escaping (UITextField) -> Void) {
-            _text = text
-            self.suggestionView = suggestionView
-            self.onCommit = onCommit
+        init(customTextField: CustomTextField) {
+            self.customTextField = customTextField
         }
 
         func textFieldDidChangeSelection(_ textField: UITextField) {
-            text = textField.text ?? ""
+            customTextField.text = textField.text ?? ""
         }
 
         func textFieldDidBeginEditing(_ textField: UITextField) {
             textField.autocorrectionType = .no
-            textField.inputAccessoryView = suggestionView
         }
 
         func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-            onCommit(textField)
+            if let text = textField.text {
+                customTextField.onCommit(text)
+            }
             return true
+        }
+
+        @objc
+        func tappedButton(sender: UIBarButtonItem) {
+            guard let title = sender.title else { return }
+            customTextField.onCommit(title)
         }
     }
 
     @Binding var text: String
     var placeholder: String
-    var suggestionView: UIView
-    var onCommit: (UITextField) -> Void
+    var onCommit: (String) -> Void
     var isFirstResponder: Bool = false
+    var suggestions: [String]
 
     func makeUIView(context: UIViewRepresentableContext<CustomTextField>) -> UITextField {
         let textField = UITextField(frame: .zero)
         textField.delegate = context.coordinator
-        textField.placeholder = placeholder
+        textField.placeholder = NSLocalizedString(placeholder, comment: "")
         return textField
     }
 
     func makeCoordinator() -> CustomTextField.Coordinator {
-        return Coordinator(text: $text,
-                           suggestionView: suggestionView,
-                           onCommit: onCommit)
+        return Coordinator(customTextField: self)
     }
 
     func updateUIView(_ uiView: UITextField, context: UIViewRepresentableContext<CustomTextField>) {
+
+        // update textfield
         uiView.text = text
         if isFirstResponder && !context.coordinator.didBecomeFirstResponder {
             uiView.becomeFirstResponder()
             context.coordinator.didBecomeFirstResponder = true
         }
+
+        // update input view
+        let toolBar = UIToolbar(frame: CGRect(x: 0, y: 0, width: uiView.frame.width, height: 44))
+        toolBar.tintColor = .paDarkGray
+        var items = [UIBarButtonItem]()
+        for suggestion in suggestions {
+            items += [UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
+                      UIBarButtonItem(title: suggestion, style: .plain, target: context.coordinator, action: #selector(Coordinator.tappedButton(sender:)))]
+        }
+        items += [UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)]
+
+        toolBar.items = items
+        uiView.inputAccessoryView = toolBar
+        uiView.reloadInputViews()
     }
 }

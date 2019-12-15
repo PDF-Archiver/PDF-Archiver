@@ -5,11 +5,13 @@
 //  Created by Julian Kahnert on 27.10.19.
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
+// swiftlint:disable function_body_length
 
 import ArchiveLib
 import Combine
 import Foundation
 import os.log
+import UIKit
 
 class ArchiveViewModel: ObservableObject, SystemLogging {
 
@@ -26,48 +28,30 @@ class ArchiveViewModel: ObservableObject, SystemLogging {
 
     private var disposables = Set<AnyCancellable>()
     private let archive: Archive
+    private let notificationFeedback = UINotificationFeedbackGenerator()
+    private let selectionFeedback = UISelectionFeedbackGenerator()
 
     init(_ archive: Archive = DocumentService.archive) {
         self.archive = archive
-        buildCombineStuff()
 
-        // Trigger creation of documents array, if no documents could be found.
-        // This might happen, when we start in another view and all previous notifications were not caught.
-        if documents.isEmpty {
-            triggerUpdate()
+        // MARK: - Combine Stuff
+        NotificationCenter.default.publisher(for: .documentChanges)
+            .receive(on: DispatchQueue.main)
+            .map { _ in false }
+            .assign(to: \.showLoadingView, on: self)
+            .store(in: &disposables)
+
+        // we assume that all documents should be loaded after 10 seconds
+        // force the disappear of the loading view
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) {
+            self.showLoadingView = false
         }
-    }
 
-    func tapped(_ document: Document) {
-        switch document.downloadStatus {
-        case .iCloudDrive:
-            document.download()
-            archive.update(document)
-            triggerUpdate()
-        case .local:
-            os_log("Already local", log: ArchiveViewModel.log, type: .error)
-        case .downloading(percentDownloaded: _):
-            os_log("Already downloading", log: ArchiveViewModel.log, type: .error)
-        }
-    }
-
-    func delete(at offsets: IndexSet) {
-        for index in offsets {
-            let deletedDocument = documents.remove(at: index)
-            deletedDocument.delete(in: archive)
-        }
-    }
-
-    private func triggerUpdate() {
-        NotificationCenter.default.post(Notification(name: .documentChanges))
-    }
-
-    private func buildCombineStuff() {
-
-        $documents
+        $scopeSelecton
             .dropFirst()
             .sink { _ in
-                self.showLoadingView = false
+                self.selectionFeedback.prepare()
+                self.selectionFeedback.selectionChanged()
             }
             .store(in: &disposables)
 
@@ -116,5 +100,36 @@ class ArchiveViewModel: ObservableObject, SystemLogging {
                 }
             }
             .store(in: &disposables)
+    }
+
+    func tapped(_ document: Document) {
+        switch document.downloadStatus {
+        case .iCloudDrive:
+
+            // trigger download of the selected document
+            document.download()
+
+            // update the UI directly, by setting/updating the download status of this document
+            // and triggering a notification
+            document.downloadStatus = .downloading(percentDownloaded: 0.0)
+            archive.update(document)
+            NotificationCenter.default.post(Notification(name: .documentChanges))
+
+            notificationFeedback.notificationOccurred(.success)
+
+        case .local:
+            os_log("Already local", log: ArchiveViewModel.log, type: .error)
+        case .downloading(percentDownloaded: _):
+            os_log("Already downloading", log: ArchiveViewModel.log, type: .error)
+        }
+    }
+
+    func delete(at offsets: IndexSet) {
+        notificationFeedback.prepare()
+        for index in offsets {
+            let deletedDocument = documents.remove(at: index)
+            deletedDocument.delete(in: archive)
+        }
+        notificationFeedback.notificationOccurred(.success)
     }
 }

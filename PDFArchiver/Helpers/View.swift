@@ -15,6 +15,6 @@ extension View {
                            .compactMap { $0 as? UIWindowScene }
                            .first?.windows
                            .first { $0.isKeyWindow }
-        keyWindow?.endEditing(true)
+        keyWindow?.endEditing(force)
     }
 }

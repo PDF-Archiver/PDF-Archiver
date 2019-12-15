@@ -13,24 +13,27 @@ struct TagTabView: View {
     @ObservedObject var viewModel: TagTabViewModel
 
     var body: some View {
-        // TODO: profile laggy first initialization
         NavigationView {
-            if viewModel.currentDocument != nil {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 16.0) {
-                        pdfView
-                        datePicker
-                        TextField("Description", text: $viewModel.specification)
-                        documentTags
-                        suggestedTags
-                    }
-                }
-                .keyboardObserving()
-                .padding(EdgeInsets(top: 0.0, leading: 8.0, bottom: 0.0, trailing: 8.0))
-                .navigationBarTitle(Text("Document"), displayMode: .inline)
-                .navigationBarItems(leading: deleteNavBarView, trailing: saveNavBarView)
+            if viewModel.showLoadingView {
+                LoadingView()
             } else {
-                PlaceholderView(name: "No iCloud Drive documents found. Please scan and tag documents first.")
+                if viewModel.currentDocument != nil {
+                    ScrollView(showsIndicators: false) {
+                        VStack(alignment: .leading, spacing: 16.0) {
+                            pdfView
+                            datePicker
+                            ClearingTextField(placeholder: "Description", text: $viewModel.specification)
+                            documentTags
+                            suggestedTags
+                        }
+                    }
+                    .keyboardObserving(offset: 16.0)
+                    .padding(EdgeInsets(top: 0.0, leading: 8.0, bottom: 0.0, trailing: 8.0))
+                    .navigationBarTitle(Text("Document"), displayMode: .inline)
+                    .navigationBarItems(leading: deleteNavBarView, trailing: saveNavBarView)
+                } else {
+                    PlaceholderView(name: "No iCloud Drive documents found. Please scan and tag documents first.")
+                }
             }
         }
         .navigationViewStyle(StackNavigationViewStyle())
@@ -84,11 +87,9 @@ struct TagTabView: View {
                 .font(.body)
             CustomTextField(text: $viewModel.documentTagInput,
                             placeholder: "Enter Tag",
-                            suggestionView: UIView(),
-                            onCommit: { _ in
-                                self.viewModel.saveTag()
-                            },
-                            isFirstResponder: false)
+                            onCommit: viewModel.saveTag,
+                            isFirstResponder: false,
+                            suggestions: viewModel.inputAccessoryViewSuggestions)
                 .padding(EdgeInsets(top: 4.0, leading: 0.0, bottom: 4.0, trailing: 0.0))
         }
     }

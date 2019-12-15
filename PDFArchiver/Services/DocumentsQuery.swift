@@ -83,8 +83,8 @@ class DocumentsQuery: NSObject, SystemLogging {
 
         super.init()
 
-        NotificationCenter.default.addObserver(self, selector: #selector(DocumentsQuery.finishGathering(notification:)), name: NSNotification.Name.NSMetadataQueryDidFinishGathering, object: metadataQuery)
-        NotificationCenter.default.addObserver(self, selector: #selector(DocumentsQuery.queryUpdated(notification:)), name: NSNotification.Name.NSMetadataQueryDidUpdate, object: metadataQuery)
+        NotificationCenter.default.addObserver(self, selector: #selector(DocumentsQuery.finishGathering(notification:)), name: .NSMetadataQueryDidFinishGathering, object: metadataQuery)
+        NotificationCenter.default.addObserver(self, selector: #selector(DocumentsQuery.queryUpdated(notification:)), name: .NSMetadataQueryDidUpdate, object: metadataQuery)
 
         metadataQuery.start()
         os_log("Starting the documents query.", log: DocumentsQuery.log, type: .debug)

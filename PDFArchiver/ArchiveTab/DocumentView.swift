@@ -19,14 +19,14 @@ struct DocumentView: View {
             HStack {
                 titleSubtitle
                 Spacer()
-                if viewModel.downloadStatus < 1.0 {
+                if !viewModel.downloadStatus.isLocal {
                     status
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             tags
-            if viewModel.downloadStatus > 0.0 && viewModel.downloadStatus < 1.0 {
-                LinearProgressBar(viewModel.downloadStatus)
+            if viewModel.downloadStatus.isDownloading {
+                LinearProgressBar(viewModel.downloadStatus.percentageDownloading)
                     .foregroundColor(Color(.paDarkGray))
             }
         }
@@ -58,13 +58,40 @@ struct DocumentView: View {
     }
 }
 
+// this is only needed, because a ViewBuilder could not be used with "if case ..." statements
+fileprivate extension DownloadStatus {
+    var isDownloading: Bool {
+        if case DownloadStatus.downloading(_) = self {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    var isLocal: Bool {
+        if case DownloadStatus.local = self {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    var percentageDownloading: CGFloat {
+        if case DownloadStatus.downloading(let percentDownloaded) = self {
+            return CGFloat(percentDownloaded)
+        } else {
+            return 0.0
+        }
+    }
+}
+
 #if DEBUG
 struct DocumentView_Previews: PreviewProvider {
     static let documentViewModel = DocumentViewModel(specification: "Ikea Bill",
                                                      formattedDate: "30.10.2019",
                                                      formattedSize: "1,2 MB",
                                                      sortedTags: ["bill", "ikea"],
-                                                     downloadStatus: CGFloat(0.33))
+                                                     downloadStatus: .downloading(percentDownloaded: 0.33))
     static var previews: some View {
         DocumentView(viewModel: documentViewModel)
             .frame(minWidth: 0.0, maxWidth: .infinity, minHeight: 0, maxHeight: 45.0)

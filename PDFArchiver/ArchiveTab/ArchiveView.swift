@@ -16,7 +16,7 @@ struct ArchiveView: View {
     var body: some View {
         NavigationView {
             if viewModel.showLoadingView {
-                loadingView
+                LoadingView()
             } else {
                 VStack {
                     searchView
@@ -27,21 +27,15 @@ struct ArchiveView: View {
             emptyView
         }
         // force list show: https://stackoverflow.com/a/58371424/10026834
-        .padding(EdgeInsets(top: 0.0, leading: 8.0, bottom: 0.0, trailing: 8.0))
-    }
-
-    var loadingView: some View {
-        VStack(alignment: .center, spacing: 32.0) {
-            ActivityIndicator()
-                .animated(true)
-            Text("Loading documents ...")
-        }
+        .padding(1.0)
     }
 
     var searchView: some View {
         SearchField(searchText: $viewModel.searchText,
                     scopes: $viewModel.years,
-                    selectionIndex: $viewModel.scopeSelecton)
+                    selectionIndex: $viewModel.scopeSelecton,
+                    placeholder: "Search")
+            .padding(EdgeInsets(top: 0.0, leading: 8.0, bottom: 0.0, trailing: 8.0))
     }
 
     var documentsView: some View {
@@ -59,15 +53,14 @@ struct ArchiveView: View {
                 }
             }.onDelete(perform: viewModel.delete(at:))
         }
-        .onTapGesture {
-            self.endEditing(true)
-        }
     }
 
     var emptyView: some View {
         let name: LocalizedStringKey
-        if viewModel.documents.isEmpty {
-            name = "No iCloud Drive documents found. Please scan and tag documents first or change filter."
+        if viewModel.showLoadingView {
+            name = ""
+        } else if viewModel.documents.isEmpty {
+            name = "No iCloud Drive documents found.\nPlease scan and tag documents first or change filter."
         } else {
             name = "Select a document."
         }

@@ -6,17 +6,26 @@
         "repositoryURL": "https://github.com/PDF-Archiver/ArchiveLib",
         "state": {
           "branch": null,
-          "revision": "21736c275babe573648d1eb2e2126fe05caaaee0",
-          "version": "2.0.8"
+          "revision": "f46ada6502df75e86e486b62b586344d9bd4bbc2",
+          "version": "2.0.11"
+        }
+      },
+      {
+        "package": "Diagnostics",
+        "repositoryURL": "https://github.com/WeTransfer/Diagnostics",
+        "state": {
+          "branch": null,
+          "revision": "7c0740d1793789b38854cfa55bc820dd7a7afd05",
+          "version": "1.0.1"
         }
       },
       {
         "package": "KeyboardObserving",
-        "repositoryURL": "https://github.com/nickffox/KeyboardObserving",
+        "repositoryURL": "https://github.com/JulianKahnert/KeyboardObserving",
         "state": {
-          "branch": null,
-          "revision": "6d043ee2402ea4b827601f9b8edcc52a88aabff2",
-          "version": "0.2.1"
+          "branch": "master",
+          "revision": "a8c6d2ce7aa1a4da2a352ba55a8dfb115eaea90b",
+          "version": null
         }
       },
       {
@@ -48,11 +57,11 @@
       },
       {
         "package": "Sentry",
-        "repositoryURL": "https://github.com/JonathanDowning/sentry-cocoa",
+        "repositoryURL": "https://github.com/getsentry/sentry-cocoa",
         "state": {
-          "branch": "master",
-          "revision": "31d8731267825d162836f34fbaa239f7584e9d87",
-          "version": null
+          "branch": null,
+          "revision": "bb3c1d852980432907cd314e4fa984fc9a78c9f3",
+          "version": "4.4.3"
         }
       },
       {
@@ -80,15 +89,6 @@
           "branch": null,
           "revision": "d830aaac6822a70245aa62ea1c51548e4fc90bad",
           "version": "0.15.0"
-        }
-      },
-      {
-        "package": "TextView",
-        "repositoryURL": "https://github.com/kenmueller/TextView",
-        "state": {
-          "branch": "master",
-          "revision": "d1dc2006fa5a1ddbe458ab730a39569260c4ffc1",
-          "version": null
         }
       }
     ]

@@ -25,7 +25,6 @@ class IAPViewModel: ObservableObject {
 
     func tapped(button: IAPButton) {
 
-        // TODO: test this
         switch button {
         case .level1:
             Log.send(.info, "SubscriptionViewController - buy: Monthly subscription.")
@@ -38,14 +37,10 @@ class IAPViewModel: ObservableObject {
         case .restore:
             Log.send(.info, "SubscriptionViewController - Restore purchases.")
             IAP.service.restorePurchases()
-            // TODO: add this
-//            let alert = UIAlertController(title: NSLocalizedString("subscription.restore.popup.title", comment: ""),
-//                                          message: NSLocalizedString("subscription.restore.popup.message", comment: ""),
-//                                          preferredStyle: .alert)
-//            alert.addAction(UIAlertAction(title: "OK", style: .default) {_ in
-//                self.cancel()
-//            })
-//            present(alert, animated: true, completion: nil)
+            AlertViewModel.createAndPost(title: "Subscription",
+                                         message: "Active subscriptions will be restored from the App Store.\nPlease contact me if you have any problems:\nMore > Support",
+                                         primaryButtonTitle: "OK",
+                                         completion: { self.cancel() })
         case .cancel:
             Log.send(.info, "SubscriptionViewController - Cancel subscription view.")
             cancel()

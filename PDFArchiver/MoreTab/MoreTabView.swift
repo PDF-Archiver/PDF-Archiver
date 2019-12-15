@@ -21,14 +21,9 @@ struct MoreTabView: View {
                 preferences
                 moreInformation
             }.listStyle(GroupedListStyle())
-            .alert(isPresented: $viewModel.isShowingResetAlert) {
-                Alert(title: Text("Reset App"),
-                      message: Text("Please restart the app to complete the reset."),
-                      dismissButton: .default(Text("OK")))
-            }
             .disabled(!MFMailComposeViewController.canSendMail())
             .sheet(isPresented: $viewModel.isShowingMailView) {
-                MailView(subject: MoreTabViewModel.mailSubject,
+                SupportMailView(subject: MoreTabViewModel.mailSubject,
                          recipients: MoreTabViewModel.mailRecipients,
                          result: self.$viewModel.result)
             }
@@ -37,7 +32,7 @@ struct MoreTabView: View {
     }
 
     private var preferences: some View {
-        Section(header: Text("⚒ Preferences")) {
+        Section(header: Text("🛠 Preferences")) {
             Picker(selection: $viewModel.selectedQualityIndex, label: Text("PDF Quality")) {
                 ForEach(0..<viewModel.qualities.count, id: \.self) {
                     Text(self.viewModel.qualities[$0])

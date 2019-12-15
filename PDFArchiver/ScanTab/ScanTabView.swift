@@ -23,11 +23,13 @@ struct ScanTabView: View {
                     Text(viewModel.progressLabel)
                     LinearProgressBar(viewModel.progressValue)
                         .foregroundColor(Color(.paDarkGray))
+                        .frame(maxHeight: 4.0)
                 } else {
                     Text(viewModel.progressLabel)
                         .hidden()
                     LinearProgressBar(viewModel.progressValue)
                         .foregroundColor(Color(.paDarkGray))
+                        .frame(maxHeight: 4.0)
                         .hidden()
                 }
                 scanButton
@@ -67,6 +69,7 @@ struct ScanTabView: View {
             }).buttonStyle(FilledButtonStyle())
             Spacer()
         }
+        .padding()
     }
 }
 

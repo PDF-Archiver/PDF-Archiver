@@ -18,6 +18,8 @@ struct PlaceholderView: View {
                 .padding()
             Text(name)
                 .font(.system(size: 15.0))
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: 400.0)
         }
     }
 }

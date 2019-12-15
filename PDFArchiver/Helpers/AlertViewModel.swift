@@ -14,10 +14,18 @@ struct AlertViewModel {
     let primaryButton: Alert.Button
     let secondaryButton: Alert.Button?
 
-    static func createAndPost(title: LocalizedStringKey, message: LocalizedStringKey, primaryButtonTitle: LocalizedStringKey) {
+    static func createAndPost(title: LocalizedStringKey, message: LocalizedStringKey, primaryButtonTitle: LocalizedStringKey, completion: (() -> Void)? = nil) {
+
+        let primaryButton: Alert.Button
+        if let completion = completion {
+            primaryButton = .default(Text(primaryButtonTitle),
+                                     action: completion)
+        } else {
+            primaryButton = .default(Text(primaryButtonTitle))
+        }
         let viewModel = AlertViewModel(title: title,
                                        message: message,
-                                       primaryButton: .default(Text(primaryButtonTitle)),
+                                       primaryButton: primaryButton,
                                        secondaryButton: nil)
         NotificationCenter.default.post(name: .showError, object: viewModel)
     }

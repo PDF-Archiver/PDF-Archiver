@@ -12,6 +12,7 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    let viewModel = MainTabViewModel()
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         for urlContext in URLContexts {
@@ -28,7 +29,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use a UIHostingController as window root view controller
         if let windowScene = scene as? UIWindowScene {
 
-            let viewModel = MainTabViewModel()
             let view = MainTabView(viewModel: viewModel)
                 .accentColor(Color(.paDarkGray))
             let window = UIWindow(windowScene: windowScene)
@@ -71,7 +71,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         Log.send(.info, "Handling shared document", extra: ["filetype": url.pathExtension])
 
         // show scan tab with document processing, after importing a document
-        (window?.rootViewController as? MainTabBarController)?.selectedIndex = 0
+        viewModel.currentTab = 0
 
         DispatchQueue.global(qos: .userInitiated).async {
             do {

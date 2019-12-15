@@ -7,6 +7,7 @@
 //
 
 import ArchiveLib
+import Diagnostics
 import LogModel
 import MetricKit
 import os.log
@@ -21,6 +22,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         MXMetricManager.shared.add(self)
+        do {
+            try DiagnosticsLogger.setup()
+        } catch {
+            Log.send(.warning, "Failed to setup the Diagnostics Logger")
+        }
+
         DispatchQueue.global().async {
 
             // start logging service by sending old events (if needed)

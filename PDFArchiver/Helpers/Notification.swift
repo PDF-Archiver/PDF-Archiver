@@ -14,6 +14,7 @@ extension Notification.Name {
     static let subscriptionChanges = Notification.Name("subscription-changes")
     static let showSubscriptionView = Notification.Name("show-subscription-view")
     static let showError = Notification.Name("show-error")
+    static let suggestionChange = Notification.Name("suggestion-change")
 }
 
 extension Notification {
@@ -22,4 +23,5 @@ extension Notification {
     static let subscriptionChanges = Notification(name: .subscriptionChanges)
     static let showSubscriptionView = Notification(name: .showSubscriptionView)
     static let showError = Notification(name: .showError)
+    static let suggestionChange = Notification(name: .suggestionChange)
 }

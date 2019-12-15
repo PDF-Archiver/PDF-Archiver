@@ -12,6 +12,7 @@ struct SearchField: View {
     @Binding var searchText: String
     @Binding var scopes: [String]
     @Binding var selectionIndex: Int
+    var placeholder: LocalizedStringKey
     var body: some View {
         VStack {
             search
@@ -23,7 +24,7 @@ struct SearchField: View {
         HStack {
             Image(systemName: "magnifyingglass")
                 .foregroundColor(Color.secondary)
-            TextField("Placeholder", text: $searchText)
+            TextField(placeholder, text: $searchText)
             Button(action: {
                 self.searchText = ""
                 self.selectionIndex = 0
@@ -60,7 +61,7 @@ struct SearchField_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             VStack {
-                SearchField(searchText: $searchText, scopes: $years, selectionIndex: $selection)
+                SearchField(searchText: $searchText, scopes: $years, selectionIndex: $selection, placeholder: "Search")
                     .padding(EdgeInsets(top: 0.0, leading: 16.0, bottom: 0.0, trailing: 16.0))
                 List {
                     ForEach(array.filter { $0.hasPrefix(searchText) || searchText.isEmpty }, id: \.self) { searchText in
