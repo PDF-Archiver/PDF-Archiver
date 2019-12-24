@@ -79,12 +79,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Log.send(.warning, "Did receive memory warning.")
     }
 
-    func applicationWillResignActive(_ application: UIApplication) {
-
-        // send logs in background
-        Log.sendOrPersistInBackground(application)
-    }
-
     func applicationWillTerminate(_ application: UIApplication) {
         MXMetricManager.shared.remove(self)
     }
