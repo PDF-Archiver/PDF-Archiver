@@ -87,6 +87,15 @@ extension IAPHelper {
     }
 
     public func restorePurchases() {
+
+        if let appStoreReceiptURL = Bundle.main.appStoreReceiptURL {
+            do {
+                try FileManager.default.removeItem(at: appStoreReceiptURL)
+            } catch {
+                os_log("Receipt could not be restored: %@", log: self.log, type: .error, error.localizedDescription)
+            }
+        }
+
         // restore subscriptions
         SKPaymentQueue.default().restoreCompletedTransactions()
 
