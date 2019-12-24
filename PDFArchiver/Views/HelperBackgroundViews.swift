@@ -8,7 +8,7 @@
 
 import Cocoa
 import Foundation
-import Quartz.PDFKit.PDFView
+import Quartz
 
 class BackgroundView: NSView {
 
