@@ -37,7 +37,14 @@ class ArchiveViewModel: ObservableObject, SystemLogging {
         // MARK: - Combine Stuff
         NotificationCenter.default.publisher(for: .documentChanges)
             .receive(on: DispatchQueue.main)
-            .map { _ in false }
+            .map { _ -> Bool in
+                if self.showLoadingView {
+                    DispatchQueue.main.async {
+                        self.years = ["All"] + Array(archive.years.sorted().reversed().prefix(3))
+                    }
+                }
+                return false
+            }
             .assign(to: \.showLoadingView, on: self)
             .store(in: &disposables)
 
