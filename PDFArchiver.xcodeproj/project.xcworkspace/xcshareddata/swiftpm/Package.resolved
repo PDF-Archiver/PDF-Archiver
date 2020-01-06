@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/WeTransfer/Diagnostics",
         "state": {
           "branch": null,
-          "revision": "7c0740d1793789b38854cfa55bc820dd7a7afd05",
-          "version": "1.0.1"
+          "revision": "f67a18ae2aa208fd94178b729e5dced0e56eac77",
+          "version": "1.3.0"
         }
       },
       {
@@ -78,7 +78,7 @@
         "repositoryURL": "https://github.com/SwiftUIX/SwiftUIX",
         "state": {
           "branch": "master",
-          "revision": "5dd5a8a8befdaaa04ac02fb6158aa0d68066db78",
+          "revision": "330df0c765786f711a1fbf133397a1455653f62a",
           "version": null
         }
       },

@@ -142,7 +142,7 @@ public class IAPService: NSObject, SystemLogging {
         SwiftyStoreKit.restorePurchases(atomically: true) { results in
             self.requestsRunning -= 1
             if !results.restoreFailedPurchases.isEmpty {
-                os_log("Restore Failed: : %@", log: IAPService.log, type: .error, results.restoreFailedPurchases)
+                os_log("Restore Failed: %@", log: IAPService.log, type: .error, results.restoreFailedPurchases)
             } else if !results.restoredPurchases.isEmpty {
                 os_log("Restore Success: %@", log: IAPService.log, type: .debug, results.restoredPurchases)
             } else {
