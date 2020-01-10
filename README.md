@@ -57,6 +57,20 @@ Submit pull requests or contribute tutorials - whatever you have to offer, it wo
 
 ## :exclamation::question: Other
 
+#### Build your own
+
+Create a `Config.xcconfig` file at `PDFArchiver/Resources/Config.xcconfig` with this dummy secrets:
+```xcconfig
+APPSTORECONNECT_SHARED_SECRET = 123
+SENTRY_DSN = 123
+LOG_USER = 123
+LOG_PASSWORD = 123
+```
+
+Now you should be good to go!
+just build and run the App on your iPhone/iPad via Xcode.
+
+
 #### License Update
 ```bash
 # installation
