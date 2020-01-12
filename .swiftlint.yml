@@ -36,5 +36,4 @@ opt_in_rules:
   - trailing_closure
   - unavailable_function
   - unused_import
-  - unused_private_declaration
   - yoda_condition
