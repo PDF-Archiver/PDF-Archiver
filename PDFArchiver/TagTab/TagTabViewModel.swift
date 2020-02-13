@@ -51,11 +51,15 @@ class TagTabViewModel: ObservableObject {
 
         $documentTagInput
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }
-            .filter { !$0.isEmpty }
-            .removeDuplicates()
-            .map { tagName in
-                // lowercasing is necessary for sorting!
-                let sortedTags = self.archive.getAvailableTags(with: [tagName])
+            .map { tagName -> [String] in
+                let tags: Set<String>
+                if tagName.isEmpty {
+                    tags = self.getAssociatedTags(from: self.documentTags)
+                } else {
+                    tags = self.archive.getAvailableTags(with: [tagName])
+                }
+
+                let sortedTags = tags
                     .subtracting(self.currentDocument?.tags ?? [])
                     .subtracting(Set([Constants.documentTagPlaceholder]))
                     .sorted { lhs, rhs in
@@ -73,8 +77,9 @@ class TagTabViewModel: ObservableObject {
                             }
                         }
                     }
-                return Array(Array(sortedTags).prefix(5))
+                return Array(sortedTags.prefix(5))
             }
+            .removeDuplicates()
             .assign(to: \.inputAccessoryViewSuggestions, on: self)
             .store(in: &disposables)
 
@@ -155,7 +160,11 @@ class TagTabViewModel: ObservableObject {
     }
 
     func saveTag(_ tagName: String) {
-        documentTagInput = ""
+        // reset this value after the documents have been set, because the input view
+        // tags will be triggered by this and depend on the document tags
+        defer {
+            documentTagInput = ""
+        }
 
         let input = tagName.lowercased().slugified(withSeparator: "")
         guard !input.isEmpty else { return }
@@ -179,9 +188,7 @@ class TagTabViewModel: ObservableObject {
         guard let index = suggestedTags.firstIndex(of: tagName) else { return }
         suggestedTags.remove(at: index)
 
-        guard !tagName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
-        documentTags.append(tagName)
-        documentTags.sort()
+        saveTag(tagName)
 
         selectionFeedback.prepare()
         selectionFeedback.selectionChanged()
@@ -238,5 +245,18 @@ class TagTabViewModel: ObservableObject {
     private func getNewDocument() -> Document? {
         DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged)
             .first { $0.downloadStatus == .local }
+    }
+
+    private func getAssociatedTags(from documentTags: [String]) -> Set<String> {
+        guard let firstDocumentTag = documentTags.first?.lowercased() else { return [] }
+        var tags = archive.getSimilarTags(for: firstDocumentTag)
+        for documentTag in documentTags.dropFirst() {
+
+            // enforce that tags is not empty, because all intersection will be also empty otherwise
+            guard !tags.isEmpty else { break }
+
+            tags.formIntersection(archive.getSimilarTags(for: documentTag.lowercased()))
+        }
+        return tags
     }
 }
