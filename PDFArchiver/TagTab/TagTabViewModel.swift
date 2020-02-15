@@ -88,7 +88,7 @@ class TagTabViewModel: ObservableObject {
                 let documents = DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged)
                 guard self.currentDocument == nil || !documents.contains(self.currentDocument!)  else { return nil }
 
-                // downlaod new documents
+                // download new documents
                 let notCloudDocuments = documents
                     .filter { $0.downloadStatus != .iCloudDrive }
                 if notCloudDocuments.count <= 5 {

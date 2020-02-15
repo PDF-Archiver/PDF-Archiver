@@ -95,7 +95,7 @@ public class IAPService: NSObject, SystemLogging {
 
         } else {
 
-            // could not found a valid exipryDate locally, so we have to fetch receipts and validate them
+            // could not found a valid expiryDate locally, so we have to fetch receipts and validate them
             // in a background thread
             DispatchQueue.global(qos: .userInitiated).async {
                 // get local or remote receipt

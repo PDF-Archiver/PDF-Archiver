@@ -1,5 +1,5 @@
 //
-//  DetailRowVIew.swift
+//  DetailRowView.swift
 //  PDFArchiver
 //
 //  Created by Julian Kahnert on 13.11.19.
