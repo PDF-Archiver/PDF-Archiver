@@ -15,6 +15,7 @@ import SwiftUI
 class TagTabViewModel: ObservableObject {
 
     // set this property manually
+    @Published var documents = [Document]()
     @Published var currentDocument: Document?
 
     @Published var showLoadingView = true
@@ -27,6 +28,10 @@ class TagTabViewModel: ObservableObject {
     @Published var documentTagInput = ""
     @Published var suggestedTags = [String]()
     @Published var inputAccessoryViewSuggestions = [String]()
+
+    var taggedUntaggedDocuments: String {
+        "\(documents.filter({$0.taggingStatus == .tagged}).count) / \(documents.count)"
+    }
 
     private let archive: Archive
     private var disposables = Set<AnyCancellable>()
@@ -84,18 +89,26 @@ class TagTabViewModel: ObservableObject {
             .store(in: &disposables)
 
         NotificationCenter.default.publisher(for: .documentChanges)
-            .compactMap { _ in
-                let documents = DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged)
-                guard self.currentDocument == nil || !documents.contains(self.currentDocument!)  else { return nil }
+            .map { _ in
+                DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged)
+            }
+            .removeDuplicates()
+            .compactMap { newUntaggedDocuments in
+
+                // save new documents
+                var currentDocuments = self.documents.filter { $0.taggingStatus == .tagged }
+                currentDocuments.append(contentsOf: newUntaggedDocuments.sorted(by: { $0.filename < $1.filename }))
+                DispatchQueue.main.async {
+                    print(currentDocuments)
+                    self.documents = currentDocuments
+                }
 
                 // download new documents
-                let notCloudDocuments = documents
-                    .filter { $0.downloadStatus != .iCloudDrive }
-                if notCloudDocuments.count <= 5 {
-                    documents
-                        .filter { $0.downloadStatus == .iCloudDrive }
-                        .forEach { $0.download() }
-                }
+                newUntaggedDocuments
+                    .filter { $0.downloadStatus == .iCloudDrive }
+                    .forEach { $0.download() }
+
+                guard self.currentDocument == nil || !newUntaggedDocuments.contains(self.currentDocument!)  else { return nil }
 
                 return self.getNewDocument()
             }
@@ -244,6 +257,7 @@ class TagTabViewModel: ObservableObject {
 
     private func getNewDocument() -> Document? {
         DocumentService.archive.get(scope: .all, searchterms: [], status: .untagged)
+            .sorted { $0.filename < $1.filename }
             .first { $0.downloadStatus == .local }
     }
 

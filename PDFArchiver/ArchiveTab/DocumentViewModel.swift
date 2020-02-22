@@ -23,9 +23,11 @@ class DocumentViewModel: ObservableObject {
     @Published var formattedSize: String
     @Published var sortedTags: [String]
     @Published var downloadStatus: DownloadStatus
+    @Published var taggingStatus: TaggingStatus
 
     init(_ document: Document) {
-        specification = document.specificationCapitalized
+        let document = document.cleaned()
+        specification = document.specificationCapitalized.isEmpty ? "―" : document.specificationCapitalized
         if let date = document.date {
             formattedDate = DocumentViewModel.formatter.string(from: date)
         } else {
@@ -34,6 +36,7 @@ class DocumentViewModel: ObservableObject {
         formattedSize = document.size ?? ""
         sortedTags = document.tags.sorted()
         downloadStatus = document.downloadStatus
+        taggingStatus = document.taggingStatus
     }
 
     #if DEBUG
@@ -44,6 +47,7 @@ class DocumentViewModel: ObservableObject {
         self.formattedSize = formattedSize
         self.sortedTags = sortedTags
         self.downloadStatus = downloadStatus
+        self.taggingStatus = .tagged
     }
     #endif
 }

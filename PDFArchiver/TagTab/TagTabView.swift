@@ -19,6 +19,9 @@ struct TagTabView: View {
             } else {
                 if viewModel.currentDocument != nil {
                     Stack {
+                        if UIDevice.current.userInterfaceIdiom != .phone {
+                            self.documentsList
+                        }
                         self.pdfView
                         self.documentInformation
                     }
@@ -62,6 +65,19 @@ struct TagTabView: View {
     }
 
     // MARK: Component Groups
+
+    private var documentsList: some View {
+        VStack {
+            Text("Tagged: \(viewModel.taggedUntaggedDocuments)")
+                .font(Font.headline)
+            List {
+                ForEach(viewModel.documents) { document in
+                    DocumentView(viewModel: DocumentViewModel(document), showTagStatus: true)
+                }
+            }
+        }
+        .frame(maxWidth: 250)
+    }
 
     private var pdfView: some View {
         PDFCustomView(self.viewModel.pdfDocument)

@@ -43,10 +43,10 @@ struct ArchiveView: View {
             ForEach(viewModel.documents) { document in
                 if document.downloadStatus == .local {
                     NavigationLink(destination: ArchiveViewModel.createDetail(with: document)) {
-                        DocumentView(viewModel: DocumentViewModel(document))
+                        DocumentView(viewModel: DocumentViewModel(document), showTagStatus: false)
                     }
                 } else {
-                    DocumentView(viewModel: DocumentViewModel(document))
+                    DocumentView(viewModel: DocumentViewModel(document), showTagStatus: false)
                         .onTapGesture {
                             self.viewModel.tapped(document)
                         }
