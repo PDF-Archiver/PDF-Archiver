@@ -18,14 +18,9 @@ struct TagTabView: View {
                 LoadingView()
             } else {
                 if viewModel.currentDocument != nil {
-                    ScrollView(showsIndicators: false) {
-                        VStack(alignment: .leading, spacing: 16.0) {
-                            pdfView
-                            datePicker
-                            ClearingTextField(placeholder: "Description", text: $viewModel.specification)
-                            documentTags
-                            suggestedTags
-                        }
+                    Stack {
+                        self.pdfView
+                        self.documentInformation
                     }
                     .keyboardObserving(offset: 16.0)
                     .padding(EdgeInsets(top: 0.0, leading: 8.0, bottom: 0.0, trailing: 8.0))
@@ -66,10 +61,26 @@ struct TagTabView: View {
         })
     }
 
+    // MARK: Component Groups
+
     private var pdfView: some View {
         PDFCustomView(self.viewModel.pdfDocument)
-            .frame(maxWidth: .infinity, minHeight: 325.0, maxHeight: 325.0, alignment: .center)
+            .frame(maxWidth: .infinity, minHeight: 325.0, maxHeight: .infinity, alignment: .center)
     }
+
+    private var documentInformation: some View {
+        VStack(alignment: .leading, spacing: 16.0) {
+            datePicker
+            TextField("Description", text: $viewModel.specification)
+                .modifier(ClearButton(text: $viewModel.specification))
+            documentTags
+            suggestedTags
+            Spacer()
+        }
+        .frame(maxWidth: 350)
+    }
+
+    // MARK: Single Components
 
     private var datePicker: some View {
         HStack {
@@ -90,6 +101,7 @@ struct TagTabView: View {
                             onCommit: viewModel.saveTag,
                             isFirstResponder: false,
                             suggestions: viewModel.inputAccessoryViewSuggestions)
+                .frame(maxHeight: 22)
                 .padding(EdgeInsets(top: 4.0, leading: 0.0, bottom: 4.0, trailing: 0.0))
         }
     }

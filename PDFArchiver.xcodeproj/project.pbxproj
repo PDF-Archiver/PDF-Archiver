@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		171E0C7E1B8E5B84001E6242 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171E0C7D1B8E5B84001E6242 /* AppDelegate.swift */; };
 		171E0C8A1B8E5B84001E6242 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171E0C881B8E5B84001E6242 /* LaunchScreen.storyboard */; };
+		A302929B2401CFDA006ACE12 /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = A302929A2401CFDA006ACE12 /* Stack.swift */; };
 		A30A4B05237366F8001843B1 /* LaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30A4B04237366F8001843B1 /* LaunchTests.swift */; };
 		A30CB4172368D6C700D3063E /* DocumentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30CB4162368D6C700D3063E /* DocumentView.swift */; };
 		A30CB439236978E400D3063E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30CB438236978E300D3063E /* SceneDelegate.swift */; };
@@ -47,7 +48,7 @@
 		A36C42C22365E3F000F379FE /* ArchiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36C42C12365E3F000F379FE /* ArchiveView.swift */; };
 		A36C42C42365E3FB00F379FE /* ArchiveViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36C42C32365E3FB00F379FE /* ArchiveViewModel.swift */; };
 		A36C42C62365E43D00F379FE /* SearchField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36C42C52365E43D00F379FE /* SearchField.swift */; };
-		A3766063238F851F00840CFB /* ClearingTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3766062238F851F00840CFB /* ClearingTextField.swift */; };
+		A3766063238F851F00840CFB /* ClearButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3766062238F851F00840CFB /* ClearButton.swift */; };
 		A377C907236E07CD000877EA /* DocumentCameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A377C906236E07CD000877EA /* DocumentCameraView.swift */; };
 		A378C433221B3929007D1419 /* DocumentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A378C432221B3929007D1419 /* DocumentService.swift */; };
 		A3811C0A2346150B00AF6CFA /* SwiftyStoreKit in Frameworks */ = {isa = PBXBuildFile; productRef = A3811C092346150B00AF6CFA /* SwiftyStoreKit */; };
@@ -136,6 +137,7 @@
 		171E0C7D1B8E5B84001E6242 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		171E0C891B8E5B84001E6242 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		171E0C8B1B8E5B84001E6242 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A302929A2401CFDA006ACE12 /* Stack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stack.swift; sourceTree = "<group>"; };
 		A30A4B04237366F8001843B1 /* LaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchTests.swift; sourceTree = "<group>"; };
 		A30CB4162368D6C700D3063E /* DocumentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentView.swift; sourceTree = "<group>"; };
 		A30CB438236978E300D3063E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -173,7 +175,7 @@
 		A36C42C12365E3F000F379FE /* ArchiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveView.swift; sourceTree = "<group>"; };
 		A36C42C32365E3FB00F379FE /* ArchiveViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveViewModel.swift; sourceTree = "<group>"; };
 		A36C42C52365E43D00F379FE /* SearchField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchField.swift; sourceTree = "<group>"; };
-		A3766062238F851F00840CFB /* ClearingTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearingTextField.swift; sourceTree = "<group>"; };
+		A3766062238F851F00840CFB /* ClearButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearButton.swift; sourceTree = "<group>"; };
 		A377C906236E07CD000877EA /* DocumentCameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentCameraView.swift; sourceTree = "<group>"; };
 		A378C432221B3929007D1419 /* DocumentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentService.swift; sourceTree = "<group>"; };
 		A381CF20222F0B5D00FAFA7C /* ImageConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageConverter.swift; sourceTree = "<group>"; };
@@ -311,18 +313,19 @@
 		A328CF3E237C43A8003D60AD /* MissingViews */ = {
 			isa = PBXGroup;
 			children = (
+				A3A0FD942389E145002C9D6E /* ActivityView.swift */,
+				A31B3C412384A8660066CB86 /* Alert.swift */,
+				A3766062238F851F00840CFB /* ClearButton.swift */,
 				A387EFF023788442003FB3B7 /* CustomDatePicker.swift */,
 				A387EFEC23786FE2003FB3B7 /* CustomTextField.swift */,
 				A328CF43237C5152003D60AD /* DetailRowView.swift */,
-				A328CF3C237C3C8E003D60AD /* SupportMailView.swift */,
+				A3A0FD96238C7803002C9D6E /* LoadingView.swift */,
+				A356DF7A237DF1C000CAD132 /* PlaceholderView.swift */,
 				A36C42C52365E43D00F379FE /* SearchField.swift */,
+				A302929A2401CFDA006ACE12 /* Stack.swift */,
+				A328CF3C237C3C8E003D60AD /* SupportMailView.swift */,
 				A33EC92C236E403A00471F98 /* TagListView.swift */,
 				A356DF79237DF0F600CAD132 /* Intro */,
-				A356DF7A237DF1C000CAD132 /* PlaceholderView.swift */,
-				A31B3C412384A8660066CB86 /* Alert.swift */,
-				A3A0FD942389E145002C9D6E /* ActivityView.swift */,
-				A3A0FD96238C7803002C9D6E /* LoadingView.swift */,
-				A3766062238F851F00840CFB /* ClearingTextField.swift */,
 			);
 			path = MissingViews;
 			sourceTree = "<group>";
@@ -351,7 +354,7 @@
 		A34A84F32130A2A70093FAE5 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				A328CF51237CB14B003D60AD /* Design */,
+				A31B3C432384A8EC0066CB86 /* AlertViewModel.swift */,
 				A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */,
 				A356115E22DE517B00A9092F /* Atomic.swift */,
 				A3689777235C754300F429AC /* Configuration.swift */,
@@ -366,9 +369,9 @@
 				A3DC071C22C6C6D10073A877 /* UIImage.swift */,
 				A3A2A72122FF51BF00747DDB /* UserDefaults.swift */,
 				A387EFF22378BE19003FB3B7 /* View.swift */,
+				A328CF51237CB14B003D60AD /* Design */,
 				A328CF3E237C43A8003D60AD /* MissingViews */,
 				A3B57B7E228720240078F7A4 /* Storage */,
-				A31B3C432384A8EC0066CB86 /* AlertViewModel.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -705,7 +708,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\n#swiftlint autocorrect\n    swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+			shellScript = "if which chia >/dev/null; then\n#swiftlint autocorrect\n    chia --config https://raw.githubusercontent.com/JulianKahnert/chia-config/master/chia.yml\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
 		};
 		A3EBFE9921650CB1008C34CC /* BartyCrouch */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -737,7 +740,7 @@
 				A328CF3D237C3C8E003D60AD /* SupportMailView.swift in Sources */,
 				A328CF50237CAF29003D60AD /* IAPView.swift in Sources */,
 				A34A84FC2130A35A0093FAE5 /* ArchiveExtension.swift in Sources */,
-				A3766063238F851F00840CFB /* ClearingTextField.swift in Sources */,
+				A3766063238F851F00840CFB /* ClearButton.swift in Sources */,
 				A36C42C62365E43D00F379FE /* SearchField.swift in Sources */,
 				A33EC92B236E3CCA00471F98 /* TagTabViewModel.swift in Sources */,
 				A3ECBC9622496BA000A626AE /* IAP.swift in Sources */,
@@ -756,6 +759,7 @@
 				A394E4C9236A463C00C81CC2 /* DocumentDetailViewModel.swift in Sources */,
 				A356DF78237DE69400CAD132 /* IntroView.swift in Sources */,
 				A30CB43D23697C1800D3063E /* MainTabViewModel.swift in Sources */,
+				A302929B2401CFDA006ACE12 /* Stack.swift in Sources */,
 				A3CF79BE22C3FA0A008711E4 /* PDFProcessing.swift in Sources */,
 				A387EFF32378BE19003FB3B7 /* View.swift in Sources */,
 				A356DF7B237DF1C000CAD132 /* PlaceholderView.swift in Sources */,
@@ -998,6 +1002,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -1041,6 +1046,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
