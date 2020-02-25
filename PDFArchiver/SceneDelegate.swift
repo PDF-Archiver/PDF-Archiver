@@ -31,6 +31,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
             let view = MainTabView(viewModel: viewModel)
                 .accentColor(Color(.paDarkGray))
+                .environmentObject(OrientationInfo())  
             let window = UIWindow(windowScene: windowScene)
             window.rootViewController = UIHostingController(rootView: view)
 

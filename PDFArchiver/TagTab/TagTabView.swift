@@ -12,6 +12,9 @@ import SwiftUI
 struct TagTabView: View {
     @ObservedObject var viewModel: TagTabViewModel
 
+    // trigger a reload of the view, when the device rotation changes
+    @EnvironmentObject var orientationInfo: OrientationInfo
+
     var body: some View {
         NavigationView {
             if viewModel.showLoadingView {
@@ -19,7 +22,7 @@ struct TagTabView: View {
             } else {
                 if viewModel.currentDocument != nil {
                     Stack {
-                        if UIDevice.current.userInterfaceIdiom != .phone {
+                        if self.shouldShowDocumentList() {
                             self.documentsList
                         }
                         self.pdfView
@@ -129,5 +132,10 @@ struct TagTabView: View {
             TagListView(tags: $viewModel.suggestedTags, isEditable: false, isMultiLine: true, tapHandler: viewModel.suggestedTagTapped(_:))
                 .font(.body)
         }
+    }
+
+    private func shouldShowDocumentList() -> Bool {
+        let screenSize = UIScreen.main.bounds.size
+        return UIDevice.current.userInterfaceIdiom != .phone && screenSize.height < screenSize.width
     }
 }
