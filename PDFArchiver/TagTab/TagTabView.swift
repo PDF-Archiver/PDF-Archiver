@@ -75,7 +75,16 @@ struct TagTabView: View {
                 .font(Font.headline)
             List {
                 ForEach(viewModel.documents) { document in
-                    DocumentView(viewModel: DocumentViewModel(document), showTagStatus: true)
+                    HStack {
+                        Circle()
+                            .fill(Color.systemBlue)
+                            .frame(width: 8, height: 8)
+                            .opacity(document == self.viewModel.currentDocument ? 1 : 0)
+                        DocumentView(viewModel: DocumentViewModel(document), showTagStatus: true)
+                    }
+                    .onTapGesture {
+                       self.viewModel.currentDocument = document
+                    }
                 }
             }
         }
