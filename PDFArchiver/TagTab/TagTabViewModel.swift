@@ -147,8 +147,9 @@ class TagTabViewModel: ObservableObject {
 
                         // parse date from document content
                         let documentDate: Date
-                        if document.date == nil,
-                            let output = DateParser.parse(text) {
+                        if let date = document.date {
+                            documentDate = date
+                        } else if let output = DateParser.parse(text) {
                             documentDate = output.date
                         } else {
                             documentDate = Date()
@@ -250,6 +251,9 @@ class TagTabViewModel: ObservableObject {
 
         // delete document in archive
         currentDocument?.delete(in: DocumentService.archive)
+
+        // delete document from document list
+        documents.removeAll { $0.filename == currentDocument?.filename }
 
         // remove the current document and clear the vie
         currentDocument = getNewDocument()
