@@ -21,12 +21,17 @@ struct TagTabView: View {
                 LoadingView()
             } else {
                 if viewModel.currentDocument != nil {
-                    Stack {
-                        if self.shouldShowDocumentList() {
-                            self.documentsList
+                    GeometryReader { geometry in
+                        Stack {
+                            if self.shouldShowDocumentList(width: geometry.size.width) {
+                                self.documentsList
+                                    .frame(maxWidth: self.size(of: .documentList, width: geometry.size.width))
+                            }
+                            self.pdfView
+                                .frame(maxWidth: self.size(of: .pdf, width: geometry.size.width), minHeight: 325.0, maxHeight: .infinity, alignment: .center)
+                            self.documentInformation
+                                .frame(maxWidth: self.size(of: .documentInformation, width: geometry.size.width))
                         }
-                        self.pdfView
-                        self.documentInformation
                     }
                     .keyboardObserving(offset: 16.0)
                     .padding(EdgeInsets(top: 0.0, leading: 8.0, bottom: 0.0, trailing: 8.0))
@@ -88,12 +93,10 @@ struct TagTabView: View {
                 }
             }
         }
-        .frame(maxWidth: 250)
     }
 
     private var pdfView: some View {
         PDFCustomView(self.viewModel.pdfDocument)
-            .frame(maxWidth: .infinity, minHeight: 325.0, maxHeight: .infinity, alignment: .center)
     }
 
     private var documentInformation: some View {
@@ -105,7 +108,6 @@ struct TagTabView: View {
             suggestedTags
             Spacer()
         }
-        .frame(maxWidth: 350)
     }
 
     // MARK: Single Components
@@ -143,8 +145,30 @@ struct TagTabView: View {
         }
     }
 
-    private func shouldShowDocumentList() -> Bool {
+    // MARK: - Layout Helpers
+
+    private func shouldShowDocumentList(width: CGFloat) -> Bool {
+        guard width > 900.0 else { return false }
         let screenSize = UIScreen.main.bounds.size
         return UIDevice.current.userInterfaceIdiom != .phone && screenSize.height < screenSize.width
+    }
+
+    private enum Element {
+        case documentList, pdf, documentInformation
+    }
+
+    private func size(of element: Element, width: CGFloat) -> CGFloat {
+        switch element {
+        case .documentList:
+            return width / 6 * 1
+        case .pdf:
+            return .infinity
+        case .documentInformation:
+            if UIDevice.current.userInterfaceIdiom != .phone {
+                return width / 6 * 2
+            } else {
+                return .infinity
+            }
+        }
     }
 }
