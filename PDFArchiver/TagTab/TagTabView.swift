@@ -78,6 +78,7 @@ struct TagTabView: View {
         VStack {
             Text("Tagged: \(viewModel.taggedUntaggedDocuments)")
                 .font(Font.headline)
+                .padding()
             List {
                 ForEach(viewModel.documents) { document in
                     HStack {
@@ -165,7 +166,7 @@ struct TagTabView: View {
             return .infinity
         case .documentInformation:
             if UIDevice.current.userInterfaceIdiom != .phone {
-                return width / 6 * 2
+                return max(width / 6 * 2, 320)
             } else {
                 return .infinity
             }

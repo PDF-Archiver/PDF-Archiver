@@ -17,20 +17,22 @@ struct Stack<Content: View>: View {
     }
 
     var body: some View {
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            return AnyView(
-                ScrollView(showsIndicators: false) {
-                    VStack(alignment: .leading, spacing: 16.0) {
-                        content
+        GeometryReader { geometry -> AnyView in
+            if UIDevice.current.userInterfaceIdiom == .phone || geometry.size.width * 1.5 < geometry.size.height {
+                return AnyView(
+                    ScrollView(showsIndicators: false) {
+                        VStack(alignment: .center, spacing: 16) {
+                            self.content
+                        }
                     }
-                }
-            )
-        } else {
-            return AnyView(
-                HStack(alignment: .center, spacing: 16.0) {
-                    content
-                }
-            )
+                )
+            } else {
+                return AnyView(
+                    HStack(alignment: .center, spacing: 16) {
+                        self.content
+                    }
+                )
+            }
         }
     }
 }
