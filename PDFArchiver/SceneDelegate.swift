@@ -33,7 +33,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 .accentColor(Color(.paDarkGray))
                 .environmentObject(OrientationInfo())  
             let window = UIWindow(windowScene: windowScene)
-            window.rootViewController = UIHostingController(rootView: view)
+            window.rootViewController = KeyCommandHostingController(rootView: view, viewModel: viewModel)
 
             self.window = window
             window.makeKeyAndVisible()

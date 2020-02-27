@@ -88,6 +88,8 @@
 		A3DC071D22C6C6D10073A877 /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3DC071C22C6C6D10073A877 /* UIImage.swift */; };
 		A3EBFE9C21650F58008C34CC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A3EBFE9E21650F58008C34CC /* Localizable.strings */; };
 		A3ECBC9622496BA000A626AE /* IAP.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3ECBC9522496BA000A626AE /* IAP.swift */; };
+		A3ECF3102408668D00A7F9D2 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3ECF30F2408668D00A7F9D2 /* String.swift */; };
+		A3ECF3122408694C00A7F9D2 /* KeyCommandHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3ECF3112408694C00A7F9D2 /* KeyCommandHostingController.swift */; };
 		A3F1C21D2163DCD9002B0141 /* AppStoreReviewRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */; };
 		A3FF63A022478FC10089E66A /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF639F22478FC10089E66A /* UIColor.swift */; };
 		A3FF63AA2247A39E0089E66A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3FF63A92247A39E0089E66A /* StoreKit.framework */; };
@@ -219,6 +221,8 @@
 		A3EBFE9D21650F58008C34CC /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A3EBFE9F21650F70008C34CC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A3ECBC9522496BA000A626AE /* IAP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAP.swift; sourceTree = "<group>"; };
+		A3ECF30F2408668D00A7F9D2 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
+		A3ECF3112408694C00A7F9D2 /* KeyCommandHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyCommandHostingController.swift; sourceTree = "<group>"; };
 		A3F1C21C2163DCD9002B0141 /* AppStoreReviewRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreReviewRequest.swift; sourceTree = "<group>"; };
 		A3FF639F22478FC10089E66A /* UIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
 		A3FF63A92247A39E0089E66A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
@@ -283,6 +287,9 @@
 			isa = PBXGroup;
 			children = (
 				171E0C7D1B8E5B84001E6242 /* AppDelegate.swift */,
+				A328CF4F237CAF29003D60AD /* IAPView.swift */,
+				A328CF4D237CAECA003D60AD /* IAPViewModel.swift */,
+				A3ECF3112408694C00A7F9D2 /* KeyCommandHostingController.swift */,
 				A30D767622BF914B00862224 /* MainTabBarController.swift */,
 				A30CB43A2369792900D3063E /* MainTabView.swift */,
 				A30CB43C23697C1800D3063E /* MainTabViewModel.swift */,
@@ -295,8 +302,6 @@
 				A3F30D90221C99F80063D173 /* ScanTab */,
 				A34A84F12130A28A0093FAE5 /* Services */,
 				A3F30D8F221C99ED0063D173 /* TagTab */,
-				A328CF4D237CAECA003D60AD /* IAPViewModel.swift */,
-				A328CF4F237CAF29003D60AD /* IAPView.swift */,
 			);
 			path = PDFArchiver;
 			sourceTree = "<group>";
@@ -375,6 +380,7 @@
 				A328CF3E237C43A8003D60AD /* MissingViews */,
 				A3B57B7E228720240078F7A4 /* Storage */,
 				A302929E2405B79C006ACE12 /* OrientationInfo.swift */,
+				A3ECF30F2408668D00A7F9D2 /* String.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -768,6 +774,7 @@
 				A387EFF32378BE19003FB3B7 /* View.swift in Sources */,
 				A356DF7B237DF1C000CAD132 /* PlaceholderView.swift in Sources */,
 				A334A648236E1DE4004D960C /* ScanTabViewModel.swift in Sources */,
+				A3ECF3102408668D00A7F9D2 /* String.swift in Sources */,
 				A328CF4E237CAECA003D60AD /* IAPViewModel.swift in Sources */,
 				A356115F22DE517B00A9092F /* Atomic.swift in Sources */,
 				A3B57B83228750CF0078F7A4 /* FileManager.swift in Sources */,
@@ -787,6 +794,7 @@
 				A378C433221B3929007D1419 /* DocumentService.swift in Sources */,
 				A387EFED23786FE2003FB3B7 /* CustomTextField.swift in Sources */,
 				A328CF53237CB161003D60AD /* FilledButtonStyle.swift in Sources */,
+				A3ECF3122408694C00A7F9D2 /* KeyCommandHostingController.swift in Sources */,
 				A39942BE228B422E00FFC16B /* IntroViewController.swift in Sources */,
 				171E0C7E1B8E5B84001E6242 /* AppDelegate.swift in Sources */,
 				A328CF39237BF2E4003D60AD /* MoreTabView.swift in Sources */,
@@ -978,7 +986,7 @@
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/PDFArchiver/Resources/PDFArchiver.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_BITCODE = YES;
@@ -1023,7 +1031,7 @@
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/PDFArchiver/Resources/PDFArchiver.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (

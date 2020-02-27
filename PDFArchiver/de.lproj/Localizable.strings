@@ -200,3 +200,15 @@
 "Add" = "Sichern";
 
 "Document" = "Dokument";
+
+"Open the Scan tab." = "Scan Tab öffnen.";
+
+"Open the Tag tab." = "Tag Tab öffnen.";
+
+"Open the Archive tab." = "Archive Tab öffnen.";
+
+"Open the More tab." = "Mehr Tab öffnen.";
+
+"Save current document." = "Dokument speichern.";
+
+"Delete current document." = "Dokument löschen.";
