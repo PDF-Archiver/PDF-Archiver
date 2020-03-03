@@ -31,7 +31,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
             let view = MainTabView(viewModel: viewModel)
                 .accentColor(Color(.paDarkGray))
-                .environmentObject(OrientationInfo())  
+                .environmentObject(OrientationInfo())
             let window = UIWindow(windowScene: windowScene)
             window.rootViewController = KeyCommandHostingController(rootView: view, viewModel: viewModel)
 
