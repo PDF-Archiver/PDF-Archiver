@@ -1,5 +1,5 @@
 //
-//  PlacerholderView.swift
+//  PlaceholderView.swift
 //  PDFArchiver
 //
 //  Created by Julian Kahnert on 14.11.19.

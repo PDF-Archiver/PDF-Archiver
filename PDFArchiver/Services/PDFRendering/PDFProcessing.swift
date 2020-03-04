@@ -135,7 +135,7 @@ class PDFProcessing: Operation {
         // STEP I: get all image urls
         let allImageUrls = (try? FileManager.default.contentsOfDirectory(at: tempImagePath, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])) ?? []
 
-        // STEP II: filter and sort those urls in a second step to avoid shuffeling around pages
+        // STEP II: filter and sort those urls in a second step to avoid shuffling around pages
         let sortedDocumentUrls = allImageUrls
             .filter { $0.lastPathComponent.starts(with: documentId.uuidString) }
             .sorted { $0.lastPathComponent < $1.lastPathComponent }

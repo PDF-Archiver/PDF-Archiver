@@ -1,6 +1,6 @@
-name: ArchiveLib, nameSpecified: , owner: PDF-Archiver, version: 2.0.11
+name: ArchiveLib, nameSpecified: , owner: PDF-Archiver, version: 2.0.12
 
-name: Diagnostics, nameSpecified: , owner: WeTransfer, version: 1.3.0
+name: Diagnostics, nameSpecified: , owner: WeTransfer, version: 1.4.0
 
 name: KeyboardObserving, nameSpecified: , owner: JulianKahnert, version: 
 
@@ -20,4 +20,4 @@ name: SwiftyStoreKit, nameSpecified: , owner: bizz84, version: 0.15.0
 
 add-version-numbers: true
 
-LicensePlist Version: 2.9.0
+LicensePlist Version: 2.12.0

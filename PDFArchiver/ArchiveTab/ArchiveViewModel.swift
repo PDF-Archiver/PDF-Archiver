@@ -62,7 +62,7 @@ class ArchiveViewModel: ObservableObject, SystemLogging {
             }
             .store(in: &disposables)
 
-        // filter documents, get input from Notification, searchText or searchCcope
+        // filter documents, get input from Notification, searchText or searchScope
         $searchText
             .debounce(for: .milliseconds(300), scheduler: DispatchQueue.global(qos: .userInitiated))
             .removeDuplicates()

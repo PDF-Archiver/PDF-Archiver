@@ -13,19 +13,23 @@ import SwiftUIX
 struct DocumentView: View {
 
     let viewModel: DocumentViewModel
+    let showTagStatus: Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4.0) {
             HStack {
+                if showTagStatus {
+                    Text(viewModel.taggingStatus == .tagged ? "✅" : " ")
+                }
                 titleSubtitle
                 Spacer()
-                if !viewModel.downloadStatus.isLocal {
+                if !showTagStatus && !viewModel.downloadStatus.isLocal {
                     status
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             tags
-            if viewModel.downloadStatus.isDownloading {
+            if !showTagStatus && viewModel.downloadStatus.isDownloading {
                 LinearProgressBar(viewModel.downloadStatus.percentageDownloading)
                     .foregroundColor(Color(.paDarkGray))
             }
@@ -93,7 +97,7 @@ struct DocumentView_Previews: PreviewProvider {
                                                      sortedTags: ["bill", "ikea"],
                                                      downloadStatus: .downloading(percentDownloaded: 0.33))
     static var previews: some View {
-        DocumentView(viewModel: documentViewModel)
+        DocumentView(viewModel: documentViewModel, showTagStatus: false)
             .frame(minWidth: 0.0, maxWidth: .infinity, minHeight: 0, maxHeight: 45.0)
             .padding()
     }

@@ -12,19 +12,25 @@ import SwiftUI
 struct TagTabView: View {
     @ObservedObject var viewModel: TagTabViewModel
 
+    // trigger a reload of the view, when the device rotation changes
+    @EnvironmentObject var orientationInfo: OrientationInfo
+
     var body: some View {
         NavigationView {
             if viewModel.showLoadingView {
                 LoadingView()
             } else {
                 if viewModel.currentDocument != nil {
-                    ScrollView(showsIndicators: false) {
-                        VStack(alignment: .leading, spacing: 16.0) {
-                            pdfView
-                            datePicker
-                            ClearingTextField(placeholder: "Description", text: $viewModel.specification)
-                            documentTags
-                            suggestedTags
+                    GeometryReader { geometry in
+                        Stack {
+                            if self.shouldShowDocumentList(width: geometry.size.width) {
+                                self.documentsList
+                                    .frame(maxWidth: self.size(of: .documentList, width: geometry.size.width))
+                            }
+                            self.pdfView
+                                .frame(maxWidth: self.size(of: .pdf, width: geometry.size.width), minHeight: 325.0, maxHeight: .infinity, alignment: .center)
+                            self.documentInformation
+                                .frame(maxWidth: self.size(of: .documentInformation, width: geometry.size.width))
                         }
                     }
                     .keyboardObserving(offset: 16.0)
@@ -66,10 +72,46 @@ struct TagTabView: View {
         })
     }
 
+    // MARK: Component Groups
+
+    private var documentsList: some View {
+        VStack {
+            Text("Tagged: \(viewModel.taggedUntaggedDocuments)")
+                .font(Font.headline)
+                .padding()
+            List {
+                ForEach(viewModel.documents) { document in
+                    HStack {
+                        Circle()
+                            .fill(Color.systemBlue)
+                            .frame(width: 8, height: 8)
+                            .opacity(document == self.viewModel.currentDocument ? 1 : 0)
+                        DocumentView(viewModel: DocumentViewModel(document), showTagStatus: true)
+                    }
+                    .onTapGesture {
+                       self.viewModel.currentDocument = document
+                    }
+                }
+            }
+        }
+    }
+
     private var pdfView: some View {
         PDFCustomView(self.viewModel.pdfDocument)
-            .frame(maxWidth: .infinity, minHeight: 325.0, maxHeight: 325.0, alignment: .center)
     }
+
+    private var documentInformation: some View {
+        VStack(alignment: .leading, spacing: 16.0) {
+            datePicker
+            TextField("Description", text: $viewModel.specification)
+                .modifier(ClearButton(text: $viewModel.specification))
+            documentTags
+            suggestedTags
+            Spacer()
+        }
+    }
+
+    // MARK: Single Components
 
     private var datePicker: some View {
         HStack {
@@ -90,6 +132,7 @@ struct TagTabView: View {
                             onCommit: viewModel.saveTag,
                             isFirstResponder: false,
                             suggestions: viewModel.inputAccessoryViewSuggestions)
+                .frame(maxHeight: 22)
                 .padding(EdgeInsets(top: 4.0, leading: 0.0, bottom: 4.0, trailing: 0.0))
         }
     }
@@ -100,6 +143,33 @@ struct TagTabView: View {
                 .font(.caption)
             TagListView(tags: $viewModel.suggestedTags, isEditable: false, isMultiLine: true, tapHandler: viewModel.suggestedTagTapped(_:))
                 .font(.body)
+        }
+    }
+
+    // MARK: - Layout Helpers
+
+    private func shouldShowDocumentList(width: CGFloat) -> Bool {
+        guard width > 900.0 else { return false }
+        let screenSize = UIScreen.main.bounds.size
+        return UIDevice.current.userInterfaceIdiom != .phone && screenSize.height < screenSize.width
+    }
+
+    private enum Element {
+        case documentList, pdf, documentInformation
+    }
+
+    private func size(of element: Element, width: CGFloat) -> CGFloat {
+        switch element {
+        case .documentList:
+            return width / 6 * 1
+        case .pdf:
+            return .infinity
+        case .documentInformation:
+            if UIDevice.current.userInterfaceIdiom != .phone {
+                return max(width / 6 * 2, 320)
+            } else {
+                return .infinity
+            }
         }
     }
 }

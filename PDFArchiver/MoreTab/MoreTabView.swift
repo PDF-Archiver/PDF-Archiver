@@ -16,19 +16,30 @@ struct MoreTabView: View {
     private static let appVersion = AppEnvironment.getFullVersion()
 
     var body: some View {
-        NavigationView {
-            List {
-                preferences
-                moreInformation
-            }.listStyle(GroupedListStyle())
-            .disabled(!MFMailComposeViewController.canSendMail())
-            .sheet(isPresented: $viewModel.isShowingMailView) {
-                SupportMailView(subject: MoreTabViewModel.mailSubject,
-                         recipients: MoreTabViewModel.mailRecipients,
-                         result: self.$viewModel.result)
+        HStack {
+            if UIDevice.current.userInterfaceIdiom != .phone {
+                Spacer()
             }
-            .navigationBarTitle("Preferences & More")
-        }.navigationViewStyle(StackNavigationViewStyle())
+            NavigationView {
+                List {
+                    preferences
+                    moreInformation
+                }.listStyle(GroupedListStyle())
+                    .disabled(!MFMailComposeViewController.canSendMail())
+                    .sheet(isPresented: $viewModel.isShowingMailView) {
+                        SupportMailView(subject: MoreTabViewModel.mailSubject,
+                                        recipients: MoreTabViewModel.mailRecipients,
+                                        result: self.$viewModel.result)
+                }
+                .navigationBarTitle("Preferences & More")
+            }
+            .navigationViewStyle(StackNavigationViewStyle())
+            .frame(maxWidth: 700)
+            if UIDevice.current.userInterfaceIdiom != .phone {
+                Spacer()
+            }
+        }
+        .backgroundColor(Color(.systemGroupedBackground))
     }
 
     private var preferences: some View {
