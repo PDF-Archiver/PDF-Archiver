@@ -13,14 +13,14 @@ class KeyCommandHostingController<Content>: UIHostingController<Content> where C
     private let viewModel: MainTabViewModel
 
     // global shortcuts
-    private let tab0 = UIKeyCommand(title: "Open Scan Tab", action: #selector(action), input: "1", modifierFlags: .command, discoverabilityTitle: "Open the Scan tab.")
-    private let tab1 = UIKeyCommand(title: "Open Tag Tab", action: #selector(action), input: "2", modifierFlags: .command, discoverabilityTitle: "Open the Tag tab.")
-    private let tab2 = UIKeyCommand(title: "Open Archive Tab", action: #selector(action), input: "3", modifierFlags: .command, discoverabilityTitle: "Open the Archive tab.")
-    private let tab3 = UIKeyCommand(title: "Open More Tab", action: #selector(action), input: "4", modifierFlags: .command, discoverabilityTitle: "Open the More tab.")
+    private let tab0 = UIKeyCommand(title: "Open Scan Tab", action: #selector(action), input: "1", modifierFlags: .command, discoverabilityTitle: "Open the Scan tab")
+    private let tab1 = UIKeyCommand(title: "Open Tag Tab", action: #selector(action), input: "2", modifierFlags: .command, discoverabilityTitle: "Open the Tag tab")
+    private let tab2 = UIKeyCommand(title: "Open Archive Tab", action: #selector(action), input: "3", modifierFlags: .command, discoverabilityTitle: "Open the Archive tab")
+    private let tab3 = UIKeyCommand(title: "Open More Tab", action: #selector(action), input: "4", modifierFlags: .command, discoverabilityTitle: "Open the More tab")
 
     // document tab shortcuts
-    private let save = UIKeyCommand(title: "Save", action: #selector(action), input: "s", modifierFlags: .command, discoverabilityTitle: "Save current document.")
-    private let delete = UIKeyCommand(title: "Delete", action: #selector(action), input: "\u{8}", modifierFlags: .command, discoverabilityTitle: "Delete current document.")
+    private let save = UIKeyCommand(title: "Save", action: #selector(action), input: "s", modifierFlags: .command, discoverabilityTitle: "Save current document")
+    private let delete = UIKeyCommand(title: "Delete", action: #selector(action), input: "\u{8}", modifierFlags: .command, discoverabilityTitle: "Delete current document")
 
     init(rootView: Content, viewModel: MainTabViewModel) {
         self.viewModel = viewModel

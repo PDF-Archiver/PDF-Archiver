@@ -17,7 +17,9 @@ struct MoreTabView: View {
 
     var body: some View {
         HStack {
-            Spacer()
+            if UIDevice.current.userInterfaceIdiom != .phone {
+                Spacer()
+            }
             NavigationView {
                 List {
                     preferences
@@ -33,8 +35,11 @@ struct MoreTabView: View {
             }
             .navigationViewStyle(StackNavigationViewStyle())
             .frame(maxWidth: 700)
-            Spacer()
+            if UIDevice.current.userInterfaceIdiom != .phone {
+                Spacer()
+            }
         }
+        .backgroundColor(Color(.systemGroupedBackground))
     }
 
     private var preferences: some View {
