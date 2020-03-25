@@ -1,0 +1,25 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "ArchiveLib",
+        "repositoryURL": "https://github.com/PDF-Archiver/ArchiveLib",
+        "state": {
+          "branch": null,
+          "revision": "55d4f8705b896756fdde47cf4881b8cbf6366842",
+          "version": "1.2.1"
+        }
+      },
+      {
+        "package": "Sentry",
+        "repositoryURL": "https://github.com/getsentry/sentry-cocoa",
+        "state": {
+          "branch": null,
+          "revision": "bb3c1d852980432907cd314e4fa984fc9a78c9f3",
+          "version": "4.4.3"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
