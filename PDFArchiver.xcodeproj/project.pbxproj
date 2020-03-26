@@ -60,7 +60,6 @@
 		A387EFF32378BE19003FB3B7 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = A387EFF22378BE19003FB3B7 /* View.swift */; };
 		A38BDC26234632F6003668C3 /* ArchiveLib in Frameworks */ = {isa = PBXBuildFile; productRef = A38BDC25234632F6003668C3 /* ArchiveLib */; };
 		A393DEF0239C0E1E00266FB6 /* Diagnostics in Frameworks */ = {isa = PBXBuildFile; productRef = A393DEEF239C0E1E00266FB6 /* Diagnostics */; };
-		A393DEF2239C14CF00266FB6 /* style.css in Resources */ = {isa = PBXBuildFile; fileRef = A393DEF1239C141800266FB6 /* style.css */; };
 		A394E4C1236A2B6100C81CC2 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = A394E4C0236A2B6100C81CC2 /* Notification.swift */; };
 		A394E4C5236A350000C81CC2 /* DocumentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A394E4C4236A350000C81CC2 /* DocumentViewModel.swift */; };
 		A394E4C7236A462500C81CC2 /* DocumentDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A394E4C6236A462500C81CC2 /* DocumentDetailView.swift */; };
@@ -188,7 +187,6 @@
 		A387EFF023788442003FB3B7 /* CustomDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDatePicker.swift; sourceTree = "<group>"; };
 		A387EFF22378BE19003FB3B7 /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
 		A388C8262235330F000D52CB /* test-ocr-data.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "test-ocr-data.png"; sourceTree = "<group>"; };
-		A393DEF1239C141800266FB6 /* style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = style.css; sourceTree = "<group>"; };
 		A394E4C0236A2B6100C81CC2 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		A394E4C4236A350000C81CC2 /* DocumentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentViewModel.swift; sourceTree = "<group>"; };
 		A394E4C6236A462500C81CC2 /* DocumentDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentDetailView.swift; sourceTree = "<group>"; };
@@ -488,7 +486,6 @@
 				A34A85012130A3870093FAE5 /* Assets.xcassets */,
 				A34DEF912267699700E12EE5 /* Settings.bundle */,
 				A35B7D08235C7239002F7716 /* Config.xcconfig */,
-				A393DEF1239C141800266FB6 /* style.css */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -643,7 +640,6 @@
 			files = (
 				A3EBFE9C21650F58008C34CC /* Localizable.strings in Resources */,
 				171E0C8A1B8E5B84001E6242 /* LaunchScreen.storyboard in Resources */,
-				A393DEF2239C14CF00266FB6 /* style.css in Resources */,
 				A34DEF922267699700E12EE5 /* Settings.bundle in Resources */,
 				A34A85022130A3870093FAE5 /* Assets.xcassets in Resources */,
 			);
@@ -986,7 +982,7 @@
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/PDFArchiver/Resources/PDFArchiver.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_BITCODE = YES;
@@ -1001,7 +997,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 2.3.0;
+				MARKETING_VERSION = 2.3.1;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1031,7 +1027,7 @@
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/PDFArchiver/Resources/PDFArchiver.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1045,7 +1041,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 2.3.0;
+				MARKETING_VERSION = 2.3.1;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
