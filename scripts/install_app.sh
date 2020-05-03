@@ -2,10 +2,7 @@
 
 REPO_FOLDER="$(git rev-parse --show-toplevel)"
 
-# build OpenSSL
-bash "$REPO_FOLDER/scripts/build_openssl.sh"
-
-# build OpenSSL
+# build app
 bash "$REPO_FOLDER/scripts/build_app.sh"
 
 # copy the app

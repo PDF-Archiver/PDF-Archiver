@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
-        <plugIn identifier="com.apple.pdfkit.ibplugin" version="14490.70"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16096"/>
+        <plugIn identifier="com.apple.pdfkit.ibplugin" version="16096"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -279,7 +279,7 @@ CA
             <objects>
                 <viewController title="Onboarding" storyboardIdentifier="onboardingViewController" id="IBN-wm-PS1" customClass="OnboardingViewController" customModule="PDFArchiver" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" identifier="OnboardingBackgroundView" id="1Ps-AJ-22C" customClass="BackgroundView" customModule="PDFArchiver" customModuleProvider="target">
-                        <rect key="frame" x="0.0" y="0.0" width="760" height="535"/>
+                        <rect key="frame" x="0.0" y="0.0" width="760" height="534"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="Ofp-Uf-gpZ">
@@ -434,11 +434,11 @@ CA
                                 <rect key="frame" x="20" y="20" width="450" height="169"/>
                                 <subviews>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Vlw-kp-khl">
-                                        <rect key="frame" x="28" y="145" width="233" height="17"/>
+                                        <rect key="frame" x="28" y="145" width="354" height="17"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="17" id="Xg8-by-PFD"/>
                                         </constraints>
-                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Automatic renewal and cancellation:" id="GL4-Kh-cUd">
+                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Automatic renewal and cancellation (Internet required):" id="GL4-Kh-cUd">
                                             <font key="font" metaFont="systemSemibold" size="13"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -447,7 +447,7 @@ CA
                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="b3N-vg-zo7">
                                         <rect key="frame" x="8" y="38" width="434" height="102"/>
                                         <textFieldCell key="cell" allowsUndo="NO" sendsActionOnEndEditing="YES" id="Vnc-G1-ChS">
-                                            <font key="font" metaFont="smallSystem"/>
+                                            <font key="font" metaFont="message" size="11"/>
                                             <string key="title">• Try the app for free! You can try the app in a free trial period of 1 month by choosing a subscription. You can try the app without any costs in this period.
 • Your Apple account will be charged for the next subscriptioon period within the final 24 hours of the current period.
 • The subscription will renew automatically if you do not deactivate the renewal in the account setting in iTunes or the App Store at least 24 hours before the end of the subscription period.</string>
@@ -501,12 +501,12 @@ CA
                                 </constraints>
                             </customView>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="ycm-Wf-adg">
-                                <rect key="frame" x="20" y="209" width="720" height="306"/>
+                                <rect key="frame" x="20" y="209" width="720" height="305"/>
                                 <subviews>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jsU-Cj-RIy">
-                                        <rect key="frame" x="193" y="225" width="335" height="36"/>
+                                        <rect key="frame" x="193" y="225" width="335" height="35"/>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Welcome to PDF Archiver" id="LDE-IZ-15h">
-                                            <font key="font" size="30" name=".AppleSystemUIFont"/>
+                                            <font key="font" metaFont="system" size="30"/>
                                             <color key="textColor" name="CustomViewBackground"/>
                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                         </textFieldCell>
@@ -517,7 +517,7 @@ CA
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2r6-lY-Roq">
                                         <rect key="frame" x="256" y="195" width="209" height="19"/>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Thank you for downloading." id="8Xm-l9-Ww4">
-                                            <font key="font" size="16" name=".AppleSystemUIFont"/>
+                                            <font key="font" metaFont="system" size="16"/>
                                             <color key="textColor" name="Subtitle"/>
                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                         </textFieldCell>
@@ -642,7 +642,7 @@ Tag your document and save  it:</string>
                     <tabView key="tabView" type="noTabsNoBorder" id="1CQ-ZS-tAy">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <font key="font" metaFont="message"/>
+                        <font key="font" metaFont="system"/>
                         <connections>
                             <outlet property="delegate" destination="ZqG-df-vaR" id="xQW-1C-vE5"/>
                         </connections>
@@ -760,7 +760,7 @@ Tag your document and save  it:</string>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <button verticalHuggingPriority="750" springLoaded="YES" translatesAutoresizingMaskIntoConstraints="NO" id="joG-X7-QK9">
-                                            <rect key="frame" x="178" y="56" width="461" height="19"/>
+                                            <rect key="frame" x="178" y="54" width="461" height="19"/>
                                             <buttonCell key="cell" type="check" title="Convert pictures to PDFs" bezelStyle="regularSquare" imagePosition="left" inset="2" id="dMg-Kx-7ej">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="systemSemibold" size="15"/>
@@ -770,7 +770,7 @@ Tag your document and save  it:</string>
                                             </connections>
                                         </button>
                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="quC-LR-hxW">
-                                            <rect key="frame" x="196" y="19" width="443" height="34"/>
+                                            <rect key="frame" x="196" y="19" width="443" height="32"/>
                                             <textFieldCell key="cell" allowsUndo="NO" sendsActionOnEndEditing="YES" title="Convert pictures (jpg etc.) in the observed folder to PDFs and trash the original." id="WIy-5i-bbd">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -778,7 +778,7 @@ Tag your document and save  it:</string>
                                             </textFieldCell>
                                         </textField>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="RAD-9s-bE4">
-                                            <rect key="frame" x="47" y="93" width="123" height="19"/>
+                                            <rect key="frame" x="47" y="91" width="123" height="19"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Observed Folder" id="z8O-Wh-LiY">
                                                 <font key="font" metaFont="systemSemibold" size="15"/>
                                                 <color key="textColor" name="Headline1"/>
@@ -786,7 +786,7 @@ Tag your document and save  it:</string>
                                             </textFieldCell>
                                         </textField>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PTW-ce-MNP">
-                                            <rect key="frame" x="47" y="132" width="123" height="19"/>
+                                            <rect key="frame" x="47" y="129" width="123" height="19"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Archive Folder" id="Ju7-wj-fHp">
                                                 <font key="font" metaFont="systemSemibold" size="15"/>
                                                 <color key="textColor" name="Headline1"/>
@@ -794,7 +794,7 @@ Tag your document and save  it:</string>
                                             </textFieldCell>
                                         </textField>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="X5U-R0-ENH">
-                                            <rect key="frame" x="180" y="130" width="374" height="22"/>
+                                            <rect key="frame" x="180" y="127" width="374" height="21"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="374" id="1mE-q7-Xho"/>
                                             </constraints>
@@ -806,7 +806,7 @@ Tag your document and save  it:</string>
                                             </textFieldCell>
                                         </textField>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="oIL-jU-gHB">
-                                            <rect key="frame" x="47" y="169" width="123" height="19"/>
+                                            <rect key="frame" x="47" y="166" width="123" height="19"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="iCloud" id="urS-Lh-uQS">
                                                 <font key="font" metaFont="systemSemibold" size="15"/>
                                                 <color key="textColor" name="Headline1"/>
@@ -814,7 +814,7 @@ Tag your document and save  it:</string>
                                             </textFieldCell>
                                         </textField>
                                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8RK-0V-cYr">
-                                            <rect key="frame" x="553" y="123" width="90" height="33"/>
+                                            <rect key="frame" x="553" y="120" width="90" height="32"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="78" id="gqs-le-VBd"/>
                                             </constraints>
@@ -827,7 +827,7 @@ Tag your document and save  it:</string>
                                             </connections>
                                         </button>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hB8-Fa-RBW">
-                                            <rect key="frame" x="180" y="91" width="374" height="22"/>
+                                            <rect key="frame" x="180" y="89" width="374" height="21"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="Please set the observed path …" drawsBackground="YES" usesSingleLineMode="YES" id="hox-RC-83t">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -836,7 +836,7 @@ Tag your document and save  it:</string>
                                             </textFieldCell>
                                         </textField>
                                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="YTa-3I-7A5">
-                                            <rect key="frame" x="553" y="84" width="90" height="33"/>
+                                            <rect key="frame" x="553" y="82" width="90" height="32"/>
                                             <buttonCell key="cell" type="push" title="Change …" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="obQ-RK-Zgm">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
@@ -846,7 +846,7 @@ Tag your document and save  it:</string>
                                             </connections>
                                         </button>
                                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Kzj-Fs-SV2">
-                                            <rect key="frame" x="47" y="56" width="123" height="19"/>
+                                            <rect key="frame" x="47" y="54" width="123" height="19"/>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Pictures" id="DHw-bL-Azd">
                                                 <font key="font" metaFont="systemSemibold" size="15"/>
                                                 <color key="textColor" name="Headline1"/>
@@ -854,7 +854,7 @@ Tag your document and save  it:</string>
                                             </textFieldCell>
                                         </textField>
                                         <button verticalHuggingPriority="750" springLoaded="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2Qv-dK-ZbP">
-                                            <rect key="frame" x="178" y="169" width="461" height="19"/>
+                                            <rect key="frame" x="178" y="166" width="461" height="19"/>
                                             <buttonCell key="cell" type="check" title="Save Documents in iCloud Drive" bezelStyle="regularSquare" imagePosition="left" inset="2" id="xlr-HK-YOq">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="systemSemibold" size="15"/>
@@ -938,11 +938,11 @@ Tag your document and save  it:</string>
                             <box autoresizesSubviews="NO" borderType="line" title="One-Time Donation" translatesAutoresizingMaskIntoConstraints="NO" id="alz-A4-A8z">
                                 <rect key="frame" x="372" y="50" width="196" height="145"/>
                                 <view key="contentView" id="yc2-iU-djq">
-                                    <rect key="frame" x="3" y="3" width="190" height="123"/>
+                                    <rect key="frame" x="3" y="3" width="190" height="124"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <button identifier="level1" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="pjt-37-tlz">
-                                            <rect key="frame" x="9" y="80" width="172" height="32"/>
+                                            <rect key="frame" x="9" y="81" width="172" height="32"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="21" id="bTt-g8-WKR"/>
                                             </constraints>
@@ -955,7 +955,7 @@ Tag your document and save  it:</string>
                                             </connections>
                                         </button>
                                         <button identifier="level2" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="OLw-Bf-fGp">
-                                            <rect key="frame" x="9" y="44" width="172" height="32"/>
+                                            <rect key="frame" x="9" y="45" width="172" height="32"/>
                                             <buttonCell key="cell" type="push" title="Level 2" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="5JW-68-xh8">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
@@ -965,7 +965,7 @@ Tag your document and save  it:</string>
                                             </connections>
                                         </button>
                                         <button identifier="level3" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Zkb-C5-cZI">
-                                            <rect key="frame" x="9" y="8" width="172" height="32"/>
+                                            <rect key="frame" x="9" y="8" width="172" height="33"/>
                                             <buttonCell key="cell" type="push" title="Level 3" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ndf-3x-jdp">
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
@@ -1077,7 +1077,7 @@ Help &gt; Show Onboarding</string>
         <scene sceneID="hIz-AP-VOD">
             <objects>
                 <viewController identifier="mainViewController" storyboardIdentifier="mainViewController" id="XfG-lQ-9wD" customClass="ViewController" customModule="PDFArchiver" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" identifier="MainViewBackground" wantsLayer="YES" id="m2S-Jp-Qdl" customClass="BackgroundView" customModule="PDFArchiver" customModuleProvider="target">
+                    <view key="view" identifier="MainViewBackground" wantsLayer="YES" misplaced="YES" id="m2S-Jp-Qdl" customClass="BackgroundView" customModule="PDFArchiver" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="1040" height="646"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
@@ -1088,7 +1088,7 @@ Help &gt; Show Onboarding</string>
                                         <rect key="frame" x="0.0" y="33" width="320" height="568"/>
                                         <subviews>
                                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8J4-uS-3fj">
-                                                <rect key="frame" x="-2" y="546" width="324" height="22"/>
+                                                <rect key="frame" x="-2" y="499" width="324" height="69"/>
                                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="PDF Documents" id="FTj-OD-Ghm">
                                                     <font key="font" metaFont="systemBlack" size="18"/>
                                                     <color key="textColor" name="Headline1"/>
@@ -1108,21 +1108,20 @@ Help &gt; Show Onboarding</string>
                                                 </connections>
                                             </button>
                                             <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" horizontalScrollElasticity="none" translatesAutoresizingMaskIntoConstraints="NO" id="snn-Ub-ylk">
-                                                <rect key="frame" x="0.0" y="28" width="320" height="510"/>
+                                                <rect key="frame" x="0.0" y="28" width="320" height="463"/>
                                                 <clipView key="contentView" id="IQ8-Cx-TuB">
-                                                    <rect key="frame" x="1" y="0.0" width="318" height="494"/>
+                                                    <rect key="frame" x="1" y="0.0" width="318" height="447"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <tableView identifier="documentTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" headerView="8zw-71-lOb" viewBased="YES" id="6Bq-b9-66z" userLabel="Document Table View">
-                                                            <rect key="frame" x="0.0" y="0.0" width="368" height="471"/>
-                                                            <autoresizingMask key="autoresizingMask"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="368" height="424"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <size key="intercellSpacing" width="3" height="2"/>
                                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                             <tableColumns>
                                                                 <tableColumn width="40" minWidth="40" maxWidth="1000" id="z3k-p7-D0U" userLabel="Status">
                                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
-                                                                        <font key="font" metaFont="smallSystem"/>
                                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                                     </tableHeaderCell>
@@ -1133,12 +1132,12 @@ Help &gt; Show Onboarding</string>
                                                                     </textFieldCell>
                                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                     <prototypeCellViews>
-                                                                        <tableCellView identifier="documentStatusCell" id="XRF-wg-cG8">
+                                                                        <tableCellView identifier="documentStatusCell" misplaced="YES" id="XRF-wg-cG8">
                                                                             <rect key="frame" x="1" y="1" width="40" height="17"/>
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                             <subviews>
                                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="jfD-0d-UT9">
-                                                                                    <rect key="frame" x="-2" y="0.0" width="44" height="17"/>
+                                                                                    <rect key="frame" x="-2" y="0.0" width="44" height="16"/>
                                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="center" title="✔︎" id="zWE-Hy-4ww">
                                                                                         <font key="font" metaFont="system"/>
                                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1163,7 +1162,6 @@ Help &gt; Show Onboarding</string>
                                                                 </tableColumn>
                                                                 <tableColumn width="322" minWidth="40" maxWidth="1000" id="t5i-OA-mho" userLabel="Name">
                                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Document">
-                                                                        <font key="font" metaFont="smallSystem"/>
                                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                                     </tableHeaderCell>
@@ -1174,12 +1172,12 @@ Help &gt; Show Onboarding</string>
                                                                     </textFieldCell>
                                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                     <prototypeCellViews>
-                                                                        <tableCellView identifier="documentNameCell" id="Ten-tg-2yw">
+                                                                        <tableCellView identifier="documentNameCell" misplaced="YES" id="Ten-tg-2yw">
                                                                             <rect key="frame" x="44" y="1" width="322" height="17"/>
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                             <subviews>
                                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="aJU-La-j8P">
-                                                                                    <rect key="frame" x="-2" y="0.0" width="326" height="17"/>
+                                                                                    <rect key="frame" x="-2" y="0.0" width="326" height="16"/>
                                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Document1" id="DzD-Dn-zMP">
                                                                                         <font key="font" metaFont="system"/>
                                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1211,7 +1209,7 @@ Help &gt; Show Onboarding</string>
                                                     </subviews>
                                                 </clipView>
                                                 <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="ujd-lb-X02">
-                                                    <rect key="frame" x="1" y="494" width="318" height="15"/>
+                                                    <rect key="frame" x="1" y="447" width="318" height="15"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
                                                 <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="Faa-2w-ot5">
@@ -1261,7 +1259,7 @@ Help &gt; Show Onboarding</string>
                                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="N6d-d5-13u">
                                                 <rect key="frame" x="0.0" y="352" width="240" height="249"/>
                                                 <subviews>
-                                                    <datePicker toolTip="date of the document" wantsLayer="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="NiF-3c-nL6" userLabel="Document Date Picker">
+                                                    <datePicker toolTip="date of the document" wantsLayer="YES" verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NiF-3c-nL6" userLabel="Document Date Picker">
                                                         <rect key="frame" x="80" y="195" width="80" height="22"/>
                                                         <shadow key="shadow">
                                                             <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -1280,21 +1278,20 @@ Help &gt; Show Onboarding</string>
                                                         </connections>
                                                     </datePicker>
                                                     <scrollView toolTip="tags of the document" wantsLayer="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oZc-B6-cqG" userLabel="Document Tag - Table View">
-                                                        <rect key="frame" x="0.0" y="28" width="240" height="135"/>
+                                                        <rect key="frame" x="0.0" y="28" width="240" height="134"/>
                                                         <clipView key="contentView" id="kWK-ER-HYK">
-                                                            <rect key="frame" x="1" y="1" width="238" height="133"/>
+                                                            <rect key="frame" x="1" y="1" width="238" height="132"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <tableView identifier="documentTagsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" id="3Nb-6r-7ib" userLabel="Document Tag Table View">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="238" height="133"/>
-                                                                    <autoresizingMask key="autoresizingMask"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="238" height="132"/>
+                                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <size key="intercellSpacing" width="3" height="2"/>
                                                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                                     <tableColumns>
                                                                         <tableColumn width="235" minWidth="40" maxWidth="1000" id="a86-rc-hFq">
                                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Tag">
-                                                                                <font key="font" metaFont="smallSystem"/>
                                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                                             </tableHeaderCell>
@@ -1305,12 +1302,12 @@ Help &gt; Show Onboarding</string>
                                                                             </textFieldCell>
                                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                             <prototypeCellViews>
-                                                                                <tableCellView identifier="documentTagCell" id="x9B-kL-6Ub">
+                                                                                <tableCellView identifier="documentTagCell" misplaced="YES" id="x9B-kL-6Ub">
                                                                                     <rect key="frame" x="1" y="1" width="235" height="17"/>
                                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                     <subviews>
                                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="RQx-fP-9gF">
-                                                                                            <rect key="frame" x="-2" y="0.0" width="239" height="17"/>
+                                                                                            <rect key="frame" x="-2" y="0.0" width="239" height="16"/>
                                                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="mEm-YG-Iaa">
                                                                                                 <font key="font" metaFont="system"/>
                                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1373,7 +1370,7 @@ Help &gt; Show Onboarding</string>
                                                             <action selector="saveDocumentButton:" target="XfG-lQ-9wD" id="dHu-OA-fdp"/>
                                                         </connections>
                                                     </button>
-                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="upy-ZK-2Zs">
+                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="upy-ZK-2Zs">
                                                         <rect key="frame" x="-2" y="227" width="244" height="22"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Document Attributes" id="RIU-wB-4cE">
                                                             <font key="font" metaFont="systemBlack" size="18"/>
@@ -1381,7 +1378,7 @@ Help &gt; Show Onboarding</string>
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
-                                                    <textField identifier="documentDescriptionField" toolTip="description of the document" wantsLayer="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="WG2-MH-TVV" userLabel="Document Description Field">
+                                                    <textField identifier="documentDescriptionField" toolTip="description of the document" wantsLayer="YES" verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WG2-MH-TVV" userLabel="Document Description Field">
                                                         <rect key="frame" x="0.0" y="168" width="240" height="22"/>
                                                         <shadow key="shadow">
                                                             <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -1419,21 +1416,20 @@ Help &gt; Show Onboarding</string>
                                                 <rect key="frame" x="0.0" y="0.0" width="240" height="328"/>
                                                 <subviews>
                                                     <scrollView toolTip="Used tags in your archive" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kGW-Ke-BkB" userLabel="Tag Scroll View">
-                                                        <rect key="frame" x="0.0" y="0.0" width="240" height="269"/>
-                                                        <clipView key="contentView" id="FwI-oY-mZj">
-                                                            <rect key="frame" x="1" y="0.0" width="238" height="268"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="240" height="222"/>
+                                                        <clipView key="contentView" ambiguous="YES" id="FwI-oY-mZj">
+                                                            <rect key="frame" x="1" y="0.0" width="238" height="221"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
-                                                                <tableView identifier="tagsTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" headerView="gxi-Wd-NVa" viewBased="YES" id="xpK-mJ-Y4J" userLabel="Tag Table View">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="238" height="245"/>
-                                                                    <autoresizingMask key="autoresizingMask"/>
+                                                                <tableView identifier="tagsTableView" verticalHuggingPriority="750" ambiguous="YES" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnSelection="YES" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" typeSelect="NO" rowSizeStyle="automatic" headerView="gxi-Wd-NVa" viewBased="YES" id="xpK-mJ-Y4J" userLabel="Tag Table View">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="238" height="198"/>
+                                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                     <size key="intercellSpacing" width="3" height="2"/>
                                                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                                     <tableColumns>
                                                                         <tableColumn width="27.5" minWidth="10" maxWidth="3.4028234663852886e+38" id="dAK-Zr-LS0">
                                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="right" title="#">
-                                                                                <font key="font" metaFont="smallSystem"/>
                                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                             </tableHeaderCell>
@@ -1469,7 +1465,6 @@ Help &gt; Show Onboarding</string>
                                                                         </tableColumn>
                                                                         <tableColumn width="203.5" minWidth="40" maxWidth="1000" id="bgb-vH-5vk">
                                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Tag">
-                                                                                <font key="font" metaFont="smallSystem"/>
                                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                                             </tableHeaderCell>
@@ -1480,12 +1475,12 @@ Help &gt; Show Onboarding</string>
                                                                             </textFieldCell>
                                                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                                             <prototypeCellViews>
-                                                                                <tableCellView identifier="tagNameCell" id="9wq-Yh-6cT">
-                                                                                    <rect key="frame" x="31.5" y="1" width="203" height="17"/>
+                                                                                <tableCellView identifier="tagNameCell" misplaced="YES" id="9wq-Yh-6cT">
+                                                                                    <rect key="frame" x="32" y="1" width="203" height="17"/>
                                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                     <subviews>
                                                                                         <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="9eV-E8-I4x">
-                                                                                            <rect key="frame" x="-2" y="0.0" width="207" height="17"/>
+                                                                                            <rect key="frame" x="-2" y="0.0" width="208" height="16"/>
                                                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="pXJ-g7-oZi">
                                                                                                 <font key="font" metaFont="system"/>
                                                                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -1529,7 +1524,7 @@ Help &gt; Show Onboarding</string>
                                                         </tableHeaderView>
                                                     </scrollView>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="z3w-bA-vGU">
-                                                        <rect key="frame" x="-2" y="306" width="244" height="22"/>
+                                                        <rect key="frame" x="-2" y="259" width="244" height="69"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Available Tags" id="qKy-yf-U85">
                                                             <font key="font" metaFont="systemBlack" size="18"/>
                                                             <color key="textColor" name="Headline1"/>
@@ -1537,7 +1532,7 @@ Help &gt; Show Onboarding</string>
                                                         </textFieldCell>
                                                     </textField>
                                                     <searchField identifier="tagSearchField" toolTip="Tag input; press return key to add it to the document attributes" wantsLayer="YES" verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WfD-Nd-kM0">
-                                                        <rect key="frame" x="0.0" y="274" width="240" height="22"/>
+                                                        <rect key="frame" x="0.0" y="227" width="240" height="22"/>
                                                         <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" placeholderString="Search and add" usesSingleLineMode="YES" bezelStyle="round" id="azW-Co-ROb">
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>

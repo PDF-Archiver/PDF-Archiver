@@ -8,14 +8,11 @@
 
 import Cocoa
 import Foundation
+import IAPHelper
 import os.log
 import StoreKit
 
-protocol DonationPreferencesVCDelegate: AnyObject {
-    func updateGUI()
-}
-
-class DonationPreferencesVC: PreferencesVC, DonationPreferencesVCDelegate {
+class DonationPreferencesVC: PreferencesVC {
 
     // optional values because UI elements are sometimes nil during startup
     @IBOutlet weak var donationNumberLabel: NSTextField?
@@ -30,25 +27,21 @@ class DonationPreferencesVC: PreferencesVC, DonationPreferencesVCDelegate {
         }
     }
     weak var preferencesDelegate: PreferencesDelegate?
-    weak var iAPHelperDelegate: IAPHelperDelegate?
 
     @IBAction private func donationButton1Clicked(_ sender: NSButton) {
-        self.iAPHelperDelegate?.buyProduct("DONATION_LEVEL1")
+        DataModel.store.buyProduct("DONATION_LEVEL1")
     }
 
     @IBAction private func donationButton2Clicked(_ sender: NSButton) {
-        self.iAPHelperDelegate?.buyProduct("DONATION_LEVEL2")
+        DataModel.store.buyProduct("DONATION_LEVEL2")
     }
 
     @IBAction private func donationButton3Clicked(_ sender: NSButton) {
-        self.iAPHelperDelegate?.buyProduct("DONATION_LEVEL3")
+        DataModel.store.buyProduct("DONATION_LEVEL3")
     }
 
     @IBAction private func statusImageClicked(_ sender: Any) {
-        if connectedToNetwork(),
-           self.iAPHelperDelegate?.products.isEmpty ?? true {
-            self.iAPHelperDelegate?.requestProducts()
-        }
+        print("\n\nEXPIRATION DATE: \(UserDefaults.standard.subscriptionExpiryDate?.description ?? "")\n\n")
     }
 
     override func viewWillAppear() {
@@ -63,18 +56,18 @@ class DonationPreferencesVC: PreferencesVC, DonationPreferencesVCDelegate {
         }
     }
 
-    func updateGUI() {
+    private func updateGUI() {
         DispatchQueue.main.async {
 
             // set the MAS status image
-            if self.iAPHelperDelegate?.products.isEmpty ?? true {
+            if DataModel.store.products.isEmpty {
                 self.donationButton?.image = NSImage(named: "NSStatusUnavailable")
             } else {
                 self.donationButton?.image = NSImage(named: "NSStatusAvailable")
             }
 
             // update the donation buttons
-            for product in self.iAPHelperDelegate?.products ?? [] {
+            for product in DataModel.store.products {
                 var selectedButton: NSButton?
                 switch product.productIdentifier {
                 case "DONATION_LEVEL1":

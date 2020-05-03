@@ -7,14 +7,9 @@
 //
 
 import Cocoa
-
-protocol OnboardingVCDelegate: AnyObject {
-    func updateGUI()
-    func closeOnboardingView()
-}
+import StoreKit
 
 class OnboardingViewController: NSViewController {
-    weak var iAPHelperDelegate: IAPHelperDelegate?
     weak var viewControllerDelegate: ViewControllerDelegate?
 
     @IBOutlet weak var baseView: NSView!
@@ -33,23 +28,30 @@ class OnboardingViewController: NSViewController {
     }
 
     @IBAction private func restorePurchasesButton(_ sender: NSButton) {
-        self.iAPHelperDelegate?.restorePurchases()
+        DataModel.store.restorePurchases()
     }
 
     @IBAction private func monthlySubscriptionButtonClicked(_ sender: NSButton) {
-        self.iAPHelperDelegate?.buyProduct("SUBSCRIPTION_MONTHLY")
+        DataModel.store.buyProduct("SUBSCRIPTION_MONTHLY") { [weak self] success in
+            guard success else { return }
+            self?.closeOnboardingView()
+        }
     }
 
     @IBAction private func yearlySubscriptionButton(_ sender: NSButton) {
-        self.iAPHelperDelegate?.buyProduct("SUBSCRIPTION_YEARLY")
+        DataModel.store.buyProduct("SUBSCRIPTION_YEARLY") { [weak self] success in
+            guard success else { return }
+            self?.closeOnboardingView()
+        }
     }
+
     @IBAction private func manageSubscriptionsButtonClicked(_ sender: NSButton) {
         guard let subscriptionUrl = URL(string: "https://apps.apple.com/account/subscriptions") else { fatalError("Subscription URL not found.") }
         NSWorkspace.shared.open(subscriptionUrl)
     }
 
     @IBAction private func closeButton(_ sender: NSButton?) {
-        if !(self.iAPHelperDelegate?.appUsagePermitted() ?? false) {
+        if !(DataModel.store.appUsagePermitted()) {
             // ask for a subscription plan before closing the app
             let alert = NSAlert()
             alert.messageText = NSLocalizedString("no-license-title", comment: "No license: Title.")
@@ -101,35 +103,23 @@ class OnboardingViewController: NSViewController {
 
     override func viewWillDisappear() {
         // test if user has purchased the app, close if not
-        if !(self.iAPHelperDelegate?.appUsagePermitted() ?? false) {
+        if !(DataModel.store.appUsagePermitted()) {
             self.viewControllerDelegate?.closeApp()
         }
     }
-}
 
-// MARK: - OnboardingVCDelegate
-
-extension OnboardingViewController: OnboardingVCDelegate {
-    func updateGUI() {
+    private func updateGUI() {
         DispatchQueue.main.async {
             // update the locked/unlocked indicator
-            if let appUsagePermitted = self.iAPHelperDelegate?.appUsagePermitted(),
-                appUsagePermitted {
+            if DataModel.store.appUsagePermitted() {
                 self.lockIndicator.image = NSImage(named: "NSLockUnlockedTemplate")
 
             } else {
                 self.lockIndicator.image = NSImage(named: "NSLockLockedTemplate")
-
-                // update the progress indicator
-                if (self.iAPHelperDelegate?.requestRunning ?? 0) != 0 {
-                    self.progressIndicator.startAnimation(self)
-                } else {
-                    self.progressIndicator.stopAnimation(self)
-                }
             }
 
             // set the button label
-            for product in self.iAPHelperDelegate?.products ?? [] {
+            for product in DataModel.store.products {
                 var selectedLabel: NSTextField
                 var selectedButton: NSButton
 
@@ -154,9 +144,32 @@ extension OnboardingViewController: OnboardingVCDelegate {
         }
     }
 
-    func closeOnboardingView() {
+    private func closeOnboardingView() {
         DispatchQueue.main.async {
             self.closeButton(nil)
+        }
+    }
+}
+
+// MARK: - IAPHelperDelegate
+
+extension OnboardingViewController: IAPHelperDelegate {
+    func changed(expirationDate: Date) {
+        updateGUI()
+    }
+
+    func found(products: Set<SKProduct>) {
+        updateGUI()
+    }
+
+    func found(requestsRunning: Int) {
+        DispatchQueue.main.async {
+            // update the progress indicator
+            if requestsRunning != 0 {
+                self.progressIndicator.startAnimation(self)
+            } else {
+                self.progressIndicator.stopAnimation(self)
+            }
         }
     }
 }

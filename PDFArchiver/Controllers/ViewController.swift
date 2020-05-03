@@ -176,14 +176,7 @@ class ViewController: NSViewController, Logging {
 
     override func viewDidAppear() {
         // test if the app needs subscription validation
-        var isValid: Bool
-        #if RELEASE
-            os_log("RELEASE", log: log, type: .debug)
-            isValid = dataModelInstance.store.appUsagePermitted()
-        #else
-            os_log("NO RELEASE", log: log, type: .debug)
-            isValid = true
-        #endif
+        let isValid = DataModel.store.appUsagePermitted()
 
         // show onboarding view
         if !UserDefaults.standard.bool(forKey: "onboardingShown") || isValid == false {
@@ -215,16 +208,12 @@ class ViewController: NSViewController, Logging {
                     controller.viewControllerDelegate = self
                 } else if let controller = controller as? DonationPreferencesVC {
                     controller.preferencesDelegate = dataModelInstance.prefs
-                    controller.iAPHelperDelegate = dataModelInstance.store
-                    dataModelInstance.store.donationPreferencesVCDelegate = controller
                 }
             }
 
         } else if let viewController = segue.destinationController as? OnboardingViewController {
-            viewController.iAPHelperDelegate = dataModelInstance.store
+            DataModel.store.delegate = viewController
             viewController.viewControllerDelegate = self
-            dataModelInstance.onboardingVCDelegate = viewController
-            dataModelInstance.store.onboardingVCDelegate = viewController
         }
     }
 

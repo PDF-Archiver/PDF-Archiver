@@ -6,8 +6,17 @@
         "repositoryURL": "https://github.com/PDF-Archiver/ArchiveLib",
         "state": {
           "branch": null,
-          "revision": "55d4f8705b896756fdde47cf4881b8cbf6366842",
-          "version": "1.2.1"
+          "revision": "6cded6b58224ee2b2a3c55cb2e4bf39b2bd20e29",
+          "version": "1.2.3"
+        }
+      },
+      {
+        "package": "Purchases",
+        "repositoryURL": "https://github.com/RevenueCat/purchases-ios",
+        "state": {
+          "branch": null,
+          "revision": "a86c5744bc23ff1a61f9d387c5458743614cc800",
+          "version": "3.2.2"
         }
       },
       {
