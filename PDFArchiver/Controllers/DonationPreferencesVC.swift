@@ -8,7 +8,6 @@
 
 import Cocoa
 import Foundation
-import IAPHelper
 import os.log
 import StoreKit
 
