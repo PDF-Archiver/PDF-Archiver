@@ -9,3 +9,4 @@ PDFArchiver/External/OpenSSL/include/*
 .env.default
 Pods
 PDFArchiver.xcworkspace/xcuserdata
+PDFArchiver.xcodeproj/project.xcworkspace/xcuserdata

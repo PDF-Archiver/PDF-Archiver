@@ -10,8 +10,6 @@
 		A307BB372014B8530046C391 /* MainPreferencesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A307BB362014B8530046C391 /* MainPreferencesVC.swift */; };
 		A307BB3B2014D5300046C391 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = A307BB3A2014D5300046C391 /* Preferences.swift */; };
 		A315408F20C83E61004947CC /* ViewHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = A315408E20C83E61004947CC /* ViewHandling.swift */; };
-		A3199FDC21C0621800D07553 /* ArchiveLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A3199FDA21C061F500D07553 /* ArchiveLib.framework */; };
-		A3199FDD21C0621800D07553 /* ArchiveLib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A3199FDA21C061F500D07553 /* ArchiveLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A31B52EA1FF694B0007A3D14 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B52E91FF694B0007A3D14 /* AppDelegate.swift */; };
 		A31B52EC1FF694B0007A3D14 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B52EB1FF694B0007A3D14 /* ViewController.swift */; };
 		A31B52EE1FF694B0007A3D14 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A31B52ED1FF694B0007A3D14 /* Assets.xcassets */; };
@@ -21,8 +19,6 @@
 		A32A128320468A3000CFC81F /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32A128220468A3000CFC81F /* OnboardingViewController.swift */; };
 		A344D1D220B5FF1000A168B2 /* VCE-MenuItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = A344D1D120B5FF1000A168B2 /* VCE-MenuItems.swift */; };
 		A347FAD72041ACBE001A7925 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A347FAD92041ACBE001A7925 /* Localizable.strings */; };
-		A34A06E120E4120F0097481D /* AppleIncRootCertificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = A34A06E020E4120F0097481D /* AppleIncRootCertificate.cer */; };
-		A35601F820E415C7006AC5C8 /* SwiftyLocalReceiptValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35601F720E415C7006AC5C8 /* SwiftyLocalReceiptValidator.swift */; };
 		A359963F202A3CC700CDD6E8 /* MyWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A359963E202A3CC700CDD6E8 /* MyWindow.swift */; };
 		A359E4B7202C376E00A703AF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A359E4B9202C376E00A703AF /* InfoPlist.strings */; };
 		A36B47C02077DA4D00F3DCAF /* DonationPreferencesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36B47BF2077DA4D00F3DCAF /* DonationPreferencesVC.swift */; };
@@ -32,16 +28,14 @@
 		A38A58AB1FFFA72D003F0573 /* WindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38A58AA1FFFA72D003F0573 /* WindowController.swift */; };
 		A38F4911206952AD00B8164A /* PreferencesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38F4910206952AD00B8164A /* PreferencesTests.swift */; };
 		A38F4913206955F600B8164A /* DataModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38F4912206955F600B8164A /* DataModelTests.swift */; };
-		A38F98CE20E2A0E5000F27B3 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A38F98CC20E2A0E5000F27B3 /* libssl.a */; };
-		A38F98CF20E2A0E5000F27B3 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A38F98CD20E2A0E5000F27B3 /* libcrypto.a */; };
-		A38FDE7D20DD33540015801E /* IAPHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38FDE7C20DD33540015801E /* IAPHelper.swift */; };
 		A3A4C1C12015177A008BB354 /* NetworkHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3A4C1C02015177A008BB354 /* NetworkHandling.swift */; };
-		A3A99EDF20E15335001566EA /* pkcs7_union_accessors.c in Sources */ = {isa = PBXBuildFile; fileRef = A3A99EDE20E15335001566EA /* pkcs7_union_accessors.c */; };
 		A3C3D06D207744E400E80B1A /* PreferencesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3C3D06C207744E400E80B1A /* PreferencesVC.swift */; };
 		A3DD5A4E20D23EDC000E1005 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3DD5A4D20D23EDC000E1005 /* Extensions.swift */; };
+		A3E31A87245E11D900FA2E75 /* Purchases in Frameworks */ = {isa = PBXBuildFile; productRef = A3E31A86245E11D900FA2E75 /* Purchases */; };
+		A3E31A88245F389400FA2E75 /* IAPHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38FDE7C20DD33540015801E /* IAPHelper.swift */; };
 		A3E323502157E06C00C57087 /* AppStoreReviewRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3E3234F2157E06C00C57087 /* AppStoreReviewRequest.swift */; };
-		A3F19B3F23B242BD001B6A14 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = A3F19B3E23B242BD001B6A14 /* SwiftPackageProductDependency */; };
-		A3F19B4223B242FA001B6A14 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = A3F19B4123B242FA001B6A14 /* SwiftPackageProductDependency */; };
+		A3F19B3F23B242BD001B6A14 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = A3F19B3E23B242BD001B6A14 /* Sentry */; };
+		A3F19B4223B242FA001B6A14 /* ArchiveLib in Frameworks */ = {isa = PBXBuildFile; productRef = A3F19B4123B242FA001B6A14 /* ArchiveLib */; };
 		A3FC0DA0201B054A0082CD2A /* ViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC0D9F201B054A0082CD2A /* ViewControllerExtension.swift */; };
 		A3FC0DA4201B05F10082CD2A /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC0DA3201B05F10082CD2A /* DataModel.swift */; };
 		A3FF275820D0E614007EED90 /* DateParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FF275720D0E614007EED90 /* DateParser.swift */; };
@@ -71,7 +65,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				A3199FDD21C0621800D07553 /* ArchiveLib.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -82,7 +75,6 @@
 		A307BB362014B8530046C391 /* MainPreferencesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPreferencesVC.swift; sourceTree = "<group>"; };
 		A307BB3A2014D5300046C391 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		A315408E20C83E61004947CC /* ViewHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHandling.swift; sourceTree = "<group>"; };
-		A3199FDA21C061F500D07553 /* ArchiveLib.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ArchiveLib.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A31B52E61FF694B0007A3D14 /* PDFArchiver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PDFArchiver.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A31B52E91FF694B0007A3D14 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A31B52EB1FF694B0007A3D14 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -99,10 +91,6 @@
 		A344D1D120B5FF1000A168B2 /* VCE-MenuItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VCE-MenuItems.swift"; sourceTree = "<group>"; };
 		A347FADA2041AD39001A7925 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A347FADB2041AD3C001A7925 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
-		A34A06E020E4120F0097481D /* AppleIncRootCertificate.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = AppleIncRootCertificate.cer; sourceTree = "<group>"; };
-		A3519EA920DE967800D8ACDF /* shim.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = shim.h; sourceTree = "<group>"; };
-		A3519EAA20DE988400D8ACDF /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
-		A35601F720E415C7006AC5C8 /* SwiftyLocalReceiptValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftyLocalReceiptValidator.swift; sourceTree = "<group>"; };
 		A359963E202A3CC700CDD6E8 /* MyWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyWindow.swift; sourceTree = "<group>"; };
 		A359E4B8202C376E00A703AF /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		A359E4BA202C377800A703AF /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -118,8 +106,6 @@
 		A38FDE7C20DD33540015801E /* IAPHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPHelper.swift; sourceTree = "<group>"; };
 		A3A4C1C02015177A008BB354 /* NetworkHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkHandling.swift; sourceTree = "<group>"; };
 		A3A4C1C22015381F008BB354 /* PDFArchiver.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PDFArchiver.entitlements; sourceTree = "<group>"; };
-		A3A99EDD20E15335001566EA /* pkcs7_union_accessors.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pkcs7_union_accessors.h; sourceTree = "<group>"; };
-		A3A99EDE20E15335001566EA /* pkcs7_union_accessors.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = pkcs7_union_accessors.c; sourceTree = "<group>"; };
 		A3C3D06C207744E400E80B1A /* PreferencesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesVC.swift; sourceTree = "<group>"; };
 		A3DD5A4D20D23EDC000E1005 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		A3E3234F2157E06C00C57087 /* AppStoreReviewRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreReviewRequest.swift; sourceTree = "<group>"; };
@@ -134,12 +120,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A38F98CE20E2A0E5000F27B3 /* libssl.a in Frameworks */,
-				A38F98CF20E2A0E5000F27B3 /* libcrypto.a in Frameworks */,
-				A3199FDC21C0621800D07553 /* ArchiveLib.framework in Frameworks */,
 				A3797B61207B3684009DEF70 /* StoreKit.framework in Frameworks */,
-				A3F19B4223B242FA001B6A14 /* BuildFile in Frameworks */,
-				A3F19B3F23B242BD001B6A14 /* BuildFile in Frameworks */,
+				A3F19B4223B242FA001B6A14 /* ArchiveLib in Frameworks */,
+				A3F19B3F23B242BD001B6A14 /* Sentry in Frameworks */,
+				A3E31A87245E11D900FA2E75 /* Purchases in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -169,7 +153,7 @@
 				A3A4C1C02015177A008BB354 /* NetworkHandling.swift */,
 				A315408E20C83E61004947CC /* ViewHandling.swift */,
 				A3FF275720D0E614007EED90 /* DateParser.swift */,
-				A34A06DB20E408450097481D /* Payment */,
+				A38FDE7C20DD33540015801E /* IAPHelper.swift */,
 				A3E3234F2157E06C00C57087 /* AppStoreReviewRequest.swift */,
 			);
 			path = Helpers;
@@ -233,7 +217,6 @@
 				A315408B20C83C69004947CC /* Controllers */,
 				A315408920C83C41004947CC /* Helpers */,
 				A31B52ED1FF694B0007A3D14 /* Assets.xcassets */,
-				A3519EAB20DE991400D8ACDF /* Modules */,
 			);
 			path = PDFArchiver;
 			sourceTree = "<group>";
@@ -260,33 +243,11 @@
 		A32D52EE2012B5150032F05C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				A3199FDA21C061F500D07553 /* ArchiveLib.framework */,
 				A38F98CD20E2A0E5000F27B3 /* libcrypto.a */,
 				A38F98CC20E2A0E5000F27B3 /* libssl.a */,
 				A3797B60207B3684009DEF70 /* StoreKit.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		A34A06DB20E408450097481D /* Payment */ = {
-			isa = PBXGroup;
-			children = (
-				A38FDE7C20DD33540015801E /* IAPHelper.swift */,
-				A35601F720E415C7006AC5C8 /* SwiftyLocalReceiptValidator.swift */,
-				A34A06E020E4120F0097481D /* AppleIncRootCertificate.cer */,
-			);
-			path = Payment;
-			sourceTree = "<group>";
-		};
-		A3519EAB20DE991400D8ACDF /* Modules */ = {
-			isa = PBXGroup;
-			children = (
-				A3A99EDD20E15335001566EA /* pkcs7_union_accessors.h */,
-				A3A99EDE20E15335001566EA /* pkcs7_union_accessors.c */,
-				A3519EA920DE967800D8ACDF /* shim.h */,
-				A3519EAA20DE988400D8ACDF /* module.modulemap */,
-			);
-			path = Modules;
 			sourceTree = "<group>";
 		};
 		A3F5BC922019BAAE0043B192 /* Models */ = {
@@ -306,7 +267,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A31B530C1FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "PDFArchiver" */;
 			buildPhases = (
-				A3BE5BF120E2A49900AE72CE /* BuildOpenSSL */,
 				A349C8212064E187002633A7 /* BartyCrouch */,
 				A389987A2025078D00C34E0B /* SwiftLint */,
 				A31B52E21FF694B0007A3D14 /* Sources */,
@@ -321,8 +281,9 @@
 			);
 			name = PDFArchiver;
 			packageProductDependencies = (
-				A3F19B3E23B242BD001B6A14 /* SwiftPackageProductDependency */,
-				A3F19B4123B242FA001B6A14 /* SwiftPackageProductDependency */,
+				A3F19B3E23B242BD001B6A14 /* Sentry */,
+				A3F19B4123B242FA001B6A14 /* ArchiveLib */,
+				A3E31A86245E11D900FA2E75 /* Purchases */,
 			);
 			productName = Archiver;
 			productReference = A31B52E61FF694B0007A3D14 /* PDFArchiver.app */;
@@ -415,8 +376,9 @@
 			);
 			mainGroup = A31B52DD1FF694B0007A3D14;
 			packageReferences = (
-				A3F19B3D23B242BD001B6A14 /* RemoteSwiftPackageReference */,
-				A3F19B4023B242FA001B6A14 /* RemoteSwiftPackageReference */,
+				A3F19B3D23B242BD001B6A14 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
+				A3F19B4023B242FA001B6A14 /* XCRemoteSwiftPackageReference "ArchiveLib" */,
+				A3E31A85245E11D900FA2E75 /* XCRemoteSwiftPackageReference "purchases-ios" */,
 			);
 			productRefGroup = A31B52E71FF694B0007A3D14 /* Products */;
 			projectDirPath = "";
@@ -437,7 +399,6 @@
 				A347FAD72041ACBE001A7925 /* Localizable.strings in Resources */,
 				A31B52EE1FF694B0007A3D14 /* Assets.xcassets in Resources */,
 				A359E4B7202C376E00A703AF /* InfoPlist.strings in Resources */,
-				A34A06E120E4120F0097481D /* AppleIncRootCertificate.cer in Resources */,
 				A31B52F11FF694B0007A3D14 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -506,20 +467,6 @@
 			shellPath = /bin/sh;
 			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint autocorrect\n    swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
 		};
-		A3BE5BF120E2A49900AE72CE /* BuildOpenSSL */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 12;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = BuildOpenSSL;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "bash \"$PROJECT_DIR\"/scripts/build_openssl.sh\n";
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -532,23 +479,21 @@
 				A315408F20C83E61004947CC /* ViewHandling.swift in Sources */,
 				A31B52EC1FF694B0007A3D14 /* ViewController.swift in Sources */,
 				A38A58AB1FFFA72D003F0573 /* WindowController.swift in Sources */,
-				A3A99EDF20E15335001566EA /* pkcs7_union_accessors.c in Sources */,
 				A307BB3B2014D5300046C391 /* Preferences.swift in Sources */,
 				A359963F202A3CC700CDD6E8 /* MyWindow.swift in Sources */,
 				A32A128320468A3000CFC81F /* OnboardingViewController.swift in Sources */,
-				A35601F820E415C7006AC5C8 /* SwiftyLocalReceiptValidator.swift in Sources */,
 				A3A4C1C12015177A008BB354 /* NetworkHandling.swift in Sources */,
 				A3FC0DA4201B05F10082CD2A /* DataModel.swift in Sources */,
 				A307BB372014B8530046C391 /* MainPreferencesVC.swift in Sources */,
 				A3DD5A4E20D23EDC000E1005 /* Extensions.swift in Sources */,
 				A3FC0DA0201B054A0082CD2A /* ViewControllerExtension.swift in Sources */,
-				A38FDE7D20DD33540015801E /* IAPHelper.swift in Sources */,
 				A38787762159797600F05EF7 /* HelperBackgroundViews.swift in Sources */,
 				A31B53171FF6A6D8007A3D14 /* FileHandling.swift in Sources */,
 				A36B47C02077DA4D00F3DCAF /* DonationPreferencesVC.swift in Sources */,
 				A31B52EA1FF694B0007A3D14 /* AppDelegate.swift in Sources */,
 				A3FF275820D0E614007EED90 /* DateParser.swift in Sources */,
 				A3C3D06D207744E400E80B1A /* PreferencesVC.swift in Sources */,
+				A3E31A88245F389400FA2E75 /* IAPHelper.swift in Sources */,
 				A3E323502157E06C00C57087 /* AppStoreReviewRequest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -741,7 +686,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 74;
+				CURRENT_PROJECT_VERSION = 75;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -753,7 +698,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/PDFArchiver/External/OpenSSL/lib";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				MARKETING_VERSION = 1.5.4;
+				MARKETING_VERSION = 1.6.0;
 				OTHER_SWIFT_FLAGS = "-DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiver;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -773,7 +718,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 74;
+				CURRENT_PROJECT_VERSION = 75;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_HARDENED_RUNTIME = YES;
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/PDFArchiver/External/OpenSSL/include";
@@ -784,7 +729,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/PDFArchiver/External/OpenSSL/lib";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				MARKETING_VERSION = 1.5.4;
+				MARKETING_VERSION = 1.6.0;
 				OTHER_SWIFT_FLAGS = "-DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiver;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -928,7 +873,15 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		A3F19B3D23B242BD001B6A14 /* RemoteSwiftPackageReference */ = {
+		A3E31A85245E11D900FA2E75 /* XCRemoteSwiftPackageReference "purchases-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RevenueCat/purchases-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.2.2;
+			};
+		};
+		A3F19B3D23B242BD001B6A14 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/getsentry/sentry-cocoa";
 			requirement = {
@@ -936,25 +889,30 @@
 				minimumVersion = 4.4.3;
 			};
 		};
-		A3F19B4023B242FA001B6A14 /* RemoteSwiftPackageReference */ = {
+		A3F19B4023B242FA001B6A14 /* XCRemoteSwiftPackageReference "ArchiveLib" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/PDF-Archiver/ArchiveLib";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.2.0;
+				minimumVersion = 1.2.3;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		A3F19B3E23B242BD001B6A14 /* SwiftPackageProductDependency */ = {
+		A3E31A86245E11D900FA2E75 /* Purchases */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = A3F19B3D23B242BD001B6A14 /* RemoteSwiftPackageReference */;
+			package = A3E31A85245E11D900FA2E75 /* XCRemoteSwiftPackageReference "purchases-ios" */;
+			productName = Purchases;
+		};
+		A3F19B3E23B242BD001B6A14 /* Sentry */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A3F19B3D23B242BD001B6A14 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
 			productName = Sentry;
 		};
-		A3F19B4123B242FA001B6A14 /* SwiftPackageProductDependency */ = {
+		A3F19B4123B242FA001B6A14 /* ArchiveLib */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = A3F19B4023B242FA001B6A14 /* RemoteSwiftPackageReference */;
+			package = A3F19B4023B242FA001B6A14 /* XCRemoteSwiftPackageReference "ArchiveLib" */;
 			productName = ArchiveLib;
 		};
 /* End XCSwiftPackageProductDependency section */

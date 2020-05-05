@@ -32,10 +32,29 @@ extension DataModel {
 
 public class DataModel: NSObject, DataModelDelegate, Logging {
     weak var viewControllerDelegate: ViewControllerDelegate?
-    weak var onboardingVCDelegate: OnboardingVCDelegate?
     var prefs = Preferences()
     private let archive = Archive()
-    let store = IAPHelper()
+
+    static let environment: Environment = {
+        // return early, if we have a debug build
+        #if DEBUG
+        return .develop
+        #else
+        // source from: https://stackoverflow.com/a/38984554
+        if let url = Bundle.main.appStoreReceiptURL {
+            if url.path.contains("CoreSimulator") {
+                return .develop
+            } else if url.lastPathComponent == "sandboxReceipt" {
+                return .testflight
+            }
+        }
+        return .release
+        #endif
+    }()
+    static let store = IAPHelper(productIdentifiers: Set(["DONATION_LEVEL1", "DONATION_LEVEL2", "DONATION_LEVEL3", "SUBSCRIPTION_MONTHLY", "SUBSCRIPTION_YEARLY"]),
+                                 environment: environment,
+                                 apiKey: "EfDOhpHSYceHyPlraALHuiADMcQeXVsj",
+                                 preSubscriptionPrefixes: ["1.0", "1.1.", "1.2."])
 
     // selected document
     public var selectedDocument: Document? {

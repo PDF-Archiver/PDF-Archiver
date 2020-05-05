@@ -1,3 +1,0 @@
-[submodule "PDFArchiver/External/OpenSSL/src"]
-	path = PDFArchiver/External/OpenSSL/src
-	url = https://github.com/openssl/openssl.git
