@@ -130,7 +130,7 @@ public class IAPHelper {
         let semaphore = DispatchSemaphore(value: 1)
         Purchases.shared.purchaserInfo { (purchaserInfo, _) in
             appUsagePermitted = self.internalAppUsagePermitted(with: purchaserInfo)
-                semaphore.signal()
+            semaphore.signal()
         }
         let timeout = semaphore.wait(timeout: .now() + .seconds(5))
         if timeout == .timedOut {

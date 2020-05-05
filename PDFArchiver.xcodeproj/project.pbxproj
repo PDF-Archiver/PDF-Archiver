@@ -686,7 +686,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 75;
+				CURRENT_PROJECT_VERSION = 76;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -698,7 +698,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/PDFArchiver/External/OpenSSL/lib";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				MARKETING_VERSION = 1.6.0;
+				MARKETING_VERSION = 1.6.1;
 				OTHER_SWIFT_FLAGS = "-DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiver;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -718,7 +718,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 75;
+				CURRENT_PROJECT_VERSION = 76;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_HARDENED_RUNTIME = YES;
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/PDFArchiver/External/OpenSSL/include";
@@ -729,7 +729,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/PDFArchiver/External/OpenSSL/lib";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				MARKETING_VERSION = 1.6.0;
+				MARKETING_VERSION = 1.6.1;
 				OTHER_SWIFT_FLAGS = "-DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiver;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -894,7 +894,7 @@
 			repositoryURL = "https://github.com/PDF-Archiver/ArchiveLib";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.2.3;
+				minimumVersion = 1.2.4;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
