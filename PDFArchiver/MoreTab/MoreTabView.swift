@@ -58,6 +58,9 @@ struct MoreTabView: View {
             DetailRowView(name: "Reset App Preferences") {
                 self.viewModel.resetApp()
             }
+            DetailRowView(name: "Activate Subscription") {
+                NotificationCenter.default.post(.showSubscriptionView)
+            }
             DetailRowView(name: "Manage Subscription") {
                 self.viewModel.showManageSubscription()
             }

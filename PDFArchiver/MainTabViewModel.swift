@@ -84,6 +84,12 @@ class MainTabViewModel: ObservableObject {
                 self.validateSubscriptionState(of: self.currentTab)
             }
             .store(in: &disposables)
+        
+        NotificationCenter.default.publisher(for: .showSubscriptionView)
+        .sink { _ in
+            self.showSubscriptionView = true
+        }
+        .store(in: &disposables)
 
         // MARK: Alerts
         $alertViewModel
