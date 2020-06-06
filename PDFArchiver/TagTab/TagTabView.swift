@@ -88,6 +88,7 @@ struct TagTabView: View {
                             .opacity(document == self.viewModel.currentDocument ? 1 : 0)
                         DocumentView(viewModel: DocumentViewModel(document), showTagStatus: true)
                     }
+                    .contentShape(Rectangle())
                     .onTapGesture {
                        self.viewModel.currentDocument = document
                     }
