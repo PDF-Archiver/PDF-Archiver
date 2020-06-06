@@ -23,6 +23,7 @@ struct MoreTabView: View {
             NavigationView {
                 List {
                     preferences
+                    subscription
                     moreInformation
                 }.listStyle(GroupedListStyle())
                     .disabled(!MFMailComposeViewController.canSendMail())
@@ -58,6 +59,16 @@ struct MoreTabView: View {
             DetailRowView(name: "Reset App Preferences") {
                 self.viewModel.resetApp()
             }
+        }
+    }
+
+    private var subscription: some View {
+        Section(header: Text("🧾 Subscription")) {
+            HStack {
+                Text("Status:")
+                Text(viewModel.subscriptionStatus)
+            }
+            
             DetailRowView(name: "Activate Subscription") {
                 NotificationCenter.default.post(.showSubscriptionView)
             }
@@ -67,6 +78,7 @@ struct MoreTabView: View {
         }
     }
 
+    
     private var moreInformation: some View {
         Section(header: Text("⁉️ More Information"), footer: Text("Version \(MoreTabView.appVersion)")) {
             NavigationLink(destination: AboutMeView()) {

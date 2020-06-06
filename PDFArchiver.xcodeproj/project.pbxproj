@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		171E0C7E1B8E5B84001E6242 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171E0C7D1B8E5B84001E6242 /* AppDelegate.swift */; };
 		171E0C8A1B8E5B84001E6242 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171E0C881B8E5B84001E6242 /* LaunchScreen.storyboard */; };
+		3494D098248C2B7F00CF55E3 /* WidthSyncedRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3494D097248C2B7F00CF55E3 /* WidthSyncedRow.swift */; };
+		3494D09A248C2BA800CF55E3 /* SubscriptionButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3494D099248C2BA800CF55E3 /* SubscriptionButtonStyle.swift */; };
 		A302929B2401CFDA006ACE12 /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = A302929A2401CFDA006ACE12 /* Stack.swift */; };
 		A302929F2405B79C006ACE12 /* OrientationInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A302929E2405B79C006ACE12 /* OrientationInfo.swift */; };
 		A30A4B05237366F8001843B1 /* LaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30A4B04237366F8001843B1 /* LaunchTests.swift */; };
@@ -139,6 +141,8 @@
 		171E0C7D1B8E5B84001E6242 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		171E0C891B8E5B84001E6242 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		171E0C8B1B8E5B84001E6242 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3494D097248C2B7F00CF55E3 /* WidthSyncedRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidthSyncedRow.swift; sourceTree = "<group>"; };
+		3494D099248C2BA800CF55E3 /* SubscriptionButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionButtonStyle.swift; sourceTree = "<group>"; };
 		A302929A2401CFDA006ACE12 /* Stack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stack.swift; sourceTree = "<group>"; };
 		A302929E2405B79C006ACE12 /* OrientationInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrientationInfo.swift; sourceTree = "<group>"; };
 		A30A4B04237366F8001843B1 /* LaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchTests.swift; sourceTree = "<group>"; };
@@ -339,6 +343,8 @@
 			isa = PBXGroup;
 			children = (
 				A328CF52237CB161003D60AD /* FilledButtonStyle.swift */,
+				3494D097248C2B7F00CF55E3 /* WidthSyncedRow.swift */,
+				3494D099248C2BA800CF55E3 /* SubscriptionButtonStyle.swift */,
 			);
 			path = Design;
 			sourceTree = "<group>";
@@ -743,6 +749,7 @@
 				A30D767722BF914B00862224 /* MainTabBarController.swift in Sources */,
 				A394E4CB236A519300C81CC2 /* PDFCustomView.swift in Sources */,
 				A328CF3D237C3C8E003D60AD /* SupportMailView.swift in Sources */,
+				3494D09A248C2BA800CF55E3 /* SubscriptionButtonStyle.swift in Sources */,
 				A328CF50237CAF29003D60AD /* IAPView.swift in Sources */,
 				A34A84FC2130A35A0093FAE5 /* ArchiveExtension.swift in Sources */,
 				A3766063238F851F00840CFB /* ClearButton.swift in Sources */,
@@ -781,6 +788,7 @@
 				A30CB439236978E400D3063E /* SceneDelegate.swift in Sources */,
 				A30CB43B2369792900D3063E /* MainTabView.swift in Sources */,
 				A36611BE233FDB460092DB19 /* Log.swift in Sources */,
+				3494D098248C2B7F00CF55E3 /* WidthSyncedRow.swift in Sources */,
 				A36C42C22365E3F000F379FE /* ArchiveView.swift in Sources */,
 				A328CF44237C5152003D60AD /* DetailRowView.swift in Sources */,
 				A3FF63A022478FC10089E66A /* UIColor.swift in Sources */,

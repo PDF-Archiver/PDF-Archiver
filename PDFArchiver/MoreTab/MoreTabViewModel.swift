@@ -20,6 +20,9 @@ class MoreTabViewModel: ObservableObject {
 
     @Published var isShowingMailView: Bool = false
     @Published var result: Result<MFMailComposeResult, Error>?
+    var subscriptionStatus: LocalizedStringKey {
+        IAP.service.appUsagePermitted() ? "Active ✅" : "Inactive ❌"
+    }
 
     private var disposables = Set<AnyCancellable>()
 
