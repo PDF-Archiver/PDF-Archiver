@@ -41,6 +41,7 @@ struct MoreTabView: View {
             }
         }
         .backgroundColor(Color(.systemGroupedBackground))
+        .onAppear(perform: viewModel.updateSubscription)
     }
 
     private var preferences: some View {

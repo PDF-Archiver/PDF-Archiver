@@ -179,6 +179,9 @@ public class IAPService: NSObject, SystemLogging {
 
                         // set new expiration date
                         self.expiryDate = expiryDate
+                        
+                        // poste subscription change
+                        NotificationCenter.default.post(.subscriptionChanges)
 
                         return
 
