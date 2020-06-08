@@ -25,12 +25,12 @@ struct MoreTabView: View {
                     preferences
                     subscription
                     moreInformation
-                }.listStyle(GroupedListStyle())
-                    .disabled(!MFMailComposeViewController.canSendMail())
-                    .sheet(isPresented: $viewModel.isShowingMailView) {
-                        SupportMailView(subject: MoreTabViewModel.mailSubject,
-                                        recipients: MoreTabViewModel.mailRecipients,
-                                        result: self.$viewModel.result)
+                }
+                .listStyle(GroupedListStyle())
+                .sheet(isPresented: $viewModel.isShowingMailView) {
+                    SupportMailView(subject: MoreTabViewModel.mailSubject,
+                                    recipients: MoreTabViewModel.mailRecipients,
+                                    result: self.$viewModel.result)
                 }
                 .navigationBarTitle("Preferences & More")
             }
