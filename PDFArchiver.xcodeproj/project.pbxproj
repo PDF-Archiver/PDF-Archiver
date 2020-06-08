@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		171E0C7E1B8E5B84001E6242 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171E0C7D1B8E5B84001E6242 /* AppDelegate.swift */; };
 		171E0C8A1B8E5B84001E6242 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171E0C881B8E5B84001E6242 /* LaunchScreen.storyboard */; };
+		342434E1248ECFD200DD1729 /* KeyboardObserving in Frameworks */ = {isa = PBXBuildFile; productRef = 342434E0248ECFD200DD1729 /* KeyboardObserving */; };
 		3494D098248C2B7F00CF55E3 /* WidthSyncedRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3494D097248C2B7F00CF55E3 /* WidthSyncedRow.swift */; };
 		3494D09A248C2BA800CF55E3 /* SubscriptionButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3494D099248C2BA800CF55E3 /* SubscriptionButtonStyle.swift */; };
 		A302929B2401CFDA006ACE12 /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = A302929A2401CFDA006ACE12 /* Stack.swift */; };
@@ -72,7 +73,6 @@
 		A39942BE228B422E00FFC16B /* IntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39942BD228B422E00FFC16B /* IntroViewController.swift */; };
 		A39A807A21FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A39A807721FDEC540099C503 /* 2017-01-17--tom-tailor-jeans__bill_clothes_shopping.pdf */; };
 		A39B0EE72399A58D002624D1 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = A39B0EE62399A58D002624D1 /* Sentry */; };
-		A39B0EEA2399A94C002624D1 /* KeyboardObserving in Frameworks */ = {isa = PBXBuildFile; productRef = A39B0EE92399A94C002624D1 /* KeyboardObserving */; };
 		A3A0FD952389E145002C9D6E /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3A0FD942389E145002C9D6E /* ActivityView.swift */; };
 		A3A0FD97238C7803002C9D6E /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3A0FD96238C7803002C9D6E /* LoadingView.swift */; };
 		A3A2A72222FF51BF00747DDB /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3A2A72122FF51BF00747DDB /* UserDefaults.swift */; };
@@ -237,7 +237,7 @@
 			files = (
 				A393DEF0239C0E1E00266FB6 /* Diagnostics in Frameworks */,
 				A31B3C4023849E1E0066CB86 /* SwiftUIX in Frameworks */,
-				A39B0EEA2399A94C002624D1 /* KeyboardObserving in Frameworks */,
+				342434E1248ECFD200DD1729 /* KeyboardObserving in Frameworks */,
 				A36611C4233FDDB40092DB19 /* LoggingKit in Frameworks */,
 				A39B0EE72399A58D002624D1 /* Sentry in Frameworks */,
 				A35B7D07235C71C8002F7716 /* PaperOnboarding in Frameworks */,
@@ -525,8 +525,8 @@
 				A35B7D06235C71C8002F7716 /* PaperOnboarding */,
 				A31B3C3F23849E1E0066CB86 /* SwiftUIX */,
 				A39B0EE62399A58D002624D1 /* Sentry */,
-				A39B0EE92399A94C002624D1 /* KeyboardObserving */,
 				A393DEEF239C0E1E00266FB6 /* Diagnostics */,
+				342434E0248ECFD200DD1729 /* KeyboardObserving */,
 			);
 			productName = CandySearch;
 			productReference = 171E0C7A1B8E5B84001E6242 /* PDFArchiver.app */;
@@ -625,8 +625,8 @@
 				A35B7D05235C71C8002F7716 /* XCRemoteSwiftPackageReference "paper-onboarding" */,
 				A31B3C3E23849E1E0066CB86 /* XCRemoteSwiftPackageReference "SwiftUIX" */,
 				A39B0EE52399A58D002624D1 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
-				A39B0EE82399A94C002624D1 /* XCRemoteSwiftPackageReference "KeyboardObserving" */,
 				A393DEEE239C0E1E00266FB6 /* XCRemoteSwiftPackageReference "Diagnostics" */,
+				342434DF248ECFD200DD1729 /* XCRemoteSwiftPackageReference "KeyboardObserving" */,
 			);
 			productRefGroup = 171E0C7B1B8E5B84001E6242 /* Products */;
 			projectDirPath = "";
@@ -990,7 +990,7 @@
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/PDFArchiver/Resources/PDFArchiver.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_BITCODE = YES;
@@ -1035,7 +1035,7 @@
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/PDFArchiver/Resources/PDFArchiver.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1263,6 +1263,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		342434DF248ECFD200DD1729 /* XCRemoteSwiftPackageReference "KeyboardObserving" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/nickffox/KeyboardObserving";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.3.0;
+			};
+		};
 		A31B3C3E23849E1E0066CB86 /* XCRemoteSwiftPackageReference "SwiftUIX" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SwiftUIX/SwiftUIX";
@@ -1319,17 +1327,14 @@
 				minimumVersion = 5.0.0;
 			};
 		};
-		A39B0EE82399A94C002624D1 /* XCRemoteSwiftPackageReference "KeyboardObserving" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/JulianKahnert/KeyboardObserving";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		342434E0248ECFD200DD1729 /* KeyboardObserving */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 342434DF248ECFD200DD1729 /* XCRemoteSwiftPackageReference "KeyboardObserving" */;
+			productName = KeyboardObserving;
+		};
 		A31B3C3F23849E1E0066CB86 /* SwiftUIX */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = A31B3C3E23849E1E0066CB86 /* XCRemoteSwiftPackageReference "SwiftUIX" */;
@@ -1364,11 +1369,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A39B0EE52399A58D002624D1 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
 			productName = Sentry;
-		};
-		A39B0EE92399A94C002624D1 /* KeyboardObserving */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = A39B0EE82399A94C002624D1 /* XCRemoteSwiftPackageReference "KeyboardObserving" */;
-			productName = KeyboardObserving;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

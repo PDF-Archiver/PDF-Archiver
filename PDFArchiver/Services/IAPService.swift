@@ -82,7 +82,7 @@ public class IAPService: NSObject, SystemLogging {
     // MARK: - StoreKit API
 
     public func appUsagePermitted(appStart: Bool = false) -> Bool {
-        
+
         // debug/simulator/testflight: app usage is always permitted
         let environment = AppEnvironment.get()
         if environment == .develop || environment == .testflight {
