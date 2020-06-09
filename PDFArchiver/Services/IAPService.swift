@@ -153,11 +153,11 @@ public class IAPService: NSObject, SystemLogging {
 
     // MARK: - Helper Functions
 
-    fileprivate func saveNewExpiryDateOfReceipt() {
+    fileprivate func saveNewExpiryDateOfReceipt(with service: AppleReceiptValidator.VerifyReceiptURLType = .production) {
         os_log("external start", log: IAPService.log, type: .info)
 
         // create apple validator
-        let appleValidator = AppleReceiptValidator(service: .production, sharedSecret: Constants.appStoreConnectSharedSecret)
+        let appleValidator = AppleReceiptValidator(service: service, sharedSecret: Constants.appStoreConnectSharedSecret)
 
         SwiftyStoreKit.verifyReceipt(using: appleValidator) { result in
             defer {
@@ -193,7 +193,10 @@ public class IAPService: NSObject, SystemLogging {
                 }
 
             case .error(let error):
-                print("Receipt verification failed: \(error)")
+                os_log("Receipt verification failed %@", log: IAPService.log, type: .error, error.localizedDescription)
+                if service == .production {
+                    self.saveNewExpiryDateOfReceipt(with: .sandbox)
+                }
             }
         }
     }
