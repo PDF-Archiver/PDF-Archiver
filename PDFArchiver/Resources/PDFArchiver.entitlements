@@ -14,5 +14,9 @@
 	<array>
 		<string>iCloud.de.JulianKahnert.PDFArchiver</string>
 	</array>
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>group.PDFArchiverShared</string>
+	</array>
 </dict>
 </plist>
