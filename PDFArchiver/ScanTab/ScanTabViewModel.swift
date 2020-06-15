@@ -135,7 +135,7 @@ class ScanTabViewModel: ObservableObject {
         if !isPermitted {
             AlertViewModel.createAndPost(title: "No Subscription",
                                          message: "No active subscription could be found. Your document will therefore not be saved.\nPlease support the app and subscribe.",
-                                         primaryButton: .default(Text("OK"), action: {
+                                         primaryButton: .default(Text("Activate"), action: {
                                             // show the subscription view
                                             NotificationCenter.default.post(.showSubscriptionView)
                                          }),

@@ -42,31 +42,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         // Create a Sentry client and start crash handler
-        do {
-            Client.shared = try Client(options: [
-                "dsn": Constants.sentryDsn,
-                "environment": AppEnvironment.get().rawValue,
-                "release": AppEnvironment.getFullVersion()
-            ])
-            try Client.shared?.startCrashHandler()
-            Client.shared?.enableAutomaticBreadcrumbTracking()
-            Client.shared?.trackMemoryPressureAsEvent()
-
+        SentrySDK.start(options: [
+            "dsn": Constants.sentryDsn,
+            "environment": AppEnvironment.get().rawValue,
+            "release": AppEnvironment.getFullVersion(),
+            "debug": false,
+            "enableAutoSessionTracking": true
+        ])
+        
+        SentrySDK.currentHub().getClient()?.options.beforeSend = { event in
             // I am not interested in this kind of data
-            Client.shared?.beforeSerializeEvent = { event in
-                event.fingerprint = nil
-                event.context?.deviceContext?["storage_size"] = nil
-                event.context?.deviceContext?["free_memory"] = nil
-                event.context?.deviceContext?["memory_size"] = nil
-                event.context?.deviceContext?["boot_time"] = nil
-                event.context?.deviceContext?["timezone"] = nil
-                event.context?.deviceContext?["usable_memory"] = nil
-                event.context?.appContext?["device_app_hash"] = nil
-                event.context?.appContext?["app_id"] = nil
-            }
-
-        } catch let error {
-            Log.send(.error, "Error while starting.", extra: ["error": error.localizedDescription])
+            event.context?["device"]?["storage_size"] = nil
+            event.context?["device"]?["free_memory"] = nil
+            event.context?["device"]?["memory_size"] = nil
+            event.context?["device"]?["boot_time"] = nil
+            event.context?["device"]?["timezone"] = nil
+            event.context?["device"]?["usable_memory"] = nil
+            return event
         }
 
         window?.tintColor = .paDarkGray

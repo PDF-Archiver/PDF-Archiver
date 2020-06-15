@@ -14,19 +14,31 @@ class MoreTabViewModel: ObservableObject {
 
     static let mailRecipients = ["support@pdf-archiver.io"]
     static let mailSubject = "PDF Archiver: iOS Support"
+    
+    static func getCurrentStatus() -> LocalizedStringKey {
+        IAP.service.appUsagePermitted() ? "Active ✅" : "Inactive ❌"
+    }
 
     @Published var qualities: [LocalizedStringKey]  = ["100% - Lossless 🤯", "75% - Good 👌 (Default)", "50% - Normal 👍", "25% - Small 💾"]
     @Published var selectedQualityIndex = UserDefaults.PDFQuality.toIndex(UserDefaults.standard.pdfQuality)
 
     @Published var isShowingMailView: Bool = false
     @Published var result: Result<MFMailComposeResult, Error>?
+    @Published var subscriptionStatus: LocalizedStringKey
 
     private var disposables = Set<AnyCancellable>()
 
     init() {
+        subscriptionStatus = Self.getCurrentStatus()
         $selectedQualityIndex
             .sink { selectedQuality in
                 UserDefaults.standard.pdfQuality = UserDefaults.PDFQuality.allCases[selectedQuality]
+            }
+            .store(in: &disposables)
+        
+        NotificationCenter.default.publisher(for: .subscriptionChanges)
+            .sink { _ in
+                self.updateSubscription()
             }
             .store(in: &disposables)
     }
@@ -93,5 +105,9 @@ class MoreTabViewModel: ObservableObject {
             guard let url = URL(string: "https://pdf-archiver.io/faq") else { fatalError("Could not generate the FAQ url.") }
             UIApplication.shared.open(url)
         }
+    }
+    
+    func updateSubscription() {
+        subscriptionStatus = MoreTabViewModel.getCurrentStatus()
     }
 }

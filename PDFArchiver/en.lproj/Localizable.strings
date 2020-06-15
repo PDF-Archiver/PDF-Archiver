@@ -80,10 +80,10 @@
 "MoreTableViewController.privacyPolicyCell.url" = "https://pdf-archiver.io/privacy";
 
 /* No comment provided by engineer. */
-"per_month" = "per month";
+"per_month" = "/ month";
 
 /* No comment provided by engineer. */
-"per_year" = "per year";
+"per_year" = "/ year";
 
 /* No comment provided by engineer. */
 "ScanViewController.processing" = "Processing: ";
