@@ -10,6 +10,7 @@
 		171E0C7E1B8E5B84001E6242 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171E0C7D1B8E5B84001E6242 /* AppDelegate.swift */; };
 		171E0C8A1B8E5B84001E6242 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171E0C881B8E5B84001E6242 /* LaunchScreen.storyboard */; };
 		342434E1248ECFD200DD1729 /* KeyboardObserving in Frameworks */ = {isa = PBXBuildFile; productRef = 342434E0248ECFD200DD1729 /* KeyboardObserving */; };
+		348D74BB2497FC7000E54D21 /* ResignKeyboardOnDragGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348D74BA2497FC7000E54D21 /* ResignKeyboardOnDragGesture.swift */; };
 		3494D098248C2B7F00CF55E3 /* WidthSyncedRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3494D097248C2B7F00CF55E3 /* WidthSyncedRow.swift */; };
 		3494D09A248C2BA800CF55E3 /* SubscriptionButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3494D099248C2BA800CF55E3 /* SubscriptionButtonStyle.swift */; };
 		A302929B2401CFDA006ACE12 /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = A302929A2401CFDA006ACE12 /* Stack.swift */; };
@@ -141,6 +142,7 @@
 		171E0C7D1B8E5B84001E6242 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		171E0C891B8E5B84001E6242 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		171E0C8B1B8E5B84001E6242 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		348D74BA2497FC7000E54D21 /* ResignKeyboardOnDragGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResignKeyboardOnDragGesture.swift; sourceTree = "<group>"; };
 		3494D097248C2B7F00CF55E3 /* WidthSyncedRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidthSyncedRow.swift; sourceTree = "<group>"; };
 		3494D099248C2BA800CF55E3 /* SubscriptionButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionButtonStyle.swift; sourceTree = "<group>"; };
 		A302929A2401CFDA006ACE12 /* Stack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stack.swift; sourceTree = "<group>"; };
@@ -385,6 +387,7 @@
 				A3B57B7E228720240078F7A4 /* Storage */,
 				A302929E2405B79C006ACE12 /* OrientationInfo.swift */,
 				A3ECF30F2408668D00A7F9D2 /* String.swift */,
+				348D74BA2497FC7000E54D21 /* ResignKeyboardOnDragGesture.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -783,6 +786,7 @@
 				A3B57B83228750CF0078F7A4 /* FileManager.swift in Sources */,
 				A3A2A72222FF51BF00747DDB /* UserDefaults.swift in Sources */,
 				A394E4CF236A5F9300C81CC2 /* ScanTabView.swift in Sources */,
+				348D74BB2497FC7000E54D21 /* ResignKeyboardOnDragGesture.swift in Sources */,
 				A36C42C42365E3FB00F379FE /* ArchiveViewModel.swift in Sources */,
 				A3A0FD952389E145002C9D6E /* ActivityView.swift in Sources */,
 				A30CB439236978E400D3063E /* SceneDelegate.swift in Sources */,
