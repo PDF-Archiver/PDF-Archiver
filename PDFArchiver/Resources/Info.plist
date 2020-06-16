@@ -34,8 +34,6 @@
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<false/>
-	<key>CFBundleDocumentTypes</key>
-	<array/>
 	<key>NSCameraUsageDescription</key>
 	<string>$(PRODUCT_NAME) uses the camera to scan documents.</string>
 	<key>NSUbiquitousContainers</key>
