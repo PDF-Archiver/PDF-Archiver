@@ -118,7 +118,7 @@ class ScanTabViewModel: ObservableObject {
                 let completedDocuments = totalDocuments - ImageConverter.shared.getOperationCount()
                 let progressString = "\(min(completedDocuments + 1, totalDocuments))/\(totalDocuments) (\(Int(documentProgress * 100))%)"
 
-                self.progressValue = (CGFloat(completedDocuments) + CGFloat(documentProgress)) / CGFloat(totalDocuments)
+                self.progressValue = min((CGFloat(completedDocuments) + CGFloat(documentProgress)) / CGFloat(totalDocuments), 1)
                 self.progressLabel = NSLocalizedString("ScanViewController.processing", comment: "") + progressString
             } else {
                 self.progressValue = 0

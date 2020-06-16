@@ -11,14 +11,11 @@ import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
+    private static let sharedContainerIdentifier = "group.PDFArchiverShared"
+    
     var window: UIWindow?
-    let viewModel = MainTabViewModel()
-
-    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-        for urlContext in URLContexts {
-            handle(url: urlContext.url)
-        }
-    }
+    private let viewModel = MainTabViewModel()
+    private var isCurrentlyProcessing = Atomic(false)
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 
@@ -60,6 +57,29 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneWillEnterForeground(_ scene: UIScene) {
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
+        DispatchQueue.global(qos: .background).async { [weak self] in
+            guard let self = self,
+                !self.isCurrentlyProcessing.value else { return }
+            self.isCurrentlyProcessing.mutate { $0 = true }
+            
+            guard let url = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: Self.sharedContainerIdentifier) else {
+                Log.send(.critical, "Failed to get url for forSecurityApplicationGroupIdentifier.")
+                return
+            }
+            let urls = (try? FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: [], options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])) ?? []
+            
+            if !urls.isEmpty {
+                DispatchQueue.main.async {
+                    // show scan tab with document processing, after importing a document
+                    self.viewModel.currentTab = 0
+                }
+            }
+            
+            for url in urls where !url.hasDirectoryPath {
+                self.handle(url: url)
+            }
+            self.isCurrentlyProcessing.mutate { $0 = false }
+        }
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
@@ -75,22 +95,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private func handle(url: URL) {
         Log.send(.info, "Handling shared document", extra: ["filetype": url.pathExtension])
 
-        // show scan tab with document processing, after importing a document
-        viewModel.currentTab = 0
+        do {
+            _ = url.startAccessingSecurityScopedResource()
+            try StorageHelper.handle(url)
+            url.stopAccessingSecurityScopedResource()
+        } catch let error {
+            url.stopAccessingSecurityScopedResource()
+            Log.send(.error, "Unable to handle file.", extra: ["filetype": url.pathExtension, "error": error.localizedDescription])
+            try? FileManager.default.removeItem(at: url)
 
-        DispatchQueue.global(qos: .userInitiated).async {
-            do {
-                _ = url.startAccessingSecurityScopedResource()
-                try StorageHelper.handle(url)
-                url.stopAccessingSecurityScopedResource()
-            } catch let error {
-                url.stopAccessingSecurityScopedResource()
-                Log.send(.error, "Unable to handle file.", extra: ["filetype": url.pathExtension, "error": error.localizedDescription])
-                try? FileManager.default.removeItem(at: url)
-                try? FileManager.default.removeItem(at: url.deletingLastPathComponent())
-
-                AlertViewModel.createAndPost(message: error, primaryButtonTitle: "OK")
-            }
+            AlertViewModel.createAndPost(message: error, primaryButtonTitle: "OK")
         }
     }
 }

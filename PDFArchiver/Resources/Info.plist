@@ -8,35 +8,6 @@
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
 	<string>PDF Archiver</string>
-	<key>CFBundleDocumentTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeName</key>
-			<string>PDF</string>
-			<key>CFBundleTypeRole</key>
-			<string>Viewer</string>
-			<key>LSHandlerRank</key>
-			<string>Alternate</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>com.adobe.pdf</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeIconFiles</key>
-			<array/>
-			<key>CFBundleTypeName</key>
-			<string>Image</string>
-			<key>CFBundleTypeRole</key>
-			<string>Viewer</string>
-			<key>LSHandlerRank</key>
-			<string>Alternate</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>public.image</string>
-			</array>
-		</dict>
-	</array>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -63,6 +34,8 @@
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<false/>
+	<key>CFBundleDocumentTypes</key>
+	<array/>
 	<key>NSCameraUsageDescription</key>
 	<string>$(PRODUCT_NAME) uses the camera to scan documents.</string>
 	<key>NSUbiquitousContainers</key>

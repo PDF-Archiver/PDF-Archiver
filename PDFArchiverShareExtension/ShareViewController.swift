@@ -11,14 +11,21 @@ import UIKit
 
 class ShareViewController: UIViewController {
     
-    private enum ShareError: Error {
+    fileprivate enum ShareError: Error {
         case timeout
         case containerNotFound
         case noData
+        case invalidData
     }
 
     
     private static let sharedContainerIdentifier = "group.PDFArchiverShared"
+    private static let validUTIs = [
+        "public.file-url",
+        "public.url",
+        "com.adobe.pdf",
+        "public.image"
+    ]
     
     @IBOutlet private weak var backgroundView: UIView!
     @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
@@ -66,65 +73,92 @@ class ShareViewController: UIViewController {
         do {
             guard let url = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: Self.sharedContainerIdentifier) else { throw ShareError.containerNotFound }
             let inputItems = (extensionContext?.inputItems as? [NSExtensionItem]) ?? []
+            var success = false
             for item in inputItems {
                 for attachment in (item.attachments ?? []) {
-                    try saveData(from: attachment, at: url)
+                    let attachmentSuccess = try saveData(from: attachment, at: url)
+                    success = success || attachmentSuccess
                 }
             }
+            
+            var error: Error?
+            if !success {
+                error = ShareError.invalidData
+            }
 
-            complete()
+            complete(with: error)
         } catch {
             complete(with: error)
         }
     }
     
-    private func saveData(from attachment: NSItemProvider, at url: URL) throws {
+    private func saveData(from attachment: NSItemProvider, at url: URL) throws -> Bool {
         var error: Error?
         var data: Data?
         
-        let semaphore = DispatchSemaphore(value: 0)
-        if attachment.registeredTypeIdentifiers.contains("com.adobe.pdf") {
-            attachment.loadItem(forTypeIdentifier: "com.adobe.pdf", options: nil) { (rawData, inputError) in
-                defer {
-                    semaphore.signal()
-                }
+        for uti in Self.validUTIs where attachment.hasItemConformingToTypeIdentifier(uti) {
+            do {
+                data = try attachment.syncLoadItem(forTypeIdentifier: uti)
+            } catch let inputError {
                 error = inputError
-                guard inputError == nil else { return }
-                
-                guard let inputData = rawData as? Data,
-                    let documentData = PDFDocument(data: inputData)?.dataRepresentation() else { return }
-                
-                data = documentData
             }
-        } else if attachment.canLoadObject(ofClass: UIImage.self) {
-            attachment.loadObject(ofClass: UIImage.self) { (rawImage, inputError) in
-                defer {
-                    semaphore.signal()
-                }
-                error = inputError
-                guard inputError == nil,
-                    let image = rawImage as? UIImage else { return }
-                    
-                data = image.jpegData(compressionQuality: 1)
+            
+            guard let data = data else { continue }
+            
+            if UIImage(data: data) != nil {
+                let fileUrl = url.appendingPathComponent(UUID().uuidString).appendingPathExtension("jpeg")
+                try data.write(to: fileUrl)
+                return true
+            } else if PDFDocument(data: data) != nil{
+                let fileUrl = url.appendingPathComponent(UUID().uuidString).appendingPathExtension("pdf")
+                try data.write(to: fileUrl)
+                return true
             }
-        } else {
-            return
         }
-        
-        let timeoutResult = semaphore.wait(timeout: .now() + .seconds(10))
-        guard timeoutResult == .success else {
-            throw ShareError.timeout
-        }
-        
+
         if let err = error {
             throw err
         }
         
-        guard let outputData = data else {
-            throw ShareError.noData
+        return false
+    }
+}
+
+
+fileprivate extension NSItemProvider {
+    func syncLoadItem(forTypeIdentifier uti: String) throws -> Data? {
+        var data: Data?
+        var error: Error?
+        let semaphore = DispatchSemaphore(value: 0)
+        self.loadItem(forTypeIdentifier: uti, options: nil) { rawData, rawError in
+            defer {
+                semaphore.signal()
+            }
+            if let rawError = rawError {
+                error = rawError
+            }
+            
+            if let url = rawData as? URL {
+                do {
+                    data = try Data(contentsOf: url)
+                } catch let inputError {
+                    error = inputError
+                }
+            } else if let inputData = rawData as? Data {
+                data = inputData
+            } else if let image = rawData as? UIImage {
+                data = image.jpegData(compressionQuality: 1)
+            }
+        }
+        let timeoutResult = semaphore.wait(timeout: .now() + .seconds(10))
+        guard timeoutResult == .success else {
+            throw ShareViewController.ShareError.timeout
         }
         
-        let fileUrl = url.appendingPathComponent(UUID().uuidString)
-        try outputData.write(to: fileUrl)
+        if let error = error {
+            throw error
+        }
+        
+        return data
     }
 }
