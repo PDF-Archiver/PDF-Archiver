@@ -35,5 +35,7 @@ struct TagView: View {
         .foregroundColor(.white)
         .background(Color(.paLightRed))
         .cornerRadius(8.0)
+        .transition(.opacity)
+        .animation(.spring())
     }
 }

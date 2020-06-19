@@ -81,7 +81,9 @@ class ArchiveViewModel: ObservableObject, SystemLogging {
                 if searchterm.isEmpty {
                     searchterms = []
                 } else {
-                    searchterms = searchterm.components(separatedBy: CharacterSet.whitespacesAndNewlines)
+                    searchterms = searchterm
+                        .trimmingCharacters(in: .whitespacesAndNewlines)
+                        .components(separatedBy: .whitespacesAndNewlines)
                 }
 
                 return self.archive.get(scope: scope, searchterms: searchterms, status: .tagged)
