@@ -29,6 +29,26 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       enableAddressSanitizer = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "A3B83715215FCEFA00DA239F"
+               BuildableName = "PDFArchiverUITests.xctest"
+               BlueprintName = "PDFArchiverUITests"
+               ReferencedContainer = "container:PDFArchiver.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "A3BCC972217F84DB00C3775E"
+               BuildableName = "PDFArchiverTests.xctest"
+               BlueprintName = "PDFArchiverTests"
+               ReferencedContainer = "container:PDFArchiver.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

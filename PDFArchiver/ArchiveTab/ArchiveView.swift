@@ -21,10 +21,14 @@ struct ArchiveView: View {
                 VStack {
                     searchView
                     documentsView
+                    .resignKeyboardOnDragGesture()
                 }
                 .navigationBarTitle(Text("Documents"))
             }
             emptyView
+        }
+        .onTapGesture {
+            self.endEditing(true)
         }
         // force list show: https://stackoverflow.com/a/58371424/10026834
         .padding(1.0)

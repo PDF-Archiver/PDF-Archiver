@@ -79,6 +79,7 @@ class MainTabViewModel: ObservableObject {
             .store(in: &disposables)
 
         NotificationCenter.default.publisher(for: .subscriptionChanges)
+            .receive(on: DispatchQueue.main)
             .sink { _ in
                 self.showSubscriptionDismissed()
                 self.validateSubscriptionState(of: self.currentTab)
@@ -86,10 +87,11 @@ class MainTabViewModel: ObservableObject {
             .store(in: &disposables)
         
         NotificationCenter.default.publisher(for: .showSubscriptionView)
-        .sink { _ in
-            self.showSubscriptionView = true
-        }
-        .store(in: &disposables)
+            .receive(on: DispatchQueue.main)
+            .sink { _ in
+                self.showSubscriptionView = true
+            }
+            .store(in: &disposables)
 
         // MARK: Alerts
         $alertViewModel
@@ -100,6 +102,7 @@ class MainTabViewModel: ObservableObject {
             .store(in: &disposables)
 
         NotificationCenter.default.publisher(for: .showError)
+            .receive(on: DispatchQueue.main)
             .sink { notification in
                 self.alertViewModel = notification.object as? AlertViewModel
             }

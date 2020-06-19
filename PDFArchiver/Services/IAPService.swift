@@ -210,7 +210,7 @@ public class IAPService: NSObject, SystemLogging {
             case .success:
                 os_log("Fetching receipt was successful.", log: IAPService.log, type: .debug)
             case .error(let error):
-                print("Fetch receipt failed: \(error)")
+                os_log("Fetch receipt failed: %@", log: IAPService.log, type: .debug, error.localizedDescription)
                 if appStart {
                     os_log("Receipt not found, exit the app!", log: IAPService.log, type: .error)
                     exit(173)

@@ -17,4 +17,8 @@ extension View {
                            .first { $0.isKeyWindow }
         keyWindow?.endEditing(force)
     }
+    
+    func resignKeyboardOnDragGesture() -> some View {
+        return modifier(ResignKeyboardOnDragGesture())
+    }
 }

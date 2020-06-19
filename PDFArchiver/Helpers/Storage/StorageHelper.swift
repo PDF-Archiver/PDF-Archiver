@@ -25,6 +25,7 @@ enum StorageHelper {
 
             try StorageHelper.save([image])
             try StorageHelper.triggerProcessing()
+            try FileManager.default.removeItem(at: url)
 
         } else {
             ImageConverter.shared.processPdf(at: url)

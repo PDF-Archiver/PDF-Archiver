@@ -99,7 +99,6 @@ class TagTabViewModel: ObservableObject {
                 var currentDocuments = self.documents.filter { $0.taggingStatus == .tagged }
                 currentDocuments.append(contentsOf: newUntaggedDocuments.sorted(by: { $0.filename < $1.filename }))
                 DispatchQueue.main.async {
-                    print(currentDocuments)
                     self.documents = currentDocuments
                 }
 

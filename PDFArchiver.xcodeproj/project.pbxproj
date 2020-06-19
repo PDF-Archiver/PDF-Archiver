@@ -10,6 +10,10 @@
 		171E0C7E1B8E5B84001E6242 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171E0C7D1B8E5B84001E6242 /* AppDelegate.swift */; };
 		171E0C8A1B8E5B84001E6242 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171E0C881B8E5B84001E6242 /* LaunchScreen.storyboard */; };
 		342434E1248ECFD200DD1729 /* KeyboardObserving in Frameworks */ = {isa = PBXBuildFile; productRef = 342434E0248ECFD200DD1729 /* KeyboardObserving */; };
+		348D74BB2497FC7000E54D21 /* ResignKeyboardOnDragGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348D74BA2497FC7000E54D21 /* ResignKeyboardOnDragGesture.swift */; };
+		348D74C32497FD4600E54D21 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 348D74C22497FD4600E54D21 /* ShareViewController.swift */; };
+		348D74C62497FD4600E54D21 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 348D74C42497FD4600E54D21 /* MainInterface.storyboard */; };
+		348D74CA2497FD4600E54D21 /* PDFArchiverShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 348D74C02497FD4600E54D21 /* PDFArchiverShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3494D098248C2B7F00CF55E3 /* WidthSyncedRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3494D097248C2B7F00CF55E3 /* WidthSyncedRow.swift */; };
 		3494D09A248C2BA800CF55E3 /* SubscriptionButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3494D099248C2BA800CF55E3 /* SubscriptionButtonStyle.swift */; };
 		A302929B2401CFDA006ACE12 /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = A302929A2401CFDA006ACE12 /* Stack.swift */; };
@@ -97,6 +101,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		348D74C82497FD4600E54D21 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 171E0C721B8E5B84001E6242 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 348D74BF2497FD4600E54D21;
+			remoteInfo = PDFArchiverShareExtension;
+		};
 		A3B8371B215FCEFA00DA239F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 171E0C721B8E5B84001E6242 /* Project object */;
@@ -130,6 +141,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				348D74CA2497FD4600E54D21 /* PDFArchiverShareExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -141,6 +153,12 @@
 		171E0C7D1B8E5B84001E6242 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		171E0C891B8E5B84001E6242 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		171E0C8B1B8E5B84001E6242 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		348D74BA2497FC7000E54D21 /* ResignKeyboardOnDragGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResignKeyboardOnDragGesture.swift; sourceTree = "<group>"; };
+		348D74C02497FD4600E54D21 /* PDFArchiverShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PDFArchiverShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		348D74C22497FD4600E54D21 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
+		348D74C52497FD4600E54D21 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		348D74C72497FD4600E54D21 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		348D74CE24980BBC00E54D21 /* PDFArchiverShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PDFArchiverShareExtension.entitlements; sourceTree = "<group>"; };
 		3494D097248C2B7F00CF55E3 /* WidthSyncedRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidthSyncedRow.swift; sourceTree = "<group>"; };
 		3494D099248C2BA800CF55E3 /* SubscriptionButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionButtonStyle.swift; sourceTree = "<group>"; };
 		A302929A2401CFDA006ACE12 /* Stack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stack.swift; sourceTree = "<group>"; };
@@ -247,6 +265,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		348D74BD2497FD4600E54D21 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A3B83713215FCEFA00DA239F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -270,6 +295,7 @@
 				171E0C7C1B8E5B84001E6242 /* PDFArchiver */,
 				A3BCC974217F84DB00C3775E /* PDFArchiverTests */,
 				A3B83717215FCEFA00DA239F /* PDFArchiverUITests */,
+				348D74C12497FD4600E54D21 /* PDFArchiverShareExtension */,
 				2C90F6DAB110A4A6FF569E3A /* Frameworks */,
 				171E0C7B1B8E5B84001E6242 /* Products */,
 			);
@@ -281,6 +307,7 @@
 				171E0C7A1B8E5B84001E6242 /* PDFArchiver.app */,
 				A3B83716215FCEFA00DA239F /* PDFArchiverUITests.xctest */,
 				A3BCC973217F84DB00C3775E /* PDFArchiverTests.xctest */,
+				348D74C02497FD4600E54D21 /* PDFArchiverShareExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -317,6 +344,17 @@
 				A3B13782223516B200C91BB1 /* CoreImage.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		348D74C12497FD4600E54D21 /* PDFArchiverShareExtension */ = {
+			isa = PBXGroup;
+			children = (
+				348D74CE24980BBC00E54D21 /* PDFArchiverShareExtension.entitlements */,
+				348D74C22497FD4600E54D21 /* ShareViewController.swift */,
+				348D74C42497FD4600E54D21 /* MainInterface.storyboard */,
+				348D74C72497FD4600E54D21 /* Info.plist */,
+			);
+			path = PDFArchiverShareExtension;
 			sourceTree = "<group>";
 		};
 		A328CF3E237C43A8003D60AD /* MissingViews */ = {
@@ -385,6 +423,7 @@
 				A3B57B7E228720240078F7A4 /* Storage */,
 				A302929E2405B79C006ACE12 /* OrientationInfo.swift */,
 				A3ECF30F2408668D00A7F9D2 /* String.swift */,
+				348D74BA2497FC7000E54D21 /* ResignKeyboardOnDragGesture.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -516,6 +555,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				348D74C92497FD4600E54D21 /* PBXTargetDependency */,
 			);
 			name = PDFArchiver;
 			packageProductDependencies = (
@@ -531,6 +571,23 @@
 			productName = CandySearch;
 			productReference = 171E0C7A1B8E5B84001E6242 /* PDFArchiver.app */;
 			productType = "com.apple.product-type.application";
+		};
+		348D74BF2497FD4600E54D21 /* PDFArchiverShareExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 348D74CB2497FD4600E54D21 /* Build configuration list for PBXNativeTarget "PDFArchiverShareExtension" */;
+			buildPhases = (
+				348D74BC2497FD4600E54D21 /* Sources */,
+				348D74BD2497FD4600E54D21 /* Frameworks */,
+				348D74BE2497FD4600E54D21 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PDFArchiverShareExtension;
+			productName = PDFArchiverShareExtension;
+			productReference = 348D74C02497FD4600E54D21 /* PDFArchiverShareExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 		A3B83715215FCEFA00DA239F /* PDFArchiverUITests */ = {
 			isa = PBXNativeTarget;
@@ -574,7 +631,7 @@
 		171E0C721B8E5B84001E6242 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1120;
+				LastSwiftUpdateCheck = 1150;
 				LastUpgradeCheck = 1120;
 				ORGANIZATIONNAME = "Julian Kahnert";
 				TargetAttributes = {
@@ -591,6 +648,9 @@
 								enabled = 1;
 							};
 						};
+					};
+					348D74BF2497FD4600E54D21 = {
+						CreatedOnToolsVersion = 11.5;
 					};
 					A3B83715215FCEFA00DA239F = {
 						CreatedOnToolsVersion = 10.0;
@@ -635,6 +695,7 @@
 				171E0C791B8E5B84001E6242 /* PDFArchiver */,
 				A3B83715215FCEFA00DA239F /* PDFArchiverUITests */,
 				A3BCC972217F84DB00C3775E /* PDFArchiverTests */,
+				348D74BF2497FD4600E54D21 /* PDFArchiverShareExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -648,6 +709,14 @@
 				171E0C8A1B8E5B84001E6242 /* LaunchScreen.storyboard in Resources */,
 				A34DEF922267699700E12EE5 /* Settings.bundle in Resources */,
 				A34A85022130A3870093FAE5 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		348D74BE2497FD4600E54D21 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				348D74C62497FD4600E54D21 /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -783,6 +852,7 @@
 				A3B57B83228750CF0078F7A4 /* FileManager.swift in Sources */,
 				A3A2A72222FF51BF00747DDB /* UserDefaults.swift in Sources */,
 				A394E4CF236A5F9300C81CC2 /* ScanTabView.swift in Sources */,
+				348D74BB2497FC7000E54D21 /* ResignKeyboardOnDragGesture.swift in Sources */,
 				A36C42C42365E3FB00F379FE /* ArchiveViewModel.swift in Sources */,
 				A3A0FD952389E145002C9D6E /* ActivityView.swift in Sources */,
 				A30CB439236978E400D3063E /* SceneDelegate.swift in Sources */,
@@ -816,6 +886,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		348D74BC2497FD4600E54D21 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				348D74C32497FD4600E54D21 /* ShareViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A3B83712215FCEFA00DA239F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -837,6 +915,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		348D74C92497FD4600E54D21 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 348D74BF2497FD4600E54D21 /* PDFArchiverShareExtension */;
+			targetProxy = 348D74C82497FD4600E54D21 /* PBXContainerItemProxy */;
+		};
 		A3B8371C215FCEFA00DA239F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 171E0C791B8E5B84001E6242 /* PDFArchiver */;
@@ -856,6 +939,14 @@
 				171E0C891B8E5B84001E6242 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		348D74C42497FD4600E54D21 /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				348D74C52497FD4600E54D21 /* Base */,
+			);
+			name = MainInterface.storyboard;
 			sourceTree = "<group>";
 		};
 		A3EBFE9E21650F58008C34CC /* Localizable.strings */ = {
@@ -990,7 +1081,7 @@
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/PDFArchiver/Resources/PDFArchiver.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_BITCODE = YES;
@@ -1005,7 +1096,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 2.3.2;
+				MARKETING_VERSION = 2.3.3;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1035,7 +1126,7 @@
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/PDFArchiver/Resources/PDFArchiver.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1049,7 +1140,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 2.3.2;
+				MARKETING_VERSION = 2.3.3;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1064,6 +1155,72 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		348D74CC2497FD4600E54D21 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = PDFArchiverShareExtension/PDFArchiverShareExtension.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 3;
+				DEVELOPMENT_TEAM = 87KNVHZ8C7;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = PDFArchiverShareExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 2.3.3;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer.PDFArchiverShareExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		348D74CD2497FD4600E54D21 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = PDFArchiverShareExtension/PDFArchiverShareExtension.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 3;
+				DEVELOPMENT_TEAM = 87KNVHZ8C7;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = PDFArchiverShareExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 2.3.3;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer.PDFArchiverShareExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1238,6 +1395,15 @@
 			buildConfigurations = (
 				171E0CA51B8E5B84001E6242 /* Debug */,
 				171E0CA61B8E5B84001E6242 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		348D74CB2497FD4600E54D21 /* Build configuration list for PBXNativeTarget "PDFArchiverShareExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				348D74CC2497FD4600E54D21 /* Debug */,
+				348D74CD2497FD4600E54D21 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
