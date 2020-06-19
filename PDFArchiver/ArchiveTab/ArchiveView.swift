@@ -27,8 +27,8 @@ struct ArchiveView: View {
             }
             emptyView
         }
-        // force list show: https://stackoverflow.com/a/58371424/10026834
-        .padding(1.0)
+        // On iPad: force double column view
+        .navigationViewStyle(DoubleColumnNavigationViewStyle())
     }
 
     var searchView: some View {
