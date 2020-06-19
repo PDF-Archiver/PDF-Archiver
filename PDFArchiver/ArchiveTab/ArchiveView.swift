@@ -27,9 +27,6 @@ struct ArchiveView: View {
             }
             emptyView
         }
-        .onTapGesture {
-            self.endEditing(true)
-        }
         // force list show: https://stackoverflow.com/a/58371424/10026834
         .padding(1.0)
     }
