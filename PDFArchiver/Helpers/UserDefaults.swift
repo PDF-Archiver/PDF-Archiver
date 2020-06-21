@@ -40,12 +40,13 @@ extension UserDefaults {
         }
     }
 
-    var lastSelectedTabIndex: Int {
+    var lastSelectedTabIndex: MainTabView.Tabs {
         get {
-            return UserDefaults.standard.integer(forKey: Names.lastSelectedTabIndex.rawValue)
+            let index = UserDefaults.standard.integer(forKey: Names.lastSelectedTabIndex.rawValue)
+            return MainTabView.Tabs(rawValue: index) ?? .scan
         }
         set {
-            UserDefaults.standard.set(newValue, forKey: Names.lastSelectedTabIndex.rawValue)
+            UserDefaults.standard.set(newValue.rawValue, forKey: Names.lastSelectedTabIndex.rawValue)
         }
     }
 

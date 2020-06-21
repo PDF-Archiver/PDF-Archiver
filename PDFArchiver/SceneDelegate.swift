@@ -66,16 +66,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 Log.send(.critical, "Failed to get url for forSecurityApplicationGroupIdentifier.")
                 return
             }
-            let urls = (try? FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: [], options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])) ?? []
+            let urls = ((try? FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: [], options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])) ?? [])
+                .filter { !$0.hasDirectoryPath }
             
             if !urls.isEmpty {
                 DispatchQueue.main.async {
                     // show scan tab with document processing, after importing a document
-                    self.viewModel.currentTab = 0
+                    self.viewModel.currentTab = .scan
                 }
             }
             
-            for url in urls where !url.hasDirectoryPath {
+            for url in urls {
                 self.handle(url: url)
             }
             self.isCurrentlyProcessing.mutate { $0 = false }
