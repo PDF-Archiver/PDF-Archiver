@@ -14,7 +14,7 @@ struct MainTabView: View {
     var body: some View {
         ZStack {
             tabViews
-            if viewModel.showDocumentScan {
+            if viewModel.scanViewModel.showDocumentScan {
                 documentCameraView
             }
             if viewModel.showSubscriptionView {
@@ -63,7 +63,9 @@ struct MainTabView: View {
     }
 
     private var documentCameraView: some View {
-        DocumentCameraView(completionHandler: viewModel.scanViewModel.process)
+        DocumentCameraView(
+            isShown: $viewModel.scanViewModel.showDocumentScan,
+            imageHandler: viewModel.scanViewModel.process)
             .edgesIgnoringSafeArea(.all)
             .statusBar(hidden: true)
     }

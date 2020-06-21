@@ -67,12 +67,10 @@ class ScanTabViewModel: ObservableObject {
         }
     }
 
-    func process(_ images: [UIImage]?) {
+    func process(_ images: [UIImage]) {
+        assert(!Thread.isMainThread, "This might take some time and should not be executed on the main thread.")
 
         ImageConverter.shared.startProcessing()
-        showDocumentScan = false
-
-        guard let images = images else { return }
 
         // validate subscription
         guard testAppUsagePermitted() else { return }
@@ -91,7 +89,7 @@ class ScanTabViewModel: ObservableObject {
         triggerProcessing()
 
         // show processing indicator instantly
-        updateProcessingIndicator(with: Float(0))
+        updateProcessingIndicator(with: 0)
     }
 
     // MARK: - Helper Functions

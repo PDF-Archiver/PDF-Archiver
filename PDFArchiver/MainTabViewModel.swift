@@ -14,14 +14,13 @@ class MainTabViewModel: ObservableObject {
     @Published var currentTab = UserDefaults.standard.lastSelectedTabIndex
     @Published var showTutorial = !UserDefaults.standard.tutorialShown
 
-    let scanViewModel = ScanTabViewModel()
+    var scanViewModel = ScanTabViewModel()
     let tagViewModel = TagTabViewModel()
     let archiveViewModel = ArchiveViewModel()
     let moreViewModel = MoreTabViewModel()
 
     let iapViewModel = IAPViewModel()
 
-    @Published var showDocumentScan: Bool = false
     @Published var showSubscriptionView: Bool = false
     @Published var showAlert: Bool = false
     @Published var alertViewModel: AlertViewModel?
@@ -30,13 +29,11 @@ class MainTabViewModel: ObservableObject {
     private let selectionFeedback = UISelectionFeedbackGenerator()
 
     init() {
-
+        
         scanViewModel.objectWillChange
             .sink { _ in
-                // wait until the object has changed
-                DispatchQueue.main.async {
-                    self.showDocumentScan = self.scanViewModel.showDocumentScan
-                }
+                // bubble up the change from the nested view model
+                self.objectWillChange.send()
             }
             .store(in: &disposables)
 
