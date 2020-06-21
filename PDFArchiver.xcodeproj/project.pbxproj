@@ -24,7 +24,6 @@
 		A30CB439236978E400D3063E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30CB438236978E300D3063E /* SceneDelegate.swift */; };
 		A30CB43B2369792900D3063E /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30CB43A2369792900D3063E /* MainTabView.swift */; };
 		A30CB43D23697C1800D3063E /* MainTabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30CB43C23697C1800D3063E /* MainTabViewModel.swift */; };
-		A30D767722BF914B00862224 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30D767622BF914B00862224 /* MainTabBarController.swift */; };
 		A31B3C4023849E1E0066CB86 /* SwiftUIX in Frameworks */ = {isa = PBXBuildFile; productRef = A31B3C3F23849E1E0066CB86 /* SwiftUIX */; };
 		A31B3C422384A8660066CB86 /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B3C412384A8660066CB86 /* Alert.swift */; };
 		A31B3C442384A8EC0066CB86 /* AlertViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B3C432384A8EC0066CB86 /* AlertViewModel.swift */; };
@@ -168,7 +167,6 @@
 		A30CB438236978E300D3063E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		A30CB43A2369792900D3063E /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		A30CB43C23697C1800D3063E /* MainTabViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabViewModel.swift; sourceTree = "<group>"; };
-		A30D767622BF914B00862224 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		A31B3C412384A8660066CB86 /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
 		A31B3C432384A8EC0066CB86 /* AlertViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertViewModel.swift; sourceTree = "<group>"; };
 		A32777E321FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf"; sourceTree = "<group>"; };
@@ -319,7 +317,6 @@
 				A328CF4F237CAF29003D60AD /* IAPView.swift */,
 				A328CF4D237CAECA003D60AD /* IAPViewModel.swift */,
 				A3ECF3112408694C00A7F9D2 /* KeyCommandHostingController.swift */,
-				A30D767622BF914B00862224 /* MainTabBarController.swift */,
 				A30CB43A2369792900D3063E /* MainTabView.swift */,
 				A30CB43C23697C1800D3063E /* MainTabViewModel.swift */,
 				A30CB438236978E300D3063E /* SceneDelegate.swift */,
@@ -815,7 +812,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A30D767722BF914B00862224 /* MainTabBarController.swift in Sources */,
 				A394E4CB236A519300C81CC2 /* PDFCustomView.swift in Sources */,
 				A328CF3D237C3C8E003D60AD /* SupportMailView.swift in Sources */,
 				3494D09A248C2BA800CF55E3 /* SubscriptionButtonStyle.swift in Sources */,
