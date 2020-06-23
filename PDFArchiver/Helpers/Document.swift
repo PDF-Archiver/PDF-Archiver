@@ -32,9 +32,8 @@ extension Document {
 
     func cleaned() -> Document {
         // cleanup the found document
-        if let tag = tags.first(where: { $0 == Constants.documentTagPlaceholder }) {
-            tags.remove(tag)
-        }
+        tags = tags.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && $0 != Constants.documentTagPlaceholder }
+        
         if specification.contains(Constants.documentDescriptionPlaceholder) {
             specification = ""
         }

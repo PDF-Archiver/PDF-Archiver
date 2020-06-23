@@ -66,7 +66,6 @@ class TagTabViewModel: ObservableObject {
 
                 let sortedTags = tags
                     .subtracting(self.currentDocument?.tags ?? [])
-                    .subtracting(Set([Constants.documentTagPlaceholder]))
                     .sorted { lhs, rhs in
                         if lhs.starts(with: tagName) {
                             if rhs.starts(with: tagName) {
@@ -128,7 +127,7 @@ class TagTabViewModel: ObservableObject {
             .store(in: &disposables)
 
         $currentDocument
-            .compactMap { $0 }
+            .compactMap { $0?.cleaned() }
             .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .sink { document in
@@ -163,10 +162,8 @@ class TagTabViewModel: ObservableObject {
                     self.pdfDocument = PDFDocument()
                     assertionFailure("Could not present document.")
                 }
-                self.specification = document.specification.starts(with: Constants.documentDescriptionPlaceholder) ? "" : document.specification
-                self.documentTags = Array(document.tags)
-                    .filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
-                    .sorted()
+                self.specification = document.specification
+                self.documentTags = document.tags.sorted()
                 self.suggestedTags = []
             }
             .store(in: &disposables)

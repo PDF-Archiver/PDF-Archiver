@@ -16,6 +16,7 @@
 		348D74CA2497FD4600E54D21 /* PDFArchiverShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 348D74C02497FD4600E54D21 /* PDFArchiverShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3494D098248C2B7F00CF55E3 /* WidthSyncedRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3494D097248C2B7F00CF55E3 /* WidthSyncedRow.swift */; };
 		3494D09A248C2BA800CF55E3 /* SubscriptionButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3494D099248C2BA800CF55E3 /* SubscriptionButtonStyle.swift */; };
+		34EEE22E249FA2AA00939380 /* IAPView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A328CF4F237CAF29003D60AD /* IAPView.swift */; };
 		A302929B2401CFDA006ACE12 /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = A302929A2401CFDA006ACE12 /* Stack.swift */; };
 		A302929F2405B79C006ACE12 /* OrientationInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A302929E2405B79C006ACE12 /* OrientationInfo.swift */; };
 		A30A4B05237366F8001843B1 /* LaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30A4B04237366F8001843B1 /* LaunchTests.swift */; };
@@ -23,7 +24,6 @@
 		A30CB439236978E400D3063E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30CB438236978E300D3063E /* SceneDelegate.swift */; };
 		A30CB43B2369792900D3063E /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30CB43A2369792900D3063E /* MainTabView.swift */; };
 		A30CB43D23697C1800D3063E /* MainTabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30CB43C23697C1800D3063E /* MainTabViewModel.swift */; };
-		A30D767722BF914B00862224 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30D767622BF914B00862224 /* MainTabBarController.swift */; };
 		A31B3C4023849E1E0066CB86 /* SwiftUIX in Frameworks */ = {isa = PBXBuildFile; productRef = A31B3C3F23849E1E0066CB86 /* SwiftUIX */; };
 		A31B3C422384A8660066CB86 /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B3C412384A8660066CB86 /* Alert.swift */; };
 		A31B3C442384A8EC0066CB86 /* AlertViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31B3C432384A8EC0066CB86 /* AlertViewModel.swift */; };
@@ -34,7 +34,6 @@
 		A328CF40237C4C6F003D60AD /* AboutMeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A328CF3F237C4C6F003D60AD /* AboutMeView.swift */; };
 		A328CF44237C5152003D60AD /* DetailRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A328CF43237C5152003D60AD /* DetailRowView.swift */; };
 		A328CF4E237CAECA003D60AD /* IAPViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A328CF4D237CAECA003D60AD /* IAPViewModel.swift */; };
-		A328CF50237CAF29003D60AD /* IAPView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A328CF4F237CAF29003D60AD /* IAPView.swift */; };
 		A328CF53237CB161003D60AD /* FilledButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A328CF52237CB161003D60AD /* FilledButtonStyle.swift */; };
 		A334A646236E163A004D960C /* TagTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A334A645236E163A004D960C /* TagTabView.swift */; };
 		A334A648236E1DE4004D960C /* ScanTabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A334A647236E1DE4004D960C /* ScanTabViewModel.swift */; };
@@ -168,7 +167,6 @@
 		A30CB438236978E300D3063E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		A30CB43A2369792900D3063E /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		A30CB43C23697C1800D3063E /* MainTabViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabViewModel.swift; sourceTree = "<group>"; };
-		A30D767622BF914B00862224 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		A31B3C412384A8660066CB86 /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
 		A31B3C432384A8EC0066CB86 /* AlertViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertViewModel.swift; sourceTree = "<group>"; };
 		A32777E321FDD76D0076F68C /* 2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "2017-01-17--tom-tailor-jeans__kleidung_rechnung.pdf"; sourceTree = "<group>"; };
@@ -319,7 +317,6 @@
 				A328CF4F237CAF29003D60AD /* IAPView.swift */,
 				A328CF4D237CAECA003D60AD /* IAPViewModel.swift */,
 				A3ECF3112408694C00A7F9D2 /* KeyCommandHostingController.swift */,
-				A30D767622BF914B00862224 /* MainTabBarController.swift */,
 				A30CB43A2369792900D3063E /* MainTabView.swift */,
 				A30CB43C23697C1800D3063E /* MainTabViewModel.swift */,
 				A30CB438236978E300D3063E /* SceneDelegate.swift */,
@@ -815,11 +812,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A30D767722BF914B00862224 /* MainTabBarController.swift in Sources */,
 				A394E4CB236A519300C81CC2 /* PDFCustomView.swift in Sources */,
 				A328CF3D237C3C8E003D60AD /* SupportMailView.swift in Sources */,
 				3494D09A248C2BA800CF55E3 /* SubscriptionButtonStyle.swift in Sources */,
-				A328CF50237CAF29003D60AD /* IAPView.swift in Sources */,
 				A34A84FC2130A35A0093FAE5 /* ArchiveExtension.swift in Sources */,
 				A3766063238F851F00840CFB /* ClearButton.swift in Sources */,
 				A36C42C62365E43D00F379FE /* SearchField.swift in Sources */,
@@ -845,6 +840,7 @@
 				A3CF79BE22C3FA0A008711E4 /* PDFProcessing.swift in Sources */,
 				A387EFF32378BE19003FB3B7 /* View.swift in Sources */,
 				A356DF7B237DF1C000CAD132 /* PlaceholderView.swift in Sources */,
+				34EEE22E249FA2AA00939380 /* IAPView.swift in Sources */,
 				A334A648236E1DE4004D960C /* ScanTabViewModel.swift in Sources */,
 				A3ECF3102408668D00A7F9D2 /* String.swift in Sources */,
 				A328CF4E237CAECA003D60AD /* IAPViewModel.swift in Sources */,
@@ -1081,7 +1077,7 @@
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/PDFArchiver/Resources/PDFArchiver.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_BITCODE = YES;
@@ -1096,7 +1092,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 2.3.4;
+				MARKETING_VERSION = 2.3.5;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1126,7 +1122,7 @@
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/PDFArchiver/Resources/PDFArchiver.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1140,7 +1136,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 2.3.4;
+				MARKETING_VERSION = 2.3.5;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1172,7 +1168,7 @@
 				CODE_SIGN_ENTITLEMENTS = PDFArchiverShareExtension/PDFArchiverShareExtension.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = PDFArchiverShareExtension/Info.plist;
@@ -1182,7 +1178,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 2.3.4;
+				MARKETING_VERSION = 2.3.5;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer.PDFArchiverShareExtension;
@@ -1206,7 +1202,7 @@
 				CODE_SIGN_ENTITLEMENTS = PDFArchiverShareExtension/PDFArchiverShareExtension.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = PDFArchiverShareExtension/Info.plist;
@@ -1216,7 +1212,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 2.3.4;
+				MARKETING_VERSION = 2.3.5;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer.PDFArchiverShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";

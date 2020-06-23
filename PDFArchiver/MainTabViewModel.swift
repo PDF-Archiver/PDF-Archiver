@@ -14,14 +14,13 @@ class MainTabViewModel: ObservableObject {
     @Published var currentTab = UserDefaults.standard.lastSelectedTabIndex
     @Published var showTutorial = !UserDefaults.standard.tutorialShown
 
-    let scanViewModel = ScanTabViewModel()
+    var scanViewModel = ScanTabViewModel()
     let tagViewModel = TagTabViewModel()
     let archiveViewModel = ArchiveViewModel()
     let moreViewModel = MoreTabViewModel()
 
     let iapViewModel = IAPViewModel()
 
-    @Published var showDocumentScan: Bool = false
     @Published var showSubscriptionView: Bool = false
     @Published var showAlert: Bool = false
     @Published var alertViewModel: AlertViewModel?
@@ -30,28 +29,26 @@ class MainTabViewModel: ObservableObject {
     private let selectionFeedback = UISelectionFeedbackGenerator()
 
     init() {
-
+        
         scanViewModel.objectWillChange
             .sink { _ in
-                // wait until the object has changed
-                DispatchQueue.main.async {
-                    self.showDocumentScan = self.scanViewModel.showDocumentScan
-                }
+                // bubble up the change from the nested view model
+                self.objectWillChange.send()
             }
             .store(in: &disposables)
 
         // MARK: UserDefaults
         if !UserDefaults.standard.tutorialShown {
-            currentTab = 2
+            currentTab = .archive
         }
 
         $currentTab
             .dropFirst()
             .removeDuplicates()
-            .sink { selectedIndex in
+            .sink { selectedTab in
                 // save the selected index for the next app start
-                UserDefaults.standard.lastSelectedTabIndex = selectedIndex
-                Log.send(.info, "Changed tab.", extra: ["selectedTab": String(selectedIndex)])
+                UserDefaults.standard.lastSelectedTabIndex = selectedTab
+                Log.send(.info, "Changed tab.", extra: ["selectedTab": String(selectedTab.rawValue)])
 
                 self.selectionFeedback.prepare()
                 self.selectionFeedback.selectionChanged()
@@ -110,11 +107,11 @@ class MainTabViewModel: ObservableObject {
     }
 
     func showSubscriptionDismissed() {
-        guard !IAP.service.appUsagePermitted() && currentTab == 1 else { return }
-        currentTab = 2
+        guard !IAP.service.appUsagePermitted() && currentTab == .tag else { return }
+        currentTab = .archive
     }
 
-    private func validateSubscriptionState(of selectedIndex: Int) {
-        self.showSubscriptionView = !IAP.service.appUsagePermitted() && selectedIndex == 1
+    private func validateSubscriptionState(of selectedTab: MainTabView.Tabs) {
+        self.showSubscriptionView = !IAP.service.appUsagePermitted() && selectedTab == .tag
     }
 }

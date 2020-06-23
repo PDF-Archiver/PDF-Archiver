@@ -37,7 +37,7 @@ class KeyCommandHostingController<Content>: UIHostingController<Content> where C
 
     override var keyCommands: [UIKeyCommand]? {
         var commands = [tab0, tab1, tab2, tab3]
-        if viewModel.currentTab == 1 {
+        if viewModel.currentTab == .tag {
             commands.append(contentsOf: [save, delete])
         }
         commands.forEach { command in
@@ -51,25 +51,25 @@ class KeyCommandHostingController<Content>: UIHostingController<Content> where C
     func action(_ sender: UIKeyCommand) {
         switch sender {
         case save:
-            guard viewModel.currentTab == 1 else {
+            guard viewModel.currentTab == .tag else {
                 assertionFailure("Could not save document in tab #\(viewModel.currentTab)")
                 return
             }
             viewModel.tagViewModel.saveDocument()
         case delete:
-            guard viewModel.currentTab == 1 else {
+            guard viewModel.currentTab == .tag else {
                 assertionFailure("Could not save document in tab #\(viewModel.currentTab)")
                 return
             }
             viewModel.tagViewModel.deleteDocument()
         case tab0:
-            viewModel.currentTab = 0
+            viewModel.currentTab = .scan
         case tab1:
-            viewModel.currentTab = 1
+            viewModel.currentTab = .tag
         case tab2:
-            viewModel.currentTab = 2
+            viewModel.currentTab = .archive
         case tab3:
-            viewModel.currentTab = 3
+            viewModel.currentTab = .more
         default:
             print(">>> test was pressed")
         }

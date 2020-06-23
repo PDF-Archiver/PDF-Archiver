@@ -11,14 +11,16 @@ import VisionKit
 
 struct DocumentCameraView: UIViewControllerRepresentable {
 
-    private let completionHandler: ([UIImage]?) -> Void
+    private let controller = VNDocumentCameraViewController()
+    private let isShown: Binding<Bool>
+    private let imageHandler: ([UIImage]) -> Void
 
-    init(completionHandler: @escaping ([UIImage]?) -> Void) {
-        self.completionHandler = completionHandler
+    init(isShown: Binding<Bool>, imageHandler: @escaping ([UIImage]) -> Void) {
+        self.isShown = isShown
+        self.imageHandler = imageHandler
     }
 
     func makeUIViewController(context: Context) -> VNDocumentCameraViewController {
-        let controller = VNDocumentCameraViewController()
         controller.delegate = context.coordinator
         return controller
     }
@@ -26,33 +28,39 @@ struct DocumentCameraView: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: VNDocumentCameraViewController, context: Context) { }
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(completionHandler: completionHandler)
+        Coordinator(isShown: isShown, imageHandler: imageHandler)
     }
 
     final class Coordinator: NSObject, VNDocumentCameraViewControllerDelegate {
-        private let completionHandler: ([UIImage]?) -> Void
+        
+        private let isShown: Binding<Bool>
+        private let imageHandler: ([UIImage]) -> Void
 
-        init(completionHandler: @escaping ([UIImage]?) -> Void) {
-            self.completionHandler = completionHandler
+        init(isShown: Binding<Bool>, imageHandler: @escaping ([UIImage]) -> Void) {
+            self.isShown = isShown
+            self.imageHandler = imageHandler
         }
 
         func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
-            // The scanned pages seemed to be reversed!
-            var images = [UIImage]()
-            for index in 0..<scan.pageCount {
-                let image = scan.imageOfPage(at: index)
-                images.append(image)
+            self.isShown.wrappedValue = false
+            
+            DispatchQueue.global(qos: .utility).async {
+                var images = [UIImage]()
+                for index in 0..<scan.pageCount {
+                    let image = scan.imageOfPage(at: index)
+                    images.append(image)
+                }
+                self.imageHandler(images)
             }
-            completionHandler(images)
         }
 
         func documentCameraViewControllerDidCancel(_ controller: VNDocumentCameraViewController) {
-            completionHandler(nil)
+            self.isShown.wrappedValue = false
         }
 
         func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFailWithError error: Error) {
             Log.send(.error, "Scan did fail with error.", extra: ["error": error.localizedDescription])
-            completionHandler(nil)
+            self.isShown.wrappedValue = false
         }
     }
 }

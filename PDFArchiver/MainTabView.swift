@@ -9,12 +9,17 @@
 import SwiftUI
 
 struct MainTabView: View {
+    enum Tabs: Int, Hashable {
+        case scan = 0
+        case tag, archive, more
+    }
+    
     @ObservedObject var viewModel: MainTabViewModel
 
     var body: some View {
         ZStack {
             tabViews
-            if viewModel.showDocumentScan {
+            if viewModel.scanViewModel.showDocumentScan {
                 documentCameraView
             }
             if viewModel.showSubscriptionView {
@@ -37,33 +42,35 @@ struct MainTabView: View {
                         Image(systemName: "doc.text.viewfinder")
                         Text("Scan")
                     }
-                }.tag(0)
+                }.tag(Tabs.scan)
             TagTabView(viewModel: viewModel.tagViewModel)
                 .tabItem {
                     VStack {
                         Image(systemName: "tag")
                         Text("Tag")
                     }
-                }.tag(1)
+                }.tag(Tabs.tag)
             ArchiveView(viewModel: viewModel.archiveViewModel)
                 .tabItem {
                     VStack {
                         Image(systemName: "archivebox")
                         Text("Archive")
                     }
-                }.tag(2)
+                }.tag(Tabs.archive)
             MoreTabView(viewModel: viewModel.moreViewModel)
                 .tabItem {
                     VStack {
                         Image(systemName: "ellipsis")
                         Text("More")
                     }
-                }.tag(3)
+                }.tag(Tabs.more)
         }
     }
 
     private var documentCameraView: some View {
-        DocumentCameraView(completionHandler: viewModel.scanViewModel.process)
+        DocumentCameraView(
+            isShown: $viewModel.scanViewModel.showDocumentScan,
+            imageHandler: viewModel.scanViewModel.process)
             .edgesIgnoringSafeArea(.all)
             .statusBar(hidden: true)
     }
