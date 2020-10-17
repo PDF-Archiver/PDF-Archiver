@@ -108,36 +108,38 @@ public class IAPHelper {
     }
 
     public func appUsagePermitted() -> Bool {
+        return true
 
-        // debug/simulator/testflight: app usage is always permitted
-        guard environment == .release else {
-            return true
-        }
-
-        // no validation needed if the saved expiration date is not yet reached
-        if let expiryDate = UserDefaults.standard.subscriptionExpiryDate,
-            expiryDate > Date() {
-            return true
-        }
-
-        requestsRunning += 1
-        defer {
-            requestsRunning -= 1
-        }
-
-        var appUsagePermitted = false
-
-        let semaphore = DispatchSemaphore(value: 1)
-        Purchases.shared.purchaserInfo { (purchaserInfo, _) in
-            appUsagePermitted = self.internalAppUsagePermitted(with: purchaserInfo)
-            semaphore.signal()
-        }
-        let timeout = semaphore.wait(timeout: .now() + .seconds(5))
-        if timeout == .timedOut {
-            os_log("Failed to get permission!", log: Self.log, type: .error)
-            return false
-        }
-        return appUsagePermitted
+        // skip app validation in this version
+//        // debug/simulator/testflight: app usage is always permitted
+//        guard environment == .release else {
+//            return true
+//        }
+//
+//        // no validation needed if the saved expiration date is not yet reached
+//        if let expiryDate = UserDefaults.standard.subscriptionExpiryDate,
+//            expiryDate > Date() {
+//            return true
+//        }
+//
+//        requestsRunning += 1
+//        defer {
+//            requestsRunning -= 1
+//        }
+//
+//        var appUsagePermitted = false
+//
+//        let semaphore = DispatchSemaphore(value: 1)
+//        Purchases.shared.purchaserInfo { (purchaserInfo, _) in
+//            appUsagePermitted = self.internalAppUsagePermitted(with: purchaserInfo)
+//            semaphore.signal()
+//        }
+//        let timeout = semaphore.wait(timeout: .now() + .seconds(5))
+//        if timeout == .timedOut {
+//            os_log("Failed to get permission!", log: Self.log, type: .error)
+//            return false
+//        }
+//        return appUsagePermitted
     }
 
     private func internalAppUsagePermitted(with purchaserInfo: Purchases.PurchaserInfo?) -> Bool {
