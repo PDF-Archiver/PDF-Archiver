@@ -84,27 +84,27 @@ public class IAPHelper {
         Purchases.shared.products(Array(productIdentifiers)) { products in
             self.products = Set(products)
         }
-        DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(2)) {
-            Purchases.shared.purchaserInfo { purchaserInfo, _ in
-
-                // setup migration
-                var isSubscribedInOldSystem = false
-                if let subscriptionExpiryDate = UserDefaults.standard.subscriptionExpiryDate,
-                    subscriptionExpiryDate > Date() {
-                    isSubscribedInOldSystem = true
-                }
-                let isSubscribedInRevenueCat = !(purchaserInfo?.entitlements.active.isEmpty ?? true)
-
-                // If the old system says we have a subscription, but RevenueCat does not
-                if isSubscribedInOldSystem && !isSubscribedInRevenueCat {
-                  // Tell Purchases to restoreTransactions.
-                  // This will sync the user's receipt with RevenueCat.
-                  Purchases.shared.restoreTransactions { (_, _) in }
-                }
-
-                _ = self.internalAppUsagePermitted(with: purchaserInfo)
-            }
-        }
+//        DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(2)) {
+//            Purchases.shared.purchaserInfo { purchaserInfo, _ in
+//
+//                // setup migration
+//                var isSubscribedInOldSystem = false
+//                if let subscriptionExpiryDate = UserDefaults.standard.subscriptionExpiryDate,
+//                    subscriptionExpiryDate > Date() {
+//                    isSubscribedInOldSystem = true
+//                }
+//                let isSubscribedInRevenueCat = !(purchaserInfo?.entitlements.active.isEmpty ?? true)
+//
+//                // If the old system says we have a subscription, but RevenueCat does not
+//                if isSubscribedInOldSystem && !isSubscribedInRevenueCat {
+//                  // Tell Purchases to restoreTransactions.
+//                  // This will sync the user's receipt with RevenueCat.
+//                  Purchases.shared.restoreTransactions { (_, _) in }
+//                }
+//
+//                _ = self.internalAppUsagePermitted(with: purchaserInfo)
+//            }
+//        }
     }
 
     public func appUsagePermitted() -> Bool {
@@ -142,32 +142,32 @@ public class IAPHelper {
 //        return appUsagePermitted
     }
 
-    private func internalAppUsagePermitted(with purchaserInfo: Purchases.PurchaserInfo?) -> Bool {
-        guard let purchaserInfo = purchaserInfo else { return false }
-
-        // update the expiration date if it could be found
-        if let expirationDate = purchaserInfo.entitlements.all[IAPHelper.subscriptionEntitlement]?.expirationDate {
-            let oldExpirationDate = UserDefaults.standard.subscriptionExpiryDate
-            UserDefaults.standard.subscriptionExpiryDate = expirationDate
-            os_log("New Subscription Expiration Date: %@", log: Self.log, type: .info, expirationDate.description)
-
-            if oldExpirationDate != expirationDate {
-                self.delegate?.changed(expirationDate: expirationDate)
-            }
-        }
-
-        if let originalApplicationVersion = purchaserInfo.originalApplicationVersion,
-            self.preSubscriptionPrefixes.contains(where: { originalApplicationVersion.hasPrefix($0) }) {
-            // user bought the app before subscription model
-            return true
-        }
-
-        if purchaserInfo.entitlements.all[IAPHelper.subscriptionEntitlement]?.isActive == true {
-            // found a valid subscription
-            return true
-        }
-        return false
-    }
+//    private func internalAppUsagePermitted(with purchaserInfo: Purchases.PurchaserInfo?) -> Bool {
+//        guard let purchaserInfo = purchaserInfo else { return false }
+//
+//        // update the expiration date if it could be found
+//        if let expirationDate = purchaserInfo.entitlements.all[IAPHelper.subscriptionEntitlement]?.expirationDate {
+//            let oldExpirationDate = UserDefaults.standard.subscriptionExpiryDate
+//            UserDefaults.standard.subscriptionExpiryDate = expirationDate
+//            os_log("New Subscription Expiration Date: %@", log: Self.log, type: .info, expirationDate.description)
+//
+//            if oldExpirationDate != expirationDate {
+//                self.delegate?.changed(expirationDate: expirationDate)
+//            }
+//        }
+//
+//        if let originalApplicationVersion = purchaserInfo.originalApplicationVersion,
+//            self.preSubscriptionPrefixes.contains(where: { originalApplicationVersion.hasPrefix($0) }) {
+//            // user bought the app before subscription model
+//            return true
+//        }
+//
+//        if purchaserInfo.entitlements.all[IAPHelper.subscriptionEntitlement]?.isActive == true {
+//            // found a valid subscription
+//            return true
+//        }
+//        return false
+//    }
 
     public func buyProduct(_ productIdentifier: String, completion: ((_ successful: Bool) -> Void)? = nil) {
 
@@ -179,24 +179,25 @@ public class IAPHelper {
                 let package = packages.first(where: { $0.product.productIdentifier == productIdentifier }) {
 
                 self.requestsRunning += 1
-                Purchases.shared.purchasePackage(package) { (_, purchaseInfo, _, _) in
+                Purchases.shared.purchasePackage(package) { (_, _, _, _) in
                     self.requestsRunning -= 1
 
-                    let success = self.internalAppUsagePermitted(with: purchaseInfo)
-                    completion?(success)
+//                    let success = self.internalAppUsagePermitted(with: purchaseInfo)
+//                    completion?(success)
+                    completion?(true)
                 }
 
             } else {
-                completion?(false)
+                completion?(true)
             }
         }
     }
-
-    public func restorePurchases() {
-        requestsRunning += 1
-        Purchases.shared.restoreTransactions { (purchaseInfo, _) in
-            _ = self.internalAppUsagePermitted(with: purchaseInfo)
-            self.requestsRunning -= 1
-        }
-    }
+//
+//    public func restorePurchases() {
+//        requestsRunning += 1
+//        Purchases.shared.restoreTransactions { (purchaseInfo, _) in
+//            _ = self.internalAppUsagePermitted(with: purchaseInfo)
+//            self.requestsRunning -= 1
+//        }
+//    }
 }
