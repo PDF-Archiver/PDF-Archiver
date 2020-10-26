@@ -3,7 +3,7 @@
 //  PDFArchiver
 //
 //  Created by Julian Kahnert on 09.07.18.
-//  Copyright © 2019 Julian Kahnert. All rights reserved.
+//  Copyright © 2020 Julian Kahnert. All rights reserved.
 //
 // swiftlint:disable force_unwrapping
 

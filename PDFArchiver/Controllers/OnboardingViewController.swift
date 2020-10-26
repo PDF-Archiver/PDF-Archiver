@@ -3,7 +3,7 @@
 //  PDF Archiver
 //
 //  Created by Julian Kahnert on 28.02.18.
-//  Copyright © 2019 Julian Kahnert. All rights reserved.
+//  Copyright © 2020 Julian Kahnert. All rights reserved.
 //
 
 import Cocoa

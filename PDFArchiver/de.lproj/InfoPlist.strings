@@ -3,8 +3,8 @@
   PDF Archiver
 
   Created by Julian Kahnert on 08.02.18.
-  Copyright © 2019 Julian Kahnert. All rights reserved.
+  Copyright © 2020 Julian Kahnert. All rights reserved.
 */
 
 "CFBundleDisplayName" = "PDF Archiver";
-"NSHumanReadableCopyright" = "2019 Julian Kahnert. Alle Rechte vorbehalten.\nmail@pdf-archiver.io\n\nImpressum & Datenschutzerklärung:\nhttps://pdf-archiver/de/imprint\nhttps://pdf-archiver.io/de/privacy";
+"NSHumanReadableCopyright" = "2020 Julian Kahnert. Alle Rechte vorbehalten.\nmail@pdf-archiver.io\n\nImpressum & Datenschutzerklärung:\nhttps://pdf-archiver/de/imprint\nhttps://pdf-archiver.io/de/privacy";
