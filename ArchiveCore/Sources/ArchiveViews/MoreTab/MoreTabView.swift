@@ -11,7 +11,7 @@ import SwiftUIX
 import Parma
 
 #if os(macOS)
-private typealias CustomListStyle = DefaultListStyle
+private typealias CustomListStyle = InsetListStyle
 private typealias CustomNavigationtStyle = DefaultNavigationViewStyle
 #else
 private typealias CustomListStyle = GroupedListStyle

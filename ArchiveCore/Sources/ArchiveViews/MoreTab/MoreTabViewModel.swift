@@ -13,7 +13,7 @@ import MessageUI
 #endif
 import SwiftUI
 
-final class MoreTabViewModel: ObservableObject, Log {
+final public class MoreTabViewModel: ObservableObject, Log {
 
     static let mailRecipients = ["support@pdf-archiver.io"]
     static let mailSubject = "PDF Archiver: iOS Support"
@@ -31,7 +31,7 @@ final class MoreTabViewModel: ObservableObject, Log {
     private let iapService: IAPServiceAPI
     private var disposables = Set<AnyCancellable>()
 
-    init(iapService: IAPServiceAPI) {
+    public init(iapService: IAPServiceAPI) {
         self.iapService = iapService
         $selectedQualityIndex
             .sink { selectedQuality in

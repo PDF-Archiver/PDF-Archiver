@@ -270,7 +270,7 @@ public final class PDFProcessing: Operation, Log {
             for result in observation.results {
                 result.attributedText.draw(in: result.rect)
             }
-            
+
             // close context
             context.endPDFPage()
             context.closePDF()

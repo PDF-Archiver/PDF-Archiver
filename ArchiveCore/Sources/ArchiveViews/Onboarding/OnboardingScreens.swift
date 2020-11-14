@@ -65,7 +65,8 @@ struct OnboardingScreens: View {
 struct OnboardingScreens_Previews: PreviewProvider {
     static var previews: some View {
         OnboardingScreens(isPresenting: .constant(true), onboardSet: OnboardSet.previewSet())
-            .makeForPreviewProvider()
+//            .makeForPreviewProvider()
+            .previewDevice("Mac")
     }
 }
 #endif

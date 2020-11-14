@@ -31,7 +31,7 @@ struct PDFArchiverApp: App, Log {
         WindowGroup {
             mainView
         }
-        .windowStyle(CustomWindowStyle())
+        .windowStyle(HiddenTitleBarWindowStyle())
 
         Settings {
             Text("Test")

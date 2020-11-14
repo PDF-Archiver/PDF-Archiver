@@ -11,10 +11,6 @@ import Foundation
 import PDFKit
 import Vision
 
-public protocol ImageConverterDelegate: class {
-    func getDocumentDestination() -> URL?
-}
-
 public final class ImageConverter: ObservableObject, ImageConverterAPI, Log {
 
     @Published public private(set) var error: Error?

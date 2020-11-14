@@ -181,8 +181,10 @@ public final class MainNavigationViewModel: ObservableObject, Log {
                 return AnyView(TagTabView(viewModel: tagViewModel))
             case .archive:
                 return AnyView(ArchiveView(viewModel: archiveViewModel))
+            #if !os(macOS)
             case .more:
                 return AnyView(MoreTabView(viewModel: moreViewModel))
+            #endif
         }
     }
 

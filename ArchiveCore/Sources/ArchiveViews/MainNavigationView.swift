@@ -69,6 +69,7 @@ public struct MainNavigationView: View {
                         } label: {
                             Label(category, systemImage: "folder")
                         }
+                        .buttonStyle(BorderlessButtonStyle())
                     }
                     .accentColor(.systemGray)
                 }
@@ -80,6 +81,7 @@ public struct MainNavigationView: View {
                         } label: {
                             Label(category, systemImage: "tag")
                         }
+                        .buttonStyle(BorderlessButtonStyle())
                     }
                     .accentColor(.blue)
                 }
