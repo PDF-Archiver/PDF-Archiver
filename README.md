@@ -71,6 +71,15 @@ Now you should be good to go!
 just build and run the App on your iPhone/iPad via Xcode.
 
 
+#### Sentry Upload Debug Symbols
+
+1. Get auth token from [Sentry](https://sentry.io/settings/account/api/auth-tokens/).
+2. Download debug symbols of the specified version in Xcode Organizer.
+3. Add token and upload symbols:
+```bash
+sentry-cli --auth-token CHANGEME upload-dif build --org pdf-archiver --project pdf-archive-viewer ~/Library/Developer/Xcode/DerivedData/
+````
+
 #### License Update
 ```bash
 # installation

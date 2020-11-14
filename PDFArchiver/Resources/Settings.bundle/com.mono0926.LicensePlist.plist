@@ -12,17 +12,9 @@
 		</dict>
 		<dict>
 			<key>File</key>
-			<string>com.mono0926.LicensePlist/ArchiveLib</string>
-			<key>Title</key>
-			<string>ArchiveLib (2.0.12)</string>
-			<key>Type</key>
-			<string>PSChildPaneSpecifier</string>
-		</dict>
-		<dict>
-			<key>File</key>
 			<string>com.mono0926.LicensePlist/Diagnostics</string>
 			<key>Title</key>
-			<string>Diagnostics (1.6.0)</string>
+			<string>Diagnostics (1.7.0)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -30,7 +22,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/KeyboardObserving</string>
 			<key>Title</key>
-			<string>KeyboardObserving</string>
+			<string>KeyboardObserving (0.3.0)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -54,7 +46,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/paper-onboarding</string>
 			<key>Title</key>
-			<string>paper-onboarding (6.1.4)</string>
+			<string>paper-onboarding (6.1.5)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -62,7 +54,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/sentry-cocoa</string>
 			<key>Title</key>
-			<string>sentry-cocoa (4.4.3)</string>
+			<string>sentry-cocoa (5.1.6)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -86,7 +78,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/SwiftyStoreKit</string>
 			<key>Title</key>
-			<string>SwiftyStoreKit (0.15.1)</string>
+			<string>SwiftyStoreKit (0.16.0)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>

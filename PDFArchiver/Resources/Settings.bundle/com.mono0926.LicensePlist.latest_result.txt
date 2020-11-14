@@ -1,23 +1,21 @@
-name: ArchiveLib, nameSpecified: , owner: PDF-Archiver, version: 2.0.12
+name: Diagnostics, nameSpecified: , owner: WeTransfer, version: 1.7.0
 
-name: Diagnostics, nameSpecified: , owner: WeTransfer, version: 1.6.0
-
-name: KeyboardObserving, nameSpecified: , owner: JulianKahnert, version: 
+name: KeyboardObserving, nameSpecified: , owner: nickffox, version: 0.3.0
 
 name: LoggingKit, nameSpecified: , owner: PDF-Archiver, version: 1.1.4
 
 name: LogModel, nameSpecified: , owner: PDF-Archiver, version: 0.0.4
 
-name: paper-onboarding, nameSpecified: , owner: Ramotion, version: 6.1.4
+name: paper-onboarding, nameSpecified: , owner: Ramotion, version: 6.1.5
 
-name: sentry-cocoa, nameSpecified: , owner: getsentry, version: 4.4.3
+name: sentry-cocoa, nameSpecified: , owner: getsentry, version: 5.1.6
 
 name: swift-log, nameSpecified: , owner: apple, version: 1.2.0
 
 name: SwiftUIX, nameSpecified: , owner: SwiftUIX, version: 
 
-name: SwiftyStoreKit, nameSpecified: , owner: bizz84, version: 0.15.1
+name: SwiftyStoreKit, nameSpecified: , owner: bizz84, version: 0.16.0
 
 add-version-numbers: true
 
-LicensePlist Version: 2.14.0
+LicensePlist Version: 2.15.0
