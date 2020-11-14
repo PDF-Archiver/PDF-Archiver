@@ -1,0 +1,23 @@
+name: ASN1Swift, nameSpecified: ASN1Swift, owner: tikhop, version: 1.2.4
+
+name: DeepDiff, nameSpecified: DeepDiff, owner: onmyway133, version: 2.3.1
+
+name: Diagnostics, nameSpecified: Diagnostics, owner: WeTransfer, version: 
+
+name: Down, nameSpecified: Down, owner: iwasrobbed, version: 0.9.4
+
+name: GraphicsRenderer, nameSpecified: GraphicsRenderer, owner: shaps80, version: 1.4.4
+
+name: Parma, nameSpecified: Parma, owner: dasautoooo, version: 0.2.0
+
+name: sentry-cocoa, nameSpecified: Sentry, owner: getsentry, version: 5.2.2
+
+name: swift-log, nameSpecified: swift-log, owner: apple, version: 1.4.0
+
+name: SwiftUIX, nameSpecified: SwiftUIX, owner: SwiftUIX, version: 
+
+name: TPInAppReceipt, nameSpecified: TPInAppReceipt, owner: tikhop, version: 3.0.2
+
+add-version-numbers: true
+
+LicensePlist Version: 3.0.5

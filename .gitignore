@@ -40,3 +40,5 @@ Gemfile.lock
 .bundle
 Config.xcconfig
 PDFArchiver.xcodeproj/xcshareddata/xcbaselines
+Constants+Secrets.swift
+ArchiveCore/.swiftpm
