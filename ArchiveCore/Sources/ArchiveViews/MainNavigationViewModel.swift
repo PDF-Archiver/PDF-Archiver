@@ -13,8 +13,6 @@ import SwiftUI
 
 public final class MainNavigationViewModel: ObservableObject, Log {
 
-    public static let imageConverter = ImageConverter(getDocumentDestination: { PathManager.shared.untaggedURL },
-                                                      shouldStartBackgroundTask: true)
     public static let iapService = IAPService()
 
     @Published var error: Error?
@@ -26,7 +24,10 @@ public final class MainNavigationViewModel: ObservableObject, Log {
     @Published var currentOptionalTab: Tab?
     @Published var showTutorial = !UserDefaults.appGroup.tutorialShown
 
-    var scanViewModel = ScanTabViewModel(imageConverter: imageConverter, iapService: iapService, documentsFinishedHandler: scanFinished)
+    public private(set) lazy var imageConverter = ImageConverter(getDocumentDestination: getDocumentDestination,
+                                                                 shouldStartBackgroundTask: true)
+
+    lazy var scanViewModel = ScanTabViewModel(imageConverter: imageConverter, iapService: Self.iapService, documentsFinishedHandler: Self.scanFinished)
     let tagViewModel = TagTabViewModel()
     let archiveViewModel = ArchiveViewModel()
     let moreViewModel = MoreTabViewModel(iapService: iapService)
@@ -37,12 +38,21 @@ public final class MainNavigationViewModel: ObservableObject, Log {
 
     private var disposables = Set<AnyCancellable>()
 
+    func getDocumentDestination() -> URL? {
+        do {
+            return try PathManager.shared.getUntaggedUrl()
+        } catch {
+            self.error = error
+            return nil
+        }
+    }
+
     public init() {
 
         Self.iapService.$error
             .assign(to: &$error)
 
-        Self.imageConverter.$error
+        imageConverter.$error
             .assign(to: &$error)
 
         $currentTab
@@ -137,16 +147,17 @@ public final class MainNavigationViewModel: ObservableObject, Log {
 
         // TODO: change container!?
         DispatchQueue.global(qos: .userInteractive).async {
+            // TODO: handle no icloud drive found
+            do {
+                let archiveUrl = try PathManager.shared.getArchiveUrl()
+                let untaggedUrl = try PathManager.shared.getUntaggedUrl()
 
-            guard let iCloudContainerPath = PathConstants.iCloudDriveURL else {
-                Self.log.error("Could not find a iCloud Drive url.")
+                ArchiveStore.shared.update(archiveFolder: archiveUrl, untaggedFolders: [untaggedUrl])
+            } catch {
                 DispatchQueue.main.async {
-                    self.error = AlertDataModel.createAndPostNoICloudDrive()
+                    self.error = error
                 }
-                return
             }
-
-            ArchiveStore.shared.update(archiveFolder: iCloudContainerPath, untaggedFolders: [iCloudContainerPath.appendingPathComponent("untagged")])
         }
     }
 
@@ -232,7 +243,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
                 url.stopAccessingSecurityScopedResource()
             }
             _ = url.startAccessingSecurityScopedResource()
-            try Self.imageConverter.handle(url)
+            try imageConverter.handle(url)
         } catch {
             log.error("Unable to handle file.", metadata: ["filetype": "\(url.pathExtension)", "error": "\(error)"])
 //            try? FileManager.default.removeItem(at: url)

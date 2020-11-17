@@ -22,6 +22,7 @@ import SwiftUI
 struct PDFArchiverApp: App, Log {
 
     @Environment(\.scenePhase) private var scenePhase
+    @StateObject public var mainNavigationViewModel = MainNavigationViewModel()
 
     init() {
         setup()
@@ -46,7 +47,7 @@ struct PDFArchiverApp: App, Log {
     }
 
     private var mainView: some View {
-        MainNavigationView()
+        MainNavigationView(viewModel: mainNavigationViewModel)
             .environmentObject(OrientationInfo())
             .onChange(of: scenePhase) { phase in
                 Self.log.info("Scene change: \(phase)")
@@ -54,7 +55,7 @@ struct PDFArchiverApp: App, Log {
                 #if !os(macOS)
                 // schedule a new background task
                 if phase != .active,
-                   MainNavigationViewModel.imageConverter.totalDocumentCount.value > 0 {
+                   mainNavigationViewModel.imageConverter.totalDocumentCount.value > 0 {
                     BackgroundTaskScheduler.shared.scheduleTask(with: .pdfProcessing)
                 }
                 #endif

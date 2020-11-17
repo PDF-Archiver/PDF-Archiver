@@ -8,9 +8,6 @@
 import Foundation
 
 public enum PathConstants: Log {
-    public static var iCloudDriveURL: URL? {
-        FileManager.default.url(forUbiquityContainerIdentifier: nil)?.appendingPathComponent("Documents")
-    }
     private static let appGroupContainerURL: URL = {
         guard let tempImageURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: Constants.sharedContainerIdentifier) else {
             log.criticalAndAssert("AppGroup folder could not be found.")
