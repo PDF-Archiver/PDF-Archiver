@@ -138,7 +138,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
         // TODO: change container!?
         DispatchQueue.global(qos: .userInteractive).async {
 
-            guard let iCloudContainerPath = PathManager.iCloudDriveURL else {
+            guard let iCloudContainerPath = PathConstants.iCloudDriveURL else {
                 Self.log.error("Could not find a iCloud Drive url.")
                 DispatchQueue.main.async {
                     self.error = AlertDataModel.createAndPostNoICloudDrive()
@@ -154,8 +154,8 @@ public final class MainNavigationViewModel: ObservableObject, Log {
         guard scenePhase == .active else { return }
 
         // get documents from ShareExtension and AppClip
-        let extensionURLs = (try? FileManager.default.contentsOfDirectory(at: PathManager.extensionTempPdfURL, includingPropertiesForKeys: [], options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])) ?? []
-        let appClipURLs = (try? FileManager.default.contentsOfDirectory(at: PathManager.appClipTempPdfURL, includingPropertiesForKeys: [], options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])) ?? []
+        let extensionURLs = (try? FileManager.default.contentsOfDirectory(at: PathConstants.extensionTempPdfURL, includingPropertiesForKeys: [], options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])) ?? []
+        let appClipURLs = (try? FileManager.default.contentsOfDirectory(at: PathConstants.appClipTempPdfURL, includingPropertiesForKeys: [], options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])) ?? []
         let urls = [extensionURLs, appClipURLs]
             .flatMap { $0 }
             .filter { !$0.hasDirectoryPath }

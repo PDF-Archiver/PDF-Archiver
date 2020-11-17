@@ -41,7 +41,7 @@ struct OBCardView: View {
                         .padding(8)
                         .scaledToFit()
                         .font(.largeTitle)
-                        
+
                 }
                 .frame(width: 50, height: 50)
                 .padding()

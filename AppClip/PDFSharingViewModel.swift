@@ -25,7 +25,7 @@ final class PDFSharingViewModel: ObservableObject, Equatable {
         NotificationCenter.default.publisher(for: .foundProcessedDocument)
             .compactMap { _ -> URL? in
                 let fileManager = FileManager.default
-                return try? fileManager.contentsOfDirectory(at: PathManager.tempPdfURL, includingPropertiesForKeys: nil, options: [.skipsSubdirectoryDescendants, .skipsHiddenFiles])
+                return try? fileManager.contentsOfDirectory(at: PathConstants.tempPdfURL, includingPropertiesForKeys: nil, options: [.skipsSubdirectoryDescendants, .skipsHiddenFiles])
                     .max { url1, url2 in
                         guard let date1 = (try? fileManager.attributesOfItem(atPath: url1.path))?[.creationDate] as? Date,
                               let date2 = (try? fileManager.attributesOfItem(atPath: url2.path))?[.creationDate] as? Date else { return false }

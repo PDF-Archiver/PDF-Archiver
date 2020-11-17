@@ -15,7 +15,7 @@ public enum StorageHelper {
 
     public static func save(_ images: [CIImage]) throws {
 
-        try FileManager.default.createFolderIfNotExists(PathManager.tempImageURL)
+        try FileManager.default.createFolderIfNotExists(PathConstants.tempImageURL)
 
         let quality = CGFloat(UserDefaults.standard.pdfQuality.rawValue)
         let uuid = UUID()
@@ -28,13 +28,13 @@ public enum StorageHelper {
             let filename = "\(uuid.uuidString)\(seperator)\(String(format: "%04d", index)).jpg"
 
             // Attempt to write the data
-            try data.write(to: PathManager.tempImageURL.appendingPathComponent(filename))
+            try data.write(to: PathConstants.tempImageURL.appendingPathComponent(filename))
         }
     }
 
     public static func loadImageIds() -> Set<UUID> {
 
-        let paths = (try? FileManager.default.contentsOfDirectory(at: PathManager.tempImageURL, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)) ?? []
+        let paths = (try? FileManager.default.contentsOfDirectory(at: PathConstants.tempImageURL, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)) ?? []
         let imageIds = paths
             .filter { $0.pathExtension.lowercased() != "pdf" }
             .compactMap { $0.lastPathComponent.components(separatedBy: seperator).first }
@@ -47,7 +47,7 @@ public enum StorageHelper {
 
     private static func getImagePaths() -> [URL] {
 
-        let paths = (try? FileManager.default.contentsOfDirectory(at: PathManager.tempImageURL, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)) ?? []
+        let paths = (try? FileManager.default.contentsOfDirectory(at: PathConstants.tempImageURL, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)) ?? []
         return paths.filter { $0.pathExtension.lowercased() != "pdf" }
     }
 }

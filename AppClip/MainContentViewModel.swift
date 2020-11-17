@@ -10,7 +10,7 @@ import Combine
 import SwiftUI
 
 final class MainContentViewModel: ObservableObject {
-    static let imageConverter = ImageConverter(getDocumentDestination: { PathManager.tempPdfURL },
+    static let imageConverter = ImageConverter(getDocumentDestination: { PathConstants.tempPdfURL },
                                                shouldStartBackgroundTask: false)
 
     @Published var showAppStoreOverlay = false

@@ -1,5 +1,5 @@
 //
-//  PathManager.swift
+//  PathConstants.swift
 //  
 //
 //  Created by Julian Kahnert on 18.10.20.
@@ -7,10 +7,7 @@
 
 import Foundation
 
-public final class PathManager: Log {
-
-    public static let shared = PathManager()
-
+public enum PathConstants: Log {
     public static var iCloudDriveURL: URL? {
         FileManager.default.url(forUbiquityContainerIdentifier: nil)?.appendingPathComponent("Documents")
     }
@@ -40,17 +37,6 @@ public final class PathManager: Log {
 
     public static var appClipTempPdfURL: URL {
         tempPdfURL
-    }
-
-    public private(set) var archiveURL: URL?
-    public private(set) var untaggedURL: URL?
-
-    private init() {
-        self.archiveURL = UserDefaults.appGroup.archiveURL ?? Self.iCloudDriveURL
-        self.untaggedURL = UserDefaults.appGroup.untaggedURL ?? Self.iCloudDriveURL?.appendingPathComponent("untagged")
-
-        Self.createFolderIfNotExists(archiveURL, name: "archive")
-        Self.createFolderIfNotExists(untaggedURL, name: "untagged")
     }
 
     private static func createFolderIfNotExists(_ folder: URL?, name: StaticString) {

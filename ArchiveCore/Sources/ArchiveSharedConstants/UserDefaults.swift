@@ -18,6 +18,7 @@ extension UserDefaults: Log {
         case firstDocumentScanAlertPresented
         case archiveURL
         case untaggedURL
+        case archivePathType
     }
 
     public enum PDFQuality: Float, CaseIterable {
@@ -106,6 +107,20 @@ extension UserDefaults: Log {
         set {
             set(newValue, forKey: Names.untaggedURL.rawValue)
         }
+    }
+
+    public func set<T: Encodable>(_ object: T?, forKey key: Names) throws {
+        guard let object = object else {
+            setNilValueForKey(key.rawValue)
+            return
+        }
+        let data = try JSONEncoder().encode(object)
+        set(data, forKey: key.rawValue)
+    }
+
+    public func getObject<T: Decodable>(forKey key: Names) throws -> T? {
+        guard let data = object(forKey: key.rawValue) as? Data else { return nil }
+        return try JSONDecoder().decode(T.self, from: data)
     }
 
     // MARK: - Migration
