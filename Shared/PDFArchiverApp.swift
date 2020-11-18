@@ -85,6 +85,11 @@ struct PDFArchiverApp: App, Log {
             _ = ArchiveStore.shared
         }
 
+        #if !APPCLIP
+        // background tasks must be initialized before the application did finish launching
+        _ = BackgroundTaskScheduler.shared
+        #endif
+
         #if !os(macOS)
         // Create a Sentry client and start crash handler
         SentrySDK.start { options in

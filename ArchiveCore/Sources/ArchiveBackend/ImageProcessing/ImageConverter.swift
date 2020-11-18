@@ -31,7 +31,7 @@ public final class ImageConverter: ObservableObject, ImageConverterAPI, Log {
         return queue
     }()
 
-    public init(getDocumentDestination: @escaping () -> URL?, shouldStartBackgroundTask: Bool) {
+    public init(getDocumentDestination: @escaping () -> URL?) {
         precondition(!Self.isInitialized, "ImageConverter must only initialized once.")
         Self.isInitialized = true
         self.getDocumentDestination = getDocumentDestination
@@ -51,11 +51,9 @@ public final class ImageConverter: ObservableObject, ImageConverterAPI, Log {
             }
         }
 
-        #if os(iOS)
+        #if !APPCLIP
         // by setting the delegate, the BackgroundTaskScheduler will be initialized
-        if shouldStartBackgroundTask {
-            BackgroundTaskScheduler.shared.delegate = self
-        }
+        BackgroundTaskScheduler.shared.delegate = self
         #endif
     }
 

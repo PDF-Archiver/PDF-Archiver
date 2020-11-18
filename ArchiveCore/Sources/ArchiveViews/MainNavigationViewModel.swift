@@ -24,8 +24,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
     @Published var currentOptionalTab: Tab?
     @Published var showTutorial = !UserDefaults.appGroup.tutorialShown
 
-    public private(set) lazy var imageConverter = ImageConverter(getDocumentDestination: getDocumentDestination,
-                                                                 shouldStartBackgroundTask: true)
+    public private(set) lazy var imageConverter = ImageConverter(getDocumentDestination: getDocumentDestination)
 
     lazy var scanViewModel = ScanTabViewModel(imageConverter: imageConverter, iapService: Self.iapService, documentsFinishedHandler: Self.scanFinished)
     let tagViewModel = TagTabViewModel()
