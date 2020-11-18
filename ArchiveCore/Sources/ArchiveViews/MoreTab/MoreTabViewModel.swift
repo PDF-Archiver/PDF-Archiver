@@ -18,9 +18,11 @@ final public class MoreTabViewModel: ObservableObject, Log {
     static let mailRecipients = ["support@pdf-archiver.io"]
     static let mailSubject = "PDF Archiver: iOS Support"
 
+    let qualities: [String]  = ["100% - Lossless 🤯", "75% - Good 👌 (Default)", "50% - Normal 👍", "25% - Small 💾"]
+    let storageTypes: [String]  = StorageType.allCases.map(\.title).map { "\($0)" }
     @Published var error: Error?
-    @Published var qualities: [LocalizedStringKey]  = ["100% - Lossless 🤯", "75% - Good 👌 (Default)", "50% - Normal 👍", "25% - Small 💾"]
-    @Published var selectedQualityIndex = UserDefaults.PDFQuality.toIndex(UserDefaults.appGroup.pdfQuality)
+    @Published var selectedQualityIndex = UserDefaults.PDFQuality.toIndex(UserDefaults.appGroup.pdfQuality) ?? UserDefaults.PDFQuality.defaultQualityIndex
+    @Published var selectedArchiveIndex = StorageType.toIndex(StorageType.getCurrent())!
 
     @Published var isShowingMailView: Bool = false
     #if canImport(MessageUI)

@@ -50,6 +50,18 @@ struct MoreTabView: View {
                     Text(self.viewModel.qualities[$0])
                 }
             }
+            NavigationLink(destination: Text("Temp")) {
+                HStack {
+                    Text("Storage")
+                    Spacer()
+                    Text(MoreTabViewModel.StorageType.getCurrent().title)
+                }
+            }
+//            Picker("Storage", selection: $viewModel.selectedArchiveIndex) {
+//                ForEach(viewModel.storageTypes) { storageType in
+//                    Text(LocalizedStringKey(storageType))
+//                }
+//            }
             DetailRowView(name: "Show Intro") {
                 self.viewModel.showIntro()
             }

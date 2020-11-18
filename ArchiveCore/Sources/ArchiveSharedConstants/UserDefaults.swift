@@ -28,11 +28,6 @@ extension UserDefaults: Log {
         case small = 0.25
 
         public static let defaultQualityIndex = 1  // e.g. "good"
-
-        public static func toIndex(_ quality: PDFQuality) -> Int {
-            let allCases = UserDefaults.PDFQuality.allCases
-            return allCases.firstIndex(of: quality) ?? defaultQualityIndex
-        }
     }
 
     public var tutorialShown: Bool {
