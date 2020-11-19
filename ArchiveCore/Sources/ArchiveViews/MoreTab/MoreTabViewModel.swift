@@ -22,7 +22,7 @@ final public class MoreTabViewModel: ObservableObject, Log {
     let storageTypes: [String]  = StorageType.allCases.map(\.title).map { "\($0)" }
     @Published var error: Error?
     @Published var selectedQualityIndex = UserDefaults.PDFQuality.toIndex(UserDefaults.appGroup.pdfQuality) ?? UserDefaults.PDFQuality.defaultQualityIndex
-    @Published var selectedArchiveIndex = StorageType.toIndex(StorageType.getCurrent())!
+    @Published var selectedArchiveType = StorageType.getCurrent()
 
     @Published var isShowingMailView: Bool = false
     #if canImport(MessageUI)

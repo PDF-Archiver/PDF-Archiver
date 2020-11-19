@@ -55,8 +55,7 @@ extension MoreTabViewModel {
                         }
                     }
                 case .local:
-                    // TODO: add text
-                    Text("💾 Drive")
+                    Text("Not synchronized - Your documents are stored in a folder you choose on your computer. PDF Archiver does not initiate synchronization.")
             }
         }
     }
