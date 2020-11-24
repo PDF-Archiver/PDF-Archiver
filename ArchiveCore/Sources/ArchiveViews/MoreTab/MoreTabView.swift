@@ -50,12 +50,11 @@ struct MoreTabView: View {
                     Text(self.viewModel.qualities[$0])
                 }
             }
-            // TODO: handle changes
-            NavigationLink(destination: StorageSelectionView(selection: $viewModel.selectedArchiveType)) {
+            NavigationLink(destination: StorageSelectionView(selection: $viewModel.selectedArchiveType), isActive: $viewModel.showArchiveTypeSelection) {
                 HStack {
                     Text("Storage")
                     Spacer()
-                    Text(MoreTabViewModel.StorageType.getCurrent().title)
+                    Text(viewModel.selectedArchiveType.title)
                 }
             }
             DetailRowView(name: "Show Intro") {
@@ -133,7 +132,15 @@ struct MoreTabView_Previews: PreviewProvider {
         func restorePurchases() {}
     }
 
-    @State static var viewModel = MoreTabViewModel(iapService: MockIAPService())
+    private class MockArchiveStoreAPI: ArchiveStoreAPI {
+        func update(archiveFolder: URL, untaggedFolders: [URL]) {}
+        func archive(_ document: Document, slugify: Bool) throws {}
+        func download(_ document: Document) throws {}
+        func delete(_ document: Document) throws {}
+        func getCreationDate(of url: URL) throws -> Date? { nil }
+    }
+
+    @State static var viewModel = MoreTabViewModel(iapService: MockIAPService(), archiveStore: MockArchiveStoreAPI())
     static var previews: some View {
         Group {
             MoreTabView(viewModel: viewModel)

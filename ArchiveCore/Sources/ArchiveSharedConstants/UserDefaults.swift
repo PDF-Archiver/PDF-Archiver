@@ -106,7 +106,7 @@ extension UserDefaults: Log {
 
     public func set<T: Encodable>(_ object: T?, forKey key: Names) throws {
         guard let object = object else {
-            setNilValueForKey(key.rawValue)
+            set(nil, forKey: key.rawValue)
             return
         }
         let data = try JSONEncoder().encode(object)

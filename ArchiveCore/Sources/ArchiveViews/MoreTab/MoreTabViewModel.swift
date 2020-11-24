@@ -23,6 +23,7 @@ final public class MoreTabViewModel: ObservableObject, Log {
     @Published var error: Error?
     @Published var selectedQualityIndex = UserDefaults.PDFQuality.toIndex(UserDefaults.appGroup.pdfQuality) ?? UserDefaults.PDFQuality.defaultQualityIndex
     @Published var selectedArchiveType = StorageType.getCurrent()
+    @Published var showArchiveTypeSelection = false
 
     @Published var isShowingMailView: Bool = false
     #if canImport(MessageUI)
@@ -31,13 +32,48 @@ final public class MoreTabViewModel: ObservableObject, Log {
     @Published var subscriptionStatus: LocalizedStringKey = "Inactive ❌"
 
     private let iapService: IAPServiceAPI
+    private let archiveStore: ArchiveStoreAPI
     private var disposables = Set<AnyCancellable>()
 
-    public init(iapService: IAPServiceAPI) {
+    public init(iapService: IAPServiceAPI, archiveStore: ArchiveStoreAPI) {
         self.iapService = iapService
+        self.archiveStore = archiveStore
         $selectedQualityIndex
             .sink { selectedQuality in
                 UserDefaults.appGroup.pdfQuality = UserDefaults.PDFQuality.allCases[selectedQuality]
+            }
+            .store(in: &disposables)
+
+        $selectedArchiveType
+            .dropFirst()
+            .sink { selectedArchiveType in
+
+                let type: PathManager.ArchivePathType
+                switch selectedArchiveType {
+                    case .iCloudDrive:
+                        type = .iCloudDrive
+                    case .appContainer:
+                        type = .appContainer
+                    #if os(macOS)
+                    case .local:
+                        // TODO: fix this
+                        type = .local(URL(string: "")!)
+                    #endif
+                }
+
+                do {
+                    let archiveUrl = try PathManager.shared.getArchiveUrl()
+                    let untaggedUrl = try PathManager.shared.getUntaggedUrl()
+
+                    try PathManager.shared.setArchiveUrl(with: type)
+
+                    self.showArchiveTypeSelection = false
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        archiveStore.update(archiveFolder: archiveUrl, untaggedFolders: [untaggedUrl])
+                    }
+                } catch {
+                    self.error = error
+                }
             }
             .store(in: &disposables)
 

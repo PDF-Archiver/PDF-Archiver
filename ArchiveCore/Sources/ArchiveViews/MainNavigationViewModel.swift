@@ -13,6 +13,7 @@ import SwiftUI
 
 public final class MainNavigationViewModel: ObservableObject, Log {
 
+    public static let archiveStore = ArchiveStore.shared
     public static let iapService = IAPService()
 
     @Published var error: Error?
@@ -29,7 +30,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
     lazy var scanViewModel = ScanTabViewModel(imageConverter: imageConverter, iapService: Self.iapService, documentsFinishedHandler: Self.scanFinished)
     let tagViewModel = TagTabViewModel()
     let archiveViewModel = ArchiveViewModel()
-    let moreViewModel = MoreTabViewModel(iapService: iapService)
+    private lazy var moreViewModel = MoreTabViewModel(iapService: Self.iapService, archiveStore: Self.archiveStore)
 
     let iapViewModel = IAPViewModel(iapService: iapService)
 
@@ -124,7 +125,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
             }
             .store(in: &disposables)
 
-        ArchiveStore.shared.$years
+        Self.archiveStore.$years
             .map { years -> [String] in
                 let tmp = years.sorted()
                     .reversed()
@@ -136,7 +137,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
             .receive(on: DispatchQueue.main)
             .assign(to: &self.$archiveCategories)
 
-        ArchiveStore.shared.$documents
+        Self.archiveStore.$documents
             .map { _ in
                 Array(TagStore.shared.getSortedTags().prefix(10).map(\.localizedCapitalized))
             }
@@ -151,7 +152,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
                 let archiveUrl = try PathManager.shared.getArchiveUrl()
                 let untaggedUrl = try PathManager.shared.getUntaggedUrl()
 
-                ArchiveStore.shared.update(archiveFolder: archiveUrl, untaggedFolders: [untaggedUrl])
+                Self.archiveStore.update(archiveFolder: archiveUrl, untaggedFolders: [untaggedUrl])
             } catch {
                 DispatchQueue.main.async {
                     self.error = error

@@ -11,7 +11,9 @@ extension PathManager {
     public enum ArchivePathType: Equatable {
         case iCloudDrive
         case appContainer
+        #if os(macOS)
         case local(URL)
+        #endif
 
         func getArchiveUrl() throws -> URL {
             switch self {
@@ -20,8 +22,10 @@ extension PathManager {
                     return url
                 case .appContainer:
                     return FileManager.default.appContainerURL
+                #if os(macOS)
                 case .local(let url):
                     return url
+                #endif
             }
         }
     }
@@ -31,7 +35,9 @@ extension PathManager.ArchivePathType: Codable {
     enum CodingKeys: CodingKey {
         case iCloudDrive
         case appContainer
+        #if os(macOS)
         case local
+        #endif
     }
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -41,9 +47,11 @@ extension PathManager.ArchivePathType: Codable {
                 self = .iCloudDrive
             case .appContainer:
                 self = .appContainer
+            #if os(macOS)
             case .local:
                 let url =  try container.decode(URL.self, forKey: .local)
                 self = .local(url)
+            #endif
             case .none:
                 throw DecodingError.dataCorrupted(
                     DecodingError.Context(
@@ -61,8 +69,10 @@ extension PathManager.ArchivePathType: Codable {
                 try container.encode("", forKey: .iCloudDrive)
             case .appContainer:
                 try container.encode("", forKey: .appContainer)
+            #if os(macOS)
             case .local(let url):
                 try container.encode(url, forKey: .local)
+            #endif
         }
     }
 }

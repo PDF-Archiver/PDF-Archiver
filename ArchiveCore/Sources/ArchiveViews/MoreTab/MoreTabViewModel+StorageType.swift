@@ -11,7 +11,9 @@ extension MoreTabViewModel {
     enum StorageType: String, CaseIterable, Identifiable, Hashable {
         case iCloudDrive
         case appContainer
+        #if os(macOS)
         case local
+        #endif
 
         static func getCurrent() -> StorageType {
             let type = PathManager.shared.archivePathType
@@ -20,8 +22,10 @@ extension MoreTabViewModel {
                     return .iCloudDrive
                 case .appContainer:
                     return .appContainer
+                #if os(macOS)
                 case .local:
                     return .local
+                #endif
             }
         }
 
@@ -35,8 +39,10 @@ extension MoreTabViewModel {
                     return "☁️ iCloud Drive"
                 case .appContainer:
                     return "📱 Local"
+                #if os(macOS)
                 case .local:
                     return "💾 Drive"
+                #endif
             }
         }
 
@@ -48,14 +54,12 @@ extension MoreTabViewModel {
                 case .appContainer:
                     VStack(alignment: .leading) {
                         Text("Not synchronized - your documents are only stored locally on this device. They can be transferred via the Finder on a Mac, for example.")
-                        Button("https://support.apple.com/en-us/HT210598") {
-                            // TODO: test this
-                            let url = URL(string: NSLocalizedString("https://support.apple.com/en-us/HT210598", comment: ""))!
-                            open(url)
-                        }
+                        Link("https://support.apple.com/en-us/HT210598", destination: URL(string: NSLocalizedString("https://support.apple.com/en-us/HT210598", comment: ""))!)
                     }
+                #if os(macOS)
                 case .local:
                     Text("Not synchronized - Your documents are stored in a folder you choose on your computer. PDF Archiver does not initiate synchronization.")
+                #endif
             }
         }
     }

@@ -8,7 +8,15 @@
 import Combine
 import Foundation
 
-public final class ArchiveStore: ObservableObject, Log {
+public protocol ArchiveStoreAPI: class {
+    func update(archiveFolder: URL, untaggedFolders: [URL])
+    func archive(_ document: Document, slugify: Bool) throws
+    func download(_ document: Document) throws
+    func delete(_ document: Document) throws
+    func getCreationDate(of url: URL) throws -> Date?
+}
+
+public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
 
     public enum State {
         case uninitialized, cachedDocuments, live

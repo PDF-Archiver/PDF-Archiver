@@ -36,22 +36,18 @@ public final class PathManager: Log {
 
     private init() {
         archivePathType = PathManager.userDefaults.archivePathType ?? .iCloudDrive
-
-        if let archiveURL = try? getArchiveUrl() {
-            try? FileManager.default.createFolderIfNotExists(archiveURL)
-        }
-
-        if let untaggedURL = try? getUntaggedUrl() {
-            try? FileManager.default.createFolderIfNotExists(untaggedURL)
-        }
     }
 
     public func getArchiveUrl() throws -> URL {
-        return try archivePathType.getArchiveUrl()
+        let archiveURL = try archivePathType.getArchiveUrl()
+        try FileManager.default.createFolderIfNotExists(archiveURL)
+        return archiveURL
     }
 
     public func getUntaggedUrl() throws -> URL {
-        try  getArchiveUrl().appendingPathComponent("untagged")
+        let untaggedURL = try  getArchiveUrl().appendingPathComponent("untagged")
+        try FileManager.default.createFolderIfNotExists(untaggedURL)
+        return untaggedURL
     }
 
     public func setArchiveUrl(with type: ArchivePathType) throws {
@@ -62,9 +58,14 @@ public final class PathManager: Log {
         let newArchiveUrl = try type.getArchiveUrl()
         let oldArchiveUrl = try archivePathType.getArchiveUrl()
 
-        // TODO: test what happens when the new archive is not empty        
-        try fileManager.moveItem(at: oldArchiveUrl, to: newArchiveUrl)
+        let contents = try fileManager.contentsOfDirectory(at: oldArchiveUrl, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+            .filter { $0.lastPathComponent != "diagnostics_log.txt" }
+        for file in contents {
+            let destination = newArchiveUrl.appendingPathComponent(file.lastPathComponent)
+            try fileManager.moveItem(at: file, to: destination)
+        }
 
+        self.archivePathType = type
         Self.userDefaults.archivePathType = type
     }
 }
