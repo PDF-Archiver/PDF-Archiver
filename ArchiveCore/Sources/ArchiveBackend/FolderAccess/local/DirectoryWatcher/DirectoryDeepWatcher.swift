@@ -49,7 +49,7 @@ final class DirectoryDeepWatcher: NSObject, Log {
         let descriptor = open(url.path, O_EVTONLY)
         guard descriptor != -1 else { return nil }
 
-        let source = DispatchSource.makeFileSystemObjectSource(fileDescriptor: descriptor, eventMask: .write, queue: self.queue)
+        let source = DispatchSource.makeFileSystemObjectSource(fileDescriptor: descriptor, eventMask: [.write, .rename, .delete], queue: self.queue)
 
         source.setEventHandler {
             [weak self] in

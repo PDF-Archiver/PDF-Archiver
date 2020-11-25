@@ -53,7 +53,7 @@ extension MoreTabViewModel {
                     Text("Synchronized - Your documents are stored in iCloud Drive. They are available to you on all devices with the same iCloud account, e.g. iPhone, iPad and Mac.")
                 case .appContainer:
                     VStack(alignment: .leading) {
-                        Text("Not synchronized - your documents are only stored locally on this device. They can be transferred via the Finder on a Mac, for example.")
+                        Text("Not synchronized - your documents are only stored locally in this app. They can be transferred via the Finder on a Mac, for example.")
                         Link("https://support.apple.com/en-us/HT210598", destination: URL(string: NSLocalizedString("https://support.apple.com/en-us/HT210598", comment: ""))!)
                     }
                 #if os(macOS)

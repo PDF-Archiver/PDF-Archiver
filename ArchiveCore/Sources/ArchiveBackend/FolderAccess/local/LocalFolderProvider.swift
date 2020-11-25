@@ -92,6 +92,7 @@ final class LocalFolderProvider: FolderProvider {
     private func createChanges() -> [FileChange] {
         let oldFiles = currentFiles
         let newFiles = baseUrl.getFilesRecursive(fileProperties: fileProperties)
+            .filter { $0.pathExtension.lowercased() == "pdf"  }
             .compactMap { url -> FileChange.Details? in
 
                 guard let resourceValues = try? url.resourceValues(forKeys: Set(fileProperties)),
