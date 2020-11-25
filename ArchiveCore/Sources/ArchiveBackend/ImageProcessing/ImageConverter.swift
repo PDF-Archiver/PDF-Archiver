@@ -51,7 +51,7 @@ public final class ImageConverter: ObservableObject, ImageConverterAPI, Log {
             }
         }
 
-        #if !APPCLIP
+        #if !APPCLIP && !os(macOS)
         // by setting the delegate, the BackgroundTaskScheduler will be initialized
         BackgroundTaskScheduler.shared.delegate = self
         #endif

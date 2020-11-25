@@ -28,11 +28,6 @@ extension UserDefaults: Log {
         case small = 0.25
 
         public static let defaultQualityIndex = 1  // e.g. "good"
-
-        public static func toIndex(_ quality: PDFQuality) -> Int {
-            let allCases = UserDefaults.PDFQuality.allCases
-            return allCases.firstIndex(of: quality) ?? defaultQualityIndex
-        }
     }
 
     public var tutorialShown: Bool {
@@ -111,7 +106,7 @@ extension UserDefaults: Log {
 
     public func set<T: Encodable>(_ object: T?, forKey key: Names) throws {
         guard let object = object else {
-            setNilValueForKey(key.rawValue)
+            set(nil, forKey: key.rawValue)
             return
         }
         let data = try JSONEncoder().encode(object)
