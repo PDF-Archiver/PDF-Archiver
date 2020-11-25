@@ -19,10 +19,12 @@ public struct MainNavigationView: View {
     #if os(iOS)
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     #endif
-    @StateObject public var viewModel = MainNavigationViewModel()
+    @ObservedObject public var viewModel: MainNavigationViewModel
     @Environment(\.scenePhase) private var scenePhase
 
-    public init() { }
+    public init(viewModel: MainNavigationViewModel) {
+        self.viewModel = viewModel
+    }
 
     public var body: some View {
         ZStack {
@@ -69,6 +71,7 @@ public struct MainNavigationView: View {
                         } label: {
                             Label(category, systemImage: "folder")
                         }
+                        .buttonStyle(BorderlessButtonStyle())
                     }
                     .accentColor(.systemGray)
                 }
@@ -80,6 +83,7 @@ public struct MainNavigationView: View {
                         } label: {
                             Label(category, systemImage: "tag")
                         }
+                        .buttonStyle(BorderlessButtonStyle())
                     }
                     .accentColor(.blue)
                 }

@@ -50,7 +50,15 @@ struct TagTabView: View {
             }
             .navigationBarHidden(false)
             .navigationBarTitle(Text("Document"), displayMode: .inline)
-            .navigationBarItems(leading: deleteNavBarView, trailing: saveNavBarView)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    deleteNavBarView
+                }
+
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    saveNavBarView
+                }
+            }
             .emittingError(viewModel.error)
         } else {
             PlaceholderView(name: "No iCloud Drive documents found. Please scan and tag documents first.")

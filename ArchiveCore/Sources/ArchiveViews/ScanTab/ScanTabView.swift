@@ -13,6 +13,14 @@ public struct ScanTabView: View {
     @ObservedObject var viewModel: ScanTabViewModel
     @State private var opacity = 0.0
 
+    private let maxFrameHeight: CGFloat = {
+        #if os(macOS)
+        return 500
+        #else
+        return .infinity
+        #endif
+    }()
+
     public init(viewModel: ScanTabViewModel) {
         self.viewModel = viewModel
     }
@@ -29,6 +37,7 @@ public struct ScanTabView: View {
             }
             .fixedSize(horizontal: false, vertical: true)
         }
+        .frame(maxHeight: maxFrameHeight)
         .padding(EdgeInsets(top: 32.0, leading: 16.0, bottom: 32.0, trailing: 16.0))
         .emittingError(viewModel.error)
     }

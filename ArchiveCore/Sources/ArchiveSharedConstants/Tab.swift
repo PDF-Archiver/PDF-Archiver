@@ -9,7 +9,10 @@ import Combine
 import SwiftUI
 
 public enum Tab: String, CaseIterable, Identifiable, Hashable, Equatable {
-    case scan, tag, archive, more
+    case scan, tag, archive
+    #if !os(macOS)
+    case more
+    #endif
 
     public var id: String { rawValue }
     public var name: String { rawValue.capitalized }
@@ -21,8 +24,10 @@ public enum Tab: String, CaseIterable, Identifiable, Hashable, Equatable {
                 return "tag"
             case .archive:
                 return "archivebox"
+            #if !os(macOS)
             case .more:
                 return "ellipsis"
+            #endif
         }
     }
 }

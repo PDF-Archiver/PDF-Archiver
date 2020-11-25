@@ -13,8 +13,7 @@ import SwiftUI
 
 public final class MainNavigationViewModel: ObservableObject, Log {
 
-    public static let imageConverter = ImageConverter(getDocumentDestination: { PathManager.shared.untaggedURL },
-                                                      shouldStartBackgroundTask: true)
+    public static let archiveStore = ArchiveStore.shared
     public static let iapService = IAPService()
 
     @Published var error: Error?
@@ -26,10 +25,12 @@ public final class MainNavigationViewModel: ObservableObject, Log {
     @Published var currentOptionalTab: Tab?
     @Published var showTutorial = !UserDefaults.appGroup.tutorialShown
 
-    var scanViewModel = ScanTabViewModel(imageConverter: imageConverter, iapService: iapService, documentsFinishedHandler: scanFinished)
+    public private(set) lazy var imageConverter = ImageConverter(getDocumentDestination: getDocumentDestination)
+
+    lazy var scanViewModel = ScanTabViewModel(imageConverter: imageConverter, iapService: Self.iapService, documentsFinishedHandler: Self.scanFinished)
     let tagViewModel = TagTabViewModel()
     let archiveViewModel = ArchiveViewModel()
-    let moreViewModel = MoreTabViewModel(iapService: iapService)
+    private lazy var moreViewModel = MoreTabViewModel(iapService: Self.iapService, archiveStore: Self.archiveStore)
 
     let iapViewModel = IAPViewModel(iapService: iapService)
 
@@ -37,12 +38,21 @@ public final class MainNavigationViewModel: ObservableObject, Log {
 
     private var disposables = Set<AnyCancellable>()
 
+    func getDocumentDestination() -> URL? {
+        do {
+            return try PathManager.shared.getUntaggedUrl()
+        } catch {
+            self.error = error
+            return nil
+        }
+    }
+
     public init() {
 
         Self.iapService.$error
             .assign(to: &$error)
 
-        Self.imageConverter.$error
+        imageConverter.$error
             .assign(to: &$error)
 
         $currentTab
@@ -115,7 +125,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
             }
             .store(in: &disposables)
 
-        ArchiveStore.shared.$years
+        Self.archiveStore.$years
             .map { years -> [String] in
                 let tmp = years.sorted()
                     .reversed()
@@ -127,7 +137,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
             .receive(on: DispatchQueue.main)
             .assign(to: &self.$archiveCategories)
 
-        ArchiveStore.shared.$documents
+        Self.archiveStore.$documents
             .map { _ in
                 Array(TagStore.shared.getSortedTags().prefix(10).map(\.localizedCapitalized))
             }
@@ -137,16 +147,17 @@ public final class MainNavigationViewModel: ObservableObject, Log {
 
         // TODO: change container!?
         DispatchQueue.global(qos: .userInteractive).async {
+            // TODO: handle no icloud drive found
+            do {
+                let archiveUrl = try PathManager.shared.getArchiveUrl()
+                let untaggedUrl = try PathManager.shared.getUntaggedUrl()
 
-            guard let iCloudContainerPath = PathManager.iCloudDriveURL else {
-                Self.log.error("Could not find a iCloud Drive url.")
+                Self.archiveStore.update(archiveFolder: archiveUrl, untaggedFolders: [untaggedUrl])
+            } catch {
                 DispatchQueue.main.async {
-                    self.error = AlertDataModel.createAndPostNoICloudDrive()
+                    self.error = error
                 }
-                return
             }
-
-            ArchiveStore.shared.update(archiveFolder: iCloudContainerPath, untaggedFolders: [iCloudContainerPath.appendingPathComponent("untagged")])
         }
     }
 
@@ -154,8 +165,8 @@ public final class MainNavigationViewModel: ObservableObject, Log {
         guard scenePhase == .active else { return }
 
         // get documents from ShareExtension and AppClip
-        let extensionURLs = (try? FileManager.default.contentsOfDirectory(at: PathManager.extensionTempPdfURL, includingPropertiesForKeys: [], options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])) ?? []
-        let appClipURLs = (try? FileManager.default.contentsOfDirectory(at: PathManager.appClipTempPdfURL, includingPropertiesForKeys: [], options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])) ?? []
+        let extensionURLs = (try? FileManager.default.contentsOfDirectory(at: PathConstants.extensionTempPdfURL, includingPropertiesForKeys: [], options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])) ?? []
+        let appClipURLs = (try? FileManager.default.contentsOfDirectory(at: PathConstants.appClipTempPdfURL, includingPropertiesForKeys: [], options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])) ?? []
         let urls = [extensionURLs, appClipURLs]
             .flatMap { $0 }
             .filter { !$0.hasDirectoryPath }
@@ -181,8 +192,10 @@ public final class MainNavigationViewModel: ObservableObject, Log {
                 return AnyView(TagTabView(viewModel: tagViewModel))
             case .archive:
                 return AnyView(ArchiveView(viewModel: archiveViewModel))
+            #if !os(macOS)
             case .more:
                 return AnyView(MoreTabView(viewModel: moreViewModel))
+            #endif
         }
     }
 
@@ -230,7 +243,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
                 url.stopAccessingSecurityScopedResource()
             }
             _ = url.startAccessingSecurityScopedResource()
-            try Self.imageConverter.handle(url)
+            try imageConverter.handle(url)
         } catch {
             log.error("Unable to handle file.", metadata: ["filetype": "\(url.pathExtension)", "error": "\(error)"])
 //            try? FileManager.default.removeItem(at: url)

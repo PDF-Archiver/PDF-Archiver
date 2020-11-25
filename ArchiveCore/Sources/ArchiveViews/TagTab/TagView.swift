@@ -24,6 +24,7 @@ struct TagView: View, Identifiable {
         }, label: {
             self.tag
         })
+        .buttonStyle(BorderlessButtonStyle())
     }
 
     private var tag: some View {

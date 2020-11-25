@@ -70,7 +70,7 @@ final class ShareViewController: UIViewController {
 
     private func handleAttachments() {
         do {
-            let url = PathManager.extensionTempPdfURL
+            let url = PathConstants.extensionTempPdfURL
             let inputItems = (extensionContext?.inputItems as? [NSExtensionItem]) ?? []
             var success = false
             for item in inputItems {

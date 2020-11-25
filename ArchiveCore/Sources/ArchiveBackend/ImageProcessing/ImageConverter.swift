@@ -11,10 +11,6 @@ import Foundation
 import PDFKit
 import Vision
 
-public protocol ImageConverterDelegate: class {
-    func getDocumentDestination() -> URL?
-}
-
 public final class ImageConverter: ObservableObject, ImageConverterAPI, Log {
 
     @Published public private(set) var error: Error?
@@ -35,16 +31,16 @@ public final class ImageConverter: ObservableObject, ImageConverterAPI, Log {
         return queue
     }()
 
-    public init(getDocumentDestination: @escaping () -> URL?, shouldStartBackgroundTask: Bool) {
+    public init(getDocumentDestination: @escaping () -> URL?) {
         precondition(!Self.isInitialized, "ImageConverter must only initialized once.")
         Self.isInitialized = true
         self.getDocumentDestination = getDocumentDestination
 
         // move files from the temp folder to the current destination
         if let destinationFolder = getDocumentDestination(),
-           destinationFolder != PathManager.tempPdfURL {
+           destinationFolder != PathConstants.tempPdfURL {
             do {
-                let documentUrls = try FileManager.default.contentsOfDirectory(at: PathManager.tempPdfURL, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+                let documentUrls = try FileManager.default.contentsOfDirectory(at: PathConstants.tempPdfURL, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
                     .filter { $0.pathExtension.lowercased().hasSuffix("pdf") }
                 for documentUrl in documentUrls {
                     let destinationUrl = destinationFolder.appendingPathComponent(documentUrl.lastPathComponent)
@@ -55,11 +51,9 @@ public final class ImageConverter: ObservableObject, ImageConverterAPI, Log {
             }
         }
 
-        #if os(iOS)
+        #if !APPCLIP && !os(macOS)
         // by setting the delegate, the BackgroundTaskScheduler will be initialized
-        if shouldStartBackgroundTask {
-            BackgroundTaskScheduler.shared.delegate = self
-        }
+        BackgroundTaskScheduler.shared.delegate = self
         #endif
     }
 
@@ -118,7 +112,7 @@ public final class ImageConverter: ObservableObject, ImageConverterAPI, Log {
         let availableTags = TagStore.shared.getAvailableTags(with: [])
         let operation = PDFProcessing(of: mode,
                                       destinationFolder: destinationURL,
-                                      tempImagePath: PathManager.tempImageURL,
+                                      tempImagePath: PathConstants.tempImageURL,
                                       archiveTags: availableTags) { progress in
             NotificationCenter.default.post(name: .imageProcessingQueue, object: progress)
         }

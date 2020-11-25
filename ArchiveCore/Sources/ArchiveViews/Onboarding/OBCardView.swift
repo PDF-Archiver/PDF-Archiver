@@ -23,7 +23,7 @@ struct OBCardView: View {
             Text(card.title)
                 .font(.largeTitle)
                 .fontWeight(.bold)
-                .foregroundColor(Color.accentColor)
+                .foregroundColor(.paDarkRed)
                 .multilineTextAlignment(.center)
             Text(card.text)
                 .multilineTextAlignment(.center)
@@ -37,8 +37,15 @@ struct OBCardView: View {
                     }
                 }) {
                     Image(systemName: (currentCardIndex + 1) == cardCount ? "checkmark.circle.fill" : "arrow.right.circle.fill")
+                        .resizable()
+                        .padding(8)
+                        .scaledToFit()
                         .font(.largeTitle)
+
                 }
+                .frame(width: 50, height: 50)
+                .padding()
+                .buttonStyle(BorderlessButtonStyle())
             }
         }
     }
@@ -61,9 +68,10 @@ struct OBCardView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             OBCardView(currentCardIndex: 0, cardCount: 1, buttonTapped: {}, card: onboardSet.cards[0])
-            OBCardView(currentCardIndex: 1, cardCount: 1, buttonTapped: {}, card: onboardSet.cards[3])
+                .previewDevice("Mac")
+            OBCardView(currentCardIndex: 1, cardCount: 1, buttonTapped: {}, card: onboardSet.cards[0])
+                .makeForPreviewProvider()
         }
-        .makeForPreviewProvider()
     }
 }
 #endif

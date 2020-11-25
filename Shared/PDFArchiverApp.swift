@@ -7,6 +7,7 @@
 
 @_exported import ArchiveBackend
 @_exported import ArchiveViews
+@_exported import ArchiveSharedConstants
 
 import Diagnostics
 import Foundation
@@ -21,6 +22,7 @@ import SwiftUI
 struct PDFArchiverApp: App, Log {
 
     @Environment(\.scenePhase) private var scenePhase
+    @StateObject public var mainNavigationViewModel = MainNavigationViewModel()
 
     init() {
         setup()
@@ -31,7 +33,7 @@ struct PDFArchiverApp: App, Log {
         WindowGroup {
             mainView
         }
-        .windowStyle(CustomWindowStyle())
+        .windowStyle(HiddenTitleBarWindowStyle())
 
         Settings {
             Text("Test")
@@ -45,7 +47,7 @@ struct PDFArchiverApp: App, Log {
     }
 
     private var mainView: some View {
-        MainNavigationView()
+        MainNavigationView(viewModel: mainNavigationViewModel)
             .environmentObject(OrientationInfo())
             .onChange(of: scenePhase) { phase in
                 Self.log.info("Scene change: \(phase)")
@@ -53,7 +55,7 @@ struct PDFArchiverApp: App, Log {
                 #if !os(macOS)
                 // schedule a new background task
                 if phase != .active,
-                   MainNavigationViewModel.imageConverter.totalDocumentCount.value > 0 {
+                   mainNavigationViewModel.imageConverter.totalDocumentCount.value > 0 {
                     BackgroundTaskScheduler.shared.scheduleTask(with: .pdfProcessing)
                 }
                 #endif
@@ -83,15 +85,20 @@ struct PDFArchiverApp: App, Log {
             _ = ArchiveStore.shared
         }
 
+        #if !APPCLIP
+        // background tasks must be initialized before the application did finish launching
+        _ = BackgroundTaskScheduler.shared
+        #endif
+
         #if !os(macOS)
         // Create a Sentry client and start crash handler
-        SentrySDK.start(options: [
-            "dsn": Constants.sentryDsn,
-            "environment": AppEnvironment.get().rawValue,
-            "release": AppEnvironment.getFullVersion(),
-            "debug": false,
-            "enableAutoSessionTracking": true
-        ])
+        SentrySDK.start { options in
+            options.dsn = "https://7adfcae85d8d4b2f946102571b2d4d6c@o194922.ingest.sentry.io/1299590"
+            options.environment = AppEnvironment.get().rawValue
+            options.releaseName = AppEnvironment.getFullVersion()
+            options.enableAutoSessionTracking = true
+            options.debug = NSNumber(value: AppEnvironment.get() != .production)
+        }
 
         SentrySDK.currentHub().getClient()?.options.beforeSend = { event in
             // I am not interested in this kind of data

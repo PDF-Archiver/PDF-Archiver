@@ -11,7 +11,7 @@ import SwiftUIX
 import Parma
 
 #if os(macOS)
-private typealias CustomListStyle = DefaultListStyle
+private typealias CustomListStyle = InsetListStyle
 private typealias CustomNavigationtStyle = DefaultNavigationViewStyle
 #else
 private typealias CustomListStyle = GroupedListStyle
@@ -48,6 +48,13 @@ struct MoreTabView: View {
             Picker(selection: $viewModel.selectedQualityIndex, label: Text("PDF Quality")) {
                 ForEach(0..<viewModel.qualities.count, id: \.self) {
                     Text(self.viewModel.qualities[$0])
+                }
+            }
+            NavigationLink(destination: StorageSelectionView(selection: $viewModel.selectedArchiveType), isActive: $viewModel.showArchiveTypeSelection) {
+                HStack {
+                    Text("Storage")
+                    Spacer()
+                    Text(viewModel.selectedArchiveType.title)
                 }
             }
             DetailRowView(name: "Show Intro") {
@@ -125,7 +132,15 @@ struct MoreTabView_Previews: PreviewProvider {
         func restorePurchases() {}
     }
 
-    @State static var viewModel = MoreTabViewModel(iapService: MockIAPService())
+    private class MockArchiveStoreAPI: ArchiveStoreAPI {
+        func update(archiveFolder: URL, untaggedFolders: [URL]) {}
+        func archive(_ document: Document, slugify: Bool) throws {}
+        func download(_ document: Document) throws {}
+        func delete(_ document: Document) throws {}
+        func getCreationDate(of url: URL) throws -> Date? { nil }
+    }
+
+    @State static var viewModel = MoreTabViewModel(iapService: MockIAPService(), archiveStore: MockArchiveStoreAPI())
     static var previews: some View {
         Group {
             MoreTabView(viewModel: viewModel)
