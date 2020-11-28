@@ -157,7 +157,9 @@ final class TagTabViewModel: ObservableObject, Log {
 
                         // get tags and save them in the background, they will be passed to the TagTabView
                         guard let text = pdfDocument.string else { return }
-                        let tags = TagParser.parse(text).sorted()
+                        let tags = TagParser.parse(text)
+                            .subtracting(Set(self?.documentTags ?? []))
+                            .sorted()
                         DispatchQueue.main.async {
                             self?.suggestedTags = Array(tags.prefix(12))
                         }
