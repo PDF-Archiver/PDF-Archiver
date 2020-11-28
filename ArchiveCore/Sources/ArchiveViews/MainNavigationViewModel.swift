@@ -10,11 +10,16 @@
 import ArchiveBackend
 import Combine
 import SwiftUI
+#if canImport(MessageUI)
+import MessageUI
+#endif
 
 public final class MainNavigationViewModel: ObservableObject, Log {
 
     public static let archiveStore = ArchiveStore.shared
     public static let iapService = IAPService()
+    static let mailRecipients = ["support@pdf-archiver.io"]
+    static let mailSubject = "PDF Archiver: iOS Support"
 
     @Published var error: Error?
 
@@ -24,6 +29,10 @@ public final class MainNavigationViewModel: ObservableObject, Log {
     @Published var currentTab: Tab = UserDefaults.appGroup.lastSelectedTab
     @Published var currentOptionalTab: Tab?
     @Published var showTutorial = !UserDefaults.appGroup.tutorialShown
+    @Published var isShowingMailView: Bool = false
+    #if canImport(MessageUI)
+    @Published var result: Result<MFMailComposeResult, Error>?
+    #endif
 
     public private(set) lazy var imageConverter = ImageConverter(getDocumentDestination: getDocumentDestination)
 
@@ -122,6 +131,13 @@ public final class MainNavigationViewModel: ObservableObject, Log {
             .receive(on: DispatchQueue.main)
             .sink { _ in
                 self.showSubscriptionView = true
+            }
+            .store(in: &disposables)
+
+        NotificationCenter.default.publisher(for: .showSendDiagnosticsReport)
+            .receive(on: DispatchQueue.main)
+            .sink { _ in
+                self.showSupport()
             }
             .store(in: &disposables)
 
@@ -224,6 +240,20 @@ public final class MainNavigationViewModel: ObservableObject, Log {
         currentTab = .scan
     }
 
+    func showSupport() {
+        log.info("Show support")
+        #if os(macOS)
+        sendDiagnosticsReport()
+        #else
+        if MFMailComposeViewController.canSendMail() {
+            isShowingMailView = true
+        } else {
+            guard let url = URL(string: "https://pdf-archiver.io/faq") else { preconditionFailure("Could not generate the FAQ url.") }
+            open(url)
+        }
+        #endif
+    }
+
     // MARK: - Helper Functions
 
     private static func scanFinished(error: inout Error?) {
@@ -254,3 +284,40 @@ public final class MainNavigationViewModel: ObservableObject, Log {
         }
     }
 }
+
+#if os(macOS)
+import AppKit
+import Diagnostics
+
+extension MainNavigationViewModel {
+    func sendDiagnosticsReport() {
+        // add a diagnostics report
+        var reporters = DiagnosticsReporter.DefaultReporter.allReporters
+        reporters.insert(CustomDiagnosticsReporter.self, at: 1)
+        let report = DiagnosticsReporter.create(using: reporters)
+
+        guard let service = NSSharingService(named: .composeEmail) else {
+            log.errorAndAssert("Failed to get sharing service.")
+
+            guard let url = URL(string: "https://pdf-archiver.io/faq") else { preconditionFailure("Could not generate the FAQ url.") }
+            open(url)
+            return
+        }
+        service.recipients = Self.mailRecipients
+        service.subject = Self.mailSubject
+
+        let url = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("Diagnostics-Report.html")
+
+        // remove previous report
+        try? FileManager.default.removeItem(at: url)
+
+        do {
+            try report.data.write(to: url)
+        } catch {
+            preconditionFailure("Failed with error: \(error)")
+        }
+
+        service.perform(withItems: [url])
+    }
+}
+#endif

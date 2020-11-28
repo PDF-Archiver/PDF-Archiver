@@ -14,6 +14,7 @@ public extension Notification.Name {
     static let showSubscriptionView = Notification.Name("show-subscription-view")
     static let suggestionChange = Notification.Name("suggestion-change")
     static let foundProcessedDocument = Notification.Name("found-processed-document")
+    static let showSendDiagnosticsReport = Notification.Name("show-send-diagnostics-report")
 }
 
 public extension Notification {

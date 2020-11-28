@@ -59,13 +59,13 @@ public final class ImageConverter: ObservableObject, ImageConverterAPI, Log {
 
     public func handle(_ url: URL) throws {
 
-        if let image = CIImage(contentsOf: url) {
+        if PDFDocument(url: url) != nil {
+            addOperation(with: .pdf(url))
+        } else if let image = CIImage(contentsOf: url) {
             try StorageHelper.save([image])
             guard let destinationURL = getDocumentDestination() else { throw StorageError.noPathToSave }
             saveProcessAndSaveTempImages(at: destinationURL)
             try FileManager.default.removeItem(at: url)
-        } else if url.pathExtension.lowercased() == "pdf" {
-            addOperation(with: .pdf(url))
         } else {
             throw StorageError.wrongExtension(url.pathExtension)
         }

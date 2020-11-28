@@ -8,15 +8,9 @@
 // swiftlint:disable force_unwrapping
 
 import Combine
-#if canImport(MessageUI)
-import MessageUI
-#endif
 import SwiftUI
 
 final public class MoreTabViewModel: ObservableObject, Log {
-
-    static let mailRecipients = ["support@pdf-archiver.io"]
-    static let mailSubject = "PDF Archiver: iOS Support"
 
     let qualities: [String]  = ["100% - Lossless 🤯", "75% - Good 👌 (Default)", "50% - Normal 👍", "25% - Small 💾"]
     let storageTypes: [String]  = StorageType.allCases.map(\.title).map { "\($0)" }
@@ -24,11 +18,6 @@ final public class MoreTabViewModel: ObservableObject, Log {
     @Published var selectedQualityIndex = UserDefaults.PDFQuality.toIndex(UserDefaults.appGroup.pdfQuality) ?? UserDefaults.PDFQuality.defaultQualityIndex
     @Published var selectedArchiveType = StorageType.getCurrent()
     @Published var showArchiveTypeSelection = false
-
-    @Published var isShowingMailView: Bool = false
-    #if canImport(MessageUI)
-    @Published var result: Result<MFMailComposeResult, Error>?
-    #endif
     @Published var subscriptionStatus: LocalizedStringKey = "Inactive ❌"
 
     private let iapService: IAPServiceAPI
@@ -125,55 +114,4 @@ final public class MoreTabViewModel: ObservableObject, Log {
     var macOSAppUrl: URL {
         URL(string: "https://macos.pdf-archiver.io")!
     }
-
-    func showSupport() {
-        log.info("More table view show: support")
-        #if os(macOS)
-        sendDiagnosticsReport()
-        #else
-        if MFMailComposeViewController.canSendMail() {
-            isShowingMailView = true
-        } else {
-            guard let url = URL(string: "https://pdf-archiver.io/faq") else { preconditionFailure("Could not generate the FAQ url.") }
-            open(url)
-        }
-        #endif
-    }
 }
-
-#if os(macOS)
-import AppKit
-import Diagnostics
-
-extension MoreTabViewModel {
-    func sendDiagnosticsReport() {
-        // add a diagnostics report
-        var reporters = DiagnosticsReporter.DefaultReporter.allReporters
-        reporters.insert(CustomDiagnosticsReporter.self, at: 1)
-        let report = DiagnosticsReporter.create(using: reporters)
-
-        guard let service = NSSharingService(named: .composeEmail) else {
-            log.errorAndAssert("Failed to get sharing service.")
-
-            guard let url = URL(string: "https://pdf-archiver.io/faq") else { preconditionFailure("Could not generate the FAQ url.") }
-            open(url)
-            return
-        }
-        service.recipients = Self.mailRecipients
-        service.subject = Self.mailSubject
-
-        let url = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("Diagnostics-Report.html")
-
-        // remove previous report
-        try? FileManager.default.removeItem(at: url)
-
-        do {
-            try report.data.write(to: url)
-        } catch {
-            preconditionFailure("Failed with error: \(error)")
-        }
-
-        service.perform(withItems: [url])
-    }
-}
-#endif

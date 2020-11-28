@@ -9,7 +9,7 @@
 import SwiftUI
 
 extension View {
-    func handlingErrors(using handler: ErrorHandler) -> some View {
+    public func handlingErrors(using handler: ErrorHandler) -> some View {
         environment(\.errorHandler, handler)
     }
 

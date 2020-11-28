@@ -85,7 +85,7 @@ struct PDFArchiverApp: App, Log {
             _ = ArchiveStore.shared
         }
 
-        #if !APPCLIP
+        #if !APPCLIP && !os(macOS)
         // background tasks must be initialized before the application did finish launching
         _ = BackgroundTaskScheduler.shared
         #endif

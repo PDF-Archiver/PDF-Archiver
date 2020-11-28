@@ -59,7 +59,11 @@ public final class PathManager: Log {
         let oldArchiveUrl = try archivePathType.getArchiveUrl()
 
         let contents = try fileManager.contentsOfDirectory(at: oldArchiveUrl, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
-            .filter { $0.lastPathComponent != "diagnostics_log.txt" }
+            .filter(\.hasDirectoryPath)
+            .filter { folderUrl in
+                folderUrl.lastPathComponent.isNumeric || folderUrl.lastPathComponent == "untagged"
+            }
+
         for file in contents {
             let destination = newArchiveUrl.appendingPathComponent(file.lastPathComponent)
             try fileManager.moveItem(at: file, to: destination)

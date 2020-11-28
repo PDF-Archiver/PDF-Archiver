@@ -8,11 +8,11 @@
 
 import SwiftUI
 
-struct ErrorHandlerEnvironmentKey: EnvironmentKey {
-    static var defaultValue: ErrorHandler = AlertErrorHandler()
+public struct ErrorHandlerEnvironmentKey: EnvironmentKey {
+    public static var defaultValue: ErrorHandler = AlertErrorHandler()
 }
 
-extension EnvironmentValues {
+public extension EnvironmentValues {
     var errorHandler: ErrorHandler {
         get { self[ErrorHandlerEnvironmentKey.self] }
         set { self[ErrorHandlerEnvironmentKey.self] = newValue }

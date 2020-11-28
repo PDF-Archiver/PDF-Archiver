@@ -31,13 +31,6 @@ struct MoreTabView: View {
         }
         .listStyle(CustomListStyle())
         .foregroundColor(.primary)
-        .sheet(isPresented: $viewModel.isShowingMailView) {
-            #if canImport(MessageUI)
-            SupportMailView(subject: MoreTabViewModel.mailSubject,
-                            recipients: MoreTabViewModel.mailRecipients,
-                            result: self.$viewModel.result)
-            #endif
-        }
         .navigationTitle("Preferences & More")
         .navigationViewStyle(CustomNavigationtStyle())
         .emittingError(viewModel.error)
@@ -92,7 +85,7 @@ struct MoreTabView: View {
             markdownView(for: "Terms of Use & Privacy Policy", withKey: "Privacy")
             markdownView(for: "Imprint", withKey: "Imprint")
             DetailRowView(name: "Contact Support  🚑") {
-                self.viewModel.showSupport()
+                NotificationCenter.default.post(Notification(name: .showSendDiagnosticsReport))
             }
         }
     }

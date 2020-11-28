@@ -51,11 +51,13 @@ struct TagTabView: View {
             .navigationBarHidden(false)
             .navigationBarTitle(Text("Document"), displayMode: .inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
+                ToolbarItem(placement: .destructiveAction) {
                     deleteNavBarView
                 }
-
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .automatic) {
+                    Spacer()
+                }
+                ToolbarItem(placement: .primaryAction) {
                     saveNavBarView
                 }
             }
@@ -71,12 +73,21 @@ struct TagTabView: View {
         Button(action: {
             self.viewModel.deleteDocument()
         }, label: {
+            #if os(macOS)
+            HStack {
+                Image(systemName: "trash")
+                Text("Delete")
+                    .font(.caption)
+            }
+            .padding(.horizontal, 24)
+            #else
             VStack {
                 Image(systemName: "trash")
                 Text("Delete")
                     .font(.caption)
             }
             .padding(.horizontal, 24)
+            #endif
         })
         .disabled(viewModel.currentDocument == nil)
     }
@@ -85,12 +96,21 @@ struct TagTabView: View {
         Button(action: {
             self.viewModel.saveDocument()
         }, label: {
+            #if os(macOS)
+            HStack {
+                Image(systemName: "square.and.arrow.down")
+                Text("Add")
+                    .font(.caption)
+            }
+            .padding(.horizontal, 24)
+            #else
             VStack {
                 Image(systemName: "square.and.arrow.down")
                 Text("Add")
                     .font(.caption)
             }
             .padding(.horizontal, 24)
+            #endif
         })
         .disabled(viewModel.currentDocument == nil)
     }

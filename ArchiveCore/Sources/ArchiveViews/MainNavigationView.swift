@@ -7,6 +7,7 @@
 //
 
 import Combine
+import ErrorHandling
 import SwiftUI
 
 #if os(macOS)
@@ -47,7 +48,18 @@ public struct MainNavigationView: View {
             IAPView(viewModel: self.viewModel.iapViewModel)
         }
         .emittingError(viewModel.error)
+        .sheet(isPresented: $viewModel.isShowingMailView) {
+            #if canImport(MessageUI)
+            SupportMailView(subject: MainNavigationViewModel.mailSubject,
+                            recipients: MainNavigationViewModel.mailRecipients,
+                            result: self.$viewModel.result)
+            #endif
+        }
         .onChange(of: scenePhase, perform: viewModel.handleTempFilesIfNeeded)
+        .handlingErrors(using: AlertErrorHandler(secondaryButton: .default(Text("Send Report"),
+                                                                           action: {
+                                                                            NotificationCenter.default.post(Notification(name: .showSendDiagnosticsReport))
+                                                                           })))
     }
 
     private var sidebar: some View {

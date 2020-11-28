@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct AlertErrorHandler: ErrorHandler {
+public struct AlertErrorHandler: ErrorHandler {
     private struct Presentation: Identifiable {
         let id: UUID
         let error: Error
@@ -19,8 +19,14 @@ struct AlertErrorHandler: ErrorHandler {
     // to keep track of the alerts that it creates as it updates
     // our various views:
     private let id = UUID()
+    
+    private let secondaryButton: Alert.Button?
+    
+    public init(secondaryButton: Alert.Button? = nil) {
+        self.secondaryButton = secondaryButton
+    }
 
-    func handle<T: View>(
+    public func handle<T: View>(
         _ error: Error?,
         in view: T,
         retryHandler: @escaping () -> Void
@@ -64,11 +70,20 @@ struct AlertErrorHandler: ErrorHandler {
                         )
                     )
                 case .nonRetryable:
-                    return Alert(
-                        title: Text(errorInfo.title),
-                        message: Text(errorInfo.message),
-                        dismissButton: .default(Text("Dismiss"))
-                    )
+                    if let secondaryButton = secondaryButton {
+                        return Alert(
+                            title: Text(errorInfo.title),
+                            message: Text(errorInfo.message),
+                            primaryButton: .default(Text("Dismiss")),
+                            secondaryButton: secondaryButton)
+                    } else {
+                        return Alert(
+                            title: Text(errorInfo.title),
+                            message: Text(errorInfo.message),
+                            dismissButton: .default(Text("Dismiss"))
+                        )
+                    }
+                    
 //                case .requiresLogout:
 //                    // We don't expect this code path to be hit, since
 //                    // we're guarding for this case above, so we'll
