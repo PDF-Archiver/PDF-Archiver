@@ -26,10 +26,10 @@ struct GeneralSettingsView: View {
 
 #if os(macOS)
 public struct SettingsView: View {
-    
+
     @ObservedObject var viewModel: MoreTabViewModel
     @State private var showMoreInformation = true
-    
+
     public init(viewModel: MoreTabViewModel) {
         self.viewModel = viewModel
     }
@@ -81,7 +81,7 @@ public struct SettingsView: View {
         .padding(20)
         .frame(width: 400, height: 150)
     }
-    
+
     private var storage: some View {
         StorageSelectionView(selection: $viewModel.selectedArchiveType)
             .listStyle(InsetListStyle())

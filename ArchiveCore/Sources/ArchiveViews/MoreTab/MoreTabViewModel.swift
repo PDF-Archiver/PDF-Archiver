@@ -19,7 +19,7 @@ final public class MoreTabViewModel: ObservableObject, Log {
 
         return MarkdownView(title: title, markdown: markdown)
     }
-    
+
     let qualities: [String]  = ["100% - Lossless 🤯", "75% - Good 👌 (Default)", "50% - Normal 👍", "25% - Small 💾"]
     let storageTypes: [String]  = StorageType.allCases.map(\.title).map { "\($0)" }
     @Published var error: Error?
@@ -35,7 +35,7 @@ final public class MoreTabViewModel: ObservableObject, Log {
     var macOSAppUrl: URL {
         URL(string: "https://macos.pdf-archiver.io")!
     }
-    
+
     private let iapService: IAPServiceAPI
     private let archiveStore: ArchiveStoreAPI
     private var disposables = Set<AnyCancellable>()

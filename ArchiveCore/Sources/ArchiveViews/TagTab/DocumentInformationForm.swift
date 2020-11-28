@@ -18,6 +18,22 @@ struct DocumentInformationForm: View {
     @Binding var suggestedTags: [String]
 
     var body: some View {
+        #if os(macOS)
+        HStack(spacing: 16) {
+            DatePicker("Date", selection: $date, displayedComponents: .date)
+                .labelsHidden()
+                .datePickerStyle(GraphicalDatePickerStyle())
+                .fixedSize()
+            Form {
+                TextField("Description", text: $specification)
+                    .modifier(ClearButton(text: $specification))
+                documentTagsView
+                suggestedTagsView
+            }
+        }
+        .textFieldStyle(PlainTextFieldStyle())
+        .buttonStyle(BorderlessButtonStyle())
+        #else
         Form {
             DatePicker("Date", selection: $date, displayedComponents: .date)
                 .labelsHidden()
@@ -27,6 +43,7 @@ struct DocumentInformationForm: View {
             suggestedTagsView
         }
         .buttonStyle(BorderlessButtonStyle())
+        #endif
     }
 
     private func documentTagTapped(_ tag: String) {
