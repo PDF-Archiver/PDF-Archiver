@@ -11,7 +11,15 @@ import Combine
 import SwiftUI
 
 final public class MoreTabViewModel: ObservableObject, Log {
+    public static let appVersion = AppEnvironment.getFullVersion()
 
+    public static func markdownView(for title: LocalizedStringKey, withKey key: String) -> some View {
+        guard let url = Bundle.main.url(forResource: key, withExtension: "md"),
+              let markdown = try? String(contentsOf: url) else { preconditionFailure("Could not fetch file \(key)") }
+
+        return MarkdownView(title: title, markdown: markdown)
+    }
+    
     let qualities: [String]  = ["100% - Lossless 🤯", "75% - Good 👌 (Default)", "50% - Normal 👍", "25% - Small 💾"]
     let storageTypes: [String]  = StorageType.allCases.map(\.title).map { "\($0)" }
     @Published var error: Error?
@@ -20,6 +28,14 @@ final public class MoreTabViewModel: ObservableObject, Log {
     @Published var showArchiveTypeSelection = false
     @Published var subscriptionStatus: LocalizedStringKey = "Inactive ❌"
 
+    var manageSubscriptionUrl: URL {
+        URL(string: "https://apps.apple.com/account/subscriptions")!
+    }
+
+    var macOSAppUrl: URL {
+        URL(string: "https://macos.pdf-archiver.io")!
+    }
+    
     private let iapService: IAPServiceAPI
     private let archiveStore: ArchiveStoreAPI
     private var disposables = Set<AnyCancellable>()
@@ -80,15 +96,13 @@ final public class MoreTabViewModel: ObservableObject, Log {
         NotificationCenter.default.post(name: .introChanges, object: true)
     }
 
+    #if !os(macOS)
     func showPermissions() {
         log.info("More table view show: app permissions")
-        #if os(macOS)
-        // TODO: handle settings
-        #else
         guard let settingsAppURL = URL(string: UIApplication.openSettingsURLString) else { fatalError("Could not find settings url!") }
         open(settingsAppURL)
-        #endif
     }
+    #endif
 
     func resetApp() {
         log.info("More table view show: reset app")
@@ -106,12 +120,33 @@ final public class MoreTabViewModel: ObservableObject, Log {
             self.error = AlertDataModel.createAndPost(title: "Reset App", message: "Please restart the app to complete the reset.", primaryButtonTitle: "OK")
         }
     }
-
-    var manageSubscriptionUrl: URL {
-        URL(string: "https://apps.apple.com/account/subscriptions")!
-    }
-
-    var macOSAppUrl: URL {
-        URL(string: "https://macos.pdf-archiver.io")!
-    }
 }
+
+#if DEBUG
+import Combine
+import StoreKit
+import InAppPurchases
+extension MoreTabViewModel {
+    private class MockIAPService: IAPServiceAPI {
+        var productsPublisher: AnyPublisher<Set<SKProduct>, Never> {
+            Just([]).eraseToAnyPublisher()
+        }
+        var appUsagePermitted: Bool = true
+        var appUsagePermittedPublisher: AnyPublisher<Bool, Never> {
+            Just(appUsagePermitted).eraseToAnyPublisher()
+        }
+        func buy(subscription: IAPService.SubscriptionType) throws {}
+        func restorePurchases() {}
+    }
+
+    private class MockArchiveStoreAPI: ArchiveStoreAPI {
+        func update(archiveFolder: URL, untaggedFolders: [URL]) {}
+        func archive(_ document: Document, slugify: Bool) throws {}
+        func download(_ document: Document) throws {}
+        func delete(_ document: Document) throws {}
+        func getCreationDate(of url: URL) throws -> Date? { nil }
+    }
+
+    @State static var previewViewModel = MoreTabViewModel(iapService: MockIAPService(), archiveStore: MockArchiveStoreAPI())
+}
+#endif

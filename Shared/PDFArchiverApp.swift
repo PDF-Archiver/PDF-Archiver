@@ -36,9 +36,9 @@ struct PDFArchiverApp: App, Log {
         .windowStyle(HiddenTitleBarWindowStyle())
 
         Settings {
-            Text("Test")
-                .padding()
+            SettingsView(viewModel: mainNavigationViewModel.moreViewModel)
         }
+        .windowStyle(HiddenTitleBarWindowStyle())
         #else
         WindowGroup {
             mainView

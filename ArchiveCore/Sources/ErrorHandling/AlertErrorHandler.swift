@@ -19,9 +19,9 @@ public struct AlertErrorHandler: ErrorHandler {
     // to keep track of the alerts that it creates as it updates
     // our various views:
     private let id = UUID()
-    
+
     private let secondaryButton: Alert.Button?
-    
+
     public init(secondaryButton: Alert.Button? = nil) {
         self.secondaryButton = secondaryButton
     }
@@ -83,7 +83,7 @@ public struct AlertErrorHandler: ErrorHandler {
                             dismissButton: .default(Text("Dismiss"))
                         )
                     }
-                    
+
 //                case .requiresLogout:
 //                    // We don't expect this code path to be hit, since
 //                    // we're guarding for this case above, so we'll

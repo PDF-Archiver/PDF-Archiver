@@ -8,20 +8,11 @@
 
 import SwiftUI
 import SwiftUIX
-import Parma
 
-#if os(macOS)
-private typealias CustomListStyle = InsetListStyle
-private typealias CustomNavigationtStyle = DefaultNavigationViewStyle
-#else
-private typealias CustomListStyle = GroupedListStyle
-private typealias CustomNavigationtStyle = StackNavigationViewStyle
-#endif
-
+#if !os(macOS)
 struct MoreTabView: View {
 
     @ObservedObject var viewModel: MoreTabViewModel
-    private static let appVersion = AppEnvironment.getFullVersion()
 
     var body: some View {
         Form {
@@ -29,10 +20,10 @@ struct MoreTabView: View {
             subscription
             moreInformation
         }
-        .listStyle(CustomListStyle())
+        .listStyle(GroupedListStyle())
         .foregroundColor(.primary)
         .navigationTitle("Preferences & More")
-        .navigationViewStyle(CustomNavigationtStyle())
+        .navigationViewStyle(StackNavigationViewStyle())
         .emittingError(viewModel.error)
     }
 
@@ -77,63 +68,24 @@ struct MoreTabView: View {
     }
 
     private var moreInformation: some View {
-        Section(header: Text("⁉️ More Information"), footer: Text("Version \(MoreTabView.appVersion)")) {
+        Section(header: Text("⁉️ More Information"), footer: Text("Version \(MoreTabViewModel.appVersion)")) {
             NavigationLink(destination: AboutMeView()) {
                 Text("About  👤")
             }
             Link("PDF Archiver (macOS)  🖥", destination: viewModel.macOSAppUrl)
-            markdownView(for: "Terms of Use & Privacy Policy", withKey: "Privacy")
-            markdownView(for: "Imprint", withKey: "Imprint")
+            MoreTabViewModel.markdownView(for: "Terms of Use & Privacy Policy", withKey: "Privacy")
+            MoreTabViewModel.markdownView(for: "Imprint", withKey: "Imprint")
             DetailRowView(name: "Contact Support  🚑") {
                 NotificationCenter.default.post(Notification(name: .showSendDiagnosticsReport))
             }
         }
     }
-
-    private func markdownView(for title: LocalizedStringKey, withKey key: String) -> some View {
-        guard let url = Bundle.main.url(forResource: key, withExtension: "md"),
-              let markdown = try? String(contentsOf: url) else { preconditionFailure("Could not fetch file \(key)") }
-
-        return NavigationLink {
-            LazyView {
-                ScrollView {
-                    Parma(markdown)
-                }
-                .padding(.horizontal, 16)
-            }
-            .navigationTitle(title)
-        } label: {
-            Text(title)
-        }
-    }
 }
+#endif
 
-#if DEBUG
-import Combine
-import StoreKit
-import InAppPurchases
+#if DEBUG && !os(macOS)
 struct MoreTabView_Previews: PreviewProvider {
-    private class MockIAPService: IAPServiceAPI {
-        var productsPublisher: AnyPublisher<Set<SKProduct>, Never> {
-            Just([]).eraseToAnyPublisher()
-        }
-        var appUsagePermitted: Bool = true
-        var appUsagePermittedPublisher: AnyPublisher<Bool, Never> {
-            Just(appUsagePermitted).eraseToAnyPublisher()
-        }
-        func buy(subscription: IAPService.SubscriptionType) throws {}
-        func restorePurchases() {}
-    }
-
-    private class MockArchiveStoreAPI: ArchiveStoreAPI {
-        func update(archiveFolder: URL, untaggedFolders: [URL]) {}
-        func archive(_ document: Document, slugify: Bool) throws {}
-        func download(_ document: Document) throws {}
-        func delete(_ document: Document) throws {}
-        func getCreationDate(of url: URL) throws -> Date? { nil }
-    }
-
-    @State static var viewModel = MoreTabViewModel(iapService: MockIAPService(), archiveStore: MockArchiveStoreAPI())
+    @State static var viewModel = MoreTabViewModel.previewViewModel
     static var previews: some View {
         Group {
             MoreTabView(viewModel: viewModel)

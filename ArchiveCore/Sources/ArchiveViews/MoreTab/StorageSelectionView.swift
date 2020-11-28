@@ -28,6 +28,9 @@ struct StorageSelectionView: View {
                         }
                     }
                 }
+                #if os(macOS)
+                Spacer(minLength: 28)
+                #endif
             }
         }
     }

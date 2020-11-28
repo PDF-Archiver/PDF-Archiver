@@ -39,7 +39,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
     lazy var scanViewModel = ScanTabViewModel(imageConverter: imageConverter, iapService: Self.iapService, documentsFinishedHandler: Self.scanFinished)
     let tagViewModel = TagTabViewModel()
     let archiveViewModel = ArchiveViewModel()
-    private lazy var moreViewModel = MoreTabViewModel(iapService: Self.iapService, archiveStore: Self.archiveStore)
+    public private(set) lazy var moreViewModel = MoreTabViewModel(iapService: Self.iapService, archiveStore: Self.archiveStore)
 
     let iapViewModel = IAPViewModel(iapService: iapService)
 
