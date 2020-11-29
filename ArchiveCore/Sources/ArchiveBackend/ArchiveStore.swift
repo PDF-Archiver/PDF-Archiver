@@ -29,7 +29,7 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
 
     private static let fileProperties: [URLResourceKey] = [.ubiquitousItemDownloadingStatusKey, .ubiquitousItemIsDownloadingKey, .fileSizeKey, .localizedNameKey]
     private static let savePath: URL = {
-        guard let url = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first else { fatalError("No cache dir found.")}
+        guard let url = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first else { fatalError("No cache dir found.") }
         return url.appendingPathComponent("ArchiveData.json")
     }()
     public static let shared = ArchiveStore()

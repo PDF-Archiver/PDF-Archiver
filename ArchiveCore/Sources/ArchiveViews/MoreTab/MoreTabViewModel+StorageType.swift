@@ -54,6 +54,7 @@ extension MoreTabViewModel {
                 case .appContainer:
                     VStack(alignment: .leading) {
                         Text("Not synchronized - your documents are only stored locally in this app. They can be transferred via the Finder on a Mac, for example.")
+                        // swiftlint:disable:next force_unwrapping
                         Link("https://support.apple.com/en-us/HT210598", destination: URL(string: NSLocalizedString("https://support.apple.com/en-us/HT210598", comment: ""))!)
                     }
                 #if os(macOS)

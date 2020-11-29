@@ -55,7 +55,7 @@ extension Array where Element: Searchitem, Element: Comparable {
 
 extension Array where Element: Searchitem {
     public func fuzzyMatch(_ needle: String) -> [(item: Element, score: Int)] {
-        let n = [UInt8](needle.utf8)
+        let needleUtf8View = [UInt8](needle.utf8)
         var result: [(item: Element, score: Int)] = []
         let resultQueue = DispatchQueue(label: "result")
         let cores = ProcessInfo.processInfo.activeProcessorCount
@@ -68,12 +68,12 @@ extension Array where Element: Searchitem {
         }
 
         let chunkSize = array.count / cores
-        DispatchQueue.concurrentPerform(iterations: cores) { ix in
-            let start = ix * chunkSize
+        DispatchQueue.concurrentPerform(iterations: cores) { idx in
+            let start = idx * chunkSize
             let end = Swift.min(start + chunkSize, array.endIndex)
             let chunk: [(Element, Int)] = array[start..<end].compactMap { element in
                 guard let element = element else { return nil }
-                guard let match = element.term.fuzzyMatch3(n) else { return nil }
+                guard let match = element.term.fuzzyMatch3(needleUtf8View) else { return nil }
                 return (element, match.score)
             }
             resultQueue.sync {
@@ -111,6 +111,7 @@ extension Array where Element: Searchitem {
 }
 
 extension Array where Element: Equatable {
+    // swiftlint:disable:next cyclomatic_complexity
     private func fuzzyMatch3(_ needle: [Element]) -> (score: Int, matrix: Matrix<Int?>)? {
         guard needle.count <= count else { return nil }
         var matrix = Matrix<Int?>(width: self.count, height: needle.count, initialValue: nil)
@@ -120,7 +121,7 @@ extension Array where Element: Equatable {
             let needleChar = needle[row]
             var firstMatchIdx: Int?
             let remainderLength = needle.count - row - 1
-            for column in (prevMatchIdx+1)..<(count-remainderLength) {
+            for column in (prevMatchIdx + 1)..<(count - remainderLength) {
                 let char = self[column]
                 guard needleChar == char else {
                     continue
@@ -132,9 +133,9 @@ extension Array where Element: Equatable {
                 if row > 0 {
                     var maxPrevious = Int.min
                     for prevColumn in prevMatchIdx..<column {
-                        guard let s = matrix[prevColumn, row-1] else { continue }
-                        let gapPenalty = (column-prevColumn) - 1
-                        maxPrevious = Swift.max(maxPrevious, s - gapPenalty)
+                        guard let item = matrix[prevColumn, row - 1] else { continue }
+                        let gapPenalty = (column - prevColumn) - 1
+                        maxPrevious = Swift.max(maxPrevious, item - gapPenalty)
                     }
                     score += maxPrevious
                 }
@@ -143,7 +144,7 @@ extension Array where Element: Equatable {
             guard let firstIx = firstMatchIdx else { return nil }
             prevMatchIdx = firstIx
         }
-        guard let score = matrix[row: needle.count-1].compactMap({ $0 }).max() else {
+        guard let score = matrix[row: needle.count - 1].compactMap({ $0 }).max() else {
             return  nil
         }
         return (score, matrix)

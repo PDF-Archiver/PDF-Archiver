@@ -5,7 +5,7 @@
 //  Created by Julian Kahnert on 02.11.19.
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
-// swiftlint:disable force_unwrapping function_body_length
+// swiftlint:disable force_unwrapping function_body_length cyclomatic_complexity
 
 import Combine
 import PDFKit
@@ -284,6 +284,7 @@ final class TagTabViewModel: ObservableObject, Log {
     }
 
     private func getNewDocument(from documents: [Document]) -> Document? {
+        // swiftlint:disable:next sorted_first_last
         documents
             .filter { $0.taggingStatus == .untagged }
             .sorted { $0.filename < $1.filename }

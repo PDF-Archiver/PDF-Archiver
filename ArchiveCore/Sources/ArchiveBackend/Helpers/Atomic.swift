@@ -8,7 +8,7 @@
 
 import Foundation
 
-final public class Atomic<A> {
+public final class Atomic<A> {
     private let queue = DispatchQueue(label: UUID().uuidString)
     private var _value: A
     public init(_ value: A) {

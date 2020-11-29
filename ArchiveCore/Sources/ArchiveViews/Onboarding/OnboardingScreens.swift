@@ -16,15 +16,15 @@ struct OnboardingScreens: View {
     var body: some View {
         GeometryReader { proxy in
             ZStack(alignment: .center) {
-                ForEach(0..<onboardSet.cards.count) { i in
-                    OBCardView(currentCardIndex: i, cardCount: onboardSet.cards.count, buttonTapped: showNextHandler, card: onboardSet.cards[i])
+                ForEach(0..<onboardSet.cards.count) { index in
+                    OBCardView(currentCardIndex: index, cardCount: onboardSet.cards.count, buttonTapped: showNextHandler, card: onboardSet.cards[index])
                         .padding()
                         .frame(maxWidth: min(500, proxy.size.width * 0.85), maxHeight: proxy.size.height * 0.66)
                         .background(RoundedRectangle(cornerRadius: 10, style: .continuous)
                                         .fill(Color.secondarySystemBackground)
                                         .shadow(radius: 10))
                         // Source: https://github.com/AugustDev/swiftui-onboarding-slider/blob/59b4d81e9b5606c2ad9b9868a79a1e2d386282b7/Onboarding/OnboardingViewPure.swift#L11
-                        .offset(x: CGFloat(i) * proxy.size.width)
+                        .offset(x: CGFloat(index) * proxy.size.width)
                         .offset(x: gesture.width - CGFloat(cardIndex) * proxy.size.width)
                         .animation(.spring())
                         .gesture(DragGesture().onChanged { value in

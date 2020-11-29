@@ -6,8 +6,8 @@
 //
 
 @_exported import ArchiveBackend
-@_exported import ArchiveViews
 @_exported import ArchiveSharedConstants
+@_exported import ArchiveViews
 
 import Diagnostics
 import Foundation
@@ -22,7 +22,7 @@ import SwiftUI
 struct PDFArchiverApp: App, Log {
 
     @Environment(\.scenePhase) private var scenePhase
-    @StateObject public var mainNavigationViewModel = MainNavigationViewModel()
+    @StateObject var mainNavigationViewModel = MainNavigationViewModel()
 
     init() {
         setup()

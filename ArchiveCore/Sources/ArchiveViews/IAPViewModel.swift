@@ -7,9 +7,9 @@
 //
 
 import Combine
+import InAppPurchases
 import StoreKit
 import SwiftUI
-import InAppPurchases
 
 final class IAPViewModel: ObservableObject, Log {
 

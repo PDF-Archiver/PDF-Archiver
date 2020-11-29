@@ -35,11 +35,12 @@ public struct AlertErrorHandler: ErrorHandler {
 //            return AnyView(view)
 //        }
 
-        var presentation = error.map { Presentation(
-            id: id,
-            error: $0,
-            retryHandler: retryHandler
-        )}
+        var presentation = error.map {
+            Presentation(
+                id: id,
+                error: $0,
+                retryHandler: retryHandler)
+        }
 
         // We need to convert our model to a Binding value in
         // order to be able to present an alert using it:

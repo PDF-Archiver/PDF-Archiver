@@ -9,7 +9,7 @@
 
 import SwiftUI
 
-final public class OrientationInfo: ObservableObject {
+public final class OrientationInfo: ObservableObject {
     public enum Orientation {
         case portrait
         case landscape

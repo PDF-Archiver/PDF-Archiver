@@ -128,7 +128,7 @@ final class SearchTests: XCTestCase {
         XCTAssertEqual(foundElements.count, elements.count)
         XCTAssertEqual(foundElements.sorted(), elements.sorted())
     }
-    
+
     func testSearchCPUCoreCount3() {
 
         // prepare
@@ -142,7 +142,6 @@ final class SearchTests: XCTestCase {
         XCTAssertEqual(foundElements.count, elements.count)
         XCTAssertEqual(foundElements.sorted(), elements.sorted())
     }
-
 
     func testFilterPerformance1() {
 

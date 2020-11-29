@@ -4,7 +4,6 @@
 //
 //  Created by Julian Kahnert on 30.11.18.
 //
-// swiftlint:disable force_try force_unwrapping type_body_length
 
 @testable import ArchiveBackend
 import XCTest

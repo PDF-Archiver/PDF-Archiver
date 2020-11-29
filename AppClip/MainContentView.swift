@@ -5,12 +5,12 @@
 //  Created by Julian Kahnert on 10.10.20.
 //
 
-import ArchiveViews
 import ArchiveBackend
+import ArchiveViews
 import Combine
+import StoreKit
 import SwiftUI
 import SwiftUIX
-import StoreKit
 
 struct MainContentView: View {
 

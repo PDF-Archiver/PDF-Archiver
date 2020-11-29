@@ -110,6 +110,7 @@ struct ScanTabView_Previews: PreviewProvider {
     }
 
     static var previews: some View {
+        // swiftlint:disable:next trailing_closure
         ScanTabView(viewModel: ScanTabViewModel(imageConverter: ImageConverter(), iapService: MockIAPService(), documentsFinishedHandler: { _ in
                                                     print("Scan completed!") }))
             .frame(maxWidth: .infinity)

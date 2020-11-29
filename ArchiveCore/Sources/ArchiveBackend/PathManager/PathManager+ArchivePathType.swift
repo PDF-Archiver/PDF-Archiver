@@ -49,7 +49,7 @@ extension PathManager.ArchivePathType: Codable {
                 self = .appContainer
             #if os(macOS)
             case .local:
-                let url =  try container.decode(URL.self, forKey: .local)
+                let url = try container.decode(URL.self, forKey: .local)
                 self = .local(url)
             #endif
             case .none:

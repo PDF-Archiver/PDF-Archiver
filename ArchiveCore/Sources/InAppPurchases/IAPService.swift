@@ -23,7 +23,7 @@ public final class IAPService: NSObject, ObservableObject, Log {
     private var productsRequest: SKProductsRequest
     private var timer: Timer?
 
-    public override init() {
+    override public init() {
         precondition(!Self.isInitialized, "IAPService must only initialized once.")
         Self.isInitialized = true
 
@@ -128,7 +128,7 @@ extension IAPService: SKPaymentTransactionObserver {
             case .purchasing:
                 log.debug("In purchasing process.")
                 @unknown default:
-                    fatalError()
+                    preconditionFailure("Unkown transaction state: \(transaction.transactionState)")
             }
         }
     }

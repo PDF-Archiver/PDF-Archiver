@@ -121,6 +121,7 @@ extension UserDefaults: Log {
     // MARK: - Migration
 
     public static var appGroup: UserDefaults {
+        // swiftlint:disable:next force_unwrapping
         UserDefaults(suiteName: Constants.sharedContainerIdentifier)!
     }
 

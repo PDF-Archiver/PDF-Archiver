@@ -4,7 +4,7 @@
 //
 //  Created by Julian Kahnert on 30.11.18.
 //
-// swiftlint:disable function_body_length
+// swiftlint:disable function_body_length force_unwrapping
 
 import ArchiveBackend
 import XCTest

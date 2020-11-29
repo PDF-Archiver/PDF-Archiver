@@ -7,8 +7,8 @@
 
 import ArchiveSharedConstants
 import Combine
-import SwiftUI
 import PDFKit
+import SwiftUI
 
 final class PDFSharingViewModel: ObservableObject, Equatable {
     static func == (lhs: PDFSharingViewModel, rhs: PDFSharingViewModel) -> Bool {

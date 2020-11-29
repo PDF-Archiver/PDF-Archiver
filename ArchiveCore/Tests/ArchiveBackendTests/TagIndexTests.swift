@@ -4,6 +4,7 @@
 //
 //  Created by Julian Kahnert on 10.02.20.
 //
+// swiftlint:disable identifier_name
 
 @testable import ArchiveBackend
 import XCTest
@@ -35,7 +36,6 @@ final class TagIndexTests: XCTestCase {
 
         XCTAssertFalse(index.getElements(for: "tag3").contains("tag3"))
     }
-
 
     func testIndexAddPerformance() {
 

@@ -255,7 +255,7 @@ public final class Document: ObservableObject, Identifiable, Codable, Log {
         case date, specification, tags, size, downloadStatus, taggingStatus, path, filename
     }
 
-    required public init(from decoder: Decoder) throws {
+    public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         date = try? container.decode(Date.self, forKey: .date)
         specification = try container.decode(String.self, forKey: .specification)

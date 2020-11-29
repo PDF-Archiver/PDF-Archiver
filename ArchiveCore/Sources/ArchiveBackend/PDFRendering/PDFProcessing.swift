@@ -63,7 +63,7 @@ public final class PDFProcessing: Operation, Log {
         self.progressHandler = progressHandler
     }
 
-    public override func main() {
+    override public func main() {
 
         do {
             if isCancelled {
@@ -247,8 +247,10 @@ public final class PDFProcessing: Operation, Log {
             // create context - we use different contexts in order to get different page sizes in the PDF
             var bounds = CGRect(origin: .zero, size: observation.image.size)
             let data = NSMutableData()
+            // swiftlint:disable force_unwrapping
             let consumer = CGDataConsumer(data: data)!
             let context = CGContext(consumer: consumer, mediaBox: &bounds, nil)!
+            // swiftlint:enable force_unwrapping
 
             #if os(macOS)
                 let previousContext = NSGraphicsContext.current

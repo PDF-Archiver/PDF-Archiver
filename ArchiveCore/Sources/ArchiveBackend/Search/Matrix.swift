@@ -10,7 +10,7 @@ public struct Matrix<A> {
     let width: Int
     private(set) var height: Int
     init(width: Int, height: Int, initialValue: A) {
-        array = Array(repeating: initialValue, count: width*height)
+        array = Array(repeating: initialValue, count: width * height)
         self.width = width
         self.height = height
     }
@@ -27,7 +27,7 @@ public struct Matrix<A> {
     }
 
     subscript(row row: Int) -> [A] {
-        return Array(array[row * width..<(row+1)*width])
+        Array(array[row * width ..< (row + 1) * width])
     }
 
     func map<B>(_ transform: (A) -> B) -> Matrix<B> {

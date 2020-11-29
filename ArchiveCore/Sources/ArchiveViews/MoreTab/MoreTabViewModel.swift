@@ -10,7 +10,7 @@
 import Combine
 import SwiftUI
 
-final public class MoreTabViewModel: ObservableObject, Log {
+public final class MoreTabViewModel: ObservableObject, Log {
     public static let appVersion = AppEnvironment.getFullVersion()
 
     public static func markdownView(for title: LocalizedStringKey, withKey key: String) -> some View {
@@ -20,8 +20,8 @@ final public class MoreTabViewModel: ObservableObject, Log {
         return MarkdownView(title: title, markdown: markdown)
     }
 
-    let qualities: [String]  = ["100% - Lossless 🤯", "75% - Good 👌 (Default)", "50% - Normal 👍", "25% - Small 💾"]
-    let storageTypes: [String]  = StorageType.allCases.map(\.title).map { "\($0)" }
+    let qualities: [String] = ["100% - Lossless 🤯", "75% - Good 👌 (Default)", "50% - Normal 👍", "25% - Small 💾"]
+    let storageTypes: [String] = StorageType.allCases.map(\.title).map { "\($0)" }
     @Published var error: Error?
     @Published var selectedQualityIndex = UserDefaults.PDFQuality.toIndex(UserDefaults.appGroup.pdfQuality) ?? UserDefaults.PDFQuality.defaultQualityIndex
     @Published var selectedArchiveType = StorageType.getCurrent()
@@ -124,8 +124,9 @@ final public class MoreTabViewModel: ObservableObject, Log {
 
 #if DEBUG
 import Combine
-import StoreKit
 import InAppPurchases
+import StoreKit
+
 extension MoreTabViewModel {
     private class MockIAPService: IAPServiceAPI {
         var productsPublisher: AnyPublisher<Set<SKProduct>, Never> {
