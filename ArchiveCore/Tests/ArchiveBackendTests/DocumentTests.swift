@@ -49,7 +49,7 @@ final class DocumentTests: XCTestCase {
         let path = URL(fileURLWithPath: "~/Downloads/2010-05-12__tag1_tag2_tag4.pdf")
 
         // calculate
-        let parsingOutput = Document.parseFilename(path.path)
+        let parsingOutput = Document.parseFilename(path.lastPathComponent)
 
         // assert
         XCTAssertEqual(parsingOutput.date, dateFormatter.date(from: "2010-05-12"))
@@ -63,7 +63,7 @@ final class DocumentTests: XCTestCase {
         let path = URL(fileURLWithPath: "~/Downloads/scan 1.pdf")
 
         // calculate
-        let parsingOutput = Document.parseFilename(path.path)
+        let parsingOutput = Document.parseFilename(path.lastPathComponent)
 
         // assert
         XCTAssertNil(parsingOutput.date)
@@ -77,7 +77,7 @@ final class DocumentTests: XCTestCase {
         let path = URL(fileURLWithPath: "~/Downloads/2019-09-02--gfwob abrechnung für 2018__hausgeldabrechung_steuer_wohnung.pdf")
 
         // calculate
-        let parsingOutput = Document.parseFilename(path.path)
+        let parsingOutput = Document.parseFilename(path.lastPathComponent)
 
         // assert
         XCTAssertEqual(parsingOutput.date, dateFormatter.date(from: "2019-09-02"))
@@ -224,8 +224,9 @@ final class DocumentTests: XCTestCase {
         document2.specification = "this is a test"
 
         // assert
-        XCTAssertNotEqual(document1, document2)
-        XCTAssertNotEqual(document1.hashValue, document2.hashValue)
+        XCTAssertEqual(document1.id, document2.id)
+        XCTAssertEqual(document1, document2)
+        XCTAssertEqual(document1.hashValue, document2.hashValue)
     }
 
     func testComparableWithSameUUID() {
@@ -249,26 +250,27 @@ final class DocumentTests: XCTestCase {
         let document = Document(path: path, taggingStatus: .tagged, downloadStatus: defaultDownloadStatus, byteSize: defaultSize)
 
         // assert
-        XCTAssertEqual(document.searchTerm, path.lastPathComponent)
+        XCTAssertEqual(document.term, path.lastPathComponent.lowercased().utf8.map { UInt8($0) })
     }
 
     // MARK: - Test the whole workflow
 
-    func testDocumentNameParsing() {
+    func testDocumentNameParsing() throws {
 
         // setup some of the testing variables
         let path = URL(fileURLWithPath: "~/Downloads/2010-05-12--example-description__tag1_tag2_tag4.pdf")
 
         // create a basic document
-        let document = Document(path: path, taggingStatus: .tagged, downloadStatus: defaultDownloadStatus, byteSize: defaultSize)
+        let (date, specification, tagNames) = Document.parseFilename(path.lastPathComponent)
+        let tags = Set(try XCTUnwrap(tagNames))
 
         // assert
-        XCTAssertEqual(document.specification, "example-description")
+        XCTAssertEqual(specification, "example-description")
 
-        XCTAssertEqual(document.tags.count, 3)
-        XCTAssertTrue(document.tags.contains(tag1))
-        XCTAssertTrue(document.tags.contains(tag2))
-        XCTAssertEqual(document.date, dateFormatter.date(from: "2010-05-12"))
+        XCTAssertEqual(tags.count, 3)
+        XCTAssertTrue(tags.contains(tag1))
+        XCTAssertTrue(tags.contains(tag2))
+        XCTAssertEqual(date, dateFormatter.date(from: "2010-05-12"))
     }
 
     func testDocumentWithEmptyName() {
@@ -289,13 +291,13 @@ final class DocumentTests: XCTestCase {
         let path = URL(fileURLWithPath: "~/Downloads/2010-05-12 example filename.pdf")
 
         // calculate
-        let document = Document(path: path, taggingStatus: .tagged, downloadStatus: defaultDownloadStatus, byteSize: defaultSize)
+        let (date, specification, tagNames) = Document.parseFilename(path.lastPathComponent)
 
         // assert
-        XCTAssertEqual(document.date, dateFormatter.date(from: "2010-05-12"))
-        XCTAssertEqual(document.specification, "example filename")
-        XCTAssertEqual(document.specification.localizedCapitalized, "Example Filename")
-        XCTAssertEqual(document.tags, Set())
+        XCTAssertEqual(date, dateFormatter.date(from: "2010-05-12"))
+        XCTAssertEqual(specification, "example filename")
+        XCTAssertEqual(specification?.localizedCapitalized, "Example Filename")
+        XCTAssertNil(tagNames)
     }
 
     func testDocumentDateParsingFormat2() {
@@ -304,13 +306,13 @@ final class DocumentTests: XCTestCase {
         let path = URL(fileURLWithPath: "~/Downloads/2010_05_12 example filename.pdf")
 
         // calculate
-        let document = Document(path: path, taggingStatus: .tagged, downloadStatus: defaultDownloadStatus, byteSize: defaultSize)
+        let (date, specification, tagNames) = Document.parseFilename(path.lastPathComponent)
 
         // assert
-        XCTAssertEqual(document.date, dateFormatter.date(from: "2010-05-12"))
-        XCTAssertEqual(document.specification, "example filename")
-        XCTAssertEqual(document.specification.localizedCapitalized, "Example Filename")
-        XCTAssertEqual(document.tags, Set())
+        XCTAssertEqual(date, dateFormatter.date(from: "2010-05-12"))
+        XCTAssertEqual(specification, "example filename")
+        XCTAssertEqual(specification?.localizedCapitalized, "Example Filename")
+        XCTAssertNil(tagNames)
     }
 
     func testDocumentDateParsingFormat3() {
@@ -319,28 +321,29 @@ final class DocumentTests: XCTestCase {
         let path = URL(fileURLWithPath: "~/Downloads/20100512 example filename.pdf")
 
         // calculate
-        let document = Document(path: path, taggingStatus: .tagged, downloadStatus: defaultDownloadStatus, byteSize: defaultSize)
+        let (date, specification, tagNames) = Document.parseFilename(path.lastPathComponent)
 
         // assert
-        XCTAssertEqual(document.date, dateFormatter.date(from: "2010-05-12"))
-        XCTAssertEqual(document.specification, "example filename")
-        XCTAssertEqual(document.specification.localizedCapitalized, "Example Filename")
-        XCTAssertEqual(document.tags, Set())
+        XCTAssertEqual(date, dateFormatter.date(from: "2010-05-12"))
+        XCTAssertEqual(specification, "example filename")
+        XCTAssertEqual(specification?.localizedCapitalized, "Example Filename")
+        XCTAssertNil(tagNames)
     }
 
-    func testDocumentDateParsingFormat4() {
+    func testDocumentDateParsingFormat4() throws {
 
         // setup
         let path = URL(fileURLWithPath: "~/Downloads/2010_05_12__15_17.pdf")
 
         // calculate
-        let document = Document(path: path, taggingStatus: .tagged, downloadStatus: defaultDownloadStatus, byteSize: defaultSize)
+        let (date, specification, tagNames) = Document.parseFilename(path.lastPathComponent)
+        let tags = Set(try XCTUnwrap(tagNames))
 
         // assert
-        XCTAssertEqual(document.date, dateFormatter.date(from: "2010-05-12"))
-        XCTAssertEqual(document.specification, "")
-        XCTAssertTrue(document.tags.contains("15"))
-        XCTAssertTrue(document.tags.contains("17"))
+        XCTAssertEqual(date, dateFormatter.date(from: "2010-05-12"))
+        XCTAssertNil(specification)
+        XCTAssertTrue(tags.contains("15"))
+        XCTAssertTrue(tags.contains("17"))
     }
 
     func testDocumentDateParsingScanSnapFormat() {
@@ -349,13 +352,13 @@ final class DocumentTests: XCTestCase {
         let path = URL(fileURLWithPath: "~/Downloads/2010_05_12_15_17.pdf")
 
         // calculate
-        let document = Document(path: path, taggingStatus: .tagged, downloadStatus: defaultDownloadStatus, byteSize: defaultSize)
+        let (date, specification, tagNames) = Document.parseFilename(path.lastPathComponent)
 
         // assert
-        XCTAssertEqual(document.date, dateFormatter.date(from: "2010-05-12"))
-        XCTAssertEqual(document.specification, "15-17")
-        XCTAssertEqual(document.specification.localizedCapitalized, "15 17")
-        XCTAssertEqual(document.tags, Set())
+        XCTAssertEqual(date, dateFormatter.date(from: "2010-05-12"))
+        XCTAssertEqual(specification, "15-17")
+        XCTAssertEqual(specification?.localizedCapitalized, "15-17")
+        XCTAssertNil(tagNames)
     }
 
 //    func testDocumentRenamingPath() {

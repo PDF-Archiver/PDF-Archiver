@@ -9,7 +9,7 @@
 import AppKit
 
 extension NSTextField {
-    
+
     // disables the focues ring for all macOS textfields
     open override var focusRingType: NSFocusRingType {
         get { .none }
