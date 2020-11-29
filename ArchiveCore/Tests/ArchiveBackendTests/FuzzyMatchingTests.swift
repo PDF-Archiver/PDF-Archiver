@@ -32,7 +32,7 @@ final class FuzzyMatchingTests: XCTestCase {
             results = text.fuzzyMatch("swift")
         }
 
-        print(results)
+        XCTAssertTrue(!results.isEmpty)
     }
 
     func testPerformance2() {
@@ -43,7 +43,7 @@ final class FuzzyMatchingTests: XCTestCase {
             results = text.fuzzyMatchSorted("swift")
         }
 
-        print(results)
+        XCTAssertTrue(!results.isEmpty)
     }
 
     func testPerformance3() {
@@ -54,6 +54,6 @@ final class FuzzyMatchingTests: XCTestCase {
             tmp = text.map { Array($0.utf8) }
         }
 
-        print(tmp.prefix(5))
+        XCTAssertTrue(!tmp.isEmpty)
     }
 }

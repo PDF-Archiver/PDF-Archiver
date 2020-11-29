@@ -9,7 +9,7 @@
 import ArchiveBackend
 import XCTest
 
-class DateParserTests: XCTestCase {
+final class DateParserTests: XCTestCase {
 
     var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
