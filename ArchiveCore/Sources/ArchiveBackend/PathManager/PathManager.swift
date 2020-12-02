@@ -8,7 +8,7 @@
 import ArchiveSharedConstants
 import Foundation
 
-fileprivate extension UserDefaults {
+extension UserDefaults {
 //    let bookmark = try newValue.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
 //    UserDefaults.standard.set(bookmark, forKey: "observedPathWithSecurityScope")
 
