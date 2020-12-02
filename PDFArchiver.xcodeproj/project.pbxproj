@@ -631,7 +631,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which chia >/dev/null; then\n    swiftlint autocorrect\n    #swiftlint\n    chia --config https://raw.githubusercontent.com/JulianKahnert/chia-config/master/chia.yml --xcode\n    #chia --config ${PROJECT_DIR}/chia.yaml --xcode\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint autocorrect\n    # swiftlint will be run in chia\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/swiftlint\"\nfi\n\nif which chia >/dev/null; then\n    chia --config https://raw.githubusercontent.com/JulianKahnert/chia-config/master/chia.yml --xcode\nelse\n    echo \"warning: chia not installed, download from https://github.com/worldiety/chia\"\nfi\n";
 		};
 		34A53F7E24AA63DC008A3377 /* Settings Bundle Update */ = {
 			isa = PBXShellScriptBuildPhase;

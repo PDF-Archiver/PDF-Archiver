@@ -284,7 +284,7 @@ final class DocumentTests: XCTestCase {
         XCTAssertNil(document.date)
     }
 
-    func testDocumentDateParsingFormat1() {
+    func testDocumentDateParsingFormat1() throws {
 
         // setup
         let path = URL(fileURLWithPath: "~/Downloads/2010-05-12 example filename.pdf")
@@ -293,13 +293,15 @@ final class DocumentTests: XCTestCase {
         let (date, specification, tagNames) = Document.parseFilename(path.lastPathComponent)
 
         // assert
-        XCTAssertEqual(date, dateFormatter.date(from: "2010-05-12"))
+        let parsedDate = try XCTUnwrap(date)
+        let desiredDate = try XCTUnwrap(dateFormatter.date(from: "2010-05-12"))
+        XCTAssert(Calendar.current.isDate(parsedDate, inSameDayAs: desiredDate))
         XCTAssertEqual(specification, "example filename")
         XCTAssertEqual(specification?.localizedCapitalized, "Example Filename")
         XCTAssertNil(tagNames)
     }
 
-    func testDocumentDateParsingFormat2() {
+    func testDocumentDateParsingFormat2() throws {
 
         // setup
         let path = URL(fileURLWithPath: "~/Downloads/2010_05_12 example filename.pdf")
@@ -308,13 +310,15 @@ final class DocumentTests: XCTestCase {
         let (date, specification, tagNames) = Document.parseFilename(path.lastPathComponent)
 
         // assert
-        XCTAssertEqual(date, dateFormatter.date(from: "2010-05-12"))
+        let parsedDate = try XCTUnwrap(date)
+        let desiredDate = try XCTUnwrap(dateFormatter.date(from: "2010-05-12"))
+        XCTAssert(Calendar.current.isDate(parsedDate, inSameDayAs: desiredDate))
         XCTAssertEqual(specification, "example filename")
         XCTAssertEqual(specification?.localizedCapitalized, "Example Filename")
         XCTAssertNil(tagNames)
     }
 
-    func testDocumentDateParsingFormat3() {
+    func testDocumentDateParsingFormat3() throws {
 
         // setup
         let path = URL(fileURLWithPath: "~/Downloads/20100512 example filename.pdf")
@@ -323,7 +327,9 @@ final class DocumentTests: XCTestCase {
         let (date, specification, tagNames) = Document.parseFilename(path.lastPathComponent)
 
         // assert
-        XCTAssertEqual(date, dateFormatter.date(from: "2010-05-12"))
+        let parsedDate = try XCTUnwrap(date)
+        let desiredDate = try XCTUnwrap(dateFormatter.date(from: "2010-05-12"))
+        XCTAssert(Calendar.current.isDate(parsedDate, inSameDayAs: desiredDate))
         XCTAssertEqual(specification, "example filename")
         XCTAssertEqual(specification?.localizedCapitalized, "Example Filename")
         XCTAssertNil(tagNames)

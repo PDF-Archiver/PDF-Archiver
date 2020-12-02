@@ -1,6 +1,10 @@
 // swift-tools-version:5.3
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
+// https://docs.swift.org/package-manager/PackageDescription/index.html
+// https://developer.apple.com/documentation/swift_packages/package
+// https://swift.org/package-manager/
+
 import PackageDescription
 
 let package = Package(
@@ -65,6 +69,9 @@ let package = Package(
         .testTarget(name: "ArchiveBackendTests",
                     dependencies: [
                         "ArchiveBackend"
+                    ],
+                    resources: [
+                        .copy("assets"),
                     ])
     ]
 )

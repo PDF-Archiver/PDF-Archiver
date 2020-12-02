@@ -59,20 +59,11 @@ extension Array where Element: Searchitem {
         var result: [(item: Element, score: Int)] = []
         let resultQueue = DispatchQueue(label: "result")
         let cores = ProcessInfo.processInfo.activeProcessorCount
-
-        var array: [Element?] = self
-        let rest = count % cores
-        if rest > 0 {
-            let paddingCount = cores - rest
-            array.append(contentsOf: [Element?](repeating: nil, count: paddingCount))
-        }
-
-        let chunkSize = array.count / cores
+        let chunkSize = count / cores
         DispatchQueue.concurrentPerform(iterations: cores) { idx in
             let start = idx * chunkSize
-            let end = Swift.min(start + chunkSize, array.endIndex)
-            let chunk: [(Element, Int)] = array[start..<end].compactMap { element in
-                guard let element = element else { return nil }
+            let end = idx == cores - 1 ? endIndex : start + chunkSize
+            let chunk: [(Element, Int)] = self[start..<end].compactMap { element in
                 guard let match = element.term.fuzzyMatch3(needleUtf8View) else { return nil }
                 return (element, match.score)
             }
@@ -82,32 +73,6 @@ extension Array where Element: Searchitem {
         }
         return result
     }
-
-//    let n = Array<UInt8>(needle.utf8)
-//    var result: [(string: [UInt8], score: Int)] = []
-//    let resultQueue = DispatchQueue(label: "result")
-//    let cores = ProcessInfo.processInfo.activeProcessorCount
-//
-//    var array = self
-//    let rest = count % cores
-//    if rest > 0 {
-//        let paddingCount = cores - rest
-//        array.append(contentsOf: Array(repeating: [], count: paddingCount))
-//    }
-//
-//    let chunkSize = array.count/cores
-//    DispatchQueue.concurrentPerform(iterations: cores) { ix in
-//        let start = ix * chunkSize
-//        let end = Swift.min(start + chunkSize, array.endIndex)
-//        let chunk: [([UInt8], Int)] = array[start..<end].compactMap {
-//            guard let match = $0.fuzzyMatch3(n) else { return nil }
-//            return ($0, match.score)
-//        }
-//        resultQueue.sync {
-//            result.append(contentsOf: chunk)
-//        }
-//    }
-//    return result
 }
 
 extension Array where Element: Equatable {

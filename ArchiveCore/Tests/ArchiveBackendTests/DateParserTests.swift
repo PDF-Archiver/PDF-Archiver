@@ -7,6 +7,7 @@
 // swiftlint:disable function_body_length force_unwrapping
 
 import ArchiveBackend
+import PDFKit
 import XCTest
 
 final class DateParserTests: XCTestCase {
@@ -17,7 +18,7 @@ final class DateParserTests: XCTestCase {
         return formatter
     }
 
-    func testParsingValidDate() {
+    func testParsingValidDate() throws {
 
         // setup the raw string
         let hiddenDate = "20050201"
@@ -65,14 +66,14 @@ final class DateParserTests: XCTestCase {
 
             // assert
             if let parsedOutput = parsedOutput {
-                XCTAssertEqual(parsedOutput.date, date)
+                XCTAssertTrue(Calendar.current.isDate(parsedOutput.date, inSameDayAs: try XCTUnwrap(date)))
             } else {
                 XCTFail("No date was found, this should not happen in this test.")
             }
         }
     }
 
-    func testParsingambiguousDate() {
+    func testParsingambiguousDate() throws {
 
         // setup the raw string
         let rawStringMapping = ["20150203": dateFormatter.date(from: "2015-02-03"),
@@ -85,7 +86,7 @@ final class DateParserTests: XCTestCase {
 
             // assert
             if let parsedOutput = parsedOutput {
-                XCTAssertEqual(parsedOutput.date, date)
+                XCTAssertTrue(Calendar.current.isDate(parsedOutput.date, inSameDayAs:  try XCTUnwrap(date)))
             } else {
                 XCTFail("No date was found, this should not happen in this test.")
             }
@@ -110,7 +111,7 @@ final class DateParserTests: XCTestCase {
         }
     }
 
-    func testValidParsingLocale() {
+    func testValidParsingLocale() throws {
 
         // setup the raw string
         let rawStringMapping = [
@@ -127,7 +128,8 @@ final class DateParserTests: XCTestCase {
             let parsedOutput = DateParser.parse(raw, locales: [Locale(identifier: "de_DE")])
 
             // assert
-            XCTAssertEqual(parsedOutput?.date, date)
+            let parsedDate = try XCTUnwrap(parsedOutput?.date)
+            XCTAssertTrue(Calendar.current.isDate(parsedDate, inSameDayAs: try XCTUnwrap(date)))
         }
     }
 
@@ -152,7 +154,7 @@ final class DateParserTests: XCTestCase {
         }
     }
 
-    func testPerformanceExample() {
+    func testPerformanceExample() throws {
 
         // setup the long string
         let hiddenDate = "20050201"
@@ -164,17 +166,36 @@ final class DateParserTests: XCTestCase {
         At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
         """
 
-        var parsedOutput: (date: Date, rawDate: String)?
         // measure the performance of the date parsing
+        var parsedOutput: (date: Date, rawDate: String)?
         self.measure {
             parsedOutput = DateParser.parse(longText)
         }
 
         // assert
         if let parsedOutput = parsedOutput {
-            XCTAssertEqual(parsedOutput.date, dateFormatter.date(from: "2005-02-01"))
+            let date = try XCTUnwrap(dateFormatter.date(from: "2005-02-01"))
+            XCTAssertTrue(Calendar.current.isDate(parsedOutput.date, inSameDayAs: date))
         } else {
             XCTFail("No date was found, this should not happen in this test.")
         }
+    }
+    
+    func testPerformanceExample2() throws {
+        let examplePdfUrl = Bundle.longTextPDFUrl
+        let document = try XCTUnwrap(PDFDocument(url: examplePdfUrl))
+        
+        var content = ""
+        for pageNumber in 0..<min(document.pageCount, 1) {
+            content += document.page(at: pageNumber)?.string ?? ""
+        }
+        
+        // measure the performance of the date parsing
+        var parsedOutput: (date: Date, rawDate: String)?
+        self.measure {
+            parsedOutput = DateParser.parse(content)
+        }
+     
+        XCTAssertNil(parsedOutput)
     }
 }

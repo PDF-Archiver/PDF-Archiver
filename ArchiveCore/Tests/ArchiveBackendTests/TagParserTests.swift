@@ -6,6 +6,7 @@
 //
 
 import ArchiveBackend
+import PDFKit
 import XCTest
 
 final class TagParserTests: XCTestCase {
@@ -47,5 +48,26 @@ final class TagParserTests: XCTestCase {
             // assert
             XCTAssertEqual(tags, referenceTags)
         }
+    }
+    
+    func testPerformanceExample() throws {
+        let examplePdfUrl = Bundle.longTextPDFUrl
+        let document = try XCTUnwrap(PDFDocument(url: examplePdfUrl))
+        
+        var content = ""
+        for pageNumber in 0..<min(document.pageCount, 10) {
+            content += document.page(at: pageNumber)?.string ?? ""
+        }
+        
+        // measure the performance of the date parsing
+        var tags: Set<String>?
+        self.measure {
+            tags = TagParser.parse(content)
+        }
+     
+        let foundTags = try XCTUnwrap(tags)
+        XCTAssert(foundTags.contains("versicherungsschutz"))
+        XCTAssert(foundTags.contains("produkt"))
+        XCTAssert(foundTags.contains("bank"))
     }
 }
