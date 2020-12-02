@@ -11,7 +11,8 @@ import XCTest
 import PDFKit
 
 final class PDFProcessingTests: XCTestCase {
-    static let tempFolder = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent(UUID().uuidString)
+    private static let tempFolder = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent(UUID().uuidString)
+    private static let referenceDocument = PDFDocument(url: Bundle.billPDFUrl)!
     
     private let queue: OperationQueue = {
         let queue = OperationQueue()
@@ -60,8 +61,7 @@ final class PDFProcessingTests: XCTestCase {
         let outputUrl = try XCTUnwrap(operation.outputUrl)
         let document = try XCTUnwrap(PDFDocument(url: outputUrl))
         
-        XCTAssertEqual(document.pageCount, inputDocument.pageCount)
-        XCTAssertEqual(document.string, inputDocument.string)
+        assertEqualPDFDocuments(left: document, right: inputDocument)
     }
     
     func testPNGInput() throws {
@@ -88,6 +88,8 @@ final class PDFProcessingTests: XCTestCase {
         let outputUrl = try XCTUnwrap(operation.outputUrl)
         let document = try XCTUnwrap(PDFDocument(url: outputUrl))
         
+        assertEqualPDFDocuments(left: document, right: Self.referenceDocument)
+
         XCTAssertEqual(document.pageCount, 1)
         let content = try XCTUnwrap(document.string)
         XCTAssertFalse(content.isEmpty)
@@ -120,6 +122,8 @@ final class PDFProcessingTests: XCTestCase {
         
         let outputUrl = try XCTUnwrap(operation.outputUrl)
         let document = try XCTUnwrap(PDFDocument(url: outputUrl))
+        
+        assertEqualPDFDocuments(left: document, right: Self.referenceDocument)
         
         XCTAssertEqual(document.pageCount, 1)
         let content = try XCTUnwrap(document.string)
