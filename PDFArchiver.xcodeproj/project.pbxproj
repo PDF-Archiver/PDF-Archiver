@@ -30,7 +30,6 @@
 		34822228257ACD36005DC1B2 /* IAP.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 34822227257ACD36005DC1B2 /* IAP.storekit */; };
 		34822229257ACD36005DC1B2 /* IAP.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 34822227257ACD36005DC1B2 /* IAP.storekit */; };
 		3482222A257ACD36005DC1B2 /* IAP.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 34822227257ACD36005DC1B2 /* IAP.storekit */; };
-		34822232257AD267005DC1B2 /* IAPServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34822231257AD267005DC1B2 /* IAPServiceTests.swift */; };
 		3489D73024A3C53E0035E64F /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3489D72F24A3C53E0035E64F /* Tests_iOS.swift */; };
 		3489D73B24A3C53E0035E64F /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3489D73A24A3C53E0035E64F /* Tests_macOS.swift */; };
 		3489D73D24A3C53E0035E64F /* PDFArchiverApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3489D71424A3C53D0035E64F /* PDFArchiverApp.swift */; };
@@ -122,8 +121,6 @@
 		3416B1B324A9282800D5F4E0 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		347D0CE224BF923A00061707 /* ArchiveCore */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ArchiveCore; sourceTree = "<group>"; };
 		34822227257ACD36005DC1B2 /* IAP.storekit */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = IAP.storekit; sourceTree = "<group>"; };
-		34822231257AD267005DC1B2 /* IAPServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPServiceTests.swift; sourceTree = "<group>"; };
-		3482223F257AD26D005DC1B2 /* IAPTest.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = IAPTest.storekit; sourceTree = "<group>"; };
 		3489D71424A3C53D0035E64F /* PDFArchiverApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFArchiverApp.swift; sourceTree = "<group>"; };
 		3489D71B24A3C53E0035E64F /* PDFArchiver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PDFArchiver.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3489D72324A3C53E0035E64F /* PDFArchiver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PDFArchiver.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -297,8 +294,6 @@
 		3489D72E24A3C53E0035E64F /* Tests iOS */ = {
 			isa = PBXGroup;
 			children = (
-				3482223F257AD26D005DC1B2 /* IAPTest.storekit */,
-				34822231257AD267005DC1B2 /* IAPServiceTests.swift */,
 				3489D72F24A3C53E0035E64F /* Tests_iOS.swift */,
 				3489D73124A3C53E0035E64F /* Info.plist */,
 			);
@@ -686,7 +681,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				34822232257AD267005DC1B2 /* IAPServiceTests.swift in Sources */,
 				3489D73024A3C53E0035E64F /* Tests_iOS.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
