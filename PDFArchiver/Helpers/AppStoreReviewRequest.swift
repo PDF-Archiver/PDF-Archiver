@@ -3,7 +3,7 @@
 //  PDFArchiver
 //
 //  Created by Julian Kahnert on 23.09.18.
-//  Copyright © 2019 Julian Kahnert. All rights reserved.
+//  Copyright © 2020 Julian Kahnert. All rights reserved.
 //
 //  Inspired by: https://developer.apple.com/documentation/storekit/skstorereviewcontroller/requesting_app_store_reviews
 //
