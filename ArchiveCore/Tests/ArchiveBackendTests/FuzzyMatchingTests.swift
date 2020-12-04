@@ -26,7 +26,7 @@ final class FuzzyMatchingTests: XCTestCase {
 
     func testPerformance1() throws {
         guard let testFilenames = Self.testFilenames else { throw XCTSkip("Could not fetch linux file content.") }
-        
+
         var results = [(item: [String.UTF8View.Element], score: Int)]()
         let text = testFilenames.map { Array($0.utf8) }
 

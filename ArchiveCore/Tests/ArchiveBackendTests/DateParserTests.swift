@@ -86,7 +86,7 @@ final class DateParserTests: XCTestCase {
 
             // assert
             if let parsedOutput = parsedOutput {
-                XCTAssertTrue(Calendar.current.isDate(parsedOutput.date, inSameDayAs:  try XCTUnwrap(date)))
+                XCTAssertTrue(Calendar.current.isDate(parsedOutput.date, inSameDayAs: try XCTUnwrap(date)))
             } else {
                 XCTFail("No date was found, this should not happen in this test.")
             }
@@ -180,22 +180,22 @@ final class DateParserTests: XCTestCase {
             XCTFail("No date was found, this should not happen in this test.")
         }
     }
-    
+
     func testPerformanceExample2() throws {
         let examplePdfUrl = Bundle.longTextPDFUrl
         let document = try XCTUnwrap(PDFDocument(url: examplePdfUrl))
-        
+
         var content = ""
         for pageNumber in 0..<min(document.pageCount, 1) {
             content += document.page(at: pageNumber)?.string ?? ""
         }
-        
+
         // measure the performance of the date parsing
         var parsedOutput: (date: Date, rawDate: String)?
         self.measure {
             parsedOutput = DateParser.parse(content)
         }
-     
+
         XCTAssertNil(parsedOutput)
     }
 }

@@ -11,7 +11,7 @@ import Foundation
 public enum DateParser {
 
     public typealias ParserResult = (date: Date, rawDate: String)
-    
+
     private struct FormatMapping {
         let format: String
         let regex: String
@@ -65,8 +65,7 @@ public enum DateParser {
             // use the super fast NSDataDetector first, e.g. for "yesterday"/"last Monday"
             return dateDetector(for: raw)
         }
-        
-        
+
         // create a date parser
         let dateFormatter = DateFormatter()
 

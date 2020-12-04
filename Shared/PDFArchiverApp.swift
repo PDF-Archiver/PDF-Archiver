@@ -96,7 +96,7 @@ struct PDFArchiverApp: App, Log {
             options.dsn = "https://7adfcae85d8d4b2f946102571b2d4d6c@o194922.ingest.sentry.io/1299590"
             options.environment = AppEnvironment.get().rawValue
             options.releaseName = AppEnvironment.getFullVersion()
-            options.enableAutoSessionTracking = AppEnvironment.get() != .production
+            options.enableAutoSessionTracking = NSNumber(value: AppEnvironment.get() != .production)
             options.debug = NSNumber(value: AppEnvironment.get() != .production)
         }
 

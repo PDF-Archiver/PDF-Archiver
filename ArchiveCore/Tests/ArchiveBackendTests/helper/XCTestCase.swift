@@ -4,6 +4,7 @@
 //
 //  Created by Julian Kahnert on 02.12.20.
 //
+// swiftlint:disable identifier_name
 
 import GraphicsRenderer
 import PDFKit
@@ -16,22 +17,22 @@ extension XCTestCase {
             XCTFail("Documents have different page count")
             return
         }
-       
+
         // Pages are rendered on dataRepresentation() only !?
         for i in 0..<left.pageCount {
             if let pageLeft = left.page(at: i),
                let pageRight = right.page(at: i) {
                 XCTAssertEqual(pageLeft.rotation, pageRight.rotation, "Rotation of pdf page \(i) does not match.")
 //                XCTAssertEqual(pageLeft.string, pageRight.string, "Content of pdf page \(i) does not match.")
-                
+
                 let dataLeft = pageLeft.thumbnail(of: .init(width: 1024, height: 1024), for: .mediaBox).png
                 let dataRight = pageRight.thumbnail(of: .init(width: 1024, height: 1024), for: .mediaBox).png
 
-                if (dataLeft != dataRight) {
+                if dataLeft != dataRight {
                     if let diffImageData = diff(dataLeft, dataRight) {
                         add(XCTAttachment(uniformTypeIdentifier: "image/png", name: "diff image", payload: diffImageData, userInfo: nil))
                     }
-                    
+
                     add(XCTAttachment(uniformTypeIdentifier: "image/png", name: "left image", payload: dataLeft, userInfo: nil))
                     add(XCTAttachment(uniformTypeIdentifier: "image/png", name: "right image", payload: dataRight, userInfo: nil))
                 }
@@ -43,12 +44,12 @@ extension XCTestCase {
     }
 }
 
-fileprivate func diff(_ firstImageData: Data?, _ secondImageData: Data?) -> Data? {
+private func diff(_ firstImageData: Data?, _ secondImageData: Data?) -> Data? {
     guard let firstImageData = firstImageData,
           let secondImageData = secondImageData,
           let first = CIImage(data: firstImageData),
           let second = CIImage(data: secondImageData) else { return nil }
-    
+
     // https://github.com/Tylerflick/ImageDiff/blob/master/ImageDiff/CoreImageDiffer.swift#L48
     let kernelString = """
                         kernel vec4 naiveDiff(__sample first, __sample second) {
