@@ -75,7 +75,7 @@
 		A307BB362014B8530046C391 /* MainPreferencesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPreferencesVC.swift; sourceTree = "<group>"; };
 		A307BB3A2014D5300046C391 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		A315408E20C83E61004947CC /* ViewHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHandling.swift; sourceTree = "<group>"; };
-		A31B52E61FF694B0007A3D14 /* PDFArchiver (macOS).app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "PDFArchiver (macOS).app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A31B52E61FF694B0007A3D14 /* PDFArchiver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PDFArchiver.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A31B52E91FF694B0007A3D14 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A31B52EB1FF694B0007A3D14 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		A31B52ED1FF694B0007A3D14 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -198,7 +198,7 @@
 		A31B52E71FF694B0007A3D14 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A31B52E61FF694B0007A3D14 /* PDFArchiver (macOS).app */,
+				A31B52E61FF694B0007A3D14 /* PDFArchiver.app */,
 				A31B52F81FF694B0007A3D14 /* PDFArchiverTests.xctest */,
 				A31B53031FF694B0007A3D14 /* PDFArchiverUITests.xctest */,
 			);
@@ -263,9 +263,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		A31B52E51FF694B0007A3D14 /* PDFArchiver (macOS) */ = {
+		A31B52E51FF694B0007A3D14 /* PDFArchiver */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A31B530C1FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "PDFArchiver (macOS)" */;
+			buildConfigurationList = A31B530C1FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "PDFArchiver" */;
 			buildPhases = (
 				A349C8212064E187002633A7 /* BartyCrouch */,
 				A389987A2025078D00C34E0B /* SwiftLint */,
@@ -279,14 +279,14 @@
 			);
 			dependencies = (
 			);
-			name = "PDFArchiver (macOS)";
+			name = PDFArchiver;
 			packageProductDependencies = (
 				A3F19B3E23B242BD001B6A14 /* Sentry */,
 				A3F19B4123B242FA001B6A14 /* ArchiveLib */,
 				A3E31A86245E11D900FA2E75 /* Purchases */,
 			);
 			productName = Archiver;
-			productReference = A31B52E61FF694B0007A3D14 /* PDFArchiver (macOS).app */;
+			productReference = A31B52E61FF694B0007A3D14 /* PDFArchiver.app */;
 			productType = "com.apple.product-type.application";
 		};
 		A31B52F71FF694B0007A3D14 /* PDFArchiverTests */ = {
@@ -383,7 +383,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A31B52E51FF694B0007A3D14 /* PDFArchiver (macOS) */,
+				A31B52E51FF694B0007A3D14 /* PDFArchiver */,
 				A31B52F71FF694B0007A3D14 /* PDFArchiverTests */,
 				A31B53021FF694B0007A3D14 /* PDFArchiverUITests */,
 			);
@@ -519,12 +519,12 @@
 /* Begin PBXTargetDependency section */
 		A31B53051FF694B0007A3D14 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A31B52E51FF694B0007A3D14 /* PDFArchiver (macOS) */;
+			target = A31B52E51FF694B0007A3D14 /* PDFArchiver */;
 			targetProxy = A31B53041FF694B0007A3D14 /* PBXContainerItemProxy */;
 		};
 		A3962D6520C4114B00A80AB5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A31B52E51FF694B0007A3D14 /* PDFArchiver (macOS) */;
+			target = A31B52E51FF694B0007A3D14 /* PDFArchiver */;
 			targetProxy = A3962D6420C4114B00A80AB5 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -687,7 +687,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 80;
+				CURRENT_PROJECT_VERSION = 81;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -719,7 +719,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 80;
+				CURRENT_PROJECT_VERSION = 81;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_HARDENED_RUNTIME = YES;
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/PDFArchiver/External/OpenSSL/include";
@@ -844,7 +844,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A31B530C1FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "PDFArchiver (macOS)" */ = {
+		A31B530C1FF694B0007A3D14 /* Build configuration list for PBXNativeTarget "PDFArchiver" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A31B530D1FF694B0007A3D14 /* Debug */,
