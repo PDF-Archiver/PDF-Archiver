@@ -73,7 +73,7 @@ final class DateParserTests: XCTestCase {
         }
     }
 
-    func testParsingambiguousDate() throws {
+    func testParsingAmbiguousDate() throws {
 
         // setup the raw string
         let rawStringMapping = ["20150203": dateFormatter.date(from: "2015-02-03"),

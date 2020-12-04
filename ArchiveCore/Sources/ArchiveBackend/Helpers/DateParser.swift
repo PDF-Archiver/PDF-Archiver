@@ -61,10 +61,11 @@ public enum DateParser {
 
     private static func parse(_ raw: String, with mappings: [FormatMapping]) -> ParserResult? {
 
-        // use the super fast NSDataDetector first, e.g. for "yesterday"/"last monday"
-        if let result = dateDetector(for: raw) {
-            return result
+        guard raw.count < 5000 else {
+            // use the super fast NSDataDetector first, e.g. for "yesterday"/"last Monday"
+            return dateDetector(for: raw)
         }
+        
         
         // create a date parser
         let dateFormatter = DateFormatter()
@@ -104,7 +105,8 @@ public enum DateParser {
             }
         }
 
-        return result.min(by: { $0.key < $1.key })?.value
+        let parserResult = result.min(by: { $0.key < $1.key })?.value
+        return parserResult ?? dateDetector(for: raw)
     }
 
     // MARK: - helper functions
@@ -153,7 +155,7 @@ public enum DateParser {
         var mappings = [(FormatMapping)]()
         for dateOrder in dateOrders {
 
-            // create the cartesian product of all datepart variantes (e.g. yy or yyyy)
+            // create the cartesian product of all date part variants (e.g. yy or yyyy)
             let prod1 = product(part2mapping(dateOrder.first, monthMappings: monthMappings),
                                 part2mapping(dateOrder.second, monthMappings: monthMappings))
             let prod2 = product(prod1,
