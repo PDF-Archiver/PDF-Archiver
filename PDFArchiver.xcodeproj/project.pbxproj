@@ -42,6 +42,7 @@
 		34A5CF8224A93A3C002409EF /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34A5CF8124A93A3C002409EF /* StoreKit.framework */; };
 		34B2545E2512774400EC5DD9 /* Imprint.md in Resources */ = {isa = PBXBuildFile; fileRef = 34B254602512774400EC5DD9 /* Imprint.md */; };
 		34B25469251277A700EC5DD9 /* Privacy.md in Resources */ = {isa = PBXBuildFile; fileRef = 34B2546B251277A700EC5DD9 /* Privacy.md */; };
+		34BEBFD1258807450030377A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 34BEBFD0258807450030377A /* Assets.xcassets */; };
 		34D470BB255B249B000302A8 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34D470BA255B249B000302A8 /* StoreKit.framework */; };
 		34E7DB0F250189D400E94352 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 34E7DB12250189D400E94352 /* Localizable.strings */; };
 		34E7DB10250189D400E94352 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 34E7DB12250189D400E94352 /* Localizable.strings */; };
@@ -143,6 +144,7 @@
 		34B254672512774D00EC5DD9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = Base; path = Base.lproj/Imprint.md; sourceTree = "<group>"; };
 		34B2546A251277A700EC5DD9 /* de */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = de; path = de.lproj/Privacy.md; sourceTree = "<group>"; };
 		34B25472251277AC00EC5DD9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = Base; path = Base.lproj/Privacy.md; sourceTree = "<group>"; };
+		34BEBFD0258807450030377A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		34D470BA255B249B000302A8 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		34E7DB11250189D400E94352 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		34E7DB1325018A0000E94352 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -346,10 +348,11 @@
 				34ECB09B25324FCF00E69448 /* AppClipApp.swift */,
 				34FD2AF025437E490044A594 /* AppClipIAPService.swift */,
 				34ECB09D25324FCF00E69448 /* MainContentView.swift */,
+				34FD2B0F254443760044A594 /* MainContentViewModel.swift */,
 				34FD2AE0254376F00044A594 /* PDFSharingView.swift */,
 				34FD2AE8254377180044A594 /* PDFSharingViewModel.swift */,
+				34BEBFD0258807450030377A /* Assets.xcassets */,
 				34ECB0A125324FD100E69448 /* Preview Content */,
-				34FD2B0F254443760044A594 /* MainContentViewModel.swift */,
 			);
 			path = AppClip;
 			sourceTree = "<group>";
@@ -615,6 +618,7 @@
 				3482222A257ACD36005DC1B2 /* IAP.storekit in Resources */,
 				346547272543637C0029F05B /* Localizable.strings in Resources */,
 				34ECB0B92532500000E69448 /* Assets.xcassets in Resources */,
+				34BEBFD1258807450030377A /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
