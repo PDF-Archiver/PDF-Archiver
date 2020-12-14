@@ -10,12 +10,12 @@ import SwiftUI
 
 struct TagListView: View {
     private static let minColumnWidth: CGFloat = 120
-    
+
     @Binding var tags: [String]
     let isEditable: Bool
     let isMultiLine: Bool
     let tapHandler: ((String) -> Void)?
-    
+
     var columns: [GridItem] = [GridItem(.adaptive(minimum: Self.minColumnWidth), spacing: 4)]
 
     @ViewBuilder
@@ -70,7 +70,7 @@ struct TagListView_Previews: PreviewProvider {
 
             TagListView(tags: $tags, isEditable: true, isMultiLine: true, tapHandler: nil)
                 .previewLayout(.fixed(width: 250, height: 400))
-            
+
             TagListView(tags: $tags, isEditable: true, isMultiLine: true, tapHandler: nil)
                 .previewLayout(.fixed(width: 400, height: 250))
         }

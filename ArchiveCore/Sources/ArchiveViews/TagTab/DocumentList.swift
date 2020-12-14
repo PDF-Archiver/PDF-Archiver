@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DocumentList: View {
-    
+
     @Binding var currentDocument: Document?
     @Binding var documents: [Document]
     private var taggedUntaggedDocuments: String {
@@ -43,7 +43,7 @@ struct DocumentList: View {
 #if DEBUG
 struct DocumentList_Previews: PreviewProvider {
     static let selectedDocument = Document.create()
-    
+
     @State static var currentDocument: Document? = selectedDocument
     @State static var documents = [
         Document.create(taggingStatus: .tagged),

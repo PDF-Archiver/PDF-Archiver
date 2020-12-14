@@ -39,7 +39,7 @@ struct TagView: View, Identifiable {
             Label(tagName.capitalized, systemImage: "tag")
         }
     }
-    
+
     private var tag: some View {
         buttonLabel
             .minimumScaleFactor(0.85)
@@ -63,15 +63,15 @@ struct TagView_Previews: PreviewProvider {
             TagView(tagName: "tag1",
                     isEditable: true,
                     tapHandler: tapHandler)
-            
+
             TagView(tagName: "tag2",
                     isEditable: false,
                     tapHandler: tapHandler)
-            
+
             TagView(tagName: "t",
                     isEditable: false,
                     tapHandler: tapHandler)
-            
+
         }
         .previewLayout(.sizeThatFits)
     }

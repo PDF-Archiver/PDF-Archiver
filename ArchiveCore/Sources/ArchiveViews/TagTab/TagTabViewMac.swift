@@ -10,7 +10,7 @@ import SwiftUI
 #if os(macOS)
 struct TagTabViewMac: View {
     @ObservedObject var viewModel: TagTabViewModel
-    
+
     var body: some View {
         GeometryReader { proxy in
             HStack(spacing: 8) {
@@ -18,7 +18,7 @@ struct TagTabViewMac: View {
                     .frame(maxWidth: proxy.size.width * 0.3)
                     .clipped()
                 pdfView
-                
+
                 documentInformation
                     .frame(maxWidth: proxy.size.width * 0.25)
                     .clipped()
@@ -27,19 +27,19 @@ struct TagTabViewMac: View {
         }
         .padding(8)
     }
-    
+
     private var documentList: some View {
         DocumentList(currentDocument: $viewModel.currentDocument,
                      documents: $viewModel.documents)
     }
-    
+
     private var pdfView: some View {
         PDFCustomView(self.viewModel.pdfDocument)
     }
-    
+
     @ViewBuilder
     private var documentInformation: some View {
-        
+
         VStack(alignment: .leading, spacing: 16) {
             Text("Document Attributes")
                 .font(.title)
@@ -69,11 +69,11 @@ struct TagTabViewMac: View {
             Spacer()
         }.padding(.horizontal, 10)
     }
-    
+
     private func saveButtonTapped() {
         print("Save Button Tapped")
     }
-    
+
     private func documentTagTapped(_ tag: String) {
         print(tag)
     }
@@ -96,7 +96,7 @@ struct TagTabViewMac_Previews: PreviewProvider {
         model.currentDocument = Document.create()
         return model
     }()
-    
+
     static var previews: some View {
         TagTabViewMac(viewModel: viewModel)            .previewLayout(.fixed(width: 1000, height: 650))
             .previewDevice("Mac")
