@@ -161,9 +161,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
             .receive(on: DispatchQueue.main)
             .assign(to: &self.$tagCategories)
 
-        // TODO: change container!?
         DispatchQueue.global(qos: .userInteractive).async {
-            // TODO: handle no icloud drive found
             do {
                 let archiveUrl = try PathManager.shared.getArchiveUrl()
                 let untaggedUrl = try PathManager.shared.getUntaggedUrl()
