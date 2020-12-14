@@ -57,8 +57,10 @@ public final class MoreTabViewModel: ObservableObject, Log {
                 switch selectedArchiveType {
                     case .iCloudDrive:
                         type = .iCloudDrive
+                    #if !os(macOS)
                     case .appContainer:
                         type = .appContainer
+                    #endif
                     #if os(macOS)
                     case .local:
                         // TODO: fix this

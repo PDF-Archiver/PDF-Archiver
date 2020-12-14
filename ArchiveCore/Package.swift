@@ -71,7 +71,7 @@ let package = Package(
                         "ArchiveBackend"
                     ],
                     resources: [
-                        .copy("assets"),
+                        .copy("assets")
                     ])
     ]
 )

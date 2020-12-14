@@ -205,7 +205,11 @@ public final class MainNavigationViewModel: ObservableObject, Log {
             case .scan:
                 return AnyView(ScanTabView(viewModel: scanViewModel))
             case .tag:
+                #if os(macOS)
+                return AnyView(TagTabViewMac(viewModel: tagViewModel))
+                #else
                 return AnyView(TagTabView(viewModel: tagViewModel))
+                #endif
             case .archive:
                 return AnyView(ArchiveView(viewModel: archiveViewModel))
             #if !os(macOS)

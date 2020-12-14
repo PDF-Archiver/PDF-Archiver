@@ -214,9 +214,7 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
                         DispatchQueue.global(qos: .background).async {
                             // save documents after the last has been written
                             documentProcessingGroup.enter()
-//                            let startingPoint = Date()
                             document.updateProperties(with: document.downloadStatus, contentParsingOptions: contentParsingOptions)
-//                            print("\(startingPoint.timeIntervalSinceNow * -1) seconds elapsed")
                             documentProcessingGroup.leave()
                         }
                     }

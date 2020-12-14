@@ -48,7 +48,7 @@
 		34ECB09C25324FCF00E69448 /* AppClipApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34ECB09B25324FCF00E69448 /* AppClipApp.swift */; };
 		34ECB09E25324FCF00E69448 /* MainContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34ECB09D25324FCF00E69448 /* MainContentView.swift */; };
 		34ECB0A325324FD100E69448 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 34ECB0A225324FD100E69448 /* Preview Assets.xcassets */; };
-		34ECB0A825324FD100E69448 /* AppClip.app in Embed App Clips */ = {isa = PBXBuildFile; fileRef = 34ECB09925324FCF00E69448 /* AppClip.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		34ECB0A825324FD100E69448 /* AppClip.app in Embed App Clips */ = {isa = PBXBuildFile; fileRef = 34ECB09925324FCF00E69448 /* AppClip.app */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		34ECB0B92532500000E69448 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3416B1AE24A9282800D5F4E0 /* Assets.xcassets */; };
 		34FB40712548839B00A415DA /* ArchiveSharedConstants in Frameworks */ = {isa = PBXBuildFile; productRef = 34FB40702548839A00A415DA /* ArchiveSharedConstants */; };
 		34FD2AE1254376F00044A594 /* PDFSharingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34FD2AE0254376F00044A594 /* PDFSharingView.swift */; };
@@ -637,7 +637,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint autocorrect\n    # swiftlint will be run in chia\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/swiftlint\"\nfi\n\nif which chia >/dev/null; then\n    chia --config https://raw.githubusercontent.com/JulianKahnert/chia-config/master/chia.yml --xcode\nelse\n    echo \"warning: chia not installed, download from https://github.com/worldiety/chia\"\nfi\n";
+			shellScript = "export PATH=\"/usr/local/bin:$PATH\"\n\nif which swiftlint >/dev/null; then\n    swiftlint autocorrect\n    # swiftlint will be run in chia\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/swiftlint\"\nfi\n\nif which chia >/dev/null; then\n    chia --config https://raw.githubusercontent.com/JulianKahnert/chia-config/master/chia.yml --xcode\nelse\n    echo \"warning: chia not installed, download from https://github.com/worldiety/chia\"\nfi\n";
 		};
 		34A53F7E24AA63DC008A3377 /* Settings Bundle Update */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -734,6 +734,7 @@
 		};
 		34ECB0A725324FD100E69448 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
+			platformFilter = ios;
 			target = 34ECB09825324FCF00E69448 /* AppClip */;
 			targetProxy = 34ECB0A625324FD100E69448 /* PBXContainerItemProxy */;
 		};
@@ -912,6 +913,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer;
 				PRODUCT_NAME = PDFArchiver;
 				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -938,6 +940,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer;
 				PRODUCT_NAME = PDFArchiver;
 				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -1105,6 +1108,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1131,6 +1135,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;

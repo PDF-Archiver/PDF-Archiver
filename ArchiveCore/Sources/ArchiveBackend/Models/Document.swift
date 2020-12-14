@@ -283,12 +283,13 @@ public final class Document: ObservableObject, Identifiable, Codable, Log {
 #if DEBUG
 // swiftlint:disable force_unwrapping
 extension Document {
-    public static func create() -> Document {
+    public static func create(taggingStatus: TaggingStatus = .untagged) -> Document {
 //        Document(path: URL(string: "~/test.pdf")!,
 //                 size: Int.random(in: 0..<512000),
 //                 downloadStatus: .local)
 
-        Document(path: URL(string: "~/test.pdf")!, taggingStatus: .untagged, downloadStatus: .downloading(percent: 0.33), byteSize: 512)
+        let name = UUID().uuidString.prefix(5)
+        return Document(path: URL(string: "~/test-\(name).pdf")!, taggingStatus: taggingStatus, downloadStatus: .downloading(percent: 0.33), byteSize: 512)
     }
 }
 #endif
