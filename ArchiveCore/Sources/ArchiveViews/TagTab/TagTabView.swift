@@ -26,7 +26,8 @@ struct TagTabView: View {
         } else if viewModel.currentDocument != nil {
             Stack(spacing: 8) {
                 if horizontalSizeClass != .compact {
-                    documentsList
+                    DocumentList(currentDocument: $viewModel.currentDocument, documents: $viewModel.documents)
+                        .frame(maxWidth: 300)
                 }
                 GeometryReader { proxy in
                     VStack(spacing: 0) {
@@ -65,14 +66,6 @@ struct TagTabView: View {
         Button(action: {
             self.viewModel.deleteDocument()
         }, label: {
-//            #if os(macOS)
-//            HStack {
-//                Image(systemName: "trash")
-//                Text("Delete")
-//                    .font(.caption)
-//            }
-//            .padding(.horizontal, 24)
-//            #else
             VStack {
                 Image(systemName: "trash")
                 Text("Delete")
@@ -87,14 +80,6 @@ struct TagTabView: View {
         Button(action: {
             self.viewModel.saveDocument()
         }, label: {
-//            #if os(macOS)
-//            HStack {
-//                Image(systemName: "square.and.arrow.down")
-//                Text("Add")
-//                    .font(.caption)
-//            }
-//            .padding(.horizontal, 24)
-//            #else
             VStack {
                 Image(systemName: "square.and.arrow.down")
                 Text("Add")
@@ -103,33 +88,6 @@ struct TagTabView: View {
             .padding(.horizontal, 24)
         })
         .disabled(viewModel.currentDocument == nil)
-    }
-
-    // MARK: Component Groups
-
-    private var documentsList: some View {
-//        VStack {
-//            Text("Tagged: \(viewModel.taggedUntaggedDocuments)")
-//                .font(Font.headline)
-//                .padding()
-//            List {
-//                ForEach(viewModel.documents) { document in
-//                    HStack {
-//                        Circle()
-//                            .fill(Color.systemBlue)
-//                            .frame(width: 8, height: 8)
-//                            .opacity(document == self.viewModel.currentDocument ? 1 : 0)
-//                        DocumentView(viewModel: document, showTagStatus: true)
-//                    }
-//                    .contentShape(Rectangle())
-//                    .onTapGesture {
-//                       self.viewModel.currentDocument = document
-//                    }
-//                }
-//            }
-//        }
-        DocumentList(currentDocument: $viewModel.currentDocument, documents: $viewModel.documents)
-        .frame(maxWidth: 300)
     }
 }
 #endif

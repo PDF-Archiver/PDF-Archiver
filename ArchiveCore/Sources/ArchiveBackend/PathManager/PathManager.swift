@@ -35,7 +35,12 @@ public final class PathManager: Log {
     private let fileManager = FileManager.default
 
     private init() {
-        archivePathType = PathManager.userDefaults.archivePathType ?? .iCloudDrive
+        let iCloudDriveAvailable = FileManager.default.iCloudDriveURL != nil
+        if iCloudDriveAvailable {
+            archivePathType = PathManager.userDefaults.archivePathType ?? .iCloudDrive
+        } else {
+            archivePathType = PathManager.userDefaults.archivePathType ?? .appContainer
+        }
     }
 
     public func getArchiveUrl() throws -> URL {
