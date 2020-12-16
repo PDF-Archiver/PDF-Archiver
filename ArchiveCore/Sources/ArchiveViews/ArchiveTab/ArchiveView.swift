@@ -28,7 +28,6 @@ struct ArchiveView: View {
 
         if viewModel.showLoadingView {
             LoadingView()
-                .emittingError(viewModel.error)
         } else {
             VStack {
                 searchView
@@ -40,7 +39,6 @@ struct ArchiveView: View {
             }
             .navigationBarTitle(Text("Archive"))
             .navigationBarItems(trailing: EditButton())
-            .emittingError(viewModel.error)
         }
     }
 

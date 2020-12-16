@@ -6,14 +6,14 @@
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
 
+import ArchiveSharedConstants
 import Combine
-import ErrorHandling
 import SwiftUI
 
 #if os(macOS)
-private typealias CustomNavigationtStyle = DefaultNavigationViewStyle
+private typealias CustomNavigationStyle = DefaultNavigationViewStyle
 #else
-private typealias CustomNavigationtStyle = StackNavigationViewStyle
+private typealias CustomNavigationStyle = StackNavigationViewStyle
 #endif
 
 public struct MainNavigationView: View {
@@ -47,7 +47,6 @@ public struct MainNavigationView: View {
                onDismiss: viewModel.handleIAPViewDismiss) {
             IAPView(viewModel: self.viewModel.iapViewModel)
         }
-        .emittingError(viewModel.error)
         .sheet(isPresented: $viewModel.isShowingMailView) {
             #if canImport(MessageUI)
             SupportMailView(subject: MainNavigationViewModel.mailSubject,
@@ -56,10 +55,7 @@ public struct MainNavigationView: View {
             #endif
         }
         .onChange(of: scenePhase, perform: viewModel.handleTempFilesIfNeeded)
-        .handlingErrors(using: AlertErrorHandler(secondaryButton: .default(Text("Send Report"),
-                                                                           action: {
-                                                                            NotificationCenter.default.post(Notification(name: .showSendDiagnosticsReport))
-                                                                           })))
+        .alert(item: $viewModel.alertDataModel, content: Alert.create(from:))
     }
 
     private var sidebar: some View {
@@ -122,7 +118,7 @@ public struct MainNavigationView: View {
             ForEach(Tab.allCases) { tab in
                 viewModel.view(for: tab)
                     .wrapNavigationView(when: tab != .scan)
-                    .navigationViewStyle(CustomNavigationtStyle())
+                    .navigationViewStyle(CustomNavigationStyle())
                     .tabItem {
                         Label(tab.name, systemImage: tab.iconName)
                     }

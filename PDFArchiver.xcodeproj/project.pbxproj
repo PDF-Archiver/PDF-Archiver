@@ -19,8 +19,6 @@
 		343B4BB4254C0592008AD859 /* ArchiveSharedConstants in Frameworks */ = {isa = PBXBuildFile; productRef = 343B4BB3254C0592008AD859 /* ArchiveSharedConstants */; };
 		343B4BB6254C0592008AD859 /* ArchiveViews in Frameworks */ = {isa = PBXBuildFile; productRef = 343B4BB5254C0592008AD859 /* ArchiveViews */; };
 		343B4BB8254C0592008AD859 /* InAppPurchases in Frameworks */ = {isa = PBXBuildFile; productRef = 343B4BB7254C0592008AD859 /* InAppPurchases */; };
-		343B4BC0254C0EA5008AD859 /* ErrorHandling in Frameworks */ = {isa = PBXBuildFile; productRef = 343B4BBF254C0EA5008AD859 /* ErrorHandling */; };
-		343B4BC8254C110F008AD859 /* ErrorHandling in Frameworks */ = {isa = PBXBuildFile; productRef = 343B4BC7254C110F008AD859 /* ErrorHandling */; };
 		343B4BCA254C110F008AD859 /* InAppPurchases in Frameworks */ = {isa = PBXBuildFile; productRef = 343B4BC9254C110F008AD859 /* InAppPurchases */; };
 		345A497E24AFB0CE00EC4DC2 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3416B1AD24A9282700D5F4E0 /* Settings.bundle */; };
 		346547272543637C0029F05B /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 34E7DB12250189D400E94352 /* Localizable.strings */; };
@@ -42,7 +40,6 @@
 		34A5CF8224A93A3C002409EF /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34A5CF8124A93A3C002409EF /* StoreKit.framework */; };
 		34B2545E2512774400EC5DD9 /* Imprint.md in Resources */ = {isa = PBXBuildFile; fileRef = 34B254602512774400EC5DD9 /* Imprint.md */; };
 		34B25469251277A700EC5DD9 /* Privacy.md in Resources */ = {isa = PBXBuildFile; fileRef = 34B2546B251277A700EC5DD9 /* Privacy.md */; };
-		34BEBFD1258807450030377A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 34BEBFD0258807450030377A /* Assets.xcassets */; };
 		34D470BB255B249B000302A8 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34D470BA255B249B000302A8 /* StoreKit.framework */; };
 		34E7DB0F250189D400E94352 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 34E7DB12250189D400E94352 /* Localizable.strings */; };
 		34E7DB10250189D400E94352 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 34E7DB12250189D400E94352 /* Localizable.strings */; };
@@ -144,7 +141,6 @@
 		34B254672512774D00EC5DD9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = Base; path = Base.lproj/Imprint.md; sourceTree = "<group>"; };
 		34B2546A251277A700EC5DD9 /* de */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = de; path = de.lproj/Privacy.md; sourceTree = "<group>"; };
 		34B25472251277AC00EC5DD9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = Base; path = Base.lproj/Privacy.md; sourceTree = "<group>"; };
-		34BEBFD0258807450030377A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		34D470BA255B249B000302A8 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		34E7DB11250189D400E94352 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		34E7DB1325018A0000E94352 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -165,7 +161,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				343B4BC0254C0EA5008AD859 /* ErrorHandling in Frameworks */,
 				346B1BDC253C65B700D3F8AB /* ArchiveSharedConstants in Frameworks */,
 				346B1BDA253C65B700D3F8AB /* ArchiveBackend in Frameworks */,
 				3416B28724A92D4200D5F4E0 /* Sentry in Frameworks */,
@@ -212,7 +207,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				343B4BC8254C110F008AD859 /* ErrorHandling in Frameworks */,
 				341BCD92253C7D3A00E807EF /* ArchiveSharedConstants in Frameworks */,
 				341BCD90253C7D3A00E807EF /* ArchiveBackend in Frameworks */,
 				343B4BCA254C110F008AD859 /* InAppPurchases in Frameworks */,
@@ -351,7 +345,6 @@
 				34FD2B0F254443760044A594 /* MainContentViewModel.swift */,
 				34FD2AE0254376F00044A594 /* PDFSharingView.swift */,
 				34FD2AE8254377180044A594 /* PDFSharingViewModel.swift */,
-				34BEBFD0258807450030377A /* Assets.xcassets */,
 				34ECB0A125324FD100E69448 /* Preview Content */,
 			);
 			path = AppClip;
@@ -392,7 +385,6 @@
 				346B1BD9253C65B700D3F8AB /* ArchiveBackend */,
 				346B1BDB253C65B700D3F8AB /* ArchiveSharedConstants */,
 				346B1BDD253C65B700D3F8AB /* ArchiveViews */,
-				343B4BBF254C0EA5008AD859 /* ErrorHandling */,
 			);
 			productName = iOS;
 			productReference = 3489D71B24A3C53E0035E64F /* PDFArchiver.app */;
@@ -494,7 +486,6 @@
 				341BCD8F253C7D3A00E807EF /* ArchiveBackend */,
 				341BCD91253C7D3A00E807EF /* ArchiveSharedConstants */,
 				341BCD93253C7D3A00E807EF /* ArchiveViews */,
-				343B4BC7254C110F008AD859 /* ErrorHandling */,
 				343B4BC9254C110F008AD859 /* InAppPurchases */,
 			);
 			productName = AppClip;
@@ -618,7 +609,6 @@
 				3482222A257ACD36005DC1B2 /* IAP.storekit in Resources */,
 				346547272543637C0029F05B /* Localizable.strings in Resources */,
 				34ECB0B92532500000E69448 /* Assets.xcassets in Resources */,
-				34BEBFD1258807450030377A /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -904,7 +894,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = iOS/PDFArchiver.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
@@ -931,7 +921,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = iOS/PDFArchiver.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
@@ -960,6 +950,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -986,6 +977,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -1098,7 +1090,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = ShareExtension/ShareExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				INFOPLIST_FILE = ShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -1125,7 +1117,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = ShareExtension/ShareExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				INFOPLIST_FILE = ShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -1153,7 +1145,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AppClip/AppClip.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"AppClip/Preview Content\"";
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_PREVIEWS = YES;
@@ -1180,7 +1172,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AppClip/AppClip.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"AppClip/Preview Content\"";
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_PREVIEWS = YES;
@@ -1275,7 +1267,7 @@
 			repositoryURL = "https://github.com/getsentry/sentry-cocoa";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 5.1.6;
+				minimumVersion = 6.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -1313,14 +1305,6 @@
 		343B4BB7254C0592008AD859 /* InAppPurchases */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = InAppPurchases;
-		};
-		343B4BBF254C0EA5008AD859 /* ErrorHandling */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ErrorHandling;
-		};
-		343B4BC7254C110F008AD859 /* ErrorHandling */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ErrorHandling;
 		};
 		343B4BC9254C110F008AD859 /* InAppPurchases */ = {
 			isa = XCSwiftPackageProductDependency;

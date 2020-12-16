@@ -4,6 +4,7 @@
 //
 //  Created by Julian Kahnert on 02.12.20.
 //
+// swiftlint:disable force_unwrapping
 
 import Foundation
 

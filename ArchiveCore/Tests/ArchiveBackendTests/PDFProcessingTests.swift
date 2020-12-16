@@ -4,11 +4,12 @@
 //
 //  Created by Julian Kahnert on 01.12.20.
 //
+// swiftlint:disable force_unwrapping
 
 @testable import ArchiveBackend
 import Foundation
-import XCTest
 import PDFKit
+import XCTest
 
 final class PDFProcessingTests: XCTestCase {
     private static let tempFolder = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent(UUID().uuidString)

@@ -258,7 +258,7 @@
 
 "Purchase failed, because no subscription could be found." = "Kauf fehlgeschlagen, weil kein Abo gefunden werden konnte.";
 
-"An error occured 😳" = "Fehler aufgetreten 😳";
+"An error occurred 😳" = "Fehler aufgetreten 😳";
 
 "Dismiss" = "Schließen";
 
@@ -277,3 +277,7 @@
 "https://support.apple.com/en-us/HT210598" = "https://support.apple.com/de-de/HT210598";
 
 "Not synchronized - Your documents are stored in a folder you choose on your computer. PDF Archiver does not initiate synchronization." = "Nicht synchronisiert - Deine Dokumente werden in einem von dir ausgewählten Ordner auf deinem Computer gespeichert. Eine Synchronisation wird von PDF Archiver nicht initiiert.";
+
+"PDF Archiver has crashed. This should not happen!\n\nPlease provide feedback, to improve the App experience." = "PDF Archiver ist abgestürzt. Dies sollte nicht passieren!\n\nBitte sende Dein Feedback, um die App zu verbessern.";
+
+"Send" = "Senden";

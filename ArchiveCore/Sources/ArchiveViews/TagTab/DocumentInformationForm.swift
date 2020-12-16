@@ -21,16 +21,12 @@ struct DocumentInformationForm: View {
         Form {
             DatePicker("Date", selection: $date, displayedComponents: .date)
                 .labelsHidden()
-            Spacer()
             TextField("Description", text: $specification)
                 .modifier(ClearButton(text: $specification))
-            Spacer()
             documentTagsView
-            Spacer()
             suggestedTagsView
         }
         .buttonStyle(BorderlessButtonStyle())
-        .padding(8)
     }
 
     private func documentTagTapped(_ tag: String) {
@@ -56,14 +52,13 @@ struct DocumentInformationForm: View {
     }
 
     private var documentTagsView: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 4) {
             Text("Document Tags")
                 .font(.caption)
             TagListView(tags: $tags,
                         isEditable: true,
                         isMultiLine: true,
                         tapHandler: documentTagTapped(_:))
-                .font(.caption)
             TextField("Enter Tag",
                       text: $tagInput,
                       onCommit: saveCurrentTag)
@@ -73,14 +68,13 @@ struct DocumentInformationForm: View {
     }
 
     private var suggestedTagsView: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 4) {
             Text("Suggested Tags")
                 .font(.caption)
             TagListView(tags: $suggestedTags,
                         isEditable: false,
                         isMultiLine: true,
                         tapHandler: suggestedTagTapped(_:))
-                .font(.body)
         }
     }
 }

@@ -21,7 +21,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
     static let mailRecipients = ["support@pdf-archiver.io"]
     static let mailSubject = "PDF Archiver: iOS Support"
 
-    @Published var error: Error?
+    @Published var alertDataModel: AlertDataModel?
 
     @Published var archiveCategories: [String] = []
     @Published var tagCategories: [String] = []
@@ -51,18 +51,15 @@ public final class MainNavigationViewModel: ObservableObject, Log {
         do {
             return try PathManager.shared.getUntaggedUrl()
         } catch {
-            self.error = error
+            NotificationCenter.default.postAlert(error)
             return nil
         }
     }
 
     public init() {
-
-        Self.iapService.$error
-            .assign(to: &$error)
-
-        imageConverter.$error
-            .assign(to: &$error)
+        NotificationCenter.default.alertPublisher()
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$alertDataModel)
 
         $currentTab
             .map { Optional($0) }
@@ -168,9 +165,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
 
                 Self.archiveStore.update(archiveFolder: archiveUrl, untaggedFolders: [untaggedUrl])
             } catch {
-                DispatchQueue.main.async {
-                    self.error = error
-                }
+                NotificationCenter.default.postAlert(error)
             }
         }
     }
@@ -256,15 +251,23 @@ public final class MainNavigationViewModel: ObservableObject, Log {
         #endif
     }
 
+    public func displayUserFeedback() {
+        NotificationCenter.default.createAndPost(title: "App Crash 💥",
+                                                 message: "PDF Archiver has crashed. This should not happen!\n\nPlease provide feedback, to improve the App experience.",
+                                                 primaryButton: .cancel(),
+                                                 secondaryButton: .default(Text("Send"),
+                                                                           action: showSupport))
+    }
+
     // MARK: - Helper Functions
 
-    private static func scanFinished(error: inout Error?) {
+    private static func scanFinished() {
         guard !UserDefaults.appGroup.firstDocumentScanAlertPresented else { return }
         UserDefaults.appGroup.firstDocumentScanAlertPresented = true
 
-        error = AlertDataModel.createAndPost(title: "First Scan processed! 🙂",
-                                                  message: "The first document was processed successfully and is now waiting for you in the 'Tag' tab.\n\n📄   ➡️   🗄",
-                                                  primaryButtonTitle: "OK")
+        NotificationCenter.default.createAndPost(title: "First Scan processed! 🙂",
+                                                 message: "The first document was processed successfully and is now waiting for you in the 'Tag' tab.\n\n📄   ➡️   🗄",
+                                                 primaryButtonTitle: "OK")
     }
 
     private func handle(url: URL) {
@@ -280,9 +283,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
             log.error("Unable to handle file.", metadata: ["filetype": "\(url.pathExtension)", "error": "\(error)"])
 //            try? FileManager.default.removeItem(at: url)
 
-            DispatchQueue.main.async {
-                self.error = error
-            }
+            NotificationCenter.default.postAlert(error)
         }
     }
 }

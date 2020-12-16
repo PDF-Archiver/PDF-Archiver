@@ -13,7 +13,7 @@ import Diagnostics
 import Foundation
 import Logging
 #if !os(macOS)
-// TODO: add sentry again
+// TODO: add sentry again on macos
 import Sentry
 #endif
 import SwiftUI
@@ -59,6 +59,10 @@ struct PDFArchiverApp: App, Log {
                     BackgroundTaskScheduler.shared.scheduleTask(with: .pdfProcessing)
                 }
                 #endif
+
+                if phase == .active {
+                    initializeSentry()
+                }
             }
     }
 
@@ -90,14 +94,33 @@ struct PDFArchiverApp: App, Log {
         _ = BackgroundTaskScheduler.shared
         #endif
 
+        #if !os(macOS) && DEBUG
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3)) {
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { (_, error) in
+                if let error = error {
+                    Self.log.errorAndAssert("Failed to get notification authorization", metadata: ["error": "\(error)"])
+                }
+            }
+        }
+        #endif
+    }
+
+    private func initializeSentry() {
+        // TODO: add sentry again on macOS
         #if !os(macOS)
         // Create a Sentry client and start crash handler
         SentrySDK.start { options in
             options.dsn = "https://7adfcae85d8d4b2f946102571b2d4d6c@o194922.ingest.sentry.io/1299590"
             options.environment = AppEnvironment.get().rawValue
             options.releaseName = AppEnvironment.getFullVersion()
-            options.enableAutoSessionTracking = NSNumber(value: AppEnvironment.get() != .production)
-            options.debug = NSNumber(value: AppEnvironment.get() != .production)
+            options.enableAutoSessionTracking = AppEnvironment.get() != .production
+            options.debug = AppEnvironment.get() != .production
+
+            // Only gets called for the first crash event
+            options.onCrashedLastRun = { event in
+                log.error("Crash has happened!", metadata: ["event": "\(event)"])
+                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3), execute: self.mainNavigationViewModel.displayUserFeedback)
+            }
         }
 
         SentrySDK.currentHub().getClient()?.options.beforeSend = { event in
@@ -109,16 +132,6 @@ struct PDFArchiverApp: App, Log {
             event.context?["device"]?["timezone"] = nil
             event.context?["device"]?["usable_memory"] = nil
             return event
-        }
-        #endif
-
-        #if !os(macOS) && DEBUG
-        DispatchQueue.main.asyncAfter(deadline: .now()) {
-            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { (_, error) in
-                if let error = error {
-                    Self.log.errorAndAssert("Failed to get notification authorization", metadata: ["error": "\(error)"])
-                }
-            }
         }
         #endif
     }
