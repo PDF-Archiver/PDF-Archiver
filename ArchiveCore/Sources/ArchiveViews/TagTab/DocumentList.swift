@@ -28,7 +28,7 @@ struct DocumentList: View {
                             .fill(Color.systemBlue)
                             .frame(width: 8, height: 8)
                             .opacity(document == currentDocument ? 1 : 0)
-                        DocumentView(viewModel: document, showTagStatus: true)
+                        DocumentView(viewModel: document, showTagStatus: true, multilineTagList: false)
                     }
                     .contentShape(Rectangle())
                     .onTapGesture {
