@@ -7,7 +7,6 @@
 
 import Combine
 import SwiftUI
-import Foundation
 
 extension Notification.Name {
     static let alertMessage = Notification.Name("Error.Message")

@@ -155,7 +155,7 @@ final class PDFProcessingTests: XCTestCase {
         }
         queue.addOperation(operation)
 
-        wait(for: [expectation], timeout: 60.0)
+        wait(for: [expectation], timeout: 120.0)
 
         let outputUrl = try XCTUnwrap(operation.outputUrl)
         let document = try XCTUnwrap(PDFDocument(url: outputUrl))
