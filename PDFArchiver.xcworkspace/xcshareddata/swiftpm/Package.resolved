@@ -60,8 +60,8 @@
         "repositoryURL": "https://github.com/getsentry/sentry-cocoa",
         "state": {
           "branch": null,
-          "revision": "f82076d9393363fb278e3b33cf343d8c6102fc9e",
-          "version": "6.0.11"
+          "revision": "9828e2815a5addc5cb490a26472868496e9633d9",
+          "version": "6.0.12"
         }
       },
       {
@@ -78,7 +78,7 @@
         "repositoryURL": "https://github.com/SwiftUIX/SwiftUIX",
         "state": {
           "branch": "master",
-          "revision": "542602bcd69fedaa48d9705313bfba52dc719e0c",
+          "revision": "e81d77b78755ef6d70b21d3e0e0ebf29454a9ea0",
           "version": null
         }
       },
@@ -87,7 +87,7 @@
         "repositoryURL": "https://github.com/tikhop/TPInAppReceipt",
         "state": {
           "branch": null,
-          "revision": "1ea772be1b5b3f75afe542a8af6f43da5aef3da8",
+          "revision": "76d6b60deae717422cbae80ecd2be099c129818a",
           "version": "3.0.2"
         }
       }

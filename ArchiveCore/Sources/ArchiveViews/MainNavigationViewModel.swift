@@ -29,10 +29,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
     @Published var currentTab: Tab = UserDefaults.appGroup.lastSelectedTab
     @Published var currentOptionalTab: Tab?
     @Published var showTutorial = !UserDefaults.appGroup.tutorialShown
-    @Published var isShowingMailView: Bool = false
-    #if canImport(MessageUI)
-    @Published var result: Result<MFMailComposeResult, Error>?
-    #endif
+    @Published var sheetType: SheetType?
 
     public private(set) lazy var imageConverter = ImageConverter(getDocumentDestination: getDocumentDestination)
 
@@ -43,8 +40,6 @@ public final class MainNavigationViewModel: ObservableObject, Log {
 
     let iapViewModel = IAPViewModel(iapService: iapService)
 
-    @Published var showSubscriptionView: Bool = false
-
     private var disposables = Set<AnyCancellable>()
 
     func getDocumentDestination() -> URL? {
@@ -53,6 +48,20 @@ public final class MainNavigationViewModel: ObservableObject, Log {
         } catch {
             NotificationCenter.default.postAlert(error)
             return nil
+        }
+    }
+
+    @ViewBuilder
+    func getView(for sheetType: SheetType) -> some View {
+        switch sheetType {
+        case .iapView:
+            IAPView(viewModel: iapViewModel)
+        #if canImport(MessageUI)
+        case .supportView:
+            SupportMailView(subject: Self.mailSubject,
+                            recipients: Self.mailRecipients,
+                            errorHandler: { NotificationCenter.default.postAlert($0) })
+        #endif
         }
     }
 
@@ -120,14 +129,16 @@ public final class MainNavigationViewModel: ObservableObject, Log {
             .combineLatest($currentTab)
             .receive(on: DispatchQueue.main)
             .sink { (_, selectedTab) in
-                self.showSubscriptionView = !Self.iapService.appUsagePermitted && selectedTab == .tag
+                if !Self.iapService.appUsagePermitted && selectedTab == .tag {
+                    self.sheetType = .iapView
+                }
             }
             .store(in: &disposables)
 
         NotificationCenter.default.publisher(for: .showSubscriptionView)
             .receive(on: DispatchQueue.main)
             .sink { _ in
-                self.showSubscriptionView = true
+                self.sheetType = .iapView
             }
             .store(in: &disposables)
 
@@ -243,7 +254,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
         sendDiagnosticsReport()
         #else
         if MFMailComposeViewController.canSendMail() {
-            isShowingMailView = true
+            sheetType = .supportView
         } else {
             guard let url = URL(string: "https://pdf-archiver.io/faq") else { preconditionFailure("Could not generate the FAQ url.") }
             open(url)
@@ -284,6 +295,19 @@ public final class MainNavigationViewModel: ObservableObject, Log {
 //            try? FileManager.default.removeItem(at: url)
 
             NotificationCenter.default.postAlert(error)
+        }
+    }
+}
+
+extension MainNavigationViewModel {
+    enum SheetType: String, Identifiable {
+        case iapView
+        #if canImport(MessageUI)
+        case supportView
+        #endif
+
+        var id: String {
+            rawValue
         }
     }
 }

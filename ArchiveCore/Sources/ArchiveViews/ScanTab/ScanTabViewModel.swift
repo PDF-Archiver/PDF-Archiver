@@ -157,6 +157,7 @@ public final class ScanTabViewModel: ObservableObject, Log {
                                                          primaryButton: .default(Text("Activate"), action: {
                                                             // show the subscription view
                                                             NotificationCenter.default.post(.showSubscriptionView)
+                                                            self.showDocumentScan = false
                                                          }),
                                                          secondaryButton: .cancel())
             }

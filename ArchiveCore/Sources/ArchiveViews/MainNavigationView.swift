@@ -43,16 +43,9 @@ public struct MainNavigationView: View {
             #endif
         }
         .intro(when: $viewModel.showTutorial)
-        .sheet(isPresented: $viewModel.showSubscriptionView,
-               onDismiss: viewModel.handleIAPViewDismiss) {
-            IAPView(viewModel: self.viewModel.iapViewModel)
-        }
-        .sheet(isPresented: $viewModel.isShowingMailView) {
-            #if canImport(MessageUI)
-            SupportMailView(subject: MainNavigationViewModel.mailSubject,
-                            recipients: MainNavigationViewModel.mailRecipients,
-                            result: self.$viewModel.result)
-            #endif
+        .sheet(item: $viewModel.sheetType,
+               onDismiss: viewModel.handleIAPViewDismiss) { sheetType in
+            viewModel.getView(for: sheetType)
         }
         .onChange(of: scenePhase, perform: viewModel.handleTempFilesIfNeeded)
         .alert(item: $viewModel.alertDataModel, content: Alert.create(from:))
