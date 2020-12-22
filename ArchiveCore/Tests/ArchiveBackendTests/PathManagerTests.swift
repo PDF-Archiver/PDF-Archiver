@@ -4,11 +4,12 @@
 //
 //  Created by Julian Kahnert on 01.12.20.
 //
+// swiftlint:disable trailing_closure
 
 @testable import ArchiveBackend
 import Foundation
-import XCTest
 import PDFKit
+import XCTest
 
 final class PathManagerTests: XCTestCase {
     static let tempFolder = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent(UUID().uuidString)

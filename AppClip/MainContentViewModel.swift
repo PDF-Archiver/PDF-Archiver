@@ -45,7 +45,7 @@ final class MainContentViewModel: ObservableObject {
             .store(in: &disposables)
     }
 
-    private static func documentsProcessingCompleted(error: inout Error?) {
+    private static func documentsProcessingCompleted() {
         NotificationCenter.default.post(name: .foundProcessedDocument, object: nil)
     }
 }

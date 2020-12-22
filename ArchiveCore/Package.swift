@@ -18,7 +18,6 @@ let package = Package(
         .library(name: "ArchiveBackend", targets: ["ArchiveBackend"]),
         .library(name: "ArchiveViews", targets: ["ArchiveViews"]),
         .library(name: "InAppPurchases", targets: ["InAppPurchases"]),
-        .library(name: "ErrorHandling", targets: ["ErrorHandling"]),
         .library(name: "ArchiveSharedConstants", targets: ["ArchiveSharedConstants"])
     ],
     dependencies: [
@@ -39,7 +38,6 @@ let package = Package(
                 dependencies: [
                     "ArchiveSharedConstants",
                     "DeepDiff",
-                    "ErrorHandling",
                     "GraphicsRenderer"
                 ]),
         .target(name: "ArchiveViews",
@@ -54,12 +52,7 @@ let package = Package(
         .target(name: "InAppPurchases",
                 dependencies: [
                     "ArchiveSharedConstants",
-                    "TPInAppReceipt",
-                    "ErrorHandling"
-                ]),
-        .target(name: "ErrorHandling",
-                dependencies: [
-                    .product(name: "Logging", package: "swift-log")
+                    "TPInAppReceipt"
                 ]),
         .target(name: "ArchiveSharedConstants",
                 dependencies: [

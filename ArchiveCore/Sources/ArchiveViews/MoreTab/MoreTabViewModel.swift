@@ -22,7 +22,6 @@ public final class MoreTabViewModel: ObservableObject, Log {
 
     let qualities: [String] = ["100% - Lossless 🤯", "75% - Good 👌 (Default)", "50% - Normal 👍", "25% - Small 💾"]
     let storageTypes: [String] = StorageType.allCases.map(\.title).map { "\($0)" }
-    @Published var error: Error?
     @Published var selectedQualityIndex = UserDefaults.PDFQuality.toIndex(UserDefaults.appGroup.pdfQuality) ?? UserDefaults.PDFQuality.defaultQualityIndex
     @Published var selectedArchiveType = StorageType.getCurrent()
     @Published var showArchiveTypeSelection = false
@@ -79,7 +78,7 @@ public final class MoreTabViewModel: ObservableObject, Log {
                         archiveStore.update(archiveFolder: archiveUrl, untaggedFolders: [untaggedUrl])
                     }
                 } catch {
-                    self.error = error
+                    NotificationCenter.default.postAlert(error)
                 }
             }
             .store(in: &disposables)
@@ -119,7 +118,9 @@ public final class MoreTabViewModel: ObservableObject, Log {
         }
 
         DispatchQueue.main.async {
-            self.error = AlertDataModel.createAndPost(title: "Reset App", message: "Please restart the app to complete the reset.", primaryButtonTitle: "OK")
+            NotificationCenter.default.createAndPost(title: "Reset App",
+                                                     message: "Please restart the app to complete the reset.",
+                                                     primaryButtonTitle: "OK")
         }
     }
 }

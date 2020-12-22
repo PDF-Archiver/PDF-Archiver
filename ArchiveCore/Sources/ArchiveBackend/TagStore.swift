@@ -58,8 +58,14 @@ public final class TagStore {
             }
         }
 
-        return tagCounts.sorted { $0.value > $1.value }
-            .map(\.key)
+        return tagCounts.sorted { lhs, rhs in
+            if lhs.value == rhs.value {
+                return lhs.key < rhs.key
+            } else {
+                return lhs.value > rhs.value
+            }
+        }
+        .map(\.key)
     }
 
     // MARK: Tag Index

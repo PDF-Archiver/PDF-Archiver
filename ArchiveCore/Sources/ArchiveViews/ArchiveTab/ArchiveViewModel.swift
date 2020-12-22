@@ -20,7 +20,6 @@ final class ArchiveViewModel: ObservableObject, Log {
     }
     private static let defaultYears = ["All", "2020", "2019", "2018", "2017"]
 
-    @Published private(set) var error: Error?
     @Published private(set) var selectedDocument: Document?
     @Published private(set) var documents: [Document] = []
     @Published var years: [String] = defaultYears
@@ -153,11 +152,10 @@ final class ArchiveViewModel: ObservableObject, Log {
             do {
                 try archiveStore.download(document)
             } catch {
-                DispatchQueue.main.async {
-                    self.error = error
-                }
+                NotificationCenter.default.postAlert(error)
             }
 
+            // TODO: do we need this?
 //            var filteredDocuments = archiveStore.documents.filter { $0.id != document.id }
 //            filteredDocuments.append(document)
 //            archiveStore.documents = filteredDocuments
@@ -183,9 +181,7 @@ final class ArchiveViewModel: ObservableObject, Log {
             do {
                 try archiveStore.delete(deletedDocument)
             } catch {
-                DispatchQueue.main.async {
-                    self.error = error
-                }
+                NotificationCenter.default.postAlert(error)
             }
         }
         FeedbackGenerator.notify(.success)

@@ -133,7 +133,9 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
 
         do {
             try provider.startDownload(of: document.path)
-            document.downloadStatus = .downloading(percent: 0)
+            DispatchQueue.main.async {
+                document.downloadStatus = .downloading(percent: 0)
+            }
         } catch {
             log.errorAndAssert("Document download error.", metadata: ["error": "\(error)"])
             throw error
@@ -211,7 +213,7 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
 
                     // trigger update of the document properties
                     if let contentParsingOptions = contentParsingOptions {
-                        DispatchQueue.global(qos: .background).async {
+                        DispatchQueue.global(qos: .userInitiated).async {
                             // save documents after the last has been written
                             documentProcessingGroup.enter()
                             document.updateProperties(with: document.downloadStatus, contentParsingOptions: contentParsingOptions)

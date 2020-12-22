@@ -104,6 +104,7 @@ public enum DateParser {
             }
         }
 
+        // swiftlint:disable:next trailing_closure
         let parserResult = result.min(by: { $0.key < $1.key })?.value
         return parserResult ?? dateDetector(for: raw)
     }

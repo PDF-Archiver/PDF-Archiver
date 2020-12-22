@@ -49,9 +49,7 @@ final class PDFSharingViewModel: ObservableObject, Equatable {
             do {
                 try FileManager.default.removeItem(at: sharingUrl)
             } catch {
-                DispatchQueue.main.async {
-                    self.error = error
-                }
+                NotificationCenter.default.postAlert(error)
             }
         }
     }

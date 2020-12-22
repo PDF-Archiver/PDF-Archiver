@@ -22,7 +22,6 @@ struct TagTabView: View {
         if viewModel.showLoadingView {
             LoadingView()
                 .navigationBarHidden(true)
-                .emittingError(viewModel.error)
         } else if viewModel.currentDocument != nil {
             Stack(spacing: 8) {
                 if horizontalSizeClass != .compact {
@@ -54,11 +53,9 @@ struct TagTabView: View {
                     saveNavBarView
                 }
             }
-            .emittingError(viewModel.error)
         } else {
             PlaceholderView(name: "No iCloud Drive documents found. Please scan and tag documents first.")
                 .navigationBarHidden(true)
-                .emittingError(viewModel.error)
         }
     }
 

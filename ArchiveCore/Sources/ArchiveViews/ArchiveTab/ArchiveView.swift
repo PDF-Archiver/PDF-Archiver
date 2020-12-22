@@ -28,7 +28,6 @@ struct ArchiveView: View {
 
         if viewModel.showLoadingView {
             LoadingView()
-                .emittingError(viewModel.error)
         } else {
             VStack {
                 searchView
@@ -40,7 +39,6 @@ struct ArchiveView: View {
             }
             .navigationBarTitle(Text("Archive"))
             .navigationBarItems(trailing: EditButton())
-            .emittingError(viewModel.error)
         }
     }
 
@@ -81,10 +79,10 @@ struct ArchiveView: View {
             ForEach(viewModel.documents) { document in
                 if document.downloadStatus == .local {
                     NavigationLink(destination: ArchiveViewModel.createDetail(with: document)) {
-                        DocumentView(viewModel: document, showTagStatus: false)
+                        DocumentView(viewModel: document, showTagStatus: false, multilineTagList: false)
                     }
                 } else {
-                    DocumentView(viewModel: document, showTagStatus: false)
+                    DocumentView(viewModel: document, showTagStatus: false, multilineTagList: false)
                         .onTapGesture {
                             #if !os(macOS)
                             guard editMode?.wrappedValue == .inactive else { return }

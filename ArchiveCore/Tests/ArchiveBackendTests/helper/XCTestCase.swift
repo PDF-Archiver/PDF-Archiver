@@ -4,7 +4,7 @@
 //
 //  Created by Julian Kahnert on 02.12.20.
 //
-// swiftlint:disable identifier_name
+// swiftlint:disable identifier_name force_unwrapping
 
 import GraphicsRenderer
 import PDFKit

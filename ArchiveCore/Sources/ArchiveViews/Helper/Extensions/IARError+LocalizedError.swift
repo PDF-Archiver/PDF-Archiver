@@ -27,10 +27,10 @@ extension IARError: LocalizedError {
 extension IARError.ValidationFailureReason: CustomStringConvertible {
     public var description: String {
         switch self {
-            case .bundleIdentifierVefirication:
-                return "bundleIdentifierVefirication"
-            case .bundleVersionVefirication:
-                return "bundleVersionVefirication"
+            case .bundleIdentifierVerification:
+                return "bundleIdentifierVerification"
+            case .bundleVersionVerification:
+                return "bundleVersionVerification"
             case .hashValidation:
                 return "hashValidation"
             case .signatureValidation(let reason):

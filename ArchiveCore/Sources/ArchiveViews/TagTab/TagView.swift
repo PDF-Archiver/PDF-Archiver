@@ -19,21 +19,26 @@ struct TagView: View, Identifiable {
     let tapHandler: ((String) -> Void)?
 
     var body: some View {
-        Button(action: {
-            self.tapHandler?(self.tagName)
-        }, label: {
+        if let tapHandler = tapHandler {
+            Button(action: {
+                tapHandler(self.tagName)
+            }, label: {
+                self.tag
+            })
+            .buttonStyle(BorderlessButtonStyle())
+        } else {
             self.tag
-        })
-        .buttonStyle(BorderlessButtonStyle())
+        }
     }
 
     @ViewBuilder
     private var buttonLabel: some View {
         if isEditable {
-            HStack {
+            HStack(alignment: .center) {
                 Label(tagName.capitalized, systemImage: "tag")
                 Spacer()
                 Image(systemName: "xmark.circle.fill")
+                    .font(.caption)
             }
         } else {
             Label(tagName.capitalized, systemImage: "tag")
@@ -42,6 +47,7 @@ struct TagView: View, Identifiable {
 
     private var tag: some View {
         buttonLabel
+            .lineLimit(1)
             .minimumScaleFactor(0.85)
             .padding(EdgeInsets(top: 2.0, leading: 5.0, bottom: 2.0, trailing: 5.0))
             .frame(minWidth: 60, maxWidth: 120, alignment: .leading)
