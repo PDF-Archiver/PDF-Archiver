@@ -11,7 +11,7 @@ import PDFKit.PDFDocument
 
 public enum StorageHelper {
 
-    private static let seperator = "----"
+    private static let separator = "----"
 
     public static func save(_ images: [CIImage]) throws {
 
@@ -20,15 +20,14 @@ public enum StorageHelper {
         let quality = CGFloat(UserDefaults.standard.pdfQuality.rawValue)
         let uuid = UUID()
         for (index, image) in images.enumerated() {
-
-            // get jpg data from image
-            guard let data = image.jpegData(compressionQuality: quality) else { throw StorageError.jpgConversion }
+            guard let colorSpace = image.colorSpace else { throw StorageError.jpgConversion }
 
             // create a filename, e.g. 576951A0-88B9-44E4-B118-BDEC3556014A----0002.jpg
-            let filename = "\(uuid.uuidString)\(seperator)\(String(format: "%04d", index)).jpg"
+            let filename = "\(uuid.uuidString)\(separator)\(String(format: "%04d", index)).jpg"
+            let url = PathConstants.tempImageURL.appendingPathComponent(filename)
 
-            // Attempt to write the data
-            try data.write(to: PathConstants.tempImageURL.appendingPathComponent(filename))
+            // Attempt to write image data to url
+            try CIContext().writeJPEGRepresentation(of: image, to: url, colorSpace: colorSpace, options: [kCGImageDestinationLossyCompressionQuality as CIImageRepresentationOption: quality])
         }
     }
 
@@ -37,7 +36,7 @@ public enum StorageHelper {
         let paths = (try? FileManager.default.contentsOfDirectory(at: PathConstants.tempImageURL, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)) ?? []
         let imageIds = paths
             .filter { $0.pathExtension.lowercased() != "pdf" }
-            .compactMap { $0.lastPathComponent.components(separatedBy: seperator).first }
+            .compactMap { $0.lastPathComponent.components(separatedBy: separator).first }
             .compactMap { UUID(uuidString: $0) }
 
         return Set(imageIds)

@@ -4,8 +4,8 @@
 //  Created by Julian Kahnert on 17.08.20.
 //
 
-import Foundation
 import DeepDiff
+import Foundation
 
 public enum FileChange {
     case added(Details)
@@ -27,7 +27,7 @@ extension FileChange.Details: DiffAware {
         url
     }
 
-    public static func compareContent(_ a: FileChange.Details, _ b: FileChange.Details) -> Bool {
-        a == b
+    public static func compareContent(_ lhs: FileChange.Details, _ rhs: FileChange.Details) -> Bool {
+        lhs == rhs
     }
 }

@@ -47,6 +47,7 @@ public final class PDFProcessing: Operation, Log {
     private let confidenceThreshold = Float(0)
 
     public private(set) var error: Error?
+    public private(set) var outputUrl: URL?
     public var documentId: UUID? {
         if case Mode.images(let documentId) = mode {
             return documentId
@@ -63,7 +64,7 @@ public final class PDFProcessing: Operation, Log {
         self.progressHandler = progressHandler
     }
 
-    public override func main() {
+    override public func main() {
 
         do {
             if isCancelled {
@@ -99,6 +100,7 @@ public final class PDFProcessing: Operation, Log {
             let filepath = destinationFolder.appendingPathComponent(filename)
 
             try FileManager.default.moveItem(at: path, to: filepath)
+            self.outputUrl = filepath
 
             // log the processing time
             let timeDiff = Date().timeIntervalSinceReferenceDate - start.timeIntervalSinceReferenceDate
@@ -119,6 +121,7 @@ public final class PDFProcessing: Operation, Log {
         // get OCR content
         var content = ""
         for pageNumber in 0..<min(document.pageCount, 3) {
+            guard content.count < 5000 else { break }
             content += document.page(at: pageNumber)?.string ?? ""
         }
 
@@ -247,8 +250,10 @@ public final class PDFProcessing: Operation, Log {
             // create context - we use different contexts in order to get different page sizes in the PDF
             var bounds = CGRect(origin: .zero, size: observation.image.size)
             let data = NSMutableData()
+            // swiftlint:disable force_unwrapping
             let consumer = CGDataConsumer(data: data)!
             let context = CGContext(consumer: consumer, mediaBox: &bounds, nil)!
+            // swiftlint:enable force_unwrapping
 
             #if os(macOS)
                 let previousContext = NSGraphicsContext.current

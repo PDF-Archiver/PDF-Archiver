@@ -74,7 +74,7 @@ class ICloudFolderProvider: NSObject, FolderProvider {
 
     static func canHandle(_ url: URL) -> Bool {
         guard let cloudUrl = FileManager.default.url(forUbiquityContainerIdentifier: nil) else {
-            log.criticalAndAssert("Could not find iCloud Drive path.")
+            // this is a valid situation, if no iCloud Drive is available
             return false
         }
         return url.path.starts(with: cloudUrl.path)

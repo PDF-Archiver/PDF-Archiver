@@ -8,7 +8,7 @@
 import ArchiveSharedConstants
 import Foundation
 
-fileprivate extension UserDefaults {
+extension UserDefaults {
 //    let bookmark = try newValue.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
 //    UserDefaults.standard.set(bookmark, forKey: "observedPathWithSecurityScope")
 
@@ -35,7 +35,12 @@ public final class PathManager: Log {
     private let fileManager = FileManager.default
 
     private init() {
-        archivePathType = PathManager.userDefaults.archivePathType ?? .iCloudDrive
+        let iCloudDriveAvailable = FileManager.default.iCloudDriveURL != nil
+        if iCloudDriveAvailable {
+            archivePathType = PathManager.userDefaults.archivePathType ?? .iCloudDrive
+        } else {
+            archivePathType = PathManager.userDefaults.archivePathType ?? .appContainer
+        }
     }
 
     public func getArchiveUrl() throws -> URL {
@@ -59,7 +64,11 @@ public final class PathManager: Log {
         let oldArchiveUrl = try archivePathType.getArchiveUrl()
 
         let contents = try fileManager.contentsOfDirectory(at: oldArchiveUrl, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
-            .filter { $0.lastPathComponent != "diagnostics_log.txt" }
+            .filter(\.hasDirectoryPath)
+            .filter { folderUrl in
+                folderUrl.lastPathComponent.isNumeric || folderUrl.lastPathComponent == "untagged"
+            }
+
         for file in contents {
             let destination = newArchiveUrl.appendingPathComponent(file.lastPathComponent)
             try fileManager.moveItem(at: file, to: destination)

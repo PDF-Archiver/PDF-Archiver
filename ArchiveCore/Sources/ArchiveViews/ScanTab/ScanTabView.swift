@@ -39,7 +39,6 @@ public struct ScanTabView: View {
         }
         .frame(maxHeight: maxFrameHeight)
         .padding(EdgeInsets(top: 32.0, leading: 16.0, bottom: 32.0, trailing: 16.0))
-        .emittingError(viewModel.error)
     }
 
     private var staticInfo: some View {
@@ -110,10 +109,13 @@ struct ScanTabView_Previews: PreviewProvider {
     }
 
     static var previews: some View {
-        ScanTabView(viewModel: ScanTabViewModel(imageConverter: ImageConverter(), iapService: MockIAPService(), documentsFinishedHandler: { _ in
-                                                    print("Scan completed!") }))
-            .frame(maxWidth: .infinity)
-            .padding()
+        // swiftlint:disable:next trailing_closure
+        ScanTabView(viewModel: ScanTabViewModel(imageConverter: ImageConverter(), iapService: MockIAPService(), documentsFinishedHandler: {
+            print("Scan completed!")
+
+        }))
+        .frame(maxWidth: .infinity)
+        .padding()
     }
 }
 #endif

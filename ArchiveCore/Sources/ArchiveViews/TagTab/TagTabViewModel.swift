@@ -5,15 +5,13 @@
 //  Created by Julian Kahnert on 02.11.19.
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
-// swiftlint:disable force_unwrapping function_body_length
+// swiftlint:disable force_unwrapping function_body_length cyclomatic_complexity
 
 import Combine
 import PDFKit
 import SwiftUI
 
 final class TagTabViewModel: ObservableObject, Log {
-
-    @Published private(set) var error: Error?
 
     // set this property manually
     @Published var documents = [Document]()
@@ -119,9 +117,7 @@ final class TagTabViewModel: ObservableObject, Log {
                         do {
                             try archiveStore.download(document)
                         } catch {
-                            DispatchQueue.main.async {
-                                self.error = error
-                            }
+                            NotificationCenter.default.postAlert(error)
                         }
                     }
 
@@ -248,9 +244,7 @@ final class TagTabViewModel: ObservableObject, Log {
 
             } catch {
                 Self.log.error("Error in PDFProcessing!", metadata: ["error": "\(error)"])
-                DispatchQueue.main.async {
-                    self.error = error
-                }
+                NotificationCenter.default.postAlert(error)
 
                 FeedbackGenerator.notify(.error)
             }
@@ -276,14 +270,13 @@ final class TagTabViewModel: ObservableObject, Log {
                 }
             } catch {
                 Self.log.error("Error while deleting document!", metadata: ["error": "\(error)"])
-                DispatchQueue.main.async {
-                    self.error = error
-                }
+                NotificationCenter.default.postAlert(error)
             }
         }
     }
 
     private func getNewDocument(from documents: [Document]) -> Document? {
+        // swiftlint:disable:next sorted_first_last
         documents
             .filter { $0.taggingStatus == .untagged }
             .sorted { $0.filename < $1.filename }

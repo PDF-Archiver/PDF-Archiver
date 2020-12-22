@@ -4,6 +4,7 @@
 //
 //  Created by Julian Kahnert on 22.08.20.
 //
+// swiftlint:disable force_unwrapping
 
 @testable import ArchiveBackend
 import Foundation

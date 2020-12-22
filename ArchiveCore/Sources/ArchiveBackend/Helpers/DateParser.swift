@@ -10,6 +10,8 @@ import Foundation
 /// Parse several kinds of dates in a String.
 public enum DateParser {
 
+    public typealias ParserResult = (date: Date, rawDate: String)
+
     private struct FormatMapping {
         let format: String
         let regex: String
@@ -40,7 +42,7 @@ public enum DateParser {
     ///
     /// - Parameter raw: Raw string which might contain a date.
     /// - Returns: The found date or nil if no date was found.
-    public static func parse(_ raw: String) -> (date: Date, rawDate: String)? {
+    public static func parse(_ raw: String) -> ParserResult? {
         return parse(raw, with: mappings)
     }
 
@@ -50,14 +52,19 @@ public enum DateParser {
     /// - Parameter raw: Raw string which might contain a date.
     ///   - locales: Array which defines the order of locales that should be used for parsing.
     /// - Returns: The found date or nil if no date was found.
-    public static func parse(_ raw: String, locales: [Locale]) -> (date: Date, rawDate: String)? {
+    public static func parse(_ raw: String, locales: [Locale]) -> ParserResult? {
         let mappings = createMappings(for: locales)
         return parse(raw, with: mappings)
     }
 
     // MARK: - internal date parser
 
-    private static func parse(_ raw: String, with mappings: [FormatMapping]) -> (date: Date, rawDate: String)? {
+    private static func parse(_ raw: String, with mappings: [FormatMapping]) -> ParserResult? {
+
+        guard raw.count < 5000 else {
+            // use the super fast NSDataDetector first, e.g. for "yesterday"/"last Monday"
+            return dateDetector(for: raw)
+        }
 
         // create a date parser
         let dateFormatter = DateFormatter()
@@ -65,38 +72,46 @@ public enum DateParser {
         // only compare lowercased dates
         let lowercasedRaw = raw.lowercased()
 
-        for mapping in mappings {
-            if let rawDates = lowercasedRaw.capturedGroups(withRegex: "([\\D]+|^)(\(mapping.regex))([\\D]+|$)") {
+        let resultQueue = DispatchQueue(label: "result")
+        var result = [Int: ParserResult]()
+        DispatchQueue.concurrentPerform(iterations: mappings.count) { idx in
+            let localResult = resultQueue.sync { result }
+            guard !localResult.keys.contains(where: { $0 < idx }) else { return }
 
-                // get raw date from captured groups
-                let rawDate = String(rawDates[1])
+            let mapping = mappings[idx]
+            guard let rawDates = lowercasedRaw.capturedGroups(withRegex: "([\\D]+|^)(\(mapping.regex))([\\D]+|$)") else { return }
 
-                // cleanup all separators from the found string
-                let foundString = String(rawDate)
-                    .replacingOccurrences(of: separator, with: "", options: .regularExpression)
-                    .lowercased()
+            // get raw date from captured groups
+            let rawDate = String(rawDates[1])
 
-                // setup the right format in the dateFormatter
-                dateFormatter.dateFormat = mapping.format
-                if let locale = mapping.locale {
-                    dateFormatter.locale = locale
-                }
+            // cleanup all separators from the found string
+            let foundString = String(rawDate)
+                .replacingOccurrences(of: separator, with: "", options: .regularExpression)
+                .lowercased()
 
-                // try to parse the found raw string
-                if let date = dateFormatter.date(from: foundString),
-                    date > minimumDate {
-                    return (date, rawDate)
+            // setup the right format in the dateFormatter
+            dateFormatter.dateFormat = mapping.format
+            if let locale = mapping.locale {
+                dateFormatter.locale = locale
+            }
+
+            // try to parse the found raw string
+            if let date = dateFormatter.date(from: foundString),
+                date > minimumDate {
+                resultQueue.sync {
+                    result[idx] = (date, rawDate)
                 }
             }
         }
 
-        // use the NSDataDetector as a fallback, e.g. for "yesterday"/"last monday"
-        return dateDetector(for: raw)
+        // swiftlint:disable:next trailing_closure
+        let parserResult = result.min(by: { $0.key < $1.key })?.value
+        return parserResult ?? dateDetector(for: raw)
     }
 
     // MARK: - helper functions
 
-    private static func dateDetector(for text: String) -> (date: Date, rawDate: String)? {
+    private static func dateDetector(for text: String) -> ParserResult? {
         guard let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.date.rawValue) else { return nil }
         let searchRange = NSRange(text.startIndex..<text.endIndex, in: text)
         let result = detector.firstMatch(in: text, options: [], range: searchRange)
@@ -140,7 +155,7 @@ public enum DateParser {
         var mappings = [(FormatMapping)]()
         for dateOrder in dateOrders {
 
-            // create the cartesian product of all datepart variantes (e.g. yy or yyyy)
+            // create the cartesian product of all date part variants (e.g. yy or yyyy)
             let prod1 = product(part2mapping(dateOrder.first, monthMappings: monthMappings),
                                 part2mapping(dateOrder.second, monthMappings: monthMappings))
             let prod2 = product(prod1,

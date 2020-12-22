@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import SwiftUIX
 
 struct SearchField: View {
     @Binding var searchText: String
@@ -43,6 +44,7 @@ struct SearchField: View {
                 }
             }
             TextField(placeholder, text: $searchText)
+                .textFieldStyle(PlainTextFieldStyle())
             Button(action: {
                 self.searchText = ""
                 self.filterItems = []
@@ -50,8 +52,8 @@ struct SearchField: View {
             }, label: {
                 Image(systemName: "xmark.circle.fill")
                     .foregroundColor(.secondary)
-                    .opacity(self.searchText.isEmpty && self.filterItems.isEmpty ? 0.0 : 1.0)
             })
+            .opacity(self.searchText.isEmpty && self.filterItems.isEmpty ? 0.0 : 1.0)
         }
         .padding(EdgeInsets(top: 8.0, leading: 8.0, bottom: 8.0, trailing: 8.0))
         .overlay(

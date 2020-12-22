@@ -7,8 +7,10 @@ jobs:
   build:
     name: Chia
     runs-on: ubuntu-latest
+    container:
+      image: worldiety/chia:latest
     steps:
       - name: Checkout the repository
         uses: actions/checkout@master
       - name: Run chia cli
-        uses: worldiety/chia@master
+        run: chia --config https://raw.githubusercontent.com/JulianKahnert/chia-config/master/chia.yml

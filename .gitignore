@@ -29,8 +29,6 @@ xcuserdata/
 Breakpoints_v2.xcbkptlist
 report.xml
 Preview.html
-Pods
-.env.default
 screenshots.html
 
 fastlane/README.md
@@ -38,7 +36,4 @@ Gemfile
 vendor
 Gemfile.lock
 .bundle
-Config.xcconfig
-PDFArchiver.xcodeproj/xcshareddata/xcbaselines
-Constants+Secrets.swift
 ArchiveCore/.swiftpm

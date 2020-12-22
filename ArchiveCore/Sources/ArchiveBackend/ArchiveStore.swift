@@ -29,7 +29,7 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
 
     private static let fileProperties: [URLResourceKey] = [.ubiquitousItemDownloadingStatusKey, .ubiquitousItemIsDownloadingKey, .fileSizeKey, .localizedNameKey]
     private static let savePath: URL = {
-        guard let url = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first else { fatalError("No cache dir found.")}
+        guard let url = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first else { fatalError("No cache dir found.") }
         return url.appendingPathComponent("ArchiveData.json")
     }()
     public static let shared = ArchiveStore()
@@ -133,7 +133,9 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
 
         do {
             try provider.startDownload(of: document.path)
-            document.downloadStatus = .downloading(percent: 0)
+            DispatchQueue.main.async {
+                document.downloadStatus = .downloading(percent: 0)
+            }
         } catch {
             log.errorAndAssert("Document download error.", metadata: ["error": "\(error)"])
             throw error
@@ -211,12 +213,10 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
 
                     // trigger update of the document properties
                     if let contentParsingOptions = contentParsingOptions {
-                        DispatchQueue.global(qos: .background).async {
+                        DispatchQueue.global(qos: .userInitiated).async {
                             // save documents after the last has been written
                             documentProcessingGroup.enter()
-//                            let startingPoint = Date()
                             document.updateProperties(with: document.downloadStatus, contentParsingOptions: contentParsingOptions)
-//                            print("\(startingPoint.timeIntervalSinceNow * -1) seconds elapsed")
                             documentProcessingGroup.leave()
                         }
                     }

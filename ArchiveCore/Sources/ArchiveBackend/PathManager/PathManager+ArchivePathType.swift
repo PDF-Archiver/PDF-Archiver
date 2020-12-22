@@ -10,7 +10,9 @@ import Foundation
 extension PathManager {
     public enum ArchivePathType: Equatable {
         case iCloudDrive
+        #if !os(macOS)
         case appContainer
+        #endif
         #if os(macOS)
         case local(URL)
         #endif
@@ -20,8 +22,10 @@ extension PathManager {
                 case .iCloudDrive:
                     guard let url = FileManager.default.iCloudDriveURL else { throw PathError.iCloudDriveNotFound }
                     return url
+                #if !os(macOS)
                 case .appContainer:
                     return FileManager.default.appContainerURL
+                #endif
                 #if os(macOS)
                 case .local(let url):
                     return url
@@ -34,7 +38,9 @@ extension PathManager {
 extension PathManager.ArchivePathType: Codable {
     enum CodingKeys: CodingKey {
         case iCloudDrive
+        #if !os(macOS)
         case appContainer
+        #endif
         #if os(macOS)
         case local
         #endif
@@ -45,11 +51,13 @@ extension PathManager.ArchivePathType: Codable {
         switch key {
             case .iCloudDrive:
                 self = .iCloudDrive
+            #if !os(macOS)
             case .appContainer:
                 self = .appContainer
+            #endif
             #if os(macOS)
             case .local:
-                let url =  try container.decode(URL.self, forKey: .local)
+                let url = try container.decode(URL.self, forKey: .local)
                 self = .local(url)
             #endif
             case .none:
@@ -67,8 +75,10 @@ extension PathManager.ArchivePathType: Codable {
         switch self {
             case .iCloudDrive:
                 try container.encode("", forKey: .iCloudDrive)
+            #if !os(macOS)
             case .appContainer:
                 try container.encode("", forKey: .appContainer)
+            #endif
             #if os(macOS)
             case .local(let url):
                 try container.encode(url, forKey: .local)

@@ -7,7 +7,6 @@
 
 import ArchiveSharedConstants
 import Combine
-import ErrorHandling
 import StoreKit
 import TPInAppReceipt
 
@@ -15,7 +14,6 @@ public final class IAPService: NSObject, ObservableObject, Log {
 
     private static var isInitialized = false
 
-    @Published public private(set) var error: Error?
     @Published public private(set) var products = Set<SKProduct>()
     @Published public private(set) var appUsagePermitted = false
 
@@ -23,7 +21,7 @@ public final class IAPService: NSObject, ObservableObject, Log {
     private var productsRequest: SKProductsRequest
     private var timer: Timer?
 
-    public override init() {
+    override public init() {
         precondition(!Self.isInitialized, "IAPService must only initialized once.")
         Self.isInitialized = true
 
@@ -38,9 +36,9 @@ public final class IAPService: NSObject, ObservableObject, Log {
         InAppReceipt.refresh { [weak self] error in
             if let error = error {
                 Self.log.error("Failed to refresh receipt.", metadata: ["error": "\(error)"])
-                self?.error = error
+                NotificationCenter.default.postAlert(error)
             } else {
-                self?.validateReciept()
+                self?.validateReceipt()
             }
         }
 
@@ -55,7 +53,7 @@ public final class IAPService: NSObject, ObservableObject, Log {
                 timer.invalidate()
                 return
             }
-            self.validateReciept()
+            self.validateReceipt()
         }
         #endif
     }
@@ -75,7 +73,7 @@ public final class IAPService: NSObject, ObservableObject, Log {
         paymentQueue.restoreCompletedTransactions()
     }
 
-    private func validateReciept() {
+    private func validateReceipt() {
         do {
             // Initialize receipt
             let receipt = try InAppReceipt.localReceipt()
@@ -92,9 +90,7 @@ public final class IAPService: NSObject, ObservableObject, Log {
         } catch {
             appUsagePermitted = false
             log.errorAndAssert("Failed to validate receaipt", metadata: ["error": "\(error)"])
-            DispatchQueue.main.async {
-                self.error = error
-            }
+            NotificationCenter.default.postAlert(error)
         }
     }
 }
@@ -128,7 +124,7 @@ extension IAPService: SKPaymentTransactionObserver {
             case .purchasing:
                 log.debug("In purchasing process.")
                 @unknown default:
-                    fatalError()
+                    preconditionFailure("Unkown transaction state: \(transaction.transactionState)")
             }
         }
     }
@@ -136,7 +132,7 @@ extension IAPService: SKPaymentTransactionObserver {
     /// Logs all transactions that have been removed from the payment queue.
     public func paymentQueue(_ queue: SKPaymentQueue, removedTransactions transactions: [SKPaymentTransaction]) {
         log.debug("removedTransactions \(transactions)")
-        validateReciept()
+        validateReceipt()
     }
 
     /// Called when an error occur while restoring purchases. Notify the user about the error.
@@ -144,32 +140,30 @@ extension IAPService: SKPaymentTransactionObserver {
         log.error("restoreCompletedTransactionsFailedWithError", metadata: ["error": "\(error)"])
         guard let error = error as? SKError,
               error.code != .paymentCancelled else { return }
-        DispatchQueue.main.async {
-            self.error = error
-        }
+        NotificationCenter.default.postAlert(error)
     }
 
     /// Called when all restorable transactions have been processed by the payment queue.
     public func paymentQueueRestoreCompletedTransactionsFinished(_ queue: SKPaymentQueue) {
         log.debug("paymentQueueRestoreCompletedTransactionsFinished")
-        validateReciept()
+        validateReceipt()
 
         DispatchQueue.main.async {
             if self.appUsagePermitted {
-                self.error = AlertDataModel.createAndPost(title: "Subscription",
-                                                          message: "✅ An active subscription was successfully restored.",
-                                                          primaryButtonTitle: "OK")
+                NotificationCenter.default.createAndPost(title: "Subscription",
+                                                         message: "✅ An active subscription was successfully restored.",
+                                                         primaryButtonTitle: "OK")
             } else {
-                self.error = AlertDataModel.createAndPost(title: "Subscription",
-                                                          message: "❌ No active subscription could be restored.\nPlease contact us if this is an error:\nMore > Support",
-                                                          primaryButtonTitle: "OK")
+                NotificationCenter.default.createAndPost(title: "Subscription",
+                                                         message: "❌ No active subscription could be restored.\nPlease contact us if this is an error:\nMore > Support",
+                                                         primaryButtonTitle: "OK")
             }
         }
     }
 
     public func paymentQueue(_ queue: SKPaymentQueue, didRevokeEntitlementsForProductIdentifiers productIdentifiers: [String]) {
         log.info("didRevokeEntitlementsForProductIdentifiers \(productIdentifiers)")
-        validateReciept()
+        validateReceipt()
     }
 }
 

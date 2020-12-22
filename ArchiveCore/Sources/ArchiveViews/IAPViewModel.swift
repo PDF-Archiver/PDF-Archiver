@@ -7,13 +7,12 @@
 //
 
 import Combine
+import InAppPurchases
 import StoreKit
 import SwiftUI
-import InAppPurchases
 
 final class IAPViewModel: ObservableObject, Log {
 
-    @Published var error: Error?
     @Published var level1Name = "Level 1"
     @Published var level2Name = "Level 2"
 
@@ -40,9 +39,7 @@ final class IAPViewModel: ObservableObject, Log {
                 try iapService.buy(subscription: .monthly)
                 presentationMode.dismiss()
             } catch {
-                DispatchQueue.main.async {
-                    self.error = error
-                }
+                NotificationCenter.default.postAlert(error)
             }
         case .level2:
             log.info("SubscriptionViewController - buy: Yearly subscription.")
@@ -50,9 +47,7 @@ final class IAPViewModel: ObservableObject, Log {
                 try iapService.buy(subscription: .yearly)
                 presentationMode.dismiss()
             } catch {
-                DispatchQueue.main.async {
-                    self.error = error
-                }
+                NotificationCenter.default.postAlert(error)
             }
         case .restore:
             log.info("SubscriptionViewController - Restore purchases.")

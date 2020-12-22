@@ -12,7 +12,7 @@ struct DocumentDetailView: View {
     @ObservedObject var viewModel: DocumentDetailViewModel
     var body: some View {
         VStack {
-            DocumentView(viewModel: viewModel.document, showTagStatus: false)
+            DocumentView(viewModel: viewModel.document, showTagStatus: false, multilineTagList: true)
                 .padding()
             PDFCustomView(viewModel.pdfDocument)
         }

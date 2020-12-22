@@ -7,8 +7,8 @@
 
 import ArchiveSharedConstants
 import Combine
-import SwiftUI
 import PDFKit
+import SwiftUI
 
 final class PDFSharingViewModel: ObservableObject, Equatable {
     static func == (lhs: PDFSharingViewModel, rhs: PDFSharingViewModel) -> Bool {
@@ -49,9 +49,7 @@ final class PDFSharingViewModel: ObservableObject, Equatable {
             do {
                 try FileManager.default.removeItem(at: sharingUrl)
             } catch {
-                DispatchQueue.main.async {
-                    self.error = error
-                }
+                NotificationCenter.default.postAlert(error)
             }
         }
     }

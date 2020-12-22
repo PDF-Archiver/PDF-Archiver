@@ -28,6 +28,9 @@ struct StorageSelectionView: View {
                         }
                     }
                 }
+                #if os(macOS)
+                Spacer(minLength: 28)
+                #endif
             }
         }
     }
@@ -35,6 +38,10 @@ struct StorageSelectionView: View {
 
 struct StorageSelectionView_Previews: PreviewProvider {
     static var previews: some View {
+        #if os(macOS)
+        StorageSelectionView(selection: .constant(.local))
+        #else
         StorageSelectionView(selection: .constant(.appContainer))
+        #endif
     }
 }

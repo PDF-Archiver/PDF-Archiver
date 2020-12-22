@@ -5,7 +5,7 @@
 //  Created by Julian Kahnert on 06.11.20.
 //
 
-#if canImport(AppKit)
+#if os(macOS)
 import AppKit
 #else
 import UIKit.UIImage
@@ -13,7 +13,7 @@ import UIKit.UIImage
 
 extension CIImage {
     func jpegData(compressionQuality quality: CGFloat) -> Data? {
-        #if canImport(AppKit)
+        #if os(macOS)
         let bitmapRep = NSBitmapImageRep(ciImage: self)
         let jpegData = bitmapRep.representation(using: .jpeg, properties: [.compressionFactor: NSNumber(value: Float(quality))])
 

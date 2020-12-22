@@ -52,11 +52,11 @@ struct OBCardView: View {
 
     private var progressView: some View {
         HStack {
-            ForEach(0..<cardCount) { i in
+            ForEach(0..<cardCount) { index in
                 Circle()
                     .scaledToFit()
                     .frame(width: 10)
-                    .foregroundColor(currentCardIndex >= i ? Color.accentColor : Color(.systemGray))
+                    .foregroundColor(currentCardIndex >= index ? Color.accentColor : Color(.systemGray))
             }
         }
     }

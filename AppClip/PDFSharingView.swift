@@ -18,7 +18,6 @@ struct PDFSharingView: View {
             Color.systemBackground
             documentView
         }
-        .emittingError(viewModel.error)
     }
 
     private var documentView: some View {

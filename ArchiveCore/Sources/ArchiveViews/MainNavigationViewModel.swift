@@ -10,13 +10,18 @@
 import ArchiveBackend
 import Combine
 import SwiftUI
+#if canImport(MessageUI)
+import MessageUI
+#endif
 
 public final class MainNavigationViewModel: ObservableObject, Log {
 
     public static let archiveStore = ArchiveStore.shared
     public static let iapService = IAPService()
+    static let mailRecipients = ["support@pdf-archiver.io"]
+    static let mailSubject = "PDF Archiver: iOS Support"
 
-    @Published var error: Error?
+    @Published var alertDataModel: AlertDataModel?
 
     @Published var archiveCategories: [String] = []
     @Published var tagCategories: [String] = []
@@ -24,17 +29,16 @@ public final class MainNavigationViewModel: ObservableObject, Log {
     @Published var currentTab: Tab = UserDefaults.appGroup.lastSelectedTab
     @Published var currentOptionalTab: Tab?
     @Published var showTutorial = !UserDefaults.appGroup.tutorialShown
+    @Published var sheetType: SheetType?
 
     public private(set) lazy var imageConverter = ImageConverter(getDocumentDestination: getDocumentDestination)
 
     lazy var scanViewModel = ScanTabViewModel(imageConverter: imageConverter, iapService: Self.iapService, documentsFinishedHandler: Self.scanFinished)
     let tagViewModel = TagTabViewModel()
     let archiveViewModel = ArchiveViewModel()
-    private lazy var moreViewModel = MoreTabViewModel(iapService: Self.iapService, archiveStore: Self.archiveStore)
+    public private(set) lazy var moreViewModel = MoreTabViewModel(iapService: Self.iapService, archiveStore: Self.archiveStore)
 
     let iapViewModel = IAPViewModel(iapService: iapService)
-
-    @Published var showSubscriptionView: Bool = false
 
     private var disposables = Set<AnyCancellable>()
 
@@ -42,18 +46,29 @@ public final class MainNavigationViewModel: ObservableObject, Log {
         do {
             return try PathManager.shared.getUntaggedUrl()
         } catch {
-            self.error = error
+            NotificationCenter.default.postAlert(error)
             return nil
         }
     }
 
+    @ViewBuilder
+    func getView(for sheetType: SheetType) -> some View {
+        switch sheetType {
+        case .iapView:
+            IAPView(viewModel: iapViewModel)
+        #if canImport(MessageUI)
+        case .supportView:
+            SupportMailView(subject: Self.mailSubject,
+                            recipients: Self.mailRecipients,
+                            errorHandler: { NotificationCenter.default.postAlert($0) })
+        #endif
+        }
+    }
+
     public init() {
-
-        Self.iapService.$error
-            .assign(to: &$error)
-
-        imageConverter.$error
-            .assign(to: &$error)
+        NotificationCenter.default.alertPublisher()
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$alertDataModel)
 
         $currentTab
             .map { Optional($0) }
@@ -114,14 +129,23 @@ public final class MainNavigationViewModel: ObservableObject, Log {
             .combineLatest($currentTab)
             .receive(on: DispatchQueue.main)
             .sink { (_, selectedTab) in
-                self.showSubscriptionView = !Self.iapService.appUsagePermitted && selectedTab == .tag
+                if !Self.iapService.appUsagePermitted && selectedTab == .tag {
+                    self.sheetType = .iapView
+                }
             }
             .store(in: &disposables)
 
         NotificationCenter.default.publisher(for: .showSubscriptionView)
             .receive(on: DispatchQueue.main)
             .sink { _ in
-                self.showSubscriptionView = true
+                self.sheetType = .iapView
+            }
+            .store(in: &disposables)
+
+        NotificationCenter.default.publisher(for: .showSendDiagnosticsReport)
+            .receive(on: DispatchQueue.main)
+            .sink { _ in
+                self.showSupport()
             }
             .store(in: &disposables)
 
@@ -145,18 +169,14 @@ public final class MainNavigationViewModel: ObservableObject, Log {
             .receive(on: DispatchQueue.main)
             .assign(to: &self.$tagCategories)
 
-        // TODO: change container!?
         DispatchQueue.global(qos: .userInteractive).async {
-            // TODO: handle no icloud drive found
             do {
                 let archiveUrl = try PathManager.shared.getArchiveUrl()
                 let untaggedUrl = try PathManager.shared.getUntaggedUrl()
 
                 Self.archiveStore.update(archiveFolder: archiveUrl, untaggedFolders: [untaggedUrl])
             } catch {
-                DispatchQueue.main.async {
-                    self.error = error
-                }
+                NotificationCenter.default.postAlert(error)
             }
         }
     }
@@ -189,7 +209,11 @@ public final class MainNavigationViewModel: ObservableObject, Log {
             case .scan:
                 return AnyView(ScanTabView(viewModel: scanViewModel))
             case .tag:
+                #if os(macOS)
+                return AnyView(TagTabViewMac(viewModel: tagViewModel))
+                #else
                 return AnyView(TagTabView(viewModel: tagViewModel))
+                #endif
             case .archive:
                 return AnyView(ArchiveView(viewModel: archiveViewModel))
             #if !os(macOS)
@@ -224,15 +248,37 @@ public final class MainNavigationViewModel: ObservableObject, Log {
         currentTab = .scan
     }
 
+    func showSupport() {
+        log.info("Show support")
+        #if os(macOS)
+        sendDiagnosticsReport()
+        #else
+        if MFMailComposeViewController.canSendMail() {
+            sheetType = .supportView
+        } else {
+            guard let url = URL(string: "https://pdf-archiver.io/faq") else { preconditionFailure("Could not generate the FAQ url.") }
+            open(url)
+        }
+        #endif
+    }
+
+    public func displayUserFeedback() {
+        NotificationCenter.default.createAndPost(title: "App Crash 💥",
+                                                 message: "PDF Archiver has crashed. This should not happen!\n\nPlease provide feedback, to improve the App experience.",
+                                                 primaryButton: .cancel(),
+                                                 secondaryButton: .default(Text("Send"),
+                                                                           action: showSupport))
+    }
+
     // MARK: - Helper Functions
 
-    private static func scanFinished(error: inout Error?) {
+    private static func scanFinished() {
         guard !UserDefaults.appGroup.firstDocumentScanAlertPresented else { return }
         UserDefaults.appGroup.firstDocumentScanAlertPresented = true
 
-        error = AlertDataModel.createAndPost(title: "First Scan processed! 🙂",
-                                                  message: "The first document was processed successfully and is now waiting for you in the 'Tag' tab.\n\n📄   ➡️   🗄",
-                                                  primaryButtonTitle: "OK")
+        NotificationCenter.default.createAndPost(title: "First Scan processed! 🙂",
+                                                 message: "The first document was processed successfully and is now waiting for you in the 'Tag' tab.\n\n📄   ➡️   🗄",
+                                                 primaryButtonTitle: "OK")
     }
 
     private func handle(url: URL) {
@@ -248,9 +294,57 @@ public final class MainNavigationViewModel: ObservableObject, Log {
             log.error("Unable to handle file.", metadata: ["filetype": "\(url.pathExtension)", "error": "\(error)"])
 //            try? FileManager.default.removeItem(at: url)
 
-            DispatchQueue.main.async {
-                self.error = error
-            }
+            NotificationCenter.default.postAlert(error)
         }
     }
 }
+
+extension MainNavigationViewModel {
+    enum SheetType: String, Identifiable {
+        case iapView
+        #if canImport(MessageUI)
+        case supportView
+        #endif
+
+        var id: String {
+            rawValue
+        }
+    }
+}
+
+#if os(macOS)
+import AppKit
+import Diagnostics
+
+extension MainNavigationViewModel {
+    func sendDiagnosticsReport() {
+        // add a diagnostics report
+        var reporters = DiagnosticsReporter.DefaultReporter.allReporters
+        reporters.insert(CustomDiagnosticsReporter.self, at: 1)
+        let report = DiagnosticsReporter.create(using: reporters)
+
+        guard let service = NSSharingService(named: .composeEmail) else {
+            log.errorAndAssert("Failed to get sharing service.")
+
+            guard let url = URL(string: "https://pdf-archiver.io/faq") else { preconditionFailure("Could not generate the FAQ url.") }
+            open(url)
+            return
+        }
+        service.recipients = Self.mailRecipients
+        service.subject = Self.mailSubject
+
+        let url = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("Diagnostics-Report.html")
+
+        // remove previous report
+        try? FileManager.default.removeItem(at: url)
+
+        do {
+            try report.data.write(to: url)
+        } catch {
+            preconditionFailure("Failed with error: \(error)")
+        }
+
+        service.perform(withItems: [url])
+    }
+}
+#endif

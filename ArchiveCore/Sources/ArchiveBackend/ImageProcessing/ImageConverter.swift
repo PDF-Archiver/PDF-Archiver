@@ -6,14 +6,11 @@
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
 
-import ErrorHandling
 import Foundation
 import PDFKit
 import Vision
 
 public final class ImageConverter: ObservableObject, ImageConverterAPI, Log {
-
-    @Published public private(set) var error: Error?
 
     private static let seperator = "----"
     private static var isInitialized = false
@@ -59,13 +56,13 @@ public final class ImageConverter: ObservableObject, ImageConverterAPI, Log {
 
     public func handle(_ url: URL) throws {
 
-        if let image = CIImage(contentsOf: url) {
+        if PDFDocument(url: url) != nil {
+            addOperation(with: .pdf(url))
+        } else if let image = CIImage(contentsOf: url) {
             try StorageHelper.save([image])
             guard let destinationURL = getDocumentDestination() else { throw StorageError.noPathToSave }
             saveProcessAndSaveTempImages(at: destinationURL)
             try FileManager.default.removeItem(at: url)
-        } else if url.pathExtension.lowercased() == "pdf" {
-            addOperation(with: .pdf(url))
         } else {
             throw StorageError.wrongExtension(url.pathExtension)
         }
@@ -103,9 +100,9 @@ public final class ImageConverter: ObservableObject, ImageConverterAPI, Log {
         triggerObservation()
 
         guard let destinationURL = getDocumentDestination() else {
-            self.error = AlertDataModel.createAndPost(title: "Attention",
-                                                      message: "Failed to get destination path.",
-                                                      primaryButtonTitle: "OK")
+            NotificationCenter.default.createAndPost(title: "Attention",
+                                                     message: "Failed to get destination path.",
+                                                     primaryButtonTitle: "OK")
             return
         }
 
@@ -118,9 +115,7 @@ public final class ImageConverter: ObservableObject, ImageConverterAPI, Log {
         }
         operation.completionBlock = {
             guard let error = operation.error else { return }
-            DispatchQueue.main.async {
-                self.error = error
-            }
+            NotificationCenter.default.postAlert(error)
         }
         queue.addOperation(operation)
         totalDocumentCount.mutate { $0 += 1 }

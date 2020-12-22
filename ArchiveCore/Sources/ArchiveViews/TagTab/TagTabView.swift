@@ -8,31 +8,26 @@
 
 import SwiftUI
 
+#if os(iOS)
 struct TagTabView: View {
 
-    #if os(iOS)
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    #endif
-
     @ObservedObject var viewModel: TagTabViewModel
 
+    // TODO: do we need this?
     // trigger a reload of the view, when the device rotation changes
-    @EnvironmentObject var orientationInfo: OrientationInfo
+//    @EnvironmentObject var orientationInfo: OrientationInfo
 
     var body: some View {
         if viewModel.showLoadingView {
             LoadingView()
                 .navigationBarHidden(true)
-                .emittingError(viewModel.error)
         } else if viewModel.currentDocument != nil {
             Stack(spacing: 8) {
-                #if os(iOS)
                 if horizontalSizeClass != .compact {
-                    documentsList
+                    DocumentList(currentDocument: $viewModel.currentDocument, documents: $viewModel.documents)
+                        .frame(maxWidth: 300)
                 }
-                #else
-                documentsList
-                #endif
                 GeometryReader { proxy in
                     VStack(spacing: 0) {
                         PDFCustomView(self.viewModel.pdfDocument)
@@ -54,16 +49,13 @@ struct TagTabView: View {
                 ToolbarItem(placement: .navigationBarLeading) {
                     deleteNavBarView
                 }
-
                 ToolbarItem(placement: .navigationBarTrailing) {
                     saveNavBarView
                 }
             }
-            .emittingError(viewModel.error)
         } else {
             PlaceholderView(name: "No iCloud Drive documents found. Please scan and tag documents first.")
                 .navigationBarHidden(true)
-                .emittingError(viewModel.error)
         }
     }
 
@@ -94,35 +86,10 @@ struct TagTabView: View {
         })
         .disabled(viewModel.currentDocument == nil)
     }
-
-    // MARK: Component Groups
-
-    private var documentsList: some View {
-        VStack {
-            Text("Tagged: \(viewModel.taggedUntaggedDocuments)")
-                .font(Font.headline)
-                .padding()
-            List {
-                ForEach(viewModel.documents) { document in
-                    HStack {
-                        Circle()
-                            .fill(Color.systemBlue)
-                            .frame(width: 8, height: 8)
-                            .opacity(document == self.viewModel.currentDocument ? 1 : 0)
-                        DocumentView(viewModel: document, showTagStatus: true)
-                    }
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                       self.viewModel.currentDocument = document
-                    }
-                }
-            }
-        }
-        .frame(maxWidth: 300)
-    }
 }
+#endif
 
-#if DEBUG
+#if DEBUG && os(iOS)
 struct TagTabView_Previews: PreviewProvider {
     static var viewModel: TagTabViewModel = {
         let model = TagTabViewModel()

@@ -9,16 +9,23 @@
 import SwiftUI
 
 struct TagListView: View {
+    private static let minColumnWidth: CGFloat = 100
 
     @Binding var tags: [String]
     let isEditable: Bool
     let isMultiLine: Bool
     let tapHandler: ((String) -> Void)?
 
+    var columns: [GridItem] = [GridItem(.adaptive(minimum: Self.minColumnWidth), spacing: 4)]
+
     @ViewBuilder
     var body: some View {
         if isMultiLine {
-            multilineView
+            LazyVGrid(columns: columns, spacing: 6) {
+                ForEach(tags, id: \.self) { tag in
+                    TagView(tagName: tag, isEditable: self.isEditable, tapHandler: self.tapHandler)
+                }
+            }
         } else {
             singleLineView
         }
@@ -33,29 +40,36 @@ struct TagListView: View {
             }
         }
     }
-
-    private var multilineView: some View {
-        ForEach(0...tags.count / 3, id: \.self) { rowIndex in
-            HStack {
-                if (rowIndex * 3 + 0) < self.tags.count {
-                    TagView(tagName: self.tags[rowIndex * 3 + 0], isEditable: self.isEditable, tapHandler: self.tapHandler)
-                }
-                if (rowIndex * 3 + 1) < self.tags.count {
-                    TagView(tagName: self.tags[rowIndex * 3 + 1], isEditable: self.isEditable, tapHandler: self.tapHandler)
-                }
-                if (rowIndex * 3 + 2) < self.tags.count {
-                    TagView(tagName: self.tags[rowIndex * 3 + 2], isEditable: self.isEditable, tapHandler: self.tapHandler)
-                }
-            }
-        }
-    }
 }
 
 struct TagListView_Previews: PreviewProvider {
-    @State static var tags = ["tag1", "tag2    ", "    tag3", "   ", "tag4"]
+//    @State static var tags = [
+//        "billbillbillbill",
+//        "ikeaikeaikea",
+//        "extraLongElement",
+//        "bill",
+//        "ikea",
+//        "flight",
+//        "vacation",
+//        "swift",
+//        "xcode",
+//        "billbillbillbill",
+//        "ikeaikeaikea",
+//        "extraLongElement"
+//    ]
+    @State static var tags = (0..<5).map { "tag\($0)" }
     static var previews: some View {
-        TagListView(tags: $tags, isEditable: true, isMultiLine: true, tapHandler: nil)
-            .previewLayout(.sizeThatFits)
+        Group {
+            // Example: Document View
+            TagListView(tags: $tags, isEditable: true, isMultiLine: false, tapHandler: nil)
+                .previewLayout(.fixed(width: 350, height: 50))
+
+            TagListView(tags: $tags, isEditable: true, isMultiLine: true, tapHandler: nil)
+                .previewLayout(.fixed(width: 250, height: 400))
+
+            TagListView(tags: $tags, isEditable: true, isMultiLine: true, tapHandler: nil)
+                .previewLayout(.fixed(width: 400, height: 250))
+        }
     }
 }
 

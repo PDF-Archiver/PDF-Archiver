@@ -13,6 +13,7 @@ struct DocumentView: View {
 
     @ObservedObject var viewModel: Document
     let showTagStatus: Bool
+    let multilineTagList: Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4.0) {
@@ -62,7 +63,7 @@ struct DocumentView: View {
     }
 
     var tags: some View {
-        TagListView(tags: .constant(viewModel.tags.sorted()), isEditable: false, isMultiLine: false, tapHandler: nil)
+        TagListView(tags: .constant(viewModel.tags.sorted()), isEditable: false, isMultiLine: multilineTagList, tapHandler: nil)
             .font(.caption)
     }
 }
@@ -111,7 +112,7 @@ struct DocumentView_Previews: PreviewProvider {
 //                                                     downloadStatus: .downloading(percent: 0.123))
     static var previews: some View {
         let document = Document.create()
-        DocumentView(viewModel: document, showTagStatus: false)
+        DocumentView(viewModel: document, showTagStatus: false, multilineTagList: true)
             .preferredColorScheme(.light)
             .environment(\.sizeCategory, .extraExtraLarge)
             .previewLayout(.sizeThatFits)

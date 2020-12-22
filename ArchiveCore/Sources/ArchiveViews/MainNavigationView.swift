@@ -6,13 +6,14 @@
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
 
+import ArchiveSharedConstants
 import Combine
 import SwiftUI
 
 #if os(macOS)
-private typealias CustomNavigationtStyle = DefaultNavigationViewStyle
+private typealias CustomNavigationStyle = DefaultNavigationViewStyle
 #else
-private typealias CustomNavigationtStyle = StackNavigationViewStyle
+private typealias CustomNavigationStyle = StackNavigationViewStyle
 #endif
 
 public struct MainNavigationView: View {
@@ -42,12 +43,12 @@ public struct MainNavigationView: View {
             #endif
         }
         .intro(when: $viewModel.showTutorial)
-        .sheet(isPresented: $viewModel.showSubscriptionView,
-               onDismiss: viewModel.handleIAPViewDismiss) {
-            IAPView(viewModel: self.viewModel.iapViewModel)
+        .sheet(item: $viewModel.sheetType,
+               onDismiss: viewModel.handleIAPViewDismiss) { sheetType in
+            viewModel.getView(for: sheetType)
         }
-        .emittingError(viewModel.error)
         .onChange(of: scenePhase, perform: viewModel.handleTempFilesIfNeeded)
+        .alert(item: $viewModel.alertDataModel, content: Alert.create(from:))
     }
 
     private var sidebar: some View {
@@ -110,7 +111,7 @@ public struct MainNavigationView: View {
             ForEach(Tab.allCases) { tab in
                 viewModel.view(for: tab)
                     .wrapNavigationView(when: tab != .scan)
-                    .navigationViewStyle(CustomNavigationtStyle())
+                    .navigationViewStyle(CustomNavigationStyle())
                     .tabItem {
                         Label(tab.name, systemImage: tab.iconName)
                     }

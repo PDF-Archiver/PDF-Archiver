@@ -8,28 +8,32 @@
 // swiftlint:disable force_unwrapping
 
 import Combine
-#if canImport(MessageUI)
-import MessageUI
-#endif
 import SwiftUI
 
-final public class MoreTabViewModel: ObservableObject, Log {
+public final class MoreTabViewModel: ObservableObject, Log {
+    public static let appVersion = AppEnvironment.getFullVersion()
 
-    static let mailRecipients = ["support@pdf-archiver.io"]
-    static let mailSubject = "PDF Archiver: iOS Support"
+    public static func markdownView(for title: LocalizedStringKey, withKey key: String) -> some View {
+        guard let url = Bundle.main.url(forResource: key, withExtension: "md"),
+              let markdown = try? String(contentsOf: url) else { preconditionFailure("Could not fetch file \(key)") }
 
-    let qualities: [String]  = ["100% - Lossless 🤯", "75% - Good 👌 (Default)", "50% - Normal 👍", "25% - Small 💾"]
-    let storageTypes: [String]  = StorageType.allCases.map(\.title).map { "\($0)" }
-    @Published var error: Error?
+        return MarkdownView(title: title, markdown: markdown)
+    }
+
+    let qualities: [String] = ["100% - Lossless 🤯", "75% - Good 👌 (Default)", "50% - Normal 👍", "25% - Small 💾"]
+    let storageTypes: [String] = StorageType.allCases.map(\.title).map { "\($0)" }
     @Published var selectedQualityIndex = UserDefaults.PDFQuality.toIndex(UserDefaults.appGroup.pdfQuality) ?? UserDefaults.PDFQuality.defaultQualityIndex
     @Published var selectedArchiveType = StorageType.getCurrent()
     @Published var showArchiveTypeSelection = false
-
-    @Published var isShowingMailView: Bool = false
-    #if canImport(MessageUI)
-    @Published var result: Result<MFMailComposeResult, Error>?
-    #endif
     @Published var subscriptionStatus: LocalizedStringKey = "Inactive ❌"
+
+    var manageSubscriptionUrl: URL {
+        URL(string: "https://apps.apple.com/account/subscriptions")!
+    }
+
+    var macOSAppUrl: URL {
+        URL(string: "https://macos.pdf-archiver.io")!
+    }
 
     private let iapService: IAPServiceAPI
     private let archiveStore: ArchiveStoreAPI
@@ -52,8 +56,10 @@ final public class MoreTabViewModel: ObservableObject, Log {
                 switch selectedArchiveType {
                     case .iCloudDrive:
                         type = .iCloudDrive
+                    #if !os(macOS)
                     case .appContainer:
                         type = .appContainer
+                    #endif
                     #if os(macOS)
                     case .local:
                         // TODO: fix this
@@ -72,7 +78,7 @@ final public class MoreTabViewModel: ObservableObject, Log {
                         archiveStore.update(archiveFolder: archiveUrl, untaggedFolders: [untaggedUrl])
                     }
                 } catch {
-                    self.error = error
+                    NotificationCenter.default.postAlert(error)
                 }
             }
             .store(in: &disposables)
@@ -91,15 +97,13 @@ final public class MoreTabViewModel: ObservableObject, Log {
         NotificationCenter.default.post(name: .introChanges, object: true)
     }
 
+    #if !os(macOS)
     func showPermissions() {
         log.info("More table view show: app permissions")
-        #if os(macOS)
-        // TODO: handle settings
-        #else
         guard let settingsAppURL = URL(string: UIApplication.openSettingsURLString) else { fatalError("Could not find settings url!") }
         open(settingsAppURL)
-        #endif
     }
+    #endif
 
     func resetApp() {
         log.info("More table view show: reset app")
@@ -114,66 +118,39 @@ final public class MoreTabViewModel: ObservableObject, Log {
         }
 
         DispatchQueue.main.async {
-            self.error = AlertDataModel.createAndPost(title: "Reset App", message: "Please restart the app to complete the reset.", primaryButtonTitle: "OK")
+            NotificationCenter.default.createAndPost(title: "Reset App",
+                                                     message: "Please restart the app to complete the reset.",
+                                                     primaryButtonTitle: "OK")
         }
-    }
-
-    var manageSubscriptionUrl: URL {
-        URL(string: "https://apps.apple.com/account/subscriptions")!
-    }
-
-    var macOSAppUrl: URL {
-        URL(string: "https://macos.pdf-archiver.io")!
-    }
-
-    func showSupport() {
-        log.info("More table view show: support")
-        #if os(macOS)
-        sendDiagnosticsReport()
-        #else
-        if MFMailComposeViewController.canSendMail() {
-            isShowingMailView = true
-        } else {
-            guard let url = URL(string: "https://pdf-archiver.io/faq") else { preconditionFailure("Could not generate the FAQ url.") }
-            open(url)
-        }
-        #endif
     }
 }
 
-#if os(macOS)
-import AppKit
-import Diagnostics
+#if DEBUG
+import Combine
+import InAppPurchases
+import StoreKit
 
 extension MoreTabViewModel {
-    func sendDiagnosticsReport() {
-        // add a diagnostics report
-        var reporters = DiagnosticsReporter.DefaultReporter.allReporters
-        reporters.insert(CustomDiagnosticsReporter.self, at: 1)
-        let report = DiagnosticsReporter.create(using: reporters)
-
-        guard let service = NSSharingService(named: .composeEmail) else {
-            log.errorAndAssert("Failed to get sharing service.")
-
-            guard let url = URL(string: "https://pdf-archiver.io/faq") else { preconditionFailure("Could not generate the FAQ url.") }
-            open(url)
-            return
+    private class MockIAPService: IAPServiceAPI {
+        var productsPublisher: AnyPublisher<Set<SKProduct>, Never> {
+            Just([]).eraseToAnyPublisher()
         }
-        service.recipients = Self.mailRecipients
-        service.subject = Self.mailSubject
-
-        let url = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("Diagnostics-Report.html")
-
-        // remove previous report
-        try? FileManager.default.removeItem(at: url)
-
-        do {
-            try report.data.write(to: url)
-        } catch {
-            preconditionFailure("Failed with error: \(error)")
+        var appUsagePermitted: Bool = true
+        var appUsagePermittedPublisher: AnyPublisher<Bool, Never> {
+            Just(appUsagePermitted).eraseToAnyPublisher()
         }
-
-        service.perform(withItems: [url])
+        func buy(subscription: IAPService.SubscriptionType) throws {}
+        func restorePurchases() {}
     }
+
+    private class MockArchiveStoreAPI: ArchiveStoreAPI {
+        func update(archiveFolder: URL, untaggedFolders: [URL]) {}
+        func archive(_ document: Document, slugify: Bool) throws {}
+        func download(_ document: Document) throws {}
+        func delete(_ document: Document) throws {}
+        func getCreationDate(of url: URL) throws -> Date? { nil }
+    }
+
+    @State static var previewViewModel = MoreTabViewModel(iapService: MockIAPService(), archiveStore: MockArchiveStoreAPI())
 }
 #endif

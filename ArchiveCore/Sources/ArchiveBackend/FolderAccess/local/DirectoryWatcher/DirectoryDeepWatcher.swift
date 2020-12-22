@@ -51,8 +51,7 @@ final class DirectoryDeepWatcher: NSObject, Log {
 
         let source = DispatchSource.makeFileSystemObjectSource(fileDescriptor: descriptor, eventMask: [.write, .rename, .delete], queue: self.queue)
 
-        source.setEventHandler {
-            [weak self] in
+        source.setEventHandler { [weak self] in
             self?.onFolderNotification?(url)
 
             let enumerator = FileManager.default.enumerator(at: url,
@@ -62,7 +61,8 @@ final class DirectoryDeepWatcher: NSObject, Log {
                 return true
             }
 
-            _ = self?.startWatching(with: enumerator!)
+            guard let safeEnumerator = enumerator else { preconditionFailure("Failed to create enumerator.") }
+            _ = self?.startWatching(with: safeEnumerator)
         }
 
         source.setCancelHandler {
