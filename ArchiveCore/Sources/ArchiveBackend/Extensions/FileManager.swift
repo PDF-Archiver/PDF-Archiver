@@ -12,8 +12,15 @@ extension FileManager {
         url(forUbiquityContainerIdentifier: nil)?.appendingPathComponent("Documents")
     }
 
+    #if !os(macOS)
     var appContainerURL: URL {
         urls(for: .documentDirectory, in: .userDomainMask)[0]
     }
+    #endif
 
+    #if os(macOS)
+    var documentsDirectoryURL: URL {
+        urls(for: .documentDirectory, in: .userDomainMask)[0]
+    }
+    #endif
 }

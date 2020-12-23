@@ -39,7 +39,11 @@ public final class PathManager: Log {
         if iCloudDriveAvailable {
             archivePathType = PathManager.userDefaults.archivePathType ?? .iCloudDrive
         } else {
+            #if os(macOS)
+            archivePathType = PathManager.userDefaults.archivePathType ?? .local(FileManager.default.documentsDirectoryURL.appendingPathComponent("PDFArchiver"))
+            #else
             archivePathType = PathManager.userDefaults.archivePathType ?? .appContainer
+            #endif
         }
     }
 

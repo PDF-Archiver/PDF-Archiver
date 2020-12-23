@@ -78,7 +78,7 @@
         "repositoryURL": "https://github.com/SwiftUIX/SwiftUIX",
         "state": {
           "branch": "master",
-          "revision": "e81d77b78755ef6d70b21d3e0e0ebf29454a9ea0",
+          "revision": "8895b203884038261fce15af304a1d0609d53bfe",
           "version": null
         }
       },
@@ -86,9 +86,9 @@
         "package": "TPInAppReceipt",
         "repositoryURL": "https://github.com/tikhop/TPInAppReceipt",
         "state": {
-          "branch": null,
-          "revision": "76d6b60deae717422cbae80ecd2be099c129818a",
-          "version": "3.0.2"
+          "branch": "master",
+          "revision": "5c0fa8270c81b648fd80f733be1a5b9fcfdc7633",
+          "version": null
         }
       }
     ]
