@@ -86,9 +86,9 @@
         "package": "TPInAppReceipt",
         "repositoryURL": "https://github.com/tikhop/TPInAppReceipt",
         "state": {
-          "branch": "master",
-          "revision": "5c0fa8270c81b648fd80f733be1a5b9fcfdc7633",
-          "version": null
+          "branch": null,
+          "revision": "76d6b60deae717422cbae80ecd2be099c129818a",
+          "version": "3.0.2"
         }
       }
     ]

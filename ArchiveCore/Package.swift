@@ -28,8 +28,7 @@ let package = Package(
         // TODO: switch back after a release
 //        .package(url: "https://github.com/WeTransfer/Diagnostics", from: "1.7.0"),
         .package(url: "https://github.com/WeTransfer/Diagnostics", .branch("master")),
-//        .package(url: "https://github.com/tikhop/TPInAppReceipt", from: "3.0.2"),
-        .package(url: "https://github.com/tikhop/TPInAppReceipt", .branch("master")),
+        .package(url: "https://github.com/tikhop/TPInAppReceipt", from: "3.0.2"),
         .package(url: "https://github.com/shaps80/GraphicsRenderer", from: "1.4.4")
     ],
     targets: [
