@@ -34,9 +34,10 @@ final class Tests_macOS: XCTestCase {
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
 
+    @available(OSX 11.0, *)
     func testLaunchPerformance() throws {
         // This measures how long it takes to launch your application.
-        measure(metrics: [XCTApplicationLaunchMetric()]) {
+        measure(metrics: [XCTApplicationLaunchMetric(waitUntilResponsive: true)]) {
             XCUIApplication().launch()
         }
     }
