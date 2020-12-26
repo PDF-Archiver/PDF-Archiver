@@ -175,7 +175,7 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
             for change in changes {
 
                 var document: Document?
-                var contentParsingOptions: ParsingOptions?
+                var shouldParseDate: Bool?
 
                 switch change {
                     case .added(let details):
@@ -183,7 +183,7 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
                         document = Document(from: details, with: taggingStatus)
 
                         // parse document content only for untagged documents
-                        contentParsingOptions = taggingStatus == .untagged ? .all : []
+                        shouldParseDate = taggingStatus == .untagged
 
                     case .removed(let url):
                         contents[provider.baseUrl]?.removeAll { $0.path == url }
@@ -204,7 +204,7 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
 
                         contents[provider.baseUrl]?.removeAll { $0.path == details.url }
 
-                        contentParsingOptions = []
+                        shouldParseDate = false
                 }
 
                 if let document = document {
@@ -212,11 +212,11 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
                     contents[provider.baseUrl]?.sort()
 
                     // trigger update of the document properties
-                    if let contentParsingOptions = contentParsingOptions {
+                    if let shouldParseDate = shouldParseDate {
                         DispatchQueue.global(qos: .userInitiated).async {
                             // save documents after the last has been written
                             documentProcessingGroup.enter()
-                            document.updateProperties(with: document.downloadStatus, contentParsingOptions: contentParsingOptions)
+                            document.updateProperties(with: document.downloadStatus, shouldParseDate: shouldParseDate)
                             documentProcessingGroup.leave()
                         }
                     }

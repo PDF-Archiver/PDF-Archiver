@@ -34,6 +34,13 @@ struct PDFArchiverApp: App, Log {
             mainView
         }
         .windowStyle(HiddenTitleBarWindowStyle())
+        .commands {
+            CommandGroup(replacing: CommandGroupPlacement.newItem) { }
+        }
+//        .windowToolbarStyle(UnifiedCompactWindowToolbarStyle())
+//        .commands {
+//            SidebarCommands()
+//        }
 
         Settings {
             SettingsView(viewModel: mainNavigationViewModel.moreViewModel)
@@ -67,6 +74,10 @@ struct PDFArchiverApp: App, Log {
     }
 
     private func setup() {
+
+        #if os(macOS)
+        NSWindow.allowsAutomaticWindowTabbing = false
+        #endif
 
         do {
             try DiagnosticsLogger.setup()

@@ -134,16 +134,8 @@ public final class PDFProcessing: Operation, Log {
         let parsedDate = DateParser.parse(content)?.date ?? Date()
 
         // parse the tags
-        var newTags = TagParser.parse(content)
-        if newTags.isEmpty {
-            newTags.insert(Constants.documentTagPlaceholder)
-        } else {
-
-            // only use tags that are already in the archive
-            newTags = Set(newTags.intersection(archiveTags).prefix(5))
-        }
-
-        return Document.createFilename(date: parsedDate, specification: specification, tags: newTags)
+        let tags = Set([Constants.documentTagPlaceholder])
+        return Document.createFilename(date: parsedDate, specification: specification, tags: tags)
     }
 
     private func createPdf(of documentId: UUID) throws -> URL {

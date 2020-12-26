@@ -143,6 +143,12 @@ extension IAPService: SKPaymentTransactionObserver {
         NotificationCenter.default.postAlert(error)
     }
 
+    /// Tells the observer that a user initiated an in-app purchase from the App Store.
+    public func paymentQueue(_ queue: SKPaymentQueue, shouldAddStorePayment payment: SKPayment, for product: SKProduct) -> Bool {
+        log.info("shouldAddStorePayment was called.")
+        return true
+    }
+
     /// Called when all restorable transactions have been processed by the payment queue.
     public func paymentQueueRestoreCompletedTransactionsFinished(_ queue: SKPaymentQueue) {
         log.debug("paymentQueueRestoreCompletedTransactionsFinished")

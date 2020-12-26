@@ -26,7 +26,6 @@ final class TagTabViewModel: ObservableObject, Log {
     @Published var documentTags = [String]()
     @Published var documentTagInput = ""
     @Published var suggestedTags = [String]()
-    @Published var inputAccessoryViewSuggestions = [String]()
 
     var taggedUntaggedDocuments: String {
         let filteredDocuments = documents.filter { $0.taggingStatus == .tagged }
@@ -50,12 +49,14 @@ final class TagTabViewModel: ObservableObject, Log {
             .assign(to: \.showLoadingView, on: self)
             .store(in: &disposables)
 
-        $documentTagInput
-            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }
-            .map { tagName -> [String] in
+        $documentTags
+            .removeDuplicates()
+            .combineLatest($documentTagInput)
+            .map { (documentTags, tag) -> [String] in
+                let tagName = tag.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
                 let tags: Set<String>
-                if tagName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                    tags = self.getAssociatedTags(from: self.documentTags)
+                if tagName.isEmpty {
+                    tags = self.getAssociatedTags(from: documentTags)
                 } else {
                     tags = self.tagStore.getAvailableTags(with: [tagName])
                 }
@@ -81,7 +82,7 @@ final class TagTabViewModel: ObservableObject, Log {
                 return Array(sortedTags.prefix(5))
             }
             .removeDuplicates()
-            .assign(to: &$inputAccessoryViewSuggestions)
+            .assign(to: &$suggestedTags)
 
         archiveStore.$documents
             .map { newDocuments -> [Document] in
@@ -102,9 +103,11 @@ final class TagTabViewModel: ObservableObject, Log {
                             return doc1 > doc2
                         }
                     }
+                    .reversed()
 
                 // tagged documents should be first in the list
                 var currentDocuments = self.documents.filter { $0.taggingStatus == .tagged }
+                    .sorted()
                 currentDocuments.append(contentsOf: sortedDocuments)
                 DispatchQueue.main.async {
                     self.documents = currentDocuments
@@ -200,9 +203,6 @@ final class TagTabViewModel: ObservableObject, Log {
             }
             .receive(on: DispatchQueue.main)
             .assign(to: &$documentTags)
-//            .assign(to: \.documentTags, on: self)
-//            .store(in: &disposables)
-
     }
 
     func saveTag(_ tagName: String) {

@@ -145,7 +145,7 @@ public final class Document: ObservableObject, Identifiable, Codable, Log {
         return "\(dateStr)--\(specification)__\(tagStr).pdf"
     }
 
-    func updateProperties(with downloadStatus: FileChange.DownloadStatus, contentParsingOptions: ParsingOptions) {
+    func updateProperties(with downloadStatus: FileChange.DownloadStatus, shouldParseDate: Bool) {
         if Thread.isMainThread {
             log.errorAndAssert("updateProperties() must not be called from the main thread.")
         }
@@ -174,8 +174,8 @@ public final class Document: ObservableObject, Identifiable, Codable, Log {
         }
 
         guard downloadStatus == .local,
-              !contentParsingOptions.isEmpty else { return }
-        self.parseContent(contentParsingOptions)
+              shouldParseDate else { return }
+        self.parseContent()
     }
 
     /// Get the new foldername and filename after applying the PDF Archiver naming scheme.
@@ -209,13 +209,10 @@ public final class Document: ObservableObject, Identifiable, Codable, Log {
     /// ATTENTION: This method needs security access!
     ///
     /// - Parameter tagManager: TagManager that will be used when adding new tags.
-    private func parseContent(_ options: ParsingOptions) {
+    private func parseContent() {
         if Thread.isMainThread {
             log.errorAndAssert("parseContent() must not be called from the main thread.")
         }
-
-        // skip the calculations if the OptionSet is empty
-        guard !options.isEmpty else { return }
 
         // get the pdf content of first 3 pages
         guard let pdfDocument = PDFDocument(url: path) else { return }
@@ -231,20 +228,9 @@ public final class Document: ObservableObject, Identifiable, Codable, Log {
         guard !text.isEmpty else { return }
 
         // parse the date
-        if options.contains(.date),
-            let parsed = DateParser.parse(text) {
+        if let parsed = DateParser.parse(text) {
             DispatchQueue.main.sync {
                 self.date = parsed.date
-            }
-        }
-
-        // parse the tags
-        if options.contains(.tags) {
-
-            // get new tags
-            let newTags = TagParser.parse(text)
-            DispatchQueue.main.sync {
-                self.tags.formUnion(newTags)
             }
         }
     }
