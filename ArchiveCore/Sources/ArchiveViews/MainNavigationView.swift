@@ -65,7 +65,7 @@ public struct MainNavigationView: View {
                     }
                 }
 
-                Section(header: Text("Archive")) {
+                Section(header: Text("Archive").foregroundColor(.paDarkRed)) {
                     ForEach(viewModel.archiveCategories) { category in
                         Button {
                             viewModel.selectedArchive(category)
@@ -77,7 +77,7 @@ public struct MainNavigationView: View {
                     .accentColor(.systemGray)
                 }
 
-                Section(header: Text("Tags")) {
+                Section(header: Text("Tags").foregroundColor(.paDarkRed)) {
                     ForEach(viewModel.tagCategories) { category in
                         Button {
                             viewModel.selectedTag(category)

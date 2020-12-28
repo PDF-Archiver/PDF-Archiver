@@ -30,18 +30,30 @@ public struct ScanTabView: View {
             Spacer()
             staticInfo
             Spacer()
-            VStack(alignment: .leading) {
+            VStack(alignment: .center) {
                 ProgressView(viewModel.progressLabel, value: viewModel.progressValue)
                     .opacity(viewModel.progressValue > 0.0 ? 1 : 0)
+                #if os(macOS)
+                importFieldView
+                #else
                 scanButton
+                #endif
             }
             .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxHeight: maxFrameHeight)
         .padding(EdgeInsets(top: 32.0, leading: 16.0, bottom: 32.0, trailing: 16.0))
+        .onDrop(of: [.image, .pdf, .fileURL],
+                delegate: viewModel)
     }
 
+    @ViewBuilder
     private var staticInfo: some View {
+        #if os(macOS)
+        let content: LocalizedStringKey = "Import your documents, tag them and find them sorted in your iCloud Drive."
+        #else
+        let content: LocalizedStringKey = "Scan your documents, tag them and find them sorted in your iCloud Drive."
+        #endif
         VStack(alignment: .leading) {
             Image("Logo")
                 .resizable()
@@ -54,7 +66,7 @@ public struct ScanTabView: View {
                 .foregroundColor(.paDarkRed)
                 .font(.largeTitle)
                 .fontWeight(.heavy)
-            Text("Scan your documents, tag them and find them sorted in your iCloud Drive.")
+            Text(content)
                 .font(.title3)
                 .fixedSize(horizontal: false, vertical: true)
                 .lineLimit(nil)
@@ -69,17 +81,23 @@ public struct ScanTabView: View {
         }
     }
 
-    var scanButton: some View {
-        HStack {
-            Spacer()
-            Button(action: {
-                self.viewModel.startScanning()
-            }, label: {
-                Text("Scan")
-            }).buttonStyle(FilledButtonStyle())
-            .keyboardShortcut("s")
-            Spacer()
-        }
+    private var importFieldView: some View {
+        Label("Drag'n'Drop to import PDF or Image", systemImage: "doc.text.viewfinder")
+            .foregroundColor(.paWhite)
+            .padding(.horizontal, 50)
+            .padding(.vertical, 20)
+            .background(.paDarkGray)
+            .cornerRadius(8)
+    }
+
+    @available(macOS, unavailable)
+    private var scanButton: some View {
+        Button(action: {
+            self.viewModel.startScanning()
+        }, label: {
+            Text("Scan")
+        }).buttonStyle(FilledButtonStyle())
+        .keyboardShortcut("s")
         .padding()
     }
 }

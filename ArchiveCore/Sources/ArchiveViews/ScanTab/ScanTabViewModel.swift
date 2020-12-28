@@ -9,9 +9,18 @@
 import AVKit
 import Combine
 import Foundation
+import PDFKit
 import SwiftUI
 
-public final class ScanTabViewModel: ObservableObject, Log {
+#if os(macOS)
+import AppKit.NSImage
+private typealias UniversalImage = NSImage
+#else
+import UIKit.UIImage
+private typealias UniversalImage = UIImage
+#endif
+
+public final class ScanTabViewModel: ObservableObject, DropDelegate, Log {
     @Published public var showDocumentScan: Bool = false
     @Published public private(set) var progressValue: CGFloat = 0.0
     @Published public private(set) var progressLabel: String = " "
@@ -90,6 +99,62 @@ public final class ScanTabViewModel: ObservableObject, Log {
         }
     }
 
+    public func performDrop(info: DropInfo) -> Bool {
+        let types: [UTType] = [.fileURL, .image, .pdf]
+        let items = info.itemProviders(for: types)
+
+        DispatchQueue.global(qos: .userInitiated).async {
+            for item in items {
+                let fileUrlType = UTType.fileURL.identifier
+                var readDirectorySuccess = false
+                if item.hasItemConformingToTypeIdentifier(fileUrlType) {
+                    let semaphore = DispatchSemaphore(value: 0)
+                    _ = item.loadObject(ofClass: URL.self) { rawUrl, rawError in
+                        guard let url = rawUrl,
+                              FileManager.default.directoryExists(atPath: url.path) else {
+                            semaphore.signal()
+                            return
+                        }
+
+                        do {
+                            if let error = rawError {
+                                throw error
+                            }
+                            let urls = try FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+                            for url in urls {
+                                try self.imageConverter.handle(url)
+                            }
+                            readDirectorySuccess = true
+                        } catch {
+                            self.log.errorAndAssert("Failed to handle file url input.", metadata: ["error": "\(error)"])
+                        }
+                        semaphore.signal()
+                    }
+                    _ = semaphore.wait(timeout: .now() + .seconds(30))
+                }
+                if readDirectorySuccess {
+                    return
+                }
+
+                for uti in types where item.hasItemConformingToTypeIdentifier(uti.identifier) {
+                    do {
+                        guard let data = try item.syncLoadItem(forTypeIdentifier: uti) else { continue }
+
+                        let url = PathConstants.tempPdfURL.appendingPathComponent("\(UUID().uuidString).pdf")
+                        try data.write(to: url)
+                        try self.imageConverter.handle(url)
+                        return
+                    } catch {
+                        self.log.errorAndAssert("Failed to handle image/pdf with type \(uti.identifier). Try next ...", metadata: ["error": "\(error)"])
+                        // TODO: show error
+                    }
+                }
+            }
+        }
+
+        return true
+    }
+
     public func process(_ images: [CIImage]) {
         assert(!Thread.isMainThread, "This might take some time and should not be executed on the main thread.")
 
@@ -101,15 +166,14 @@ public final class ScanTabViewModel: ObservableObject, Log {
 
         // save images in reversed order to fix the API output order
         do {
-            defer {
-                // notify ImageConverter even if the image saving has failed
-                triggerImageProcessing()
-            }
             try StorageHelper.save(images)
         } catch {
             assertionFailure("Could not save temp images with error:\n\(error)")
             NotificationCenter.default.postAlert(error)
         }
+
+        // notify ImageConverter even if the image saving has failed
+        triggerImageProcessing()
     }
 
     // MARK: - Helper Functions

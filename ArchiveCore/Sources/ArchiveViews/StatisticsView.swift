@@ -9,23 +9,30 @@ import SwiftUI
 
 struct StatisticsView: View {
 
+    #if !os(macOS)
     @Environment(\.horizontalSizeClass) private var sizeClass
+    #endif
 
     var viewModel: StatisticsViewModel
 
     var body: some View {
+        #if os(macOS)
+        let isCompact = false
+        #else
+        let isCompact = sizeClass == .compact
+        #endif
         VStack {
             HStack(alignment: .top, spacing: 12) {
                 documentsView
-                if !viewModel.topTags.isEmpty && sizeClass != .compact {
+                if !viewModel.topTags.isEmpty && !isCompact {
                     tagView
                 }
-                if !viewModel.topYears.isEmpty && sizeClass != .compact {
+                if !viewModel.topYears.isEmpty && !isCompact {
                     yearView
                 }
             }
 
-            if sizeClass == .compact && (!viewModel.topTags.isEmpty || !viewModel.topYears.isEmpty) {
+            if isCompact && (!viewModel.topTags.isEmpty || !viewModel.topYears.isEmpty) {
                 HStack(alignment: .top, spacing: 12) {
                     if !viewModel.topTags.isEmpty {
                         tagView
