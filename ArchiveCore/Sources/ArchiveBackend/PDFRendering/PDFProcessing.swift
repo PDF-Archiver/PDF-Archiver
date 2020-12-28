@@ -31,7 +31,7 @@ extension NSImage {
 #endif
 
 public enum PDFProcessingError: Error {
-    case unttaggedDocumentsPathNotFound
+    case untaggedDocumentsPathNotFound
     case pdfNotFound
 }
 
@@ -289,6 +289,8 @@ public final class PDFProcessing: Operation, Log {
             document.insert(page, at: index)
         }
 
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+        document.documentAttributes?[PDFDocumentAttribute.creatorAttribute] = "PDF Archiver " + (version ?? "")
         return document
     }
 

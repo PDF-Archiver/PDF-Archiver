@@ -26,6 +26,7 @@ public final class MoreTabViewModel: ObservableObject, Log {
     @Published var selectedArchiveType = StorageType.getCurrent()
     @Published var showArchiveTypeSelection = false
     @Published var subscriptionStatus: LocalizedStringKey = "Inactive ❌"
+    @Published var statisticsViewModel: StatisticsViewModel
 
     var manageSubscriptionUrl: URL {
         URL(string: "https://apps.apple.com/account/subscriptions")!
@@ -42,6 +43,14 @@ public final class MoreTabViewModel: ObservableObject, Log {
     public init(iapService: IAPServiceAPI, archiveStore: ArchiveStoreAPI) {
         self.iapService = iapService
         self.archiveStore = archiveStore
+        self.statisticsViewModel = StatisticsViewModel(documents: archiveStore.documents)
+
+        archiveStore.documentsPublisher
+            .receive(on: DispatchQueue.global(qos: .utility))
+            .map(StatisticsViewModel.init(documents: ))
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$statisticsViewModel)
+
         $selectedQualityIndex
             .sink { selectedQuality in
                 UserDefaults.appGroup.pdfQuality = UserDefaults.PDFQuality.allCases[selectedQuality]
@@ -144,6 +153,10 @@ extension MoreTabViewModel {
     }
 
     private class MockArchiveStoreAPI: ArchiveStoreAPI {
+        var documents: [Document] { [] }
+        var documentsPublisher: AnyPublisher<[Document], Never> {
+            Just([]).eraseToAnyPublisher()
+        }
         func update(archiveFolder: URL, untaggedFolders: [URL]) {}
         func archive(_ document: Document, slugify: Bool) throws {}
         func download(_ document: Document) throws {}

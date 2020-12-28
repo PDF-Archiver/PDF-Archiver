@@ -10,7 +10,7 @@ import Combine
 import StoreKit
 import TPInAppReceipt
 
-public final class IAPService: NSObject, ObservableObject, Log {
+public final class IAPService: NSObject, Log {
 
     private static var isInitialized = false
 

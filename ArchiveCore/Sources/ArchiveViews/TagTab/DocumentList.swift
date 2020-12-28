@@ -21,20 +21,25 @@ struct DocumentList: View {
             Text("Tagged: \(taggedUntaggedDocuments)")
                 .font(Font.headline)
                 .padding()
-            List {
-                ForEach(documents) { document in
-                    HStack {
-                        Circle()
-                            .fill(Color.systemBlue)
-                            .frame(width: 8, height: 8)
-                            .opacity(document == currentDocument ? 1 : 0)
-                        DocumentView(viewModel: document, showTagStatus: true, multilineTagList: false)
-                    }
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                       self.currentDocument = document
-                    }
+            List(documents) { document in
+                HStack {
+                    Circle()
+                        .fill(Color.systemBlue)
+                        .frame(width: 8, height: 8)
+                        .opacity(document == currentDocument ? 1 : 0)
+                    Text(document.filename)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.vertical, 5)
+                .padding(.horizontal, 4)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    self.currentDocument = document
+                }
+                .background((documents.firstIndex(of: document) ?? 2) % 2 == 0 ? .clear : .paSecondaryBackground)
+                .cornerRadius(5)
             }
         }
     }

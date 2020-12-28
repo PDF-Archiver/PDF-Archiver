@@ -9,6 +9,9 @@ import Combine
 import Foundation
 
 public protocol ArchiveStoreAPI: class {
+    var documents: [Document] { get }
+    var documentsPublisher: AnyPublisher<[Document], Never> { get }
+
     func update(archiveFolder: URL, untaggedFolders: [URL])
     func archive(_ document: Document, slugify: Bool) throws
     func download(_ document: Document) throws
@@ -37,6 +40,10 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
     @Published public var state: State = .uninitialized
     @Published public var documents: [Document] = []
     @Published public var years: Set<String> = []
+
+    public var documentsPublisher: AnyPublisher<[Document], Never> {
+        $documents.eraseToAnyPublisher()
+    }
 
     private var archiveFolder: URL!
     private var untaggedFolders: [URL] = []

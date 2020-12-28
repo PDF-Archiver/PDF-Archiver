@@ -18,9 +18,9 @@ struct MoreTabView: View {
         Form {
             preferences
             subscription
+            statistics
             moreInformation
         }
-        .listStyle(GroupedListStyle())
         .foregroundColor(.primary)
         .navigationTitle("Preferences & More")
         .navigationViewStyle(StackNavigationViewStyle())
@@ -63,6 +63,12 @@ struct MoreTabView: View {
                 NotificationCenter.default.post(.showSubscriptionView)
             }
             Link("Manage Subscription", destination: viewModel.manageSubscriptionUrl)
+        }
+    }
+
+    private var statistics: some View {
+        Section(header: Text("🧾 Statistics")) {
+            StatisticsView(viewModel: viewModel.statisticsViewModel)
         }
     }
 

@@ -277,5 +277,14 @@ extension Document {
         let name = UUID().uuidString.prefix(5)
         return Document(path: URL(string: "~/test-\(name).pdf")!, taggingStatus: taggingStatus, downloadStatus: .downloading(percent: 0.33), byteSize: 512)
     }
+
+    public static func createWithInfo(taggingStatus: TaggingStatus, tags: Set<String>, folderName: String) -> Document {
+        let name = UUID().uuidString.prefix(5)
+        let url = URL(string: "~/\(folderName)/2020-12-27--\(name)__\(tags.sorted().joined(separator: "_")).pdf")!
+        let document = Document(path: url, taggingStatus: taggingStatus, downloadStatus: .downloading(percent: 0.33), byteSize: 512)
+        document.tags = tags
+
+        return document
+    }
 }
 #endif

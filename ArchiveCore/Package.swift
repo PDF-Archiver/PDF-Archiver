@@ -66,6 +66,10 @@ let package = Package(
                     ],
                     resources: [
                         .copy("assets")
+                    ]),
+        .testTarget(name: "ArchiveViewsTests",
+                    dependencies: [
+                        "ArchiveViews"
                     ])
     ]
 )
