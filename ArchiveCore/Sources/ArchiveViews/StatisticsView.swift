@@ -9,11 +9,14 @@ import SwiftUI
 
 struct StatisticsView: View {
 
-    #if !os(macOS)
+    #if os(macOS)
+    private static let bodyFont: Font = .body
+    #else
+    private static let bodyFont: Font = .subheadline
     @Environment(\.horizontalSizeClass) private var sizeClass
     #endif
 
-    var viewModel: StatisticsViewModel
+    let viewModel: StatisticsViewModel
 
     var body: some View {
         #if os(macOS)
@@ -55,13 +58,13 @@ struct StatisticsView: View {
                     .foregroundColor(.gray)
                 Text("tagged")
             }
-            .font(.subheadline)
+            .font(Self.bodyFont)
             HStack {
                 Text("\(viewModel.untaggedDocumentCount)")
                     .foregroundColor(.gray)
                 Text("untagged")
             }
-            .font(.subheadline)
+            .font(Self.bodyFont)
         }
         .padding()
     }
@@ -80,7 +83,7 @@ struct StatisticsView: View {
                         .minimumScaleFactor(0.95)
                 }
             }
-            .font(.subheadline)
+            .font(Self.bodyFont)
         }
         .padding()
     }
@@ -99,7 +102,7 @@ struct StatisticsView: View {
                         .minimumScaleFactor(0.95)
                 }
             }
-            .font(.subheadline)
+            .font(Self.bodyFont)
         }
         .padding()
     }

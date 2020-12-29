@@ -35,7 +35,7 @@ public struct SettingsView: View {
     }
 
     private enum Tabs: Hashable {
-        case general, storage, subscription, moreInformation
+        case general, storage, statistics, subscription, moreInformation
     }
     public var body: some View {
         TabView {
@@ -49,6 +49,11 @@ public struct SettingsView: View {
                     Label("Storage", systemImage: "internaldrive")
                 }
                 .tag(Tabs.storage)
+            statistics
+                .tabItem {
+                    Label("Statistics", systemImage: "list.number")
+                }
+                .tag(Tabs.statistics)
             subscription
                 .tabItem {
                     Label("Subscription", systemImage: "purchased.circle")
@@ -86,7 +91,13 @@ public struct SettingsView: View {
         StorageSelectionView(selection: $viewModel.selectedArchiveType)
             .listStyle(InsetListStyle())
             .padding(20)
-            .frame(width: 500, height: 430)
+            .frame(width: 500, height: 250)
+    }
+    
+    private var statistics: some View {
+        StatisticsView(viewModel: viewModel.statisticsViewModel)
+            .padding(20)
+            .frame(minWidth: 450, minHeight: 170)
     }
 
     private var subscription: some View {

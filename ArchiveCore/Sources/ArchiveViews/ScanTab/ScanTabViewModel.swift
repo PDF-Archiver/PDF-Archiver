@@ -104,6 +104,7 @@ public final class ScanTabViewModel: ObservableObject, DropDelegate, Log {
         let items = info.itemProviders(for: types)
 
         DispatchQueue.global(qos: .userInitiated).async {
+            var error: Error?
             for item in items {
                 let fileUrlType = UTType.fileURL.identifier
                 var readDirectorySuccess = false
@@ -125,8 +126,9 @@ public final class ScanTabViewModel: ObservableObject, DropDelegate, Log {
                                 try self.imageConverter.handle(url)
                             }
                             readDirectorySuccess = true
-                        } catch {
+                        } catch let inputError {
                             self.log.errorAndAssert("Failed to handle file url input.", metadata: ["error": "\(error)"])
+                            error = inputError
                         }
                         semaphore.signal()
                     }
@@ -144,11 +146,14 @@ public final class ScanTabViewModel: ObservableObject, DropDelegate, Log {
                         try data.write(to: url)
                         try self.imageConverter.handle(url)
                         return
-                    } catch {
+                    } catch let inputError {
                         self.log.errorAndAssert("Failed to handle image/pdf with type \(uti.identifier). Try next ...", metadata: ["error": "\(error)"])
-                        // TODO: show error
+                        error = inputError
                     }
                 }
+            }
+            if let error = error {
+                NotificationCenter.default.postAlert(error)
             }
         }
 
