@@ -9,26 +9,32 @@
 import Foundation
 
 final class DirectoryDeepWatcher: NSObject, Log {
+    
+    typealias FolderChangeHandler = (URL) -> Void
+    private typealias SourceObject = (source: DispatchSourceFileSystemObject, descriptor: Int32, url: URL)
+    
+    private static let queue = DispatchQueue.global(qos: .background)
+    private static var folderChangeHandler: FolderChangeHandler?
+    
     private var watchedUrl: URL
-
-    typealias SourceObject = (source: DispatchSourceFileSystemObject, descriptor: Int32, url: URL)
     private var sources = [SourceObject]()
-    private let queue = DispatchQueue.global(qos: .background)
 
-    var onFolderNotification: ((URL) -> Void)?
-
-    //init
-    init(watchedUrl: URL) {
+    private init(watchedUrl: URL) {
         self.watchedUrl = watchedUrl
     }
+    
+    deinit {
+        stopWatching()
+    }
 
-    static func watch(_ url: URL) -> DirectoryDeepWatcher? {
+    static func watch(_ url: URL, withHandler handler: @escaping FolderChangeHandler) -> DirectoryDeepWatcher? {
+        folderChangeHandler = handler
         let directoryWatcher = DirectoryDeepWatcher(watchedUrl: url)
 
         guard let sourceObject = directoryWatcher.createSource(from: url) else { return nil }
-
         directoryWatcher.sources.append(sourceObject)
 
+        
         let enumerator = FileManager.default.enumerator(at: url,
                                                         includingPropertiesForKeys: [.creationDateKey, .isDirectoryKey],
                                                         options: [.skipsHiddenFiles]) { (url, error) -> Bool in
@@ -49,17 +55,13 @@ final class DirectoryDeepWatcher: NSObject, Log {
         let descriptor = open(url.path, O_EVTONLY)
         guard descriptor != -1 else { return nil }
 
-        let source = DispatchSource.makeFileSystemObjectSource(fileDescriptor: descriptor, eventMask: [.write, .rename, .delete], queue: self.queue)
+        let source = DispatchSource.makeFileSystemObjectSource(fileDescriptor: descriptor, eventMask: [.write, .rename, .delete], queue: Self.queue)
 
         source.setEventHandler { [weak self] in
-            self?.onFolderNotification?(url)
+            Self.folderChangeHandler?(url)
 
             let enumerator = FileManager.default.enumerator(at: url,
-                                                            includingPropertiesForKeys: [.creationDateKey, .isDirectoryKey],
-                                                            options: [.skipsHiddenFiles]) { (url, error) -> Bool in
-                Self.log.criticalAndAssert("Directory enumerator error", metadata: ["error": "\(error)", "url": "\(url.path)"])
-                return true
-            }
+                                                            includingPropertiesForKeys: [.creationDateKey, .isDirectoryKey])
 
             guard let safeEnumerator = enumerator else { preconditionFailure("Failed to create enumerator.") }
             _ = self?.startWatching(with: safeEnumerator)
@@ -78,31 +80,25 @@ final class DirectoryDeepWatcher: NSObject, Log {
         guard let url = enumerator.nextObject() as? URL else { return true }
 
         if !url.hasDirectoryPath {
-            return self.startWatching(with: enumerator)
+            return startWatching(with: enumerator)
         }
 
-        if (self.sources.contains { (source) -> Bool in
-            return source.url == url
-        }) {
-            return self.startWatching(with: enumerator)
+        if sources.contains(where: { $0.url == url }) {
+            return startWatching(with: enumerator)
         }
 
-        guard let sourceObject = self.createSource(from: url) else { return false }
+        guard let sourceObject = createSource(from: url) else { return false }
 
-        self.sources.append(sourceObject)
+        sources.append(sourceObject)
 
-        return self.startWatching(with: enumerator)
+        return startWatching(with: enumerator)
     }
 
     func stopWatching() {
-        for sourceObject in self.sources {
+        for sourceObject in sources {
             sourceObject.source.cancel()
         }
 
-        self.sources.removeAll()
-    }
-
-    deinit {
-        self.stopWatching()
+        sources.removeAll()
     }
 }

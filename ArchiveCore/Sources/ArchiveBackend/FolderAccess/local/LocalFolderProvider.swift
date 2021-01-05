@@ -11,9 +11,10 @@ import Foundation
 final class LocalFolderProvider: FolderProvider {
 
     let baseUrl: URL
+    private let didAccessSecurityScope: Bool
     private let folderDidChange: FolderChangeHandler
 
-    private let watcher: DirectoryDeepWatcher
+    private var watcher: DirectoryDeepWatcher! = nil
     private let fileManager = FileManager.default
     private let fileProperties: [URLResourceKey] = [.ubiquitousItemDownloadingStatusKey, .ubiquitousItemIsDownloadingKey, .fileSizeKey, .localizedNameKey]
 
@@ -21,18 +22,17 @@ final class LocalFolderProvider: FolderProvider {
 
     required init(baseUrl: URL, _ handler: @escaping (FolderProvider, [FileChange]) -> Void) {
         self.baseUrl = baseUrl
+        self.didAccessSecurityScope = baseUrl.startAccessingSecurityScopedResource()
         self.folderDidChange = handler
 
-        guard let watcher = DirectoryDeepWatcher.watch(baseUrl) else {
-            preconditionFailure("Could not create local watcher.")
-        }
-        self.watcher = watcher
-        watcher.onFolderNotification = { [weak self] _ in
+        Self.log.debug("Creating file provider.", metadata: ["url": "\(baseUrl.path)"])
+        
+        self.watcher = DirectoryDeepWatcher.watch(baseUrl, withHandler: { [weak self] _ in
             guard let self = self else { return }
 
             let changes = self.createChanges()
             self.folderDidChange(self, changes)
-        }
+        })!
 
         DispatchQueue.global(qos: .background).async {
             // build initial changes
@@ -40,12 +40,20 @@ final class LocalFolderProvider: FolderProvider {
             self.folderDidChange(self, changes)
         }
     }
+    
+    deinit {
+        guard didAccessSecurityScope else { return }
+        baseUrl.stopAccessingSecurityScopedResource()
+    }
 
     // MARK: - API
 
     static func canHandle(_ url: URL) -> Bool {
-        FileManager.default.isReadableFile(atPath: url.path) &&
-            FileManager.default.isWritableFile(atPath: url.path)
+        // we must add the security scope here, because the LocalFolderProvider is not initialized when this functions gets called
+        url.securityScope {
+            FileManager.default.isReadableFile(atPath: $0.path) &&
+                FileManager.default.isWritableFile(atPath: $0.path)
+        }
     }
 
     func save(data: Data, at url: URL) throws {
@@ -91,7 +99,7 @@ final class LocalFolderProvider: FolderProvider {
 
     private func createChanges() -> [FileChange] {
         let oldFiles = currentFiles
-        let newFiles = baseUrl.getFilesRecursive(fileProperties: fileProperties)
+        let newFiles = fileManager.getFilesRecursive(at: baseUrl, with: fileProperties)
             .filter { $0.pathExtension.lowercased() == "pdf" }
             .compactMap { url -> FileChange.Details? in
 

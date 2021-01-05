@@ -48,6 +48,7 @@
 		34ECB0A325324FD100E69448 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 34ECB0A225324FD100E69448 /* Preview Assets.xcassets */; };
 		34ECB0A825324FD100E69448 /* AppClip.app in Embed App Clips */ = {isa = PBXBuildFile; fileRef = 34ECB09925324FCF00E69448 /* AppClip.app */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		34ECB0B92532500000E69448 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3416B1AE24A9282800D5F4E0 /* Assets.xcassets */; };
+		34FAB21A25A3B79B0088A306 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 34FAB21925A3B79B0088A306 /* Sentry */; };
 		34FB40712548839B00A415DA /* ArchiveSharedConstants in Frameworks */ = {isa = PBXBuildFile; productRef = 34FB40702548839A00A415DA /* ArchiveSharedConstants */; };
 		34FD2AE1254376F00044A594 /* PDFSharingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34FD2AE0254376F00044A594 /* PDFSharingView.swift */; };
 		34FD2AE9254377180044A594 /* PDFSharingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34FD2AE8254377180044A594 /* PDFSharingViewModel.swift */; };
@@ -178,6 +179,7 @@
 				34D470BB255B249B000302A8 /* StoreKit.framework in Frameworks */,
 				343B4BB2254C0592008AD859 /* ArchiveBackend in Frameworks */,
 				343B4BB6254C0592008AD859 /* ArchiveViews in Frameworks */,
+				34FAB21A25A3B79B0088A306 /* Sentry in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -408,6 +410,7 @@
 				343B4BB3254C0592008AD859 /* ArchiveSharedConstants */,
 				343B4BB5254C0592008AD859 /* ArchiveViews */,
 				343B4BB7254C0592008AD859 /* InAppPurchases */,
+				34FAB21925A3B79B0088A306 /* Sentry */,
 			);
 			productName = macOS;
 			productReference = 3489D72324A3C53E0035E64F /* PDFArchiver.app */;
@@ -1321,6 +1324,11 @@
 		346B1BDD253C65B700D3F8AB /* ArchiveViews */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ArchiveViews;
+		};
+		34FAB21925A3B79B0088A306 /* Sentry */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3416B28524A92D4200D5F4E0 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
+			productName = Sentry;
 		};
 		34FB40702548839A00A415DA /* ArchiveSharedConstants */ = {
 			isa = XCSwiftPackageProductDependency;

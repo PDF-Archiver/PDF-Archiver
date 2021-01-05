@@ -104,7 +104,7 @@ extension UserDefaults: Log {
         }
     }
 
-    public func set<T: Encodable>(_ object: T?, forKey key: Names) throws {
+    public func setObject<T: Encodable>(_ object: T?, forKey key: Names) throws {
         guard let object = object else {
             set(nil, forKey: key.rawValue)
             return

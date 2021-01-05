@@ -95,7 +95,7 @@ public final class ScanTabViewModel: ObservableObject, DropDelegate, Log {
                                                          secondaryButton: .cancel())
 
             @unknown default:
-                preconditionFailure("This authorization status is unkown.")
+                preconditionFailure("This authorization status is unknown.")
         }
     }
 
@@ -127,7 +127,7 @@ public final class ScanTabViewModel: ObservableObject, DropDelegate, Log {
                             }
                             readDirectorySuccess = true
                         } catch let inputError {
-                            self.log.errorAndAssert("Failed to handle file url input.", metadata: ["error": "\(error)"])
+                            self.log.errorAndAssert("Failed to handle file url input.", metadata: ["error": "\(String(describing: error))"])
                             error = inputError
                         }
                         semaphore.signal()
@@ -147,7 +147,7 @@ public final class ScanTabViewModel: ObservableObject, DropDelegate, Log {
                         try self.imageConverter.handle(url)
                         return
                     } catch let inputError {
-                        self.log.errorAndAssert("Failed to handle image/pdf with type \(uti.identifier). Try next ...", metadata: ["error": "\(error)"])
+                        self.log.errorAndAssert("Failed to handle image/pdf with type \(uti.identifier). Try next ...", metadata: ["error": "\(String(describing: error))"])
                         error = inputError
                     }
                 }

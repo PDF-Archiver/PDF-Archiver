@@ -9,18 +9,48 @@ import ArchiveSharedConstants
 import Foundation
 
 extension UserDefaults {
-//    let bookmark = try newValue.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
-//    UserDefaults.standard.set(bookmark, forKey: "observedPathWithSecurityScope")
-
     var archivePathType: PathManager.ArchivePathType? {
         get {
-            try? getObject(forKey: .archivePathType)
+            
+            do {
+                #if os(macOS)
+                var staleBookmarkData = false
+                if let type: PathManager.ArchivePathType = try? getObject(forKey: .archivePathType) {
+                    return type
+                } else if let bookmarkData = object(forKey: Names.archivePathType.rawValue) as? Data {
+                    let url = try URL(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &staleBookmarkData)
+                    if staleBookmarkData {
+                        log.errorAndAssert("Found stale bookmark data.")
+                    }
+                    return .local(url)
+                } else {
+                    return nil
+                }
+                #else
+                try? getObject(forKey: .archivePathType)
+                #endif
+            } catch {
+                log.errorAndAssert("Error while getting archive url.", metadata: ["error": "\(String(describing: error))"])
+                NotificationCenter.default.postAlert(error)
+                return nil
+            }
         }
         set {
             do {
-                try set(newValue, forKey: .archivePathType)
+                #if os(macOS)
+                switch newValue {
+                    case .local(let url):
+                        let bookmark = try url.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
+                        set(bookmark, forKey: Names.archivePathType.rawValue)
+                    default:
+                        try setObject(newValue, forKey: .archivePathType)
+                }
+                #else
+                try setObject(newValue, forKey: .archivePathType)
+                #endif
             } catch {
                 log.errorAndAssert("Failed to set ArchivePathType.", metadata: ["error": "\(error)"])
+                NotificationCenter.default.postAlert(error)
             }
         }
     }
@@ -54,7 +84,7 @@ public final class PathManager: Log {
     }
 
     public func getUntaggedUrl() throws -> URL {
-        let untaggedURL = try  getArchiveUrl().appendingPathComponent("untagged")
+        let untaggedURL = try getArchiveUrl().appendingPathComponent("untagged")
         try FileManager.default.createFolderIfNotExists(untaggedURL)
         return untaggedURL
     }
@@ -63,6 +93,8 @@ public final class PathManager: Log {
         if type == .iCloudDrive {
             guard fileManager.iCloudDriveURL != nil else { throw PathError.iCloudDriveNotFound }
         }
+        
+        log.debug("Setting new archive type.", metadata: ["type": "\(type)"])
 
         let newArchiveUrl = try type.getArchiveUrl()
         let oldArchiveUrl = try archivePathType.getArchiveUrl()

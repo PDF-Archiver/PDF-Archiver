@@ -7,9 +7,17 @@
 
 import Foundation
 
-class ICloudFolderProvider: NSObject, FolderProvider {
+final class ICloudFolderProvider: FolderProvider {
 
     private static let tempFolderName = "temp"
+    private static let workerQueue: OperationQueue = {
+        let workerQueue = OperationQueue()
+
+        workerQueue.name = (Bundle.main.bundleIdentifier ?? "PDFArchiver") + ".browserdatasource.workerQueue"
+        workerQueue.maxConcurrentOperationCount = 1
+
+        return workerQueue
+    }()
 
     let baseUrl: URL
     private let folderDidChange: FolderChangeHandler
@@ -19,14 +27,6 @@ class ICloudFolderProvider: NSObject, FolderProvider {
     private var firstRun = true
 
     private let fileManager = FileManager.default
-    private let workerQueue: OperationQueue = {
-        let workerQueue = OperationQueue()
-
-        workerQueue.name = (Bundle.main.bundleIdentifier ?? "PDFArchiver") + ".browserdatasource.workerQueue"
-        workerQueue.maxConcurrentOperationCount = 1
-
-        return workerQueue
-    }()
 
     required init(baseUrl: URL, _ handler: @escaping FolderChangeHandler) {
         self.baseUrl = baseUrl
@@ -59,15 +59,18 @@ class ICloudFolderProvider: NSObject, FolderProvider {
          can perform our own background work in sync with item discovery.
          Note that the operationQueue of the `NSMetadataQuery` must be serial.
          */
-        metadataQuery.operationQueue = workerQueue
-
-        super.init()
+        metadataQuery.operationQueue = Self.workerQueue
 
         NotificationCenter.default.addObserver(self, selector: #selector(Self.finishGathering(notification:)), name: .NSMetadataQueryDidFinishGathering, object: metadataQuery)
         NotificationCenter.default.addObserver(self, selector: #selector(Self.queryUpdated(notification:)), name: .NSMetadataQueryDidUpdate, object: metadataQuery)
 
         metadataQuery.start()
         log.debug("Starting the documents query.")
+    }
+    
+    deinit {
+        Self.log.debug("deinit ICloudFolderProvider")
+        metadataQuery.stop()
     }
 
     // MARK: - API
@@ -207,7 +210,7 @@ class ICloudFolderProvider: NSObject, FolderProvider {
     @objc
     private func finishGathering(notification: NSNotification) {
 
-        log.debug("Documents query finished.")
+        log.debug("Documents query finished initial fetch.")
         guard let metadataQueryResults = metadataQuery.results as? [NSMetadataItem] else { return }
 
         // update the archive
@@ -221,7 +224,7 @@ fileprivate extension Array where Array.Element == NSMetadataItem {
             if let details = ICloudFolderProvider.createDetails(from: item) {
                 return handler(details)
             } else {
-                log.errorAndAssert("Could not create details for item.", metadata: ["item": "\(item)"])
+                Self.log.errorAndAssert("Could not create details for item.", metadata: ["item": "\(item)"])
                 return nil
             }
         }

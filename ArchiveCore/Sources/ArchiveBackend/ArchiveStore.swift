@@ -63,6 +63,9 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
 
     public func update(archiveFolder: URL, untaggedFolders: [URL]) {
         assert(!Thread.isMainThread, "This should not be called from the main thread.")
+        
+        // remove all current file providers to prevent watching changes while moving folders
+        providers = []
 
         let oldArchiveFolder = self.archiveFolder
 
@@ -86,6 +89,7 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
             guard let provider = Self.availableProvider.first(where: { $0.canHandle(folder) }) else {
                 preconditionFailure("Could not find a FolderProvider for: \(folder.path)")
             }
+            log.debug("Initialize new provider for: \(folder.path)")
             return provider.init(baseUrl: folder, folderDidChange(_:_:))
         }
     }
@@ -216,7 +220,6 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
 
                 if let document = document {
                     contents[provider.baseUrl, default: []].append(document)
-                    contents[provider.baseUrl]?.sort()
 
                     // trigger update of the document properties
                     if let shouldParseDate = shouldParseDate {
@@ -228,6 +231,10 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
                         }
                     }
                 }
+            }
+            
+            for url in contents.keys {
+                contents[url]?.sort()
             }
         }
 
@@ -244,7 +251,7 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
         var documents = [Document]()
         queue.sync {
             documents = self.contents
-                .flatMap { $0.value }
+                .flatMap(\.value)
                 .sorted()
         }
         self.documents = documents
@@ -316,7 +323,6 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
         do {
             let data = try JSONEncoder().encode(documents)
             try data.write(to: Self.savePath)
-            log.info("Documents saved.")
         } catch {
             log.error("JSON encoding error", metadata: ["error": "\(error)"])
         }

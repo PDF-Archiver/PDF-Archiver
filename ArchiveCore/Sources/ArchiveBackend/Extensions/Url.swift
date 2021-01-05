@@ -17,17 +17,6 @@ extension URL {
 
     private static let itemUserTagsName = "com.apple.metadata:_kMDItemUserTags"
 
-    public func getFilesRecursive(fileProperties: [URLResourceKey] = []) -> [URL] {
-        guard let enumerator = FileManager.default.enumerator(at: self, includingPropertiesForKeys: fileProperties) else { return [] }
-
-        var files = [URL]()
-        for case let file as URL in enumerator {
-            guard !file.hasDirectoryPath else { continue }
-            files.append(file)
-        }
-        return files
-    }
-
     /// Finder file tags
     public var fileTags: [String] {
         get {
