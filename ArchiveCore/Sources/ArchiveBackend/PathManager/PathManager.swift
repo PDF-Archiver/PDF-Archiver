@@ -11,7 +11,7 @@ import Foundation
 extension UserDefaults {
     var archivePathType: PathManager.ArchivePathType? {
         get {
-            
+
             do {
                 #if os(macOS)
                 var staleBookmarkData = false
@@ -27,7 +27,7 @@ extension UserDefaults {
                     return nil
                 }
                 #else
-                try? getObject(forKey: .archivePathType)
+                return try? getObject(forKey: .archivePathType)
                 #endif
             } catch {
                 log.errorAndAssert("Error while getting archive url.", metadata: ["error": "\(String(describing: error))"])
@@ -93,7 +93,7 @@ public final class PathManager: Log {
         if type == .iCloudDrive {
             guard fileManager.iCloudDriveURL != nil else { throw PathError.iCloudDriveNotFound }
         }
-        
+
         log.debug("Setting new archive type.", metadata: ["type": "\(type)"])
 
         let newArchiveUrl = try type.getArchiveUrl()
@@ -105,9 +105,14 @@ public final class PathManager: Log {
                 folderUrl.lastPathComponent.isNumeric || folderUrl.lastPathComponent == "untagged"
             }
 
-        for file in contents {
-            let destination = newArchiveUrl.appendingPathComponent(file.lastPathComponent)
-            try fileManager.moveItem(at: file, to: destination)
+        for folder in contents {
+            let destination = newArchiveUrl.appendingPathComponent(folder.lastPathComponent)
+
+            if fileManager.directoryExists(at: destination) {
+                try fileManager.moveContents(of: folder, to: destination)
+            } else {
+                try fileManager.moveItem(at: folder, to: destination)
+            }
         }
 
         self.archivePathType = type

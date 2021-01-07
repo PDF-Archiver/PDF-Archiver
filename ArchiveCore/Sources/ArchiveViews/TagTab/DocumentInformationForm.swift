@@ -31,7 +31,8 @@ struct DocumentInformationForm: View {
 
     private func documentTagTapped(_ tag: String) {
         tags.removeAll { $0 == tag }
-//        $suggestedTags.insertAndSort(tag)
+        // just remove the tapped tag
+        //$suggestedTags.insertAndSort(tag)
     }
 
     private func saveCurrentTag() {
@@ -93,14 +94,5 @@ struct DocumentInformationForm_Previews: PreviewProvider {
     static var previews: some View {
         PreviewContentView()
             .previewLayout(.sizeThatFits)
-    }
-}
-
-// TODO: move this to a helper file
-extension Binding where Value == [String] {
-    func insertAndSort(_ item: String) {
-        var uniqueItems = Set(wrappedValue)
-        uniqueItems.insert(item)
-        wrappedValue = uniqueItems.sorted()
     }
 }

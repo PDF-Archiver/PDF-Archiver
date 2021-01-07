@@ -4,7 +4,7 @@
 //  Created by Julian Kahnert on 24.06.20.
 //
 
-import ArchiveBackend
+import ArchiveSharedConstants
 import XCTest
 
 final class FileManagerTests: XCTestCase {

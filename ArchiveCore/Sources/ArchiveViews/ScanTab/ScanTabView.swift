@@ -90,7 +90,7 @@ public struct ScanTabView: View {
             .cornerRadius(8)
     }
 
-    @available(macOS, unavailable)
+    #if !os(macOS)
     private var scanButton: some View {
         Button(action: {
             self.viewModel.startScanning()
@@ -100,6 +100,7 @@ public struct ScanTabView: View {
         .keyboardShortcut("s")
         .padding()
     }
+    #endif
 }
 
 #if DEBUG

@@ -65,6 +65,30 @@
                ReferencedContainer = "container:ArchiveCore">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES"
+            testExecutionOrdering = "random">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "ArchiveSharedConstantsTests"
+               BuildableName = "ArchiveSharedConstantsTests"
+               BlueprintName = "ArchiveSharedConstantsTests"
+               ReferencedContainer = "container:ArchiveCore">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES"
+            testExecutionOrdering = "random">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "ArchiveViewsTests"
+               BuildableName = "ArchiveViewsTests"
+               BlueprintName = "ArchiveViewsTests"
+               ReferencedContainer = "container:ArchiveCore">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

@@ -29,7 +29,6 @@ struct DocumentDetailView: View {
     var shareNavigationButton: some View {
         Button(action: {
             #if os(macOS)
-            // TODO: test this
             NSWorkspace.shared.activateFileViewerSelecting([viewModel.document.path])
             #else
             self.viewModel.showActivityView = true

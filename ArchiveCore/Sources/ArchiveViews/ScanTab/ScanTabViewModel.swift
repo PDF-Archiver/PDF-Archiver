@@ -54,6 +54,7 @@ public final class ScanTabViewModel: ObservableObject, DropDelegate, Log {
             .store(in: &disposables)
     }
 
+    #if !os(macOS)
     public func startScanning() {
         let authorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
         switch authorizationStatus {
@@ -85,12 +86,8 @@ public final class ScanTabViewModel: ObservableObject, DropDelegate, Log {
                                                          message: "Camera access is required to scan documents.",
                                                          primaryButton: .default(Text("Grant Access"),
                                                                                  action: {
-                                                                                    #if os(macOS)
-                                                                                    // TODO: handle settings
-                                                                                    #else
                                                                                     guard let settingsAppURL = URL(string: UIApplication.openSettingsURLString) else { fatalError("Could not find settings url!") }
                                                                                     open(settingsAppURL)
-                                                                                    #endif
                                                                                  }),
                                                          secondaryButton: .cancel())
 
@@ -98,6 +95,7 @@ public final class ScanTabViewModel: ObservableObject, DropDelegate, Log {
                 preconditionFailure("This authorization status is unknown.")
         }
     }
+    #endif
 
     public func performDrop(info: DropInfo) -> Bool {
         let types: [UTType] = [.fileURL, .image, .pdf]
@@ -112,7 +110,7 @@ public final class ScanTabViewModel: ObservableObject, DropDelegate, Log {
                     let semaphore = DispatchSemaphore(value: 0)
                     _ = item.loadObject(ofClass: URL.self) { rawUrl, rawError in
                         guard let url = rawUrl,
-                              FileManager.default.directoryExists(atPath: url.path) else {
+                              FileManager.default.directoryExists(at: url) else {
                             semaphore.signal()
                             return
                         }

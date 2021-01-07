@@ -28,7 +28,7 @@
 		34822228257ACD36005DC1B2 /* IAP.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 34822227257ACD36005DC1B2 /* IAP.storekit */; };
 		34822229257ACD36005DC1B2 /* IAP.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 34822227257ACD36005DC1B2 /* IAP.storekit */; };
 		3482222A257ACD36005DC1B2 /* IAP.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 34822227257ACD36005DC1B2 /* IAP.storekit */; };
-		3489D73024A3C53E0035E64F /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3489D72F24A3C53E0035E64F /* Tests_iOS.swift */; };
+		3489D73024A3C53E0035E64F /* TestsIOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3489D72F24A3C53E0035E64F /* TestsIOS.swift */; };
 		3489D73B24A3C53E0035E64F /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3489D73A24A3C53E0035E64F /* Tests_macOS.swift */; };
 		3489D73D24A3C53E0035E64F /* PDFArchiverApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3489D71424A3C53D0035E64F /* PDFArchiverApp.swift */; };
 		3489D73E24A3C53E0035E64F /* PDFArchiverApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3489D71424A3C53D0035E64F /* PDFArchiverApp.swift */; };
@@ -126,7 +126,7 @@
 		3489D72524A3C53E0035E64F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3489D72624A3C53E0035E64F /* macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macOS.entitlements; sourceTree = "<group>"; };
 		3489D72B24A3C53E0035E64F /* Tests iOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests iOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		3489D72F24A3C53E0035E64F /* Tests_iOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_iOS.swift; sourceTree = "<group>"; };
+		3489D72F24A3C53E0035E64F /* TestsIOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestsIOS.swift; sourceTree = "<group>"; };
 		3489D73124A3C53E0035E64F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3489D73624A3C53E0035E64F /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3489D73A24A3C53E0035E64F /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
@@ -292,7 +292,7 @@
 		3489D72E24A3C53E0035E64F /* Tests iOS */ = {
 			isa = PBXGroup;
 			children = (
-				3489D72F24A3C53E0035E64F /* Tests_iOS.swift */,
+				3489D72F24A3C53E0035E64F /* TestsIOS.swift */,
 				3489D73124A3C53E0035E64F /* Info.plist */,
 			);
 			path = "Tests iOS";
@@ -678,7 +678,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3489D73024A3C53E0035E64F /* Tests_iOS.swift in Sources */,
+				3489D73024A3C53E0035E64F /* TestsIOS.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -30,7 +30,9 @@
       codeCoverageEnabled = "YES">
       <Testables>
          <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            parallelizable = "YES"
+            testExecutionOrdering = "random">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "3489D72A24A3C53E0035E64F"
@@ -48,6 +50,30 @@
                BlueprintIdentifier = "ArchiveBackendTests"
                BuildableName = "ArchiveBackendTests"
                BlueprintName = "ArchiveBackendTests"
+               ReferencedContainer = "container:ArchiveCore">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES"
+            testExecutionOrdering = "random">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "ArchiveSharedConstantsTests"
+               BuildableName = "ArchiveSharedConstantsTests"
+               BlueprintName = "ArchiveSharedConstantsTests"
+               ReferencedContainer = "container:ArchiveCore">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES"
+            testExecutionOrdering = "random">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "ArchiveViewsTests"
+               BuildableName = "ArchiveViewsTests"
+               BlueprintName = "ArchiveViewsTests"
                ReferencedContainer = "container:ArchiveCore">
             </BuildableReference>
          </TestableReference>

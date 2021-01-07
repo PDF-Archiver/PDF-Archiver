@@ -9,20 +9,20 @@
 import Foundation
 
 final class DirectoryDeepWatcher: NSObject, Log {
-    
+
     typealias FolderChangeHandler = (URL) -> Void
     private typealias SourceObject = (source: DispatchSourceFileSystemObject, descriptor: Int32, url: URL)
-    
+
     private static let queue = DispatchQueue.global(qos: .background)
     private static var folderChangeHandler: FolderChangeHandler?
-    
+
     private var watchedUrl: URL
     private var sources = [SourceObject]()
 
     private init(watchedUrl: URL) {
         self.watchedUrl = watchedUrl
     }
-    
+
     deinit {
         stopWatching()
     }
@@ -34,7 +34,6 @@ final class DirectoryDeepWatcher: NSObject, Log {
         guard let sourceObject = directoryWatcher.createSource(from: url) else { return nil }
         directoryWatcher.sources.append(sourceObject)
 
-        
         let enumerator = FileManager.default.enumerator(at: url,
                                                         includingPropertiesForKeys: [.creationDateKey, .isDirectoryKey],
                                                         options: [.skipsHiddenFiles]) { (url, error) -> Bool in

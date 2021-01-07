@@ -60,10 +60,15 @@ let package = Package(
                 ]),
         .testTarget(name: "ArchiveBackendTests",
                     dependencies: [
-                        "ArchiveBackend"
+                        "ArchiveBackend",
+                        "ArchiveSharedConstants"
                     ],
                     resources: [
                         .copy("assets")
+                    ]),
+        .testTarget(name: "ArchiveSharedConstantsTests",
+                    dependencies: [
+                        "ArchiveSharedConstants"
                     ]),
         .testTarget(name: "ArchiveViewsTests",
                     dependencies: [

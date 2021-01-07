@@ -10,7 +10,6 @@ import SwiftUI
 import SwiftUIX
 
 #if os(macOS)
-// TODO: is this working out?
 struct EditButton: View {
     var body: some View {
         EmptyView()

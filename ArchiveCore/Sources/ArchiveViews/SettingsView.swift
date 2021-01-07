@@ -93,7 +93,7 @@ public struct SettingsView: View {
             .padding(20)
             .frame(width: 500, height: 250)
     }
-    
+
     private var statistics: some View {
         StatisticsView(viewModel: viewModel.statisticsViewModel)
             .padding(20)

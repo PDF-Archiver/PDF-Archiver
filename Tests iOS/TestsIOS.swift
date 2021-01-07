@@ -8,7 +8,7 @@
 //@testable import PDFArchiver
 import XCTest
 
-final class Tests_iOS: XCTestCase {
+final class TestsIOS: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()

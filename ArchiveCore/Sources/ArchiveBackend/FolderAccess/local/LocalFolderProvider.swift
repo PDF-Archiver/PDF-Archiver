@@ -26,7 +26,7 @@ final class LocalFolderProvider: FolderProvider {
         self.folderDidChange = handler
 
         Self.log.debug("Creating file provider.", metadata: ["url": "\(baseUrl.path)"])
-        
+
         self.watcher = DirectoryDeepWatcher.watch(baseUrl, withHandler: { [weak self] _ in
             guard let self = self else { return }
 
@@ -40,7 +40,7 @@ final class LocalFolderProvider: FolderProvider {
             self.folderDidChange(self, changes)
         }
     }
-    
+
     deinit {
         guard didAccessSecurityScope else { return }
         baseUrl.stopAccessingSecurityScopedResource()

@@ -81,7 +81,6 @@ final class TagTabViewModel: ObservableObject, Log {
                     }
                 return Array(sortedTags.prefix(5))
             }
-            .removeDuplicates()
             .assign(to: &$suggestedTags)
 
         archiveStore.$documents

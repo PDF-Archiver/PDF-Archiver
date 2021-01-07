@@ -83,7 +83,7 @@ public final class MoreTabViewModel: ObservableObject, Log {
             .dropFirst()
             .sink { type in
                 let type: PathManager.ArchivePathType
-                switch selectedArchiveType {
+                switch self.selectedArchiveType {
                     case .iCloudDrive:
                         type = .iCloudDrive
                     case .appContainer:
@@ -115,7 +115,7 @@ public final class MoreTabViewModel: ObservableObject, Log {
         open(settingsAppURL)
     }
     #endif
-    
+
     #if os(macOS)
     private func chooseArchivePanel() {
         let openPanel = NSOpenPanel()
@@ -136,14 +136,14 @@ public final class MoreTabViewModel: ObservableObject, Log {
         }
     }
     #endif
-    
+
     private func handle(newType type: PathManager.ArchivePathType) {
         do {
             try PathManager.shared.setArchiveUrl(with: type)
-            
+
             let archiveUrl = try PathManager.shared.getArchiveUrl()
             let untaggedUrl = try PathManager.shared.getUntaggedUrl()
-            
+
             self.showArchiveTypeSelection = false
             DispatchQueue.global(qos: .userInitiated).async {
                 self.archiveStore.update(archiveFolder: archiveUrl, untaggedFolders: [untaggedUrl])

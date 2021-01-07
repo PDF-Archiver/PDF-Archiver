@@ -67,7 +67,7 @@ final class ICloudFolderProvider: FolderProvider {
         metadataQuery.start()
         log.debug("Starting the documents query.")
     }
-    
+
     deinit {
         Self.log.debug("deinit ICloudFolderProvider")
         metadataQuery.stop()
