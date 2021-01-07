@@ -35,8 +35,8 @@
 //          |
 //          - file22
 
-import Foundation
 import ArchiveSharedConstants
+import Foundation
 import XCTest
 
 final class FileManagerMoveTests: XCTestCase {
@@ -68,7 +68,7 @@ final class FileManagerMoveTests: XCTestCase {
         let files = FileManager.default.getFilesRecursive(at: url)
         XCTAssertEqual(files.count, 6)
     }
-    
+
     override func tearDownWithError() throws {
         try super.tearDownWithError()
         guard let url = tempDir else { return }
@@ -80,18 +80,19 @@ final class FileManagerMoveTests: XCTestCase {
 
         let source = url.appendingPathComponent("source")
         let destination = url.appendingPathComponent("destination")
-        
+
         XCTAssert(FileManager.default.directoryExists(at: source))
         XCTAssert(FileManager.default.directoryExists(at: destination))
-        
+
         let files = FileManager.default.getFilesRecursive(at: url)
         XCTAssertEqual(files.count, 6)
-        
+
         try FileManager.default.moveContents(of: source, to: destination)
-        
+
         let files2 = FileManager.default.getFilesRecursive(at: url)
         XCTAssertEqual(files2.count, 6)
-        
+
+        //swiftlint:disable identifier_name
         let fm = FileManager.default
         XCTAssert(fm.fileExists(at: destination.appendingPathComponent("file1")))
         XCTAssert(fm.fileExists(at: destination.appendingPathComponent("file3")))

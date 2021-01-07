@@ -137,7 +137,9 @@ public struct SettingsView: View {
         .frame(width: 750, height: 450)
     }
 }
+#endif
 
+#if os(macOS) && DEBG
 struct SettingsView_Previews: PreviewProvider {
     @State static var viewModel = MoreTabViewModel.previewViewModel
     static var previews: some View {

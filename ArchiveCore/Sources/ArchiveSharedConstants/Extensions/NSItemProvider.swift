@@ -79,6 +79,7 @@ public extension NSItemProvider {
 
             } else if let image = rawData as? Image {
                 #if os(macOS)
+                //swiftlint:disable:next force_unwrapping
                 let cgImage = image.cgImage(forProposedRect: nil, context: nil, hints: nil)!
                 let bitmapRep = NSBitmapImageRep(cgImage: cgImage)
                 data = bitmapRep.representation(using: .jpeg, properties: [.compressionFactor: NSNumber(value: 1)])

@@ -27,12 +27,13 @@ final class LocalFolderProvider: FolderProvider {
 
         Self.log.debug("Creating file provider.", metadata: ["url": "\(baseUrl.path)"])
 
-        self.watcher = DirectoryDeepWatcher.watch(baseUrl, withHandler: { [weak self] _ in
+        guard let watcher = DirectoryDeepWatcher.watch(baseUrl, withHandler: { [weak self] _ in
             guard let self = self else { return }
 
             let changes = self.createChanges()
             self.folderDidChange(self, changes)
-        })!
+        }) else { preconditionFailure("Could not create DirectoryDeepWatcher.") }
+        self.watcher = watcher
 
         DispatchQueue.global(qos: .background).async {
             // build initial changes

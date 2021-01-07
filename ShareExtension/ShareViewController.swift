@@ -8,8 +8,8 @@
 
 import ArchiveSharedConstants
 import PDFKit
-import UniformTypeIdentifiers
 import UIKit
+import UniformTypeIdentifiers
 
 final class ShareViewController: UIViewController {
 

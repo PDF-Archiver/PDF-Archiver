@@ -4,8 +4,8 @@
 //  Created by Julian Kahnert on 24.06.20.
 //
 
-import ArchiveSharedConstants
 @testable import ArchiveBackend
+import ArchiveSharedConstants
 import XCTest
 
 final class DeepDirectoryWatcherTests: XCTestCase {

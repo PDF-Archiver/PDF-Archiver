@@ -11,7 +11,7 @@ extension FileManager {
     public func fileExists(at url: URL) -> Bool {
         fileExists(atPath: url.path)
     }
-    
+
     public func directoryExists(at url: URL) -> Bool {
         var isDirectory: ObjCBool = false
         let exists = self.fileExists(atPath: url.path, isDirectory: &isDirectory)

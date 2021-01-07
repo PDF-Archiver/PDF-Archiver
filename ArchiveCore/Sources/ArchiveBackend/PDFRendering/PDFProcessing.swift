@@ -258,7 +258,6 @@ public final class PDFProcessing: Operation, Log {
             let pageInfo = info as CFDictionary
             context.beginPDFPage(pageInfo)
 
-            // TODO: do we need this on macOS?
             let transform = CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: 0, ty: bounds.height)
             context.concatenate(transform)
 

@@ -81,9 +81,9 @@ public final class MoreTabViewModel: ObservableObject, Log {
         #else
         $selectedArchiveType
             .dropFirst()
-            .sink { type in
+            .sink { selectedArchiveType in
                 let type: PathManager.ArchivePathType
-                switch self.selectedArchiveType {
+                switch selectedArchiveType {
                     case .iCloudDrive:
                         type = .iCloudDrive
                     case .appContainer:

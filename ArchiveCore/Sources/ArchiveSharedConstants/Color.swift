@@ -19,6 +19,7 @@ public extension Color {
     static var paPDFBackground = Color("PDFBackground")
     static var paBackground = Color("Background")
     #if os(macOS)
+    //swiftlint:disable:next force_unwrapping
     static var paSecondaryBackground = Color(NSColor.alternatingContentBackgroundColors.last!)
     #else
     static var paSecondaryBackground = Color("SecondaryBackground")

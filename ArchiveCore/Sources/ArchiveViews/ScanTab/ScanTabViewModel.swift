@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 02.11.19.
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
+// swiftlint:disable cyclomatic_complexity
 
 import AVKit
 import Combine

@@ -108,8 +108,10 @@ struct StatisticsView: View {
     }
 }
 
+#if DEBUG
 struct StatisticsView_Previews: PreviewProvider {
     static var previews: some View {
         StatisticsView(viewModel: StatisticsViewModel.previewViewModel)
     }
 }
+#endif
