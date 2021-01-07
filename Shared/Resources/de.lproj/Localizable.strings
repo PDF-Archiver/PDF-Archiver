@@ -228,8 +228,6 @@
 
 "Search PDFs" = "Suche PDFs";
 
-"Scan Documents" = "Scan Dokumente";
-
 "Searchable PDFs" = "Textanalyse";
 
 "Activate/Restore Subscription" = "Abo aktivieren/wiederherstellen";
@@ -289,3 +287,7 @@
 "Top Years" = "Top Jahre";
 
 "Choose the archive folder" = "Wähle den Archiv Ordner";
+
+"tagged" = "ver­schlag­wor­tet";
+
+"untagged" = "unbearbeitet";
