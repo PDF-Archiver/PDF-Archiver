@@ -25,10 +25,13 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
         case uninitialized, cachedDocuments, live
     }
 
-    private static let availableProvider: [FolderProvider.Type] = [
-        ICloudFolderProvider.self,
-        LocalFolderProvider.self
-    ]
+    private static let availableProvider: [FolderProvider.Type] = {
+        if UserDefaults.standard.isInDemoMode {
+            return [DemoFolderProvider.self]
+        } else {
+            return [ICloudFolderProvider.self, LocalFolderProvider.self]
+        }
+    }()
 
     private static let fileProperties: [URLResourceKey] = [.ubiquitousItemDownloadingStatusKey, .ubiquitousItemIsDownloadingKey, .fileSizeKey, .localizedNameKey]
     private static let savePath: URL = {

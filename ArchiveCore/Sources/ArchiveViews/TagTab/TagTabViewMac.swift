@@ -35,8 +35,14 @@ struct TagTabViewMac: View {
     }
 
     private var documentList: some View {
-        DocumentList(currentDocument: $viewModel.currentDocument,
-                     documents: $viewModel.documents)
+        VStack {
+            Text("PDF Documents")
+                .font(.title)
+                .fontWeight(.semibold)
+                .foregroundColor(.paDarkRed)
+            DocumentList(currentDocument: $viewModel.currentDocument,
+                         documents: $viewModel.documents)
+        }
     }
 
     private var pdfView: some View {
@@ -48,6 +54,8 @@ struct TagTabViewMac: View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Document Attributes")
                 .font(.title)
+                .fontWeight(.semibold)
+                .foregroundColor(.paDarkRed)
             DatePicker("Date", selection: $viewModel.date, displayedComponents: .date)
                 .labelsHidden()
             TextField("Description", text: $viewModel.specification)
@@ -68,6 +76,8 @@ struct TagTabViewMac: View {
             }
             Text("Available Tags")
                 .font(.title)
+                .fontWeight(.semibold)
+                .foregroundColor(.paDarkRed)
             TextField("Enter Tag",
                       text: $viewModel.documentTagInput,
                       onCommit: saveCurrentTag)

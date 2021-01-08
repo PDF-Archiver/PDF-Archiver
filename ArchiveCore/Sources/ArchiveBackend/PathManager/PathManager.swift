@@ -78,7 +78,12 @@ public final class PathManager: Log {
     }
 
     public func getArchiveUrl() throws -> URL {
-        let archiveURL = try archivePathType.getArchiveUrl()
+        let archiveURL: URL
+        if UserDefaults.standard.isInDemoMode {
+            archiveURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+        } else {
+            archiveURL = try archivePathType.getArchiveUrl()
+        }
         try FileManager.default.createFolderIfNotExists(archiveURL)
         return archiveURL
     }

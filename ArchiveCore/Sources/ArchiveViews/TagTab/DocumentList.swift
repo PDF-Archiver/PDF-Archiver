@@ -29,9 +29,9 @@ struct DocumentList: View {
                     ForEach(documents) { document in
                         HStack {
                             Circle()
-                                .fill(Color.systemBlue)
+                                .fill(document.taggingStatus == .tagged ? Color.green : Color.systemBlue)
                                 .frame(width: 8, height: 8)
-                                .opacity(document == currentDocument ? 1 : 0)
+                                .opacity(document == currentDocument || document.taggingStatus == .tagged ? 1 : 0)
                             Text(document.filename)
                                 .lineLimit(1)
                                 .truncationMode(.middle)
