@@ -227,7 +227,7 @@ public final class ScanTabViewModel: ObservableObject, DropDelegate, Log {
                                                             NotificationCenter.default.post(.showSubscriptionView)
                                                             self.showDocumentScan = false
                                                          }),
-                                                         secondaryButton: .cancel())
+                                                         secondaryButton: .cancel(Text("OK")))
             }
         }
 

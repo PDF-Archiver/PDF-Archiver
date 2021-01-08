@@ -38,7 +38,6 @@ struct Stack<Content: View>: View {
         VStack(alignment: .center, spacing: spacing) {
             content
         }
-        // TODO: do we really need this?
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
@@ -46,7 +45,6 @@ struct Stack<Content: View>: View {
         HStack(alignment: .center, spacing: spacing) {
             content
         }
-        // TODO: do we really need this?
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
