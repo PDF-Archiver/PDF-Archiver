@@ -53,7 +53,7 @@ final class TagTabViewModel: ObservableObject, Log {
             .removeDuplicates()
             .combineLatest($documentTagInput)
             .map { (documentTags, tag) -> [String] in
-                let tagName = tag.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+                let tagName = tag.trimmingCharacters(in: .whitespacesAndNewlines).slugified().lowercased()
                 let tags: Set<String>
                 if tagName.isEmpty {
                     tags = self.getAssociatedTags(from: documentTags)

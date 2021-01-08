@@ -106,11 +106,9 @@ public final class ImageConverter: ObservableObject, ImageConverterAPI, Log {
             return
         }
 
-        let availableTags = TagStore.shared.getAvailableTags(with: [])
         let operation = PDFProcessing(of: mode,
                                       destinationFolder: destinationURL,
-                                      tempImagePath: PathConstants.tempImageURL,
-                                      archiveTags: availableTags) { progress in
+                                      tempImagePath: PathConstants.tempImageURL) { progress in
             NotificationCenter.default.post(name: .imageProcessingQueue, object: progress)
         }
         operation.completionBlock = {
