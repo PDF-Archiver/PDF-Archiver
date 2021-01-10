@@ -36,7 +36,9 @@ public final class IAPService: NSObject, Log {
         InAppReceipt.refresh { [weak self] error in
             if let error = error {
                 Self.log.error("Failed to refresh receipt.", metadata: ["error": "\(error)"])
-                NotificationCenter.default.postAlert(error)
+                if Self.shouldHandle(error) {
+                    NotificationCenter.default.postAlert(error)
+                }
             } else {
                 self?.validateReceipt()
             }
@@ -90,7 +92,9 @@ public final class IAPService: NSObject, Log {
         } catch {
             appUsagePermitted = false
             log.errorAndAssert("Failed to validate receaipt", metadata: ["error": "\(error)"])
-            NotificationCenter.default.postAlert(error)
+            if Self.shouldHandle(error) {
+                NotificationCenter.default.postAlert(error)
+            }
         }
     }
 }
@@ -138,8 +142,8 @@ extension IAPService: SKPaymentTransactionObserver {
     /// Called when an error occur while restoring purchases. Notify the user about the error.
     public func paymentQueue(_ queue: SKPaymentQueue, restoreCompletedTransactionsFailedWithError error: Error) {
         log.error("restoreCompletedTransactionsFailedWithError", metadata: ["error": "\(error)"])
-        guard let error = error as? SKError,
-              error.code != .paymentCancelled else { return }
+        guard (error as? SKError)?.code != .paymentCancelled,
+              Self.shouldHandle(error) else { return }
         NotificationCenter.default.postAlert(error)
     }
 
@@ -170,6 +174,15 @@ extension IAPService: SKPaymentTransactionObserver {
     public func paymentQueue(_ queue: SKPaymentQueue, didRevokeEntitlementsForProductIdentifiers productIdentifiers: [String]) {
         log.info("didRevokeEntitlementsForProductIdentifiers \(productIdentifiers)")
         validateReceipt()
+    }
+
+    // MARK: - Helper Functions
+
+    private static func shouldHandle(_ error: Error) -> Bool {
+        // This is a hacky workaround for fixing:
+        // * https://developer.apple.com/forums/thread/661351
+        // * https://openradar.appspot.com/FB8907873
+        !"\(error)".lowercased().contains("unhandled exception")
     }
 }
 
