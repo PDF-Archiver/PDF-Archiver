@@ -30,6 +30,10 @@ extension UserDefaults: Log {
         public static let defaultQualityIndex = 1  // e.g. "good"
     }
 
+    public var isInDemoMode: Bool {
+        UserDefaults.standard.bool(forKey: "demoMode")
+    }
+
     public var tutorialShown: Bool {
         get {
             bool(forKey: Names.tutorialShown.rawValue)

@@ -42,7 +42,6 @@ public final class PDFProcessing: Operation, Log {
     private let mode: Mode
     private let destinationFolder: URL
     private let tempImagePath: URL
-    private let archiveTags: Set<String>
     private let progressHandler: ProgressHandler?
     private let confidenceThreshold = Float(0)
 
@@ -56,11 +55,10 @@ public final class PDFProcessing: Operation, Log {
         }
     }
 
-    public init(of mode: Mode, destinationFolder: URL, tempImagePath: URL, archiveTags: Set<String>, progressHandler: ProgressHandler?) {
+    public init(of mode: Mode, destinationFolder: URL, tempImagePath: URL, progressHandler: ProgressHandler?) {
         self.mode = mode
         self.destinationFolder = destinationFolder
         self.tempImagePath = tempImagePath
-        self.archiveTags = archiveTags
         self.progressHandler = progressHandler
     }
 

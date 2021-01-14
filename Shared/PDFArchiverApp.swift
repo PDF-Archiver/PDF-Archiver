@@ -18,6 +18,10 @@ import SwiftUI
 @main
 struct PDFArchiverApp: App, Log {
 
+    #if os(macOS)
+    //swiftlint:disable:next weak_delegate
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    #endif
     @Environment(\.scenePhase) private var scenePhase
     @StateObject var mainNavigationViewModel = MainNavigationViewModel()
 
@@ -30,14 +34,13 @@ struct PDFArchiverApp: App, Log {
         WindowGroup {
             mainView
         }
+        // use this when tool bar items were added
+        //.windowToolbarStyle(UnifiedCompactWindowToolbarStyle())
         .windowStyle(HiddenTitleBarWindowStyle())
         .commands {
+            SidebarCommands()
             CommandGroup(replacing: CommandGroupPlacement.newItem) { }
         }
-//        .windowToolbarStyle(UnifiedCompactWindowToolbarStyle())
-//        .commands {
-//            SidebarCommands()
-//        }
 
         Settings {
             SettingsView(viewModel: mainNavigationViewModel.moreViewModel)
@@ -141,3 +144,12 @@ struct PDFArchiverApp: App, Log {
         }
     }
 }
+
+#if os(macOS)
+final class AppDelegate: NSObject, NSApplicationDelegate {
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+        // the app was rejected by apple because a user could not open the app again after closing the main window
+        true
+    }
+}
+#endif

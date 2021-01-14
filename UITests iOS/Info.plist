@@ -4,8 +4,6 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
-	<key>CFBundleDisplayName</key>
-	<string>PDF Archiver</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -17,14 +15,8 @@
 	<key>CFBundlePackageType</key>
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(MARKETING_VERSION)</string>
+	<string>1.0</string>
 	<key>CFBundleVersion</key>
-	<string>$(CURRENT_PROJECT_VERSION)</string>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
-	<key>LSApplicationCategoryType</key>
-	<string>public.app-category.productivity</string>
-	<key>LSMinimumSystemVersion</key>
-	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
+	<string>1</string>
 </dict>
 </plist>

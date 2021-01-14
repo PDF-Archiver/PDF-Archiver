@@ -21,26 +21,44 @@ struct DocumentList: View {
             Text("Tagged: \(taggedUntaggedDocuments)")
                 .font(Font.headline)
                 .padding()
-            List(documents) { document in
-                HStack {
-                    Circle()
-                        .fill(Color.systemBlue)
-                        .frame(width: 8, height: 8)
-                        .opacity(document == currentDocument ? 1 : 0)
-                    Text(document.filename)
-                        .lineLimit(1)
-                        .truncationMode(.middle)
+
+            // There is currently no way to remove the list separators, so we have to use a LazyVStack
+            //List(documents) { document in
+            ScrollView {
+                LazyVStack {
+                    ForEach(documents) { document in
+                        HStack {
+                            statusView(for: document)
+                            Text(document.filename)
+                                .lineLimit(1)
+                                .truncationMode(.middle)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.vertical, 5)
+                        .padding(.horizontal, 4)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            self.currentDocument = document
+                        }
+                        .background((documents.firstIndex(of: document) ?? 2) % 2 == 0 ? .clear : .paSecondaryBackground)
+                        .cornerRadius(5)
+                    }
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.vertical, 5)
-                .padding(.horizontal, 4)
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    self.currentDocument = document
-                }
-                .background((documents.firstIndex(of: document) ?? 2) % 2 == 0 ? .clear : .paSecondaryBackground)
-                .cornerRadius(5)
             }
+        }
+    }
+
+    @ViewBuilder
+    private func statusView(for document: Document) -> some View {
+        if document.taggingStatus == .tagged {
+            Image(systemName: "checkmark.circle")
+                .foregroundColor(.systemGreen)
+        } else if document == currentDocument {
+            Image(systemName: "circle")
+                .foregroundColor(.systemBlue)
+        } else {
+            Image(systemName: "circle")
+                .opacity(0)
         }
     }
 }

@@ -77,6 +77,16 @@
                ReferencedContainer = "container:ArchiveCore">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "34B1BAAF25A8EB440014FF77"
+               BuildableName = "UITests iOS.xctest"
+               BlueprintName = "UITests iOS"
+               ReferencedContainer = "container:PDFArchiver.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
@@ -99,6 +109,16 @@
             ReferencedContainer = "container:PDFArchiver.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "-demoMode"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "true"
+            isEnabled = "NO">
+         </CommandLineArgument>
+      </CommandLineArguments>
       <StoreKitConfigurationFileReference
          identifier = "../Shared/Resources/IAP.storekit">
       </StoreKitConfigurationFileReference>

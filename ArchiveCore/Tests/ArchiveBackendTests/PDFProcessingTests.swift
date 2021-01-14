@@ -46,8 +46,7 @@ final class PDFProcessingTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Document processing completed.")
         let operation = PDFProcessing(of: .pdf(exampleUrl),
                                       destinationFolder: Self.tempFolder,
-                                      tempImagePath: Self.tempFolder,
-                                      archiveTags: Set<String>()) { progress in
+                                      tempImagePath: Self.tempFolder) { progress in
             print("current progress \(progress)")
         }
         operation.completionBlock = {
@@ -73,8 +72,7 @@ final class PDFProcessingTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Document processing completed.")
         let operation = PDFProcessing(of: .images(uuid),
                                       destinationFolder: Self.tempFolder,
-                                      tempImagePath: Self.tempFolder,
-                                      archiveTags: Set<String>()) { progress in
+                                      tempImagePath: Self.tempFolder) { progress in
             print("current progress \(progress)")
         }
         operation.completionBlock = {
@@ -110,8 +108,7 @@ final class PDFProcessingTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Document processing completed.")
         let operation = PDFProcessing(of: .images(uuid),
                                       destinationFolder: Self.tempFolder,
-                                      tempImagePath: Self.tempFolder,
-                                      archiveTags: Set<String>()) { progress in
+                                      tempImagePath: Self.tempFolder) { progress in
             print("current progress \(progress)")
         }
         operation.completionBlock = {
@@ -148,8 +145,7 @@ final class PDFProcessingTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Document processing completed.")
         let operation = PDFProcessing(of: .images(uuid),
                                       destinationFolder: Self.tempFolder,
-                                      tempImagePath: Self.tempFolder,
-                                      archiveTags: Set<String>()) { progress in
+                                      tempImagePath: Self.tempFolder) { progress in
             print("current progress \(progress)")
         }
         operation.completionBlock = {
