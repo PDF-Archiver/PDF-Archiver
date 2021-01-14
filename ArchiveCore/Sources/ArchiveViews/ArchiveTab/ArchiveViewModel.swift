@@ -155,17 +155,6 @@ final class ArchiveViewModel: ObservableObject, Log {
                 NotificationCenter.default.postAlert(error)
             }
 
-            // TODO: do we need this?
-//            var filteredDocuments = archiveStore.documents.filter { $0.id != document.id }
-//            filteredDocuments.append(document)
-//            archiveStore.documents = filteredDocuments
-
-            // update the UI directly, by setting/updating the download status of this document
-            // and triggering a notification
-//            FileChange.DownloadStatus = .downloading
-//            archive.update(document)
-//            NotificationCenter.default.post(Notification(name: .documentChanges))
-
             FeedbackGenerator.notify(.success)
 
         case .local:

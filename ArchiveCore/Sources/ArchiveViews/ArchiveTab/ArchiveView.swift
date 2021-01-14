@@ -10,7 +10,6 @@ import SwiftUI
 import SwiftUIX
 
 #if os(macOS)
-// TODO: is this working out?
 struct EditButton: View {
     var body: some View {
         EmptyView()
@@ -25,21 +24,30 @@ struct ArchiveView: View {
     #endif
 
     var body: some View {
-
         if viewModel.showLoadingView {
             LoadingView()
         } else {
-            VStack {
-                searchView
-                if !viewModel.availableFilters.isEmpty {
-                    filterQueryItemView
-                }
-                documentsView
-                    .resignKeyboardOnDragGesture()
+            #if os(macOS)
+            NavigationView {
+                mainArchiveView
             }
-            .navigationBarTitle(Text("Archive"))
-            .navigationBarItems(trailing: EditButton())
+            #else
+            mainArchiveView
+            #endif
         }
+    }
+
+    var mainArchiveView: some View {
+        VStack {
+            searchView
+            if !viewModel.availableFilters.isEmpty {
+                filterQueryItemView
+            }
+            documentsView
+                .resignKeyboardOnDragGesture()
+        }
+        .navigationBarTitle(Text("Archive"))
+        .navigationBarItems(trailing: EditButton())
     }
 
     var searchView: some View {

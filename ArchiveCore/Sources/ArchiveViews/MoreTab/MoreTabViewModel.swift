@@ -26,6 +26,8 @@ public final class MoreTabViewModel: ObservableObject, Log {
     @Published var selectedArchiveType = StorageType.getCurrent()
     @Published var showArchiveTypeSelection = false
     @Published var subscriptionStatus: LocalizedStringKey = "Inactive ❌"
+    @Published var statisticsViewModel: StatisticsViewModel
+    @Published var newArchiveUrl: URL?
 
     var manageSubscriptionUrl: URL {
         URL(string: "https://apps.apple.com/account/subscriptions")!
@@ -42,46 +44,55 @@ public final class MoreTabViewModel: ObservableObject, Log {
     public init(iapService: IAPServiceAPI, archiveStore: ArchiveStoreAPI) {
         self.iapService = iapService
         self.archiveStore = archiveStore
+        self.statisticsViewModel = StatisticsViewModel(documents: archiveStore.documents)
+
+        archiveStore.documentsPublisher
+            .receive(on: DispatchQueue.global(qos: .utility))
+            .map(StatisticsViewModel.init(documents: ))
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$statisticsViewModel)
+
         $selectedQualityIndex
             .sink { selectedQuality in
                 UserDefaults.appGroup.pdfQuality = UserDefaults.PDFQuality.allCases[selectedQuality]
             }
             .store(in: &disposables)
 
+        #if os(macOS)
         $selectedArchiveType
             .dropFirst()
             .sink { selectedArchiveType in
-
                 let type: PathManager.ArchivePathType
                 switch selectedArchiveType {
                     case .iCloudDrive:
                         type = .iCloudDrive
-                    #if !os(macOS)
-                    case .appContainer:
-                        type = .appContainer
-                    #endif
-                    #if os(macOS)
                     case .local:
-                        // TODO: fix this
-                        type = .local(URL(string: "")!)
-                    #endif
+                        if let newArchiveUrl = self.newArchiveUrl {
+                            type = .local(newArchiveUrl)
+                            self.newArchiveUrl = nil
+                        } else {
+                            self.chooseArchivePanel()
+                            return
+                        }
                 }
-
-                do {
-                    let archiveUrl = try PathManager.shared.getArchiveUrl()
-                    let untaggedUrl = try PathManager.shared.getUntaggedUrl()
-
-                    try PathManager.shared.setArchiveUrl(with: type)
-
-                    self.showArchiveTypeSelection = false
-                    DispatchQueue.global(qos: .userInitiated).async {
-                        archiveStore.update(archiveFolder: archiveUrl, untaggedFolders: [untaggedUrl])
-                    }
-                } catch {
-                    NotificationCenter.default.postAlert(error)
-                }
+                self.handle(newType: type)
             }
             .store(in: &disposables)
+        #else
+        $selectedArchiveType
+            .dropFirst()
+            .sink { selectedArchiveType in
+                let type: PathManager.ArchivePathType
+                switch selectedArchiveType {
+                    case .iCloudDrive:
+                        type = .iCloudDrive
+                    case .appContainer:
+                        type = .appContainer
+                }
+                self.handle(newType: type)
+            }
+            .store(in: &disposables)
+        #endif
 
         iapService.appUsagePermittedPublisher
             .removeDuplicates()
@@ -104,6 +115,43 @@ public final class MoreTabViewModel: ObservableObject, Log {
         open(settingsAppURL)
     }
     #endif
+
+    #if os(macOS)
+    private func chooseArchivePanel() {
+        let openPanel = NSOpenPanel()
+        openPanel.title = NSLocalizedString("Choose the archive folder", comment: "")
+        openPanel.showsResizeIndicator = false
+        openPanel.showsHiddenFiles = false
+        openPanel.canChooseFiles = false
+        openPanel.canChooseDirectories = true
+        openPanel.allowsMultipleSelection = false
+        openPanel.canCreateDirectories = true
+        openPanel.begin { response in
+            guard response == .OK,
+                  let url = openPanel.url else { return }
+            self.newArchiveUrl = url
+            let tmp = self.selectedArchiveType
+            self.selectedArchiveType = tmp
+            print(url)
+        }
+    }
+    #endif
+
+    private func handle(newType type: PathManager.ArchivePathType) {
+        do {
+            try PathManager.shared.setArchiveUrl(with: type)
+
+            let archiveUrl = try PathManager.shared.getArchiveUrl()
+            let untaggedUrl = try PathManager.shared.getUntaggedUrl()
+
+            self.showArchiveTypeSelection = false
+            DispatchQueue.global(qos: .userInitiated).async {
+                self.archiveStore.update(archiveFolder: archiveUrl, untaggedFolders: [untaggedUrl])
+            }
+        } catch {
+            NotificationCenter.default.postAlert(error)
+        }
+    }
 
     func resetApp() {
         log.info("More table view show: reset app")
@@ -144,6 +192,10 @@ extension MoreTabViewModel {
     }
 
     private class MockArchiveStoreAPI: ArchiveStoreAPI {
+        var documents: [Document] { [] }
+        var documentsPublisher: AnyPublisher<[Document], Never> {
+            Just([]).eraseToAnyPublisher()
+        }
         func update(archiveFolder: URL, untaggedFolders: [URL]) {}
         func archive(_ document: Document, slugify: Bool) throws {}
         func download(_ document: Document) throws {}

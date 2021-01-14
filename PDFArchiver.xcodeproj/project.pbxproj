@@ -28,7 +28,7 @@
 		34822228257ACD36005DC1B2 /* IAP.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 34822227257ACD36005DC1B2 /* IAP.storekit */; };
 		34822229257ACD36005DC1B2 /* IAP.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 34822227257ACD36005DC1B2 /* IAP.storekit */; };
 		3482222A257ACD36005DC1B2 /* IAP.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 34822227257ACD36005DC1B2 /* IAP.storekit */; };
-		3489D73024A3C53E0035E64F /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3489D72F24A3C53E0035E64F /* Tests_iOS.swift */; };
+		3489D73024A3C53E0035E64F /* TestsIOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3489D72F24A3C53E0035E64F /* TestsIOS.swift */; };
 		3489D73B24A3C53E0035E64F /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3489D73A24A3C53E0035E64F /* Tests_macOS.swift */; };
 		3489D73D24A3C53E0035E64F /* PDFArchiverApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3489D71424A3C53D0035E64F /* PDFArchiverApp.swift */; };
 		3489D73E24A3C53E0035E64F /* PDFArchiverApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3489D71424A3C53D0035E64F /* PDFArchiverApp.swift */; };
@@ -38,6 +38,18 @@
 		34A53FA724AA65CB008A3377 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A53FA524AA65CA008A3377 /* ShareViewController.swift */; };
 		34A53FA824AA65CB008A3377 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 34A53FA624AA65CB008A3377 /* MainInterface.storyboard */; };
 		34A5CF8224A93A3C002409EF /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34A5CF8124A93A3C002409EF /* StoreKit.framework */; };
+		34A6576125A8DCCA0040E5A4 /* example-bill.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 34A6576025A8DCCA0040E5A4 /* example-bill.pdf */; };
+		34A6576225A8DCCA0040E5A4 /* example-bill.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 34A6576025A8DCCA0040E5A4 /* example-bill.pdf */; };
+		34A6576325A8DCCA0040E5A4 /* example-bill.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 34A6576025A8DCCA0040E5A4 /* example-bill.pdf */; };
+		34A6576425A8DCCA0040E5A4 /* example-bill.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 34A6576025A8DCCA0040E5A4 /* example-bill.pdf */; };
+		34A6576525A8DCCA0040E5A4 /* example-bill.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 34A6576025A8DCCA0040E5A4 /* example-bill.pdf */; };
+		34B1BAB325A8EB440014FF77 /* UITests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B1BAB225A8EB440014FF77 /* UITests_iOS.swift */; };
+		34B1BAC825A8EC5B0014FF77 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 34E7DB12250189D400E94352 /* Localizable.strings */; };
+		34B1BAD025A8EC5C0014FF77 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 34E7DB12250189D400E94352 /* Localizable.strings */; };
+		34B1BAD125A8EC5D0014FF77 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 34E7DB12250189D400E94352 /* Localizable.strings */; };
+		34B1BAD925A8EC650014FF77 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 34E7DB12250189D400E94352 /* Localizable.strings */; };
+		34B1BAF925A8EF7F0014FF77 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B1BAF825A8EF7F0014FF77 /* SnapshotHelper.swift */; };
+		34B1BB0825A8F1AA0014FF77 /* example-bill.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 34A6576025A8DCCA0040E5A4 /* example-bill.pdf */; };
 		34B2545E2512774400EC5DD9 /* Imprint.md in Resources */ = {isa = PBXBuildFile; fileRef = 34B254602512774400EC5DD9 /* Imprint.md */; };
 		34B25469251277A700EC5DD9 /* Privacy.md in Resources */ = {isa = PBXBuildFile; fileRef = 34B2546B251277A700EC5DD9 /* Privacy.md */; };
 		34D470BB255B249B000302A8 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34D470BA255B249B000302A8 /* StoreKit.framework */; };
@@ -48,6 +60,7 @@
 		34ECB0A325324FD100E69448 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 34ECB0A225324FD100E69448 /* Preview Assets.xcassets */; };
 		34ECB0A825324FD100E69448 /* AppClip.app in Embed App Clips */ = {isa = PBXBuildFile; fileRef = 34ECB09925324FCF00E69448 /* AppClip.app */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		34ECB0B92532500000E69448 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3416B1AE24A9282800D5F4E0 /* Assets.xcassets */; };
+		34FAB21A25A3B79B0088A306 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 34FAB21925A3B79B0088A306 /* Sentry */; };
 		34FB40712548839B00A415DA /* ArchiveSharedConstants in Frameworks */ = {isa = PBXBuildFile; productRef = 34FB40702548839A00A415DA /* ArchiveSharedConstants */; };
 		34FD2AE1254376F00044A594 /* PDFSharingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34FD2AE0254376F00044A594 /* PDFSharingView.swift */; };
 		34FD2AE9254377180044A594 /* PDFSharingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34FD2AE8254377180044A594 /* PDFSharingViewModel.swift */; };
@@ -76,6 +89,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 34A53F9624AA656B008A3377;
 			remoteInfo = ShareExtension;
+		};
+		34B1BAB525A8EB440014FF77 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3489D70F24A3C53D0035E64F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3489D71A24A3C53E0035E64F;
+			remoteInfo = iOS;
 		};
 		34ECB0A625324FD100E69448 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -125,7 +145,7 @@
 		3489D72524A3C53E0035E64F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3489D72624A3C53E0035E64F /* macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macOS.entitlements; sourceTree = "<group>"; };
 		3489D72B24A3C53E0035E64F /* Tests iOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests iOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		3489D72F24A3C53E0035E64F /* Tests_iOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_iOS.swift; sourceTree = "<group>"; };
+		3489D72F24A3C53E0035E64F /* TestsIOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestsIOS.swift; sourceTree = "<group>"; };
 		3489D73124A3C53E0035E64F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3489D73624A3C53E0035E64F /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3489D73A24A3C53E0035E64F /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
@@ -137,6 +157,11 @@
 		34A53FA924AA65E8008A3377 /* ShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShareExtension.entitlements; sourceTree = "<group>"; };
 		34A5CF7F24A93A28002409EF /* PDFArchiver.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PDFArchiver.entitlements; sourceTree = "<group>"; };
 		34A5CF8124A93A3C002409EF /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
+		34A6576025A8DCCA0040E5A4 /* example-bill.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "example-bill.pdf"; sourceTree = "<group>"; };
+		34B1BAB025A8EB440014FF77 /* UITests iOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "UITests iOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		34B1BAB225A8EB440014FF77 /* UITests_iOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITests_iOS.swift; sourceTree = "<group>"; };
+		34B1BAB425A8EB440014FF77 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		34B1BAF825A8EF7F0014FF77 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
 		34B2545F2512774400EC5DD9 /* de */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = de; path = de.lproj/Imprint.md; sourceTree = "<group>"; };
 		34B254672512774D00EC5DD9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = Base; path = Base.lproj/Imprint.md; sourceTree = "<group>"; };
 		34B2546A251277A700EC5DD9 /* de */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = de; path = de.lproj/Privacy.md; sourceTree = "<group>"; };
@@ -178,6 +203,7 @@
 				34D470BB255B249B000302A8 /* StoreKit.framework in Frameworks */,
 				343B4BB2254C0592008AD859 /* ArchiveBackend in Frameworks */,
 				343B4BB6254C0592008AD859 /* ArchiveViews in Frameworks */,
+				34FAB21A25A3B79B0088A306 /* Sentry in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -203,6 +229,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		34B1BAAD25A8EB440014FF77 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		34ECB09625324FCF00E69448 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -220,6 +253,7 @@
 		3416B1AC24A9282700D5F4E0 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				34A6576025A8DCCA0040E5A4 /* example-bill.pdf */,
 				34822227257ACD36005DC1B2 /* IAP.storekit */,
 				34E7DB12250189D400E94352 /* Localizable.strings */,
 				34B254252512765700EC5DD9 /* markdown */,
@@ -242,6 +276,7 @@
 				3489D73924A3C53E0035E64F /* Tests macOS */,
 				34A53F9824AA656B008A3377 /* ShareExtension */,
 				34ECB09A25324FCF00E69448 /* AppClip */,
+				34B1BAB125A8EB440014FF77 /* UITests iOS */,
 				3489D71C24A3C53E0035E64F /* Products */,
 				34A5CF8024A93A3C002409EF /* Frameworks */,
 			);
@@ -265,6 +300,7 @@
 				3489D73624A3C53E0035E64F /* Tests macOS.xctest */,
 				34A53F9724AA656B008A3377 /* ShareExtension.appex */,
 				34ECB09925324FCF00E69448 /* AppClip.app */,
+				34B1BAB025A8EB440014FF77 /* UITests iOS.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -290,7 +326,7 @@
 		3489D72E24A3C53E0035E64F /* Tests iOS */ = {
 			isa = PBXGroup;
 			children = (
-				3489D72F24A3C53E0035E64F /* Tests_iOS.swift */,
+				3489D72F24A3C53E0035E64F /* TestsIOS.swift */,
 				3489D73124A3C53E0035E64F /* Info.plist */,
 			);
 			path = "Tests iOS";
@@ -323,6 +359,16 @@
 				34A5CF8124A93A3C002409EF /* StoreKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		34B1BAB125A8EB440014FF77 /* UITests iOS */ = {
+			isa = PBXGroup;
+			children = (
+				34B1BAB225A8EB440014FF77 /* UITests_iOS.swift */,
+				34B1BAF825A8EF7F0014FF77 /* SnapshotHelper.swift */,
+				34B1BAB425A8EB440014FF77 /* Info.plist */,
+			);
+			path = "UITests iOS";
 			sourceTree = "<group>";
 		};
 		34B254252512765700EC5DD9 /* markdown */ = {
@@ -394,6 +440,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3489D74824A3C53E0035E64F /* Build configuration list for PBXNativeTarget "macOS" */;
 			buildPhases = (
+				3458AA0825A7A8DF00F49BEC /* SwiftLint */,
+				34AB205825AB37E200325F25 /* Settings Bundle Update */,
 				3489D71F24A3C53E0035E64F /* Sources */,
 				3489D72024A3C53E0035E64F /* Frameworks */,
 				3489D72124A3C53E0035E64F /* Resources */,
@@ -408,6 +456,7 @@
 				343B4BB3254C0592008AD859 /* ArchiveSharedConstants */,
 				343B4BB5254C0592008AD859 /* ArchiveViews */,
 				343B4BB7254C0592008AD859 /* InAppPurchases */,
+				34FAB21925A3B79B0088A306 /* Sentry */,
 			);
 			productName = macOS;
 			productReference = 3489D72324A3C53E0035E64F /* PDFArchiver.app */;
@@ -469,6 +518,24 @@
 			productReference = 34A53F9724AA656B008A3377 /* ShareExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		34B1BAAF25A8EB440014FF77 /* UITests iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 34B1BAB925A8EB440014FF77 /* Build configuration list for PBXNativeTarget "UITests iOS" */;
+			buildPhases = (
+				34B1BAAC25A8EB440014FF77 /* Sources */,
+				34B1BAAD25A8EB440014FF77 /* Frameworks */,
+				34B1BAAE25A8EB440014FF77 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				34B1BAB625A8EB440014FF77 /* PBXTargetDependency */,
+			);
+			name = "UITests iOS";
+			productName = "UITests iOS";
+			productReference = 34B1BAB025A8EB440014FF77 /* UITests iOS.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		34ECB09825324FCF00E69448 /* AppClip */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 34ECB0A925324FD100E69448 /* Build configuration list for PBXNativeTarget "AppClip" */;
@@ -498,7 +565,7 @@
 		3489D70F24A3C53D0035E64F /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1200;
+				LastSwiftUpdateCheck = 1220;
 				LastUpgradeCheck = 1210;
 				TargetAttributes = {
 					3489D71A24A3C53E0035E64F = {
@@ -518,6 +585,10 @@
 					34A53F9624AA656B008A3377 = {
 						CreatedOnToolsVersion = 12.0;
 						LastSwiftMigration = 1200;
+					};
+					34B1BAAF25A8EB440014FF77 = {
+						CreatedOnToolsVersion = 12.2;
+						TestTargetID = 3489D71A24A3C53E0035E64F;
 					};
 					34ECB09825324FCF00E69448 = {
 						CreatedOnToolsVersion = 12.0.1;
@@ -544,6 +615,7 @@
 				3489D71A24A3C53E0035E64F /* iOS */,
 				3489D72224A3C53E0035E64F /* macOS */,
 				3489D72A24A3C53E0035E64F /* Tests iOS */,
+				34B1BAAF25A8EB440014FF77 /* UITests iOS */,
 				3489D73524A3C53E0035E64F /* Tests macOS */,
 				34A53F9624AA656B008A3377 /* ShareExtension */,
 				34ECB09825324FCF00E69448 /* AppClip */,
@@ -561,6 +633,7 @@
 				34A23FD02519386200EBE1D5 /* Privacy.md in Resources */,
 				34822228257ACD36005DC1B2 /* IAP.storekit in Resources */,
 				345A497E24AFB0CE00EC4DC2 /* Settings.bundle in Resources */,
+				34A6576125A8DCCA0040E5A4 /* example-bill.pdf in Resources */,
 				3416B23C24A9282800D5F4E0 /* Assets.xcassets in Resources */,
 				34E7DB0F250189D400E94352 /* Localizable.strings in Resources */,
 			);
@@ -574,6 +647,7 @@
 				34B2545E2512774400EC5DD9 /* Imprint.md in Resources */,
 				3416B23D24A9282800D5F4E0 /* Assets.xcassets in Resources */,
 				34E7DB10250189D400E94352 /* Localizable.strings in Resources */,
+				34A6576225A8DCCA0040E5A4 /* example-bill.pdf in Resources */,
 				34031DC6250FCED500C46C88 /* Settings.bundle in Resources */,
 				34822229257ACD36005DC1B2 /* IAP.storekit in Resources */,
 			);
@@ -583,6 +657,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				34A6576325A8DCCA0040E5A4 /* example-bill.pdf in Resources */,
+				34B1BAC825A8EC5B0014FF77 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -590,6 +666,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				34A6576425A8DCCA0040E5A4 /* example-bill.pdf in Resources */,
+				34B1BAD125A8EC5D0014FF77 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -598,6 +676,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				34A53FA824AA65CB008A3377 /* MainInterface.storyboard in Resources */,
+				34B1BAD925A8EC650014FF77 /* Localizable.strings in Resources */,
+				34A6576525A8DCCA0040E5A4 /* example-bill.pdf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		34B1BAAE25A8EB440014FF77 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				34B1BAD025A8EC5C0014FF77 /* Localizable.strings in Resources */,
+				34B1BB0825A8F1AA0014FF77 /* example-bill.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -615,6 +704,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		3458AA0825A7A8DF00F49BEC /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export PATH=\"/usr/local/bin:$PATH\"\n\nif which swiftlint >/dev/null; then\n    swiftlint autocorrect\n    # swiftlint will be run in chia\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/swiftlint\"\nfi\n\nif which chia >/dev/null; then\n    chia --config https://raw.githubusercontent.com/JulianKahnert/chia-config/master/chia.yml --xcode\nelse\n    echo \"warning: chia not installed, download from https://github.com/worldiety/chia\"\nfi\n";
+		};
 		34A53F7C24AA6381008A3377 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -634,6 +741,25 @@
 			shellScript = "export PATH=\"/usr/local/bin:$PATH\"\n\nif which swiftlint >/dev/null; then\n    swiftlint autocorrect\n    # swiftlint will be run in chia\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/swiftlint\"\nfi\n\nif which chia >/dev/null; then\n    chia --config https://raw.githubusercontent.com/JulianKahnert/chia-config/master/chia.yml --xcode\nelse\n    echo \"warning: chia not installed, download from https://github.com/worldiety/chia\"\nfi\n";
 		};
 		34A53F7E24AA63DC008A3377 /* Settings Bundle Update */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 8;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Settings Bundle Update";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(PROJECT_DIR)/Shared/Resources/Seettings.bundle/Root.plist",
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "# Update settings.bundle with new license plist files\n# https://github.com/mono0926/LicensePlist\nif which license-plist >/dev/null; then\n    license-plist --suppress-opening-directory --add-version-numbers --force --output-path Shared/Resources/Settings.bundle\nelse\n    echo \"warning: license-plist not installed, download from https://github.com/mono0926/LicensePlist\"\nfi\n\n# Source: https://stackoverflow.com/a/39030153\n/usr/libexec/PlistBuddy -c \"Set PreferenceSpecifiers:0:DefaultValue $MARKETING_VERSION ($CURRENT_PROJECT_VERSION)\" \"$PROJECT_DIR/Shared/Resources/Settings.bundle/Root.plist\"\n";
+		};
+		34AB205825AB37E200325F25 /* Settings Bundle Update */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 8;
 			files = (
@@ -675,7 +801,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3489D73024A3C53E0035E64F /* Tests_iOS.swift in Sources */,
+				3489D73024A3C53E0035E64F /* TestsIOS.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -692,6 +818,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				34A53FA724AA65CB008A3377 /* ShareViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		34B1BAAC25A8EB440014FF77 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				34B1BAB325A8EB440014FF77 /* UITests_iOS.swift in Sources */,
+				34B1BAF925A8EF7F0014FF77 /* SnapshotHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -725,6 +860,11 @@
 			isa = PBXTargetDependency;
 			target = 34A53F9624AA656B008A3377 /* ShareExtension */;
 			targetProxy = 34A53F9F24AA656B008A3377 /* PBXContainerItemProxy */;
+		};
+		34B1BAB625A8EB440014FF77 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3489D71A24A3C53E0035E64F /* iOS */;
+			targetProxy = 34B1BAB525A8EB440014FF77 /* PBXContainerItemProxy */;
 		};
 		34ECB0A725324FD100E69448 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -894,7 +1034,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = iOS/PDFArchiver.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
@@ -903,7 +1043,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.1.2;
+				MARKETING_VERSION = 3.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer;
 				PRODUCT_NAME = PDFArchiver;
 				SDKROOT = iphoneos;
@@ -921,7 +1061,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = iOS/PDFArchiver.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
@@ -930,7 +1070,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.1.2;
+				MARKETING_VERSION = 3.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer;
 				PRODUCT_NAME = PDFArchiver;
 				SDKROOT = iphoneos;
@@ -950,7 +1090,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -960,7 +1100,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 3.1.2;
+				MARKETING_VERSION = 3.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer;
 				PRODUCT_NAME = PDFArchiver;
 				SDKROOT = macosx;
@@ -977,7 +1117,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -987,7 +1127,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 3.1.2;
+				MARKETING_VERSION = 3.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer;
 				PRODUCT_NAME = PDFArchiver;
 				SDKROOT = macosx;
@@ -1090,7 +1230,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = ShareExtension/ShareExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				INFOPLIST_FILE = ShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -1099,7 +1239,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 3.1.2;
+				MARKETING_VERSION = 3.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1117,7 +1257,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = ShareExtension/ShareExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				INFOPLIST_FILE = ShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -1126,7 +1266,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 3.1.2;
+				MARKETING_VERSION = 3.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1138,6 +1278,49 @@
 			};
 			name = Release;
 		};
+		34B1BAB725A8EB440014FF77 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 87KNVHZ8C7;
+				INFOPLIST_FILE = "UITests iOS/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "de.juliankahnert.UITests-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = iOS;
+			};
+			name = Debug;
+		};
+		34B1BAB825A8EB440014FF77 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 87KNVHZ8C7;
+				INFOPLIST_FILE = "UITests iOS/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "de.juliankahnert.UITests-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = iOS;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		34ECB0AA25324FD100E69448 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1145,7 +1328,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AppClip/AppClip.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_ASSET_PATHS = "\"AppClip/Preview Content\"";
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_PREVIEWS = YES;
@@ -1155,7 +1338,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.1.2;
+				MARKETING_VERSION = 3.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer.Clip;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1172,7 +1355,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AppClip/AppClip.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_ASSET_PATHS = "\"AppClip/Preview Content\"";
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_PREVIEWS = YES;
@@ -1182,7 +1365,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.1.2;
+				MARKETING_VERSION = 3.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer.Clip;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1246,6 +1429,15 @@
 			buildConfigurations = (
 				34A53FA324AA656B008A3377 /* Debug */,
 				34A53FA424AA656B008A3377 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		34B1BAB925A8EB440014FF77 /* Build configuration list for PBXNativeTarget "UITests iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				34B1BAB725A8EB440014FF77 /* Debug */,
+				34B1BAB825A8EB440014FF77 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1321,6 +1513,11 @@
 		346B1BDD253C65B700D3F8AB /* ArchiveViews */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ArchiveViews;
+		};
+		34FAB21925A3B79B0088A306 /* Sentry */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3416B28524A92D4200D5F4E0 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
+			productName = Sentry;
 		};
 		34FB40702548839A00A415DA /* ArchiveSharedConstants */ = {
 			isa = XCSwiftPackageProductDependency;

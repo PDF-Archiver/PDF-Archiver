@@ -9,22 +9,17 @@
 import SwiftUI
 
 struct TagListView: View {
-    private static let minColumnWidth: CGFloat = 100
 
     @Binding var tags: [String]
     let isEditable: Bool
     let isMultiLine: Bool
     let tapHandler: ((String) -> Void)?
 
-    var columns: [GridItem] = [GridItem(.adaptive(minimum: Self.minColumnWidth), spacing: 4)]
-
     @ViewBuilder
     var body: some View {
         if isMultiLine {
-            LazyVGrid(columns: columns, spacing: 6) {
-                ForEach(tags, id: \.self) { tag in
-                    TagView(tagName: tag, isEditable: self.isEditable, tapHandler: self.tapHandler)
-                }
+            WrappingHStack(items: tags) { tag in
+                TagView(tagName: tag, isEditable: self.isEditable, tapHandler: self.tapHandler)
             }
         } else {
             singleLineView

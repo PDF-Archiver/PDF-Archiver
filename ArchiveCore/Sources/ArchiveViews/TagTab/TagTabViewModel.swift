@@ -26,7 +26,6 @@ final class TagTabViewModel: ObservableObject, Log {
     @Published var documentTags = [String]()
     @Published var documentTagInput = ""
     @Published var suggestedTags = [String]()
-    @Published var inputAccessoryViewSuggestions = [String]()
 
     var taggedUntaggedDocuments: String {
         let filteredDocuments = documents.filter { $0.taggingStatus == .tagged }
@@ -50,12 +49,14 @@ final class TagTabViewModel: ObservableObject, Log {
             .assign(to: \.showLoadingView, on: self)
             .store(in: &disposables)
 
-        $documentTagInput
-            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }
-            .map { tagName -> [String] in
+        $documentTags
+            .removeDuplicates()
+            .combineLatest($documentTagInput)
+            .map { (documentTags, tag) -> [String] in
+                let tagName = tag.trimmingCharacters(in: .whitespacesAndNewlines).slugified().lowercased()
                 let tags: Set<String>
-                if tagName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                    tags = self.getAssociatedTags(from: self.documentTags)
+                if tagName.isEmpty {
+                    tags = self.getAssociatedTags(from: documentTags)
                 } else {
                     tags = self.tagStore.getAvailableTags(with: [tagName])
                 }
@@ -78,10 +79,9 @@ final class TagTabViewModel: ObservableObject, Log {
                             }
                         }
                     }
-                return Array(sortedTags.prefix(5))
+                return Array(sortedTags.prefix(10))
             }
-            .removeDuplicates()
-            .assign(to: &$inputAccessoryViewSuggestions)
+            .assign(to: &$suggestedTags)
 
         archiveStore.$documents
             .map { newDocuments -> [Document] in
@@ -102,9 +102,11 @@ final class TagTabViewModel: ObservableObject, Log {
                             return doc1 > doc2
                         }
                     }
+                    .reversed()
 
                 // tagged documents should be first in the list
                 var currentDocuments = self.documents.filter { $0.taggingStatus == .tagged }
+                    .sorted()
                 currentDocuments.append(contentsOf: sortedDocuments)
                 DispatchQueue.main.async {
                     self.documents = currentDocuments
@@ -123,7 +125,10 @@ final class TagTabViewModel: ObservableObject, Log {
 
                 guard self.currentDocument == nil || !newUntaggedDocuments.contains(self.currentDocument!)  else { return nil }
 
-                return self.getNewDocument(from: newUntaggedDocuments)
+                let newCurrentDocument = currentDocuments
+                    .first { $0.taggingStatus == .untagged && $0.downloadStatus == .local }
+
+                return newCurrentDocument
             }
             .receive(on: DispatchQueue.main)
             .sink { document in
@@ -200,9 +205,6 @@ final class TagTabViewModel: ObservableObject, Log {
             }
             .receive(on: DispatchQueue.main)
             .assign(to: &$documentTags)
-//            .assign(to: \.documentTags, on: self)
-//            .store(in: &disposables)
-
     }
 
     func saveTag(_ tagName: String) {
@@ -231,11 +233,9 @@ final class TagTabViewModel: ObservableObject, Log {
                 try self.archiveStore.archive(document, slugify: true)
                 var filteredDocuments = self.archiveStore.documents.filter { $0.id != document.id }
                 filteredDocuments.append(document)
+                // this will trigger the publisher, which calls getNewDocument, e.g.
+                // updates the current document
                 self.archiveStore.documents = filteredDocuments
-
-                DispatchQueue.main.async {
-                    self.currentDocument = self.getNewDocument(from: filteredDocuments)
-                }
 
                 FeedbackGenerator.notify(.success)
 
@@ -259,28 +259,19 @@ final class TagTabViewModel: ObservableObject, Log {
         guard let currentDocument = currentDocument else { return }
         DispatchQueue.global(qos: .userInitiated).async {
             do {
+                // this will trigger the publisher, which calls getNewDocument, e.g.
+                // updates the current document
                 try self.archiveStore.delete(currentDocument)
 
                 DispatchQueue.main.async {
-                    // delete document from document list
+                    // delete document from document list - immediately
                     self.documents.removeAll { $0.filename == currentDocument.filename }
-
-                    // remove the current document and clear the vie
-                    self.currentDocument = self.getNewDocument(from: self.archiveStore.documents)
                 }
             } catch {
                 Self.log.error("Error while deleting document!", metadata: ["error": "\(error)"])
                 NotificationCenter.default.postAlert(error)
             }
         }
-    }
-
-    private func getNewDocument(from documents: [Document]) -> Document? {
-        // swiftlint:disable:next sorted_first_last
-        documents
-            .filter { $0.taggingStatus == .untagged }
-            .sorted { $0.filename < $1.filename }
-            .first { $0.downloadStatus == .local }
     }
 
     private func getAssociatedTags(from documentTags: [String]) -> Set<String> {

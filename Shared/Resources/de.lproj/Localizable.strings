@@ -105,9 +105,6 @@
 /* Simulator test data set */
 "test_file3" = "archive/2016/2016-04-03--versicherung-report__brief_versicherung.pdf";
 
-/* Simulator test data set */
-"test_resource_filename" = "2017-01-17--tom-tailor-jeans__kleidung_rechnung";
-
 /* Error message to be displayed when failing to share a document */
 "Unable to share document without the pdf file" = "Dokument konnte nicht gefunden werden.";
 
@@ -188,6 +185,8 @@
 
 "Scan your documents, tag them and find them sorted in your iCloud Drive." = "Scanne und tagge Dokumente und finde sie anschließend in iCloud Drive.";
 
+"Import your documents, tag them and find them sorted in your iCloud Drive." = "Importiere und tagge Dokumente und finde sie anschließend in iCloud Drive.";
+
 "PDF Quality" = "PDF Qualität";
 
 "Document Tags" = "Dokumenten Tags";
@@ -226,8 +225,6 @@
 
 "Search PDFs" = "Suche PDFs";
 
-"Scan Documents" = "Scan Dokumente";
-
 "Searchable PDFs" = "Textanalyse";
 
 "Activate/Restore Subscription" = "Abo aktivieren/wiederherstellen";
@@ -236,7 +233,7 @@
 
 "Restore" = "Wiederherstellen";
 
-"• Try the app for free! You can try the app in a free trial period of 1 month by choosing a subscription. You can try the app without any costs in this period.\n• Your Apple account will be charged for the next subscription period within the final 24 hours of the current period.\n• The subscription will renew automatically if you do not deactivate the renewal in the account setting in iTunes or the App Store at least 24 hours before the end of the subscription period." = "• Teste die App kostenlos! Du kannst die App in einer kostenlosen Testphase von 1 Monat testen, indem du ein Abonnement wählst. Du kannst die App in diesem Zeitraum kostenlos testen.\n• Dein Apple-Account wird innerhalb der letzten 24 Stunden der aktuellen Periode für die nächste Abonnementsperiode belastet.\n• Das Abonnement verlängert sich automatisch, wenn du die Verlängerung nicht mindestens 24 Stunden vor Ablauf der Abonnementsperiode in der Account-Einstellung im App Store deaktivierst.";
+"• Try the app for free! You can try the app in a free trial period of 2 weeks by choosing a subscription. You can try the app without any costs in this period.\n• Your Apple account will be charged for the next subscription period within the final 24 hours of the current period.\n• The subscription will renew automatically if you do not deactivate the renewal in the account setting in iTunes or the App Store at least 24 hours before the end of the subscription period." = "• Teste die App kostenlos! Du kannst die App in einer kostenlosen Testphase von 2 Wochen testen, indem du ein Abonnement wählst. Du kannst die App in diesem Zeitraum kostenlos testen.\n• Dein Apple-Account wird innerhalb der letzten 24 Stunden der aktuellen Periode für die nächste Abonnementsperiode belastet.\n• Das Abonnement verlängert sich automatisch, wenn du die Verlängerung nicht mindestens 24 Stunden vor Ablauf der Abonnementsperiode in der Account-Einstellung im App Store deaktivierst.";
 
 "Active ✅" = "Aktiv ✅";
 
@@ -281,3 +278,21 @@
 "PDF Archiver has crashed. This should not happen!\n\nPlease provide feedback, to improve the App experience." = "PDF Archiver ist abgestürzt. Dies sollte nicht passieren!\n\nBitte sende Dein Feedback, um die App zu verbessern.";
 
 "Send" = "Senden";
+
+"🧾 Statistics" = "🧾 Statistiken";
+
+"Top Years" = "Top Jahre";
+
+"Choose the archive folder" = "Wähle den Archiv Ordner";
+
+"tagged" = "ver­schlag­wor­tet";
+
+"untagged" = "unbearbeitet";
+
+"Document Attributes" = "Dokument Attribute";
+
+"Available Tags" = "Verfügbare Tags";
+
+"PDF Documents" = "PDF Dokumente";
+
+"Save" = "Speichern";

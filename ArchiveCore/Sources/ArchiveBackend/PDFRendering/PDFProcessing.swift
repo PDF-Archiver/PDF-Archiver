@@ -31,7 +31,7 @@ extension NSImage {
 #endif
 
 public enum PDFProcessingError: Error {
-    case unttaggedDocumentsPathNotFound
+    case untaggedDocumentsPathNotFound
     case pdfNotFound
 }
 
@@ -42,7 +42,6 @@ public final class PDFProcessing: Operation, Log {
     private let mode: Mode
     private let destinationFolder: URL
     private let tempImagePath: URL
-    private let archiveTags: Set<String>
     private let progressHandler: ProgressHandler?
     private let confidenceThreshold = Float(0)
 
@@ -56,11 +55,10 @@ public final class PDFProcessing: Operation, Log {
         }
     }
 
-    public init(of mode: Mode, destinationFolder: URL, tempImagePath: URL, archiveTags: Set<String>, progressHandler: ProgressHandler?) {
+    public init(of mode: Mode, destinationFolder: URL, tempImagePath: URL, progressHandler: ProgressHandler?) {
         self.mode = mode
         self.destinationFolder = destinationFolder
         self.tempImagePath = tempImagePath
-        self.archiveTags = archiveTags
         self.progressHandler = progressHandler
     }
 
@@ -134,16 +132,8 @@ public final class PDFProcessing: Operation, Log {
         let parsedDate = DateParser.parse(content)?.date ?? Date()
 
         // parse the tags
-        var newTags = TagParser.parse(content)
-        if newTags.isEmpty {
-            newTags.insert(Constants.documentTagPlaceholder)
-        } else {
-
-            // only use tags that are already in the archive
-            newTags = Set(newTags.intersection(archiveTags).prefix(5))
-        }
-
-        return Document.createFilename(date: parsedDate, specification: specification, tags: newTags)
+        let tags = Set([Constants.documentTagPlaceholder])
+        return Document.createFilename(date: parsedDate, specification: specification, tags: tags)
     }
 
     private func createPdf(of documentId: UUID) throws -> URL {
@@ -266,7 +256,6 @@ public final class PDFProcessing: Operation, Log {
             let pageInfo = info as CFDictionary
             context.beginPDFPage(pageInfo)
 
-            // TODO: do we need this on macOS?
             let transform = CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: 0, ty: bounds.height)
             context.concatenate(transform)
 
@@ -297,6 +286,8 @@ public final class PDFProcessing: Operation, Log {
             document.insert(page, at: index)
         }
 
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+        document.documentAttributes?[PDFDocumentAttribute.creatorAttribute] = "PDF Archiver " + (version ?? "")
         return document
     }
 

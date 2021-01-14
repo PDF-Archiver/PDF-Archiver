@@ -30,6 +30,10 @@ extension UserDefaults: Log {
         public static let defaultQualityIndex = 1  // e.g. "good"
     }
 
+    public var isInDemoMode: Bool {
+        UserDefaults.standard.bool(forKey: "demoMode")
+    }
+
     public var tutorialShown: Bool {
         get {
             bool(forKey: Names.tutorialShown.rawValue)
@@ -104,7 +108,7 @@ extension UserDefaults: Log {
         }
     }
 
-    public func set<T: Encodable>(_ object: T?, forKey key: Names) throws {
+    public func setObject<T: Encodable>(_ object: T?, forKey key: Names) throws {
         guard let object = object else {
             set(nil, forKey: key.rawValue)
             return

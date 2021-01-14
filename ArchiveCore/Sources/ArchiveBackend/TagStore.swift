@@ -27,10 +27,10 @@ public final class TagStore {
             .store(in: &disposables)
     }
 
-    public func getAvailableTags(with searchterms: [String]) -> Set<String> {
+    public func getAvailableTags(with searchTerms: [String]) -> Set<String> {
 
         // search in filename of the documents
-        let filteredDocuments = ArchiveStore.shared.documents.fuzzyMatchSorted(by: searchterms)
+        let filteredDocuments = ArchiveStore.shared.documents.fuzzyMatchSorted(by: searchTerms)
 
         // get a set of all document tags
         let allDocumentTags = filteredDocuments.reduce(into: Set<String>()) { result, document in
@@ -38,12 +38,12 @@ public final class TagStore {
         }
 
         let filteredTags: Set<String>
-        if searchterms.isEmpty {
+        if searchTerms.isEmpty {
             filteredTags = allDocumentTags
         } else {
             // filter the tags that match any searchterm
             filteredTags = allDocumentTags.filter { tag in
-                searchterms.contains { tag.lowercased().contains($0.lowercased()) }
+                searchTerms.contains { tag.lowercased().contains($0.lowercased()) }
             }
         }
 

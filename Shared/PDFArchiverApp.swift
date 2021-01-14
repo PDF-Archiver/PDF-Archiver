@@ -12,15 +12,16 @@
 import Diagnostics
 import Foundation
 import Logging
-#if !os(macOS)
-// TODO: add sentry again on macos
 import Sentry
-#endif
 import SwiftUI
 
 @main
 struct PDFArchiverApp: App, Log {
 
+    #if os(macOS)
+    //swiftlint:disable:next weak_delegate
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    #endif
     @Environment(\.scenePhase) private var scenePhase
     @StateObject var mainNavigationViewModel = MainNavigationViewModel()
 
@@ -33,7 +34,13 @@ struct PDFArchiverApp: App, Log {
         WindowGroup {
             mainView
         }
+        // use this when tool bar items were added
+        //.windowToolbarStyle(UnifiedCompactWindowToolbarStyle())
         .windowStyle(HiddenTitleBarWindowStyle())
+        .commands {
+            SidebarCommands()
+            CommandGroup(replacing: CommandGroupPlacement.newItem) { }
+        }
 
         Settings {
             SettingsView(viewModel: mainNavigationViewModel.moreViewModel)
@@ -67,6 +74,10 @@ struct PDFArchiverApp: App, Log {
     }
 
     private func setup() {
+
+        #if os(macOS)
+        NSWindow.allowsAutomaticWindowTabbing = false
+        #endif
 
         do {
             try DiagnosticsLogger.setup()
@@ -106,8 +117,6 @@ struct PDFArchiverApp: App, Log {
     }
 
     private func initializeSentry() {
-        // TODO: add sentry again on macOS
-        #if !os(macOS)
         // Create a Sentry client and start crash handler
         SentrySDK.start { options in
             options.dsn = "https://7adfcae85d8d4b2f946102571b2d4d6c@o194922.ingest.sentry.io/1299590"
@@ -133,6 +142,14 @@ struct PDFArchiverApp: App, Log {
             event.context?["device"]?["usable_memory"] = nil
             return event
         }
-        #endif
     }
 }
+
+#if os(macOS)
+final class AppDelegate: NSObject, NSApplicationDelegate {
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+        // the app was rejected by apple because a user could not open the app again after closing the main window
+        true
+    }
+}
+#endif

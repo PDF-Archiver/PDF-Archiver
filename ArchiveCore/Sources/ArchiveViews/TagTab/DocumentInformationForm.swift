@@ -31,24 +31,20 @@ struct DocumentInformationForm: View {
 
     private func documentTagTapped(_ tag: String) {
         tags.removeAll { $0 == tag }
-        insertAndSort($suggestedTags, tag: tag)
+        // just remove the tapped tag
+        //$suggestedTags.insertAndSort(tag)
     }
 
     private func saveCurrentTag() {
         let tag = tagInput
         tagInput = ""
-        insertAndSort($tags, tag: tag)
+        $tags.insertAndSort(tag)
     }
 
     private func suggestedTagTapped(_ tag: String) {
         suggestedTags.removeAll { $0 == tag }
-        insertAndSort($tags, tag: tag)
-    }
-
-    private func insertAndSort(_ tags: Binding<[String]>, tag: String) {
-        var uniqueTags = Set(tags.wrappedValue)
-        uniqueTags.insert(tag)
-        tags.wrappedValue = uniqueTags.sorted()
+        tagInput = ""
+        $tags.insertAndSort(tag)
     }
 
     private var documentTagsView: some View {

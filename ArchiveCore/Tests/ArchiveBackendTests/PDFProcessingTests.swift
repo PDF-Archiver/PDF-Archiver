@@ -46,8 +46,7 @@ final class PDFProcessingTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Document processing completed.")
         let operation = PDFProcessing(of: .pdf(exampleUrl),
                                       destinationFolder: Self.tempFolder,
-                                      tempImagePath: Self.tempFolder,
-                                      archiveTags: Set<String>()) { progress in
+                                      tempImagePath: Self.tempFolder) { progress in
             print("current progress \(progress)")
         }
         operation.completionBlock = {
@@ -73,8 +72,7 @@ final class PDFProcessingTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Document processing completed.")
         let operation = PDFProcessing(of: .images(uuid),
                                       destinationFolder: Self.tempFolder,
-                                      tempImagePath: Self.tempFolder,
-                                      archiveTags: Set<String>()) { progress in
+                                      tempImagePath: Self.tempFolder) { progress in
             print("current progress \(progress)")
         }
         operation.completionBlock = {
@@ -92,6 +90,8 @@ final class PDFProcessingTests: XCTestCase {
         assertEqualPDFDocuments(left: document, right: Self.referenceDocument)
 
         XCTAssertEqual(document.pageCount, 1)
+        let creatorAttribute = try XCTUnwrap(document.documentAttributes?[PDFDocumentAttribute.creatorAttribute] as? String)
+        XCTAssert(creatorAttribute.starts(with: "PDF Archiver"))
         let content = try XCTUnwrap(document.string)
         XCTAssertFalse(content.isEmpty)
         XCTAssert(content.contains("TOM TAILOR"))
@@ -108,8 +108,7 @@ final class PDFProcessingTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Document processing completed.")
         let operation = PDFProcessing(of: .images(uuid),
                                       destinationFolder: Self.tempFolder,
-                                      tempImagePath: Self.tempFolder,
-                                      archiveTags: Set<String>()) { progress in
+                                      tempImagePath: Self.tempFolder) { progress in
             print("current progress \(progress)")
         }
         operation.completionBlock = {
@@ -127,6 +126,8 @@ final class PDFProcessingTests: XCTestCase {
         assertEqualPDFDocuments(left: document, right: Self.referenceDocument)
 
         XCTAssertEqual(document.pageCount, 1)
+        let creatorAttribute = try XCTUnwrap(document.documentAttributes?[PDFDocumentAttribute.creatorAttribute] as? String)
+        XCTAssert(creatorAttribute.starts(with: "PDF Archiver"))
         let content = try XCTUnwrap(document.string)
         XCTAssertFalse(content.isEmpty)
         XCTAssert(content.contains("TOM TAILOR"))
@@ -144,8 +145,7 @@ final class PDFProcessingTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Document processing completed.")
         let operation = PDFProcessing(of: .images(uuid),
                                       destinationFolder: Self.tempFolder,
-                                      tempImagePath: Self.tempFolder,
-                                      archiveTags: Set<String>()) { progress in
+                                      tempImagePath: Self.tempFolder) { progress in
             print("current progress \(progress)")
         }
         operation.completionBlock = {
@@ -161,6 +161,8 @@ final class PDFProcessingTests: XCTestCase {
         let document = try XCTUnwrap(PDFDocument(url: outputUrl))
 
         XCTAssertEqual(document.pageCount, 3)
+        let creatorAttribute = try XCTUnwrap(document.documentAttributes?[PDFDocumentAttribute.creatorAttribute] as? String)
+        XCTAssert(creatorAttribute.starts(with: "PDF Archiver"))
         let content = try XCTUnwrap(document.string)
         XCTAssertFalse(content.isEmpty)
         XCTAssert(content.contains("TOM TAILOR"))

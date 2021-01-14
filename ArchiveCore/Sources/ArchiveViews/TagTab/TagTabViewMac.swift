@@ -12,25 +12,38 @@ struct TagTabViewMac: View {
     @ObservedObject var viewModel: TagTabViewModel
 
     var body: some View {
-        GeometryReader { proxy in
-            HStack(spacing: 8) {
-                documentList
-                    .frame(maxWidth: proxy.size.width * 0.3)
-                    .clipped()
-                pdfView
+        if viewModel.showLoadingView {
+            LoadingView()
+        } else {
+            GeometryReader { proxy in
+                HStack(spacing: 8) {
+                    documentList
+                        .frame(maxWidth: proxy.size.width * 0.3)
+                        .clipped()
 
-                documentInformation
-                    .frame(maxWidth: proxy.size.width * 0.25)
-                    .clipped()
+                    pdfView
+
+                    documentInformation
+                        .frame(maxWidth: proxy.size.width * 0.25)
+                        .clipped()
+                }
+                .frame(width: proxy.frame(in: .global).width,
+                       height: proxy.frame(in: .global).height)
             }
-            .frame(proxy.size)
+            .padding(8)
+            .onDeleteCommand(perform: viewModel.deleteDocument)
         }
-        .padding(8)
     }
 
     private var documentList: some View {
-        DocumentList(currentDocument: $viewModel.currentDocument,
-                     documents: $viewModel.documents)
+        VStack {
+            Text("PDF Documents")
+                .font(.title)
+                .fontWeight(.semibold)
+                .foregroundColor(.paDarkRed)
+            DocumentList(currentDocument: $viewModel.currentDocument,
+                         documents: $viewModel.documents)
+        }
     }
 
     private var pdfView: some View {
@@ -39,43 +52,62 @@ struct TagTabViewMac: View {
 
     @ViewBuilder
     private var documentInformation: some View {
-
         VStack(alignment: .leading, spacing: 16) {
             Text("Document Attributes")
                 .font(.title)
+                .fontWeight(.semibold)
+                .foregroundColor(.paDarkRed)
             DatePicker("Date", selection: $viewModel.date, displayedComponents: .date)
                 .labelsHidden()
-            //                .padding(.horizontal, 16)
             TextField("Description", text: $viewModel.specification)
-            TagListView(tags: $viewModel.documentTags,
-                        isEditable: true,
-                        isMultiLine: true,
-                        tapHandler: documentTagTapped(_:))
-                .font(.caption)
-                .frame(maxHeight: 175)
+            ScrollView {
+                TagListView(tags: $viewModel.documentTags,
+                            isEditable: true,
+                            isMultiLine: true,
+                            tapHandler: documentTagTapped(_:))
+            }
+            .frame(maxHeight: 175)
             HStack {
-                Spacer()
-                Button("Save", action: saveButtonTapped)
-                Spacer()
+                Button(action: viewModel.saveDocument) {
+                    Text("Save")
+                        .padding(.horizontal, 44)
+                }
+                .frame(maxWidth: .infinity)
+                .keyboardShortcut("s", modifiers: .command)
             }
             Text("Available Tags")
                 .font(.title)
-            TextField("Search and add", text: $viewModel.documentTagInput)
-            TagListView(tags: $viewModel.suggestedTags,
-                        isEditable: false,
-                        isMultiLine: true,
-                        tapHandler: documentTagTapped(_:))
-                .font(.caption)
+                .fontWeight(.semibold)
+                .foregroundColor(.paDarkRed)
+            TextField("Enter Tag",
+                      text: $viewModel.documentTagInput,
+                      onCommit: saveCurrentTag)
+                .modifier(ClearButton(text: $viewModel.documentTagInput))
+            ScrollView {
+                TagListView(tags: $viewModel.suggestedTags,
+                            isEditable: false,
+                            isMultiLine: true,
+                            tapHandler: suggestedTagTapped(_:))
+            }
             Spacer()
         }.padding(.horizontal, 10)
     }
 
-    private func saveButtonTapped() {
-        print("Save Button Tapped")
+    private func documentTagTapped(_ tag: String) {
+        viewModel.documentTags.removeAll { $0 == tag }
+//        $viewModel.suggestedTags.insertAndSort(tag)
     }
 
-    private func documentTagTapped(_ tag: String) {
-        print(tag)
+    private func saveCurrentTag() {
+        let tag = viewModel.documentTagInput
+        viewModel.documentTagInput = ""
+        $viewModel.documentTags.insertAndSort(tag)
+    }
+
+    private func suggestedTagTapped(_ tag: String) {
+        viewModel.suggestedTags.removeAll { $0 == tag }
+        viewModel.documentTagInput = ""
+        $viewModel.documentTags.insertAndSort(tag)
     }
 }
 #endif
@@ -98,7 +130,8 @@ struct TagTabViewMac_Previews: PreviewProvider {
     }()
 
     static var previews: some View {
-        TagTabViewMac(viewModel: viewModel)            .previewLayout(.fixed(width: 1000, height: 650))
+        TagTabViewMac(viewModel: viewModel)
+            .previewLayout(.fixed(width: 1000, height: 650))
             .previewDevice("Mac")
     }
 }

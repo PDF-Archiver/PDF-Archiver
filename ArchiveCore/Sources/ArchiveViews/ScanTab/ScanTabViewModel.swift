@@ -5,13 +5,23 @@
 //  Created by Julian Kahnert on 02.11.19.
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
+// swiftlint:disable cyclomatic_complexity
 
 import AVKit
 import Combine
 import Foundation
+import PDFKit
 import SwiftUI
 
-public final class ScanTabViewModel: ObservableObject, Log {
+#if os(macOS)
+import AppKit.NSImage
+private typealias UniversalImage = NSImage
+#else
+import UIKit.UIImage
+private typealias UniversalImage = UIImage
+#endif
+
+public final class ScanTabViewModel: ObservableObject, DropDelegate, Log {
     @Published public var showDocumentScan: Bool = false
     @Published public private(set) var progressValue: CGFloat = 0.0
     @Published public private(set) var progressLabel: String = " "
@@ -41,10 +51,16 @@ public final class ScanTabViewModel: ObservableObject, Log {
                 guard let self = self else { return }
                 let documentProgress = notification.object as? Float
                 self.updateProcessingIndicator(with: documentProgress)
+
+                guard documentProgress == nil else { return }
+
+                // there might be a better way for this inout workaround
+                self.documentsFinishedHandler()
             }
             .store(in: &disposables)
     }
 
+    #if !os(macOS)
     public func startScanning() {
         let authorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
         switch authorizationStatus {
@@ -76,18 +92,76 @@ public final class ScanTabViewModel: ObservableObject, Log {
                                                          message: "Camera access is required to scan documents.",
                                                          primaryButton: .default(Text("Grant Access"),
                                                                                  action: {
-                                                                                    #if os(macOS)
-                                                                                    // TODO: handle settings
-                                                                                    #else
                                                                                     guard let settingsAppURL = URL(string: UIApplication.openSettingsURLString) else { fatalError("Could not find settings url!") }
                                                                                     open(settingsAppURL)
-                                                                                    #endif
                                                                                  }),
                                                          secondaryButton: .cancel())
 
             @unknown default:
-                preconditionFailure("This authorization status is unkown.")
+                preconditionFailure("This authorization status is unknown.")
         }
+    }
+    #endif
+
+    public func performDrop(info: DropInfo) -> Bool {
+        let types: [UTType] = [.fileURL, .image, .pdf]
+        let items = info.itemProviders(for: types)
+
+        DispatchQueue.global(qos: .userInitiated).async {
+            var error: Error?
+            for item in items {
+                let fileUrlType = UTType.fileURL.identifier
+                var readDirectorySuccess = false
+                if item.hasItemConformingToTypeIdentifier(fileUrlType) {
+                    let semaphore = DispatchSemaphore(value: 0)
+                    _ = item.loadObject(ofClass: URL.self) { rawUrl, rawError in
+                        guard let url = rawUrl,
+                              FileManager.default.directoryExists(at: url) else {
+                            semaphore.signal()
+                            return
+                        }
+
+                        do {
+                            if let error = rawError {
+                                throw error
+                            }
+                            let urls = try FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+                            for url in urls {
+                                try self.imageConverter.handle(url)
+                            }
+                            readDirectorySuccess = true
+                        } catch let inputError {
+                            self.log.errorAndAssert("Failed to handle file url input.", metadata: ["error": "\(String(describing: error))"])
+                            error = inputError
+                        }
+                        semaphore.signal()
+                    }
+                    _ = semaphore.wait(timeout: .now() + .seconds(30))
+                }
+                if readDirectorySuccess {
+                    return
+                }
+
+                for uti in types where item.hasItemConformingToTypeIdentifier(uti.identifier) {
+                    do {
+                        guard let data = try item.syncLoadItem(forTypeIdentifier: uti) else { continue }
+
+                        let url = PathConstants.tempPdfURL.appendingPathComponent("\(UUID().uuidString).pdf")
+                        try data.write(to: url)
+                        try self.imageConverter.handle(url)
+                        return
+                    } catch let inputError {
+                        self.log.errorAndAssert("Failed to handle image/pdf with type \(uti.identifier). Try next ...", metadata: ["error": "\(String(describing: error))"])
+                        error = inputError
+                    }
+                }
+            }
+            if let error = error {
+                NotificationCenter.default.postAlert(error)
+            }
+        }
+
+        return true
     }
 
     public func process(_ images: [CIImage]) {
@@ -101,15 +175,14 @@ public final class ScanTabViewModel: ObservableObject, Log {
 
         // save images in reversed order to fix the API output order
         do {
-            defer {
-                // notify ImageConverter even if the image saving has failed
-                triggerImageProcessing()
-            }
             try StorageHelper.save(images)
         } catch {
             assertionFailure("Could not save temp images with error:\n\(error)")
             NotificationCenter.default.postAlert(error)
         }
+
+        // notify ImageConverter even if the image saving has failed
+        triggerImageProcessing()
     }
 
     // MARK: - Helper Functions
@@ -159,7 +232,7 @@ public final class ScanTabViewModel: ObservableObject, Log {
                                                             NotificationCenter.default.post(.showSubscriptionView)
                                                             self.showDocumentScan = false
                                                          }),
-                                                         secondaryButton: .cancel())
+                                                         secondaryButton: .cancel(Text("OK")))
             }
         }
 

@@ -14,10 +14,6 @@ struct TagTabView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @ObservedObject var viewModel: TagTabViewModel
 
-    // TODO: do we need this?
-    // trigger a reload of the view, when the device rotation changes
-//    @EnvironmentObject var orientationInfo: OrientationInfo
-
     var body: some View {
         if viewModel.showLoadingView {
             LoadingView()
@@ -71,6 +67,7 @@ struct TagTabView: View {
             .padding(.horizontal, 24)
         })
         .disabled(viewModel.currentDocument == nil)
+        .keyboardShortcut(.delete, modifiers: .command)
     }
 
     private var saveNavBarView: some View {
@@ -85,6 +82,7 @@ struct TagTabView: View {
             .padding(.horizontal, 24)
         })
         .disabled(viewModel.currentDocument == nil)
+        .keyboardShortcut("s", modifiers: .command)
     }
 }
 #endif

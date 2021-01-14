@@ -1,30 +1,13 @@
 //
-//  Tests_iOS.swift
-//  Tests iOS
+//  FileManagerTests.swift
 //
 //  Created by Julian Kahnert on 24.06.20.
 //
 
-//@testable import PDFArchiver
+import ArchiveSharedConstants
 import XCTest
 
-extension URL {
-
-    func getFilesRecursive(fileProperties: [URLResourceKey] = []) -> [URL] {
-        guard let enumerator = FileManager.default.enumerator(at: self, includingPropertiesForKeys: fileProperties) else { return [] }
-
-        var files = [URL]()
-        for case let file as URL in enumerator {
-            guard !file.hasDirectoryPath else { continue }
-            files.append(file)
-        }
-        return files
-    }
-
-}
-
-//swiftlint:disable:next type_name
-final class Tests_iOS: XCTestCase {
+final class FileManagerTests: XCTestCase {
 
     var tempDir: URL?
 
@@ -62,10 +45,10 @@ final class Tests_iOS: XCTestCase {
         var files = [URL]()
 
         measure {
-            files = path.getFilesRecursive(fileProperties: [.ubiquitousItemDownloadingStatusKey, .ubiquitousItemIsDownloadingKey, .fileSizeKey, .localizedNameKey])
+            files = FileManager.default.getFilesRecursive(at: path, with: [.ubiquitousItemDownloadingStatusKey, .ubiquitousItemIsDownloadingKey, .fileSizeKey, .localizedNameKey])
         }
 
-        XCTAssert(files.count == 1000)
+        XCTAssertEqual(files.count, 1000)
     }
 
     func testGetFilesPerformanceNoLocalizedName() throws {
@@ -73,10 +56,10 @@ final class Tests_iOS: XCTestCase {
         var files = [URL]()
 
         measure {
-            files = path.getFilesRecursive(fileProperties: [.ubiquitousItemDownloadingStatusKey, .ubiquitousItemIsDownloadingKey, .fileSizeKey])
+            files = FileManager.default.getFilesRecursive(at: path, with: [.ubiquitousItemDownloadingStatusKey, .ubiquitousItemIsDownloadingKey, .fileSizeKey])
         }
 
-        XCTAssert(files.count == 1000)
+        XCTAssertEqual(files.count, 1000)
     }
 
     func testGetFilesPerformanceOnlyLocalizedName() throws {
@@ -84,17 +67,8 @@ final class Tests_iOS: XCTestCase {
         var files = [URL]()
 
         measure {
-            files = path.getFilesRecursive(fileProperties: [.localizedNameKey])
+            files = FileManager.default.getFilesRecursive(at: path, with: [.localizedNameKey])
         }
-        XCTAssert(files.count == 1000)
+        XCTAssertEqual(files.count, 1000)
     }
-
-//    func testLaunchPerformance() throws {
-//        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, *) {
-//            // This measures how long it takes to launch your application.
-//            measure(metrics: [XCTApplicationLaunchMetric()]) {
-//                XCUIApplication().launch()
-//            }
-//        }
-//    }
 }

@@ -9,6 +9,9 @@ import Combine
 import Foundation
 
 public protocol ArchiveStoreAPI: class {
+    var documents: [Document] { get }
+    var documentsPublisher: AnyPublisher<[Document], Never> { get }
+
     func update(archiveFolder: URL, untaggedFolders: [URL])
     func archive(_ document: Document, slugify: Bool) throws
     func download(_ document: Document) throws
@@ -22,10 +25,13 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
         case uninitialized, cachedDocuments, live
     }
 
-    private static let availableProvider: [FolderProvider.Type] = [
-        ICloudFolderProvider.self,
-        LocalFolderProvider.self
-    ]
+    private static let availableProvider: [FolderProvider.Type] = {
+        if UserDefaults.standard.isInDemoMode {
+            return [DemoFolderProvider.self]
+        } else {
+            return [ICloudFolderProvider.self, LocalFolderProvider.self]
+        }
+    }()
 
     private static let fileProperties: [URLResourceKey] = [.ubiquitousItemDownloadingStatusKey, .ubiquitousItemIsDownloadingKey, .fileSizeKey, .localizedNameKey]
     private static let savePath: URL = {
@@ -37,6 +43,10 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
     @Published public var state: State = .uninitialized
     @Published public var documents: [Document] = []
     @Published public var years: Set<String> = []
+
+    public var documentsPublisher: AnyPublisher<[Document], Never> {
+        $documents.eraseToAnyPublisher()
+    }
 
     private var archiveFolder: URL!
     private var untaggedFolders: [URL] = []
@@ -56,6 +66,9 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
 
     public func update(archiveFolder: URL, untaggedFolders: [URL]) {
         assert(!Thread.isMainThread, "This should not be called from the main thread.")
+
+        // remove all current file providers to prevent watching changes while moving folders
+        providers = []
 
         let oldArchiveFolder = self.archiveFolder
 
@@ -79,6 +92,7 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
             guard let provider = Self.availableProvider.first(where: { $0.canHandle(folder) }) else {
                 preconditionFailure("Could not find a FolderProvider for: \(folder.path)")
             }
+            log.debug("Initialize new provider for: \(folder.path)")
             return provider.init(baseUrl: folder, folderDidChange(_:_:))
         }
     }
@@ -86,11 +100,11 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
     public func archive(_ document: Document, slugify: Bool) throws {
         assert(!Thread.isMainThread, "This should not be called from the main thread.")
 
-        guard let documentProvider = providers.first(where: { document.path.path.hasPrefix($0.baseUrl.path) }),
-              let archiveFolder = self.archiveFolder,
-              let archiveProvider = providers.first(where: { archiveFolder.path.hasPrefix($0.baseUrl.path) }) else {
+        guard let archiveFolder = self.archiveFolder else {
             throw ArchiveStore.Error.providerNotFound
         }
+        let documentProvider = try getProvider(for: document.path)
+        let archiveProvider = try getProvider(for: archiveFolder)
 
         if slugify {
             DispatchQueue.main.async {
@@ -125,9 +139,7 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
     }
 
     public func download(_ document: Document) throws {
-        guard let provider = providers.first(where: { document.path.path.hasPrefix($0.baseUrl.path) }) else {
-            throw ArchiveStore.Error.providerNotFound
-        }
+        let provider = try getProvider(for: document.path)
 
         guard document.downloadStatus == .remote else { return }
 
@@ -145,17 +157,13 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
     public func delete(_ document: Document) throws {
         assert(!Thread.isMainThread, "This should not be called from the main thread.")
 
-        guard let provider = providers.first(where: { document.path.path.hasPrefix($0.baseUrl.path) }) else {
-            throw ArchiveStore.Error.providerNotFound
-        }
+        let provider = try getProvider(for: document.path)
         try provider.delete(url: document.path)
         documents.removeAll { $0 == document }
     }
 
     public func getCreationDate(of url: URL) throws -> Date? {
-        guard let provider = providers.first(where: { url.path.hasPrefix($0.baseUrl.path) }) else {
-            throw ArchiveStore.Error.providerNotFound
-        }
+        let provider = try getProvider(for: url)
 
         do {
             return try provider.getCreationDate(of: url)
@@ -175,7 +183,7 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
             for change in changes {
 
                 var document: Document?
-                var contentParsingOptions: ParsingOptions?
+                var shouldParseDate: Bool?
 
                 switch change {
                     case .added(let details):
@@ -183,7 +191,7 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
                         document = Document(from: details, with: taggingStatus)
 
                         // parse document content only for untagged documents
-                        contentParsingOptions = taggingStatus == .untagged ? .all : []
+                        shouldParseDate = taggingStatus == .untagged
 
                     case .removed(let url):
                         contents[provider.baseUrl]?.removeAll { $0.path == url }
@@ -204,23 +212,26 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
 
                         contents[provider.baseUrl]?.removeAll { $0.path == details.url }
 
-                        contentParsingOptions = []
+                        shouldParseDate = false
                 }
 
                 if let document = document {
                     contents[provider.baseUrl, default: []].append(document)
-                    contents[provider.baseUrl]?.sort()
 
                     // trigger update of the document properties
-                    if let contentParsingOptions = contentParsingOptions {
+                    if let shouldParseDate = shouldParseDate {
                         DispatchQueue.global(qos: .userInitiated).async {
                             // save documents after the last has been written
                             documentProcessingGroup.enter()
-                            document.updateProperties(with: document.downloadStatus, contentParsingOptions: contentParsingOptions)
+                            document.updateProperties(with: document.downloadStatus, shouldParseDate: shouldParseDate)
                             documentProcessingGroup.leave()
                         }
                     }
                 }
+            }
+
+            for url in contents.keys {
+                contents[url]?.sort()
             }
         }
 
@@ -237,7 +248,7 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
         var documents = [Document]()
         queue.sync {
             documents = self.contents
-                .flatMap { $0.value }
+                .flatMap(\.value)
                 .sorted()
         }
         self.documents = documents
@@ -309,9 +320,22 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
         do {
             let data = try JSONEncoder().encode(documents)
             try data.write(to: Self.savePath)
-            log.info("Documents saved.")
         } catch {
             log.error("JSON encoding error", metadata: ["error": "\(error)"])
         }
+    }
+
+    private func getProvider(for url: URL) throws -> FolderProvider {
+
+        // Use `contains` instead of `prefix` to avoid problems with local files.
+        // This fixes a problem, where we get different file urls back:
+        // /private/var/mobile/Containers/Data/Application/8F70A72B-026D-4F6B-98E8-2C6ACE940133/Documents/untagged/document1.pdf
+        //         /var/mobile/Containers/Data/Application/8F70A72B-026D-4F6B-98E8-2C6ACE940133/Documents/
+
+        guard let provider = providers.first(where: { url.path.contains($0.baseUrl.path) }) else {
+            throw ArchiveStore.Error.providerNotFound
+        }
+
+        return provider
     }
 }
