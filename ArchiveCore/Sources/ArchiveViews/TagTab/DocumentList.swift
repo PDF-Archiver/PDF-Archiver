@@ -28,10 +28,7 @@ struct DocumentList: View {
                 LazyVStack {
                     ForEach(documents) { document in
                         HStack {
-                            Circle()
-                                .fill(document.taggingStatus == .tagged ? Color.green : Color.systemBlue)
-                                .frame(width: 8, height: 8)
-                                .opacity(document == currentDocument || document.taggingStatus == .tagged ? 1 : 0)
+                            statusView(for: document)
                             Text(document.filename)
                                 .lineLimit(1)
                                 .truncationMode(.middle)
@@ -48,6 +45,20 @@ struct DocumentList: View {
                     }
                 }
             }
+        }
+    }
+
+    @ViewBuilder
+    private func statusView(for document: Document) -> some View {
+        if document.taggingStatus == .tagged {
+            Image(systemName: "checkmark.circle")
+                .foregroundColor(.systemGreen)
+        } else if document == currentDocument {
+            Image(systemName: "circle")
+                .foregroundColor(.systemBlue)
+        } else {
+            Image(systemName: "circle")
+                .opacity(0)
         }
     }
 }

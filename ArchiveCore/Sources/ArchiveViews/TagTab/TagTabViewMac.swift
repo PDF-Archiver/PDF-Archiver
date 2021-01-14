@@ -31,6 +31,7 @@ struct TagTabViewMac: View {
                        height: proxy.frame(in: .global).height)
             }
             .padding(8)
+            .onDeleteCommand(perform: viewModel.deleteDocument)
         }
     }
 

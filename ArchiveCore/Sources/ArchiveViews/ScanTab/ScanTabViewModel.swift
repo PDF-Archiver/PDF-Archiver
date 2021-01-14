@@ -51,6 +51,11 @@ public final class ScanTabViewModel: ObservableObject, DropDelegate, Log {
                 guard let self = self else { return }
                 let documentProgress = notification.object as? Float
                 self.updateProcessingIndicator(with: documentProgress)
+
+                guard documentProgress == nil else { return }
+
+                // there might be a better way for this inout workaround
+                self.documentsFinishedHandler()
             }
             .store(in: &disposables)
     }

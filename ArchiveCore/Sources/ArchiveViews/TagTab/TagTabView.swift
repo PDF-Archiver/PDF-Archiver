@@ -67,6 +67,7 @@ struct TagTabView: View {
             .padding(.horizontal, 24)
         })
         .disabled(viewModel.currentDocument == nil)
+        .keyboardShortcut(.delete, modifiers: .command)
     }
 
     private var saveNavBarView: some View {
@@ -81,6 +82,7 @@ struct TagTabView: View {
             .padding(.horizontal, 24)
         })
         .disabled(viewModel.currentDocument == nil)
+        .keyboardShortcut("s", modifiers: .command)
     }
 }
 #endif
