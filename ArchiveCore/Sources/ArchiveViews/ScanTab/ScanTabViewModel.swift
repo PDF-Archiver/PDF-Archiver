@@ -21,8 +21,16 @@ import UIKit.UIImage
 private typealias UniversalImage = UIImage
 #endif
 
+// currently not working, because SPM does not know the APPCLIP compiler flag
+#if APPCLIP
+let shareDocumentAfterScanDefault = true
+#else
+let shareDocumentAfterScanDefault = false
+#endif
+
 public final class ScanTabViewModel: ObservableObject, DropDelegate, Log {
     @Published public var showDocumentScan: Bool = false
+    @Published public var shareDocumentAfterScan: Bool = shareDocumentAfterScanDefault
     @Published public private(set) var progressValue: CGFloat = 0.0
     @Published public private(set) var progressLabel: String = " "
 

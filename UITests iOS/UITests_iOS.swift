@@ -16,6 +16,8 @@ class UITestsiOS: XCTestCase {
         app = XCUIApplication()
         app.launchArguments.append("-demoMode")
         app.launchArguments.append("true")
+        app.launchArguments.append("-tutorial-v1")
+        app.launchArguments.append("true")
         setupSnapshot(app, waitForAnimations: true)
         app.launch()
     }

@@ -10,6 +10,7 @@
 import ArchiveBackend
 import Combine
 import SwiftUI
+import SwiftUIX
 #if canImport(MessageUI)
 import MessageUI
 #endif
@@ -31,7 +32,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
     @Published var showTutorial = !UserDefaults.appGroup.tutorialShown
     @Published var sheetType: SheetType?
 
-    public private(set) lazy var imageConverter = ImageConverter(getDocumentDestination: getDocumentDestination)
+    public let imageConverter = ImageConverter(getDocumentDestination: getDocumentDestination)
 
     lazy var scanViewModel = ScanTabViewModel(imageConverter: imageConverter, iapService: Self.iapService, documentsFinishedHandler: Self.scanFinished)
     let tagViewModel = TagTabViewModel()
@@ -41,15 +42,6 @@ public final class MainNavigationViewModel: ObservableObject, Log {
     let iapViewModel = IAPViewModel(iapService: iapService)
 
     private var disposables = Set<AnyCancellable>()
-
-    func getDocumentDestination() -> URL? {
-        do {
-            return try PathManager.shared.getUntaggedUrl()
-        } catch {
-            NotificationCenter.default.postAlert(error)
-            return nil
-        }
-    }
 
     @ViewBuilder
     func getView(for sheetType: SheetType) -> some View {
@@ -61,6 +53,10 @@ public final class MainNavigationViewModel: ObservableObject, Log {
             SupportMailView(subject: Self.mailSubject,
                             recipients: Self.mailRecipients,
                             errorHandler: { NotificationCenter.default.postAlert($0) })
+        #endif
+        #if !os(macOS)
+        case .activityView(let items):
+            AppActivityView(activityItems: items)
         #endif
         }
     }
@@ -179,6 +175,19 @@ public final class MainNavigationViewModel: ObservableObject, Log {
                 NotificationCenter.default.postAlert(error)
             }
         }
+
+        #if !os(macOS)
+        imageConverter.$processedDocumentUrl
+            .compactMap { [weak self] url in
+                guard let url = url,
+                      self?.scanViewModel.shareDocumentAfterScan ?? false else { return nil }
+
+                // show share sheet
+                return .activityView(items: [url])
+            }
+            .assign(to: &$sheetType)
+
+        #endif
     }
 
     func handleTempFilesIfNeeded(_ scenePhase: ScenePhase) {
@@ -270,6 +279,26 @@ public final class MainNavigationViewModel: ObservableObject, Log {
                                                                            action: showSupport))
     }
 
+    // MARK: - Delegate Functions
+
+    private static func getDocumentDestination() -> URL? {
+        do {
+            return try PathManager.shared.getUntaggedUrl()
+        } catch {
+            NotificationCenter.default.postAlert(error)
+            return nil
+        }
+    }
+
+//    private func documentProcessingCompletionHandler(_ url: URL) {
+//        guard scanViewModel.shareDocumentAfterScan else { return }
+//
+//        #if !os(macOS)
+//        // show share sheet
+//        sheetType = .activityView(items: [url])
+//        #endif
+//    }
+
     // MARK: - Helper Functions
 
     private static func scanFinished() {
@@ -300,14 +329,29 @@ public final class MainNavigationViewModel: ObservableObject, Log {
 }
 
 extension MainNavigationViewModel {
-    enum SheetType: String, Identifiable {
+    enum SheetType: Identifiable {
         case iapView
         #if canImport(MessageUI)
         case supportView
         #endif
 
+        #if !os(macOS)
+        case activityView(items: [Any])
+        #endif
+
         var id: String {
-            rawValue
+            switch self {
+                case .iapView:
+                    return "iapView"
+                #if canImport(MessageUI)
+                case .supportView:
+                    return "supportView"
+                #endif
+                #if !os(macOS)
+                case .activityView:
+                    return "activityView"
+                #endif
+            }
         }
     }
 }

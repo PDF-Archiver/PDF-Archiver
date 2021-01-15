@@ -20,6 +20,10 @@ struct MainContentView: View {
         ZStack {
             ScanTabView(viewModel: viewModel.scanViewModel)
 
+            if viewModel.showScanCompletionMessage {
+                documentScanCompleted
+            }
+
             if viewModel.sharingViewModel.pdfDocument != nil {
                 PDFSharingView(viewModel: viewModel.sharingViewModel)
             }
@@ -41,6 +45,21 @@ struct MainContentView: View {
                            imageHandler: viewModel.scanViewModel.process)
             .edgesIgnoringSafeArea(.all)
             .statusBar(hidden: true)
+    }
+
+    private var documentScanCompleted: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "checkmark")
+                .font(.largeTitle, weight: .bold)
+                .foregroundColor(.systemGreen)
+            Label("Processing completed", systemImage: "doc.text")
+                .font(.title2)
+        }
+        .padding()
+        .background(.systemBackground)
+        .cornerRadius(8)
+        .shadow(color: .paDarkGray, radius: 15)
+        .transition(.scale)
     }
 }
 
