@@ -281,9 +281,9 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
         // Do "--" and "__" exist in filename?
         guard url.lastPathComponent.contains("--"),
             url.lastPathComponent.contains("__"),
-            !url.lastPathComponent.contains(Constants.documentDatePlaceholder),
-            !url.lastPathComponent.contains(Constants.documentDescriptionPlaceholder),
-            !url.lastPathComponent.contains(Constants.documentTagPlaceholder) else { return .untagged }
+            !url.lastPathComponent.lowercased().contains(Constants.documentDatePlaceholder.lowercased()),
+            !url.lastPathComponent.lowercased().contains(Constants.documentDescriptionPlaceholder.lowercased()),
+            !url.lastPathComponent.lowercased().contains(Constants.documentTagPlaceholder.lowercased()) else { return .untagged }
 
         return .tagged
     }

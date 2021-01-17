@@ -5,7 +5,7 @@
 //  Created by Julian Kahnert on 30.10.19.
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
-// swiftlint:disable function_body_length
+// swiftlint:disable function_body_length type_body_length
 
 import ArchiveBackend
 import Combine
@@ -32,36 +32,20 @@ public final class MainNavigationViewModel: ObservableObject, Log {
     @Published var showTutorial = !UserDefaults.appGroup.tutorialShown
     @Published var sheetType: SheetType?
 
-    public let imageConverter = ImageConverter(getDocumentDestination: getDocumentDestination)
-
-    lazy var scanViewModel = ScanTabViewModel(imageConverter: imageConverter, iapService: Self.iapService, documentsFinishedHandler: Self.scanFinished)
+    public let imageConverter: ImageConverter
+    var scanViewModel: ScanTabViewModel
     let tagViewModel = TagTabViewModel()
     let archiveViewModel = ArchiveViewModel()
-    public private(set) lazy var moreViewModel = MoreTabViewModel(iapService: Self.iapService, archiveStore: Self.archiveStore)
+    public let moreViewModel = MoreTabViewModel(iapService: MainNavigationViewModel.iapService, archiveStore: MainNavigationViewModel.archiveStore)
 
     let iapViewModel = IAPViewModel(iapService: iapService)
 
     private var disposables = Set<AnyCancellable>()
 
-    @ViewBuilder
-    func getView(for sheetType: SheetType) -> some View {
-        switch sheetType {
-        case .iapView:
-            IAPView(viewModel: iapViewModel)
-        #if canImport(MessageUI)
-        case .supportView:
-            SupportMailView(subject: Self.mailSubject,
-                            recipients: Self.mailRecipients,
-                            errorHandler: { NotificationCenter.default.postAlert($0) })
-        #endif
-        #if !os(macOS)
-        case .activityView(let items):
-            AppActivityView(activityItems: items)
-        #endif
-        }
-    }
-
     public init() {
+        imageConverter = ImageConverter(getDocumentDestination: Self.getDocumentDestination)
+        scanViewModel = ScanTabViewModel(imageConverter: imageConverter, iapService: Self.iapService)
+
         NotificationCenter.default.alertPublisher()
             .receive(on: DispatchQueue.main)
             .assign(to: &$alertDataModel)
@@ -176,18 +160,39 @@ public final class MainNavigationViewModel: ObservableObject, Log {
             }
         }
 
-        #if !os(macOS)
         imageConverter.$processedDocumentUrl
-            .compactMap { [weak self] url in
-                guard let url = url,
-                      self?.scanViewModel.shareDocumentAfterScan ?? false else { return nil }
-
-                // show share sheet
-                return .activityView(items: [url])
+            .compactMap { $0 }
+            .sink { [weak self] url in
+                #if os(macOS)
+                Self.showFirstDocumentFinishedDialogIfNeeded()
+                #else
+                if let self = self,
+                   self.scanViewModel.shareDocumentAfterScan {
+                    self.showShareDialog(with: url)
+                } else {
+                    Self.showFirstDocumentFinishedDialogIfNeeded()
+                }
+                #endif
             }
-            .assign(to: &$sheetType)
+            .store(in: &disposables)
+    }
 
+    @ViewBuilder
+    func getView(for sheetType: SheetType) -> some View {
+        switch sheetType {
+        case .iapView:
+            IAPView(viewModel: iapViewModel)
+        #if canImport(MessageUI)
+        case .supportView:
+            SupportMailView(subject: Self.mailSubject,
+                            recipients: Self.mailRecipients,
+                            errorHandler: { NotificationCenter.default.postAlert($0) })
         #endif
+        #if !os(macOS)
+        case .activityView(let items):
+            AppActivityView(activityItems: items)
+        #endif
+        }
     }
 
     func handleTempFilesIfNeeded(_ scenePhase: ScenePhase) {
@@ -279,6 +284,16 @@ public final class MainNavigationViewModel: ObservableObject, Log {
                                                                            action: showSupport))
     }
 
+    #if !os(macOS)
+    public func showScan(shareAfterScan: Bool) {
+        withAnimation {
+            currentTab = .scan
+            scanViewModel.shareDocumentAfterScan = shareAfterScan
+            scanViewModel.startScanning()
+        }
+    }
+    #endif
+
     // MARK: - Delegate Functions
 
     private static func getDocumentDestination() -> URL? {
@@ -290,18 +305,9 @@ public final class MainNavigationViewModel: ObservableObject, Log {
         }
     }
 
-//    private func documentProcessingCompletionHandler(_ url: URL) {
-//        guard scanViewModel.shareDocumentAfterScan else { return }
-//
-//        #if !os(macOS)
-//        // show share sheet
-//        sheetType = .activityView(items: [url])
-//        #endif
-//    }
-
     // MARK: - Helper Functions
 
-    private static func scanFinished() {
+    private static func showFirstDocumentFinishedDialogIfNeeded() {
         guard !UserDefaults.appGroup.firstDocumentScanAlertPresented else { return }
         UserDefaults.appGroup.firstDocumentScanAlertPresented = true
 
@@ -321,11 +327,29 @@ public final class MainNavigationViewModel: ObservableObject, Log {
             try imageConverter.handle(url)
         } catch {
             log.error("Unable to handle file.", metadata: ["filetype": "\(url.pathExtension)", "error": "\(error)"])
-//            try? FileManager.default.removeItem(at: url)
+            try? FileManager.default.removeItem(at: url)
 
             NotificationCenter.default.postAlert(error)
         }
     }
+
+    #if !os(macOS)
+    private func showShareDialog(with url: URL) {
+        let formatter = DateFormatter()
+        formatter.locale = .autoupdatingCurrent
+        formatter.setLocalizedDateFormatFromTemplate("dd-MM-yyyy jmmssa")
+        let dateString = formatter.string(from: Date()).replacingOccurrences(of: ":", with: ".").replacingOccurrences(of: ",", with: "")
+        let filename = "PDF Archiver \(dateString).pdf"
+        let destination = FileManager.default.temporaryDirectory.appendingPathComponent(filename)
+        do {
+            try FileManager.default.copyItem(at: url, to: destination)
+
+            self.sheetType = .activityView(items: [destination])
+        } catch {
+            NotificationCenter.default.postAlert(error)
+        }
+    }
+    #endif
 }
 
 extension MainNavigationViewModel {
@@ -377,7 +401,7 @@ extension MainNavigationViewModel {
         service.recipients = Self.mailRecipients
         service.subject = Self.mailSubject
 
-        let url = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("Diagnostics-Report.html")
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("Diagnostics-Report.html")
 
         // remove previous report
         try? FileManager.default.removeItem(at: url)

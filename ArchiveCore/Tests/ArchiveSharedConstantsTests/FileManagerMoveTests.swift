@@ -46,7 +46,7 @@ final class FileManagerMoveTests: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        tempDir = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent(UUID().uuidString)
+        tempDir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
 
         let url = try XCTUnwrap(tempDir)
 

@@ -20,7 +20,7 @@ final class FileManagerTests: XCTestCase {
 
         // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
 
-        tempDir = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent(UUID().uuidString)
+        tempDir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
 
         guard let tempDir = tempDir else { return }
         for folderIndex in 0..<20 {
