@@ -13,13 +13,11 @@ struct OBCardView: View {
     let buttonTapped: () -> Void
     let card: OnboardCard
     var body: some View {
-        VStack(spacing: 16) {
-            Spacer()
+        VStack(spacing: 8) {
             Image(card.image)
                 .resizable()
                 .scaledToFit()
                 .frame(maxWidth: 100, maxHeight: 100)
-            Spacer()
             Text(card.title)
                 .font(.largeTitle)
                 .fontWeight(.bold)
@@ -27,7 +25,7 @@ struct OBCardView: View {
                 .multilineTextAlignment(.center)
             Text(card.text)
                 .multilineTextAlignment(.center)
-                .minimumScaleFactor(0.9)
+                .minimumScaleFactor(0.75)
             Spacer()
             HStack {
                 Spacer()
