@@ -12,10 +12,11 @@ import Vision
 
 public final class ImageConverter: ObservableObject, ImageConverterAPI, Log {
 
-    private static let seperator = "----"
     private static var isInitialized = false
 
     public private(set) var totalDocumentCount = Atomic(0)
+    @Published public var processedDocumentUrl: URL?
+
     private var observation: NSKeyValueObservation?
     private let getDocumentDestination: () -> URL?
     private let queue: OperationQueue = {
@@ -111,9 +112,14 @@ public final class ImageConverter: ObservableObject, ImageConverterAPI, Log {
                                       tempImagePath: PathConstants.tempImageURL) { progress in
             NotificationCenter.default.post(name: .imageProcessingQueue, object: progress)
         }
-        operation.completionBlock = {
-            guard let error = operation.error else { return }
-            NotificationCenter.default.postAlert(error)
+        operation.completionBlock = { [weak self] in
+            DispatchQueue.main.async {
+                self?.processedDocumentUrl = operation.outputUrl
+            }
+
+            if let error = operation.error {
+                NotificationCenter.default.postAlert(error)
+            }
         }
         queue.addOperation(operation)
         totalDocumentCount.mutate { $0 += 1 }

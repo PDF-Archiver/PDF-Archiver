@@ -92,12 +92,16 @@ public struct ScanTabView: View {
 
     #if !os(macOS)
     private var scanButton: some View {
-        Button(action: {
-            self.viewModel.startScanning()
-        }, label: {
-            Text("Scan")
-        }).buttonStyle(FilledButtonStyle())
-        .keyboardShortcut("s")
+        VStack(spacing: 8) {
+            Button(action: {
+                self.viewModel.startScanning()
+            }, label: {
+                Text("Scan")
+            }).buttonStyle(FilledButtonStyle())
+            .keyboardShortcut("s")
+            Toggle("Share document after scan", isOn: $viewModel.shareDocumentAfterScan)
+                .padding(.horizontal)
+        }
         .padding()
     }
     #endif

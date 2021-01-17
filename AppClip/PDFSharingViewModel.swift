@@ -21,21 +21,6 @@ final class PDFSharingViewModel: ObservableObject, Equatable {
 
     private var disposables = Set<AnyCancellable>()
 
-    init() {
-        NotificationCenter.default.publisher(for: .foundProcessedDocument)
-            .compactMap { _ -> URL? in
-                let fileManager = FileManager.default
-                return try? fileManager.contentsOfDirectory(at: PathConstants.appClipTempPdfURL, includingPropertiesForKeys: nil, options: [.skipsSubdirectoryDescendants, .skipsHiddenFiles])
-                    .max { url1, url2 in
-                        guard let date1 = (try? fileManager.attributesOfItem(atPath: url1.path))?[.creationDate] as? Date,
-                              let date2 = (try? fileManager.attributesOfItem(atPath: url2.path))?[.creationDate] as? Date else { return false }
-                        return date1 < date2
-                    }
-            }
-            .compactMap(PDFDocument.init)
-            .assign(to: &$pdfDocument)
-    }
-
     func shareDocument() {
         withAnimation {
             self.sharingUrl = self.pdfDocument?.documentURL
