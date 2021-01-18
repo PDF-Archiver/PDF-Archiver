@@ -1,6 +1,6 @@
 <p align="center">
 <a href="https://apps.apple.com/app/apple-store/id1433801905?pt=118993774&ct=GitHub&mt=8" target="itunes_store">
-  <img src="assets/AppIcon.svg" width="100px">
+  <img src="assets/AppIcon.svg" width="200px">
 </a>
 <br>
 <br>
@@ -9,12 +9,19 @@
 </a>
 </p>
 
+# PDF Archiver
 
-# PDF Archive Viewer
+Archive all incoming documents digitally to access and search them in an easier way.
+Transfer the sorted documents to your smartphone or make a backup within seconds.
 
-The PDF Archive Viewer shows documents in iCloud Drive.
-It is a helper of the macOS App [PDF Archiver](https://github.com/pdf-Archiver/pdf-archiver).
+* Scan all incoming bills, letters etc. and save them on your computer/iCloud in an *untagged* folder.
+* Put the original paper documents in a folder, sorted by year. Don't care about bills/insurance papers etc.. Just leave all of them in one box for the each year.
+* Open the **PDF Archiver** and start tagging. Your documents will be moved from the *untagged* to your *Archive* folder.
 
+## :rocket: Usage
+1. Scan your documents with [PDF Archiver for iOS](http://ios.pdf-archiver.io)
+2. Start tagging your files on macOS or iOS
+3. There is not step 3 🤷🏻‍♂️
 
 ## :scroll: Convention
 * **Date:** `yyyy-mm-dd` Date of the document content.
@@ -42,49 +49,45 @@ This structure is independent from your OS and filesystem and makes it very easy
 * ... and even the file content: have a look at the [Pro Tips](#pro-tips)!
 
 
+## :floppy_disk: Installation
+Download it from the App Stores [iOS](http://ios.pdf-archiver.io) and [macOS](http://macos.pdf-archiver.io)!
+
+Or clone the repository and build it:
+* Downloaded and install [Xcode.app](https://apps.apple.com/app/xcode/id497799835)
+* Get the project: `git clone --recurse-submodules https://github.com/PDF-Archiver/PDF-Archiver.git`
+* Build and run `PDF Archiver`
+
+## <a name="pro-tips"></a>:mortar_board: Pro Tips
+### PDF Archiver for iOS
+* Scan your documents with the [iOS App](http://ios.pdf-archiver.io)
+* Use the text recognition from PDF Archiver and use the tag/date suggestions
+* Validate the suggestions and save the document in your archive with the [iOS App](http://ios.pdf-archiver.io) or [macOS App](http://macos.pdf-archiver.io)
+
+### PDF Archiver
+* Use the `↹` key for fast field switching
+* You can use keyboard shortcuts from the [FAQs](https://pdf-archiver.io/faq)
+
 ## :interrobang: Help
 * Take a look at the [FAQs](https://pdf-archiver.io/faq).
 * Get in contact with us at [Discord](http://discord.pdf-archiver.io).
 
-
 ## :octocat: How to contribute
-Rate the App in the [App Store](https://apps.apple.com/app/apple-store/id1433801905?pt=118993774&ct=GitHub&mt=8&action=write-review).
+Rate the App in the [Mac App Store](http://macos.pdf-archiver.io).
 
 All [contributions](https://github.com/PDF-Archiver/PDF-Archiver/blob/develop/.github/CONTRIBUTING.md) are welcome!
 Feel free to contribute to this project.
 Submit pull requests or contribute tutorials - whatever you have to offer, it would be appreciated!
 
+## :newspaper_roll: Featured on
+* [Macobserver](https://www.macobserver.com/reviews/quick-look/review-pdf-archiver/) - How to Archive PDFs with PDF Archiver
+* [iFun](https://www.ifun.de/pdf-archiver-kostenloser-ios-kompagnon-ergaenzt-die-mac-app-128930/) - Kostenloser iOS-Kompagnon ergänzt die Mac-App
+* [Netzwelt](https://www.netzwelt.de/download/24613-pdf-archiver.html) - PDF-Dokumente einfach verwalten
+* [Sir Apfelot](https://www.sir-apfelot.de/pdf-archiver-22021/) - PDFs verschlagworten, ordnen und archivieren
+* [appgefahren.de](https://www.appgefahren.de/pdf-archiver-praktische-mac-app-hilft-beim-langfristigen-verwalten-von-dokumenten-220759.html) - Mac-App hilft beim langfristigen Verwalten von Dokumenten
 
-## :exclamation::question: Other
-
-#### Build your own
-
-Create a `Config.xcconfig` file at `PDFArchiver/Resources/Config.xcconfig` with this dummy secrets:
-```xcconfig
-APPSTORECONNECT_SHARED_SECRET = 123
-SENTRY_DSN = 123
-LOG_USER = 123
-LOG_PASSWORD = 123
-```
-
-Now you should be good to go!
-just build and run the App on your iPhone/iPad via Xcode.
-
-
-#### Sentry Upload Debug Symbols
-
-1. Get auth token from [Sentry](https://sentry.io/settings/account/api/auth-tokens/).
-2. Download debug symbols of the specified version in Xcode Organizer.
-3. Add token and upload symbols:
-```bash
-sentry-cli --auth-token CHANGEME upload-dif build --org pdf-archiver --project pdf-archive-viewer ~/Library/Developer/Xcode/DerivedData/
-````
-
-#### License Update
-```bash
-# installation
-brew install mono0926/license-plist/license-plist
-
-# update license files
-license-plist --add-version-numbers --output-path PDFArchiver/Resources/Settings.bundle --suppress-opening-directory
-```
+## :book: Thanks and Donations
+* [**The.Swift.Dev.**](https://theswiftdev.com/2018/05/17/how-to-use-icloud-drive-documents/) for a sponsorship option on a blogpost I used while writing this app.
+* [**zngguvnf.org**](https://zngguvnf.org) discussing and creating this archive structure.
+* [**Karl Voit**](http://karl-voit.at/managing-digital-photographs/) for the initial idea of a document naming convention.
+* [**Nick Roach**](https://www.elegantthemes.com) for the [Icon](https://www.iconfinder.com/icons/1055071/document_file_icon).
+* MAS Preview Sound: [Love Jones by @nop](http://dig.ccmixter.org/files/Lancefield/50789)
