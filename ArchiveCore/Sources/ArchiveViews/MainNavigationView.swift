@@ -57,7 +57,7 @@ public struct MainNavigationView: View {
                 ForEach(Tab.allCases) { tab in
                     NavigationLink(destination: viewModel.view(for: tab), tag: tab, selection: $viewModel.currentOptionalTab) {
                         Label {
-                            Text(LocalizedStringKey(tab.name))
+                            Text(tab.name)
                         } icon: {
                             Image(systemName: tab.iconName)
                                 .accentColor(.paDarkRed)
