@@ -103,6 +103,7 @@ public struct ScanTabView: View {
                 .padding(.horizontal)
         }
         .padding()
+        .frame(maxWidth: 400)
     }
     #endif
 }

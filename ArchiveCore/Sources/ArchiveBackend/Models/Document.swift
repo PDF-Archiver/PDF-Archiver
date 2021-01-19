@@ -200,9 +200,10 @@ public final class Document: ObservableObject, Identifiable, Codable, Log {
         guard !tags.isEmpty else {
             throw FolderProviderError.tags
         }
-        guard !specification.isEmpty else {
-            throw FolderProviderError.description
-        }
+        // 😡 because Finn does not need a description 🤷🏻‍♂️
+//        guard !specification.isEmpty else {
+//            throw FolderProviderError.description
+//        }
 
         let filename = Document.createFilename(date: date, specification: specification, tags: tags)
         let foldername = String(filename.prefix(4))
