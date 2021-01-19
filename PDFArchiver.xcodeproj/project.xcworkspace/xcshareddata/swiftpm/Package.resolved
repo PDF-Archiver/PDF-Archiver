@@ -23,9 +23,9 @@
         "package": "Diagnostics",
         "repositoryURL": "https://github.com/WeTransfer/Diagnostics",
         "state": {
-          "branch": "master",
+          "branch": null,
           "revision": "38d59b8db1c554cb63f467699740a08f3f17122a",
-          "version": null
+          "version": "1.8.0"
         }
       },
       {
@@ -60,8 +60,8 @@
         "repositoryURL": "https://github.com/getsentry/sentry-cocoa",
         "state": {
           "branch": null,
-          "revision": "80928b7e19a713fea798ba45c8bfda38096d7f30",
-          "version": "5.2.2"
+          "revision": "8cdddcc030f886c5f04696a57f9ea4f25e6192a5",
+          "version": "6.1.3"
         }
       },
       {
@@ -86,9 +86,9 @@
         "package": "TPInAppReceipt",
         "repositoryURL": "https://github.com/tikhop/TPInAppReceipt",
         "state": {
-          "branch": null,
-          "revision": "1ea772be1b5b3f75afe542a8af6f43da5aef3da8",
-          "version": "3.0.2"
+          "branch": "master",
+          "revision": "5c0fa8270c81b648fd80f733be1a5b9fcfdc7633",
+          "version": null
         }
       }
     ]

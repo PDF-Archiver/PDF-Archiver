@@ -258,7 +258,7 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
         log.info("Found \(documents.count) documents.")
         self.state = .live
         DispatchQueue.global(qos: .background).async {
-            self.saveDocuments()
+            self.save(documents)
         }
     }
 
@@ -311,7 +311,7 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
         }
     }
 
-    private func saveDocuments() {
+    private func save(_ documents: [Document]) {
 
         if fileManager.fileExists(atPath: Self.savePath.path) {
             try? fileManager.removeItem(at: Self.savePath)
