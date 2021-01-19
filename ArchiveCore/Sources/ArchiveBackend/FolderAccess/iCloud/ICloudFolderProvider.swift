@@ -108,7 +108,8 @@ final class ICloudFolderProvider: FolderProvider {
     }
 
     func delete(url: URL) throws {
-        try fileManager.removeItem(at: url)
+        // trash items (not remove) to let users restore them if needed
+        try fileManager.trashItem(at: url, resultingItemURL: nil)
     }
 
     func rename(from source: URL, to destination: URL) throws {
