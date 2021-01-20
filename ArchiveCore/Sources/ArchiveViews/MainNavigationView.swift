@@ -131,12 +131,12 @@ public struct MainNavigationView: View {
     #endif
 }
 
-//struct MainNavigationView_Previews: PreviewProvider {
+// struct MainNavigationView_Previews: PreviewProvider {
 //    @State static var viewModel = MainNavigationViewModel()
 //    static var previews: some View {
 //        MainNavigationView(viewModel: viewModel)
 //    }
-//}
+// }
 
 fileprivate extension View {
 

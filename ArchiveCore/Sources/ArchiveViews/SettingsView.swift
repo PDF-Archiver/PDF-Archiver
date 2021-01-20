@@ -128,7 +128,7 @@ public struct SettingsView: View {
                     NotificationCenter.default.post(Notification(name: .showSendDiagnosticsReport))
                 }
                 Spacer()
-                Link("PDF Archiver Website  🖥", destination: viewModel.macOSAppUrl)
+                Link("PDF Archiver Website  🖥", destination: viewModel.pdfArchiverUrl)
                 Text("Version \(MoreTabViewModel.appVersion)")
                     .font(.caption)
             }

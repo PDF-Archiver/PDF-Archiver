@@ -28,7 +28,7 @@ public struct WrappingHStack<Item: Identifiable & Hashable, Content: View>: View
             }
         }
         .frame(height: totalHeight)// << variant for ScrollView/List
-        //.frame(maxHeight: totalHeight) // << variant for VStack
+        // .frame(maxHeight: totalHeight) // << variant for VStack
     }
 
     private func generateContent(in proxy: GeometryProxy) -> some View {
@@ -47,7 +47,7 @@ public struct WrappingHStack<Item: Identifiable & Hashable, Content: View>: View
                         let result = width
                         if let lastItem = self.items.last,
                            item == lastItem {
-                            width = 0 //last item
+                            width = 0 // last item
                         } else {
                             width -= dimensions.width
                         }

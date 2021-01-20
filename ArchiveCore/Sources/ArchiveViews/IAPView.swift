@@ -168,7 +168,7 @@ struct IAPView_Previews: PreviewProvider {
     @State static var viewModel = IAPViewModel(iapService: MockIAPService())
     static var previews: some View {
         IAPView(viewModel: viewModel)
-            //.previewDevice("Mac")
+            // .previewDevice("Mac")
             .makeForPreviewProvider()
     }
 }

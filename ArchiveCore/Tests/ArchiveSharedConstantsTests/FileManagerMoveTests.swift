@@ -7,7 +7,7 @@
 
 // *** FOLDERSTRUCTURE ***
 //
-//sourcefolder
+// sourcefolder
 //   |
 //   - file1
 //   - subfolder
@@ -16,14 +16,14 @@
 //          |
 //          - file22
 //
-//destinationfolder
+// destinationfolder
 //   |
 //   - file3
 //   - subfolder
 //       - file4
 //       - file5
 //
-//resultingfolder
+// resultingfolder
 //   |
 //   - file1
 //   - file3
@@ -92,7 +92,7 @@ final class FileManagerMoveTests: XCTestCase {
         let files2 = FileManager.default.getFilesRecursive(at: url)
         XCTAssertEqual(files2.count, 6)
 
-        //swiftlint:disable identifier_name
+        // swiftlint:disable identifier_name
         let fm = FileManager.default
         XCTAssert(fm.fileExists(at: destination.appendingPathComponent("file1")))
         XCTAssert(fm.fileExists(at: destination.appendingPathComponent("file3")))

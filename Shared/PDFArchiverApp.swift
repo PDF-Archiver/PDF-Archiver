@@ -18,13 +18,13 @@ import SwiftUI
 @main
 struct PDFArchiverApp: App, Log {
 
+    // swiftlint:disable weak_delegate
     #if os(macOS)
-    //swiftlint:disable:next weak_delegate
     @NSApplicationDelegateAdaptor(AppDelegate.self) var delegate
     #else
-    //swiftlint:disable:next weak_delegate
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     #endif
+    // swiftlint:enable weak_delegate
     @Environment(\.scenePhase) private var scenePhase
     @StateObject var mainNavigationViewModel = MainNavigationViewModel()
 
@@ -38,7 +38,7 @@ struct PDFArchiverApp: App, Log {
             mainView
         }
         // use this when tool bar items were added
-        //.windowToolbarStyle(UnifiedCompactWindowToolbarStyle())
+        // .windowToolbarStyle(UnifiedCompactWindowToolbarStyle())
         .windowStyle(HiddenTitleBarWindowStyle())
         .commands {
             SidebarCommands()
