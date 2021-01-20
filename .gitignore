@@ -37,3 +37,4 @@ vendor
 Gemfile.lock
 .bundle
 ArchiveCore/.swiftpm
+.env.default
