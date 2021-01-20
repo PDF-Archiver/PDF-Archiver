@@ -14,7 +14,6 @@ extension UserDefaults: Log {
         case tutorialShown = "tutorial-v1"
         case lastSelectedTabName
         case pdfQuality
-        case subscriptionExpiryDate = "SubscriptionExpiryDate"
         case firstDocumentScanAlertPresented
         case archiveURL
         case untaggedURL
@@ -78,15 +77,6 @@ extension UserDefaults: Log {
         set {
             log.info("PDF Quality Changed.", metadata: ["quality": "\(newValue.rawValue)"])
             set(newValue.rawValue, forKey: Names.pdfQuality.rawValue)
-        }
-    }
-
-    public var subscriptionExpiryDate: Date? {
-        get {
-            object(forKey: Names.subscriptionExpiryDate.rawValue) as? Date
-        }
-        set {
-            set(newValue, forKey: Names.subscriptionExpiryDate.rawValue)
         }
     }
 

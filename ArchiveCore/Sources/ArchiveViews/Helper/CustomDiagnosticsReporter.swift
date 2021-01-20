@@ -20,8 +20,7 @@ struct CustomDiagnosticsReporter: DiagnosticsReporting {
             "Environment": AppEnvironment.get().rawValue,
             "Version": AppEnvironment.getFullVersion(),
             "Number of tagged Documents": String(taggedCount),
-            "Number of untagged Documents": String(untaggedCount),
-            "Subscription Expiry Date": UserDefaults.appGroup.subscriptionExpiryDate?.description ?? "NULL"
+            "Number of untagged Documents": String(untaggedCount)
         ]
         return DiagnosticsChapter(title: "App Environment", diagnostics: diagnostics)
     }

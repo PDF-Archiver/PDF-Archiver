@@ -144,12 +144,8 @@
 
 "Grant Access" = "Erlauben";
 
-"Subscription" = "Abo";
-
-"Premium Subscription" = "Premium Abo";
-
-"❌ No active subscription could be restored.\nPlease contact us if this is an error:\nMore > Support" = "❌ Es konnte kein aktives Abo wiederhergestellt werden.\nMelde dich bitte falls es sich hierbei um einen Fehler handelt:\nMehr > Support";
-"✅ An active subscription was successfully restored." = "✅ Ein aktives Abo wurde erfolgreich wiederhergestellt.";
+"❌ No active subscription/lifetime license could be restored.\nPlease contact us if this is an error:\nMore > Support" = "❌ Es konnte kein aktives Abo und keine Lizenz auf Lebenszeit wiederhergestellt werden.\nMelde dich bitte falls es sich hierbei um einen Fehler handelt:\nMehr > Support";
+"✅ An active subscription/lifetime license was successfully restored." = "✅ Ein aktives Abo oder eine Lizenz auf Lebenszeit wurde erfolgreich wiederhergestellt.";
 
 "Search" = "Suchen";
 
@@ -227,7 +223,7 @@
 
 "Searchable PDFs" = "Textanalyse";
 
-"Activate/Restore Subscription" = "Abo aktivieren/wiederherstellen";
+"Activate/Restore Premium" = "Premium aktivieren/wiederherstellen";
 
 "Support further development of a 1 person team." = "Unterstütze die Arbeit eines einzelnen Entwicklers.";
 
@@ -238,8 +234,6 @@
 "Active ✅" = "Aktiv ✅";
 
 "Inactive ❌" = "Inaktiv ❌";
-
-"🧾 Subscription" = "🧾 Abo";
 
 "First Scan processed! 🙂" = "Erster Scan verarbeitet! 🙂";
 

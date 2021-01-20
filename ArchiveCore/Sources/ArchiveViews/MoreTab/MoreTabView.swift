@@ -53,13 +53,13 @@ struct MoreTabView: View {
     }
 
     private var subscription: some View {
-        Section(header: Text("🧾 Subscription")) {
+        Section(header: Text("⭐️ Premium")) {
             HStack {
                 Text("Status:")
                 Text(viewModel.subscriptionStatus)
             }
 
-            DetailRowView(name: "Activate/Restore Subscription") {
+            DetailRowView(name: "Activate/Restore Premium") {
                 NotificationCenter.default.post(.showSubscriptionView)
             }
             Link("Manage Subscription", destination: viewModel.manageSubscriptionUrl)

@@ -26,6 +26,9 @@ struct IAPView: View {
                 title
                 features
                 subscriptionButtons
+                if let lifetimeLicenseName = viewModel.lifetimeLicenseName {
+                    getLifetimeButton(with: lifetimeLicenseName)
+                }
                 text
                 otherButtons
                 Spacer()
@@ -48,7 +51,7 @@ struct IAPView: View {
             VStack(alignment: .leading) {
                 Text("PDF Archiver")
                     .font(.subheadline)
-                Text("Premium Subscription")
+                Text("Premium")
                     .font(.title)
             }
             .foregroundColor(.paDarkGray)
@@ -114,21 +117,36 @@ struct IAPView: View {
                         .font(.headline)
                     Text(self.viewModel.level1Name)
                 }
-                .padding(.vertical, 4)
             })
             .buttonStyle(SubscriptionButtonStyle(isPreferred: false))
 
             Button(action: {
                 self.viewModel.tapped(button: .level2, presentationMode: self.presentationMode)
             }, label: {
-                VStack(spacing: 8) {
+                VStack(spacing: 4) {
                     Text("Yearly")
                         .font(.headline)
                     Text(self.viewModel.level2Name)
                 }
-                .padding(.vertical, 4)
             })
             .buttonStyle(SubscriptionButtonStyle(isPreferred: true))
+        }
+    }
+
+    private func getLifetimeButton(with name: String) -> some View {
+        HStack {
+            Spacer()
+            Button(action: {
+                self.viewModel.tapped(button: .lifetime, presentationMode: self.presentationMode)
+            }, label: {
+                VStack(spacing: 4) {
+                    Text("Lifetime")
+                        .font(.headline)
+                    Text(name)
+                }
+            })
+            .buttonStyle(SubscriptionButtonStyle(isPreferred: true))
+            Spacer()
         }
     }
 

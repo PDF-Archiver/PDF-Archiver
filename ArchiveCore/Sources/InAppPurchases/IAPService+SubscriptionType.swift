@@ -9,5 +9,6 @@ extension IAPService {
     public enum SubscriptionType: String, CaseIterable {
         case monthly = "SUBSCRIPTION_MONTHLY_IOS"
         case yearly = "SUBSCRIPTION_YEARLY_IOS_NEW"
+        case lifetime = "LIFETIME"
     }
 }
