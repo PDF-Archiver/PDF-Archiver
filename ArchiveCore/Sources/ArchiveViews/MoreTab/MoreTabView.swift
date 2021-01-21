@@ -53,13 +53,13 @@ struct MoreTabView: View {
     }
 
     private var subscription: some View {
-        Section(header: Text("🧾 Subscription")) {
+        Section(header: Text("⭐️ Premium")) {
             HStack {
                 Text("Status:")
                 Text(viewModel.subscriptionStatus)
             }
 
-            DetailRowView(name: "Activate/Restore Subscription") {
+            DetailRowView(name: "Activate/Restore Premium") {
                 NotificationCenter.default.post(.showSubscriptionView)
             }
             Link("Manage Subscription", destination: viewModel.manageSubscriptionUrl)
@@ -77,7 +77,7 @@ struct MoreTabView: View {
             NavigationLink(destination: AboutMeView()) {
                 Text("About  👤")
             }
-            Link("PDF Archiver (macOS)  🖥", destination: viewModel.macOSAppUrl)
+            Link("PDF Archiver Website  🖥", destination: viewModel.pdfArchiverUrl)
             MoreTabViewModel.markdownView(for: "Terms of Use & Privacy Policy", withKey: "Privacy")
             MoreTabViewModel.markdownView(for: "Imprint", withKey: "Imprint")
             DetailRowView(name: "Contact Support  🚑") {

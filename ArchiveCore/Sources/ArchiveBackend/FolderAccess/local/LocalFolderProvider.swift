@@ -77,7 +77,14 @@ final class LocalFolderProvider: FolderProvider {
     }
 
     func delete(url: URL) throws {
+        #if os(macOS)
+        try fileManager.trashItem(at: url, resultingItemURL: nil)
+        #else
+        // trash is not possible for local documents on iOS
+        // => document appears again after relaunch
+        // => we have to use removeItem on iOS
         try fileManager.removeItem(at: url)
+        #endif
     }
 
     func rename(from source: URL, to destination: URL) throws {

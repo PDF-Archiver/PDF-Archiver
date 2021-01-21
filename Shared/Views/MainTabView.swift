@@ -119,9 +119,9 @@ struct MainNavigationView: View {
     }
 }
 
-//struct MainTabView_Previews: PreviewProvider {
+// struct MainTabView_Previews: PreviewProvider {
 //    @State static var viewModel = MainNavigationViewModel()
 //    static var previews: some View {
 //        MainTabView(viewModel: viewModel)
 //    }
-//}
+// }

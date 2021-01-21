@@ -23,7 +23,7 @@ struct DocumentList: View {
                 .padding()
 
             // There is currently no way to remove the list separators, so we have to use a LazyVStack
-            //List(documents) { document in
+            // List(documents) { document in
             ScrollView {
                 LazyVStack {
                     ForEach(documents) { document in

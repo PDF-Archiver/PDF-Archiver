@@ -36,15 +36,13 @@ public final class ScanTabViewModel: ObservableObject, DropDelegate, Log {
 
     private let imageConverter: ImageConverterAPI
     private let iapService: IAPServiceAPI
-    private let documentsFinishedHandler: () -> Void
 
     private var lastProgressValue: CGFloat?
     private var disposables = Set<AnyCancellable>()
 
-    public init(imageConverter: ImageConverterAPI, iapService: IAPServiceAPI, documentsFinishedHandler: @escaping () -> Void) {
+    public init(imageConverter: ImageConverterAPI, iapService: IAPServiceAPI) {
         self.imageConverter = imageConverter
         self.iapService = iapService
-        self.documentsFinishedHandler = documentsFinishedHandler
 
         // show the processing indicator, if documents are currently processed
         if imageConverter.totalDocumentCount.value != 0 {
@@ -59,11 +57,6 @@ public final class ScanTabViewModel: ObservableObject, DropDelegate, Log {
                 guard let self = self else { return }
                 let documentProgress = notification.object as? Float
                 self.updateProcessingIndicator(with: documentProgress)
-
-                guard documentProgress == nil else { return }
-
-                // there might be a better way for this inout workaround
-                self.documentsFinishedHandler()
             }
             .store(in: &disposables)
     }

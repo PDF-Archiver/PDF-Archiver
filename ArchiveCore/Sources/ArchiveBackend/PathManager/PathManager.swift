@@ -80,7 +80,7 @@ public final class PathManager: Log {
     public func getArchiveUrl() throws -> URL {
         let archiveURL: URL
         if UserDefaults.standard.isInDemoMode {
-            archiveURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+            archiveURL = fileManager.temporaryDirectory
         } else {
             archiveURL = try archivePathType.getArchiveUrl()
         }

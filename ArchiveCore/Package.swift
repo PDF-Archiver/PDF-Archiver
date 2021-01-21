@@ -28,7 +28,8 @@ let package = Package(
         .package(url: "https://github.com/WeTransfer/Diagnostics", from: "1.8.0"),
 //        .package(url: "https://github.com/tikhop/TPInAppReceipt", from: "3.0.2"),
         .package(url: "https://github.com/tikhop/TPInAppReceipt", .branch("master")),
-        .package(url: "https://github.com/shaps80/GraphicsRenderer", from: "1.4.4")
+        .package(url: "https://github.com/shaps80/GraphicsRenderer", from: "1.4.4"),
+        .package(name: "Sentry", url: "https://github.com/getsentry/sentry-cocoa", from: "6.1.3")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -56,7 +57,8 @@ let package = Package(
         .target(name: "ArchiveSharedConstants",
                 dependencies: [
                     .product(name: "Logging", package: "swift-log"),
-                    "SwiftUIX"
+                    "SwiftUIX",
+                    "Sentry"
                 ]),
         .testTarget(name: "ArchiveBackendTests",
                     dependencies: [

@@ -103,6 +103,7 @@ public struct ScanTabView: View {
                 .padding(.horizontal)
         }
         .padding()
+        .frame(maxWidth: 400)
     }
     #endif
 }
@@ -133,10 +134,7 @@ struct ScanTabView_Previews: PreviewProvider {
 
     static var previews: some View {
         // swiftlint:disable:next trailing_closure
-        ScanTabView(viewModel: ScanTabViewModel(imageConverter: ImageConverter(), iapService: MockIAPService(), documentsFinishedHandler: {
-            print("Scan completed!")
-
-        }))
+        ScanTabView(viewModel: ScanTabViewModel(imageConverter: ImageConverter(), iapService: MockIAPService()))
         .frame(maxWidth: .infinity)
         .padding()
     }

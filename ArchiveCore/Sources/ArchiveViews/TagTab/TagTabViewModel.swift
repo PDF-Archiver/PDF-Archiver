@@ -225,7 +225,7 @@ final class TagTabViewModel: ObservableObject, Log {
         guard let document = currentDocument else { return }
 
         document.date = date
-        document.specification = specification.slugified(withSeparator: "-")
+        document.specification = specification.slugified(withSeparator: "-").lowercased()
         document.tags = Set(documentTags.map { $0.slugified(withSeparator: "") })
 
         DispatchQueue.global(qos: .userInitiated).async {

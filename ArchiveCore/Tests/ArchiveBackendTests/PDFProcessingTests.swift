@@ -12,7 +12,7 @@ import PDFKit
 import XCTest
 
 final class PDFProcessingTests: XCTestCase {
-    private static let tempFolder = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent(UUID().uuidString)
+    private static let tempFolder = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
     private static let referenceDocument = PDFDocument(url: Bundle.billPDFUrl)!
 
     private let queue: OperationQueue = {

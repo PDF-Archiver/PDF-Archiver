@@ -59,12 +59,9 @@ struct TagTabView: View {
         Button(action: {
             self.viewModel.deleteDocument()
         }, label: {
-            VStack {
-                Image(systemName: "trash")
-                Text("Delete")
-                    .font(.caption)
-            }
-            .padding(.horizontal, 24)
+            Label("Delete", systemImage: "trash")
+                .labelStyle(VerticalLabelStyle())
+                .padding(.horizontal, 24)
         })
         .disabled(viewModel.currentDocument == nil)
         .keyboardShortcut(.delete, modifiers: .command)
@@ -74,12 +71,9 @@ struct TagTabView: View {
         Button(action: {
             self.viewModel.saveDocument()
         }, label: {
-            VStack {
-                Image(systemName: "square.and.arrow.down")
-                Text("Add")
-                    .font(.caption)
-            }
-            .padding(.horizontal, 24)
+            Label("Add", systemImage: "square.and.arrow.down")
+                .labelStyle(VerticalLabelStyle())
+                .padding(.horizontal, 24)
         })
         .disabled(viewModel.currentDocument == nil)
         .keyboardShortcut("s", modifiers: .command)

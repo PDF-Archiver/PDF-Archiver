@@ -32,7 +32,7 @@ struct DocumentInformationForm: View {
     private func documentTagTapped(_ tag: String) {
         tags.removeAll { $0 == tag }
         // just remove the tapped tag
-        //$suggestedTags.insertAndSort(tag)
+        // $suggestedTags.insertAndSort(tag)
     }
 
     private func saveCurrentTag() {

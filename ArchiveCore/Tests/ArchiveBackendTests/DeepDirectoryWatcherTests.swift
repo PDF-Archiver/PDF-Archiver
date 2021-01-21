@@ -16,7 +16,7 @@ final class DeepDirectoryWatcherTests: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        tempDir = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent(UUID().uuidString)
+        tempDir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
 
         guard let tempDir = tempDir else {
             XCTFail("TempDir could not be created.")

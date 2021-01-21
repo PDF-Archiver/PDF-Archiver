@@ -258,7 +258,7 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
         log.info("Found \(documents.count) documents.")
         self.state = .live
         DispatchQueue.global(qos: .background).async {
-            self.saveDocuments()
+            self.save(documents)
         }
     }
 
@@ -281,9 +281,9 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
         // Do "--" and "__" exist in filename?
         guard url.lastPathComponent.contains("--"),
             url.lastPathComponent.contains("__"),
-            !url.lastPathComponent.contains(Constants.documentDatePlaceholder),
-            !url.lastPathComponent.contains(Constants.documentDescriptionPlaceholder),
-            !url.lastPathComponent.contains(Constants.documentTagPlaceholder) else { return .untagged }
+            !url.lastPathComponent.lowercased().contains(Constants.documentDatePlaceholder.lowercased()),
+            !url.lastPathComponent.lowercased().contains(Constants.documentDescriptionPlaceholder.lowercased()),
+            !url.lastPathComponent.lowercased().contains(Constants.documentTagPlaceholder.lowercased()) else { return .untagged }
 
         return .tagged
     }
@@ -311,7 +311,7 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
         }
     }
 
-    private func saveDocuments() {
+    private func save(_ documents: [Document]) {
 
         if fileManager.fileExists(atPath: Self.savePath.path) {
             try? fileManager.removeItem(at: Self.savePath)

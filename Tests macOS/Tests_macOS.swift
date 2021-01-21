@@ -7,7 +7,7 @@
 
 import XCTest
 
-//swiftlint:disable:next type_name
+// swiftlint:disable:next type_name
 final class Tests_macOS: XCTestCase {
 
     override func setUpWithError() throws {

@@ -17,8 +17,8 @@ struct SubscriptionButtonStyle: ButtonStyle {
 
     func makeBody(configuration: Self.Configuration) -> some View {
         configuration.label
-            .padding(12.0)
-            .frame(maxWidth: 350.0)
+            .padding(8)
+            .frame(maxWidth: 300)
             .foregroundColor(isPreferred ? foregroundColor : backgroundColor)
             .background(isPreferred ? backgroundColor : foregroundColor)
             .cornerRadius(8)

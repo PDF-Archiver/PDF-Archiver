@@ -57,7 +57,7 @@ public struct MainNavigationView: View {
                 ForEach(Tab.allCases) { tab in
                     NavigationLink(destination: viewModel.view(for: tab), tag: tab, selection: $viewModel.currentOptionalTab) {
                         Label {
-                            Text(LocalizedStringKey(tab.name))
+                            Text(tab.name)
                         } icon: {
                             Image(systemName: tab.iconName)
                                 .accentColor(.paDarkRed)
@@ -131,12 +131,12 @@ public struct MainNavigationView: View {
     #endif
 }
 
-//struct MainNavigationView_Previews: PreviewProvider {
+// struct MainNavigationView_Previews: PreviewProvider {
 //    @State static var viewModel = MainNavigationViewModel()
 //    static var previews: some View {
 //        MainNavigationView(viewModel: viewModel)
 //    }
-//}
+// }
 
 fileprivate extension View {
 

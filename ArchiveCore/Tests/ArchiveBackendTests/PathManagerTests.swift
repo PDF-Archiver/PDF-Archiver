@@ -12,7 +12,7 @@ import PDFKit
 import XCTest
 
 final class PathManagerTests: XCTestCase {
-    static let tempFolder = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent(UUID().uuidString)
+    static let tempFolder = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
 
     override func setUpWithError() throws {
         try super.setUpWithError()
@@ -27,6 +27,7 @@ final class PathManagerTests: XCTestCase {
     #if os(macOS)
     func testArchiveChangeMacOS() throws {
         let currentArchiveFolder = Self.tempFolder.appendingPathComponent("CurrentArchive")
+        XCTAssertNoThrow(try FileManager.default.createDirectory(at: currentArchiveFolder, withIntermediateDirectories: true, attributes: nil))
         UserDefaults.appGroup.archivePathType = .local(currentArchiveFolder)
 
         let archiveUrl = try PathManager.shared.getArchiveUrl()

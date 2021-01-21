@@ -15,7 +15,17 @@ public enum Tab: String, CaseIterable, Identifiable, Hashable, Equatable {
     #endif
 
     public var id: String { rawValue }
-    public var name: String { rawValue.capitalized }
+    public var name: LocalizedStringKey {
+        if self == .scan {
+            #if os(macOS)
+            return "Import"
+            #else
+            return "Scan"
+            #endif
+        } else {
+            return LocalizedStringKey(rawValue.capitalized)
+        }
+    }
     public var iconName: String {
         switch self {
             case .scan:

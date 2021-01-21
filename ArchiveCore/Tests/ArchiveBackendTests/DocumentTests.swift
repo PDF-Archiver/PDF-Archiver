@@ -6,6 +6,7 @@
 //
 
 @testable import ArchiveBackend
+import ArchiveSharedConstants
 import XCTest
 
 final class DocumentTests: XCTestCase {
@@ -231,7 +232,6 @@ final class DocumentTests: XCTestCase {
     func testComparableWithSameUUID() {
 
         // setup
-        _ = UUID()
         let document1 = Document(path: URL(fileURLWithPath: "~/Downloads/2018-05-12--example-description__tag1_tag2.pdf"), taggingStatus: .tagged, downloadStatus: defaultDownloadStatus, byteSize: defaultSize)
         let document2 = Document(path: URL(fileURLWithPath: "~/Downloads/2018-05-12--example-description__tag1_tag2.pdf"), taggingStatus: .tagged, downloadStatus: defaultDownloadStatus, byteSize: defaultSize)
 
@@ -364,6 +364,18 @@ final class DocumentTests: XCTestCase {
         XCTAssertEqual(specification, "15-17")
         XCTAssertEqual(specification?.localizedCapitalized, "15-17")
         XCTAssertNil(tagNames)
+    }
+
+    func testPlaceholder() {
+
+        // setup
+        let document = Document(path: URL(fileURLWithPath: "~/Downloads/2018-05-12--\(Constants.documentDescriptionPlaceholder)__\(Constants.documentTagPlaceholder).pdf"), taggingStatus: .untagged, downloadStatus: defaultDownloadStatus, byteSize: defaultSize)
+
+        document.updateProperties(with: .local, shouldParseDate: false)
+
+        // assert - placeholders must not be in the tags or specification
+        XCTAssertEqual(document.tags, [])
+        XCTAssertEqual(document.specification, "")
     }
 
 //    func testDocumentRenamingPath() {

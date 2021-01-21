@@ -7,7 +7,7 @@
 //
 // swiftlint:disable function_body_length
 
-//import ArchiveCore
+// import ArchiveCore
 import Combine
 import Foundation
 import SwiftUI
@@ -165,15 +165,25 @@ final class ArchiveViewModel: ObservableObject, Log {
     }
 
     func delete(at offsets: IndexSet) {
-        for index in offsets {
-            let deletedDocument = documents.remove(at: index)
+        let documentsToDelete = offsets.map { self.documents[$0] }
+        DispatchQueue.global(qos: .userInitiated).async {
+            var deletedDocuments = [Document]()
             do {
-                try archiveStore.delete(deletedDocument)
+                defer {
+                    DispatchQueue.main.async {
+                        self.documents.removeAll { deletedDocuments.contains($0) }
+                    }
+                }
+
+                for document in documentsToDelete {
+                    try self.archiveStore.delete(document)
+                    deletedDocuments.append(document)
+                }
+                FeedbackGenerator.notify(.success)
             } catch {
                 NotificationCenter.default.postAlert(error)
             }
         }
-        FeedbackGenerator.notify(.success)
     }
 
     func selected(filterItem: FilterItem) {

@@ -18,8 +18,7 @@ final class MainContentViewModel: ObservableObject {
 
     var sharingViewModel = PDFSharingViewModel()
     var scanViewModel = ScanTabViewModel(imageConverter: imageConverter,
-                                         iapService: AppClipIAPService(),
-                                         documentsFinishedHandler: {})
+                                         iapService: AppClipIAPService())
     private var disposables = Set<AnyCancellable>()
 
     init() {

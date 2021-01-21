@@ -56,7 +56,7 @@ public struct SettingsView: View {
                 .tag(Tabs.statistics)
             subscription
                 .tabItem {
-                    Label("Subscription", systemImage: "purchased.circle")
+                    Label("Premium", systemImage: "purchased.circle")
                 }
                 .tag(Tabs.subscription)
             moreInformation
@@ -106,7 +106,7 @@ public struct SettingsView: View {
                 Text("Status:")
                 Text(viewModel.subscriptionStatus)
             }
-            DetailRowView(name: "Activate/Restore Subscription") {
+            DetailRowView(name: "Activate/Restore Premium") {
                 NotificationCenter.default.post(.showSubscriptionView)
             }
             Spacer()
@@ -128,7 +128,7 @@ public struct SettingsView: View {
                     NotificationCenter.default.post(Notification(name: .showSendDiagnosticsReport))
                 }
                 Spacer()
-                Link("PDF Archiver Website  🖥", destination: viewModel.macOSAppUrl)
+                Link("PDF Archiver Website  🖥", destination: viewModel.pdfArchiverUrl)
                 Text("Version \(MoreTabViewModel.appVersion)")
                     .font(.caption)
             }

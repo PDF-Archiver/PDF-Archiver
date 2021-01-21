@@ -145,18 +145,19 @@ public final class Document: ObservableObject, Identifiable, Codable, Log {
         return "\(dateStr)--\(specification)__\(tagStr).pdf"
     }
 
+    /// This function updates the properties of the document.
+    ///
+    /// Since it might run some time, this should not be run on the main thread.
     func updateProperties(with downloadStatus: FileChange.DownloadStatus, shouldParseDate: Bool) {
-        if Thread.isMainThread {
-            log.errorAndAssert("updateProperties() must not be called from the main thread.")
-        }
         filename = (try? path.resourceValues(forKeys: [.localizedNameKey]).localizedName) ?? self.path.lastPathComponent
 
         // parse the current filename and add finder file tags
         let parsedFilename = Document.parseFilename(self.filename)
+        let placeholderTag = Constants.documentTagPlaceholder.lowercased()
         let tags = Set(parsedFilename.tagNames ?? []).union(path.fileTags)
-            .filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && $0 != Constants.documentTagPlaceholder }
+            .filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && $0.lowercased() != placeholderTag }
 
-        DispatchQueue.main.sync {
+        let workItem = DispatchWorkItem {
             self.downloadStatus = downloadStatus
 
             // set the date
@@ -171,6 +172,12 @@ public final class Document: ObservableObject, Identifiable, Codable, Log {
             }
 
             self.tags = tags
+        }
+
+        if Thread.isMainThread {
+            workItem.perform()
+        } else {
+            DispatchQueue.main.sync(execute: workItem)
         }
 
         guard downloadStatus == .local,
@@ -193,9 +200,10 @@ public final class Document: ObservableObject, Identifiable, Codable, Log {
         guard !tags.isEmpty else {
             throw FolderProviderError.tags
         }
-        guard !specification.isEmpty else {
-            throw FolderProviderError.description
-        }
+        // 😡 because Finn does not need a description 🤷🏻‍♂️
+//        guard !specification.isEmpty else {
+//            throw FolderProviderError.description
+//        }
 
         let filename = Document.createFilename(date: date, specification: specification, tags: tags)
         let foldername = String(filename.prefix(4))

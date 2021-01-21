@@ -15,6 +15,7 @@ final class IAPViewModel: ObservableObject, Log {
 
     @Published var level1Name = "Level 1"
     @Published var level2Name = "Level 2"
+    @Published var lifetimeLicenseName: String?
 
     private let iapService: IAPServiceAPI
     private var disposables = Set<AnyCancellable>()
@@ -34,7 +35,7 @@ final class IAPViewModel: ObservableObject, Log {
 
         switch button {
         case .level1:
-            log.info("SubscriptionViewController - buy: Monthly subscription.")
+            log.info("IAPView - buy: Monthly subscription.")
             do {
                 try iapService.buy(subscription: .monthly)
                 presentationMode.dismiss()
@@ -42,19 +43,27 @@ final class IAPViewModel: ObservableObject, Log {
                 NotificationCenter.default.postAlert(error)
             }
         case .level2:
-            log.info("SubscriptionViewController - buy: Yearly subscription.")
+            log.info("IAPView - buy: Yearly subscription.")
             do {
                 try iapService.buy(subscription: .yearly)
                 presentationMode.dismiss()
             } catch {
                 NotificationCenter.default.postAlert(error)
             }
+        case .lifetime:
+            log.info("IAPView - buy: lifetime license.")
+            do {
+                try iapService.buy(subscription: .lifetime)
+                presentationMode.dismiss()
+            } catch {
+                NotificationCenter.default.postAlert(error)
+            }
         case .restore:
-            log.info("SubscriptionViewController - Restore purchases.")
+            log.info("IAPView - Restore purchases.")
             iapService.restorePurchases()
             presentationMode.dismiss()
         case .cancel:
-            log.info("SubscriptionViewController - Cancel subscription view.")
+            log.info("IAPView - Cancel subscription view.")
             presentationMode.dismiss()
         }
     }
@@ -68,6 +77,9 @@ final class IAPViewModel: ObservableObject, Log {
             case "SUBSCRIPTION_YEARLY_IOS_NEW":
                 guard let localizedPrice = product.localizedPrice else { continue }
                 level2Name = localizedPrice + " " + NSLocalizedString("per_year", comment: "")
+            case "LIFETIME":
+                guard let localizedPrice = product.localizedPrice else { continue }
+                lifetimeLicenseName = localizedPrice
             default:
                 Self.log.error("Could not find product in IAP.", metadata: ["product_name": "\(product.localizedDescription)"])
             }
@@ -79,6 +91,7 @@ extension IAPViewModel {
     enum IAPButton: String, CaseIterable {
         case level1
         case level2
+        case lifetime
         case restore
         case cancel
     }

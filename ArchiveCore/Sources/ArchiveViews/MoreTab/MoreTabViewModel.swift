@@ -33,8 +33,8 @@ public final class MoreTabViewModel: ObservableObject, Log {
         URL(string: "https://apps.apple.com/account/subscriptions")!
     }
 
-    var macOSAppUrl: URL {
-        URL(string: "https://macos.pdf-archiver.io")!
+    var pdfArchiverUrl: URL {
+        URL(string: "https://pdf-archiver.io")!
     }
 
     private let iapService: IAPServiceAPI

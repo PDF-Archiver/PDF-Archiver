@@ -1,6 +1,20 @@
 {
   "products" : [
-
+    {
+      "displayPrice" : "29.99",
+      "familyShareable" : true,
+      "internalID" : "628B0CE5",
+      "localizations" : [
+        {
+          "description" : "One time purchase for PDF Archiver",
+          "displayName" : "Lifetime License",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "LIFETIME",
+      "referenceName" : "Lifetime License IAP",
+      "type" : "NonConsumable"
+    }
   ],
   "settings" : {
     "_billingIssuesEnabled" : false,
@@ -21,7 +35,7 @@
 
           ],
           "displayPrice" : "0.99",
-          "familyShareable" : false,
+          "familyShareable" : true,
           "groupNumber" : 1,
           "internalID" : "4356F141",
           "introductoryOffer" : null,
@@ -43,7 +57,7 @@
 
           ],
           "displayPrice" : "9.99",
-          "familyShareable" : false,
+          "familyShareable" : true,
           "groupNumber" : 1,
           "internalID" : "97637841",
           "introductoryOffer" : null,

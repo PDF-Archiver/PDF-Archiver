@@ -80,7 +80,7 @@ public final class IAPService: NSObject, Log {
             // Initialize receipt
             let receipt = try InAppReceipt.localReceipt()
 
-            // Verify hash, bundleID, version and signiture
+            // Verify hash, bundleID, version and signature
             try receipt.verify()
 
             // Retrieve Active Auto Renewable Subscription's Purchases for Product Name and Specific Date
@@ -88,10 +88,14 @@ public final class IAPService: NSObject, Log {
             let hasActiveSubscription = receipt.activeAutoRenewableSubscriptionPurchases
                 .contains { productIdentifiers.contains($0.productIdentifier) }
 
-            appUsagePermitted = hasActiveSubscription
+            let hasLifetimePurchase = !receipt.purchases(ofProductIdentifier: "LIFETIME")
+                .filter { $0.cancellationDateString == nil }
+                .isEmpty
+
+            appUsagePermitted = hasActiveSubscription || hasLifetimePurchase
         } catch {
             appUsagePermitted = false
-            log.errorAndAssert("Failed to validate receaipt", metadata: ["error": "\(error)"])
+            log.error("Failed to validate receipt", metadata: ["error": "\(error)"])
             if Self.shouldHandle(error) {
                 NotificationCenter.default.postAlert(error)
             }
@@ -160,12 +164,12 @@ extension IAPService: SKPaymentTransactionObserver {
 
         DispatchQueue.main.async {
             if self.appUsagePermitted {
-                NotificationCenter.default.createAndPost(title: "Subscription",
-                                                         message: "✅ An active subscription was successfully restored.",
+                NotificationCenter.default.createAndPost(title: "PDF Archiver Premium",
+                                                         message: "✅ An active subscription/lifetime license was successfully restored.",
                                                          primaryButtonTitle: "OK")
             } else {
-                NotificationCenter.default.createAndPost(title: "Subscription",
-                                                         message: "❌ No active subscription could be restored.\nPlease contact us if this is an error:\nMore > Support",
+                NotificationCenter.default.createAndPost(title: "PDF Archiver Premium",
+                                                         message: "❌ No active subscription/lifetime license could be restored.\nPlease contact us if this is an error:\nMore > Support",
                                                          primaryButtonTitle: "OK")
             }
         }

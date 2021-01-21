@@ -18,6 +18,10 @@ struct DocumentDetailView: View {
         }
         .navigationBarTitle(Text(""), displayMode: .inline)
         .navigationBarItems(trailing: shareNavigationButton)
+//        .navigationBarItems(trailing: HStack(alignment: .bottom, spacing: 16) {
+//            editButton
+//            shareNavigationButton
+//        })
         .onAppear(perform: viewModel.viewAppeared)
         .sheet(isPresented: $viewModel.showActivityView) {
             #if !os(macOS)
@@ -25,6 +29,13 @@ struct DocumentDetailView: View {
             #endif
         }
     }
+
+//    var editButton: some View {
+//        Button(action: {}, label: {
+//            Label("Edit", systemImage: "pencil")
+//                .labelStyle(VerticalLabelStyle())
+//        })
+//    }
 
     var shareNavigationButton: some View {
         Button(action: {
@@ -34,7 +45,8 @@ struct DocumentDetailView: View {
             self.viewModel.showActivityView = true
             #endif
         }, label: {
-            Image(systemName: "square.and.arrow.up")
+            Label("Share", systemImage: "square.and.arrow.up")
+                .labelStyle(VerticalLabelStyle())
         })
     }
 }
