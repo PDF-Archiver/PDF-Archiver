@@ -15,7 +15,11 @@ public final class IAPService: NSObject, Log {
     private static var isInitialized = false
 
     @Published public private(set) var products = Set<SKProduct>()
-    @Published public private(set) var appUsagePermitted = false
+    @Published public private(set) var appUsagePermitted = UserDefaults.appGroup.lastAppUsagePermitted {
+        didSet {
+            UserDefaults.appGroup.lastAppUsagePermitted = appUsagePermitted
+        }
+    }
 
     private let paymentQueue = SKPaymentQueue.default()
     private var productsRequest: SKProductsRequest

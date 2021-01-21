@@ -15,6 +15,7 @@ extension UserDefaults: Log {
         case lastSelectedTabName
         case pdfQuality
         case firstDocumentScanAlertPresented
+        case lastAppUsagePermitted
         case archiveURL
         case untaggedURL
         case archivePathType
@@ -48,6 +49,15 @@ extension UserDefaults: Log {
         }
         set {
             set(newValue, forKey: Names.firstDocumentScanAlertPresented.rawValue)
+        }
+    }
+
+    public var lastAppUsagePermitted: Bool {
+        get {
+            bool(forKey: Names.lastAppUsagePermitted.rawValue)
+        }
+        set {
+            set(newValue, forKey: Names.lastAppUsagePermitted.rawValue)
         }
     }
 
