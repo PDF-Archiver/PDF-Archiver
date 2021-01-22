@@ -82,6 +82,8 @@ struct PDFArchiverApp: App, Log {
                             mainNavigationViewModel.showScan(shareAfterScan: true)
                         }
                     }
+                    // reset the quick action item after handling it during app start
+                    shortcutItemToProcess = nil
                     #endif
                 } else if phase == .background {
                     #if !os(macOS)
