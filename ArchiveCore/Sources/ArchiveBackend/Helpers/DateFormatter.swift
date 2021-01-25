@@ -11,7 +11,7 @@ extension DateFormatter {
     static func with(_ template: String) -> DateFormatter {
         let formatter = DateFormatter()
         formatter.locale = .autoupdatingCurrent
-        formatter.setLocalizedDateFormatFromTemplate(template)
+        formatter.dateFormat = template
         return formatter
     }
 }

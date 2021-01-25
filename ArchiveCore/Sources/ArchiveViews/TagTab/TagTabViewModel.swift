@@ -224,8 +224,14 @@ final class TagTabViewModel: ObservableObject, Log {
     func saveDocument() {
         guard let document = currentDocument else { return }
 
+        // slugify the specification first to fix this bug:
+        // View was not updating, when the document is already tagged:
+        // * save document
+        // * change specification
+        specification = specification.slugified(withSeparator: "-").lowercased()
+
         document.date = date
-        document.specification = specification.slugified(withSeparator: "-").lowercased()
+        document.specification = specification
         document.tags = Set(documentTags.map { $0.slugified(withSeparator: "") })
 
         DispatchQueue.global(qos: .userInitiated).async {

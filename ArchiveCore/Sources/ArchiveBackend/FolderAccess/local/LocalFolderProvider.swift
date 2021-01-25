@@ -88,6 +88,7 @@ final class LocalFolderProvider: FolderProvider {
     }
 
     func rename(from source: URL, to destination: URL) throws {
+        guard source != destination else { return }
         try fileManager.createFolderIfNotExists(destination.deletingLastPathComponent())
 
         // test if the document name already exists in archive, otherwise move it

@@ -27,11 +27,14 @@ public enum FilterItem: Identifiable, Equatable, Comparable {
             case .tag(let tagName):
                 return tagName
             case .year(let date):
-                return Self.cache.getTriple(for: date).year
+                formatter.setLocalizedDateFormatFromTemplate("yyyy")
+                return formatter.string(from: date)
             case .yearMonth(let date):
-                return Self.cache.getTriple(for: date).yearMonth
+                formatter.setLocalizedDateFormatFromTemplate("yyyyMM")
+                return formatter.string(from: date)
             case .yearMonthDay(let date):
-                return Self.cache.getTriple(for: date).yearMonthDay
+                formatter.setLocalizedDateFormatFromTemplate("yyyyMMdd")
+                return formatter.string(from: date)
         }
     }
 

@@ -42,6 +42,7 @@ struct ArchiveView: View {
             searchView
             if !viewModel.availableFilters.isEmpty {
                 filterQueryItemView
+                    .padding(.vertical, 4)
             }
             documentsView
                 .resignKeyboardOnDragGesture()
@@ -73,12 +74,11 @@ struct ArchiveView: View {
                             Image(systemName: filter.imageSystemName)
                         }
                     }
-                    .padding()
                     .background(.secondarySystemBackground)
                     .cornerRadius(8)
                 }
             }
-            .padding()
+            .padding(.horizontal, 8)
         }
     }
 
