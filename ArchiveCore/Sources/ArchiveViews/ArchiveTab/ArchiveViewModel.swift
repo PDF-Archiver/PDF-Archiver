@@ -72,9 +72,11 @@ final class ArchiveViewModel: ObservableObject, Log {
         $searchText
             .combineLatest($scopeSelection)
             .receive(on: DispatchQueue.global(qos: .userInitiated))
-            // only change scope when there is a non-empty searchTerm
-            .filter { !$0.0.isEmpty }
             .map { (searchTerm, _) -> [FilterItem] in
+
+                // only change scope when there is a non-empty searchTerm
+                guard !searchTerm.isEmpty else { return [] }
+
                 var filters = Self.getDateFilters(from: searchTerm)
                 let lowercasedSearchTerm = searchTerm.lowercased()
                 let tagFilters = TagStore.shared.getAvailableTags(with: [lowercasedSearchTerm])

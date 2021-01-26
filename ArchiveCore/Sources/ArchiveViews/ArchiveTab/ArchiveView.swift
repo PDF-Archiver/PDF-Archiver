@@ -70,10 +70,11 @@ struct ArchiveView: View {
                     } label: {
                         #if os(macOS)
                         Label(filter.text, systemImage: filter.imageSystemName)
+                            .lineLimit(1)
                         #else
                         Label(filter.text, systemImage: filter.imageSystemName)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
+                            .lineLimit(1)
+                            .padding(10)
                         #endif
                     }
                     .background(.secondarySystemBackground)
