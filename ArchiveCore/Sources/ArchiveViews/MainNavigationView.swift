@@ -55,7 +55,7 @@ public struct MainNavigationView: View {
         NavigationView {
             List {
                 ForEach(Tab.allCases) { tab in
-                    NavigationLink(destination: viewModel.view(for: tab), tag: tab, selection: $viewModel.currentOptionalTab) {
+                    NavigationLink(destination: viewModel.lazyView(for: tab), tag: tab, selection: $viewModel.currentOptionalTab) {
                         Label {
                             Text(tab.name)
                         } icon: {
@@ -94,7 +94,7 @@ public struct MainNavigationView: View {
 
             Text("Select a tab")
 
-            // Would be great to show a thrid column in .archive case, but this is currently not possible:
+            // Would be great to show a third column in .archive case, but this is currently not possible:
             // https://github.com/JulianKahnert/NavigationExample
 //            if viewModel.currentTab == .archive {
 //                if let selectedDocument = viewModel.archiveViewModel.selectedDocument {
@@ -109,7 +109,7 @@ public struct MainNavigationView: View {
     private var tabbar: some View {
         TabView(selection: $viewModel.currentTab) {
             ForEach(Tab.allCases) { tab in
-                viewModel.view(for: tab)
+                viewModel.lazyView(for: tab)
                     .wrapNavigationView(when: tab != .scan)
                     .navigationViewStyle(CustomNavigationStyle())
                     .tabItem {

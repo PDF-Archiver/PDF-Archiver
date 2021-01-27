@@ -7,16 +7,18 @@
 //
 // swiftlint:disable function_body_length
 
-// import ArchiveCore
 import Combine
 import Foundation
 import SwiftUI
+import SwiftUIX
 
 final class ArchiveViewModel: ObservableObject, Log {
 
-    static func createDetail(with document: Document) -> DocumentDetailView {
+    static func createLazyDetail(with document: Document) -> some View {
         let viewModel = DocumentDetailViewModel(document)
-        return DocumentDetailView(viewModel: viewModel)
+        return LazyView {
+            DocumentDetailView(viewModel: viewModel)
+        }
     }
     private static let defaultYears = ["All", "2020", "2019", "2018", "2017"]
 
