@@ -30,51 +30,51 @@ extension UserDefaults: Log {
         public static let defaultQualityIndex = 1  // e.g. "good"
     }
 
-    public var isInDemoMode: Bool {
+    public static var isInDemoMode: Bool {
         UserDefaults.standard.bool(forKey: "demoMode")
     }
 
-    public var tutorialShown: Bool {
+    public static var tutorialShown: Bool {
         get {
-            bool(forKey: Names.tutorialShown.rawValue)
+            appGroup.bool(forKey: Names.tutorialShown.rawValue)
         }
         set {
-            set(newValue, forKey: Names.tutorialShown.rawValue)
+            appGroup.set(newValue, forKey: Names.tutorialShown.rawValue)
         }
     }
 
-    public var firstDocumentScanAlertPresented: Bool {
+    public static var firstDocumentScanAlertPresented: Bool {
         get {
-            bool(forKey: Names.firstDocumentScanAlertPresented.rawValue)
+            appGroup.bool(forKey: Names.firstDocumentScanAlertPresented.rawValue)
         }
         set {
-            set(newValue, forKey: Names.firstDocumentScanAlertPresented.rawValue)
+            appGroup.set(newValue, forKey: Names.firstDocumentScanAlertPresented.rawValue)
         }
     }
 
-    public var lastAppUsagePermitted: Bool {
+    public static var lastAppUsagePermitted: Bool {
         get {
-            bool(forKey: Names.lastAppUsagePermitted.rawValue)
+            appGroup.bool(forKey: Names.lastAppUsagePermitted.rawValue)
         }
         set {
-            set(newValue, forKey: Names.lastAppUsagePermitted.rawValue)
+            appGroup.set(newValue, forKey: Names.lastAppUsagePermitted.rawValue)
         }
     }
 
-    public var lastSelectedTab: Tab {
+    public static var lastSelectedTab: Tab {
         get {
-            guard let name = string(forKey: Names.lastSelectedTabName.rawValue),
+            guard let name = appGroup.string(forKey: Names.lastSelectedTabName.rawValue),
                 let tab = Tab(rawValue: name) else { return .scan }
             return tab
         }
         set {
-            set(newValue.rawValue, forKey: Names.lastSelectedTabName.rawValue)
+            appGroup.set(newValue.rawValue, forKey: Names.lastSelectedTabName.rawValue)
         }
     }
 
-    public var pdfQuality: PDFQuality {
+    public static var pdfQuality: PDFQuality {
         get {
-            var value = float(forKey: Names.pdfQuality.rawValue)
+            var value = appGroup.float(forKey: Names.pdfQuality.rawValue)
 
             // set default to 0.75
             if value == 0.0 {
@@ -86,25 +86,25 @@ extension UserDefaults: Log {
         }
         set {
             log.info("PDF Quality Changed.", metadata: ["quality": "\(newValue.rawValue)"])
-            set(newValue.rawValue, forKey: Names.pdfQuality.rawValue)
+            appGroup.set(newValue.rawValue, forKey: Names.pdfQuality.rawValue)
         }
     }
 
-    public var archiveURL: URL? {
+    public static var archiveURL: URL? {
         get {
-            object(forKey: Names.archiveURL.rawValue) as? URL
+            appGroup.object(forKey: Names.archiveURL.rawValue) as? URL
         }
         set {
-            set(newValue, forKey: Names.archiveURL.rawValue)
+            appGroup.set(newValue, forKey: Names.archiveURL.rawValue)
         }
     }
 
-    public var untaggedURL: URL? {
+    public static var untaggedURL: URL? {
         get {
-            object(forKey: Names.untaggedURL.rawValue) as? URL
+            appGroup.object(forKey: Names.untaggedURL.rawValue) as? URL
         }
         set {
-            set(newValue, forKey: Names.untaggedURL.rawValue)
+            appGroup.set(newValue, forKey: Names.untaggedURL.rawValue)
         }
     }
 

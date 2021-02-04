@@ -22,7 +22,7 @@ public final class MoreTabViewModel: ObservableObject, Log {
 
     let qualities: [String] = ["100% - Lossless 🤯", "75% - Good 👌 (Default)", "50% - Normal 👍", "25% - Small 💾"]
     let storageTypes: [String] = StorageType.allCases.map(\.title).map { "\($0)" }
-    @Published var selectedQualityIndex = UserDefaults.PDFQuality.toIndex(UserDefaults.appGroup.pdfQuality) ?? UserDefaults.PDFQuality.defaultQualityIndex
+    @Published var selectedQualityIndex = UserDefaults.PDFQuality.toIndex(UserDefaults.pdfQuality) ?? UserDefaults.PDFQuality.defaultQualityIndex
     @Published var selectedArchiveType = StorageType.getCurrent()
     @Published var showArchiveTypeSelection = false
     @Published var subscriptionStatus: LocalizedStringKey = "Inactive ❌"
@@ -54,7 +54,7 @@ public final class MoreTabViewModel: ObservableObject, Log {
 
         $selectedQualityIndex
             .sink { selectedQuality in
-                UserDefaults.appGroup.pdfQuality = UserDefaults.PDFQuality.allCases[selectedQuality]
+                UserDefaults.pdfQuality = UserDefaults.PDFQuality.allCases[selectedQuality]
             }
             .store(in: &disposables)
 

@@ -27,9 +27,9 @@ public final class MainNavigationViewModel: ObservableObject, Log {
     @Published var archiveCategories: [String] = []
     @Published var tagCategories: [String] = []
 
-    @Published var currentTab: Tab = UserDefaults.appGroup.lastSelectedTab
+    @Published var currentTab: Tab = UserDefaults.lastSelectedTab
     @Published var currentOptionalTab: Tab?
-    @Published var showTutorial = !UserDefaults.appGroup.tutorialShown
+    @Published var showTutorial = !UserDefaults.tutorialShown
     @Published var sheetType: SheetType?
 
     public let imageConverter: ImageConverter
@@ -72,7 +72,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
         // only the TagTabView must do so.
 
         // MARK: UserDefaults
-        if !UserDefaults.appGroup.tutorialShown {
+        if !UserDefaults.tutorialShown {
             currentTab = .archive
         }
 
@@ -81,7 +81,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
             .removeDuplicates()
             .sink { selectedTab in
                 // save the selected index for the next app start
-                UserDefaults.appGroup.lastSelectedTab = selectedTab
+                UserDefaults.lastSelectedTab = selectedTab
                 Self.log.info("Changed tab.", metadata: ["selectedTab": "\(selectedTab)"])
 
                 FeedbackGenerator.selectionChanged()
@@ -91,7 +91,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
         // MARK: Intro
         $showTutorial
             .sink { shouldPresentTutorial in
-                UserDefaults.appGroup.tutorialShown = !shouldPresentTutorial
+                UserDefaults.tutorialShown = !shouldPresentTutorial
             }
             .store(in: &disposables)
 
@@ -310,8 +310,8 @@ public final class MainNavigationViewModel: ObservableObject, Log {
     // MARK: - Helper Functions
 
     private static func showFirstDocumentFinishedDialogIfNeeded() {
-        guard !UserDefaults.appGroup.firstDocumentScanAlertPresented else { return }
-        UserDefaults.appGroup.firstDocumentScanAlertPresented = true
+        guard !UserDefaults.firstDocumentScanAlertPresented else { return }
+        UserDefaults.firstDocumentScanAlertPresented = true
 
         NotificationCenter.default.createAndPost(title: "First Scan processed! 🙂",
                                                  message: "The first document was processed successfully and is now waiting for you in the 'Tag' tab.\n\n📄   ➡️   🗄",

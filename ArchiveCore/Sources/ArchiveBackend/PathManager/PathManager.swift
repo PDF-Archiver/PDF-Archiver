@@ -79,7 +79,7 @@ public final class PathManager: Log {
 
     public func getArchiveUrl() throws -> URL {
         let archiveURL: URL
-        if UserDefaults.standard.isInDemoMode {
+        if UserDefaults.isInDemoMode {
             archiveURL = fileManager.temporaryDirectory
         } else {
             archiveURL = try archivePathType.getArchiveUrl()
