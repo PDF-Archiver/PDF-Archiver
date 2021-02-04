@@ -11,7 +11,10 @@ import PDFKit
 
 final class DocumentDetailViewModel: ObservableObject {
     let document: Document
-    @Published var pdfDocument: PDFDocument?
+    // this will be set lazy when the view has appeared, because we do not
+    // want to load all PDFDocument (quite heavy) before we need them
+    @Published private(set) var pdfDocument: PDFDocument?
+    @Published var pdfDocumentUrl: URL?
     @Published var showActivityView: Bool = false
     var activityItems: [Any] {
         [document.path]
@@ -19,10 +22,13 @@ final class DocumentDetailViewModel: ObservableObject {
 
     init(_ document: Document) {
         self.document = document
-        pdfDocument = PDFDocument(url: document.path)
+        self.pdfDocumentUrl = document.path
     }
 
     func viewAppeared() {
+        if let url = pdfDocumentUrl {
+            pdfDocument = PDFDocument(url: url)
+        }
         FeedbackGenerator.selectionChanged()
     }
 }

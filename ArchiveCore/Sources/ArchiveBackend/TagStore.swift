@@ -41,10 +41,14 @@ public final class TagStore {
         if searchTerms.isEmpty {
             filteredTags = allDocumentTags
         } else {
-            // filter the tags that match any searchterm
-            filteredTags = allDocumentTags.filter { tag in
-                searchTerms.contains { tag.lowercased().contains($0.lowercased()) }
-            }
+            let lowercasedSearchTerms = searchTerms.map { $0.lowercased() }
+            // filter the tags that match any searchTerm
+            let filteredTagsArray = allDocumentTags
+                .map { $0.lowercased() }
+                .filter { tag in
+                    lowercasedSearchTerms.contains { tag.contains($0) }
+                }
+            filteredTags = Set(filteredTagsArray)
         }
 
         return filteredTags

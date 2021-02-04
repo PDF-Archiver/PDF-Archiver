@@ -41,8 +41,10 @@ public struct PDFCustomView: AppKitOrUIKitViewRepresentable {
     }
 }
 
+#if DEBUG
 struct PDFCustomView_Previews: PreviewProvider {
     static var previews: some View {
         PDFCustomView(PDFDocument())
     }
 }
+#endif

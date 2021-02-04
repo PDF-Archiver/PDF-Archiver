@@ -12,8 +12,8 @@ extension FilterItem {
         public typealias DateTriple = (year: String, yearMonth: String, yearMonthDay: String)
 
         public let yearFormatter: DateFormatter = .with("yyyy")
-        public let yearMonthFormatter: DateFormatter = .with("yyyyMM")
-        public let yearMonthDayFormatter: DateFormatter = .with("yyyyMMdd")
+        public let yearMonthFormatter: DateFormatter = .with("yyyy-MM")
+        public let yearMonthDayFormatter: DateFormatter = .with("yyyy-MM-dd")
 
         private var dateMap: [Date: DateTriple] = [:]
         private let mapAccessQueue = DispatchQueue(label: "FilterCacheQueue")

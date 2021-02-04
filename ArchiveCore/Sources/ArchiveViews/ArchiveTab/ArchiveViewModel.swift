@@ -7,16 +7,18 @@
 //
 // swiftlint:disable function_body_length
 
-// import ArchiveCore
 import Combine
 import Foundation
 import SwiftUI
+import SwiftUIX
 
 final class ArchiveViewModel: ObservableObject, Log {
 
-    static func createDetail(with document: Document) -> DocumentDetailView {
+    static func createLazyDetail(with document: Document) -> some View {
         let viewModel = DocumentDetailViewModel(document)
-        return DocumentDetailView(viewModel: viewModel)
+        return LazyView {
+            DocumentDetailView(viewModel: viewModel)
+        }
     }
     private static let defaultYears = ["All", "2020", "2019", "2018", "2017"]
 
@@ -71,21 +73,25 @@ final class ArchiveViewModel: ObservableObject, Log {
 
         $searchText
             .combineLatest($scopeSelection)
-            // only change scope when there is a non-empty searchterm
-            .filter { !$0.0.isEmpty }
             .receive(on: DispatchQueue.global(qos: .userInitiated))
-            .map { (searchterm, _) -> [FilterItem] in
-                let allDocumentTags = self.documents.reduce(into: Set<String>()) { result, document in
-                    result.formUnion(document.tags)
-                }
+            .map { (searchTerm, _) -> [FilterItem] in
 
-                var filters = Self.getDateFilters(from: searchterm)
-                let tagFilters = allDocumentTags
-                    .sorted()
-                    .prefix(10)
-                    .map { tag in
-                        FilterItem.tag(tag)
+                // only change scope when there is a non-empty searchTerm
+                guard !searchTerm.isEmpty else { return [] }
+
+                var filters = Self.getDateFilters(from: searchTerm)
+                let lowercasedSearchTerm = searchTerm.lowercased()
+                let tagFilters = TagStore.shared.getAvailableTags(with: [lowercasedSearchTerm])
+                    .map { $0.lowercased() }
+                    .sorted { lhs, rhs in
+                        if lhs.starts(with: lowercasedSearchTerm) == rhs.starts(with: lowercasedSearchTerm) {
+                            return lhs < rhs
+                        } else {
+                            return lhs.starts(with: lowercasedSearchTerm)
+                        }
                     }
+                    .prefix(10)
+                    .map(FilterItem.tag)
                 filters.append(contentsOf: tagFilters)
 
                 return filters
@@ -99,13 +105,13 @@ final class ArchiveViewModel: ObservableObject, Log {
             .debounce(for: .milliseconds(100), scheduler: DispatchQueue.global(qos: .userInitiated))
             .removeDuplicates()
             .combineLatest($scopeSelection, archiveStore.$documents, $selectedFilters)
-            .map { (searchterm, searchscopeSelection, documents, selectedFilters) -> [Document] in
+            .map { (searchTerm, searchScopeSelection, documents, selectedFilters) -> [Document] in
 
-                var searchterms: [String] = []
-                if searchterm.isEmpty {
-                    searchterms = []
+                var searchTerms: [String] = []
+                if searchTerm.isEmpty {
+                    searchTerms = []
                 } else {
-                    searchterms = searchterm.slugified(withSeparator: " ")
+                    searchTerms = searchTerm.slugified(withSeparator: " ")
                         .trimmingCharacters(in: .whitespacesAndNewlines)
                         .components(separatedBy: .whitespacesAndNewlines)
 
@@ -113,17 +119,17 @@ final class ArchiveViewModel: ObservableObject, Log {
 
                 var currentDocuments = documents
 
-                let searchscope = self.years[searchscopeSelection]
-                if CharacterSet.decimalDigits.isSuperset(of: CharacterSet(charactersIn: searchscope)) {
-                    // found a year - it should be used as a searchterm
-                    currentDocuments = currentDocuments.filter { $0.folder == searchscope }
+                let searchScope = self.years[searchScopeSelection]
+                if CharacterSet.decimalDigits.isSuperset(of: CharacterSet(charactersIn: searchScope)) {
+                    // found a year - it should be used as a searchTerm
+                    currentDocuments = currentDocuments.filter { $0.folder == searchScope }
                 }
 
                 return currentDocuments
                     .filter { $0.taggingStatus == .tagged }
                     .filter(by: selectedFilters)
                     // filter by fuzzy search + sort
-                    .fuzzyMatchSorted(by: searchterms)
+                    .fuzzyMatchSorted(by: searchTerms)
                     // sort: new > old
                     .reversed()
             }

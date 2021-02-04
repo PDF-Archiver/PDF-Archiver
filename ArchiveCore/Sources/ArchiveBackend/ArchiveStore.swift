@@ -276,7 +276,7 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
     private func getTaggingStatus(of url: URL) -> Document.TaggingStatus {
 
         // Could document be found in the untagged folder?
-        guard untaggedFolders.contains(where: { url.path.contains($0.path) }) else { return .tagged }
+        guard !untaggedFolders.contains(where: { url.path.contains($0.path) }) else { return .untagged }
 
         // Do "--" and "__" exist in filename?
         guard url.lastPathComponent.contains("--"),

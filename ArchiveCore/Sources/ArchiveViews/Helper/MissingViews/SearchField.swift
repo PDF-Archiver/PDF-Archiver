@@ -32,13 +32,10 @@ struct SearchField: View {
                     Button {
                         filterSelectionHandler(filter)
                     } label: {
-                        Label {
-                            Text(filter.text)
-                        } icon: {
-                            Image(systemName: filter.imageSystemName)
-                        }
+                        Label(filter.text, systemImage: filter.imageSystemName)
+                            .lineLimit(1)
+                            .padding(2)
                     }
-                    .padding(2)
                     .background(.secondarySystemBackground)
                     .cornerRadius(8)
                 }
