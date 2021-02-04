@@ -108,7 +108,8 @@ struct PDFArchiverApp: App, Log {
         }
 
         LoggingSystem.bootstrap { label in
-            let logLevel: Logger.Level = AppEnvironment.get() == .production ? .info : .trace
+//            let logLevel: Logger.Level = AppEnvironment.get() == .production ? .info : .trace
+            let logLevel: Logger.Level = .trace
             var sysLogger = StreamLogHandler.standardOutput(label: label)
             sysLogger.logLevel = logLevel
             let sentryLogger = SentryBreadcrumbLogger(metadata: [:], logLevel: logLevel)

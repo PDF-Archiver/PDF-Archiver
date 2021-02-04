@@ -17,6 +17,7 @@ final class DirectoryDeepWatcher: NSObject, Log {
     private static var folderChangeHandler: FolderChangeHandler?
 
     private var watchedUrl: URL
+    private let sourcesAccessQueue = DispatchQueue(label: UUID().uuidString)
     private var sources = [SourceObject]()
 
     private init(watchedUrl: URL) {
@@ -34,10 +35,11 @@ final class DirectoryDeepWatcher: NSObject, Log {
         guard let sourceObject = directoryWatcher.createSource(from: url) else { return nil }
         directoryWatcher.sources.append(sourceObject)
 
+        log.debug("Creating new directory watcher.", metadata: ["path": "\(url.path)"])
         let enumerator = FileManager.default.enumerator(at: url,
                                                         includingPropertiesForKeys: [.creationDateKey, .isDirectoryKey],
                                                         options: [.skipsHiddenFiles]) { (url, error) -> Bool in
-            log.criticalAndAssert("Directory enumerator error", metadata: ["error": "\(error)", "url": "\(url.path)"])
+            Self.log.criticalAndAssert("Directory enumerator error", metadata: ["error": "\(error)", "url": "\(url.path)"])
             return true
         }
 
@@ -59,6 +61,7 @@ final class DirectoryDeepWatcher: NSObject, Log {
         source.setEventHandler { [weak self] in
             Self.folderChangeHandler?(url)
 
+            Self.log.debug("DispatchSource event has happened.", metadata: ["path": "\(url.path)"])
             let enumerator = FileManager.default.enumerator(at: url,
                                                             includingPropertiesForKeys: [.creationDateKey, .isDirectoryKey])
 
@@ -69,35 +72,33 @@ final class DirectoryDeepWatcher: NSObject, Log {
         source.setCancelHandler {
             close(descriptor)
         }
-
         source.resume()
-
         return (source, descriptor, url)
     }
 
     private func startWatching(with enumerator: FileManager.DirectoryEnumerator) -> Bool {
-        guard let url = enumerator.nextObject() as? URL else { return true }
+        sourcesAccessQueue.sync {
+            guard let url = enumerator.nextObject() as? URL else { return true }
 
-        if !url.hasDirectoryPath {
+            if !url.hasDirectoryPath {
+                return startWatching(with: enumerator)
+            }
+
+            if sources.contains(where: { $0.url == url }) {
+                return startWatching(with: enumerator)
+            }
+
+            guard let sourceObject = createSource(from: url) else { return false }
+            sources.append(sourceObject)
+
             return startWatching(with: enumerator)
         }
-
-        if sources.contains(where: { $0.url == url }) {
-            return startWatching(with: enumerator)
-        }
-
-        guard let sourceObject = createSource(from: url) else { return false }
-
-        sources.append(sourceObject)
-
-        return startWatching(with: enumerator)
     }
 
     func stopWatching() {
-        for sourceObject in sources {
-            sourceObject.source.cancel()
+        sourcesAccessQueue.sync {
+            sources.forEach { $0.source.cancel() }
+            sources.removeAll()
         }
-
-        sources.removeAll()
     }
 }
