@@ -28,10 +28,12 @@ end
 desc "Upload binary to Sentry.io"
 lane :sentry do
   download_dsyms(
-    min_version: "3.2.0",
+    min_version: "3.2.4",
     output_directory: "build/"
   )
   sentry_upload_dsym(
+    org_slug: 'pdf-archiver',
+    project_slug: 'pdf-archive-viewer',
     dsym_path: "build/"
   )
 end
