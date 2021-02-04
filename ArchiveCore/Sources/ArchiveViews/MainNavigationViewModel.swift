@@ -218,22 +218,24 @@ public final class MainNavigationViewModel: ObservableObject, Log {
         }
     }
 
-    func view(for type: Tab) -> AnyView {
-        switch type {
-            case .scan:
-                return AnyView(ScanTabView(viewModel: scanViewModel).keyboardShortcut("1", modifiers: .command))
-            case .tag:
-                #if os(macOS)
-                return AnyView(TagTabViewMac(viewModel: tagViewModel).keyboardShortcut("2", modifiers: .command))
-                #else
-                return AnyView(TagTabView(viewModel: tagViewModel).keyboardShortcut("3", modifiers: .command))
+    func lazyView(for type: Tab) -> LazyView<AnyView> {
+        LazyView {
+            switch type {
+                case .scan:
+                    return AnyView(ScanTabView(viewModel: self.scanViewModel).keyboardShortcut("1", modifiers: .command))
+                case .tag:
+                    #if os(macOS)
+                    return AnyView(TagTabViewMac(viewModel: self.tagViewModel).keyboardShortcut("2", modifiers: .command))
+                    #else
+                    return AnyView(TagTabView(viewModel: self.tagViewModel).keyboardShortcut("3", modifiers: .command))
+                    #endif
+                case .archive:
+                    return AnyView(ArchiveView(viewModel: self.archiveViewModel).keyboardShortcut("3", modifiers: .command))
+                #if !os(macOS)
+                case .more:
+                    return AnyView(MoreTabView(viewModel: self.moreViewModel).keyboardShortcut("4", modifiers: .command))
                 #endif
-            case .archive:
-                return AnyView(ArchiveView(viewModel: archiveViewModel).keyboardShortcut("3", modifiers: .command))
-            #if !os(macOS)
-            case .more:
-                return AnyView(MoreTabView(viewModel: moreViewModel).keyboardShortcut("4", modifiers: .command))
-            #endif
+            }
         }
     }
 

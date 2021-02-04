@@ -68,11 +68,14 @@ struct ArchiveView: View {
                     Button {
                         viewModel.selected(filterItem: filter)
                     } label: {
-                        Label {
-                            Text(filter.text)
-                        } icon: {
-                            Image(systemName: filter.imageSystemName)
-                        }
+                        #if os(macOS)
+                        Label(filter.text, systemImage: filter.imageSystemName)
+                            .lineLimit(1)
+                        #else
+                        Label(filter.text, systemImage: filter.imageSystemName)
+                            .lineLimit(1)
+                            .padding(10)
+                        #endif
                     }
                     .background(.secondarySystemBackground)
                     .cornerRadius(8)
@@ -86,7 +89,7 @@ struct ArchiveView: View {
         List {
             ForEach(viewModel.documents) { document in
                 if document.downloadStatus == .local {
-                    NavigationLink(destination: ArchiveViewModel.createDetail(with: document)) {
+                    NavigationLink(destination: ArchiveViewModel.createLazyDetail(with: document)) {
                         DocumentView(viewModel: document, showTagStatus: false, multilineTagList: false)
                     }
                 } else {
@@ -116,11 +119,19 @@ struct ArchiveView: View {
     }
 }
 
+#if DEBUG
 struct ArchiveView_Previews: PreviewProvider {
 
-    static let viewModel = ArchiveViewModel()
+    static let viewModel: ArchiveViewModel = {
+        let model = ArchiveViewModel()
+        model.showLoadingView = false
+        model.availableFilters = [FilterItem.tag("tag1"), FilterItem.tag("tag2")]
+        model.selectedFilters = [FilterItem.tag("tag1")]
+        return model
+    }()
 
     static var previews: some View {
         ArchiveView(viewModel: viewModel)
     }
 }
+#endif
