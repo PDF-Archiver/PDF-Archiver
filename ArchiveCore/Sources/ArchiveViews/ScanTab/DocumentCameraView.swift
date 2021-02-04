@@ -48,7 +48,7 @@ public struct DocumentCameraView: UIViewControllerRepresentable, Log {
             DispatchQueue.global(qos: .userInitiated).async {
                 var images = [CIImage]()
                 for index in 0..<scan.pageCount {
-                    guard let image = CIImage(image: scan.imageOfPage(at: index)) else {
+                    guard let image = CIImage(imageWithOrientation: scan.imageOfPage(at: index)) else {
                         preconditionFailure("Failed to convert scanned image.")
                     }
                     images.append(image)
