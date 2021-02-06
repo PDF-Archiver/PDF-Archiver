@@ -17,8 +17,7 @@ final class DirectoryDeepWatcher: NSObject, Log {
     private static var folderChangeHandler: FolderChangeHandler?
 
     private var watchedUrl: URL
-    private let sourcesAccessQueue = DispatchQueue(label: UUID().uuidString)
-    private var sources = [SourceObject]()
+    private var sources = Atomic<[SourceObject]>([])
 
     private init(watchedUrl: URL) {
         self.watchedUrl = watchedUrl
@@ -33,7 +32,7 @@ final class DirectoryDeepWatcher: NSObject, Log {
         let directoryWatcher = DirectoryDeepWatcher(watchedUrl: url)
 
         guard let sourceObject = directoryWatcher.createSource(from: url) else { return nil }
-        directoryWatcher.sources.append(sourceObject)
+        directoryWatcher.sources.mutate { $0.append(sourceObject) }
 
         log.debug("Creating new directory watcher.", metadata: ["path": "\(url.path)"])
         let enumerator = FileManager.default.enumerator(at: url,
@@ -77,26 +76,24 @@ final class DirectoryDeepWatcher: NSObject, Log {
     }
 
     private func startWatching(with enumerator: FileManager.DirectoryEnumerator) -> Bool {
-        sourcesAccessQueue.sync {
-            guard let url = enumerator.nextObject() as? URL else { return true }
+        guard let url = enumerator.nextObject() as? URL else { return true }
 
-            if !url.hasDirectoryPath {
-                return startWatching(with: enumerator)
-            }
-
-            if sources.contains(where: { $0.url == url }) {
-                return startWatching(with: enumerator)
-            }
-
-            guard let sourceObject = createSource(from: url) else { return false }
-            sources.append(sourceObject)
-
+        if !url.hasDirectoryPath {
             return startWatching(with: enumerator)
         }
+
+        if sources.value.contains(where: { $0.url == url }) {
+            return startWatching(with: enumerator)
+        }
+
+        guard let sourceObject = createSource(from: url) else { return false }
+        sources.mutate { $0.append(sourceObject) }
+
+        return startWatching(with: enumerator)
     }
 
     func stopWatching() {
-        sourcesAccessQueue.sync {
+        sources.mutate { sources in
             sources.forEach { $0.source.cancel() }
             sources.removeAll()
         }
