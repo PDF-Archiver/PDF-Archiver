@@ -22,17 +22,17 @@ final class DeepDirectoryWatcherTests: XCTestCase {
             XCTFail("TempDir could not be created.")
             return
         }
-        for folderIndex in 0..<5 {
+        for folderIndex in 0..<100 {
             let folder = tempDir.appendingPathComponent("\(folderIndex)")
             try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true, attributes: nil)
-            for _ in 0..<10 {
+            for _ in 0..<400 {
                 let file = folder.appendingPathComponent(UUID().uuidString)
                 try "TEST".write(to: file, atomically: true, encoding: .utf8)
             }
         }
 
         files = FileManager.default.getFilesRecursive(at: tempDir)
-        XCTAssertEqual(files?.count, 50)
+        XCTAssertEqual(files?.count, 40000)
     }
 
     override func tearDownWithError() throws {
@@ -51,39 +51,68 @@ final class DeepDirectoryWatcherTests: XCTestCase {
         let folderToRemove = try XCTUnwrap(folders.shuffled().first)
 
         let expectation = XCTestExpectation(description: "Document processing completed.")
-        watcher = DirectoryDeepWatcher.watch(path, withHandler: { _ in
+        watcher = DirectoryDeepWatcher(path, withHandler: { _ in
             expectation.fulfill()
         })
 
         try FileManager.default.removeItem(at: folderToRemove)
 
         wait(for: [expectation], timeout: 3)
+        watcher = nil
     }
 
     func testFileRemove() throws {
         guard let path = tempDir else { return }
 
+        let fileToRemove = try XCTUnwrap(files?.shuffled().first)
+
         let expectation = XCTestExpectation(description: "Document processing completed.")
-        watcher = DirectoryDeepWatcher.watch(path, withHandler: { _ in
+        watcher = DirectoryDeepWatcher(path, withHandler: { changedUrl in
+            guard changedUrl == fileToRemove.deletingLastPathComponent() else { return }
             expectation.fulfill()
         })
 
-        let fileToRemove = try XCTUnwrap(files?.shuffled().first)
         try FileManager.default.removeItem(at: fileToRemove)
 
         wait(for: [expectation], timeout: 3)
+        watcher = nil
+    }
+
+    func testMultipleFileRemove() throws {
+        guard let path = tempDir else { return }
+
+        let filesToRemove = try XCTUnwrap(files?.shuffled().prefix(5))
+
+        let parentFolders = Set(filesToRemove.map { $0.deletingLastPathComponent() })
+
+        let expectations = parentFolders.reduce(into: [URL: XCTestExpectation]()) { (result, parentUrl) in
+            result[parentUrl] = XCTestExpectation(description: "Document processing completed of \(parentUrl.absoluteString).")
+        }
+
+        watcher = DirectoryDeepWatcher(path, withHandler: { changedUrl in
+            expectations[changedUrl]?.fulfill()
+        })
+
+        for file in filesToRemove {
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(Int.random(in: 0..<5))) {
+                try? FileManager.default.removeItem(at: file)
+            }
+        }
+
+        wait(for: expectations.map(\.value), timeout: 30)
+        watcher = nil
     }
 
     func testFileRemoveLong() throws {
         guard let path = tempDir else { return }
 
         let expectation = XCTestExpectation(description: "Document processing completed.")
-        watcher = DirectoryDeepWatcher.watch(path, withHandler: { _ in
+        watcher = DirectoryDeepWatcher(path, withHandler: { _ in
             expectation.fulfill()
         })
 
         let fileToRemove = try XCTUnwrap(files?.shuffled().first)
-        DispatchQueue.global().asyncAfter(deadline: .now() + .seconds(7)) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(7)) {
             do {
                 try FileManager.default.removeItem(at: fileToRemove)
             } catch {
@@ -91,6 +120,7 @@ final class DeepDirectoryWatcherTests: XCTestCase {
             }
         }
 
-        wait(for: [expectation], timeout: 10)
+        wait(for: [expectation], timeout: 20)
+        watcher = nil
     }
 }

@@ -1,101 +1,101 @@
 //
 //  DirectoryDeepWatcher.swift
-//  DirectoryWatcher
 //
-//  Created by Gianni Carlo on 3/18/20.
-//  Copyright © 2020 Tortuga Power. All rights reserved.
+//  Created by Julian Kahnert on 06.02.21.
 //
+// Inspired by: https://github.com/GianniCarlo/DirectoryWatcher
 
 import Foundation
 
-final class DirectoryDeepWatcher: NSObject, Log {
+final class DirectoryDeepWatcher: Log {
 
     typealias FolderChangeHandler = (URL) -> Void
-    private typealias SourceObject = (source: DispatchSourceFileSystemObject, descriptor: Int32, url: URL)
+    private typealias SourceObject = (source: DispatchSourceFileSystemObject, descriptor: Int32)
 
-    private static let queue = DispatchQueue.global(qos: .background)
-    private static var folderChangeHandler: FolderChangeHandler?
+    let baseUrl: URL
+    private let queue = DispatchQueue(label: "DirectoryDeepWatcher \(UUID().uuidString)", qos: .background)
+    private let folderChangeHandler: FolderChangeHandler
+    private var sources = [URL: SourceObject]()
 
-    private var watchedUrl: URL
-    private var sources = Atomic<[SourceObject]>([])
+    init?(_ baseUrl: URL, withHandler handler: @escaping FolderChangeHandler) {
+        self.baseUrl = baseUrl
+        self.folderChangeHandler = handler
 
-    private init(watchedUrl: URL) {
-        self.watchedUrl = watchedUrl
+        Self.log.debug("Creating new directory watcher.", metadata: ["path": "\(baseUrl.path)"])
+
+        do {
+            // create source for the parent directory
+            try createAndAddSource(from: baseUrl)
+
+            // We have to startWatching an the queue, because during the initial creating of all sources
+            // one folder (e.g. the first) might be changed, which triggers the event handler on the queue.
+            // By syncing these calls on a serial queue, they will be processed one after another.
+            try queue.sync {
+                try startWatching(contentsOf: baseUrl)
+            }
+        } catch {
+            log.error("Failed to create DirectoryDeepWatcher")
+            preconditionFailure("Could not create DirectoryDeepWatcher.")
+        }
     }
 
     deinit {
-        stopWatching()
+        sources.forEach { $0.value.source.cancel() }
+        sources.removeAll()
     }
 
-    static func watch(_ url: URL, withHandler handler: @escaping FolderChangeHandler) -> DirectoryDeepWatcher? {
-        folderChangeHandler = handler
-        let directoryWatcher = DirectoryDeepWatcher(watchedUrl: url)
+    private func createAndAddSource(from url: URL) throws {
 
-        guard let sourceObject = directoryWatcher.createSource(from: url) else { return nil }
-        directoryWatcher.sources.mutate { $0.append(sourceObject) }
+        // no need to create a second source
+        guard sources[url] == nil else { return }
 
-        log.debug("Creating new directory watcher.", metadata: ["path": "\(url.path)"])
-        let enumerator = FileManager.default.enumerator(at: url,
-                                                        includingPropertiesForKeys: [.creationDateKey, .isDirectoryKey],
-                                                        options: [.skipsHiddenFiles]) { (url, error) -> Bool in
-            Self.log.criticalAndAssert("Directory enumerator error", metadata: ["error": "\(error)", "url": "\(url.path)"])
-            return true
-        }
-
-        guard let tmpEnumerator = enumerator,
-              directoryWatcher.startWatching(with: tmpEnumerator) else {
-            // Something went wrong, return nil
-            return nil
-        }
-
-        return directoryWatcher
-    }
-
-    private func createSource(from url: URL) -> SourceObject? {
         let descriptor = open(url.path, O_EVTONLY)
-        guard descriptor != -1 else { return nil }
+        guard descriptor != -1 else { throw WatcherError.failedToCreateFileDescriptor }
 
-        let source = DispatchSource.makeFileSystemObjectSource(fileDescriptor: descriptor, eventMask: [.write, .rename, .delete], queue: Self.queue)
-
+        let source = DispatchSource.makeFileSystemObjectSource(fileDescriptor: descriptor, eventMask: [.write, .rename, .delete], queue: queue)
         source.setEventHandler { [weak self] in
-            Self.folderChangeHandler?(url)
+            self?.folderChangeHandler(url)
 
             Self.log.debug("DispatchSource event has happened.", metadata: ["path": "\(url.path)"])
-            let enumerator = FileManager.default.enumerator(at: url,
-                                                            includingPropertiesForKeys: [.creationDateKey, .isDirectoryKey])
-
-            guard let safeEnumerator = enumerator else { preconditionFailure("Failed to create enumerator.") }
-            _ = self?.startWatching(with: safeEnumerator)
+            do {
+                // iterate (once again) over all folders and subfolders, to get all changes
+                try self?.startWatching(contentsOf: url)
+            } catch {
+                Self.log.error("Failed to start watching in event handler", metadata: ["error": "\(error)"])
+            }
         }
 
         source.setCancelHandler {
             close(descriptor)
         }
         source.resume()
-        return (source, descriptor, url)
+
+        // add new source to the source dictionary
+        sources[url] = (source, descriptor)
     }
 
-    private func startWatching(with enumerator: FileManager.DirectoryEnumerator) -> Bool {
-        guard let url = enumerator.nextObject() as? URL else { return true }
+    private func startWatching(contentsOf url: URL) throws {
+        let enumerator = FileManager.default.enumerator(at: url,
+                                                        includingPropertiesForKeys: [.creationDateKey, .isDirectoryKey],
+                                                        options: [.skipsHiddenFiles]) { (url, error) -> Bool in
+            // if a folder was deleted during enumeration, there occurs a "no such file" error - we assume that there will be another change triggered
+            guard (error as NSError).code != NSFileReadNoSuchFileError else { return false }
 
-        if !url.hasDirectoryPath {
-            return startWatching(with: enumerator)
+            Self.log.criticalAndAssert("Directory enumerator error", metadata: ["error": "\(error)", "url": "\(url.path)"])
+            return true
         }
+        guard let safeEnumerator = enumerator else { throw WatcherError.failedToCreateEnumerator }
 
-        if sources.value.contains(where: { $0.url == url }) {
-            return startWatching(with: enumerator)
+        log.trace("Iterating and creating sources if needed.", metadata: ["path": "\(url.absoluteString)"])
+        for case let url as URL in safeEnumerator {
+            guard url.hasDirectoryPath else { continue }
+
+            try createAndAddSource(from: url)
         }
-
-        guard let sourceObject = createSource(from: url) else { return false }
-        sources.mutate { $0.append(sourceObject) }
-
-        return startWatching(with: enumerator)
     }
 
-    func stopWatching() {
-        sources.mutate { sources in
-            sources.forEach { $0.source.cancel() }
-            sources.removeAll()
-        }
+    private enum WatcherError: Error {
+        case failedToCreateEnumerator
+        case failedToCreateFileDescriptor
     }
 }
