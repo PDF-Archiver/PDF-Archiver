@@ -28,7 +28,7 @@ final class PathManagerTests: XCTestCase {
     func testArchiveChangeMacOS() throws {
         let currentArchiveFolder = Self.tempFolder.appendingPathComponent("CurrentArchive")
         XCTAssertNoThrow(try FileManager.default.createDirectory(at: currentArchiveFolder, withIntermediateDirectories: true, attributes: nil))
-        UserDefaults.appGroup.archivePathType = .local(currentArchiveFolder)
+        UserDefaults.archivePathType = .local(currentArchiveFolder)
 
         let archiveUrl = try PathManager.shared.getArchiveUrl()
 

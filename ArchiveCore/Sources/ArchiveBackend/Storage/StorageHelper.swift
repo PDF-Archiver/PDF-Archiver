@@ -17,7 +17,7 @@ public enum StorageHelper {
 
         try FileManager.default.createFolderIfNotExists(PathConstants.tempImageURL)
 
-        let quality = CGFloat(UserDefaults.standard.pdfQuality.rawValue)
+        let quality = CGFloat(UserDefaults.pdfQuality.rawValue)
         let uuid = UUID()
         for (index, image) in images.enumerated() {
             guard let colorSpace = image.colorSpace else { throw StorageError.jpgConversion }

@@ -15,9 +15,9 @@ public final class IAPService: NSObject, Log {
     private static var isInitialized = false
 
     @Published public private(set) var products = Set<SKProduct>()
-    @Published public private(set) var appUsagePermitted = UserDefaults.appGroup.lastAppUsagePermitted {
+    @Published public private(set) var appUsagePermitted = UserDefaults.lastAppUsagePermitted {
         didSet {
-            UserDefaults.appGroup.lastAppUsagePermitted = appUsagePermitted
+            UserDefaults.lastAppUsagePermitted = appUsagePermitted
         }
     }
 

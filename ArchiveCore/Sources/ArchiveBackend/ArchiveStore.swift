@@ -26,7 +26,7 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
     }
 
     private static let availableProvider: [FolderProvider.Type] = {
-        if UserDefaults.standard.isInDemoMode {
+        if UserDefaults.isInDemoMode {
             return [DemoFolderProvider.self]
         } else {
             return [ICloudFolderProvider.self, LocalFolderProvider.self]
