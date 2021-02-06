@@ -171,6 +171,22 @@ public final class MoreTabViewModel: ObservableObject, Log {
                                                      primaryButtonTitle: "OK")
         }
     }
+
+    func openArchiveFolder() {
+        do {
+            #if os(macOS)
+            let url = try PathManager.shared.getArchiveUrl()
+            #else
+            let archiveUrl = try PathManager.shared.getArchiveUrl()
+            // dropFirst uses the index that's why we need -1
+            let pathWithoutScheme = archiveUrl.absoluteString.dropFirst("files://".count - 1)
+            guard let url = URL(string: "shareddocuments://\(pathWithoutScheme)") else { return }
+            #endif
+            open(url)
+        } catch {
+            NotificationCenter.default.postAlert(error)
+        }
+    }
 }
 
 #if DEBUG
