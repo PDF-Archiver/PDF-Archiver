@@ -222,9 +222,7 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
                     if let shouldParseDate = shouldParseDate {
                         DispatchQueue.global(qos: .userInitiated).async {
                             // save documents after the last has been written
-                            documentProcessingGroup.enter()
                             document.updateProperties(with: document.downloadStatus, shouldParseDate: shouldParseDate)
-                            documentProcessingGroup.leave()
                         }
                     }
                 }
@@ -235,13 +233,7 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
             }
         }
 
-        DispatchQueue.global(qos: .background).async {
-            let timeout = documentProcessingGroup.wait(wallTimeout: .now() + .seconds(15))
-            if timeout == .timedOut {
-                Self.log.errorAndAssert("Timeout while waiting for documents to be processed.")
-            }
-            self.updateDocuments()
-        }
+        updateDocuments()
     }
 
     private func updateDocuments() {

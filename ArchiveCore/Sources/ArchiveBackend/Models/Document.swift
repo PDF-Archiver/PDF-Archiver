@@ -157,7 +157,7 @@ public final class Document: ObservableObject, Identifiable, Codable, Log {
         let tags = Set(parsedFilename.tagNames ?? []).union(path.fileTags)
             .filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && $0.lowercased() != placeholderTag }
 
-        let workItem = DispatchWorkItem {
+        DispatchQueue.main.async {
             self.downloadStatus = downloadStatus
 
             // set the date
@@ -172,12 +172,6 @@ public final class Document: ObservableObject, Identifiable, Codable, Log {
             }
 
             self.tags = tags
-        }
-
-        if Thread.isMainThread {
-            workItem.perform()
-        } else {
-            DispatchQueue.main.sync(execute: workItem)
         }
 
         guard downloadStatus == .local,
@@ -237,7 +231,7 @@ public final class Document: ObservableObject, Identifiable, Codable, Log {
 
         // parse the date
         if let parsed = DateParser.parse(text) {
-            DispatchQueue.main.sync {
+            DispatchQueue.main.async {
                 self.date = parsed.date
             }
         }
