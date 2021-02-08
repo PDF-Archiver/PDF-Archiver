@@ -6,6 +6,7 @@
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
 
+import ArchiveBackend
 import SwiftUI
 import SwiftUIX
 
@@ -40,6 +41,11 @@ struct MoreTabView: View {
                     Text(viewModel.selectedArchiveType.title)
                 }
             }
+            Button("Open Archive Folder (☁️ iCloud Drive)" as LocalizedStringKey, action: viewModel.openArchiveFolder)
+                // if statement in view not possible, because the StorageSelectionView was not returning to the overview
+                // after the selection has changed.
+                .disabled(PathManager.shared.archivePathType != .iCloudDrive)
+                .opacity(PathManager.shared.archivePathType == .iCloudDrive ? 1 : 0.3)
             DetailRowView(name: "Show Intro") {
                 self.viewModel.showIntro()
             }

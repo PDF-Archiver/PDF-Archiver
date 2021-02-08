@@ -20,7 +20,9 @@ extension UserDefaults {
                 } else if let bookmarkData = object(forKey: Names.archivePathType.rawValue) as? Data {
                     let url = try URL(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &staleBookmarkData)
                     if staleBookmarkData {
+                        set(nil, forKey: Names.archivePathType.rawValue)
                         log.errorAndAssert("Found stale bookmark data.")
+                        return nil
                     }
                     return .local(url)
                 } else {

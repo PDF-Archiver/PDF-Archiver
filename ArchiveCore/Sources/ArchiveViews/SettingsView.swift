@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 14.11.20.
 //
 
+import ArchiveBackend
 import SwiftUI
 import SwiftUIX
 
@@ -88,10 +89,14 @@ public struct SettingsView: View {
     }
 
     private var storage: some View {
-        StorageSelectionView(selection: $viewModel.selectedArchiveType)
-            .listStyle(InsetListStyle())
-            .padding(20)
-            .frame(width: 500, height: 250)
+        VStack(spacing: 0) {
+            StorageSelectionView(selection: $viewModel.selectedArchiveType)
+                .listStyle(InsetListStyle())
+                .padding(20)
+                .frame(width: 500, height: 250)
+            Button("Open Archive Folder" as LocalizedStringKey, action: viewModel.openArchiveFolder)
+                .padding()
+        }
     }
 
     private var statistics: some View {
