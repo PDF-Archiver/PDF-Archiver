@@ -149,12 +149,21 @@ public final class MainNavigationViewModel: ObservableObject, Log {
             .receive(on: DispatchQueue.main)
             .assign(to: &self.$tagCategories)
 
+        // TODO: update this after settings change
+        // TODO: add observed folder on settings screen
+        // TODO: test observed folder after launch
         DispatchQueue.global(qos: .userInteractive).async {
             do {
                 let archiveUrl = try PathManager.shared.getArchiveUrl()
                 let untaggedUrl = try PathManager.shared.getUntaggedUrl()
 
-                Self.archiveStore.update(archiveFolder: archiveUrl, untaggedFolders: [untaggedUrl])
+                #if os(macOS)
+                let untaggedFolders = [untaggedUrl, UserDefaults.observedFolderURL].compactMap { $0 }
+                #else
+                let untaggedFolders = [untaggedUrl]
+                #endif
+
+                Self.archiveStore.update(archiveFolder: archiveUrl, untaggedFolders: untaggedFolders)
             } catch {
                 NotificationCenter.default.postAlert(error)
             }

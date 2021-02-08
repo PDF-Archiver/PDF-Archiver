@@ -18,6 +18,7 @@ extension UserDefaults: Log {
         case lastAppUsagePermitted
         case archiveURL
         case untaggedURL
+        case observedFolderURL
         case archivePathType
     }
 
@@ -107,6 +108,39 @@ extension UserDefaults: Log {
             appGroup.set(newValue, forKey: Names.untaggedURL.rawValue)
         }
     }
+
+    #if os(macOS)
+    public static var observedFolderURL: URL? {
+        get {
+            guard let bookmarkData = appGroup.object(forKey: Names.observedFolderURL.rawValue) as? Data else { return nil }
+
+            do {
+                var staleBookmarkData = false
+                let url = try URL(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &staleBookmarkData)
+                if staleBookmarkData {
+                    appGroup.set(nil, forKey: Names.observedFolderURL.rawValue)
+                    log.errorAndAssert("Found stale bookmark data.")
+                    return nil
+                }
+                return url
+            } catch {
+                log.errorAndAssert("Failed to get observedFolderURL", metadata: ["error": "\(error)"])
+                NotificationCenter.default.postAlert(error)
+                return nil
+            }
+        }
+        set {
+            guard let url = newValue else { return }
+            do {
+                let bookmark = try url.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
+                appGroup.set(bookmark, forKey: Names.observedFolderURL.rawValue)
+            } catch {
+                log.errorAndAssert("Failed to set ArchivePathType.", metadata: ["error": "\(error)"])
+                NotificationCenter.default.postAlert(error)
+            }
+        }
+    }
+    #endif
 
     public func setObject<T: Encodable>(_ object: T?, forKey key: Names) throws {
         guard let object = object else {

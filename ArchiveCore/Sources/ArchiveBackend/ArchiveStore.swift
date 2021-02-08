@@ -176,9 +176,6 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
     // MARK: Helper Function
 
     private func folderDidChange(_ provider: FolderProvider, _ changes: [FileChange]) {
-
-        let documentProcessingGroup = DispatchGroup()
-
         queue.sync {
             for change in changes {
 
