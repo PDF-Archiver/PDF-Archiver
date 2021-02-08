@@ -54,6 +54,8 @@ extension URL {
                 if currentAttrib != tags {
                     docAttrib[PDFDocumentAttribute.keywordsAttribute] = newValue
                     document.documentAttributes = docAttrib
+
+                    // this save the document increases the file size of some documents
                     document.write(to: self)
                 }
             }
