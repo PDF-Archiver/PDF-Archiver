@@ -149,6 +149,10 @@ public final class Document: ObservableObject, Identifiable, Codable, Log {
     ///
     /// Since it might run some time, this should not be run on the main thread.
     func updateProperties(with downloadStatus: FileChange.DownloadStatus, shouldParseDate: Bool) {
+        if Thread.isMainThread {
+            log.errorAndAssert("updateProperties() must not be called from the main thread.")
+        }
+
         filename = (try? path.resourceValues(forKeys: [.localizedNameKey]).localizedName) ?? self.path.lastPathComponent
 
         // parse the current filename and add finder file tags
@@ -157,7 +161,11 @@ public final class Document: ObservableObject, Identifiable, Codable, Log {
         let tags = Set(parsedFilename.tagNames ?? []).union(path.fileTags)
             .filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && $0.lowercased() != placeholderTag }
 
+        let semaphore = DispatchSemaphore(value: 0)
         DispatchQueue.main.async {
+            defer {
+                semaphore.signal()
+            }
             self.downloadStatus = downloadStatus
 
             // set the date
@@ -173,6 +181,9 @@ public final class Document: ObservableObject, Identifiable, Codable, Log {
 
             self.tags = tags
         }
+
+        // we have to wait until the changes have propagated on the main thread, see `ArchiveStore` for more information
+        _ = semaphore.wait(timeout: .now() + .seconds(3))
 
         guard downloadStatus == .local,
               shouldParseDate else { return }

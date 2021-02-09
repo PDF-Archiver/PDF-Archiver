@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 
-public protocol ArchiveStoreAPI: class {
+public protocol ArchiveStoreAPI: AnyObject {
     var documents: [Document] { get }
     var documentsPublisher: AnyPublisher<[Document], Never> { get }
 
@@ -176,6 +176,9 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
     // MARK: Helper Function
 
     private func folderDidChange(_ provider: FolderProvider, _ changes: [FileChange]) {
+
+        let documentProcessingGroup = DispatchGroup()
+
         queue.sync {
             for change in changes {
 
@@ -217,9 +220,11 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
 
                     // trigger update of the document properties
                     if let shouldParseDate = shouldParseDate {
+                        documentProcessingGroup.enter()
                         DispatchQueue.global(qos: .userInitiated).async {
                             // save documents after the last has been written
                             document.updateProperties(with: document.downloadStatus, shouldParseDate: shouldParseDate)
+                            documentProcessingGroup.leave()
                         }
                     }
                 }
@@ -230,7 +235,15 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
             }
         }
 
-        updateDocuments()
+        // We have to wait until all documents have been processed, because several updates will be triggered on $document changes
+        // these changes must contain the valid new information.
+        DispatchQueue.global(qos: .background).async {
+            let timeout = documentProcessingGroup.wait(wallTimeout: .now() + .seconds(15))
+            if timeout == .timedOut {
+                Self.log.errorAndAssert("Timeout while waiting for documents to be processed.")
+            }
+            self.updateDocuments()
+        }
     }
 
     private func updateDocuments() {

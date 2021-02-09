@@ -12,8 +12,7 @@ struct DocumentDetailView: View {
     @ObservedObject var viewModel: DocumentDetailViewModel
     var body: some View {
         VStack {
-            DocumentView(viewModel: viewModel.document, showTagStatus: false, multilineTagList: true)
-                .padding()
+            documentDetails
             PDFCustomView(viewModel.pdfDocument)
         }
         .navigationBarTitle(Text(""), displayMode: .inline)
@@ -37,6 +36,16 @@ struct DocumentDetailView: View {
 //        })
 //    }
 
+    private var documentDetails: some View {
+        HStack {
+            DocumentView(viewModel: viewModel.document, showTagStatus: false, multilineTagList: true)
+            #if os(macOS)
+            shareNavigationButton
+            #endif
+        }
+        .padding()
+    }
+
     var shareNavigationButton: some View {
         Button(action: {
             #if os(macOS)
@@ -45,8 +54,12 @@ struct DocumentDetailView: View {
             self.viewModel.showActivityView = true
             #endif
         }, label: {
+            #if os(macOS)
+            Text("Show in Finder")
+            #else
             Label("Share", systemImage: "square.and.arrow.up")
                 .labelStyle(VerticalLabelStyle())
+            #endif
         })
     }
 }

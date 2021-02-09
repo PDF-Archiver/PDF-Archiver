@@ -130,10 +130,13 @@ extension UserDefaults: Log {
             }
         }
         set {
-            guard let url = newValue else { return }
             do {
-                let bookmark = try url.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
-                appGroup.set(bookmark, forKey: Names.observedFolderURL.rawValue)
+                if let url = newValue {
+                    let bookmark = try url.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
+                    appGroup.set(bookmark, forKey: Names.observedFolderURL.rawValue)
+                } else {
+                    appGroup.set(nil, forKey: Names.observedFolderURL.rawValue)
+                }
             } catch {
                 log.errorAndAssert("Failed to set ArchivePathType.", metadata: ["error": "\(error)"])
                 NotificationCenter.default.postAlert(error)

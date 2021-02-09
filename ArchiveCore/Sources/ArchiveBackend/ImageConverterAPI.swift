@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol ImageConverterAPI: class {
+public protocol ImageConverterAPI: AnyObject {
     var totalDocumentCount: Atomic<Int> { get }
 
     func handle(_ url: URL) throws

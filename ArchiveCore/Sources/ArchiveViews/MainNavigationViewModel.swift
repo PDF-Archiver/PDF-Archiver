@@ -141,32 +141,14 @@ public final class MainNavigationViewModel: ObservableObject, Log {
             .receive(on: DispatchQueue.main)
             .assign(to: &self.$archiveCategories)
 
-        Self.archiveStore.$documents
-            .map { _ in
-                Array(TagStore.shared.getSortedTags().prefix(10).map(\.localizedCapitalized))
-            }
+        TagStore.shared.$sortedTags
+            .print()
             .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .assign(to: &self.$tagCategories)
 
-        // TODO: update this after settings change
-        // TODO: add observed folder on settings screen
-        // TODO: test observed folder after launch
         DispatchQueue.global(qos: .userInteractive).async {
-            do {
-                let archiveUrl = try PathManager.shared.getArchiveUrl()
-                let untaggedUrl = try PathManager.shared.getUntaggedUrl()
-
-                #if os(macOS)
-                let untaggedFolders = [untaggedUrl, UserDefaults.observedFolderURL].compactMap { $0 }
-                #else
-                let untaggedFolders = [untaggedUrl]
-                #endif
-
-                Self.archiveStore.update(archiveFolder: archiveUrl, untaggedFolders: untaggedFolders)
-            } catch {
-                NotificationCenter.default.postAlert(error)
-            }
+            self.moreViewModel.reloadArchiveDocuments()
         }
 
         imageConverter.$processedDocumentUrl

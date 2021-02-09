@@ -20,6 +20,7 @@ struct StorageSelectionView: View {
                     }) {
                         HStack {
                             Text(storageType.title)
+                                .fixedSize()
                                 .foregroundColor(.label)
                             Spacer()
                             if selection == storageType {
@@ -29,7 +30,7 @@ struct StorageSelectionView: View {
                     }
                 }
                 #if os(macOS)
-                Spacer(minLength: 28)
+                Spacer(minLength: 8)
                 #endif
             }
         }
