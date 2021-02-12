@@ -124,6 +124,7 @@ extension UserDefaults: Log {
                 }
                 return url
             } catch {
+                appGroup.set(nil, forKey: Names.observedFolderURL.rawValue)
                 log.errorAndAssert("Failed to get observedFolderURL", metadata: ["error": "\(error)"])
                 NotificationCenter.default.postAlert(error)
                 return nil
@@ -138,7 +139,8 @@ extension UserDefaults: Log {
                     appGroup.set(nil, forKey: Names.observedFolderURL.rawValue)
                 }
             } catch {
-                log.errorAndAssert("Failed to set ArchivePathType.", metadata: ["error": "\(error)"])
+                appGroup.set(nil, forKey: Names.observedFolderURL.rawValue)
+                log.errorAndAssert("Failed to set observedFolderURL.", metadata: ["error": "\(error)"])
                 NotificationCenter.default.postAlert(error)
             }
         }

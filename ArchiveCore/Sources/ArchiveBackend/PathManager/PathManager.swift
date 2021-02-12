@@ -32,6 +32,7 @@ extension UserDefaults {
                 return try? getObject(forKey: .archivePathType)
                 #endif
             } catch {
+                set(nil, forKey: Names.archivePathType.rawValue)
                 log.errorAndAssert("Error while getting archive url.", metadata: ["error": "\(String(describing: error))"])
                 NotificationCenter.default.postAlert(error)
                 return nil
@@ -51,6 +52,7 @@ extension UserDefaults {
                 try setObject(newValue, forKey: .archivePathType)
                 #endif
             } catch {
+                set(nil, forKey: Names.archivePathType.rawValue)
                 log.errorAndAssert("Failed to set ArchivePathType.", metadata: ["error": "\(error)"])
                 NotificationCenter.default.postAlert(error)
             }

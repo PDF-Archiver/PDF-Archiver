@@ -52,13 +52,10 @@ struct DocumentList: View {
     private func statusView(for document: Document) -> some View {
         if document.taggingStatus == .tagged {
             Image(systemName: "checkmark.circle")
-                .foregroundColor(.systemGreen)
-        } else if document == currentDocument {
-            Image(systemName: "circle")
-                .foregroundColor(.systemBlue)
+                .foregroundColor(document == currentDocument ? Color.systemBlue : Color.systemGreen)
         } else {
             Image(systemName: "circle")
-                .opacity(0)
+                .foregroundColor(document == currentDocument ? Color.systemBlue : Color.clear)
         }
     }
 }

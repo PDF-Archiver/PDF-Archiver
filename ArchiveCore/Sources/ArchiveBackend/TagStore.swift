@@ -40,7 +40,6 @@ public final class TagStore {
                 for tag in document.tags {
                     counts[tag, default: 0] += 1
                 }
-                print(counts)
             }
             .sorted { lhs, rhs in
                 if lhs.value == rhs.value {

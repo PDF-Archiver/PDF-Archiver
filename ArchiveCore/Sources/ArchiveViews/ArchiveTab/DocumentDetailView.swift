@@ -17,10 +17,12 @@ struct DocumentDetailView: View {
         }
         .navigationBarTitle(Text(""), displayMode: .inline)
         .navigationBarItems(trailing: shareNavigationButton)
-//        .navigationBarItems(trailing: HStack(alignment: .bottom, spacing: 16) {
-//            editButton
-//            shareNavigationButton
-//        })
+        .navigationBarItems(trailing: HStack(alignment: .bottom, spacing: 16) {
+            #if !os(macOS)
+            editButton
+            shareNavigationButton
+            #endif
+        })
         .onAppear(perform: viewModel.viewAppeared)
         .sheet(isPresented: $viewModel.showActivityView) {
             #if !os(macOS)
@@ -29,18 +31,27 @@ struct DocumentDetailView: View {
         }
     }
 
-//    var editButton: some View {
-//        Button(action: {}, label: {
-//            Label("Edit", systemImage: "pencil")
-//                .labelStyle(VerticalLabelStyle())
-//        })
-//    }
+    var editButton: some View {
+        Button(action: {
+            NotificationCenter.default.edit(document: viewModel.document)
+        }, label: {
+            #if os(macOS)
+            Label("Edit", systemImage: "pencil")
+            #else
+            Label("Edit", systemImage: "pencil")
+                .labelStyle(VerticalLabelStyle())
+            #endif
+        })
+    }
 
     private var documentDetails: some View {
         HStack {
             DocumentView(viewModel: viewModel.document, showTagStatus: false, multilineTagList: true)
             #if os(macOS)
-            shareNavigationButton
+            VStack(alignment: .leading) {
+                editButton
+                shareNavigationButton
+            }
             #endif
         }
         .padding()
@@ -55,7 +66,7 @@ struct DocumentDetailView: View {
             #endif
         }, label: {
             #if os(macOS)
-            Text("Show in Finder")
+            Label("Show in Finder", systemImage: "doc.text.magnifyingglass")
             #else
             Label("Share", systemImage: "square.and.arrow.up")
                 .labelStyle(VerticalLabelStyle())

@@ -9,7 +9,7 @@ import Combine
 import SwiftUI
 
 extension Notification.Name {
-    static let alertMessage = Notification.Name("Error.Message")
+    fileprivate static let alertMessage = Notification.Name("Error.Message")
 }
 
 extension NotificationCenter {

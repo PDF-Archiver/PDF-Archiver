@@ -52,7 +52,9 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
     private var untaggedFolders: [URL] = []
 
     private let fileManager = FileManager.default
-    private let queue = DispatchQueue(label: "ArchiveStoreQueue", qos: .utility)
+    private let queue = DispatchQueue(label: "ArchiveStoreQueue", qos: .userInitiated)
+    private let documentProcessingQueue = DispatchQueue(label: "ArchiveStore DocumentProcessing queue", qos: .userInitiated)
+
     private var providers: [FolderProvider] = []
     private var contents: [URL: [Document]] = [:]
 
@@ -129,13 +131,15 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
             try documentProvider.delete(url: document.path)
         }
 
-        // update document properties
-        document.filename = String(newFilepath.lastPathComponent)
-        document.path = newFilepath
-        document.taggingStatus = .tagged
+        DispatchQueue.main.async {
+            // update document properties
+            document.filename = String(newFilepath.lastPathComponent)
+            document.path = newFilepath
+            document.taggingStatus = .tagged
 
-        // save file tags
-        document.path.fileTags = document.tags.sorted()
+            // save file tags
+            document.path.fileTags = document.tags.sorted()
+        }
     }
 
     public func download(_ document: Document) throws {
@@ -221,7 +225,7 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
                     // trigger update of the document properties
                     if let shouldParseDate = shouldParseDate {
                         documentProcessingGroup.enter()
-                        DispatchQueue.global(qos: .userInitiated).async {
+                        documentProcessingQueue.async {
                             // save documents after the last has been written
                             document.updateProperties(with: document.downloadStatus, shouldParseDate: shouldParseDate)
                             documentProcessingGroup.leave()
@@ -258,10 +262,8 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
         updateYears()
 
         log.info("Found \(documents.count) documents.")
-        self.state = .live
-        DispatchQueue.global(qos: .background).async {
-            self.save(documents)
-        }
+        state = .live
+        save(documents)
     }
 
     private func updateYears() {

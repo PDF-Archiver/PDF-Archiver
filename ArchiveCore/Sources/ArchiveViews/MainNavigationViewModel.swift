@@ -27,10 +27,14 @@ public final class MainNavigationViewModel: ObservableObject, Log {
     @Published var archiveCategories: [String] = []
     @Published var tagCategories: [String] = []
 
-    @Published var currentTab: Tab = UserDefaults.lastSelectedTab
-    @Published var currentOptionalTab: Tab?
+    @Published var currentTab: Tab? = UserDefaults.lastSelectedTab
     @Published var showTutorial = !UserDefaults.tutorialShown
     @Published var sheetType: SheetType?
+    lazy var unwrappedCurrentTab: Binding<Tab> = Binding { () -> Tab in
+        self.currentTab ?? .scan
+    } set: { newTab in
+        self.currentTab = newTab
+    }
 
     public let imageConverter: ImageConverter
     var scanViewModel: ScanTabViewModel
@@ -50,16 +54,6 @@ public final class MainNavigationViewModel: ObservableObject, Log {
             .receive(on: DispatchQueue.main)
             .assign(to: &$alertDataModel)
 
-        $currentTab
-            .map { Optional($0) }
-            .removeDuplicates()
-            .assign(to: &$currentOptionalTab)
-
-        $currentOptionalTab
-            .compactMap { $0 }
-            .removeDuplicates()
-            .assign(to: &$currentTab)
-
         scanViewModel.objectWillChange
             .receive(on: DispatchQueue.main)
             .sink { _ in
@@ -78,6 +72,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
 
         $currentTab
             .dropFirst()
+            .compactMap { $0 }
             .removeDuplicates()
             .sink { selectedTab in
                 // save the selected index for the next app start
@@ -129,6 +124,17 @@ public final class MainNavigationViewModel: ObservableObject, Log {
             }
             .store(in: &disposables)
 
+        NotificationCenter.default.editDocumentPublisher()
+            .receive(on: DispatchQueue.main)
+            .sink { document in
+                self.tagViewModel.currentDocument = document
+                if !self.tagViewModel.documents.contains(document) {
+                    self.tagViewModel.documents = [[document], self.tagViewModel.documents].flatMap { $0 }
+                }
+                self.currentTab = .tag
+            }
+            .store(in: &disposables)
+
         Self.archiveStore.$years
             .map { years -> [String] in
                 let tmp = years.sorted()
@@ -142,14 +148,9 @@ public final class MainNavigationViewModel: ObservableObject, Log {
             .assign(to: &self.$archiveCategories)
 
         TagStore.shared.$sortedTags
-            .print()
             .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .assign(to: &self.$tagCategories)
-
-        DispatchQueue.global(qos: .userInteractive).async {
-            self.moreViewModel.reloadArchiveDocuments()
-        }
 
         imageConverter.$processedDocumentUrl
             .compactMap { $0 }
@@ -166,6 +167,10 @@ public final class MainNavigationViewModel: ObservableObject, Log {
                 #endif
             }
             .store(in: &disposables)
+
+        DispatchQueue.global(qos: .userInteractive).async {
+            self.moreViewModel.reloadArchiveDocuments()
+        }
     }
 
     @ViewBuilder
