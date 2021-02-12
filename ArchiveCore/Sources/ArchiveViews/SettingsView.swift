@@ -89,13 +89,49 @@ public struct SettingsView: View {
     }
 
     private var storage: some View {
-        VStack(spacing: 0) {
+        VStack(alignment: .leading, spacing: 0) {
+            Text("Archive")
+                .font(.title)
+                .foregroundColor(.paDarkRed)
+                .padding(.vertical, 8)
             StorageSelectionView(selection: $viewModel.selectedArchiveType)
                 .listStyle(InsetListStyle())
-                .padding(20)
-                .frame(width: 500, height: 250)
             Button("Open Archive Folder" as LocalizedStringKey, action: viewModel.openArchiveFolder)
-                .padding()
+                .frame(maxWidth: .infinity)
+            Divider()
+                .padding(.vertical, 10)
+            Text("Observed Folder")
+                .font(.title)
+                .foregroundColor(.paDarkRed)
+                .padding(.bottom, 4)
+            observedFolderSelection
+                .padding(.vertical, 10)
+        }
+        .padding(.horizontal, 20)
+        .padding(.bottom, 8)
+        .frame(width: 500)
+    }
+
+    private var observedFolderSelection: some View {
+        HStack(spacing: 8) {
+            HStack(spacing: 4) {
+                if let observedFolderURL = viewModel.observedFolderURL {
+                    Text(observedFolderURL.path)
+                    Spacer()
+                    Button(action: viewModel.clearObeservedFolder) {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundColor(.secondary)
+                    }
+                } else {
+                    Text("Not Selected")
+                        .opacity(0.4)
+                }
+            }
+            .padding(6)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(.paSecondaryBackground)
+            .cornerRadius(4)
+            Button("Select" as LocalizedStringKey, action: viewModel.selectObservedFolder)
         }
     }
 

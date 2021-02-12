@@ -141,23 +141,14 @@ public final class MainNavigationViewModel: ObservableObject, Log {
             .receive(on: DispatchQueue.main)
             .assign(to: &self.$archiveCategories)
 
-        Self.archiveStore.$documents
-            .map { _ in
-                Array(TagStore.shared.getSortedTags().prefix(10).map(\.localizedCapitalized))
-            }
+        TagStore.shared.$sortedTags
+            .print()
             .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .assign(to: &self.$tagCategories)
 
         DispatchQueue.global(qos: .userInteractive).async {
-            do {
-                let archiveUrl = try PathManager.shared.getArchiveUrl()
-                let untaggedUrl = try PathManager.shared.getUntaggedUrl()
-
-                Self.archiveStore.update(archiveFolder: archiveUrl, untaggedFolders: [untaggedUrl])
-            } catch {
-                NotificationCenter.default.postAlert(error)
-            }
+            self.moreViewModel.reloadArchiveDocuments()
         }
 
         imageConverter.$processedDocumentUrl

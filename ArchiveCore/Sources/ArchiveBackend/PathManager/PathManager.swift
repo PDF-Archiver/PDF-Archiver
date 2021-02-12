@@ -112,17 +112,27 @@ public final class PathManager: Log {
                 folderUrl.lastPathComponent.isNumeric || folderUrl.lastPathComponent == "untagged"
             }
 
+        var moveError: Error?
         for folder in contents {
             let destination = newArchiveUrl.appendingPathComponent(folder.lastPathComponent)
 
-            if fileManager.directoryExists(at: destination) {
-                try fileManager.moveContents(of: folder, to: destination)
-            } else {
-                try fileManager.moveItem(at: folder, to: destination)
+            do {
+                if fileManager.directoryExists(at: destination) {
+                    try fileManager.moveContents(of: folder, to: destination)
+                } else {
+                    try fileManager.moveItem(at: folder, to: destination)
+                }
+            } catch {
+                // we do not want to abort the move process - save error and show it later
+                moveError = error
             }
         }
 
         self.archivePathType = type
         Self.userDefaults.archivePathType = type
+
+        if let moveError = moveError {
+            throw moveError
+        }
     }
 }

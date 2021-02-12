@@ -37,17 +37,8 @@ public final class IAPService: NSObject, Log {
         #if DEBUG
         appUsagePermitted = true
         #else
-        InAppReceipt.refresh { [weak self] error in
-            if let error = error {
-                Self.log.error("Failed to refresh receipt.", metadata: ["error": "\(error)"])
-                if Self.shouldHandle(error) {
-                    NotificationCenter.default.postAlert(error)
-                }
-            } else {
-                self?.validateReceipt()
-            }
-        }
 
+        refreshReceiptIfNeeded()
         paymentQueue.add(self)
 
         productsRequest.delegate = self
@@ -103,6 +94,38 @@ public final class IAPService: NSObject, Log {
             if Self.shouldHandle(error) {
                 NotificationCenter.default.postAlert(error)
             }
+        }
+    }
+
+    private func refreshReceiptIfNeeded() {
+        // always refresh receipt on iOS, because it will be done in the background (no password prompt)
+        #if os(macOS)
+        guard !foundLocalVerifiedReceipt() else { return }
+        #endif
+
+        InAppReceipt.refresh { [weak self] error in
+            if let error = error {
+                Self.log.error("Failed to refresh receipt.", metadata: ["error": "\(error)"])
+                if Self.shouldHandle(error) {
+                    NotificationCenter.default.postAlert(error)
+                }
+            } else {
+                self?.validateReceipt()
+            }
+        }
+    }
+
+    private func foundLocalVerifiedReceipt() -> Bool {
+        do {
+            // Initialize receipt
+            let receipt = try InAppReceipt.localReceipt()
+
+            // Verify hash, bundleID, version and signature
+            try receipt.verify()
+
+            return true
+        } catch {
+            return false
         }
     }
 }

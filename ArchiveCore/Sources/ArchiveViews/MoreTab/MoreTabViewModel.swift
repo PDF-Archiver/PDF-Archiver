@@ -28,6 +28,9 @@ public final class MoreTabViewModel: ObservableObject, Log {
     @Published var subscriptionStatus: LocalizedStringKey = "Inactive ❌"
     @Published var statisticsViewModel: StatisticsViewModel
     @Published var newArchiveUrl: URL?
+    #if os(macOS)
+    @Published var observedFolderURL: URL? = UserDefaults.observedFolderURL
+    #endif
 
     var manageSubscriptionUrl: URL {
         URL(string: "https://apps.apple.com/account/subscriptions")!
@@ -130,9 +133,9 @@ public final class MoreTabViewModel: ObservableObject, Log {
             guard response == .OK,
                   let url = openPanel.url else { return }
             self.newArchiveUrl = url
+            // trigger archive type change
             let tmp = self.selectedArchiveType
             self.selectedArchiveType = tmp
-            print(url)
         }
     }
     #endif
@@ -187,6 +190,53 @@ public final class MoreTabViewModel: ObservableObject, Log {
             NotificationCenter.default.postAlert(error)
         }
     }
+
+    func reloadArchiveDocuments() {
+        do {
+            let archiveUrl = try PathManager.shared.getArchiveUrl()
+            let untaggedUrl = try PathManager.shared.getUntaggedUrl()
+
+            #if os(macOS)
+            let untaggedFolders = [untaggedUrl, UserDefaults.observedFolderURL].compactMap { $0 }
+            #else
+            let untaggedFolders = [untaggedUrl]
+            #endif
+
+            archiveStore.update(archiveFolder: archiveUrl, untaggedFolders: untaggedFolders)
+        } catch {
+            NotificationCenter.default.postAlert(error)
+        }
+    }
+
+    #if os(macOS)
+    func clearObeservedFolder() {
+        observedFolderURL = nil
+        UserDefaults.observedFolderURL = nil
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.reloadArchiveDocuments()
+        }
+    }
+
+    func selectObservedFolder() {
+        let openPanel = NSOpenPanel()
+        openPanel.title = NSLocalizedString("Choose the observed folder", comment: "")
+        openPanel.showsResizeIndicator = false
+        openPanel.showsHiddenFiles = false
+        openPanel.canChooseFiles = false
+        openPanel.canChooseDirectories = true
+        openPanel.allowsMultipleSelection = false
+        openPanel.canCreateDirectories = true
+        openPanel.begin { response in
+            guard response == .OK,
+                  let url = openPanel.url else { return }
+            self.observedFolderURL = url
+            UserDefaults.observedFolderURL = url
+            DispatchQueue.global(qos: .userInitiated).async {
+                self.reloadArchiveDocuments()
+            }
+        }
+    }
+    #endif
 }
 
 #if DEBUG

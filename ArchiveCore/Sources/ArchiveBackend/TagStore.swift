@@ -6,11 +6,13 @@
 //
 
 import Combine
+import Foundation
 
 public final class TagStore {
 
     public static let shared = TagStore()
 
+    @Published public private(set) var sortedTags: [String] = []
     public private(set) var tagIndex = TagIndex<String>()
     private var tagCounts: [String: Int] = [:]
     private var disposables = Set<AnyCancellable>()
@@ -25,12 +27,37 @@ public final class TagStore {
                 self.tagIndex = tagIndex
             }
             .store(in: &disposables)
+
+        ArchiveStore.shared.$documents
+            .receive(on: DispatchQueue.global(qos: .background))
+            .map(TagStore.documents2SortedTags(_:))
+            .assign(to: &$sortedTags)
+    }
+
+    private static func documents2SortedTags(_ documents: [Document]) -> [String] {
+        documents.filter { $0.taggingStatus == .tagged }
+            .reduce(into: [:]) { ( counts: inout [String: Int], document: Document) in
+                for tag in document.tags {
+                    counts[tag, default: 0] += 1
+                }
+                print(counts)
+            }
+            .sorted { lhs, rhs in
+                if lhs.value == rhs.value {
+                    return lhs.key < rhs.key
+                } else {
+                    return lhs.value > rhs.value
+                }
+            }
+            .map(\.key)
     }
 
     public func getAvailableTags(with searchTerms: [String]) -> Set<String> {
 
         // search in filename of the documents
-        let filteredDocuments = ArchiveStore.shared.documents.fuzzyMatchSorted(by: searchTerms)
+        let filteredDocuments = ArchiveStore.shared.documents
+            .filter { $0.taggingStatus == .tagged }
+            .fuzzyMatchSorted(by: searchTerms)
 
         // get a set of all document tags
         let allDocumentTags = filteredDocuments.reduce(into: Set<String>()) { result, document in
@@ -52,24 +79,6 @@ public final class TagStore {
         }
 
         return filteredTags
-    }
-
-    public func getSortedTags() -> [String] {
-        let documents = ArchiveStore.shared.documents
-        let tagCounts = documents.reduce(into: [:]) { ( counts: inout [String: Int], document: Document) in
-            for tag in document.tags {
-                counts[tag, default: 0] += 1
-            }
-        }
-
-        return tagCounts.sorted { lhs, rhs in
-            if lhs.value == rhs.value {
-                return lhs.key < rhs.key
-            } else {
-                return lhs.value > rhs.value
-            }
-        }
-        .map(\.key)
     }
 
     // MARK: Tag Index

@@ -8,7 +8,7 @@
 import Combine
 import StoreKit
 
-public protocol IAPServiceAPI: class {
+public protocol IAPServiceAPI: AnyObject {
 
     var productsPublisher: AnyPublisher<Set<SKProduct>, Never> { get }
     var appUsagePermitted: Bool { get }
