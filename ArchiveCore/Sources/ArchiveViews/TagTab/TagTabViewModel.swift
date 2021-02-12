@@ -84,11 +84,13 @@ final class TagTabViewModel: ObservableObject, Log {
             .assign(to: &$suggestedTags)
 
         archiveStore.$documents
+            // we have to removeDuplicates before filtering, because if we want to trigger
+            // the selection of a new document even if we edit a already tagged document
+            .removeDuplicates()
             .map { newDocuments -> [Document] in
                 newDocuments.filter { $0.taggingStatus == .untagged }
             }
-            .removeDuplicates()
-            .compactMap { newUntaggedDocuments in
+            .compactMap { newUntaggedDocuments -> [Document] in
 
                 let sortedDocuments = newUntaggedDocuments
                     .sorted { doc1, doc2 in
@@ -123,16 +125,20 @@ final class TagTabViewModel: ObservableObject, Log {
                         }
                     }
 
-                guard self.currentDocument == nil || !newUntaggedDocuments.contains(self.currentDocument!)  else { return nil }
-
-                let newCurrentDocument = currentDocuments
-                    .first { $0.taggingStatus == .untagged && $0.downloadStatus == .local }
-
-                return newCurrentDocument
+                return currentDocuments
             }
             .receive(on: DispatchQueue.main)
-            .sink { document in
-                self.currentDocument = document
+            .sink { currentDocuments in
+                if let currentDocument = self.currentDocument,
+                   currentDocument.taggingStatus == .untagged,
+                   currentDocuments.contains(currentDocument) {
+                    // we should not change anything, if a current document was found
+                    // and is not tagged yet
+                    // and is part of all currentDocuments
+                    return
+                }
+                self.currentDocument = currentDocuments
+                    .first { $0.taggingStatus == .untagged && $0.downloadStatus == .local }
             }
             .store(in: &disposables)
 

@@ -73,10 +73,18 @@ final class ShareViewController: UIViewController {
             let url = PathConstants.extensionTempPdfURL
             let inputItems = (extensionContext?.inputItems as? [NSExtensionItem]) ?? []
             var success = false
+
+            // if we share e.g. 2 pictures, there is 1 inputItem with 2 attachments
+            // if we share a pdf from a website, there are 2 inputItems (pdf/url) with 1 attachment
             for item in inputItems {
                 for attachment in (item.attachments ?? []) {
                     let attachmentSuccess = try attachment.saveData(at: url, with: Self.validUTIs)
                     success = success || attachmentSuccess
+                }
+
+                if success {
+                    // just get the first attachment you can get
+                    break
                 }
             }
 
