@@ -371,7 +371,7 @@ final class DocumentTests: XCTestCase {
         // setup
         let document = Document(path: URL(fileURLWithPath: "~/Downloads/2018-05-12--\(Constants.documentDescriptionPlaceholder)__\(Constants.documentTagPlaceholder).pdf"), taggingStatus: .untagged, downloadStatus: defaultDownloadStatus, byteSize: defaultSize)
 
-        document.updateProperties(with: .local, shouldParseDate: false)
+        document.updateProperties(with: .local)
 
         // assert - placeholders must not be in the tags or specification
         XCTAssertEqual(document.tags, [])

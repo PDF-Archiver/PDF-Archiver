@@ -53,7 +53,7 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
 
     private let fileManager = FileManager.default
     private let queue = DispatchQueue(label: "ArchiveStoreQueue", qos: .userInitiated)
-    private let documentProcessingQueue = DispatchQueue(label: "ArchiveStore DocumentProcessing queue", qos: .userInitiated)
+    private let documentProcessingQueue = DispatchQueue(label: "ArchiveStore DocumentProcessing queue", qos: .userInitiated, attributes: .concurrent)
 
     private var providers: [FolderProvider] = []
     private var contents: [URL: [Document]] = [:]
@@ -187,18 +187,19 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
             for change in changes {
 
                 var document: Document?
-                var shouldParseDate: Bool?
+                let updateDocumentProperties: Bool
 
                 switch change {
                     case .added(let details):
                         let taggingStatus = getTaggingStatus(of: details.url)
                         document = Document(from: details, with: taggingStatus)
+                        updateDocumentProperties = true
 
-                        // parse document content only for untagged documents
-                        shouldParseDate = taggingStatus == .untagged
+                        // document content will be parsed if the user selects the untagged document in the Tag tab
 
                     case .removed(let url):
                         contents[provider.baseUrl]?.removeAll { $0.path == url }
+                        updateDocumentProperties = false
 
                     case .updated(let details):
                         if let foundDocument = contents[provider.baseUrl]?.first(where: { $0.path == details.url }) {
@@ -216,18 +217,18 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
 
                         contents[provider.baseUrl]?.removeAll { $0.path == details.url }
 
-                        shouldParseDate = false
+                        updateDocumentProperties = true
                 }
 
                 if let document = document {
                     contents[provider.baseUrl, default: []].append(document)
 
                     // trigger update of the document properties
-                    if let shouldParseDate = shouldParseDate {
+                    if updateDocumentProperties {
                         documentProcessingGroup.enter()
                         documentProcessingQueue.async {
                             // save documents after the last has been written
-                            document.updateProperties(with: document.downloadStatus, shouldParseDate: shouldParseDate)
+                            document.updateProperties(with: document.downloadStatus)
                             documentProcessingGroup.leave()
                         }
                     }
@@ -242,7 +243,7 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
         // We have to wait until all documents have been processed, because several updates will be triggered on $document changes
         // these changes must contain the valid new information.
         DispatchQueue.global(qos: .background).async {
-            let timeout = documentProcessingGroup.wait(wallTimeout: .now() + .seconds(15))
+            let timeout = documentProcessingGroup.wait(wallTimeout: .now() + .seconds(60))
             if timeout == .timedOut {
                 Self.log.errorAndAssert("Timeout while waiting for documents to be processed.")
             }

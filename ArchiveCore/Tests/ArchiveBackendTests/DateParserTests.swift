@@ -167,7 +167,7 @@ final class DateParserTests: XCTestCase {
         """
 
         // measure the performance of the date parsing
-        var parsedOutput: (date: Date, rawDate: String)?
+        var parsedOutput: DateParser.ParserResult?
         self.measure {
             parsedOutput = DateParser.parse(longText)
         }
@@ -191,7 +191,7 @@ final class DateParserTests: XCTestCase {
         }
 
         // measure the performance of the date parsing
-        var parsedOutput: (date: Date, rawDate: String)?
+        var parsedOutput: DateParser.ParserResult?
         self.measure {
             parsedOutput = DateParser.parse(content)
         }

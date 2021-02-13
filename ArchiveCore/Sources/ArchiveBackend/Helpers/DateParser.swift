@@ -5,18 +5,38 @@
 //  Created by Julian Kahnert on 20.11.18.
 //
 
+import Combine
 import Foundation
 
 /// Parse several kinds of dates in a String.
 public enum DateParser {
 
-    public typealias ParserResult = (date: Date, rawDate: String)
+    public struct ParserResult: Codable {
+        public let date: Date
+        public let rawDate: String
+    }
 
-    private struct FormatMapping {
+    private class FormatMapping: Log {
         let format: String
-        let regex: String
+        let regexPattern: String
         let locale: Locale?
         let likelihood: Double
+
+        private(set) lazy var regex: NSRegularExpression? = {
+            do {
+                return try NSRegularExpression(pattern: "([\\D]+|^)(\(regexPattern))([\\D]+|$)", options: [])
+            } catch {
+                Self.log.errorAndAssert("Failed to create regex.", metadata: ["pattern": "\(regexPattern)"])
+                return nil
+            }
+        }()
+
+        fileprivate init(format: String, regexPattern: String, locale: Locale?, likelihood: Double) {
+            self.format = format
+            self.regexPattern = regexPattern
+            self.locale = locale
+            self.likelihood = likelihood
+        }
     }
     private typealias DateOrder = (first: Parts, second: Parts, third: Parts, likelihood: Double)
     private enum Parts {
@@ -79,7 +99,8 @@ public enum DateParser {
             guard !localResult.keys.contains(where: { $0 < idx }) else { return }
 
             let mapping = mappings[idx]
-            guard let rawDates = lowercasedRaw.capturedGroups(withRegex: "([\\D]+|^)(\(mapping.regex))([\\D]+|$)") else { return }
+            guard let regex = mapping.regex,
+                  let rawDates = lowercasedRaw.capturedGroups(withRegex: regex) else { return }
 
             // get raw date from captured groups
             let rawDate = String(rawDates[1])
@@ -99,7 +120,7 @@ public enum DateParser {
             if let date = dateFormatter.date(from: foundString),
                 date > minimumDate {
                 resultQueue.sync {
-                    result[idx] = (date, rawDate)
+                    result[idx] = ParserResult(date: date, rawDate: rawDate)
                 }
             }
         }
@@ -119,7 +140,7 @@ public enum DateParser {
         if let date = result?.date,
            let rawRange = result?.range,
            let range = Range(rawRange, in: text) {
-            return (date, String(text[range]))
+            return ParserResult(date: date, rawDate: String(text[range]))
         }
         return nil
     }
@@ -127,7 +148,7 @@ public enum DateParser {
     private static func createMappings(for locales: [Locale]) -> [FormatMapping] {
 
         var monthMappings = [FormatMapping]()
-        monthMappings.append(FormatMapping(format: "MM", regex: "(0[1-9]{1}|10|11|12)", locale: locales[0], likelihood: 0.6))
+        monthMappings.append(FormatMapping(format: "MM", regexPattern: "(0[1-9]{1}|10|11|12)", locale: locales[0], likelihood: 0.6))
 
         let dateFormatter = DateFormatter()
         let otherMonthFormats = ["MMM", "MMMM"]
@@ -147,7 +168,7 @@ public enum DateParser {
                     dateFormatter.dateFormat = otherMonthFormat
                     months.append(dateFormatter.string(from: date).lowercased().replacingOccurrences(of: ".", with: ""))
                 }
-                monthMappings.append(FormatMapping(format: otherMonthFormat, regex: "(\(months.joined(separator: "|")))", locale: locale, likelihood: likelihood))
+                monthMappings.append(FormatMapping(format: otherMonthFormat, regexPattern: "(\(months.joined(separator: "|")))", locale: locale, likelihood: likelihood))
             }
         }
 
@@ -167,12 +188,12 @@ public enum DateParser {
                 let element2 = row.0.1
                 let element3 = row.1
 
-                let regex = [element1.regex, element2.regex, element3.regex].joined(separator: separator)
+                let regex = [element1.regexPattern, element2.regexPattern, element3.regexPattern].joined(separator: separator)
                 let format = element1.format + element2.format + element3.format
                 let locale = [element1.locale, element2.locale, element3.locale].compactMap { $0 } .first
                 let likelihood = ((element1.likelihood + element2.likelihood + element3.likelihood) / 3) * dateOrder.likelihood
 
-                mappings.append(FormatMapping(format: format, regex: regex, locale: locale, likelihood: likelihood))
+                mappings.append(FormatMapping(format: format, regexPattern: regex, locale: locale, likelihood: likelihood))
             }
         }
 
@@ -185,13 +206,13 @@ public enum DateParser {
     private static func part2mapping(_ part: Parts, monthMappings: [FormatMapping]) -> [FormatMapping] {
         switch part {
         case .day:
-            return [FormatMapping(format: "dd", regex: "(0{0,1}[1-9]{1}|[12]{1}\\d|3[01]{1})", locale: nil, likelihood: 1)]
+            return [FormatMapping(format: "dd", regexPattern: "(0{0,1}[1-9]{1}|[12]{1}\\d|3[01]{1})", locale: nil, likelihood: 1)]
         case .month:
             return monthMappings
         case .year:
             return [
-                FormatMapping(format: "yyyy", regex: "((19|20)\\d{2})", locale: nil, likelihood: 0.9),
-                FormatMapping(format: "yy", regex: "(\\d{2})", locale: nil, likelihood: 0.1)
+                FormatMapping(format: "yyyy", regexPattern: "((19|20)\\d{2})", locale: nil, likelihood: 0.9),
+                FormatMapping(format: "yy", regexPattern: "(\\d{2})", locale: nil, likelihood: 0.1)
             ]
         }
     }
