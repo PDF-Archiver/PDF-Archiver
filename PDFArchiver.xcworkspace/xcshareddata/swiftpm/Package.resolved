@@ -33,8 +33,8 @@
         "repositoryURL": "https://github.com/iwasrobbed/Down",
         "state": {
           "branch": null,
-          "revision": "731f6bbab24ab208ea2d6a944e3f8a8a9d5273c7",
-          "version": "0.9.4"
+          "revision": "f2e4658f79f2c1a482b1e73fbfce6ac9e0aad8b8",
+          "version": "0.9.5"
         }
       },
       {
@@ -78,7 +78,7 @@
         "repositoryURL": "https://github.com/SwiftUIX/SwiftUIX",
         "state": {
           "branch": "master",
-          "revision": "e23bf349d154ab1cd711ecdb993d480d07598647",
+          "revision": "14bca210736cefdc1fb25ab5cd117996a458527c",
           "version": null
         }
       },
