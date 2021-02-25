@@ -8,9 +8,9 @@
 import Foundation
 
 extension String {
-    /// Slugify the string and seperate each part.
+    /// Slugify the string and separate each part.
     ///
-    /// - Parameter separator: Character which will be used for the seperation.
+    /// - Parameter separator: Character which will be used for the separation.
     /// - Returns: Cleaned string.
     public func slugified(withSeparator separator: String = "-") -> String {
         // this function is inspired by:
@@ -34,16 +34,9 @@ extension String {
     ///
     /// - Parameter pattern: regular expression which captures a group
     /// - Returns: Array of found groups
-    public func capturedGroups(withRegex pattern: String) -> [String]? {
+    public func capturedGroups(withRegex regex: NSRegularExpression) -> [String]? {
         // this function is inspired by:
         // https://gist.github.com/unshapedesign/1b95f78d7f74241f706f346aed5384ff
-        var regex: NSRegularExpression
-        do {
-            regex = try NSRegularExpression(pattern: pattern,
-                                            options: [])
-        } catch {
-            return nil
-        }
         let matches = regex.matches(in: self,
                                     options: [],
                                     range: NSRange(location: 0, length: count))
@@ -69,12 +62,4 @@ extension String {
     public var localized: String {
         return NSLocalizedString(self, comment: "")
     }
-
-//    /// Returns a capitalized version, e.g. "Blue Pullover".
-//    public var capitalized: String {
-//        self
-//            .split { [" ", "-"].contains($0) }
-//            .map { $0.prefix(1).uppercased() + $0.dropFirst() }
-//            .joined(separator: " ")
-//    }
 }

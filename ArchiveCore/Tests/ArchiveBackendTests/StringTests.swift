@@ -39,13 +39,14 @@ final class StringExtensionTests: XCTestCase {
         }
     }
 
-    func testCapturedGroups() {
+    func testCapturedGroups() throws {
 
         // setup
         let testString = "2010-05-12--example-description__tag1_tag2_tag3"
 
         // calculate
-        let groups = testString.capturedGroups(withRegex: "__([\\w\\d_]+)")
+        let regex = try NSRegularExpression(pattern: "__([\\w\\d_]+)", options: [])
+        let groups = testString.capturedGroups(withRegex: regex)
 
         // assert
         if let groups = groups {
@@ -55,20 +56,20 @@ final class StringExtensionTests: XCTestCase {
         }
     }
 
-    func testCapturedGroupsInvalid() {
+    func testCapturedGroupsInvalid() throws {
 
         // setup
         let testString = "2010-05-12--example-description"
 
         // calculate
         // no groups in test string
-        let groups1 = testString.capturedGroups(withRegex: "__([\\w\\d_]+)")
+        let regex = try NSRegularExpression(pattern: "__([\\w\\d_]+)", options: [])
+        let groups1 = testString.capturedGroups(withRegex: regex)
         // invalid regular expression
-        let groups2 = testString.capturedGroups(withRegex: "([")
+        XCTAssertThrowsError(try NSRegularExpression(pattern: "([", options: []))
 
         // assert
         XCTAssertNil(groups1)
-        XCTAssertNil(groups2)
     }
 
     func testCapitalizingFirstLetter() {
@@ -93,5 +94,25 @@ final class StringExtensionTests: XCTestCase {
 
         // assert
         XCTAssertEqual(output, "This Is Another Test")
+    }
+
+    func testCapturedGroupsPerformance() throws {
+
+        // setup
+        let testString = "2010-05-12--example-description__tag1_tag2_tag3"
+
+        // calculate
+        let regex = try NSRegularExpression(pattern: "__([\\w\\d_]+)", options: [])
+        var groups: [String]?
+        measure {
+            groups = testString.capturedGroups(withRegex: regex)
+        }
+
+        // assert
+        if let groups = groups {
+            XCTAssertEqual(groups[0], "tag1_tag2_tag3")
+        } else {
+            XCTFail("No group found. This should not happen.")
+        }
     }
 }

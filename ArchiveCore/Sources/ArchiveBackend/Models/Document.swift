@@ -12,9 +12,16 @@ import Quartz.PDFKit
 import PDFKit
 #endif
 
+private let dateFormatter = DateFormatter.with("yyyy-MM-dd")
 extension Document: Searchitem {}
 
 public final class Document: ObservableObject, Identifiable, Codable, Log {
+
+    // swiftlint:disable force_try
+    private static let filenameDateRegex = try! NSRegularExpression(pattern: "([\\d-]+)--", options: [])
+    private static let filenameSpecificationRegex = try! NSRegularExpression(pattern: "--([\\w\\d-]+)__", options: [])
+    // swiftlint:enable force_try
+
     public var id: URL {
         path
     }
@@ -73,7 +80,7 @@ public final class Document: ObservableObject, Identifiable, Codable, Log {
         // parse the specification
         var specification: String?
 
-        if let raw = filename.capturedGroups(withRegex: "--([\\w\\d-]+)__") {
+        if let raw = filename.capturedGroups(withRegex: filenameSpecificationRegex) {
 
             // try to parse the real specification from scheme
             specification = raw[0]
@@ -113,11 +120,8 @@ public final class Document: ObservableObject, Identifiable, Codable, Log {
     }
 
     private static func getFilenameDate(_ raw: String) -> (date: Date, rawDate: String)? {
-        if let groups = raw.capturedGroups(withRegex: "([\\d-]+)--") {
+        if let groups = raw.capturedGroups(withRegex: filenameDateRegex) {
             let rawDate = groups[0]
-
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd"
 
             if let date = dateFormatter.date(from: rawDate) {
                 return (date, rawDate)
@@ -148,7 +152,7 @@ public final class Document: ObservableObject, Identifiable, Codable, Log {
     /// This function updates the properties of the document.
     ///
     /// Since it might run some time, this should not be run on the main thread.
-    func updateProperties(with downloadStatus: FileChange.DownloadStatus, shouldParseDate: Bool) {
+    func updateProperties(with downloadStatus: FileChange.DownloadStatus) {
         if Thread.isMainThread {
             log.errorAndAssert("updateProperties() must not be called from the main thread.")
         }
@@ -184,10 +188,6 @@ public final class Document: ObservableObject, Identifiable, Codable, Log {
 
         // we have to wait until the changes have propagated on the main thread, see `ArchiveStore` for more information
         _ = semaphore.wait(timeout: .now() + .seconds(3))
-
-        guard downloadStatus == .local,
-              shouldParseDate else { return }
-        self.parseContent()
     }
 
     /// Get the new foldername and filename after applying the PDF Archiver naming scheme.
@@ -214,38 +214,6 @@ public final class Document: ObservableObject, Identifiable, Codable, Log {
         let foldername = String(filename.prefix(4))
 
         return (foldername, filename)
-    }
-
-    /// Parse the OCR content of the pdf document try to fetch a date and some tags.
-    /// This overrides the current date and appends the new tags.
-    ///
-    /// ATTENTION: This method needs security access!
-    ///
-    /// - Parameter tagManager: TagManager that will be used when adding new tags.
-    private func parseContent() {
-        if Thread.isMainThread {
-            log.errorAndAssert("parseContent() must not be called from the main thread.")
-        }
-
-        // get the pdf content of first 3 pages
-        guard let pdfDocument = PDFDocument(url: path) else { return }
-        var text = ""
-        for index in 0 ..< min(pdfDocument.pageCount, 3) {
-            guard let page = pdfDocument.page(at: index),
-                let pageContent = page.string else { return }
-
-            text += pageContent
-        }
-
-        // verify that we got some pdf content
-        guard !text.isEmpty else { return }
-
-        // parse the date
-        if let parsed = DateParser.parse(text) {
-            DispatchQueue.main.async {
-                self.date = parsed.date
-            }
-        }
     }
 
     // MARK: - Codable Implementation
