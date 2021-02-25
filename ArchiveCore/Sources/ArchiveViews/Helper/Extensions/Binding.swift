@@ -14,3 +14,10 @@ extension Binding where Value == [String] {
         wrappedValue = uniqueItems.sorted()
     }
 }
+
+extension Binding where Value == Bool {
+    func negate() -> Binding<Bool> {
+        Binding(get: { !wrappedValue },
+                set: { wrappedValue = !$0 })
+    }
+}

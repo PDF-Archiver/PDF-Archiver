@@ -114,9 +114,19 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
             }
         }
 
-        let foldername: String
-        let filename: String
-        (foldername, filename) = try document.getRenamingPath()
+        // create a filename and rename the document
+        guard let date = document.date else {
+            throw FolderProviderError.date
+        }
+        guard !document.tags.isEmpty || UserDefaults.documentTagsNotRequired else {
+            throw FolderProviderError.tags
+        }
+        guard !document.specification.isEmpty || UserDefaults.documentSpecificationNotRequired else {
+            throw FolderProviderError.description
+        }
+
+        let filename = Document.createFilename(date: date, specification: document.specification, tags: document.tags)
+        let foldername = String(filename.prefix(4))
 
         // check, if this path already exists ... create it
         let newFilepath = archiveFolder
@@ -136,10 +146,10 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
             document.filename = String(newFilepath.lastPathComponent)
             document.path = newFilepath
             document.taggingStatus = .tagged
-
-            // save file tags
-            document.path.fileTags = document.tags.sorted()
         }
+
+        // save file tags
+        newFilepath.setFileTags(document.tags.sorted())
     }
 
     public func download(_ document: Document) throws {

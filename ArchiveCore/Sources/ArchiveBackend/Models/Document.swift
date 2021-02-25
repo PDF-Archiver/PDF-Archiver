@@ -162,7 +162,8 @@ public final class Document: ObservableObject, Identifiable, Codable, Log {
         // parse the current filename and add finder file tags
         let parsedFilename = Document.parseFilename(self.filename)
         let placeholderTag = Constants.documentTagPlaceholder.lowercased()
-        let tags = Set(parsedFilename.tagNames ?? []).union(path.fileTags)
+        let tags = Set(parsedFilename.tagNames ?? [])
+            .union(path.getFileTags())
             .filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && $0.lowercased() != placeholderTag }
 
         let semaphore = DispatchSemaphore(value: 0)
@@ -188,32 +189,6 @@ public final class Document: ObservableObject, Identifiable, Codable, Log {
 
         // we have to wait until the changes have propagated on the main thread, see `ArchiveStore` for more information
         _ = semaphore.wait(timeout: .now() + .seconds(3))
-    }
-
-    /// Get the new foldername and filename after applying the PDF Archiver naming scheme.
-    ///
-    /// ATTENTION: The specification will not be slugified in this step! Keep in mind to do this before/after this method call.
-    ///
-    /// - Returns: Returns the new foldername and filename after renaming.
-    /// - Throws: This method throws an error, if the document contains no tags or specification.
-    public func getRenamingPath() throws -> (foldername: String, filename: String) {
-
-        // create a filename and rename the document
-        guard let date = date else {
-            throw FolderProviderError.date
-        }
-        guard !tags.isEmpty else {
-            throw FolderProviderError.tags
-        }
-        // 😡 because Finn does not need a description 🤷🏻‍♂️
-//        guard !specification.isEmpty else {
-//            throw FolderProviderError.description
-//        }
-
-        let filename = Document.createFilename(date: date, specification: specification, tags: tags)
-        let foldername = String(filename.prefix(4))
-
-        return (foldername, filename)
     }
 
     // MARK: - Codable Implementation

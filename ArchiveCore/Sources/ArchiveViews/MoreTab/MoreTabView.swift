@@ -52,8 +52,11 @@ struct MoreTabView: View {
             DetailRowView(name: "Show Permissions") {
                 self.viewModel.showPermissions()
             }
-            DetailRowView(name: "Reset App Preferences") {
-                self.viewModel.resetApp()
+            NavigationLink(destination: ExpertSettingsView(notSaveDocumentTagsAsPDFMetadata: $viewModel.notSaveDocumentTagsAsPDFMetadata,
+                                                           documentTagsNotRequired: $viewModel.documentTagsNotRequired,
+                                                           documentSpecificationNotRequired: $viewModel.documentSpecificationNotRequired,
+                                                           resetApp: viewModel.resetApp)) {
+                Text("Expert Settings")
             }
         }
     }

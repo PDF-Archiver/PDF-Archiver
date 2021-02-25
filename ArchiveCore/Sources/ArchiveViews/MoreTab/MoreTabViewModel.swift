@@ -23,6 +23,9 @@ public final class MoreTabViewModel: ObservableObject, Log {
     let qualities: [String] = ["100% - Lossless 🤯", "75% - Good 👌 (Default)", "50% - Normal 👍", "25% - Small 💾"]
     let storageTypes: [String] = StorageType.allCases.map(\.title).map { "\($0)" }
     @Published var selectedQualityIndex = UserDefaults.PDFQuality.toIndex(UserDefaults.pdfQuality) ?? UserDefaults.PDFQuality.defaultQualityIndex
+    @Published var notSaveDocumentTagsAsPDFMetadata = UserDefaults.notSaveDocumentTagsAsPDFMetadata
+    @Published var documentTagsNotRequired = UserDefaults.documentTagsNotRequired
+    @Published var documentSpecificationNotRequired = UserDefaults.documentSpecificationNotRequired
     @Published var selectedArchiveType = StorageType.getCurrent()
     @Published var showArchiveTypeSelection = false
     @Published var subscriptionStatus: LocalizedStringKey = "Inactive ❌"
@@ -208,8 +211,19 @@ public final class MoreTabViewModel: ObservableObject, Log {
         }
     }
 
+    func updateFinderTags() {
+        DispatchQueue.global(qos: .background).async {
+            self.archiveStore.documents
+                .filter { $0.taggingStatus == .tagged }
+                .forEach { document in
+                    let sortedTags = Array(document.tags).sorted()
+                    document.path.setFileTags(sortedTags)
+                }
+        }
+    }
+
     #if os(macOS)
-    func clearObeservedFolder() {
+    func clearObservedFolder() {
         observedFolderURL = nil
         UserDefaults.observedFolderURL = nil
         DispatchQueue.global(qos: .userInitiated).async {

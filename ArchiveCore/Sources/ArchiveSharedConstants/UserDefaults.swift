@@ -20,6 +20,9 @@ extension UserDefaults: Log {
         case untaggedURL
         case observedFolderURL
         case archivePathType
+        case notSaveDocumentTagsAsPDFMetadata
+        case documentTagsNotRequired
+        case documentSpecificationNotRequired
     }
 
     public enum PDFQuality: Float, CaseIterable {
@@ -146,6 +149,33 @@ extension UserDefaults: Log {
         }
     }
     #endif
+
+    public static var notSaveDocumentTagsAsPDFMetadata: Bool {
+        get {
+            appGroup.bool(forKey: Names.notSaveDocumentTagsAsPDFMetadata.rawValue)
+        }
+        set {
+            appGroup.set(newValue, forKey: Names.notSaveDocumentTagsAsPDFMetadata.rawValue)
+        }
+    }
+
+    public static var documentTagsNotRequired: Bool {
+        get {
+            appGroup.bool(forKey: Names.documentTagsNotRequired.rawValue)
+        }
+        set {
+            appGroup.set(newValue, forKey: Names.documentTagsNotRequired.rawValue)
+        }
+    }
+
+    public static var documentSpecificationNotRequired: Bool {
+        get {
+            appGroup.bool(forKey: Names.documentSpecificationNotRequired.rawValue)
+        }
+        set {
+            appGroup.set(newValue, forKey: Names.documentSpecificationNotRequired.rawValue)
+        }
+    }
 
     public func setObject<T: Encodable>(_ object: T?, forKey key: Names) throws {
         guard let object = object else {

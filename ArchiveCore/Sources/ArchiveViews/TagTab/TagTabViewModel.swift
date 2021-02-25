@@ -174,9 +174,13 @@ final class TagTabViewModel: ObservableObject, Log {
                         // get tags and save them in the background, they will be passed to the TagTabView
                         let tags = TagParser.parse(text)
                             .subtracting(Set(self?.documentTags ?? []))
+                            .prefix(12)
+
+                        let suggestedTags = Set(tags).union(pdfDocument.getMetadataTags())
                             .sorted()
+
                         DispatchQueue.main.async {
-                            self?.suggestedTags = Array(tags.prefix(12))
+                            self?.suggestedTags = Array(suggestedTags)
                         }
 
                         // parse date from document content
@@ -249,7 +253,13 @@ final class TagTabViewModel: ObservableObject, Log {
 
         document.date = date
         document.specification = specification
-        document.tags = Set(documentTags.map { $0.slugified(withSeparator: "") })
+        let slugifiedTags = Set(documentTags.map { $0.slugified(withSeparator: "") })
+        document.tags = slugifiedTags
+
+        if !UserDefaults.notSaveDocumentTagsAsPDFMetadata {
+            pdfDocument.setMetadataTags(Array(slugifiedTags))
+            pdfDocument.write(to: document.path)
+        }
 
         DispatchQueue.global(qos: .userInitiated).async {
             do {
