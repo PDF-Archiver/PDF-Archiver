@@ -47,7 +47,7 @@ public struct SettingsView: View {
                 .tag(Tabs.general)
             expertSettings
                 .tabItem {
-                    Label("Expert Settings", systemImage: "hand.point.up.braille")
+                    Label("Advanced", systemImage: "hand.point.up.braille")
                 }
                 .tag(Tabs.expert)
             storage

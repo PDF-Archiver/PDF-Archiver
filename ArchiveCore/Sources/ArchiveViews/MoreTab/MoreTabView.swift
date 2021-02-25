@@ -56,7 +56,7 @@ struct MoreTabView: View {
                                                            documentTagsNotRequired: $viewModel.documentTagsNotRequired,
                                                            documentSpecificationNotRequired: $viewModel.documentSpecificationNotRequired,
                                                            resetApp: viewModel.resetApp)) {
-                Text("Expert Settings")
+                Text("Advanced")
             }
         }
     }
