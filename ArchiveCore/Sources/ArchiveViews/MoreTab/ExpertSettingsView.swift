@@ -11,6 +11,7 @@ struct ExpertSettingsView: View {
     @Binding var notSaveDocumentTagsAsPDFMetadata: Bool
     @Binding var documentTagsNotRequired: Bool
     @Binding var documentSpecificationNotRequired: Bool
+    var showPermissions: (() -> Void)?
     var resetApp: () -> Void
 
     var body: some View {
@@ -18,6 +19,9 @@ struct ExpertSettingsView: View {
             Toggle("Save Tags in PDF Metadata", isOn: $notSaveDocumentTagsAsPDFMetadata.negate())
             Toggle("Require Document Tags", isOn: $documentTagsNotRequired.negate())
             Toggle("Require Document Specification", isOn: $documentSpecificationNotRequired.negate())
+            if let showPermissions = showPermissions {
+                DetailRowView(name: "Show Permissions", action: showPermissions)
+            }
             DetailRowView(name: "Reset App Preferences", action: resetApp)
         }
     }

@@ -94,6 +94,7 @@ public struct SettingsView: View {
         ExpertSettingsView(notSaveDocumentTagsAsPDFMetadata: $viewModel.notSaveDocumentTagsAsPDFMetadata,
                                                        documentTagsNotRequired: $viewModel.documentTagsNotRequired,
                                                        documentSpecificationNotRequired: $viewModel.documentSpecificationNotRequired,
+                                                       showPermissions: nil,
                                                        resetApp: viewModel.resetApp)
             .padding()
             .frame(width: 450, height: 160)
