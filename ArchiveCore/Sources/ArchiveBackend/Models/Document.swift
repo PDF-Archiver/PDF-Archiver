@@ -145,7 +145,7 @@ public final class Document: ObservableObject, Identifiable, Codable, Log {
         }
         tagStr = String(tagStr.dropLast(1))
 
-        // create new filepath
+        // create new file path
         return "\(dateStr)--\(specification)__\(tagStr).pdf"
     }
 
@@ -154,7 +154,7 @@ public final class Document: ObservableObject, Identifiable, Codable, Log {
     /// Since it might run some time, this should not be run on the main thread.
     func updateProperties(with downloadStatus: FileChange.DownloadStatus) {
         if Thread.isMainThread {
-            log.errorAndAssert("updateProperties() must not be called from the main thread.")
+            log.error("updateProperties() must not be called from the main thread.")
         }
 
         filename = (try? path.resourceValues(forKeys: [.localizedNameKey]).localizedName) ?? self.path.lastPathComponent
