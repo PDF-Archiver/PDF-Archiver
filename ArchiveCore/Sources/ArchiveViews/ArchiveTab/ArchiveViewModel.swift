@@ -24,7 +24,7 @@ final class ArchiveViewModel: ObservableObject, Log {
 
     @Published private(set) var selectedDocument: Document?
     @Published private(set) var documents: [Document] = []
-    @Published var years: [String] = defaultYears
+    @Published private(set) var years: [String] = defaultYears
     @Published var scopeSelection: Int = 0
     @Published var searchText = ""
     @Published var showLoadingView = true
@@ -33,6 +33,7 @@ final class ArchiveViewModel: ObservableObject, Log {
     @Published var selectedFilters: [FilterItem] = []
 
     private var disposables = Set<AnyCancellable>()
+    private let queue = DispatchQueue(label: "ArchiveViewModel WorkQueue", qos: .userInitiated)
     private let archiveStore: ArchiveStore
 
     init(_ archiveStore: ArchiveStore = ArchiveStore.shared) {
@@ -73,7 +74,7 @@ final class ArchiveViewModel: ObservableObject, Log {
 
         $searchText
             .combineLatest($scopeSelection)
-            .receive(on: DispatchQueue.global(qos: .userInitiated))
+            .receive(on: queue)
             .map { (searchTerm, _) -> [FilterItem] in
 
                 // only change scope when there is a non-empty searchTerm
@@ -105,6 +106,7 @@ final class ArchiveViewModel: ObservableObject, Log {
             .debounce(for: .milliseconds(100), scheduler: DispatchQueue.global(qos: .userInitiated))
             .removeDuplicates()
             .combineLatest($scopeSelection, archiveStore.$documents, $selectedFilters)
+            .receive(on: queue)
             .map { (searchTerm, searchScopeSelection, documents, selectedFilters) -> [Document] in
 
                 var searchTerms: [String] = []
@@ -119,8 +121,14 @@ final class ArchiveViewModel: ObservableObject, Log {
 
                 var currentDocuments = documents
 
-                let searchScope = self.years[searchScopeSelection]
-                if CharacterSet.decimalDigits.isSuperset(of: CharacterSet(charactersIn: searchScope)) {
+                // we need to get the year values on the main thread to avoid race conditions,
+                // e.g. after document updates
+                let years = DispatchQueue.main.sync {
+                    self.years
+                }
+
+                if let searchScope = years.get(at: searchScopeSelection),
+                   searchScope.isNumeric {
                     // found a year - it should be used as a searchTerm
                     currentDocuments = currentDocuments.filter { $0.folder == searchScope }
                 }
@@ -172,7 +180,7 @@ final class ArchiveViewModel: ObservableObject, Log {
 
     func delete(at offsets: IndexSet) {
         let documentsToDelete = offsets.map { self.documents[$0] }
-        DispatchQueue.global(qos: .userInitiated).async {
+        queue.async {
             var deletedDocuments = [Document]()
             do {
                 defer {

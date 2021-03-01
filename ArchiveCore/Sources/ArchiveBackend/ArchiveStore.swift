@@ -90,12 +90,20 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
             try? fileManager.removeItem(at: Self.savePath)
         }
 
-        providers = observedFolders.map { folder in
+        providers = observedFolders.compactMap { folder in
             guard let provider = Self.availableProvider.first(where: { $0.canHandle(folder) }) else {
-                preconditionFailure("Could not find a FolderProvider for: \(folder.path)")
+                log.errorAndAssert("Could not find a FolderProvider", metadata: ["path": "\(folder.path)"])
+                NotificationCenter.default.createAndPost(title: "Folder Provider Error", message: "Could not find a folder provider for path:\n\(folder.absoluteString)", primaryButtonTitle: "OK")
+                return nil
             }
             log.debug("Initialize new provider for: \(folder.path)")
-            return provider.init(baseUrl: folder, folderDidChange(_:_:))
+            do {
+                return try provider.init(baseUrl: folder, folderDidChange(_:_:))
+            } catch {
+                log.error("Failed to create FolderProvider.", metadata: ["error": "\(error)"])
+                NotificationCenter.default.postAlert(error)
+                return nil
+            }
         }
     }
 
