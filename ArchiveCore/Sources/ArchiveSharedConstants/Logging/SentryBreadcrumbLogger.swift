@@ -47,6 +47,9 @@ public struct SentryBreadcrumbLogger: LogHandler {
         crumb.level = sentryLevel
         crumb.category = "\(file) \(function):\(line)"
         crumb.message = message.description
+        crumb.data = metadata?.reduce(into: [String: Any]()) { (result, metadata) in
+            result[metadata.key] = metadata.value
+        }
         crumb.timestamp = Date()
         SentrySDK.addBreadcrumb(crumb: crumb)
     }

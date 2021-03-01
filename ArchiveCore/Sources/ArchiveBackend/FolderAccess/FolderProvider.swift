@@ -14,7 +14,7 @@ public protocol FolderProvider: AnyObject, Log {
 
     var baseUrl: URL { get }
 
-    init(baseUrl: URL, _ handler: @escaping FolderChangeHandler)
+    init(baseUrl: URL, _ handler: @escaping FolderChangeHandler) throws
 
     func save(data: Data, at: URL) throws
     func startDownload(of: URL) throws

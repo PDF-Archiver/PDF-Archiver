@@ -17,7 +17,7 @@ final class DirectoryDeepWatcher: Log {
     private let folderChangeHandler: FolderChangeHandler
     private var sources = [URL: SourceObject]()
 
-    init?(_ baseUrl: URL, withHandler handler: @escaping FolderChangeHandler) {
+    init(_ baseUrl: URL, withHandler handler: @escaping FolderChangeHandler) throws {
         self.baseUrl = baseUrl
         self.folderChangeHandler = handler
 
@@ -34,8 +34,8 @@ final class DirectoryDeepWatcher: Log {
                 try startWatching(contentsOf: baseUrl)
             }
         } catch {
-            log.error("Failed to create DirectoryDeepWatcher")
-            preconditionFailure("Could not create DirectoryDeepWatcher.")
+            log.error("Failed to create DirectoryDeepWatcher", metadata: ["error": "\(error)"])
+            throw error
         }
     }
 
