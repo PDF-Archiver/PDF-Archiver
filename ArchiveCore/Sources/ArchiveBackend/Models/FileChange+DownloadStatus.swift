@@ -12,7 +12,7 @@ extension FileChange {
     /// - iCloudDrive: The file is currently only in iCloud Drive available.
     /// - downloading: The OS downloads the file currentyl.
     /// - local: The file is locally available.
-    public enum DownloadStatus: Equatable, Codable {
+    public enum DownloadStatus: Equatable, Codable, CustomStringConvertible {
 
         case remote
         case downloading(percent: Double)
@@ -46,6 +46,17 @@ extension FileChange {
                 try container.encode(true, forKey: .local)
             case .downloading(let percent):
                 try container.encode(percent, forKey: .downloading)
+            }
+        }
+
+        public var description: String {
+            switch self {
+                case .remote:
+                    return "remote"
+                case .downloading(percent: let percent):
+                    return "downloading(\(percent)"
+                case .local:
+                    return "local"
             }
         }
     }

@@ -20,6 +20,7 @@ struct TagListView: View {
         if isMultiLine {
             WrappingHStack(items: tags) { tag in
                 TagView(tagName: tag, isEditable: self.isEditable, tapHandler: self.tapHandler)
+                    .fixedSize()
             }
         } else {
             singleLineView

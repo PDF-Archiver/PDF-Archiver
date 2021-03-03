@@ -50,7 +50,6 @@ struct TagView: View, Identifiable {
             .lineLimit(1)
             .minimumScaleFactor(0.85)
             .padding(EdgeInsets(top: 2.0, leading: 5.0, bottom: 2.0, trailing: 5.0))
-            .fixedSize()
             .foregroundColor(.white)
             .background(.paDarkRed)
             .cornerRadius(8.0)

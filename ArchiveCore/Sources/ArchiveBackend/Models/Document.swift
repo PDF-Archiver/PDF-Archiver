@@ -15,23 +15,23 @@ import PDFKit
 private let dateFormatter = DateFormatter.with("yyyy-MM-dd")
 extension Document: Searchitem {}
 
-public final class Document: ObservableObject, Identifiable, Codable, Log {
+public final class Document: Identifiable, Codable, Log {
 
     // swiftlint:disable force_try
     private static let filenameDateRegex = try! NSRegularExpression(pattern: "([\\d-]+)--", options: [])
     private static let filenameSpecificationRegex = try! NSRegularExpression(pattern: "--([\\w\\d-]+)__", options: [])
     // swiftlint:enable force_try
 
-    public var id: URL {
-        path
+    public var id: String {
+        path.absoluteString + downloadStatus.description
     }
 
-    @Published public var date: Date?
-    @Published public var specification = ""
-    @Published public var tags = Set<String>()
+    public var date: Date?
+    public var specification = ""
+    public var tags = Set<String>()
 
-    @Published public var downloadStatus: FileChange.DownloadStatus
-    @Published public var taggingStatus: TaggingStatus
+    public var downloadStatus: FileChange.DownloadStatus
+    public var taggingStatus: TaggingStatus
 
     public let size: String
     public internal(set) var path: URL
@@ -153,10 +153,6 @@ public final class Document: ObservableObject, Identifiable, Codable, Log {
     ///
     /// Since it might run some time, this should not be run on the main thread.
     func updateProperties(with downloadStatus: FileChange.DownloadStatus) {
-        if Thread.isMainThread {
-            log.error("updateProperties() must not be called from the main thread.")
-        }
-
         filename = (try? path.resourceValues(forKeys: [.localizedNameKey]).localizedName) ?? self.path.lastPathComponent
 
         // parse the current filename and add finder file tags
@@ -166,29 +162,20 @@ public final class Document: ObservableObject, Identifiable, Codable, Log {
             .union(path.getFileTags())
             .filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && $0.lowercased() != placeholderTag }
 
-        let semaphore = DispatchSemaphore(value: 0)
-        DispatchQueue.main.async {
-            defer {
-                semaphore.signal()
-            }
-            self.downloadStatus = downloadStatus
+        self.downloadStatus = downloadStatus
 
-            // set the date
-            self.date = parsedFilename.date
+        // set the date
+        self.date = parsedFilename.date
 
-            // set the specification
-            let specification = parsedFilename.specification ?? ""
-            if specification.lowercased().contains(Constants.documentDescriptionPlaceholder.lowercased()) {
-                self.specification = ""
-            } else {
-                self.specification = specification
-            }
-
-            self.tags = tags
+        // set the specification
+        let specification = parsedFilename.specification ?? ""
+        if specification.lowercased().contains(Constants.documentDescriptionPlaceholder.lowercased()) {
+            self.specification = ""
+        } else {
+            self.specification = specification
         }
 
-        // we have to wait until the changes have propagated on the main thread, see `ArchiveStore` for more information
-        _ = semaphore.wait(timeout: .now() + .seconds(3))
+        self.tags = tags
     }
 
     // MARK: - Codable Implementation

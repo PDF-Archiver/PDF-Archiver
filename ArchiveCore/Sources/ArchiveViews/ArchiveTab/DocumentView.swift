@@ -11,7 +11,7 @@ import SwiftUIX
 
 struct DocumentView: View {
 
-    @ObservedObject var viewModel: Document
+    var viewModel: Document
     let showTagStatus: Bool
     let multilineTagList: Bool
 
@@ -22,13 +22,17 @@ struct DocumentView: View {
                     Text(viewModel.taggingStatus == .tagged ? "✅" : " ")
                 }
                 titleSubtitle
+                    .layoutPriority(2)
                 Spacer()
                 if !showTagStatus && viewModel.downloadStatus.isRemote {
                     status
+                        .fixedSize()
+                        .layoutPriority(1)
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .layoutPriority(1)
             tags
+                .layoutPriority(2)
             if !showTagStatus && viewModel.downloadStatus.isDownloading {
                 LinearProgressBar(viewModel.downloadStatus.percentageDownloading)
                     .foregroundColor(.paDarkGray)
@@ -78,14 +82,6 @@ fileprivate extension FileChange.DownloadStatus {
             return false
         }
     }
-
-//    var isLocal: Bool {
-//        if case FileChange.DownloadStatus.local = self {
-//            return true
-//        } else {
-//            return false
-//        }
-//    }
 
     var isRemote: Bool {
         if case FileChange.DownloadStatus.remote = self {
