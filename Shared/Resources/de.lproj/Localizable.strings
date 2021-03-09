@@ -159,7 +159,7 @@
 
 "Show Intro" = "Intro anzeigen";
 
-"Show Permissions" = "Einstellungen anzeigen";
+"Show Permissions" = "Berechtigungen anzeigen";
 
 "Reset App Preferences" = "Einstellungen zurücksetzen";
 
@@ -316,3 +316,11 @@
 "Select" = "Auswählen";
 
 "Not Selected" = "Keine Auswahl";
+
+"Advanced" = "Erweitert";
+
+"Save Tags in PDF Metadata" = "Tags in PDF-Metadaten speichern";
+
+"Require Document Tags" = "Dokument-Tags erforderlich";
+
+"Require Document Specification" = "Dokument-Beschreibung erforderlich";

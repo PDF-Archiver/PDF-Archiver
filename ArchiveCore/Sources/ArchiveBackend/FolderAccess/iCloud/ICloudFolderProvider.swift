@@ -28,7 +28,7 @@ final class ICloudFolderProvider: FolderProvider {
 
     private let fileManager = FileManager.default
 
-    required init(baseUrl: URL, _ handler: @escaping FolderChangeHandler) {
+    init(baseUrl: URL, _ handler: @escaping FolderChangeHandler) throws {
         self.baseUrl = baseUrl
         self.folderDidChange = handler
         self.metadataQuery = NSMetadataQuery()

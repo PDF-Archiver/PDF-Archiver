@@ -90,12 +90,20 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
             try? fileManager.removeItem(at: Self.savePath)
         }
 
-        providers = observedFolders.map { folder in
+        providers = observedFolders.compactMap { folder in
             guard let provider = Self.availableProvider.first(where: { $0.canHandle(folder) }) else {
-                preconditionFailure("Could not find a FolderProvider for: \(folder.path)")
+                log.errorAndAssert("Could not find a FolderProvider", metadata: ["path": "\(folder.path)"])
+                NotificationCenter.default.createAndPost(title: "Folder Provider Error", message: "Could not find a folder provider for path:\n\(folder.absoluteString)", primaryButtonTitle: "OK")
+                return nil
             }
             log.debug("Initialize new provider for: \(folder.path)")
-            return provider.init(baseUrl: folder, folderDidChange(_:_:))
+            do {
+                return try provider.init(baseUrl: folder, folderDidChange(_:_:))
+            } catch {
+                log.error("Failed to create FolderProvider.", metadata: ["error": "\(error)"])
+                NotificationCenter.default.postAlert(error)
+                return nil
+            }
         }
     }
 
@@ -109,14 +117,22 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
         let archiveProvider = try getProvider(for: archiveFolder)
 
         if slugify {
-            DispatchQueue.main.async {
-                document.specification = document.specification.slugified(withSeparator: "-")
-            }
+            document.specification = document.specification.slugified(withSeparator: "-")
         }
 
-        let foldername: String
-        let filename: String
-        (foldername, filename) = try document.getRenamingPath()
+        // create a filename and rename the document
+        guard let date = document.date else {
+            throw FolderProviderError.date
+        }
+        guard !document.tags.isEmpty || UserDefaults.documentTagsNotRequired else {
+            throw FolderProviderError.tags
+        }
+        guard !document.specification.isEmpty || UserDefaults.documentSpecificationNotRequired else {
+            throw FolderProviderError.description
+        }
+
+        let filename = Document.createFilename(date: date, specification: document.specification, tags: document.tags)
+        let foldername = String(filename.prefix(4))
 
         // check, if this path already exists ... create it
         let newFilepath = archiveFolder
@@ -131,15 +147,13 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
             try documentProvider.delete(url: document.path)
         }
 
-        DispatchQueue.main.async {
-            // update document properties
-            document.filename = String(newFilepath.lastPathComponent)
-            document.path = newFilepath
-            document.taggingStatus = .tagged
+        // update document properties
+        document.filename = String(newFilepath.lastPathComponent)
+        document.path = newFilepath
+        document.taggingStatus = .tagged
 
-            // save file tags
-            document.path.fileTags = document.tags.sorted()
-        }
+        // save file tags
+        newFilepath.setFileTags(document.tags.sorted())
     }
 
     public func download(_ document: Document) throws {
@@ -149,9 +163,7 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
 
         do {
             try provider.startDownload(of: document.path)
-            DispatchQueue.main.async {
-                document.downloadStatus = .downloading(percent: 0)
-            }
+            document.downloadStatus = .downloading(percent: 0)
         } catch {
             log.errorAndAssert("Document download error.", metadata: ["error": "\(error)"])
             throw error
@@ -204,9 +216,7 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
                     case .updated(let details):
                         if let foundDocument = contents[provider.baseUrl]?.first(where: { $0.path == details.url }) {
                             // update details
-                            DispatchQueue.main.async {
-                                foundDocument.downloadStatus = details.downloadStatus
-                            }
+                            foundDocument.downloadStatus = details.downloadStatus
                             foundDocument.filename = details.filename
 
                             document = foundDocument

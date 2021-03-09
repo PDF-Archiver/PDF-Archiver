@@ -10,9 +10,9 @@ name: GraphicsRenderer, nameSpecified: GraphicsRenderer, owner: shaps80, version
 
 name: Parma, nameSpecified: Parma, owner: dasautoooo, version: 0.2.0
 
-name: sentry-cocoa, nameSpecified: Sentry, owner: getsentry, version: 6.1.3
+name: sentry-cocoa, nameSpecified: Sentry, owner: getsentry, version: 6.2.1
 
-name: swift-log, nameSpecified: swift-log, owner: apple, version: 1.4.0
+name: swift-log, nameSpecified: swift-log, owner: apple, version: 1.4.1
 
 name: SwiftUIX, nameSpecified: SwiftUIX, owner: SwiftUIX, version: 
 

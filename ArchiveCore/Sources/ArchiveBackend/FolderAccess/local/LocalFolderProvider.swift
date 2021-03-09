@@ -20,14 +20,14 @@ final class LocalFolderProvider: FolderProvider {
 
     private var currentFiles: [FileChange.Details] = []
 
-    required init(baseUrl: URL, _ handler: @escaping (FolderProvider, [FileChange]) -> Void) {
+    required init(baseUrl: URL, _ handler: @escaping (FolderProvider, [FileChange]) -> Void) throws {
         self.baseUrl = baseUrl
         self.didAccessSecurityScope = baseUrl.startAccessingSecurityScopedResource()
         self.folderDidChange = handler
 
         Self.log.debug("Creating file provider.", metadata: ["url": "\(baseUrl.path)"])
 
-        self.watcher = DirectoryDeepWatcher(baseUrl, withHandler: { [weak self] _ in
+        self.watcher = try DirectoryDeepWatcher(baseUrl, withHandler: { [weak self] _ in
             guard let self = self else { return }
 
             let changes = self.createChanges()

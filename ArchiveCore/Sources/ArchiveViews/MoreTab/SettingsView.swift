@@ -36,7 +36,7 @@ public struct SettingsView: View {
     }
 
     private enum Tabs: Hashable {
-        case general, storage, statistics, subscription, moreInformation
+        case general, expert, storage, statistics, subscription, moreInformation
     }
     public var body: some View {
         TabView {
@@ -45,6 +45,11 @@ public struct SettingsView: View {
                     Label("General", systemImage: "gear")
                 }
                 .tag(Tabs.general)
+            expertSettings
+                .tabItem {
+                    Label("Advanced", systemImage: "hand.point.up.braille")
+                }
+                .tag(Tabs.expert)
             storage
                 .tabItem {
                     Label("Storage", systemImage: "internaldrive")
@@ -80,12 +85,19 @@ public struct SettingsView: View {
             DetailRowView(name: "Show Intro") {
                 self.viewModel.showIntro()
             }
-            DetailRowView(name: "Reset App Preferences") {
-                self.viewModel.resetApp()
-            }
         }
         .padding(20)
-        .frame(width: 400, height: 150)
+        .frame(width: 450, height: 150)
+    }
+
+    private var expertSettings: some View {
+        ExpertSettingsView(notSaveDocumentTagsAsPDFMetadata: $viewModel.notSaveDocumentTagsAsPDFMetadata,
+                                                       documentTagsNotRequired: $viewModel.documentTagsNotRequired,
+                                                       documentSpecificationNotRequired: $viewModel.documentSpecificationNotRequired,
+                                                       showPermissions: nil,
+                                                       resetApp: viewModel.resetApp)
+            .padding()
+            .frame(width: 450, height: 160)
     }
 
     private var storage: some View {
@@ -118,7 +130,7 @@ public struct SettingsView: View {
                 if let observedFolderURL = viewModel.observedFolderURL {
                     Text(observedFolderURL.path)
                     Spacer()
-                    Button(action: viewModel.clearObeservedFolder) {
+                    Button(action: viewModel.clearObservedFolder) {
                         Image(systemName: "xmark.circle.fill")
                             .foregroundColor(.secondary)
                     }
@@ -154,7 +166,7 @@ public struct SettingsView: View {
             Link("Manage Subscription", destination: viewModel.manageSubscriptionUrl)
         }
         .padding(20)
-        .frame(width: 400, height: 150)
+        .frame(width: 450, height: 150)
     }
 
     private var moreInformation: some View {

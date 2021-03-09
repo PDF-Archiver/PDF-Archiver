@@ -378,60 +378,17 @@ final class DocumentTests: XCTestCase {
         XCTAssertEqual(document.specification, "")
     }
 
-//    func testDocumentRenamingPath() {
-//
-//        // setup
-//        let path = URL(fileURLWithPath: "~/Downloads/scan1.pdf")
-//        let document = Document(path: path, taggingStatus: .tagged, downloadStatus: defaultDownloadStatus, byteSize: defaultSize)
-//        document.date = dateFormatter.date(from: "2010-05-12") ?? Date()
-//        document.specification = "testing-test-description"
-//        document.tags = Set([tag1, tag2])
-//
-//        // calculate
-//        let newFilename = try? document.getRenamingPath()
-//
-//        // assert
-//        XCTAssertNotNil(newFilename)
-//        XCTAssertEqual(newFilename!.filename, "2010-05-12--testing-test-description__tag1_tag2.pdf")
-//        XCTAssertEqual(newFilename!.foldername, "2010")
-//    }
+    func testDocumentRenamingPath() {
 
-//    func testDocumentRenameFailing() {
-//
-//        // setup
-//        let path = URL(fileURLWithPath: "~/Downloads/2010/2010-05-12--testing-test-description__tag1_tag2.pdf")
-//        let document = Document(path: path, taggingStatus: .tagged, downloadStatus: defaultDownloadStatus, byteSize: defaultSize)
-//
-//        // calculate & assert
-//        XCTAssertThrowsError(try document.rename(archivePath: URL(string: "~/Downloads/")!, slugify: true))
-//    }
+        // setup
+        let date = dateFormatter.date(from: "2010-05-12") ?? Date()
+        let specification = "testing-test-description"
+        let tags = Set([tag1, tag2])
 
-//    func testDocumentRename() {
-//
-//        // setup
-//        let home = FileManager.default.temporaryDirectory
-//        let path = home.appendingPathComponent("2010-05-12--testing-test-description__tag1_tag2.pdf")
-//        try? "THIS IS A TEST, YOU CAN DELETE THIS FILE".write(to: path, atomically: true, encoding: .utf8)
-//        let document1 = Document(path: path, taggingStatus: .tagged, downloadStatus: defaultDownloadStatus, byteSize: defaultSize)
-//
-//        // cleanup the document, if it already exists
-//        let newDocumentPathComponents = try! document1.getRenamingPath()
-//        let newDocumentPath = home.appendingPathComponent(newDocumentPathComponents.foldername).appendingPathComponent(newDocumentPathComponents.filename)
-//        let exists = try? newDocumentPath.checkResourceIsReachable()
-//        if exists ?? false {
-//            try? FileManager.default.removeItem(at: newDocumentPath)
-//        }
-//
-//        // calculate & assert
-//        do {
-//            try document1.rename(archivePath: home, slugify: true)
-//        } catch let error {
-//            XCTFail(error)
-//        }
-//
-//        // create a new document with the same name and try to rename it (again) - this should fail
-//        try? "THIS IS A TEST, YOU CAN DELETE THIS FILE".write(to: path, atomically: true, encoding: .utf8)
-//        let document2 = Document(path: path, taggingStatus: .tagged, downloadStatus: defaultDownloadStatus, byteSize: defaultSize)
-//        XCTAssertThrowsError(try document2.rename(archivePath: home, slugify: true))
-//    }
+        // calculate
+        let filename = Document.createFilename(date: date, specification: specification, tags: tags)
+
+        // assert
+        XCTAssertEqual(filename, "2010-05-12--testing-test-description__tag1_tag2.pdf")
+    }
 }

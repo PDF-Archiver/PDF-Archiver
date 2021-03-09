@@ -10,7 +10,7 @@ import Foundation
 import Logging
 
 final class DemoFolderProvider: FolderProvider, Log {
-    private var isInitialized = false
+    private static var isInitialized = false
     static func canHandle(_ url: URL) -> Bool {
         true
     }
@@ -18,14 +18,14 @@ final class DemoFolderProvider: FolderProvider, Log {
     var baseUrl: URL
     private var handler: FolderChangeHandler
 
-    init(baseUrl: URL, _ handler: @escaping FolderChangeHandler) {
+    init(baseUrl: URL, _ handler: @escaping FolderChangeHandler) throws {
         self.baseUrl = baseUrl
         self.handler = handler
 
-        guard !isInitialized,
-              baseUrl.lastPathComponent != "untagged" else { return }
+        guard !Self.isInitialized,
+              baseUrl.lastPathComponent != "untagged" else { throw DemoFolderProviderError.alreadyInitialized }
         initialize()
-        isInitialized = true
+        Self.isInitialized = true
     }
 
     func save(data: Data, at: URL) throws {
@@ -67,4 +67,8 @@ final class DemoFolderProvider: FolderProvider, Log {
         ]
         handler(self, urls.map { FileChange.added(.init(fileUrl: $0)) })
     }
+}
+
+private enum DemoFolderProviderError: String, Error {
+    case alreadyInitialized
 }
