@@ -20,7 +20,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
     public static let archiveStore = ArchiveStore.shared
     public static let iapService = IAPService()
     static let mailRecipients = ["support@pdf-archiver.io"]
-    static let mailSubject = "PDF Archiver: iOS Support"
+    static let mailSubject = "PDF Archiver: Support"
 
     @Published var alertDataModel: AlertDataModel?
 
