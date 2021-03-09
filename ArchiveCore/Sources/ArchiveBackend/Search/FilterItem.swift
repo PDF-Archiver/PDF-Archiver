@@ -69,17 +69,21 @@ extension Array where Element == Document {
     public func filter(with filterItem: FilterItem) -> [Element] {
         switch filterItem {
             case .tag(let name):
-                let tagname = name.lowercased()
-                return self.filter { $0.tags.contains(tagname) }
+                let lowercasedTagname = name.lowercased()
+                return filter { element in
+                    element.tags
+                        .map { $0.lowercased() }
+                        .contains(lowercasedTagname)
+                }
             case .year(let date):
                 let dateString = FilterItem.cache.getTriple(for: date).year
-                return self.filter { $0.filename.starts(with: dateString) }
+                return filter { $0.filename.starts(with: dateString) }
             case .yearMonth(let date):
                 let dateString = FilterItem.cache.getTriple(for: date).yearMonth
-                return self.filter { $0.filename.starts(with: dateString) }
+                return filter { $0.filename.starts(with: dateString) }
             case .yearMonthDay(let date):
                 let dateString = FilterItem.cache.getTriple(for: date).yearMonthDay
-                return self.filter { $0.filename.starts(with: dateString) }
+                return filter { $0.filename.starts(with: dateString) }
         }
     }
 }

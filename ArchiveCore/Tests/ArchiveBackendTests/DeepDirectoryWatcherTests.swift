@@ -51,7 +51,7 @@ final class DeepDirectoryWatcherTests: XCTestCase {
         let folderToRemove = try XCTUnwrap(folders.shuffled().first)
 
         let expectation = XCTestExpectation(description: "Document processing completed.")
-        watcher = DirectoryDeepWatcher(path, withHandler: { _ in
+        watcher = try DirectoryDeepWatcher(path, withHandler: { _ in
             expectation.fulfill()
         })
 
@@ -67,7 +67,7 @@ final class DeepDirectoryWatcherTests: XCTestCase {
         let fileToRemove = try XCTUnwrap(files?.shuffled().first)
 
         let expectation = XCTestExpectation(description: "Document processing completed.")
-        watcher = DirectoryDeepWatcher(path, withHandler: { changedUrl in
+        watcher = try DirectoryDeepWatcher(path, withHandler: { changedUrl in
             guard changedUrl == fileToRemove.deletingLastPathComponent() else { return }
             expectation.fulfill()
         })
@@ -89,7 +89,7 @@ final class DeepDirectoryWatcherTests: XCTestCase {
             result[parentUrl] = XCTestExpectation(description: "Document processing completed of \(parentUrl.absoluteString).")
         }
 
-        watcher = DirectoryDeepWatcher(path, withHandler: { changedUrl in
+        watcher = try DirectoryDeepWatcher(path, withHandler: { changedUrl in
             expectations[changedUrl]?.fulfill()
         })
 
@@ -107,7 +107,7 @@ final class DeepDirectoryWatcherTests: XCTestCase {
         guard let path = tempDir else { return }
 
         let expectation = XCTestExpectation(description: "Document processing completed.")
-        watcher = DirectoryDeepWatcher(path, withHandler: { _ in
+        watcher = try DirectoryDeepWatcher(path, withHandler: { _ in
             expectation.fulfill()
         })
 

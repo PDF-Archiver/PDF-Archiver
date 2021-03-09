@@ -49,12 +49,10 @@ struct MoreTabView: View {
             DetailRowView(name: "Show Intro") {
                 self.viewModel.showIntro()
             }
-            DetailRowView(name: "Show Permissions") {
-                self.viewModel.showPermissions()
-            }
             NavigationLink(destination: ExpertSettingsView(notSaveDocumentTagsAsPDFMetadata: $viewModel.notSaveDocumentTagsAsPDFMetadata,
                                                            documentTagsNotRequired: $viewModel.documentTagsNotRequired,
                                                            documentSpecificationNotRequired: $viewModel.documentSpecificationNotRequired,
+                                                           showPermissions: viewModel.showPermissions,
                                                            resetApp: viewModel.resetApp)) {
                 Text("Advanced")
             }
