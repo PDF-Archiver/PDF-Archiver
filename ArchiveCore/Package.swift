@@ -25,7 +25,7 @@ let package = Package(
         .package(url: "https://github.com/onmyway133/DeepDiff.git", from: "2.3.1"),
         .package(url: "https://github.com/SwiftUIX/SwiftUIX", .branch("master")),
         .package(url: "https://github.com/dasautoooo/Parma", from: "0.2.0"),
-        .package(url: "https://github.com/WeTransfer/Diagnostics", from: "1.8.2"),
+        .package(url: "https://github.com/WeTransfer/Diagnostics", from: "1.9.0"),
 //        .package(url: "https://github.com/tikhop/TPInAppReceipt", from: "3.0.2"),
         .package(url: "https://github.com/tikhop/TPInAppReceipt", .branch("master")),
         .package(url: "https://github.com/shaps80/GraphicsRenderer", from: "1.4.4"),
