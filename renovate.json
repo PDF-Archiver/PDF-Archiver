@@ -2,5 +2,11 @@
   "extends": [
     "config:base"
   ],
-  "assigneesFromCodeOwners": true
+  "assigneesFromCodeOwners": true,
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "automerge": true
+    }
+  ]
 }
