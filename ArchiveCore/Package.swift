@@ -22,14 +22,14 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-log.git", from: "1.4.2"),
-        .package(url: "https://github.com/onmyway133/DeepDiff.git", from: "2.3.1"),
+        .package(url: "https://github.com/onmyway133/DeepDiff.git", from: "3.2.3"),
         .package(url: "https://github.com/SwiftUIX/SwiftUIX", .branch("master")),
-        .package(url: "https://github.com/dasautoooo/Parma", from: "0.2.0"),
-        .package(url: "https://github.com/WeTransfer/Diagnostics", from: "1.8.1"),
+        .package(url: "https://github.com/dasautoooo/Parma", from: "v0.3.0"),
+        .package(url: "https://github.com/WeTransfer/Diagnostics", from: "1.9.0"),
 //        .package(url: "https://github.com/tikhop/TPInAppReceipt", from: "3.0.2"),
         .package(url: "https://github.com/tikhop/TPInAppReceipt", .branch("master")),
         .package(url: "https://github.com/shaps80/GraphicsRenderer", from: "1.4.4"),
-        .package(name: "Sentry", url: "https://github.com/getsentry/sentry-cocoa", from: "6.2.1")
+        .package(name: "Sentry", url: "https://github.com/getsentry/sentry-cocoa", from: "7.1.3")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
