@@ -22,7 +22,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/DeepDiff</string>
 			<key>Title</key>
-			<string>DeepDiff (2.3.1)</string>
+			<string>DeepDiff (2.3.3)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -30,7 +30,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/Diagnostics</string>
 			<key>Title</key>
-			<string>Diagnostics (1.8.0)</string>
+			<string>Diagnostics (1.9.0)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -38,7 +38,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/Down</string>
 			<key>Title</key>
-			<string>Down (0.9.4)</string>
+			<string>Down (0.9.5)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -54,7 +54,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/Parma</string>
 			<key>Title</key>
-			<string>Parma (0.2.0)</string>
+			<string>Parma (0.3.0)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -62,7 +62,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/sentry-cocoa</string>
 			<key>Title</key>
-			<string>Sentry (6.2.1)</string>
+			<string>Sentry (7.1.3)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -70,7 +70,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-log</string>
 			<key>Title</key>
-			<string>swift-log (1.4.1)</string>
+			<string>swift-log (1.4.2)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -86,7 +86,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/TPInAppReceipt</string>
 			<key>Title</key>
-			<string>TPInAppReceipt</string>
+			<string>TPInAppReceipt (3.2.1)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
