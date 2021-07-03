@@ -84,7 +84,7 @@ public final class IAPService: NSObject, Log {
                 .contains { productIdentifiers.contains($0.productIdentifier) }
 
             let hasLifetimePurchase = !receipt.purchases(ofProductIdentifier: "LIFETIME")
-                .filter { $0.cancellationDateString == nil }
+                .filter { $0.cancellationDate == nil }
                 .isEmpty
 
             appUsagePermitted = hasActiveSubscription || hasLifetimePurchase

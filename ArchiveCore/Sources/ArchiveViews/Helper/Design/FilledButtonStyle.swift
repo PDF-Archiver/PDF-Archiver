@@ -11,7 +11,7 @@ import SwiftUI
 public struct FilledButtonStyle: ButtonStyle {
     public var foregroundColor: Color = .paWhite
     public var backgroundColor: Color = .paDarkGray
-    public var isInverted: Bool = false
+    public var isInverted = false
 
     public init(foregroundColor: Color = .paWhite, backgroundColor: Color = .paDarkGray, isInverted: Bool = false) {
         self.foregroundColor = foregroundColor

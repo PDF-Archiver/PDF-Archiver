@@ -13,7 +13,7 @@ struct SubscriptionButtonStyle: ButtonStyle {
 
     private let foregroundColor: Color = .systemBackground
     private let backgroundColor: Color = .paDarkGray
-    var isPreferred: Bool = false
+    var isPreferred = false
 
     func makeBody(configuration: Self.Configuration) -> some View {
         configuration.label

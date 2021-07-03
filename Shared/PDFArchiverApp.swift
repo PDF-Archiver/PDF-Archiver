@@ -154,17 +154,17 @@ struct PDFArchiverApp: App, Log {
                 log.error("Crash has happened!", metadata: ["event": "\(event)"])
                 DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3), execute: self.mainNavigationViewModel.displayUserFeedback)
             }
-        }
 
-        SentrySDK.currentHub().getClient()?.options.beforeSend = { event in
-            // I am not interested in this kind of data
-            event.context?["device"]?["storage_size"] = nil
-            event.context?["device"]?["free_memory"] = nil
-            event.context?["device"]?["memory_size"] = nil
-            event.context?["device"]?["boot_time"] = nil
-            event.context?["device"]?["timezone"] = nil
-            event.context?["device"]?["usable_memory"] = nil
-            return event
+            options.beforeSend = { event in
+                // I am not interested in this kind of data
+                event.context?["device"]?["storage_size"] = nil
+                event.context?["device"]?["free_memory"] = nil
+                event.context?["device"]?["memory_size"] = nil
+                event.context?["device"]?["boot_time"] = nil
+                event.context?["device"]?["timezone"] = nil
+                event.context?["device"]?["usable_memory"] = nil
+                return event
+            }
         }
     }
 }
