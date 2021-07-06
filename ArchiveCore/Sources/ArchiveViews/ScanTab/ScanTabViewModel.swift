@@ -29,7 +29,7 @@ let shareDocumentAfterScanDefault = false
 #endif
 
 public final class ScanTabViewModel: ObservableObject, DropDelegate, Log {
-    @Published public var showDocumentScan: Bool = false
+    @Published public var showDocumentScan = false
     @Published public var shareDocumentAfterScan: Bool = shareDocumentAfterScanDefault
     @Published public private(set) var progressValue: CGFloat = 0.0
     @Published public private(set) var progressLabel: String = " "

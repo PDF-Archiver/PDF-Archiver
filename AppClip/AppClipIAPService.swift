@@ -16,7 +16,7 @@ final class AppClipIAPService: IAPServiceAPI {
         Just([]).eraseToAnyPublisher()
     }
 
-    var appUsagePermitted: Bool = true
+    var appUsagePermitted = true
 
     var appUsagePermittedPublisher: AnyPublisher<Bool, Never> {
         Just(appUsagePermitted).eraseToAnyPublisher()

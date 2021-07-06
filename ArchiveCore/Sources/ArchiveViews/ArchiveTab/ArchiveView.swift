@@ -89,7 +89,7 @@ struct ArchiveView: View {
         List {
             ForEach(viewModel.documents) { document in
                 if document.downloadStatus == .local {
-                    NavigationLink(destination: ArchiveViewModel.createLazyDetail(with: document)) {
+                    NavigationLink(destination: viewModel.createDetail(with: document)) {
                         DocumentView(viewModel: document, showTagStatus: false, multilineTagList: false)
                     }
                 } else {

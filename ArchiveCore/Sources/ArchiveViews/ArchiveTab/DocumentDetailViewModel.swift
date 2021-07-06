@@ -15,7 +15,7 @@ final class DocumentDetailViewModel: ObservableObject {
     // want to load all PDFDocument (quite heavy) before we need them
     @Published private(set) var pdfDocument: PDFDocument?
     @Published var pdfDocumentUrl: URL?
-    @Published var showActivityView: Bool = false
+    @Published var showActivityView = false
     var activityItems: [Any] {
         [document.path]
     }

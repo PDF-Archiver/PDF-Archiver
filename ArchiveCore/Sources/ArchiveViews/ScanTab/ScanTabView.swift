@@ -124,7 +124,7 @@ struct ScanTabView_Previews: PreviewProvider {
         var productsPublisher: AnyPublisher<Set<SKProduct>, Never> {
             Just([]).eraseToAnyPublisher()
         }
-        var appUsagePermitted: Bool = true
+        var appUsagePermitted = true
         var appUsagePermittedPublisher: AnyPublisher<Bool, Never> {
             Just(appUsagePermitted).eraseToAnyPublisher()
         }

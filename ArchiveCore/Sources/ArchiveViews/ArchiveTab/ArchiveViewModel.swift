@@ -14,12 +14,6 @@ import SwiftUIX
 
 final class ArchiveViewModel: ObservableObject, Log {
 
-    static func createLazyDetail(with document: Document) -> some View {
-        let viewModel = DocumentDetailViewModel(document)
-        return LazyView {
-            DocumentDetailView(viewModel: viewModel)
-        }
-    }
     private static let defaultYears = ["All", "2020", "2019", "2018", "2017"]
 
     @Published private(set) var selectedDocument: Document?
@@ -35,6 +29,7 @@ final class ArchiveViewModel: ObservableObject, Log {
     private var disposables = Set<AnyCancellable>()
     private let queue = DispatchQueue(label: "ArchiveViewModel WorkQueue", qos: .userInitiated)
     private let archiveStore: ArchiveStore
+    private var detailViewModels = [Document: DocumentDetailViewModel]()
 
     init(_ archiveStore: ArchiveStore = ArchiveStore.shared) {
         self.archiveStore = archiveStore
@@ -213,6 +208,15 @@ final class ArchiveViewModel: ObservableObject, Log {
 
             searchText = ""
         }
+    }
+
+    func createDetail(with document: Document) -> some View {
+        // This function might be called multiple times for the same document.
+        // If we create a new view model on every call, all changes to the view model (e.g. showActivityView state)
+        // would be reset. This would result in a closing ActivityView directly after it was presented.
+        let viewModel = detailViewModels[document, default: DocumentDetailViewModel(document)]
+        detailViewModels[document] = viewModel
+        return DocumentDetailView(viewModel: viewModel)
     }
 
     private static func getDateFilters(from searchterm: String) -> [FilterItem] {

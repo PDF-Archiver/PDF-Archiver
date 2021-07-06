@@ -64,6 +64,24 @@ public final class MoreTabViewModel: ObservableObject, Log {
             }
             .store(in: &disposables)
 
+        $notSaveDocumentTagsAsPDFMetadata
+            .sink { value in
+                UserDefaults.notSaveDocumentTagsAsPDFMetadata = value
+            }
+            .store(in: &disposables)
+
+        $documentTagsNotRequired
+            .sink { value in
+                UserDefaults.documentTagsNotRequired = value
+            }
+            .store(in: &disposables)
+
+        $documentSpecificationNotRequired
+            .sink { value in
+                UserDefaults.documentSpecificationNotRequired = value
+            }
+            .store(in: &disposables)
+
         #if os(macOS)
         $selectedArchiveType
             .dropFirst()
@@ -263,7 +281,7 @@ extension MoreTabViewModel {
         var productsPublisher: AnyPublisher<Set<SKProduct>, Never> {
             Just([]).eraseToAnyPublisher()
         }
-        var appUsagePermitted: Bool = true
+        var appUsagePermitted = true
         var appUsagePermittedPublisher: AnyPublisher<Bool, Never> {
             Just(appUsagePermitted).eraseToAnyPublisher()
         }
