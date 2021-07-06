@@ -19,8 +19,20 @@ struct DocumentInformationForm: View {
 
     var body: some View {
         Form {
-            DatePicker("Date", selection: $date, displayedComponents: .date)
-                .labelsHidden()
+            HStack {
+                DatePicker("Date", selection: $date, displayedComponents: .date)
+                #if !os(macOS)
+                Spacer()
+                Button("Today") {
+                    date = Date()
+                }
+                .padding(.horizontal, 11)
+                .padding(.vertical, 7)
+                .background(Color.tertiarySystemFill)
+                .cornerRadius(6)
+                #endif
+            }
+            .labelsHidden()
             TextField("Description", text: $specification)
                 .modifier(ClearButton(text: $specification))
             documentTagsView

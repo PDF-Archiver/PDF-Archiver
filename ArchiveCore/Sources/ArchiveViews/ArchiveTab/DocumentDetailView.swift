@@ -24,6 +24,7 @@ struct DocumentDetailView: View {
             #endif
         })
         .onAppear(perform: viewModel.viewAppeared)
+        .onDisappear(perform: viewModel.viewDisappeared)
         .sheet(isPresented: $viewModel.showActivityView) {
             #if !os(macOS)
             AppActivityView(activityItems: self.viewModel.activityItems)

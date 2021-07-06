@@ -31,4 +31,9 @@ final class DocumentDetailViewModel: ObservableObject {
         }
         FeedbackGenerator.selectionChanged()
     }
+
+    func viewDisappeared() {
+        // OOM fix: since we save a reference of the view model in a dict, we have to clean up the pdfDocument on disappear
+        pdfDocument = nil
+    }
 }
