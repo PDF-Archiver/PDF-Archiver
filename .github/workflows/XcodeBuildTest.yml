@@ -10,6 +10,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Build and Test
-        run: "xcodebuild test -workspace PDFArchiver.xcworkspace -scheme iOS -destination 'platform=iOS Simulator,name=iPhone 11,OS=14.2'"
-        env:
-          DEVELOPER_DIR: /Applications/Xcode_12.2.app/Contents/Developer
+        run: "xcodebuild test -workspace PDFArchiver.xcworkspace -scheme iOS -destination 'platform=iOS Simulator,name=iPhone 11'"
+        # env:
+        #   DEVELOPER_DIR: /Applications/Xcode_12.2.app/Contents/Developer

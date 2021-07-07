@@ -38,3 +38,4 @@ Gemfile.lock
 .bundle
 ArchiveCore/.swiftpm
 .env.default
+ArchiveCore/.build
