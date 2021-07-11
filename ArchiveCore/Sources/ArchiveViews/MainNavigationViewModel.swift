@@ -182,6 +182,12 @@ public final class MainNavigationViewModel: ObservableObject, Log {
         case .supportView:
             SupportMailView(subject: Self.mailSubject,
                             recipients: Self.mailRecipients,
+                            messagePrefix: "",
+                            errorHandler: { NotificationCenter.default.postAlert($0) })
+        case .supportAfterCrashView:
+            SupportMailView(subject: Self.mailSubject,
+                            recipients: Self.mailRecipients,
+                            messagePrefix: .afterCrashMessage,
                             errorHandler: { NotificationCenter.default.postAlert($0) })
         #endif
         #if !os(macOS)
@@ -263,10 +269,24 @@ public final class MainNavigationViewModel: ObservableObject, Log {
     func showSupport() {
         log.info("Show support")
         #if os(macOS)
-        sendDiagnosticsReport()
+        sendDiagnosticsReport(messagePrefix: "")
         #else
         if MFMailComposeViewController.canSendMail() {
             sheetType = .supportView
+        } else {
+            guard let url = URL(string: "https://pdf-archiver.io/faq") else { preconditionFailure("Could not generate the FAQ url.") }
+            open(url)
+        }
+        #endif
+    }
+
+    func showAfterCrashSupport() {
+        log.info("Show after crash support")
+        #if os(macOS)
+        sendDiagnosticsReport(messagePrefix: .afterCrashMessage)
+        #else
+        if MFMailComposeViewController.canSendMail() {
+            sheetType = .supportAfterCrashView
         } else {
             guard let url = URL(string: "https://pdf-archiver.io/faq") else { preconditionFailure("Could not generate the FAQ url.") }
             open(url)
@@ -279,7 +299,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
                                                  message: "PDF Archiver has crashed. This should not happen!\n\nPlease provide feedback, to improve the App experience.",
                                                  primaryButton: .cancel(),
                                                  secondaryButton: .default(Text("Send"),
-                                                                           action: showSupport))
+                                                                           action: showAfterCrashSupport))
     }
 
     #if !os(macOS)
@@ -355,6 +375,7 @@ extension MainNavigationViewModel {
         case iapView
         #if canImport(MessageUI)
         case supportView
+        case supportAfterCrashView
         #endif
 
         #if !os(macOS)
@@ -368,6 +389,8 @@ extension MainNavigationViewModel {
                 #if canImport(MessageUI)
                 case .supportView:
                     return "supportView"
+                case .supportAfterCrashView:
+                    return "supportAfterCrashView"
                 #endif
                 #if !os(macOS)
                 case .activityView:
@@ -383,7 +406,7 @@ import AppKit
 import Diagnostics
 
 extension MainNavigationViewModel {
-    func sendDiagnosticsReport() {
+    func sendDiagnosticsReport(messagePrefix: String) {
         // add a diagnostics report
         var reporters = DiagnosticsReporter.DefaultReporter.allReporters
         reporters.insert(CustomDiagnosticsReporter.self, at: 1)
@@ -410,7 +433,7 @@ extension MainNavigationViewModel {
             preconditionFailure("Failed with error: \(error)")
         }
 
-        service.perform(withItems: [url])
+        service.perform(withItems: [messagePrefix, url])
     }
 }
 #endif

@@ -15,6 +15,7 @@ struct SupportMailView: UIViewControllerRepresentable {
 
     let subject: String
     let recipients: [String]
+    let messagePrefix: String
     let errorHandler: (Error) -> Void
     @Environment(\.presentationMode) private var presentation
 
@@ -51,7 +52,7 @@ struct SupportMailView: UIViewControllerRepresentable {
         mail.mailComposeDelegate = context.coordinator
         mail.setToRecipients(recipients)
         mail.setSubject(subject)
-        mail.setMessageBody("\n\n\nDiagnostics Report:", isHTML: false)
+        mail.setMessageBody("\(messagePrefix)\n\n\nDiagnostics Report:", isHTML: false)
 
         // add a diagnostics report
         var reporters = DiagnosticsReporter.DefaultReporter.allReporters
