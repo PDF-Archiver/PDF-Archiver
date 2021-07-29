@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/WeTransfer/Diagnostics",
         "state": {
           "branch": null,
-          "revision": "6c6fcefdefb6420fcdbc96278a32f2ab6018e474",
-          "version": "1.9.0"
+          "revision": "3c72dc567af455a282ea73dd6dc4aba10000c36b",
+          "version": "1.9.1"
         }
       },
       {
@@ -33,8 +33,8 @@
         "repositoryURL": "https://github.com/iwasrobbed/Down",
         "state": {
           "branch": null,
-          "revision": "f2e4658f79f2c1a482b1e73fbfce6ac9e0aad8b8",
-          "version": "0.9.5"
+          "revision": "f34b166be1f1db4aa8f573067e901d72f2a6be57",
+          "version": "0.11.0"
         }
       },
       {
@@ -60,8 +60,8 @@
         "repositoryURL": "https://github.com/getsentry/sentry-cocoa",
         "state": {
           "branch": null,
-          "revision": "f7c3de2d9fc09d7a61f7259521d97091fb2f8bda",
-          "version": "7.1.3"
+          "revision": "d9b37a6664cf2467efda861e1383ec806a221b18",
+          "version": "7.1.4"
         }
       },
       {
@@ -78,7 +78,7 @@
         "repositoryURL": "https://github.com/SwiftUIX/SwiftUIX",
         "state": {
           "branch": "master",
-          "revision": "14bca210736cefdc1fb25ab5cd117996a458527c",
+          "revision": "de46bb86b83157823c05c0109c367e630d10a7b8",
           "version": null
         }
       },
