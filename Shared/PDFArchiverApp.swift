@@ -148,6 +148,7 @@ struct PDFArchiverApp: App, Log {
             options.releaseName = AppEnvironment.getFullVersion()
             options.enableAutoSessionTracking = AppEnvironment.get() != .production
             options.debug = AppEnvironment.get() != .production
+            options.enableOutOfMemoryTracking = AppEnvironment.get() != .production
 
             // Only gets called for the first crash event
             options.onCrashedLastRun = { event in
