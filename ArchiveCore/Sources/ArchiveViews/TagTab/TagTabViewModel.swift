@@ -13,6 +13,13 @@ import SwiftUI
 
 final class TagTabViewModel: ObservableObject, Log {
 
+    static private let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .medium
+        return formatter
+    }()
+
     // set this property manually
     @Published var documents = [Document]()
     @Published var currentDocument: Document?
@@ -30,6 +37,23 @@ final class TagTabViewModel: ObservableObject, Log {
     var taggedUntaggedDocuments: String {
         let filteredDocuments = documents.filter { $0.taggingStatus == .tagged }
         return "\(filteredDocuments.count) / \(documents.count)"
+    }
+
+    var documentTitle: LocalizedStringKey {
+        if let filename = currentDocument?.filename,
+           !filename.contains(Constants.documentDatePlaceholder),
+           !filename.contains(Constants.documentDescriptionPlaceholder),
+           !filename.contains(Constants.documentTagPlaceholder) {
+            return LocalizedStringKey(filename)
+        } else {
+            return "Document"
+        }
+    }
+
+    var documentSubtitle: String? {
+        guard let currentDocument = currentDocument,
+              let creationDate = try? archiveStore.getCreationDate(of: currentDocument.path) else { return nil }
+        return Self.dateFormatter.string(for: creationDate)
     }
 
     private let archiveStore: ArchiveStore
