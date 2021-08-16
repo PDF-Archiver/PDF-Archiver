@@ -42,7 +42,7 @@ struct TagTabView: View {
             .navigationBarHidden(false)
             .navigationBarTitleView(
                 VStack(spacing: 1) {
-                    Text(viewModel.documentTitle)
+                    Text(LocalizedStringKey(viewModel.documentTitle ?? "Document"))
                         .minimumScaleFactor(0.7)
                         .allowsTightening(true)
                         .truncationMode(.middle)

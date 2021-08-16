@@ -265,7 +265,7 @@ public final class MoreTabViewModel: ObservableObject, Log {
                   let url = openPanel.url else { return }
             self.observedFolderURL = url
             UserDefaults.observedFolderURL = url
-            queue.async {
+            self.queue.async {
                 self.reloadArchiveDocuments()
             }
         }

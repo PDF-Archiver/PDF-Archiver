@@ -39,15 +39,12 @@ final class TagTabViewModel: ObservableObject, Log {
         return "\(filteredDocuments.count) / \(documents.count)"
     }
 
-    var documentTitle: LocalizedStringKey {
-        if let filename = currentDocument?.filename,
+    var documentTitle: String? {
+        guard let filename = currentDocument?.filename,
            !filename.contains(Constants.documentDatePlaceholder),
            !filename.contains(Constants.documentDescriptionPlaceholder),
-           !filename.contains(Constants.documentTagPlaceholder) {
-            return LocalizedStringKey(filename)
-        } else {
-            return "Document"
-        }
+           !filename.contains(Constants.documentTagPlaceholder) else { return nil }
+        return filename
     }
 
     var documentSubtitle: String? {

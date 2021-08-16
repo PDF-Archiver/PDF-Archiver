@@ -57,6 +57,20 @@ struct TagTabViewMac: View {
                 .font(.title)
                 .fontWeight(.semibold)
                 .foregroundColor(.paDarkRed)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Label(viewModel.documentTitle ?? "", systemImage: "doc")
+                    .opacity(viewModel.documentTitle == nil ? 0 : 1)
+                Label(viewModel.documentSubtitle ?? "", systemImage: "doc.badge.plus")
+                    .opacity(viewModel.documentSubtitle == nil ? 0 : 1)
+            }
+            .foregroundColor(.secondary)
+            .font(.callout)
+            .truncationMode(.middle)
+            .minimumScaleFactor(0.8)
+            .allowsTightening(true)
+            .lineLimit(3)
+
             DatePicker("Date", selection: $viewModel.date, displayedComponents: .date)
                 .labelsHidden()
             TextField("Description", text: $viewModel.specification)
