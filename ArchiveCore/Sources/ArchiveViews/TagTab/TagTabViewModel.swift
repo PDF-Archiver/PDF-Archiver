@@ -5,7 +5,7 @@
 //  Created by Julian Kahnert on 02.11.19.
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
-// swiftlint:disable function_body_length cyclomatic_complexity
+// swiftlint:disable function_body_length cyclomatic_complexity type_body_length
 
 import Combine
 import PDFKit
@@ -13,7 +13,7 @@ import SwiftUI
 
 final class TagTabViewModel: ObservableObject, Log {
 
-    static private let dateFormatter: DateFormatter = {
+    private static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         formatter.timeStyle = .medium
@@ -59,6 +59,7 @@ final class TagTabViewModel: ObservableObject, Log {
     private let archiveStore: ArchiveStore
     private let tagStore: TagStore
     private var disposables = Set<AnyCancellable>()
+    private let queue = DispatchQueue(label: "TagTabViewModel", qos: .userInitiated)
 
     init(archiveStore: ArchiveStore = ArchiveStore.shared, tagStore: TagStore = TagStore.shared) {
         self.archiveStore = archiveStore
@@ -184,7 +185,7 @@ final class TagTabViewModel: ObservableObject, Log {
                     self.pdfDocument = pdfDocument
 
                     // try to parse suggestions from document content
-                    DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                    self.queue.async { [weak self] in
 
                         // get the pdf content of first 3 pages
                         var text = ""
@@ -285,7 +286,7 @@ final class TagTabViewModel: ObservableObject, Log {
             pdfDocument.write(to: document.path)
         }
 
-        DispatchQueue.global(qos: .userInitiated).async {
+        queue.async {
             do {
                 try self.archiveStore.archive(document, slugify: true)
                 var filteredDocuments = self.archiveStore.documents.filter { $0.id != document.id }
@@ -314,7 +315,7 @@ final class TagTabViewModel: ObservableObject, Log {
 
         // delete document in archive
         guard let currentDocument = currentDocument else { return }
-        DispatchQueue.global(qos: .userInitiated).async {
+        queue.async {
             do {
                 // this will trigger the publisher, which calls getNewDocument, e.g.
                 // updates the current document

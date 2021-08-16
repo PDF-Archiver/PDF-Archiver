@@ -98,7 +98,7 @@ final class ArchiveViewModel: ObservableObject, Log {
 
         // filter documents, get input from Notification, searchText or searchScope
         $searchText
-            .debounce(for: .milliseconds(100), scheduler: DispatchQueue.global(qos: .userInitiated))
+            .debounce(for: .milliseconds(100), scheduler: queue)
             .removeDuplicates()
             .combineLatest($scopeSelection, archiveStore.$documents, $selectedFilters)
             .receive(on: queue)

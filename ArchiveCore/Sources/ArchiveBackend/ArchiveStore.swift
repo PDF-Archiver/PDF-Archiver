@@ -53,6 +53,7 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
 
     private let fileManager = FileManager.default
     private let queue = DispatchQueue(label: "ArchiveStoreQueue", qos: .userInitiated)
+    private let queueBackground = DispatchQueue(label: "ArchiveStoreQueue-background", qos: .background)
     private let documentProcessingQueue = DispatchQueue(label: "ArchiveStore DocumentProcessing queue", qos: .userInitiated, attributes: .concurrent)
 
     private var providers: [FolderProvider] = []
@@ -252,7 +253,7 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
 
         // We have to wait until all documents have been processed, because several updates will be triggered on $document changes
         // these changes must contain the valid new information.
-        DispatchQueue.global(qos: .background).async {
+        queueBackground.async {
             let timeout = documentProcessingGroup.wait(wallTimeout: .now() + .seconds(60))
             if timeout == .timedOut {
                 Self.log.errorAndAssert("Timeout while waiting for documents to be processed.")

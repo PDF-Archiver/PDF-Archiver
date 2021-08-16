@@ -46,6 +46,8 @@ public final class MoreTabViewModel: ObservableObject, Log {
     private let iapService: IAPServiceAPI
     private let archiveStore: ArchiveStoreAPI
     private var disposables = Set<AnyCancellable>()
+    private let queue = DispatchQueue(label: "MoreTabViewModel", qos: .userInitiated)
+    private let queueUtility = DispatchQueue(label: "MoreTabViewModel-utility", qos: .utility)
 
     public init(iapService: IAPServiceAPI, archiveStore: ArchiveStoreAPI) {
         self.iapService = iapService
@@ -53,7 +55,7 @@ public final class MoreTabViewModel: ObservableObject, Log {
         self.statisticsViewModel = StatisticsViewModel(documents: archiveStore.documents)
 
         archiveStore.documentsPublisher
-            .receive(on: DispatchQueue.global(qos: .utility))
+            .receive(on: queueUtility)
             .map(StatisticsViewModel.init(documents: ))
             .receive(on: DispatchQueue.main)
             .assign(to: &$statisticsViewModel)
@@ -169,7 +171,7 @@ public final class MoreTabViewModel: ObservableObject, Log {
             let untaggedUrl = try PathManager.shared.getUntaggedUrl()
 
             self.showArchiveTypeSelection = false
-            DispatchQueue.global(qos: .userInitiated).async {
+            queue.async {
                 self.archiveStore.update(archiveFolder: archiveUrl, untaggedFolders: [untaggedUrl])
             }
         } catch {
@@ -230,7 +232,7 @@ public final class MoreTabViewModel: ObservableObject, Log {
     }
 
     func updateFinderTags() {
-        DispatchQueue.global(qos: .background).async {
+        queue.async {
             self.archiveStore.documents
                 .filter { $0.taggingStatus == .tagged }
                 .forEach { document in
@@ -244,7 +246,7 @@ public final class MoreTabViewModel: ObservableObject, Log {
     func clearObservedFolder() {
         observedFolderURL = nil
         UserDefaults.observedFolderURL = nil
-        DispatchQueue.global(qos: .userInitiated).async {
+        queue.async {
             self.reloadArchiveDocuments()
         }
     }
@@ -263,7 +265,7 @@ public final class MoreTabViewModel: ObservableObject, Log {
                   let url = openPanel.url else { return }
             self.observedFolderURL = url
             UserDefaults.observedFolderURL = url
-            DispatchQueue.global(qos: .userInitiated).async {
+            queue.async {
                 self.reloadArchiveDocuments()
             }
         }
