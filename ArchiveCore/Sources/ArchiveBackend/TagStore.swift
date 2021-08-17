@@ -16,6 +16,7 @@ public final class TagStore {
     public private(set) var tagIndex = TagIndex<String>()
     private var tagCounts: [String: Int] = [:]
     private var disposables = Set<AnyCancellable>()
+    private let queue = DispatchQueue(label: "TagStore \(UUID().uuidString)", qos: .background)
 
     private init() {
         ArchiveStore.shared.$documents
@@ -29,7 +30,7 @@ public final class TagStore {
             .store(in: &disposables)
 
         ArchiveStore.shared.$documents
-            .receive(on: DispatchQueue.global(qos: .background))
+            .receive(on: queue)
             .map(TagStore.documents2SortedTags(_:))
             .assign(to: &$sortedTags)
     }

@@ -2,15 +2,15 @@ name: ASN1Swift, nameSpecified: ASN1Swift, owner: tikhop, version: 1.2.4
 
 name: DeepDiff, nameSpecified: DeepDiff, owner: onmyway133, version: 2.3.3
 
-name: Diagnostics, nameSpecified: Diagnostics, owner: WeTransfer, version: 1.9.0
+name: Diagnostics, nameSpecified: Diagnostics, owner: WeTransfer, version: 1.9.1
 
-name: Down, nameSpecified: Down, owner: iwasrobbed, version: 0.9.5
+name: Down, nameSpecified: Down, owner: iwasrobbed, version: 0.11.0
 
 name: GraphicsRenderer, nameSpecified: GraphicsRenderer, owner: shaps80, version: 1.4.4
 
 name: Parma, nameSpecified: Parma, owner: dasautoooo, version: 0.3.0
 
-name: sentry-cocoa, nameSpecified: Sentry, owner: getsentry, version: 7.1.3
+name: sentry-cocoa, nameSpecified: Sentry, owner: getsentry, version: 7.1.4
 
 name: swift-log, nameSpecified: swift-log, owner: apple, version: 1.4.2
 

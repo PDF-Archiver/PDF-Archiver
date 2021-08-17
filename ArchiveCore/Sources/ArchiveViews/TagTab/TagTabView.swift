@@ -40,7 +40,22 @@ struct TagTabView: View {
                 }
             }
             .navigationBarHidden(false)
-            .navigationBarTitle(Text("Document"), displayMode: .inline)
+            .navigationBarTitleView(
+                VStack(spacing: 1) {
+                    Text(LocalizedStringKey(viewModel.documentTitle ?? "New Document"))
+                        .minimumScaleFactor(0.7)
+                        .allowsTightening(true)
+                        .truncationMode(.middle)
+                        .lineLimit(1)
+                    Label(viewModel.documentSubtitle ?? "", systemImage: "doc.badge.plus")
+                        .foregroundColor(.secondary)
+                        .font(.caption)
+                        .minimumScaleFactor(0.5)
+                        .allowsTightening(true)
+                        .lineLimit(1)
+                        .opacity(viewModel.documentSubtitle == nil ? 0 : 1)
+                },
+                displayMode: .inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     deleteNavBarView

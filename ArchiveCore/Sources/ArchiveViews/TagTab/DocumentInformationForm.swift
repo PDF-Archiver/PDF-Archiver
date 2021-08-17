@@ -23,7 +23,7 @@ struct DocumentInformationForm: View {
                 DatePicker("Date", selection: $date, displayedComponents: .date)
                 #if !os(macOS)
                 Spacer()
-                Button("Today") {
+                Button("Today" as LocalizedStringKey) {
                     date = Date()
                 }
                 .padding(.horizontal, 11)
@@ -70,6 +70,7 @@ struct DocumentInformationForm: View {
             TextField("Enter Tag",
                       text: $tagInput,
                       onCommit: saveCurrentTag)
+                .disableAutocorrection(true)
                 .frame(maxHeight: 22)
                 .padding(EdgeInsets(top: 4.0, leading: 0.0, bottom: 4.0, trailing: 0.0))
         }

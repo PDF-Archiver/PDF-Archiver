@@ -111,6 +111,9 @@ final class LocalFolderProvider: FolderProvider {
             .filter { $0.pathExtension.lowercased() == "pdf" }
             .compactMap { url -> FileChange.Details? in
 
+                // we do not want to track trashed files
+                guard !url.pathComponents.contains(".Trash") else { return nil }
+
                 guard let resourceValues = try? url.resourceValues(forKeys: Set(fileProperties)),
                       let fileSize = resourceValues.fileSize else {
                     log.errorAndAssert("Could not fetch resource values from url.", metadata: ["url": "\(url.path)"])
