@@ -54,8 +54,8 @@ struct TagTabView: View {
                         .allowsTightening(true)
                         .lineLimit(1)
                         .opacity(viewModel.documentSubtitle == nil ? 0 : 1)
-                }
-            )
+                },
+                displayMode: .inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     deleteNavBarView
