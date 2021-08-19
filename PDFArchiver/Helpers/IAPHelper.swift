@@ -78,7 +78,7 @@ public class IAPHelper {
         os_log("Subscription Expiration Date: %@", log: Self.log, type: .info, UserDefaults.standard.subscriptionExpiryDate?.description ?? "")
 
         // start revenue cat
-        //Purchases.debugLogsEnabled = true
+        // Purchases.debugLogsEnabled = true
         Purchases.configure(withAPIKey: apiKey)
 
         Purchases.shared.products(Array(productIdentifiers)) { products in

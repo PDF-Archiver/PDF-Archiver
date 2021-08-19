@@ -33,8 +33,8 @@ class Preferences: PreferencesDelegate, Logging {
     weak var dataModelDelegate: DataModelDelegate?
     weak var archiveDelegate: TagManagerHandling?
     var archiveModificationDate: Date?
-    var slugifyNames: Bool = true
-    var useiCloudDrive: Bool = false {
+    var slugifyNames = true
+    var useiCloudDrive = false {
         didSet {
 
             if let archivePath = self._archivePath,
@@ -59,8 +59,8 @@ class Preferences: PreferencesDelegate, Logging {
             }
         }
     }
-    var analyseAllFolders: Bool = false
-    var convertPictures: Bool = false
+    var analyseAllFolders = false
+    var convertPictures = false
     var observedPath: URL? {
         // ATTENTION: only set observed path, after an OpenPanel dialog
         get {

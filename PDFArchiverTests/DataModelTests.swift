@@ -6,10 +6,10 @@
 //  Copyright © 2020 Julian Kahnert. All rights reserved.
 //
 
-//@testable import PDFArchiver
+// @testable import PDFArchiver
 import XCTest
 
-//class DataModelTests: XCTestCase {
+// class DataModelTests: XCTestCase {
 //    var dataModel: DataModel?
 //
 //    override func setUp() {
@@ -35,4 +35,4 @@ import XCTest
 //        }
 //    }
 //
-//}
+// }

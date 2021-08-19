@@ -34,7 +34,6 @@
 		A3E31A87245E11D900FA2E75 /* Purchases in Frameworks */ = {isa = PBXBuildFile; productRef = A3E31A86245E11D900FA2E75 /* Purchases */; };
 		A3E31A88245F389400FA2E75 /* IAPHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38FDE7C20DD33540015801E /* IAPHelper.swift */; };
 		A3E323502157E06C00C57087 /* AppStoreReviewRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3E3234F2157E06C00C57087 /* AppStoreReviewRequest.swift */; };
-		A3F19B3F23B242BD001B6A14 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = A3F19B3E23B242BD001B6A14 /* Sentry */; };
 		A3F19B4223B242FA001B6A14 /* ArchiveLib in Frameworks */ = {isa = PBXBuildFile; productRef = A3F19B4123B242FA001B6A14 /* ArchiveLib */; };
 		A3FC0DA0201B054A0082CD2A /* ViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC0D9F201B054A0082CD2A /* ViewControllerExtension.swift */; };
 		A3FC0DA4201B05F10082CD2A /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FC0DA3201B05F10082CD2A /* DataModel.swift */; };
@@ -122,7 +121,6 @@
 			files = (
 				A3797B61207B3684009DEF70 /* StoreKit.framework in Frameworks */,
 				A3F19B4223B242FA001B6A14 /* ArchiveLib in Frameworks */,
-				A3F19B3F23B242BD001B6A14 /* Sentry in Frameworks */,
 				A3E31A87245E11D900FA2E75 /* Purchases in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -281,7 +279,6 @@
 			);
 			name = PDFArchiver;
 			packageProductDependencies = (
-				A3F19B3E23B242BD001B6A14 /* Sentry */,
 				A3F19B4123B242FA001B6A14 /* ArchiveLib */,
 				A3E31A86245E11D900FA2E75 /* Purchases */,
 			);
@@ -375,7 +372,6 @@
 			);
 			mainGroup = A31B52DD1FF694B0007A3D14;
 			packageReferences = (
-				A3F19B3D23B242BD001B6A14 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 				A3F19B4023B242FA001B6A14 /* XCRemoteSwiftPackageReference "ArchiveLib" */,
 				A3E31A85245E11D900FA2E75 /* XCRemoteSwiftPackageReference "purchases-ios" */,
 			);
@@ -436,7 +432,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
-			shellScript = "source \"$PROJECT_DIR/.env.default\"\n\nif which sentry-cli >/dev/null; then\n    ERROR=$(sentry-cli upload-dif \"$DWARF_DSYM_FOLDER_PATH\" 2>&1 >/dev/null)\nif [ ! $? -eq 0 ]; then\n    echo \"warning: sentry-cli - $ERROR\"\nfi\nelse\n    echo \"warning: sentry-cli not installed, download from https://github.com/getsentry/sentry-cli/releases\"\nfi\n";
+			shellScript = "#source \"$PROJECT_DIR/.env.default\"\n#\n#if which sentry-cli >/dev/null; then\n#    ERROR=$(sentry-cli upload-dif \"$DWARF_DSYM_FOLDER_PATH\" 2>&1 >/dev/null)\n#if [ ! $? -eq 0 ]; then\n#    echo \"warning: sentry-cli - $ERROR\"\n#fi\n#else\n#    echo \"warning: sentry-cli not installed, download from https://github.com/getsentry/sentry-cli/releases\"\n#fi\n";
 		};
 		A349C8212064E187002633A7 /* BartyCrouch */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -687,7 +683,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 81;
+				CURRENT_PROJECT_VERSION = 82;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -699,7 +695,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/PDFArchiver/External/OpenSSL/lib";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				MARKETING_VERSION = 1.6.3;
+				MARKETING_VERSION = 1.6.4;
 				OTHER_SWIFT_FLAGS = "-DDEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiver;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -719,7 +715,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 81;
+				CURRENT_PROJECT_VERSION = 82;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_HARDENED_RUNTIME = YES;
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/PDFArchiver/External/OpenSSL/include";
@@ -730,7 +726,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/PDFArchiver/External/OpenSSL/lib";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				MARKETING_VERSION = 1.6.3;
+				MARKETING_VERSION = 1.6.4;
 				OTHER_SWIFT_FLAGS = "-DRELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiver;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -882,14 +878,6 @@
 				minimumVersion = 3.2.2;
 			};
 		};
-		A3F19B3D23B242BD001B6A14 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/getsentry/sentry-cocoa";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.4.3;
-			};
-		};
 		A3F19B4023B242FA001B6A14 /* XCRemoteSwiftPackageReference "ArchiveLib" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/PDF-Archiver/ArchiveLib";
@@ -905,11 +893,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A3E31A85245E11D900FA2E75 /* XCRemoteSwiftPackageReference "purchases-ios" */;
 			productName = Purchases;
-		};
-		A3F19B3E23B242BD001B6A14 /* Sentry */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = A3F19B3D23B242BD001B6A14 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
-			productName = Sentry;
 		};
 		A3F19B4123B242FA001B6A14 /* ArchiveLib */ = {
 			isa = XCSwiftPackageProductDependency;
