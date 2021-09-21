@@ -38,6 +38,11 @@ public final class IAPService: NSObject, Log {
         appUsagePermitted = true
         #else
 
+        if AppEnvironment.get() == .testflight {
+            appUsagePermitted = true
+            return
+        }
+        
         refreshReceiptIfNeeded()
         paymentQueue.add(self)
 
