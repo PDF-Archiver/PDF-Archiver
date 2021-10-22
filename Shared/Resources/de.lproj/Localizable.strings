@@ -43,7 +43,7 @@
 /* No tags could be found, e.g. while renaming the document. */
 "document_recovery_suggestion__tags_missing" = "Bitte füge Tags hinzu.";
 
-"Camera access is required to scan documents." = "Der Zugriff auf die Kamera wird benötig, um Dokumente scannen zu können.";
+"Camera access is required to scan documents." = "Der Zugriff auf die Kamera wird benötigt, um Dokumente scannen zu können.";
 
 /* Camera access in ScanViewController. */
 "Cancel" = "Abbrechen";

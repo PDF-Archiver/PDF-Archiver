@@ -125,6 +125,12 @@ struct PDFArchiverApp: App, Log {
         }
 
         #if !APPCLIP && !os(macOS)
+        // disable transparent UITabBar on iOS 15+
+        if #available(iOS 15.0, *) {
+            let appearance = UITabBarAppearance()
+            UITabBar.appearance().scrollEdgeAppearance = appearance
+        }
+
         // background tasks must be initialized before the application did finish launching
         _ = BackgroundTaskScheduler.shared
         #endif

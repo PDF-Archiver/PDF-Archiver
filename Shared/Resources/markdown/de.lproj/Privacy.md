@@ -1,5 +1,3 @@
-**English Version:** [Privacy Policy](https://pdf-archiver.io/privacy)
-
 ## 1. Datenschutz auf einen Blick
 ### Allgemeine Hinweise
 

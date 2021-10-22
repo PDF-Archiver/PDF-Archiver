@@ -29,7 +29,7 @@ final class ArchiveViewModel: ObservableObject, Log {
     private var disposables = Set<AnyCancellable>()
     private let queue = DispatchQueue(label: "ArchiveViewModel WorkQueue", qos: .userInitiated)
     private let archiveStore: ArchiveStore
-    private var detailViewModels = [Document: DocumentDetailViewModel]()
+    private var detailViewModels = [URL: DocumentDetailViewModel]()
 
     init(_ archiveStore: ArchiveStore = ArchiveStore.shared) {
         self.archiveStore = archiveStore
@@ -214,8 +214,13 @@ final class ArchiveViewModel: ObservableObject, Log {
         // This function might be called multiple times for the same document.
         // If we create a new view model on every call, all changes to the view model (e.g. showActivityView state)
         // would be reset. This would result in a closing ActivityView directly after it was presented.
-        let viewModel = detailViewModels[document, default: DocumentDetailViewModel(document)]
-        detailViewModels[document] = viewModel
+        let viewModel: DocumentDetailViewModel
+        if let cachedViewModel = detailViewModels[document.path] {
+            viewModel = cachedViewModel
+        } else {
+            viewModel = DocumentDetailViewModel(document)
+            detailViewModels[document.path] = viewModel
+        }
         return DocumentDetailView(viewModel: viewModel)
     }
 
