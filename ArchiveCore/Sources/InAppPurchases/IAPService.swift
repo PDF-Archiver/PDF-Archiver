@@ -42,7 +42,7 @@ public final class IAPService: NSObject, Log {
             appUsagePermitted = true
             return
         }
-        
+
         refreshReceiptIfNeeded()
         paymentQueue.add(self)
 
