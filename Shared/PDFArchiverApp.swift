@@ -153,7 +153,8 @@ struct PDFArchiverApp: App, Log {
             // Only gets called for the first crash event
             options.onCrashedLastRun = { event in
                 log.error("Crash has happened!", metadata: ["event": "\(event)"])
-                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3), execute: self.mainNavigationViewModel.displayUserFeedback)
+                // this is disabled because it might cause unintended redirects, since the Sentry crash detection seems to be wonky
+                // DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3), execute: self.mainNavigationViewModel.displayUserFeedback)
             }
 
             options.beforeSend = { event in

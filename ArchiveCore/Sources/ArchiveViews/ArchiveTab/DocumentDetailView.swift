@@ -16,13 +16,14 @@ struct DocumentDetailView: View {
             PDFCustomView(viewModel.pdfDocument)
         }
         .navigationBarTitle(Text(""), displayMode: .inline)
+        #if os(macOS)
         .navigationBarItems(trailing: shareNavigationButton)
+        #else
         .navigationBarItems(trailing: HStack(alignment: .bottom, spacing: 16) {
-            #if !os(macOS)
             editButton
             shareNavigationButton
-            #endif
         })
+        #endif
         .onAppear(perform: viewModel.viewAppeared)
         .onDisappear(perform: viewModel.viewDisappeared)
         .sheet(isPresented: $viewModel.showActivityView) {
