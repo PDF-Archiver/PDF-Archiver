@@ -1,5 +1,3 @@
-**German Version:** [Impressum](https://pdf-archiver.io/de/imprint/)
-
 ## Information provided according to Sec. 5 German Telemedia Act (TMG):
 
 **Julian Kahnert**

@@ -29,15 +29,6 @@
         }
       },
       {
-        "package": "Down",
-        "repositoryURL": "https://github.com/iwasrobbed/Down",
-        "state": {
-          "branch": null,
-          "revision": "f34b166be1f1db4aa8f573067e901d72f2a6be57",
-          "version": "0.11.0"
-        }
-      },
-      {
         "package": "GraphicsRenderer",
         "repositoryURL": "https://github.com/shaps80/GraphicsRenderer",
         "state": {
@@ -47,21 +38,12 @@
         }
       },
       {
-        "package": "Parma",
-        "repositoryURL": "https://github.com/dasautoooo/Parma",
-        "state": {
-          "branch": null,
-          "revision": "3c8b431fd5ad3cf675c60d0aa89f011cbcbb036c",
-          "version": "0.3.0"
-        }
-      },
-      {
         "package": "Sentry",
         "repositoryURL": "https://github.com/getsentry/sentry-cocoa",
         "state": {
           "branch": null,
-          "revision": "3429d2236a9eebf551f82e513daa1cddd60050f7",
-          "version": "7.4.7"
+          "revision": "fa1ba77bd74a227875a585a8ee569f330564926b",
+          "version": "7.5.0"
         }
       },
       {
@@ -78,7 +60,7 @@
         "repositoryURL": "https://github.com/SwiftUIX/SwiftUIX",
         "state": {
           "branch": "master",
-          "revision": "0c79123bf3d8521ee50bbcfc121992457064059c",
+          "revision": "a29d6179de1477f046058f17d81b7f2fc2b36160",
           "version": null
         }
       },

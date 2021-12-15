@@ -82,7 +82,7 @@ public struct MainNavigationView: View {
                         Button {
                             viewModel.selectedTag(category)
                         } label: {
-                            Label(category, systemImage: "tag")
+                            Label(category.capitalized, systemImage: "tag")
                         }
                         .buttonStyle(BorderlessButtonStyle())
                     }

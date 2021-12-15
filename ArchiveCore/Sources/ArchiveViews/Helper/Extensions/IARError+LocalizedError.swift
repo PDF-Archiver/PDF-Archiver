@@ -12,12 +12,14 @@ extension IARError: LocalizedError {
     public var errorDescription: String? {
         let message: String
         switch self {
-            case .initializationFailed(let reason):
-                message = "initializationFailed \(reason.description)"
-            case .validationFailed(let reason):
-                message = "validationFailed \(reason.description)"
-            case .purchaseExpired:
-                message = "purchaseExpired"
+        case .initializationFailed(let reason):
+            message = "initializationFailed \(reason.description)"
+        case .validationFailed(let reason):
+            message = "validationFailed \(reason.description)"
+        case .purchaseExpired:
+            message = "purchaseExpired"
+        case .receiptRefreshingInProgress:
+            message = "receiptRefreshingInProgress"
         }
 
         return "Failed to debug In App Purchase receipt:\n\(message)"

@@ -8,7 +8,7 @@
 
 import SwiftUIX
 
-struct DocumentDetailView: View {
+struct DocumentDetailView: View, Log {
     @ObservedObject var viewModel: DocumentDetailViewModel
     var body: some View {
         VStack {
@@ -16,21 +16,20 @@ struct DocumentDetailView: View {
             PDFCustomView(viewModel.pdfDocument)
         }
         .navigationBarTitle(Text(""), displayMode: .inline)
-        #if os(macOS)
-        .navigationBarItems(trailing: shareNavigationButton)
-        #else
+        #if !os(macOS)
         .navigationBarItems(trailing: HStack(alignment: .bottom, spacing: 16) {
+            deleteButton
             editButton
             shareNavigationButton
         })
         #endif
         .onAppear(perform: viewModel.viewAppeared)
         .onDisappear(perform: viewModel.viewDisappeared)
+        #if !os(macOS)
         .sheet(isPresented: $viewModel.showActivityView) {
-            #if !os(macOS)
             AppActivityView(activityItems: self.viewModel.activityItems)
-            #endif
         }
+        #endif
     }
 
     var editButton: some View {
@@ -52,6 +51,7 @@ struct DocumentDetailView: View {
             #if os(macOS)
             VStack(alignment: .leading) {
                 editButton
+                deleteButton
                 shareNavigationButton
             }
             #endif
@@ -73,6 +73,21 @@ struct DocumentDetailView: View {
             Label("Share", systemImage: "square.and.arrow.up")
                 .labelStyle(VerticalLabelStyle())
             #endif
+        })
+    }
+
+    var deleteButton: some View {
+        Button(action: {
+            do {
+                try FileManager.default.trashItem(at: viewModel.document.path, resultingItemURL: nil)
+            } catch {
+                Self.log.error("Error while trashing file", metadata: ["error": "\(error)"])
+            }
+        }, label: {
+            Label("Delete", systemImage: "trash")
+                #if !os(macOS)
+                .labelStyle(VerticalLabelStyle())
+                #endif
         })
     }
 }

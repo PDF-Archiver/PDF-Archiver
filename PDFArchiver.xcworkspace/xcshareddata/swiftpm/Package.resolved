@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/WeTransfer/Diagnostics",
         "state": {
           "branch": null,
-          "revision": "5dbb0f041162902234d6aa07cd222ec11734dd2f",
-          "version": "1.12.0"
+          "revision": "11270b5f8c3c133b321fc9486ccc3d1a9b6b8cc4",
+          "version": "2.1.0"
         }
       },
       {
@@ -60,17 +60,8 @@
         "repositoryURL": "https://github.com/getsentry/sentry-cocoa",
         "state": {
           "branch": null,
-          "revision": "3429d2236a9eebf551f82e513daa1cddd60050f7",
-          "version": "7.4.7"
-        }
-      },
-      {
-        "package": "swift-log",
-        "repositoryURL": "https://github.com/apple/swift-log.git",
-        "state": {
-          "branch": null,
-          "revision": "5d66f7ba25daf4f94100e7022febf3c75e37a6c7",
-          "version": "1.4.2"
+          "revision": "a68422852a7695a6ebb427a7d9ec5c1deae12fa4",
+          "version": "7.6.1"
         }
       },
       {
@@ -78,7 +69,7 @@
         "repositoryURL": "https://github.com/SwiftUIX/SwiftUIX",
         "state": {
           "branch": "master",
-          "revision": "a581303f1fb7e89ef9a3b61b7b6caa0716c2a90f",
+          "revision": "4750dc230d7a6fc9e05aa507e1d50b0bce7bee7d",
           "version": null
         }
       },
@@ -87,8 +78,8 @@
         "repositoryURL": "https://github.com/tikhop/TPInAppReceipt",
         "state": {
           "branch": null,
-          "revision": "14f707e28fc7e19aadac72c8d63eb8610fa9c3bf",
-          "version": "3.3.0"
+          "revision": "4bdd84a82d1db4f03e7df55b666b4442c301980d",
+          "version": "3.3.2"
         }
       }
     ]

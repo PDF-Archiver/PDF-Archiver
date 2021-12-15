@@ -85,7 +85,7 @@ struct MoreTabView: View {
                 Text("About  👤")
             }
             Link("PDF Archiver Website  🖥", destination: viewModel.pdfArchiverUrl)
-            MoreTabViewModel.markdownView(for: "Terms of Use & Privacy Policy", withKey: "Privacy")
+            MoreTabViewModel.markdownView(for: "Terms & Privacy", withKey: "Privacy")
             MoreTabViewModel.markdownView(for: "Imprint", withKey: "Imprint")
             DetailRowView(name: "Contact Support  🚑") {
                 NotificationCenter.default.post(Notification(name: .showSendDiagnosticsReport))
