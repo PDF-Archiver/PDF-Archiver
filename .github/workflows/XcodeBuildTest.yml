@@ -5,10 +5,10 @@ on:
 jobs:
   macos:
     # runs-on: macOS-latest
-    runs-on: macos-11.0
+    runs-on: macos-11
     steps:
-      #- name: Checkout
-      #  uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
       #- name: Build and Test
       #  run: "xcodebuild test -workspace PDFArchiver.xcworkspace -scheme iOS -destination 'platform=iOS Simulator,name=iPhone 11'"
         # env:
