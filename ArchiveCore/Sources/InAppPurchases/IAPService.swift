@@ -81,7 +81,7 @@ public final class IAPService: NSObject, Log {
             let receipt = try InAppReceipt.localReceipt()
 
             // Verify hash, bundleID, version and signature
-            try receipt.verify()
+            try receipt.validate()
 
             // Retrieve Active Auto Renewable Subscription's Purchases for Product Name and Specific Date
             let productIdentifiers = SubscriptionType.allCases.map(\.rawValue)
@@ -126,7 +126,7 @@ public final class IAPService: NSObject, Log {
             let receipt = try InAppReceipt.localReceipt()
 
             // Verify hash, bundleID, version and signature
-            try receipt.verify()
+            try receipt.validate()
 
             return true
         } catch {
