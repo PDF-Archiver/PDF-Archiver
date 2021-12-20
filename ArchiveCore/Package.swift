@@ -26,7 +26,7 @@ let package = Package(
         .package(url: "https://github.com/SwiftUIX/SwiftUIX", .branch("master")),
         .package(url: "https://github.com/dasautoooo/Parma", from: "0.3.0"),
         .package(url: "https://github.com/WeTransfer/Diagnostics", from: "2.1.0"),
-        .package(url: "https://github.com/tikhop/TPInAppReceipt", from: "3.3.2"),
+        .package(url: "https://github.com/tikhop/TPInAppReceipt", from: "3.3.3"),
         .package(url: "https://github.com/shaps80/GraphicsRenderer", from: "1.4.4"),
         .package(name: "Sentry", url: "https://github.com/getsentry/sentry-cocoa", from: "7.7.0")
     ],
