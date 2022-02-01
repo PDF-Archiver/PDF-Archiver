@@ -51,8 +51,8 @@ struct DocumentDetailView: View, Log {
             #if os(macOS)
             VStack(alignment: .leading) {
                 editButton
-                deleteButton
                 shareNavigationButton
+                deleteButton
             }
             #endif
         }
@@ -85,6 +85,7 @@ struct DocumentDetailView: View, Log {
             }
         }, label: {
             Label("Delete", systemImage: "trash")
+                .foregroundColor(.red)
                 #if !os(macOS)
                 .labelStyle(VerticalLabelStyle())
                 #endif

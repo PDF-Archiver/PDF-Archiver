@@ -18,9 +18,20 @@ struct DocumentList: View {
 
     var body: some View {
         VStack {
-            Text("Tagged: \(taggedUntaggedDocuments)")
-                .font(Font.headline)
-                .padding()
+            HStack {
+                Text("Tagged: \(taggedUntaggedDocuments)")
+                    .font(Font.headline)
+                    .padding()
+                Button(action: {
+                    guard let currentDocument = currentDocument else { return }
+                    try? FileManager.default.trashItem(at: currentDocument.path, resultingItemURL: nil)
+                }, label: {
+                    Label("Delete", systemImage: "trash")
+                        .foregroundColor(.red)
+                })
+                    .keyboardShortcut(.delete, modifiers: [.command])
+                    .disabled(currentDocument == nil)
+            }
 
             // There is currently no way to remove the list separators, so we have to use a LazyVStack
             // List(documents) { document in
