@@ -740,7 +740,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export PATH=\"/opt/homebrew/bin:$HOME/.mint/bin:$PATH\"\n\n\nif which swiftlint >/dev/null; then\n    swiftlint autocorrect\n    # swiftlint will be run in chia\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/swiftlint\"\nfi\n\nif which chia >/dev/null; then\n    #chia --config https://raw.githubusercontent.com/JulianKahnert/chia-config/master/chia.yml --xcode\n    echo \"warning: chia not running\"\nelse\n    echo \"warning: chia not installed, download from https://github.com/worldiety/chia\"\nfi\n";
+			shellScript = "export PATH=\"/opt/homebrew/bin:$HOME/.mint/bin:$PATH\"\n\n\nif which swiftlint >/dev/null; then\n    swiftlint --fix\n    # swiftlint will be run in chia\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/swiftlint\"\nfi\n\nif which chia >/dev/null; then\n    chia --config https://raw.githubusercontent.com/JulianKahnert/chia-config/master/chia.yml --xcode\nelse\n    echo \"warning: chia not installed, download from https://github.com/worldiety/chia\"\nfi\n";
 		};
 		34A53F7C24AA6381008A3377 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -758,7 +758,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export PATH=\"/opt/homebrew/bin:$HOME/.mint/bin:$PATH\"\n\nif which swiftlint >/dev/null; then\n    swiftlint autocorrect\n    # swiftlint will be run in chia\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/swiftlint\"\nfi\n\nif which chia >/dev/null; then\n    #chia --config https://raw.githubusercontent.com/JulianKahnert/chia-config/master/chia.yml --xcode\n    echo \"warning: chia not running\"\nelse\n    echo \"warning: chia not installed, download from https://github.com/worldiety/chia\"\nfi\n";
+			shellScript = "export PATH=\"/opt/homebrew/bin:$HOME/.mint/bin:$PATH\"\n\nif which swiftlint >/dev/null; then\n    swiftlint --fix\n    # swiftlint will be run in chia\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/swiftlint\"\nfi\n\nif which chia >/dev/null; then\n    chia --config https://raw.githubusercontent.com/JulianKahnert/chia-config/master/chia.yml --xcode\nelse\n    echo \"warning: chia not installed, download from https://github.com/worldiety/chia\"\nfi\n";
 		};
 		34A53F7E24AA63DC008A3377 /* Settings Bundle Update */ = {
 			isa = PBXShellScriptBuildPhase;
