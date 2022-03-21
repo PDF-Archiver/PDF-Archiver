@@ -12,8 +12,10 @@ import SwiftUIX
 
 #if !os(macOS)
 struct MoreTabView: View {
+    static private let appId = 1433801905
 
     @ObservedObject var viewModel: MoreTabViewModel
+    @State private var showActivityView = false
 
     var body: some View {
         Form {
@@ -25,6 +27,10 @@ struct MoreTabView: View {
         .foregroundColor(.primary)
         .navigationTitle("Preferences & More")
         .navigationViewStyle(StackNavigationViewStyle())
+        .sheet(isPresented: $showActivityView) {
+            // swiftlint:disable:next force_unwrapping
+            AppActivityView(activityItems: [URL(string: "https://apps.apple.com/app/pdf-archiver/id\(Self.appId)")!])
+        }
     }
 
     private var preferences: some View {
@@ -89,6 +95,12 @@ struct MoreTabView: View {
             MoreTabViewModel.markdownView(for: "Imprint", withKey: "Imprint")
             DetailRowView(name: "Contact Support  🚑") {
                 NotificationCenter.default.post(Notification(name: .showSendDiagnosticsReport))
+            }
+            DetailRowView(name: "Rate App ⭐️") {
+                AppStoreReviewRequest.shared.requestReviewManually(for: Self.appId)
+            }
+            DetailRowView(name: "Share PDF Archiver 📱❤️🫵") {
+                showActivityView = true
             }
         }
     }

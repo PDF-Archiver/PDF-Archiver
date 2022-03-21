@@ -66,7 +66,7 @@
       },
       {
         "package": "swift-log",
-        "repositoryURL": "https://github.com/apple/swift-log",
+        "repositoryURL": "https://github.com/apple/swift-log.git",
         "state": {
           "branch": null,
           "revision": "5d66f7ba25daf4f94100e7022febf3c75e37a6c7",
@@ -77,9 +77,9 @@
         "package": "SwiftUIX",
         "repositoryURL": "https://github.com/SwiftUIX/SwiftUIX",
         "state": {
-          "branch": "master",
-          "revision": "9ddd5330db4539ae364c4afc722ab586a86e7320",
-          "version": null
+          "branch": null,
+          "revision": "889c781539cdd1e6a1111472c711082522aa35c6",
+          "version": "0.1.2"
         }
       },
       {

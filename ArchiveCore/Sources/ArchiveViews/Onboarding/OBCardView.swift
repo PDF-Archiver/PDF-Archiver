@@ -50,7 +50,7 @@ struct OBCardView: View {
 
     private var progressView: some View {
         HStack {
-            ForEach(0..<cardCount) { index in
+            ForEach(0..<cardCount, id: \.self) { index in
                 Circle()
                     .scaledToFit()
                     .frame(width: 10)

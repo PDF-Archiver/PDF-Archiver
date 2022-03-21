@@ -12,11 +12,11 @@ struct OnboardingScreens: View {
     @State private var gesture: CGSize = .zero
     @State private var cardIndex = 0
 
-    var onboardSet: OnboardSet
+    let onboardSet: OnboardSet
     var body: some View {
         GeometryReader { proxy in
             ZStack(alignment: .center) {
-                ForEach(0..<onboardSet.cards.count) { index in
+                ForEach(0..<onboardSet.cards.count, id: \.self) { index in
                     OBCardView(currentCardIndex: index, cardCount: onboardSet.cards.count, buttonTapped: showNextHandler, card: onboardSet.cards[index])
                         .padding()
                         .frame(maxWidth: min(500, proxy.size.width * 0.85), maxHeight: proxy.size.height * 0.66)

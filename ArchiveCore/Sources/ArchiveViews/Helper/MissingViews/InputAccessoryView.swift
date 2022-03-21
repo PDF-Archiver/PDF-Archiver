@@ -14,7 +14,7 @@ struct InputAccessoryView: View {
 
     var body: some View {
         HStack {
-            ForEach(0..<items.count) { index in
+            ForEach(0..<items.count, id: \.self) { index in
                 let item = items[index]
                 Button(item) {
                     callback(item)
