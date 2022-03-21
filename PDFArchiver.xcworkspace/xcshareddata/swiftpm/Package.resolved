@@ -60,8 +60,17 @@
         "repositoryURL": "https://github.com/getsentry/sentry-cocoa",
         "state": {
           "branch": null,
-          "revision": "533a1a838a7046c26211e4186dee91ed2391707d",
-          "version": "7.10.2"
+          "revision": "0c9efc707a8a62b8b6a6fb03431cc74a9ea8cc51",
+          "version": "7.11.0"
+        }
+      },
+      {
+        "package": "swift-log",
+        "repositoryURL": "https://github.com/apple/swift-log",
+        "state": {
+          "branch": null,
+          "revision": "5d66f7ba25daf4f94100e7022febf3c75e37a6c7",
+          "version": "1.4.2"
         }
       },
       {
@@ -69,7 +78,7 @@
         "repositoryURL": "https://github.com/SwiftUIX/SwiftUIX",
         "state": {
           "branch": "master",
-          "revision": "7b0eaffb986ad694fbeb7666dcd90d42cfaffdb4",
+          "revision": "9ddd5330db4539ae364c4afc722ab586a86e7320",
           "version": null
         }
       },

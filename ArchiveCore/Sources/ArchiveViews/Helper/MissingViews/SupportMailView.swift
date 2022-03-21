@@ -56,7 +56,7 @@ struct SupportMailView: UIViewControllerRepresentable {
 
         // add a diagnostics report
         var reporters = DiagnosticsReporter.DefaultReporter.allReporters
-        reporters.insert(CustomDiagnosticsReporter.self, at: 1)
+        reporters.insert(CustomDiagnosticsReporter(), at: 1)
         let report = DiagnosticsReporter.create(using: reporters)
         mail.addDiagnosticReport(report)
 
