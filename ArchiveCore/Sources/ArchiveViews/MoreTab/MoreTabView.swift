@@ -12,7 +12,7 @@ import SwiftUIX
 
 #if !os(macOS)
 struct MoreTabView: View {
-    static private let appId = 1433801905
+    private static let appId = 1433801905
 
     @ObservedObject var viewModel: MoreTabViewModel
     @State private var showActivityView = false

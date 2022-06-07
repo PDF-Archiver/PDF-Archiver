@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/WeTransfer/Diagnostics",
         "state": {
           "branch": null,
-          "revision": "5c6c587955fc3c9196c81b4ef78dc435de149580",
-          "version": "3.0.0"
+          "revision": "10dbfe92d270abdb17699143c0a2eba8bec6f026",
+          "version": "4.0.0"
         }
       },
       {
@@ -35,6 +35,15 @@
           "branch": null,
           "revision": "f34b166be1f1db4aa8f573067e901d72f2a6be57",
           "version": "0.11.0"
+        }
+      },
+      {
+        "package": "ExceptionCatcher",
+        "repositoryURL": "https://github.com/sindresorhus/ExceptionCatcher",
+        "state": {
+          "branch": null,
+          "revision": "9d99a736e17f67ab3aa333c0dad7ed2ee9d6b2b9",
+          "version": "2.0.0"
         }
       },
       {
@@ -60,8 +69,8 @@
         "repositoryURL": "https://github.com/getsentry/sentry-cocoa",
         "state": {
           "branch": null,
-          "revision": "0c9efc707a8a62b8b6a6fb03431cc74a9ea8cc51",
-          "version": "7.11.0"
+          "revision": "b34ce9048e6b8b082ea6b15e6b50583d46c936ea",
+          "version": "7.16.0"
         }
       },
       {
