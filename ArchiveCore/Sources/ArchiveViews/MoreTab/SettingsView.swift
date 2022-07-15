@@ -92,10 +92,10 @@ public struct SettingsView: View {
 
     private var expertSettings: some View {
         ExpertSettingsView(notSaveDocumentTagsAsPDFMetadata: $viewModel.notSaveDocumentTagsAsPDFMetadata,
-                                                       documentTagsNotRequired: $viewModel.documentTagsNotRequired,
-                                                       documentSpecificationNotRequired: $viewModel.documentSpecificationNotRequired,
-                                                       showPermissions: nil,
-                                                       resetApp: viewModel.resetApp)
+                           documentTagsNotRequired: $viewModel.documentTagsNotRequired,
+                           documentSpecificationNotRequired: $viewModel.documentSpecificationNotRequired,
+                           showPermissions: nil,
+                           resetApp: viewModel.resetApp)
             .padding()
             .frame(width: 450, height: 160)
     }
@@ -121,7 +121,7 @@ public struct SettingsView: View {
         }
         .padding(.horizontal, 20)
         .padding(.bottom, 8)
-        .frame(width: 500)
+        .frame(width: 500, height: 375)
     }
 
     private var observedFolderSelection: some View {
@@ -171,21 +171,22 @@ public struct SettingsView: View {
 
     private var moreInformation: some View {
         NavigationView {
-            Form {
-                NavigationLink("About  👤", destination: AboutMeView(), isActive: $showMoreInformation)
-                Spacer()
-                    .maxHeight(28)
-                MoreTabViewModel.markdownView(for: "Terms of Use & Privacy Policy", withKey: "Privacy")
-                MoreTabViewModel.markdownView(for: "Imprint", withKey: "Imprint")
-                DetailRowView(name: "Contact Support  🚑") {
-                    NotificationCenter.default.post(Notification(name: .showSendDiagnosticsReport))
+            VStack {
+                List {
+                    NavigationLink("About  👤", destination: AboutMeView(), isActive: $showMoreInformation)
+                    MoreTabViewModel.markdownView(for: "Terms & Privacy", withKey: "Privacy")
+                    MoreTabViewModel.markdownView(for: "Imprint", withKey: "Imprint")
                 }
-                Spacer()
-                Link("PDF Archiver Website  🖥", destination: viewModel.pdfArchiverUrl)
-                Text("Version \(MoreTabViewModel.appVersion)")
-                    .font(.caption)
+            Spacer()
+            DetailRowView(name: "Contact Support  🚑") {
+                NotificationCenter.default.post(Notification(name: .showSendDiagnosticsReport))
             }
-            .padding(20)
+            Link("PDF Archiver Website  🖥", destination: viewModel.pdfArchiverUrl)
+            Text("Version \(MoreTabViewModel.appVersion)")
+                .font(.caption)
+            }
+            .padding(.bottom, 16)
+
         }
         .frame(width: 750, height: 450)
     }

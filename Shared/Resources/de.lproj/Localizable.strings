@@ -70,7 +70,7 @@
 "intro.scan.title" = "Scan it.";
 
 /* Intro: Subscription Description */
-"intro.subscription.description" = "Ich bin ein Indie-Entwickler und arbeite an der App in meiner Freizeit. Unterstütze die Weiterentwicklung und schalte alle Feature frei, indem du ein monatliches oder jährliches Abo abschließt.\n\nVielen Dank für deine Hilfe! ☺️";
+"intro.subscription.description" = "Ich bin ein Indie-Entwickler und arbeite an der App in meiner Freizeit. Unterstütze die Weiterentwicklung und schalte alle Features frei, indem du ein monatliches oder jährliches Abo abschließt.\n\nVielen Dank für deine Hilfe! ☺️";
 
 /* Intro: Subscription Title */
 "intro.subscription.title" = "Noch'n Abo?!\n😡 🤬 🤭";
@@ -167,7 +167,7 @@
 
 "About  👤" = "Über  👤";
 
-"Terms of Use & Privacy Policy" = "Datenschutzerklärung";
+"Terms & Privacy" = "Datenschutz";
 
 "Imprint" = "Impressum";
 
@@ -328,3 +328,7 @@
 "Today" = "Heute";
 
 "A crash occurred! Please answere the following questions to help investigate the problem.\n* What were the last steps (before the crash) in the app?\n\n\n* Was a particularly large or possibly corrupt PDF file opened?\n\n\n* How long was the app used before the crash?\n\n\n* Is there any other important information that could help with troubleshooting?\n\n\n* Can the crash be reproduced? If so, what steps are needed?\n" = "Es ist ein Absturz aufgetreten! Bitte beantworten Sie die folgenden Fragen, um das Problem zu untersuchen.\n* Was waren die letzten Schritte (vor dem Absturz) in der App?\n\n\n* Wurde eine besonders große oder möglicherweise beschädigte PDF-Datei geöffnet?\n\n\n* Wie lange wurde die App vor dem Absturz verwendet?\n\n\n* Gibt es weitere wichtige Informationen, die bei der Fehlersuche helfen könnten?\n\n\n* Lässt sich der Crash reproduzieren? Falls ja, welche Schritte werden benötigt?\n";
+
+"Rate App ⭐️" = "App bewerten ⭐️";
+
+"Share PDF Archiver 📱❤️🫵" = "PDF Archiver teilen 📱❤️🫵";

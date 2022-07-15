@@ -1,5 +1,3 @@
-**English Version:** [Imprint](https://pdf-archiver.io/imprint)
-
 ## Angaben gemäß § 5 TMG:
 **Julian Kahnert**
 

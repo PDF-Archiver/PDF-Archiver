@@ -9,7 +9,7 @@ import Diagnostics
 import Foundation
 
 struct CustomDiagnosticsReporter: DiagnosticsReporting {
-    static func report() -> DiagnosticsChapter {
+    func report() -> DiagnosticsChapter {
         let documents = ArchiveStore.shared.documents
         let taggedCount = documents
             .filter { $0.taggingStatus == .tagged }

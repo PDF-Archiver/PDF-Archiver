@@ -409,7 +409,7 @@ extension MainNavigationViewModel {
     func sendDiagnosticsReport(messagePrefix: String) {
         // add a diagnostics report
         var reporters = DiagnosticsReporter.DefaultReporter.allReporters
-        reporters.insert(CustomDiagnosticsReporter.self, at: 1)
+        reporters.insert(CustomDiagnosticsReporter(), at: 1)
         let report = DiagnosticsReporter.create(using: reporters)
 
         guard let service = NSSharingService(named: .composeEmail) else {

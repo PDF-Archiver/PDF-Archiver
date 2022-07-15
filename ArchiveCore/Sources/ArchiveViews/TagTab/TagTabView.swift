@@ -76,6 +76,7 @@ struct TagTabView: View {
         }, label: {
             Label("Delete", systemImage: "trash")
                 .labelStyle(VerticalLabelStyle())
+                .foregroundColor(.red)
                 .padding(.horizontal, 24)
         })
         .disabled(viewModel.currentDocument == nil)
