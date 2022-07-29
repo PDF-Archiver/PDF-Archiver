@@ -25,7 +25,7 @@ let package = Package(
         .package(url: "https://github.com/onmyway133/DeepDiff.git", from: "2.3.3"),
         .package(url: "https://github.com/SwiftUIX/SwiftUIX", from: "0.1.2"),
         .package(url: "https://github.com/dasautoooo/Parma", from: "0.3.0"),
-        .package(url: "https://github.com/WeTransfer/Diagnostics", from: "4.0.0"),
+        .package(url: "https://github.com/WeTransfer/Diagnostics", from: "4.1.0"),
         .package(url: "https://github.com/tikhop/TPInAppReceipt", from: "3.3.3"),
         .package(url: "https://github.com/shaps80/GraphicsRenderer", from: "1.4.4"),
         .package(name: "Sentry", url: "https://github.com/getsentry/sentry-cocoa", from: "7.23.0")
