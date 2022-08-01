@@ -190,15 +190,17 @@ public final class PDFProcessing: Operation, Log {
 
                         if let results = request.results,
                             !results.isEmpty {
-
+                            // Multiple observations are catenated
+                            var thisObservation: [String] = []
                             for observation in (request.results as? [VNRecognizedTextObservation] ?? []) {
                                 guard let candidate = observation.topCandidates(1).first,
                                     !candidate.string.isEmpty else { continue }
-
-                                textObservationResults.append(TextObservationResult(rect: textBox, text: candidate.string))
+                                thisObservation.append(candidate.string)
                             }
+                            let fullObservation = thisObservation.joined(separator: " ")
+                            textObservationResults.append(TextObservationResult(rect: textBox, text: fullObservation))
                         }
-                    }
+                     }
                     // This doesn't require OCR on a live camera feed, select accurate for more accurate results.
                     textRecognitionRequest.recognitionLevel = .accurate
                     textRecognitionRequest.usesLanguageCorrection = true
