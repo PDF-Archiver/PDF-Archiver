@@ -349,7 +349,13 @@ extension NSAttributedString {
 
         let fontName = Font.systemFont(ofSize: 0).fontName
         var attributes: [NSAttributedString.Key: Any] = [NSAttributedString.Key.foregroundColor: Color.clear]
-        attributes[.font] = Font(named: fontName, fitting: text, into: size, with: attributes, options: .usesFontLeading)
+        let theFont = Font(named: fontName, fitting: text, into: size, with: attributes, options: .usesFontLeading)
+        attributes[.font] = theFont
+        let em = theFont!.advancement(forGlyph: 109).width
+
+        let actualWidth = NSAttributedString(string: text, attributes: attributes).size()
+        // Hack, 100% means leading and trailing font ligatures expand the drawing beyond the OCR box and the word gets clipped. Since the font is scaled, there is no easy way to strip the spacing, but 1/4 the size of m will work
+        attributes[NSAttributedString.Key.expansion]=log((size.width)/(actualWidth.width + em/4))
 
         return NSAttributedString(string: text, attributes: attributes)
     }
