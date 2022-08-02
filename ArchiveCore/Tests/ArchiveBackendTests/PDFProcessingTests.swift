@@ -97,6 +97,7 @@ final class PDFProcessingTests: XCTestCase {
         XCTAssert(content.contains("TOM TAILOR"))
         XCTAssert(content.contains("Oldenburg"))
         XCTAssert(content.contains("Vielen Dank"))
+        XCTAssert(content.contains("Nachlassbetrag"))
         XCTAssert(content.contains("Mitglied werden"))
     }
 
@@ -133,6 +134,7 @@ final class PDFProcessingTests: XCTestCase {
         XCTAssert(content.contains("TOM TAILOR"))
         XCTAssert(content.contains("Oldenburg"))
         XCTAssert(content.contains("Vielen Dank"))
+        XCTAssert(content.contains("Nachlassbetrag"))
         XCTAssert(content.contains("Mitglied werden"))
     }
 
@@ -168,6 +170,7 @@ final class PDFProcessingTests: XCTestCase {
         XCTAssert(content.contains("TOM TAILOR"))
         XCTAssert(content.contains("Oldenburg"))
         XCTAssert(content.contains("Vielen Dank"))
+        XCTAssert(content.contains("Nachlassbetrag"))
         XCTAssert(content.contains("Mitglied werden"))
     }
 }
