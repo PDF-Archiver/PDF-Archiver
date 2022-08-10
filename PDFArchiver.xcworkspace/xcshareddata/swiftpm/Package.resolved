@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/WeTransfer/Diagnostics",
         "state": {
           "branch": null,
-          "revision": "10dbfe92d270abdb17699143c0a2eba8bec6f026",
-          "version": "4.0.0"
+          "revision": "85b209be526e5c46d78ce781eec1290b0fca69f5",
+          "version": "4.2.0"
         }
       },
       {
@@ -69,8 +69,8 @@
         "repositoryURL": "https://github.com/getsentry/sentry-cocoa",
         "state": {
           "branch": null,
-          "revision": "4243d566f1bba2134adef729cd9469fb4e7be0e5",
-          "version": "7.21.0"
+          "revision": "5bc31fd9bb476539387de7c6ff32acfaf2407157",
+          "version": "7.23.0"
         }
       },
       {
@@ -96,8 +96,8 @@
         "repositoryURL": "https://github.com/tikhop/TPInAppReceipt",
         "state": {
           "branch": null,
-          "revision": "2b9946f8fe2dd74ed87dfcb5dbedc3be06c5ccab",
-          "version": "3.3.3"
+          "revision": "5b830d6ce6c34bb4bb976917576ab560e7945037",
+          "version": "3.3.4"
         }
       }
     ]
