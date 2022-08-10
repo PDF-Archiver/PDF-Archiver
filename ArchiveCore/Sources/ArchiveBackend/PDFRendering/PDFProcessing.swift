@@ -200,7 +200,7 @@ public final class PDFProcessing: Operation, Log {
                             let fullObservation = thisObservation.joined(separator: " ")
                             textObservationResults.append(TextObservationResult(rect: textBox, text: fullObservation))
                         }
-                     }
+                    }
                     // This doesn't require OCR on a live camera feed, select accurate for more accurate results.
                     textRecognitionRequest.recognitionLevel = .accurate
                     textRecognitionRequest.usesLanguageCorrection = true
@@ -357,8 +357,9 @@ extension NSAttributedString {
         // Hack, 100% means leading and trailing font ligatures expand the drawing beyond the OCR box and the word gets
         // clipped. Since the font is scaled, there is no easy way to strip the spacing, but 1/4 the size of an average
         // char will work
+        // swiftlint:disable:next identifier_name
         let em = actualWidth.width / CGFloat(text.count)
-        attributes[NSAttributedString.Key.expansion]=log((size.width)/(actualWidth.width + em/4))
+        attributes[NSAttributedString.Key.expansion] = log(size.width / (actualWidth.width + em / 4))
 
         return NSAttributedString(string: text, attributes: attributes)
     }
