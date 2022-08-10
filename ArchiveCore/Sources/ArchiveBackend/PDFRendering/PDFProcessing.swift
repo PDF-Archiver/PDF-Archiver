@@ -190,15 +190,17 @@ public final class PDFProcessing: Operation, Log {
 
                         if let results = request.results,
                             !results.isEmpty {
-
+                            // Multiple observations are catenated
+                            var thisObservation: [String] = []
                             for observation in (request.results as? [VNRecognizedTextObservation] ?? []) {
                                 guard let candidate = observation.topCandidates(1).first,
                                     !candidate.string.isEmpty else { continue }
-
-                                textObservationResults.append(TextObservationResult(rect: textBox, text: candidate.string))
+                                thisObservation.append(candidate.string)
                             }
+                            let fullObservation = thisObservation.joined(separator: " ")
+                            textObservationResults.append(TextObservationResult(rect: textBox, text: fullObservation))
                         }
-                    }
+                     }
                     // This doesn't require OCR on a live camera feed, select accurate for more accurate results.
                     textRecognitionRequest.recognitionLevel = .accurate
                     textRecognitionRequest.usesLanguageCorrection = true
@@ -349,7 +351,14 @@ extension NSAttributedString {
 
         let fontName = Font.systemFont(ofSize: 0).fontName
         var attributes: [NSAttributedString.Key: Any] = [NSAttributedString.Key.foregroundColor: Color.clear]
-        attributes[.font] = Font(named: fontName, fitting: text, into: size, with: attributes, options: .usesFontLeading)
+        let theFont = Font(named: fontName, fitting: text, into: size, with: attributes, options: .usesFontLeading)
+        attributes[.font] = theFont
+        let actualWidth = NSAttributedString(string: text, attributes: attributes).size()
+        // Hack, 100% means leading and trailing font ligatures expand the drawing beyond the OCR box and the word gets
+        // clipped. Since the font is scaled, there is no easy way to strip the spacing, but 1/4 the size of an average
+        // char will work
+        let em = actualWidth.width / CGFloat(text.count)
+        attributes[NSAttributedString.Key.expansion]=log((size.width)/(actualWidth.width + em/4))
 
         return NSAttributedString(string: text, attributes: attributes)
     }
