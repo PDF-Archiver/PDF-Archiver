@@ -21,22 +21,24 @@ public struct PDFCustomView: AppKitOrUIKitViewRepresentable {
 
     public func makeAppKitOrUIKitView(context: Context) -> PDFView {
         let view = PDFView()
-        view.displayMode = .singlePageContinuous
-        view.autoScales = true
         view.interpolationQuality = .low
         view.backgroundColor = .init(Color.paPDFBackground)
-//        view.minScaleFactor = 0.1
-//        view.maxScaleFactor = 4.0
         return view
     }
 
     public func updateAppKitOrUIKitView(_ view: PDFView, context: Context) {
-        if let pdfDocument = pdfDocument {
+        if let pdfDocument = pdfDocument,
+           view.document?.documentURL != pdfDocument.documentURL {
             view.document = pdfDocument
-            view.goToFirstPage(self)
 
-            // show the whole document in the view
-            view.scaleFactor = view.scaleFactorForSizeToFit
+            // 1. set displayMode (should always be singlePageContinuous, because this is the best way for the user to find details in the document) and enable auto scaling
+            view.displayMode = .singlePageContinuous
+            view.minScaleFactor = 0.1
+            view.maxScaleFactor = 4.0
+            view.autoScales = true
+
+            // 2. show the first page of the document
+            view.goToFirstPage(self)
         }
     }
 }

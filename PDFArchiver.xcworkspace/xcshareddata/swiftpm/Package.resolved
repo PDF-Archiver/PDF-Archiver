@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/WeTransfer/Diagnostics",
         "state": {
           "branch": null,
-          "revision": "5c6c587955fc3c9196c81b4ef78dc435de149580",
-          "version": "3.0.0"
+          "revision": "85b209be526e5c46d78ce781eec1290b0fca69f5",
+          "version": "4.2.0"
         }
       },
       {
@@ -35,6 +35,15 @@
           "branch": null,
           "revision": "f34b166be1f1db4aa8f573067e901d72f2a6be57",
           "version": "0.11.0"
+        }
+      },
+      {
+        "package": "ExceptionCatcher",
+        "repositoryURL": "https://github.com/sindresorhus/ExceptionCatcher",
+        "state": {
+          "branch": null,
+          "revision": "9d99a736e17f67ab3aa333c0dad7ed2ee9d6b2b9",
+          "version": "2.0.0"
         }
       },
       {
@@ -60,17 +69,17 @@
         "repositoryURL": "https://github.com/getsentry/sentry-cocoa",
         "state": {
           "branch": null,
-          "revision": "0c9efc707a8a62b8b6a6fb03431cc74a9ea8cc51",
-          "version": "7.11.0"
+          "revision": "5bc31fd9bb476539387de7c6ff32acfaf2407157",
+          "version": "7.23.0"
         }
       },
       {
         "package": "swift-log",
-        "repositoryURL": "https://github.com/apple/swift-log.git",
+        "repositoryURL": "https://github.com/apple/swift-log",
         "state": {
           "branch": null,
-          "revision": "5d66f7ba25daf4f94100e7022febf3c75e37a6c7",
-          "version": "1.4.2"
+          "revision": "8fc79cae9d03a5e623c52cc2dbd2df165a7832b0",
+          "version": "1.4.3"
         }
       },
       {
@@ -87,8 +96,8 @@
         "repositoryURL": "https://github.com/tikhop/TPInAppReceipt",
         "state": {
           "branch": null,
-          "revision": "2b9946f8fe2dd74ed87dfcb5dbedc3be06c5ccab",
-          "version": "3.3.3"
+          "revision": "5b830d6ce6c34bb4bb976917576ab560e7945037",
+          "version": "3.3.4"
         }
       }
     ]
