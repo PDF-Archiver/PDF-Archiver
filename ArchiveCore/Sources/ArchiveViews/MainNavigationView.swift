@@ -70,11 +70,13 @@ public struct MainNavigationView: View {
                         Button {
                             viewModel.selectedArchive(category)
                         } label: {
-                            Label(category, systemImage: "folder")
+                            Label(category, systemImage: "calendar")
+                                .labelStyle(SidebarLabelStyle(iconColor: .systemGray, titleColor: .systemGray))
+                                // Make the whole width tappable
+                                .frame(maxWidth: .infinity, alignment: .leading)
                         }
                         .buttonStyle(BorderlessButtonStyle())
                     }
-                    .accentColor(.systemGray)
                 }
 
                 Section(header: Text("Tags").foregroundColor(.paDarkRed)) {
@@ -83,16 +85,18 @@ public struct MainNavigationView: View {
                             viewModel.selectedTag(category)
                         } label: {
                             Label(category.capitalized, systemImage: "tag")
+                                .labelStyle(SidebarLabelStyle(iconColor: .blue, titleColor: .systemGray))
+                                // Make the whole width tappable
+                                .frame(maxWidth: .infinity, alignment: .leading)
                         }
                         .buttonStyle(BorderlessButtonStyle())
                     }
-                    .accentColor(.blue)
                 }
             }
             .listStyle(SidebarListStyle())
             .navigationTitle("Documents")
 
-            Text("Select a tab")
+            Text("Start by selecting Scan, Tag or Archive in the sidebar.")
 
             // Would be great to show a third column in .archive case, but this is currently not possible:
             // https://github.com/JulianKahnert/NavigationExample

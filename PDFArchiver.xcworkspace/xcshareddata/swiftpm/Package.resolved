@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/sindresorhus/ExceptionCatcher",
         "state": {
           "branch": null,
-          "revision": "9d99a736e17f67ab3aa333c0dad7ed2ee9d6b2b9",
-          "version": "2.0.0"
+          "revision": "a7acaf40f8bd67a1f3a05a14de5b6a861ac3d1ac",
+          "version": "2.0.1"
         }
       },
       {
@@ -69,8 +69,8 @@
         "repositoryURL": "https://github.com/getsentry/sentry-cocoa",
         "state": {
           "branch": null,
-          "revision": "5bc31fd9bb476539387de7c6ff32acfaf2407157",
-          "version": "7.23.0"
+          "revision": "7acc8479b2c773dddacc7c5985e7ce9e4344f5f0",
+          "version": "7.25.0"
         }
       },
       {
@@ -78,8 +78,8 @@
         "repositoryURL": "https://github.com/apple/swift-log",
         "state": {
           "branch": null,
-          "revision": "8fc79cae9d03a5e623c52cc2dbd2df165a7832b0",
-          "version": "1.4.3"
+          "revision": "6fe203dc33195667ce1759bf0182975e4653ba1c",
+          "version": "1.4.4"
         }
       },
       {

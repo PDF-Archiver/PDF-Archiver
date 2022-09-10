@@ -41,7 +41,8 @@ struct TagTabViewMac: View {
                 .font(.title)
                 .fontWeight(.semibold)
                 .foregroundColor(.paDarkRed)
-            DocumentList(currentDocument: $viewModel.currentDocument,
+            DocumentList(shouldShowDeleteButton: true,
+                         currentDocument: $viewModel.currentDocument,
                          documents: $viewModel.documents)
         }
     }
