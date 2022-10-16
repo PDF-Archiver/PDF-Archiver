@@ -124,7 +124,7 @@ public struct MainNavigationView: View {
         }
     }
 
-    #if canImport(VisionKit)
+    #if !os(macOS)
     private var documentCameraView: some View {
         DocumentCameraView(
             isShown: $viewModel.scanViewModel.showDocumentScan,

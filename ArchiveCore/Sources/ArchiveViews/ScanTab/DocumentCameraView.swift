@@ -6,7 +6,7 @@
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
 
-#if canImport(VisionKit)
+#if !os(macOS)
 import SwiftUI
 import VisionKit
 
