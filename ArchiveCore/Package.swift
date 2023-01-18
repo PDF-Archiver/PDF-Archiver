@@ -21,7 +21,7 @@ let package = Package(
         .library(name: "ArchiveSharedConstants", targets: ["ArchiveSharedConstants"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-log.git", from: "1.4.4"),
+        .package(url: "https://github.com/apple/swift-log.git", from: "1.5.0"),
         .package(url: "https://github.com/onmyway133/DeepDiff.git", from: "2.3.3"),
         .package(url: "https://github.com/SwiftUIX/SwiftUIX", from: "0.1.3"),
         .package(url: "https://github.com/dasautoooo/Parma", from: "0.3.0"),
