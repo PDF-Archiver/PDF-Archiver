@@ -33,6 +33,7 @@ struct SearchField: View {
                         filterSelectionHandler(filter)
                     } label: {
                         Label(filter.text, systemImage: filter.imageSystemName)
+                            .labelStyle(SidebarLabelStyle(iconColor: filter.isTag ? .blue : .systemGray, titleColor: .systemGray))
                             .lineLimit(1)
                             .padding(2)
                     }

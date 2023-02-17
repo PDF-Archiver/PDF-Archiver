@@ -21,7 +21,7 @@ struct TagTabView: View {
         } else if viewModel.currentDocument != nil {
             Stack(spacing: 8) {
                 if horizontalSizeClass != .compact {
-                    DocumentList(currentDocument: $viewModel.currentDocument, documents: $viewModel.documents)
+                    DocumentList(shouldShowDeleteButton: false, currentDocument: $viewModel.currentDocument, documents: $viewModel.documents)
                         .frame(maxWidth: 300)
                 }
                 GeometryReader { proxy in
@@ -39,26 +39,27 @@ struct TagTabView: View {
                            height: proxy.frame(in: .global).height)
                 }
             }
-            .navigationBarHidden(false)
-            .navigationBarTitleView(
-                VStack(spacing: 1) {
-                    Text(LocalizedStringKey(viewModel.documentTitle ?? "New Document"))
-                        .minimumScaleFactor(0.7)
-                        .allowsTightening(true)
-                        .truncationMode(.middle)
-                        .lineLimit(1)
-                    Label(viewModel.documentSubtitle ?? "", systemImage: "doc.badge.plus")
-                        .foregroundColor(.secondary)
-                        .font(.caption)
-                        .minimumScaleFactor(0.5)
-                        .allowsTightening(true)
-                        .lineLimit(1)
-                        .opacity(viewModel.documentSubtitle == nil ? 0 : 1)
-                },
-                displayMode: .inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     deleteNavBarView
+                }
+                ToolbarItem(placement: .principal) { // <3>
+                    VStack(spacing: 1) {
+                        Text(LocalizedStringKey(viewModel.documentTitle ?? "New Document"))
+                            .minimumScaleFactor(0.7)
+                            .allowsTightening(true)
+                            .truncationMode(.middle)
+                            .lineLimit(1)
+
+                        Label(viewModel.documentSubtitle ?? "", systemImage: "doc.badge.plus")
+                            .foregroundColor(.secondary)
+                            .font(.caption)
+                            .minimumScaleFactor(0.5)
+                            .allowsTightening(true)
+                            .lineLimit(1)
+                            .opacity(viewModel.documentSubtitle == nil ? 0 : 1)
+                            .labelStyle(self.paLabelStyle())
+                    }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     saveNavBarView
@@ -94,6 +95,14 @@ struct TagTabView: View {
         .disabled(viewModel.currentDocument == nil)
         .keyboardShortcut("s", modifiers: .command)
     }
+
+    func paLabelStyle() -> some LabelStyle {
+        if #available(iOS 14.5, *) {
+            return TitleAndIconLabelStyle.titleAndIcon
+        } else {
+            return TitleOnlyLabelStyle.titleOnly
+        }
+    }
 }
 #endif
 
@@ -120,3 +129,13 @@ struct TagTabView_Previews: PreviewProvider {
     }
 }
 #endif
+
+// extension LabelStyle where Self == <#Type#> {
+//    static var paLabelStyle: any LabelStyle {
+//        if #available(iOS 14.5, *) {
+//            return TitleAndIconLabelStyle.titleAndIcon
+//        } else {
+//            return TitleOnlyLabelStyle.titleOnly
+//        }
+//    }
+// }

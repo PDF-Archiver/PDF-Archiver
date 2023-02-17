@@ -45,6 +45,7 @@ public struct ScanTabView: View {
         .padding(EdgeInsets(top: 32.0, leading: 16.0, bottom: 32.0, trailing: 16.0))
         .onDrop(of: [.image, .pdf, .fileURL],
                 delegate: viewModel)
+        .navigationTitle(Text(""))
     }
 
     @ViewBuilder

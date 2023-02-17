@@ -21,14 +21,14 @@ let package = Package(
         .library(name: "ArchiveSharedConstants", targets: ["ArchiveSharedConstants"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-log.git", from: "1.4.2"),
+        .package(url: "https://github.com/apple/swift-log.git", from: "1.4.4"),
         .package(url: "https://github.com/onmyway133/DeepDiff.git", from: "2.3.3"),
-        .package(url: "https://github.com/SwiftUIX/SwiftUIX", from: "0.1.2"),
+        .package(url: "https://github.com/SwiftUIX/SwiftUIX", from: "0.1.3"),
         .package(url: "https://github.com/dasautoooo/Parma", from: "0.3.0"),
         .package(url: "https://github.com/WeTransfer/Diagnostics", from: "4.2.0"),
         .package(url: "https://github.com/tikhop/TPInAppReceipt", from: "3.3.4"),
         .package(url: "https://github.com/shaps80/GraphicsRenderer", from: "1.4.4"),
-        .package(name: "Sentry", url: "https://github.com/getsentry/sentry-cocoa", from: "7.23.0")
+        .package(name: "Sentry", url: "https://github.com/getsentry/sentry-cocoa", from: "7.28.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.

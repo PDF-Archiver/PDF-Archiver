@@ -112,35 +112,18 @@ public final class ScanTabViewModel: ObservableObject, DropDelegate, Log {
             var error: Error?
             for item in items {
                 let fileUrlType = UTType.fileURL.identifier
-                var readDirectorySuccess = false
                 if item.hasItemConformingToTypeIdentifier(fileUrlType) {
-                    let semaphore = DispatchSemaphore(value: 0)
-                    _ = item.loadObject(ofClass: URL.self) { rawUrl, rawError in
-                        guard let url = rawUrl,
-                              FileManager.default.directoryExists(at: url) else {
-                            semaphore.signal()
-                            return
+                    do {
+                        let urls = try self.getUrls(of: item)
+                        for url in urls {
+                            try self.imageConverter.handle(url)
                         }
-
-                        do {
-                            if let error = rawError {
-                                throw error
-                            }
-                            let urls = try FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
-                            for url in urls {
-                                try self.imageConverter.handle(url)
-                            }
-                            readDirectorySuccess = true
-                        } catch let inputError {
-                            self.log.errorAndAssert("Failed to handle file url input.", metadata: ["error": "\(String(describing: error))"])
-                            error = inputError
+                        if !urls.isEmpty {
+                            continue
                         }
-                        semaphore.signal()
+                    } catch let getUrlError {
+                        error = getUrlError
                     }
-                    _ = semaphore.wait(timeout: .now() + .seconds(30))
-                }
-                if readDirectorySuccess {
-                    return
                 }
 
                 for uti in types where item.hasItemConformingToTypeIdentifier(uti.identifier) {
@@ -150,7 +133,7 @@ public final class ScanTabViewModel: ObservableObject, DropDelegate, Log {
                         let url = PathConstants.tempPdfURL.appendingPathComponent("\(UUID().uuidString).pdf")
                         try data.write(to: url)
                         try self.imageConverter.handle(url)
-                        return
+                        continue
                     } catch let inputError {
                         self.log.errorAndAssert("Failed to handle image/pdf with type \(uti.identifier). Try next ...", metadata: ["error": "\(String(describing: error))"])
                         error = inputError
@@ -238,5 +221,33 @@ public final class ScanTabViewModel: ObservableObject, DropDelegate, Log {
         }
 
         return isPermitted
+    }
+
+    private func getUrls(of item: NSItemProvider) throws -> [URL] {
+        let semaphore = DispatchSemaphore(value: 0)
+        var result: Result<[URL], Error>?
+        _ = item.loadObject(ofClass: URL.self) { rawUrl, rawError in
+            guard let url = rawUrl,
+                  FileManager.default.directoryExists(at: url) else {
+                result = .success([])
+                semaphore.signal()
+                return
+            }
+
+            do {
+                if let error = rawError {
+                    throw error
+                }
+                let urls = try FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+                result = .success(urls)
+            } catch let inputError {
+                self.log.errorAndAssert("Failed to handle file url input.", metadata: ["error": "\(String(describing: inputError))"])
+                result = .failure(inputError)
+                semaphore.signal()
+            }
+            semaphore.signal()
+        }
+        _ = semaphore.wait(timeout: .now() + .seconds(30))
+        return try result?.get() ?? []
     }
 }
