@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -181,9 +181,6 @@
 		34FD2AE8254377180044A594 /* PDFSharingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFSharingViewModel.swift; sourceTree = "<group>"; };
 		34FD2AF025437E490044A594 /* AppClipIAPService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppClipIAPService.swift; sourceTree = "<group>"; };
 		34FD2B0F254443760044A594 /* MainContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainContentViewModel.swift; sourceTree = "<group>"; };
-		A36A692F272D60E70014A4EE /* ArchiveCore */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ArchiveCore; sourceTree = "<group>"; };
-		A36A6930272D610C0014A4EE /* ArchiveCore */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ArchiveCore; sourceTree = "<group>"; };
-		A36A6931272D61670014A4EE /* ArchiveCore */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ArchiveCore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -275,7 +272,6 @@
 		3489D70E24A3C53D0035E64F = {
 			isa = PBXGroup;
 			children = (
-				A36A692E272D60E70014A4EE /* Packages */,
 				347D0CE224BF923A00061707 /* ArchiveCore */,
 				3489D71324A3C53D0035E64F /* Shared */,
 				3489D71D24A3C53E0035E64F /* iOS */,
@@ -410,16 +406,6 @@
 				34ECB0A225324FD100E69448 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		A36A692E272D60E70014A4EE /* Packages */ = {
-			isa = PBXGroup;
-			children = (
-				A36A692F272D60E70014A4EE /* ArchiveCore */,
-				A36A6930272D610C0014A4EE /* ArchiveCore */,
-				A36A6931272D61670014A4EE /* ArchiveCore */,
-			);
-			name = Packages;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -726,6 +712,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		3458AA0825A7A8DF00F49BEC /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -740,10 +727,11 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export PATH=\"/opt/homebrew/bin:$HOME/.mint/bin:$PATH\"\n\n\nif which swiftlint >/dev/null; then\n    swiftlint --fix\n    # swiftlint will be run in chia\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/swiftlint\"\nfi\n\nif which chia >/dev/null; then\n    chia --config https://raw.githubusercontent.com/JulianKahnert/chia-config/master/chia.yml --xcode\nelse\n    echo \"warning: chia not installed, download from https://github.com/worldiety/chia\"\nfi\n";
+			shellScript = "export PATH=\"/opt/homebrew/bin:$HOME/.mint/bin:$PATH\"\n\n\nif which swiftlint >/dev/null; then\n    swiftlint --fix\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/swiftlint\"\nfi\n";
 		};
 		34A53F7C24AA6381008A3377 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -758,7 +746,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export PATH=\"/opt/homebrew/bin:$HOME/.mint/bin:$PATH\"\n\nif which swiftlint >/dev/null; then\n    swiftlint --fix\n    # swiftlint will be run in chia\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/swiftlint\"\nfi\n\nif which chia >/dev/null; then\n    chia --config https://raw.githubusercontent.com/JulianKahnert/chia-config/master/chia.yml --xcode\nelse\n    echo \"warning: chia not installed, download from https://github.com/worldiety/chia\"\nfi\n";
+			shellScript = "export PATH=\"/opt/homebrew/bin:$HOME/.mint/bin:$PATH\"\n\nif which swiftlint >/dev/null; then\n    swiftlint --fix\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/swiftlint\"\nfi\n\n";
 		};
 		34A53F7E24AA63DC008A3377 /* Settings Bundle Update */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1468,7 +1456,7 @@
 			repositoryURL = "https://github.com/getsentry/sentry-cocoa";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 7.0.0;
+				minimumVersion = 8.0.0;
 			};
 		};
 		A3EAEE6C276A9B9F0091AF70 /* XCRemoteSwiftPackageReference "swift-log" */ = {

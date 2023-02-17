@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/WeTransfer/Diagnostics",
         "state": {
           "branch": null,
-          "revision": "85b209be526e5c46d78ce781eec1290b0fca69f5",
-          "version": "4.2.0"
+          "revision": "8861bd65ec440ab7a8e99143ad408486fa1c0f28",
+          "version": "4.3.1"
         }
       },
       {
@@ -69,8 +69,8 @@
         "repositoryURL": "https://github.com/getsentry/sentry-cocoa",
         "state": {
           "branch": null,
-          "revision": "dc00a3673e3d313e41326bd53802f757defd0eee",
-          "version": "7.28.0"
+          "revision": "24fa90aa4ef8f81c65eb5803e40875f685de0dcd",
+          "version": "8.1.0"
         }
       },
       {
@@ -78,8 +78,8 @@
         "repositoryURL": "https://github.com/apple/swift-log",
         "state": {
           "branch": null,
-          "revision": "6fe203dc33195667ce1759bf0182975e4653ba1c",
-          "version": "1.4.4"
+          "revision": "32e8d724467f8fe623624570367e3d50c5638e46",
+          "version": "1.5.2"
         }
       },
       {

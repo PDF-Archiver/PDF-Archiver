@@ -51,6 +51,6 @@ public struct SentryBreadcrumbLogger: LogHandler {
             result[metadata.key] = metadata.value
         }
         crumb.timestamp = Date()
-        SentrySDK.addBreadcrumb(crumb: crumb)
+        SentrySDK.addBreadcrumb(crumb)
     }
 }
