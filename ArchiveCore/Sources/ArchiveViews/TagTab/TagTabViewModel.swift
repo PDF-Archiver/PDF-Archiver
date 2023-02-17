@@ -250,18 +250,34 @@ final class TagTabViewModel: ObservableObject, Log {
             .assign(to: &$documentTags)
     }
 
-    func saveTag(_ tagName: String) {
+    func saveTag() {
+        let tag = documentTagInput.lowercased().slugified(withSeparator: "")
+        guard !tag.isEmpty else { return }
+        documentTags.insertAndSort(tag)
+
         // reset this value after the documents have been set, because the input view
         // tags will be triggered by this and depend on the document tags
-        defer {
-            documentTagInput = ""
+        Task.detached {
+            await MainActor.run {
+                self.documentTagInput = ""
+            }
         }
+    }
 
-        let input = tagName.lowercased().slugified(withSeparator: "")
-        guard !input.isEmpty else { return }
-        var tags = Set(documentTags)
-        tags.insert(input)
-        documentTags = Array(tags).sorted()
+    func suggestedTagTapped(_ tag: String) {
+        suggestedTags.removeAll { $0 == tag }
+        documentTags.insertAndSort(tag)
+
+        Task.detached {
+            await MainActor.run {
+                self.documentTagInput = ""
+            }
+        }
+    }
+
+    func documentTagTapped(_ tag: String) {
+        documentTags.removeAll { $0 == tag }
+//        suggestedTags.insertAndSort(tag)
     }
 
     func saveDocument() {

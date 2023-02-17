@@ -6,25 +6,19 @@
 //
 
 import SwiftUI
-import SwiftUIX
 
 struct DocumentInformationForm: View {
 
-    @Binding var date: Date
-    @Binding var specification: String
-    @Binding var tags: [String]
-
-    @Binding var tagInput: String
-    @Binding var suggestedTags: [String]
+    @ObservedObject var viewModel: TagTabViewModel
 
     var body: some View {
         Form {
             HStack {
-                DatePicker("Date", selection: $date, displayedComponents: .date)
+                DatePicker("Date", selection: $viewModel.date, displayedComponents: .date)
                 #if !os(macOS)
                 Spacer()
                 Button("Today" as LocalizedStringKey) {
-                    date = Date()
+                    viewModel.date = Date()
                 }
                 .padding(.horizontal, 11)
                 .padding(.vertical, 7)
@@ -33,43 +27,25 @@ struct DocumentInformationForm: View {
                 #endif
             }
             .labelsHidden()
-            TextField("Description", text: $specification)
-                .modifier(ClearButton(text: $specification))
+            TextField("Description", text: $viewModel.specification)
+                .modifier(ClearButton(text: $viewModel.specification))
             documentTagsView
             suggestedTagsView
         }
         .buttonStyle(BorderlessButtonStyle())
     }
 
-    private func documentTagTapped(_ tag: String) {
-        tags.removeAll { $0 == tag }
-        // just remove the tapped tag
-        // $suggestedTags.insertAndSort(tag)
-    }
-
-    private func saveCurrentTag() {
-        let tag = tagInput
-        tagInput = ""
-        $tags.insertAndSort(tag)
-    }
-
-    private func suggestedTagTapped(_ tag: String) {
-        suggestedTags.removeAll { $0 == tag }
-        tagInput = ""
-        $tags.insertAndSort(tag)
-    }
-
     private var documentTagsView: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Document Tags")
                 .font(.caption)
-            TagListView(tags: $tags,
+            TagListView(tags: $viewModel.documentTags,
                         isEditable: true,
                         isMultiLine: true,
-                        tapHandler: documentTagTapped(_:))
+                        tapHandler: viewModel.documentTagTapped(_:))
             TextField("Enter Tag",
-                      text: $tagInput,
-                      onCommit: saveCurrentTag)
+                      text: $viewModel.documentTagInput,
+                      onCommit: viewModel.saveTag)
                 .disableAutocorrection(true)
                 .frame(maxHeight: 22)
                 .padding(EdgeInsets(top: 4.0, leading: 0.0, bottom: 4.0, trailing: 0.0))
@@ -80,15 +56,30 @@ struct DocumentInformationForm: View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Suggested Tags")
                 .font(.caption)
-            TagListView(tags: $suggestedTags,
+            TagListView(tags: $viewModel.suggestedTags,
                         isEditable: false,
                         isMultiLine: true,
-                        tapHandler: suggestedTagTapped(_:))
+                        tapHandler: viewModel.suggestedTagTapped(_:))
         }
     }
 }
 
 struct DocumentInformationForm_Previews: PreviewProvider {
+
+    static var viewModel: TagTabViewModel = {
+        let model = TagTabViewModel()
+        model.showLoadingView = false
+        model.date = Date()
+        model.documents = [
+            Document.create(),
+            Document.create(),
+            Document.create()
+        ]
+        model.documentTags = ["bill", "letter"]
+        model.suggestedTags = ["tag1", "tag2", "tag3"]
+        model.currentDocument = Document.create()
+        return model
+    }()
 
     struct PreviewContentView: View {
         @State var tagInput: String = "test"
@@ -96,13 +87,9 @@ struct DocumentInformationForm_Previews: PreviewProvider {
         @State var suggestedTags: [String] = ["tag1", "tag2", "tag3"]
 
         var body: some View {
-            DocumentInformationForm(date: .constant(Date()),
-                                    specification: .constant("Blue Pullover"),
-                                    tags: $tags,
-                                    tagInput: $tagInput,
-                                    suggestedTags: $suggestedTags)
-                }
+            DocumentInformationForm(viewModel: viewModel)
         }
+    }
 
     static var previews: some View {
         PreviewContentView()

@@ -28,11 +28,7 @@ struct TagTabView: View {
                     VStack(spacing: 0) {
                         PDFCustomView(self.viewModel.pdfDocument)
                             .frame(height: proxy.size.height * 0.6)
-                        DocumentInformationForm(date: $viewModel.date,
-                                                specification: $viewModel.specification,
-                                                tags: $viewModel.documentTags,
-                                                tagInput: $viewModel.documentTagInput,
-                                                suggestedTags: $viewModel.suggestedTags)
+                        DocumentInformationForm(viewModel: viewModel)
                             .frame(height: proxy.size.height * 0.4)
                     }
                     .frame(width: proxy.frame(in: .global).width,

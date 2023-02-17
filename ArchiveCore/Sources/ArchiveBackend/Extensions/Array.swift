@@ -22,3 +22,11 @@ extension Array where Array.Element == URL {
         return newFolders
     }
 }
+
+extension Array where Array.Element == String {
+    public mutating func insertAndSort(_ item: String) {
+        var uniqueItems = Set(self)
+        uniqueItems.insert(item)
+        self = uniqueItems.sorted()
+    }
+}

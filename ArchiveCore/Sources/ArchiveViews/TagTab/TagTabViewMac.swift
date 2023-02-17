@@ -79,7 +79,7 @@ struct TagTabViewMac: View {
                 TagListView(tags: $viewModel.documentTags,
                             isEditable: true,
                             isMultiLine: true,
-                            tapHandler: documentTagTapped(_:))
+                            tapHandler: viewModel.documentTagTapped(_:))
             }
             .frame(maxHeight: 175)
             HStack {
@@ -96,33 +96,16 @@ struct TagTabViewMac: View {
                 .foregroundColor(.paDarkRed)
             TextField("Enter Tag",
                       text: $viewModel.documentTagInput,
-                      onCommit: saveCurrentTag)
+                      onCommit: viewModel.saveTag)
                 .modifier(ClearButton(text: $viewModel.documentTagInput))
             ScrollView {
                 TagListView(tags: $viewModel.suggestedTags,
                             isEditable: false,
                             isMultiLine: true,
-                            tapHandler: suggestedTagTapped(_:))
+                            tapHandler: viewModel.suggestedTagTapped(_:))
             }
             Spacer()
         }.padding(.horizontal, 10)
-    }
-
-    private func documentTagTapped(_ tag: String) {
-        viewModel.documentTags.removeAll { $0 == tag }
-//        $viewModel.suggestedTags.insertAndSort(tag)
-    }
-
-    private func saveCurrentTag() {
-        let tag = viewModel.documentTagInput
-        viewModel.documentTagInput = ""
-        $viewModel.documentTags.insertAndSort(tag)
-    }
-
-    private func suggestedTagTapped(_ tag: String) {
-        viewModel.suggestedTags.removeAll { $0 == tag }
-        viewModel.documentTagInput = ""
-        $viewModel.documentTags.insertAndSort(tag)
     }
 }
 #endif
