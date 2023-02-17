@@ -117,14 +117,14 @@ final class TagTabViewModel: ObservableObject, Log {
                 let sortedDocuments = newUntaggedDocuments
                     .sorted { doc1, doc2 in
 
-                        // sort by file creation date to get most recent scans at first
-                        if let date1 = try? archiveStore.getCreationDate(of: doc1.path),
-                           let date2 = try? archiveStore.getCreationDate(of: doc2.path) {
-
-                            return date1 > date2
-                        } else {
-                            return doc1 > doc2
-                        }
+//                        // sort by file creation date to get most recent scans at first
+//                        if let date1 = try? archiveStore.getCreationDate(of: doc1.path),
+//                           let date2 = try? archiveStore.getCreationDate(of: doc2.path) {
+//
+//                            return date1 > date2
+//                        } else {
+                            return doc1.path.absoluteString > doc2.path.absoluteString
+//                        }
                     }
                     .reversed()
 
