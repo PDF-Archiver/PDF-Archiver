@@ -180,6 +180,9 @@ final class TagTabViewModel: ObservableObject, Log {
                 if let document = document,
                    let pdfDocument = PDFDocument(url: document.path) {
                     self.pdfDocument = pdfDocument
+                    self.specification = document.specification
+                    self.documentTags = document.tags.sorted()
+                    self.suggestedTags = []
 
                     // try to parse suggestions from document content
                     self.queue.async { [weak self] in
@@ -191,6 +194,14 @@ final class TagTabViewModel: ObservableObject, Log {
                                 let pageContent = page.string else { return }
 
                             text += pageContent
+                        }
+
+                        // try to mach some tags from the document and use them as documentTags
+                        let matchedTags = tagStore.getTags(from: text)
+                        if !matchedTags.isEmpty {
+                            DispatchQueue.main.async {
+                                self?.documentTags = matchedTags.sorted()
+                            }
                         }
 
                         // get tags and save them in the background, they will be passed to the TagTabView
@@ -221,10 +232,6 @@ final class TagTabViewModel: ObservableObject, Log {
                             self?.date = documentDate
                         }
                     }
-
-                    self.specification = document.specification
-                    self.documentTags = document.tags.sorted()
-                    self.suggestedTags = []
 
                 } else {
                     Self.log.error("Could not present document.")

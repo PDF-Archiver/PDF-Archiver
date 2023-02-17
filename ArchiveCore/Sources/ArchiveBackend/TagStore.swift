@@ -7,12 +7,14 @@
 
 import Combine
 import Foundation
+import NaturalLanguage
 
 public final class TagStore {
 
     public static let shared = TagStore()
 
     @Published public private(set) var sortedTags: [String] = []
+    private var tags: Set<String> = []
     public private(set) var tagIndex = TagIndex<String>()
     private var tagCounts: [String: Int] = [:]
     private var disposables = Set<AnyCancellable>()
@@ -33,6 +35,12 @@ public final class TagStore {
             .receive(on: queue)
             .map(TagStore.documents2SortedTags(_:))
             .assign(to: &$sortedTags)
+
+        $sortedTags
+            .sink { [weak self] sortedTags in
+                self?.tags = Set(sortedTags)
+            }
+            .store(in: &disposables)
     }
 
     private static func documents2SortedTags(_ documents: [Document]) -> [String] {
@@ -87,5 +95,17 @@ public final class TagStore {
     /// - Parameter tagname: Given tag name.
     public func getSimilarTags(for tagname: String) -> Set<String> {
         return tagIndex[tagname]
+    }
+
+    public func getTags(from text: String) -> Set<String> {
+        let tokenizer = NLTokenizer(unit: .word)
+        tokenizer.string = text.lowercased()
+
+        var tokens = Set<String>()
+        tokenizer.enumerateTokens(in: text.startIndex..<text.endIndex) { tokenRange, _ in
+            tokens.insert(String(text[tokenRange]))
+            return true
+        }
+        return tokens.intersection(tags)
     }
 }

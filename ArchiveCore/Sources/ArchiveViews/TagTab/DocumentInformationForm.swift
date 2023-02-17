@@ -64,17 +64,14 @@ struct DocumentInformationForm: View {
     }
 }
 
+#if DEBUG
 struct DocumentInformationForm_Previews: PreviewProvider {
 
     static var viewModel: TagTabViewModel = {
         let model = TagTabViewModel()
         model.showLoadingView = false
         model.date = Date()
-        model.documents = [
-            Document.create(),
-            Document.create(),
-            Document.create()
-        ]
+        model.documents = []
         model.documentTags = ["bill", "letter"]
         model.suggestedTags = ["tag1", "tag2", "tag3"]
         model.currentDocument = Document.create()
@@ -96,3 +93,4 @@ struct DocumentInformationForm_Previews: PreviewProvider {
             .previewLayout(.sizeThatFits)
     }
 }
+#endif
