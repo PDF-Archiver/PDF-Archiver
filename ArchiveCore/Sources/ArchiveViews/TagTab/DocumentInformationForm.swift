@@ -29,8 +29,40 @@ struct DocumentInformationForm: View {
             .labelsHidden()
             TextField("Description", text: $viewModel.specification)
                 .modifier(ClearButton(text: $viewModel.specification))
+            #if os(iOS)
+            if #available(iOS 15.0, *) {
+                documentTagsView
+                    .toolbar {
+                        ToolbarItemGroup(placement: .keyboard) {
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack {
+                                    ForEach(viewModel.suggestedTags) { tag in
+                                        Button {
+                                            viewModel.suggestedTagTapped(tag)
+                                        } label: {
+                                            Text(tag)
+                                                .lineLimit(1)
+                                                .minimumScaleFactor(0.85)
+                                                .padding(EdgeInsets(top: 2.0, leading: 5.0, bottom: 2.0, trailing: 5.0))
+                                                .foregroundColor(.white)
+                                                .background(.paDarkRed)
+                                                .cornerRadius(8.0)
+                                                .padding(.horizontal, 2)
+                                        }
+                                    }
+                                }
+                            }
+                            .hidden(viewModel.suggestedTags.isEmpty)
+                        }
+                    }
+            } else {
+                documentTagsView
+                suggestedTagsView
+            }
+            #else
             documentTagsView
             suggestedTagsView
+            #endif
         }
         .buttonStyle(BorderlessButtonStyle())
     }
@@ -46,9 +78,12 @@ struct DocumentInformationForm: View {
             TextField("Enter Tag",
                       text: $viewModel.documentTagInput,
                       onCommit: viewModel.saveTag)
-                .disableAutocorrection(true)
-                .frame(maxHeight: 22)
-                .padding(EdgeInsets(top: 4.0, leading: 0.0, bottom: 4.0, trailing: 0.0))
+            #if os(iOS)
+            .keyboardType(.alphabet)
+            #endif
+            .disableAutocorrection(true)
+            .frame(maxHeight: 22)
+            .padding(EdgeInsets(top: 4.0, leading: 0.0, bottom: 4.0, trailing: 0.0))
         }
     }
 
