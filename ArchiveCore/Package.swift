@@ -28,7 +28,7 @@ let package = Package(
         .package(url: "https://github.com/WeTransfer/Diagnostics", from: "4.3.1"),
         .package(url: "https://github.com/tikhop/TPInAppReceipt", from: "3.3.4"),
         .package(url: "https://github.com/shaps80/GraphicsRenderer", from: "1.4.4"),
-        .package(name: "Sentry", url: "https://github.com/getsentry/sentry-cocoa", from: "8.3.0")
+        .package(name: "Sentry", url: "https://github.com/getsentry/sentry-cocoa", from: "8.3.1")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
