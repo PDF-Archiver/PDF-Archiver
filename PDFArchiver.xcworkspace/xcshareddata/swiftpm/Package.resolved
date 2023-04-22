@@ -29,6 +29,15 @@
         }
       },
       {
+        "package": "SwiftUILib-DocumentPicker",
+        "repositoryURL": "https://github.com/swiftuilib/document-picker",
+        "state": {
+          "branch": null,
+          "revision": "dca7adf7c1ff5355b696ba2da7aebf6ffa9bb15d",
+          "version": "1.0.0"
+        }
+      },
+      {
         "package": "Down",
         "repositoryURL": "https://github.com/iwasrobbed/Down",
         "state": {

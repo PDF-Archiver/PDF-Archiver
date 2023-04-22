@@ -6,10 +6,16 @@
 //
 
 import SwiftUI
+import SwiftUILib_DocumentPicker
+#if os(iOS)
+import MobileCoreServices
+#endif
 
 struct StorageSelectionView: View {
 
     @Binding var selection: MoreTabViewModel.StorageType
+	@Binding var showDocumentPicker: Bool
+	@Binding var urlDocumentPicker: URL?
 
     var body: some View {
         Form {
@@ -29,10 +35,18 @@ struct StorageSelectionView: View {
                         }
                     }
                 }
+
                 #if os(macOS)
                 Spacer(minLength: 8)
                 #endif
             }
+			.documentPicker(
+				isPresented: $showDocumentPicker,
+				documentTypes: [kUTTypeFolder as String /* "public.folder" */ ], onDocumentsPicked: { urls in
+					guard let url = urls.first else { return }
+					urlDocumentPicker = url
+				}
+			)
         }
     }
 }
@@ -42,7 +56,7 @@ struct StorageSelectionView_Previews: PreviewProvider {
         #if os(macOS)
         StorageSelectionView(selection: .constant(.local))
         #else
-        StorageSelectionView(selection: .constant(.appContainer))
+		StorageSelectionView(selection: .constant(.appContainer), showDocumentPicker: .constant(false), urlDocumentPicker: .constant(nil))
         #endif
     }
 }

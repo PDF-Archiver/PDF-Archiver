@@ -9,8 +9,11 @@
 
 import Combine
 import SwiftUI
+#if os(iOS)
+import CoreServices
+#endif
 
-public final class MoreTabViewModel: ObservableObject, Log {
+public class MoreTabViewModel: ObservableObject, Log {
     public static let appVersion = AppEnvironment.getFullVersion()
 
     public static func markdownView(for title: LocalizedStringKey, withKey key: String) -> some View {
@@ -34,6 +37,7 @@ public final class MoreTabViewModel: ObservableObject, Log {
     #if os(macOS)
     @Published var observedFolderURL: URL? = UserDefaults.observedFolderURL
     #endif
+	@Published var showDocumentPicker: Bool = false
 
     var manageSubscriptionUrl: URL {
         URL(string: "https://apps.apple.com/account/subscriptions")!
@@ -114,8 +118,16 @@ public final class MoreTabViewModel: ObservableObject, Log {
                         type = .iCloudDrive
                     case .appContainer:
                         type = .appContainer
+					case .local:
+						if let newArchiveUrl = self.newArchiveUrl {
+							type = .local(newArchiveUrl)
+							self.newArchiveUrl = nil
+						} else {
+							self.showDocumentPicker = true
+							return
+						}
                 }
-                self.handle(newType: type)
+				self.handle(newType: type)
             }
             .store(in: &disposables)
         #endif
@@ -162,6 +174,13 @@ public final class MoreTabViewModel: ObservableObject, Log {
         }
     }
     #endif
+	#if os(iOS)
+	func handleDocumentPicker(selectedUrl: URL) {
+		self.newArchiveUrl = selectedUrl
+		let tmp = self.selectedArchiveType
+		self.selectedArchiveType = tmp
+	}
+	#endif
 
     private func handle(newType type: PathManager.ArchivePathType) {
         do {
