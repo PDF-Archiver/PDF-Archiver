@@ -7,7 +7,7 @@
 //
 
 public enum Constants {
-    public static let sharedContainerIdentifier = "group.PDFArchiverShared"
+    public static let sharedContainerIdentifier = "group.app.PDFArchiveViewer"
 
     public static let documentDatePlaceholder = "PDFARCHIVER-TEMP-DATE"
     public static let documentDescriptionPlaceholder = "PDF-ARCHIVER-TEMP-DESCRIPTION-"
