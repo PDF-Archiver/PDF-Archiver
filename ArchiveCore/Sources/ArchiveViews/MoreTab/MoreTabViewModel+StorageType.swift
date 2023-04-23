@@ -39,7 +39,7 @@ extension MoreTabViewModel {
 					#if os(macOS)
                     return "💾 Drive"
 					#else
-					return "📁 Folder"
+					return "🗂️ Folder"
 					#endif
             }
         }

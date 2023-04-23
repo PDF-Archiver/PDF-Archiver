@@ -179,6 +179,7 @@ public class MoreTabViewModel: ObservableObject, Log {
 		self.newArchiveUrl = selectedUrl
 		let tmp = self.selectedArchiveType
 		self.selectedArchiveType = tmp
+		handle(newType: .local(selectedUrl))
 	}
 	#endif
 

@@ -40,7 +40,13 @@ struct StorageSelectionView: View {
 			.fileImporter(isPresented: $showDocumentPicker, allowedContentTypes: [UTType.folder], onCompletion: { result in
 				switch result {
 					case .success(let url):
+						// Securely access the URL to save a bookmark
+						guard url.startAccessingSecurityScopedResource() else {
+							// Handle the failure here.
+							return
+						}
 						urlDocumentPicker = url
+
 					case .failure(let error):
 						print("Download picker error: \(error)")
 				}
