@@ -13,9 +13,7 @@ extension MoreTabViewModel {
         #if !os(macOS)
         case appContainer
         #endif
-        #if os(macOS)
         case local
-        #endif
 
         static func getCurrent() -> StorageType {
             let type = PathManager.shared.archivePathType
@@ -26,10 +24,8 @@ extension MoreTabViewModel {
                 case .appContainer:
                     return .appContainer
                 #endif
-                #if os(macOS)
                 case .local:
                     return .local
-                #endif
             }
         }
 
@@ -45,10 +41,12 @@ extension MoreTabViewModel {
                 case .appContainer:
                     return "📱 Local"
                 #endif
-                #if os(macOS)
                 case .local:
+                    #if os(macOS)
                     return "💾 Drive"
-                #endif
+                    #else
+                    return "🗂️ Folder"
+                    #endif
             }
         }
 
@@ -65,10 +63,8 @@ extension MoreTabViewModel {
                         Link("https://support.apple.com/en-us/HT210598", destination: URL(string: NSLocalizedString("https://support.apple.com/en-us/HT210598", comment: ""))!)
                     }
                 #endif
-                #if os(macOS)
                 case .local:
                     Text("Not synchronized - Your documents are stored in a folder you choose on your computer. PDF Archiver does not initiate synchronization.")
-                #endif
             }
         }
     }

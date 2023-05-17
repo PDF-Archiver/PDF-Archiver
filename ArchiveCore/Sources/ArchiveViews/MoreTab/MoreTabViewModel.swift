@@ -9,8 +9,11 @@
 
 import Combine
 import SwiftUI
+#if os(iOS)
+import CoreServices
+#endif
 
-public final class MoreTabViewModel: ObservableObject, Log {
+public class MoreTabViewModel: ObservableObject, Log {
     public static let appVersion = AppEnvironment.getFullVersion()
 
     public static func markdownView(for title: LocalizedStringKey, withKey key: String) -> some View {
@@ -34,6 +37,7 @@ public final class MoreTabViewModel: ObservableObject, Log {
     #if os(macOS)
     @Published var observedFolderURL: URL? = UserDefaults.observedFolderURL
     #endif
+    @Published var showDocumentPicker: Bool = false
 
     var manageSubscriptionUrl: URL {
         URL(string: "https://apps.apple.com/account/subscriptions")!
@@ -84,41 +88,73 @@ public final class MoreTabViewModel: ObservableObject, Log {
             }
             .store(in: &disposables)
 
-        #if os(macOS)
+//        #if os(macOS)
+//        $selectedArchiveType
+//            .dropFirst()
+//            .sink { selectedArchiveType in
+//                let type: PathManager.ArchivePathType
+//                switch selectedArchiveType {
+//                    case .iCloudDrive:
+//                        type = .iCloudDrive
+//                    case .local:
+//                        if let newArchiveUrl = self.newArchiveUrl {
+//                            type = .local(newArchiveUrl)
+//                            self.newArchiveUrl = nil
+//                        } else {
+//                            self.chooseArchivePanel()
+//                            return
+//                        }
+//                }
+//                self.handle(newType: type)
+//            }
+//            .store(in: &disposables)
+//        #else
+//        $selectedArchiveType
+//            .dropFirst()
+//            .sink { selectedArchiveType in
+//                let type: PathManager.ArchivePathType
+//                switch selectedArchiveType {
+//                    case .iCloudDrive:
+//                        type = .iCloudDrive
+//                    case .appContainer:
+//                        type = .appContainer
+//                    case .local:
+//                        if let newArchiveUrl = self.newArchiveUrl {
+//                            type = .local(newArchiveUrl)
+//                            self.newArchiveUrl = nil
+//                        } else {
+//                            self.showDocumentPicker = true
+//                            return
+//                        }
+//                }
+//                self.handle(newType: type)
+//            }
+//            .store(in: &disposables)
+//        #endif
+
         $selectedArchiveType
             .dropFirst()
             .sink { selectedArchiveType in
                 let type: PathManager.ArchivePathType
                 switch selectedArchiveType {
-                    case .iCloudDrive:
-                        type = .iCloudDrive
-                    case .local:
-                        if let newArchiveUrl = self.newArchiveUrl {
-                            type = .local(newArchiveUrl)
-                            self.newArchiveUrl = nil
-                        } else {
-                            self.chooseArchivePanel()
-                            return
-                        }
+                case .iCloudDrive:
+                    type = .iCloudDrive
+                #if os(iOS)
+                case .appContainer:
+                    type = .appContainer
+                #endif
+                case .local:
+                    if let newArchiveUrl = self.newArchiveUrl {
+                        type = .local(newArchiveUrl)
+                        self.newArchiveUrl = nil
+                    } else {
+                        self.openDocumentPicker()
+                        return
+                    }
                 }
                 self.handle(newType: type)
             }
             .store(in: &disposables)
-        #else
-        $selectedArchiveType
-            .dropFirst()
-            .sink { selectedArchiveType in
-                let type: PathManager.ArchivePathType
-                switch selectedArchiveType {
-                    case .iCloudDrive:
-                        type = .iCloudDrive
-                    case .appContainer:
-                        type = .appContainer
-                }
-                self.handle(newType: type)
-            }
-            .store(in: &disposables)
-        #endif
 
         iapService.appUsagePermittedPublisher
             .removeDuplicates()
@@ -142,8 +178,8 @@ public final class MoreTabViewModel: ObservableObject, Log {
     }
     #endif
 
-    #if os(macOS)
-    private func chooseArchivePanel() {
+    private func openDocumentPicker() {
+        #if os(macOS)
         let openPanel = NSOpenPanel()
         openPanel.title = NSLocalizedString("Choose the archive folder", comment: "")
         openPanel.showsResizeIndicator = false
@@ -152,16 +188,22 @@ public final class MoreTabViewModel: ObservableObject, Log {
         openPanel.canChooseDirectories = true
         openPanel.allowsMultipleSelection = false
         openPanel.canCreateDirectories = true
-        openPanel.begin { response in
+        openPanel.begin { [weak self] response in
             guard response == .OK,
                   let url = openPanel.url else { return }
-            self.newArchiveUrl = url
-            // trigger archive type change
-            let tmp = self.selectedArchiveType
-            self.selectedArchiveType = tmp
+            self?.handleDocumentPicker(selectedUrl: url)
         }
+        #else
+        self.showDocumentPicker = true
+        #endif
     }
-    #endif
+
+    func handleDocumentPicker(selectedUrl: URL) {
+        self.newArchiveUrl = selectedUrl
+        // trigger archive type change
+        let tmp = self.selectedArchiveType
+        self.selectedArchiveType = tmp
+    }
 
     private func handle(newType type: PathManager.ArchivePathType) {
         do {
