@@ -41,14 +41,7 @@ struct MoreTabView: View {
                 }
             }
 
-            // storage selection
-            let urlDocumentPickerBinding = Binding<URL?>(get: {
-                viewModel.newArchiveUrl
-            }, set: { newValue in
-                guard let newValue else { return }
-                viewModel.handleDocumentPicker(selectedUrl: newValue)
-            })
-            NavigationLink(destination: StorageSelectionView(selection: $viewModel.selectedArchiveType, showDocumentPicker: $viewModel.showDocumentPicker, urlDocumentPicker: urlDocumentPickerBinding), isActive: $viewModel.showArchiveTypeSelection) {
+            NavigationLink(destination: StorageSelectionView(selection: $viewModel.selectedArchiveType, onCompletion: viewModel.handleDocumentPicker), isActive: $viewModel.showArchiveTypeSelection) {
                 HStack {
                     Text("Storage")
                     Spacer()

@@ -11,10 +11,8 @@ import UniformTypeIdentifiers
 struct StorageSelectionView: View {
 
     @Binding var selection: MoreTabViewModel.StorageType
-    #if os(iOS)
-    @Binding var showDocumentPicker: Bool
-    @Binding var urlDocumentPicker: URL?
-    #endif
+    @State private var showDocumentPicker = false
+    let onCompletion: (Result<URL, Error>) -> Void
 
     var body: some View {
         Form {
@@ -22,6 +20,9 @@ struct StorageSelectionView: View {
                 Section(footer: storageType.descriptionView) {
                     Button(action: {
                         selection = storageType
+                        if storageType == .local {
+                            showDocumentPicker = true
+                        }
                     }) {
                         HStack {
                             Text(storageType.title)
@@ -38,32 +39,27 @@ struct StorageSelectionView: View {
                 Spacer(minLength: 8)
                 #endif
             }
-            #if os(iOS)
             .fileImporter(isPresented: $showDocumentPicker, allowedContentTypes: [UTType.folder], onCompletion: { result in
                 switch result {
-                    case .success(let url):
-                        // Securely access the URL to save a bookmark
-                        guard url.startAccessingSecurityScopedResource() else {
-                            // Handle the failure here.
-                            return
-                        }
-                        urlDocumentPicker = url
+                case .success(let url):
+                    // Securely access the URL to save a bookmark
+                    guard url.startAccessingSecurityScopedResource() else {
+                        // Handle the failure here.
+                        return
+                    }
+                    onCompletion(.success(url))
 
-                    case .failure(let error):
-                        print("Download picker error: \(error)")
+                case .failure(let error):
+                    onCompletion(.failure(error))
                 }
+                showDocumentPicker = false
             })
-            #endif
         }
     }
 }
 
 struct StorageSelectionView_Previews: PreviewProvider {
     static var previews: some View {
-        #if os(macOS)
-        StorageSelectionView(selection: .constant(.local))
-        #else
-        StorageSelectionView(selection: .constant(.appContainer), showDocumentPicker: .constant(false), urlDocumentPicker: .constant(nil))
-        #endif
+        StorageSelectionView(selection: .constant(.local), onCompletion: { print($0) })
     }
 }
