@@ -41,14 +41,7 @@ struct MoreTabView: View {
                 }
             }
 
-			// storage selection
-			let urlDocumentPickerBinding = Binding<URL?>(get: {
-				viewModel.newArchiveUrl
-			}, set: { newValue in
-				guard let newValue else { return }
-				viewModel.handleDocumentPicker(selectedUrl: newValue)
-			})
-			NavigationLink(destination: StorageSelectionView(selection: $viewModel.selectedArchiveType, showDocumentPicker: $viewModel.showDocumentPicker, urlDocumentPicker: urlDocumentPickerBinding), isActive: $viewModel.showArchiveTypeSelection) {
+            NavigationLink(destination: StorageSelectionView(selection: $viewModel.selectedArchiveType, onCompletion: viewModel.handleDocumentPicker), isActive: $viewModel.showArchiveTypeSelection) {
                 HStack {
                     Text("Storage")
                     Spacer()
@@ -58,7 +51,7 @@ struct MoreTabView: View {
             Button("Open Archive Folder" as LocalizedStringKey, action: viewModel.openArchiveFolder)
                 // if statement in view not possible, because the StorageSelectionView was not returning to the overview
                 // after the selection has changed.
-				.disabled(!PathManager.shared.archivePathType.isFileBrowserCompatible)
+                .disabled(!PathManager.shared.archivePathType.isFileBrowserCompatible)
                 .opacity(PathManager.shared.archivePathType.isFileBrowserCompatible ? 1 : 0.3)
             DetailRowView(name: "Show Intro") {
                 self.viewModel.showIntro()

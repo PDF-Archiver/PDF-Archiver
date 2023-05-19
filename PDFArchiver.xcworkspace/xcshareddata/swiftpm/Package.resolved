@@ -24,17 +24,8 @@
         "repositoryURL": "https://github.com/WeTransfer/Diagnostics",
         "state": {
           "branch": null,
-          "revision": "0a70c6d31a07a3b58598796db1ac96b45e4a179f",
-          "version": "4.4.0"
-        }
-      },
-      {
-        "package": "SwiftUILib-DocumentPicker",
-        "repositoryURL": "https://github.com/swiftuilib/document-picker",
-        "state": {
-          "branch": null,
-          "revision": "dca7adf7c1ff5355b696ba2da7aebf6ffa9bb15d",
-          "version": "1.0.0"
+          "revision": "c0be659b063281f7c0ce1ffd41bf0fe82b8cfd43",
+          "version": "4.4.1"
         }
       },
       {
@@ -78,8 +69,8 @@
         "repositoryURL": "https://github.com/getsentry/sentry-cocoa",
         "state": {
           "branch": null,
-          "revision": "92a6472efc750a4e18bdee21c204942ab0bc4dcd",
-          "version": "8.4.0"
+          "revision": "8dab665edf492580977d353f8f8bf2da57c04420",
+          "version": "8.7.2"
         }
       },
       {

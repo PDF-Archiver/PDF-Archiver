@@ -11,12 +11,13 @@ import Foundation
 extension UserDefaults {
     var archivePathType: PathManager.ArchivePathType? {
         get {
+
             do {
                 var staleBookmarkData = false
                 if let type: PathManager.ArchivePathType = try? getObject(forKey: .archivePathType) {
                     return type
                 } else if let bookmarkData = object(forKey: Names.archivePathType.rawValue) as? Data {
-#if os(macOS)
+                    #if os(macOS)
                     let url = try URL(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &staleBookmarkData)
                     if staleBookmarkData {
                         set(nil, forKey: Names.archivePathType.rawValue)
@@ -24,15 +25,15 @@ extension UserDefaults {
                         return nil
                     }
                     return .local(url)
-#else
-					let url = try URL(resolvingBookmarkData: bookmarkData, bookmarkDataIsStale: &staleBookmarkData)
-					guard !staleBookmarkData else {
-						// Handle stale data here.
-						log.errorAndAssert("Error while getting archive url. Stale bookmark data.")
-						return nil
-					}
-					return .local(url)
-#endif
+                    #else
+                    let url = try URL(resolvingBookmarkData: bookmarkData, bookmarkDataIsStale: &staleBookmarkData)
+                    guard !staleBookmarkData else {
+                        // Handle stale data here.
+                        log.errorAndAssert("Error while getting archive url. Stale bookmark data.")
+                        return nil
+                    }
+                    return .local(url)
+                    #endif
                 } else {
                     return nil
                 }
@@ -43,30 +44,29 @@ extension UserDefaults {
                 return nil
             }
         }
-
         set {
             do {
                 switch newValue {
                     case .local(let url):
-#if os(macOS)
+                        #if os(macOS)
                         let bookmark = try url.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
                         set(bookmark, forKey: Names.archivePathType.rawValue)
-#else
-						// Securely access the URL to save a bookmark
-						guard url.startAccessingSecurityScopedResource() else {
-							// Handle the failure here.
-							return
-						}
-						// We have to stop accessing the resource no matter what
-						defer { url.stopAccessingSecurityScopedResource() }
-						do {
-							// Make sure the bookmark is minimal!
-							let bookmark = try url.bookmarkData(options: .minimalBookmark, includingResourceValuesForKeys: nil, relativeTo: nil)
-							set(bookmark, forKey: Names.archivePathType.rawValue)
-						} catch {
-							print("Bookmark error \(error)")
-						}
-#endif
+                        #else
+                        // Securely access the URL to save a bookmark
+                        guard url.startAccessingSecurityScopedResource() else {
+                            // Handle the failure here.
+                            return
+                        }
+                        // We have to stop accessing the resource no matter what
+                        defer { url.stopAccessingSecurityScopedResource() }
+                        do {
+                            // Make sure the bookmark is minimal!
+                            let bookmark = try url.bookmarkData(options: .minimalBookmark, includingResourceValuesForKeys: nil, relativeTo: nil)
+                            set(bookmark, forKey: Names.archivePathType.rawValue)
+                        } catch {
+                            print("Bookmark error \(error)")
+                        }
+                        #endif
                     default:
                         try setObject(newValue, forKey: .archivePathType)
                 }
@@ -126,6 +126,11 @@ public final class PathManager: Log {
 
         let newArchiveUrl = try type.getArchiveUrl()
         let oldArchiveUrl = try archivePathType.getArchiveUrl()
+
+        guard newArchiveUrl != oldArchiveUrl else {
+            log.errorAndAssert("Old and new archive url should be different", metadata: ["newArchiveUrl": "\(newArchiveUrl)"])
+            return
+        }
 
         let contents = try fileManager.contentsOfDirectory(at: oldArchiveUrl, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
             .filter(\.hasDirectoryPath)
