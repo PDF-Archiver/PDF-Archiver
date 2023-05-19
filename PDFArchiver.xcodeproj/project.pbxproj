@@ -570,8 +570,9 @@
 		3489D70F24A3C53D0035E64F /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1220;
-				LastUpgradeCheck = 1410;
+				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					3489D71A24A3C53E0035E64F = {
 						CreatedOnToolsVersion = 12.0;
@@ -1029,6 +1030,7 @@
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1056,6 +1058,7 @@
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1081,12 +1084,13 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 57;
+				CURRENT_PROJECT_VERSION = 65;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = macOS/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_OUTPUT_FORMAT = binary;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1110,12 +1114,13 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 57;
+				CURRENT_PROJECT_VERSION = 65;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = macOS/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_OUTPUT_FORMAT = binary;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
