@@ -24,8 +24,26 @@
         "repositoryURL": "https://github.com/WeTransfer/Diagnostics",
         "state": {
           "branch": null,
-          "revision": "5dbb0f041162902234d6aa07cd222ec11734dd2f",
-          "version": "1.12.0"
+          "revision": "c3816d37ff6993b7de46aff3370354c4cadca7c8",
+          "version": "4.5.0"
+        }
+      },
+      {
+        "package": "Down",
+        "repositoryURL": "https://github.com/iwasrobbed/Down",
+        "state": {
+          "branch": null,
+          "revision": "f34b166be1f1db4aa8f573067e901d72f2a6be57",
+          "version": "0.11.0"
+        }
+      },
+      {
+        "package": "ExceptionCatcher",
+        "repositoryURL": "https://github.com/sindresorhus/ExceptionCatcher",
+        "state": {
+          "branch": null,
+          "revision": "a7acaf40f8bd67a1f3a05a14de5b6a861ac3d1ac",
+          "version": "2.0.1"
         }
       },
       {
@@ -38,12 +56,21 @@
         }
       },
       {
+        "package": "Parma",
+        "repositoryURL": "https://github.com/dasautoooo/Parma",
+        "state": {
+          "branch": null,
+          "revision": "3c8b431fd5ad3cf675c60d0aa89f011cbcbb036c",
+          "version": "0.3.0"
+        }
+      },
+      {
         "package": "Sentry",
         "repositoryURL": "https://github.com/getsentry/sentry-cocoa",
         "state": {
           "branch": null,
-          "revision": "fa1ba77bd74a227875a585a8ee569f330564926b",
-          "version": "7.5.0"
+          "revision": "9cf7d2e514af1600cc2b3c5592e2848c6c5a76d6",
+          "version": "8.7.3"
         }
       },
       {
@@ -51,17 +78,17 @@
         "repositoryURL": "https://github.com/apple/swift-log.git",
         "state": {
           "branch": null,
-          "revision": "5d66f7ba25daf4f94100e7022febf3c75e37a6c7",
-          "version": "1.4.2"
+          "revision": "32e8d724467f8fe623624570367e3d50c5638e46",
+          "version": "1.5.2"
         }
       },
       {
         "package": "SwiftUIX",
         "repositoryURL": "https://github.com/SwiftUIX/SwiftUIX",
         "state": {
-          "branch": "master",
-          "revision": "a29d6179de1477f046058f17d81b7f2fc2b36160",
-          "version": null
+          "branch": null,
+          "revision": "75d5be2c85ec1e3ccbd9d99d321dd3abb5955e8d",
+          "version": "0.1.5"
         }
       },
       {
@@ -69,8 +96,8 @@
         "repositoryURL": "https://github.com/tikhop/TPInAppReceipt",
         "state": {
           "branch": null,
-          "revision": "14f707e28fc7e19aadac72c8d63eb8610fa9c3bf",
-          "version": "3.3.0"
+          "revision": "5b830d6ce6c34bb4bb976917576ab560e7945037",
+          "version": "3.3.4"
         }
       }
     ]
