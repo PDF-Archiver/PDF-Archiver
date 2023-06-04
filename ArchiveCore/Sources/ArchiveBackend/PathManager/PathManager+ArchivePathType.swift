@@ -1,6 +1,6 @@
 //
 //  PathManager+ArchivePathType.swift
-//  
+//
 //
 //  Created by Julian Kahnert on 17.11.20.
 //
@@ -13,23 +13,32 @@ extension PathManager {
         #if !os(macOS)
         case appContainer
         #endif
-        #if os(macOS)
         case local(URL)
-        #endif
 
         func getArchiveUrl() throws -> URL {
             switch self {
                 case .iCloudDrive:
                     guard let url = FileManager.default.iCloudDriveURL else { throw PathError.iCloudDriveNotFound }
                     return url
-                #if !os(macOS)
+                #if os(iOS)
                 case .appContainer:
                     return FileManager.default.appContainerURL
                 #endif
-                #if os(macOS)
                 case .local(let url):
                     return url
+            }
+        }
+
+        public var isFileBrowserCompatible: Bool {
+            switch self {
+                case .iCloudDrive:
+                    return true
+                #if !os(macOS)
+                case .appContainer:
+                    return false
                 #endif
+                case .local:
+                    return true
             }
         }
     }
@@ -41,9 +50,7 @@ extension PathManager.ArchivePathType: Codable {
         #if !os(macOS)
         case appContainer
         #endif
-        #if os(macOS)
         case local
-        #endif
     }
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -55,11 +62,9 @@ extension PathManager.ArchivePathType: Codable {
             case .appContainer:
                 self = .appContainer
             #endif
-            #if os(macOS)
             case .local:
                 let url = try container.decode(URL.self, forKey: .local)
                 self = .local(url)
-            #endif
             case .none:
                 throw DecodingError.dataCorrupted(
                     DecodingError.Context(
@@ -79,10 +84,8 @@ extension PathManager.ArchivePathType: Codable {
             case .appContainer:
                 try container.encode("", forKey: .appContainer)
             #endif
-            #if os(macOS)
             case .local(let url):
                 try container.encode(url, forKey: .local)
-            #endif
         }
     }
 }

@@ -7,14 +7,6 @@
 
 import SwiftUI
 
-extension Binding where Value == [String] {
-    func insertAndSort(_ item: String) {
-        var uniqueItems = Set(wrappedValue)
-        uniqueItems.insert(item)
-        wrappedValue = uniqueItems.sorted()
-    }
-}
-
 extension Binding where Value == Bool {
     func negate() -> Binding<Bool> {
         Binding(get: { !wrappedValue },

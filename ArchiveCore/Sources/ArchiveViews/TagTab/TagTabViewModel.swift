@@ -117,14 +117,14 @@ final class TagTabViewModel: ObservableObject, Log {
                 let sortedDocuments = newUntaggedDocuments
                     .sorted { doc1, doc2 in
 
-                        // sort by file creation date to get most recent scans at first
-                        if let date1 = try? archiveStore.getCreationDate(of: doc1.path),
-                           let date2 = try? archiveStore.getCreationDate(of: doc2.path) {
-
-                            return date1 > date2
-                        } else {
-                            return doc1 > doc2
-                        }
+//                        // sort by file creation date to get most recent scans at first
+//                        if let date1 = try? archiveStore.getCreationDate(of: doc1.path),
+//                           let date2 = try? archiveStore.getCreationDate(of: doc2.path) {
+//
+//                            return date1 > date2
+//                        } else {
+                            return doc1.path.absoluteString > doc2.path.absoluteString
+//                        }
                     }
                     .reversed()
 
@@ -180,6 +180,9 @@ final class TagTabViewModel: ObservableObject, Log {
                 if let document = document,
                    let pdfDocument = PDFDocument(url: document.path) {
                     self.pdfDocument = pdfDocument
+                    self.specification = document.specification
+                    self.documentTags = document.tags.sorted()
+                    self.suggestedTags = []
 
                     // try to parse suggestions from document content
                     self.queue.async { [weak self] in
@@ -191,6 +194,14 @@ final class TagTabViewModel: ObservableObject, Log {
                                 let pageContent = page.string else { return }
 
                             text += pageContent
+                        }
+
+                        // try to mach some tags from the document and use them as documentTags
+                        let matchedTags = tagStore.getTags(from: text)
+                        if !matchedTags.isEmpty {
+                            DispatchQueue.main.async {
+                                self?.documentTags = matchedTags.sorted()
+                            }
                         }
 
                         // get tags and save them in the background, they will be passed to the TagTabView
@@ -222,10 +233,6 @@ final class TagTabViewModel: ObservableObject, Log {
                         }
                     }
 
-                    self.specification = document.specification
-                    self.documentTags = document.tags.sorted()
-                    self.suggestedTags = []
-
                 } else {
                     Self.log.error("Could not present document.")
                     self.pdfDocument = PDFDocument()
@@ -250,18 +257,34 @@ final class TagTabViewModel: ObservableObject, Log {
             .assign(to: &$documentTags)
     }
 
-    func saveTag(_ tagName: String) {
+    func saveTag() {
+        let tag = documentTagInput.lowercased().slugified(withSeparator: "")
+        guard !tag.isEmpty else { return }
+        documentTags.insertAndSort(tag)
+
         // reset this value after the documents have been set, because the input view
         // tags will be triggered by this and depend on the document tags
-        defer {
-            documentTagInput = ""
+        Task.detached {
+            await MainActor.run {
+                self.documentTagInput = ""
+            }
         }
+    }
 
-        let input = tagName.lowercased().slugified(withSeparator: "")
-        guard !input.isEmpty else { return }
-        var tags = Set(documentTags)
-        tags.insert(input)
-        documentTags = Array(tags).sorted()
+    func suggestedTagTapped(_ tag: String) {
+        suggestedTags.removeAll { $0 == tag }
+        documentTags.insertAndSort(tag)
+
+        Task.detached {
+            await MainActor.run {
+                self.documentTagInput = ""
+            }
+        }
+    }
+
+    func documentTagTapped(_ tag: String) {
+        documentTags.removeAll { $0 == tag }
+//        suggestedTags.insertAndSort(tag)
     }
 
     func saveDocument() {

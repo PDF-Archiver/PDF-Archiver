@@ -30,7 +30,6 @@ public extension Color {
 
 #if os(macOS)
 public extension Color {
-    static var systemBackground = Color(.windowBackgroundColor)
     static var secondarySystemBackground = Color(.controlBackgroundColor)
     static var systemGray6 = Color(.darkGray)
 }

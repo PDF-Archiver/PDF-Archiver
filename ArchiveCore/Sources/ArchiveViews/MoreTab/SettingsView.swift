@@ -106,7 +106,7 @@ public struct SettingsView: View {
                 .font(.title)
                 .foregroundColor(.paDarkRed)
                 .padding(.vertical, 8)
-            StorageSelectionView(selection: $viewModel.selectedArchiveType)
+            StorageSelectionView(selection: $viewModel.selectedArchiveType, onCompletion: viewModel.handleDocumentPicker)
                 .listStyle(InsetListStyle())
             Button("Open Archive Folder" as LocalizedStringKey, action: viewModel.openArchiveFolder)
                 .frame(maxWidth: .infinity)

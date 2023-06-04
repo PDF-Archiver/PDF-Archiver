@@ -9,8 +9,11 @@
 
 import Combine
 import SwiftUI
+#if os(iOS)
+import CoreServices
+#endif
 
-public final class MoreTabViewModel: ObservableObject, Log {
+public class MoreTabViewModel: ObservableObject, Log {
     public static let appVersion = AppEnvironment.getFullVersion()
 
     public static func markdownView(for title: LocalizedStringKey, withKey key: String) -> some View {
@@ -84,41 +87,29 @@ public final class MoreTabViewModel: ObservableObject, Log {
             }
             .store(in: &disposables)
 
-        #if os(macOS)
         $selectedArchiveType
             .dropFirst()
             .sink { selectedArchiveType in
                 let type: PathManager.ArchivePathType
                 switch selectedArchiveType {
-                    case .iCloudDrive:
-                        type = .iCloudDrive
-                    case .local:
-                        if let newArchiveUrl = self.newArchiveUrl {
-                            type = .local(newArchiveUrl)
-                            self.newArchiveUrl = nil
-                        } else {
-                            self.chooseArchivePanel()
-                            return
-                        }
+                case .iCloudDrive:
+                    type = .iCloudDrive
+                #if os(iOS)
+                case .appContainer:
+                    type = .appContainer
+                #endif
+                case .local:
+                    if let newArchiveUrl = self.newArchiveUrl {
+                        type = .local(newArchiveUrl)
+                        self.newArchiveUrl = nil
+                    } else {
+                        // document picker will be opened
+                        return
+                    }
                 }
                 self.handle(newType: type)
             }
             .store(in: &disposables)
-        #else
-        $selectedArchiveType
-            .dropFirst()
-            .sink { selectedArchiveType in
-                let type: PathManager.ArchivePathType
-                switch selectedArchiveType {
-                    case .iCloudDrive:
-                        type = .iCloudDrive
-                    case .appContainer:
-                        type = .appContainer
-                }
-                self.handle(newType: type)
-            }
-            .store(in: &disposables)
-        #endif
 
         iapService.appUsagePermittedPublisher
             .removeDuplicates()
@@ -142,26 +133,17 @@ public final class MoreTabViewModel: ObservableObject, Log {
     }
     #endif
 
-    #if os(macOS)
-    private func chooseArchivePanel() {
-        let openPanel = NSOpenPanel()
-        openPanel.title = NSLocalizedString("Choose the archive folder", comment: "")
-        openPanel.showsResizeIndicator = false
-        openPanel.showsHiddenFiles = false
-        openPanel.canChooseFiles = false
-        openPanel.canChooseDirectories = true
-        openPanel.allowsMultipleSelection = false
-        openPanel.canCreateDirectories = true
-        openPanel.begin { response in
-            guard response == .OK,
-                  let url = openPanel.url else { return }
-            self.newArchiveUrl = url
+    func handleDocumentPicker(result: Result<URL, Error>) {
+        switch result {
+        case .success(let selectedUrl):
+            self.newArchiveUrl = selectedUrl
             // trigger archive type change
             let tmp = self.selectedArchiveType
             self.selectedArchiveType = tmp
+        case .failure(let error):
+            self.log.errorAndAssert("Found error in document picker", metadata: ["error": "\(error)"])
         }
     }
-    #endif
 
     private func handle(newType type: PathManager.ArchivePathType) {
         do {
