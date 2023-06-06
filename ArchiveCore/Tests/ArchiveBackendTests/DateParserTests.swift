@@ -66,7 +66,7 @@ final class DateParserTests: XCTestCase {
 
             // assert
             if let parsedOutput = parsedOutput {
-                XCTAssertTrue(Calendar.current.isDate(parsedOutput.date, inSameDayAs: try XCTUnwrap(date)))
+                XCTAssertTrue(Calendar.current.isDate(parsedOutput.date, inSameDayAs: try XCTUnwrap(date)), "Found parsed output: \(parsedOutput)")
             } else {
                 XCTFail("No date was found, this should not happen in this test. (\(raw))")
             }
@@ -86,7 +86,7 @@ final class DateParserTests: XCTestCase {
 
             // assert
             if let parsedOutput = parsedOutput {
-                XCTAssertTrue(Calendar.current.isDate(parsedOutput.date, inSameDayAs: try XCTUnwrap(date)))
+                XCTAssertTrue(Calendar.current.isDate(parsedOutput.date, inSameDayAs: try XCTUnwrap(date)), "Found parsed output: \(parsedOutput)")
             } else {
                 XCTFail("No date was found, this should not happen in this test.")
             }
