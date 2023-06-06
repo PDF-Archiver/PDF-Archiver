@@ -30,31 +30,6 @@ extension String {
             .replacingOccurrences(of: "[^0-9a-zA-Z]+", with: separator, options: .regularExpression, range: nil)
     }
 
-    /// Find groups by a given regular expression.
-    ///
-    /// - Parameter pattern: regular expression which captures a group
-    /// - Returns: Array of found groups
-    public func capturedGroups(withRegex regex: NSRegularExpression) -> [String]? {
-        // this function is inspired by:
-        // https://gist.github.com/unshapedesign/1b95f78d7f74241f706f346aed5384ff
-        let matches = regex.matches(in: self,
-                                    options: [],
-                                    range: NSRange(location: 0, length: count))
-
-        guard let match = matches.first else { return nil }
-
-        let lastRangeIndex = match.numberOfRanges - 1
-        guard lastRangeIndex >= 1 else { return nil }
-
-        var results = [String]()
-        for idx in 1...lastRangeIndex {
-            let capturedGroupIndex = match.range(at: idx)
-            let matchedString = (self as NSString).substring(with: capturedGroupIndex)
-            results.append(matchedString)
-        }
-        return results
-    }
-
     public var isNumeric: Bool {
         CharacterSet.decimalDigits.isSuperset(of: CharacterSet(charactersIn: self))
     }

@@ -39,39 +39,6 @@ final class StringExtensionTests: XCTestCase {
         }
     }
 
-    func testCapturedGroups() throws {
-
-        // setup
-        let testString = "2010-05-12--example-description__tag1_tag2_tag3"
-
-        // calculate
-        let regex = try NSRegularExpression(pattern: "__([\\w\\d_]+)", options: [])
-        let groups = testString.capturedGroups(withRegex: regex)
-
-        // assert
-        if let groups = groups {
-            XCTAssertEqual(groups[0], "tag1_tag2_tag3")
-        } else {
-            XCTFail("No group found. This should not happen.")
-        }
-    }
-
-    func testCapturedGroupsInvalid() throws {
-
-        // setup
-        let testString = "2010-05-12--example-description"
-
-        // calculate
-        // no groups in test string
-        let regex = try NSRegularExpression(pattern: "__([\\w\\d_]+)", options: [])
-        let groups1 = testString.capturedGroups(withRegex: regex)
-        // invalid regular expression
-        XCTAssertThrowsError(try NSRegularExpression(pattern: "([", options: []))
-
-        // assert
-        XCTAssertNil(groups1)
-    }
-
     func testCapitalizingFirstLetter() {
 
         // setup
@@ -94,25 +61,5 @@ final class StringExtensionTests: XCTestCase {
 
         // assert
         XCTAssertEqual(output, "This Is Another Test")
-    }
-
-    func testCapturedGroupsPerformance() throws {
-
-        // setup
-        let testString = "2010-05-12--example-description__tag1_tag2_tag3"
-
-        // calculate
-        let regex = try NSRegularExpression(pattern: "__([\\w\\d_]+)", options: [])
-        var groups: [String]?
-        measure {
-            groups = testString.capturedGroups(withRegex: regex)
-        }
-
-        // assert
-        if let groups = groups {
-            XCTAssertEqual(groups[0], "tag1_tag2_tag3")
-        } else {
-            XCTFail("No group found. This should not happen.")
-        }
     }
 }
