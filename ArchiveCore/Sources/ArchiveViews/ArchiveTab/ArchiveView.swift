@@ -103,6 +103,7 @@ struct ArchiveView: View {
                 }
             }
             .onDelete(perform: viewModel.delete(at:))
+            .listRowSeparatorHidden()
         }
     }
 
