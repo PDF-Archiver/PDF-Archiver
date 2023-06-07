@@ -33,12 +33,11 @@ struct DocumentView: View {
             .layoutPriority(1)
             tags
                 .layoutPriority(2)
-            if !showTagStatus && viewModel.downloadStatus.isDownloading {
-                ProgressView(value: viewModel.downloadStatus.percentageDownloading, total: 1.0)
-                    .progressViewStyle(.linear)
-                    .foregroundColor(.paDarkGray)
-                    .frame(maxHeight: 4)
-            }
+            ProgressView(value: viewModel.downloadStatus.percentageDownloading, total: 1.0)
+                .progressViewStyle(.linear)
+                .foregroundColor(.paDarkGray)
+                .frame(maxHeight: 4)
+                .hidden(!(!showTagStatus && viewModel.downloadStatus.isDownloading))
         }
         .frame(maxWidth: .infinity, maxHeight: 65.0)
     }

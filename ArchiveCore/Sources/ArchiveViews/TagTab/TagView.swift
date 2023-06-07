@@ -35,13 +35,13 @@ struct TagView: View, Identifiable {
     private var buttonLabel: some View {
         if isEditable {
             HStack(alignment: .center) {
-                Label(tagName.capitalized, systemImage: "tag")
+                Text(tagName.capitalized)
                 Spacer()
-                Image(systemName: "xmark.circle.fill")
+                Image(systemName: "xmark.circle")
                     .font(.caption)
             }
         } else {
-            Label(tagName.capitalized, systemImage: "tag")
+            Text(tagName.capitalized)
         }
     }
 

@@ -19,6 +19,7 @@ struct DocumentInformationForm: View {
                 Spacer()
                 Button("Today" as LocalizedStringKey) {
                     viewModel.date = Date()
+                    FeedbackGenerator.selectionChanged()
                 }
                 .padding(.horizontal, 11)
                 .padding(.vertical, 7)
@@ -52,7 +53,6 @@ struct DocumentInformationForm: View {
                                     }
                                 }
                             }
-                            .hidden(viewModel.suggestedTags.isEmpty)
                         }
                     }
             } else {
