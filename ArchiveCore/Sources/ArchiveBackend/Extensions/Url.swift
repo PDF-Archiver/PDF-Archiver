@@ -53,8 +53,7 @@ extension URL: Log {
                 }
                 return newTag
             }
-
-        } else if let newTags = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? [String] {
+        } else if let newTags = try NSKeyedUnarchiver.unarchivedObject(ofClass: NSArray.self, from: data) as? [String] {
             tags = newTags
         }
         return tags

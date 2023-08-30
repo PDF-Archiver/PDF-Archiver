@@ -17,11 +17,6 @@ extension Document: Searchitem {}
 
 public final class Document: Identifiable, Codable, Log {
 
-    // swiftlint:disable force_try
-    private static let filenameDateRegex = try! NSRegularExpression(pattern: "([\\d-]+)--", options: [])
-    private static let filenameSpecificationRegex = try! NSRegularExpression(pattern: "--([\\w\\d-]+)__", options: [])
-    // swiftlint:enable force_try
-
     public var id: String {
         path.absoluteString + downloadStatus.description
     }
@@ -80,10 +75,15 @@ public final class Document: Identifiable, Codable, Log {
         // parse the specification
         var specification: String?
 
-        if let raw = filename.capturedGroups(withRegex: filenameSpecificationRegex) {
+        let components = filename.components(separatedBy: "--")
+        if components.count == 2,
+           let lastComponents = components.last?.components(separatedBy: "__"),
+           lastComponents.count == 2,
+           let raw = lastComponents.first,
+           !raw.isEmpty {
 
             // try to parse the real specification from scheme
-            specification = raw[0]
+            specification = raw
 
         } else {
 
@@ -119,15 +119,17 @@ public final class Document: Identifiable, Codable, Log {
         return (date, specification, tagNames)
     }
 
-    private static func getFilenameDate(_ raw: String) -> (date: Date, rawDate: String)? {
-        if let groups = raw.capturedGroups(withRegex: filenameDateRegex) {
-            let rawDate = groups[0]
-
-            if let date = dateFormatter.date(from: rawDate) {
-                return (date, rawDate)
-            }
+    private static func getFilenameDate(_ filename: String) -> (date: Date, rawDate: String)? {
+        var rawDate: String?
+        if let components = filename.components(separatedBy: "--") as [String]?, components.count > 1 {
+            rawDate = components.first
+        } else if let components = filename.components(separatedBy: "__") as [String]?, components.count > 1 {
+            rawDate = components.first
         }
-        return nil
+
+        guard let rawDate,
+              let date = DateFormatter.yyyyMMdd.date(from: rawDate) else { return nil }
+        return (date, rawDate)
     }
 
     public static func createFilename(date: Date, specification: String, tags: Set<String>) -> String {
