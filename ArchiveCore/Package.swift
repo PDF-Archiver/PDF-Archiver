@@ -23,7 +23,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/apple/swift-log.git", from: "1.5.3"),
         .package(url: "https://github.com/onmyway133/DeepDiff.git", from: "2.3.3"),
-        .package(url: "https://github.com/SwiftUIX/SwiftUIX", from: "0.1.6"),
+        .package(url: "https://github.com/SwiftUIX/SwiftUIX", from: "0.1.7"),
         .package(url: "https://github.com/dasautoooo/Parma", from: "0.3.0"),
         .package(url: "https://github.com/WeTransfer/Diagnostics", from: "4.5.0"),
         .package(url: "https://github.com/tikhop/TPInAppReceipt", from: "3.3.4"),
