@@ -23,10 +23,6 @@ final class DocumentTests: XCTestCase {
         return formatter
     }
 
-    override func setUp() {
-        super.setUp()
-    }
-
     // MARK: - Test Document.parseFilename
 
     func testFilenameParsing1() {

@@ -22,11 +22,6 @@ class UITestsiOS: XCTestCase {
         app.launch()
     }
 
-    override func tearDownWithError() throws {
-        try super.tearDownWithError()
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
     func testSelectScan() throws {
         let tabBar = app.tabBars.firstMatch
         _ = tabBar.waitForExistence(timeout: 10)

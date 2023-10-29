@@ -20,10 +20,6 @@ final class FuzzyMatchingTests: XCTestCase {
             .map(String.init)
     }()
 
-    override func setUp() {
-        super.setUp()
-    }
-
     func testPerformance1() throws {
         guard let testFilenames = Self.testFilenames else { throw XCTSkip("Could not fetch linux file content.") }
 

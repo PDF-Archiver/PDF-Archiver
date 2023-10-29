@@ -303,7 +303,10 @@ final class TagTabViewModel: ObservableObject, Log {
 
         if !UserDefaults.notSaveDocumentTagsAsPDFMetadata {
             pdfDocument.setMetadataTags(Array(slugifiedTags))
-            pdfDocument.write(to: document.path)
+
+            if UserDefaults.shouldManipulatePdfDocument() {
+                pdfDocument.write(to: document.path)
+            }
         }
 
         queue.async {

@@ -34,6 +34,14 @@ extension UserDefaults: Log {
         public static let defaultQualityIndex = 1  // e.g. "good"
     }
 
+    public static func shouldManipulatePdfDocument() -> Bool {
+        if #available(iOS 17, macOS 14, *) {
+            return false
+        } else {
+            return true
+        }
+    }
+
     public static var isInDemoMode: Bool {
         UserDefaults.standard.bool(forKey: "demoMode")
     }

@@ -12,10 +12,6 @@ import XCTest
 
 final class ArrayURLTests: XCTestCase {
 
-    override func setUp() {
-        super.setUp()
-    }
-
     func testParents() {
         let url1 = URL(string: "/test/folder1/archive/untagged")!
         let url2 = URL(string: "/test/folder1/archive")!
