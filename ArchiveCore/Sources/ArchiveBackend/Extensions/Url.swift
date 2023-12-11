@@ -45,14 +45,10 @@ extension URL: Log {
         var tags = [String]()
         let data = try self.getExtendedAttribute(forName: URL.itemUserTagsName)
         if let tagPlist = try PropertyListSerialization.propertyList(from: data, options: [], format: nil) as? [String] {
-
-            tags = tagPlist.map { tag -> String in
-                var newTag = tag
-                if newTag.suffix(2) == "\n0" {
-                    newTag.removeLast(2)
-                }
-                return newTag
-            }
+            // some lokal tags are saved with a "\n0" or "\n1" suffix, e.g. "ikea\n1"
+            tags = tagPlist
+                .compactMap { $0.split(separator: "\n").first}
+                .map { String($0)}
         } else if let newTags = try NSKeyedUnarchiver.unarchivedObject(ofClass: NSArray.self, from: data) as? [String] {
             tags = newTags
         }

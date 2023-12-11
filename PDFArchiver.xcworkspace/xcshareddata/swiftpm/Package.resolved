@@ -69,8 +69,8 @@
         "repositoryURL": "https://github.com/getsentry/sentry-cocoa",
         "state": {
           "branch": null,
-          "revision": "008325304ada69fa32aa7aeba967b65984f30569",
-          "version": "8.14.2"
+          "revision": "74cf23b2946c92550fb1185612077151497e648e",
+          "version": "8.17.1"
         }
       },
       {
@@ -87,8 +87,8 @@
         "repositoryURL": "https://github.com/SwiftUIX/SwiftUIX",
         "state": {
           "branch": null,
-          "revision": "5d472e5797d377af3d65c711af60277c7a753663",
-          "version": "0.1.7"
+          "revision": "a5a22a1aaca885c229f475af049d75a6d9144de8",
+          "version": "0.1.9"
         }
       },
       {
