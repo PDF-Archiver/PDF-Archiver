@@ -45,18 +45,25 @@ extension URL: Log {
         var tags = [String]()
         let data = try self.getExtendedAttribute(forName: URL.itemUserTagsName)
         if let tagPlist = try PropertyListSerialization.propertyList(from: data, options: [], format: nil) as? [String] {
-
-            tags = tagPlist.map { tag -> String in
-                var newTag = tag
-                if newTag.suffix(2) == "\n0" {
-                    newTag.removeLast(2)
-                }
-                return newTag
-            }
-        } else if let newTags = try NSKeyedUnarchiver.unarchivedObject(ofClass: NSArray.self, from: data) as? [String] {
+            log.debug("using PropertyListSerialization")
+            tags = tagPlist
+        } else if let newTags = try NSKeyedUnarchiver.unarchivedArrayOfObjects(ofClass: NSString.self, from: data) as? [String] {
+            log.debug("using NSKeyedUnarchiver")
             tags = newTags
         }
-        return tags
+        
+        // some lokal tags are saved with a "\n0" or "\n1" suffix, e.g. "ikea\n1"
+        let fixedTags = tags
+            .compactMap { $0.split(separator: "\n").first}
+            .map { String($0)}
+        
+        // additional logs for the testflight/debug environment to get the "duplicated tags" bug debugged/fixed
+        if AppEnvironment.get() != .production,
+           fixedTags.contains(where: {$0.last == "1"}) {
+            log.error("Duplicated tags bug occurred", metadata: ["tags": "\(tags.joined(separator: "&"))", "fixedTags": "\(fixedTags.joined(separator: "&"))", "dataBase64": "\(data.base64EncodedString())"])
+        }
+        
+        return fixedTags
     }
 
     private func setiOSFileTags(_ fileTags: [String]) throws {

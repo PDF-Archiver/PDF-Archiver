@@ -36,7 +36,13 @@ extension UserDefaults: Log {
 
     public static func shouldManipulatePdfDocument() -> Bool {
         if #available(iOS 17, macOS 14, *) {
-            return false
+            if #available(iOS 17.2, macOS 14.2, *) {
+                // creation of PDFs is fixed in iOS 17.2
+                return true
+            } else {
+                // iOS 17.0 to 17.1
+                return false
+            }
         } else {
             return true
         }
