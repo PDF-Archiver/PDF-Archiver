@@ -9,7 +9,11 @@ import Foundation
 
 extension FileManager {
     var iCloudDriveURL: URL? {
-        url(forUbiquityContainerIdentifier: nil)?.appendingPathComponent("Documents")
+        if #available(iOS 16.0, *) {
+            return url(forUbiquityContainerIdentifier: nil)?.appending(path: "Documents", directoryHint: .isDirectory)
+        } else {
+            return url(forUbiquityContainerIdentifier: nil)?.appendingPathComponent("Documents", isDirectory: true)
+        }
     }
 
     #if !os(macOS)
