@@ -174,9 +174,14 @@ public struct SettingsView: View {
             VStack(spacing: 32) {
                 AboutMeView()
 
-                Text("Version \(MoreTabViewModel.appVersion)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                if #available(macOS 14.0, *) {
+                    Text("Version \(MoreTabViewModel.appVersion)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                } else {
+                    Text("Version \(MoreTabViewModel.appVersion)")
+                        .font(.caption)
+                }
 
                 HStack {
                     Spacer()
