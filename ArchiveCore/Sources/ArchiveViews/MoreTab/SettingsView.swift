@@ -170,23 +170,36 @@ public struct SettingsView: View {
     }
 
     private var moreInformation: some View {
-        NavigationView {
-            VStack {
-                List {
-                    NavigationLink("About  👤", destination: AboutMeView(), isActive: $showMoreInformation)
-                    MoreTabViewModel.markdownView(for: "Terms & Privacy", withKey: "Privacy")
-                    MoreTabViewModel.markdownView(for: "Imprint", withKey: "Imprint")
-                }
-            Spacer()
-            DetailRowView(name: "Contact Support  🚑") {
-                NotificationCenter.default.post(Notification(name: .showSendDiagnosticsReport))
-            }
-            Link("PDF Archiver Website  🖥", destination: viewModel.pdfArchiverUrl)
-            Text("Version \(MoreTabViewModel.appVersion)")
-                .font(.caption)
-            }
-            .padding(.bottom, 16)
+        ScrollView {
+            VStack(spacing: 32) {
+                AboutMeView()
 
+                Text("Version \(MoreTabViewModel.appVersion)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                HStack {
+                    Spacer()
+                    DetailRowView(name: "Contact Support  🚑") {
+                        NotificationCenter.default.post(Notification(name: .showSendDiagnosticsReport))
+                    }
+                    Spacer()
+                    Link("PDF Archiver Website  🖥", destination: viewModel.pdfArchiverUrl)
+                    Spacer()
+                }
+
+                VStack {
+                    Text("Privacy")
+                        .font(.title)
+                    MoreTabViewModel.markdownView(for: "Terms & Privacy", withKey: "Privacy", withScrollView: false)
+                }
+
+                VStack {
+                    Text("Imprint")
+                        .font(.title)
+                    MoreTabViewModel.markdownView(for: "Imprint", withKey: "Imprint", withScrollView: false)
+                }
+            }
         }
         .frame(width: 750, height: 450)
     }

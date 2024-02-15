@@ -12,17 +12,23 @@ import SwiftUIX
 struct MarkdownView: View {
     var title: LocalizedStringKey
     var markdown: String
+    let scrollView: Bool
     var body: some View {
-        NavigationLink {
-            LazyView {
-                ScrollView {
-                    Parma(markdown)
+        if !scrollView {
+            Parma(markdown)
+                .navigationTitle(title)
+        } else {
+            NavigationLink {
+                LazyView {
+                    ScrollView {
+                        Parma(markdown)
+                    }
+                    .padding(.horizontal, 16)
                 }
-                .padding(.horizontal, 16)
+                .navigationTitle(title)
+            } label: {
+                Text(title)
             }
-            .navigationTitle(title)
-        } label: {
-            Text(title)
         }
     }
 }
@@ -35,6 +41,6 @@ struct MarkdownView_Previews: PreviewProvider {
         * item 1
         * item 2
         * item 3
-        """)
+        """, scrollView: true)
     }
 }
