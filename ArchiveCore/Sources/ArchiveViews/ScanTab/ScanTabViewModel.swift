@@ -107,6 +107,8 @@ public final class ScanTabViewModel: ObservableObject, DropDelegate, Log {
     public func performDrop(info: DropInfo) -> Bool {
         let types: [UTType] = [.fileURL, .image, .pdf]
         let items = info.itemProviders(for: types)
+        progressValue = 0.3
+        progressLabel = NSLocalizedString("ScanViewController.processing", comment: "") + "30%"
 
         DispatchQueue.global(qos: .userInitiated).async {
             var error: Error?
@@ -142,6 +144,22 @@ public final class ScanTabViewModel: ObservableObject, DropDelegate, Log {
             }
             if let error = error {
                 NotificationCenter.default.postAlert(error)
+            }
+
+            // set progress/label to finished
+            DispatchQueue.main.asyncAfter(deadline: .now().advanced(by: .milliseconds(500))) { [weak self] in
+                guard let self else { return }
+                self.progressValue = 1
+                self.progressLabel = NSLocalizedString("ScanViewController.processing", comment: "") + "100%"
+
+                // clear progress/label after some time
+                DispatchQueue.main.asyncAfter(deadline: .now().advanced(by: .seconds(1))) { [weak self] in
+                    guard let self,
+                          self.progressValue == 1 else { return }
+
+                    self.progressValue = 0
+                    self.progressLabel = " "
+                }
             }
         }
 
