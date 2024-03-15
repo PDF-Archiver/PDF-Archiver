@@ -51,18 +51,18 @@ extension URL: Log {
             log.debug("using NSKeyedUnarchiver")
             tags = newTags
         }
-        
+
         // some lokal tags are saved with a "\n0" or "\n1" suffix, e.g. "ikea\n1"
         let fixedTags = tags
             .compactMap { $0.split(separator: "\n").first}
             .map { String($0)}
-        
+
         // additional logs for the testflight/debug environment to get the "duplicated tags" bug debugged/fixed
         if AppEnvironment.get() != .production,
            fixedTags.contains(where: {$0.last == "1"}) {
             log.error("Duplicated tags bug occurred", metadata: ["tags": "\(tags.joined(separator: "&"))", "fixedTags": "\(fixedTags.joined(separator: "&"))", "dataBase64": "\(data.base64EncodedString())"])
         }
-        
+
         return fixedTags
     }
 

@@ -24,11 +24,10 @@ struct DocumentView: View {
                 titleSubtitle
                     .layoutPriority(2)
                 Spacer()
-                if !showTagStatus && viewModel.downloadStatus.isRemote {
-                    status
-                        .fixedSize()
-                        .layoutPriority(1)
-                }
+                status
+                    .fixedSize()
+                    .layoutPriority(1)
+                    .opacity((!showTagStatus && viewModel.downloadStatus.isRemote) ? 1 : 0)
             }
             .layoutPriority(1)
             tags
@@ -37,7 +36,7 @@ struct DocumentView: View {
                 .progressViewStyle(.linear)
                 .foregroundColor(.paDarkGray)
                 .frame(maxHeight: 4)
-                .hidden(!(!showTagStatus && viewModel.downloadStatus.isDownloading))
+                .opacity((!showTagStatus && viewModel.downloadStatus.isDownloading) ? 1 : 0)
         }
         .frame(maxWidth: .infinity, maxHeight: 65.0)
     }

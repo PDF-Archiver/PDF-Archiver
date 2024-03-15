@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/tikhop/ASN1Swift",
         "state": {
           "branch": null,
-          "revision": "b53bee03a942623db25afc5bfb80227b2cb3b425",
-          "version": "1.2.4"
+          "revision": "177417b6bf89431a0750ee640012b6aed8961c6a",
+          "version": "1.2.5"
         }
       },
       {
@@ -69,8 +69,8 @@
         "repositoryURL": "https://github.com/getsentry/sentry-cocoa",
         "state": {
           "branch": null,
-          "revision": "f5dafd7449be2f1778f2ddb87d57347b96461003",
-          "version": "8.17.2"
+          "revision": "b847a202a517a90763e8fd0656d8028aeee7b78d",
+          "version": "8.20.0"
         }
       },
       {
@@ -78,8 +78,8 @@
         "repositoryURL": "https://github.com/apple/swift-log",
         "state": {
           "branch": null,
-          "revision": "532d8b529501fb73a2455b179e0bbb6d49b652ed",
-          "version": "1.5.3"
+          "revision": "e97a6fcb1ab07462881ac165fdbb37f067e205d5",
+          "version": "1.5.4"
         }
       },
       {
@@ -96,8 +96,8 @@
         "repositoryURL": "https://github.com/tikhop/TPInAppReceipt",
         "state": {
           "branch": null,
-          "revision": "5b830d6ce6c34bb4bb976917576ab560e7945037",
-          "version": "3.3.4"
+          "revision": "5c1ecd9da98fe0373da9d66e8106104d0d305ce3",
+          "version": "3.4.0"
         }
       }
     ]

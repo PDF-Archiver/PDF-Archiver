@@ -159,8 +159,7 @@ final class TagTabViewModel: ObservableObject, Log {
                     // and is part of all currentDocuments
                     return
                 }
-                self.currentDocument = currentDocuments
-                    .first { $0.taggingStatus == .untagged && $0.downloadStatus == .local }
+                self.currentDocument = currentDocuments.first { $0.taggingStatus == .untagged && $0.downloadStatus == .local && FileManager.default.fileExists(at: $0.path) }
             }
             .store(in: &disposables)
 
@@ -177,7 +176,7 @@ final class TagTabViewModel: ObservableObject, Log {
             .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .sink { document in
-                if let document = document,
+                if let document,
                    let pdfDocument = PDFDocument(url: document.path) {
                     self.pdfDocument = pdfDocument
                     self.specification = document.specification
@@ -337,7 +336,7 @@ final class TagTabViewModel: ObservableObject, Log {
         FeedbackGenerator.notify(.success)
 
         // delete document in archive
-        guard let currentDocument = currentDocument else { return }
+        guard let currentDocument else { return }
         queue.async {
             do {
                 // this will trigger the publisher, which calls getNewDocument, e.g.
