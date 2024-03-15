@@ -16,11 +16,11 @@ import CoreServices
 public class MoreTabViewModel: ObservableObject, Log {
     public static let appVersion = AppEnvironment.getFullVersion()
 
-    public static func markdownView(for title: LocalizedStringKey, withKey key: String) -> some View {
+    public static func markdownView(for title: LocalizedStringKey, withKey key: String, withScrollView scrollView: Bool = true) -> some View {
         guard let url = Bundle.main.url(forResource: key, withExtension: "md"),
               let markdown = try? String(contentsOf: url) else { preconditionFailure("Could not fetch file \(key)") }
 
-        return MarkdownView(title: title, markdown: markdown)
+        return MarkdownView(title: title, markdown: markdown, scrollView: scrollView)
     }
 
     let qualities: [String] = ["100% - Lossless 🤯", "75% - Good 👌 (Default)", "50% - Normal 👍", "25% - Small 💾"]

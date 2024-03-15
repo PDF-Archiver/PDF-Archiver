@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension FileManager {
+extension FileManager: Log {
     public func fileExists(at url: URL) -> Bool {
         fileExists(atPath: url.path)
     }
@@ -20,7 +20,9 @@ extension FileManager {
 
     public func createFolderIfNotExists(_ folder: URL) throws {
         if !directoryExists(at: folder) {
+            log.debug("Try to create folder", metadata: ["folder": "\(folder.path)"])
             try createDirectory(at: folder, withIntermediateDirectories: true, attributes: nil)
+            log.debug("folder creation success", metadata: ["folder": "\(folder.path)"])
         }
     }
 
