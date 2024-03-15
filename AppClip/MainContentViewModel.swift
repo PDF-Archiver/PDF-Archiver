@@ -5,7 +5,6 @@
 //  Created by Julian Kahnert on 24.10.20.
 //
 
-import ArchiveViews
 import Combine
 import PDFKit
 import SwiftUI

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1430"
+   LastUpgradeVersion = "1520"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -20,20 +20,6 @@
                ReferencedContainer = "container:PDFArchiver.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "NO"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "ArchiveBackendTests"
-               BuildableName = "ArchiveBackendTests"
-               BlueprintName = "ArchiveBackendTests"
-               ReferencedContainer = "container:ArchiveCore">
-            </BuildableReference>
-         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -51,42 +37,6 @@
                BuildableName = "Tests macOS.xctest"
                BlueprintName = "Tests macOS"
                ReferencedContainer = "container:PDFArchiver.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES"
-            testExecutionOrdering = "random">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "ArchiveBackendTests"
-               BuildableName = "ArchiveBackendTests"
-               BlueprintName = "ArchiveBackendTests"
-               ReferencedContainer = "container:ArchiveCore">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES"
-            testExecutionOrdering = "random">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "ArchiveSharedConstantsTests"
-               BuildableName = "ArchiveSharedConstantsTests"
-               BlueprintName = "ArchiveSharedConstantsTests"
-               ReferencedContainer = "container:ArchiveCore">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES"
-            testExecutionOrdering = "random">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "ArchiveViewsTests"
-               BuildableName = "ArchiveViewsTests"
-               BlueprintName = "ArchiveViewsTests"
-               ReferencedContainer = "container:ArchiveCore">
             </BuildableReference>
          </TestableReference>
       </Testables>

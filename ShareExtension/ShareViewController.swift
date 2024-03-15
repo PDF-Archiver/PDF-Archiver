@@ -6,7 +6,6 @@
 //  Copyright © 2020 Julian Kahnert. All rights reserved.
 //
 
-import ArchiveSharedConstants
 import PDFKit
 import UIKit
 import UniformTypeIdentifiers

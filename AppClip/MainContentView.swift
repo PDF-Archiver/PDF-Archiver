@@ -5,8 +5,6 @@
 //  Created by Julian Kahnert on 10.10.20.
 //
 
-import ArchiveBackend
-import ArchiveViews
 import Combine
 import StoreKit
 import SwiftUI
