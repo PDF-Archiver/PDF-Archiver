@@ -57,7 +57,6 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
     private let queueBackground = DispatchQueue(label: "ArchiveStoreQueue-background", qos: .background)
     private let documentProcessingQueue = DispatchQueue(label: "ArchiveStore DocumentProcessing queue", qos: .userInitiated, attributes: .concurrent)
 
-    private var providers: [FolderProvider] = []
     private var contents: [URL: [Document]] = [:]
 
     private init() {
@@ -71,16 +70,10 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
     public func update(archiveFolder: URL, untaggedFolders: [URL]) {
         assert(!Thread.isMainThread, "This should not be called from the main thread.")
 
-        // remove all current file providers to prevent watching changes while moving folders
-        providers = []
-
         let oldArchiveFolder = self.archiveFolder
 
         self.archiveFolder = archiveFolder
         self.untaggedFolders = untaggedFolders
-        let observedFolders = [[archiveFolder], untaggedFolders]
-            .flatMap { $0 }
-            .getUniqueParents()
 
         queue.sync {
             contents = [:]
@@ -90,22 +83,6 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
            oldArchiveFolder != archiveFolder {
             // only remove this if the archiveFolder has changed
             try? fileManager.removeItem(at: Self.savePath)
-        }
-
-        providers = observedFolders.compactMap { folder in
-            guard let provider = Self.availableProvider.first(where: { $0.canHandle(folder) }) else {
-                log.errorAndAssert("Could not find a FolderProvider", metadata: ["path": "\(folder.path)"])
-                NotificationCenter.default.createAndPost(title: "Folder Provider Error", message: "Could not find a folder provider for path:\n\(folder.absoluteString)", primaryButtonTitle: "OK")
-                return nil
-            }
-            log.debug("Initialize new provider for: \(folder.path)")
-            do {
-                return try provider.init(baseUrl: folder, folderDidChange(_:_:))
-            } catch {
-                log.error("Failed to create FolderProvider.", metadata: ["error": "\(error)"])
-                NotificationCenter.default.postAlert(error)
-                return nil
-            }
         }
     }
 
@@ -193,10 +170,10 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
 
     // MARK: Helper Function
 
-    private func folderDidChange(_ provider: FolderProvider, _ changes: [FileChange]) {
+    @available(*, deprecated)
+    func folderDidChange(_ provider: FolderProvider, _ changes: [FileChange]) {
 
         let documentProcessingGroup = DispatchGroup()
-
         queue.sync {
             for change in changes {
 
@@ -210,7 +187,6 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
                         updateDocumentProperties = true
 
                         // document content will be parsed if the user selects the untagged document in the Tag tab
-//                    SearchArchive.shared.addDocument(<#T##NSDocument#>)
 
                     case .removed(let url):
                         contents[provider.baseUrl]?.removeAll { $0.path == url }
@@ -344,16 +320,8 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
     }
 
     private func getProvider(for url: URL) throws -> FolderProvider {
-
-        // Use `contains` instead of `prefix` to avoid problems with local files.
-        // This fixes a problem, where we get different file urls back:
-        // /private/var/mobile/Containers/Data/Application/8F70A72B-026D-4F6B-98E8-2C6ACE940133/Documents/untagged/document1.pdf
-        //         /var/mobile/Containers/Data/Application/8F70A72B-026D-4F6B-98E8-2C6ACE940133/Documents/
-
-        guard let provider = providers.first(where: { url.path.contains($0.baseUrl.path) }) else {
-            throw ArchiveStore.Error.providerNotFound
+        return try _unsafeWait {
+            return try await NewArchiveStore.shared.getProvider(for: url)
         }
-
-        return provider
     }
 }

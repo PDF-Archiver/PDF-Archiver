@@ -25,6 +25,24 @@ extension URL: Log {
             return []
         }
     }
+    
+    public func uniqueId() -> Int? {
+        do {
+            return try resourceValues(forKeys: [.documentIdentifierKey]).documentIdentifier
+        } catch {
+            log.error("Error while getting unique document identifier", metadata: ["error": "\(error)"])
+            return nil
+        }
+    }
+    
+    public func filename() -> String? {
+         do {
+             return try resourceValues(forKeys: [.localizedNameKey]).localizedName
+         } catch {
+             log.error("Error while getting filename", metadata: ["error": "\(error)"])
+             return nil
+         }
+    }
 
     public func setFileTags(_ tags: [String]) {
         do {

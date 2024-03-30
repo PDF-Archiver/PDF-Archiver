@@ -228,11 +228,10 @@ public final class MainNavigationViewModel: ObservableObject, Log {
                     #if os(macOS)
                     return AnyView(TagTabViewMac(viewModel: self.tagViewModel).keyboardShortcut("2", modifiers: .command))
                     #else
-                    return AnyView(TagTabView(viewModel: self.tagViewModel).keyboardShortcut("3", modifiers: .command))
+                    return AnyView(TagTabView(viewModel: self.tagViewModel).keyboardShortcut("2", modifiers: .command))
                     #endif
                 case .archive:
-//                    return AnyView(ArchiveView(viewModel: self.archiveViewModel).keyboardShortcut("3", modifiers: .command))
-                    return AnyView(NewArchiveView().keyboardShortcut("3", modifiers: .command))
+                    return AnyView(ArchiveView(viewModel: self.archiveViewModel).keyboardShortcut("3", modifiers: .command))
                 #if !os(macOS)
                 case .more:
                     return AnyView(MoreTabView(viewModel: self.moreViewModel).keyboardShortcut("4", modifiers: .command))

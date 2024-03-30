@@ -154,7 +154,9 @@ public class MoreTabViewModel: ObservableObject, Log {
 
             self.showArchiveTypeSelection = false
             queue.async {
-                self.archiveStore.update(archiveFolder: archiveUrl, untaggedFolders: [untaggedUrl])
+                Task {
+                    await NewArchiveStore.shared.update(archiveFolder: archiveUrl, untaggedFolders: [untaggedUrl])
+                }
             }
         } catch {
             NotificationCenter.default.postAlert(error)
@@ -207,7 +209,9 @@ public class MoreTabViewModel: ObservableObject, Log {
             let untaggedFolders = [untaggedUrl]
             #endif
 
-            archiveStore.update(archiveFolder: archiveUrl, untaggedFolders: untaggedFolders)
+            Task {
+                await NewArchiveStore.shared.update(archiveFolder: archiveUrl, untaggedFolders: untaggedFolders)
+            }
         } catch {
             NotificationCenter.default.postAlert(error)
         }
