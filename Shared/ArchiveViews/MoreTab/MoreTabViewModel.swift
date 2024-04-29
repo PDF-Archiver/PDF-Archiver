@@ -285,7 +285,6 @@ extension MoreTabViewModel {
         func archive(_ document: Document, slugify: Bool) throws {}
         func download(_ document: Document) throws {}
         func delete(_ document: Document) throws {}
-        func getCreationDate(of url: URL) throws -> Date? { nil }
     }
 
     @State static var previewViewModel = MoreTabViewModel(iapService: MockIAPService(), archiveStore: MockArchiveStoreAPI())

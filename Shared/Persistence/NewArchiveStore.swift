@@ -116,17 +116,14 @@ actor NewArchiveStore: ModelActor {
                     }
                     
                     let data = Document.parseFilename(filename)
-                    guard let date = data.date else {
-//                        Logger.archiveStore.errorAndAssert("Failed to get filename")
-                        continue
-                    }
+                    let isTagged = isTagged(details.url)
                     
                     let document = DBDocument(id: "\(id)", 
                                               url: details.url,
-                                              isTagged: isTagged(details.url),
-                                              filename: filename,
-                                              date: date,
-                                              specification: data.specification ?? "n/a",
+                                              isTagged: isTagged,
+                                              filename: isTagged ? filename.replacingOccurrences(of: "-", with: " ") : filename,
+                                              date: data.date ?? details.url.fileCreationDate() ?? Date(),
+                                              specification: isTagged ? (data.specification ?? "n/a").replacingOccurrences(of: "-", with: " ") : (data.specification ?? "n/a"),
                                               tags: data.tagNames ?? [],
                                               downloadStatus: downloadStatus)
                     modelContext.insert(document)

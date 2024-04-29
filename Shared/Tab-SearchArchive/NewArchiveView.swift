@@ -22,8 +22,10 @@ struct NewArchiveView: View {
     @State private var tokens: [SearchToken] = []
     @State private var suggestedTokens: [SearchToken] = [.year(2024), .year(2023), .year(2022)]
     
+    @State private var shoudLoadAll = false
+    
     var body: some View {
-        ArchiveListView(selectedDocumentId: $selectedDocumentId, searchString: searchText, tokens: tokens)
+        ArchiveListView(selectedDocumentId: $selectedDocumentId, searchString: searchText, tokens: tokens, shoudLoadAll: $shoudLoadAll)
             .searchable(text: $searchText, tokens: $tokens, suggestedTokens: $suggestedTokens, placement: .toolbar, prompt: "Search in documents", token: { token in
                 switch token {
                 case .term(let term):

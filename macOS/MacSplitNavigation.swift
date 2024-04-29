@@ -8,13 +8,29 @@
 import SwiftUI
 
 struct MacSplitNavigation: View {
-    @State var selectedDocumentId: String?
+    @State private var selectedDocumentId: String?
+    @AppStorage("taggingMode") private var untaggedMode = false
 
     var body: some View {
         NavigationSplitView {
-            NewArchiveView(selectedDocumentId: $selectedDocumentId)
+            VStack {
+                Toggle(isOn: $untaggedMode, label: {
+                    Text("Show untagged")
+                })
+                .toggleStyle(SwitchToggleStyle())
+                
+                if untaggedMode {
+                    UntaggedDocumentsList(selectedDocumentId: $selectedDocumentId)
+                } else {
+                    NewArchiveView(selectedDocumentId: $selectedDocumentId)
+                }
+            }
         } detail: {
-            NewDocumentDetailView(documentId: $selectedDocumentId)
+            if untaggedMode {
+                UntaggedDocumentView(documentId: $selectedDocumentId)
+            } else {
+                NewDocumentDetailView(documentId: $selectedDocumentId)
+            }
         }
     }
 }

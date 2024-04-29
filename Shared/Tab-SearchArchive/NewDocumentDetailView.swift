@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 import OSLog
 
-struct NewDocumentDetailView: View, Log {
+struct NewDocumentDetailView: View {
     enum ViewState {
         case loading
         case error(Error)
@@ -164,6 +164,7 @@ struct NewDocumentDetailView: View, Log {
     }
 }
 
+#if DEBUG
 #Preview("Document", traits: .fixedLayout(width: 800, height: 600)) {
     NavigationSplitView {
         Text("Sidebar")
@@ -199,3 +200,4 @@ struct NewDocumentDetailView: View, Log {
             .modelContainer(previewContainer)
     }
 }
+#endif

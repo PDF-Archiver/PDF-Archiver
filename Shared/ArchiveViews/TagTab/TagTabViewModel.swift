@@ -49,7 +49,7 @@ final class TagTabViewModel: ObservableObject, Log {
 
     var documentSubtitle: String? {
         guard let currentDocument = currentDocument,
-              let creationDate = try? archiveStore.getCreationDate(of: currentDocument.path) else { return nil }
+              let creationDate = currentDocument.path.fileCreationDate() else { return nil }
         return Self.dateFormatter.string(for: creationDate)
     }
 

@@ -49,11 +49,6 @@ final class DemoFolderProvider: FolderProvider, Log {
         log.debug("rename(from: URL, to: URL) throws")
     }
 
-    func getCreationDate(of: URL) throws -> Date? {
-        log.debug("getCreationDate(of: URL) throws -> Date?")
-        return nil
-    }
-
     private func initialize() {
         let url = Bundle.main.url(forResource: "example-bill", withExtension: "pdf")!
         let destination = baseUrl.appendingPathComponent("untagged").appendingPathComponent("2021 01 08 - scan1.pdf")

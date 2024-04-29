@@ -98,11 +98,6 @@ final class LocalFolderProvider: FolderProvider {
         try fileManager.moveItem(at: source, to: destination)
     }
 
-    func getCreationDate(of url: URL) throws -> Date? {
-        let attributes = try fileManager.attributesOfItem(atPath: url.path)
-        return attributes[.creationDate] as? Date
-    }
-
     // MARK: - Helper Functions
 
     private func createChanges() -> [FileChange] {

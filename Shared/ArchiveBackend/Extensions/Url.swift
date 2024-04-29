@@ -43,6 +43,15 @@ extension URL: Log {
              return nil
          }
     }
+    
+    public func fileCreationDate() -> Date? {
+        do {
+            return try resourceValues(forKeys: [.creationDateKey]).creationDate
+        } catch {
+            log.error("Error while getting filename", metadata: ["error": "\(error)"])
+            return nil
+        }
+    }
 
     public func setFileTags(_ tags: [String]) {
         do {

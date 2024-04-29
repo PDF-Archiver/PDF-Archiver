@@ -124,18 +124,6 @@ final class ICloudFolderProvider: FolderProvider {
         try fileManager.moveItem(at: source, to: destination)
     }
 
-    func getCreationDate(of url: URL) throws -> Date? {
-        var attributes = [FileAttributeKey: Any]()
-        do {
-            attributes = try fileManager.attributesOfItem(atPath: url.path)
-        } catch {
-            let newFilename = ".\(url.lastPathComponent).icloud"
-            let newUrl = url.deletingLastPathComponent().appendingPathComponent(newFilename)
-            attributes = try fileManager.attributesOfItem(atPath: newUrl.path)
-        }
-        return attributes[.creationDate] as? Date
-    }
-
     // MARK: - Helper Functions
 
     private func update(added: [NSMetadataItem], removed: [NSMetadataItem], updated: [NSMetadataItem]) {

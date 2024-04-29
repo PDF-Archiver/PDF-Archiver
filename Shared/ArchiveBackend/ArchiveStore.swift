@@ -17,7 +17,6 @@ public protocol ArchiveStoreAPI: AnyObject {
     func archive(_ document: Document, slugify: Bool) throws
     func download(_ document: Document) throws
     func delete(_ document: Document) throws
-    func getCreationDate(of url: URL) throws -> Date?
 }
 
 public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
@@ -155,17 +154,6 @@ public final class ArchiveStore: ObservableObject, ArchiveStoreAPI, Log {
         let provider = try getProvider(for: document.path)
         try provider.delete(url: document.path)
         documents.removeAll { $0 == document }
-    }
-
-    public func getCreationDate(of url: URL) throws -> Date? {
-        let provider = try getProvider(for: url)
-
-        do {
-            return try provider.getCreationDate(of: url)
-        } catch {
-            log.error("Document download error.", metadata: ["error": "\(error)"])
-            throw error
-        }
     }
 
     // MARK: Helper Function
