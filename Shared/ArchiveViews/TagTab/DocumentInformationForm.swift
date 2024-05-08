@@ -71,7 +71,7 @@ struct DocumentInformationForm: View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Document Tags")
                 .font(.caption)
-            TagListView(tags: $viewModel.documentTags,
+            TagListView(tags: viewModel.documentTags,
                         isEditable: true,
                         isMultiLine: true,
                         tapHandler: viewModel.documentTagTapped(_:))
@@ -91,7 +91,7 @@ struct DocumentInformationForm: View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Suggested Tags")
                 .font(.caption)
-            TagListView(tags: $viewModel.suggestedTags,
+            TagListView(tags: viewModel.suggestedTags,
                         isEditable: false,
                         isMultiLine: true,
                         tapHandler: viewModel.suggestedTagTapped(_:))

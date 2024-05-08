@@ -16,6 +16,7 @@ struct TagView: View, Identifiable {
 
     let tagName: String
     let isEditable: Bool
+    let isSuggestion: Bool
     let tapHandler: ((String) -> Void)?
 
     var body: some View {
@@ -51,10 +52,15 @@ struct TagView: View, Identifiable {
             .minimumScaleFactor(0.85)
             .padding(EdgeInsets(top: 2.0, leading: 5.0, bottom: 2.0, trailing: 5.0))
             .foregroundColor(.white)
-            .background(.paDarkRed)
+            .background(isSuggestion ? nil : Color.paDarkRed)
             .cornerRadius(8.0)
             .transition(.opacity)
-            .animation(.spring())
+//            .animation(.spring())
+            .overlay(
+                RoundedRectangle(cornerRadius: 10)
+                    .opacity(isSuggestion ? 1 : 0)
+            )
+            .id(tagName)
     }
 }
 
@@ -67,14 +73,17 @@ struct TagView_Previews: PreviewProvider {
         Group {
             TagView(tagName: "tag1",
                     isEditable: true,
+                    isSuggestion: true,
                     tapHandler: tapHandler)
 
             TagView(tagName: "tag2",
                     isEditable: false,
+                    isSuggestion: false,
                     tapHandler: tapHandler)
 
             TagView(tagName: "t",
                     isEditable: false,
+                    isSuggestion: false,
                     tapHandler: tapHandler)
 
         }

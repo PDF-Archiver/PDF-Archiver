@@ -10,16 +10,25 @@ import SwiftUI
 
 struct TagListView: View {
 
-    @Binding var tags: [String]
+    let tags: [String]
     let isEditable: Bool
+    let isSuggestion: Bool
     let isMultiLine: Bool
     let tapHandler: ((String) -> Void)?
+    
+    init(tags: [String], isEditable: Bool, isSuggestion: Bool = false, isMultiLine: Bool, tapHandler: ((String) -> Void)? = nil) {
+        self.tags = tags
+        self.isEditable = isEditable
+        self.isSuggestion = isSuggestion
+        self.isMultiLine = isMultiLine
+        self.tapHandler = tapHandler
+    }
 
     @ViewBuilder
     var body: some View {
         if isMultiLine {
             WrappingHStack(items: tags) { tag in
-                TagView(tagName: tag, isEditable: self.isEditable, tapHandler: self.tapHandler)
+                TagView(tagName: tag, isEditable: self.isEditable, isSuggestion: self.isSuggestion, tapHandler: self.tapHandler)
                     .fixedSize()
             }
         } else {
@@ -32,6 +41,7 @@ struct TagListView: View {
             ForEach(tags.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }, id: \.self) { tagName in
                 TagView(tagName: tagName,
                         isEditable: self.isEditable,
+                        isSuggestion: self.isSuggestion,
                         tapHandler: self.tapHandler)
             }
         }
@@ -57,13 +67,13 @@ struct TagListView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             // Example: Document View
-            TagListView(tags: $tags, isEditable: true, isMultiLine: false, tapHandler: nil)
+            TagListView(tags: tags, isEditable: true, isSuggestion: true, isMultiLine: false, tapHandler: nil)
                 .previewLayout(.fixed(width: 350, height: 50))
 
-            TagListView(tags: $tags, isEditable: true, isMultiLine: true, tapHandler: nil)
+            TagListView(tags: tags, isEditable: true, isSuggestion: true, isMultiLine: true, tapHandler: nil)
                 .previewLayout(.fixed(width: 250, height: 400))
 
-            TagListView(tags: $tags, isEditable: true, isMultiLine: true, tapHandler: nil)
+            TagListView(tags: tags, isEditable: true, isSuggestion: true, isMultiLine: true, tapHandler: nil)
                 .previewLayout(.fixed(width: 400, height: 250))
         }
     }

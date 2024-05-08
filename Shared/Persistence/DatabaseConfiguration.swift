@@ -23,6 +23,8 @@ func createMockData(in modelContext: ModelContext) {
     modelContext.insert(DBDocument(id: UUID().uuidString, url: URL(filePath: ""), isTagged: true, filename: "test", date: Date(), specification: "large picture", tags: ["bill", "ikea"], downloadStatus: 0.5))
     modelContext.insert(DBDocument(id: UUID().uuidString, url: URL(filePath: ""), isTagged: true, filename: "test", date: Date(), specification: "coffee bags", tags: ["bill", "coffee"], downloadStatus: 0.75))
     modelContext.insert(DBDocument(id: UUID().uuidString, url: URL(filePath: ""), isTagged: true, filename: "test", date: Date(), specification: "tools", tags: ["bill"], downloadStatus: 1))
+    modelContext.insert(DBDocument(id: UUID().uuidString, url: URL(filePath: ""), isTagged: false, filename: "scan1", date: Date(), specification: "", tags: [], downloadStatus: 1))
+    modelContext.insert(DBDocument(id: UUID().uuidString, url: URL(filePath: ""), isTagged: false, filename: "scan2", date: Date(), specification: "", tags: [], downloadStatus: 1))
 }
 
 @MainActor

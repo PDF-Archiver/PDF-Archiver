@@ -74,7 +74,7 @@ struct ArchiveListView: View {
                         .font(.subheadline)
                         .foregroundStyle(.gray)
                     
-                    TagListView(tags: .constant(document.tags.sorted()), isEditable: false, isMultiLine: false, tapHandler: nil)
+                    TagListView(tags: document.tags.sorted(), isEditable: false, isMultiLine: false, tapHandler: nil)
                         .font(.caption)
                     //                    HStack {
                     //                        if showTagStatus {

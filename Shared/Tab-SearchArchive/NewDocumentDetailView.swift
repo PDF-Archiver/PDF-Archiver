@@ -107,7 +107,7 @@ struct NewDocumentDetailView: View {
                         deleteButton
                     }
                     ToolbarItem(placement: .accessoryBar(id: "tags")) {
-                        TagListView(tags: .constant(document.tags.sorted()), isEditable: false, isMultiLine: false, tapHandler: nil)
+                        TagListView(tags: document.tags.sorted(), isEditable: false, isMultiLine: false, tapHandler: nil)
                             .font(.caption)
                     }
                 }

@@ -89,7 +89,7 @@ public struct WrappingHStack<Item: Identifiable & Hashable, Content: View>: View
 struct WrappingHStack_Previews: PreviewProvider {
     static var previews: some View {
         WrappingHStack(items: ["Nintendo", "XBox", "PlayStation", "PlayStation 2", "PlayStation 3", "PlayStation 4"]) { text in
-            TagView(tagName: text, isEditable: true, tapHandler: { print($0) })
+            TagView(tagName: text, isEditable: true, isSuggestion: true, tapHandler: { print($0) })
 //            Label(text, systemImage: "tag")
 //                .padding(.all, 5)
                 .font(.body)

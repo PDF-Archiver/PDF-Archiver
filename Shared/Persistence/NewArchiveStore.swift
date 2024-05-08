@@ -80,6 +80,37 @@ actor NewArchiveStore: ModelActor {
         return provider
     }
     
+    func archiveFile(from url: URL, to filename: String) throws {
+        assert(!Thread.isMainThread, "This should not be called from the main thread.")
+
+        let foldername = String(filename.prefix(4))
+        
+        guard let archiveFolder = self.archiveFolder else {
+            throw ArchiveStore.Error.providerNotFound
+        }
+        let documentProvider = try getProvider(for: url)
+        let archiveProvider = try getProvider(for: archiveFolder)
+
+        // check, if this path already exists ... create it
+        let newFilepath = archiveFolder
+            .appendingPathComponent(foldername)
+            .appendingPathComponent(filename)
+
+        if archiveProvider.baseUrl == documentProvider.baseUrl {
+            try archiveProvider.rename(from: url, to: newFilepath)
+        } else {
+            let documentData = try documentProvider.fetch(url: url)
+            try archiveProvider.save(data: documentData, at: newFilepath)
+            try documentProvider.delete(url: url)
+        }
+
+        // save file tags
+        if let tags = Document.parseFilename(filename).tagNames,
+           !tags.isEmpty {
+            newFilepath.setFileTags(tags.sorted())
+        }
+    }
+    
     private func folderDidChange(_ provider: FolderProvider, _ changes: [FileChange]) {
         updateDocuments(with: changes)
         

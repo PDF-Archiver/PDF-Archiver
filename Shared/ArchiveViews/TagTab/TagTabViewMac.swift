@@ -76,7 +76,7 @@ struct TagTabViewMac: View {
                 .labelsHidden()
             TextField("Description", text: $viewModel.specification)
             ScrollView {
-                TagListView(tags: $viewModel.documentTags,
+                TagListView(tags: viewModel.documentTags,
                             isEditable: true,
                             isMultiLine: true,
                             tapHandler: viewModel.documentTagTapped(_:))
@@ -99,7 +99,7 @@ struct TagTabViewMac: View {
                       onCommit: viewModel.saveTag)
                 .modifier(ClearButton(text: $viewModel.documentTagInput))
             ScrollView {
-                TagListView(tags: $viewModel.suggestedTags,
+                TagListView(tags: viewModel.suggestedTags,
                             isEditable: false,
                             isMultiLine: true,
                             tapHandler: viewModel.suggestedTagTapped(_:))

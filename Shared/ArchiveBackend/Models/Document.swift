@@ -115,6 +115,15 @@ public final class Document: Identifiable, Codable, Log {
             // parse the tags of a document
             tagNames = raw.components(separatedBy: "_")
         }
+        
+        if let foundSpecification = specification,
+           foundSpecification.lowercased().starts(with: Constants.documentDescriptionPlaceholder.lowercased()) {
+            specification = nil
+        }
+        if let foundTagNames = tagNames,
+            foundTagNames.contains(where: { $0.lowercased() == Constants.documentTagPlaceholder.lowercased() }) {
+            tagNames = nil
+        }
 
         return (date, specification, tagNames)
     }
