@@ -13,6 +13,7 @@ import PDFKit
 @Observable
 class DocumentInformationViewModel {
     let url: URL
+    let onSave: () -> Void
     var date = Date()
     var specification = ""
     private(set) var tags: [String] = []
@@ -21,8 +22,9 @@ class DocumentInformationViewModel {
     var tagSuggestions: [String] = []
     var dateSuggestions: [Date] = []
     
-    init(url: URL ) {
+    init(url: URL, onSave handler: @escaping () -> Void) {
         self.url = url
+        self.onSave = handler
     }
     
     func add(tag name: String) {
@@ -83,9 +85,10 @@ class DocumentInformationViewModel {
         Task {
             do {
                 try await NewArchiveStore.shared.archiveFile(from: url, to: filename)
+                self.onSave()
             } catch {
-                // TODO: handle error
-                Logger.archiveStore.errorAndAssert("Failed to save document \(error)")
+                Logger.archiveStore.error("Failed to save document \(error)")
+                NotificationCenter.default.postAlert(error)
             }
         }
     }
@@ -125,13 +128,13 @@ class DocumentInformationViewModel {
                 var descriptor = FetchDescriptor<DBDocument>(predicate: predicate)
                 descriptor.fetchLimit = 1000
                 let documents = try modelContext.fetch(descriptor)
-                let filteredTags = Set(documents.flatMap(\.tags)).filter { $0.contains(trimmedSearchTeam) }
+                let filteredTags = Set(documents.flatMap(\.tags)).filter { $0.starts(with: trimmedSearchTeam) }
 
-                tagSuggestions = Set(filteredTags).subtracting(tags).sorted()
+                tagSuggestions = Set(filteredTags).subtracting(tags).sorted().prefix(10).sorted()
             }
         } catch {
-            // TODO: handle error
-            Logger.archiveStore.errorAndAssert("Error found \(error)")
+            Logger.archiveStore.error("Searchterm changed \(error)")
+            NotificationCenter.default.postAlert(error)
         }
     }
 }
@@ -191,6 +194,7 @@ struct DocumentInformation: View {
                 TextField("Enter Tag",
                           text: $information.tagSearchterm,
                           onCommit: {
+                    print("current tags", information.tagSuggestions, information.tags)
                     // TODO: validate tagSearchterm (lowercased etc.)
                     let selectedTag = information.tagSuggestions.first ?? information.tagSearchterm
                     guard !selectedTag.isEmpty else { return }
@@ -216,6 +220,7 @@ struct DocumentInformation: View {
                         information.save()
                         FeedbackGenerator.selectionChanged()
                     }
+                    .keyboardShortcut("s", modifiers: [.command])
                     Spacer()
                 }
             }
@@ -259,7 +264,7 @@ struct DocumentInformation: View {
 }
 
 #Preview("Document Information", traits: .fixedLayout(width: 400, height: 600)) {
-    let information = DocumentInformationViewModel(url: .documentsDirectory)
+    let information = DocumentInformationViewModel(url: .documentsDirectory, onSave: {})
     information.specification = "test-specification"
     information.add(tag: "tag1")
     information.add(tag: "tag2")

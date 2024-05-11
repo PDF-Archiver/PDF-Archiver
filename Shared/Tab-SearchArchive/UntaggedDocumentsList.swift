@@ -13,8 +13,10 @@ struct UntaggedDocumentsList: View {
     @Binding var selectedDocumentId: String?
 
     init(selectedDocumentId: Binding<String?>) {
+        // we need this id because when the "last document button" was tapped, we want to show that document, too.
+        let id = selectedDocumentId.wrappedValue ?? ""
         let predicate = #Predicate<DBDocument> { document in
-            return !document.isTagged
+            return !document.isTagged || document.id == id
         }
         var descriptor = FetchDescriptor(predicate: predicate, sortBy: [SortDescriptor(\DBDocument.date, order: .reverse)])
         descriptor.fetchLimit = 100
@@ -31,6 +33,12 @@ struct UntaggedDocumentsList: View {
         }
         .listStyle(.plain)
         .alternatingRowBackgrounds()
+        .onChange(of: selectedDocumentId) { _, currentDocumentId in
+            guard currentDocumentId == nil,
+                  let firstDocument = untaggedDocuments.first else { return }
+            
+            selectedDocumentId = firstDocument.id
+        }
     }
 }
 

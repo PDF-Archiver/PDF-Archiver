@@ -19,6 +19,7 @@ struct UntaggedDocumentView: View {
     
     @Binding var documentId: String?
     @State private var viewState: ViewState = .documentNotFound
+    @State private var lastSavedDocumentId: String?
     @Environment(\.modelContext) private var modelContext
     
     @State private var date = Date()
@@ -78,9 +79,18 @@ struct UntaggedDocumentView: View {
                     .navigationTitle(" ")
             case .document(let document):
                 HStack {
-                    DocumentView(document: document)
-                    DocumentInformation(information: DocumentInformationViewModel(url: document.url))
-                        .navigationSplitViewColumnWidth(350)
+                    DocumentView(document: document, onRevert: lastSavedDocumentId == nil ? nil : {
+                        guard let lastSavedDocumentId else {
+                            assertionFailure("Failed to get lastSavedDocumentId")
+                            return
+                        }
+                        documentId = lastSavedDocumentId
+                    })
+                    DocumentInformation(information: DocumentInformationViewModel(url: document.url, onSave: {
+                        self.lastSavedDocumentId = self.documentId
+                        self.documentId = nil
+                    }))
+                    .navigationSplitViewColumnWidth(350)
                 }
             case .documentNotFound:
                 ContentUnavailableView("Select a Document", systemImage: "doc", description: Text("Select a document from the list."))
@@ -98,7 +108,7 @@ struct UntaggedDocumentView: View {
 
     struct DocumentView: View {
         let document: DBDocument
-        
+        let onRevert: (() -> Void)?
         @State private var showDeleteConfirmation = false
         
         var body: some View {
@@ -106,7 +116,9 @@ struct UntaggedDocumentView: View {
                 .navigationTitle(document.specification)
                 .navigationSubtitle(Text(document.date, format: .dateTime.year().month().day()))
                 .toolbar {
-                    ToolbarItem(placement: .destructiveAction) {
+                    ToolbarItemGroup(placement: .cancellationAction) {
+                        revertButton
+                        showInFinderButton
                         deleteButton
                     }
                 }
@@ -137,6 +149,32 @@ struct UntaggedDocumentView: View {
                     .labelStyle(VerticalLabelStyle())
                     #endif
             })
+        }
+        
+        private var revertButton: some View {
+            Button(role: .none) {
+                onRevert?()
+            } label: {
+                Label("Revert", systemImage: "arrow.uturn.backward")
+                    #if !os(macOS)
+                    .labelStyle(VerticalLabelStyle())
+                    #endif
+            }
+            .disabled(self.onRevert == nil)
+        }
+        private var showInFinderButton: some View {
+            Button(role: .none) {
+                #if os(macOS)
+                NSWorkspace.shared.activateFileViewerSelecting([document.url])
+                #else
+                open(document.url)
+                #endif
+            } label: {
+                Label("Show in Finder", systemImage: "folder")
+                    #if !os(macOS)
+                    .labelStyle(VerticalLabelStyle())
+                    #endif
+            }
         }
     }
 }
