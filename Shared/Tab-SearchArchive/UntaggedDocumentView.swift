@@ -90,7 +90,7 @@ struct UntaggedDocumentView: View {
                         self.lastSavedDocumentId = self.documentId
                         self.documentId = nil
                     }))
-                    .navigationSplitViewColumnWidth(350)
+                    .frame(width: 350)
                 }
             case .documentNotFound:
                 ContentUnavailableView("Select a Document", systemImage: "doc", description: Text("Select a document from the list."))

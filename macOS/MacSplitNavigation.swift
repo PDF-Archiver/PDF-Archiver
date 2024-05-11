@@ -13,16 +13,22 @@ struct MacSplitNavigation: View {
 
     var body: some View {
         NavigationSplitView {
-            VStack {
-                Toggle(isOn: $untaggedMode, label: {
-                    Text("Show untagged")
-                })
-                .toggleStyle(SwitchToggleStyle())
-                
+            Group {
                 if untaggedMode {
                     UntaggedDocumentsList(selectedDocumentId: $selectedDocumentId)
                 } else {
                     NewArchiveView(selectedDocumentId: $selectedDocumentId)
+                }
+            }
+            .toolbar(removing: .sidebarToggle)
+            .toolbar {
+                ToolbarItem(placement: .automatic) {
+                    Button {
+                        untaggedMode.toggle()
+                    } label: {
+                        Label("Archive Mode", systemImage: untaggedMode ? "tag.slash.fill" : "tag.fill")
+                            .labelStyle(.titleAndIcon)
+                    }
                 }
             }
         } detail: {
