@@ -27,7 +27,6 @@ struct StorageSelectionView: View {
                         HStack {
                             Text(storageType.title)
                                 .fixedSize()
-                                .foregroundColor(.label)
                             Spacer()
                             if selection == storageType {
                                 Image(systemName: "checkmark")

@@ -53,10 +53,7 @@ struct AboutMeView: View {
 }
 
 #if DEBUG
-struct AboutMeView_Previews: PreviewProvider {
-    static var previews: some View {
-        AboutMeView()
-            .makeForPreviewProvider()
-    }
+#Preview("AboutMeView") {
+    AboutMeView()
 }
 #endif

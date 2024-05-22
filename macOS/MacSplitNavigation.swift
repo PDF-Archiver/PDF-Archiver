@@ -20,13 +20,14 @@ struct MacSplitNavigation: View {
                     NewArchiveView(selectedDocumentId: $selectedDocumentId)
                 }
             }
-            .toolbar(removing: .sidebarToggle)
+            .frame(minWidth: 300)
             .toolbar {
                 ToolbarItem(placement: .automatic) {
                     Button {
                         untaggedMode.toggle()
+                        selectedDocumentId = nil
                     } label: {
-                        Label("Archive Mode", systemImage: untaggedMode ? "tag.slash.fill" : "tag.fill")
+                        Label(untaggedMode ? "Tagging Mode" : "Archive Mode", systemImage: untaggedMode ? "tag.fill" : "archivebox.fill")
                             .labelStyle(.titleAndIcon)
                     }
                 }
@@ -35,7 +36,7 @@ struct MacSplitNavigation: View {
             if untaggedMode {
                 UntaggedDocumentView(documentId: $selectedDocumentId)
             } else {
-                NewDocumentDetailView(documentId: $selectedDocumentId)
+                DocumentDetailView(documentId: $selectedDocumentId, untaggedMode: $untaggedMode)
             }
         }
     }

@@ -1,5 +1,5 @@
 {
-  "originHash" : "75d0dd23a240956662815fa5e075194efc3979a2a85d654dbb7f28bc0a66cc39",
+  "originHash" : "a1d32a873daecf7102c3bfc0cb863e03871adb49d06104366a78bb42e1c2521d",
   "pins" : [
     {
       "identity" : "asn1swift",
@@ -80,15 +80,6 @@
       "state" : {
         "revision" : "e97a6fcb1ab07462881ac165fdbb37f067e205d5",
         "version" : "1.5.4"
-      }
-    },
-    {
-      "identity" : "swiftuix",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/SwiftUIX/SwiftUIX",
-      "state" : {
-        "revision" : "a5a22a1aaca885c229f475af049d75a6d9144de8",
-        "version" : "0.1.9"
       }
     },
     {

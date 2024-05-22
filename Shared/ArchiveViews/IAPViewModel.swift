@@ -37,7 +37,7 @@ final class IAPViewModel: ObservableObject, Log {
             log.info("IAPView - buy: Monthly subscription.")
             do {
                 try iapService.buy(subscription: .monthly)
-                presentationMode.dismiss()
+                presentationMode.wrappedValue.dismiss()
             } catch {
                 NotificationCenter.default.postAlert(error)
             }
@@ -45,7 +45,7 @@ final class IAPViewModel: ObservableObject, Log {
             log.info("IAPView - buy: Yearly subscription.")
             do {
                 try iapService.buy(subscription: .yearly)
-                presentationMode.dismiss()
+                presentationMode.wrappedValue.dismiss()
             } catch {
                 NotificationCenter.default.postAlert(error)
             }
@@ -53,17 +53,17 @@ final class IAPViewModel: ObservableObject, Log {
             log.info("IAPView - buy: lifetime license.")
             do {
                 try iapService.buy(subscription: .lifetime)
-                presentationMode.dismiss()
+                presentationMode.wrappedValue.dismiss()
             } catch {
                 NotificationCenter.default.postAlert(error)
             }
         case .restore:
             log.info("IAPView - Restore purchases.")
             iapService.restorePurchases()
-            presentationMode.dismiss()
+            presentationMode.wrappedValue.dismiss()
         case .cancel:
             log.info("IAPView - Cancel subscription view.")
-            presentationMode.dismiss()
+            presentationMode.wrappedValue.dismiss()
         }
     }
 

@@ -7,7 +7,6 @@
 //
 
 import SwiftUI
-import SwiftUIX
 
 struct IAPView: View {
     #if os(macOS)
@@ -20,26 +19,24 @@ struct IAPView: View {
     @Environment(\.presentationMode) private var presentationMode
 
     var body: some View {
-        LazyView {
-            VStack(alignment: .leading, spacing: 16) {
-                Spacer()
-                title
-                features
-                subscriptionButtons
-                if let lifetimeLicenseName = viewModel.lifetimeLicenseName {
-                    getLifetimeButton(with: lifetimeLicenseName)
-                }
-                text
-                otherButtons
-                Spacer()
+        LazyVStack(alignment: .leading, spacing: 16) {
+            Spacer()
+            title
+            features
+            subscriptionButtons
+            if let lifetimeLicenseName = viewModel.lifetimeLicenseName {
+                getLifetimeButton(with: lifetimeLicenseName)
             }
-            .padding()
-            .frame(maxWidth: 600, maxHeight: Self.maxHeight)
-            .onAppear {
-                #if !os(macOS)
-                Keyboard.main.dismiss()
-                #endif
-            }
+            text
+            otherButtons
+            Spacer()
+        }
+        .padding()
+        .frame(maxWidth: 600, maxHeight: Self.maxHeight)
+        .onAppear {
+            #if !os(macOS)
+            Keyboard.main.dismiss()
+            #endif
         }
     }
 
@@ -62,9 +59,9 @@ struct IAPView: View {
         VStack(alignment: .center, spacing: 8) {
             WidthSyncedRow(spacing: 8) {
                 VStack(alignment: .leading, spacing: 6) {
-                    Label("Search PDFs" as LocalizedStringKey, systemImage: .magnifyingglass)
-                    Label("iCloud Sync" as LocalizedStringKey, systemImage: .cloud)
-                    Label("Open Source" as LocalizedStringKey, systemImage: .lockOpen)
+                    Label("Search PDFs" as LocalizedStringKey, systemImage: "magnifyingglass")
+                    Label("iCloud Sync" as LocalizedStringKey, systemImage: "cloud")
+                    Label("Open Source" as LocalizedStringKey, systemImage: "lock.open")
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
@@ -72,9 +69,9 @@ struct IAPView: View {
                 .cornerRadius(8)
                 ZStack(alignment: .topTrailing) {
                     VStack(alignment: .leading, spacing: 6) {
-                        Label("Scanner" as LocalizedStringKey, systemImage: .docTextViewfinder)
-                        Label("Searchable PDFs" as LocalizedStringKey, systemImage: .docTextMagnifyingglass)
-                        Label("Tag PDFs" as LocalizedStringKey, systemImage: .tag)
+                        Label("Scanner" as LocalizedStringKey, systemImage: "doc.text.viewfinder")
+                        Label("Searchable PDFs" as LocalizedStringKey, systemImage: "doc.text.magnifyingglass")
+                        Label("Tag PDFs" as LocalizedStringKey, systemImage: "tag")
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
@@ -85,7 +82,7 @@ struct IAPView: View {
                             .padding(4)
                             .font(.footnote)
                             .foregroundColor(.paWhite)
-                            .background(.paDarkRed)
+                            .background(Color.paDarkRed)
                             .cornerRadius(8)
                             .animation(nil)
                             .transition(.scale)
@@ -95,11 +92,11 @@ struct IAPView: View {
             }
 
             HStack(spacing: 8) {
-                Image(systemName: .heartFill)
+                Image(systemName: "heart.fill")
                     .foregroundColor(.paDarkRed)
                 Text("Support further development of a 1 person team.")
                 .fixedSize(horizontal: false, vertical: true)
-                .maxWidth(250)
+                .frame(maxWidth: 250)
             }
             .padding()
             .background(Color.paDarkGray.opacity(0.125))
@@ -156,7 +153,7 @@ struct IAPView: View {
                 .font(.caption)
                 .foregroundColor(.paLightGray)
         }
-        .maxHeight(200)
+        .frame(maxHeight: 200)
     }
 
     private var otherButtons: some View {
@@ -166,7 +163,7 @@ struct IAPView: View {
             }, label: {
                 Text("Restore")
             })
-            .buttonStyle(FilledButtonStyle(foregroundColor: .paDarkGray, backgroundColor: .systemBackground))
+            .buttonStyle(FilledButtonStyle(foregroundColor: .paDarkGray, backgroundColor: .background))
 
             Button(action: {
                 self.viewModel.tapped(button: .cancel, presentationMode: self.presentationMode)
@@ -174,7 +171,7 @@ struct IAPView: View {
             }, label: {
                 Text("Cancel")
             })
-            .buttonStyle(FilledButtonStyle(foregroundColor: .paDarkRed, backgroundColor: .systemBackground))
+            .buttonStyle(FilledButtonStyle(foregroundColor: .paDarkRed, backgroundColor: .background))
         }
     }
 }
@@ -182,26 +179,20 @@ struct IAPView: View {
 #if DEBUG
 import Combine
 import StoreKit
-struct IAPView_Previews: PreviewProvider {
-    @State static var viewModel = IAPViewModel(iapService: MockIAPService())
-    static var previews: some View {
-        IAPView(viewModel: viewModel)
-            // .previewDevice("Mac")
-            .makeForPreviewProvider()
-    }
+
+#Preview("IAPView") {
+    IAPView(viewModel: IAPViewModel(iapService: MockIAPService()))
 }
 
-extension IAPView_Previews {
-    private class MockIAPService: IAPServiceAPI {
-        var productsPublisher: AnyPublisher<Set<SKProduct>, Never> {
-            Just([]).eraseToAnyPublisher()
-        }
-        var appUsagePermitted = true
-        var appUsagePermittedPublisher: AnyPublisher<Bool, Never> {
-            Just(appUsagePermitted).eraseToAnyPublisher()
-        }
-        func buy(subscription: IAPService.SubscriptionType) throws {}
-        func restorePurchases() {}
+private class MockIAPService: IAPServiceAPI {
+    var productsPublisher: AnyPublisher<Set<SKProduct>, Never> {
+        Just([]).eraseToAnyPublisher()
     }
+    var appUsagePermitted = true
+    var appUsagePermittedPublisher: AnyPublisher<Bool, Never> {
+        Just(appUsagePermitted).eraseToAnyPublisher()
+    }
+    func buy(subscription: IAPService.SubscriptionType) throws {}
+    func restorePurchases() {}
 }
 #endif

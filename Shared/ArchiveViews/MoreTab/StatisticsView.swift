@@ -5,25 +5,28 @@
 //  Created by Julian Kahnert on 27.12.20.
 //
 
+import SwiftData
 import SwiftUI
 
 struct StatisticsView: View {
-
-    #if os(macOS)
-    private static let bodyFont: Font = .body
-    #else
+//    #if os(macOS)
+//    private static let bodyFont: Font = .body
+//    #else
     private static let bodyFont: Font = .subheadline
     @Environment(\.horizontalSizeClass) private var sizeClass
-    #endif
+//    #endif
 
-    let viewModel: StatisticsViewModel
+    @Environment(\.modelContext) private var modelContext
+    @Query private var documents: [Document]
+
+    private let viewModel = StatisticsViewModel()
 
     var body: some View {
-        #if os(macOS)
-        let isCompact = false
-        #else
+//        #if os(macOS)
+//        let isCompact = false
+//        #else
         let isCompact = sizeClass == .compact
-        #endif
+//        #endif
         VStack {
             HStack(alignment: .top, spacing: 12) {
                 documentsView
@@ -46,6 +49,13 @@ struct StatisticsView: View {
                 }
             }
         }
+        .redacted(reason: viewModel.isLoading ? .placeholder : [])
+        .task {
+            viewModel.updateData(with: documents)
+        }
+        .onChange(of: documents, { _, newValue in
+            viewModel.updateData(with: newValue)
+        })
     }
 
     private var documentsView: some View {
@@ -111,7 +121,7 @@ struct StatisticsView: View {
 #if DEBUG
 struct StatisticsView_Previews: PreviewProvider {
     static var previews: some View {
-        StatisticsView(viewModel: StatisticsViewModel.previewViewModel)
+        StatisticsView()
     }
 }
 #endif

@@ -7,7 +7,6 @@
 //
 
 import SwiftUI
-import SwiftUIX
 
 public struct ScanTabView: View {
     @ObservedObject var viewModel: ScanTabViewModel
@@ -87,7 +86,7 @@ public struct ScanTabView: View {
             .foregroundColor(.paWhite)
             .padding(.horizontal, 50)
             .padding(.vertical, 20)
-            .background(.paDarkGray)
+            .background(Color.paDarkGray)
             .cornerRadius(8)
     }
 

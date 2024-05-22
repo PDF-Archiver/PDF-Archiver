@@ -32,7 +32,6 @@ public class MoreTabViewModel: ObservableObject, Log {
     @Published var selectedArchiveType = StorageType.getCurrent()
     @Published var showArchiveTypeSelection = false
     @Published var subscriptionStatus: LocalizedStringKey = "Inactive ❌"
-    @Published var statisticsViewModel: StatisticsViewModel
     @Published var newArchiveUrl: URL?
     #if os(macOS)
     @Published var observedFolderURL: URL? = UserDefaults.observedFolderURL
@@ -47,21 +46,12 @@ public class MoreTabViewModel: ObservableObject, Log {
     }
 
     private let iapService: IAPServiceAPI
-    private let archiveStore: ArchiveStoreAPI
     private var disposables = Set<AnyCancellable>()
     private let queue = DispatchQueue(label: "MoreTabViewModel", qos: .userInitiated)
     private let queueUtility = DispatchQueue(label: "MoreTabViewModel-utility", qos: .utility)
 
-    public init(iapService: IAPServiceAPI, archiveStore: ArchiveStoreAPI) {
+    public init(iapService: IAPServiceAPI) {
         self.iapService = iapService
-        self.archiveStore = archiveStore
-        self.statisticsViewModel = StatisticsViewModel(documents: archiveStore.documents)
-
-        archiveStore.documentsPublisher
-            .receive(on: queueUtility)
-            .map(StatisticsViewModel.init(documents: ))
-            .receive(on: DispatchQueue.main)
-            .assign(to: &$statisticsViewModel)
 
         $selectedQualityIndex
             .sink { selectedQuality in
@@ -217,16 +207,17 @@ public class MoreTabViewModel: ObservableObject, Log {
         }
     }
 
-    func updateFinderTags() {
-        queue.async {
-            self.archiveStore.documents
-                .filter { $0.taggingStatus == .tagged }
-                .forEach { document in
-                    let sortedTags = Array(document.tags).sorted()
-                    document.path.setFileTags(sortedTags)
-                }
-        }
-    }
+    #warning("TODO: implement update finder tags")
+//    func updateFinderTags() {
+//        queue.async {
+//            self.archiveStore.documents
+//                .filter { $0.taggingStatus == .tagged }
+//                .forEach { document in
+//                    let sortedTags = Array(document.tags).sorted()
+//                    document.path.setFileTags(sortedTags)
+//                }
+//        }
+//    }
 
     #if os(macOS)
     func clearObservedFolder() {
@@ -276,17 +267,6 @@ extension MoreTabViewModel {
         func restorePurchases() {}
     }
 
-    private class MockArchiveStoreAPI: ArchiveStoreAPI {
-        var documents: [Document] { [] }
-        var documentsPublisher: AnyPublisher<[Document], Never> {
-            Just([]).eraseToAnyPublisher()
-        }
-        func update(archiveFolder: URL, untaggedFolders: [URL]) {}
-        func archive(_ document: Document, slugify: Bool) throws {}
-        func download(_ document: Document) throws {}
-        func delete(_ document: Document) throws {}
-    }
-
-    @State static var previewViewModel = MoreTabViewModel(iapService: MockIAPService(), archiveStore: MockArchiveStoreAPI())
+    @State static var previewViewModel = MoreTabViewModel(iapService: MockIAPService())
 }
 #endif

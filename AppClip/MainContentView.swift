@@ -8,7 +8,6 @@
 import Combine
 import StoreKit
 import SwiftUI
-import SwiftUIX
 
 struct MainContentView: View {
 
@@ -54,7 +53,7 @@ struct MainContentView: View {
                 .font(.title2)
         }
         .padding()
-        .background(.systemBackground)
+        .background(.background)
         .cornerRadius(8)
         .shadow(color: .paDarkGray, radius: 15)
         .transition(.scale)

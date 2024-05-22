@@ -74,7 +74,7 @@ actor NewArchiveStore: ModelActor {
         //         /var/mobile/Containers/Data/Application/8F70A72B-026D-4F6B-98E8-2C6ACE940133/Documents/
 
         guard let provider = providers.first(where: { url.path.contains($0.baseUrl.path) }) else {
-            throw ArchiveStore.Error.providerNotFound
+            throw NewArchiveStore.Error.providerNotFound
         }
 
         return provider
@@ -86,7 +86,7 @@ actor NewArchiveStore: ModelActor {
         let foldername = String(filename.prefix(4))
         
         guard let archiveFolder = self.archiveFolder else {
-            throw ArchiveStore.Error.providerNotFound
+            throw NewArchiveStore.Error.providerNotFound
         }
         let documentProvider = try getProvider(for: url)
         let archiveProvider = try getProvider(for: archiveFolder)
@@ -113,8 +113,6 @@ actor NewArchiveStore: ModelActor {
     
     private func folderDidChange(_ provider: FolderProvider, _ changes: [FileChange]) {
         updateDocuments(with: changes)
-        
-        ArchiveStore.shared.folderDidChange(provider, changes)
     }
 
     
@@ -123,9 +121,6 @@ actor NewArchiveStore: ModelActor {
             for change in fileChanges {
                 switch change {
                 case .added(let details):
-                    //                    let taggingStatus = getTaggingStatus(of: details.url)
-                    //                    document = Document(from: details, with: taggingStatus)
-                    //                    updateDocumentProperties = true
                     let downloadStatus: Double
                     switch details.downloadStatus {
                     case .downloading(percent: let percent):
@@ -149,7 +144,7 @@ actor NewArchiveStore: ModelActor {
                     let data = Document.parseFilename(filename)
                     let isTagged = isTagged(details.url)
                     
-                    let document = DBDocument(id: "\(id)", 
+                    let document = Document(id: "\(id)", 
                                               url: details.url,
                                               isTagged: isTagged,
                                               filename: isTagged ? filename.replacingOccurrences(of: "-", with: " ") : filename,
@@ -165,11 +160,11 @@ actor NewArchiveStore: ModelActor {
                         continue
                     }
                     
-                    let predicate = #Predicate<DBDocument> {
+                    let predicate = #Predicate<Document> {
                         $0.id == "\(id)"
                     }
-                    let descriptor = FetchDescriptor<DBDocument>(
-                        predicate: predicate, sortBy: [SortDescriptor(\DBDocument.date, order: .reverse)]
+                    let descriptor = FetchDescriptor<Document>(
+                        predicate: predicate, sortBy: [SortDescriptor(\Document.date, order: .reverse)]
                     )
                     let documents = try modelContext.fetch(descriptor)
                     for document in documents {
@@ -181,11 +176,11 @@ actor NewArchiveStore: ModelActor {
                         Logger.archiveStore.errorAndAssert("Failed to get uniqueId for update")
                         continue
                     }
-                    let predicate = #Predicate<DBDocument> {
+                    let predicate = #Predicate<Document> {
                         $0.id == "\(id)"
                     }
-                    let descriptor = FetchDescriptor<DBDocument>(
-                        predicate: predicate, sortBy: [SortDescriptor(\DBDocument.date, order: .reverse)]
+                    let descriptor = FetchDescriptor<Document>(
+                        predicate: predicate, sortBy: [SortDescriptor(\Document.date, order: .reverse)]
                     )
                     let documents = try modelContext.fetch(descriptor)
                     

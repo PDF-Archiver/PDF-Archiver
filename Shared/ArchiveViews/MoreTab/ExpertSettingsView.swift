@@ -16,9 +16,9 @@ struct ExpertSettingsView: View {
 
     var body: some View {
         Form {
-            Toggle("Save Tags in PDF Metadata", isOn: $notSaveDocumentTagsAsPDFMetadata.negate())
-            Toggle("Require Document Tags", isOn: $documentTagsNotRequired.negate())
-            Toggle("Require Document Specification", isOn: $documentSpecificationNotRequired.negate())
+            Toggle("Save Tags in PDF Metadata", isOn: $notSaveDocumentTagsAsPDFMetadata.flipped)
+            Toggle("Require Document Tags", isOn: $documentTagsNotRequired.flipped)
+            Toggle("Require Document Specification", isOn: $documentSpecificationNotRequired.flipped)
             if let showPermissions = showPermissions {
                 DetailRowView(name: "Show Permissions", action: showPermissions)
             }

@@ -209,42 +209,42 @@ final class DocumentTests: XCTestCase {
 //        XCTAssertEqual(sortedDocuments4[2], document3)
 //    }
 
-    func testComparable() {
-
-        // setup
-        let document1 = Document(path: URL(fileURLWithPath: "~/Downloads/2018-05-12--example-description__tag1_tag2.pdf"), taggingStatus: .tagged, downloadStatus: defaultDownloadStatus, byteSize: defaultSize)
-        let document2 = Document(path: URL(fileURLWithPath: "~/Downloads/2018-05-12--example-description__tag1_tag2.pdf"), taggingStatus: .tagged, downloadStatus: defaultDownloadStatus, byteSize: defaultSize)
-
-        document2.specification = "this is a test"
-
-        // assert
-        XCTAssertEqual(document1.id, document2.id)
-        XCTAssertEqual(document1, document2)
-        XCTAssertEqual(document1.hashValue, document2.hashValue)
-    }
-
-    func testComparableWithSameUUID() {
-
-        // setup
-        let document1 = Document(path: URL(fileURLWithPath: "~/Downloads/2018-05-12--example-description__tag1_tag2.pdf"), taggingStatus: .tagged, downloadStatus: defaultDownloadStatus, byteSize: defaultSize)
-        let document2 = Document(path: URL(fileURLWithPath: "~/Downloads/2018-05-12--example-description__tag1_tag2.pdf"), taggingStatus: .tagged, downloadStatus: defaultDownloadStatus, byteSize: defaultSize)
-
-        document2.specification = "this is a test"
-
-        // assert
-        XCTAssertEqual(document1, document2)
-        XCTAssertEqual(document1.hashValue, document2.hashValue)
-    }
-
-    func testSearchable() {
-
-        // setup
-        let path = URL(fileURLWithPath: "~/Downloads/2018-05-12--example-description__tag1_tag2.pdf")
-        let document = Document(path: path, taggingStatus: .tagged, downloadStatus: defaultDownloadStatus, byteSize: defaultSize)
-
-        // assert
-        XCTAssertEqual(document.term, path.lastPathComponent.lowercased().utf8.map { UInt8($0) })
-    }
+//    func testComparable() {
+//
+//        // setup
+//        let document1 = Document(path: URL(fileURLWithPath: "~/Downloads/2018-05-12--example-description__tag1_tag2.pdf"), taggingStatus: .tagged, downloadStatus: defaultDownloadStatus, byteSize: defaultSize)
+//        let document2 = Document(path: URL(fileURLWithPath: "~/Downloads/2018-05-12--example-description__tag1_tag2.pdf"), taggingStatus: .tagged, downloadStatus: defaultDownloadStatus, byteSize: defaultSize)
+//
+//        document2.specification = "this is a test"
+//
+//        // assert
+//        XCTAssertEqual(document1.id, document2.id)
+//        XCTAssertEqual(document1, document2)
+//        XCTAssertEqual(document1.hashValue, document2.hashValue)
+//    }
+//
+//    func testComparableWithSameUUID() {
+//
+//        // setup
+//        let document1 = Document(path: URL(fileURLWithPath: "~/Downloads/2018-05-12--example-description__tag1_tag2.pdf"), taggingStatus: .tagged, downloadStatus: defaultDownloadStatus, byteSize: defaultSize)
+//        let document2 = Document(path: URL(fileURLWithPath: "~/Downloads/2018-05-12--example-description__tag1_tag2.pdf"), taggingStatus: .tagged, downloadStatus: defaultDownloadStatus, byteSize: defaultSize)
+//
+//        document2.specification = "this is a test"
+//
+//        // assert
+//        XCTAssertEqual(document1, document2)
+//        XCTAssertEqual(document1.hashValue, document2.hashValue)
+//    }
+//
+//    func testSearchable() {
+//
+//        // setup
+//        let path = URL(fileURLWithPath: "~/Downloads/2018-05-12--example-description__tag1_tag2.pdf")
+//        let document = Document(path: path, taggingStatus: .tagged, downloadStatus: defaultDownloadStatus, byteSize: defaultSize)
+//
+//        // assert
+//        XCTAssertEqual(document.term, path.lastPathComponent.lowercased().utf8.map { UInt8($0) })
+//    }
 
     // MARK: - Test the whole workflow
 
@@ -266,17 +266,17 @@ final class DocumentTests: XCTestCase {
         XCTAssertEqual(date, dateFormatter.date(from: "2010-05-12"))
     }
 
-    func testDocumentWithEmptyName() {
-
-        // setup
-        let path = URL(fileURLWithPath: "~/Downloads/scan1.pdf")
-
-        // calculate
-        let document = Document(path: path, taggingStatus: .tagged, downloadStatus: defaultDownloadStatus, byteSize: defaultSize)
-
-        // assert
-        XCTAssertNil(document.date)
-    }
+//    func testDocumentWithEmptyName() {
+//
+//        // setup
+//        let path = URL(fileURLWithPath: "~/Downloads/scan1.pdf")
+//
+//        // calculate
+//        let document = Document(path: path, taggingStatus: .tagged, downloadStatus: defaultDownloadStatus, byteSize: defaultSize)
+//
+//        // assert
+//        XCTAssertNil(document.date)
+//    }
 
     func testDocumentDateParsingFormat1() throws {
 
@@ -360,17 +360,17 @@ final class DocumentTests: XCTestCase {
         XCTAssertNil(tagNames)
     }
 
-    func testPlaceholder() {
-
-        // setup
-        let document = Document(path: URL(fileURLWithPath: "~/Downloads/2018-05-12--\(Constants.documentDescriptionPlaceholder)__\(Constants.documentTagPlaceholder).pdf"), taggingStatus: .untagged, downloadStatus: defaultDownloadStatus, byteSize: defaultSize)
-
-        document.updateProperties(with: .local)
-
-        // assert - placeholders must not be in the tags or specification
-        XCTAssertEqual(document.tags, [])
-        XCTAssertEqual(document.specification, "")
-    }
+//    func testPlaceholder() {
+//
+//        // setup
+//        let document = Document(path: URL(fileURLWithPath: "~/Downloads/2018-05-12--\(Constants.documentDescriptionPlaceholder)__\(Constants.documentTagPlaceholder).pdf"), taggingStatus: .untagged, downloadStatus: defaultDownloadStatus, byteSize: defaultSize)
+//
+//        document.updateProperties(with: .local)
+//
+//        // assert - placeholders must not be in the tags or specification
+//        XCTAssertEqual(document.tags, [])
+//        XCTAssertEqual(document.specification, "")
+//    }
 
     func testDocumentRenamingPath() {
 

@@ -7,7 +7,6 @@
 //
 
 import SwiftUI
-import SwiftUIX
 
 #if !os(macOS)
 struct MoreTabView: View {
@@ -81,7 +80,7 @@ struct MoreTabView: View {
 
     private var statistics: some View {
         Section(header: Text("🧾 Statistics")) {
-            StatisticsView(viewModel: viewModel.statisticsViewModel)
+            StatisticsView()
         }
     }
 

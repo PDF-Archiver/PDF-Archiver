@@ -19,12 +19,13 @@ struct PDFArchiverMacApp: App, Log {
     var body: some Scene {
         WindowGroup {
             MacSplitNavigation()
-                .modelContainer(container)
         }
+        .modelContainer(container)
         
         Settings {
             SettingsView(viewModel: mainNavigationViewModel.moreViewModel)
         }
         .windowStyle(HiddenTitleBarWindowStyle())
+        .modelContainer(container)
     }
 }

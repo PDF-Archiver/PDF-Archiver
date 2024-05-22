@@ -61,15 +61,12 @@ struct OBCardView: View {
 }
 
 #if DEBUG
-struct OBCardView_Previews: PreviewProvider {
-    static let onboardSet = OnboardSet.previewSet()
-    static var previews: some View {
-        Group {
-            OBCardView(currentCardIndex: 0, cardCount: 1, buttonTapped: {}, card: onboardSet.cards[0])
-                .previewDevice("Mac")
-            OBCardView(currentCardIndex: 1, cardCount: 1, buttonTapped: {}, card: onboardSet.cards[0])
-                .makeForPreviewProvider()
-        }
+#Preview("IAPView") {
+    Group {
+        let onboardSet = OnboardSet.previewSet()
+        OBCardView(currentCardIndex: 0, cardCount: 1, buttonTapped: {}, card: onboardSet.cards[0])
+            .previewDevice("Mac")
+        OBCardView(currentCardIndex: 1, cardCount: 1, buttonTapped: {}, card: onboardSet.cards[0])
     }
 }
 #endif

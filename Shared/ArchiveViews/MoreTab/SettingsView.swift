@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import SwiftUIX
 
 struct GeneralSettingsView: View {
     @AppStorage("showPreview") private var showPreview = true
@@ -80,7 +79,7 @@ public struct SettingsView: View {
                 }
             }
             Spacer()
-                .maxHeight(28)
+                .frame(maxHeight: 28)
             DetailRowView(name: "Show Intro") {
                 self.viewModel.showIntro()
             }
@@ -140,14 +139,14 @@ public struct SettingsView: View {
             }
             .padding(6)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.paSecondaryBackground)
+            .background(Color.paSecondaryBackground)
             .cornerRadius(4)
             Button("Select" as LocalizedStringKey, action: viewModel.selectObservedFolder)
         }
     }
 
     private var statistics: some View {
-        StatisticsView(viewModel: viewModel.statisticsViewModel)
+        StatisticsView()
             .padding(20)
             .frame(minWidth: 450, minHeight: 170)
     }

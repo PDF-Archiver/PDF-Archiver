@@ -9,22 +9,17 @@
 
 import Combine
 import SwiftUI
-import SwiftUIX
 #if canImport(MessageUI)
 import MessageUI
 #endif
 
 public final class MainNavigationViewModel: ObservableObject, Log {
 
-    public static let archiveStore = ArchiveStore.shared
     public static let iapService = IAPService()
     static let mailRecipients = ["support@pdf-archiver.io"]
     static let mailSubject = "PDF Archiver: Support"
 
     @Published var alertDataModel: AlertDataModel?
-
-    @Published var archiveCategories: [String] = []
-    @Published var tagCategories: [String] = []
 
     @Published var currentTab: Tab? = UserDefaults.lastSelectedTab
     @Published var showTutorial = !UserDefaults.tutorialShown
@@ -37,9 +32,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
 
     public let imageConverter: ImageConverter
     var scanViewModel: ScanTabViewModel
-    let tagViewModel = TagTabViewModel()
-    let archiveViewModel = ArchiveViewModel()
-    public let moreViewModel = MoreTabViewModel(iapService: MainNavigationViewModel.iapService, archiveStore: MainNavigationViewModel.archiveStore)
+    public let moreViewModel = MoreTabViewModel(iapService: MainNavigationViewModel.iapService)
 
     let iapViewModel = IAPViewModel(iapService: iapService)
 
@@ -123,34 +116,6 @@ public final class MainNavigationViewModel: ObservableObject, Log {
             }
             .store(in: &disposables)
 
-        NotificationCenter.default.editDocumentPublisher()
-            .receive(on: DispatchQueue.main)
-            .sink { document in
-                self.tagViewModel.currentDocument = document
-                if !self.tagViewModel.documents.contains(document) {
-                    self.tagViewModel.documents = [[document], self.tagViewModel.documents].flatMap { $0 }
-                }
-                self.currentTab = .tag
-            }
-            .store(in: &disposables)
-
-        Self.archiveStore.$years
-            .map { years -> [String] in
-                let tmp = years.sorted()
-                    .reversed()
-                    .prefix(5)
-
-                return Array(tmp)
-            }
-            .removeDuplicates()
-            .receive(on: DispatchQueue.main)
-            .assign(to: &self.$archiveCategories)
-
-        TagStore.shared.$sortedTags
-            .removeDuplicates()
-            .receive(on: DispatchQueue.main)
-            .assign(to: &self.$tagCategories)
-
         imageConverter.$processedDocumentUrl
             .compactMap { $0 }
             .sink { [weak self] url in
@@ -219,19 +184,19 @@ public final class MainNavigationViewModel: ObservableObject, Log {
         }
     }
 
-    func lazyView(for type: Tab) -> LazyView<AnyView> {
-        LazyView {
+    func lazyView(for type: Tab) -> some View {
+        LazyVStack {
             switch type {
                 case .scan:
                     return AnyView(ScanTabView(viewModel: self.scanViewModel).keyboardShortcut("1", modifiers: .command))
                 case .tag:
                     #if os(macOS)
-                    return AnyView(TagTabViewMac(viewModel: self.tagViewModel).keyboardShortcut("2", modifiers: .command))
+                    return AnyView(EmptyView())
                     #else
                     return AnyView(TagTabView(viewModel: self.tagViewModel).keyboardShortcut("2", modifiers: .command))
                     #endif
                 case .archive:
-                    return AnyView(ArchiveView(viewModel: self.archiveViewModel).keyboardShortcut("3", modifiers: .command))
+                    return AnyView(EmptyView())
                 #if !os(macOS)
                 case .more:
                     return AnyView(MoreTabView(viewModel: self.moreViewModel).keyboardShortcut("4", modifiers: .command))
@@ -240,6 +205,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
         }
     }
 
+    #warning("TODO: fix this")
     func selectedArchive(_ category: String) {
         guard let date = DateComponents(calendar: .current, timeZone: .current, year: Int(category)).date else {
             log.errorAndAssert("Could not create matching date.", metadata: ["input": "\(category)"])
@@ -248,16 +214,17 @@ public final class MainNavigationViewModel: ObservableObject, Log {
 
         log.info("Tapped on archive category.")
         currentTab = .archive
-        archiveViewModel.selectedFilters = [.year(date)]
+//        archiveViewModel.selectedFilters = [.year(date)]
     }
 
+    #warning("TODO: fix this")
     func selectedTag(_ category: String) {
         log.info("Tapped on tag.")
         currentTab = .archive
-        let newTagFilter: FilterItem = .tag(category)
-        if !archiveViewModel.selectedFilters.contains(newTagFilter) {
-            archiveViewModel.selectedFilters.append(newTagFilter)
-        }
+//        let newTagFilter: FilterItem = .tag(category)
+//        if !archiveViewModel.selectedFilters.contains(newTagFilter) {
+//            archiveViewModel.selectedFilters.append(newTagFilter)
+//        }
     }
 
     func handleIAPViewDismiss() {

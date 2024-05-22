@@ -7,14 +7,13 @@
 
 import PDFKit
 import SwiftUI
-import SwiftUIX
 
 struct PDFSharingView: View {
     var viewModel: PDFSharingViewModel
 
     var body: some View {
         ZStack {
-            Color.systemBackground
+            Color.background
             documentView
         }
     }
@@ -48,7 +47,7 @@ struct PDFSharingView: View {
                 }, label: {
                     Text("Delete")
                 })
-                .buttonStyle(FilledButtonStyle(foregroundColor: .paDarkRed, backgroundColor: .systemBackground))
+                .buttonStyle(FilledButtonStyle(foregroundColor: .paDarkRed, backgroundColor: .background))
             }
             .padding()
 
