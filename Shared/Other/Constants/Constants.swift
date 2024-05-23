@@ -15,4 +15,6 @@ public enum Constants {
     
     static let mailRecipient = "support@pdf-archiver.io"
     static let mailSubject = "PDF Archiver: Support"
+    
+    static let inAppPurchaseGroupId = "20516661"
 }

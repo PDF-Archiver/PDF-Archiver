@@ -45,14 +45,11 @@ public class MoreTabViewModel: ObservableObject, Log {
         URL(string: "https://pdf-archiver.io")!
     }
 
-    private let iapService: IAPServiceAPI
     private var disposables = Set<AnyCancellable>()
     private let queue = DispatchQueue(label: "MoreTabViewModel", qos: .userInitiated)
     private let queueUtility = DispatchQueue(label: "MoreTabViewModel-utility", qos: .utility)
 
-    public init(iapService: IAPServiceAPI) {
-        self.iapService = iapService
-
+    public init() {
         $selectedQualityIndex
             .sink { selectedQuality in
                 UserDefaults.pdfQuality = UserDefaults.PDFQuality.allCases[selectedQuality]
@@ -98,14 +95,6 @@ public class MoreTabViewModel: ObservableObject, Log {
                     }
                 }
                 self.handle(newType: type)
-            }
-            .store(in: &disposables)
-
-        iapService.appUsagePermittedPublisher
-            .removeDuplicates()
-            .receive(on: DispatchQueue.main)
-            .sink { appUsagePermitted in
-                self.subscriptionStatus = appUsagePermitted ? "Active ✅" : "Inactive ❌"
             }
             .store(in: &disposables)
     }
@@ -249,24 +238,3 @@ public class MoreTabViewModel: ObservableObject, Log {
     }
     #endif
 }
-
-#if DEBUG
-import Combine
-import StoreKit
-
-extension MoreTabViewModel {
-    private class MockIAPService: IAPServiceAPI {
-        var productsPublisher: AnyPublisher<Set<SKProduct>, Never> {
-            Just([]).eraseToAnyPublisher()
-        }
-        var appUsagePermitted = true
-        var appUsagePermittedPublisher: AnyPublisher<Bool, Never> {
-            Just(appUsagePermitted).eraseToAnyPublisher()
-        }
-        func buy(subscription: IAPService.SubscriptionType) throws {}
-        func restorePurchases() {}
-    }
-
-    @State static var previewViewModel = MoreTabViewModel(iapService: MockIAPService())
-}
-#endif

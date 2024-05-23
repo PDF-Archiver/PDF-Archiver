@@ -1,15 +1,6 @@
 {
-  "originHash" : "330158c3e1afc5fcd5c3f4990d559ef8ae259627bb893316d5a4345b8327078f",
+  "originHash" : "20a9821b75edcba0dda9096e18830862a5d25103bce0cd219b193a0d0b4ff55c",
   "pins" : [
-    {
-      "identity" : "asn1swift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/tikhop/ASN1Swift",
-      "state" : {
-        "revision" : "403cd95194e6a962e16db7c0d373d89fce83e0f7",
-        "version" : "1.2.7"
-      }
-    },
     {
       "identity" : "deepdiff",
       "kind" : "remoteSourceControl",
@@ -20,30 +11,12 @@
       }
     },
     {
-      "identity" : "diagnostics",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/WeTransfer/Diagnostics",
-      "state" : {
-        "revision" : "f5c4c56ecd91c348bb20b7e85828594fae197f83",
-        "version" : "4.6.0"
-      }
-    },
-    {
       "identity" : "down",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/iwasrobbed/Down",
       "state" : {
         "revision" : "f34b166be1f1db4aa8f573067e901d72f2a6be57",
         "version" : "0.11.0"
-      }
-    },
-    {
-      "identity" : "exceptioncatcher",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/sindresorhus/ExceptionCatcher",
-      "state" : {
-        "revision" : "a7acaf40f8bd67a1f3a05a14de5b6a861ac3d1ac",
-        "version" : "2.0.1"
       }
     },
     {
@@ -62,24 +35,6 @@
       "state" : {
         "branch" : "main",
         "revision" : "3c8b431fd5ad3cf675c60d0aa89f011cbcbb036c"
-      }
-    },
-    {
-      "identity" : "swift-log",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-log.git",
-      "state" : {
-        "revision" : "e97a6fcb1ab07462881ac165fdbb37f067e205d5",
-        "version" : "1.5.4"
-      }
-    },
-    {
-      "identity" : "tpinappreceipt",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/tikhop/TPInAppReceipt",
-      "state" : {
-        "revision" : "e135055eaeba5a52874b7f9b290f42890cbe981f",
-        "version" : "3.4.1"
       }
     }
   ],

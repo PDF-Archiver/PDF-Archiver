@@ -35,14 +35,12 @@ public final class ScanTabViewModel: ObservableObject, DropDelegate, Log {
     @Published public private(set) var progressLabel: String = " "
 
     private let imageConverter: ImageConverterAPI
-    private let iapService: IAPServiceAPI
 
     private var lastProgressValue: CGFloat?
     private var disposables = Set<AnyCancellable>()
 
-    public init(imageConverter: ImageConverterAPI, iapService: IAPServiceAPI) {
+    public init(imageConverter: ImageConverterAPI) {
         self.imageConverter = imageConverter
-        self.iapService = iapService
 
         // show the processing indicator, if documents are currently processed
         if imageConverter.totalDocumentCount.value != 0 {
@@ -169,9 +167,6 @@ public final class ScanTabViewModel: ObservableObject, DropDelegate, Log {
     public func process(_ images: [CIImage]) {
         assert(!Thread.isMainThread, "This might take some time and should not be executed on the main thread.")
 
-        // validate subscription
-        guard testAppUsagePermitted() else { return }
-
         // show processing indicator instantly
         updateProcessingIndicator(with: 0)
 
@@ -217,28 +212,6 @@ public final class ScanTabViewModel: ObservableObject, DropDelegate, Log {
                 self.progressLabel = NSLocalizedString("ScanViewController.processing", comment: "") + "0%"
             }
         }
-    }
-
-    @discardableResult
-    private func testAppUsagePermitted() -> Bool {
-
-        let isPermitted = iapService.appUsagePermitted
-
-        // show subscription view controller, if no subscription was found
-        if !isPermitted {
-            DispatchQueue.main.async {
-                NotificationCenter.default.createAndPost(title: "No Subscription",
-                                                         message: "No active subscription could be found. Your document will therefore not be saved.\nPlease support the app and subscribe.",
-                                                         primaryButton: .default(Text("Activate"), action: {
-                                                            // show the subscription view
-                                                            NotificationCenter.default.post(.showSubscriptionView)
-                                                            self.showDocumentScan = false
-                                                         }),
-                                                         secondaryButton: .cancel(Text("OK")))
-            }
-        }
-
-        return isPermitted
     }
 
     private func getUrls(of item: NSItemProvider) throws -> [URL] {

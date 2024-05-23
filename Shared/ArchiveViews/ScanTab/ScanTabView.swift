@@ -120,21 +120,9 @@ struct ScanTabView_Previews: PreviewProvider {
         func getOperationCount() -> Int { 4 }
     }
 
-    private class MockIAPService: IAPServiceAPI {
-        var productsPublisher: AnyPublisher<Set<SKProduct>, Never> {
-            Just([]).eraseToAnyPublisher()
-        }
-        var appUsagePermitted = true
-        var appUsagePermittedPublisher: AnyPublisher<Bool, Never> {
-            Just(appUsagePermitted).eraseToAnyPublisher()
-        }
-        func buy(subscription: IAPService.SubscriptionType) throws {}
-        func restorePurchases() {}
-    }
-
     static var previews: some View {
         // swiftlint:disable:next trailing_closure
-        ScanTabView(viewModel: ScanTabViewModel(imageConverter: ImageConverter(), iapService: MockIAPService()))
+        ScanTabView(viewModel: ScanTabViewModel(imageConverter: ImageConverter()))
         .frame(maxWidth: .infinity)
         .padding()
     }

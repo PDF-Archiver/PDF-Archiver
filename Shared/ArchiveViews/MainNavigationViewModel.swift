@@ -14,9 +14,6 @@ import MessageUI
 #endif
 
 public final class MainNavigationViewModel: ObservableObject, Log {
-
-    public static let iapService = IAPService()
-
     @Published var alertDataModel: AlertDataModel?
 
     @Published var currentTab: Tab? = UserDefaults.lastSelectedTab
@@ -30,15 +27,13 @@ public final class MainNavigationViewModel: ObservableObject, Log {
 
     public let imageConverter: ImageConverter
     var scanViewModel: ScanTabViewModel
-    public let moreViewModel = MoreTabViewModel(iapService: MainNavigationViewModel.iapService)
-
-    let iapViewModel = IAPViewModel(iapService: iapService)
+    public let moreViewModel = MoreTabViewModel()
 
     private var disposables = Set<AnyCancellable>()
 
     public init() {
         imageConverter = ImageConverter(getDocumentDestination: Self.getDocumentDestination)
-        scanViewModel = ScanTabViewModel(imageConverter: imageConverter, iapService: Self.iapService)
+        scanViewModel = ScanTabViewModel(imageConverter: imageConverter)
 
         NotificationCenter.default.alertPublisher()
             .receive(on: DispatchQueue.main)
@@ -86,27 +81,6 @@ public final class MainNavigationViewModel: ObservableObject, Log {
             }
             .store(in: &disposables)
 
-        // MARK: Subscription
-        Self.iapService.appUsagePermittedPublisher
-            // do not use initial value -> finish validation first
-            .dropFirst()
-            .removeDuplicates()
-            .combineLatest($currentTab)
-            .receive(on: DispatchQueue.main)
-            .sink { (_, selectedTab) in
-                if !Self.iapService.appUsagePermitted && selectedTab == .tag {
-                    self.sheetType = .iapView
-                }
-            }
-            .store(in: &disposables)
-
-        NotificationCenter.default.publisher(for: .showSubscriptionView)
-            .receive(on: DispatchQueue.main)
-            .sink { _ in
-                self.sheetType = .iapView
-            }
-            .store(in: &disposables)
-
         imageConverter.$processedDocumentUrl
             .compactMap { $0 }
             .sink { [weak self] url in
@@ -131,8 +105,6 @@ public final class MainNavigationViewModel: ObservableObject, Log {
     @ViewBuilder
     func getView(for sheetType: SheetType) -> some View {
         switch sheetType {
-        case .iapView:
-            IAPView(viewModel: iapViewModel)
         #if canImport(MessageUI)
         case .supportView:
             SupportMailView(subject: Self.mailSubject,
@@ -149,6 +121,9 @@ public final class MainNavigationViewModel: ObservableObject, Log {
         case .activityView(let items):
             AppActivityView(activityItems: items)
         #endif
+        default:
+            #warning("TODO: remove this")
+            EmptyView()
         }
     }
 
@@ -216,11 +191,6 @@ public final class MainNavigationViewModel: ObservableObject, Log {
 //        if !archiveViewModel.selectedFilters.contains(newTagFilter) {
 //            archiveViewModel.selectedFilters.append(newTagFilter)
 //        }
-    }
-
-    func handleIAPViewDismiss() {
-        guard !Self.iapService.appUsagePermitted else { return }
-        currentTab = .scan
     }
 
     func showAfterCrashSupport() {
@@ -306,16 +276,12 @@ public final class MainNavigationViewModel: ObservableObject, Log {
 
 extension MainNavigationViewModel {
     enum SheetType: Identifiable {
-        case iapView
-
         #if !os(macOS)
         case activityView(items: [Any])
         #endif
 
         var id: String {
             switch self {
-                case .iapView:
-                    return "iapView"
                 #if canImport(MessageUI)
                 case .supportView:
                     return "supportView"

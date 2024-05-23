@@ -1,0 +1,180 @@
+{
+  "identifier" : "7CCDE553",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "26.99",
+      "familyShareable" : true,
+      "internalID" : "1549937161",
+      "localizations" : [
+        {
+          "description" : "One time purchase for PDF Archiver",
+          "displayName" : "Lifetime License",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "Einmaliger Kauf von PDF Archiver",
+          "displayName" : "Lizenz auf Lebenszeit",
+          "locale" : "de"
+        }
+      ],
+      "productID" : "LIFETIME",
+      "referenceName" : "Lifetime Purchase",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "1433801905",
+    "_developerTeamID" : "87KNVHZ8C7",
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 738188088.34752703,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "20516661",
+      "localizations" : [
+
+      ],
+      "name" : "de.juliankahnert.pdf-archiver",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "1.99",
+          "familyShareable" : true,
+          "groupNumber" : 1,
+          "internalID" : "1457749808",
+          "introductoryOffer" : {
+            "internalID" : "4AA7351C",
+            "numberOfPeriods" : 1,
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P2W"
+          },
+          "localizations" : [
+            {
+              "description" : "Freischaltung (Scan/Tag) als monatliches Abo",
+              "displayName" : "Monatliches Abo",
+              "locale" : "de"
+            },
+            {
+              "description" : "Unlock scan/tagging via monthly subscription",
+              "displayName" : "Monthly Subscription",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "SUBSCRIPTION_MONTHLY_IOS",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Monthly Subscription",
+          "subscriptionGroupID" : "20516661",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+            {
+              "displayPrice" : "0.99",
+              "eligibility" : [
+                "new",
+                "expired"
+              ],
+              "internalID" : "68C72AD0",
+              "isStackable" : false,
+              "numberOfPeriods" : 1,
+              "paymentMode" : "payAsYouGo",
+              "referenceName" : "Christmas2020",
+              "subscriptionPeriod" : "P1Y"
+            }
+          ],
+          "displayPrice" : "0.99",
+          "familyShareable" : true,
+          "groupNumber" : 1,
+          "internalID" : "1469750159",
+          "introductoryOffer" : {
+            "internalID" : "D4A5E5FF",
+            "numberOfPeriods" : 1,
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P1W"
+          },
+          "localizations" : [
+            {
+              "description" : "Unterstütze die Weiterentwicklung #IndieDev",
+              "displayName" : "Jährliches Abo",
+              "locale" : "de"
+            },
+            {
+              "description" : "Support the development & unlock all features",
+              "displayName" : "Yearly Subscription",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "SUBSCRIPTION_YEARLY_IOS_NEW",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Yearly Subscription",
+          "subscriptionGroupID" : "20516661",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}

@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct MacSplitNavigation: View {
+    @Environment(Subscription.self) var subscription
+
     @State private var selectedDocumentId: String?
     @AppStorage("taggingMode") private var untaggedMode = false
 
@@ -39,6 +41,9 @@ struct MacSplitNavigation: View {
                 DocumentDetailView(documentId: $selectedDocumentId, untaggedMode: $untaggedMode)
             }
         }
+        .sheet(isPresented: .constant(true), content: {
+            InAppPurchaseView(isPresented: .constant(true))
+        })
     }
 }
 

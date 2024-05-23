@@ -28,6 +28,7 @@ extension Logger {
     #endif
     
     static let archiveStore = Logger(subsystem: subsystem, category: "archive-store")
+    static let inAppPurchase = Logger(subsystem: subsystem, category: "in-app-purchase")
     static let newDocument = Logger(subsystem: subsystem, category: "new-document")
 
     func errorAndAssert(_ message: String) {
@@ -43,69 +44,62 @@ extension Logger {
 
     func trace(_ message: String,
                metadata: @autoclosure () -> [String: String],
-               source: @autoclosure () -> String? = nil,
                file: StaticString = #file,
                function: StaticString = #function,
                line: UInt = #line) {
-        let tmp = input2message(message, metadata: metadata(), source: source(), file: file, function: function, line: line)
+        let tmp = input2message(message, metadata: metadata(), file: file, function: function, line: line)
         trace("\(tmp)")
     }
     
     func info(_ message: String,
                metadata: @autoclosure () -> [String: String],
-               source: @autoclosure () -> String? = nil,
                file: StaticString = #file,
                function: StaticString = #function,
                line: UInt = #line) {
-        let tmp = input2message(message, metadata: metadata(), source: source(), file: file, function: function, line: line)
+        let tmp = input2message(message, metadata: metadata(), file: file, function: function, line: line)
         info("\(tmp)")
     }
     
     func debug(_ message: String,
                metadata: @autoclosure () -> [String: String],
-               source: @autoclosure () -> String? = nil,
                file: StaticString = #file,
                function: StaticString = #function,
                line: UInt = #line) {
-        let tmp = input2message(message, metadata: metadata(), source: source(), file: file, function: function, line: line)
+        let tmp = input2message(message, metadata: metadata(), file: file, function: function, line: line)
         debug("\(tmp)")
     }
     
     func error(_ message: String,
                metadata: @autoclosure () -> [String: String]?,
-               source: @autoclosure () -> String? = nil,
                file: StaticString = #file,
                function: StaticString = #function,
                line: UInt = #line) {
-        let tmp = input2message(message, metadata: metadata(), source: source(), file: file, function: function, line: line)
+        let tmp = input2message(message, metadata: metadata(), file: file, function: function, line: line)
         error("\(tmp)")
     }
     
     func errorAndAssert(_ message: String,
                         metadata: @autoclosure () -> [String: String]? = nil,
-                        source: @autoclosure () -> String? = nil,
                         file: StaticString = #file,
                         function: StaticString = #function,
                         line: UInt = #line) {
-        let tmp = input2message(message, metadata: metadata(), source: source(), file: file, function: function, line: line)
+        let tmp = input2message(message, metadata: metadata(), file: file, function: function, line: line)
         error("\(tmp)")
         assertionFailure(message, file: file, line: line)
     }
 
     func criticalAndAssert(_ message: String,
                            metadata: @autoclosure () -> [String: String]? = nil,
-                           source: @autoclosure () -> String? = nil,
                            file: StaticString = #file,
                            function: StaticString = #function,
                            line: UInt = #line) {
-        let tmp = input2message(message, metadata: metadata(), source: source(), file: file, function: function, line: line)
+        let tmp = input2message(message, metadata: metadata(), file: file, function: function, line: line)
         critical("\(tmp)")
         assertionFailure(message, file: file, line: line)
     }
     
     private func input2message(_ message: String,
                                metadata: [String: String]?,
-                               source: String?,
                                file: StaticString,
                                function: StaticString,
                                line: UInt) -> String {
@@ -120,6 +114,6 @@ extension Logger {
         } else {
             metadataText = ""
         }
-        return "\(message) -\(metadataText) source: \(source ?? ""), file: \(file), function: \(function), line: \(line)"
+        return "\(message) -\(metadataText) file: \(URL(fileURLWithPath: file.description).lastPathComponent) \(function):\(line)"
     }
 }
