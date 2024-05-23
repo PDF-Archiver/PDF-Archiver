@@ -211,19 +211,4 @@ extension UserDefaults: Log {
         // swiftlint:disable:next force_unwrapping
         UserDefaults(suiteName: Constants.sharedContainerIdentifier)!
     }
-
-    public static func runMigration() {
-        let old = UserDefaults.standard
-        let new = UserDefaults.appGroup
-
-        for name in Names.allCases {
-            if let value = old.object(forKey: name.rawValue) {
-                // if an old value could be found, set it in the new UserDefaults
-                new.set(value, forKey: name.rawValue)
-
-                // remove the old value after the migration has been completed, so that this will only run one time
-                old.set(nil, forKey: name.rawValue)
-            }
-        }
-    }
 }

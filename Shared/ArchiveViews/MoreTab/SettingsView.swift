@@ -179,7 +179,7 @@ public struct SettingsView: View {
                 HStack {
                     Spacer()
                     DetailRowView(name: "Contact Support  🚑") {
-                        NotificationCenter.default.post(Notification(name: .showSendDiagnosticsReport))
+                        sendMail(recipient: Constants.mailRecipient, subject: Constants.mailSubject)
                     }
                     Spacer()
                     Link("PDF Archiver Website  🖥", destination: viewModel.pdfArchiverUrl)

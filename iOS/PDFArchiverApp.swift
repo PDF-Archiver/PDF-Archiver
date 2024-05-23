@@ -5,10 +5,7 @@
 //  Created by Julian Kahnert on 24.06.20.
 //
 
-import Diagnostics
 import Foundation
-import Logging
-import Sentry
 import SwiftUI
 
 @main
@@ -67,7 +64,6 @@ struct PDFArchiverApp: App, Log {
                 #endif
 
                 if phase == .active {
-                    initializeSentry()
                     #if !os(macOS)
                     if let type = shortcutItemToProcess?.type,
                        let itemType = ShortCutItemType(rawValue: type) {
@@ -91,33 +87,7 @@ struct PDFArchiverApp: App, Log {
     }
 
     private func setup() {
-
-        #if os(macOS)
-        NSWindow.allowsAutomaticWindowTabbing = false
-        #endif
-
-        do {
-            try DiagnosticsLogger.setup()
-            UserDefaultsReporter.userDefaults = UserDefaults.appGroup
-        } catch {
-            log.warning("Failed to setup the Diagnostics Logger")
-        }
-
-        LoggingSystem.bootstrap { label in
-//            let logLevel: Logger.Level = AppEnvironment.get() == .production ? .info : .trace
-            let logLevel: Logger.Level = .trace
-            var sysLogger = StreamLogHandler.standardOutput(label: label)
-            sysLogger.logLevel = logLevel
-            let sentryLogger = SentryBreadcrumbLogger(metadata: [:], logLevel: logLevel)
-            return MultiplexLogHandler([sysLogger, sentryLogger])
-        }
-
-        DispatchQueue.global().async {
-
-            UserDefaults.runMigration()
-        }
-
-        #if !APPCLIP && !os(macOS)
+        #if !os(macOS)
         // disable transparent UITabBar on iOS 15+
         if #available(iOS 15.0, *) {
             let appearance = UITabBarAppearance()
@@ -137,38 +107,6 @@ struct PDFArchiverApp: App, Log {
             }
         }
         #endif
-    }
-
-    private func initializeSentry() {
-        // Create a Sentry client and start crash handler
-        SentrySDK.start { options in
-            options.dsn = "https://7adfcae85d8d4b2f946102571b2d4d6c@o194922.ingest.sentry.io/1299590"
-            options.environment = AppEnvironment.get().rawValue
-            options.releaseName = AppEnvironment.getFullVersion()
-            options.enabled = AppEnvironment.get() != .production
-            options.enableAutoSessionTracking = AppEnvironment.get() != .production
-            options.debug = AppEnvironment.get() != .production
-
-            options.enableCrashHandler = true
-
-            // Only gets called for the first crash event
-            options.onCrashedLastRun = { event in
-                log.error("Crash has happened!", metadata: ["event": "\(event)"])
-                // this is disabled because it might cause unintended redirects, since the Sentry crash detection seems to be wonky
-                // DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3), execute: self.mainNavigationViewModel.displayUserFeedback)
-            }
-
-            options.beforeSend = { event in
-                // I am not interested in this kind of data
-                event.context?["device"]?["storage_size"] = nil
-                event.context?["device"]?["free_memory"] = nil
-                event.context?["device"]?["memory_size"] = nil
-                event.context?["device"]?["boot_time"] = nil
-                event.context?["device"]?["timezone"] = nil
-                event.context?["device"]?["usable_memory"] = nil
-                return event
-            }
-        }
     }
 }
 

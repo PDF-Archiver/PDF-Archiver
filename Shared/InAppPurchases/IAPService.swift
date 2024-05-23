@@ -61,7 +61,7 @@ public final class IAPService: NSObject, Log {
 
     /// Create and add a payment request to the payment queue.
     public func buy(subscription: SubscriptionType) throws {
-        log.debug("buy \(subscription)")
+        log.debug("buy \(subscription.rawValue)")
         guard let product = products.first(where: { $0.productIdentifier == subscription.rawValue }) else { throw IAPError.purchaseFailedProductNotFound }
         let payment = SKMutablePayment(product: product)
         paymentQueue.add(payment)

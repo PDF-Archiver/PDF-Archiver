@@ -93,7 +93,7 @@ struct MoreTabView: View {
             MoreTabViewModel.markdownView(for: "Terms & Privacy", withKey: "Privacy")
             MoreTabViewModel.markdownView(for: "Imprint", withKey: "Imprint")
             DetailRowView(name: "Contact Support  🚑") {
-                NotificationCenter.default.post(Notification(name: .showSendDiagnosticsReport))
+                sendMail(recipient: Constants.mailRecipient, subject: Constants.mailSubject)
             }
             DetailRowView(name: "Rate App ⭐️") {
                 AppStoreReviewRequest.shared.requestReviewManually(for: Self.appId)

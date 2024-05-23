@@ -84,7 +84,6 @@ struct IAPView: View {
                             .foregroundColor(.paWhite)
                             .background(Color.paDarkRed)
                             .cornerRadius(8)
-                            .animation(nil)
                             .transition(.scale)
                     }
                     .offset(x: -16, y: -12)
@@ -163,7 +162,7 @@ struct IAPView: View {
             }, label: {
                 Text("Restore")
             })
-            .buttonStyle(FilledButtonStyle(foregroundColor: .paDarkGray, backgroundColor: .background))
+            .buttonStyle(FilledButtonStyle(foregroundColor: .paDarkGray, backgroundColor: .paBackground))
 
             Button(action: {
                 self.viewModel.tapped(button: .cancel, presentationMode: self.presentationMode)
@@ -171,7 +170,7 @@ struct IAPView: View {
             }, label: {
                 Text("Cancel")
             })
-            .buttonStyle(FilledButtonStyle(foregroundColor: .paDarkRed, backgroundColor: .background))
+            .buttonStyle(FilledButtonStyle(foregroundColor: .paDarkRed, backgroundColor: .paBackground))
         }
     }
 }

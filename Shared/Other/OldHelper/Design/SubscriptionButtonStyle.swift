@@ -10,7 +10,7 @@ import SwiftUI
 
 struct SubscriptionButtonStyle: ButtonStyle {
 
-    private let foregroundColor: Color = .background
+    private let foregroundColor: Color = .paBackground
     private let backgroundColor: Color = .paDarkGray
     var isPreferred = false
 

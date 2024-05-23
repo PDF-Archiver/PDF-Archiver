@@ -26,7 +26,7 @@ struct OnboardingScreens: View {
                         // Source: https://github.com/AugustDev/swiftui-onboarding-slider/blob/59b4d81e9b5606c2ad9b9868a79a1e2d386282b7/Onboarding/OnboardingViewPure.swift#L11
                         .offset(x: CGFloat(index) * proxy.size.width)
                         .offset(x: gesture.width - CGFloat(cardIndex) * proxy.size.width)
-                        .animation(.spring())
+                        .animation(.spring, value: cardIndex)
                         .gesture(DragGesture().onChanged { value in
                             gesture = value.translation
                         }

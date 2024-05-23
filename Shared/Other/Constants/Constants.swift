@@ -7,9 +7,12 @@
 //
 
 public enum Constants {
-    public static let sharedContainerIdentifier = "group.PDFArchiverShared"
+    static let sharedContainerIdentifier = "group.PDFArchiverShared"
 
-    public static let documentDatePlaceholder = "PDFARCHIVER-TEMP-DATE"
-    public static let documentDescriptionPlaceholder = "PDF-ARCHIVER-TEMP-DESCRIPTION-"
-    public static let documentTagPlaceholder = "PDFARCHIVERTEMPTAG"
+    static let documentDatePlaceholder = "PDFARCHIVER-TEMP-DATE"
+    static let documentDescriptionPlaceholder = "PDF-ARCHIVER-TEMP-DESCRIPTION-"
+    static let documentTagPlaceholder = "PDFARCHIVERTEMPTAG"
+    
+    static let mailRecipient = "support@pdf-archiver.io"
+    static let mailSubject = "PDF Archiver: Support"
 }

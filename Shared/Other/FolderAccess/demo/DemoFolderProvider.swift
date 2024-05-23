@@ -7,7 +7,6 @@
 // swiftlint:disable force_unwrapping
 
 import Foundation
-import Logging
 
 final class DemoFolderProvider: FolderProvider, Log {
     private static var isInitialized = false

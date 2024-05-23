@@ -16,8 +16,6 @@ import MessageUI
 public final class MainNavigationViewModel: ObservableObject, Log {
 
     public static let iapService = IAPService()
-    static let mailRecipients = ["support@pdf-archiver.io"]
-    static let mailSubject = "PDF Archiver: Support"
 
     @Published var alertDataModel: AlertDataModel?
 
@@ -106,13 +104,6 @@ public final class MainNavigationViewModel: ObservableObject, Log {
             .receive(on: DispatchQueue.main)
             .sink { _ in
                 self.sheetType = .iapView
-            }
-            .store(in: &disposables)
-
-        NotificationCenter.default.publisher(for: .showSendDiagnosticsReport)
-            .receive(on: DispatchQueue.main)
-            .sink { _ in
-                self.showSupport()
             }
             .store(in: &disposables)
 
@@ -232,32 +223,9 @@ public final class MainNavigationViewModel: ObservableObject, Log {
         currentTab = .scan
     }
 
-    func showSupport() {
-        log.info("Show support")
-        #if os(macOS)
-        sendDiagnosticsReport(messagePrefix: "")
-        #else
-        if MFMailComposeViewController.canSendMail() {
-            sheetType = .supportView
-        } else {
-            guard let url = URL(string: "https://pdf-archiver.io/faq") else { preconditionFailure("Could not generate the FAQ url.") }
-            open(url)
-        }
-        #endif
-    }
-
     func showAfterCrashSupport() {
         log.info("Show after crash support")
-        #if os(macOS)
-        sendDiagnosticsReport(messagePrefix: .afterCrashMessage)
-        #else
-        if MFMailComposeViewController.canSendMail() {
-            sheetType = .supportAfterCrashView
-        } else {
-            guard let url = URL(string: "https://pdf-archiver.io/faq") else { preconditionFailure("Could not generate the FAQ url.") }
-            open(url)
-        }
-        #endif
+        sendMail(recipient: Constants.mailRecipient, subject: Constants.mailSubject, body: "App Crash 💥\n\n")
     }
 
     public func displayUserFeedback() {
@@ -339,10 +307,6 @@ public final class MainNavigationViewModel: ObservableObject, Log {
 extension MainNavigationViewModel {
     enum SheetType: Identifiable {
         case iapView
-        #if canImport(MessageUI)
-        case supportView
-        case supportAfterCrashView
-        #endif
 
         #if !os(macOS)
         case activityView(items: [Any])
@@ -366,40 +330,3 @@ extension MainNavigationViewModel {
         }
     }
 }
-
-#if os(macOS)
-import AppKit
-import Diagnostics
-
-extension MainNavigationViewModel {
-    func sendDiagnosticsReport(messagePrefix: String) {
-        // add a diagnostics report
-        var reporters = DiagnosticsReporter.DefaultReporter.allReporters
-        reporters.insert(CustomDiagnosticsReporter(), at: 1)
-        let report = DiagnosticsReporter.create(using: reporters)
-
-        guard let service = NSSharingService(named: .composeEmail) else {
-            log.errorAndAssert("Failed to get sharing service.")
-
-            guard let url = URL(string: "https://pdf-archiver.io/faq") else { preconditionFailure("Could not generate the FAQ url.") }
-            open(url)
-            return
-        }
-        service.recipients = Self.mailRecipients
-        service.subject = Self.mailSubject
-
-        let url = FileManager.default.temporaryDirectory.appendingPathComponent("Diagnostics-Report.html")
-
-        // remove previous report
-        try? FileManager.default.removeItem(at: url)
-
-        do {
-            try report.data.write(to: url)
-        } catch {
-            preconditionFailure("Failed with error: \(error)")
-        }
-
-        service.perform(withItems: [messagePrefix, url])
-    }
-}
-#endif

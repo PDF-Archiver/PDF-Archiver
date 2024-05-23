@@ -1,13 +1,13 @@
 {
-  "originHash" : "a1d32a873daecf7102c3bfc0cb863e03871adb49d06104366a78bb42e1c2521d",
+  "originHash" : "330158c3e1afc5fcd5c3f4990d559ef8ae259627bb893316d5a4345b8327078f",
   "pins" : [
     {
       "identity" : "asn1swift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tikhop/ASN1Swift",
       "state" : {
-        "revision" : "177417b6bf89431a0750ee640012b6aed8961c6a",
-        "version" : "1.2.5"
+        "revision" : "403cd95194e6a962e16db7c0d373d89fce83e0f7",
+        "version" : "1.2.7"
       }
     },
     {
@@ -65,15 +65,6 @@
       }
     },
     {
-      "identity" : "sentry-cocoa",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/getsentry/sentry-cocoa",
-      "state" : {
-        "revision" : "9cf7d2e514af1600cc2b3c5592e2848c6c5a76d6",
-        "version" : "8.7.3"
-      }
-    },
-    {
       "identity" : "swift-log",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-log.git",
@@ -87,8 +78,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tikhop/TPInAppReceipt",
       "state" : {
-        "revision" : "5c1ecd9da98fe0373da9d66e8106104d0d305ce3",
-        "version" : "3.4.0"
+        "revision" : "e135055eaeba5a52874b7f9b290f42890cbe981f",
+        "version" : "3.4.1"
       }
     }
   ],

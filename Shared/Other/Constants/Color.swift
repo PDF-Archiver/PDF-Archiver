@@ -9,15 +9,15 @@
 import SwiftUI
 
 public extension Color {
-    static var paDelete = Color("Delete")
-    static var paDarkGray = Color("DarkGray")
-    static var paLightGray = Color("LightGray")
-    static var paWhite = Color("White")
-    static var paDarkRed = Color("DarkRed")
-    static var paLightRed = Color("LightRed")
+    static var paDelete = Color("paDeleteAsset")
+    static var paDarkGray = Color("paDarkGrayAsset")
+    static var paLightGray = Color("paLightGrayAsset")
+    static var paWhite = Color("paWhiteAsset")
+    static var paDarkRed = Color("paDarkRedAsset")
+    static var paLightRed = Color("paLightRedAsset")
 
     static var paPDFBackground = Color("PDFBackground")
-    static var paBackground = Color("Background")
+    static var paBackground = Color("paBackgroundAsset")
     #if os(macOS)
     // swiftlint:disable:next force_unwrapping
     static var paSecondaryBackground = Color(NSColor.alternatingContentBackgroundColors.last!)

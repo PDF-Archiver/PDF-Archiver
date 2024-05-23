@@ -28,35 +28,30 @@ class StatisticsViewModel {
     }
     
     func updateData(with documents: [Document]) {
-        do {
-            self.isLoading = true
-            self.documents = documents
+        self.isLoading = true
+        self.documents = documents
 
-            let taggedDocuments = documents.filter(\.isTagged)
-            let tmpTopTags = taggedDocuments
-                .map(\.tags)
-                .reduce(into: [String: Int]()) { (counts, documentTags) in
-                    for documentTag in documentTags {
-                        counts[documentTag, default: 0] += 1
-                    }
+        let taggedDocuments = documents.filter(\.isTagged)
+        let tmpTopTags = taggedDocuments
+            .map(\.tags)
+            .reduce(into: [String: Int]()) { (counts, documentTags) in
+                for documentTag in documentTags {
+                    counts[documentTag, default: 0] += 1
                 }
-                .sorted { $0.value > $1.value }
-                .prefix(3)
-            self.topTags = Array(tmpTopTags)
-            
-            let tmpTopYears = taggedDocuments
-                .map(\.url)
-                .map { $0.deletingLastPathComponent().lastPathComponent }
-                .reduce(into: [String: Int]()) { (counts, year) in
-                    counts[year, default: 0] += 1
-                }
-                .sorted { $0.value > $1.value }
-                .prefix(3)
-            self.topYears = Array(tmpTopYears)
-            self.isLoading = false
-        } catch {
-            Logger.archiveStore.error("Failed to update statistics \(error)")
-            NotificationCenter.default.postAlert(error)
-        }
+            }
+            .sorted { $0.value > $1.value }
+            .prefix(3)
+        self.topTags = Array(tmpTopTags)
+        
+        let tmpTopYears = taggedDocuments
+            .map(\.url)
+            .map { $0.deletingLastPathComponent().lastPathComponent }
+            .reduce(into: [String: Int]()) { (counts, year) in
+                counts[year, default: 0] += 1
+            }
+            .sorted { $0.value > $1.value }
+            .prefix(3)
+        self.topYears = Array(tmpTopYears)
+        self.isLoading = false
     }
 }
