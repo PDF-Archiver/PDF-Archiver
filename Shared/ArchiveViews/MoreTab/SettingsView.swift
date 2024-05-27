@@ -26,6 +26,7 @@ struct GeneralSettingsView: View {
 #if os(macOS)
 public struct SettingsView: View {
 
+    @AppStorage("tutorialShown", store: .appGroup) private var tutorialShown = false
     @ObservedObject var viewModel: MoreTabViewModel
     @State private var showMoreInformation = true
 
@@ -81,7 +82,9 @@ public struct SettingsView: View {
             Spacer()
                 .frame(maxHeight: 28)
             DetailRowView(name: "Show Intro") {
-                self.viewModel.showIntro()
+                withAnimation {
+                    tutorialShown = false
+                }
             }
         }
         .padding(20)

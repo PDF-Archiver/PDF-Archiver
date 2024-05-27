@@ -14,40 +14,36 @@ struct OnboardingScreens: View {
 
     let onboardSet: OnboardSet
     var body: some View {
-        GeometryReader { proxy in
-            ZStack(alignment: .center) {
-                ForEach(0..<onboardSet.cards.count, id: \.self) { index in
-                    OBCardView(currentCardIndex: index, cardCount: onboardSet.cards.count, buttonTapped: showNextHandler, card: onboardSet.cards[index])
-                        .padding()
-                        .frame(maxWidth: min(500, proxy.size.width * 0.85), maxHeight: proxy.size.height * 0.66)
-                        .background(RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                        .fill(Color.secondarySystemBackground)
-                                        .shadow(radius: 10))
-                        // Source: https://github.com/AugustDev/swiftui-onboarding-slider/blob/59b4d81e9b5606c2ad9b9868a79a1e2d386282b7/Onboarding/OnboardingViewPure.swift#L11
-                        .offset(x: CGFloat(index) * proxy.size.width)
-                        .offset(x: gesture.width - CGFloat(cardIndex) * proxy.size.width)
-                        .animation(.spring, value: cardIndex)
-                        .gesture(DragGesture().onChanged { value in
-                            gesture = value.translation
-                        }
-                        .onEnded { _ in
-                            if gesture.width < -50,
-                               cardIndex < onboardSet.cards.count - 1 {
-                                withAnimation {
-                                    cardIndex += 1
-                                }
-                            } else if gesture.width > 50,
-                                      cardIndex > 0 {
-                                withAnimation {
-                                    cardIndex -= 1
-                                }
-                            }
-                            gesture = .zero
-                        })
+        VStack {
+            OBCardView(card: onboardSet.cards[cardIndex])
+                .padding(.top, 25)
+         
+            Spacer()
+            progressView
+            HStack {
+                Spacer()
+                Button(action: {
+                    withAnimation {
+                        showNextHandler()
+                    }
+                }) {
+                    Image(systemName: (cardIndex + 1) == onboardSet.cards.count ? "checkmark.circle.fill" : "arrow.right.circle.fill")
+                        .font(.system(size: 40))
                 }
+                .buttonStyle(BorderlessButtonStyle())
+                .focusable(false)
             }
-            .frame(width: proxy.frame(in: .global).width,
-                   height: proxy.frame(in: .global).height)
+        }
+        .padding()
+    }
+    
+    private var progressView: some View {
+        HStack {
+            ForEach(0..<onboardSet.cards.count, id: \.self) { index in
+                Circle()
+                    .frame(width: 10)
+                    .foregroundColor(cardIndex >= index ? Color.paLightGray : Color(.tertiaryLabelColor))
+            }
         }
     }
 

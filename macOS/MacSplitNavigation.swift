@@ -11,7 +11,8 @@ struct MacSplitNavigation: View {
     @Environment(Subscription.self) var subscription
 
     @State private var selectedDocumentId: String?
-    @AppStorage("taggingMode") private var untaggedMode = false
+    @AppStorage("taggingMode", store: .appGroup) private var untaggedMode = false
+    @AppStorage("tutorialShown", store: .appGroup) private var tutorialShown = false
 
     var body: some View {
         NavigationSplitView {
@@ -19,7 +20,7 @@ struct MacSplitNavigation: View {
                 if untaggedMode {
                     UntaggedDocumentsList(selectedDocumentId: $selectedDocumentId)
                 } else {
-                    NewArchiveView(selectedDocumentId: $selectedDocumentId)
+                    ArchiveView(selectedDocumentId: $selectedDocumentId)
                 }
             }
             .frame(minWidth: 300)
@@ -37,12 +38,17 @@ struct MacSplitNavigation: View {
         } detail: {
             if untaggedMode {
                 UntaggedDocumentView(documentId: $selectedDocumentId)
+                    .sheet(isPresented: subscription.isSubscribed, content: {
+                        InAppPurchaseView(onCancel: {
+                            untaggedMode = false
+                        })
+                    })
             } else {
                 DocumentDetailView(documentId: $selectedDocumentId, untaggedMode: $untaggedMode)
             }
         }
-        .sheet(isPresented: .constant(true), content: {
-            InAppPurchaseView(isPresented: .constant(true))
+        .sheet(isPresented: $tutorialShown.flipped, content: {
+            OnboardingView(isPresenting: $tutorialShown.flipped)
         })
     }
 }

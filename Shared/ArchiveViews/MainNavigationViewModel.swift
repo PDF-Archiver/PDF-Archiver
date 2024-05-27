@@ -16,14 +16,14 @@ import MessageUI
 public final class MainNavigationViewModel: ObservableObject, Log {
     @Published var alertDataModel: AlertDataModel?
 
-    @Published var currentTab: Tab? = UserDefaults.lastSelectedTab
-    @Published var showTutorial = !UserDefaults.tutorialShown
+//    @Published var currentTab: Tab? = UserDefaults.lastSelectedTab
+//    @Published var showTutorial = !UserDefaults.tutorialShown
     @Published var sheetType: SheetType?
-    lazy var unwrappedCurrentTab: Binding<Tab> = Binding { () -> Tab in
-        self.currentTab ?? .scan
-    } set: { newTab in
-        self.currentTab = newTab
-    }
+//    lazy var unwrappedCurrentTab: Binding<Tab> = Binding { () -> Tab in
+//        self.currentTab ?? .scan
+//    } set: { newTab in
+//        self.currentTab = newTab
+//    }
 
     public let imageConverter: ImageConverter
     var scanViewModel: ScanTabViewModel
@@ -51,35 +51,35 @@ public final class MainNavigationViewModel: ObservableObject, Log {
         // only the TagTabView must do so.
 
         // MARK: UserDefaults
-        if !UserDefaults.tutorialShown {
-            currentTab = .archive
-        }
-
-        $currentTab
-            .dropFirst()
-            .compactMap { $0 }
-            .removeDuplicates()
-            .sink { selectedTab in
-                // save the selected index for the next app start
-                UserDefaults.lastSelectedTab = selectedTab
-                Self.log.info("Changed tab.", metadata: ["selectedTab": "\(selectedTab)"])
-
-                FeedbackGenerator.selectionChanged()
-            }
-            .store(in: &disposables)
+//        if !UserDefaults.tutorialShown {
+//            currentTab = .archive
+//        }
+//
+//        $currentTab
+//            .dropFirst()
+//            .compactMap { $0 }
+//            .removeDuplicates()
+//            .sink { selectedTab in
+//                // save the selected index for the next app start
+//                UserDefaults.lastSelectedTab = selectedTab
+//                Self.log.info("Changed tab.", metadata: ["selectedTab": "\(selectedTab)"])
+//
+//                FeedbackGenerator.selectionChanged()
+//            }
+//            .store(in: &disposables)
 
         // MARK: Intro
-        $showTutorial
-            .sink { shouldPresentTutorial in
-                UserDefaults.tutorialShown = !shouldPresentTutorial
-            }
-            .store(in: &disposables)
-
-        NotificationCenter.default.publisher(for: .introChanges)
-            .sink { notification in
-                self.showTutorial = (notification.object as? Bool) ?? false
-            }
-            .store(in: &disposables)
+//        $showTutorial
+//            .sink { shouldPresentTutorial in
+//                UserDefaults.tutorialShown = !shouldPresentTutorial
+//            }
+//            .store(in: &disposables)
+//
+//        NotificationCenter.default.publisher(for: .introChanges)
+//            .sink { notification in
+//                self.showTutorial = (notification.object as? Bool) ?? false
+//            }
+//            .store(in: &disposables)
 
         imageConverter.$processedDocumentUrl
             .compactMap { $0 }
@@ -111,11 +111,6 @@ public final class MainNavigationViewModel: ObservableObject, Log {
                             recipients: Self.mailRecipients,
                             messagePrefix: "",
                             errorHandler: { NotificationCenter.default.postAlert($0) })
-        case .supportAfterCrashView:
-            SupportMailView(subject: Self.mailSubject,
-                            recipients: Self.mailRecipients,
-                            messagePrefix: .afterCrashMessage,
-                            errorHandler: { NotificationCenter.default.postAlert($0) })
         #endif
         #if !os(macOS)
         case .activityView(let items):
@@ -127,6 +122,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
         }
     }
 
+    #warning("TODO: add this")
     func handleTempFilesIfNeeded(_ scenePhase: ScenePhase) {
         guard scenePhase == .active else { return }
 
@@ -141,7 +137,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
             DispatchQueue.main.async {
 
                 // show scan tab with document processing, after importing a document
-                self.currentTab = .scan
+//                self.currentTab = .scan
             }
         }
 
@@ -150,61 +146,26 @@ public final class MainNavigationViewModel: ObservableObject, Log {
         }
     }
 
-    func lazyView(for type: Tab) -> some View {
-        LazyVStack {
-            switch type {
-                case .scan:
-                    return AnyView(ScanTabView(viewModel: self.scanViewModel).keyboardShortcut("1", modifiers: .command))
-                case .tag:
-                    #if os(macOS)
-                    return AnyView(EmptyView())
-                    #else
-                    return AnyView(TagTabView(viewModel: self.tagViewModel).keyboardShortcut("2", modifiers: .command))
-                    #endif
-                case .archive:
-                    return AnyView(EmptyView())
-                #if !os(macOS)
-                case .more:
-                    return AnyView(MoreTabView(viewModel: self.moreViewModel).keyboardShortcut("4", modifiers: .command))
-                #endif
-            }
-        }
-    }
-
-    #warning("TODO: fix this")
-    func selectedArchive(_ category: String) {
-        guard let date = DateComponents(calendar: .current, timeZone: .current, year: Int(category)).date else {
-            log.errorAndAssert("Could not create matching date.", metadata: ["input": "\(category)"])
-            return
-        }
-
-        log.info("Tapped on archive category.")
-        currentTab = .archive
-//        archiveViewModel.selectedFilters = [.year(date)]
-    }
-
-    #warning("TODO: fix this")
-    func selectedTag(_ category: String) {
-        log.info("Tapped on tag.")
-        currentTab = .archive
-//        let newTagFilter: FilterItem = .tag(category)
-//        if !archiveViewModel.selectedFilters.contains(newTagFilter) {
-//            archiveViewModel.selectedFilters.append(newTagFilter)
+//    func lazyView(for type: Tab) -> some View {
+//        LazyVStack {
+//            switch type {
+//                case .scan:
+//                    return AnyView(ScanTabView(viewModel: self.scanViewModel).keyboardShortcut("1", modifiers: .command))
+//                case .tag:
+//                    #if os(macOS)
+//                    return AnyView(EmptyView())
+//                    #else
+//                    return AnyView(TagTabView(viewModel: self.tagViewModel).keyboardShortcut("2", modifiers: .command))
+//                    #endif
+//                case .archive:
+//                    return AnyView(EmptyView())
+//                #if !os(macOS)
+//                case .more:
+//                    return AnyView(MoreTabView(viewModel: self.moreViewModel).keyboardShortcut("4", modifiers: .command))
+//                #endif
+//            }
 //        }
-    }
-
-    func showAfterCrashSupport() {
-        log.info("Show after crash support")
-        sendMail(recipient: Constants.mailRecipient, subject: Constants.mailSubject, body: "App Crash 💥\n\n")
-    }
-
-    public func displayUserFeedback() {
-        NotificationCenter.default.createAndPost(title: "App Crash 💥",
-                                                 message: "PDF Archiver has crashed. This should not happen!\n\nPlease provide feedback, to improve the App experience.",
-                                                 primaryButton: .cancel(),
-                                                 secondaryButton: .default(Text("Send"),
-                                                                           action: showAfterCrashSupport))
-    }
+//    }
 
     #if !os(macOS)
     public func showScan(shareAfterScan: Bool) {
@@ -285,8 +246,6 @@ extension MainNavigationViewModel {
                 #if canImport(MessageUI)
                 case .supportView:
                     return "supportView"
-                case .supportAfterCrashView:
-                    return "supportAfterCrashView"
                 #endif
                 #if !os(macOS)
                 case .activityView:

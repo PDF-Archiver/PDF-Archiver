@@ -1,5 +1,5 @@
 //
-//  NewArchiveView.swift
+//  ArchiveView.swift
 //
 //
 //  Created by Julian Kahnert on 14.03.24.
@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 
-struct NewArchiveView: View {
+struct ArchiveView: View {
     private static let formatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.usesGroupingSeparator = false
@@ -36,7 +36,7 @@ struct NewArchiveView: View {
                     Label(Self.formatter.string(from: year as NSNumber) ?? "", systemImage: "calendar")
                 }
             })
-        // TODO: do this on a background thread
+            #warning("TODO: do this on a background thread")
 //            .onChange(of: documents) { _, newDocuments in
 //                let mostUsedTags = newDocuments.flatMap(\.tags).histogram
 //                    .sorted { $0.value < $1.value }
@@ -60,7 +60,7 @@ struct NewArchiveView: View {
 
 #if DEBUG
 #Preview {
-    NewArchiveView(selectedDocumentId: .constant("debug-document-id"))
+    ArchiveView(selectedDocumentId: .constant("debug-document-id"))
         .modelContainer(previewContainer)
 }
 #endif

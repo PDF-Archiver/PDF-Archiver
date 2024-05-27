@@ -34,12 +34,11 @@ public struct OnboardingView: View {
     }()
     public var body: some View {
         OnboardingScreens(isPresenting: $isPresenting, onboardSet: onboardSet)
+            .frame(width: 500, height: 400)
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        OnboardingView(isPresenting: .constant(false))
-            .previewDevice("Mac")
-    }
+#Preview {
+    OnboardingView(isPresenting: .constant(true))
+        .previewDevice("Mac")
 }

@@ -9,7 +9,7 @@ import StoreKit
 import SwiftUI
 
 struct InAppPurchaseView: View {
-    @Binding var isPresented: Bool
+    let onCancel: () -> Void
     
     @State private var chooseSubscription = false
 
@@ -23,15 +23,8 @@ struct InAppPurchaseView: View {
                 }
                 
                 features
-                
-                ProductView(id: "LIFETIME") { _ in
-                    Image("Logo")
-                        .resizable()
-                        .scaledToFit()
-                } placeholderIcon: {
-                    ProgressView()
-                }
-                .productViewStyle(.large)
+                ProductView(id: "LIFETIME")
+                    .productViewStyle(.large)
                 
                 VStack(alignment: .leading, spacing: 16) {
                     ForEach(["SUBSCRIPTION_YEARLY_IOS_NEW", "SUBSCRIPTION_MONTHLY_IOS"], id: \.self) { id in
@@ -122,8 +115,7 @@ struct InAppPurchaseView: View {
     
     private var cancel: some View {
         Button {
-            #warning("TODO: handle cancel -> closure as input")
-            isPresented = false
+            onCancel()
         } label: {
             Text("Cancel")
         }
@@ -131,12 +123,14 @@ struct InAppPurchaseView: View {
     }
 }
 
+#if DEBUG
 #Preview("IAP light", traits: .fixedLayout(width: 400, height: 500)) {
-    InAppPurchaseView(isPresented: .constant(true))
+    InAppPurchaseView(onCancel: { print("Cancel pressed") })
         .preferredColorScheme(.light)
 }
 
 #Preview("IAP dark", traits: .fixedLayout(width: 400, height: 500)) {
-    InAppPurchaseView(isPresented: .constant(true))
+    InAppPurchaseView(onCancel: { print("Cancel pressed") })
         .preferredColorScheme(.dark)
 }
+#endif

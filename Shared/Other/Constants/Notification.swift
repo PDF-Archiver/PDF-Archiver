@@ -9,7 +9,6 @@
 import Foundation
 
 public extension Notification.Name {
-    static let introChanges = Notification.Name("intro-changes")
     static let imageProcessingQueue = Notification.Name("ImageConverter.queueLength")
     static let showSubscriptionView = Notification.Name("show-subscription-view")
     static let suggestionChange = Notification.Name("suggestion-change")
@@ -17,7 +16,6 @@ public extension Notification.Name {
 }
 
 public extension Notification {
-    static let introChanges = Notification(name: .introChanges)
     static let showSubscriptionView = Notification(name: .showSubscriptionView)
     static let suggestionChange = Notification(name: .suggestionChange)
     static let foundProcessedDocument = Notification(name: .foundProcessedDocument)

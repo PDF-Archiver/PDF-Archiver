@@ -18,6 +18,13 @@ import SwiftUI
 
 @Observable final class Subscription {
     fileprivate(set) var status: SubscriptionStatus = .loading
+    var isSubscribed: Binding<Bool> {
+        Binding(get: {
+            self.status != .active
+        }, set: { _ in
+            Logger.inAppPurchase.errorAndAssert("Must not set isSubscribed state")
+        })
+    }
 }
 
 enum SubscriptionStatus: String {

@@ -8,65 +8,36 @@
 import SwiftUI
 
 struct OBCardView: View {
-    let currentCardIndex: Int
-    let cardCount: Int
-    let buttonTapped: () -> Void
     let card: OnboardCard
     var body: some View {
         VStack(spacing: 8) {
             Image(card.image)
                 .resizable()
                 .scaledToFit()
-                .frame(maxWidth: 100, maxHeight: 100)
+                .frame(width: 75, height: 75)
+                .padding(.bottom, 12)
+
             Text(card.title)
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .foregroundColor(.paDarkRed)
                 .multilineTextAlignment(.center)
             Text(card.text)
+                .foregroundColor(.paDarkGray)
                 .multilineTextAlignment(.center)
-                .minimumScaleFactor(0.75)
-            Spacer()
-            HStack {
-                Spacer()
-                Button(action: {
-                    withAnimation {
-                        buttonTapped()
-                    }
-                }) {
-                    Image(systemName: (currentCardIndex + 1) == cardCount ? "checkmark.circle.fill" : "arrow.right.circle.fill")
-                        .resizable()
-                        .padding(8)
-                        .scaledToFit()
-                        .font(.largeTitle)
-
-                }
-                .frame(width: 50, height: 50)
-                .padding()
-                .buttonStyle(BorderlessButtonStyle())
-            }
-        }
-    }
-
-    private var progressView: some View {
-        HStack {
-            ForEach(0..<cardCount, id: \.self) { index in
-                Circle()
-                    .scaledToFit()
-                    .frame(width: 10)
-                    .foregroundColor(currentCardIndex >= index ? Color.accentColor : Color(.systemGray))
-            }
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 }
 
 #if DEBUG
-#Preview("IAPView") {
-    Group {
-        let onboardSet = OnboardSet.previewSet()
-        OBCardView(currentCardIndex: 0, cardCount: 1, buttonTapped: {}, card: onboardSet.cards[0])
-            .previewDevice("Mac")
-        OBCardView(currentCardIndex: 1, cardCount: 1, buttonTapped: {}, card: onboardSet.cards[0])
-    }
+let onboardSet = OnboardSet.previewSet()
+#Preview("IAPView", traits: .fixedLayout(width: 400, height: 300)) {
+    OBCardView(card: onboardSet.cards[0])
+}
+
+#Preview("IAPView Mac") {
+    OBCardView(card: onboardSet.cards[0])
+        .previewDevice("Mac")
 }
 #endif

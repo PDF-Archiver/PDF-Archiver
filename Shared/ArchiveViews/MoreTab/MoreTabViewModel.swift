@@ -99,11 +99,6 @@ public class MoreTabViewModel: ObservableObject, Log {
             .store(in: &disposables)
     }
 
-    func showIntro() {
-        log.info("More table view show: intro")
-        NotificationCenter.default.post(name: .introChanges, object: true)
-    }
-
     #if !os(macOS)
     func showPermissions() {
         log.info("More table view show: app permissions")
