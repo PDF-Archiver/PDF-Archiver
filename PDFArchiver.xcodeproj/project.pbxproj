@@ -234,6 +234,8 @@
 		A3D5A4942BBDDC8D0089B016 /* DocumentInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3D5A4922BBDDC8D0089B016 /* DocumentInformation.swift */; };
 		A3D8F93F2BB6007B00BE3E3A /* MacSplitNavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3D8F93E2BB6007B00BE3E3A /* MacSplitNavigation.swift */; };
 		A3D8F9412BB607B100BE3E3A /* DocumentDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3D8F9402BB607B100BE3E3A /* DocumentDetailView.swift */; };
+		A3F4EA222C067AA2003E8500 /* DropButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F4EA212C067AA2003E8500 /* DropButton.swift */; };
+		A3F4EA232C067AA2003E8500 /* DropButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F4EA212C067AA2003E8500 /* DropButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -345,6 +347,7 @@
 		A3D5A4922BBDDC8D0089B016 /* DocumentInformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentInformation.swift; sourceTree = "<group>"; };
 		A3D8F93E2BB6007B00BE3E3A /* MacSplitNavigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSplitNavigation.swift; sourceTree = "<group>"; };
 		A3D8F9402BB607B100BE3E3A /* DocumentDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentDetailView.swift; sourceTree = "<group>"; };
+		A3F4EA212C067AA2003E8500 /* DropButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropButton.swift; sourceTree = "<group>"; };
 		A3FE9A3A2BA4CF04009F8381 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		A3FE9A3C2BA4CF04009F8381 /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
 		A3FE9A3D2BA4CF04009F8381 /* AlertDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertDataModel.swift; sourceTree = "<group>"; };
@@ -838,7 +841,6 @@
 			children = (
 				A3FE9A962BA4CF04009F8381 /* MoreTab */,
 				A3FE9AA02BA4CF04009F8381 /* ScanTab */,
-				A3FE9AA42BA4CF04009F8381 /* ArchiveTab */,
 				A3FE9AD42BA4CF04009F8381 /* MainNavigationViewModel.swift */,
 				A3FE9AD52BA4CF04009F8381 /* Onboarding */,
 			);
@@ -871,13 +873,6 @@
 			path = ScanTab;
 			sourceTree = "<group>";
 		};
-		A3FE9AA42BA4CF04009F8381 /* ArchiveTab */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = ArchiveTab;
-			sourceTree = "<group>";
-		};
 		A3FE9AAC2BA4CF04009F8381 /* Archive */ = {
 			isa = PBXGroup;
 			children = (
@@ -887,6 +882,7 @@
 				A3D8F9402BB607B100BE3E3A /* DocumentDetailView.swift */,
 				A3D5A4922BBDDC8D0089B016 /* DocumentInformation.swift */,
 				A3FE9A8E2BA4CF04009F8381 /* TagParser.swift */,
+				A3F4EA212C067AA2003E8500 /* DropButton.swift */,
 			);
 			path = Archive;
 			sourceTree = "<group>";
@@ -1434,6 +1430,7 @@
 				A3356F4C2BA4D32E000AA51A /* PathConstants.swift in Sources */,
 				A3356FB12BA4D364000AA51A /* OBCardView.swift in Sources */,
 				A39D507D2BFDE4AE0028696A /* Bool.swift in Sources */,
+				A3F4EA222C067AA2003E8500 /* DropButton.swift in Sources */,
 				A3356F502BA4D32E000AA51A /* Constants.swift in Sources */,
 				A3002AE22BAA30D100663B4F /* ArchiveListView.swift in Sources */,
 				A3356FAA2BA4D364000AA51A /* OnboardCard.swift in Sources */,
@@ -1522,6 +1519,7 @@
 				A3356FF12BA4D365000AA51A /* SubscriptionButtonStyle.swift in Sources */,
 				A3356F642BA4D32F000AA51A /* AlertDataModel.swift in Sources */,
 				A3356EFC2BA4D319000AA51A /* Document+Helper.swift in Sources */,
+				A3F4EA232C067AA2003E8500 /* DropButton.swift in Sources */,
 				A3B5D8FC2BB36414002B9FF1 /* SearchToken.swift in Sources */,
 				A3356EC22BA4D1B8000AA51A /* ImageConverterAPI.swift in Sources */,
 				A3356FD92BA4D365000AA51A /* SidebarLabelStyle.swift in Sources */,

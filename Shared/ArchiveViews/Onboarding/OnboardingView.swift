@@ -38,7 +38,9 @@ public struct OnboardingView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     OnboardingView(isPresenting: .constant(true))
         .previewDevice("Mac")
 }
+#endif

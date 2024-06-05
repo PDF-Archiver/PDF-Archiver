@@ -34,9 +34,10 @@ public extension NSItemProvider {
 
             guard let data = data else { continue }
 
-            if Image(data: data) != nil {
+            if let image = Image(data: data),
+                let imageData = image.jpg(quality: 1) {
                 let fileUrl = url.appendingPathComponent(UUID().uuidString).appendingPathExtension("jpeg")
-                try data.write(to: fileUrl)
+                try imageData.write(to: fileUrl)
                 return true
             } else if PDFDocument(data: data) != nil {
                 let fileUrl = url.appendingPathComponent(UUID().uuidString).appendingPathExtension("pdf")

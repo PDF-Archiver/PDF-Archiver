@@ -30,6 +30,7 @@ extension Logger {
     static let archiveStore = Logger(subsystem: subsystem, category: "archive-store")
     static let inAppPurchase = Logger(subsystem: subsystem, category: "in-app-purchase")
     static let newDocument = Logger(subsystem: subsystem, category: "new-document")
+    static let pdfDropHandler = Logger(subsystem: subsystem, category: "pdf-drop-handler")
 
     func errorAndAssert(_ message: String) {
         assertionFailure(message)

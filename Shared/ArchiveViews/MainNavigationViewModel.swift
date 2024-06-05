@@ -13,6 +13,7 @@ import SwiftUI
 import MessageUI
 #endif
 
+#if !os(macOS)
 public final class MainNavigationViewModel: ObservableObject, Log {
     @Published var alertDataModel: AlertDataModel?
 
@@ -255,3 +256,4 @@ extension MainNavigationViewModel {
         }
     }
 }
+#endif

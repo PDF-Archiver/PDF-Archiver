@@ -111,6 +111,19 @@ actor NewArchiveStore: ModelActor {
         }
     }
     
+    func reloadArchiveDocuments() throws {
+        let archiveUrl = try PathManager.shared.getArchiveUrl()
+        let untaggedUrl = try PathManager.shared.getUntaggedUrl()
+
+        #if os(macOS)
+        let untaggedFolders = [untaggedUrl, UserDefaults.observedFolderURL].compactMap { $0 }
+        #else
+        let untaggedFolders = [untaggedUrl]
+        #endif
+
+        update(archiveFolder: archiveUrl, untaggedFolders: untaggedFolders)
+    }
+    
     private func folderDidChange(_ provider: FolderProvider, _ changes: [FileChange]) {
         updateDocuments(with: changes)
     }

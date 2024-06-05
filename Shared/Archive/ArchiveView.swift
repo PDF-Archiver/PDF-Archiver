@@ -15,7 +15,7 @@ struct ArchiveView: View {
         return formatter
     }()
     
-//    @Query(sort: \DBDocument.date, order: .reverse) private var documents: [DBDocument]
+    @Query(sort: \Document.date, order: .reverse) private var documents: [Document]
     
     @Binding var selectedDocumentId: String?
     @State private var searchText = ""
@@ -36,25 +36,34 @@ struct ArchiveView: View {
                     Label(Self.formatter.string(from: year as NSNumber) ?? "", systemImage: "calendar")
                 }
             })
-            #warning("TODO: do this on a background thread")
-//            .onChange(of: documents) { _, newDocuments in
-//                let mostUsedTags = newDocuments.flatMap(\.tags).histogram
-//                    .sorted { $0.value < $1.value }
-//                    .reversed()
-//                    .prefix(5)
-//                    .map(\.key)
-//                    .map { SearchToken.tag($0) }
-//                
-//                let possibleYears = Set(newDocuments.map { $0.filename.prefix(4) })
-//                let foundYears: [SearchToken] = possibleYears
-//                    .compactMap { Int($0) }
-//                    .sorted()
-//                    .reversed()
-//                    .prefix(5)
-//                    .map { .year($0) }
-//                
-//                suggestedTokens = mostUsedTags + foundYears
-//            }
+            .onChange(of: documents) { _, newDocuments in
+                Task.detached(priority: .background) {
+                    await updateSuggestedTokens(from: newDocuments)
+                }
+            }
+    }
+    
+    private func updateSuggestedTokens(from documents: [Document]) async {
+        let mostUsedTags = documents.flatMap(\.tags).histogram
+            .sorted { $0.value < $1.value }
+            .reversed()
+            .prefix(5)
+            .map(\.key)
+            .map { SearchToken.tag($0) }
+        
+        let possibleYears = Set(documents.map { $0.filename.prefix(4) })
+        let foundYears: [SearchToken] = possibleYears
+            .compactMap { Int($0) }
+            .sorted()
+            .reversed()
+            .prefix(5)
+            .map { .year($0) }
+        
+        guard !Task.isCancelled else { return }
+        await MainActor.run {
+            guard !Task.isCancelled else { return }
+            suggestedTokens = mostUsedTags + foundYears
+        }
     }
 }
 

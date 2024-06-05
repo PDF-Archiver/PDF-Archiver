@@ -10,13 +10,4 @@ import Foundation
 
 public extension Notification.Name {
     static let imageProcessingQueue = Notification.Name("ImageConverter.queueLength")
-    static let showSubscriptionView = Notification.Name("show-subscription-view")
-    static let suggestionChange = Notification.Name("suggestion-change")
-    static let foundProcessedDocument = Notification.Name("found-processed-document")
-}
-
-public extension Notification {
-    static let showSubscriptionView = Notification(name: .showSubscriptionView)
-    static let suggestionChange = Notification(name: .suggestionChange)
-    static let foundProcessedDocument = Notification(name: .foundProcessedDocument)
 }

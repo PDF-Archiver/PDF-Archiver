@@ -195,8 +195,7 @@ struct DocumentInformation: View {
 
                 TextField("Enter Tag", text: $information.tagSearchterm)
                     .onSubmit {
-                        #warning("TODO: validate tagSearchterm (lowercased etc.)")
-                        let selectedTag = information.tagSuggestions.first ?? information.tagSearchterm
+                        let selectedTag = information.tagSuggestions.first ?? information.tagSearchterm.lowercased().slugified(withSeparator: "")
                         guard !selectedTag.isEmpty else { return }
                         
                         information.add(tag: selectedTag)
