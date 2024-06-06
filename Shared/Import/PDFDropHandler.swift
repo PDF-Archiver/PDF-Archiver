@@ -28,6 +28,11 @@ final class PDFDropHandler {
         isImporting = true
     }
     
+    func abortImport() {
+        documentProcessingState = .noDocument
+        isImporting = false
+    }
+    
     func handleImport(of url: URL) throws {
         try handle(url: url)
         finishDropHandling()

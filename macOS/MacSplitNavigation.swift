@@ -71,6 +71,14 @@ struct MacSplitNavigation: View {
                 NotificationCenter.default.postAlert(error)
             }
         }
+          .onChange(of: dropHandler.isImporting) { oldValue, newValue in
+              // special case: abort importing
+              guard oldValue,
+                    !newValue,
+                    dropHandler.documentProcessingState == .processing else { return }
+              
+              dropHandler.abortImport()
+          }
     }
 }
 
