@@ -1,106 +1,42 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "ASN1Swift",
-        "repositoryURL": "https://github.com/tikhop/ASN1Swift",
-        "state": {
-          "branch": null,
-          "revision": "b53bee03a942623db25afc5bfb80227b2cb3b425",
-          "version": "1.2.4"
-        }
-      },
-      {
-        "package": "DeepDiff",
-        "repositoryURL": "https://github.com/onmyway133/DeepDiff.git",
-        "state": {
-          "branch": null,
-          "revision": "2639b3a11054d666a4c5ec1b7dd2808e437f3289",
-          "version": "2.3.3"
-        }
-      },
-      {
-        "package": "Diagnostics",
-        "repositoryURL": "https://github.com/WeTransfer/Diagnostics",
-        "state": {
-          "branch": null,
-          "revision": "c3816d37ff6993b7de46aff3370354c4cadca7c8",
-          "version": "4.5.0"
-        }
-      },
-      {
-        "package": "Down",
-        "repositoryURL": "https://github.com/iwasrobbed/Down",
-        "state": {
-          "branch": null,
-          "revision": "f34b166be1f1db4aa8f573067e901d72f2a6be57",
-          "version": "0.11.0"
-        }
-      },
-      {
-        "package": "ExceptionCatcher",
-        "repositoryURL": "https://github.com/sindresorhus/ExceptionCatcher",
-        "state": {
-          "branch": null,
-          "revision": "a7acaf40f8bd67a1f3a05a14de5b6a861ac3d1ac",
-          "version": "2.0.1"
-        }
-      },
-      {
-        "package": "GraphicsRenderer",
-        "repositoryURL": "https://github.com/shaps80/GraphicsRenderer",
-        "state": {
-          "branch": null,
-          "revision": "fa9b28096ea13eb59333a02d616244482ad6039f",
-          "version": "1.4.4"
-        }
-      },
-      {
-        "package": "Parma",
-        "repositoryURL": "https://github.com/dasautoooo/Parma",
-        "state": {
-          "branch": null,
-          "revision": "3c8b431fd5ad3cf675c60d0aa89f011cbcbb036c",
-          "version": "0.3.0"
-        }
-      },
-      {
-        "package": "Sentry",
-        "repositoryURL": "https://github.com/getsentry/sentry-cocoa",
-        "state": {
-          "branch": null,
-          "revision": "9cf7d2e514af1600cc2b3c5592e2848c6c5a76d6",
-          "version": "8.7.3"
-        }
-      },
-      {
-        "package": "swift-log",
-        "repositoryURL": "https://github.com/apple/swift-log.git",
-        "state": {
-          "branch": null,
-          "revision": "32e8d724467f8fe623624570367e3d50c5638e46",
-          "version": "1.5.2"
-        }
-      },
-      {
-        "package": "SwiftUIX",
-        "repositoryURL": "https://github.com/SwiftUIX/SwiftUIX",
-        "state": {
-          "branch": null,
-          "revision": "75d5be2c85ec1e3ccbd9d99d321dd3abb5955e8d",
-          "version": "0.1.5"
-        }
-      },
-      {
-        "package": "TPInAppReceipt",
-        "repositoryURL": "https://github.com/tikhop/TPInAppReceipt",
-        "state": {
-          "branch": null,
-          "revision": "5b830d6ce6c34bb4bb976917576ab560e7945037",
-          "version": "3.3.4"
-        }
+  "originHash" : "20a9821b75edcba0dda9096e18830862a5d25103bce0cd219b193a0d0b4ff55c",
+  "pins" : [
+    {
+      "identity" : "deepdiff",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/onmyway133/DeepDiff.git",
+      "state" : {
+        "revision" : "2639b3a11054d666a4c5ec1b7dd2808e437f3289",
+        "version" : "2.3.3"
       }
-    ]
-  },
-  "version": 1
+    },
+    {
+      "identity" : "down",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/iwasrobbed/Down",
+      "state" : {
+        "revision" : "f34b166be1f1db4aa8f573067e901d72f2a6be57",
+        "version" : "0.11.0"
+      }
+    },
+    {
+      "identity" : "graphicsrenderer",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/shaps80/GraphicsRenderer",
+      "state" : {
+        "revision" : "fa9b28096ea13eb59333a02d616244482ad6039f",
+        "version" : "1.4.4"
+      }
+    },
+    {
+      "identity" : "parma",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/dasautoooo/Parma",
+      "state" : {
+        "branch" : "main",
+        "revision" : "3c8b431fd5ad3cf675c60d0aa89f011cbcbb036c"
+      }
+    }
+  ],
+  "version" : 3
 }
