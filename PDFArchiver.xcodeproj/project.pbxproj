@@ -210,6 +210,8 @@
 		A3356FF42BA4D365000AA51A /* StorageSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A9D2BA4CF04009F8381 /* StorageSelectionView.swift */; };
 		A3356FF62BA4D365000AA51A /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A992BA4CF04009F8381 /* SettingsView.swift */; };
 		A3356FF82BA4D365000AA51A /* TagListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9AC42BA4CF04009F8381 /* TagListView.swift */; };
+		A34AF4982C1199CD0043D56A /* PDFDropHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34AF4972C1199CD0043D56A /* PDFDropHandler.swift */; };
+		A34AF49A2C119A060043D56A /* PDFDropHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34AF4972C1199CD0043D56A /* PDFDropHandler.swift */; };
 		A3579A4F2BFF5CCA001D921C /* SupportMail.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3579A4E2BFF5CCA001D921C /* SupportMail.swift */; };
 		A3579A502BFF5CCA001D921C /* SupportMail.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3579A4E2BFF5CCA001D921C /* SupportMail.swift */; };
 		A3579A532BFF6187001D921C /* InAppPurchaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3579A522BFF6187001D921C /* InAppPurchaseView.swift */; };
@@ -335,6 +337,7 @@
 		A31BE2DF2BB8AFF000022885 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		A31BE2E62BBB43A200022885 /* UntaggedDocumentsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UntaggedDocumentsList.swift; sourceTree = "<group>"; };
 		A31BE2EB2BBB4A4000022885 /* UntaggedDocumentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UntaggedDocumentView.swift; sourceTree = "<group>"; };
+		A34AF4972C1199CD0043D56A /* PDFDropHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFDropHandler.swift; sourceTree = "<group>"; };
 		A3579A4E2BFF5CCA001D921C /* SupportMail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportMail.swift; sourceTree = "<group>"; };
 		A3579A522BFF6187001D921C /* InAppPurchaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchaseView.swift; sourceTree = "<group>"; };
 		A3579A552BFFD802001D921C /* Subscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
@@ -536,8 +539,8 @@
 		3489D71324A3C53D0035E64F /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				A34AF4992C1199DD0043D56A /* Import */,
 				A3002ADB2BAA295300663B4F /* Other */,
-				A3CED6E22BA4E24900443F77 /* Persistence */,
 				A39D50832BFDF7190028696A /* Tagging */,
 				A3FE9AAC2BA4CF04009F8381 /* Archive */,
 				A3FE9A942BA4CF04009F8381 /* ArchiveViews */,
@@ -643,6 +646,7 @@
 		A3002ADB2BAA295300663B4F /* Other */ = {
 			isa = PBXGroup;
 			children = (
+				A3CED6E22BA4E24900443F77 /* Persistence */,
 				A3579A512BFF617A001D921C /* InAppPurchases */,
 				A3002ADC2BAA296300663B4F /* async-await-migration.swift */,
 				A3FE9A6B2BA4CF04009F8381 /* BackgroundTaskScheduler.swift */,
@@ -674,6 +678,14 @@
 				A31BE2DF2BB8AFF000022885 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		A34AF4992C1199DD0043D56A /* Import */ = {
+			isa = PBXGroup;
+			children = (
+				A34AF4972C1199CD0043D56A /* PDFDropHandler.swift */,
+			);
+			path = Import;
 			sourceTree = "<group>";
 		};
 		A3579A512BFF617A001D921C /* InAppPurchases */ = {
@@ -1355,6 +1367,7 @@
 				A3356F4E2BA4D32E000AA51A /* NSItemProvider.swift in Sources */,
 				A3356EDD2BA4D318000AA51A /* FileChange.swift in Sources */,
 				A3356F4F2BA4D32E000AA51A /* AppEnvironment.swift in Sources */,
+				A34AF4982C1199CD0043D56A /* PDFDropHandler.swift in Sources */,
 				A3356F842BA4D364000AA51A /* StatisticsView.swift in Sources */,
 				A3356F902BA4D364000AA51A /* Document.swift in Sources */,
 				A3356EE42BA4D318000AA51A /* PDFProcessing.swift in Sources */,
@@ -1492,6 +1505,7 @@
 				A3356FDB2BA4D365000AA51A /* TagView.swift in Sources */,
 				A3356EF82BA4D319000AA51A /* NewArchiveStore+Error.swift in Sources */,
 				A3356F662BA4D32F000AA51A /* NotificationCenter+Error.swift in Sources */,
+				A34AF49A2C119A060043D56A /* PDFDropHandler.swift in Sources */,
 				A3356F192BA4D319000AA51A /* DateFormatter.swift in Sources */,
 				A3356F1B2BA4D319000AA51A /* BackgroundTaskScheduler.swift in Sources */,
 				A3B5D90B2BB37114002B9FF1 /* PDFArchiverMacApp.swift in Sources */,
