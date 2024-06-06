@@ -7,13 +7,13 @@
 //
 // swiftlint:disable function_body_length type_body_length
 
+#if !os(macOS)
 import Combine
 import SwiftUI
 #if canImport(MessageUI)
 import MessageUI
 #endif
 
-#if !os(macOS)
 public final class MainNavigationViewModel: ObservableObject, Log {
     @Published var alertDataModel: AlertDataModel?
 

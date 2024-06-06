@@ -5,39 +5,25 @@
 //  Created by Julian Kahnert on 14.11.20.
 //
 
+import SwiftData
 import SwiftUI
 
-struct GeneralSettingsView: View {
-    @AppStorage("showPreview") private var showPreview = true
-    @AppStorage("fontSize") private var fontSize = 12.0
-
-    var body: some View {
-        Form {
-            Toggle("Show Previews", isOn: $showPreview)
-            Slider(value: $fontSize, in: 9...96) {
-                Text("Font Size (\(fontSize, specifier: "%.0f") pts)")
-            }
-        }
-        .padding(20)
-        .frame(width: 350, height: 100)
-    }
-}
-
 #if os(macOS)
-public struct SettingsView: View {
+struct SettingsView: View {
 
     @AppStorage("tutorialShown", store: .appGroup) private var tutorialShown = false
     @ObservedObject var viewModel: MoreTabViewModel
     @State private var showMoreInformation = true
+    @Query private var documents: [Document]
 
-    public init(viewModel: MoreTabViewModel) {
+    init(viewModel: MoreTabViewModel) {
         self.viewModel = viewModel
     }
 
     private enum Tabs: Hashable {
         case general, expert, storage, statistics, subscription, moreInformation
     }
-    public var body: some View {
+    var body: some View {
         TabView {
             preferences
                 .tabItem {
@@ -80,15 +66,25 @@ public struct SettingsView: View {
                 }
             }
             Spacer()
-                .frame(maxHeight: 28)
+//                .frame(maxHeight: 28)
             DetailRowView(name: "Show Intro") {
                 withAnimation {
                     tutorialShown = false
                 }
             }
+            Spacer()
+//                .frame(maxHeight: 28)
+            ProgressView("Finder Tag Update", value: viewModel.finderTagUpdateProgress)
+                .opacity(viewModel.finderTagUpdateProgress > 0 ? 1 : 0)
+            DetailRowView(name: "Update Finder Tags") {
+                print("DEBUGGING: Starting update")
+                viewModel.updateFinderTags(from: documents)
+                
+                print("DEBUGGING: completing task")
+            }
         }
         .padding(20)
-        .frame(width: 450, height: 150)
+        .frame(width: 450, height: 250)
     }
 
     private var expertSettings: some View {
@@ -130,11 +126,11 @@ public struct SettingsView: View {
             HStack(spacing: 4) {
                 if let observedFolderURL = viewModel.observedFolderURL {
                     Text(observedFolderURL.path)
-                    Spacer()
-                    Button(action: viewModel.clearObservedFolder) {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundColor(.secondary)
-                    }
+//                    Spacer()
+//                    Button(action: viewModel.clearObservedFolder) {
+//                        Image(systemName: "xmark.circle.fill")
+//                            .foregroundColor(.secondary)
+//                    }
                 } else {
                     Text("Not Selected")
                         .opacity(0.4)
@@ -160,10 +156,10 @@ public struct SettingsView: View {
                 Text("Status:")
                 Text(viewModel.subscriptionStatus)
             }
-            DetailRowView(name: "Activate/Restore Premium") {
-                NotificationCenter.default.post(.showSubscriptionView)
-            }
-            Spacer()
+//            DetailRowView(name: "Activate/Restore Premium") {
+//                NotificationCenter.default.post(.showSubscriptionView)
+//            }
+//            Spacer()
             Link("Manage Subscription", destination: viewModel.manageSubscriptionUrl)
         }
         .padding(20)
@@ -207,12 +203,16 @@ public struct SettingsView: View {
 }
 #endif
 
-#if os(macOS) && DEBG
-struct SettingsView_Previews: PreviewProvider {
-    @State static var viewModel = MoreTabViewModel.previewViewModel
-    static var previews: some View {
+#if DEBUG
+struct SettingsPreviewView: View {
+    @State var viewModel = MoreTabViewModel()
+    var body: some View {
         SettingsView(viewModel: viewModel)
-            .previewDevice("Mac")
     }
+}
+
+#Preview("Test", traits: .sizeThatFitsLayout) {
+    SettingsPreviewView()
+        .modelContainer(previewContainer)
 }
 #endif

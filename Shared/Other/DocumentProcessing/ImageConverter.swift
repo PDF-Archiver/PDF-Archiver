@@ -10,6 +10,7 @@ import Foundation
 import PDFKit
 import Vision
 
+#warning("TODO: fix import in temp folders")
 public final class ImageConverter: ObservableObject, ImageConverterAPI, Log {
 
     private static var isInitialized = false

@@ -116,7 +116,6 @@
 		A3356F4A2BA4D32E000AA51A /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A502BA4CF04009F8381 /* Color.swift */; };
 		A3356F4C2BA4D32E000AA51A /* PathConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A452BA4CF04009F8381 /* PathConstants.swift */; };
 		A3356F4D2BA4D32E000AA51A /* PlatfromWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A4B2BA4CF04009F8381 /* PlatfromWrapper.swift */; };
-		A3356F4E2BA4D32E000AA51A /* NSItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A432BA4CF04009F8381 /* NSItemProvider.swift */; };
 		A3356F4F2BA4D32E000AA51A /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A4F2BA4CF04009F8381 /* AppEnvironment.swift */; };
 		A3356F502BA4D32E000AA51A /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A3A2BA4CF04009F8381 /* Constants.swift */; };
 		A3356F512BA4D32E000AA51A /* AlertDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A3D2BA4CF04009F8381 /* AlertDataModel.swift */; };
@@ -131,7 +130,6 @@
 		A3356F5D2BA4D32F000AA51A /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A502BA4CF04009F8381 /* Color.swift */; };
 		A3356F5F2BA4D32F000AA51A /* PathConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A452BA4CF04009F8381 /* PathConstants.swift */; };
 		A3356F602BA4D32F000AA51A /* PlatfromWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A4B2BA4CF04009F8381 /* PlatfromWrapper.swift */; };
-		A3356F612BA4D32F000AA51A /* NSItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A432BA4CF04009F8381 /* NSItemProvider.swift */; };
 		A3356F622BA4D32F000AA51A /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A4F2BA4CF04009F8381 /* AppEnvironment.swift */; };
 		A3356F632BA4D32F000AA51A /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A3A2BA4CF04009F8381 /* Constants.swift */; };
 		A3356F642BA4D32F000AA51A /* AlertDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A3D2BA4CF04009F8381 /* AlertDataModel.swift */; };
@@ -539,10 +537,12 @@
 		3489D71324A3C53D0035E64F /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				A3FE9AD52BA4CF04009F8381 /* Onboarding */,
 				A34AF4992C1199DD0043D56A /* Import */,
-				A3002ADB2BAA295300663B4F /* Other */,
-				A39D50832BFDF7190028696A /* Tagging */,
 				A3FE9AAC2BA4CF04009F8381 /* Archive */,
+				A39D50832BFDF7190028696A /* Tagging */,
+				A3FE9A962BA4CF04009F8381 /* Settings */,
+				A3002ADB2BAA295300663B4F /* Other */,
 				A3FE9A942BA4CF04009F8381 /* ArchiveViews */,
 				3416B1AC24A9282700D5F4E0 /* Resources */,
 			);
@@ -610,6 +610,7 @@
 				34A53FA924AA65E8008A3377 /* ShareExtension.entitlements */,
 				34A53FA624AA65CB008A3377 /* MainInterface.storyboard */,
 				34A53FA524AA65CA008A3377 /* ShareViewController.swift */,
+				A3FE9A432BA4CF04009F8381 /* NSItemProvider.swift */,
 				34A53F9E24AA656B008A3377 /* Info.plist */,
 			);
 			path = ShareExtension;
@@ -710,7 +711,6 @@
 			isa = PBXGroup;
 			children = (
 				A3FE9A422BA4CF04009F8381 /* FileManager.swift */,
-				A3FE9A432BA4CF04009F8381 /* NSItemProvider.swift */,
 				A3FE9A412BA4CF04009F8381 /* CaseIterable.swift */,
 				A3FE9A782BA4CF04009F8381 /* Array.swift */,
 				A3FE9A7A2BA4CF04009F8381 /* FileManagerExtension.swift */,
@@ -851,15 +851,13 @@
 		A3FE9A942BA4CF04009F8381 /* ArchiveViews */ = {
 			isa = PBXGroup;
 			children = (
-				A3FE9A962BA4CF04009F8381 /* MoreTab */,
 				A3FE9AA02BA4CF04009F8381 /* ScanTab */,
 				A3FE9AD42BA4CF04009F8381 /* MainNavigationViewModel.swift */,
-				A3FE9AD52BA4CF04009F8381 /* Onboarding */,
 			);
 			path = ArchiveViews;
 			sourceTree = "<group>";
 		};
-		A3FE9A962BA4CF04009F8381 /* MoreTab */ = {
+		A3FE9A962BA4CF04009F8381 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
 				A3FE9A972BA4CF04009F8381 /* StatisticsViewModel.swift */,
@@ -872,7 +870,7 @@
 				A3FE9A9E2BA4CF04009F8381 /* MoreTabViewModel+StorageType.swift */,
 				A3FE9A9F2BA4CF04009F8381 /* MoreTabViewModel.swift */,
 			);
-			path = MoreTab;
+			path = Settings;
 			sourceTree = "<group>";
 		};
 		A3FE9AA02BA4CF04009F8381 /* ScanTab */ = {
@@ -1364,7 +1362,6 @@
 				A3356F592BA4D32E000AA51A /* UserDefaults.swift in Sources */,
 				A3356F4A2BA4D32E000AA51A /* Color.swift in Sources */,
 				A3356FAD2BA4D364000AA51A /* AboutMeView.swift in Sources */,
-				A3356F4E2BA4D32E000AA51A /* NSItemProvider.swift in Sources */,
 				A3356EDD2BA4D318000AA51A /* FileChange.swift in Sources */,
 				A3356F4F2BA4D32E000AA51A /* AppEnvironment.swift in Sources */,
 				A34AF4982C1199CD0043D56A /* PDFDropHandler.swift in Sources */,
@@ -1469,7 +1466,6 @@
 				A3356F6C2BA4D32F000AA51A /* UserDefaults.swift in Sources */,
 				A3356F5D2BA4D32F000AA51A /* Color.swift in Sources */,
 				A3356FEA2BA4D365000AA51A /* AboutMeView.swift in Sources */,
-				A3356F612BA4D32F000AA51A /* NSItemProvider.swift in Sources */,
 				A3356F082BA4D319000AA51A /* FileChange.swift in Sources */,
 				A3356F622BA4D32F000AA51A /* AppEnvironment.swift in Sources */,
 				A3356FC12BA4D365000AA51A /* StatisticsView.swift in Sources */,

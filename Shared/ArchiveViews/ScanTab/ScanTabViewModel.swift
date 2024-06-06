@@ -7,6 +7,7 @@
 //
 // swiftlint:disable cyclomatic_complexity
 
+#if !os(macOS)
 import AVKit
 import Combine
 import Foundation
@@ -28,7 +29,7 @@ let shareDocumentAfterScanDefault = true
 let shareDocumentAfterScanDefault = false
 #endif
 
-public final class ScanTabViewModel: ObservableObject, DropDelegate, Log {
+public final class ScanTabViewModel: ObservableObject, Log {
     @Published public var showDocumentScan = false
     @Published public var shareDocumentAfterScan: Bool = shareDocumentAfterScanDefault
     @Published public private(set) var progressValue: CGFloat = 0.0
@@ -102,67 +103,67 @@ public final class ScanTabViewModel: ObservableObject, DropDelegate, Log {
     }
     #endif
 
-    public func performDrop(info: DropInfo) -> Bool {
-        let types: [UTType] = [.fileURL, .image, .pdf]
-        let items = info.itemProviders(for: types)
-        progressValue = 0.3
-        progressLabel = NSLocalizedString("ScanViewController.processing", comment: "") + "30%"
-
-        DispatchQueue.global(qos: .userInitiated).async {
-            var error: Error?
-            for item in items {
-                let fileUrlType = UTType.fileURL.identifier
-                if item.hasItemConformingToTypeIdentifier(fileUrlType) {
-                    do {
-                        let urls = try self.getUrls(of: item)
-                        for url in urls {
-                            try self.imageConverter.handle(url)
-                        }
-                        if !urls.isEmpty {
-                            continue
-                        }
-                    } catch let getUrlError {
-                        error = getUrlError
-                    }
-                }
-
-                for uti in types where item.hasItemConformingToTypeIdentifier(uti.identifier) {
-                    do {
-                        guard let data = try item.syncLoadItem(forTypeIdentifier: uti) else { continue }
-
-                        let url = PathConstants.tempPdfURL.appendingPathComponent("\(UUID().uuidString).pdf")
-                        try data.write(to: url)
-                        try self.imageConverter.handle(url)
-                        continue
-                    } catch let inputError {
-                        self.log.errorAndAssert("Failed to handle image/pdf with type \(uti.identifier). Try next ...", metadata: ["error": "\(String(describing: error))"])
-                        error = inputError
-                    }
-                }
-            }
-            if let error = error {
-                NotificationCenter.default.postAlert(error)
-            }
-
-            // set progress/label to finished
-            DispatchQueue.main.asyncAfter(deadline: .now().advanced(by: .milliseconds(500))) { [weak self] in
-                guard let self else { return }
-                self.progressValue = 1
-                self.progressLabel = NSLocalizedString("ScanViewController.processing", comment: "") + "100%"
-
-                // clear progress/label after some time
-                DispatchQueue.main.asyncAfter(deadline: .now().advanced(by: .seconds(1))) { [weak self] in
-                    guard let self,
-                          self.progressValue == 1 else { return }
-
-                    self.progressValue = 0
-                    self.progressLabel = " "
-                }
-            }
-        }
-
-        return true
-    }
+//    public func performDrop(info: DropInfo) -> Bool {
+//        let types: [UTType] = [.fileURL, .image, .pdf]
+//        let items = info.itemProviders(for: types)
+//        progressValue = 0.3
+//        progressLabel = NSLocalizedString("ScanViewController.processing", comment: "") + "30%"
+//
+//        DispatchQueue.global(qos: .userInitiated).async {
+//            var error: Error?
+//            for item in items {
+//                let fileUrlType = UTType.fileURL.identifier
+//                if item.hasItemConformingToTypeIdentifier(fileUrlType) {
+//                    do {
+//                        let urls = try self.getUrls(of: item)
+//                        for url in urls {
+//                            try self.imageConverter.handle(url)
+//                        }
+//                        if !urls.isEmpty {
+//                            continue
+//                        }
+//                    } catch let getUrlError {
+//                        error = getUrlError
+//                    }
+//                }
+//
+//                for uti in types where item.hasItemConformingToTypeIdentifier(uti.identifier) {
+//                    do {
+//                        guard let data = try item.syncLoadItem(forTypeIdentifier: uti) else { continue }
+//
+//                        let url = PathConstants.tempPdfURL.appendingPathComponent("\(UUID().uuidString).pdf")
+//                        try data.write(to: url)
+//                        try self.imageConverter.handle(url)
+//                        continue
+//                    } catch let inputError {
+//                        self.log.errorAndAssert("Failed to handle image/pdf with type \(uti.identifier). Try next ...", metadata: ["error": "\(String(describing: error))"])
+//                        error = inputError
+//                    }
+//                }
+//            }
+//            if let error = error {
+//                NotificationCenter.default.postAlert(error)
+//            }
+//
+//            // set progress/label to finished
+//            DispatchQueue.main.asyncAfter(deadline: .now().advanced(by: .milliseconds(500))) { [weak self] in
+//                guard let self else { return }
+//                self.progressValue = 1
+//                self.progressLabel = NSLocalizedString("ScanViewController.processing", comment: "") + "100%"
+//
+//                // clear progress/label after some time
+//                DispatchQueue.main.asyncAfter(deadline: .now().advanced(by: .seconds(1))) { [weak self] in
+//                    guard let self,
+//                          self.progressValue == 1 else { return }
+//
+//                    self.progressValue = 0
+//                    self.progressLabel = " "
+//                }
+//            }
+//        }
+//
+//        return true
+//    }
 
     public func process(_ images: [CIImage]) {
         assert(!Thread.isMainThread, "This might take some time and should not be executed on the main thread.")
@@ -242,3 +243,4 @@ public final class ScanTabViewModel: ObservableObject, DropDelegate, Log {
         return try result?.get() ?? []
     }
 }
+#endif

@@ -79,14 +79,7 @@ public extension NSItemProvider {
                 data = inputData
 
             } else if let image = rawData as? Image {
-                #if os(macOS)
-                // swiftlint:disable:next force_unwrapping
-                let cgImage = image.cgImage(forProposedRect: nil, context: nil, hints: nil)!
-                let bitmapRep = NSBitmapImageRep(cgImage: cgImage)
-                data = bitmapRep.representation(using: .jpeg, properties: [.compressionFactor: NSNumber(value: 1)])
-                #else
-                data = image.jpegData(compressionQuality: 1)
-                #endif
+                data = image.jpg(quality: 1)
             }
         }
         let timeoutResult = semaphore.wait(timeout: .now() + .seconds(10))
@@ -112,5 +105,18 @@ public extension NSItemProvider {
             return nil
         }
         return inputData
+    }
+}
+
+extension Image {
+    func jpg(quality: CGFloat) -> Data? {
+        #if os(macOS)
+        // swiftlint:disable:next force_unwrapping
+        let cgImage = image.cgImage(forProposedRect: nil, context: nil, hints: nil)!
+        let bitmapRep = NSBitmapImageRep(cgImage: cgImage)
+        return bitmapRep.representation(using: .jpeg, properties: [.compressionFactor: NSNumber(value: 1)])
+        #else
+        return jpegData(compressionQuality: 1)
+        #endif
     }
 }

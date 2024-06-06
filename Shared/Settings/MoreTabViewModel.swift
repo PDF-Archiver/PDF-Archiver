@@ -33,6 +33,8 @@ public class MoreTabViewModel: ObservableObject, Log {
     @Published var showArchiveTypeSelection = false
     @Published var subscriptionStatus: LocalizedStringKey = "Inactive ❌"
     @Published var newArchiveUrl: URL?
+    
+    @Published var finderTagUpdateProgress: Double = 0
     #if os(macOS)
     @Published var observedFolderURL: URL? = UserDefaults.observedFolderURL
     #endif
@@ -172,43 +174,59 @@ public class MoreTabViewModel: ObservableObject, Log {
         }
     }
 
-    func reloadArchiveDocuments() {
-        do {
-            let archiveUrl = try PathManager.shared.getArchiveUrl()
-            let untaggedUrl = try PathManager.shared.getUntaggedUrl()
-
-            #if os(macOS)
-            let untaggedFolders = [untaggedUrl, UserDefaults.observedFolderURL].compactMap { $0 }
-            #else
-            let untaggedFolders = [untaggedUrl]
-            #endif
-
-            Task {
-                await NewArchiveStore.shared.update(archiveFolder: archiveUrl, untaggedFolders: untaggedFolders)
-            }
-        } catch {
-            NotificationCenter.default.postAlert(error)
-        }
-    }
-
-    #warning("TODO: implement update finder tags")
-//    func updateFinderTags() {
-//        queue.async {
-//            self.archiveStore.documents
-//                .filter { $0.taggingStatus == .tagged }
-//                .forEach { document in
-//                    let sortedTags = Array(document.tags).sorted()
-//                    document.path.setFileTags(sortedTags)
-//                }
+//    func reloadArchiveDocuments() {
+//        do {
+//            let archiveUrl = try PathManager.shared.getArchiveUrl()
+//            let untaggedUrl = try PathManager.shared.getUntaggedUrl()
+//
+//            #if os(macOS)
+//            let untaggedFolders = [untaggedUrl, UserDefaults.observedFolderURL].compactMap { $0 }
+//            #else
+//            let untaggedFolders = [untaggedUrl]
+//            #endif
+//
+//            Task {
+//                await NewArchiveStore.shared.update(archiveFolder: archiveUrl, untaggedFolders: untaggedFolders)
+//            }
+//        } catch {
+//            NotificationCenter.default.postAlert(error)
 //        }
 //    }
+
+    func updateFinderTags(from documents: [Document]) {
+        finderTagUpdateProgress = 0
+        
+        Task.detached(priority: .background) {
+            var processedDocumentsCount = 0
+            let taggedDocuments = documents.filter(\.isTagged)
+            for taggedDocument in taggedDocuments {
+                let sortedTags = Array(taggedDocument.tags).sorted()
+                taggedDocument.url.setFileTags(sortedTags)
+                processedDocumentsCount += 1
+                
+                let tmp = Double(processedDocumentsCount) / Double(documents.count)
+                await MainActor.run {
+                    self.finderTagUpdateProgress = tmp
+                }
+            }
+            await MainActor.run {
+                self.finderTagUpdateProgress = 0
+            }
+        }
+    }
 
     #if os(macOS)
     func clearObservedFolder() {
         observedFolderURL = nil
         UserDefaults.observedFolderURL = nil
         queue.async {
-            self.reloadArchiveDocuments()
+            Task {
+                do {
+                    try await NewArchiveStore.shared.reloadArchiveDocuments()
+                } catch {
+                    NotificationCenter.default.postAlert(error)
+                }
+            }
         }
     }
 
@@ -227,7 +245,13 @@ public class MoreTabViewModel: ObservableObject, Log {
             self.observedFolderURL = url
             UserDefaults.observedFolderURL = url
             self.queue.async {
-                self.reloadArchiveDocuments()
+                Task {
+                    do {
+                        try await NewArchiveStore.shared.reloadArchiveDocuments()
+                    } catch {
+                        NotificationCenter.default.postAlert(error)
+                    }
+                }
             }
         }
     }

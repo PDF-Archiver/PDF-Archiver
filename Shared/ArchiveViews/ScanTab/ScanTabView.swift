@@ -6,6 +6,7 @@
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
 
+#if !os(macOS)
 import SwiftUI
 
 public struct ScanTabView: View {
@@ -42,9 +43,11 @@ public struct ScanTabView: View {
         }
         .frame(maxHeight: maxFrameHeight)
         .padding(EdgeInsets(top: 32.0, leading: 16.0, bottom: 32.0, trailing: 16.0))
-        .onDrop(of: [.image, .pdf, .fileURL],
-                delegate: viewModel)
         .navigationTitle(Text(""))
+        #warning("TODO: move this to PDFDropHandler")
+//        .onDrop(of: [.image, .pdf, .fileURL],
+//                delegate: viewModel)
+        
     }
 
     @ViewBuilder
@@ -127,4 +130,5 @@ struct ScanTabView_Previews: PreviewProvider {
         .padding()
     }
 }
+#endif
 #endif
