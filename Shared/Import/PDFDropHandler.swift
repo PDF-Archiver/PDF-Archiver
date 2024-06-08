@@ -33,51 +33,70 @@ final class PDFDropHandler {
         isImporting = false
     }
     
-    func handleImport(of url: URL) throws {
-        try handle(url: url)
-        finishDropHandling()
-    }
-    
-    private func handle(url: URL) throws {
+    func handleImport(of url: URL) async throws {
         documentProcessingState = .processing
-        try url.securityScope { url in
-            if let pdf = PDFDocument(url: url) {
-                handle(pdf: pdf)
-                return
-            }
-            
-            let data = try Data(contentsOf: url)
-            if let image = Image(data: data) {
-                handle(image: image)
-            } else {
-                Logger.pdfDropHandler.errorAndAssert("Could not handle url")
-            }
+        Task {
+            try await handle(input: url as NSSecureCoding)
+            finishDropHandling()
         }
     }
     
+    @StorageActor
+    private func handle(input item: any NSSecureCoding) async throws {
+        if let data = item as? Data {
+            if let pdf = PDFDocument(data: data) {
+                handle(pdf: pdf)
+            } else if let image = Image(data: data) {
+                handle(image: image)
+            }
+            
+        } else if let url = item as? URL {
+            try url.securityScope { url in
+                if let pdf = PDFDocument(url: url) {
+                    handle(pdf: pdf)
+                    return
+                } else if let data = try Data(contentsOf: url) as Data?,
+                          let image = Image(data: data) {
+                    handle(image: image)
+                } else {
+                    Logger.pdfDropHandler.errorAndAssert("Could not handle url")
+                }
+            }
+            
+        } else if let image = item as? Image {
+            handle(image: image)
+            
+        } else if let pdfDocument = item as? PDFDocument {
+            handle(pdf: pdfDocument)
+            
+        } else {
+            Logger.pdfDropHandler.errorAndAssert("Failed to get data")
+        }
+    }
+
+    @StorageActor
     private func handle(image: Image) {
         Logger.pdfDropHandler.info("Handle Image")
         
-        let documentName = "PDF-Archiver-\(Date().timeIntervalSinceReferenceDate).jpeg"
-        let imageDestinationUrl = PathConstants.tempPdfURL.appendingPathComponent(documentName, isDirectory: false)
-        
-        guard let jpegData = image.jpg(quality: 1) else {
+        guard let jpegData = image.jpg(quality: 1),
+            let ciImage = CIImage(data: jpegData) else {
             Logger.pdfDropHandler.errorAndAssert("Failed to get jpeg data")
             return
         }
         
         do {
-            try jpegData.write(to: imageDestinationUrl)
+            try StorageHelper.save([ciImage])
         } catch {
             Logger.pdfDropHandler.errorAndAssert("Failed to write jpeg", metadata: ["error": "\(error)"])
         }
     }
     
+    @StorageActor
     private func handle(pdf: PDFDocument) {
         Logger.pdfDropHandler.info("Handle PDF Document")
         
         let documentName = pdf.documentURL?.lastPathComponent ?? "PDF-Archiver-\(Date().timeIntervalSinceReferenceDate).pdf"
-        let pdfDestinationUrl = PathConstants.tempPdfURL.appendingPathComponent(documentName, isDirectory: false)
+        let pdfDestinationUrl = PathConstants.tempDocumentURL.appendingPathComponent(documentName, isDirectory: false)
         
         let pdfWritten = pdf.write(to: pdfDestinationUrl)
         if !pdfWritten {
@@ -92,6 +111,9 @@ final class PDFDropHandler {
         documentProcessingState = wasProcessing ? .finished : .noDocument
         
         guard wasProcessing else { return }
+        Task {
+            await DocumentProcessingService.shared.triggerFolderObservation()
+        }
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
             self.documentProcessingState = .noDocument
         }
@@ -117,9 +139,6 @@ extension PDFDropHandler: DropDelegate {
 
         
         Task {
-            defer {
-                finishDropHandling()
-            }
             do {
                 for provider in providers {
                     guard let type = provider.registeredContentTypes.first else {
@@ -128,29 +147,12 @@ extension PDFDropHandler: DropDelegate {
                     }
 
                     let item = try await provider.loadItem(forTypeIdentifier: type.identifier)
-                    if let data = item as? Data {
-                        if let pdf = PDFDocument(data: data) {
-                            handle(pdf: pdf)
-                        } else if let image = Image(data: data) {
-                            handle(image: image)
-                        }
-                        
-                    } else if let url = item as? URL {
-                        try handle(url: url)
-                        
-                    } else if let image = item as? Image {
-                        handle(image: image)
-                        
-                    } else if let pdfDocument = item as? PDFDocument {
-                        handle(pdf: pdfDocument)
-                        
-                    } else {
-                        Logger.pdfDropHandler.errorAndAssert("Failed to get data")
-                    }
+                    try await handle(input: item)
                 }
             } catch {
                 Logger.pdfDropHandler.errorAndAssert("Received error \(error)")
             }
+            finishDropHandling()
         }
         return true
     }

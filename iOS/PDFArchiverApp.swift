@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 24.06.20.
 //
 
+#if !os(macOS)
 import Foundation
 import SwiftUI
 
@@ -51,7 +52,7 @@ struct PDFArchiverApp: App, Log {
 
     private var mainView: some View {
         MainNavigationView(viewModel: mainNavigationViewModel)
-            .environmentObject(OrientationInfo())
+//            .environmentObject(OrientationInfo())
             .onChange(of: scenePhase) { phase in
                 Self.log.info("Scene change: \(phase)")
 
@@ -156,4 +157,5 @@ final class CustomSceneDelegate: UIResponder, UIWindowSceneDelegate {
         shortcutItemToProcess = shortcutItem
     }
 }
+#endif
 #endif

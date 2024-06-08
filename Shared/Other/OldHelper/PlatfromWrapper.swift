@@ -6,9 +6,9 @@
 //
 
 #if os(macOS)
-import AppKit
+import AppKit.NSWorkspace
 #else
-import UIKit
+import UIKit.UIApplication
 #endif
 
 public func open(_ url: URL) {

@@ -42,7 +42,9 @@ struct UntaggedDocumentsList: View {
     }
 }
 
+#if DEBUG
 #Preview {
     UntaggedDocumentsList(selectedDocumentId: .constant(nil))
         .modelContainer(previewContainer)
 }
+#endif

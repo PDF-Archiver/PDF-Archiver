@@ -17,7 +17,7 @@ final class PDFProcessingTests: XCTestCase {
     private let queue: OperationQueue = {
         let queue = OperationQueue()
         queue.qualityOfService = .userInitiated
-        queue.name = "TEST.ImageConverter.workerQueue"
+        queue.name = "TEST.DocumentProcessingService.workerQueue"
         queue.maxConcurrentOperationCount = 1
         return queue
     }()

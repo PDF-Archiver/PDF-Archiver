@@ -24,13 +24,14 @@ extension Logger {
     fileprivate static let subsystem = Bundle.main.bundleIdentifier!
 
     #if DEBUG
-    static let debugging = Logger(subsystem: subsystem, category: "DEBUG")
+    static let debugging = Logger(subsystem: subsystem, category: "debugging")
     #endif
     
     static let archiveStore = Logger(subsystem: subsystem, category: "archive-store")
     static let inAppPurchase = Logger(subsystem: subsystem, category: "in-app-purchase")
     static let newDocument = Logger(subsystem: subsystem, category: "new-document")
     static let pdfDropHandler = Logger(subsystem: subsystem, category: "pdf-drop-handler")
+    static let documentProcessing = Logger(subsystem: subsystem, category: "document-processing")
 
     func errorAndAssert(_ message: String) {
         assertionFailure(message)

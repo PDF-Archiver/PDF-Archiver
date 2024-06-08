@@ -263,6 +263,7 @@ struct DocumentInformation: View {
     }
 }
 
+#if DEBUG
 #Preview("Document Information", traits: .fixedLayout(width: 400, height: 600)) {
     let information = DocumentInformationViewModel(url: .documentsDirectory, onSave: {})
     information.specification = "test-specification"
@@ -272,3 +273,4 @@ struct DocumentInformation: View {
     return DocumentInformation(information: information)
         .modelContainer(previewContainer)
 }
+#endif

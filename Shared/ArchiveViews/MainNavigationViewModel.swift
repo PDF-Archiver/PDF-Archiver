@@ -127,7 +127,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
     func handleTempFilesIfNeeded(_ scenePhase: ScenePhase) {
         guard scenePhase == .active else { return }
 
-        // get documents from ShareExtension and AppClip
+        // get documents from ShareExtension
         let extensionURLs = (try? FileManager.default.contentsOfDirectory(at: PathConstants.extensionTempPdfURL, includingPropertiesForKeys: [], options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])) ?? []
         let appClipURLs = (try? FileManager.default.contentsOfDirectory(at: PathConstants.appClipTempPdfURL, includingPropertiesForKeys: [], options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])) ?? []
         let urls = [extensionURLs, appClipURLs]

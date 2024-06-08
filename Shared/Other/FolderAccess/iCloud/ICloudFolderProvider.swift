@@ -188,7 +188,6 @@ final class ICloudFolderProvider: FolderProvider {
     @objc
     private func queryUpdated(notification: NSNotification) {
 
-        log.debug("Documents query update.")
         let changedMetadataItems = (notification.userInfo?[NSMetadataQueryUpdateChangedItemsKey] as? [NSMetadataItem]) ?? []
         let removedMetadataItems = (notification.userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem]) ?? []
         let addedMetadataItems = (notification.userInfo?[NSMetadataQueryUpdateAddedItemsKey] as? [NSMetadataItem]) ?? []

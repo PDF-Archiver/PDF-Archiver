@@ -16,25 +16,11 @@ public enum PathConstants: Log {
         return tempImageURL
     }()
 
-    public static let tempImageURL: URL = {
-        let tempImageURL = appGroupContainerURL.appendingPathComponent("TempImages")
-        createFolderIfNotExists(tempImageURL, name: "TempIamges")
+    public static let tempDocumentURL: URL = {
+        let tempImageURL = appGroupContainerURL.appendingPathComponent("TempDocuments")
+        createFolderIfNotExists(tempImageURL, name: "TempDocuments")
         return tempImageURL
     }()
-
-    public static let tempPdfURL: URL = {
-        let tempImageURL = appGroupContainerURL.appendingPathComponent("TempPDFDocuments")
-        createFolderIfNotExists(tempImageURL, name: "TempPDFDocuments")
-        return tempImageURL
-    }()
-
-    public static var extensionTempPdfURL: URL {
-        appGroupContainerURL
-    }
-
-    public static var appClipTempPdfURL: URL {
-        tempPdfURL
-    }
 
     private static func createFolderIfNotExists(_ folder: URL?, name: StaticString) {
         guard let folder = folder else {

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import OSLog
 
 struct DropButton: View {
     enum State {
@@ -36,8 +37,9 @@ struct DropButton: View {
                     }
                     .padding(2)
                     .opacity(state == .targeted ? 1 : 0)
-                    
-                    
+
+//                    ProgressView(value: DocumentProcessingService.shared.documentProgress)
+//                        .progressViewStyle(.circular)
                     ProgressView()
                         .opacity(state == .processing ? 1 : 0)
                     

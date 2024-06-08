@@ -10,6 +10,7 @@
 import GraphicsRenderer
 import PDFKit
 import Vision
+import OSLog
 
 #if canImport(UIKit)
 import UIKit
@@ -35,14 +36,11 @@ public enum PDFProcessingError: Error {
     case pdfNotFound
 }
 
-public final class PDFProcessing: Operation, Log {
-
-    public typealias ProgressHandler = ((Float) -> Void)
+public final class PDFProcessing: Operation {
 
     private let mode: Mode
     private let destinationFolder: URL
     private let tempImagePath: URL
-    private let progressHandler: ProgressHandler?
     private let confidenceThreshold = Float(0)
 
     public private(set) var error: Error?
@@ -55,11 +53,10 @@ public final class PDFProcessing: Operation, Log {
         }
     }
 
-    public init(of mode: Mode, destinationFolder: URL, tempImagePath: URL, progressHandler: ProgressHandler?) {
+    public init(of mode: Mode, destinationFolder: URL, tempImagePath: URL) {
         self.mode = mode
         self.destinationFolder = destinationFolder
         self.tempImagePath = tempImagePath
-        self.progressHandler = progressHandler
     }
 
     override public func main() {
@@ -72,8 +69,7 @@ public final class PDFProcessing: Operation, Log {
 
             // signal the start of the operation
             let start = Date()
-            log.info("Process a document.")
-            progressHandler?(Float(0))
+            Logger.documentProcessing.info("Process a document", metadata: ["filename": "\(mode)"])
 
             let path: URL
             switch mode {
@@ -91,7 +87,9 @@ public final class PDFProcessing: Operation, Log {
                 return
             }
 
-            guard let document = PDFDocument(url: path) else { throw PDFProcessingError.pdfNotFound }
+            guard let document = PDFDocument(url: path) else {
+                throw PDFProcessingError.pdfNotFound
+            }
 
             // generate filename by analysing the image
             let filename = getFilename(from: document)
@@ -102,38 +100,46 @@ public final class PDFProcessing: Operation, Log {
 
             // log the processing time
             let timeDiff = Date().timeIntervalSinceReferenceDate - start.timeIntervalSinceReferenceDate
-            log.info("Process completed.", metadata: ["processing_time": "\(timeDiff)", "document_page_count": "\(document.pageCount)"])
-            progressHandler?(Float(1))
-        } catch let error {
+            Logger.documentProcessing.info("Process completed.", metadata: ["processing_time": "\(timeDiff)", "document_page_count": "\(document.pageCount)"])
+        } catch {
             self.error = error
+            Logger.documentProcessing.errorAndAssert("An error occurred while processing", metadata: ["error": "\(error)"])
         }
     }
 
     // MARK: - Helper Functions
 
     private func getFilename(from document: PDFDocument) -> String {
-
-        // get default specification
-        let specification = Constants.documentDescriptionPlaceholder + Date().timeIntervalSince1970.description
-
-        // get OCR content
-        var content = ""
-        for pageNumber in 0..<min(document.pageCount, 3) {
-            guard content.count < 5000 else { break }
-            content += document.page(at: pageNumber)?.string ?? ""
+        if let documentUrl = document.documentURL,
+           let parsedOutput = Document.parseFilename(documentUrl.lastPathComponent) as (date: Date?, specification: String?, tagNames: [String]?)?,
+           parsedOutput.date != nil,
+           let specification = parsedOutput.specification,
+           specification != Constants.documentDescriptionPlaceholder {
+            // the current filename of the document could be parsed and has no placeholders, so we use it
+            return documentUrl.lastPathComponent
+        } else {
+            // get default specification
+            let specification = Constants.documentDescriptionPlaceholder + Date().timeIntervalSince1970.description
+            
+            // get OCR content
+            var content = ""
+            for pageNumber in 0..<min(document.pageCount, 3) {
+                guard content.count < 5000 else { break }
+                content += document.page(at: pageNumber)?.string ?? ""
+            }
+            
+            // use the default filename if no content could be found
+            guard !content.isEmpty else {
+                return Document.createFilename(date: Date(), specification: specification, tags: Set([Constants.documentTagPlaceholder]))
+            }
+            
+            // parse the date
+            let parsedDate = DateParser.parse(content)?.date ?? Date()
+            
+            // parse the tags
+            let tags = Set([Constants.documentTagPlaceholder])
+            return Document.createFilename(date: parsedDate, specification: specification, tags: tags)
         }
-
-        // use the default filename if no content could be found
-        guard !content.isEmpty else {
-            return Document.createFilename(date: Date(), specification: specification, tags: Set([Constants.documentTagPlaceholder]))
-        }
-
-        // parse the date
-        let parsedDate = DateParser.parse(content)?.date ?? Date()
-
-        // parse the tags
-        let tags = Set([Constants.documentTagPlaceholder])
-        return Document.createFilename(date: parsedDate, specification: specification, tags: tags)
     }
 
     private func createPdf(of documentId: UUID) throws -> URL {
@@ -161,7 +167,7 @@ public final class PDFProcessing: Operation, Log {
             let textBoxRequests = VNDetectTextRectanglesRequest { (request, error) in
 
                 if let error = error {
-                    Self.log.error("Error in text recognition.", metadata: ["error": "\(error)"])
+                    Logger.documentProcessing.error("Error in text recognition.", metadata: ["error": "\(error)"])
                     return
                 }
 
@@ -184,7 +190,7 @@ public final class PDFProcessing: Operation, Log {
                     let textRecognitionRequest = VNRecognizeTextRequest { (request, error) in
 
                         if let error = error {
-                            Self.log.error("Error in text recognition.", metadata: ["error": "\(error)"])
+                            Logger.documentProcessing.error("Error in text recognition.", metadata: ["error": "\(error)"])
                             return
                         }
 
@@ -212,7 +218,6 @@ public final class PDFProcessing: Operation, Log {
                 // update the progress view
                 let progress = Float(Float(imageIndex) + Float(observationIndex) / Float(detectTextRectangleObservations.count)) / Float(sortedDocumentUrls.count)
                 let borderedProgress = min(max(progress, 0), 1)
-                progressHandler?(borderedProgress)
             }
 
             // append results
@@ -223,7 +228,7 @@ public final class PDFProcessing: Operation, Log {
         let document = PDFProcessing.renderPdf(from: textObservations)
 
         // save document
-        let tempfilepath = tempImagePath.appendingPathComponent(documentId.uuidString).appendingPathExtension("pdf")
+        let tempfilepath = URL.temporaryDirectory.appendingPathComponent(documentId.uuidString).appendingPathExtension("pdf")
         document.write(to: tempfilepath)
 
         // delete original images
@@ -311,6 +316,24 @@ public final class PDFProcessing: Operation, Log {
     public enum Mode {
         case pdf(URL)
         case images(UUID)
+        
+        var pdfUrl: URL? {
+            switch self {
+            case .pdf(let url):
+                return url
+            case .images(_):
+                return nil
+            }
+        }
+        
+        var imageUUID: UUID? {
+            switch self {
+            case .pdf(_):
+                return nil
+            case .images(let uuid):
+                return uuid
+            }
+        }
     }
 
     private struct TextObservationResult {

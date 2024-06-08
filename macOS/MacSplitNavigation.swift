@@ -10,12 +10,12 @@ import OSLog
 
 struct MacSplitNavigation: View {
     @Environment(Subscription.self) var subscription
-
+    
     @State private var dropHandler = PDFDropHandler()
     @State private var selectedDocumentId: String?
     @AppStorage("taggingMode", store: .appGroup) private var untaggedMode = false
     @AppStorage("tutorialShown", store: .appGroup) private var tutorialShown = false
-
+    
     var body: some View {
         NavigationSplitView {
             Group {
@@ -61,24 +61,28 @@ struct MacSplitNavigation: View {
         })
         .onDrop(of: [.image, .pdf, .fileURL],
                 delegate: dropHandler)
-        .fileImporter(isPresented: $dropHandler.isImporting,
-                      allowedContentTypes: [.pdf, .image]) { result in
-            do {
-                let url = try result.get()
-                try dropHandler.handleImport(of: url)
-            } catch {
-                Logger.pdfDropHandler.errorAndAssert("Failed to get imported url", metadata: ["error": "\(error)"])
-                NotificationCenter.default.postAlert(error)
-            }
+        .fileImporter(isPresented: $dropHandler.isImporting, allowedContentTypes: [.pdf, .image]) { result in
+            Task {
+                do {
+                    let url = try result.get()
+                    try await dropHandler.handleImport(of: url)
+                    } catch {
+                        Logger.pdfDropHandler.errorAndAssert("Failed to get imported url", metadata: ["error": "\(error)"])
+                        NotificationCenter.default.postAlert(error)
+                    }
+                }
         }
-          .onChange(of: dropHandler.isImporting) { oldValue, newValue in
-              // special case: abort importing
-              guard oldValue,
-                    !newValue,
-                    dropHandler.documentProcessingState == .processing else { return }
-              
-              dropHandler.abortImport()
-          }
+        .onChange(of: dropHandler.isImporting) { oldValue, newValue in
+            // special case: abort importing
+            guard oldValue,
+                  !newValue,
+                  dropHandler.documentProcessingState == .processing else { return }
+            
+            dropHandler.abortImport()
+        }
+        .task {
+            let _ = await DocumentProcessingService.shared
+        }
     }
 }
 

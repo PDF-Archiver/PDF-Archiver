@@ -9,13 +9,16 @@
 import Foundation
 import PDFKit.PDFDocument
 
-public enum StorageHelper {
+@StorageActor
+enum StorageHelper {
 
     private static let separator = "----"
+    private static let tempDocumentURL = PathConstants.tempDocumentURL
 
-    public static func save(_ images: [CIImage]) throws {
+    /// Save multiple images (e.g. multiple pages from document scan)
+    static func save(_ images: [CIImage]) throws {
 
-        try FileManager.default.createFolderIfNotExists(PathConstants.tempImageURL)
+        try FileManager.default.createFolderIfNotExists(tempDocumentURL)
 
         let quality = CGFloat(UserDefaults.pdfQuality.rawValue)
         let uuid = UUID()
@@ -24,29 +27,21 @@ public enum StorageHelper {
 
             // create a filename, e.g. 576951A0-88B9-44E4-B118-BDEC3556014A----0002.jpg
             let filename = "\(uuid.uuidString)\(separator)\(String(format: "%04d", index)).jpg"
-            let url = PathConstants.tempImageURL.appendingPathComponent(filename)
+            let url = tempDocumentURL.appendingPathComponent(filename)
 
             // Attempt to write image data to url
             try CIContext().writeJPEGRepresentation(of: image, to: url, colorSpace: colorSpace, options: [kCGImageDestinationLossyCompressionQuality as CIImageRepresentationOption: quality])
         }
     }
 
-    public static func loadImageIds() -> Set<UUID> {
+    static func loadImageIds() -> Set<UUID> {
 
-        let paths = (try? FileManager.default.contentsOfDirectory(at: PathConstants.tempImageURL, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)) ?? []
+        let paths = (try? FileManager.default.contentsOfDirectory(at: tempDocumentURL, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)) ?? []
         let imageIds = paths
             .filter { $0.pathExtension.lowercased() != "pdf" }
             .compactMap { $0.lastPathComponent.components(separatedBy: separator).first }
             .compactMap { UUID(uuidString: $0) }
 
         return Set(imageIds)
-    }
-
-    // MARK: - Helper functions
-
-    private static func getImagePaths() -> [URL] {
-
-        let paths = (try? FileManager.default.contentsOfDirectory(at: PathConstants.tempImageURL, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)) ?? []
-        return paths.filter { $0.pathExtension.lowercased() != "pdf" }
     }
 }

@@ -142,7 +142,7 @@ public class MoreTabViewModel: ObservableObject, Log {
     func resetApp() {
         log.info("More table view show: reset app")
         // remove all temporary files
-        try? FileManager.default.removeItem(at: PathConstants.tempImageURL)
+        try? FileManager.default.removeItem(at: PathConstants.tempDocumentURL)
 
         // remove all user defaults
         if let bundleIdentifier = Bundle.main.bundleIdentifier {
