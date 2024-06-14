@@ -7,8 +7,8 @@
 
 import Foundation
 
-public protocol FolderProvider: AnyObject, Log {
-    typealias FolderChangeHandler = (FolderProvider, [FileChange]) -> Void
+protocol FolderProvider: AnyObject, Log {
+    typealias FolderChangeHandler = (any FolderProvider, [FileChange]) -> Void
 
     static func canHandle(_ url: URL) -> Bool
 

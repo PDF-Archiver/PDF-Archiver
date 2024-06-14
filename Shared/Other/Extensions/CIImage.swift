@@ -36,7 +36,7 @@ extension CIImage {
     /// Source: https://stackoverflow.com/a/61849964/10026834
     ///
     /// - Parameter image: Images with an orientation.
-    public convenience init?(imageWithOrientation image: UIImage) {
+    convenience init?(imageWithOrientation image: UIImage) {
         self.init(image: image,
                 options: [
                     .applyOrientationProperty: true,

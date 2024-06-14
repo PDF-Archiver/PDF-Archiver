@@ -7,9 +7,9 @@
 
 import UserNotifications
 
-public enum UserNotification: Log {
+enum UserNotification: Log {
     #if DEBUG
-    public static func schedule(title: String, message: String) {
+    static func schedule(title: String, message: String) {
         let notificationCenter = UNUserNotificationCenter.current()
 
         let content = UNMutableNotificationContent()

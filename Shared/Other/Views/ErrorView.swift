@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ErrorView: View {
-    let error: Error
+    let error: any Error
     var body: some View {
         ContentUnavailableView("An error occurred 😳", systemImage: "exclamationmark.triangle", description: Text(error.localizedDescription))
     }

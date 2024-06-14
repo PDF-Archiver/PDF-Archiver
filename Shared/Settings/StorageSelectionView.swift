@@ -12,7 +12,7 @@ struct StorageSelectionView: View {
 
     @Binding var selection: MoreTabViewModel.StorageType
     @State private var showDocumentPicker = false
-    let onCompletion: (Result<URL, Error>) -> Void
+    let onCompletion: (Result<URL, any Error>) -> Void
 
     var body: some View {
         Form {

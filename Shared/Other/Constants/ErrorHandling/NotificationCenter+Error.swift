@@ -13,11 +13,11 @@ extension Notification.Name {
 }
 
 extension NotificationCenter {
-    public func postAlert(_ error: Error, file: StaticString = #file, function: StaticString = #function, line: UInt = #line) {
+    func postAlert(_ error: any Error, file: StaticString = #file, function: StaticString = #function, line: UInt = #line) {
         let defaultTitle = "An error occurred 😳"
 
         let alertDataModel: AlertDataModel
-        if let error = error as? LocalizedError {
+        if let error = error as? any LocalizedError {
             let title = LocalizedStringKey(error.errorDescription ?? defaultTitle)
             let message = [
                 error.failureReason,
@@ -38,7 +38,7 @@ extension NotificationCenter {
         postAlert(alertDataModel, file: file, function: function, line: line)
     }
 
-    public func createAndPost(title: LocalizedStringKey, message: LocalizedStringKey, primaryButtonTitle: LocalizedStringKey, file: StaticString = #file, function: StaticString = #function, line: UInt = #line) {
+    func createAndPost(title: LocalizedStringKey, message: LocalizedStringKey, primaryButtonTitle: LocalizedStringKey, file: StaticString = #file, function: StaticString = #function, line: UInt = #line) {
         let completion = {}
         let alertDataModel = AlertDataModel(title: title,
                                             message: message,
@@ -48,7 +48,7 @@ extension NotificationCenter {
         postAlert(alertDataModel, file: file, function: function, line: line)
     }
 
-    public func createAndPost(title: LocalizedStringKey, message: LocalizedStringKey, primaryButton: Alert.Button, secondaryButton: Alert.Button, file: StaticString = #file, function: StaticString = #function, line: UInt = #line) {
+    func createAndPost(title: LocalizedStringKey, message: LocalizedStringKey, primaryButton: Alert.Button, secondaryButton: Alert.Button, file: StaticString = #file, function: StaticString = #function, line: UInt = #line) {
         let alertDataModel = AlertDataModel(title: title,
                                             message: message,
                                             primaryButton: primaryButton,
@@ -56,7 +56,7 @@ extension NotificationCenter {
         postAlert(alertDataModel, file: file, function: function, line: line)
     }
 
-    public func createAndPostNoICloudDrive(completion: @escaping () -> Void) {
+    func createAndPostNoICloudDrive(completion: @escaping () -> Void) {
         createAndPost(title: "Attention",
                       message: "Could not find iCloud Drive.",
                       primaryButtonTitle: "OK")
@@ -72,7 +72,7 @@ extension NotificationCenter {
                    ]))
     }
 
-    public func alertPublisher() -> AnyPublisher<AlertDataModel?, Never> {
+    func alertPublisher() -> AnyPublisher<AlertDataModel?, Never> {
         publisher(for: .alertMessage)
             .compactMap { $0.object as? AlertDataModel }
             .map { Optional($0) }

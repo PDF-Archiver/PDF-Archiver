@@ -11,7 +11,7 @@ import AppKit.NSWorkspace
 import UIKit.UIApplication
 #endif
 
-public func open(_ url: URL) {
+func open(_ url: URL) {
     #if os(macOS)
     NSWorkspace.shared.open(url)
     #else

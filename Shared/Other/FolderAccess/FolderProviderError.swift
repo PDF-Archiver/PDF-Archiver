@@ -12,7 +12,7 @@ import Foundation
 /// - description: A error in the description.
 /// - tags: A error in the document tags.
 /// - renameFailedFileAlreadyExists: A document with this name already exists in the archive.
-public enum FolderProviderError: Error {
+enum FolderProviderError: Error {
     case date
     case description
     case tags
@@ -20,7 +20,7 @@ public enum FolderProviderError: Error {
 }
 
 extension FolderProviderError: LocalizedError {
-    public var errorDescription: String? {
+    var errorDescription: String? {
         switch self {
         case .date:
             return NSLocalizedString("document_error_description__date_missing", comment: "No date could be found, e.g. while renaming the document.")
@@ -33,7 +33,7 @@ extension FolderProviderError: LocalizedError {
         }
     }
 
-    public var failureReason: String? {
+    var failureReason: String? {
         switch self {
         case .date:
             return NSLocalizedString("document_failure_reason__date_missing", comment: "No date could be found, e.g. while renaming the document.")
@@ -46,7 +46,7 @@ extension FolderProviderError: LocalizedError {
         }
     }
 
-    public var recoverySuggestion: String? {
+    var recoverySuggestion: String? {
         switch self {
         case .date:
             return NSLocalizedString("document_recovery_suggestion__date_missing", comment: "No date could be found, e.g. while renaming the document.")

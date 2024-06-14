@@ -9,7 +9,7 @@
 #if !os(macOS)
 import SwiftUI
 
-public struct ScanTabView: View {
+struct ScanTabView: View {
     @ObservedObject var viewModel: ScanTabViewModel
     @State private var opacity = 0.0
 
@@ -21,11 +21,11 @@ public struct ScanTabView: View {
         #endif
     }()
 
-    public init(viewModel: ScanTabViewModel) {
+    init(viewModel: ScanTabViewModel) {
         self.viewModel = viewModel
     }
 
-    public var body: some View {
+    var body: some View {
         VStack {
             Spacer()
             staticInfo

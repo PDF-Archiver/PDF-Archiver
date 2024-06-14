@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum PathConstants: Log {
+enum PathConstants: Log {
     private static let appGroupContainerURL: URL = {
         guard let tempImageURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: Constants.sharedContainerIdentifier) else {
             log.criticalAndAssert("AppGroup folder could not be found.")
@@ -16,7 +16,7 @@ public enum PathConstants: Log {
         return tempImageURL
     }()
 
-    public static let tempDocumentURL: URL = {
+    static let tempDocumentURL: URL = {
         let tempImageURL = appGroupContainerURL.appendingPathComponent("TempDocuments")
         createFolderIfNotExists(tempImageURL, name: "TempDocuments")
         return tempImageURL

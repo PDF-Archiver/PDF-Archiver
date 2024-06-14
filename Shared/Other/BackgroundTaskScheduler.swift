@@ -24,17 +24,17 @@
 
 import BackgroundTasks
 
-public enum BackgroundTaskIdentifier: String, CaseIterable {
+enum BackgroundTaskIdentifier: String, CaseIterable {
     // only one task identifier is allowed have the .exposure-notification suffix
     case pdfProcessing = "pdf-processing"
 
-    public var backgroundTaskSchedulerIdentifier: String {
+    var backgroundTaskSchedulerIdentifier: String {
         guard let bundleID = Bundle.main.bundleIdentifier else { return "invalid-task-id!" }
         return "\(bundleID).\(rawValue)"
     }
 }
 
-public protocol BackgroundTaskExecutionDelegate: AnyObject {
+protocol BackgroundTaskExecutionDelegate: AnyObject {
     func executeBackgroundTask(completion: @escaping ((Bool) -> Void))
 }
 
@@ -44,15 +44,16 @@ public protocol BackgroundTaskExecutionDelegate: AnyObject {
 ///         e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateExpirationForTaskWithIdentifier:@"de.JulianKahnert.PDFArchiveViewer.pdf-processing"]
 @available(iOS 13.0, *)
 @available(macOS, unavailable)
-public final class BackgroundTaskScheduler: Log {
+@MainActor
+final class BackgroundTaskScheduler: Log {
 
     // MARK: - Static.
 
-    public static let shared = BackgroundTaskScheduler()
+    static let shared = BackgroundTaskScheduler()
 
     // MARK: - Attributes.
 
-    public weak var delegate: BackgroundTaskExecutionDelegate?
+    weak var delegate: (any BackgroundTaskExecutionDelegate)?
 
     // MARK: - Initializer.
 
@@ -85,7 +86,7 @@ public final class BackgroundTaskScheduler: Log {
 
     // MARK: - Task scheduling.
 
-    public func scheduleTask(with taskIdentifier: BackgroundTaskIdentifier) {
+    func scheduleTask(with taskIdentifier: BackgroundTaskIdentifier) {
         do {
             let taskRequest = BGProcessingTaskRequest(identifier: taskIdentifier.backgroundTaskSchedulerIdentifier)
             taskRequest.requiresNetworkConnectivity = true

@@ -20,7 +20,7 @@ final class LocalFolderProvider: FolderProvider {
 
     private var currentFiles: [FileChange.Details] = []
 
-    required init(baseUrl: URL, _ handler: @escaping (FolderProvider, [FileChange]) -> Void) throws {
+    required init(baseUrl: URL, _ handler: @escaping (any FolderProvider, [FileChange]) -> Void) throws {
         self.baseUrl = baseUrl
         self.didAccessSecurityScope = baseUrl.startAccessingSecurityScopedResource()
         self.folderDidChange = handler

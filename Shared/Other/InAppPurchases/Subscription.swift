@@ -16,6 +16,7 @@ import OSLog
 import StoreKit
 import SwiftUI
 
+@MainActor
 @Observable final class Subscription {
     fileprivate(set) var status: SubscriptionStatus = .loading
     var isSubscribed: Binding<Bool> {

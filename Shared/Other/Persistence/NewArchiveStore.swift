@@ -13,13 +13,17 @@ actor NewArchiveStore: ModelActor {
 
     static let shared = NewArchiveStore(modelContainer: container)
     
-    private static let availableProvider: [FolderProvider.Type] = {
+    #if DEBUG
+    private static let availableProvider: [any FolderProvider.Type] = {
         if UserDefaults.isInDemoMode {
             return [DemoFolderProvider.self]
         } else {
             return [ICloudFolderProvider.self, LocalFolderProvider.self]
         }
     }()
+    #else
+    private static let availableProvider = [ICloudFolderProvider.self, LocalFolderProvider.self]
+    #endif
 
     // https://useyourloaf.com/blog/swiftdata-background-tasks/
     let modelContainer: ModelContainer
@@ -27,7 +31,7 @@ actor NewArchiveStore: ModelActor {
     
     private var archiveFolder: URL!
     private var untaggedFolders: [URL] = []
-    private var providers: [FolderProvider] = []
+    private var providers: [any FolderProvider] = []
     private let fileManager = FileManager.default
 
     private init(modelContainer: ModelContainer) {
@@ -66,7 +70,7 @@ actor NewArchiveStore: ModelActor {
         }
     }
     
-    func getProvider(for url: URL) throws -> FolderProvider {
+    func getProvider(for url: URL) throws -> any FolderProvider {
         
         // Use `contains` instead of `prefix` to avoid problems with local files.
         // This fixes a problem, where we get different file urls back:
@@ -124,7 +128,7 @@ actor NewArchiveStore: ModelActor {
         update(archiveFolder: archiveUrl, untaggedFolders: untaggedFolders)
     }
     
-    private func folderDidChange(_ provider: FolderProvider, _ changes: [FileChange]) {
+    private func folderDidChange(_ provider: any FolderProvider, _ changes: [FileChange]) {
         updateDocuments(with: changes)
     }
 

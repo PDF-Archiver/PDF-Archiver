@@ -10,7 +10,7 @@ import Foundation
 final class DirectoryDeepWatcher: Log {
 
     typealias FolderChangeHandler = (URL) -> Void
-    private typealias SourceObject = (source: DispatchSourceFileSystemObject, descriptor: Int32)
+    private typealias SourceObject = (source: any DispatchSourceFileSystemObject, descriptor: Int32)
 
     let baseUrl: URL
     private let queue = DispatchQueue(label: "DirectoryDeepWatcher \(UUID().uuidString)", qos: .background)

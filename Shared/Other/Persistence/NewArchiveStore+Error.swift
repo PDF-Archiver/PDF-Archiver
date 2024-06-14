@@ -6,7 +6,7 @@
 //
 
 extension NewArchiveStore {
-    public enum Error: Swift.Error {
+    enum Error: Swift.Error {
         case providerNotFound
     }
 }

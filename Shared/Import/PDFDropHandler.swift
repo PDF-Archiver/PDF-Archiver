@@ -35,10 +35,8 @@ final class PDFDropHandler {
     
     func handleImport(of url: URL) async throws {
         documentProcessingState = .processing
-        Task {
-            try await handle(input: url as NSSecureCoding)
-            finishDropHandling()
-        }
+        try await handle(input: url as any NSSecureCoding)
+        await finishDropHandling()
     }
     
     @StorageActor
@@ -104,19 +102,19 @@ final class PDFDropHandler {
         }
     }
     
-    private func finishDropHandling() {
+    private func finishDropHandling() async {
         guard documentProcessingState != .noDocument else { return }
         
         let wasProcessing = documentProcessingState == .processing
         documentProcessingState = wasProcessing ? .finished : .noDocument
         
         guard wasProcessing else { return }
-        Task {
-            await DocumentProcessingService.shared.triggerFolderObservation()
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
-            self.documentProcessingState = .noDocument
-        }
+        await DocumentProcessingService.shared.triggerFolderObservation()
+        
+        try? await Task.sleep(for: .seconds(2))
+        
+#warning("TODO: test if the sleep works")
+        self.documentProcessingState = .noDocument
     }
 }
 
@@ -152,7 +150,7 @@ extension PDFDropHandler: DropDelegate {
             } catch {
                 Logger.pdfDropHandler.errorAndAssert("Received error \(error)")
             }
-            finishDropHandling()
+            await finishDropHandling()
         }
         return true
     }

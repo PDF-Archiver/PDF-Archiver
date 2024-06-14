@@ -7,13 +7,13 @@
 
 import Foundation
 
-public enum AppEnvironment: String, Codable {
+enum AppEnvironment: String, Codable {
     case develop
     case testflight
     case production
 }
 
-public extension AppEnvironment {
+extension AppEnvironment {
 
     static func get() -> AppEnvironment {
         // return early, if we have a debug build

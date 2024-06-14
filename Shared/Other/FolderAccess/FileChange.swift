@@ -7,12 +7,12 @@
 import DeepDiff
 import Foundation
 
-public enum FileChange {
+enum FileChange {
     case added(Details)
     case updated(Details)
     case removed(URL)
 
-    public struct Details: Equatable {
+    struct Details: Equatable {
         let url: URL
         let filename: String
         let size: Int
@@ -36,13 +36,13 @@ public enum FileChange {
 }
 
 extension FileChange.Details: DiffAware {
-    public typealias DiffId = URL
+    typealias DiffId = URL
 
-    public var diffId: URL {
+    var diffId: URL {
         url
     }
 
-    public static func compareContent(_ lhs: FileChange.Details, _ rhs: FileChange.Details) -> Bool {
+    static func compareContent(_ lhs: FileChange.Details, _ rhs: FileChange.Details) -> Bool {
         lhs == rhs
     }
 }

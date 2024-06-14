@@ -8,17 +8,17 @@
 import Foundation
 
 extension FileManager: Log {
-    public func fileExists(at url: URL) -> Bool {
+    func fileExists(at url: URL) -> Bool {
         fileExists(atPath: url.path)
     }
 
-    public func directoryExists(at url: URL) -> Bool {
+    func directoryExists(at url: URL) -> Bool {
         var isDirectory: ObjCBool = false
         let exists = self.fileExists(atPath: url.path, isDirectory: &isDirectory)
         return exists && isDirectory.boolValue
     }
 
-    public func createFolderIfNotExists(_ folder: URL) throws {
+    func createFolderIfNotExists(_ folder: URL) throws {
         if !directoryExists(at: folder) {
             log.debug("Try to create folder", metadata: ["folder": "\(folder.path)"])
             try createDirectory(at: folder, withIntermediateDirectories: true, attributes: nil)
@@ -26,7 +26,7 @@ extension FileManager: Log {
         }
     }
 
-    public func moveContents(of sourceFolder: URL, to destinationFolder: URL) throws {
+    func moveContents(of sourceFolder: URL, to destinationFolder: URL) throws {
         guard directoryExists(at: sourceFolder),
               directoryExists(at: destinationFolder) else {
             preconditionFailure("Source/Destionation is no folder - this should not happen.")
@@ -44,7 +44,7 @@ extension FileManager: Log {
         }
     }
 
-    public func getFilesRecursive(at url: URL, with properties: [URLResourceKey]? = nil) -> [URL] {
+    func getFilesRecursive(at url: URL, with properties: [URLResourceKey]? = nil) -> [URL] {
         guard let enumerator = FileManager.default.enumerator(at: url, includingPropertiesForKeys: properties) else { return [] }
 
         var files = [URL]()

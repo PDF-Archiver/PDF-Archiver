@@ -9,17 +9,17 @@ import Foundation
 import SwiftData
 
 @Model
-public final class Document  {
-    public private(set) var id: String = ""
-    public var url: URL = URL(filePath: "")
-    public var isTagged = false
-    public var date = Date()
-    public var filename: String = ""
-    public var specification: String = ""
-    public var tags: [String] = []
+final class Document  {
+    private(set) var id: String = ""
+    var url: URL = URL(filePath: "")
+    var isTagged = false
+    var date = Date()
+    var filename: String = ""
+    var specification: String = ""
+    var tags: [String] = []
 
     // 0: remote - 1: local
-    public var downloadStatus: Double
+    var downloadStatus: Double
 
     init(id: String, url: URL, isTagged: Bool, filename: String, date: Date, specification: String, tags: [String], downloadStatus: Double) {
         self.id = id
@@ -34,7 +34,7 @@ public final class Document  {
 }
 
 extension Document {
-    public enum DownloadStatus: Equatable, Codable {
+    enum DownloadStatus: Equatable, Codable {
         case remote
         case downloading(percent: Double)
         case local

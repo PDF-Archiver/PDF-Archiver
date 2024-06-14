@@ -8,8 +8,9 @@
 
 import Foundation
 
+#if DEBUG
 final class DemoFolderProvider: FolderProvider, Log {
-    private static var isInitialized = false
+    nonisolated(unsafe) private static var isInitialized = false
     static func canHandle(_ url: URL) -> Bool {
         true
     }
@@ -66,3 +67,4 @@ final class DemoFolderProvider: FolderProvider, Log {
 private enum DemoFolderProviderError: String, Error {
     case alreadyInitialized
 }
+#endif

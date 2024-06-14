@@ -12,7 +12,7 @@ import OSLog
 struct DocumentDetailView: View {
     enum ViewState {
         case loading
-        case error(Error)
+        case error(any Error)
         case document(Document)
         case documentNotFound
     }

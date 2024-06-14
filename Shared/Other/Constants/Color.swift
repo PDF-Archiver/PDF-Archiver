@@ -8,29 +8,29 @@
 
 import SwiftUI
 
-public extension Color {
-    static var paDelete = Color("paDeleteAsset")
-    static var paDarkGray = Color("paDarkGrayAsset")
-    static var paLightGray = Color("paLightGrayAsset")
-    static var paWhite = Color("paWhiteAsset")
-    static var paDarkRed = Color("paDarkRedAsset")
-    static var paLightRed = Color("paLightRedAsset")
+extension Color {
+    static let paDelete = Color("paDeleteAsset")
+    static let paDarkGray = Color("paDarkGrayAsset")
+    static let paLightGray = Color("paLightGrayAsset")
+    static let paWhite = Color("paWhiteAsset")
+    static let paDarkRed = Color("paDarkRedAsset")
+    static let paLightRed = Color("paLightRedAsset")
 
-    static var paPDFBackground = Color("PDFBackground")
-    static var paBackground = Color("paBackgroundAsset")
+    static let paPDFBackground = Color("PDFBackground")
+    static let paBackground = Color("paBackgroundAsset")
     #if os(macOS)
     // swiftlint:disable:next force_unwrapping
-    static var paSecondaryBackground = Color(NSColor.alternatingContentBackgroundColors.last!)
+    static let paSecondaryBackground = Color(NSColor.alternatingContentBackgroundColors.last!)
     #else
-    static var paSecondaryBackground = Color("SecondaryBackground")
+    static let paSecondaryBackground = Color("SecondaryBackground")
     #endif
-    static var paKeyboardBackground = Color("KeyboardBackground")
-    static var paPlaceholderGray = Color("PlaceholderGray")
+    static let paKeyboardBackground = Color("KeyboardBackground")
+    static let paPlaceholderGray = Color("PlaceholderGray")
 }
 
 #if os(macOS)
-public extension Color {
-    static var secondarySystemBackground = Color(.controlBackgroundColor)
-    static var systemGray6 = Color(.darkGray)
+extension Color {
+    static let secondarySystemBackground = Color(.controlBackgroundColor)
+    static let systemGray6 = Color(.darkGray)
 }
 #endif

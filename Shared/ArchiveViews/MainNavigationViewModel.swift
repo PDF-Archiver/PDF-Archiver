@@ -14,7 +14,7 @@ import SwiftUI
 import MessageUI
 #endif
 
-public final class MainNavigationViewModel: ObservableObject, Log {
+final class MainNavigationViewModel: ObservableObject, Log {
     @Published var alertDataModel: AlertDataModel?
 
 //    @Published var currentTab: Tab? = UserDefaults.lastSelectedTab
@@ -26,13 +26,13 @@ public final class MainNavigationViewModel: ObservableObject, Log {
 //        self.currentTab = newTab
 //    }
 
-    public let imageConverter: ImageConverter
+    let imageConverter: ImageConverter
     var scanViewModel: ScanTabViewModel
-    public let moreViewModel = MoreTabViewModel()
+    let moreViewModel = MoreTabViewModel()
 
     private var disposables = Set<AnyCancellable>()
 
-    public init() {
+    init() {
         imageConverter = ImageConverter(getDocumentDestination: Self.getDocumentDestination)
         scanViewModel = ScanTabViewModel(imageConverter: imageConverter)
 
@@ -169,7 +169,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
 //    }
 
     #if !os(macOS)
-    public func showScan(shareAfterScan: Bool) {
+    func showScan(shareAfterScan: Bool) {
         withAnimation {
             currentTab = .scan
             scanViewModel.shareDocumentAfterScan = shareAfterScan

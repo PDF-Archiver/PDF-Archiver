@@ -78,12 +78,12 @@ extension UserDefaults {
     }
 }
 
-public final class PathManager: Log {
+final class PathManager: Log {
 
-    public static let shared = PathManager()
+    static let shared = PathManager()
     private static let userDefaults: UserDefaults = .appGroup
 
-    public private(set) var archivePathType: ArchivePathType
+    private(set) var archivePathType: ArchivePathType
     private let fileManager = FileManager.default
 
     private init() {
@@ -99,7 +99,7 @@ public final class PathManager: Log {
         }
     }
 
-    public func getArchiveUrl() throws -> URL {
+    func getArchiveUrl() throws -> URL {
         let archiveURL: URL
         if UserDefaults.isInDemoMode {
             archiveURL = fileManager.temporaryDirectory
@@ -110,13 +110,13 @@ public final class PathManager: Log {
         return archiveURL
     }
 
-    public func getUntaggedUrl() throws -> URL {
+    func getUntaggedUrl() throws -> URL {
         let untaggedURL = try getArchiveUrl().appendingPathComponent("untagged")
         try FileManager.default.createFolderIfNotExists(untaggedURL)
         return untaggedURL
     }
 
-    public func setArchiveUrl(with type: ArchivePathType) throws {
+    func setArchiveUrl(with type: ArchivePathType) throws {
         if type == .iCloudDrive {
             guard fileManager.iCloudDriveURL != nil else { throw PathError.iCloudDriveNotFound }
         }
@@ -137,7 +137,7 @@ public final class PathManager: Log {
                 folderUrl.lastPathComponent.isNumeric || folderUrl.lastPathComponent == "untagged"
             }
 
-        var moveError: Error?
+        var moveError: (any Error)?
         for folder in contents {
             let destination = newArchiveUrl.appendingPathComponent(folder.lastPathComponent)
 

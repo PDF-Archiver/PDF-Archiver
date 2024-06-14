@@ -6,7 +6,7 @@
 //
 
 extension CaseIterable where AllCases.Element: Equatable {
-    public static func toIndex(_ element: Self) -> Int? {
+    static func toIndex(_ element: Self) -> Int? {
         guard let index = Self.allCases.firstIndex(of: element) else { return nil }
         return index as? Int
     }

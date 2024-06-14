@@ -31,21 +31,21 @@ extension NSImage {
 }
 #endif
 
-public enum PDFProcessingError: Error {
+enum PDFProcessingError: Error {
     case untaggedDocumentsPathNotFound
     case pdfNotFound
 }
 
-public final class PDFProcessing: Operation {
+final class PDFProcessing: Operation {
 
     private let mode: Mode
     private let destinationFolder: URL
     private let tempImagePath: URL
     private let confidenceThreshold = Float(0)
 
-    public private(set) var error: Error?
-    public private(set) var outputUrl: URL?
-    public var documentId: UUID? {
+    private(set) var error: (any Error)?
+    private(set) var outputUrl: URL?
+    var documentId: UUID? {
         if case Mode.images(let documentId) = mode {
             return documentId
         } else {
@@ -53,13 +53,13 @@ public final class PDFProcessing: Operation {
         }
     }
 
-    public init(of mode: Mode, destinationFolder: URL, tempImagePath: URL) {
+    init(of mode: Mode, destinationFolder: URL, tempImagePath: URL) {
         self.mode = mode
         self.destinationFolder = destinationFolder
         self.tempImagePath = tempImagePath
     }
 
-    override public func main() {
+    override func main() {
 
         do {
             if isCancelled {
@@ -313,7 +313,7 @@ public final class PDFProcessing: Operation {
 
     // MARK: - Helper Types
 
-    public enum Mode {
+    enum Mode {
         case pdf(URL)
         case images(UUID)
         

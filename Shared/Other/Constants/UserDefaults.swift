@@ -10,7 +10,7 @@ import Foundation
 
 extension UserDefaults: Log {
 
-    public enum Names: String, CaseIterable {
+    enum Names: String, CaseIterable {
         case tutorialShown = "tutorial-v1"
         case lastSelectedTabName
         case pdfQuality
@@ -25,16 +25,16 @@ extension UserDefaults: Log {
         case documentSpecificationNotRequired
     }
 
-    public enum PDFQuality: Float, CaseIterable {
+    enum PDFQuality: Float, CaseIterable {
         case lossless = 1.0
         case good = 0.75
         case normal = 0.5
         case small = 0.25
 
-        public static let defaultQualityIndex = 1  // e.g. "good"
+        static let defaultQualityIndex = 1  // e.g. "good"
     }
 
-    public static func shouldManipulatePdfDocument() -> Bool {
+    static func shouldManipulatePdfDocument() -> Bool {
         if #available(iOS 17, macOS 14, *) {
             if #available(iOS 17.2, macOS 14.2, *) {
                 // creation of PDFs is fixed in iOS 17.2
@@ -48,11 +48,11 @@ extension UserDefaults: Log {
         }
     }
 
-    public static var isInDemoMode: Bool {
+    static var isInDemoMode: Bool {
         UserDefaults.standard.bool(forKey: "demoMode")
     }
 
-    public static var tutorialShown: Bool {
+    static var tutorialShown: Bool {
         get {
             appGroup.bool(forKey: Names.tutorialShown.rawValue)
         }
@@ -61,7 +61,7 @@ extension UserDefaults: Log {
         }
     }
 
-    public static var firstDocumentScanAlertPresented: Bool {
+    static var firstDocumentScanAlertPresented: Bool {
         get {
             appGroup.bool(forKey: Names.firstDocumentScanAlertPresented.rawValue)
         }
@@ -70,7 +70,7 @@ extension UserDefaults: Log {
         }
     }
 
-    public static var lastAppUsagePermitted: Bool {
+    static var lastAppUsagePermitted: Bool {
         get {
             appGroup.bool(forKey: Names.lastAppUsagePermitted.rawValue)
         }
@@ -79,7 +79,7 @@ extension UserDefaults: Log {
         }
     }
 
-    public static var lastSelectedTab: Tab {
+    static var lastSelectedTab: Tab {
         get {
             guard let name = appGroup.string(forKey: Names.lastSelectedTabName.rawValue),
                 let tab = Tab(rawValue: name) else { return .scan }
@@ -90,7 +90,7 @@ extension UserDefaults: Log {
         }
     }
 
-    public static var pdfQuality: PDFQuality {
+    static var pdfQuality: PDFQuality {
         get {
             var value = appGroup.float(forKey: Names.pdfQuality.rawValue)
 
@@ -108,7 +108,7 @@ extension UserDefaults: Log {
         }
     }
 
-    public static var archiveURL: URL? {
+    static var archiveURL: URL? {
         get {
             appGroup.object(forKey: Names.archiveURL.rawValue) as? URL
         }
@@ -117,7 +117,7 @@ extension UserDefaults: Log {
         }
     }
 
-    public static var untaggedURL: URL? {
+    static var untaggedURL: URL? {
         get {
             appGroup.object(forKey: Names.untaggedURL.rawValue) as? URL
         }
@@ -127,7 +127,7 @@ extension UserDefaults: Log {
     }
 
     #if os(macOS)
-    public static var observedFolderURL: URL? {
+    static var observedFolderURL: URL? {
         get {
             guard let bookmarkData = appGroup.object(forKey: Names.observedFolderURL.rawValue) as? Data else { return nil }
 
@@ -164,7 +164,7 @@ extension UserDefaults: Log {
     }
     #endif
 
-    public static var notSaveDocumentTagsAsPDFMetadata: Bool {
+    static var notSaveDocumentTagsAsPDFMetadata: Bool {
         get {
             appGroup.bool(forKey: Names.notSaveDocumentTagsAsPDFMetadata.rawValue)
         }
@@ -173,7 +173,7 @@ extension UserDefaults: Log {
         }
     }
 
-    public static var documentTagsNotRequired: Bool {
+    static var documentTagsNotRequired: Bool {
         get {
             appGroup.bool(forKey: Names.documentTagsNotRequired.rawValue)
         }
@@ -182,7 +182,7 @@ extension UserDefaults: Log {
         }
     }
 
-    public static var documentSpecificationNotRequired: Bool {
+    static var documentSpecificationNotRequired: Bool {
         get {
             appGroup.bool(forKey: Names.documentSpecificationNotRequired.rawValue)
         }
@@ -191,7 +191,7 @@ extension UserDefaults: Log {
         }
     }
 
-    public func setObject<T: Encodable>(_ object: T?, forKey key: Names) throws {
+    func setObject<T: Encodable>(_ object: T?, forKey key: Names) throws {
         guard let object = object else {
             set(nil, forKey: key.rawValue)
             return
@@ -200,14 +200,14 @@ extension UserDefaults: Log {
         set(data, forKey: key.rawValue)
     }
 
-    public func getObject<T: Decodable>(forKey key: Names) throws -> T? {
+    func getObject<T: Decodable>(forKey key: Names) throws -> T? {
         guard let data = object(forKey: key.rawValue) as? Data else { return nil }
         return try JSONDecoder().decode(T.self, from: data)
     }
 
     // MARK: - Migration
 
-    public static var appGroup: UserDefaults {
+    static var appGroup: UserDefaults {
         // swiftlint:disable:next force_unwrapping
         UserDefaults(suiteName: Constants.sharedContainerIdentifier)!
     }

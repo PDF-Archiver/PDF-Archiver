@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-public struct WrappingHStack<Item: Identifiable & Hashable, Content: View>: View {
+struct WrappingHStack<Item: Identifiable & Hashable, Content: View>: View {
     var items: [Item]
 
     @State private var totalHeight
@@ -16,12 +16,12 @@ public struct WrappingHStack<Item: Identifiable & Hashable, Content: View>: View
     //    = CGFloat.infinity   // << variant for VStack
 
     private let content: (Item) -> Content
-    public init(items: [Item], @ViewBuilder content: @escaping (Item) -> Content) {
+    init(items: [Item], @ViewBuilder content: @escaping (Item) -> Content) {
         self.items = items
         self.content = content
     }
 
-    public var body: some View {
+    var body: some View {
         VStack {
             GeometryReader { geometry in
                 self.generateContent(in: geometry)

@@ -20,7 +20,7 @@ extension Document {
     ///
     /// - Parameter path: Path which should be parsed.
     /// - Returns: Date, specification and tag names which can be parsed from the path.
-    public static func parseFilename(_ filename: String) -> (date: Date?, specification: String?, tagNames: [String]?) {
+    static func parseFilename(_ filename: String) -> (date: Date?, specification: String?, tagNames: [String]?) {
 
         // try to parse the current filename
         var date: Date?
@@ -102,7 +102,7 @@ extension Document {
         return (date, rawDate)
     }
 
-    public static func createFilename(date: Date, specification: String, tags: Set<String>) -> String {
+    static func createFilename(date: Date, specification: String, tags: Set<String>) -> String {
         // get formatted date
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"

@@ -8,14 +8,14 @@
 import Combine
 import SwiftUI
 
-public enum Tab: String, CaseIterable, Identifiable, Hashable, Equatable {
+enum Tab: String, CaseIterable, Identifiable, Hashable, Equatable {
     case scan, tag, archive
     #if !os(macOS)
     case more
     #endif
 
-    public var id: String { rawValue }
-    public var name: LocalizedStringKey {
+    var id: String { rawValue }
+    var name: LocalizedStringKey {
         if self == .scan {
             #if os(macOS)
             return "Import"
@@ -26,7 +26,7 @@ public enum Tab: String, CaseIterable, Identifiable, Hashable, Equatable {
             return LocalizedStringKey(rawValue.capitalized)
         }
     }
-    public var iconName: String {
+    var iconName: String {
         switch self {
             case .scan:
                 return "doc.text.viewfinder"

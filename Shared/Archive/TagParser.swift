@@ -10,7 +10,7 @@ import Foundation
 import NaturalLanguage
 
 /// Parse tags from a String.
-public enum TagParser {
+enum TagParser {
 
     private static let seperator = "-"
 
@@ -18,7 +18,7 @@ public enum TagParser {
     ///
     /// - Parameter raw: Raw string which might contain some tags.
     /// - Returns: Found tag names.
-    public static func parse(_ text: String) -> Set<String> {
+    static func parse(_ text: String) -> Set<String> {
         var documentTags = Set<String>()
 
         let tagger = NLTagger(tagSchemes: [.nameType])

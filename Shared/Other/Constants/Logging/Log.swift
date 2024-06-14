@@ -7,11 +7,11 @@
 
 import OSLog
 
-public protocol Log {
+protocol Log {
     var log: Logger { get }
 }
 
-public extension Log {
+extension Log {
     static var log: Logger {
         Logger(subsystem: Logger.subsystem, category: String(describing: self))
     }

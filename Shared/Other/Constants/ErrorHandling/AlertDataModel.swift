@@ -9,8 +9,8 @@
 import Foundation
 import SwiftUI
 
-public struct AlertDataModel: Identifiable {
-    public let id = UUID()
+struct AlertDataModel: Identifiable {
+    let id = UUID()
     let title: LocalizedStringKey
     let message: LocalizedStringKey
     let primaryButton: Alert.Button

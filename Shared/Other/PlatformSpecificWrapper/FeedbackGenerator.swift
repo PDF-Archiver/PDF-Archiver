@@ -9,9 +9,9 @@
 import UIKit
 #endif
 
-public enum FeedbackGenerator {
+enum FeedbackGenerator {
 
-    public enum FeedbackType {
+    enum FeedbackType {
         case success, warning, error
     }
 
@@ -20,14 +20,14 @@ public enum FeedbackGenerator {
     private static let selectionFeedback = UISelectionFeedbackGenerator()
     #endif
 
-    public static func selectionChanged() {
+    static func selectionChanged() {
         #if canImport(UIKit)
         selectionFeedback.prepare()
         selectionFeedback.selectionChanged()
         #endif
     }
 
-    public static func notify(_ status: FeedbackType) {
+    static func notify(_ status: FeedbackType) {
         #if canImport(UIKit)
         notificationFeedback.prepare()
 

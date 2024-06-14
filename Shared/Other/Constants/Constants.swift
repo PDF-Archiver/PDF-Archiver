@@ -6,7 +6,7 @@
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
 
-public enum Constants {
+enum Constants {
     static let sharedContainerIdentifier = "group.PDFArchiverShared"
 
     static let documentDatePlaceholder = "PDFARCHIVER-TEMP-DATE"

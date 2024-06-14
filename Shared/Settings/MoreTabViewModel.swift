@@ -13,10 +13,11 @@ import SwiftUI
 import CoreServices
 #endif
 
-public class MoreTabViewModel: ObservableObject, Log {
-    public static let appVersion = AppEnvironment.getFullVersion()
+@MainActor
+class MoreTabViewModel: ObservableObject, Log {
+    static let appVersion = AppEnvironment.getFullVersion()
 
-    public static func markdownView(for title: LocalizedStringKey, withKey key: String, withScrollView scrollView: Bool = true) -> some View {
+    static func markdownView(for title: LocalizedStringKey, withKey key: String, withScrollView scrollView: Bool = true) -> some View {
         guard let url = Bundle.main.url(forResource: key, withExtension: "md"),
               let markdown = try? String(contentsOf: url) else { preconditionFailure("Could not fetch file \(key)") }
 
@@ -51,7 +52,7 @@ public class MoreTabViewModel: ObservableObject, Log {
     private let queue = DispatchQueue(label: "MoreTabViewModel", qos: .userInitiated)
     private let queueUtility = DispatchQueue(label: "MoreTabViewModel-utility", qos: .utility)
 
-    public init() {
+    init() {
         $selectedQualityIndex
             .sink { selectedQuality in
                 UserDefaults.pdfQuality = UserDefaults.PDFQuality.allCases[selectedQuality]
@@ -109,7 +110,7 @@ public class MoreTabViewModel: ObservableObject, Log {
     }
     #endif
 
-    func handleDocumentPicker(result: Result<URL, Error>) {
+    func handleDocumentPicker(result: Result<URL, any Error>) {
         switch result {
         case .success(let selectedUrl):
             self.newArchiveUrl = selectedUrl
@@ -122,20 +123,18 @@ public class MoreTabViewModel: ObservableObject, Log {
     }
 
     private func handle(newType type: PathManager.ArchivePathType) {
-        do {
-            try PathManager.shared.setArchiveUrl(with: type)
-
-            let archiveUrl = try PathManager.shared.getArchiveUrl()
-            let untaggedUrl = try PathManager.shared.getUntaggedUrl()
-
-            self.showArchiveTypeSelection = false
-            queue.async {
-                Task {
-                    await NewArchiveStore.shared.update(archiveFolder: archiveUrl, untaggedFolders: [untaggedUrl])
-                }
+        Task {
+            do {
+                try await PathManager.shared.setArchiveUrl(with: type)
+                
+                let archiveUrl = try await PathManager.shared.getArchiveUrl()
+                let untaggedUrl = try await PathManager.shared.getUntaggedUrl()
+                
+                self.showArchiveTypeSelection = false
+                await NewArchiveStore.shared.update(archiveFolder: archiveUrl, untaggedFolders: [untaggedUrl])
+            } catch {
+                NotificationCenter.default.postAlert(error)
             }
-        } catch {
-            NotificationCenter.default.postAlert(error)
         }
     }
 
@@ -159,18 +158,20 @@ public class MoreTabViewModel: ObservableObject, Log {
     }
 
     func openArchiveFolder() {
-        do {
-            #if os(macOS)
-            let url = try PathManager.shared.getArchiveUrl()
-            #else
-            let archiveUrl = try PathManager.shared.getArchiveUrl()
-            // dropFirst uses the index that's why we need -1
-            let pathWithoutScheme = archiveUrl.absoluteString.dropFirst("files://".count - 1)
-            guard let url = URL(string: "shareddocuments://\(pathWithoutScheme)") else { return }
-            #endif
-            open(url)
-        } catch {
-            NotificationCenter.default.postAlert(error)
+        Task {
+            do {
+#if os(macOS)
+                let url = try await PathManager.shared.getArchiveUrl()
+#else
+                let archiveUrl = try PathManager.shared.getArchiveUrl()
+                // dropFirst uses the index that's why we need -1
+                let pathWithoutScheme = archiveUrl.absoluteString.dropFirst("files://".count - 1)
+                guard let url = URL(string: "shareddocuments://\(pathWithoutScheme)") else { return }
+#endif
+                open(url)
+            } catch {
+                NotificationCenter.default.postAlert(error)
+            }
         }
     }
 

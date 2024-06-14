@@ -16,7 +16,7 @@ import UIKit.UIImage
 private typealias Image = UIImage
 #endif
 
-public extension NSItemProvider {
+extension NSItemProvider {
     enum NSItemProviderError: Error {
         case timeout
     }

@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-public struct OnboardingView: View {
-    public init(isPresenting: Binding<Bool>) {
+ struct OnboardingView: View {
+     init(isPresenting: Binding<Bool>) {
         self._isPresenting = isPresenting
     }
 
-    @Binding public var isPresenting: Bool
+    @Binding  var isPresenting: Bool
     var onboardSet: OnboardSet = {
         let onboardSet = OnboardSet()
         onboardSet.newCard(title: NSLocalizedString("intro.scan.title", comment: "Intro: Scan Title"),
@@ -32,7 +32,7 @@ public struct OnboardingView: View {
                            text: NSLocalizedString("intro.last.description", comment: "Intro: Last Page Description"))
         return onboardSet
     }()
-    public var body: some View {
+     var body: some View {
         OnboardingScreens(isPresenting: $isPresenting, onboardSet: onboardSet)
             .frame(width: 500, height: 400)
     }

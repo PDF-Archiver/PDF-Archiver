@@ -16,7 +16,7 @@ private enum UserDefaultsKeys: String {
     case lastVersionPromptedForReviewKey
 }
 
-public final class AppStoreReviewRequest {
+final class AppStoreReviewRequest {
 
     static let shared = AppStoreReviewRequest()
     private let reviewThresholdCount = 5
@@ -48,7 +48,7 @@ public final class AppStoreReviewRequest {
         return version1.split(separator: ".").dropLast().joined(separator: ".") == version2.split(separator: ".").dropLast().joined(separator: ".")
     }
 
-    public func incrementCount() {
+    func incrementCount() {
         if isSameMajorMinorVersion(version1: currentVersion, version2: lastVersionPromptedForReview) {
             return
         }
@@ -71,7 +71,7 @@ public final class AppStoreReviewRequest {
         }
     }
 
-    public func requestReviewManually(for appId: Int) {
+    func requestReviewManually(for appId: Int) {
         guard let writeReviewURL = URL(string: "https://apps.apple.com/app/id\(appId)?action=write-review")
             else { fatalError("Expected a valid URL") }
         open(writeReviewURL)

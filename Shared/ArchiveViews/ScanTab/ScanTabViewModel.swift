@@ -29,18 +29,18 @@ let shareDocumentAfterScanDefault = true
 let shareDocumentAfterScanDefault = false
 #endif
 
-public final class ScanTabViewModel: ObservableObject, Log {
-    @Published public var showDocumentScan = false
-    @Published public var shareDocumentAfterScan: Bool = shareDocumentAfterScanDefault
-    @Published public private(set) var progressValue: CGFloat = 0.0
-    @Published public private(set) var progressLabel: String = " "
+final class ScanTabViewModel: ObservableObject, Log {
+    @Published var showDocumentScan = false
+    @Published var shareDocumentAfterScan: Bool = shareDocumentAfterScanDefault
+    @Published private(set) var progressValue: CGFloat = 0.0
+    @Published private(set) var progressLabel: String = " "
 
     private let imageConverter: ImageConverterAPI
 
     private var lastProgressValue: CGFloat?
     private var disposables = Set<AnyCancellable>()
 
-    public init(imageConverter: ImageConverterAPI) {
+    init(imageConverter: ImageConverterAPI) {
         self.imageConverter = imageConverter
 
         // show the processing indicator, if documents are currently processed
@@ -61,7 +61,7 @@ public final class ScanTabViewModel: ObservableObject, Log {
     }
 
     #if !os(macOS)
-    public func startScanning() {
+    func startScanning() {
         let authorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
         switch authorizationStatus {
             case .authorized:
@@ -103,7 +103,7 @@ public final class ScanTabViewModel: ObservableObject, Log {
     }
     #endif
 
-//    public func performDrop(info: DropInfo) -> Bool {
+//    func performDrop(info: DropInfo) -> Bool {
 //        let types: [UTType] = [.fileURL, .image, .pdf]
 //        let items = info.itemProviders(for: types)
 //        progressValue = 0.3
@@ -165,7 +165,7 @@ public final class ScanTabViewModel: ObservableObject, Log {
 //        return true
 //    }
 
-    public func process(_ images: [CIImage]) {
+    func process(_ images: [CIImage]) {
         assert(!Thread.isMainThread, "This might take some time and should not be executed on the main thread.")
 
         // show processing indicator instantly

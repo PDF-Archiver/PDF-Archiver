@@ -8,7 +8,7 @@
 import Foundation
 
 extension PathManager {
-    public enum ArchivePathType: Equatable {
+    enum ArchivePathType: Equatable, Codable {
         case iCloudDrive
         #if !os(macOS)
         case appContainer
@@ -29,7 +29,7 @@ extension PathManager {
             }
         }
 
-        public var isFileBrowserCompatible: Bool {
+        var isFileBrowserCompatible: Bool {
             switch self {
                 case .iCloudDrive:
                     return true
@@ -40,52 +40,6 @@ extension PathManager {
                 case .local:
                     return true
             }
-        }
-    }
-}
-
-extension PathManager.ArchivePathType: Codable {
-    enum CodingKeys: CodingKey {
-        case iCloudDrive
-        #if !os(macOS)
-        case appContainer
-        #endif
-        case local
-    }
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        let key = container.allKeys.first
-        switch key {
-            case .iCloudDrive:
-                self = .iCloudDrive
-            #if !os(macOS)
-            case .appContainer:
-                self = .appContainer
-            #endif
-            case .local:
-                let url = try container.decode(URL.self, forKey: .local)
-                self = .local(url)
-            case .none:
-                throw DecodingError.dataCorrupted(
-                    DecodingError.Context(
-                        codingPath: container.codingPath,
-                        debugDescription: "Unabled to decode enum."
-                    )
-                )
-        }
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        switch self {
-            case .iCloudDrive:
-                try container.encode("", forKey: .iCloudDrive)
-            #if !os(macOS)
-            case .appContainer:
-                try container.encode("", forKey: .appContainer)
-            #endif
-            case .local(let url):
-                try container.encode(url, forKey: .local)
         }
     }
 }

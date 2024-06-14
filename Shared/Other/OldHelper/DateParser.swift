@@ -9,18 +9,18 @@ import Combine
 import Foundation
 
 /// Parse several kinds of dates in a String.
-public enum DateParser: Log {
+enum DateParser: Log {
 
-    public struct ParserResult: Codable {
-        public let date: Date
-        public let rawDate: String
+    struct ParserResult: Codable {
+        let date: Date
+        let rawDate: String
     }
 
     /// Get the first date from a raw string.
     ///
     /// - Parameter raw: Raw string which might contain a date.
     /// - Returns: The found date or nil if no date was found.
-    public static func parse(_ raw: String) -> ParserResult? {
+    static func parse(_ raw: String) -> ParserResult? {
         let input = String(raw.prefix(10))
         if let result = localParse(raw) {
             return result

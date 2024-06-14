@@ -38,8 +38,6 @@
 		34D470BB255B249B000302A8 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34D470BA255B249B000302A8 /* StoreKit.framework */; };
 		34E7DB0F250189D400E94352 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 34E7DB12250189D400E94352 /* Localizable.strings */; };
 		34E7DB10250189D400E94352 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 34E7DB12250189D400E94352 /* Localizable.strings */; };
-		A3002ADD2BAA296300663B4F /* async-await-migration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3002ADC2BAA296300663B4F /* async-await-migration.swift */; };
-		A3002ADE2BAA297900663B4F /* async-await-migration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3002ADC2BAA296300663B4F /* async-await-migration.swift */; };
 		A3002AE22BAA30D100663B4F /* ArchiveListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3002AE12BAA30D100663B4F /* ArchiveListView.swift */; };
 		A3002AE32BAA321800663B4F /* ArchiveListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3002AE12BAA30D100663B4F /* ArchiveListView.swift */; };
 		A31BE2DA2BB8A9DA00022885 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31BE2D92BB8A9DA00022885 /* ErrorView.swift */; };
@@ -317,7 +315,6 @@
 		34D470BA255B249B000302A8 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		34E7DB11250189D400E94352 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		34E7DB1325018A0000E94352 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
-		A3002ADC2BAA296300663B4F /* async-await-migration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "async-await-migration.swift"; sourceTree = "<group>"; };
 		A3002AE12BAA30D100663B4F /* ArchiveListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveListView.swift; sourceTree = "<group>"; };
 		A31BE2D92BB8A9DA00022885 /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		A31BE2DF2BB8AFF000022885 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -629,7 +626,6 @@
 		A3002ADB2BAA295300663B4F /* Other */ = {
 			isa = PBXGroup;
 			children = (
-				A3002ADC2BAA296300663B4F /* async-await-migration.swift */,
 				A3FE9A6B2BA4CF04009F8381 /* BackgroundTaskScheduler.swift */,
 				A3579A4E2BFF5CCA001D921C /* SupportMail.swift */,
 				A3FE9A392BA4CF04009F8381 /* Constants */,
@@ -1121,7 +1117,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1220;
-				LastUpgradeCheck = 1520;
+				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					3489D71A24A3C53E0035E64F = {
 						CreatedOnToolsVersion = 12.0;
@@ -1349,7 +1345,6 @@
 				A3356ED72BA4D318000AA51A /* PDFDocument.swift in Sources */,
 				A3356EEF2BA4D318000AA51A /* StorageError.swift in Sources */,
 				A3579A4F2BFF5CCA001D921C /* SupportMail.swift in Sources */,
-				A3002ADD2BAA296300663B4F /* async-await-migration.swift in Sources */,
 				A3356EEA2BA4D318000AA51A /* DirectoryDeepWatcher.swift in Sources */,
 				A3356F8E2BA4D364000AA51A /* WidthSyncedRow.swift in Sources */,
 				A3356EED2BA4D318000AA51A /* CIImage.swift in Sources */,
@@ -1445,7 +1440,6 @@
 				A3356F022BA4D319000AA51A /* PDFDocument.swift in Sources */,
 				A3356F1A2BA4D319000AA51A /* StorageError.swift in Sources */,
 				A34AF49D2C138C110043D56A /* StorageActor.swift in Sources */,
-				A3002ADE2BAA297900663B4F /* async-await-migration.swift in Sources */,
 				A3356F152BA4D319000AA51A /* DirectoryDeepWatcher.swift in Sources */,
 				A3356FCB2BA4D365000AA51A /* WidthSyncedRow.swift in Sources */,
 				A3356F182BA4D319000AA51A /* CIImage.swift in Sources */,
@@ -1659,6 +1653,21 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_UPCOMING_FEATURE_CONCISE_MAGIC_FILE = YES;
+				SWIFT_UPCOMING_FEATURE_DEPRECATE_APPLICATION_MAIN = YES;
+				SWIFT_UPCOMING_FEATURE_DISABLE_OUTWARD_ACTOR_ISOLATION = YES;
+				SWIFT_UPCOMING_FEATURE_EXISTENTIAL_ANY = YES;
+				SWIFT_UPCOMING_FEATURE_FORWARD_TRAILING_CLOSURES = YES;
+				SWIFT_UPCOMING_FEATURE_GLOBAL_CONCURRENCY = YES;
+				SWIFT_UPCOMING_FEATURE_IMPLICIT_OPEN_EXISTENTIALS = YES;
+				SWIFT_UPCOMING_FEATURE_IMPORT_OBJC_FORWARD_DECLS = YES;
+				SWIFT_UPCOMING_FEATURE_INFER_SENDABLE_FROM_CAPTURES = YES;
+				SWIFT_UPCOMING_FEATURE_INTERNAL_IMPORTS_BY_DEFAULT = YES;
+				SWIFT_UPCOMING_FEATURE_ISOLATED_DEFAULT_VALUES = YES;
+				SWIFT_UPCOMING_FEATURE_REGION_BASED_ISOLATION = YES;
+				SWIFT_VERSION = "";
+				_EXPERIMENTAL_SWIFT_EXPLICIT_MODULES = YES;
 			};
 			name = Debug;
 		};
@@ -1715,13 +1724,27 @@
 				MTL_FAST_MATH = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_UPCOMING_FEATURE_CONCISE_MAGIC_FILE = YES;
+				SWIFT_UPCOMING_FEATURE_DEPRECATE_APPLICATION_MAIN = YES;
+				SWIFT_UPCOMING_FEATURE_DISABLE_OUTWARD_ACTOR_ISOLATION = YES;
+				SWIFT_UPCOMING_FEATURE_EXISTENTIAL_ANY = YES;
+				SWIFT_UPCOMING_FEATURE_FORWARD_TRAILING_CLOSURES = YES;
+				SWIFT_UPCOMING_FEATURE_GLOBAL_CONCURRENCY = YES;
+				SWIFT_UPCOMING_FEATURE_IMPLICIT_OPEN_EXISTENTIALS = YES;
+				SWIFT_UPCOMING_FEATURE_IMPORT_OBJC_FORWARD_DECLS = YES;
+				SWIFT_UPCOMING_FEATURE_INFER_SENDABLE_FROM_CAPTURES = YES;
+				SWIFT_UPCOMING_FEATURE_INTERNAL_IMPORTS_BY_DEFAULT = YES;
+				SWIFT_UPCOMING_FEATURE_ISOLATED_DEFAULT_VALUES = YES;
+				SWIFT_UPCOMING_FEATURE_REGION_BASED_ISOLATION = YES;
+				SWIFT_VERSION = "";
+				_EXPERIMENTAL_SWIFT_EXPLICIT_MODULES = YES;
 			};
 			name = Release;
 		};
 		3489D74624A3C53E0035E64F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = iOS/PDFArchiver.entitlements;
@@ -1749,7 +1772,6 @@
 		3489D74724A3C53E0035E64F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = iOS/PDFArchiver.entitlements;
@@ -1840,7 +1862,6 @@
 		3489D74C24A3C53E0035E64F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				INFOPLIST_FILE = "Tests iOS/Info.plist";
@@ -1862,7 +1883,6 @@
 		3489D74D24A3C53E0035E64F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 87KNVHZ8C7;
 				INFOPLIST_FILE = "Tests iOS/Info.plist";
@@ -1885,7 +1905,6 @@
 		3489D74F24A3C53E0035E64F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = YES;
@@ -1896,7 +1915,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				PRODUCT_BUNDLE_IDENTIFIER = "de.juliankahnert.Tests-macOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -1908,7 +1927,6 @@
 		3489D75024A3C53E0035E64F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = YES;
@@ -1919,7 +1937,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				PRODUCT_BUNDLE_IDENTIFIER = "de.juliankahnert.Tests-macOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
