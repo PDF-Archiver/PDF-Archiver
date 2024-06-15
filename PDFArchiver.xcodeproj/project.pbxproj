@@ -64,7 +64,6 @@
 		A3356EDF2BA4D318000AA51A /* PathManager+PathError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A862BA4CF04009F8381 /* PathManager+PathError.swift */; };
 		A3356EE02BA4D318000AA51A /* DateParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A932BA4CF04009F8381 /* DateParser.swift */; };
 		A3356EE12BA4D318000AA51A /* FolderProviderError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A612BA4CF04009F8381 /* FolderProviderError.swift */; };
-		A3356EE22BA4D318000AA51A /* StorageHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A732BA4CF04009F8381 /* StorageHelper.swift */; };
 		A3356EE42BA4D318000AA51A /* PDFProcessing.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A5B2BA4CF04009F8381 /* PDFProcessing.swift */; };
 		A3356EE52BA4D318000AA51A /* DemoFolderProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A602BA4CF04009F8381 /* DemoFolderProvider.swift */; };
 		A3356EE72BA4D318000AA51A /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A7D2BA4CF04009F8381 /* URL.swift */; };
@@ -72,8 +71,6 @@
 		A3356EEA2BA4D318000AA51A /* DirectoryDeepWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A652BA4CF04009F8381 /* DirectoryDeepWatcher.swift */; };
 		A3356EED2BA4D318000AA51A /* CIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A7C2BA4CF04009F8381 /* CIImage.swift */; };
 		A3356EEE2BA4D318000AA51A /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A912BA4CF04009F8381 /* DateFormatter.swift */; };
-		A3356EEF2BA4D318000AA51A /* StorageError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A742BA4CF04009F8381 /* StorageError.swift */; };
-		A3356EF02BA4D318000AA51A /* BackgroundTaskScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A6B2BA4CF04009F8381 /* BackgroundTaskScheduler.swift */; };
 		A3356EF12BA4D318000AA51A /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A7E2BA4CF04009F8381 /* String.swift */; };
 		A3356EF32BA4D319000AA51A /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A782BA4CF04009F8381 /* Array.swift */; };
 		A3356EF42BA4D319000AA51A /* FileManagerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A7A2BA4CF04009F8381 /* FileManagerExtension.swift */; };
@@ -93,7 +90,6 @@
 		A3356F0A2BA4D319000AA51A /* PathManager+PathError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A862BA4CF04009F8381 /* PathManager+PathError.swift */; };
 		A3356F0B2BA4D319000AA51A /* DateParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A932BA4CF04009F8381 /* DateParser.swift */; };
 		A3356F0C2BA4D319000AA51A /* FolderProviderError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A612BA4CF04009F8381 /* FolderProviderError.swift */; };
-		A3356F0D2BA4D319000AA51A /* StorageHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A732BA4CF04009F8381 /* StorageHelper.swift */; };
 		A3356F0F2BA4D319000AA51A /* PDFProcessing.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A5B2BA4CF04009F8381 /* PDFProcessing.swift */; };
 		A3356F102BA4D319000AA51A /* DemoFolderProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A602BA4CF04009F8381 /* DemoFolderProvider.swift */; };
 		A3356F122BA4D319000AA51A /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A7D2BA4CF04009F8381 /* URL.swift */; };
@@ -101,8 +97,6 @@
 		A3356F152BA4D319000AA51A /* DirectoryDeepWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A652BA4CF04009F8381 /* DirectoryDeepWatcher.swift */; };
 		A3356F182BA4D319000AA51A /* CIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A7C2BA4CF04009F8381 /* CIImage.swift */; };
 		A3356F192BA4D319000AA51A /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A912BA4CF04009F8381 /* DateFormatter.swift */; };
-		A3356F1A2BA4D319000AA51A /* StorageError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A742BA4CF04009F8381 /* StorageError.swift */; };
-		A3356F1B2BA4D319000AA51A /* BackgroundTaskScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A6B2BA4CF04009F8381 /* BackgroundTaskScheduler.swift */; };
 		A3356F1C2BA4D319000AA51A /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A7E2BA4CF04009F8381 /* String.swift */; };
 		A3356F492BA4D32E000AA51A /* Tab.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A472BA4CF04009F8381 /* Tab.swift */; };
 		A3356F4A2BA4D32E000AA51A /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A502BA4CF04009F8381 /* Color.swift */; };
@@ -202,6 +196,10 @@
 		A3579A542BFF6187001D921C /* InAppPurchaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3579A522BFF6187001D921C /* InAppPurchaseView.swift */; };
 		A3579A562BFFD802001D921C /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3579A552BFFD802001D921C /* Subscription.swift */; };
 		A3579A572BFFD802001D921C /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3579A552BFFD802001D921C /* Subscription.swift */; };
+		A37FEB822C1E1642003F7F14 /* BackgroundProcessingActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37FEB812C1E1640003F7F14 /* BackgroundProcessingActor.swift */; };
+		A37FEB832C1E1642003F7F14 /* BackgroundProcessingActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37FEB812C1E1640003F7F14 /* BackgroundProcessingActor.swift */; };
+		A37FEB852C1E3A53003F7F14 /* PlatformImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37FEB842C1E3A4D003F7F14 /* PlatformImage.swift */; };
+		A37FEB862C1E3A53003F7F14 /* PlatformImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37FEB842C1E3A4D003F7F14 /* PlatformImage.swift */; };
 		A39D507D2BFDE4AE0028696A /* Bool.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39D507C2BFDE4AE0028696A /* Bool.swift */; };
 		A39D507E2BFDE4AE0028696A /* Bool.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39D507C2BFDE4AE0028696A /* Bool.swift */; };
 		A3B277292BA4D89C00F6F8D0 /* Parma in Frameworks */ = {isa = PBXBuildFile; productRef = A3B277282BA4D89C00F6F8D0 /* Parma */; };
@@ -326,6 +324,8 @@
 		A3579A522BFF6187001D921C /* InAppPurchaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchaseView.swift; sourceTree = "<group>"; };
 		A3579A552BFFD802001D921C /* Subscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
 		A3579A582BFFD9B6001D921C /* PDFArchiverIAP.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = PDFArchiverIAP.storekit; sourceTree = "<group>"; };
+		A37FEB812C1E1640003F7F14 /* BackgroundProcessingActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundProcessingActor.swift; sourceTree = "<group>"; };
+		A37FEB842C1E3A4D003F7F14 /* PlatformImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformImage.swift; sourceTree = "<group>"; };
 		A39D507C2BFDE4AE0028696A /* Bool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bool.swift; sourceTree = "<group>"; };
 		A3B5D8FA2BB36414002B9FF1 /* SearchToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchToken.swift; sourceTree = "<group>"; };
 		A3B5D9002BB36465002B9FF1 /* Sequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
@@ -359,11 +359,8 @@
 		A3FE9A672BA4CF04009F8381 /* FolderProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderProvider.swift; sourceTree = "<group>"; };
 		A3FE9A692BA4CF04009F8381 /* ICloudFolderProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ICloudFolderProvider.swift; sourceTree = "<group>"; };
 		A3FE9A6A2BA4CF04009F8381 /* NewArchiveStore+Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NewArchiveStore+Error.swift"; sourceTree = "<group>"; };
-		A3FE9A6B2BA4CF04009F8381 /* BackgroundTaskScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTaskScheduler.swift; sourceTree = "<group>"; };
 		A3FE9A6F2BA4CF04009F8381 /* Document+Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Document+Helper.swift"; sourceTree = "<group>"; };
 		A3FE9A712BA4CF04009F8381 /* FileChange+DownloadStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileChange+DownloadStatus.swift"; sourceTree = "<group>"; };
-		A3FE9A732BA4CF04009F8381 /* StorageHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageHelper.swift; sourceTree = "<group>"; };
-		A3FE9A742BA4CF04009F8381 /* StorageError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageError.swift; sourceTree = "<group>"; };
 		A3FE9A762BA4CF04009F8381 /* DocumentProcessingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentProcessingService.swift; sourceTree = "<group>"; };
 		A3FE9A782BA4CF04009F8381 /* Array.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
 		A3FE9A7A2BA4CF04009F8381 /* FileManagerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerExtension.swift; sourceTree = "<group>"; };
@@ -626,7 +623,6 @@
 		A3002ADB2BAA295300663B4F /* Other */ = {
 			isa = PBXGroup;
 			children = (
-				A3FE9A6B2BA4CF04009F8381 /* BackgroundTaskScheduler.swift */,
 				A3579A4E2BFF5CCA001D921C /* SupportMail.swift */,
 				A3FE9A392BA4CF04009F8381 /* Constants */,
 				A3FE9A5A2BA4CF04009F8381 /* DocumentProcessing */,
@@ -751,6 +747,7 @@
 			isa = PBXGroup;
 			children = (
 				A3FE9A592BA4CF04009F8381 /* FeedbackGenerator.swift */,
+				A37FEB842C1E3A4D003F7F14 /* PlatformImage.swift */,
 			);
 			path = PlatformSpecificWrapper;
 			sourceTree = "<group>";
@@ -758,6 +755,7 @@
 		A3FE9A5A2BA4CF04009F8381 /* DocumentProcessing */ = {
 			isa = PBXGroup;
 			children = (
+				A37FEB812C1E1640003F7F14 /* BackgroundProcessingActor.swift */,
 				A3FE9A762BA4CF04009F8381 /* DocumentProcessingService.swift */,
 				A3FE9A5B2BA4CF04009F8381 /* PDFProcessing.swift */,
 				A34AF49B2C138C110043D56A /* StorageActor.swift */,
@@ -768,16 +766,14 @@
 		A3FE9A5E2BA4CF04009F8381 /* FolderAccess */ = {
 			isa = PBXGroup;
 			children = (
-				A3FE9A712BA4CF04009F8381 /* FileChange+DownloadStatus.swift */,
-				A3FE9A732BA4CF04009F8381 /* StorageHelper.swift */,
-				A3FE9A742BA4CF04009F8381 /* StorageError.swift */,
-				A3FE9A852BA4CF04009F8381 /* PathManager */,
-				A3FE9A5F2BA4CF04009F8381 /* demo */,
-				A3FE9A612BA4CF04009F8381 /* FolderProviderError.swift */,
 				A3FE9A622BA4CF04009F8381 /* FileChange.swift */,
-				A3FE9A632BA4CF04009F8381 /* local */,
+				A3FE9A712BA4CF04009F8381 /* FileChange+DownloadStatus.swift */,
 				A3FE9A672BA4CF04009F8381 /* FolderProvider.swift */,
+				A3FE9A612BA4CF04009F8381 /* FolderProviderError.swift */,
+				A3FE9A5F2BA4CF04009F8381 /* demo */,
 				A3FE9A682BA4CF04009F8381 /* iCloud */,
+				A3FE9A632BA4CF04009F8381 /* local */,
+				A3FE9A852BA4CF04009F8381 /* PathManager */,
 			);
 			path = FolderAccess;
 			sourceTree = "<group>";
@@ -1308,6 +1304,7 @@
 				A3356F822BA4D364000AA51A /* OnboardSet.swift in Sources */,
 				A3356F852BA4D364000AA51A /* ArchiveView.swift in Sources */,
 				A3356F872BA4D364000AA51A /* MoreTabViewModel.swift in Sources */,
+				A37FEB832C1E1642003F7F14 /* BackgroundProcessingActor.swift in Sources */,
 				A3356ECF2BA4D318000AA51A /* LocalFolderProvider.swift in Sources */,
 				A3356FAC2BA4D364000AA51A /* MoreTabViewModel+StorageType.swift in Sources */,
 				A3CED6E42BA4E26C00443F77 /* DatabaseConfiguration.swift in Sources */,
@@ -1343,8 +1340,8 @@
 				A3356EE52BA4D318000AA51A /* DemoFolderProvider.swift in Sources */,
 				A3356EC82BA4D318000AA51A /* Array.swift in Sources */,
 				A3356ED72BA4D318000AA51A /* PDFDocument.swift in Sources */,
-				A3356EEF2BA4D318000AA51A /* StorageError.swift in Sources */,
 				A3579A4F2BFF5CCA001D921C /* SupportMail.swift in Sources */,
+				A37FEB862C1E3A53003F7F14 /* PlatformImage.swift in Sources */,
 				A3356EEA2BA4D318000AA51A /* DirectoryDeepWatcher.swift in Sources */,
 				A3356F8E2BA4D364000AA51A /* WidthSyncedRow.swift in Sources */,
 				A3356EED2BA4D318000AA51A /* CIImage.swift in Sources */,
@@ -1355,7 +1352,6 @@
 				A3356F532BA4D32E000AA51A /* NotificationCenter+Error.swift in Sources */,
 				A3356EEE2BA4D318000AA51A /* DateFormatter.swift in Sources */,
 				A31BE2E72BBB43A200022885 /* UntaggedDocumentsList.swift in Sources */,
-				A3356EF02BA4D318000AA51A /* BackgroundTaskScheduler.swift in Sources */,
 				A3356F5A2BA4D32E000AA51A /* FileManager.swift in Sources */,
 				A3356EDF2BA4D318000AA51A /* PathManager+PathError.swift in Sources */,
 				A31BE2DA2BB8A9DA00022885 /* ErrorView.swift in Sources */,
@@ -1382,7 +1378,6 @@
 				A3579A532BFF6187001D921C /* InAppPurchaseView.swift in Sources */,
 				A3356F552BA4D32E000AA51A /* Log.swift in Sources */,
 				A3356FB52BA4D364000AA51A /* ScanTabView.swift in Sources */,
-				A3356EE22BA4D318000AA51A /* StorageHelper.swift in Sources */,
 				A3356F4D2BA4D32E000AA51A /* PlatfromWrapper.swift in Sources */,
 				A3579A562BFFD802001D921C /* Subscription.swift in Sources */,
 				A3356FAE2BA4D364000AA51A /* StatisticsViewModel.swift in Sources */,
@@ -1438,7 +1433,7 @@
 				A3356EF32BA4D319000AA51A /* Array.swift in Sources */,
 				A3579A572BFFD802001D921C /* Subscription.swift in Sources */,
 				A3356F022BA4D319000AA51A /* PDFDocument.swift in Sources */,
-				A3356F1A2BA4D319000AA51A /* StorageError.swift in Sources */,
+				A37FEB852C1E3A53003F7F14 /* PlatformImage.swift in Sources */,
 				A34AF49D2C138C110043D56A /* StorageActor.swift in Sources */,
 				A3356F152BA4D319000AA51A /* DirectoryDeepWatcher.swift in Sources */,
 				A3356FCB2BA4D365000AA51A /* WidthSyncedRow.swift in Sources */,
@@ -1451,11 +1446,11 @@
 				A3356F662BA4D32F000AA51A /* NotificationCenter+Error.swift in Sources */,
 				A34AF49A2C119A060043D56A /* PDFDropHandler.swift in Sources */,
 				A3356F192BA4D319000AA51A /* DateFormatter.swift in Sources */,
-				A3356F1B2BA4D319000AA51A /* BackgroundTaskScheduler.swift in Sources */,
 				A3B5D90B2BB37114002B9FF1 /* PDFArchiverMacApp.swift in Sources */,
 				A3356F6D2BA4D32F000AA51A /* FileManager.swift in Sources */,
 				A3356F0A2BA4D319000AA51A /* PathManager+PathError.swift in Sources */,
 				A3579A502BFF5CCA001D921C /* SupportMail.swift in Sources */,
+				A37FEB822C1E1642003F7F14 /* BackgroundProcessingActor.swift in Sources */,
 				A3356EFD2BA4D319000AA51A /* DocumentProcessingService.swift in Sources */,
 				A3356F132BA4D319000AA51A /* FileChange+DownloadStatus.swift in Sources */,
 				A3D8F93F2BB6007B00BE3E3A /* MacSplitNavigation.swift in Sources */,
@@ -1481,7 +1476,6 @@
 				A3356F682BA4D32F000AA51A /* Log.swift in Sources */,
 				A31BE2DB2BB8A9DA00022885 /* ErrorView.swift in Sources */,
 				A3356FF22BA4D365000AA51A /* ScanTabView.swift in Sources */,
-				A3356F0D2BA4D319000AA51A /* StorageHelper.swift in Sources */,
 				A3356F602BA4D32F000AA51A /* PlatfromWrapper.swift in Sources */,
 				A3356FEB2BA4D365000AA51A /* StatisticsViewModel.swift in Sources */,
 				A3356F5F2BA4D32F000AA51A /* PathConstants.swift in Sources */,

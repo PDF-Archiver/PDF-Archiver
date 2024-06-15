@@ -14,89 +14,81 @@ import OSLog
 
 #if canImport(UIKit)
 import UIKit
-private typealias Image = UIImage
 private typealias Font = UIFont
 private typealias Color = UIColor
 private typealias DrawingOptions = NSStringDrawingOptions
 #else
 import AppKit
-private typealias Image = NSImage
 private typealias Font = NSFont
 private typealias Color = NSColor
 private typealias DrawingOptions = NSString.DrawingOptions
-extension NSImage {
-    var cgImage: CGImage? {
-        cgImage(forProposedRect: nil, context: nil, hints: nil)
-    }
-}
 #endif
 
 enum PDFProcessingError: Error {
     case untaggedDocumentsPathNotFound
-    case pdfNotFound
 }
 
-final class PDFProcessing: Operation {
+final class PDFProcessingOperation: AsyncOperation {
+    private static let log = Logger(subsystem: "processing", category: "pdf-processing-operation")
+    private static let tempDocumentURL = PathConstants.tempDocumentURL
+    private static let confidenceThreshold = Float(0)
 
     private let mode: Mode
     private let destinationFolder: URL
-    private let tempImagePath: URL
-    private let confidenceThreshold = Float(0)
+    private var tempUrls: [URL] = []
+    
 
     private(set) var error: (any Error)?
     private(set) var outputUrl: URL?
-    var documentId: UUID? {
-        if case Mode.images(let documentId) = mode {
-            return documentId
-        } else {
-            return nil
+
+    init(of mode: Mode, destinationFolder: URL) {
+        self.mode = mode
+        self.destinationFolder = destinationFolder
+        
+        
+        Task {
+            await save(mode)
         }
     }
 
-    init(of mode: Mode, destinationFolder: URL, tempImagePath: URL) {
-        self.mode = mode
-        self.destinationFolder = destinationFolder
-        self.tempImagePath = tempImagePath
-    }
-
-    override func main() {
-
+    func process() async {
         do {
-            if isCancelled {
-                return
-            }
+            guard !Task.isCancelled else { return }
             try FileManager.default.createFolderIfNotExists(destinationFolder)
 
             // signal the start of the operation
             let start = Date()
             Logger.documentProcessing.info("Process a document", metadata: ["filename": "\(mode)"])
 
-            let path: URL
+            let document: PDFDocument
             switch mode {
-            case .images(let documentId):
+            case .images(let images):
 
                 // apply OCR and create a PDF
-                try path = createPdf(of: documentId)
-            case .pdf(let inputPath):
+                document = try createPdf(from: images)
+            case .pdf(let inputDocument):
 
                 // just use the input PDF
-                path = inputPath
+                document = inputDocument
             }
 
-            if isCancelled {
-                return
-            }
-
-            guard let document = PDFDocument(url: path) else {
-                throw PDFProcessingError.pdfNotFound
-            }
-
+            guard !Task.isCancelled else { return }
+            
             // generate filename by analysing the image
             let filename = getFilename(from: document)
             let filepath = destinationFolder.appendingPathComponent(filename)
+            document.write(to: filepath)
 
-            try FileManager.default.moveItem(at: path, to: filepath)
             self.outputUrl = filepath
+            
+            // delete original images
+            for tempUrl in tempUrls {
+                do {
+                    try FileManager.default.removeItem(at: tempUrl)
+                } catch {
+                    Self.log.errorAndAssert("Failed to remove temp document", metadata: ["url" : tempUrl.path(), "error": "\(error)"])
+                }
+            }
 
             // log the processing time
             let timeDiff = Date().timeIntervalSinceReferenceDate - start.timeIntervalSinceReferenceDate
@@ -142,36 +134,20 @@ final class PDFProcessing: Operation {
         }
     }
 
-    private func createPdf(of documentId: UUID) throws -> URL {
-        // check if the parent folder exists
-        try FileManager.default.createFolderIfNotExists(tempImagePath)
-
-        // STEP I: get all image urls
-        let allImageUrls = (try? FileManager.default.contentsOfDirectory(at: tempImagePath, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])) ?? []
-
-        // STEP II: filter and sort those urls in a second step to avoid shuffling around pages
-        let sortedDocumentUrls = allImageUrls
-            .filter { $0.lastPathComponent.starts(with: documentId.uuidString) }
-            .sorted { $0.lastPathComponent < $1.lastPathComponent }
-
+    private func createPdf(from images: [Image]) throws -> PDFDocument {
         var textObservations = [TextObservation]()
-        for (imageIndex, imageUrl) in sortedDocumentUrls.enumerated() {
-
-            guard let image = Image(contentsOfFile: imageUrl.path) else {
-                fatalError("Could not find image at \(imageUrl.path)")
-            }
-
-            guard let cgImage = image.cgImage else { fatalError("Could not get the cgImage.") }
+        for (imageIndex, image) in images.enumerated() {
+            guard let cgImage = image.cgImage else { fatalError("Could not get cgImage") }
             let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
             var detectTextRectangleObservations = [VNTextObservation]()
             let textBoxRequests = VNDetectTextRectanglesRequest { (request, error) in
 
                 if let error = error {
-                    Logger.documentProcessing.error("Error in text recognition.", metadata: ["error": "\(error)"])
+                    Logger.documentProcessing.errorAndAssert("Error in text recognition.", metadata: ["error": "\(error)"])
                     return
                 }
 
-                for observation in (request.results as? [VNTextObservation] ?? []) where observation.confidence > self.confidenceThreshold {
+                for observation in (request.results as? [VNTextObservation] ?? []) where observation.confidence > Self.confidenceThreshold {
                     detectTextRectangleObservations.append(observation)
                 }
             }
@@ -184,13 +160,13 @@ final class PDFProcessing: Operation {
 
                 // build and start processing of one observation
                 let textBox = self.transform(observation: observation, in: image.size)
-                if let cgImage = image.cgImage?.cropping(to: textBox) {
+                if let cgImage = cgImage.cropping(to: textBox) {
 
                     // text recognition (OCR)
                     let textRecognitionRequest = VNRecognizeTextRequest { (request, error) in
 
                         if let error = error {
-                            Logger.documentProcessing.error("Error in text recognition.", metadata: ["error": "\(error)"])
+                            Logger.documentProcessing.errorAndAssert("Error in text recognition.", metadata: ["error": "\(error)"])
                             return
                         }
 
@@ -214,10 +190,6 @@ final class PDFProcessing: Operation {
                     let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
                     try? handler.perform([textRecognitionRequest])
                 }
-
-                // update the progress view
-                let progress = Float(Float(imageIndex) + Float(observationIndex) / Float(detectTextRectangleObservations.count)) / Float(sortedDocumentUrls.count)
-                let borderedProgress = min(max(progress, 0), 1)
             }
 
             // append results
@@ -225,18 +197,9 @@ final class PDFProcessing: Operation {
         }
 
         // save the pdf
-        let document = PDFProcessing.renderPdf(from: textObservations)
+        let document = Self.renderPdf(from: textObservations)
 
-        // save document
-        let tempfilepath = URL.temporaryDirectory.appendingPathComponent(documentId.uuidString).appendingPathExtension("pdf")
-        document.write(to: tempfilepath)
-
-        // delete original images
-        for sortedDocumentUrl in sortedDocumentUrls {
-            try? FileManager.default.removeItem(at: sortedDocumentUrl)
-        }
-
-        return tempfilepath
+        return document
     }
 
     private static func renderPdf(from observations: [TextObservation]) -> PDFDocument {
@@ -310,30 +273,48 @@ final class PDFProcessing: Operation {
                       width: observation.boundingBox.applying(transform).width,
                       height: observation.boundingBox.applying(transform).height)
     }
+    
+    @StorageActor
+    private func save(_ mode: Mode) {
+        do {
+            try FileManager.default.createFolderIfNotExists(Self.tempDocumentURL)
+            
+            switch mode {
+            case .pdf(let document):
+                let filename = document.documentURL?.lastPathComponent ?? UUID().uuidString
+                let pdfUrl = Self.tempDocumentURL.appendingPathComponent(filename, isDirectory: false)
+                document.write(to: pdfUrl)
+                tempUrls = [pdfUrl]
+                
+            case .images(let images):
+                var urls: [URL] = []
+                do {
+                    let uuid = UUID()
+                    for (index, image) in images.enumerated() {
+                        let filename = "\(index)---\(uuid.uuidString).jpg"
+                        let imageUrl = Self.tempDocumentURL.appendingPathComponent(filename, isDirectory: false)
+                        
+                        try image.jpg(quality: 1)?.write(to: imageUrl)
+                        urls.append(imageUrl)
+                    }
+                } catch {
+                    for url in urls {
+                        try? FileManager.default.removeItem(at: url)
+                    }
+                    throw error
+                }
+                tempUrls = urls
+            }
+        } catch {
+            Self.log.errorAndAssert("Failed to save document", metadata: ["error" : "\(error)"])
+        }
+    }
 
     // MARK: - Helper Types
 
     enum Mode {
-        case pdf(URL)
-        case images(UUID)
-        
-        var pdfUrl: URL? {
-            switch self {
-            case .pdf(let url):
-                return url
-            case .images(_):
-                return nil
-            }
-        }
-        
-        var imageUUID: UUID? {
-            switch self {
-            case .pdf(_):
-                return nil
-            case .images(let uuid):
-                return uuid
-            }
-        }
+        case pdf(PDFDocument)
+        case images([PlatformImage])
     }
 
     private struct TextObservationResult {

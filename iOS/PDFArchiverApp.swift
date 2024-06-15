@@ -56,14 +56,6 @@ struct PDFArchiverApp: App, Log {
             .onChange(of: scenePhase) { phase in
                 Self.log.info("Scene change: \(phase)")
 
-                #if !APPCLIP && !os(macOS)
-                // schedule a new background task
-                if phase != .active,
-                   mainNavigationViewModel.imageConverter.totalDocumentCount.value > 0 {
-                    BackgroundTaskScheduler.shared.scheduleTask(with: .pdfProcessing)
-                }
-                #endif
-
                 if phase == .active {
                     #if !os(macOS)
                     if let type = shortcutItemToProcess?.type,
@@ -94,9 +86,6 @@ struct PDFArchiverApp: App, Log {
             let appearance = UITabBarAppearance()
             UITabBar.appearance().scrollEdgeAppearance = appearance
         }
-
-        // background tasks must be initialized before the application did finish launching
-        _ = BackgroundTaskScheduler.shared
         #endif
 
         #if !os(macOS) && DEBUG
