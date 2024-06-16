@@ -42,7 +42,11 @@ struct OnboardingScreens: View {
             ForEach(0..<onboardSet.cards.count, id: \.self) { index in
                 Circle()
                     .frame(width: 10)
+                #if os(macOS)
                     .foregroundColor(cardIndex >= index ? Color.paLightGray : Color(.tertiaryLabelColor))
+                #else
+                    .foregroundColor(cardIndex >= index ? Color.paLightGray : Color(.tertiaryLabel))
+                #endif
             }
         }
     }

@@ -77,34 +77,12 @@ final class PDFDropHandler {
     private func handle(image: PlatformImage) {
         Logger.pdfDropHandler.info("Handle Image")
         DocumentProcessingService.shared.handle([image])
-
-        
-//        guard let jpegData = image.jpg(quality: 1),
-//            let ciImage = CIImage(data: jpegData) else {
-//            Logger.pdfDropHandler.errorAndAssert("Failed to get jpeg data")
-//            return
-//        }
-//        
-//        do {
-//            try StorageHelper.save([ciImage])
-//        } catch {
-//            Logger.pdfDropHandler.errorAndAssert("Failed to write jpeg", metadata: ["error": "\(error)"])
-//        }
     }
     
     @StorageActor
     private func handle(pdf: PDFDocument) {
         Logger.pdfDropHandler.info("Handle PDF Document")
         DocumentProcessingService.shared.handle(pdf)
-        
-//        let documentName = pdf.documentURL?.lastPathComponent ?? "PDF-Archiver-\(Date().timeIntervalSinceReferenceDate).pdf"
-//        let pdfDestinationUrl = PathConstants.tempDocumentURL.appendingPathComponent(documentName, isDirectory: false)
-//       
-//        #warning("TODO: do not write the document but call the new actor directly")
-//        let pdfWritten = pdf.write(to: pdfDestinationUrl)
-//        if !pdfWritten {
-//            Logger.pdfDropHandler.errorAndAssert("Failed to write pdf")
-//        }
     }
     
     private func finishDropHandling() async {

@@ -114,7 +114,9 @@ struct UntaggedDocumentView: View {
         var body: some View {
             PDFCustomView(document.url)
                 .navigationTitle(document.specification)
+                #if os(macOS)
                 .navigationSubtitle(Text(document.date, format: .dateTime.year().month().day()))
+                #endif
                 .toolbar {
                     ToolbarItemGroup(placement: .cancellationAction) {
                         revertButton

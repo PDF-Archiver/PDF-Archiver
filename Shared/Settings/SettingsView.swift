@@ -201,7 +201,6 @@ struct SettingsView: View {
         .frame(width: 750, height: 450)
     }
 }
-#endif
 
 #if DEBUG
 struct SettingsPreviewView: View {
@@ -215,4 +214,5 @@ struct SettingsPreviewView: View {
     SettingsPreviewView()
         .modelContainer(previewContainer)
 }
+#endif
 #endif

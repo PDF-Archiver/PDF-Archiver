@@ -170,7 +170,9 @@ struct DocumentInformation: View {
                 TextField(text: $information.specification, prompt: Text("Enter specification")) {
                     Text("Specification")
                 }
+                #if os(macOS)
                 .textFieldStyle(.squareBorder)
+                #endif
             }
             
             Section {
@@ -203,8 +205,9 @@ struct DocumentInformation: View {
                             information.tagSearchterm = ""
                         }
                     }
+                    #if os(macOS)
                     .textFieldStyle(.squareBorder)
-                    #if os(iOS)
+                    #else
                     .keyboardType(.alphabet)
                     #endif
             }

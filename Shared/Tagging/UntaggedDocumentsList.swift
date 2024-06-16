@@ -32,7 +32,9 @@ struct UntaggedDocumentsList: View {
             }
         }
         .listStyle(.plain)
+        #if os(macOS)
         .alternatingRowBackgrounds()
+        #endif
         .onChange(of: selectedDocumentId) { _, currentDocumentId in
             guard currentDocumentId == nil,
                   let firstDocument = untaggedDocuments.first else { return }

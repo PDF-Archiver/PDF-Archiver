@@ -33,7 +33,7 @@ final class DocumentProcessingService {
     
     /// Fetch all documents in folder and test if PDF processing operations should be added.
     func triggerFolderObservation() {
-//        handleFileChanges(at: PathConstants.tempDocumentURL)
+//        handleFileChanges(at: Constants.tempDocumentURL)
     }
     
     func handle(_ images: [PlatformImage]) {

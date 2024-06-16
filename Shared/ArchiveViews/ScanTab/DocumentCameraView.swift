@@ -61,7 +61,7 @@ struct DocumentCameraView: UIViewControllerRepresentable, Log {
             self.isShown.wrappedValue = false
         }
 
-        func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFailWithError error: Error) {
+        func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFailWithError error: any Error) {
             log.error("Scan did fail with error.", metadata: ["error": "\(error)"])
             self.isShown.wrappedValue = false
         }

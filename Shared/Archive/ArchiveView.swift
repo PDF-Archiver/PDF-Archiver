@@ -67,9 +67,9 @@ struct ArchiveView: View {
     }
 }
 
-#if DEBUG
-#Preview {
-    ArchiveView(selectedDocumentId: .constant("debug-document-id"))
-        .modelContainer(previewContainer)
-}
-#endif
+//#if DEBUG
+//#Preview {
+//    ArchiveView(selectedDocumentId: .constant("debug-document-id"))
+//        .modelContainer(previewContainer)
+//}
+//#endif

@@ -71,7 +71,9 @@ final class ShareViewController: UIViewController {
 
     private func handleAttachments() {
         do {
-            let url = PathConstants.tempDocumentURL
+            let url = Constants.tempDocumentURL
+            try FileManager.default.createFolderIfNotExists(url)
+
             let inputItems = (extensionContext?.inputItems as? [NSExtensionItem]) ?? []
             var success = false
 

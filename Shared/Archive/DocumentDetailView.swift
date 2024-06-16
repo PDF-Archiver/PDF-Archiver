@@ -94,7 +94,9 @@ struct DocumentDetailView: View {
     func documentView(for document: Document) -> some View {
         PDFCustomView(document.url)
             .navigationTitle(document.specification)
+            #if os(macOS)
             .navigationSubtitle(Text(document.date, format: .dateTime.year().month().day()))
+            #endif
             .toolbar {
                 ToolbarItemGroup(placement: .primaryAction) {
                     // editButton
@@ -141,10 +143,12 @@ struct DocumentDetailView: View {
                             #endif
                     })
                 }
+                #if os(macOS)
                 ToolbarItem(placement: .accessoryBar(id: "tags")) {
                     TagListView(tags: document.tags.sorted(), isEditable: false, isMultiLine: false, tapHandler: nil)
                         .font(.caption)
                 }
+                #endif
             }
             .confirmationDialog("Do you really want to delete this document?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
                 Button("Delete", role: .destructive) {

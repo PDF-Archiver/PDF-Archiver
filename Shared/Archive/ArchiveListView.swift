@@ -49,7 +49,7 @@ struct ArchiveListView: View {
         _selectedDocumentId = selectedDocumentId
     }
     
-    var filteredDocuments: [Document] {
+    private var filteredDocuments: [Document] {
         documents.filter { document in
             tokens.allSatisfy { token in
                 switch token {
@@ -99,6 +99,7 @@ struct ArchiveListView: View {
                 .frame(maxWidth: .infinity, maxHeight: 65.0)
             }
             
+            #if os(macOS)
             if !(shoudLoadAll || !searchString.isEmpty) {
                 HStack {
                     Spacer()
@@ -110,9 +111,26 @@ struct ArchiveListView: View {
                     Spacer()
                 }
             }
+            #endif
         }
         .listStyle(.plain)
+        #if os(macOS)
         .alternatingRowBackgrounds()
+        #else
+        .toolbar {
+            ToolbarItem(placement: .bottomBar) {
+                Button(action: {
+                    shoudLoadAll.toggle()
+                }, label: {
+                    HStack {
+                        Image(systemName: "arrow.down.circle")
+                        Text("Load remaining documents")
+                    }
+                })
+                .disabled(shoudLoadAll == true)
+            }
+        }
+        #endif
     }
 }
 

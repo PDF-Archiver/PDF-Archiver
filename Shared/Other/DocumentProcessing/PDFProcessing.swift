@@ -30,7 +30,7 @@ enum PDFProcessingError: Error {
 
 final class PDFProcessingOperation: AsyncOperation {
     private static let log = Logger(subsystem: "processing", category: "pdf-processing-operation")
-    private static let tempDocumentURL = PathConstants.tempDocumentURL
+    private static let tempDocumentURL = Constants.tempDocumentURL
     private static let confidenceThreshold = Float(0)
 
     private let mode: Mode

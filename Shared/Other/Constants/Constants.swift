@@ -6,6 +6,8 @@
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
 
+import Foundation
+
 enum Constants {
     static let sharedContainerIdentifier = "group.PDFArchiverShared"
 
@@ -17,4 +19,7 @@ enum Constants {
     static let mailSubject = "PDF Archiver: Support"
     
     static let inAppPurchaseGroupId = "20516661"
+    
+    static let appGroupContainerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: Self.sharedContainerIdentifier)!
+    static let tempDocumentURL = appGroupContainerURL.appendingPathComponent("TempDocuments")
 }
