@@ -8,6 +8,7 @@
 import SwiftUI
 import OSLog
 
+@MainActor
 struct IosSplitNavigation: View {
     @Environment(Subscription.self) var subscription
     

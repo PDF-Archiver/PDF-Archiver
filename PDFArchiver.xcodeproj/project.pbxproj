@@ -203,6 +203,9 @@
 		A37FEB832C1E1642003F7F14 /* BackgroundProcessingActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37FEB812C1E1640003F7F14 /* BackgroundProcessingActor.swift */; };
 		A37FEB852C1E3A53003F7F14 /* PlatformImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37FEB842C1E3A4D003F7F14 /* PlatformImage.swift */; };
 		A37FEB862C1E3A53003F7F14 /* PlatformImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37FEB842C1E3A4D003F7F14 /* PlatformImage.swift */; };
+		A38256C02C1F552C00416A08 /* IosSplitNavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38256BE2C1F552C00416A08 /* IosSplitNavigation.swift */; };
+		A38256C12C1F552C00416A08 /* PDFArchiverIOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38256BF2C1F552C00416A08 /* PDFArchiverIOSApp.swift */; };
+		A38256C22C1F556200416A08 /* DocumentDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3D8F9402BB607B100BE3E3A /* DocumentDetailView.swift */; };
 		A39D507D2BFDE4AE0028696A /* Bool.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39D507C2BFDE4AE0028696A /* Bool.swift */; };
 		A39D507E2BFDE4AE0028696A /* Bool.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39D507C2BFDE4AE0028696A /* Bool.swift */; };
 		A3B277292BA4D89C00F6F8D0 /* Parma in Frameworks */ = {isa = PBXBuildFile; productRef = A3B277282BA4D89C00F6F8D0 /* Parma */; };
@@ -329,6 +332,8 @@
 		A35CBAA32C1F294A00CFBA20 /* FileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileManager.swift; sourceTree = "<group>"; };
 		A37FEB812C1E1640003F7F14 /* BackgroundProcessingActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundProcessingActor.swift; sourceTree = "<group>"; };
 		A37FEB842C1E3A4D003F7F14 /* PlatformImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformImage.swift; sourceTree = "<group>"; };
+		A38256BE2C1F552C00416A08 /* IosSplitNavigation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IosSplitNavigation.swift; sourceTree = "<group>"; };
+		A38256BF2C1F552C00416A08 /* PDFArchiverIOSApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFArchiverIOSApp.swift; sourceTree = "<group>"; };
 		A39D507C2BFDE4AE0028696A /* Bool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bool.swift; sourceTree = "<group>"; };
 		A3B5D8FA2BB36414002B9FF1 /* SearchToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchToken.swift; sourceTree = "<group>"; };
 		A3B5D9002BB36465002B9FF1 /* Sequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
@@ -546,6 +551,8 @@
 		3489D71D24A3C53E0035E64F /* iOS */ = {
 			isa = PBXGroup;
 			children = (
+				A38256BE2C1F552C00416A08 /* IosSplitNavigation.swift */,
+				A38256BF2C1F552C00416A08 /* PDFArchiverIOSApp.swift */,
 				3489D71424A3C53D0035E64F /* PDFArchiverApp.swift */,
 				34A5CF7F24A93A28002409EF /* PDFArchiver.entitlements */,
 				3416B1B324A9282800D5F4E0 /* Info.plist */,
@@ -994,9 +1001,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3489D74524A3C53E0035E64F /* Build configuration list for PBXNativeTarget "iOS" */;
 			buildPhases = (
-				3489D71924A3C53E0035E64F /* Resources */,
 				34A53F7C24AA6381008A3377 /* SwiftLint */,
 				34A53F7E24AA63DC008A3377 /* Settings Bundle Update */,
+				3489D71924A3C53E0035E64F /* Resources */,
 				3489D71724A3C53E0035E64F /* Sources */,
 				3489D71824A3C53E0035E64F /* Frameworks */,
 				34A53F8E24AA653E008A3377 /* Embed Foundation Extensions */,
@@ -1284,7 +1291,7 @@
 		};
 		34A53F7E24AA63DC008A3377 /* Settings Bundle Update */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 8;
+			buildActionMask = 12;
 			files = (
 			);
 			inputFileListPaths = (
@@ -1295,11 +1302,10 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(PROJECT_DIR)/Shared/Resources/Seettings.bundle/Root.plist",
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Update settings.bundle with new license plist files\n# https://github.com/mono0926/LicensePlist\nif which license-plist >/dev/null; then\n    license-plist --suppress-opening-directory --add-version-numbers --force --output-path Shared/Resources/Settings.bundle\nelse\n    echo \"warning: license-plist not installed, download from https://github.com/mono0926/LicensePlist\"\nfi\n\n# Source: https://stackoverflow.com/a/39030153\n/usr/libexec/PlistBuddy -c \"Set PreferenceSpecifiers:0:DefaultValue $MARKETING_VERSION ($CURRENT_PROJECT_VERSION)\" \"$PROJECT_DIR/Shared/Resources/Settings.bundle/Root.plist\"\n";
+			shellScript = "export PATH=\"/opt/homebrew/bin:$HOME/.mint/bin:$PATH\"\n\n# Update settings.bundle with new license plist files\n# https://github.com/mono0926/LicensePlist\nif which license-plist >/dev/null; then\n    license-plist --suppress-opening-directory --add-version-numbers --force --output-path Shared/Resources/Settings.bundle\nelse\n    echo \"warning: license-plist not installed, download from https://github.com/mono0926/LicensePlist\"\nfi\n\n# Source: https://stackoverflow.com/a/39030153\n/usr/libexec/PlistBuddy -c \"Set PreferenceSpecifiers:0:DefaultValue $MARKETING_VERSION ($CURRENT_PROJECT_VERSION)\" \"$PROJECT_DIR/Shared/Resources/Settings.bundle/Root.plist\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1310,6 +1316,7 @@
 			files = (
 				A3356EC92BA4D318000AA51A /* FileManagerExtension.swift in Sources */,
 				A3356F822BA4D364000AA51A /* OnboardSet.swift in Sources */,
+				A38256C02C1F552C00416A08 /* IosSplitNavigation.swift in Sources */,
 				A3356F852BA4D364000AA51A /* ArchiveView.swift in Sources */,
 				A3356F872BA4D364000AA51A /* MoreTabViewModel.swift in Sources */,
 				A37FEB832C1E1642003F7F14 /* BackgroundProcessingActor.swift in Sources */,
@@ -1332,12 +1339,14 @@
 				A3356ED82BA4D318000AA51A /* FeedbackGenerator.swift in Sources */,
 				A3356FA92BA4D364000AA51A /* MainNavigationViewModel.swift in Sources */,
 				A3356F982BA4D364000AA51A /* MoreTabView.swift in Sources */,
+				A38256C12C1F552C00416A08 /* PDFArchiverIOSApp.swift in Sources */,
 				A3356ECB2BA4D318000AA51A /* UserNotification.swift in Sources */,
 				A3356F5B2BA4D32E000AA51A /* Alert.swift in Sources */,
 				A3B5D9012BB36465002B9FF1 /* Sequence.swift in Sources */,
 				A3356FA72BA4D364000AA51A /* ExpertSettingsView.swift in Sources */,
 				A3356EE72BA4D318000AA51A /* URL.swift in Sources */,
 				A3356FB62BA4D364000AA51A /* PDFCustomView.swift in Sources */,
+				A38256C22C1F556200416A08 /* DocumentDetailView.swift in Sources */,
 				A3356EE12BA4D318000AA51A /* FolderProviderError.swift in Sources */,
 				A3356F522BA4D32E000AA51A /* CaseIterable.swift in Sources */,
 				A3356F932BA4D364000AA51A /* WrappingHStack.swift in Sources */,
@@ -1634,7 +1643,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -1697,7 +1706,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

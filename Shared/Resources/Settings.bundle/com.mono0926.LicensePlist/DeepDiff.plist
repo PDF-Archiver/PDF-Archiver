@@ -29,6 +29,8 @@
 &gt; TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 &gt; SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 </string>
+			<key>License</key>
+			<string>unknown</string>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 		</dict>
