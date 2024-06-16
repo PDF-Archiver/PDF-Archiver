@@ -9,8 +9,10 @@
 import PDFKit
 import UIKit
 import UniformTypeIdentifiers
+import OSLog
 
 final class ShareViewController: UIViewController {
+    private static let log = Logger(subsystem: "PDFArchiverShareExtension", category: "ShareViewController")
 
     fileprivate enum ShareError: Error {
         case containerNotFound
@@ -51,7 +53,7 @@ final class ShareViewController: UIViewController {
 
     // MARK: - Helper Functions
 
-    private func complete(with error: Error? = nil) {
+    private func complete(with error: (any Error)? = nil) {
         DispatchQueue.main.asyncAfter(deadline: minTimeDeadline ?? .now()) { [weak self] in
 
             if error != nil {
@@ -87,7 +89,7 @@ final class ShareViewController: UIViewController {
                 }
             }
 
-            var error: Error?
+            var error: (any Error)?
             if !success {
                 error = ShareError.invalidData
             }

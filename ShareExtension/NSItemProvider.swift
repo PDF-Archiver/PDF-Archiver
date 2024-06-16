@@ -22,7 +22,7 @@ extension NSItemProvider {
     }
 
     func saveData(at url: URL, with validUTIs: [UTType]) throws -> Bool {
-        var error: Error?
+        var error: (any Error)?
         var data: Data?
 
         for uti in validUTIs where hasItemConformingToTypeIdentifier(uti.identifier) {
@@ -55,7 +55,7 @@ extension NSItemProvider {
 
     func syncLoadItem(forTypeIdentifier uti: UTType) throws -> Data? {
         var data: Data?
-        var error: Error?
+        var error: (any Error)?
         let semaphore = DispatchSemaphore(value: 0)
         self.loadItem(forTypeIdentifier: uti.identifier, options: nil) { rawData, rawError in
             defer {
