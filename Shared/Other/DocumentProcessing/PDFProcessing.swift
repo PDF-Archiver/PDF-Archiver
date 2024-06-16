@@ -7,7 +7,6 @@
 //
 // swiftlint:disable cyclomatic_complexity function_body_length
 
-import GraphicsRenderer
 import PDFKit
 import Vision
 import OSLog
@@ -134,7 +133,7 @@ final class PDFProcessingOperation: AsyncOperation {
         }
     }
 
-    private func createPdf(from images: [Image]) throws -> PDFDocument {
+    private func createPdf(from images: [PlatformImage]) throws -> PDFDocument {
         var textObservations = [TextObservation]()
         for (imageIndex, image) in images.enumerated() {
             guard let cgImage = image.cgImage else { fatalError("Could not get cgImage") }
@@ -326,7 +325,7 @@ final class PDFProcessingOperation: AsyncOperation {
     }
 
     private struct TextObservation {
-        let image: Image
+        let image: PlatformImage
         let results: [TextObservationResult]
     }
 

@@ -6,7 +6,6 @@
 //
 // swiftlint:disable identifier_name force_unwrapping
 
-import GraphicsRenderer
 import PDFKit
 import XCTest
 

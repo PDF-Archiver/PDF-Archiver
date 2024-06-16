@@ -197,7 +197,6 @@
 		A35CBAA22C1F28E900CFBA20 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A3A2BA4CF04009F8381 /* Constants.swift */; };
 		A35CBAA42C1F294A00CFBA20 /* FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35CBAA32C1F294A00CFBA20 /* FileManager.swift */; };
 		A35CBAA62C1F2A2600CFBA20 /* DeepDiff in Frameworks */ = {isa = PBXBuildFile; productRef = A35CBAA52C1F2A2600CFBA20 /* DeepDiff */; };
-		A35CBAA82C1F2A2600CFBA20 /* GraphicsRenderer in Frameworks */ = {isa = PBXBuildFile; productRef = A35CBAA72C1F2A2600CFBA20 /* GraphicsRenderer */; };
 		A35CBAAA2C1F2A2600CFBA20 /* Parma in Frameworks */ = {isa = PBXBuildFile; productRef = A35CBAA92C1F2A2600CFBA20 /* Parma */; };
 		A37FEB822C1E1642003F7F14 /* BackgroundProcessingActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37FEB812C1E1640003F7F14 /* BackgroundProcessingActor.swift */; };
 		A37FEB832C1E1642003F7F14 /* BackgroundProcessingActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37FEB812C1E1640003F7F14 /* BackgroundProcessingActor.swift */; };
@@ -216,7 +215,6 @@
 		A3B5D9022BB36465002B9FF1 /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B5D9002BB36465002B9FF1 /* Sequence.swift */; };
 		A3B5D90B2BB37114002B9FF1 /* PDFArchiverMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B5D9052BB36E9A002B9FF1 /* PDFArchiverMacApp.swift */; };
 		A3BF93712BA4D686002411DB /* DeepDiff in Frameworks */ = {isa = PBXBuildFile; productRef = A3BF93702BA4D686002411DB /* DeepDiff */; };
-		A3BF93742BA4D6E9002411DB /* GraphicsRenderer in Frameworks */ = {isa = PBXBuildFile; productRef = A3BF93732BA4D6E9002411DB /* GraphicsRenderer */; };
 		A3CED6E42BA4E26C00443F77 /* DatabaseConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CED6E32BA4E26C00443F77 /* DatabaseConfiguration.swift */; };
 		A3CED6E52BA4E26C00443F77 /* DatabaseConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CED6E32BA4E26C00443F77 /* DatabaseConfiguration.swift */; };
 		A3D5A4932BBDDC8D0089B016 /* DocumentInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3D5A4922BBDDC8D0089B016 /* DocumentInformation.swift */; };
@@ -443,7 +441,6 @@
 				34A5CF8224A93A3C002409EF /* StoreKit.framework in Frameworks */,
 				A35CBAA62C1F2A2600CFBA20 /* DeepDiff in Frameworks */,
 				A35CBAAA2C1F2A2600CFBA20 /* Parma in Frameworks */,
-				A35CBAA82C1F2A2600CFBA20 /* GraphicsRenderer in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -453,7 +450,6 @@
 			files = (
 				A3BF93712BA4D686002411DB /* DeepDiff in Frameworks */,
 				34D470BB255B249B000302A8 /* StoreKit.framework in Frameworks */,
-				A3BF93742BA4D6E9002411DB /* GraphicsRenderer in Frameworks */,
 				A3B277292BA4D89C00F6F8D0 /* Parma in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1017,7 +1013,6 @@
 			name = iOS;
 			packageProductDependencies = (
 				A35CBAA52C1F2A2600CFBA20 /* DeepDiff */,
-				A35CBAA72C1F2A2600CFBA20 /* GraphicsRenderer */,
 				A35CBAA92C1F2A2600CFBA20 /* Parma */,
 			);
 			productName = iOS;
@@ -1040,7 +1035,6 @@
 			name = macOS;
 			packageProductDependencies = (
 				A3BF93702BA4D686002411DB /* DeepDiff */,
-				A3BF93732BA4D6E9002411DB /* GraphicsRenderer */,
 				A3B277282BA4D89C00F6F8D0 /* Parma */,
 			);
 			productName = macOS;
@@ -1166,7 +1160,6 @@
 			mainGroup = 3489D70E24A3C53D0035E64F;
 			packageReferences = (
 				A3BF936F2BA4D686002411DB /* XCRemoteSwiftPackageReference "DeepDiff" */,
-				A3BF93722BA4D6E9002411DB /* XCRemoteSwiftPackageReference "GraphicsRenderer" */,
 				A3B277272BA4D89C00F6F8D0 /* XCRemoteSwiftPackageReference "Parma" */,
 			);
 			productRefGroup = 3489D71C24A3C53E0035E64F /* Products */;
@@ -2109,14 +2102,6 @@
 				minimumVersion = 2.3.3;
 			};
 		};
-		A3BF93722BA4D6E9002411DB /* XCRemoteSwiftPackageReference "GraphicsRenderer" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/shaps80/GraphicsRenderer";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.4.4;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -2124,11 +2109,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A3BF936F2BA4D686002411DB /* XCRemoteSwiftPackageReference "DeepDiff" */;
 			productName = DeepDiff;
-		};
-		A35CBAA72C1F2A2600CFBA20 /* GraphicsRenderer */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = A3BF93722BA4D6E9002411DB /* XCRemoteSwiftPackageReference "GraphicsRenderer" */;
-			productName = GraphicsRenderer;
 		};
 		A35CBAA92C1F2A2600CFBA20 /* Parma */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -2144,11 +2124,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A3BF936F2BA4D686002411DB /* XCRemoteSwiftPackageReference "DeepDiff" */;
 			productName = DeepDiff;
-		};
-		A3BF93732BA4D6E9002411DB /* GraphicsRenderer */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = A3BF93722BA4D6E9002411DB /* XCRemoteSwiftPackageReference "GraphicsRenderer" */;
-			productName = GraphicsRenderer;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
