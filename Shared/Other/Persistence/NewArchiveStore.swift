@@ -22,7 +22,7 @@ actor NewArchiveStore: ModelActor {
         }
     }()
     #else
-    private static let availableProvider = [ICloudFolderProvider.self, LocalFolderProvider.self]
+    private static let availableProvider: [any FolderProvider.Type] = [ICloudFolderProvider.self, LocalFolderProvider.self]
     #endif
 
     // https://useyourloaf.com/blog/swiftdata-background-tasks/
