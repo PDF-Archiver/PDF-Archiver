@@ -32,6 +32,7 @@ enum SubscriptionStatus: String {
     case loading, active, inactive
 }
 
+@MainActor
 private struct IAPTaskModifier: ViewModifier {
     @Environment(\.modelContext) private var modelContext
     @Environment(Subscription.self) var subscription
@@ -133,6 +134,8 @@ private struct IAPTaskModifier: ViewModifier {
 }
 
 extension View {
+    #warning("TODO: remove all @MainActor annotation on views etc. in iOS 18")
+    @MainActor
     func inAppPurchasesSetup() -> some View {
         modifier(IAPTaskModifier())
     }

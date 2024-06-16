@@ -203,6 +203,7 @@ struct SettingsView: View {
 }
 
 #if DEBUG
+@MainActor
 struct SettingsPreviewView: View {
     @State var viewModel = MoreTabViewModel()
     var body: some View {
