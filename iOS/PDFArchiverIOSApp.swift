@@ -20,7 +20,7 @@ struct PDFArchiverIOSApp: App, Log {
                 .inAppPurchasesSetup()
                 .task(initializePdfArchiver)
         }
-        .modelContainer(previewContainer)
+        .modelContainer(container)
         .environment(subscription)
     }
 }
