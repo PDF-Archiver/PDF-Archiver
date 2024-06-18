@@ -67,28 +67,23 @@ struct ArchiveListView: View {
     var body: some View {
         List(selection: $selectedDocumentId) {
             ForEach(filteredDocuments) { document in
-                VStack(alignment: .leading, spacing: 4.0) {
-                    Text(document.specification)
-                        .font(.headline)
-                    Text(document.date, format: .dateTime.year().month().day())
-                        .font(.subheadline)
-                        .foregroundStyle(.gray)
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(document.specification)
+                                .font(.headline)
+                            Text(document.date, format: .dateTime.year().month().day())
+                                .font(.subheadline)
+                                .foregroundStyle(.gray)
+                        }
+                        Spacer()
+                        Image(systemName: "icloud.and.arrow.down")
+                            .foregroundStyle(.gray)
+                            .opacity(document.downloadStatus == 0 ? 1 : 0)
+                    }
 
                     TagListView(tags: document.tags.sorted(), isEditable: false, isMultiLine: false, tapHandler: nil)
                         .font(.caption)
-                    //                    HStack {
-                    //                        if showTagStatus {
-                    //                            Text(viewModel.taggingStatus == .tagged ? "✅" : " ")
-                    //                        }
-                    //                        titleSubtitle
-                    //                            .layoutPriority(2)
-                    //                        Spacer()
-                    //                        status
-                    //                            .fixedSize()
-                    //                            .layoutPriority(1)
-                    //                            .opacity((!showTagStatus && viewModel.downloadStatus.isRemote) ? 1 : 0)
-                    //                    }
-                    //                    .layoutPriority(1)
 
                     ProgressView(value: document.downloadStatus, total: 1)
                         .progressViewStyle(.linear)
@@ -99,7 +94,6 @@ struct ArchiveListView: View {
                 .frame(maxWidth: .infinity, maxHeight: 65.0)
             }
 
-            #if os(macOS)
             if !(shoudLoadAll || !searchString.isEmpty) {
                 HStack {
                     Spacer()
@@ -108,28 +102,14 @@ struct ArchiveListView: View {
                     }, label: {
                         Label("Load remaining documents", systemImage: "arrow.down.circle")
                     })
+                    .padding(6)
                     Spacer()
                 }
             }
-            #endif
         }
         .listStyle(.plain)
         #if os(macOS)
         .alternatingRowBackgrounds()
-        #else
-        .toolbar {
-            ToolbarItem(placement: .bottomBar) {
-                Button(action: {
-                    shoudLoadAll.toggle()
-                }, label: {
-                    HStack {
-                        Image(systemName: "arrow.down.circle")
-                        Text("Load remaining documents")
-                    }
-                })
-                .disabled(shoudLoadAll == true)
-            }
-        }
         #endif
     }
 }

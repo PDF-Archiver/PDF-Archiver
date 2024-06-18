@@ -11,7 +11,6 @@ import SwiftUI
 @main
 struct PDFArchiverIOSApp: App, Log {
 
-//    @StateObject private var moreViewModel = MoreTabViewModel()
     @State private var subscription = Subscription()
 
     var body: some Scene {

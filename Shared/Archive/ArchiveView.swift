@@ -25,8 +25,8 @@ struct ArchiveView: View {
     @State private var shoudLoadAll = false
 
     var body: some View {
-        ArchiveListView(selectedDocumentId: $selectedDocumentId, searchString: searchText, tokens: tokens, shoudLoadAll: $shoudLoadAll)
-            .searchable(text: $searchText, tokens: $tokens, suggestedTokens: $suggestedTokens, placement: .toolbar, prompt: "Search in documents", token: { token in
+        content
+            .searchable(text: $searchText, tokens: $tokens, suggestedTokens: $suggestedTokens, placement: .toolbar, prompt: "Search your documents", token: { token in
                 switch token {
                 case .term(let term):
                     Label("\(term)", systemImage: "text.magnifyingglass")
@@ -41,6 +41,16 @@ struct ArchiveView: View {
                     await updateSuggestedTokens(from: newDocuments)
                 }
             }
+            .navigationTitle("Archive")
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        if documents.isEmpty {
+            ContentUnavailableView("Empty Archive", systemImage: "archivebox", description: Text("Start scanning and tagging your first document."))
+        } else {
+            ArchiveListView(selectedDocumentId: $selectedDocumentId, searchString: searchText, tokens: tokens, shoudLoadAll: $shoudLoadAll)
+        }
     }
 
     private func updateSuggestedTokens(from documents: [Document]) async {
@@ -67,9 +77,11 @@ struct ArchiveView: View {
     }
 }
 
-// #if DEBUG
-// #Preview {
-//    ArchiveView(selectedDocumentId: .constant("debug-document-id"))
-//        .modelContainer(previewContainer)
-// }
-// #endif
+ #if DEBUG
+ #Preview {
+     NavigationStack {
+         ArchiveView(selectedDocumentId: .constant("debug-document-id"))
+     }
+     .modelContainer(previewContainer)
+ }
+ #endif
