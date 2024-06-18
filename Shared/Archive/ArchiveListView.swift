@@ -35,7 +35,7 @@ struct ArchiveListView: View {
                 return document.isTagged
             }
         }
-        
+
         if searchString.isEmpty {
             self.tokens = tokens
         } else {
@@ -48,7 +48,7 @@ struct ArchiveListView: View {
         _documents = Query(descriptor)
         _selectedDocumentId = selectedDocumentId
     }
-    
+
     private var filteredDocuments: [Document] {
         documents.filter { document in
             tokens.allSatisfy { token in
@@ -63,7 +63,7 @@ struct ArchiveListView: View {
             }
         }
     }
-    
+
     var body: some View {
         List(selection: $selectedDocumentId) {
             ForEach(filteredDocuments) { document in
@@ -73,7 +73,7 @@ struct ArchiveListView: View {
                     Text(document.date, format: .dateTime.year().month().day())
                         .font(.subheadline)
                         .foregroundStyle(.gray)
-                    
+
                     TagListView(tags: document.tags.sorted(), isEditable: false, isMultiLine: false, tapHandler: nil)
                         .font(.caption)
                     //                    HStack {
@@ -89,7 +89,7 @@ struct ArchiveListView: View {
                     //                            .opacity((!showTagStatus && viewModel.downloadStatus.isRemote) ? 1 : 0)
                     //                    }
                     //                    .layoutPriority(1)
-                    
+
                     ProgressView(value: document.downloadStatus, total: 1)
                         .progressViewStyle(.linear)
                         .foregroundColor(.paDarkGray)
@@ -98,7 +98,7 @@ struct ArchiveListView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: 65.0)
             }
-            
+
             #if os(macOS)
             if !(shoudLoadAll || !searchString.isEmpty) {
                 HStack {

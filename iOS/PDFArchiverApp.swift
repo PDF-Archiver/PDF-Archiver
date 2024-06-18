@@ -5,12 +5,12 @@
 ////  Created by Julian Kahnert on 24.06.20.
 ////
 //
-//#if !os(macOS)
-//import Foundation
-//import SwiftUI
+// #if !os(macOS)
+// import Foundation
+// import SwiftUI
 //
-//@main
-//struct PDFArchiverApp: App, Log {
+// @main
+// struct PDFArchiverApp: App, Log {
 //
 //    // swiftlint:disable weak_delegate
 //    #if os(macOS)
@@ -98,19 +98,19 @@
 //        }
 //        #endif
 //    }
-//}
+// }
 //
-//#if os(macOS)
-//final class AppDelegate: NSObject, NSApplicationDelegate {
+// #if os(macOS)
+// final class AppDelegate: NSObject, NSApplicationDelegate {
 //    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
 //        // the app was rejected by apple because a user could not open the app again after closing the main window
 //        true
 //    }
-//}
-//#else
-//var shortcutItemToProcess: UIApplicationShortcutItem?
+// }
+// #else
+// var shortcutItemToProcess: UIApplicationShortcutItem?
 //
-//enum ShortCutItemType: String, CaseIterable {
+// enum ShortCutItemType: String, CaseIterable {
 //    case scan, scanAndShare
 //
 //    var item: UIApplicationShortcutItem {
@@ -127,9 +127,9 @@
 //                                             icon: UIApplicationShortcutIcon(type: .share))
 //        }
 //    }
-//}
+// }
 //
-//final class AppDelegate: NSObject, UIApplicationDelegate {
+// final class AppDelegate: NSObject, UIApplicationDelegate {
 //    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
 //         if let shortcutItem = options.shortcutItem {
 //             shortcutItemToProcess = shortcutItem
@@ -139,12 +139,12 @@
 //         sceneConfiguration.delegateClass = CustomSceneDelegate.self
 //         return sceneConfiguration
 //     }
-//}
+// }
 //
-//final class CustomSceneDelegate: UIResponder, UIWindowSceneDelegate {
+// final class CustomSceneDelegate: UIResponder, UIWindowSceneDelegate {
 //    func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
 //        shortcutItemToProcess = shortcutItem
 //    }
-//}
-//#endif
-//#endif
+// }
+// #endif
+// #endif

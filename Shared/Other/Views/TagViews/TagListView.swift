@@ -15,7 +15,7 @@ struct TagListView: View {
     let isSuggestion: Bool
     let isMultiLine: Bool
     let tapHandler: ((String) -> Void)?
-    
+
     init(tags: [String], isEditable: Bool, isSuggestion: Bool = false, isMultiLine: Bool, tapHandler: ((String) -> Void)? = nil) {
         self.tags = tags
         self.isEditable = isEditable

@@ -17,7 +17,7 @@ final class DocumentProcessingService {
 
     static let shared = DocumentProcessingService()
     private let backgroundProcessing = BackgroundProcessingActor<PDFProcessingOperation>()
-    
+
     @MainActor
     private(set) var documentProgress: Float = 0
     @MainActor
@@ -30,12 +30,12 @@ final class DocumentProcessingService {
     private init() {
         triggerFolderObservation()
     }
-    
+
     /// Fetch all documents in folder and test if PDF processing operations should be added.
     func triggerFolderObservation() {
 //        handleFileChanges(at: Constants.tempDocumentURL)
     }
-    
+
     func handle(_ images: [PlatformImage]) {
         guard let destinationFolder = getDocumentDestination() else {
             Logger.documentProcessing.errorAndAssert("Failed to get document")
@@ -44,7 +44,7 @@ final class DocumentProcessingService {
         let operation = PDFProcessingOperation(of: .images(images), destinationFolder: destinationFolder)
         backgroundProcessing.queue(operation)
     }
-    
+
     func handle(_ document: PDFDocument) {
         guard let destinationFolder = getDocumentDestination() else {
             Logger.documentProcessing.errorAndAssert("Failed to get document")
@@ -76,7 +76,7 @@ final class DocumentProcessingService {
 //            self.progressLabel = NSLocalizedString("ScanViewController.processing", comment: "") + "0%"
 //        }
     }
-    
+
 //    private func removeFromOperations(_ mode: PDFProcessing.Mode) {
 //        operations.removeAll(where: { ($0.imageUUID != nil && $0.imageUUID == mode.imageUUID) || ($0.pdfUrl != nil && $0.pdfUrl == mode.pdfUrl) })
 //    }

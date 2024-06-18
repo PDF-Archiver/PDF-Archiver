@@ -6,10 +6,10 @@
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
 
-//import SwiftUI
+// import SwiftUI
 //
-//#if !os(macOS)
-//struct MoreTabView: View {
+// #if !os(macOS)
+// struct MoreTabView: View {
 //    private static let appId = 1433801905
 //
 //    @ObservedObject var viewModel: MoreTabViewModel
@@ -103,11 +103,11 @@
 //            }
 //        }
 //    }
-//}
-//#endif
+// }
+// #endif
 //
-//#if DEBUG && !os(macOS)
-//struct MoreTabView_Previews: PreviewProvider {
+// #if DEBUG && !os(macOS)
+// struct MoreTabView_Previews: PreviewProvider {
 //    @State static var viewModel = MoreTabViewModel.previewViewModel
 //    static var previews: some View {
 //        Group {
@@ -116,5 +116,5 @@
 //                .padding()
 //        }
 //    }
-//}
-//#endif
+// }
+// #endif

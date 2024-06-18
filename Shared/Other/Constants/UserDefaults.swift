@@ -79,10 +79,10 @@ extension UserDefaults: Log {
         }
     }
 
-    static var lastSelectedTab: Tab {
+    static var lastSelectedTab: TabType {
         get {
             guard let name = appGroup.string(forKey: Names.lastSelectedTabName.rawValue),
-                let tab = Tab(rawValue: name) else { return .scan }
+                let tab = TabType(rawValue: name) else { return .scan }
             return tab
         }
         set {

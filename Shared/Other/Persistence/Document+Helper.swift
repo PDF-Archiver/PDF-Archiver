@@ -76,7 +76,7 @@ extension Document {
             // parse the tags of a document
             tagNames = raw.components(separatedBy: "_")
         }
-        
+
         if let foundSpecification = specification,
            foundSpecification.lowercased().starts(with: Constants.documentDescriptionPlaceholder.lowercased()) {
             specification = nil

@@ -23,7 +23,7 @@ struct UntaggedDocumentsList: View {
         self._untaggedDocuments = Query(descriptor)
         self._selectedDocumentId = selectedDocumentId
     }
-    
+
     var body: some View {
         List(selection: $selectedDocumentId) {
             ForEach(untaggedDocuments) { document in
@@ -38,7 +38,7 @@ struct UntaggedDocumentsList: View {
         .onChange(of: selectedDocumentId) { _, currentDocumentId in
             guard currentDocumentId == nil,
                   let firstDocument = untaggedDocuments.first else { return }
-            
+
             selectedDocumentId = firstDocument.id
         }
     }

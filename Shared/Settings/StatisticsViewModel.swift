@@ -26,7 +26,7 @@ class StatisticsViewModel {
         documents.filter(\.isTagged.flipped)
             .count
     }
-    
+
     func updateData(with documents: [Document]) {
         self.isLoading = true
         self.documents = documents
@@ -42,7 +42,7 @@ class StatisticsViewModel {
             .sorted { $0.value > $1.value }
             .prefix(3)
         self.topTags = Array(tmpTopTags)
-        
+
         let tmpTopYears = taggedDocuments
             .map(\.url)
             .map { $0.deletingLastPathComponent().lastPathComponent }

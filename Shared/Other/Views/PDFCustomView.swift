@@ -18,7 +18,7 @@ struct PDFCustomView: NSViewRepresentable {
     init(_ pdfDocument: PDFDocument?) {
         self.pdfDocument = pdfDocument
     }
-    
+
     init(_ url: URL) {
         self.pdfDocument = PDFDocument(url: url)
     }
@@ -54,7 +54,7 @@ struct PDFCustomView: UIViewRepresentable {
     init(_ pdfDocument: PDFDocument?) {
         self.pdfDocument = pdfDocument
     }
-    
+
     init(_ url: URL) {
         self.pdfDocument = PDFDocument(url: url)
     }

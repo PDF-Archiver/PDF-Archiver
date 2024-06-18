@@ -1,5 +1,5 @@
 //
-//  Tab.swift
+//  TabType.swift
 //  PDFArchiver
 //
 //  Created by Julian Kahnert on 28.08.20.
@@ -8,7 +8,7 @@
 import Combine
 import SwiftUI
 
-enum Tab: String, CaseIterable, Identifiable, Hashable, Equatable {
+enum TabType: String, CaseIterable, Identifiable, Hashable, Equatable {
     case scan, tag, archive
     #if !os(macOS)
     case more

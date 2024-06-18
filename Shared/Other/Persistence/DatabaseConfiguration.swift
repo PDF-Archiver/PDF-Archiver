@@ -12,12 +12,11 @@ let container = {
     createContainer(isStoredInMemoryOnly: true)
 }()
 
-
 #if DEBUG
 @MainActor
 func createMockData(in modelContext: ModelContext) {
     let examplePdfUrl = Bundle.main.resourceURL!.appendingPathComponent("example-bill.pdf", conformingTo: .pdf)
-    
+
     modelContext.insert(Document(id: "debug-document-id", url: examplePdfUrl, isTagged: true, filename: "test", date: Date(), specification: "macbook pro", tags: ["bill", "longterm"], downloadStatus: 0))
     modelContext.insert(Document(id: "error", url: URL(filePath: "/tmp/invalid-path.pdf"), isTagged: true, filename: "test", date: Date(), specification: "tv board", tags: ["bill", "home", "ikea"], downloadStatus: 0.25))
     modelContext.insert(Document(id: UUID().uuidString, url: URL(filePath: ""), isTagged: true, filename: "test", date: Date(), specification: "large picture", tags: ["bill", "ikea"], downloadStatus: 0.5))

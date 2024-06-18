@@ -17,43 +17,43 @@ class DocumentInformationViewModel {
     var date = Date()
     var specification = ""
     private(set) var tags: [String] = []
-    
+
     var tagSearchterm = ""
     var tagSuggestions: [String] = []
     var dateSuggestions: [Date] = []
-    
+
     init(url: URL, onSave handler: @escaping () -> Void) {
         self.url = url
         self.onSave = handler
     }
-    
+
     func add(tag name: String) {
         var uniqueTags = Set(tags)
         uniqueTags.insert(name.lowercased())
         tags = uniqueTags.sorted()
-        
+
         tagSuggestions = tagSuggestions.filter { $0 != name }
-        
+
         // remove current tagSearchteam - this will also trigger the new analyses of the tags
         tagSearchterm = ""
     }
-    
+
     func remove(tag name: String) {
         tags = tags.filter { $0 != name.lowercased() }
-        
+
         var newTags = Set(tagSuggestions)
         newTags.insert(name)
         tagSuggestions = newTags.sorted()
     }
-    
+
     func analyseDocument() async {
         // analyse document content and fill suggestions
         let parserOutput = Document.parseFilename(url.lastPathComponent)
-        
+
         var foundDate = parserOutput.date
         let foundTags = (parserOutput.tagNames ?? []).isEmpty ? nil : parserOutput.tagNames
         let foundSpecification = parserOutput.specification
-        
+
         if foundDate == nil || foundTags == nil,
            let pdfDocument = PDFDocument(url: url) {
             // get the pdf content of first 3 pages
@@ -61,10 +61,10 @@ class DocumentInformationViewModel {
             for index in 0 ..< min(pdfDocument.pageCount, 3) {
                 guard let page = pdfDocument.page(at: index),
                       let pageContent = page.string else { return }
-                
+
                 text += pageContent
             }
-            
+
             if foundDate == nil {
                 foundDate = DateParser.parse(text)?.date
             }
@@ -72,15 +72,15 @@ class DocumentInformationViewModel {
                 tagSuggestions = TagParser.parse(text).sorted()
             }
         }
-        
+
         date = foundDate ?? Date()
         tags = foundTags ?? []
         specification = foundSpecification ?? ""
     }
-    
+
     func save() {
         specification = specification.slugified(withSeparator: "-")
-        
+
         let filename = Document.createFilename(date: date, specification: specification, tags: Set(tags))
         Task {
             do {
@@ -92,9 +92,9 @@ class DocumentInformationViewModel {
             }
         }
     }
-    
+
     /// get new new tag suggestions
-    func searchtermChanged(to newSearchterm: String, with modelContext: ModelContext) {   
+    func searchtermChanged(to newSearchterm: String, with modelContext: ModelContext) {
         do {
             let trimmedSearchTeam = newSearchterm.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
             if trimmedSearchTeam.isEmpty {
@@ -114,17 +114,16 @@ class DocumentInformationViewModel {
                 let filteredDocuments = documents.filter { document in
                     Set(document.tags).isSuperset(of: tags)
                 }
-                
+
                 let filteredTags = Set(filteredDocuments.flatMap(\.tags)).subtracting(tags)
                 tagSuggestions = Array(filteredTags.sorted().prefix(10))
             } else {
-                
-                
+
                 let predicate = #Predicate<Document> {
                     // the tag might exist in the specification - filter afterwards again
                     $0.filename.contains(trimmedSearchTeam)
                 }
-                
+
                 var descriptor = FetchDescriptor<Document>(predicate: predicate)
                 descriptor.fetchLimit = 1000
                 let documents = try modelContext.fetch(descriptor)
@@ -161,7 +160,7 @@ struct DocumentInformation: View {
                         information.date = Date()
                         FeedbackGenerator.selectionChanged()
                     }
-                    
+
                 }
                 .focusable(false)
             }
@@ -174,7 +173,7 @@ struct DocumentInformation: View {
                 .textFieldStyle(.squareBorder)
                 #endif
             }
-            
+
             Section {
                 if information.tags.isEmpty {
                     Text("No tags selected")
@@ -187,7 +186,7 @@ struct DocumentInformation: View {
                                 tapHandler: information.remove(tag:))
                     .focusable(false)
                 }
-                
+
                 TagListView(tags: information.tagSuggestions,
                             isEditable: false,
                             isSuggestion: true,
@@ -199,7 +198,7 @@ struct DocumentInformation: View {
                     .onSubmit {
                         let selectedTag = information.tagSuggestions.first ?? information.tagSearchterm.lowercased().slugified(withSeparator: "")
                         guard !selectedTag.isEmpty else { return }
-                        
+
                         information.add(tag: selectedTag)
                         DispatchQueue.main.async {
                             information.tagSearchterm = ""
@@ -214,7 +213,7 @@ struct DocumentInformation: View {
             .onChange(of: information.tagSearchterm) { _, term in
                 information.searchtermChanged(to: term, with: modelContext)
             }
-            
+
             Section {
                 HStack {
                     Spacer()
@@ -232,7 +231,7 @@ struct DocumentInformation: View {
             await information.analyseDocument()
         }
     }
-    
+
     private var documentTagsView: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Document Tags")
@@ -242,8 +241,7 @@ struct DocumentInformation: View {
                         isSuggestion: false,
                         isMultiLine: true,
                         tapHandler: { print($0) })
-            
-            
+
             TextField("Enter Tag", text: $information.tagSearchterm)
                 #if os(iOS)
                 .keyboardType(.alphabet)

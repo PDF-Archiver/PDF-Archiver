@@ -34,7 +34,7 @@ class MoreTabViewModel: ObservableObject, Log {
     @Published var showArchiveTypeSelection = false
     @Published var subscriptionStatus: LocalizedStringKey = "Inactive ❌"
     @Published var newArchiveUrl: URL?
-    
+
     @Published var finderTagUpdateProgress: Double = 0
     #if os(macOS)
     @Published var observedFolderURL: URL? = UserDefaults.observedFolderURL
@@ -126,10 +126,10 @@ class MoreTabViewModel: ObservableObject, Log {
         Task {
             do {
                 try await PathManager.shared.setArchiveUrl(with: type)
-                
+
                 let archiveUrl = try await PathManager.shared.getArchiveUrl()
                 let untaggedUrl = try await PathManager.shared.getUntaggedUrl()
-                
+
                 self.showArchiveTypeSelection = false
                 await NewArchiveStore.shared.update(archiveFolder: archiveUrl, untaggedFolders: [untaggedUrl])
             } catch {
@@ -196,7 +196,7 @@ class MoreTabViewModel: ObservableObject, Log {
 
     func updateFinderTags(from documents: [Document]) {
         finderTagUpdateProgress = 0
-        
+
         Task.detached(priority: .background) {
             var processedDocumentsCount = 0
             let taggedDocuments = documents.filter(\.isTagged)
@@ -204,7 +204,7 @@ class MoreTabViewModel: ObservableObject, Log {
                 let sortedTags = Array(taggedDocument.tags).sorted()
                 taggedDocument.url.setFileTags(sortedTags)
                 processedDocumentsCount += 1
-                
+
                 let tmp = Double(processedDocumentsCount) / Double(documents.count)
                 await MainActor.run {
                     self.finderTagUpdateProgress = tmp

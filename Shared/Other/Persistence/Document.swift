@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class Document  {
+final class Document {
     private(set) var id: String = ""
     var url: URL = URL(filePath: "")
     var isTagged = false

@@ -16,16 +16,16 @@ struct UntaggedDocumentView: View {
         case document(Document)
         case documentNotFound
     }
-    
+
     @Binding var documentId: String?
     @State private var viewState: ViewState = .documentNotFound
     @State private var lastSavedDocumentId: String?
     @Environment(\.modelContext) private var modelContext
-    
+
     @State private var date = Date()
     @State private var specification = ""
     @State private var tags: [String] = []
-    
+
     #if DEBUG
     let viewStateOverride: ViewState?
     init(documentId: Binding<String?>, viewStateOverride: ViewState? = nil) {
@@ -33,7 +33,7 @@ struct UntaggedDocumentView: View {
         self.viewStateOverride = viewStateOverride
     }
     #endif
-    
+
     func update() async {
         #if DEBUG
         if let viewStateOverride {
@@ -55,7 +55,7 @@ struct UntaggedDocumentView: View {
             )
             descriptor.fetchLimit = 1
             let documents = try modelContext.fetch(descriptor)
-            
+
             if let document = documents.first {
                 viewState = .document(document)
             } else {
@@ -110,7 +110,7 @@ struct UntaggedDocumentView: View {
         let document: Document
         let onRevert: (() -> Void)?
         @State private var showDeleteConfirmation = false
-        
+
         var body: some View {
             PDFCustomView(document.url)
                 .navigationTitle(document.specification)
@@ -140,7 +140,7 @@ struct UntaggedDocumentView: View {
                     }
                 }
         }
-        
+
         private var deleteButton: some View {
             Button(role: .destructive, action: {
                 showDeleteConfirmation = true
@@ -152,7 +152,7 @@ struct UntaggedDocumentView: View {
                     #endif
             })
         }
-        
+
         private var revertButton: some View {
             Button(role: .none) {
                 onRevert?()

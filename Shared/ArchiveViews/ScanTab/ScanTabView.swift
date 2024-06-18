@@ -6,10 +6,10 @@
 //  Copyright © 2019 Julian Kahnert. All rights reserved.
 //
 
-//#if !os(macOS)
-//import SwiftUI
+// #if !os(macOS)
+// import SwiftUI
 //
-//struct ScanTabView: View {
+// struct ScanTabView: View {
 //    @ObservedObject var viewModel: ScanTabViewModel
 //    @State private var opacity = 0.0
 //
@@ -109,12 +109,12 @@
 //        .frame(maxWidth: 400)
 //    }
 //    #endif
-//}
+// }
 //
-//#if DEBUG
-//import Combine
-//import StoreKit
-//struct ScanTabView_Previews: PreviewProvider {
+// #if DEBUG
+// import Combine
+// import StoreKit
+// struct ScanTabView_Previews: PreviewProvider {
 //    private class ImageConverter: ImageConverterAPI {
 //        var totalDocumentCount = Atomic<Int>(5)
 //        func handle(_ url: URL) throws {}
@@ -129,6 +129,6 @@
 //        .frame(maxWidth: .infinity)
 //        .padding()
 //    }
-//}
-//#endif
-//#endif
+// }
+// #endif
+// #endif

@@ -10,7 +10,7 @@ import SwiftUI
 
 struct InAppPurchaseView: View {
     let onCancel: () -> Void
-    
+
     @State private var chooseSubscription = false
 
     var body: some View {
@@ -21,11 +21,11 @@ struct InAppPurchaseView: View {
                         .font(.title)
                     Text("Could not find a subscription or lifetime purchase. Please choose one of the options below to support the app development.")
                 }
-                
+
                 features
                 ProductView(id: "LIFETIME")
                     .productViewStyle(.large)
-                
+
                 VStack(alignment: .leading, spacing: 16) {
                     ForEach(["SUBSCRIPTION_YEARLY_IOS_NEW", "SUBSCRIPTION_MONTHLY_IOS"], id: \.self) { id in
                         ProductView(id: id)
@@ -42,14 +42,14 @@ struct InAppPurchaseView: View {
             }
             .padding()
         }
-        
+
         .frame(minWidth: 400, idealWidth: 500)
         .listRowSeparator(.hidden)
         .listSectionSeparator(.hidden)
         .foregroundStyle(Color.paDarkGray)
         .background(Color.paBackground)
     }
-    
+
     private var features: some View {
         VStack(alignment: .center, spacing: 8) {
             WidthSyncedRow(spacing: 8) {
@@ -97,7 +97,7 @@ struct InAppPurchaseView: View {
             .cornerRadius(8)
         }
     }
-    
+
     private var restore: some View {
         Button {
             Task {
@@ -112,7 +112,7 @@ struct InAppPurchaseView: View {
         }
         .buttonBorderShape(.capsule)
     }
-    
+
     private var cancel: some View {
         Button {
             onCancel()

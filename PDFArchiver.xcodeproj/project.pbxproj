@@ -98,7 +98,7 @@
 		A3356F182BA4D319000AA51A /* CIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A7C2BA4CF04009F8381 /* CIImage.swift */; };
 		A3356F192BA4D319000AA51A /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A912BA4CF04009F8381 /* DateFormatter.swift */; };
 		A3356F1C2BA4D319000AA51A /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A7E2BA4CF04009F8381 /* String.swift */; };
-		A3356F492BA4D32E000AA51A /* Tab.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A472BA4CF04009F8381 /* Tab.swift */; };
+		A3356F492BA4D32E000AA51A /* TabType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A472BA4CF04009F8381 /* TabType.swift */; };
 		A3356F4A2BA4D32E000AA51A /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A502BA4CF04009F8381 /* Color.swift */; };
 		A3356F4D2BA4D32E000AA51A /* PlatfromWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A4B2BA4CF04009F8381 /* PlatfromWrapper.swift */; };
 		A3356F4F2BA4D32E000AA51A /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A4F2BA4CF04009F8381 /* AppEnvironment.swift */; };
@@ -110,7 +110,7 @@
 		A3356F592BA4D32E000AA51A /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A482BA4CF04009F8381 /* UserDefaults.swift */; };
 		A3356F5A2BA4D32E000AA51A /* FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A422BA4CF04009F8381 /* FileManager.swift */; };
 		A3356F5B2BA4D32E000AA51A /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A3C2BA4CF04009F8381 /* Alert.swift */; };
-		A3356F5C2BA4D32F000AA51A /* Tab.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A472BA4CF04009F8381 /* Tab.swift */; };
+		A3356F5C2BA4D32F000AA51A /* TabType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A472BA4CF04009F8381 /* TabType.swift */; };
 		A3356F5D2BA4D32F000AA51A /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A502BA4CF04009F8381 /* Color.swift */; };
 		A3356F602BA4D32F000AA51A /* PlatfromWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A4B2BA4CF04009F8381 /* PlatfromWrapper.swift */; };
 		A3356F622BA4D32F000AA51A /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A4F2BA4CF04009F8381 /* AppEnvironment.swift */; };
@@ -198,6 +198,8 @@
 		A35CBAA42C1F294A00CFBA20 /* FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35CBAA32C1F294A00CFBA20 /* FileManager.swift */; };
 		A35CBAA62C1F2A2600CFBA20 /* DeepDiff in Frameworks */ = {isa = PBXBuildFile; productRef = A35CBAA52C1F2A2600CFBA20 /* DeepDiff */; };
 		A35CBAAA2C1F2A2600CFBA20 /* Parma in Frameworks */ = {isa = PBXBuildFile; productRef = A35CBAA92C1F2A2600CFBA20 /* Parma */; };
+		A360AD5B2C22339500541068 /* initializePdfArchiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A360AD5A2C22339500541068 /* initializePdfArchiver.swift */; };
+		A360AD5C2C22339500541068 /* initializePdfArchiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A360AD5A2C22339500541068 /* initializePdfArchiver.swift */; };
 		A37FEB822C1E1642003F7F14 /* BackgroundProcessingActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37FEB812C1E1640003F7F14 /* BackgroundProcessingActor.swift */; };
 		A37FEB832C1E1642003F7F14 /* BackgroundProcessingActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37FEB812C1E1640003F7F14 /* BackgroundProcessingActor.swift */; };
 		A37FEB852C1E3A53003F7F14 /* PlatformImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37FEB842C1E3A4D003F7F14 /* PlatformImage.swift */; };
@@ -328,6 +330,7 @@
 		A3579A552BFFD802001D921C /* Subscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
 		A3579A582BFFD9B6001D921C /* PDFArchiverIAP.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = PDFArchiverIAP.storekit; sourceTree = "<group>"; };
 		A35CBAA32C1F294A00CFBA20 /* FileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileManager.swift; sourceTree = "<group>"; };
+		A360AD5A2C22339500541068 /* initializePdfArchiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = initializePdfArchiver.swift; sourceTree = "<group>"; };
 		A37FEB812C1E1640003F7F14 /* BackgroundProcessingActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundProcessingActor.swift; sourceTree = "<group>"; };
 		A37FEB842C1E3A4D003F7F14 /* PlatformImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformImage.swift; sourceTree = "<group>"; };
 		A38256BE2C1F552C00416A08 /* IosSplitNavigation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IosSplitNavigation.swift; sourceTree = "<group>"; };
@@ -348,7 +351,7 @@
 		A3FE9A412BA4CF04009F8381 /* CaseIterable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaseIterable.swift; sourceTree = "<group>"; };
 		A3FE9A422BA4CF04009F8381 /* FileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManager.swift; sourceTree = "<group>"; };
 		A3FE9A432BA4CF04009F8381 /* NSItemProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSItemProvider.swift; sourceTree = "<group>"; };
-		A3FE9A472BA4CF04009F8381 /* Tab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tab.swift; sourceTree = "<group>"; };
+		A3FE9A472BA4CF04009F8381 /* TabType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabType.swift; sourceTree = "<group>"; };
 		A3FE9A482BA4CF04009F8381 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		A3FE9A4B2BA4CF04009F8381 /* PlatfromWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatfromWrapper.swift; sourceTree = "<group>"; };
 		A3FE9A4D2BA4CF04009F8381 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
@@ -642,6 +645,7 @@
 				A3CED6E22BA4E24900443F77 /* Persistence */,
 				A3FE9A582BA4CF04009F8381 /* PlatformSpecificWrapper */,
 				A31BE2D82BB8A9C600022885 /* Views */,
+				A360AD5A2C22339500541068 /* initializePdfArchiver.swift */,
 			);
 			path = Other;
 			sourceTree = "<group>";
@@ -724,7 +728,7 @@
 			children = (
 				A3FE9A3A2BA4CF04009F8381 /* Constants.swift */,
 				A3FE9A3B2BA4CF04009F8381 /* ErrorHandling */,
-				A3FE9A472BA4CF04009F8381 /* Tab.swift */,
+				A3FE9A472BA4CF04009F8381 /* TabType.swift */,
 				A3FE9A482BA4CF04009F8381 /* UserDefaults.swift */,
 				A3FE9A4C2BA4CF04009F8381 /* Logging */,
 				A3FE9A502BA4CF04009F8381 /* Color.swift */,
@@ -1261,7 +1265,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export PATH=\"/opt/homebrew/bin:$HOME/.mint/bin:$PATH\"\n\n\nif which swiftlint >/dev/null; then\n    echo \"Skipping swiftlint\"\n    #swiftlint --fix\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/swiftlint\"\nfi\n";
+			shellScript = "export PATH=\"/opt/homebrew/bin:$HOME/.mint/bin:$PATH\"\n\nif which swiftlint >/dev/null; then\n    swiftlint --fix\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/swiftlint\"\nfi\n";
 		};
 		34A53F7C24AA6381008A3377 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1280,7 +1284,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export PATH=\"/opt/homebrew/bin:$HOME/.mint/bin:$PATH\"\n\nif which swiftlint >/dev/null; then\n    # swiftlint --fix\n    echo \"skipping swiftlint\"\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/swiftlint\"\nfi\n\n";
+			shellScript = "export PATH=\"/opt/homebrew/bin:$HOME/.mint/bin:$PATH\"\n\nif which swiftlint >/dev/null; then\n    swiftlint --fix\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/swiftlint\"\nfi\n\n";
 		};
 		34A53F7E24AA63DC008A3377 /* Settings Bundle Update */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1372,7 +1376,7 @@
 				A3356ED92BA4D318000AA51A /* FolderProvider.swift in Sources */,
 				A3356FB72BA4D364000AA51A /* StorageSelectionView.swift in Sources */,
 				A3356FA22BA4D364000AA51A /* FilledButtonStyle.swift in Sources */,
-				A3356F492BA4D32E000AA51A /* Tab.swift in Sources */,
+				A3356F492BA4D32E000AA51A /* TabType.swift in Sources */,
 				A3356FBB2BA4D364000AA51A /* TagListView.swift in Sources */,
 				A3356F962BA4D364000AA51A /* OnboardingView.swift in Sources */,
 				A3356F8C2BA4D364000AA51A /* DetailRowView.swift in Sources */,
@@ -1383,6 +1387,7 @@
 				A3356ED12BA4D318000AA51A /* Document+Helper.swift in Sources */,
 				A3B5D8FB2BB36414002B9FF1 /* SearchToken.swift in Sources */,
 				3489D73D24A3C53E0035E64F /* PDFArchiverApp.swift in Sources */,
+				A360AD5B2C22339500541068 /* initializePdfArchiver.swift in Sources */,
 				A3D5A4932BBDDC8D0089B016 /* DocumentInformation.swift in Sources */,
 				A3356ECE2BA4D318000AA51A /* ICloudFolderProvider.swift in Sources */,
 				A3356ECA2BA4D318000AA51A /* TagParser.swift in Sources */,
@@ -1464,13 +1469,14 @@
 				A3356EFD2BA4D319000AA51A /* DocumentProcessingService.swift in Sources */,
 				A3356F132BA4D319000AA51A /* FileChange+DownloadStatus.swift in Sources */,
 				A3D8F93F2BB6007B00BE3E3A /* MacSplitNavigation.swift in Sources */,
+				A360AD5C2C22339500541068 /* initializePdfArchiver.swift in Sources */,
 				A3356FEC2BA4D365000AA51A /* DocumentCameraView.swift in Sources */,
 				A3579A542BFF6187001D921C /* InAppPurchaseView.swift in Sources */,
 				A3356F042BA4D319000AA51A /* FolderProvider.swift in Sources */,
 				A3356FF42BA4D365000AA51A /* StorageSelectionView.swift in Sources */,
 				A3D8F9412BB607B100BE3E3A /* DocumentDetailView.swift in Sources */,
 				A3356FDF2BA4D365000AA51A /* FilledButtonStyle.swift in Sources */,
-				A3356F5C2BA4D32F000AA51A /* Tab.swift in Sources */,
+				A3356F5C2BA4D32F000AA51A /* TabType.swift in Sources */,
 				A3356FF82BA4D365000AA51A /* TagListView.swift in Sources */,
 				A3356FD32BA4D365000AA51A /* OnboardingView.swift in Sources */,
 				A3356FC92BA4D365000AA51A /* DetailRowView.swift in Sources */,
@@ -1728,7 +1734,7 @@
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1738,6 +1744,7 @@
 				PRODUCT_NAME = PDFArchiver;
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = NO;
+				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1755,7 +1762,7 @@
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1765,6 +1772,7 @@
 				PRODUCT_NAME = PDFArchiver;
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = NO;
+				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;

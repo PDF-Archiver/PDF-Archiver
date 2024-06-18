@@ -79,7 +79,7 @@ struct SettingsView: View {
             DetailRowView(name: "Update Finder Tags") {
                 print("DEBUGGING: Starting update")
                 viewModel.updateFinderTags(from: documents)
-                
+
                 print("DEBUGGING: completing task")
             }
         }

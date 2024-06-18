@@ -12,7 +12,7 @@ import OSLog
 actor NewArchiveStore: ModelActor {
 
     static let shared = NewArchiveStore(modelContainer: container)
-    
+
     #if DEBUG
     private static let availableProvider: [any FolderProvider.Type] = {
         if UserDefaults.isInDemoMode {
@@ -28,7 +28,7 @@ actor NewArchiveStore: ModelActor {
     // https://useyourloaf.com/blog/swiftdata-background-tasks/
     let modelContainer: ModelContainer
     let modelExecutor: any ModelExecutor
-    
+
     private var archiveFolder: URL!
     private var untaggedFolders: [URL] = []
     private var providers: [any FolderProvider] = []
@@ -69,9 +69,9 @@ actor NewArchiveStore: ModelActor {
             }
         }
     }
-    
+
     func getProvider(for url: URL) throws -> any FolderProvider {
-        
+
         // Use `contains` instead of `prefix` to avoid problems with local files.
         // This fixes a problem, where we get different file urls back:
         // /private/var/mobile/Containers/Data/Application/8F70A72B-026D-4F6B-98E8-2C6ACE940133/Documents/untagged/document1.pdf
@@ -83,12 +83,12 @@ actor NewArchiveStore: ModelActor {
 
         return provider
     }
-    
+
     func archiveFile(from url: URL, to filename: String) throws {
         assert(!Thread.isMainThread, "This should not be called from the main thread.")
 
         let foldername = String(filename.prefix(4))
-        
+
         guard let archiveFolder = self.archiveFolder else {
             throw NewArchiveStore.Error.providerNotFound
         }
@@ -114,7 +114,7 @@ actor NewArchiveStore: ModelActor {
             newFilepath.setFileTags(tags.sorted())
         }
     }
-    
+
     func reloadArchiveDocuments() throws {
         let archiveUrl = try PathManager.shared.getArchiveUrl()
         let untaggedUrl = try PathManager.shared.getUntaggedUrl()
@@ -127,12 +127,11 @@ actor NewArchiveStore: ModelActor {
 
         update(archiveFolder: archiveUrl, untaggedFolders: untaggedFolders)
     }
-    
+
     private func folderDidChange(_ provider: any FolderProvider, _ changes: [FileChange]) {
         updateDocuments(with: changes)
     }
 
-    
     private func updateDocuments(with fileChanges: [FileChange]) {
         do {
             for change in fileChanges {
@@ -147,21 +146,21 @@ actor NewArchiveStore: ModelActor {
                     case .local:
                         downloadStatus = 1
                     }
-                    
+
                     guard let id = details.url.uniqueId() else {
                         Logger.archiveStore.errorAndAssert("Failed to get uniqueId")
                         continue
                     }
-                    
+
                     guard let filename = details.url.filename() else {
                         Logger.archiveStore.errorAndAssert("Failed to get filename")
                         continue
                     }
-                    
+
                     let data = Document.parseFilename(filename)
                     let isTagged = isTagged(details.url)
-                    
-                    let document = Document(id: "\(id)", 
+
+                    let document = Document(id: "\(id)",
                                               url: details.url,
                                               isTagged: isTagged,
                                               filename: isTagged ? filename.replacingOccurrences(of: "-", with: " ") : filename,
@@ -170,13 +169,13 @@ actor NewArchiveStore: ModelActor {
                                               tags: data.tagNames ?? [],
                                               downloadStatus: downloadStatus)
                     modelContext.insert(document)
-                    
+
                 case .removed(let url):
                     guard let id = url.uniqueId() else {
                         Logger.archiveStore.errorAndAssert("Failed to get uniqueId for delete")
                         continue
                     }
-                    
+
                     let predicate = #Predicate<Document> {
                         $0.id == "\(id)"
                     }
@@ -187,7 +186,7 @@ actor NewArchiveStore: ModelActor {
                     for document in documents {
                         modelContext.delete(document)
                     }
-                    
+
                 case .updated(let details):
                     guard let id = details.url.uniqueId() else {
                         Logger.archiveStore.errorAndAssert("Failed to get uniqueId for update")
@@ -200,7 +199,7 @@ actor NewArchiveStore: ModelActor {
                         predicate: predicate, sortBy: [SortDescriptor(\Document.date, order: .reverse)]
                     )
                     let documents = try modelContext.fetch(descriptor)
-                    
+
                     if let foundDocument = documents.first {
                         let downloadStatus: Double
                         switch details.downloadStatus {
@@ -211,12 +210,12 @@ actor NewArchiveStore: ModelActor {
                         case .local:
                             downloadStatus = 1
                         }
-                        
+
                         guard let filename = details.url.filename() else {
                             Logger.archiveStore.errorAndAssert("Failed to get filename")
                             continue
                         }
-                        
+
                         let data = Document.parseFilename(filename)
                         if let date = data.date {
                             foundDocument.date = date
@@ -224,19 +223,19 @@ actor NewArchiveStore: ModelActor {
                         foundDocument.specification = data.specification ?? "n/a"
                         foundDocument.downloadStatus = downloadStatus
                     }
-                    
+
                     for document in documents.dropFirst() {
                         modelContext.delete(document)
                     }
                 }
             }
-            
+
             try modelContext.save()
         } catch {
             Logger.archiveStore.errorAndAssert("Error while saving data - error: \(error)")
         }
     }
-    
+
     private func isTagged(_ url: URL) -> Bool {
 
         // Could document be found in the untagged folder?

@@ -13,12 +13,6 @@ struct FilledButtonStyle: ButtonStyle {
     var backgroundColor: Color = .paDarkGray
     var isInverted = false
 
-    init(foregroundColor: Color = .paWhite, backgroundColor: Color = .paDarkGray, isInverted: Bool = false) {
-        self.foregroundColor = foregroundColor
-        self.backgroundColor = backgroundColor
-        self.isInverted = isInverted
-    }
-
     func makeBody(configuration: Self.Configuration) -> some View {
         configuration.label
             .padding(12)

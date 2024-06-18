@@ -26,7 +26,7 @@ extension Logger {
     #if DEBUG
     static let debugging = Logger(subsystem: subsystem, category: "debugging")
     #endif
-    
+
     static let archiveStore = Logger(subsystem: subsystem, category: "archive-store")
     static let inAppPurchase = Logger(subsystem: subsystem, category: "in-app-purchase")
     static let newDocument = Logger(subsystem: subsystem, category: "new-document")
@@ -52,7 +52,7 @@ extension Logger {
         let tmp = input2message(message, metadata: metadata(), file: file, function: function, line: line)
         trace("\(tmp)")
     }
-    
+
     func info(_ message: String,
                metadata: @autoclosure () -> [String: String],
                file: StaticString = #file,
@@ -61,7 +61,7 @@ extension Logger {
         let tmp = input2message(message, metadata: metadata(), file: file, function: function, line: line)
         info("\(tmp)")
     }
-    
+
     func debug(_ message: String,
                metadata: @autoclosure () -> [String: String],
                file: StaticString = #file,
@@ -70,7 +70,7 @@ extension Logger {
         let tmp = input2message(message, metadata: metadata(), file: file, function: function, line: line)
         debug("\(tmp)")
     }
-    
+
     func error(_ message: String,
                metadata: @autoclosure () -> [String: String]?,
                file: StaticString = #file,
@@ -79,7 +79,7 @@ extension Logger {
         let tmp = input2message(message, metadata: metadata(), file: file, function: function, line: line)
         error("\(tmp)")
     }
-    
+
     func errorAndAssert(_ message: String,
                         metadata: @autoclosure () -> [String: String]? = nil,
                         file: StaticString = #file,
@@ -99,7 +99,7 @@ extension Logger {
         critical("\(tmp)")
         assertionFailure(message, file: file, line: line)
     }
-    
+
     private func input2message(_ message: String,
                                metadata: [String: String]?,
                                file: StaticString,
@@ -108,7 +108,7 @@ extension Logger {
         let metadataText: String
         if let metadataRaw = metadata,
            !metadataRaw.isEmpty {
-            
+
             let text = metadataRaw.reduce("") { partialResult, element in
                 "\(partialResult), [\(element.key): \(element.value)]"
             }

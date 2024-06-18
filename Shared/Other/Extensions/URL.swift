@@ -11,7 +11,7 @@ import Foundation
 extension URL: Log {
 
     private static let itemUserTagsName = "com.apple.metadata:_kMDItemUserTags"
-    
+
     func securityScope<T>(closure: (URL) throws -> T) rethrows -> T {
         let didAccessSecurityScope = startAccessingSecurityScopedResource()
         defer {
@@ -35,7 +35,7 @@ extension URL: Log {
             return []
         }
     }
-    
+
     func uniqueId() -> Int? {
         do {
             return try resourceValues(forKeys: [.documentIdentifierKey]).documentIdentifier
@@ -44,7 +44,7 @@ extension URL: Log {
             return nil
         }
     }
-    
+
     func filename() -> String? {
          do {
              return try resourceValues(forKeys: [.localizedNameKey]).localizedName
@@ -53,7 +53,7 @@ extension URL: Log {
              return nil
          }
     }
-    
+
     func fileCreationDate() -> Date? {
         do {
             return try resourceValues(forKeys: [.creationDateKey]).creationDate

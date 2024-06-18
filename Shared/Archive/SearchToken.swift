@@ -9,27 +9,27 @@ enum SearchToken: Hashable, Identifiable {
     case term(String)
     case tag(String)
     case year(Int)
-    
+
     var id: String { description }
-    
+
     var isTerm: Bool {
         switch self {
-        case .term(_):
+        case .term:
             return true
         default:
             return false
         }
     }
-    
+
     var isYear: Bool {
         switch self {
-        case .year(_):
+        case .year:
             return true
         default:
             return false
         }
     }
-    
+
     var description: String {
         switch self {
         case .term(let term):

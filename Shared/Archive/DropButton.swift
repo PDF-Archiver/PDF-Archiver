@@ -12,10 +12,10 @@ struct DropButton: View {
     enum State {
         case noDocument, targeted, processing, finished
     }
-    
+
     let state: State
     let action: () -> Void
-    
+
     var body: some View {
         Button {
             action()
@@ -42,13 +42,13 @@ struct DropButton: View {
 //                        .progressViewStyle(.circular)
                     ProgressView()
                         .opacity(state == .processing ? 1 : 0)
-                    
+
                     Image(systemName: "checkmark.circle")
                         .font(.largeTitle)
                         .foregroundStyle(.green)
                         .opacity(state == .finished ? 1 : 0)
                 }
-                    
+
             }
         }
     }

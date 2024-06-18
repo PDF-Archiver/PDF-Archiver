@@ -14,16 +14,16 @@ struct ArchiveView: View {
         formatter.usesGroupingSeparator = false
         return formatter
     }()
-    
+
     @Query(sort: \Document.date, order: .reverse) private var documents: [Document]
-    
+
     @Binding var selectedDocumentId: String?
     @State private var searchText = ""
     @State private var tokens: [SearchToken] = []
     @State private var suggestedTokens: [SearchToken] = [.year(2024), .year(2023), .year(2022)]
-    
+
     @State private var shoudLoadAll = false
-    
+
     var body: some View {
         ArchiveListView(selectedDocumentId: $selectedDocumentId, searchString: searchText, tokens: tokens, shoudLoadAll: $shoudLoadAll)
             .searchable(text: $searchText, tokens: $tokens, suggestedTokens: $suggestedTokens, placement: .toolbar, prompt: "Search in documents", token: { token in
@@ -42,7 +42,7 @@ struct ArchiveView: View {
                 }
             }
     }
-    
+
     private func updateSuggestedTokens(from documents: [Document]) async {
         let mostUsedTags = documents.flatMap(\.tags).histogram
             .sorted { $0.value < $1.value }
@@ -50,7 +50,7 @@ struct ArchiveView: View {
             .prefix(5)
             .map(\.key)
             .map { SearchToken.tag($0) }
-        
+
         let possibleYears = Set(documents.map { $0.filename.prefix(4) })
         let foundYears: [SearchToken] = possibleYears
             .compactMap { Int($0) }
@@ -58,7 +58,7 @@ struct ArchiveView: View {
             .reversed()
             .prefix(5)
             .map { .year($0) }
-        
+
         guard !Task.isCancelled else { return }
         await MainActor.run {
             guard !Task.isCancelled else { return }
@@ -67,9 +67,9 @@ struct ArchiveView: View {
     }
 }
 
-//#if DEBUG
-//#Preview {
+// #if DEBUG
+// #Preview {
 //    ArchiveView(selectedDocumentId: .constant("debug-document-id"))
 //        .modelContainer(previewContainer)
-//}
-//#endif
+// }
+// #endif

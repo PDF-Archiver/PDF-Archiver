@@ -7,14 +7,14 @@
 //
 // swiftlint:disable function_body_length type_body_length
 
-//#if !os(macOS)
-//import Combine
-//import SwiftUI
-//#if canImport(MessageUI)
-//import MessageUI
-//#endif
+// #if !os(macOS)
+// import Combine
+// import SwiftUI
+// #if canImport(MessageUI)
+// import MessageUI
+// #endif
 //
-//final class MainNavigationViewModel: ObservableObject, Log {
+// final class MainNavigationViewModel: ObservableObject, Log {
 //    @Published var alertDataModel: AlertDataModel?
 //
 ////    @Published var currentTab: Tab? = UserDefaults.lastSelectedTab
@@ -234,9 +234,9 @@
 //        }
 //    }
 //    #endif
-//}
+// }
 //
-//extension MainNavigationViewModel {
+// extension MainNavigationViewModel {
 //    enum SheetType: Identifiable {
 //        #if !os(macOS)
 //        case activityView(items: [Any])
@@ -255,5 +255,5 @@
 //            }
 //        }
 //    }
-//}
-//#endif
+// }
+// #endif

@@ -8,87 +8,127 @@
 import SwiftUI
 import OSLog
 
-@MainActor
 struct IosSplitNavigation: View {
     @Environment(Subscription.self) var subscription
-    
+
+    @StateObject private var moreViewModel = MoreTabViewModel()
     @State private var dropHandler = PDFDropHandler()
     @State private var selectedDocumentId: String?
-    @AppStorage("taggingMode", store: .appGroup) private var untaggedMode = false
+    @AppStorage("selectedTab", store: .appGroup) private var selectedTab: TabType = .scan
     @AppStorage("tutorialShown", store: .appGroup) private var tutorialShown = false
-    
+
+    enum TabType: String {
+        case scan, tag, archive, more
+
+        var name: LocalizedStringKey {
+            switch self {
+            case .scan:
+                "Scan"
+            case .tag:
+                "Tag"
+            case .archive:
+                "Archive"
+            case .more:
+                "More"
+            }
+        }
+        var systemImage: String {
+            switch self {
+            case .scan:
+                "doc.text.viewfinder"
+            case .tag:
+                "tag"
+            case .archive:
+                "archivebox"
+            case .more:
+                "ellipsis"
+            }
+        }
+    }
     var body: some View {
-        NavigationSplitView {
-            Group {
-                if untaggedMode {
-                    UntaggedDocumentsList(selectedDocumentId: $selectedDocumentId)
-                } else {
-                    ArchiveView(selectedDocumentId: $selectedDocumentId)
+        #warning("Only use this as a fallback")
+        TabView(selection: $selectedTab) {
+            Text("Test")
+                .tabItem {
+                    Label(TabType.scan.name, systemImage: TabType.scan.systemImage)
                 }
-            }
-            .frame(minWidth: 300)
-            .toolbar {
-                ToolbarItem(placement: .automatic) {
-                    Button {
-                        untaggedMode.toggle()
-                        selectedDocumentId = nil
-                    } label: {
-                        Label(untaggedMode ? "Tagging Mode" : "Archive Mode", systemImage: untaggedMode ? "tag.fill" : "archivebox.fill")
-                            .labelStyle(.titleAndIcon)
-                    }
+                .tag(TabType.scan)
+
+            archiveView
+                .tabItem {
+                    Label(TabType.archive.name, systemImage: TabType.archive.systemImage)
                 }
-            }
-        } detail: {
-            if untaggedMode {
-                UntaggedDocumentView(documentId: $selectedDocumentId)
-                    .sheet(isPresented: subscription.isSubscribed, content: {
-                        InAppPurchaseView(onCancel: {
-                            untaggedMode = false
-                        })
-                    })
-            } else {
-                DocumentDetailView(documentId: $selectedDocumentId, untaggedMode: $untaggedMode)
-            }
+                .tag(TabType.archive)
+
+            untaggedView
+                .tabItem {
+                    Label(TabType.tag.name, systemImage: TabType.tag.systemImage)
+                }
+                .tag(TabType.tag)
+
+            Text("Test4")
+                .tabItem {
+                    Label(TabType.more.name, systemImage: TabType.more.systemImage)
+                }
+                .tag(TabType.more)
         }
-        .overlay(alignment: .bottomTrailing, content: {
-            DropButton(state: dropHandler.documentProcessingState, action: {
-                dropHandler.startImport()
-            })
-            .padding(.bottom, 4)
-            .padding(.trailing, 4)
+//        TabView(selection: $selection) {
+//            Tab("Scan", systemImage: "doc.text.viewfinder", value: .scan) {
+//                Text("1")
+//            }
+//            Tab("Tag", systemImage: "tag", value: .tag) {
+//                NavigationSplitView {
+//                    UntaggedDocumentsList(selectedDocumentId: $selectedDocumentId)
+//                } detail: {
+//                    UntaggedDocumentView(documentId: $selectedDocumentId)
+////                        .sheet(isPresented: subscription.isSubscribed, content: {
+////                            InAppPurchaseView(onCancel: {
+////                                untaggedMode = false
+////                            })
+////                        })
+//                }
+//            }
+//
+//            Tab("Archiv", systemImage: "archivebox", value: .archiv) {
+//                ArchiveView(selectedDocumentId: $selectedDocumentId)
+//            }
+//            
+//            Tab("More", systemImage: "ellipsis", value: .more) {
+//                #warning("TODO: implement more tab")
+//                Text("Settings view")
+//            }
+//        }
+//        .tabViewStyle(.sidebarAdaptable)
+
+    }
+
+    private var archiveView: some View {
+        NavigationSplitView(sidebar: {
+            ArchiveView(selectedDocumentId: $selectedDocumentId)
+        }, detail: {
+            DocumentDetailView(documentId: $selectedDocumentId, untaggedMode: .constant(true))
         })
-        .sheet(isPresented: $tutorialShown.flipped, content: {
-            OnboardingView(isPresenting: $tutorialShown.flipped)
+    }
+
+    private var untaggedView: some View {
+        NavigationSplitView(sidebar: {
+            UntaggedDocumentsList(selectedDocumentId: $selectedDocumentId)
+        }, detail: {
+            UntaggedDocumentView(documentId: $selectedDocumentId)
+//                .sheet(isPresented: subscription.isSubscribed, content: {
+//                    InAppPurchaseView(onCancel: {
+//                        untaggedMode = false
+//                    })
+//                })
         })
-        .onDrop(of: [.image, .pdf, .fileURL],
-                delegate: dropHandler)
-        .fileImporter(isPresented: $dropHandler.isImporting, allowedContentTypes: [.pdf, .image]) { result in
-            Task {
-                do {
-                    let url = try result.get()
-                    try await dropHandler.handleImport(of: url)
-                    } catch {
-                        Logger.pdfDropHandler.errorAndAssert("Failed to get imported url", metadata: ["error": "\(error)"])
-                        NotificationCenter.default.postAlert(error)
-                    }
-                }
-        }
-        .onChange(of: dropHandler.isImporting) { oldValue, newValue in
-            // special case: abort importing
-            guard oldValue,
-                  !newValue,
-                  dropHandler.documentProcessingState == .processing else { return }
-            
-            dropHandler.abortImport()
-        }
-        .task {
-            let _ = await DocumentProcessingService.shared
-        }
     }
 }
 
 #if DEBUG
 #Preview {
-    IosSplitNavigation()
+    let subscription = Subscription()
+    return IosSplitNavigation()
+        .environment(subscription)
+        .modelContainer(previewContainer)
 }
 #endif

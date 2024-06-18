@@ -35,7 +35,6 @@ final class PDFProcessingOperation: AsyncOperation {
     private let mode: Mode
     private let destinationFolder: URL
     private var tempUrls: [URL] = []
-    
 
     private(set) var error: (any Error)?
     private(set) var outputUrl: URL?
@@ -43,8 +42,7 @@ final class PDFProcessingOperation: AsyncOperation {
     init(of mode: Mode, destinationFolder: URL) {
         self.mode = mode
         self.destinationFolder = destinationFolder
-        
-        
+
         Task {
             await save(mode)
         }
@@ -72,20 +70,20 @@ final class PDFProcessingOperation: AsyncOperation {
             }
 
             guard !Task.isCancelled else { return }
-            
+
             // generate filename by analysing the image
             let filename = getFilename(from: document)
             let filepath = destinationFolder.appendingPathComponent(filename)
             document.write(to: filepath)
 
             self.outputUrl = filepath
-            
+
             // delete original images
             for tempUrl in tempUrls {
                 do {
                     try FileManager.default.removeItem(at: tempUrl)
                 } catch {
-                    Self.log.errorAndAssert("Failed to remove temp document", metadata: ["url" : tempUrl.path(), "error": "\(error)"])
+                    Self.log.errorAndAssert("Failed to remove temp document", metadata: ["url": tempUrl.path(), "error": "\(error)"])
                 }
             }
 
@@ -111,22 +109,22 @@ final class PDFProcessingOperation: AsyncOperation {
         } else {
             // get default specification
             let specification = Constants.documentDescriptionPlaceholder + Date().timeIntervalSince1970.description
-            
+
             // get OCR content
             var content = ""
             for pageNumber in 0..<min(document.pageCount, 3) {
                 guard content.count < 5000 else { break }
                 content += document.page(at: pageNumber)?.string ?? ""
             }
-            
+
             // use the default filename if no content could be found
             guard !content.isEmpty else {
                 return Document.createFilename(date: Date(), specification: specification, tags: Set([Constants.documentTagPlaceholder]))
             }
-            
+
             // parse the date
             let parsedDate = DateParser.parse(content)?.date ?? Date()
-            
+
             // parse the tags
             let tags = Set([Constants.documentTagPlaceholder])
             return Document.createFilename(date: parsedDate, specification: specification, tags: tags)
@@ -272,19 +270,19 @@ final class PDFProcessingOperation: AsyncOperation {
                       width: observation.boundingBox.applying(transform).width,
                       height: observation.boundingBox.applying(transform).height)
     }
-    
+
     @StorageActor
     private func save(_ mode: Mode) {
         do {
             try FileManager.default.createFolderIfNotExists(Self.tempDocumentURL)
-            
+
             switch mode {
             case .pdf(let document):
                 let filename = document.documentURL?.lastPathComponent ?? UUID().uuidString
                 let pdfUrl = Self.tempDocumentURL.appendingPathComponent(filename, isDirectory: false)
                 document.write(to: pdfUrl)
                 tempUrls = [pdfUrl]
-                
+
             case .images(let images):
                 var urls: [URL] = []
                 do {
@@ -292,7 +290,7 @@ final class PDFProcessingOperation: AsyncOperation {
                     for (index, image) in images.enumerated() {
                         let filename = "\(index)---\(uuid.uuidString).jpg"
                         let imageUrl = Self.tempDocumentURL.appendingPathComponent(filename, isDirectory: false)
-                        
+
                         try image.jpg(quality: 1)?.write(to: imageUrl)
                         urls.append(imageUrl)
                     }
@@ -305,7 +303,7 @@ final class PDFProcessingOperation: AsyncOperation {
                 tempUrls = urls
             }
         } catch {
-            Self.log.errorAndAssert("Failed to save document", metadata: ["error" : "\(error)"])
+            Self.log.errorAndAssert("Failed to save document", metadata: ["error": "\(error)"])
         }
     }
 

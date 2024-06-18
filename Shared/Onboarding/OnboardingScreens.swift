@@ -18,7 +18,7 @@ struct OnboardingScreens: View {
         VStack {
             OBCardView(card: onboardSet.cards[cardIndex])
                 .padding(.top, 25)
-         
+
             Spacer()
             progressView
             HStack {
@@ -37,7 +37,7 @@ struct OnboardingScreens: View {
         }
         .padding()
     }
-    
+
     private var progressView: some View {
         HStack {
             ForEach(0..<onboardSet.cards.count, id: \.self) { index in

@@ -71,7 +71,7 @@ private struct IAPTaskModifier: ViewModifier {
                 for await update in StoreKit.Transaction.updates {
                     await process(transaction: update)
                 }
-                
+
             }
             .task {
                 // checkForUnfinishedTransactions
@@ -85,10 +85,10 @@ private struct IAPTaskModifier: ViewModifier {
                         await process(transaction: transaction)
                     }
                 }
-                
+
             }
     }
-    
+
     private func process(transaction verificationResult: VerificationResult<StoreKit.Transaction>) async {
         do {
             let unsafeTransaction = verificationResult.unsafePayloadValue
@@ -97,7 +97,7 @@ private struct IAPTaskModifier: ViewModifier {
                 \(unsafeTransaction.productID)
                 """)
         }
-        
+
         let transaction: StoreKit.Transaction
         switch verificationResult {
         case .verified(let t):
@@ -112,14 +112,14 @@ private struct IAPTaskModifier: ViewModifier {
                 """)
             return
         }
-        
+
         if case .autoRenewable = transaction.productType {
             // We can just finish the transction since we will grant access to
             // the subscription based on the subscription status.
             await transaction.finish()
         } else if case .nonConsumable = transaction.productType {
             await transaction.finish()
-            
+
             guard transaction.productID == "LIFETIME" else { return }
             if let revocationDate = transaction.revocationDate,
                revocationDate > Date() {

@@ -7,29 +7,29 @@
 //
 // swiftlint:disable cyclomatic_complexity
 
-//#if !os(macOS)
-//import AVKit
-//import Combine
-//import Foundation
-//import PDFKit
-//import SwiftUI
+// #if !os(macOS)
+// import AVKit
+// import Combine
+// import Foundation
+// import PDFKit
+// import SwiftUI
 //
-//#if os(macOS)
-//import AppKit.NSImage
-//private typealias UniversalImage = NSImage
-//#else
-//import UIKit.UIImage
-//private typealias UniversalImage = UIImage
-//#endif
+// #if os(macOS)
+// import AppKit.NSImage
+// private typealias UniversalImage = NSImage
+// #else
+// import UIKit.UIImage
+// private typealias UniversalImage = UIImage
+// #endif
 //
 //// currently not working, because SPM does not know the APPCLIP compiler flag
-//#if APPCLIP
-//let shareDocumentAfterScanDefault = true
-//#else
-//let shareDocumentAfterScanDefault = false
-//#endif
+// #if APPCLIP
+// let shareDocumentAfterScanDefault = true
+// #else
+// let shareDocumentAfterScanDefault = false
+// #endif
 //
-//final class ScanTabViewModel: ObservableObject, Log {
+// final class ScanTabViewModel: ObservableObject, Log {
 //    @Published var showDocumentScan = false
 //    @Published var shareDocumentAfterScan: Bool = shareDocumentAfterScanDefault
 //    @Published private(set) var progressValue: CGFloat = 0.0
@@ -242,5 +242,5 @@
 //        _ = semaphore.wait(timeout: .now() + .seconds(30))
 //        return try result?.get() ?? []
 //    }
-//}
-//#endif
+// }
+// #endif

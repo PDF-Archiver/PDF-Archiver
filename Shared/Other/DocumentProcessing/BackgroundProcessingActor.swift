@@ -14,7 +14,7 @@ protocol AsyncOperation: Sendable {
 // https://forums.swift.org/t/how-do-i-properly-save-a-task-from-an-actors-initializer-and-why/63349
 actor BackgroundProcessingActor<OperationType: AsyncOperation> {
     private let log = Logger(subsystem: "processing", category: "background-processing-actor")
-    
+
     // this stream will be used to store incoming documents and images
     private lazy var operationStream: AsyncStream<OperationType> = {
             AsyncStream { (continuation: AsyncStream<OperationType>.Continuation) -> Void in
@@ -25,7 +25,7 @@ actor BackgroundProcessingActor<OperationType: AsyncOperation> {
 
     private var processingTask: Task<Void, Never>?
     init() {}
-    
+
     // we do not want to wait for the DocumentProcessingActor to be available to receive any new input, so we use nonisolated here add something to the queue
     nonisolated func queue(_ operation: OperationType) {
         log.debug("Receiving a new document")
@@ -33,7 +33,7 @@ actor BackgroundProcessingActor<OperationType: AsyncOperation> {
             await self.add(operation)
         }
     }
-    
+
     private func add(_ operation: OperationType) async {
         // the startupTask should be completed before running tasks
         if processingTask == nil {
@@ -41,12 +41,12 @@ actor BackgroundProcessingActor<OperationType: AsyncOperation> {
         }
         continuation?.yield(operation)
     }
-    
+
     private func startProcessing() {
         log.debug("Start processing")
-        
+
         // init the lazy var documentStream
-        let _ = self.operationStream.makeAsyncIterator()
+        _ = self.operationStream.makeAsyncIterator()
 
         processingTask = Task.detached(priority: .userInitiated) {
             self.log.debug("Start iterating over documents")
@@ -55,7 +55,7 @@ actor BackgroundProcessingActor<OperationType: AsyncOperation> {
                 self.log.debug("Received a document in stream")
                 await operation.process()
             }
-                
+
             self.log.debug("Finished iterating over documents")
         }
     }
