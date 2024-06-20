@@ -7,6 +7,7 @@
 
 import SwiftData
 import SwiftUI
+import OSLog
 
 struct ArchiveListView: View {
     @Query private var documents: [Document]
@@ -77,8 +78,7 @@ struct ArchiveListView: View {
                                 .foregroundStyle(.gray)
                         }
                         Spacer()
-                        Image(systemName: "icloud.and.arrow.down")
-                            .foregroundStyle(.gray)
+                        status(for: document)
                             .opacity(document.downloadStatus == 0 ? 1 : 0)
                     }
 
@@ -111,6 +111,15 @@ struct ArchiveListView: View {
         #if os(macOS)
         .alternatingRowBackgrounds()
         #endif
+    }
+
+    private func status(for document: Document) -> some View {
+        VStack {
+            Image(systemName: "icloud.and.arrow.down")
+            Text(document.size.converted(to: .bytes).formatted(.byteCount(style: .file)))
+                .font(.caption)
+        }
+        .foregroundColor(.gray)
     }
 }
 

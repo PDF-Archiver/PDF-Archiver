@@ -115,6 +115,17 @@ actor NewArchiveStore: ModelActor {
         }
     }
 
+    func startDownload(of url: URL) {
+        Task.detached(priority: .userInitiated) {
+            do {
+                let provider = try await self.getProvider(for: url)
+                try provider.startDownload(of: url)
+            } catch {
+                Logger.archiveStore.errorAndAssert("Failed to start download", metadata: ["error": "\(error)"])
+            }
+        }
+    }
+
     func reloadArchiveDocuments() throws {
         let archiveUrl = try PathManager.shared.getArchiveUrl()
         let untaggedUrl = try PathManager.shared.getUntaggedUrl()
@@ -161,13 +172,14 @@ actor NewArchiveStore: ModelActor {
                     let isTagged = isTagged(details.url)
 
                     let document = Document(id: "\(id)",
-                                              url: details.url,
-                                              isTagged: isTagged,
-                                              filename: isTagged ? filename.replacingOccurrences(of: "-", with: " ") : filename,
-                                              date: data.date ?? details.url.fileCreationDate() ?? Date(),
-                                              specification: isTagged ? (data.specification ?? "n/a").replacingOccurrences(of: "-", with: " ") : (data.specification ?? "n/a"),
-                                              tags: data.tagNames ?? [],
-                                              downloadStatus: downloadStatus)
+                                            url: details.url,
+                                            isTagged: isTagged,
+                                            filename: isTagged ? filename.replacingOccurrences(of: "-", with: " ") : filename,
+                                            sizeInBytes: details.sizeInBytes,
+                                            date: data.date ?? details.url.fileCreationDate() ?? Date(),
+                                            specification: isTagged ? (data.specification ?? "n/a").replacingOccurrences(of: "-", with: " ") : (data.specification ?? "n/a"),
+                                            tags: data.tagNames ?? [],
+                                            downloadStatus: downloadStatus)
                     modelContext.insert(document)
 
                 case .removed(let url):
@@ -189,7 +201,7 @@ actor NewArchiveStore: ModelActor {
 
                 case .updated(let details):
                     guard let id = details.url.uniqueId() else {
-                        Logger.archiveStore.errorAndAssert("Failed to get uniqueId for update")
+                        Logger.archiveStore.errorAndAssert("Failed to get uniqueId for update", metadata: ["url": details.url.path()])
                         continue
                     }
                     let predicate = #Predicate<Document> {
@@ -220,8 +232,11 @@ actor NewArchiveStore: ModelActor {
                         if let date = data.date {
                             foundDocument.date = date
                         }
-                        foundDocument.specification = data.specification ?? "n/a"
+                        let isTagged = isTagged(details.url)
+                        foundDocument.specification = isTagged ? (data.specification ?? "n/a").replacingOccurrences(of: "-", with: " ") : (data.specification ?? "n/a")
                         foundDocument.downloadStatus = downloadStatus
+
+                        Logger.archiveStore.debug("Updating document", metadata: ["specification": foundDocument.specification, "downloadStatus": "\(foundDocument.downloadStatus)"])
                     }
 
                     for document in documents.dropFirst() {

@@ -188,7 +188,7 @@ struct UntaggedDocumentView: View {
         Text("Sidebar")
     } detail: {
         UntaggedDocumentView(documentId: .constant("debug-document-id"), viewStateOverride: nil)
-            .modelContainer(previewContainer)
+            .modelContainer(previewContainer())
     }
 }
 
@@ -197,7 +197,7 @@ struct UntaggedDocumentView: View {
         Text("Sidebar")
     } detail: {
         UntaggedDocumentView(documentId: .constant(nil), viewStateOverride: .loading)
-            .modelContainer(previewContainer)
+            .modelContainer(previewContainer())
     }
 }
 
@@ -206,7 +206,7 @@ struct UntaggedDocumentView: View {
         Text("Sidebar")
     } detail: {
         UntaggedDocumentView(documentId: .constant("error"), viewStateOverride: .error(NSError(domain: "Testing", code: 42)))
-            .modelContainer(previewContainer)
+            .modelContainer(previewContainer())
     }
 }
 
@@ -215,7 +215,7 @@ struct UntaggedDocumentView: View {
         Text("Sidebar")
     } detail: {
         UntaggedDocumentView(documentId: .constant("1234"), viewStateOverride: .documentNotFound)
-            .modelContainer(previewContainer)
+            .modelContainer(previewContainer())
     }
 }
 #endif

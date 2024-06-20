@@ -272,6 +272,6 @@ struct DocumentInformation: View {
     information.add(tag: "tag2")
     information.tagSuggestions = ["suggestion1", "suggestion2"]
     return DocumentInformation(information: information)
-        .modelContainer(previewContainer)
+        .modelContainer(previewContainer())
 }
 #endif

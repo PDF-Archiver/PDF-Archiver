@@ -15,17 +15,24 @@ final class Document {
     var isTagged = false
     var date = Date()
     var filename: String = ""
+    @Transient
+    var size: Measurement<UnitInformationStorage> {
+        Measurement(value: _sizeInBytes, unit: .bytes)
+    }
     var specification: String = ""
     var tags: [String] = []
+
+    var _sizeInBytes: Double
 
     // 0: remote - 1: local
     var downloadStatus: Double
 
-    init(id: String, url: URL, isTagged: Bool, filename: String, date: Date, specification: String, tags: [String], downloadStatus: Double) {
+    init(id: String, url: URL, isTagged: Bool, filename: String, sizeInBytes: Double, date: Date, specification: String, tags: [String], downloadStatus: Double) {
         self.id = id
         self.url = url
         self.isTagged = isTagged
         self.filename = filename
+        self._sizeInBytes = sizeInBytes
         self.date = date
         self.specification = specification
         self.tags = tags

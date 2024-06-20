@@ -106,7 +106,11 @@ struct IosSplitNavigation: View {
         NavigationSplitView(sidebar: {
             ArchiveView(selectedDocumentId: $selectedDocumentId)
         }, detail: {
-            DocumentDetailView(documentId: $selectedDocumentId, untaggedMode: .constant(true))
+            DocumentDetailView(documentId: selectedDocumentId, untaggedMode: Binding(get: {
+                selectedTab == .tag
+            }, set: { value in
+                selectedTab = value ? .tag : .archive
+            }))
         })
     }
 
@@ -129,6 +133,6 @@ struct IosSplitNavigation: View {
     let subscription = Subscription()
     return IosSplitNavigation()
         .environment(subscription)
-        .modelContainer(previewContainer)
+        .modelContainer(previewContainer())
 }
 #endif

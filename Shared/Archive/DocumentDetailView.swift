@@ -17,116 +17,107 @@ struct DocumentDetailView: View {
         case documentNotFound
     }
 
-    @Binding var documentId: String?
+    let documentId: String?
     @Binding var untaggedMode: Bool
-    @State private var viewState: ViewState = .documentNotFound
+    @Query private var documents: [Document]
     @State private var showDeleteConfirmation = false
     @Environment(\.modelContext) private var modelContext
 
-    #if DEBUG
-    let viewStateOverride: ViewState?
-    init(documentId: Binding<String?>, untaggedMode: Binding<Bool>, viewStateOverride: ViewState? = nil) {
-        self._documentId = documentId
+    init(documentId: String?, untaggedMode: Binding<Bool>) {
+        self.documentId = documentId
         self._untaggedMode = untaggedMode
-        self.viewStateOverride = viewStateOverride
-    }
-    #endif
 
-    func update() async {
-        #if DEBUG
-        if let viewStateOverride {
-            viewState = viewStateOverride
-            return
+        var descriptor: FetchDescriptor<Document>
+        if let documentId {
+            let predicate = #Predicate<Document> { document in
+                return document.id == documentId
+            }
+            descriptor = FetchDescriptor(predicate: predicate)
+        } else {
+            descriptor = FetchDescriptor<Document>()
         }
-        #endif
-        viewState = .loading
-        do {
-            guard let documentId else {
-                viewState = .documentNotFound
-                return
-            }
-            let predicate = #Predicate<Document> {
-                $0.id == documentId
-            }
-            var descriptor = FetchDescriptor<Document>(
-                predicate: predicate
-            )
-            descriptor.fetchLimit = 1
-            let documents = try modelContext.fetch(descriptor)
 
-            if let document = documents.first {
-                viewState = .document(document)
-            } else {
-                viewState = .documentNotFound
-            }
-        } catch {
-            Logger.newDocument.errorAndAssert("Found error")
-            viewState = .error(error)
-        }
+        descriptor.fetchLimit = 1
+        _documents = Query(descriptor)
     }
 
     var body: some View {
-        Group {
-            switch viewState {
-            case .loading:
-                ProgressView("Loading document ...")
-                    .frame(maxWidth: .infinity)
-                    .navigationTitle(" ")
-            case .error(let error):
-                ErrorView(error: error)
-                    .navigationTitle(" ")
-            case .document(let document):
-                documentView(for: document)
-            case .documentNotFound:
-                ContentUnavailableView("Select a Document", systemImage: "doc", description: Text("Select a document from the list."))
+        if let doc = documents.first {
+            if doc.downloadStatus < 1 {
+                VStack(spacing: 15) {
+                    Spacer()
+                    Image(systemName: "arrow.down.doc")
+                        .font(.system(size: 55))
+                        .foregroundStyle(.secondary)
+                    Text("Downloading Document")
+                        .fontWeight(.semibold)
+                        .font(.title2)
+                    Text("The document will be downloaded to your device. Please wait.")
+                        .multilineTextAlignment(.center)
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 10)
+                    ProgressView(doc.filename, value: doc.downloadStatus, total: 1)
+                        .progressViewStyle(.linear)
+                        .padding(40)
+                    Spacer()
+                }
+                .task {
+                    #if DEBUG
+                    guard !ProcessInfo().isSwiftUIPreview else { return }
+                    #endif
+                    await NewArchiveStore.shared.startDownload(of: doc.url)
+                }
+
+            } else {
+                documentView(for: doc)
             }
-        }
-        .task {
-            await update()
-        }
-        .onChange(of: documentId) { _, _ in
-            Task {
-                await update()
-            }
+        } else {
+            ContentUnavailableView("Select a Document", systemImage: "doc", description: Text("Select a document from the list."))
         }
     }
 
+    @ViewBuilder
     func documentView(for document: Document) -> some View {
         PDFCustomView(document.url)
             .navigationTitle(document.specification)
 
-            #if os(macOS)
+#if os(macOS)
             .navigationSubtitle(Text(document.date, format: .dateTime.year().month().day()))
-            #else
+#else
             .navigationBarTitleDisplayMode(.inline)
-            #endif
+#endif
             .toolbar {
                 ToolbarItemGroup(placement: .primaryAction) {
                     // editButton
                     Button(action: {
-        //                NotificationCenter.default.edit(document: viewModel.document)
+                        //                NotificationCenter.default.edit(document: viewModel.document)
 
                         document.isTagged = false
-                        try! document.modelContext?.save()
+                        do {
+                            try document.modelContext?.save()
+                            untaggedMode = true
+                        } catch {
+                            Logger.archiveStore.error("Failed to save document \(error)")
+                            NotificationCenter.default.postAlert(error)
+                        }
 
-                        untaggedMode = true
                     }, label: {
-                        #if os(macOS)
+#if os(macOS)
                         Label("Edit", systemImage: "pencil")
-                        #else
+#else
                         Label("Edit", systemImage: "pencil")
                             .labelStyle(VerticalLabelStyle())
-                        #endif
+#endif
                     })
 
-                    #if os(macOS)
+#if os(macOS)
                     // showInFinderButton
                     Button(role: .none) {
                         NSWorkspace.shared.activateFileViewerSelecting([document.url])
                     } label: {
                         Label("Show in Finder", systemImage: "folder")
                     }
-                    #endif
+#endif
 
                     ShareLink(Text(document.filename), item: document.url)
 
@@ -136,17 +127,17 @@ struct DocumentDetailView: View {
                     }, label: {
                         Label("Delete", systemImage: "trash")
                             .foregroundColor(.red)
-                            #if !os(macOS)
+#if !os(macOS)
                             .labelStyle(VerticalLabelStyle())
-                            #endif
+#endif
                     })
                 }
-                #if os(macOS)
+#if os(macOS)
                 ToolbarItem(placement: .accessoryBar(id: "tags")) {
                     TagListView(tags: document.tags.sorted(), isEditable: false, isMultiLine: false, tapHandler: nil)
                         .font(.caption)
                 }
-                #endif
+#endif
             }
             .confirmationDialog("Do you really want to delete this document?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
                 Button("Delete", role: .destructive) {
@@ -163,6 +154,7 @@ struct DocumentDetailView: View {
                     }
                 }
             }
+
     }
 }
 
@@ -170,15 +162,15 @@ struct DocumentDetailView: View {
 #Preview("Document", traits: .fixedLayout(width: 800, height: 600)) {
     #if os(iOS)
     NavigationStack {
-        DocumentDetailView(documentId: .constant("debug-document-id"), untaggedMode: .constant(false), viewStateOverride: nil)
+        DocumentDetailView(documentId: "document-100", untaggedMode: .constant(false))
     }
-    .modelContainer(previewContainer)
+    .modelContainer(previewContainer(documents: [(id: "document-100", downloadStatus: 1)]))
     #else
     NavigationSplitView {
         Text("Sidebar")
     } detail: {
-        DocumentDetailView(documentId: .constant("debug-document-id"), untaggedMode: .constant(false), viewStateOverride: nil)
-            .modelContainer(previewContainer)
+        DocumentDetailView(documentId: "document-100", untaggedMode: .constant(false))
+            .modelContainer(previewContainer(documents: [(id: "document-100", downloadStatus: 1)]))
     }
     #endif
 }
@@ -186,15 +178,15 @@ struct DocumentDetailView: View {
 #Preview("Loading", traits: .fixedLayout(width: 800, height: 600)) {
     #if os(iOS)
     NavigationStack {
-        DocumentDetailView(documentId: .constant(nil), untaggedMode: .constant(false), viewStateOverride: .loading)
-            .modelContainer(previewContainer)
+        DocumentDetailView(documentId: "document-33", untaggedMode: .constant(false))
     }
+    .modelContainer(previewContainer(documents: [(id: "document-33", downloadStatus: 0.33)]))
     #else
     NavigationSplitView {
         Text("Sidebar")
     } detail: {
-        DocumentDetailView(documentId: .constant(nil), untaggedMode: .constant(false), viewStateOverride: .loading)
-            .modelContainer(previewContainer)
+        DocumentDetailView(documentId: "document-33", untaggedMode: .constant(false))
+            .modelContainer(previewContainer(documents: [(id: "document-33", downloadStatus: 0.33)]))
     }
     #endif
 }
@@ -202,15 +194,15 @@ struct DocumentDetailView: View {
 #Preview("Error", traits: .fixedLayout(width: 800, height: 600)) {
     #if os(iOS)
     NavigationStack {
-        DocumentDetailView(documentId: .constant("error"), untaggedMode: .constant(false), viewStateOverride: .error(NSError(domain: "Testing", code: 42)))
+        DocumentDetailView(documentId: "error", untaggedMode: .constant(false))
     }
-    .modelContainer(previewContainer)
+    .modelContainer(previewContainer())
     #else
     NavigationSplitView {
         Text("Sidebar")
     } detail: {
-        DocumentDetailView(documentId: .constant("error"), untaggedMode: .constant(false), viewStateOverride: .error(NSError(domain: "Testing", code: 42)))
-            .modelContainer(previewContainer)
+        DocumentDetailView(documentId: "error", untaggedMode: .constant(false))
+            .modelContainer(previewContainer())
     }
     #endif
 }
@@ -218,15 +210,15 @@ struct DocumentDetailView: View {
 #Preview("No Document", traits: .fixedLayout(width: 800, height: 600)) {
     #if os(iOS)
     NavigationStack {
-        DocumentDetailView(documentId: .constant("1234"), untaggedMode: .constant(false), viewStateOverride: .documentNotFound)
+        DocumentDetailView(documentId: "1234", untaggedMode: .constant(false))
     }
-    .modelContainer(previewContainer)
+    .modelContainer(previewContainer())
     #else
     NavigationSplitView {
         Text("Sidebar")
     } detail: {
-        DocumentDetailView(documentId: .constant("1234"), untaggedMode: .constant(false), viewStateOverride: .documentNotFound)
-            .modelContainer(previewContainer)
+        DocumentDetailView(documentId: "1234", untaggedMode: .constant(false))
+            .modelContainer(previewContainer())
     }
     #endif
 }

@@ -126,7 +126,7 @@ final class LocalFolderProvider: FolderProvider {
                     return nil
                 }
 
-                return FileChange.Details(url: url, filename: filename, size: fileSize, downloadStatus: downloadStatus)
+                return FileChange.Details(url: url, filename: filename, sizeInBytes: Double(fileSize), downloadStatus: downloadStatus)
             }
             .sorted { $0.url.path < $1.url.path }
 

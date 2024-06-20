@@ -15,21 +15,21 @@ enum FileChange {
     struct Details: Equatable {
         let url: URL
         let filename: String
-        let size: Int
+        let sizeInBytes: Double
         let downloadStatus: DownloadStatus
 
-        init(url: URL, filename: String, size: Int, downloadStatus: FileChange.DownloadStatus) {
+        init(url: URL, filename: String, sizeInBytes: Double, downloadStatus: FileChange.DownloadStatus) {
             self.url = url
             self.filename = filename
-            self.size = size
+            self.sizeInBytes = sizeInBytes
             self.downloadStatus = downloadStatus
         }
 
         /// This should only be used while testing.
-        init(fileUrl: URL, size: Int = 42, downloadStatus: FileChange.DownloadStatus = .local) {
+        init(fileUrl: URL, sizeInBytes: Double = 42, downloadStatus: FileChange.DownloadStatus = .local) {
             self.url = fileUrl
             self.filename = fileUrl.lastPathComponent
-            self.size = size
+            self.sizeInBytes = sizeInBytes
             self.downloadStatus = downloadStatus
         }
     }

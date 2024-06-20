@@ -46,6 +46,8 @@
 		A31BE2E82BBB43A200022885 /* UntaggedDocumentsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31BE2E62BBB43A200022885 /* UntaggedDocumentsList.swift */; };
 		A31BE2EC2BBB4A4000022885 /* UntaggedDocumentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31BE2EB2BBB4A4000022885 /* UntaggedDocumentView.swift */; };
 		A31BE2ED2BBB4A4000022885 /* UntaggedDocumentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31BE2EB2BBB4A4000022885 /* UntaggedDocumentView.swift */; };
+		A32064622C24D70700B4EB21 /* ProcessInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32064612C24D70700B4EB21 /* ProcessInfo.swift */; };
+		A32064632C24D70700B4EB21 /* ProcessInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32064612C24D70700B4EB21 /* ProcessInfo.swift */; };
 		A3356EC82BA4D318000AA51A /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A782BA4CF04009F8381 /* Array.swift */; };
 		A3356EC92BA4D318000AA51A /* FileManagerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A7A2BA4CF04009F8381 /* FileManagerExtension.swift */; };
 		A3356ECA2BA4D318000AA51A /* TagParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A8E2BA4CF04009F8381 /* TagParser.swift */; };
@@ -323,6 +325,7 @@
 		A31BE2DF2BB8AFF000022885 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		A31BE2E62BBB43A200022885 /* UntaggedDocumentsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UntaggedDocumentsList.swift; sourceTree = "<group>"; };
 		A31BE2EB2BBB4A4000022885 /* UntaggedDocumentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UntaggedDocumentView.swift; sourceTree = "<group>"; };
+		A32064612C24D70700B4EB21 /* ProcessInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessInfo.swift; sourceTree = "<group>"; };
 		A34AF4972C1199CD0043D56A /* PDFDropHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFDropHandler.swift; sourceTree = "<group>"; };
 		A34AF49B2C138C110043D56A /* StorageActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageActor.swift; sourceTree = "<group>"; };
 		A3579A4E2BFF5CCA001D921C /* SupportMail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportMail.swift; sourceTree = "<group>"; };
@@ -707,6 +710,7 @@
 				A3FE9A7E2BA4CF04009F8381 /* String.swift */,
 				A3B5D9002BB36465002B9FF1 /* Sequence.swift */,
 				A39D507C2BFDE4AE0028696A /* Bool.swift */,
+				A32064612C24D70700B4EB21 /* ProcessInfo.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1371,6 +1375,7 @@
 				A3356EDF2BA4D318000AA51A /* PathManager+PathError.swift in Sources */,
 				A31BE2DA2BB8A9DA00022885 /* ErrorView.swift in Sources */,
 				A3356ED22BA4D318000AA51A /* DocumentProcessingService.swift in Sources */,
+				A32064622C24D70700B4EB21 /* ProcessInfo.swift in Sources */,
 				A3356EE82BA4D318000AA51A /* FileChange+DownloadStatus.swift in Sources */,
 				A3356FAF2BA4D364000AA51A /* DocumentCameraView.swift in Sources */,
 				A3356ED92BA4D318000AA51A /* FolderProvider.swift in Sources */,
@@ -1483,6 +1488,7 @@
 				A3356FCF2BA4D365000AA51A /* MarkdownView.swift in Sources */,
 				A3356FD62BA4D365000AA51A /* OnboardingScreens.swift in Sources */,
 				A3356FEF2BA4D365000AA51A /* ScanTabViewModel.swift in Sources */,
+				A32064632C24D70700B4EB21 /* ProcessInfo.swift in Sources */,
 				A3356F642BA4D32F000AA51A /* AlertDataModel.swift in Sources */,
 				A3356EFC2BA4D319000AA51A /* Document+Helper.swift in Sources */,
 				A3F4EA232C067AA2003E8500 /* DropButton.swift in Sources */,

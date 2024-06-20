@@ -213,7 +213,7 @@ struct SettingsPreviewView: View {
 
 #Preview("Test", traits: .sizeThatFitsLayout) {
     SettingsPreviewView()
-        .modelContainer(previewContainer)
+        .modelContainer(previewContainer())
 }
 #endif
 #endif

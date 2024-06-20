@@ -11,6 +11,7 @@ import Quartz.PDFKit
 #else
 import PDFKit
 #endif
+import OSLog
 
 private let dateFormatter = DateFormatter.with("yyyy-MM-dd")
 

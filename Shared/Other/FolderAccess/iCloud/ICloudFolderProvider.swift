@@ -180,7 +180,7 @@ final class ICloudFolderProvider: FolderProvider {
             preconditionFailure("The downloading status '\(downloadingStatus)' was not handled correctly!")
         }
 
-        return FileChange.Details(url: documentPath, filename: filename, size: Int(size), downloadStatus: documentStatus)
+        return FileChange.Details(url: documentPath, filename: filename, sizeInBytes: Double(size), downloadStatus: documentStatus)
     }
 
     // MARK: - Notifications

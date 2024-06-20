@@ -38,7 +38,26 @@ struct ArchiveView: View {
             })
             .onChange(of: documents) { _, newDocuments in
                 Task.detached(priority: .background) {
-                    await updateSuggestedTokens(from: newDocuments)
+                    let mostUsedTags = newDocuments.flatMap(\.tags).histogram
+                        .sorted { $0.value < $1.value }
+                        .reversed()
+                        .prefix(5)
+                        .map(\.key)
+                        .map { SearchToken.tag($0) }
+
+                    let possibleYears = Set(newDocuments.map { $0.filename.prefix(4) })
+                    let foundYears: [SearchToken] = possibleYears
+                        .compactMap { Int($0) }
+                        .sorted()
+                        .reversed()
+                        .prefix(5)
+                        .map { .year($0) }
+
+                    guard !Task.isCancelled else { return }
+                    await MainActor.run {
+                        guard !Task.isCancelled else { return }
+                        self.suggestedTokens = mostUsedTags + foundYears
+                    }
                 }
             }
             .navigationTitle("Archive")
@@ -52,29 +71,6 @@ struct ArchiveView: View {
             ArchiveListView(selectedDocumentId: $selectedDocumentId, searchString: searchText, tokens: tokens, shoudLoadAll: $shoudLoadAll)
         }
     }
-
-    private func updateSuggestedTokens(from documents: [Document]) async {
-        let mostUsedTags = documents.flatMap(\.tags).histogram
-            .sorted { $0.value < $1.value }
-            .reversed()
-            .prefix(5)
-            .map(\.key)
-            .map { SearchToken.tag($0) }
-
-        let possibleYears = Set(documents.map { $0.filename.prefix(4) })
-        let foundYears: [SearchToken] = possibleYears
-            .compactMap { Int($0) }
-            .sorted()
-            .reversed()
-            .prefix(5)
-            .map { .year($0) }
-
-        guard !Task.isCancelled else { return }
-        await MainActor.run {
-            guard !Task.isCancelled else { return }
-            suggestedTokens = mostUsedTags + foundYears
-        }
-    }
 }
 
  #if DEBUG
@@ -82,6 +78,6 @@ struct ArchiveView: View {
      NavigationStack {
          ArchiveView(selectedDocumentId: .constant("debug-document-id"))
      }
-     .modelContainer(previewContainer)
+     .modelContainer(previewContainer())
  }
  #endif
