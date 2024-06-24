@@ -12,11 +12,11 @@ import SwiftUI
 struct SettingsView: View {
 
     @AppStorage("tutorialShown", store: .appGroup) private var tutorialShown = false
-    @ObservedObject var viewModel: MoreTabViewModel
+    @ObservedObject var viewModel: SettingsViewModel
     @State private var showMoreInformation = true
     @Query private var documents: [Document]
 
-    init(viewModel: MoreTabViewModel) {
+    init(viewModel: SettingsViewModel) {
         self.viewModel = viewModel
     }
 
@@ -45,7 +45,7 @@ struct SettingsView: View {
                     Label("Statistics", systemImage: "list.number")
                 }
                 .tag(Tabs.statistics)
-            subscription
+            SubscriptionSectionView()
                 .tabItem {
                     Label("Premium", systemImage: "purchased.circle")
                 }
@@ -150,28 +150,12 @@ struct SettingsView: View {
             .frame(minWidth: 450, minHeight: 170)
     }
 
-    private var subscription: some View {
-        Form {
-            HStack {
-                Text("Status:")
-                Text(viewModel.subscriptionStatus)
-            }
-//            DetailRowView(name: "Activate/Restore Premium") {
-//                NotificationCenter.default.post(.showSubscriptionView)
-//            }
-//            Spacer()
-            Link("Manage Subscription", destination: viewModel.manageSubscriptionUrl)
-        }
-        .padding(20)
-        .frame(width: 450, height: 150)
-    }
-
     private var moreInformation: some View {
         ScrollView {
             VStack(spacing: 32) {
                 AboutMeView()
 
-                Text("Version \(MoreTabViewModel.appVersion)")
+                Text("Version \(SettingsViewModel.appVersion)")
                     .font(.caption)
                     .foregroundStyle(.secondary)
 
@@ -188,13 +172,13 @@ struct SettingsView: View {
                 VStack {
                     Text("Privacy")
                         .font(.title)
-                    MoreTabViewModel.markdownView(for: "Terms & Privacy", withKey: "Privacy", withScrollView: false)
+                    SettingsViewModel.markdownView(for: "Terms & Privacy", withKey: "Privacy", withScrollView: false)
                 }
 
                 VStack {
                     Text("Imprint")
                         .font(.title)
-                    MoreTabViewModel.markdownView(for: "Imprint", withKey: "Imprint", withScrollView: false)
+                    SettingsViewModel.markdownView(for: "Imprint", withKey: "Imprint", withScrollView: false)
                 }
             }
         }
@@ -205,7 +189,7 @@ struct SettingsView: View {
 #if DEBUG
 @MainActor
 struct SettingsPreviewView: View {
-    @State var viewModel = MoreTabViewModel()
+    @State var viewModel = SettingsViewModel()
     var body: some View {
         SettingsView(viewModel: viewModel)
     }

@@ -1,5 +1,5 @@
 //
-//  MoreTabViewModel+StorageType.swift
+//  SettingsViewModel+StorageType.swift
 //  
 //
 //  Created by Julian Kahnert on 18.11.20.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension MoreTabViewModel {
+extension SettingsViewModel {
     enum StorageType: String, CaseIterable, Identifiable, Hashable {
         case iCloudDrive
         #if !os(macOS)

@@ -11,7 +11,7 @@ import OSLog
 struct IosSplitNavigation: View {
     @Environment(Subscription.self) var subscription
 
-    @StateObject private var moreViewModel = MoreTabViewModel()
+    @StateObject private var moreViewModel = SettingsViewModel()
     @State private var dropHandler = PDFDropHandler()
     @State private var selectedDocumentId: String?
     @AppStorage("selectedTab", store: .appGroup) private var selectedTab: TabType = .scan
@@ -45,33 +45,40 @@ struct IosSplitNavigation: View {
             }
         }
     }
+
     var body: some View {
         #warning("Only use this as a fallback")
-        TabView(selection: $selectedTab) {
-            Text("Test")
-                .tabItem {
-                    Label(TabType.scan.name, systemImage: TabType.scan.systemImage)
-                }
-                .tag(TabType.scan)
+        NavigationSplitView {
+            TabView(selection: $selectedTab) {
+                Text("Test")
+                    .tabItem {
+                        Label(TabType.scan.name, systemImage: TabType.scan.systemImage)
+                    }
+                    .tag(TabType.scan)
 
-            archiveView
-                .tabItem {
-                    Label(TabType.archive.name, systemImage: TabType.archive.systemImage)
-                }
-                .tag(TabType.archive)
+                archiveView
+                    .tabItem {
+                        Label(TabType.archive.name, systemImage: TabType.archive.systemImage)
+                    }
+                    .tag(TabType.archive)
 
-            untaggedView
-                .tabItem {
-                    Label(TabType.tag.name, systemImage: TabType.tag.systemImage)
-                }
-                .tag(TabType.tag)
+                UntaggedDocumentsList(selectedDocumentId: $selectedDocumentId)
+                    .tabItem {
+                        Label(TabType.tag.name, systemImage: TabType.tag.systemImage)
+                    }
+                    .tag(TabType.tag)
 
-            Text("Test4")
-                .tabItem {
-                    Label(TabType.more.name, systemImage: TabType.more.systemImage)
-                }
-                .tag(TabType.more)
+                settingsView
+                    .tabItem {
+                        Label(TabType.more.name, systemImage: TabType.more.systemImage)
+                    }
+                    .tag(TabType.more)
+            }
+        } detail: {
+            #warning("TODO: switch here between archive/untagged document view")
+            UntaggedDocumentView(documentId: $selectedDocumentId)
         }
+
 //        TabView(selection: $selection) {
 //            Tab("Scan", systemImage: "doc.text.viewfinder", value: .scan) {
 //                Text("1")
@@ -114,17 +121,10 @@ struct IosSplitNavigation: View {
         })
     }
 
-    private var untaggedView: some View {
-        NavigationSplitView(sidebar: {
-            UntaggedDocumentsList(selectedDocumentId: $selectedDocumentId)
-        }, detail: {
-            UntaggedDocumentView(documentId: $selectedDocumentId)
-//                .sheet(isPresented: subscription.isSubscribed, content: {
-//                    InAppPurchaseView(onCancel: {
-//                        untaggedMode = false
-//                    })
-//                })
-        })
+    private var settingsView: some View {
+        NavigationStack {
+            SettingsView(viewModel: moreViewModel)
+        }
     }
 }
 

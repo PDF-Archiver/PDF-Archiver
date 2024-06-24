@@ -28,7 +28,7 @@
 //
 //    let imageConverter: ImageConverter
 //    var scanViewModel: ScanTabViewModel
-//    let moreViewModel = MoreTabViewModel()
+//    let moreViewModel = SettingsViewModel()
 //
 //    private var disposables = Set<AnyCancellable>()
 //

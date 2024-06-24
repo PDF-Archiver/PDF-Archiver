@@ -15,6 +15,7 @@ struct ArchiveView: View {
         return formatter
     }()
 
+    #warning("TODO: should we exclude the pdf content to reduce memory size here?")
     @Query(sort: \Document.date, order: .reverse) private var documents: [Document]
 
     @Binding var selectedDocumentId: String?

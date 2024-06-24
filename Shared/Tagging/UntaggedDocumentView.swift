@@ -9,7 +9,10 @@ import SwiftData
 import SwiftUI
 import OSLog
 
+@MainActor
 struct UntaggedDocumentView: View {
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+
     enum ViewState {
         case loading
         case error(any Error)
@@ -78,20 +81,13 @@ struct UntaggedDocumentView: View {
                 ErrorView(error: error)
                     .navigationTitle(" ")
             case .document(let document):
-                HStack {
-                    DocumentView(document: document, onRevert: lastSavedDocumentId == nil ? nil : {
-                        guard let lastSavedDocumentId else {
-                            assertionFailure("Failed to get lastSavedDocumentId")
-                            return
-                        }
-                        documentId = lastSavedDocumentId
-                    })
-                    DocumentInformation(information: DocumentInformationViewModel(url: document.url, onSave: {
-                        self.lastSavedDocumentId = self.documentId
-                        self.documentId = nil
-                    }))
-                    .frame(width: 350)
-                }
+                documentView(for: document)
+                    .navigationTitle(document.specification)
+                    #if os(macOS)
+                    .navigationSubtitle(Text(document.date, format: .dateTime.year().month().day()))
+                    #else
+                    .navigationBarTitleDisplayMode(.inline)
+                    #endif
             case .documentNotFound:
                 ContentUnavailableView("Select a Document", systemImage: "doc", description: Text("Select a document from the list."))
             }
@@ -106,21 +102,53 @@ struct UntaggedDocumentView: View {
         }
     }
 
+    @ViewBuilder
+    private func documentView(for document: Document) -> some View {
+        if horizontalSizeClass == .compact {
+            DocumentView(document: document, onRevert: lastSavedDocumentId == nil ? nil : {
+                guard let lastSavedDocumentId else {
+                    assertionFailure("Failed to get lastSavedDocumentId")
+                    return
+                }
+                documentId = lastSavedDocumentId
+            })
+            DocumentInformation(information: DocumentInformationViewModel(url: document.url, onSave: {
+                self.lastSavedDocumentId = self.documentId
+                self.documentId = nil
+            }))
+        } else {
+            HStack {
+                DocumentView(document: document, onRevert: lastSavedDocumentId == nil ? nil : {
+                    guard let lastSavedDocumentId else {
+                        assertionFailure("Failed to get lastSavedDocumentId")
+                        return
+                    }
+                    documentId = lastSavedDocumentId
+                })
+                DocumentInformation(information: DocumentInformationViewModel(url: document.url, onSave: {
+                    self.lastSavedDocumentId = self.documentId
+                    self.documentId = nil
+                }))
+                .frame(width: 350)
+            }
+        }
+    }
+
     struct DocumentView: View {
+        @Environment(\.horizontalSizeClass) var horizontalSizeClass
+
         let document: Document
         let onRevert: (() -> Void)?
         @State private var showDeleteConfirmation = false
 
         var body: some View {
             PDFCustomView(document.url)
-                .navigationTitle(document.specification)
-                #if os(macOS)
-                .navigationSubtitle(Text(document.date, format: .dateTime.year().month().day()))
-                #endif
                 .toolbar {
                     ToolbarItemGroup(placement: .cancellationAction) {
                         revertButton
-                        showInFinderButton
+                        if horizontalSizeClass != .compact {
+                            showInFinderButton
+                        }
                         deleteButton
                     }
                 }
@@ -184,12 +212,19 @@ struct UntaggedDocumentView: View {
 
 #if DEBUG
 #Preview("Document", traits: .fixedLayout(width: 800, height: 600)) {
-    NavigationSplitView {
-        Text("Sidebar")
-    } detail: {
-        UntaggedDocumentView(documentId: .constant("debug-document-id"), viewStateOverride: nil)
-            .modelContainer(previewContainer())
-    }
+        NavigationSplitView {
+            Text("Sidebar")
+        } detail: {
+            UntaggedDocumentView(documentId: .constant("debug-document-id"), viewStateOverride: nil)
+                .modelContainer(previewContainer())
+        }
+}
+
+#Preview("Document (Stack)", traits: .fixedLayout(width: 800, height: 600)) {
+        NavigationStack {
+            UntaggedDocumentView(documentId: .constant("debug-document-id"), viewStateOverride: nil)
+                .modelContainer(previewContainer())
+        }
 }
 
 #Preview("Loading", traits: .fixedLayout(width: 800, height: 600)) {

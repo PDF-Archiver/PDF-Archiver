@@ -11,7 +11,8 @@ import OSLog
 import PDFKit
 
 @Observable
-class DocumentInformationViewModel {
+@MainActor
+final class DocumentInformationViewModel {
     let url: URL
     let onSave: () -> Void
     var date = Date()
@@ -138,7 +139,9 @@ class DocumentInformationViewModel {
     }
 }
 
+@MainActor
 struct DocumentInformation: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.modelContext) private var modelContext
     @Bindable var information: DocumentInformationViewModel
 
@@ -187,12 +190,14 @@ struct DocumentInformation: View {
                     .focusable(false)
                 }
 
-                TagListView(tags: information.tagSuggestions,
-                            isEditable: false,
-                            isSuggestion: true,
-                            isMultiLine: true,
-                            tapHandler: information.add(tag:))
-                .focusable(false)
+                if horizontalSizeClass != .compact {
+                    TagListView(tags: information.tagSuggestions,
+                                isEditable: false,
+                                isSuggestion: true,
+                                isMultiLine: true,
+                                tapHandler: information.add(tag:))
+                    .focusable(false)
+                }
 
                 TextField("Enter Tag", text: $information.tagSearchterm)
                     .onSubmit {
@@ -208,6 +213,7 @@ struct DocumentInformation: View {
                     .textFieldStyle(.squareBorder)
                     #else
                     .keyboardType(.alphabet)
+                    .autocorrectionDisabled()
                     #endif
             }
             .onChange(of: information.tagSearchterm) { _, term in
@@ -229,6 +235,17 @@ struct DocumentInformation: View {
         .formStyle(.grouped)
         .task {
             await information.analyseDocument()
+        }
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    TagListView(tags: information.tagSuggestions,
+                                isEditable: false,
+                                isSuggestion: true,
+                                isMultiLine: false,
+                                tapHandler: information.add(tag:))
+                }
+            }
         }
     }
 

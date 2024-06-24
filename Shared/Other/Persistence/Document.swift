@@ -21,13 +21,14 @@ final class Document {
     }
     var specification: String = ""
     var tags: [String] = []
+    var content: String = ""
 
     var _sizeInBytes: Double
 
     // 0: remote - 1: local
     var downloadStatus: Double
 
-    init(id: String, url: URL, isTagged: Bool, filename: String, sizeInBytes: Double, date: Date, specification: String, tags: [String], downloadStatus: Double) {
+    init(id: String, url: URL, isTagged: Bool, filename: String, sizeInBytes: Double, date: Date, specification: String, tags: [String], content: String, downloadStatus: Double) {
         self.id = id
         self.url = url
         self.isTagged = isTagged
@@ -36,6 +37,7 @@ final class Document {
         self.date = date
         self.specification = specification
         self.tags = tags
+        self.content = content
         self.downloadStatus = downloadStatus
     }
 }

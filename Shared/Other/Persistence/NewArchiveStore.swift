@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftData
+import PDFKit.PDFDocument
 import OSLog
 
 actor NewArchiveStore: ModelActor {
@@ -179,6 +180,7 @@ actor NewArchiveStore: ModelActor {
                                             date: data.date ?? details.url.fileCreationDate() ?? Date(),
                                             specification: isTagged ? (data.specification ?? "n/a").replacingOccurrences(of: "-", with: " ") : (data.specification ?? "n/a"),
                                             tags: data.tagNames ?? [],
+                                            content: "",    // we write the content later on a background thread
                                             downloadStatus: downloadStatus)
                     modelContext.insert(document)
 

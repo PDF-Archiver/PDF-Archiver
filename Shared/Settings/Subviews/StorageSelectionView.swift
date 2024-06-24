@@ -10,13 +10,13 @@ import UniformTypeIdentifiers
 
 struct StorageSelectionView: View {
 
-    @Binding var selection: MoreTabViewModel.StorageType
+    @Binding var selection: SettingsViewModel.StorageType
     @State private var showDocumentPicker = false
     let onCompletion: (Result<URL, any Error>) -> Void
 
     var body: some View {
         Form {
-            ForEach(MoreTabViewModel.StorageType.allCases) { storageType in
+            ForEach(SettingsViewModel.StorageType.allCases) { storageType in
                 Section(footer: storageType.descriptionView) {
                     Button(action: {
                         selection = storageType

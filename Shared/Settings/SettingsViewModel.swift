@@ -1,5 +1,5 @@
 //
-//  MoreTabViewModel.swift
+//  SettingsViewModel.swift
 //  PDFArchiver
 //
 //  Created by Julian Kahnert on 13.11.19.
@@ -14,7 +14,7 @@ import CoreServices
 #endif
 
 @MainActor
-class MoreTabViewModel: ObservableObject, Log {
+final class SettingsViewModel: ObservableObject, Log {
     static let appVersion = AppEnvironment.getFullVersion()
 
     static func markdownView(for title: LocalizedStringKey, withKey key: String, withScrollView scrollView: Bool = true) -> some View {
@@ -32,7 +32,6 @@ class MoreTabViewModel: ObservableObject, Log {
     @Published var documentSpecificationNotRequired = UserDefaults.documentSpecificationNotRequired
     @Published var selectedArchiveType = StorageType.getCurrent()
     @Published var showArchiveTypeSelection = false
-    @Published var subscriptionStatus: LocalizedStringKey = "Inactive ❌"
     @Published var newArchiveUrl: URL?
 
     @Published var finderTagUpdateProgress: Double = 0
@@ -40,17 +39,12 @@ class MoreTabViewModel: ObservableObject, Log {
     @Published var observedFolderURL: URL? = UserDefaults.observedFolderURL
     #endif
 
-    var manageSubscriptionUrl: URL {
-        URL(string: "https://apps.apple.com/account/subscriptions")!
-    }
-
     var pdfArchiverUrl: URL {
         URL(string: "https://pdf-archiver.io")!
     }
 
     private var disposables = Set<AnyCancellable>()
     private let queue = DispatchQueue(label: "MoreTabViewModel", qos: .userInitiated)
-    private let queueUtility = DispatchQueue(label: "MoreTabViewModel-utility", qos: .utility)
 
     init() {
         $selectedQualityIndex
@@ -125,10 +119,10 @@ class MoreTabViewModel: ObservableObject, Log {
     private func handle(newType type: PathManager.ArchivePathType) {
         Task {
             do {
-                try await PathManager.shared.setArchiveUrl(with: type)
+                try PathManager.shared.setArchiveUrl(with: type)
 
-                let archiveUrl = try await PathManager.shared.getArchiveUrl()
-                let untaggedUrl = try await PathManager.shared.getUntaggedUrl()
+                let archiveUrl = try PathManager.shared.getArchiveUrl()
+                let untaggedUrl = try PathManager.shared.getUntaggedUrl()
 
                 self.showArchiveTypeSelection = false
                 await NewArchiveStore.shared.update(archiveFolder: archiveUrl, untaggedFolders: [untaggedUrl])
