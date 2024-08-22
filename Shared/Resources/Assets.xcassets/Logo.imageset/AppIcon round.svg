@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Pixodesk SVG (https://pixodesk.com) -->
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:pixodesk="https://pixodesk.com" viewBox="0 0 1024 1024" text-rendering="geometricPrecision" shape-rendering="geometricPrecision">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:pixodesk="https://pixodesk.com" viewBox="0 0 512 512" text-rendering="geometricPrecision" shape-rendering="geometricPrecision">
   <defs>
     <filter>
       <feDropShadow result="drop-shadow-0" dy="10" stdDeviation="10" flood-opacity="0.3"/>
@@ -9,8 +9,8 @@
       <feDropShadow result="drop-shadow-0" dy="10" stdDeviation="10" flood-opacity="0.3"/>
     </filter>
   </defs>
-  <path class="st1" fill="#ca414f" fill-rule="evenodd" d="M100,724L100,300C100,185.001,170,99.995,300.026,100L724,99.995C854,100,924,185.001,924,300L924,724C924,839.001,854,923.995,724,924L300.026,924C170,924,100,839.001,100,724z" style="pointer-events:none"/>
-  <g transform="translate(101.44, 115.16)scale(0.8, 0.8)">
+  <ellipse fill="#ca414f" stroke="none" transform="translate(395.8384, 402.7828)" cx="-139.8384" cy="-146.7828" rx="256" ry="256"/>
+  <g transform="translate(25.06, 32.7775)scale(0.45, 0.45)">
     <path id="svg_8" class="st3" fill="#ffffff" d="M577,320.6L577,177L305.8,177C279.4,177,257.9,198.4,257.9,224.9L257.9,767.2C257.9,793.6,279.3,815.1,305.8,815.1L720.5,815.1C746.9,815.1,768.4,793.7,768.4,767.2L768.4,368.4L624.8,368.4C598.4,368.4,577,347,577,320.6z"/>
     <path id="svg_10" class="st4" fill="#231f20" opacity="0.2" d="M593.2,357.2L768.4,512L768.4,368.4"/>
     <path id="svg_12" class="st5" fill="#353e49" d="M577,177L577,320.6C577,347,598.4,368.5,624.9,368.5L768.5,368.5L577,177z"/>
