@@ -54,7 +54,7 @@ public struct MainNavigationView: View {
     private var sidebar: some View {
         NavigationView {
             List {
-                ForEach(Tab.allCases) { tab in
+                ForEach(TabType.allCases) { tab in
                     NavigationLink(destination: viewModel.lazyView(for: tab), tag: tab, selection: $viewModel.currentTab) {
                         Label {
                             Text(tab.name)
@@ -112,7 +112,7 @@ public struct MainNavigationView: View {
 
     private var tabbar: some View {
         TabView(selection: viewModel.unwrappedCurrentTab) {
-            ForEach(Tab.allCases) { tab in
+            ForEach(TabType.allCases) { tab in
                 viewModel.lazyView(for: tab)
                     .wrapNavigationView(when: tab != .scan)
                     .navigationViewStyle(CustomNavigationStyle())

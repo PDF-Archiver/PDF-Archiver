@@ -27,10 +27,10 @@ public final class MainNavigationViewModel: ObservableObject, Log {
     @Published var archiveCategories: [String] = []
     @Published var tagCategories: [String] = []
 
-    @Published var currentTab: Tab? = UserDefaults.lastSelectedTab
+    @Published var currentTab: TabType? = UserDefaults.lastSelectedTab
     @Published var showTutorial = !UserDefaults.tutorialShown
     @Published var sheetType: SheetType?
-    lazy var unwrappedCurrentTab: Binding<Tab> = Binding { () -> Tab in
+    lazy var unwrappedCurrentTab: Binding<TabType> = Binding { () -> TabType in
         self.currentTab ?? .scan
     } set: { newTab in
         self.currentTab = newTab
@@ -220,7 +220,7 @@ public final class MainNavigationViewModel: ObservableObject, Log {
         }
     }
 
-    func lazyView(for type: Tab) -> LazyView<AnyView> {
+    func lazyView(for type: TabType) -> LazyView<AnyView> {
         LazyView {
             switch type {
                 case .scan:

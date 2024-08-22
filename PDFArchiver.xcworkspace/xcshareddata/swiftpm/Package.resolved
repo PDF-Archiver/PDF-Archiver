@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/tikhop/ASN1Swift",
         "state": {
           "branch": null,
-          "revision": "177417b6bf89431a0750ee640012b6aed8961c6a",
-          "version": "1.2.5"
+          "revision": "403cd95194e6a962e16db7c0d373d89fce83e0f7",
+          "version": "1.2.7"
         }
       },
       {
@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/WeTransfer/Diagnostics",
         "state": {
           "branch": null,
-          "revision": "c3816d37ff6993b7de46aff3370354c4cadca7c8",
-          "version": "4.5.0"
+          "revision": "f5c4c56ecd91c348bb20b7e85828594fae197f83",
+          "version": "4.6.0"
         }
       },
       {
@@ -69,8 +69,8 @@
         "repositoryURL": "https://github.com/getsentry/sentry-cocoa",
         "state": {
           "branch": null,
-          "revision": "b847a202a517a90763e8fd0656d8028aeee7b78d",
-          "version": "8.20.0"
+          "revision": "e2ac1723a4a9632e291c171b6e25a0c403b0fecb",
+          "version": "8.35.0"
         }
       },
       {
@@ -78,8 +78,8 @@
         "repositoryURL": "https://github.com/apple/swift-log",
         "state": {
           "branch": null,
-          "revision": "e97a6fcb1ab07462881ac165fdbb37f067e205d5",
-          "version": "1.5.4"
+          "revision": "9cb486020ebf03bfa5b5df985387a14a98744537",
+          "version": "1.6.1"
         }
       },
       {
@@ -87,8 +87,8 @@
         "repositoryURL": "https://github.com/SwiftUIX/SwiftUIX",
         "state": {
           "branch": null,
-          "revision": "a5a22a1aaca885c229f475af049d75a6d9144de8",
-          "version": "0.1.9"
+          "revision": "cdc902f828e8c457f601e744cc7607148dcdb91a",
+          "version": "0.2.2"
         }
       },
       {
@@ -96,8 +96,8 @@
         "repositoryURL": "https://github.com/tikhop/TPInAppReceipt",
         "state": {
           "branch": null,
-          "revision": "5c1ecd9da98fe0373da9d66e8106104d0d305ce3",
-          "version": "3.4.0"
+          "revision": "e135055eaeba5a52874b7f9b290f42890cbe981f",
+          "version": "3.4.1"
         }
       }
     ]
