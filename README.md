@@ -4,9 +4,7 @@
 </a>
 <br>
 <br>
-<a href="https://apps.apple.com/app/apple-store/id1433801905?pt=118993774&ct=GitHub&mt=8">
-<img src="https://linkmaker.itunes.apple.com/assets/shared/badges/en-us/appstore-lrg.svg" width="135px">
-</a>
+<a href="https://apps.apple.com/de/app/pdf-archiver/id1433801905?itsct=apps_box_badge&amp;itscg=30200" style="display: inline-block; overflow: hidden; border-radius: 13px; width: 250px; height: 83px;"><img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/de-de?size=250x83&amp;releaseDate=1539734400" alt="Download on the App Store" style="border-radius: 13px; width: 250px; height: 83px;"></a>
 </p>
 
 # PDF Archiver
