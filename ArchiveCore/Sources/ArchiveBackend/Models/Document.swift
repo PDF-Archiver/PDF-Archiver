@@ -160,8 +160,9 @@ public final class Document: Identifiable, Codable, Log {
         // parse the current filename and add finder file tags
         let parsedFilename = Document.parseFilename(self.filename)
         let placeholderTag = Constants.documentTagPlaceholder.lowercased()
-        let tags = Set(parsedFilename.tagNames ?? [])
-            .union(path.getFileTags())
+        
+        
+        let tags = Set(parsedFilename.tagNames ?? path.getFileTags())
             .filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && $0.lowercased() != placeholderTag }
 
         self.downloadStatus = downloadStatus
