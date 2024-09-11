@@ -9,11 +9,11 @@
       <feDropShadow result="drop-shadow-0" dy="10" stdDeviation="10" flood-opacity="0.3"/>
     </filter>
   </defs>
-  <path class="st1" fill="#ca414f" fill-rule="evenodd" d="M100,724L100,300C100,185.001,170,99.995,300.026,100L724,99.995C854,100,924,185.001,924,300L924,724C924,839.001,854,923.995,724,924L300.026,924C170,924,100,839.001,100,724z" style="pointer-events:none"/>
+  <path class="st1" fill="#353e49" fill-rule="evenodd" d="M100,724L100,300C100,185.001,170,99.995,300.026,100L724,99.995C854,100,924,185.001,924,300L924,724C924,839.001,854,923.995,724,924L300.026,924C170,924,100,839.001,100,724z" style="pointer-events:none"/>
   <g transform="translate(101.44, 115.16)scale(0.8, 0.8)">
     <path id="svg_8" class="st3" fill="#ffffff" d="M577,320.6L577,177L305.8,177C279.4,177,257.9,198.4,257.9,224.9L257.9,767.2C257.9,793.6,279.3,815.1,305.8,815.1L720.5,815.1C746.9,815.1,768.4,793.7,768.4,767.2L768.4,368.4L624.8,368.4C598.4,368.4,577,347,577,320.6z"/>
     <path id="svg_10" class="st4" fill="#231f20" opacity="0.2" d="M593.2,357.2L768.4,512L768.4,368.4"/>
-    <path id="svg_12" class="st5" fill="#353e49" d="M577,177L577,320.6C577,347,598.4,368.5,624.9,368.5L768.5,368.5L577,177z"/>
+    <path id="svg_12" class="st5" fill="#ca414f" d="M577,177L577,320.6C577,347,598.4,368.5,624.9,368.5L768.5,368.5L577,177z"/>
     <rect id="svg_14" class="st6" fill="#222d3c" opacity="0.5" x="353.7" y="336.5" width="153.5" height="31.9"/>
     <rect id="svg_16" class="st6" fill="#222d3c" opacity="0.5" x="353.7" y="496" width="319" height="31.9"/>
     <rect id="svg_18" class="st6" fill="#222d3c" opacity="0.5" x="353.7" y="416.3" width="319" height="31.9"/>
