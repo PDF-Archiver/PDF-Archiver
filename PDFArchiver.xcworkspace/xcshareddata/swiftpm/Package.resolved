@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/WeTransfer/Diagnostics",
         "state": {
           "branch": null,
-          "revision": "f5c4c56ecd91c348bb20b7e85828594fae197f83",
-          "version": "4.6.0"
+          "revision": "ceccf2c76f315ec86e859895875fb424bf51018a",
+          "version": "5.0.0"
         }
       },
       {
@@ -69,8 +69,8 @@
         "repositoryURL": "https://github.com/getsentry/sentry-cocoa",
         "state": {
           "branch": null,
-          "revision": "e2ac1723a4a9632e291c171b6e25a0c403b0fecb",
-          "version": "8.35.0"
+          "revision": "5575af93efb776414f243e93d6af9f6258dc539a",
+          "version": "8.36.0"
         }
       },
       {

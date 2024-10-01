@@ -102,7 +102,6 @@ struct PDFArchiverApp: App, Log {
 
         do {
             try DiagnosticsLogger.setup()
-            UserDefaultsReporter.userDefaults = UserDefaults.appGroup
         } catch {
             log.warning("Failed to setup the Diagnostics Logger")
         }
