@@ -190,6 +190,8 @@
 		A34AF49A2C119A060043D56A /* PDFDropHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34AF4972C1199CD0043D56A /* PDFDropHandler.swift */; };
 		A34AF49C2C138C110043D56A /* StorageActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34AF49B2C138C110043D56A /* StorageActor.swift */; };
 		A34AF49D2C138C110043D56A /* StorageActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34AF49B2C138C110043D56A /* StorageActor.swift */; };
+		A34CECB72CAC8EA000453AD6 /* ArchiveListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34CECB62CAC8EA000453AD6 /* ArchiveListItemView.swift */; };
+		A34CECB82CAC8EA000453AD6 /* ArchiveListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34CECB62CAC8EA000453AD6 /* ArchiveListItemView.swift */; };
 		A3579A4F2BFF5CCA001D921C /* SupportMail.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3579A4E2BFF5CCA001D921C /* SupportMail.swift */; };
 		A3579A502BFF5CCA001D921C /* SupportMail.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3579A4E2BFF5CCA001D921C /* SupportMail.swift */; };
 		A3579A532BFF6187001D921C /* InAppPurchaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3579A522BFF6187001D921C /* InAppPurchaseView.swift */; };
@@ -209,6 +211,8 @@
 		A38256C02C1F552C00416A08 /* IosSplitNavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38256BE2C1F552C00416A08 /* IosSplitNavigation.swift */; };
 		A38256C12C1F552C00416A08 /* PDFArchiverIOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38256BF2C1F552C00416A08 /* PDFArchiverIOSApp.swift */; };
 		A38256C22C1F556200416A08 /* DocumentDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3D8F9402BB607B100BE3E3A /* DocumentDetailView.swift */; };
+		A3991D422CAEC85900CEEDC9 /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3991D412CAEC85800CEEDC9 /* Tag.swift */; };
+		A3991D432CAEC85900CEEDC9 /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3991D412CAEC85800CEEDC9 /* Tag.swift */; };
 		A39D507D2BFDE4AE0028696A /* Bool.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39D507C2BFDE4AE0028696A /* Bool.swift */; };
 		A39D507E2BFDE4AE0028696A /* Bool.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39D507C2BFDE4AE0028696A /* Bool.swift */; };
 		A39DBD7C2C29B02B000DD224 /* SubscriptionSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39DBD7B2C29B02B000DD224 /* SubscriptionSectionView.swift */; };
@@ -330,6 +334,7 @@
 		A32064612C24D70700B4EB21 /* ProcessInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessInfo.swift; sourceTree = "<group>"; };
 		A34AF4972C1199CD0043D56A /* PDFDropHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFDropHandler.swift; sourceTree = "<group>"; };
 		A34AF49B2C138C110043D56A /* StorageActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageActor.swift; sourceTree = "<group>"; };
+		A34CECB62CAC8EA000453AD6 /* ArchiveListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveListItemView.swift; sourceTree = "<group>"; };
 		A3579A4E2BFF5CCA001D921C /* SupportMail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportMail.swift; sourceTree = "<group>"; };
 		A3579A522BFF6187001D921C /* InAppPurchaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchaseView.swift; sourceTree = "<group>"; };
 		A3579A552BFFD802001D921C /* Subscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
@@ -340,6 +345,7 @@
 		A37FEB842C1E3A4D003F7F14 /* PlatformImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformImage.swift; sourceTree = "<group>"; };
 		A38256BE2C1F552C00416A08 /* IosSplitNavigation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IosSplitNavigation.swift; sourceTree = "<group>"; };
 		A38256BF2C1F552C00416A08 /* PDFArchiverIOSApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFArchiverIOSApp.swift; sourceTree = "<group>"; };
+		A3991D412CAEC85800CEEDC9 /* Tag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
 		A39D507C2BFDE4AE0028696A /* Bool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bool.swift; sourceTree = "<group>"; };
 		A39DBD7B2C29B02B000DD224 /* SubscriptionSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionSectionView.swift; sourceTree = "<group>"; };
 		A3B5D8FA2BB36414002B9FF1 /* SearchToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchToken.swift; sourceTree = "<group>"; };
@@ -734,6 +740,7 @@
 		A3CED6E22BA4E24900443F77 /* Persistence */ = {
 			isa = PBXGroup;
 			children = (
+				A3991D412CAEC85800CEEDC9 /* Tag.swift */,
 				A3FE9AAE2BA4CF04009F8381 /* Document.swift */,
 				A3FE9A6F2BA4CF04009F8381 /* Document+Helper.swift */,
 				A3FE9A6A2BA4CF04009F8381 /* NewArchiveStore+Error.swift */,
@@ -889,6 +896,7 @@
 			children = (
 				A3FE9AA62BA4CF04009F8381 /* ArchiveView.swift */,
 				A3002AE12BAA30D100663B4F /* ArchiveListView.swift */,
+				A34CECB62CAC8EA000453AD6 /* ArchiveListItemView.swift */,
 				A3B5D8FA2BB36414002B9FF1 /* SearchToken.swift */,
 				A3D8F9402BB607B100BE3E3A /* DocumentDetailView.swift */,
 				A3D5A4922BBDDC8D0089B016 /* DocumentInformation.swift */,
@@ -1017,7 +1025,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3489D74524A3C53E0035E64F /* Build configuration list for PBXNativeTarget "iOS" */;
 			buildPhases = (
-				34A53F7C24AA6381008A3377 /* SwiftLint */,
 				34A53F7E24AA63DC008A3377 /* Settings Bundle Update */,
 				3489D71924A3C53E0035E64F /* Resources */,
 				3489D71724A3C53E0035E64F /* Sources */,
@@ -1043,7 +1050,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3489D74824A3C53E0035E64F /* Build configuration list for PBXNativeTarget "macOS" */;
 			buildPhases = (
-				3458AA0825A7A8DF00F49BEC /* SwiftLint */,
 				3489D71F24A3C53E0035E64F /* Sources */,
 				3489D72024A3C53E0035E64F /* Frameworks */,
 				3489D72124A3C53E0035E64F /* Resources */,
@@ -1264,44 +1270,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		3458AA0825A7A8DF00F49BEC /* SwiftLint */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = SwiftLint;
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "export PATH=\"/opt/homebrew/bin:$HOME/.mint/bin:$PATH\"\n\nif which swiftlint >/dev/null; then\n    swiftlint --fix\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/swiftlint\"\nfi\n";
-		};
-		34A53F7C24AA6381008A3377 /* SwiftLint */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = SwiftLint;
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "export PATH=\"/opt/homebrew/bin:$HOME/.mint/bin:$PATH\"\n\nif which swiftlint >/dev/null; then\n    swiftlint --fix\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/swiftlint\"\nfi\n\n";
-		};
 		34A53F7E24AA63DC008A3377 /* Settings Bundle Update */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -1397,6 +1365,7 @@
 				A3356F492BA4D32E000AA51A /* TabType.swift in Sources */,
 				A3356FBB2BA4D364000AA51A /* TagListView.swift in Sources */,
 				A3356F962BA4D364000AA51A /* OnboardingView.swift in Sources */,
+				A34CECB72CAC8EA000453AD6 /* ArchiveListItemView.swift in Sources */,
 				A3356F8C2BA4D364000AA51A /* DetailRowView.swift in Sources */,
 				A3356F922BA4D364000AA51A /* MarkdownView.swift in Sources */,
 				A3356F992BA4D364000AA51A /* OnboardingScreens.swift in Sources */,
@@ -1414,6 +1383,7 @@
 				A3356FB52BA4D364000AA51A /* ScanTabView.swift in Sources */,
 				A3356F4D2BA4D32E000AA51A /* PlatfromWrapper.swift in Sources */,
 				A3579A562BFFD802001D921C /* Subscription.swift in Sources */,
+				A3991D432CAEC85900CEEDC9 /* Tag.swift in Sources */,
 				A3356FAE2BA4D364000AA51A /* StatisticsViewModel.swift in Sources */,
 				A3356FB12BA4D364000AA51A /* OBCardView.swift in Sources */,
 				A39D507D2BFDE4AE0028696A /* Bool.swift in Sources */,
@@ -1444,6 +1414,7 @@
 				A3356FEA2BA4D365000AA51A /* AboutMeView.swift in Sources */,
 				A3356F082BA4D319000AA51A /* FileChange.swift in Sources */,
 				A3356F622BA4D32F000AA51A /* AppEnvironment.swift in Sources */,
+				A3991D422CAEC85900CEEDC9 /* Tag.swift in Sources */,
 				A3356FC12BA4D365000AA51A /* StatisticsView.swift in Sources */,
 				A3356FCD2BA4D365000AA51A /* Document.swift in Sources */,
 				A3356F0F2BA4D319000AA51A /* PDFProcessing.swift in Sources */,
@@ -1503,6 +1474,7 @@
 				A3356FEF2BA4D365000AA51A /* ScanTabViewModel.swift in Sources */,
 				A32064632C24D70700B4EB21 /* ProcessInfo.swift in Sources */,
 				A3356F642BA4D32F000AA51A /* AlertDataModel.swift in Sources */,
+				A34CECB82CAC8EA000453AD6 /* ArchiveListItemView.swift in Sources */,
 				A39DBD7D2C29B02B000DD224 /* SubscriptionSectionView.swift in Sources */,
 				A3356EFC2BA4D319000AA51A /* Document+Helper.swift in Sources */,
 				A3F4EA232C067AA2003E8500 /* DropButton.swift in Sources */,
@@ -1821,7 +1793,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.4;
 				MARKETING_VERSION = 4.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer;
 				PRODUCT_NAME = PDFArchiver;
@@ -1852,7 +1824,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.4;
 				MARKETING_VERSION = 4.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer;
 				PRODUCT_NAME = PDFArchiver;

@@ -9,7 +9,7 @@
 import Foundation
 
 enum Constants {
-    static let sharedContainerIdentifier = "group.PDFArchiverShared"
+//    static let sharedContainerIdentifier = "group.PDFArchiverShared"
 
     static let documentDatePlaceholder = "PDFARCHIVER-TEMP-DATE"
     static let documentDescriptionPlaceholder = "PDF-ARCHIVER-TEMP-DESCRIPTION-"
@@ -20,6 +20,7 @@ enum Constants {
 
     static let inAppPurchaseGroupId = "20516661"
 
-    static let appGroupContainerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: Self.sharedContainerIdentifier)!
-    static let tempDocumentURL = appGroupContainerURL.appendingPathComponent("TempDocuments")
+//    static let appGroupContainerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: Self.sharedContainerIdentifier)!
+//    static let tempDocumentURL = appGroupContainerURL.appendingPathComponent("TempDocuments")
+    static let tempDocumentURL = URL.temporaryDirectory.appendingPathComponent("TempDocuments")
 }

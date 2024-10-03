@@ -209,6 +209,7 @@ extension UserDefaults: Log {
 
     static var appGroup: UserDefaults {
         // swiftlint:disable:next force_unwrapping
-        UserDefaults(suiteName: Constants.sharedContainerIdentifier)!
+//        UserDefaults(suiteName: Constants.sharedContainerIdentifier)!
+        UserDefaults.standard
     }
 }

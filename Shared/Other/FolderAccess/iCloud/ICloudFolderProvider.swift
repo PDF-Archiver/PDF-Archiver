@@ -7,6 +7,7 @@
 
 import Foundation
 
+// TODO: test if this should be written like this: https://fatbobman.com/en/posts/in-depth-guide-to-icloud-documents/
 final class ICloudFolderProvider: FolderProvider {
 
     private static let tempFolderName = "temp"
