@@ -141,115 +141,114 @@ actor NewArchiveStore: ModelActor {
     }
 
     private func folderDidChange(_ provider: any FolderProvider, _ changes: [FileChange]) {
-        updateDocuments(with: changes)
-    }
-
-    private func updateDocuments(with fileChanges: [FileChange]) {
         do {
-            for change in fileChanges {
-                switch change {
-                case .added(let details):
-                    let downloadStatus: Double
-                    switch details.downloadStatus {
-                    case .downloading(percent: let percent):
-                        downloadStatus = percent / 100
-                    case .remote:
-                        downloadStatus = 0
-                    case .local:
-                        downloadStatus = 1
-                    }
-
-                    guard let id = details.url.uniqueId() else {
-                        Logger.archiveStore.errorAndAssert("Failed to get uniqueId")
-                        continue
-                    }
-
-                    guard let filename = details.url.filename() else {
-                        Logger.archiveStore.errorAndAssert("Failed to get filename")
-                        continue
-                    }
-
-                    let data = Document.parseFilename(filename)
-                    let isTagged = isTagged(details.url)
-
-                    let document = Document(id: "\(id)",
-                                            url: details.url,
-                                            isTagged: isTagged,
-                                            filename: isTagged ? filename.replacingOccurrences(of: "-", with: " ") : filename,
-                                            sizeInBytes: details.sizeInBytes,
-                                            date: data.date ?? details.url.fileCreationDate() ?? Date(),
-                                            specification: isTagged ? (data.specification ?? "n/a").replacingOccurrences(of: "-", with: " ") : (data.specification ?? "n/a"),
-                                            tags: data.tagNames ?? [],
-                                            content: "",    // we write the content later on a background thread
-                                            downloadStatus: downloadStatus)
-                    modelContext.insert(document)
-
-                case .removed(let url):
-                    guard let id = url.uniqueId() else {
-                        Logger.archiveStore.errorAndAssert("Failed to get uniqueId for delete")
-                        continue
-                    }
-
-                    let predicate = #Predicate<Document> {
-                        $0.id == "\(id)"
-                    }
-                    let descriptor = FetchDescriptor<Document>(
-                        predicate: predicate, sortBy: [SortDescriptor(\Document.date, order: .reverse)]
-                    )
-                    let documents = try modelContext.fetch(descriptor)
-                    for document in documents {
-                        modelContext.delete(document)
-                    }
-
-                case .updated(let details):
-                    guard let id = details.url.uniqueId() else {
-                        Logger.archiveStore.errorAndAssert("Failed to get uniqueId for update", metadata: ["url": details.url.path()])
-                        continue
-                    }
-                    let predicate = #Predicate<Document> {
-                        $0.id == "\(id)"
-                    }
-                    let descriptor = FetchDescriptor<Document>(
-                        predicate: predicate, sortBy: [SortDescriptor(\Document.date, order: .reverse)]
-                    )
-                    let documents = try modelContext.fetch(descriptor)
-
-                    if let foundDocument = documents.first {
-                        let downloadStatus: Double
-                        switch details.downloadStatus {
-                        case .downloading(percent: let percent):
-                            downloadStatus = percent / 100
-                        case .remote:
-                            downloadStatus = 0
-                        case .local:
-                            downloadStatus = 1
-                        }
-
-                        guard let filename = details.url.filename() else {
-                            Logger.archiveStore.errorAndAssert("Failed to get filename")
-                            continue
-                        }
-
-                        let data = Document.parseFilename(filename)
-                        if let date = data.date {
-                            foundDocument.date = date
-                        }
-                        let isTagged = isTagged(details.url)
-                        foundDocument.specification = isTagged ? (data.specification ?? "n/a").replacingOccurrences(of: "-", with: " ") : (data.specification ?? "n/a")
-                        foundDocument.downloadStatus = downloadStatus
-
-                        Logger.archiveStore.debug("Updating document", metadata: ["specification": foundDocument.specification, "downloadStatus": "\(foundDocument.downloadStatus)"])
-                    }
-
-                    for document in documents.dropFirst() {
-                        modelContext.delete(document)
-                    }
-                }
+            for change in changes {
+                try processFileChange(with: change)
             }
-
             try modelContext.save()
         } catch {
             Logger.archiveStore.errorAndAssert("Error while saving data - error: \(error)")
+        }
+    }
+
+    private func processFileChange(with fileChange: FileChange) throws {
+        switch fileChange {
+        case .added(let details):
+            let downloadStatus: Double
+            switch details.downloadStatus {
+            case .downloading(percent: let percent):
+                downloadStatus = percent / 100
+            case .remote:
+                downloadStatus = 0
+            case .local:
+                downloadStatus = 1
+            }
+            
+            guard let id = details.url.uniqueId() else {
+                Logger.archiveStore.errorAndAssert("Failed to get uniqueId")
+                return
+            }
+            
+            guard let filename = details.url.filename() else {
+                Logger.archiveStore.errorAndAssert("Failed to get filename")
+                return
+            }
+            
+            let data = Document.parseFilename(filename)
+            let isTagged = isTagged(details.url)
+            
+            let document = Document(id: "\(id)",
+                                    url: details.url,
+                                    isTagged: isTagged,
+                                    filename: isTagged ? filename.replacingOccurrences(of: "-", with: " ") : filename,
+                                    sizeInBytes: details.sizeInBytes,
+                                    date: data.date ?? details.url.fileCreationDate() ?? Date(),
+                                    specification: isTagged ? (data.specification ?? "n/a").replacingOccurrences(of: "-", with: " ") : (data.specification ?? "n/a"),
+                                    tags: data.tagNames ?? [],
+                                    content: "",    // we write the content later on a background thread
+                                    downloadStatus: downloadStatus)
+            modelContext.insert(document)
+            
+        case .removed(let url):
+            guard let id = url.uniqueId() else {
+                Logger.archiveStore.errorAndAssert("Failed to get uniqueId for delete")
+                return
+            }
+            
+            let predicate = #Predicate<Document> {
+                $0.id == "\(id)"
+            }
+            let descriptor = FetchDescriptor<Document>(
+                predicate: predicate, sortBy: [SortDescriptor(\Document.date, order: .reverse)]
+            )
+            let documents = try modelContext.fetch(descriptor)
+            for document in documents {
+                modelContext.delete(document)
+            }
+            
+        case .updated(let details):
+            guard let id = details.url.uniqueId() else {
+                Logger.archiveStore.errorAndAssert("Failed to get uniqueId for update", metadata: ["url": details.url.path()])
+                return
+            }
+            let predicate = #Predicate<Document> {
+                $0.id == "\(id)"
+            }
+            let descriptor = FetchDescriptor<Document>(
+                predicate: predicate, sortBy: [SortDescriptor(\Document.date, order: .reverse)]
+            )
+            let documents = try modelContext.fetch(descriptor)
+            
+            if let foundDocument = documents.first {
+                let downloadStatus: Double
+                switch details.downloadStatus {
+                case .downloading(percent: let percent):
+                    downloadStatus = percent / 100
+                case .remote:
+                    downloadStatus = 0
+                case .local:
+                    downloadStatus = 1
+                }
+                
+                guard let filename = details.url.filename() else {
+                    Logger.archiveStore.errorAndAssert("Failed to get filename")
+                    return
+                }
+                
+                let data = Document.parseFilename(filename)
+                if let date = data.date {
+                    foundDocument.date = date
+                }
+                let isTagged = isTagged(details.url)
+                foundDocument.specification = isTagged ? (data.specification ?? "n/a").replacingOccurrences(of: "-", with: " ") : (data.specification ?? "n/a")
+                foundDocument.downloadStatus = downloadStatus
+                
+                Logger.archiveStore.debug("Updating document", metadata: ["specification": foundDocument.specification, "downloadStatus": "\(foundDocument.downloadStatus)"])
+            }
+            
+            for document in documents.dropFirst() {
+                modelContext.delete(document)
+            }
         }
     }
 

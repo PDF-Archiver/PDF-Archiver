@@ -20,7 +20,12 @@ final class Document {
         Measurement(value: _sizeInBytes, unit: .bytes)
     }
     var specification: String = ""
-    var tags: [String] = []
+    @Relationship(inverse: \Tag.documents) var tagItems: [Tag]
+    
+    @Transient
+    var tags: [String] {
+        tagItems.map(\.name)
+    }
     var content: String = ""
 
     var _sizeInBytes: Double
@@ -36,7 +41,7 @@ final class Document {
         self._sizeInBytes = sizeInBytes
         self.date = date
         self.specification = specification
-        self.tags = tags
+        self.tagItems = tags.map { Tag(name: $0, documents: []) }
         self.content = content
         self.downloadStatus = downloadStatus
     }

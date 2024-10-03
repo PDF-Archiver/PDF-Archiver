@@ -6,20 +6,10 @@
 //
 
 enum SearchToken: Hashable, Identifiable {
-    case term(String)
     case tag(String)
     case year(Int)
 
     var id: String { description }
-
-    var isTerm: Bool {
-        switch self {
-        case .term:
-            return true
-        default:
-            return false
-        }
-    }
 
     var isYear: Bool {
         switch self {
@@ -32,8 +22,6 @@ enum SearchToken: Hashable, Identifiable {
 
     var description: String {
         switch self {
-        case .term(let term):
-            "term: \(term)"
         case .tag(let tag):
             "tag: \(tag)"
         case .year(let year):
@@ -43,8 +31,6 @@ enum SearchToken: Hashable, Identifiable {
 
     var term: String {
         switch self {
-        case .term(let term):
-            term
         case .tag(let tag):
             tag
         case .year(let year):

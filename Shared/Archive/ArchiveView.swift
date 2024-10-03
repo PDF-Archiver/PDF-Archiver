@@ -9,24 +9,13 @@ import SwiftUI
 import SwiftData
 
 struct ArchiveView: View {
-    
-    // TODO: remove this after fetching suggsted tokens on a background thread
-    init(selectedDocumentId: Binding<String?>) {
-        self._selectedDocumentId = selectedDocumentId
-        
-        var descriptor = FetchDescriptor<Document>.init()
-        descriptor.fetchLimit = 50
-        _documents = Query(descriptor)
-    }
-    
     private static let formatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.usesGroupingSeparator = false
         return formatter
     }()
-    
-    #warning("TODO: should we exclude the pdf content to reduce memory size here?")
-    @Query(sort: \Document.date, order: .reverse) private var documents: [Document]
+
+    @Query private var tags: [Tag]
     
     @Binding var selectedDocumentId: String?
     @State private var searchText = ""
@@ -36,105 +25,85 @@ struct ArchiveView: View {
     @State private var shoudLoadAll = false
     
     var body: some View {
-        content
-            .searchable(text: $searchText, tokens: $tokens, suggestedTokens: $suggestedTokens, placement: .toolbar, prompt: "Search your documents", token: { token in
-                switch token {
-                case .term(let term):
-                    Label("\(term)", systemImage: "text.magnifyingglass")
-                case .tag(let tag):
-                    Label("\(tag)", systemImage: "tag")
-                case .year(let year):
-                    Label(Self.formatter.string(from: year as NSNumber) ?? "", systemImage: "calendar")
-                }
-            })
-            .onChange(of: documents) { _, newDocuments in
-                // TODO: also fetch documents on a background thread
-                print("DEBUGGING: on change is called")
-                Task.detached(priority: .background) {
-                    let mostUsedTags = newDocuments.flatMap(\.tags).histogram
-                        .sorted { $0.value < $1.value }
-                        .reversed()
-                        .prefix(5)
-                        .map(\.key)
-                        .map { SearchToken.tag($0) }
-                    
-                    let possibleYears = Set(newDocuments.map { $0.filename.prefix(4) })
-                    let foundYears: [SearchToken] = possibleYears
-                        .compactMap { Int($0) }
-                        .sorted()
-                        .reversed()
-                        .prefix(5)
-                        .map { .year($0) }
-                    
-                    guard !Task.isCancelled else { return }
-                    await MainActor.run {
-                        guard !Task.isCancelled else { return }
-                        self.suggestedTokens = mostUsedTags + foundYears
-                    }
-                }
+        ArchiveListView(selectedDocumentId: $selectedDocumentId,
+                        shoudLoadAll: $shoudLoadAll,
+                        searchString: searchText,
+                        descriptor: updateQuery())
+        .searchable(text: $searchText, tokens: $tokens, suggestedTokens: $suggestedTokens, placement: .toolbar, prompt: "Search your documents", token: { token in
+            switch token {
+            case .tag(let tag):
+                Label("\(tag)", systemImage: "tag")
+            case .year(let year):
+                Label(Self.formatter.string(from: year as NSNumber) ?? "", systemImage: "calendar")
             }
-            .navigationTitle("Archive")
-    }
-    
-    @ViewBuilder
-    private var content: some View {
-        if documents.isEmpty {
-            ContentUnavailableView("Empty Archive", systemImage: "archivebox", description: Text("Start scanning and tagging your first document."))
-        } else {
-            ArchiveListView(selectedDocumentId: $selectedDocumentId,
-                            shoudLoadAll: $shoudLoadAll,
-                            searchString: searchText,
-                            descriptor: updateQuery())
+        })
+        .onChange(of: tags) { _, newDocuments in
+            
+            // ideally the tags should be filtered + sorted via a fetch descriptor,
+            //                var descriptor = FetchDescriptor<Tag>(sortBy: [SortDescriptor(\.documents.count, order: .forward)])
+            //                descriptor.fetchLimit = 5
+            //                _tags = Query(descriptor)
+            
+            let mostUsedTags = tags
+                .sorted(by: { $0.documents.count < $1.documents.count })
+                .reversed()
+                .prefix(5)
+                .map { SearchToken.tag($0.name) }
+            
+            let currentYear = Calendar.current.component(.year, from: Date())
+            let mostRecentYears: [SearchToken] = [.year(currentYear),
+                                                  .year(currentYear - 1),
+                                                  .year(currentYear - 2),
+                                                  .year(currentYear - 3),
+                                                  .year(currentYear - 4)]
+            
+            self.suggestedTokens = mostUsedTags + mostRecentYears
         }
+        .navigationTitle("Archive")
     }
     
     private func updateQuery() -> FetchDescriptor<Document> {
         
-        var predicate: Predicate<Document>?
-//        if let termToken = tokens.first(where: { $0.isTerm }) {
-//            let term = termToken.term
-//            predicate = #Predicate { document in
-//                return document.isTagged && document.specification.contains(term) || document.tags.contains(term)
-//            }
-//        } else if let yearToken = tokens.first(where: { $0.isYear }) {
-//            let term = yearToken.term
-//            predicate = #Predicate { document in
-//                return document.isTagged && document.filename.starts(with: term)
-//            }
-//        } else {
-//            predicate = #Predicate { document in
-//                return document.isTagged
-//            }
-//        }
-
+        assert(tokens.count <= 1, "Too many tokens: \(tokens)")
+        let token = tokens.first
         let searchString = self.searchText
         
+        var predicate: Predicate<Document>?
+        
+        // only find tagged documents
         let taggedDocumentPredicate = #Predicate<Document> { document in
             document.isTagged
         }
         
+        // filter by search term
         let searchTermPredicate = #Predicate<Document> { document in
             searchString.isEmpty ? true : document.filename.contains(searchString)
         }
         
-        let yearPredicate = #Predicate<Document> { document in
-            // TODO: implement year filter
-//            document.filename.starts(with: "2024")
-            true
+        // filter by token
+        let tokenPredicate: Predicate<Document>
+        if let token {
+            switch token {
+            case .tag(let tag):
+                tokenPredicate = #Predicate<Document> { document in
+                    document.tagItems.contains(where: { $0.name == tag })
+                }
+            case .year(let year):
+                tokenPredicate = #Predicate<Document> { document in
+                    document.filename.starts(with: "\(year)")
+                }
+            }
+        } else {
+            tokenPredicate = #Predicate<Document> { _ in true }
         }
-        
-        // TODO: implement tag filter
-        
         predicate = #Predicate { document in
-            return taggedDocumentPredicate.evaluate(document) && searchTermPredicate.evaluate(document) && yearPredicate.evaluate(document)
+            return taggedDocumentPredicate.evaluate(document) && searchTermPredicate.evaluate(document) && tokenPredicate.evaluate(document)
         }
         
         var descriptor = FetchDescriptor(predicate: predicate, sortBy: [SortDescriptor(\Document.date, order: .reverse)])
-
         let shouldNotLimit = shoudLoadAll && searchString.isEmpty
         descriptor.fetchLimit = shouldNotLimit ? nil : 50
         
         return descriptor
-
     }
 }
