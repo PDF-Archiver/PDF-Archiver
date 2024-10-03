@@ -47,37 +47,32 @@ struct IosSplitNavigation: View {
     }
 
     var body: some View {
-        #warning("Only use this as a fallback")
-        NavigationSplitView {
-            TabView(selection: $selectedTab) {
-                Text("Test")
-                    .tabItem {
-                        Label(TabType.scan.name, systemImage: TabType.scan.systemImage)
-                    }
-                    .tag(TabType.scan)
+        TabView(selection: $selectedTab) {
+            Text("Test")
+                .tabItem {
+                    Label(TabType.scan.name, systemImage: TabType.scan.systemImage)
+                }
+                .tag(TabType.scan)
 
-                archiveView
-                    .tabItem {
-                        Label(TabType.archive.name, systemImage: TabType.archive.systemImage)
-                    }
-                    .tag(TabType.archive)
+            archiveView
+                .tabItem {
+                    Label(TabType.archive.name, systemImage: TabType.archive.systemImage)
+                }
+                .tag(TabType.archive)
 
-                UntaggedDocumentsList(selectedDocumentId: $selectedDocumentId)
-                    .tabItem {
-                        Label(TabType.tag.name, systemImage: TabType.tag.systemImage)
-                    }
-                    .tag(TabType.tag)
+            UntaggedDocumentsList(selectedDocumentId: $selectedDocumentId)
+                .tabItem {
+                    Label(TabType.tag.name, systemImage: TabType.tag.systemImage)
+                }
+                .tag(TabType.tag)
 
-                settingsView
-                    .tabItem {
-                        Label(TabType.more.name, systemImage: TabType.more.systemImage)
-                    }
-                    .tag(TabType.more)
-            }
-        } detail: {
-            #warning("TODO: switch here between archive/untagged document view")
-            UntaggedDocumentView(documentId: $selectedDocumentId)
+            settingsView
+                .tabItem {
+                    Label(TabType.more.name, systemImage: TabType.more.systemImage)
+                }
+                .tag(TabType.more)
         }
+
 
 //        TabView(selection: $selection) {
 //            Tab("Scan", systemImage: "doc.text.viewfinder", value: .scan) {

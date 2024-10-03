@@ -77,7 +77,7 @@ struct ArchiveView: View {
         
         // filter by search term
         let searchTermPredicate = #Predicate<Document> { document in
-            searchString.isEmpty ? true : document.filename.contains(searchString)
+            searchString.isEmpty ? true : document.filename.localizedStandardContains(searchString)
         }
         
         // filter by token
