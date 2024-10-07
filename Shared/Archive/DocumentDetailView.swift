@@ -42,8 +42,8 @@ struct DocumentDetailView: View {
     }
 
     var body: some View {
-        if let doc = documents.first {
-            if doc.downloadStatus < 1 {
+        if let document = documents.first {
+            if document.downloadStatus < 1 {
                 VStack(spacing: 15) {
                     Spacer()
                     Image(systemName: "arrow.down.doc")
@@ -56,7 +56,7 @@ struct DocumentDetailView: View {
                         .multilineTextAlignment(.center)
                         .foregroundStyle(.secondary)
                         .padding(.horizontal, 10)
-                    ProgressView(doc.filename, value: doc.downloadStatus, total: 1)
+                    ProgressView(document.filename, value: document.downloadStatus, total: 1)
                         .progressViewStyle(.linear)
                         .padding(40)
                     Spacer()
@@ -65,11 +65,11 @@ struct DocumentDetailView: View {
                     #if DEBUG
                     guard !ProcessInfo().isSwiftUIPreview else { return }
                     #endif
-                    await NewArchiveStore.shared.startDownload(of: doc.url)
+                    await NewArchiveStore.shared.startDownload(of: document.url)
                 }
 
             } else {
-                documentView(for: doc)
+                documentView(for: document)
             }
         } else {
             ContentUnavailableView("Select a Document", systemImage: "doc", description: Text("Select a document from the list."))

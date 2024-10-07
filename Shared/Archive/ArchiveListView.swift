@@ -26,8 +26,11 @@ struct ArchiveListView: View {
 
     var body: some View {
         if documents.isEmpty {
-            #warning("TODO: show appropriate message when no documents were found because of the search string")
-            ContentUnavailableView("Empty Archive", systemImage: "archivebox", description: Text("Start scanning and tagging your first document."))
+            if !searchString.isEmpty {
+                ContentUnavailableView("No document found", systemImage: "magnifyingglass", description: Text("Try another search query."))
+            } else {
+                ContentUnavailableView("Empty Archive", systemImage: "archivebox", description: Text("Start scanning and tagging your first document."))
+            }
         } else {
             content
         }
@@ -41,16 +44,10 @@ private var content: some View {
         }
 
         if searchString.isEmpty {
-            HStack {
-                Spacer()
-                Button(action: {
-                    shoudLoadAll.toggle()
-                }, label: {
-                    #warning("TODO: visualize which mode is active")
-                    Label("Load remaining documents", systemImage: "arrow.down.circle")
-                })
-                .padding(6)
-                Spacer()
+            Button {
+                shoudLoadAll.toggle()
+            } label: {
+                Label(shoudLoadAll ? "Load less documents" : "Load all documents", systemImage: shoudLoadAll ? "arrow.up.circle" : "arrow.down.circle")
             }
         }
     }
