@@ -48,60 +48,25 @@ struct IosSplitNavigation: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            Text("Test")
-                .tabItem {
-                    Label(TabType.scan.name, systemImage: TabType.scan.systemImage)
-                }
-                .tag(TabType.scan)
+            Tab("Scan", systemImage: "doc.text.viewfinder", value: .scan) {
+                Text("BETA: The scan tab is not implemented yet")
+            }
 
-            archiveView
-                .tabItem {
-                    Label(TabType.archive.name, systemImage: TabType.archive.systemImage)
-                }
-                .tag(TabType.archive)
-
-            UntaggedDocumentsList(selectedDocumentId: $selectedDocumentId)
-                .tabItem {
-                    Label(TabType.tag.name, systemImage: TabType.tag.systemImage)
-                }
-                .tag(TabType.tag)
-
-            settingsView
-                .tabItem {
-                    Label(TabType.more.name, systemImage: TabType.more.systemImage)
-                }
-                .tag(TabType.more)
+            Tab("Archiv", systemImage: "archivebox", value: .archive) {
+                archiveView
+            }
+            
+            Tab("Tag", systemImage: "tag", value: .tag) {
+//                UntaggedDocumentsList(selectedDocumentId: $selectedDocumentId)
+                Text("BETA: The tag tab is not implemented yet")
+            }
+            
+            Tab("More", systemImage: "ellipsis", value: .more) {
+//                settingsView
+                Text("BETA: The settings tab is not implemented yet")
+            }
         }
-
-
-//        TabView(selection: $selection) {
-//            Tab("Scan", systemImage: "doc.text.viewfinder", value: .scan) {
-//                Text("1")
-//            }
-//            Tab("Tag", systemImage: "tag", value: .tag) {
-//                NavigationSplitView {
-//                    UntaggedDocumentsList(selectedDocumentId: $selectedDocumentId)
-//                } detail: {
-//                    UntaggedDocumentView(documentId: $selectedDocumentId)
-////                        .sheet(isPresented: subscription.isSubscribed, content: {
-////                            InAppPurchaseView(onCancel: {
-////                                untaggedMode = false
-////                            })
-////                        })
-//                }
-//            }
-//
-//            Tab("Archiv", systemImage: "archivebox", value: .archiv) {
-//                ArchiveView(selectedDocumentId: $selectedDocumentId)
-//            }
-//            
-//            Tab("More", systemImage: "ellipsis", value: .more) {
-//                #warning("TODO: implement more tab")
-//                Text("Settings view")
-//            }
-//        }
-//        .tabViewStyle(.sidebarAdaptable)
-
+        .tabViewStyle(.sidebarAdaptable)
     }
 
     private var archiveView: some View {
