@@ -33,7 +33,7 @@ final class Document {
     // 0: remote - 1: local
     var downloadStatus: Double
 
-    init(id: String, url: URL, isTagged: Bool, filename: String, sizeInBytes: Double, date: Date, specification: String, tags: [String], content: String, downloadStatus: Double) {
+    init(id: String, url: URL, isTagged: Bool, filename: String, sizeInBytes: Double, date: Date, specification: String, tags: [Tag], content: String, downloadStatus: Double) {
         self.id = id
         self.url = url
         self.isTagged = isTagged
@@ -41,7 +41,7 @@ final class Document {
         self._sizeInBytes = sizeInBytes
         self.date = date
         self.specification = specification
-        self.tagItems = tags.map { Tag(name: $0, documents: []) }
+        self.tagItems = tags
         self.content = content
         self.downloadStatus = downloadStatus
     }

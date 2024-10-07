@@ -34,6 +34,8 @@ actor NewArchiveStore: ModelActor {
     private var untaggedFolders: [URL] = []
     private var providers: [any FolderProvider] = []
     private let fileManager = FileManager.default
+    
+    private var tagCache: [String: Tag] = [:]
 
     private init(modelContainer: ModelContainer) {
         self.modelContainer = modelContainer
@@ -177,6 +179,18 @@ actor NewArchiveStore: ModelActor {
             let data = Document.parseFilename(filename)
             let isTagged = isTagged(details.url)
             
+            var tags: [Tag] = []
+            for tagName in data.tagNames ?? [] {
+                let tag: Tag
+                if let foundTag = tagCache[tagName] {
+                    tag = foundTag
+                } else {
+                    tag = Tag.getOrCreate(name: tagName, in: modelContext)
+                    tagCache[tagName] = tag
+                }
+                tags.append(tag)
+            }
+            
             let document = Document(id: "\(id)",
                                     url: details.url,
                                     isTagged: isTagged,
@@ -184,7 +198,7 @@ actor NewArchiveStore: ModelActor {
                                     sizeInBytes: details.sizeInBytes,
                                     date: data.date ?? details.url.fileCreationDate() ?? Date(),
                                     specification: isTagged ? (data.specification ?? "n/a").replacingOccurrences(of: "-", with: " ") : (data.specification ?? "n/a"),
-                                    tags: data.tagNames ?? [],
+                                    tags: tags,
                                     content: "",    // we write the content later on a background thread
                                     downloadStatus: downloadStatus)
             modelContext.insert(document)
