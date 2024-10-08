@@ -13,6 +13,7 @@ protocol FolderProvider: AnyObject, Log {
     static func canHandle(_ url: URL) -> Bool
 
     var baseUrl: URL { get }
+    var isFirstLoading: Bool { get }
 
     init(baseUrl: URL, _ handler: @escaping FolderChangeHandler) throws
 

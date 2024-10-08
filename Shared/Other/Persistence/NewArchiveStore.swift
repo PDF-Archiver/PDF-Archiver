@@ -141,6 +141,16 @@ actor NewArchiveStore: ModelActor {
 
         update(archiveFolder: archiveUrl, untaggedFolders: untaggedFolders)
     }
+    
+    func isLoading() -> Bool {
+        do {
+            let provider = try getProvider(for: archiveFolder)
+            return provider.isFirstLoading
+        } catch {
+            assertionFailure("Failed to get provider \(error.localizedDescription)")
+            return false
+        }
+    }
 
     private func folderDidChange(_ provider: any FolderProvider, _ changes: [FileChange]) {
         do {

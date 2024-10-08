@@ -19,6 +19,7 @@ final class LocalFolderProvider: FolderProvider {
     private let fileProperties: [URLResourceKey] = [.ubiquitousItemDownloadingStatusKey, .ubiquitousItemIsDownloadingKey, .fileSizeKey, .localizedNameKey]
 
     private var currentFiles: [FileChange.Details] = []
+    private(set) var isFirstLoading = true
 
     required init(baseUrl: URL, _ handler: @escaping (any FolderProvider, [FileChange]) -> Void) throws {
         self.baseUrl = baseUrl
@@ -38,6 +39,7 @@ final class LocalFolderProvider: FolderProvider {
             // build initial changes
             let changes = self.createChanges()
             self.folderDidChange(self, changes)
+            self.isFirstLoading = false
         }
     }
 

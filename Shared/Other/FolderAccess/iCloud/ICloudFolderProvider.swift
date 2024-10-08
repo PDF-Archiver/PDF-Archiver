@@ -25,7 +25,7 @@ final class ICloudFolderProvider: FolderProvider {
 
     private let notContainsTempPath = NSPredicate(format: "(NOT (%K CONTAINS[c] %@)) AND (NOT (%K CONTAINS[c] %@))", NSMetadataItemPathKey, "/\(ICloudFolderProvider.tempFolderName)/", NSMetadataItemPathKey, "/.Trash/")
     private var metadataQuery: NSMetadataQuery
-    private var firstRun = true
+    private(set) var isFirstLoading = true
 
     private let fileManager = FileManager.default
 
@@ -135,6 +135,7 @@ final class ICloudFolderProvider: FolderProvider {
         changes.append(contentsOf: updated.createDetails(FileChange.updated))
 
         folderDidChange(self, changes)
+        isFirstLoading = false
     }
 
     static func createDetails(from item: NSMetadataItem) -> FileChange.Details? {

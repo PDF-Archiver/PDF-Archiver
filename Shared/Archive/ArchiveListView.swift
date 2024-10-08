@@ -26,7 +26,12 @@ struct ArchiveListView: View {
 
     var body: some View {
         if documents.isEmpty {
-            if !searchString.isEmpty {
+            if NewArchiveStore.shared.isLoading() {
+                ProgressView {
+                    Text("Loading documents...")
+                }
+                .controlSize(.extraLarge)
+            } else if !searchString.isEmpty {
                 ContentUnavailableView("No document found", systemImage: "magnifyingglass", description: Text("Try another search query."))
             } else {
                 ContentUnavailableView("Empty Archive", systemImage: "archivebox", description: Text("Start scanning and tagging your first document."))
