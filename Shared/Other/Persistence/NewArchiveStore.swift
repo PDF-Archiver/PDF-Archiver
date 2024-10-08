@@ -35,7 +35,7 @@ actor NewArchiveStore: ModelActor {
     private var providers: [any FolderProvider] = []
     private let fileManager = FileManager.default
     
-    private var tagCache: [String: Tag] = [:]
+    private var tagCache: [String: PersistentIdentifier] = [:]
 
     private init(modelContainer: ModelContainer) {
         self.modelContainer = modelContainer
@@ -192,11 +192,13 @@ actor NewArchiveStore: ModelActor {
             var tags: [Tag] = []
             for tagName in data.tagNames ?? [] {
                 let tag: Tag
-                if let foundTag = tagCache[tagName] {
+                if let foundTagId = tagCache[tagName],
+                   // get Tag via the persistent identifier
+                   let foundTag = self[foundTagId, as: Tag.self] {
                     tag = foundTag
                 } else {
                     tag = Tag.getOrCreate(name: tagName, in: modelContext)
-                    tagCache[tagName] = tag
+                    tagCache[tagName] = tag.persistentModelID
                 }
                 tags.append(tag)
             }
