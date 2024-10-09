@@ -30,7 +30,7 @@
                                     <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="mH6-As-MhU">
                                         <rect key="frame" x="88.5" y="111.5" width="37" height="37"/>
                                     </activityIndicatorView>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="tag-1" translatesAutoresizingMaskIntoConstraints="NO" id="ucA-hY-Jll" customClass="AppIcon">
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="document" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="ucA-hY-Jll" customClass="AppIcon">
                                         <rect key="frame" x="20" y="20" width="44" height="44"/>
                                         <color key="tintColor" name="DarkRed"/>
                                         <constraints>
@@ -81,7 +81,7 @@
     </scenes>
     <resources>
         <image name="checkmark.circle.fill" catalog="system" width="128" height="123"/>
-        <image name="tag-1" width="384" height="384"/>
+        <image name="document" catalog="system" width="115" height="128"/>
         <namedColor name="DarkRed">
             <color red="0.72941176470588232" green="0.29411764705882354" blue="0.32156862745098042" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>

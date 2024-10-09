@@ -78,6 +78,7 @@ extension UserDefaults {
     }
 }
 
+@MainActor
 final class PathManager: Log {
 
     static let shared = PathManager()

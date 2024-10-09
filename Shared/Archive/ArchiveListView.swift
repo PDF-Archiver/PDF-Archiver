@@ -26,7 +26,7 @@ struct ArchiveListView: View {
 
     var body: some View {
         if documents.isEmpty {
-            if NewArchiveStore.shared.isLoading() {
+            if NewArchiveStore.shared.isLoading {
                 ProgressView {
                     Text("Loading documents...")
                 }

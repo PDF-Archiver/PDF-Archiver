@@ -15,6 +15,7 @@ extension SettingsViewModel {
         #endif
         case local
 
+        @MainActor
         static func getCurrent() -> StorageType {
             let type = PathManager.shared.archivePathType
             switch type {

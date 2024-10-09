@@ -17,7 +17,6 @@ final class DemoFolderProvider: FolderProvider, Log {
 
     var baseUrl: URL
     private var handler: FolderChangeHandler
-    private(set) var isFirstLoading = false
 
     init(baseUrl: URL, _ handler: @escaping FolderChangeHandler) throws {
         self.baseUrl = baseUrl

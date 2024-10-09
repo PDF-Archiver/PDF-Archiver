@@ -36,8 +36,8 @@ final class DocumentProcessingService {
 //        handleFileChanges(at: Constants.tempDocumentURL)
     }
 
-    func handle(_ images: [PlatformImage]) {
-        guard let destinationFolder = getDocumentDestination() else {
+    func handle(_ images: [PlatformImage]) async {
+        guard let destinationFolder = await getDocumentDestination() else {
             Logger.documentProcessing.errorAndAssert("Failed to get document")
             return
         }
@@ -45,8 +45,8 @@ final class DocumentProcessingService {
         backgroundProcessing.queue(operation)
     }
 
-    func handle(_ document: PDFDocument) {
-        guard let destinationFolder = getDocumentDestination() else {
+    func handle(_ document: PDFDocument) async {
+        guard let destinationFolder = await getDocumentDestination() else {
             Logger.documentProcessing.errorAndAssert("Failed to get document")
             return
         }
@@ -54,6 +54,7 @@ final class DocumentProcessingService {
         backgroundProcessing.queue(operation)
     }
 
+    @MainActor
     private func getDocumentDestination() -> URL? {
         do {
             return try PathManager.shared.getUntaggedUrl()

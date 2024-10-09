@@ -29,6 +29,9 @@ actor NewArchiveStore: ModelActor {
     // https://useyourloaf.com/blog/swiftdata-background-tasks/
     let modelContainer: ModelContainer
     let modelExecutor: any ModelExecutor
+    
+    @MainActor
+    private(set) var isLoading = true
 
     private var archiveFolder: URL!
     private var untaggedFolders: [URL] = []
@@ -128,29 +131,20 @@ actor NewArchiveStore: ModelActor {
     }
 
     func reloadArchiveDocuments() throws {
-        let archiveUrl = try PathManager.shared.getArchiveUrl()
-        let untaggedUrl = try PathManager.shared.getUntaggedUrl()
-
-        #if os(macOS)
-        let untaggedFolders = [untaggedUrl, UserDefaults.observedFolderURL].compactMap { $0 }
-        #else
-        let untaggedFolders = [untaggedUrl]
-        #endif
-
-        update(archiveFolder: archiveUrl, untaggedFolders: untaggedFolders)
-    }
-    
-    func isLoading() -> Bool {
-        do {
-            guard let archiveFolder else { return true }
-            let provider = try getProvider(for: archiveFolder)
-            return provider.isFirstLoading
-        } catch {
-            assertionFailure("Failed to get provider \(error.localizedDescription)")
-            return false
+        Task {
+            let archiveUrl = try await PathManager.shared.getArchiveUrl()
+            let untaggedUrl = try await PathManager.shared.getUntaggedUrl()
+            
+            #if os(macOS)
+            let untaggedFolders = [untaggedUrl, UserDefaults.observedFolderURL].compactMap { $0 }
+            #else
+            let untaggedFolders = [untaggedUrl]
+            #endif
+            
+            update(archiveFolder: archiveUrl, untaggedFolders: untaggedFolders)
         }
     }
-
+    
     private func folderDidChange(_ provider: any FolderProvider, _ changes: [FileChange]) {
         do {
             for change in changes {
@@ -159,6 +153,12 @@ actor NewArchiveStore: ModelActor {
             try modelContext.save()
         } catch {
             Logger.archiveStore.errorAndAssert("Error while saving data - error: \(error)")
+        }
+        
+        Task {
+            await MainActor.run {
+                isLoading = false
+            }
         }
     }
 

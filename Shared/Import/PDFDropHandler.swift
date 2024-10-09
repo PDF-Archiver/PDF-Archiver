@@ -76,13 +76,17 @@ final class PDFDropHandler {
     @StorageActor
     private func handle(image: PlatformImage) {
         Logger.pdfDropHandler.info("Handle Image")
-        DocumentProcessingService.shared.handle([image])
+        Task {
+            await DocumentProcessingService.shared.handle([image])
+        }
     }
 
     @StorageActor
     private func handle(pdf: PDFDocument) {
         Logger.pdfDropHandler.info("Handle PDF Document")
-        DocumentProcessingService.shared.handle(pdf)
+        Task {
+            await DocumentProcessingService.shared.handle(pdf)
+        }
     }
 
     private func finishDropHandling() async {
@@ -126,8 +130,14 @@ extension PDFDropHandler: DropDelegate {
                     }
 
                     // opt out e.g. with sending to declare the reference not to be used from any other method
-                    let item = try await provider.loadItem(forTypeIdentifier: type.identifier)
-                    try await handle(input: item)
+                    let data = try await provider.getItem(for: type.identifier)
+                    
+                    guard let data else { continue }
+                    if let pdf = PDFDocument(data: data) {
+                        await handle(pdf: pdf)
+                    } else if let image = Image(data: data) {
+                        await handle(image: image)
+                    }
                 }
             } catch {
                 Logger.pdfDropHandler.errorAndAssert("Received error \(error)")
@@ -135,5 +145,39 @@ extension PDFDropHandler: DropDelegate {
             await finishDropHandling()
         }
         return true
+    }
+}
+
+extension NSItemProvider {
+    fileprivate func getItem(for type: String) async throws -> Data? {
+        let item = try await loadItem(forTypeIdentifier: type)
+        
+        if let data = item as? Data {
+            return data
+
+
+        } else if let url = item as? URL {
+            var data: Data?
+            try url.securityScope { url in
+                if let pdf = PDFDocument(url: url) {
+                    data = pdf.dataRepresentation()
+                } else if let receivedData = try Data(contentsOf: url) as Data? {
+                    data = receivedData
+                } else {
+                    Logger.pdfDropHandler.errorAndAssert("Could not handle url")
+                }
+            }
+            return data
+
+        } else if let image = item as? Image {
+            return image.jpg(quality: 1)
+
+        } else if let pdfDocument = item as? PDFDocument {
+            return pdfDocument.dataRepresentation()
+
+        } else {
+            Logger.pdfDropHandler.errorAndAssert("Failed to get data")
+            return nil
+        }
     }
 }

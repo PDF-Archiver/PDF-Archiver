@@ -8,17 +8,12 @@
 import CoreGraphics
 import Foundation
 
-class OnboardSet {
+struct OnboardSet {
     private(set) var cards: [OnboardCard] = []
     private(set) var width: CGFloat = 350
     private(set) var height: CGFloat = 500
 
-    func dimensions(width: CGFloat, height: CGFloat) {
-        self.width = width
-        self.height = height
-    }
-
-    func newCard(title: String, image: String, text: String) {
+    mutating func newCard(title: String, image: String, text: String) {
         cards.append(OnboardCard(title: title, image: image, text: text))
     }
 }
@@ -26,7 +21,7 @@ class OnboardSet {
 #if DEBUG
 extension OnboardSet {
     static func previewSet() -> OnboardSet {
-        let onboardSet = OnboardSet()
+        var onboardSet = OnboardSet()
         onboardSet.newCard(title: NSLocalizedString("intro.scan.title", comment: "Intro: Scan Title"),
                            image: "scan",
                            text: NSLocalizedString("intro.scan.description", comment: "Intro: Scan Description"))

@@ -14,7 +14,7 @@ import SwiftUI
 
     @Binding  var isPresenting: Bool
     var onboardSet: OnboardSet = {
-        let onboardSet = OnboardSet()
+        var onboardSet = OnboardSet()
         onboardSet.newCard(title: NSLocalizedString("intro.scan.title", comment: "Intro: Scan Title"),
                            image: "scan",
                            text: NSLocalizedString("intro.scan.description", comment: "Intro: Scan Description"))
