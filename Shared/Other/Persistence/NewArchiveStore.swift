@@ -45,8 +45,6 @@ actor NewArchiveStore: ModelActor {
     }
 
     func update(archiveFolder: URL, untaggedFolders: [URL]) {
-        assert(!Thread.isMainThread, "This should not be called from the main thread.")
-
         // remove all current file providers to prevent watching changes while moving folders
         providers = []
 
@@ -144,6 +142,7 @@ actor NewArchiveStore: ModelActor {
     
     func isLoading() -> Bool {
         do {
+            guard let archiveFolder else { return true }
             let provider = try getProvider(for: archiveFolder)
             return provider.isFirstLoading
         } catch {
