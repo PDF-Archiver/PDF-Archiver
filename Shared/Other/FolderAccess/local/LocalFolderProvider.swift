@@ -20,7 +20,7 @@ final class LocalFolderProvider: FolderProvider {
 
     private var currentFiles: [FileChange.Details] = []
 
-    required init(baseUrl: URL, _ handler: @escaping (any FolderProvider, [FileChange]) -> Void) throws {
+    required init(baseUrl: URL, _ handler: @Sendable @escaping (any FolderProvider, [FileChange]) -> Void) throws {
         self.baseUrl = baseUrl
         self.didAccessSecurityScope = baseUrl.startAccessingSecurityScopedResource()
         self.folderDidChange = handler
@@ -36,8 +36,10 @@ final class LocalFolderProvider: FolderProvider {
 
         DispatchQueue.global(qos: .background).async {
             // build initial changes
-            let changes = self.createChanges()
-            self.folderDidChange(self, changes)
+            Task {
+                let changes = await self.createChanges()
+                self.folderDidChange(self, changes)
+            }
         }
     }
 

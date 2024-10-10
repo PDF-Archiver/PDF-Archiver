@@ -7,11 +7,17 @@
 
 import Foundation
 
+@globalActor actor FolderProviderActor: GlobalActor {
+    static let shared = FolderProviderActor()
+}
+
+@FolderProviderActor
 protocol FolderProvider: AnyObject, Log {
     typealias FolderChangeHandler = (any FolderProvider, [FileChange]) -> Void
 
     static func canHandle(_ url: URL) -> Bool
 
+    nonisolated
     var baseUrl: URL { get }
 
     init(baseUrl: URL, _ handler: @escaping FolderChangeHandler) throws

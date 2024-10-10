@@ -46,8 +46,8 @@ final class ShareViewController: UIViewController {
         super.viewDidAppear(animated)
 
         minTimeDeadline = .now() + .milliseconds(750)
-        DispatchQueue.global(qos: .userInitiated).async {
-            self.handleAttachments()
+        Task.detached(priority: .userInitiated) {
+            await self.handleAttachments()
         }
     }
 
@@ -69,7 +69,7 @@ final class ShareViewController: UIViewController {
         }
     }
 
-    private func handleAttachments() {
+    private func handleAttachments() async {
         do {
             let url = Constants.tempDocumentURL
             try FileManager.default.createFolderIfNotExists(url)
@@ -81,7 +81,7 @@ final class ShareViewController: UIViewController {
             // if we share a pdf from a website, there are 2 inputItems (pdf/url) with 1 attachment
             for item in inputItems {
                 for attachment in (item.attachments ?? []) {
-                    let attachmentSuccess = try attachment.saveData(at: url, with: Self.validUTIs)
+                    let attachmentSuccess = try await attachment.saveData(at: url, with: Self.validUTIs)
                     success = success || attachmentSuccess
                 }
 
@@ -102,3 +102,5 @@ final class ShareViewController: UIViewController {
         }
     }
 }
+
+extension NSItemProvider: @unchecked @retroactive Sendable {}

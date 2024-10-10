@@ -65,6 +65,5 @@ struct OnboardingScreens: View {
 #if DEBUG
 #Preview {
     OnboardingScreens(isPresenting: .constant(true), onboardSet: OnboardSet.previewSet())
-        .previewDevice("Mac")
 }
 #endif

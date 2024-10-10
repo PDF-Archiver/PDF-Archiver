@@ -8,11 +8,7 @@
 
 import SwiftUI
 
-struct TagView: View, Identifiable {
-
-    var id: String {
-        tagName
-    }
+struct TagView: View {
 
     let tagName: String
     let isEditable: Bool

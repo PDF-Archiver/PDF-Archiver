@@ -136,6 +136,7 @@ final class ICloudFolderProvider: FolderProvider {
         folderDidChange(self, changes)
     }
 
+    nonisolated
     static func createDetails(from item: NSMetadataItem) -> FileChange.Details? {
         // get the document path
         guard let documentPath = item.value(forAttribute: NSMetadataItemURLKey) as? URL else {
@@ -225,3 +226,5 @@ fileprivate extension Array where Array.Element == NSMetadataItem {
         }
     }
 }
+
+extension NSMetadataQuery: @unchecked @retroactive Sendable {}

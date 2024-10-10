@@ -12,6 +12,7 @@ import SwiftUI
 struct SettingsView: View {
     private static let appId = 1433801905
 
+    @Environment(\.requestReview) private var requestReview
     @ObservedObject var viewModel: SettingsViewModel
     @State private var showActivityView = false
 
@@ -88,7 +89,7 @@ struct SettingsView: View {
                 sendMail(recipient: Constants.mailRecipient, subject: Constants.mailSubject)
             }
             DetailRowView(name: "Rate App ⭐️") {
-                AppStoreReviewRequest.shared.requestReviewManually(for: Self.appId)
+                requestReview()
             }
             DetailRowView(name: "Share PDF Archiver 📱❤️🫵") {
                 showActivityView = true

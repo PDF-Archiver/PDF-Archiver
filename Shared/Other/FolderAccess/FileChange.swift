@@ -7,7 +7,7 @@
 import DeepDiff
 import Foundation
 
-enum FileChange {
+enum FileChange: Sendable {
     case added(Details)
     case updated(Details)
     case removed(URL)

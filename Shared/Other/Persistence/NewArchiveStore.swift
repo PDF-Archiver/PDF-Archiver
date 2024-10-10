@@ -47,7 +47,7 @@ actor NewArchiveStore: ModelActor {
         Logger.archiveStore.trace("[SearchArchive] init called")
     }
 
-    func update(archiveFolder: URL, untaggedFolders: [URL]) {
+    func update(archiveFolder: URL, untaggedFolders: [URL]) async {
         // remove all current file providers to prevent watching changes while moving folders
         providers = []
 
@@ -56,21 +56,29 @@ actor NewArchiveStore: ModelActor {
         let observedFolders = [[archiveFolder], untaggedFolders]
             .flatMap { $0 }
             .getUniqueParents()
+        var foundProviders: [(any FolderProvider)?] = []
+        for observedFolder in observedFolders {
+            let provider = await initProvider(for: observedFolder)
+            foundProviders.append(provider)
+        }
+        providers = foundProviders.compactMap { $0 }
+    }
+    
+    @FolderProviderActor
+    private func initProvider(for folder: URL) -> FolderProvider? {
+        guard let provider = Self.availableProvider.first(where: { $0.canHandle(folder) }) else {
+            Logger.archiveStore.errorAndAssert("Could not find a FolderProvider - path: \(folder.path)")
+            NotificationCenter.default.createAndPost(title: "Folder Provider Error", message: "Could not find a folder provider for path:\n\(folder.absoluteString)", primaryButtonTitle: "OK")
+            return nil
+        }
+        Logger.archiveStore.debug("Initialize new provider for: \(folder.path)")
+        do {
 
-        providers = observedFolders.compactMap { folder in
-            guard let provider = Self.availableProvider.first(where: { $0.canHandle(folder) }) else {
-                Logger.archiveStore.errorAndAssert("Could not find a FolderProvider - path: \(folder.path)")
-                NotificationCenter.default.createAndPost(title: "Folder Provider Error", message: "Could not find a folder provider for path:\n\(folder.absoluteString)", primaryButtonTitle: "OK")
-                return nil
-            }
-            Logger.archiveStore.debug("Initialize new provider for: \(folder.path)")
-            do {
-                return try provider.init(baseUrl: folder, folderDidChange(_:_:))
-            } catch {
-                Logger.archiveStore.error("Failed to create FolderProvider - error: \(error)")
-                NotificationCenter.default.postAlert(error)
-                return nil
-            }
+            return try provider.init(baseUrl: folder, folderDidChange(_:_:))
+        } catch {
+            Logger.archiveStore.error("Failed to create FolderProvider - error: \(error)")
+            NotificationCenter.default.postAlert(error)
+            return nil
         }
     }
 
@@ -88,7 +96,7 @@ actor NewArchiveStore: ModelActor {
         return provider
     }
 
-    func archiveFile(from url: URL, to filename: String) throws {
+    func archiveFile(from url: URL, to filename: String) async throws {
         assert(!Thread.isMainThread, "This should not be called from the main thread.")
 
         let foldername = String(filename.prefix(4))
@@ -105,11 +113,11 @@ actor NewArchiveStore: ModelActor {
             .appendingPathComponent(filename)
 
         if archiveProvider.baseUrl == documentProvider.baseUrl {
-            try archiveProvider.rename(from: url, to: newFilepath)
+            try await archiveProvider.rename(from: url, to: newFilepath)
         } else {
-            let documentData = try documentProvider.fetch(url: url)
-            try archiveProvider.save(data: documentData, at: newFilepath)
-            try documentProvider.delete(url: url)
+            let documentData = try await documentProvider.fetch(url: url)
+            try await archiveProvider.save(data: documentData, at: newFilepath)
+            try await documentProvider.delete(url: url)
         }
 
         // save file tags
@@ -123,7 +131,7 @@ actor NewArchiveStore: ModelActor {
         Task.detached(priority: .userInitiated) {
             do {
                 let provider = try await self.getProvider(for: url)
-                try provider.startDownload(of: url)
+                try await provider.startDownload(of: url)
             } catch {
                 Logger.archiveStore.errorAndAssert("Failed to start download", metadata: ["error": "\(error)"])
             }
@@ -141,25 +149,31 @@ actor NewArchiveStore: ModelActor {
             let untaggedFolders = [untaggedUrl]
             #endif
             
-            update(archiveFolder: archiveUrl, untaggedFolders: untaggedFolders)
+            await update(archiveFolder: archiveUrl, untaggedFolders: untaggedFolders)
         }
     }
     
+    nonisolated
     private func folderDidChange(_ provider: any FolderProvider, _ changes: [FileChange]) {
-        do {
-            for change in changes {
-                try processFileChange(with: change)
-            }
-            try modelContext.save()
-        } catch {
-            Logger.archiveStore.errorAndAssert("Error while saving data - error: \(error)")
-        }
-        
         Task {
+            do {
+                for change in changes {
+                    try await processFileChange(with: change)
+                }
+                try await saveContext()
+            } catch {
+                Logger.archiveStore.errorAndAssert("Error while saving data - error: \(error)")
+            }
+            
+            
             await MainActor.run {
                 isLoading = false
             }
         }
+    }
+    
+    private func saveContext() throws {
+        try modelContext.save()
     }
 
     private func processFileChange(with fileChange: FileChange) throws {

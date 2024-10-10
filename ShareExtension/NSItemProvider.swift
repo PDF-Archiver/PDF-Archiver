@@ -21,13 +21,13 @@ extension NSItemProvider {
         case timeout
     }
 
-    func saveData(at url: URL, with validUTIs: [UTType]) throws -> Bool {
+    func saveData(at url: URL, with validUTIs: [UTType]) async throws -> Bool {
         var error: (any Error)?
         var data: Data?
 
         for uti in validUTIs where hasItemConformingToTypeIdentifier(uti.identifier) {
             do {
-                data = try syncLoadItem(forTypeIdentifier: uti)
+                data = try await getItem(for: uti)
             } catch let inputError {
                 error = inputError
             }
@@ -52,46 +52,28 @@ extension NSItemProvider {
 
         return false
     }
-
-    func syncLoadItem(forTypeIdentifier uti: UTType) throws -> Data? {
-        var data: Data?
-        var error: (any Error)?
-        let semaphore = DispatchSemaphore(value: 0)
-        self.loadItem(forTypeIdentifier: uti.identifier, options: nil) { rawData, rawError in
-            defer {
-                semaphore.signal()
-            }
-            if let rawError = rawError {
-                error = rawError
-            }
-
-            if let pathData = rawData as? Data,
-               let path = String(data: pathData, encoding: .utf8),
-               let url = URL(string: path),
-               let inputData = Self.getDataIfValid(from: url) {
-                data = inputData
-
-            } else if let url = rawData as? URL,
-                      let inputData = Self.getDataIfValid(from: url) {
-                data = inputData
-
-            } else if let inputData = Self.validate(rawData as? Data) {
-                data = inputData
-
-            } else if let image = rawData as? Image {
-                data = image.jpg(quality: 1)
-            }
+    
+    private func getItem(for type: UTType) async throws -> Data? {
+        let rawData = try await loadItem(forTypeIdentifier: type.identifier)
+        
+        if let pathData = rawData as? Data,
+           let path = String(data: pathData, encoding: .utf8),
+           let url = URL(string: path),
+           let inputData = Self.getDataIfValid(from: url) {
+            return inputData
+            
+        } else if let url = rawData as? URL,
+                  let inputData = Self.getDataIfValid(from: url) {
+            return inputData
+            
+        } else if let inputData = Self.validate(rawData as? Data) {
+            return inputData
+            
+        } else if let image = rawData as? Image {
+            return image.jpg(quality: 1)
+        } else {
+            return nil
         }
-        let timeoutResult = semaphore.wait(timeout: .now() + .seconds(10))
-        guard timeoutResult == .success else {
-            throw NSItemProviderError.timeout
-        }
-
-        if let error = error {
-            throw error
-        }
-
-        return data
     }
 
     private static func getDataIfValid(from url: URL) -> Data? {

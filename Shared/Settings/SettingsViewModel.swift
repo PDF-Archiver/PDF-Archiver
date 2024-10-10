@@ -19,7 +19,7 @@ final class SettingsViewModel: ObservableObject, Log {
 
     static func markdownView(for title: LocalizedStringKey, withKey key: String, withScrollView scrollView: Bool = true) -> some View {
         guard let url = Bundle.main.url(forResource: key, withExtension: "md"),
-              let markdown = try? String(contentsOf: url) else { preconditionFailure("Could not fetch file \(key)") }
+              let markdown = try? String(contentsOf: url, encoding: .utf8) else { preconditionFailure("Could not fetch file \(key)") }
 
         return MarkdownView(title: title, markdown: markdown, scrollView: scrollView)
     }
@@ -155,7 +155,7 @@ final class SettingsViewModel: ObservableObject, Log {
         Task {
             do {
 #if os(macOS)
-                let url = try await PathManager.shared.getArchiveUrl()
+                let url = try PathManager.shared.getArchiveUrl()
 #else
                 let archiveUrl = try PathManager.shared.getArchiveUrl()
                 // dropFirst uses the index that's why we need -1
@@ -228,7 +228,6 @@ final class SettingsViewModel: ObservableObject, Log {
     func selectObservedFolder() {
         let openPanel = NSOpenPanel()
         openPanel.title = NSLocalizedString("Choose the observed folder", comment: "")
-        openPanel.showsResizeIndicator = false
         openPanel.showsHiddenFiles = false
         openPanel.canChooseFiles = false
         openPanel.canChooseDirectories = true

@@ -139,7 +139,6 @@ final class DocumentInformationViewModel {
     }
 }
 
-@MainActor
 struct DocumentInformation: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.modelContext) private var modelContext

@@ -187,7 +187,6 @@ struct SettingsView: View {
 }
 
 #if DEBUG
-@MainActor
 struct SettingsPreviewView: View {
     @State var viewModel = SettingsViewModel()
     var body: some View {

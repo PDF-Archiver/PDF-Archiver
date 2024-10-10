@@ -27,6 +27,7 @@ enum PDFProcessingError: Error {
     case untaggedDocumentsPathNotFound
 }
 
+@StorageActor
 final class PDFProcessingOperation: AsyncOperation {
     private static let log = Logger(subsystem: "processing", category: "pdf-processing-operation")
     private static let tempDocumentURL = Constants.tempDocumentURL
@@ -43,9 +44,7 @@ final class PDFProcessingOperation: AsyncOperation {
         self.mode = mode
         self.destinationFolder = destinationFolder
 
-        Task {
-            await save(mode)
-        }
+        save(mode)
     }
 
     func process() async {
@@ -133,7 +132,7 @@ final class PDFProcessingOperation: AsyncOperation {
 
     private func createPdf(from images: [PlatformImage]) throws -> PDFDocument {
         var textObservations = [TextObservation]()
-        for (imageIndex, image) in images.enumerated() {
+        for image in images {
             guard let cgImage = image.cgImage else { fatalError("Could not get cgImage") }
             let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
             var detectTextRectangleObservations = [VNTextObservation]()
@@ -153,7 +152,7 @@ final class PDFProcessingOperation: AsyncOperation {
             try requestHandler.perform([textBoxRequests])
 
             var textObservationResults = [TextObservationResult]()
-            for (observationIndex, observation) in detectTextRectangleObservations.enumerated() {
+            for observation in detectTextRectangleObservations {
 
                 // build and start processing of one observation
                 let textBox = self.transform(observation: observation, in: image.size)
@@ -271,7 +270,6 @@ final class PDFProcessingOperation: AsyncOperation {
                       height: observation.boundingBox.applying(transform).height)
     }
 
-    @StorageActor
     private func save(_ mode: Mode) {
         do {
             try FileManager.default.createFolderIfNotExists(Self.tempDocumentURL)

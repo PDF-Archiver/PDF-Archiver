@@ -41,6 +41,5 @@ import SwiftUI
 #if DEBUG
 #Preview {
     OnboardingView(isPresenting: .constant(true))
-        .previewDevice("Mac")
 }
 #endif

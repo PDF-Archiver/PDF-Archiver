@@ -9,7 +9,6 @@ import SwiftData
 import SwiftUI
 import OSLog
 
-@MainActor
 struct UntaggedDocumentView: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
