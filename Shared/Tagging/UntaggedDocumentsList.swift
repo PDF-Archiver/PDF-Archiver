@@ -39,7 +39,7 @@ struct UntaggedDocumentsList: View {
             guard currentDocumentId == nil,
                   let firstDocument = untaggedDocuments.first else { return }
 
-            selectedDocumentId = firstDocument.id
+//            selectedDocumentId = firstDocument.id
         }
     }
 }

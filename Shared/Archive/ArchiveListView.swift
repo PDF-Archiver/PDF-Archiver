@@ -14,6 +14,7 @@ struct ArchiveListView: View {
     
     @Binding private var selectedDocumentId: String?
     @Binding private var shoudLoadAll: Bool
+    @State private var isLoading: Bool = true
     private let searchString: String
 
     init(selectedDocumentId: Binding<String?>, shoudLoadAll: Binding<Bool>, searchString: String, descriptor: FetchDescriptor<Document>) {
@@ -25,8 +26,19 @@ struct ArchiveListView: View {
     }
 
     var body: some View {
+        content
+            .task {
+                let isLoadingStream = await NewArchiveStore.shared.isLoadingStream
+                for await isLoading in isLoadingStream {
+                    self.isLoading = isLoading
+                }
+            }
+    }
+
+    @ViewBuilder
+    private var content: some View {
         if documents.isEmpty {
-            if NewArchiveStore.shared.isLoading {
+            if isLoading {
                 ProgressView {
                     Text("Loading documents...")
                 }
@@ -37,29 +49,25 @@ struct ArchiveListView: View {
                 ContentUnavailableView("Empty Archive", systemImage: "archivebox", description: Text("Start scanning and tagging your first document."))
             }
         } else {
-            content
-        }
-    }
-
-private var content: some View {
-    List(selection: $selectedDocumentId) {
-        ForEach(documents) { document in
-            ArchiveListItemView(document: document)
-                .frame(maxWidth: .infinity, maxHeight: 65.0)
-        }
-
-        if searchString.isEmpty {
-            Button {
-                shoudLoadAll.toggle()
-            } label: {
-                Label(shoudLoadAll ? "Load less documents" : "Load all documents", systemImage: shoudLoadAll ? "arrow.up.circle" : "arrow.down.circle")
+            List(selection: $selectedDocumentId) {
+                ForEach(documents) { document in
+                    ArchiveListItemView(document: document)
+                        .frame(maxWidth: .infinity, maxHeight: 65.0)
+                }
+                
+                if searchString.isEmpty {
+                    Button {
+                        shoudLoadAll.toggle()
+                    } label: {
+                        Label(shoudLoadAll ? "Load less documents" : "Load all documents", systemImage: shoudLoadAll ? "arrow.up.circle" : "arrow.down.circle")
+                    }
+                }
             }
+            .listStyle(.plain)
+            #if os(macOS)
+            .alternatingRowBackgrounds()
+            #endif
         }
-    }
-    .listStyle(.plain)
-    #if os(macOS)
-    .alternatingRowBackgrounds()
-    #endif
 }
 
     private func status(for document: Document) -> some View {

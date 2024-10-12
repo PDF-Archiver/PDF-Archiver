@@ -4,6 +4,10 @@ name: Down, nameSpecified: Down, owner: iwasrobbed, version: 0.11.0, source: htt
 
 name: Parma, nameSpecified: Parma, owner: dasautoooo, version: 0.3.0, source: https://github.com/dasautoooo/Parma
 
+name: swift-async-algorithms, nameSpecified: swift-async-algorithms, owner: apple, version: 1.0.2, source: https://github.com/apple/swift-async-algorithms
+
+name: swift-collections, nameSpecified: swift-collections, owner: apple, version: 1.1.4, source: https://github.com/apple/swift-collections
+
 add-version-numbers: true
 
 LicensePlist Version: 3.25.1

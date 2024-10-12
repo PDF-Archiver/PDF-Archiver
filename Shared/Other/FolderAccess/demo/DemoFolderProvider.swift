@@ -15,7 +15,7 @@ final class DemoFolderProvider: FolderProvider, Log {
         true
     }
 
-    var baseUrl: URL
+    let baseUrl: URL
     private var handler: FolderChangeHandler
 
     init(baseUrl: URL, _ handler: @escaping FolderChangeHandler) throws {

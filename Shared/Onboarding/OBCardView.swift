@@ -38,6 +38,5 @@ let onboardSet = OnboardSet.previewSet()
 
 #Preview("IAPView Mac") {
     OBCardView(card: onboardSet.cards[0])
-        .previewDevice("Mac")
 }
 #endif

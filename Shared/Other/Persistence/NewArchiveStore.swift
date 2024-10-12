@@ -1,10 +1,11 @@
 //
-//  File.swift
+//  NewArchiveStore.swift
 //  
 //
 //  Created by Julian Kahnert on 14.03.24.
 //
 
+import AsyncAlgorithms
 import Foundation
 import SwiftData
 import PDFKit.PDFDocument
@@ -30,8 +31,7 @@ actor NewArchiveStore: ModelActor {
     let modelContainer: ModelContainer
     let modelExecutor: any ModelExecutor
     
-    @MainActor
-    private(set) var isLoading = true
+    private(set) var isLoadingStream = AsyncChannel<Bool>()
 
     private var archiveFolder: URL!
     private var untaggedFolders: [URL] = []
@@ -164,11 +164,8 @@ actor NewArchiveStore: ModelActor {
             } catch {
                 Logger.archiveStore.errorAndAssert("Error while saving data - error: \(error)")
             }
-            
-            
-            await MainActor.run {
-                isLoading = false
-            }
+
+            await isLoadingStream.send(false)
         }
     }
     

@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct WrappingHStack<Item: Identifiable & Hashable, Content: View>: View {
+struct WrappingHStack<Item: Hashable, Content: View>: View {
     var items: [Item]
 
     @State private var totalHeight

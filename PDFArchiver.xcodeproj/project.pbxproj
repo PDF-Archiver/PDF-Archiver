@@ -225,6 +225,8 @@
 		A3B5D9022BB36465002B9FF1 /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B5D9002BB36465002B9FF1 /* Sequence.swift */; };
 		A3B5D90B2BB37114002B9FF1 /* PDFArchiverMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B5D9052BB36E9A002B9FF1 /* PDFArchiverMacApp.swift */; };
 		A3BF93712BA4D686002411DB /* DeepDiff in Frameworks */ = {isa = PBXBuildFile; productRef = A3BF93702BA4D686002411DB /* DeepDiff */; };
+		A3CACBE52CBA653300EF115F /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = A3CACBE42CBA653300EF115F /* AsyncAlgorithms */; };
+		A3CACBE72CBA68CA00EF115F /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = A3CACBE62CBA68CA00EF115F /* AsyncAlgorithms */; };
 		A3CED6E42BA4E26C00443F77 /* DatabaseConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CED6E32BA4E26C00443F77 /* DatabaseConfiguration.swift */; };
 		A3CED6E52BA4E26C00443F77 /* DatabaseConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3CED6E32BA4E26C00443F77 /* DatabaseConfiguration.swift */; };
 		A3D5A4932BBDDC8D0089B016 /* DocumentInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3D5A4922BBDDC8D0089B016 /* DocumentInformation.swift */; };
@@ -456,6 +458,7 @@
 				34A5CF8224A93A3C002409EF /* StoreKit.framework in Frameworks */,
 				A35CBAA62C1F2A2600CFBA20 /* DeepDiff in Frameworks */,
 				A35CBAAA2C1F2A2600CFBA20 /* Parma in Frameworks */,
+				A3CACBE52CBA653300EF115F /* AsyncAlgorithms in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -466,6 +469,7 @@
 				A3BF93712BA4D686002411DB /* DeepDiff in Frameworks */,
 				34D470BB255B249B000302A8 /* StoreKit.framework in Frameworks */,
 				A3B277292BA4D89C00F6F8D0 /* Parma in Frameworks */,
+				A3CACBE72CBA68CA00EF115F /* AsyncAlgorithms in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1041,6 +1045,7 @@
 			packageProductDependencies = (
 				A35CBAA52C1F2A2600CFBA20 /* DeepDiff */,
 				A35CBAA92C1F2A2600CFBA20 /* Parma */,
+				A3CACBE42CBA653300EF115F /* AsyncAlgorithms */,
 			);
 			productName = iOS;
 			productReference = 3489D71B24A3C53E0035E64F /* PDFArchiver.app */;
@@ -1062,6 +1067,7 @@
 			packageProductDependencies = (
 				A3BF93702BA4D686002411DB /* DeepDiff */,
 				A3B277282BA4D89C00F6F8D0 /* Parma */,
+				A3CACBE62CBA68CA00EF115F /* AsyncAlgorithms */,
 			);
 			productName = macOS;
 			productReference = 3489D72324A3C53E0035E64F /* PDFArchiver.app */;
@@ -1187,6 +1193,7 @@
 			packageReferences = (
 				A3BF936F2BA4D686002411DB /* XCRemoteSwiftPackageReference "DeepDiff" */,
 				A3B277272BA4D89C00F6F8D0 /* XCRemoteSwiftPackageReference "Parma" */,
+				A3CACBE32CBA653300EF115F /* XCRemoteSwiftPackageReference "swift-async-algorithms" */,
 			);
 			productRefGroup = 3489D71C24A3C53E0035E64F /* Products */;
 			projectDirPath = "";
@@ -1273,7 +1280,7 @@
 		34A53F7E24AA63DC008A3377 /* Settings Bundle Update */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
-			buildActionMask = 12;
+			buildActionMask = 8;
 			files = (
 			);
 			inputFileListPaths = (
@@ -1285,7 +1292,7 @@
 			);
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
 			shellScript = "export PATH=\"/opt/homebrew/bin:$HOME/.mint/bin:$PATH\"\n\n# Update settings.bundle with new license plist files\n# https://github.com/mono0926/LicensePlist\nif which license-plist >/dev/null; then\n    license-plist --suppress-opening-directory --add-version-numbers --force --output-path Shared/Resources/Settings.bundle\nelse\n    echo \"warning: license-plist not installed, download from https://github.com/mono0926/LicensePlist\"\nfi\n\n# Source: https://stackoverflow.com/a/39030153\n/usr/libexec/PlistBuddy -c \"Set PreferenceSpecifiers:0:DefaultValue $MARKETING_VERSION ($CURRENT_PROJECT_VERSION)\" \"$PROJECT_DIR/Shared/Resources/Settings.bundle/Root.plist\"\n";
 		};
@@ -2102,6 +2109,14 @@
 				minimumVersion = 2.3.3;
 			};
 		};
+		A3CACBE32CBA653300EF115F /* XCRemoteSwiftPackageReference "swift-async-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-async-algorithms.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -2124,6 +2139,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A3BF936F2BA4D686002411DB /* XCRemoteSwiftPackageReference "DeepDiff" */;
 			productName = DeepDiff;
+		};
+		A3CACBE42CBA653300EF115F /* AsyncAlgorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A3CACBE32CBA653300EF115F /* XCRemoteSwiftPackageReference "swift-async-algorithms" */;
+			productName = AsyncAlgorithms;
+		};
+		A3CACBE62CBA68CA00EF115F /* AsyncAlgorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A3CACBE32CBA653300EF115F /* XCRemoteSwiftPackageReference "swift-async-algorithms" */;
+			productName = AsyncAlgorithms;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
