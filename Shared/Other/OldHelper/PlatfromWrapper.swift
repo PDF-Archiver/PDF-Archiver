@@ -11,6 +11,15 @@ import AppKit.NSWorkspace
 import UIKit.UIApplication
 #endif
 
+import Foundation
+
+@MainActor
+func sendMail(recipient: String, subject: String, body: String = "") {
+    let url = URL(string: "mailto:\(recipient)?subject=\(subject)&body=\(body)")!
+    open(url)
+}
+
+@MainActor
 func open(_ url: URL) {
     #if os(macOS)
     NSWorkspace.shared.open(url)

@@ -10,37 +10,47 @@ import UIKit
 #endif
 
 enum FeedbackGenerator {
-
+    
     enum FeedbackType {
         case success, warning, error
     }
-
-    #if canImport(UIKit)
+    
+#if canImport(UIKit)
+    @MainActor
     private static let notificationFeedback = UINotificationFeedbackGenerator()
+    @MainActor
     private static let selectionFeedback = UISelectionFeedbackGenerator()
-    #endif
-
+#endif
+    
     static func selectionChanged() {
-        #if canImport(UIKit)
-        selectionFeedback.prepare()
-        selectionFeedback.selectionChanged()
-        #endif
-    }
-
-    static func notify(_ status: FeedbackType) {
-        #if canImport(UIKit)
-        notificationFeedback.prepare()
-
-        let type: UINotificationFeedbackGenerator.FeedbackType
-        switch status {
-        case .success:
-            type = .success
-        case .warning:
-            type = .warning
-        case .error:
-            type = .error
+#if canImport(UIKit)
+        Task {
+            await MainActor.run {
+                selectionFeedback.prepare()
+                selectionFeedback.selectionChanged()
+            }
         }
-        notificationFeedback.notificationOccurred(type)
+#endif
+    }
+    
+    static func notify(_ status: FeedbackType) {
+#if canImport(UIKit)
+        Task {
+            await MainActor.run {
+                notificationFeedback.prepare()
+
+                let type: UINotificationFeedbackGenerator.FeedbackType
+                switch status {
+                case .success:
+                    type = .success
+                case .warning:
+                    type = .warning
+                case .error:
+                    type = .error
+                }
+                notificationFeedback.notificationOccurred(type)
+            }
+        }
         #endif
     }
 }

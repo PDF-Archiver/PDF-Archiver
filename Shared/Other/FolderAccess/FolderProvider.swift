@@ -6,21 +6,23 @@
 //
 
 import Foundation
+import AsyncAlgorithms
 
 @globalActor actor FolderProviderActor: GlobalActor {
     static let shared = FolderProviderActor()
 }
 
 @FolderProviderActor
-protocol FolderProvider: AnyObject, Log {
-    typealias FolderChangeHandler = (any FolderProvider, [FileChange]) -> Void
+protocol FolderProvider: AnyObject, Log, Sendable {
 
     static func canHandle(_ url: URL) -> Bool
 
+    // this is a constant, not sure how to declare it in the protocol
     nonisolated
     var baseUrl: URL { get }
+    var folderChangeStream: AsyncChannel<[FileChange]> { get }
 
-    init(baseUrl: URL, _ handler: @escaping FolderChangeHandler) throws
+    init(baseUrl: URL) throws
 
     func save(data: Data, at: URL) throws
     func startDownload(of: URL) throws

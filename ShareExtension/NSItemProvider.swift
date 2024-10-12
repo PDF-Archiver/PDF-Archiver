@@ -52,23 +52,23 @@ extension NSItemProvider {
 
         return false
     }
-    
+
     private func getItem(for type: UTType) async throws -> Data? {
         let rawData = try await loadItem(forTypeIdentifier: type.identifier)
-        
+
         if let pathData = rawData as? Data,
            let path = String(data: pathData, encoding: .utf8),
            let url = URL(string: path),
            let inputData = Self.getDataIfValid(from: url) {
             return inputData
-            
+
         } else if let url = rawData as? URL,
                   let inputData = Self.getDataIfValid(from: url) {
             return inputData
-            
+
         } else if let inputData = Self.validate(rawData as? Data) {
             return inputData
-            
+
         } else if let image = rawData as? Image {
             return image.jpg(quality: 1)
         } else {

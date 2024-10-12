@@ -36,6 +36,7 @@ actor NewArchiveStore: ModelActor {
     private var archiveFolder: URL!
     private var untaggedFolders: [URL] = []
     private var providers: [any FolderProvider] = []
+    private var folderObservationTasks: [Task<Void, Never>] = []
     private let fileManager = FileManager.default
     
     private var tagCache: [String: PersistentIdentifier] = [:]
@@ -50,6 +51,8 @@ actor NewArchiveStore: ModelActor {
     func update(archiveFolder: URL, untaggedFolders: [URL]) async {
         // remove all current file providers to prevent watching changes while moving folders
         providers = []
+        folderObservationTasks.forEach { $0.cancel() }
+        folderObservationTasks = []
 
         self.archiveFolder = archiveFolder
         self.untaggedFolders = untaggedFolders
@@ -62,6 +65,15 @@ actor NewArchiveStore: ModelActor {
             foundProviders.append(provider)
         }
         providers = foundProviders.compactMap { $0 }
+        for provider in providers {
+            let task = Task {
+                let folderChangeStream = await provider.folderChangeStream
+                for await changes in folderChangeStream {
+                    await folderDidChange(changes)
+                }
+            }
+            folderObservationTasks.append(task)
+        }
     }
     
     @FolderProviderActor
@@ -73,8 +85,7 @@ actor NewArchiveStore: ModelActor {
         }
         Logger.archiveStore.debug("Initialize new provider for: \(folder.path)")
         do {
-
-            return try provider.init(baseUrl: folder, folderDidChange(_:_:))
+            return try provider.init(baseUrl: folder)
         } catch {
             Logger.archiveStore.error("Failed to create FolderProvider - error: \(error)")
             NotificationCenter.default.postAlert(error)
@@ -153,20 +164,17 @@ actor NewArchiveStore: ModelActor {
         }
     }
     
-    nonisolated
-    private func folderDidChange(_ provider: any FolderProvider, _ changes: [FileChange]) {
-        Task {
-            do {
-                for change in changes {
-                    try await processFileChange(with: change)
-                }
-                try await saveContext()
-            } catch {
-                Logger.archiveStore.errorAndAssert("Error while saving data - error: \(error)")
+    private func folderDidChange(_ changes: [FileChange]) async {
+        do {
+            for change in changes {
+                try processFileChange(with: change)
             }
-
-            await isLoadingStream.send(false)
+            try saveContext()
+        } catch {
+            Logger.archiveStore.errorAndAssert("Error while saving data - error: \(error)")
         }
+
+        await isLoadingStream.send(false)
     }
     
     private func saveContext() throws {

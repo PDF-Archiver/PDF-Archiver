@@ -192,8 +192,6 @@
 		A34AF49D2C138C110043D56A /* StorageActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34AF49B2C138C110043D56A /* StorageActor.swift */; };
 		A34CECB72CAC8EA000453AD6 /* ArchiveListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34CECB62CAC8EA000453AD6 /* ArchiveListItemView.swift */; };
 		A34CECB82CAC8EA000453AD6 /* ArchiveListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34CECB62CAC8EA000453AD6 /* ArchiveListItemView.swift */; };
-		A3579A4F2BFF5CCA001D921C /* SupportMail.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3579A4E2BFF5CCA001D921C /* SupportMail.swift */; };
-		A3579A502BFF5CCA001D921C /* SupportMail.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3579A4E2BFF5CCA001D921C /* SupportMail.swift */; };
 		A3579A532BFF6187001D921C /* InAppPurchaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3579A522BFF6187001D921C /* InAppPurchaseView.swift */; };
 		A3579A542BFF6187001D921C /* InAppPurchaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3579A522BFF6187001D921C /* InAppPurchaseView.swift */; };
 		A3579A562BFFD802001D921C /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3579A552BFFD802001D921C /* Subscription.swift */; };
@@ -337,7 +335,6 @@
 		A34AF4972C1199CD0043D56A /* PDFDropHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFDropHandler.swift; sourceTree = "<group>"; };
 		A34AF49B2C138C110043D56A /* StorageActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageActor.swift; sourceTree = "<group>"; };
 		A34CECB62CAC8EA000453AD6 /* ArchiveListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveListItemView.swift; sourceTree = "<group>"; };
-		A3579A4E2BFF5CCA001D921C /* SupportMail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportMail.swift; sourceTree = "<group>"; };
 		A3579A522BFF6187001D921C /* InAppPurchaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchaseView.swift; sourceTree = "<group>"; };
 		A3579A552BFFD802001D921C /* Subscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
 		A3579A582BFFD9B6001D921C /* PDFArchiverIAP.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = PDFArchiverIAP.storekit; sourceTree = "<group>"; };
@@ -651,7 +648,6 @@
 		A3002ADB2BAA295300663B4F /* Other */ = {
 			isa = PBXGroup;
 			children = (
-				A3579A4E2BFF5CCA001D921C /* SupportMail.swift */,
 				A3FE9A392BA4CF04009F8381 /* Constants */,
 				A3FE9A5A2BA4CF04009F8381 /* DocumentProcessing */,
 				A3B5D8FF2BB36458002B9FF1 /* Extensions */,
@@ -1347,7 +1343,6 @@
 				A3356EE52BA4D318000AA51A /* DemoFolderProvider.swift in Sources */,
 				A3356EC82BA4D318000AA51A /* Array.swift in Sources */,
 				A3356ED72BA4D318000AA51A /* PDFDocument.swift in Sources */,
-				A3579A4F2BFF5CCA001D921C /* SupportMail.swift in Sources */,
 				A37FEB862C1E3A53003F7F14 /* PlatformImage.swift in Sources */,
 				A3356EEA2BA4D318000AA51A /* DirectoryDeepWatcher.swift in Sources */,
 				A3356F8E2BA4D364000AA51A /* WidthSyncedRow.swift in Sources */,
@@ -1460,7 +1455,6 @@
 				A3B5D90B2BB37114002B9FF1 /* PDFArchiverMacApp.swift in Sources */,
 				A3356F6D2BA4D32F000AA51A /* FileManager.swift in Sources */,
 				A3356F0A2BA4D319000AA51A /* PathManager+PathError.swift in Sources */,
-				A3579A502BFF5CCA001D921C /* SupportMail.swift in Sources */,
 				A37FEB822C1E1642003F7F14 /* BackgroundProcessingActor.swift in Sources */,
 				A3356EFD2BA4D319000AA51A /* DocumentProcessingService.swift in Sources */,
 				A3356F132BA4D319000AA51A /* FileChange+DownloadStatus.swift in Sources */,

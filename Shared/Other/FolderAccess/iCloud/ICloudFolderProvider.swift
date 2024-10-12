@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AsyncAlgorithms
 
 // TODO: test if this should be written like this: https://fatbobman.com/en/posts/in-depth-guide-to-icloud-documents/
 final class ICloudFolderProvider: FolderProvider {
@@ -21,16 +22,15 @@ final class ICloudFolderProvider: FolderProvider {
     }()
 
     let baseUrl: URL
-    private let folderDidChange: FolderChangeHandler
+    let folderChangeStream = AsyncChannel<[FileChange]>()
 
     private let notContainsTempPath = NSPredicate(format: "(NOT (%K CONTAINS[c] %@)) AND (NOT (%K CONTAINS[c] %@))", NSMetadataItemPathKey, "/\(ICloudFolderProvider.tempFolderName)/", NSMetadataItemPathKey, "/.Trash/")
     private var metadataQuery: NSMetadataQuery
 
     private let fileManager = FileManager.default
 
-    init(baseUrl: URL, _ handler: @escaping FolderChangeHandler) throws {
+    init(baseUrl: URL) throws {
         self.baseUrl = baseUrl
-        self.folderDidChange = handler
         self.metadataQuery = NSMetadataQuery()
 
         // Filter only documents from the current year and the year before
@@ -133,7 +133,9 @@ final class ICloudFolderProvider: FolderProvider {
         changes.append(contentsOf: removed.createDetails(FileChange.removed))
         changes.append(contentsOf: updated.createDetails(FileChange.updated))
 
-        folderDidChange(self, changes)
+        Task {
+            await folderChangeStream.send(changes)
+        }
     }
 
     nonisolated

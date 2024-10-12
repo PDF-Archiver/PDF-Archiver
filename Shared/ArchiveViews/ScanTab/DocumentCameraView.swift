@@ -45,7 +45,8 @@ struct DocumentCameraView: UIViewControllerRepresentable, Log {
         func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
             self.isShown.wrappedValue = false
 
-            DispatchQueue.global(qos: .userInitiated).async {
+            // TODO: test if this should be done in the background?
+//            DispatchQueue.global(qos: .userInitiated).async {
                 var images = [CIImage]()
                 for index in 0..<scan.pageCount {
                     guard let image = CIImage(imageWithOrientation: scan.imageOfPage(at: index)) else {
@@ -53,8 +54,8 @@ struct DocumentCameraView: UIViewControllerRepresentable, Log {
                     }
                     images.append(image)
                 }
-                self.imageHandler(images)
-            }
+                imageHandler(images)
+//            }
         }
 
         func documentCameraViewControllerDidCancel(_ controller: VNDocumentCameraViewController) {
@@ -67,4 +68,6 @@ struct DocumentCameraView: UIViewControllerRepresentable, Log {
         }
     }
 }
+
+extension VNDocumentCameraScan: @unchecked @retroactive Sendable {}
 #endif

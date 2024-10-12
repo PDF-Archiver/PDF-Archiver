@@ -7,12 +7,14 @@
 
 import DeepDiff
 import Foundation
+import AsyncAlgorithms
 
 final class LocalFolderProvider: FolderProvider {
 
     let baseUrl: URL
+    let folderChangeStream = AsyncChannel<[FileChange]>()
+
     private let didAccessSecurityScope: Bool
-    private let folderDidChange: FolderChangeHandler
 
     private var watcher: DirectoryDeepWatcher! = nil
     private let fileManager = FileManager.default
@@ -20,10 +22,9 @@ final class LocalFolderProvider: FolderProvider {
 
     private var currentFiles: [FileChange.Details] = []
 
-    required init(baseUrl: URL, _ handler: @escaping (any FolderProvider, [FileChange]) -> Void) throws {
+    required init(baseUrl: URL) throws {
         self.baseUrl = baseUrl
         self.didAccessSecurityScope = baseUrl.startAccessingSecurityScopedResource()
-        self.folderDidChange = handler
 
         Self.log.debug("Creating file provider.", metadata: ["url": "\(baseUrl.path)"])
 
@@ -31,13 +32,15 @@ final class LocalFolderProvider: FolderProvider {
             guard let self = self else { return }
 
             let changes = self.createChanges()
-            self.folderDidChange(self, changes)
+            Task {
+                await self.folderChangeStream.send(changes)
+            }
         })
 
         // build initial changes
         Task.detached(priority: .background) {
             let changes = await self.createChanges()
-            await self.folderDidChange(self, changes)
+            await self.folderChangeStream.send(changes)
         }
     }
 
