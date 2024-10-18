@@ -32,6 +32,8 @@ struct DocumentDetailView: View {
         descriptor.fetchLimit = 1
         do {
             let document = (try modelContext.fetch(descriptor)).first
+            
+            // we need to update the document and downloadStatus manual, because changes in document will not trigger a view update
             self.document = document
             self.downloadStatus = document?.downloadStatus
         } catch {

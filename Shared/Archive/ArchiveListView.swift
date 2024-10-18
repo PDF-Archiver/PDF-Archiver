@@ -37,6 +37,7 @@ struct ArchiveListView: View {
 
     @ViewBuilder
     private var content: some View {
+        
         if documents.isEmpty {
             if isLoading {
                 ProgressView {
