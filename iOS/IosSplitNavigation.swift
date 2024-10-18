@@ -9,7 +9,8 @@ import SwiftUI
 import OSLog
 
 struct IosSplitNavigation: View {
-    @Environment(Subscription.self) var subscription
+    @Environment(Subscription.self) private var subscription
+//    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @StateObject private var moreViewModel = SettingsViewModel()
     @State private var dropHandler = PDFDropHandler()
@@ -57,8 +58,13 @@ struct IosSplitNavigation: View {
             }
             
             Tab("Tag", systemImage: "tag", value: .tag) {
-//                UntaggedDocumentsList(selectedDocumentId: $selectedDocumentId)
-                Text("BETA: The tag tab is not implemented yet")
+                UntaggedDocumentsList(selectedDocumentId: $selectedDocumentId)
+//                if horizontalSizeClass == .compact {
+//                    DocumentDetailView(documentId: selectedDocumentId, untaggedMode: .constant(true))
+//                } else {
+//                    #warning("Test this on iPad")
+//                    UntaggedDocumentsList(selectedDocumentId: $selectedDocumentId)
+//                }
             }
             
             Tab("More", systemImage: "ellipsis", value: .more) {
@@ -66,7 +72,7 @@ struct IosSplitNavigation: View {
                 Text("BETA: The settings tab is not implemented yet")
             }
         }
-        .tabViewStyle(.sidebarAdaptable)
+        .tabViewStyle(.tabBarOnly)
     }
 
     private var archiveView: some View {

@@ -31,7 +31,8 @@ actor NewArchiveStore: ModelActor {
     let modelContainer: ModelContainer
     let modelExecutor: any ModelExecutor
     
-    private(set) var isLoadingStream = AsyncChannel<Bool>()
+    private let isLoadingCustomAsyncStream = CustomAsyncStream<Bool>.create()
+    var isLoadingStream: any AsyncSequence<Bool, Never> { isLoadingCustomAsyncStream.operationStream }
 
     private var archiveFolder: URL!
     private var untaggedFolders: [URL] = []
@@ -69,7 +70,7 @@ actor NewArchiveStore: ModelActor {
             let task = Task {
                 let folderChangeStream = await provider.folderChangeStream
                 for await changes in folderChangeStream {
-                    await folderDidChange(changes)
+                    await self.folderDidChange(changes)
                 }
             }
             folderObservationTasks.append(task)
@@ -169,16 +170,12 @@ actor NewArchiveStore: ModelActor {
             for change in changes {
                 try processFileChange(with: change)
             }
-            try saveContext()
+            try modelContext.save()
         } catch {
             Logger.archiveStore.errorAndAssert("Error while saving data - error: \(error)")
         }
 
-        await isLoadingStream.send(false)
-    }
-    
-    private func saveContext() throws {
-        try modelContext.save()
+        isLoadingCustomAsyncStream.send(false)
     }
 
     private func processFileChange(with fileChange: FileChange) throws {
@@ -263,34 +260,38 @@ actor NewArchiveStore: ModelActor {
             )
             let documents = try modelContext.fetch(descriptor)
             
-            if let foundDocument = documents.first {
-                let downloadStatus: Double
-                switch details.downloadStatus {
-                case .downloading(percent: let percent):
-                    downloadStatus = percent / 100
-                case .remote:
-                    downloadStatus = 0
-                case .local:
-                    downloadStatus = 1
-                }
-                
-                guard let filename = details.url.filename() else {
-                    Logger.archiveStore.errorAndAssert("Failed to get filename")
-                    return
-                }
-                
-                let data = Document.parseFilename(filename)
-                if let date = data.date {
-                    foundDocument.date = date
-                }
-                let isTagged = isTagged(details.url)
-                foundDocument.specification = isTagged ? (data.specification ?? "n/a").replacingOccurrences(of: "-", with: " ") : (data.specification ?? "n/a")
-                foundDocument.downloadStatus = downloadStatus
-                
-                Logger.archiveStore.debug("Updating document", metadata: ["specification": foundDocument.specification, "downloadStatus": "\(foundDocument.downloadStatus)"])
+            guard let foundDocument = documents.first else {
+                assertionFailure("Failed to get one document")
+                return
             }
             
+            let downloadStatus: Double
+            switch details.downloadStatus {
+            case .downloading(percent: let percent):
+                downloadStatus = percent / 100
+            case .remote:
+                downloadStatus = 0
+            case .local:
+                downloadStatus = 1
+            }
+            
+            guard let filename = details.url.filename() else {
+                Logger.archiveStore.errorAndAssert("Failed to get filename")
+                return
+            }
+            
+            let data = Document.parseFilename(filename)
+            if let date = data.date {
+                foundDocument.date = date
+            }
+            let isTagged = isTagged(details.url)
+            foundDocument.specification = isTagged ? (data.specification ?? "n/a").replacingOccurrences(of: "-", with: " ") : (data.specification ?? "n/a")
+            foundDocument.downloadStatus = downloadStatus
+            
+            Logger.archiveStore.debug("Updating document", metadata: ["specification": foundDocument.specification, "downloadStatus": "\(foundDocument.downloadStatus)"])
+            
             for document in documents.dropFirst() {
+                assertionFailure("There should not be more than one document in the database")
                 modelContext.delete(document)
             }
         }

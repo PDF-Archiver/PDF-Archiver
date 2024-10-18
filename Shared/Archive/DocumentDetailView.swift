@@ -10,40 +10,51 @@ import SwiftUI
 import OSLog
 
 struct DocumentDetailView: View {
-    enum ViewState {
-        case loading
-        case error(any Error)
-        case document(Document)
-        case documentNotFound
-    }
-
     let documentId: String?
     @Binding var untaggedMode: Bool
-    @Query private var documents: [Document]
+    @State private var document: Document?
+    @State private var downloadStatus: Double?
+    
     @State private var showDeleteConfirmation = false
     @Environment(\.modelContext) private var modelContext
 
     init(documentId: String?, untaggedMode: Binding<Bool>) {
         self.documentId = documentId
         self._untaggedMode = untaggedMode
-
-        var descriptor: FetchDescriptor<Document>
-        if let documentId {
-            let predicate = #Predicate<Document> { document in
-                return document.id == documentId
-            }
-            descriptor = FetchDescriptor(predicate: predicate)
-        } else {
-            descriptor = FetchDescriptor<Document>()
+    }
+    
+    func update() {
+        guard let documentId else { return }
+        let predicate = #Predicate<Document> { document in
+            return document.id == documentId
         }
-
+        var descriptor = FetchDescriptor(predicate: predicate)
         descriptor.fetchLimit = 1
-        _documents = Query(descriptor)
+        do {
+            let document = (try modelContext.fetch(descriptor)).first
+            self.document = document
+            self.downloadStatus = document?.downloadStatus
+        } catch {
+            assertionFailure("Failed to fetch document: \(error.localizedDescription)")
+        }
     }
 
     var body: some View {
-        if let document = documents.first {
-            if document.downloadStatus < 1 {
+        content
+            .task {
+                update()
+                for await notification in NotificationCenter.default.notifications(named: .NSPersistentStoreRemoteChange) {
+                    print("found 0 change of storesDidChange: \(notification)")
+                    update()
+                }
+            }
+    }
+
+    @ViewBuilder
+    var content: some View {
+        if let document,
+           let downloadStatus {
+            if downloadStatus < 1 {
                 VStack(spacing: 15) {
                     Spacer()
                     Image(systemName: "arrow.down.doc")
@@ -56,7 +67,7 @@ struct DocumentDetailView: View {
                         .multilineTextAlignment(.center)
                         .foregroundStyle(.secondary)
                         .padding(.horizontal, 10)
-                    ProgressView(document.filename, value: document.downloadStatus, total: 1)
+                    ProgressView(document.filename, value: downloadStatus, total: 1)
                         .progressViewStyle(.linear)
                         .padding(40)
                     Spacer()

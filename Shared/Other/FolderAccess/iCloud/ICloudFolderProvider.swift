@@ -166,9 +166,9 @@ final class ICloudFolderProvider: FolderProvider {
 
         var documentStatus: FileChange.DownloadStatus
         switch downloadingStatus {
-        case "NSMetadataUbiquitousItemDownloadingStatusCurrent", "NSMetadataUbiquitousItemDownloadingStatusDownloaded":
+        case NSMetadataUbiquitousItemDownloadingStatusCurrent, NSMetadataUbiquitousItemDownloadingStatusDownloaded:
             documentStatus = .local
-        case "NSMetadataUbiquitousItemDownloadingStatusNotDownloaded":
+        case NSMetadataUbiquitousItemDownloadingStatusNotDownloaded:
 
             if let isDownloading = item.value(forAttribute: NSMetadataUbiquitousItemIsDownloadingKey) as? Bool,
                 isDownloading {
