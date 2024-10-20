@@ -31,8 +31,8 @@ actor NewArchiveStore: ModelActor {
     let modelContainer: ModelContainer
     let modelExecutor: any ModelExecutor
     
-    private let isLoadingCustomAsyncStream = CustomAsyncStream<Bool>.create()
-    var isLoadingStream: any AsyncSequence<Bool, Never> { isLoadingCustomAsyncStream.operationStream }
+    private let isLoadingAsyncStream = AsyncStream<Bool>.makeStream()
+    var isLoadingStream: any AsyncSequence<Bool, Never> { isLoadingAsyncStream.stream }
 
     private var archiveFolder: URL!
     private var untaggedFolders: [URL] = []
@@ -175,7 +175,7 @@ actor NewArchiveStore: ModelActor {
             Logger.archiveStore.errorAndAssert("Error while saving data - error: \(error)")
         }
 
-        isLoadingCustomAsyncStream.send(false)
+        isLoadingAsyncStream.continuation.yield(false)
     }
 
     private func processFileChange(with fileChange: FileChange) throws {

@@ -16,12 +16,7 @@ actor BackgroundProcessingActor<OperationType: AsyncOperation> {
     private let log = Logger(subsystem: "processing", category: "background-processing-actor")
 
     // this stream will be used to store incoming documents and images
-    private lazy var operationStream: AsyncStream<OperationType> = {
-            AsyncStream { (continuation: AsyncStream<OperationType>.Continuation) -> Void in
-                self.continuation = continuation
-            }
-        }()
-    private var continuation: AsyncStream<OperationType>.Continuation?
+    private let operationStream = AsyncStream<OperationType>.makeStream()
 
     private var processingTask: Task<Void, Never>?
     init() {}
@@ -39,19 +34,16 @@ actor BackgroundProcessingActor<OperationType: AsyncOperation> {
         if processingTask == nil {
             startProcessing()
         }
-        continuation?.yield(operation)
+        operationStream.continuation.yield(operation)
     }
 
     private func startProcessing() {
         log.debug("Start processing")
 
-        // init the lazy var documentStream
-        _ = self.operationStream.makeAsyncIterator()
-
         processingTask = Task.detached(priority: .userInitiated) {
             self.log.debug("Start iterating over documents")
             // iterate over async stream and process documents
-            for await operation in await self.operationStream {
+            for await operation in self.operationStream.stream {
                 self.log.debug("Received a document in stream")
                 await operation.process()
             }
