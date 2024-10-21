@@ -11,6 +11,17 @@ enum FileChange: Sendable {
     case added(Details)
     case updated(Details)
     case removed(URL)
+    
+    var url: URL {
+       switch self {
+       case .added(let details):
+           return details.url
+       case .updated(let details):
+           return details.url
+       case .removed(let url):
+           return url
+        }
+    }
 
     struct Details: Equatable {
         let url: URL

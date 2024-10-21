@@ -46,6 +46,8 @@ struct SettingsView: View {
                 Spacer()
                 Text(viewModel.selectedArchiveType.title)
             }
+            // TODO: fix error:
+//            Do not put a navigation destination modifier inside a "lazy” container, like `List` or `LazyVStack`. These containers create child views only when needed to render on screen. Add the navigation destination modifier outside these containers so that the navigation stack can always see the destination. There's a misplaced `navigationDestination(isPresented:destination:)` modifier presenting `StorageSelectionView`. It will be ignored in a future release.
             .navigationDestination(isPresented: $viewModel.showArchiveTypeSelection) {
                 StorageSelectionView(selection: $viewModel.selectedArchiveType, onCompletion: viewModel.handleDocumentPicker)
             }

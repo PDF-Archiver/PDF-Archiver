@@ -58,13 +58,7 @@ struct IosSplitNavigation: View {
             }
             
             Tab("Tag", systemImage: "tag", value: .tag) {
-                UntaggedDocumentsList(selectedDocumentId: $selectedDocumentId)
-//                if horizontalSizeClass == .compact {
-//                    DocumentDetailView(documentId: selectedDocumentId, untaggedMode: .constant(true))
-//                } else {
-//                    #warning("Test this on iPad")
-//                    UntaggedDocumentsList(selectedDocumentId: $selectedDocumentId)
-//                }
+                untaggedView
             }
             
             Tab("More", systemImage: "ellipsis", value: .more) {
@@ -76,15 +70,31 @@ struct IosSplitNavigation: View {
     }
 
     private var archiveView: some View {
-        NavigationSplitView(sidebar: {
+        NavigationSplitView {
             ArchiveView(selectedDocumentId: $selectedDocumentId)
-        }, detail: {
-            DocumentDetailView(documentId: selectedDocumentId, untaggedMode: Binding(get: {
+        } detail: {
+            DocumentDetailView(documentId: $selectedDocumentId, untaggedMode: Binding(get: {
                 selectedTab == .tag
             }, set: { value in
                 selectedTab = value ? .tag : .archive
             }))
-        })
+        }
+        .onAppear {
+            // unselect possibly selected document because it might be an untagged document
+            selectedDocumentId = nil
+        }
+    }
+    
+    private var untaggedView: some View {
+        NavigationSplitView {
+            UntaggedDocumentsList(selectedDocumentId: $selectedDocumentId)
+        } detail: {
+            UntaggedDocumentView(documentId: $selectedDocumentId)
+        }
+        .onAppear {
+            // unselect possibly selected document because it might be a tagged document
+            selectedDocumentId = nil
+        }
     }
 
     private var settingsView: some View {

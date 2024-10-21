@@ -14,6 +14,7 @@ struct PDFArchiverIOSApp: App, Log {
     @State private var subscription = Subscription()
 
     var body: some Scene {
+        #warning("TODO: also look for more 'TODO:' not in warnings")
         WindowGroup {
             IosSplitNavigation()
                 .inAppPurchasesSetup()

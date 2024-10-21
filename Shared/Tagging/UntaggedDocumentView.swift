@@ -9,6 +9,11 @@ import SwiftData
 import SwiftUI
 import OSLog
 
+#warning("TODO: add loading spinner while DB will be created")
+#warning("TODO: add loading spinner/progress bar while document is downloading")
+#warning("TODO: fix toolbar on iOS")
+#warning("TODO: add tag suggestion on iOS")
+#warning("TODO: select a new untagged document if the current was saved")
 struct UntaggedDocumentView: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 

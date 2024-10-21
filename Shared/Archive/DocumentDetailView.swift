@@ -8,9 +8,21 @@
 import SwiftData
 import SwiftUI
 import OSLog
-
+import CoreData
+class TestDocument {
+    let title: String
+    
+    init(title: String) {
+        self.title = title
+    }
+    
+    // Methode, um die Benachrichtigung zu posten
+    func updateDocument() {
+        NotificationCenter.default.post(name: .documentUpdate, object: self)
+    }
+}
 struct DocumentDetailView: View {
-    let documentId: String?
+    @Binding var documentId: String?
     @Binding var untaggedMode: Bool
     @State private var document: Document?
     @State private var downloadStatus: Double?
@@ -18,13 +30,17 @@ struct DocumentDetailView: View {
     @State private var showDeleteConfirmation = false
     @Environment(\.modelContext) private var modelContext
 
-    init(documentId: String?, untaggedMode: Binding<Bool>) {
-        self.documentId = documentId
+    init(documentId: Binding<String?>, untaggedMode: Binding<Bool>) {
+        self._documentId = documentId
         self._untaggedMode = untaggedMode
     }
     
     func update() {
-        guard let documentId else { return }
+        guard let documentId else {
+            document = nil
+            downloadStatus = nil
+            return
+        }
         let predicate = #Predicate<Document> { document in
             return document.id == documentId
         }
@@ -43,10 +59,22 @@ struct DocumentDetailView: View {
 
     var body: some View {
         content
+            .onChange(of: documentId, { _, _ in
+                update()
+            })
             .task {
                 update()
-                for await notification in NotificationCenter.default.notifications(named: .NSPersistentStoreRemoteChange) {
-                    print("found 0 change of storesDidChange: \(notification)")
+                
+                // Currently we need to update this view on changes in Document, because it will not be triggered via SwiftData changes automatically.
+                // Example use case: select a document that will be downloaded and the download status changes
+                let documentUrl = document?.url
+                let changeUrlStream = NotificationCenter.default.notifications(named: .documentUpdate)
+                    .filter { notification in
+                        guard let urls = notification.object as? [URL],
+                              let documentUrl else { return false }
+                        return urls.contains(documentUrl)
+                    }
+                for await _ in changeUrlStream {
                     update()
                 }
             }
@@ -175,14 +203,14 @@ struct DocumentDetailView: View {
 #Preview("Document", traits: .fixedLayout(width: 800, height: 600)) {
     #if os(iOS)
     NavigationStack {
-        DocumentDetailView(documentId: "document-100", untaggedMode: .constant(false))
+        DocumentDetailView(documentId: .constant("document-100"), untaggedMode: .constant(false))
     }
     .modelContainer(previewContainer(documents: [(id: "document-100", downloadStatus: 1)]))
     #else
     NavigationSplitView {
         Text("Sidebar")
     } detail: {
-        DocumentDetailView(documentId: "document-100", untaggedMode: .constant(false))
+        DocumentDetailView(documentId: .constant("document-100"), untaggedMode: .constant(false))
             .modelContainer(previewContainer(documents: [(id: "document-100", downloadStatus: 1)]))
     }
     #endif
@@ -191,14 +219,14 @@ struct DocumentDetailView: View {
 #Preview("Loading", traits: .fixedLayout(width: 800, height: 600)) {
     #if os(iOS)
     NavigationStack {
-        DocumentDetailView(documentId: "document-33", untaggedMode: .constant(false))
+        DocumentDetailView(documentId: .constant("document-33"), untaggedMode: .constant(false))
     }
     .modelContainer(previewContainer(documents: [(id: "document-33", downloadStatus: 0.33)]))
     #else
     NavigationSplitView {
         Text("Sidebar")
     } detail: {
-        DocumentDetailView(documentId: "document-33", untaggedMode: .constant(false))
+        DocumentDetailView(documentId: .constant("document-33"), untaggedMode: .constant(false))
             .modelContainer(previewContainer(documents: [(id: "document-33", downloadStatus: 0.33)]))
     }
     #endif
@@ -207,14 +235,14 @@ struct DocumentDetailView: View {
 #Preview("Error", traits: .fixedLayout(width: 800, height: 600)) {
     #if os(iOS)
     NavigationStack {
-        DocumentDetailView(documentId: "error", untaggedMode: .constant(false))
+        DocumentDetailView(documentId: .constant("error"), untaggedMode: .constant(false))
     }
     .modelContainer(previewContainer())
     #else
     NavigationSplitView {
         Text("Sidebar")
     } detail: {
-        DocumentDetailView(documentId: "error", untaggedMode: .constant(false))
+        DocumentDetailView(documentId: .constant("error"), untaggedMode: .constant(false))
             .modelContainer(previewContainer())
     }
     #endif
@@ -223,14 +251,14 @@ struct DocumentDetailView: View {
 #Preview("No Document", traits: .fixedLayout(width: 800, height: 600)) {
     #if os(iOS)
     NavigationStack {
-        DocumentDetailView(documentId: "1234", untaggedMode: .constant(false))
+        DocumentDetailView(documentId: .constant("1234"), untaggedMode: .constant(false))
     }
     .modelContainer(previewContainer())
     #else
     NavigationSplitView {
         Text("Sidebar")
     } detail: {
-        DocumentDetailView(documentId: "1234", untaggedMode: .constant(false))
+        DocumentDetailView(documentId: .constant("1234"), untaggedMode: .constant(false))
             .modelContainer(previewContainer())
     }
     #endif

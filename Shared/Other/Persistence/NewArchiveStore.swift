@@ -11,6 +11,16 @@ import SwiftData
 import PDFKit.PDFDocument
 import OSLog
 
+extension Notification.Name {
+    class UrlContainer {
+        let urls: [URL]
+        init(urls: [URL]) {
+            self.urls = urls
+        }
+    }
+    static let documentUpdate = Notification.Name("documentUpdate")
+}
+
 actor NewArchiveStore: ModelActor {
 
     static let shared = NewArchiveStore(modelContainer: container)
@@ -171,6 +181,9 @@ actor NewArchiveStore: ModelActor {
                 try processFileChange(with: change)
             }
             try modelContext.save()
+            
+            let changedUrls = changes.map(\.url)
+            NotificationCenter.default.post(name: .documentUpdate, object: changedUrls)
         } catch {
             Logger.archiveStore.errorAndAssert("Error while saving data - error: \(error)")
         }

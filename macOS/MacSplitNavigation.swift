@@ -46,7 +46,7 @@ struct MacSplitNavigation: View {
                         })
                     })
             } else {
-                DocumentDetailView(documentId: selectedDocumentId, untaggedMode: $untaggedMode)
+                DocumentDetailView(documentId: $selectedDocumentId, untaggedMode: $untaggedMode)
             }
         }
         .overlay(alignment: .bottomTrailing, content: {

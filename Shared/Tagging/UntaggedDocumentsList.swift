@@ -8,6 +8,7 @@
 import SwiftData
 import SwiftUI
 
+#warning("TODO: improve document list design")
 struct UntaggedDocumentsList: View {
     @Query private var untaggedDocuments: [Document]
     @Binding var selectedDocumentId: String?
@@ -39,6 +40,9 @@ struct UntaggedDocumentsList: View {
             guard currentDocumentId == nil,
                   let firstDocument = untaggedDocuments.first else { return }
 
+            #warning("TODO: fix this")
+            // ATTENTION: changing the selected document here will/might result in undefined behaviour!
+            // The navigation flows will be corrupted (e.g. navigation not possible anymore).
 //            selectedDocumentId = firstDocument.id
         }
     }
