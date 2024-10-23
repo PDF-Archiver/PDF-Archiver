@@ -5,12 +5,13 @@
 //  Created by Julian Kahnert on 16.06.24.
 //
 
+import SwiftData
 import SwiftUI
 import OSLog
 
-struct IosSplitNavigation: View {
+struct IosSplitNavigation: View, Log {
     @Environment(Subscription.self) private var subscription
-//    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @StateObject private var moreViewModel = SettingsViewModel()
     @State private var dropHandler = PDFDropHandler()
@@ -59,6 +60,7 @@ struct IosSplitNavigation: View {
             
             Tab("Tag", systemImage: "tag", value: .tag) {
                 untaggedView
+                    .modifier(ArchiveStoreLoading())
             }
             
             Tab("More", systemImage: "ellipsis", value: .more) {
@@ -85,15 +87,18 @@ struct IosSplitNavigation: View {
         }
     }
     
+    @ViewBuilder
     private var untaggedView: some View {
-        NavigationSplitView {
-            UntaggedDocumentsList(selectedDocumentId: $selectedDocumentId)
-        } detail: {
-            UntaggedDocumentView(documentId: $selectedDocumentId)
-        }
-        .onAppear {
-            // unselect possibly selected document because it might be a tagged document
-            selectedDocumentId = nil
+        if horizontalSizeClass == .compact {
+            NavigationStack {
+                UntaggedDocumentView(documentId: $selectedDocumentId, selectDocumentItself: true)
+            }
+        } else {
+            NavigationSplitView {
+                UntaggedDocumentsList(selectedDocumentId: $selectedDocumentId)
+            } detail: {
+                UntaggedDocumentView(documentId: $selectedDocumentId)
+            }
         }
     }
 

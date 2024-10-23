@@ -8,7 +8,6 @@
 import SwiftData
 import SwiftUI
 
-#warning("TODO: improve document list design")
 struct UntaggedDocumentsList: View {
     @Query private var untaggedDocuments: [Document]
     @Binding var selectedDocumentId: String?
@@ -26,24 +25,19 @@ struct UntaggedDocumentsList: View {
     }
 
     var body: some View {
-        List(selection: $selectedDocumentId) {
-            ForEach(untaggedDocuments) { document in
-                Text(document.filename)
-                    .lineLimit(1)
+        if untaggedDocuments.isEmpty {
+            ContentUnavailableView("No document", systemImage: "checkmark.seal", description: Text("Congratulations! All documents are tagged. 🎉"))
+        } else {
+            List(selection: $selectedDocumentId) {
+                ForEach(untaggedDocuments) { document in
+                    Text(document.filename)
+                        .lineLimit(1)
+                }
             }
-        }
-        .listStyle(.plain)
-        #if os(macOS)
-        .alternatingRowBackgrounds()
-        #endif
-        .onChange(of: selectedDocumentId) { _, currentDocumentId in
-            guard currentDocumentId == nil,
-                  let firstDocument = untaggedDocuments.first else { return }
-
-            #warning("TODO: fix this")
-            // ATTENTION: changing the selected document here will/might result in undefined behaviour!
-            // The navigation flows will be corrupted (e.g. navigation not possible anymore).
-//            selectedDocumentId = firstDocument.id
+            .listStyle(.plain)
+            #if os(macOS)
+            .alternatingRowBackgrounds()
+            #endif
         }
     }
 }

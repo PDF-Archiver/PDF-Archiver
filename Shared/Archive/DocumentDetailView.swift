@@ -8,19 +8,7 @@
 import SwiftData
 import SwiftUI
 import OSLog
-import CoreData
-class TestDocument {
-    let title: String
-    
-    init(title: String) {
-        self.title = title
-    }
-    
-    // Methode, um die Benachrichtigung zu posten
-    func updateDocument() {
-        NotificationCenter.default.post(name: .documentUpdate, object: self)
-    }
-}
+
 struct DocumentDetailView: View {
     @Binding var documentId: String?
     @Binding var untaggedMode: Bool
@@ -67,14 +55,12 @@ struct DocumentDetailView: View {
                 
                 // Currently we need to update this view on changes in Document, because it will not be triggered via SwiftData changes automatically.
                 // Example use case: select a document that will be downloaded and the download status changes
-                let documentUrl = document?.url
                 let changeUrlStream = NotificationCenter.default.notifications(named: .documentUpdate)
-                    .filter { notification in
-                        guard let urls = notification.object as? [URL],
-                              let documentUrl else { return false }
-                        return urls.contains(documentUrl)
-                    }
-                for await _ in changeUrlStream {
+                for await notification in changeUrlStream {
+                    guard let urls = notification.object as? [URL],
+                          let documentUrl = document?.url,
+                          urls.contains(documentUrl) else { continue }
+                    
                     update()
                 }
             }

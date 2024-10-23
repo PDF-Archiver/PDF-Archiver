@@ -19,13 +19,16 @@ struct UntaggedDocumentView: View {
 
     enum ViewState {
         case loading
+        case downloading(filename: String, downloadProgress: Double)
         case error(any Error)
         case document(Document)
         case documentNotFound
     }
 
     @Binding var documentId: String?
-    @State private var viewState: ViewState = .documentNotFound
+    let selectDocumentItself: Bool
+    
+    @State private var viewState: ViewState = .loading
     @State private var lastSavedDocumentId: String?
     @Environment(\.modelContext) private var modelContext
 
@@ -35,13 +38,14 @@ struct UntaggedDocumentView: View {
 
     #if DEBUG
     let viewStateOverride: ViewState?
-    init(documentId: Binding<String?>, viewStateOverride: ViewState? = nil) {
+    init(documentId: Binding<String?>, selectDocumentItself: Bool = false, viewStateOverride: ViewState? = nil) {
         self._documentId = documentId
+        self.selectDocumentItself = selectDocumentItself
         self.viewStateOverride = viewStateOverride
     }
     #endif
 
-    func update() async {
+    func update() {
         #if DEBUG
         if let viewStateOverride {
             viewState = viewStateOverride
@@ -50,21 +54,42 @@ struct UntaggedDocumentView: View {
         #endif
         viewState = .loading
         do {
-            guard let documentId else {
-                viewState = .documentNotFound
-                return
-            }
-            let predicate = #Predicate<Document> {
-                $0.id == documentId
+            let predicate: Predicate<Document>
+            if selectDocumentItself {
+                predicate = #Predicate<Document> {
+                    !$0.isTagged
+                }
+            } else {
+                
+                guard let documentId else {
+                    viewState = .documentNotFound
+                    return
+                }
+                
+                predicate = #Predicate<Document> {
+                    $0.id == documentId
+                }
             }
             var descriptor = FetchDescriptor<Document>(
-                predicate: predicate
+                predicate: predicate,
+                sortBy: [SortDescriptor(\Document.id)]
             )
             descriptor.fetchLimit = 1
             let documents = try modelContext.fetch(descriptor)
 
             if let document = documents.first {
-                viewState = .document(document)
+                
+                if document.isTagged {
+                    documentId = nil
+                    update()
+                    return
+                }
+                
+                if document.downloadStatus < 1 {
+                    viewState = .downloading(filename: document.filename, downloadProgress: document.downloadStatus)
+                } else {
+                    viewState = .document(document)
+                }
             } else {
                 viewState = .documentNotFound
             }
@@ -94,14 +119,44 @@ struct UntaggedDocumentView: View {
                     #endif
             case .documentNotFound:
                 ContentUnavailableView("Select a Document", systemImage: "doc", description: Text("Select a document from the list."))
+            case .downloading(filename: let filename, downloadProgress: let downloadProgress):
+                VStack(spacing: 15) {
+                    Spacer()
+                    Image(systemName: "arrow.down.doc")
+                        .font(.system(size: 55))
+                        .foregroundStyle(.secondary)
+                    Text("Downloading Document")
+                        .fontWeight(.semibold)
+                        .font(.title2)
+                    Text("The document will be downloaded to your device. Please wait.")
+                        .multilineTextAlignment(.center)
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 10)
+                    ProgressView(filename, value: downloadProgress, total: 1)
+                        .progressViewStyle(.linear)
+                        .padding(40)
+                    Spacer()
+                }
             }
         }
-        .task {
-            await update()
-        }
         .onChange(of: documentId) { _, _ in
-            Task {
-                await update()
+            update()
+        }
+        .task {
+            update()
+            
+            // Currently we need to update this view on changes in Document, because it will not be triggered via SwiftData changes automatically.
+            // Example use case: select a document that will be downloaded and the download status changes
+            let changeUrlStream = NotificationCenter.default.notifications(named: .documentUpdate)
+            for await notification in changeUrlStream {
+                
+//                guard documentId == nil else { continue }
+                
+//                guard let urls = notification.object as? [URL],
+//                      let documentUrl = documentId,
+//                      urls.contains(documentUrl) else { continue }
+                
+                update()
             }
         }
     }
