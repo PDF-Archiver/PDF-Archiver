@@ -41,7 +41,7 @@ actor NewArchiveStore: ModelActor {
     // https://useyourloaf.com/blog/swiftdata-background-tasks/
     let modelContainer: ModelContainer
     let modelExecutor: any ModelExecutor
-    
+
     var isLoadingStream = AsyncCurrentValueSubject(true)
 
     private var archiveFolder: URL!
@@ -49,7 +49,7 @@ actor NewArchiveStore: ModelActor {
     private var providers: [any FolderProvider] = []
     private var folderObservationTasks: [Task<Void, Never>] = []
     private let fileManager = FileManager.default
-    
+
     private var tagCache: [String: PersistentIdentifier] = [:]
 
     private init(modelContainer: ModelContainer) {
@@ -86,7 +86,7 @@ actor NewArchiveStore: ModelActor {
             folderObservationTasks.append(task)
         }
     }
-    
+
     @FolderProviderActor
     private func initProvider(for folder: URL) -> FolderProvider? {
         guard let provider = Self.availableProvider.first(where: { $0.canHandle(folder) }) else {
@@ -164,24 +164,24 @@ actor NewArchiveStore: ModelActor {
         Task {
             let archiveUrl = try await PathManager.shared.getArchiveUrl()
             let untaggedUrl = try await PathManager.shared.getUntaggedUrl()
-            
+
             #if os(macOS)
             let untaggedFolders = [untaggedUrl, UserDefaults.observedFolderURL].compactMap { $0 }
             #else
             let untaggedFolders = [untaggedUrl]
             #endif
-            
+
             await update(archiveFolder: archiveUrl, untaggedFolders: untaggedFolders)
         }
     }
-    
+
     private func folderDidChange(_ changes: [FileChange]) async {
         do {
             for change in changes {
                 try processFileChange(with: change)
             }
             try modelContext.save()
-            
+
             let changedUrls = changes.map(\.url)
             NotificationCenter.default.post(name: .documentUpdate, object: changedUrls)
         } catch {
@@ -203,20 +203,20 @@ actor NewArchiveStore: ModelActor {
             case .local:
                 downloadStatus = 1
             }
-            
+
             guard let id = details.url.uniqueId() else {
                 Logger.archiveStore.errorAndAssert("Failed to get uniqueId")
                 return
             }
-            
+
             guard let filename = details.url.filename() else {
                 Logger.archiveStore.errorAndAssert("Failed to get filename")
                 return
             }
-            
+
             let data = Document.parseFilename(filename)
             let isTagged = isTagged(details.url)
-            
+
             var tags: [Tag] = []
             for tagName in data.tagNames ?? [] {
                 let tag: Tag
@@ -230,7 +230,7 @@ actor NewArchiveStore: ModelActor {
                 }
                 tags.append(tag)
             }
-            
+
             let document = Document(id: "\(id)",
                                     url: details.url,
                                     isTagged: isTagged,
@@ -242,13 +242,13 @@ actor NewArchiveStore: ModelActor {
                                     content: "",    // we write the content later on a background thread
                                     downloadStatus: downloadStatus)
             modelContext.insert(document)
-            
+
         case .removed(let url):
             guard let id = url.uniqueId() else {
                 Logger.archiveStore.errorAndAssert("Failed to get uniqueId for delete")
                 return
             }
-            
+
             let predicate = #Predicate<Document> {
                 $0.id == "\(id)"
             }
@@ -259,7 +259,7 @@ actor NewArchiveStore: ModelActor {
             for document in documents {
                 modelContext.delete(document)
             }
-            
+
         case .updated(let details):
             guard let id = details.url.uniqueId() else {
                 Logger.archiveStore.errorAndAssert("Failed to get uniqueId for update", metadata: ["url": details.url.path()])
@@ -272,12 +272,12 @@ actor NewArchiveStore: ModelActor {
                 predicate: predicate, sortBy: [SortDescriptor(\Document.date, order: .reverse)]
             )
             let documents = try modelContext.fetch(descriptor)
-            
+
             guard let foundDocument = documents.first else {
                 assertionFailure("Failed to get one document")
                 return
             }
-            
+
             let downloadStatus: Double
             switch details.downloadStatus {
             case .downloading(percent: let percent):
@@ -287,12 +287,12 @@ actor NewArchiveStore: ModelActor {
             case .local:
                 downloadStatus = 1
             }
-            
+
             guard let filename = details.url.filename() else {
                 Logger.archiveStore.errorAndAssert("Failed to get filename")
                 return
             }
-            
+
             let data = Document.parseFilename(filename)
             if let date = data.date {
                 foundDocument.date = date
@@ -300,9 +300,9 @@ actor NewArchiveStore: ModelActor {
             let isTagged = isTagged(details.url)
             foundDocument.specification = isTagged ? (data.specification ?? "n/a").replacingOccurrences(of: "-", with: " ") : (data.specification ?? "n/a")
             foundDocument.downloadStatus = downloadStatus
-            
+
             Logger.archiveStore.debug("Updating document", metadata: ["specification": foundDocument.specification, "downloadStatus": "\(foundDocument.downloadStatus)"])
-            
+
             for document in documents.dropFirst() {
                 assertionFailure("There should not be more than one document in the database")
                 modelContext.delete(document)

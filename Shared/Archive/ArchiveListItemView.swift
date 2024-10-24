@@ -13,14 +13,14 @@ struct ArchiveListItemView: View {
     let documentDate: Date
     let documentTags: [String]
     let documentSize: Measurement<UnitInformationStorage>
-    
+
     init(documentSpecification: String, documentDate: Date, documentTags: [String], documentSize: Measurement<UnitInformationStorage>) {
         self.documentSpecification = documentSpecification
         self.documentDate = documentDate
         self.documentTags = documentTags
         self.documentSize = documentSize
     }
-    
+
     init(document: Document) {
         self.documentSpecification = document.specification
         self.documentDate = document.date
@@ -40,7 +40,7 @@ struct ArchiveListItemView: View {
                 }
                 Spacer()
             }
-            
+
             TagListView(tags: documentTags.sorted(), isEditable: false, isMultiLine: false, tapHandler: nil)
                 .font(.caption)
         }

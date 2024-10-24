@@ -27,7 +27,7 @@ struct UntaggedDocumentView: View {
     }
 
     @Binding var documentId: String?
-    
+
     @State private var viewState: ViewState = .loading
 
     @State private var lastSavedDocumentId: String?
@@ -52,7 +52,7 @@ struct UntaggedDocumentView: View {
         }
         #endif
         viewState = .loading
-        
+
         guard let documentId else {
             viewState = .documentNotFound
             return
@@ -64,7 +64,7 @@ struct UntaggedDocumentView: View {
         descriptor.fetchLimit = 1
         do {
             let document = (try modelContext.fetch(descriptor)).first
-            
+
             assert(!(document?.isTagged ?? true), "Document with id \(documentId) is tagged.")
 
             if let document {
@@ -127,7 +127,7 @@ struct UntaggedDocumentView: View {
         }
         .task {
             update()
-            
+
             // Currently we need to update this view on changes in Document, because it will not be triggered via SwiftData changes automatically.
             // Example use case: select a document that will be downloaded and the download status changes
             let changeUrlStream = NotificationCenter.default.notifications(named: .documentUpdate)

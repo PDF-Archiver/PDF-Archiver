@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct ArchiveStoreLoading: ViewModifier {
-    
+
     @State private var isLoading: Bool = true
-    
+
     func body(content: Content) -> some View {
         ZStack {
             content

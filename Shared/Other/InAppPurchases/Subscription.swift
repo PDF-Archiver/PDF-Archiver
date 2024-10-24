@@ -54,9 +54,8 @@ private struct IAPTaskModifier: ViewModifier {
                 case .loading:
                     Logger.inAppPurchase.debug("Got loading status task")
                     subscription.status = .loading
-                @unknown default:
+                    @unknown default:
                     Logger.inAppPurchase.errorAndAssert("Got unkown status in subscriptionStatusTask")
-                    break
                 }
             }
             .task {

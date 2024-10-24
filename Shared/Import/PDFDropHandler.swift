@@ -131,7 +131,7 @@ extension PDFDropHandler: DropDelegate {
 
                     // opt out e.g. with sending to declare the reference not to be used from any other method
                     let data = try await provider.getItem(for: type)
-                    
+
                     guard let data else { continue }
                     if let pdf = PDFDocument(data: data) {
                         await handle(pdf: pdf)
@@ -151,10 +151,9 @@ extension PDFDropHandler: DropDelegate {
 extension NSItemProvider {
     func getItem(for type: UTType) async throws -> Data? {
         let item = try await loadItem(forTypeIdentifier: type.identifier)
-        
+
         if let data = item as? Data {
             return data
-
 
         } else if let url = item as? URL {
             var data: Data?

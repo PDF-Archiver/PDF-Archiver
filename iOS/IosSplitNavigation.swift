@@ -32,19 +32,19 @@ struct IosSplitNavigation: View, Log {
                 #warning("TODO: refactor loading to this modifier")
 //                    .modifier(ArchiveStoreLoading())
             }
-            
+
             Tab("Tag", systemImage: "tag", value: .tag) {
                 untaggedView
                     .modifier(ArchiveStoreLoading())
             }
-            
+
             Tab("More", systemImage: "ellipsis", value: .more) {
 //                settingsView
                 Text("BETA: The settings tab is not implemented yet")
             }
         }
         .tabViewStyle(.tabBarOnly)
-        .onChange(of: selectedTab) { _, newValue in
+        .onChange(of: selectedTab) { _, _ in
             selectNewUntaggedDocument()
         }
         .onChange(of: selectedUntaggedDocumentId) { _, _ in
@@ -52,14 +52,14 @@ struct IosSplitNavigation: View, Log {
         }
         .task {
             selectNewUntaggedDocument()
-            
+
             let changeUrlStream = NotificationCenter.default.notifications(named: .documentUpdate)
-            for await _ in changeUrlStream {                
+            for await _ in changeUrlStream {
                 selectNewUntaggedDocument()
             }
         }
     }
-    
+
     private var loadingView: some View {
         ProgressView {
             Text("Loading documents...")
@@ -78,7 +78,7 @@ struct IosSplitNavigation: View, Log {
             }))
         }
     }
-    
+
     @ViewBuilder
     private var untaggedView: some View {
         if horizontalSizeClass == .compact {
@@ -99,16 +99,16 @@ struct IosSplitNavigation: View, Log {
             SettingsView(viewModel: moreViewModel)
         }
     }
-    
+
     private func selectNewUntaggedDocument() {
         guard case TabType.tag = selectedTab,
               selectedUntaggedDocumentId == nil else { return }
-        
+
         do {
             let predicate = #Predicate<Document> {
                 !$0.isTagged
             }
-            
+
             var descriptor = FetchDescriptor<Document>(
                 predicate: predicate,
                 sortBy: [SortDescriptor(\Document.id)]

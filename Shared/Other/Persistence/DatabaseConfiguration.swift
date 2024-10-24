@@ -22,7 +22,7 @@ func createMockData(in modelContext: ModelContext) {
     let home = Tag(name: "home", documents: [])
     let ikea = Tag(name: "ikea", documents: [])
     let coffee = Tag(name: "coffee", documents: [])
-    
+
     modelContext.insert(Document(id: "debug-document-id", url: examplePdfUrl, isTagged: true, filename: "test", sizeInBytes: 128, date: Date(), specification: "macbook pro", tags: [bill, longterm], content: "", downloadStatus: 0))
     modelContext.insert(Document(id: "error", url: URL(filePath: "/tmp/invalid-path.pdf"), isTagged: true, filename: "test", sizeInBytes: 128, date: Date(), specification: "tv board", tags: [bill, home, ikea], content: "", downloadStatus: 0.25))
     modelContext.insert(Document(id: UUID().uuidString, url: URL(filePath: ""), isTagged: true, filename: "test", sizeInBytes: 128, date: Date(), specification: "large picture", tags: [bill, ikea], content: "", downloadStatus: 0.5))

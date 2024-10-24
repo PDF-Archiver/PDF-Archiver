@@ -11,15 +11,15 @@
 // TODO: implement this with the new API: https://developer.apple.com/documentation/storekit/requesting_app_store_reviews
 // in a View Modifier??
 
-//import Foundation
-//import StoreKit.SKStoreReviewController
+// import Foundation
+// import StoreKit.SKStoreReviewController
 //
-//private enum UserDefaultsKeys: String {
+// private enum UserDefaultsKeys: String {
 //    case processCompletedCountKey
 //    case lastVersionPromptedForReviewKey
-//}
+// }
 //
-//final class AppStoreReviewRequest {
+// final class AppStoreReviewRequest {
 //
 //    static let shared = AppStoreReviewRequest()
 //    private let reviewThresholdCount = 5
@@ -79,4 +79,4 @@
 //            else { fatalError("Expected a valid URL") }
 //        open(writeReviewURL)
 //    }
-//}
+// }

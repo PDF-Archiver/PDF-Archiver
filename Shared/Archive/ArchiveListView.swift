@@ -11,7 +11,7 @@ import OSLog
 
 struct ArchiveListView: View {
     @Query private var documents: [Document]
-    
+
     @Binding private var selectedDocumentId: String?
     @Binding private var shoudLoadAll: Bool
     @State private var isLoading: Bool = true
@@ -37,7 +37,7 @@ struct ArchiveListView: View {
 
     @ViewBuilder
     private var content: some View {
-        
+
         if documents.isEmpty {
             if isLoading {
                 ProgressView {
@@ -55,7 +55,7 @@ struct ArchiveListView: View {
                     ArchiveListItemView(document: document)
                         .frame(maxWidth: .infinity, maxHeight: 65.0)
                 }
-                
+
                 if searchString.isEmpty {
                     Button {
                         shoudLoadAll.toggle()

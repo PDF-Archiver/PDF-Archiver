@@ -21,7 +21,7 @@ final class Document {
     }
     var specification: String = ""
     @Relationship(inverse: \Tag.documents) var tagItems: [Tag]
-    
+
     @Transient
     var tags: [String] {
         tagItems.map(\.name)

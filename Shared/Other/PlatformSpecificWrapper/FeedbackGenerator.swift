@@ -10,18 +10,18 @@ import UIKit
 #endif
 
 enum FeedbackGenerator {
-    
+
     enum FeedbackType {
         case success, warning, error
     }
-    
+
 #if canImport(UIKit)
     @MainActor
     private static let notificationFeedback = UINotificationFeedbackGenerator()
     @MainActor
     private static let selectionFeedback = UISelectionFeedbackGenerator()
 #endif
-    
+
     static func selectionChanged() {
 #if canImport(UIKit)
         Task {
@@ -32,7 +32,7 @@ enum FeedbackGenerator {
         }
 #endif
     }
-    
+
     static func notify(_ status: FeedbackType) {
 #if canImport(UIKit)
         Task {
