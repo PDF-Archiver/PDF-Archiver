@@ -10,6 +10,7 @@ import Foundation
 import SwiftData
 import PDFKit.PDFDocument
 import OSLog
+import AsyncExtensions
 
 extension Notification.Name {
     class UrlContainer {
@@ -41,8 +42,7 @@ actor NewArchiveStore: ModelActor {
     let modelContainer: ModelContainer
     let modelExecutor: any ModelExecutor
     
-    private let isLoadingAsyncStream = AsyncStream<Bool>.makeStream()
-    var isLoadingStream: any AsyncSequence<Bool, Never> { isLoadingAsyncStream.stream }
+    var isLoadingStream = AsyncCurrentValueSubject(true)
 
     private var archiveFolder: URL!
     private var untaggedFolders: [URL] = []
@@ -188,7 +188,7 @@ actor NewArchiveStore: ModelActor {
             Logger.archiveStore.errorAndAssert("Error while saving data - error: \(error)")
         }
 
-        isLoadingAsyncStream.continuation.yield(false)
+        isLoadingStream.send(false)
     }
 
     private func processFileChange(with fileChange: FileChange) throws {

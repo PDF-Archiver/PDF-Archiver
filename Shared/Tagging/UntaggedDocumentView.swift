@@ -16,6 +16,7 @@ import OSLog
 #warning("TODO: select a new untagged document if the current was saved")
 struct UntaggedDocumentView: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @Environment(\.modelContext) private var modelContext
 
     enum ViewState {
         case loading
@@ -26,11 +27,10 @@ struct UntaggedDocumentView: View {
     }
 
     @Binding var documentId: String?
-    let selectDocumentItself: Bool
     
     @State private var viewState: ViewState = .loading
+
     @State private var lastSavedDocumentId: String?
-    @Environment(\.modelContext) private var modelContext
 
     @State private var date = Date()
     @State private var specification = ""
@@ -38,9 +38,8 @@ struct UntaggedDocumentView: View {
 
     #if DEBUG
     let viewStateOverride: ViewState?
-    init(documentId: Binding<String?>, selectDocumentItself: Bool = false, viewStateOverride: ViewState? = nil) {
+    init(documentId: Binding<String?>, viewStateOverride: ViewState? = nil) {
         self._documentId = documentId
-        self.selectDocumentItself = selectDocumentItself
         self.viewStateOverride = viewStateOverride
     }
     #endif
@@ -53,38 +52,22 @@ struct UntaggedDocumentView: View {
         }
         #endif
         viewState = .loading
+        
+        guard let documentId else {
+            viewState = .documentNotFound
+            return
+        }
+        let predicate = #Predicate<Document> { document in
+            return document.id == documentId
+        }
+        var descriptor = FetchDescriptor(predicate: predicate)
+        descriptor.fetchLimit = 1
         do {
-            let predicate: Predicate<Document>
-            if selectDocumentItself {
-                predicate = #Predicate<Document> {
-                    !$0.isTagged
-                }
-            } else {
-                
-                guard let documentId else {
-                    viewState = .documentNotFound
-                    return
-                }
-                
-                predicate = #Predicate<Document> {
-                    $0.id == documentId
-                }
-            }
-            var descriptor = FetchDescriptor<Document>(
-                predicate: predicate,
-                sortBy: [SortDescriptor(\Document.id)]
-            )
-            descriptor.fetchLimit = 1
-            let documents = try modelContext.fetch(descriptor)
+            let document = (try modelContext.fetch(descriptor)).first
+            
+            assert(!(document?.isTagged ?? true), "Document with id \(documentId) is tagged.")
 
-            if let document = documents.first {
-                
-                if document.isTagged {
-                    documentId = nil
-                    update()
-                    return
-                }
-                
+            if let document {
                 if document.downloadStatus < 1 {
                     viewState = .downloading(filename: document.filename, downloadProgress: document.downloadStatus)
                 } else {
@@ -94,7 +77,7 @@ struct UntaggedDocumentView: View {
                 viewState = .documentNotFound
             }
         } catch {
-            Logger.newDocument.errorAndAssert("Found error")
+            Logger.newDocument.errorAndAssert("Found error \(error)")
             viewState = .error(error)
         }
     }
@@ -148,14 +131,7 @@ struct UntaggedDocumentView: View {
             // Currently we need to update this view on changes in Document, because it will not be triggered via SwiftData changes automatically.
             // Example use case: select a document that will be downloaded and the download status changes
             let changeUrlStream = NotificationCenter.default.notifications(named: .documentUpdate)
-            for await notification in changeUrlStream {
-                
-//                guard documentId == nil else { continue }
-                
-//                guard let urls = notification.object as? [URL],
-//                      let documentUrl = documentId,
-//                      urls.contains(documentUrl) else { continue }
-                
+            for await _ in changeUrlStream {
                 update()
             }
         }

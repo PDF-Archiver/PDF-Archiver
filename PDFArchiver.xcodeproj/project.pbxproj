@@ -213,6 +213,7 @@
 		A3991D432CAEC85900CEEDC9 /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3991D412CAEC85800CEEDC9 /* Tag.swift */; };
 		A39A29D32CC99F850072EFDE /* ArchiveStoreLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39A29D22CC99F800072EFDE /* ArchiveStoreLoading.swift */; };
 		A39A29D42CC99F850072EFDE /* ArchiveStoreLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39A29D22CC99F800072EFDE /* ArchiveStoreLoading.swift */; };
+		A39A29D72CCAE6BD0072EFDE /* AsyncExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = A39A29D62CCAE6BD0072EFDE /* AsyncExtensions */; };
 		A39D507D2BFDE4AE0028696A /* Bool.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39D507C2BFDE4AE0028696A /* Bool.swift */; };
 		A39D507E2BFDE4AE0028696A /* Bool.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39D507C2BFDE4AE0028696A /* Bool.swift */; };
 		A39DBD7C2C29B02B000DD224 /* SubscriptionSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39DBD7B2C29B02B000DD224 /* SubscriptionSectionView.swift */; };
@@ -456,6 +457,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				34A5CF8224A93A3C002409EF /* StoreKit.framework in Frameworks */,
+				A39A29D72CCAE6BD0072EFDE /* AsyncExtensions in Frameworks */,
 				A35CBAA62C1F2A2600CFBA20 /* DeepDiff in Frameworks */,
 				A35CBAAA2C1F2A2600CFBA20 /* Parma in Frameworks */,
 				A3CACBE52CBA653300EF115F /* AsyncAlgorithms in Frameworks */,
@@ -1046,6 +1048,7 @@
 				A35CBAA52C1F2A2600CFBA20 /* DeepDiff */,
 				A35CBAA92C1F2A2600CFBA20 /* Parma */,
 				A3CACBE42CBA653300EF115F /* AsyncAlgorithms */,
+				A39A29D62CCAE6BD0072EFDE /* AsyncExtensions */,
 			);
 			productName = iOS;
 			productReference = 3489D71B24A3C53E0035E64F /* PDFArchiver.app */;
@@ -1194,6 +1197,7 @@
 				A3BF936F2BA4D686002411DB /* XCRemoteSwiftPackageReference "DeepDiff" */,
 				A3B277272BA4D89C00F6F8D0 /* XCRemoteSwiftPackageReference "Parma" */,
 				A3CACBE32CBA653300EF115F /* XCRemoteSwiftPackageReference "swift-async-algorithms" */,
+				A39A29D52CCAE6BD0072EFDE /* XCRemoteSwiftPackageReference "AsyncExtensions" */,
 			);
 			productRefGroup = 3489D71C24A3C53E0035E64F /* Products */;
 			projectDirPath = "";
@@ -2093,6 +2097,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		A39A29D52CCAE6BD0072EFDE /* XCRemoteSwiftPackageReference "AsyncExtensions" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sideeffect-io/AsyncExtensions";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.5.3;
+			};
+		};
 		A3B277272BA4D89C00F6F8D0 /* XCRemoteSwiftPackageReference "Parma" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/dasautoooo/Parma";
@@ -2129,6 +2141,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A3B277272BA4D89C00F6F8D0 /* XCRemoteSwiftPackageReference "Parma" */;
 			productName = Parma;
+		};
+		A39A29D62CCAE6BD0072EFDE /* AsyncExtensions */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A39A29D52CCAE6BD0072EFDE /* XCRemoteSwiftPackageReference "AsyncExtensions" */;
+			productName = AsyncExtensions;
 		};
 		A3B277282BA4D89C00F6F8D0 /* Parma */ = {
 			isa = XCSwiftPackageProductDependency;

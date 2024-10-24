@@ -24,7 +24,6 @@ struct ArchiveStoreLoading: ViewModifier {
             .task {
                 let isLoadingStream = await NewArchiveStore.shared.isLoadingStream
                 for await isLoading in isLoadingStream {
-                    let _ = print("TEST: \(isLoading)")
                     self.isLoading = isLoading
                 }
             }

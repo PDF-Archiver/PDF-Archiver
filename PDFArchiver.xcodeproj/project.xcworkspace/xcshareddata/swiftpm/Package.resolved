@@ -1,6 +1,15 @@
 {
-  "originHash" : "bb20ace92335f6c246dc45272d9434ec1bf05c319fe25dccfd73a44fe5c7de72",
+  "originHash" : "f61e560d1a0e82ec3278141b82f80d81c1f379e611ea7525ef904fb9c851a1c7",
   "pins" : [
+    {
+      "identity" : "asyncextensions",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sideeffect-io/AsyncExtensions",
+      "state" : {
+        "revision" : "3442d3d046800f1974bda096faaf0ac510b21154",
+        "version" : "0.5.3"
+      }
+    },
     {
       "identity" : "deepdiff",
       "kind" : "remoteSourceControl",

@@ -37,6 +37,8 @@ struct DocumentDetailView: View {
         do {
             let document = (try modelContext.fetch(descriptor)).first
             
+            assert(document?.isTagged ?? true, "Document with id \(documentId) is not tagged.")
+            
             // we need to update the document and downloadStatus manual, because changes in document will not trigger a view update
             self.document = document
             self.downloadStatus = document?.downloadStatus
