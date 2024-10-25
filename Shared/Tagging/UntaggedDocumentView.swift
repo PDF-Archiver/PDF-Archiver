@@ -103,23 +103,7 @@ struct UntaggedDocumentView: View {
             case .documentNotFound:
                 ContentUnavailableView("Select a Document", systemImage: "doc", description: Text("Select a document from the list."))
             case .downloading(filename: let filename, downloadProgress: let downloadProgress):
-                VStack(spacing: 15) {
-                    Spacer()
-                    Image(systemName: "arrow.down.doc")
-                        .font(.system(size: 55))
-                        .foregroundStyle(.secondary)
-                    Text("Downloading Document")
-                        .fontWeight(.semibold)
-                        .font(.title2)
-                    Text("The document will be downloaded to your device. Please wait.")
-                        .multilineTextAlignment(.center)
-                        .foregroundStyle(.secondary)
-                        .padding(.horizontal, 10)
-                    ProgressView(filename, value: downloadProgress, total: 1)
-                        .progressViewStyle(.linear)
-                        .padding(40)
-                    Spacer()
-                }
+                DocumentLoadingView(filename: filename, downloadStatus: downloadProgress)
             }
         }
         .onChange(of: documentId) { _, _ in

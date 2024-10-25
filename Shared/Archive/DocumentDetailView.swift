@@ -73,29 +73,13 @@ struct DocumentDetailView: View {
         if let document,
            let downloadStatus {
             if downloadStatus < 1 {
-                VStack(spacing: 15) {
-                    Spacer()
-                    Image(systemName: "arrow.down.doc")
-                        .font(.system(size: 55))
-                        .foregroundStyle(.secondary)
-                    Text("Downloading Document")
-                        .fontWeight(.semibold)
-                        .font(.title2)
-                    Text("The document will be downloaded to your device. Please wait.")
-                        .multilineTextAlignment(.center)
-                        .foregroundStyle(.secondary)
-                        .padding(.horizontal, 10)
-                    ProgressView(document.filename, value: downloadStatus, total: 1)
-                        .progressViewStyle(.linear)
-                        .padding(40)
-                    Spacer()
-                }
-                .task {
-                    #if DEBUG
-                    guard !ProcessInfo().isSwiftUIPreview else { return }
-                    #endif
-                    await NewArchiveStore.shared.startDownload(of: document.url)
-                }
+                DocumentLoadingView(filename: document.filename, downloadStatus: downloadStatus)
+                    .task {
+                        #if DEBUG
+                        guard !ProcessInfo().isSwiftUIPreview else { return }
+                        #endif
+                        await NewArchiveStore.shared.startDownload(of: document.url)
+                    }
 
             } else {
                 documentView(for: document)
