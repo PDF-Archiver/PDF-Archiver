@@ -14,7 +14,6 @@ struct ArchiveListView: View {
 
     @Binding private var selectedDocumentId: String?
     @Binding private var shoudLoadAll: Bool
-    @State private var isLoading: Bool = true
     private let searchString: String
 
     init(selectedDocumentId: Binding<String?>, shoudLoadAll: Binding<Bool>, searchString: String, descriptor: FetchDescriptor<Document>) {
@@ -26,25 +25,8 @@ struct ArchiveListView: View {
     }
 
     var body: some View {
-        content
-            .task {
-                let isLoadingStream = await NewArchiveStore.shared.isLoadingStream
-                for await isLoading in isLoadingStream {
-                    self.isLoading = isLoading
-                }
-            }
-    }
-
-    @ViewBuilder
-    private var content: some View {
-
         if documents.isEmpty {
-            if isLoading {
-                ProgressView {
-                    Text("Loading documents...")
-                }
-                .controlSize(.extraLarge)
-            } else if !searchString.isEmpty {
+            if !searchString.isEmpty {
                 ContentUnavailableView("No document found", systemImage: "magnifyingglass", description: Text("Try another search query."))
             } else {
                 ContentUnavailableView("Empty Archive", systemImage: "archivebox", description: Text("Start scanning and tagging your first document."))

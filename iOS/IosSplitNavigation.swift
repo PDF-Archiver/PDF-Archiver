@@ -29,8 +29,7 @@ struct IosSplitNavigation: View, Log {
 
             Tab("Archiv", systemImage: "archivebox", value: .archive) {
                 archiveView
-                #warning("TODO: refactor loading to this modifier")
-//                    .modifier(ArchiveStoreLoading())
+                    .modifier(ArchiveStoreLoading())
             }
 
             Tab("Tag", systemImage: "tag", value: .tag) {

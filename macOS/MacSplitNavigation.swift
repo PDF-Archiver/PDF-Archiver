@@ -25,6 +25,7 @@ struct MacSplitNavigation: View {
                     ArchiveView(selectedDocumentId: $selectedDocumentId)
                 }
             }
+            .modifier(ArchiveStoreLoading())
             .frame(minWidth: 300)
             .toolbar {
                 ToolbarItem(placement: .automatic) {
@@ -53,8 +54,8 @@ struct MacSplitNavigation: View {
             DropButton(state: dropHandler.documentProcessingState, action: {
                 dropHandler.startImport()
             })
-            .padding(.bottom, 4)
-            .padding(.trailing, 4)
+            .padding(.bottom, 16)
+            .padding(.trailing, 16)
         })
         .sheet(isPresented: $tutorialShown.flipped, content: {
             OnboardingView(isPresenting: $tutorialShown.flipped)

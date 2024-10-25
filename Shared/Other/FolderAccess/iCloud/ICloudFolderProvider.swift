@@ -172,9 +172,8 @@ final class ICloudFolderProvider: FolderProvider {
 
             if let isDownloading = item.value(forAttribute: NSMetadataUbiquitousItemIsDownloadingKey) as? Bool,
                 isDownloading {
-                let percentDownloaded = Float(truncating: (item.value(forAttribute: NSMetadataUbiquitousItemPercentDownloadedKey) as? NSNumber) ?? 0)
-
-                documentStatus = .downloading(percent: Double(percentDownloaded / 100))
+                let percentDownloaded = (item.value(forAttribute: NSMetadataUbiquitousItemPercentDownloadedKey) as? NSNumber)?.doubleValue ?? 0
+                documentStatus = .downloading(percent: percentDownloaded)
             } else {
                 documentStatus = .remote
             }

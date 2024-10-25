@@ -202,6 +202,7 @@
 		A35CBAAA2C1F2A2600CFBA20 /* Parma in Frameworks */ = {isa = PBXBuildFile; productRef = A35CBAA92C1F2A2600CFBA20 /* Parma */; };
 		A360AD5B2C22339500541068 /* initializePdfArchiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A360AD5A2C22339500541068 /* initializePdfArchiver.swift */; };
 		A360AD5C2C22339500541068 /* initializePdfArchiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A360AD5A2C22339500541068 /* initializePdfArchiver.swift */; };
+		A36FB17F2CCBDF3E006ADDE9 /* AsyncExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = A36FB17E2CCBDF3E006ADDE9 /* AsyncExtensions */; };
 		A37FEB822C1E1642003F7F14 /* BackgroundProcessingActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37FEB812C1E1640003F7F14 /* BackgroundProcessingActor.swift */; };
 		A37FEB832C1E1642003F7F14 /* BackgroundProcessingActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37FEB812C1E1640003F7F14 /* BackgroundProcessingActor.swift */; };
 		A37FEB852C1E3A53003F7F14 /* PlatformImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37FEB842C1E3A4D003F7F14 /* PlatformImage.swift */; };
@@ -469,6 +470,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A3BF93712BA4D686002411DB /* DeepDiff in Frameworks */,
+				A36FB17F2CCBDF3E006ADDE9 /* AsyncExtensions in Frameworks */,
 				34D470BB255B249B000302A8 /* StoreKit.framework in Frameworks */,
 				A3B277292BA4D89C00F6F8D0 /* Parma in Frameworks */,
 				A3CACBE72CBA68CA00EF115F /* AsyncAlgorithms in Frameworks */,
@@ -1071,6 +1073,7 @@
 				A3BF93702BA4D686002411DB /* DeepDiff */,
 				A3B277282BA4D89C00F6F8D0 /* Parma */,
 				A3CACBE62CBA68CA00EF115F /* AsyncAlgorithms */,
+				A36FB17E2CCBDF3E006ADDE9 /* AsyncExtensions */,
 			);
 			productName = macOS;
 			productReference = 3489D72324A3C53E0035E64F /* PDFArchiver.app */;
@@ -2141,6 +2144,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A3B277272BA4D89C00F6F8D0 /* XCRemoteSwiftPackageReference "Parma" */;
 			productName = Parma;
+		};
+		A36FB17E2CCBDF3E006ADDE9 /* AsyncExtensions */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A39A29D52CCAE6BD0072EFDE /* XCRemoteSwiftPackageReference "AsyncExtensions" */;
+			productName = AsyncExtensions;
 		};
 		A39A29D62CCAE6BD0072EFDE /* AsyncExtensions */ = {
 			isa = XCSwiftPackageProductDependency;
