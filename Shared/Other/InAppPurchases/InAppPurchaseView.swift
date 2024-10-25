@@ -104,7 +104,7 @@ struct InAppPurchaseView: View {
                 do {
                     try await AppStore.sync()
                 } catch {
-                    print(error)
+                    print("AppStore sync failed: \(error)")
                 }
             }
         } label: {

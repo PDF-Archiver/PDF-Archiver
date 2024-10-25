@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct DocumentLoadingView: View {
-    
+
     let filename: String
     let downloadStatus: Double
-    
+
     var body: some View {
         VStack(spacing: 15) {
             Spacer()

@@ -9,10 +9,6 @@ import SwiftData
 import SwiftUI
 import OSLog
 
-#warning("TODO: add loading spinner while DB will be created")
-#warning("TODO: add loading spinner/progress bar while document is downloading")
-#warning("TODO: fix toolbar on iOS")
-#warning("TODO: add tag suggestion on iOS")
 #warning("TODO: select a new untagged document if the current was saved")
 struct UntaggedDocumentView: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
@@ -124,17 +120,37 @@ struct UntaggedDocumentView: View {
     @ViewBuilder
     private func documentView(for document: Document) -> some View {
         if horizontalSizeClass == .compact {
-            DocumentView(document: document, onRevert: lastSavedDocumentId == nil ? nil : {
-                guard let lastSavedDocumentId else {
-                    assertionFailure("Failed to get lastSavedDocumentId")
-                    return
+            VStack(spacing: 0) {
+                HStack {
+                    DeleteDocumentButtonView {
+                        Logger.newDocument.debug("Deleting all datapoints, meters and tariffs")
+                        do {
+                            try FileManager.default.trashItem(at: document.url, resultingItemURL: nil)
+                        } catch {
+                            Logger.newDocument.errorAndAssert("Error while trashing file \(error)")
+                        }
+                    }
+                    .font(.title)
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 8)
+
+                    Text(document.specification)
+                        .font(.headline)
                 }
-                documentId = lastSavedDocumentId
-            })
-            DocumentInformation(information: DocumentInformationViewModel(url: document.url, onSave: {
-                self.lastSavedDocumentId = self.documentId
-                self.documentId = nil
-            }))
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.bottom, 4)
+                DocumentView(document: document, onRevert: lastSavedDocumentId == nil ? nil : {
+                    guard let lastSavedDocumentId else {
+                        assertionFailure("Failed to get lastSavedDocumentId")
+                        return
+                    }
+                    documentId = lastSavedDocumentId
+                })
+                DocumentInformation(information: DocumentInformationViewModel(url: document.url, onSave: {
+                    self.lastSavedDocumentId = self.documentId
+                    self.documentId = nil
+                }))
+            }
         } else {
             HStack {
                 DocumentView(document: document, onRevert: lastSavedDocumentId == nil ? nil : {
@@ -163,41 +179,26 @@ struct UntaggedDocumentView: View {
         var body: some View {
             PDFCustomView(document.url)
                 .toolbar {
+                    ToolbarItemGroup(placement: .confirmationAction) {
+                        if horizontalSizeClass == .compact {
+                            revertButton
+                        }
+                    }
                     ToolbarItemGroup(placement: .cancellationAction) {
-                        revertButton
                         if horizontalSizeClass != .compact {
+                            revertButton
                             showInFinderButton
                         }
-                        deleteButton
-                    }
-                }
-                .confirmationDialog("Do you really want to delete this document?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
-                    Button("Delete", role: .destructive) {
-                        Logger.newDocument.debug("Deleting all datapoints, meters and tariffs")
-                        do {
-                            try FileManager.default.trashItem(at: document.url, resultingItemURL: nil)
-                        } catch {
-                            Logger.newDocument.errorAndAssert("Error while trashing file \(error)")
-                        }
-                    }
-                    Button("Cancel", role: .cancel) {
-                        withAnimation {
-                            showDeleteConfirmation = false
+                        DeleteDocumentButtonView {
+                            Logger.newDocument.debug("Deleting all datapoints, meters and tariffs")
+                            do {
+                                try FileManager.default.trashItem(at: document.url, resultingItemURL: nil)
+                            } catch {
+                                Logger.newDocument.errorAndAssert("Error while trashing file \(error)")
+                            }
                         }
                     }
                 }
-        }
-
-        private var deleteButton: some View {
-            Button(role: .destructive, action: {
-                showDeleteConfirmation = true
-            }, label: {
-                Label("Delete", systemImage: "trash")
-                    .foregroundColor(.red)
-                    #if !os(macOS)
-                    .labelStyle(VerticalLabelStyle())
-                    #endif
-            })
         }
 
         private var revertButton: some View {

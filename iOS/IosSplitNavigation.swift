@@ -81,9 +81,9 @@ struct IosSplitNavigation: View, Log {
     @ViewBuilder
     private var untaggedView: some View {
         if horizontalSizeClass == .compact {
-            NavigationStack {
-                UntaggedDocumentView(documentId: $selectedUntaggedDocumentId)
-            }
+            // We must not use a NavigationStack here, because it prevents showing the keyboard toolbar.
+            // More Information: https://forums.developer.apple.com/forums/thread/736040
+            UntaggedDocumentView(documentId: $selectedUntaggedDocumentId)
         } else {
             NavigationSplitView {
                 UntaggedDocumentsList(selectedDocumentId: $selectedUntaggedDocumentId)
