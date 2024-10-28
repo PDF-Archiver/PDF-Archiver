@@ -35,7 +35,6 @@ struct ArchiveListView: View {
             List(selection: $selectedDocumentId) {
                 ForEach(documents) { document in
                     ArchiveListItemView(document: document)
-                        .frame(maxWidth: .infinity, maxHeight: 65.0)
                 }
 
                 if searchString.isEmpty {
