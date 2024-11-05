@@ -39,7 +39,14 @@ enum DateParser: Log {
             Self.log.criticalAndAssert("Could not create NSDataDetector")
             return nil
         }
-        let match = detector.firstMatch(in: raw, range: NSRange(location: 0, length: raw.count))
+  
+        // the NSDataDetector parses times as "today" Date so we filter out all dates that are today
+        let match = detector.matches(in: raw, range: NSRange(location: 0, length: raw.count))
+            .first { match in
+                guard let date = match.date,
+                      !Calendar.current.isDate(date, inSameDayAs: Date()) else { return false }
+                return true
+            }
 
         guard let match = match,
               let date = match.date else {
