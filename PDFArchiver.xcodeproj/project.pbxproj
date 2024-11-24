@@ -14,7 +14,6 @@
 		345A497E24AFB0CE00EC4DC2 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3416B1AD24A9282700D5F4E0 /* Settings.bundle */; };
 		3489D73024A3C53E0035E64F /* TestsIOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3489D72F24A3C53E0035E64F /* TestsIOS.swift */; };
 		3489D73B24A3C53E0035E64F /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3489D73A24A3C53E0035E64F /* Tests_macOS.swift */; };
-		3489D73D24A3C53E0035E64F /* PDFArchiverApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3489D71424A3C53D0035E64F /* PDFArchiverApp.swift */; };
 		34A23FCF2519386200EBE1D5 /* Imprint.md in Resources */ = {isa = PBXBuildFile; fileRef = 34B254602512774400EC5DD9 /* Imprint.md */; };
 		34A23FD02519386200EBE1D5 /* Privacy.md in Resources */ = {isa = PBXBuildFile; fileRef = 34B2546B251277A700EC5DD9 /* Privacy.md */; };
 		34A53FA124AA656B008A3377 /* ShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 34A53F9724AA656B008A3377 /* ShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -214,6 +213,8 @@
 		A38256C02C1F552C00416A08 /* IosSplitNavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38256BE2C1F552C00416A08 /* IosSplitNavigation.swift */; };
 		A38256C12C1F552C00416A08 /* PDFArchiverIOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38256BF2C1F552C00416A08 /* PDFArchiverIOSApp.swift */; };
 		A38256C22C1F556200416A08 /* DocumentDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3D8F9402BB607B100BE3E3A /* DocumentDetailView.swift */; };
+		A389AB5B2CF3175800ADE6BD /* NavigationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A389AB5A2CF3174E00ADE6BD /* NavigationModel.swift */; };
+		A389AB5C2CF3175800ADE6BD /* NavigationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A389AB5A2CF3174E00ADE6BD /* NavigationModel.swift */; };
 		A3991D422CAEC85900CEEDC9 /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3991D412CAEC85800CEEDC9 /* Tag.swift */; };
 		A3991D432CAEC85900CEEDC9 /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3991D412CAEC85800CEEDC9 /* Tag.swift */; };
 		A39A29D32CC99F850072EFDE /* ArchiveStoreLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39A29D22CC99F800072EFDE /* ArchiveStoreLoading.swift */; };
@@ -304,7 +305,6 @@
 		3416B1AF24A9282800D5F4E0 /* PDFArchiver.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = PDFArchiver.entitlements; sourceTree = "<group>"; };
 		3416B1B224A9282800D5F4E0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3416B1B324A9282800D5F4E0 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		3489D71424A3C53D0035E64F /* PDFArchiverApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFArchiverApp.swift; sourceTree = "<group>"; };
 		3489D71B24A3C53E0035E64F /* PDFArchiver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PDFArchiver.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3489D72324A3C53E0035E64F /* PDFArchiver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PDFArchiver.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3489D72524A3C53E0035E64F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -354,6 +354,7 @@
 		A37FEB842C1E3A4D003F7F14 /* PlatformImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformImage.swift; sourceTree = "<group>"; };
 		A38256BE2C1F552C00416A08 /* IosSplitNavigation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IosSplitNavigation.swift; sourceTree = "<group>"; };
 		A38256BF2C1F552C00416A08 /* PDFArchiverIOSApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFArchiverIOSApp.swift; sourceTree = "<group>"; };
+		A389AB5A2CF3174E00ADE6BD /* NavigationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationModel.swift; sourceTree = "<group>"; };
 		A3991D412CAEC85800CEEDC9 /* Tag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
 		A39A29D22CC99F800072EFDE /* ArchiveStoreLoading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveStoreLoading.swift; sourceTree = "<group>"; };
 		A39D507C2BFDE4AE0028696A /* Bool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bool.swift; sourceTree = "<group>"; };
@@ -548,6 +549,7 @@
 		3489D71324A3C53D0035E64F /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				A389AB5A2CF3174E00ADE6BD /* NavigationModel.swift */,
 				A3FE9AD52BA4CF04009F8381 /* Onboarding */,
 				A34AF4992C1199DD0043D56A /* Import */,
 				A3FE9AAC2BA4CF04009F8381 /* Archive */,
@@ -578,7 +580,6 @@
 			children = (
 				A38256BE2C1F552C00416A08 /* IosSplitNavigation.swift */,
 				A38256BF2C1F552C00416A08 /* PDFArchiverIOSApp.swift */,
-				3489D71424A3C53D0035E64F /* PDFArchiverApp.swift */,
 				34A5CF7F24A93A28002409EF /* PDFArchiver.entitlements */,
 				3416B1B324A9282800D5F4E0 /* Info.plist */,
 			);
@@ -1396,7 +1397,6 @@
 				A3356ED12BA4D318000AA51A /* Document+Helper.swift in Sources */,
 				A3B5D8FB2BB36414002B9FF1 /* SearchToken.swift in Sources */,
 				A36FB1822CCC23BD006ADDE9 /* DocumentLoadingView.swift in Sources */,
-				3489D73D24A3C53E0035E64F /* PDFArchiverApp.swift in Sources */,
 				A360AD5B2C22339500541068 /* initializePdfArchiver.swift in Sources */,
 				A3D5A4932BBDDC8D0089B016 /* DocumentInformation.swift in Sources */,
 				A3356ECE2BA4D318000AA51A /* ICloudFolderProvider.swift in Sources */,
@@ -1415,6 +1415,7 @@
 				A3356F502BA4D32E000AA51A /* Constants.swift in Sources */,
 				A3002AE22BAA30D100663B4F /* ArchiveListView.swift in Sources */,
 				A3356FAA2BA4D364000AA51A /* OnboardCard.swift in Sources */,
+				A389AB5C2CF3175800ADE6BD /* NavigationModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1437,6 +1438,7 @@
 				A3356F6C2BA4D32F000AA51A /* UserDefaults.swift in Sources */,
 				A3356F5D2BA4D32F000AA51A /* Color.swift in Sources */,
 				A3356FEA2BA4D365000AA51A /* AboutMeView.swift in Sources */,
+				A389AB5B2CF3175800ADE6BD /* NavigationModel.swift in Sources */,
 				A3356F082BA4D319000AA51A /* FileChange.swift in Sources */,
 				A3356F622BA4D32F000AA51A /* AppEnvironment.swift in Sources */,
 				A3991D422CAEC85900CEEDC9 /* Tag.swift in Sources */,

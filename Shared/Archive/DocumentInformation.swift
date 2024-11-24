@@ -14,7 +14,6 @@ import PDFKit
 @MainActor
 final class DocumentInformationViewModel {
     let url: URL
-    let onSave: () -> Void
     var date = Date()
     var specification = ""
     private(set) var tags: [String] = []
@@ -23,9 +22,8 @@ final class DocumentInformationViewModel {
     var tagSuggestions: [String] = []
     var dateSuggestions: [Date] = []
 
-    init(url: URL, onSave handler: @escaping () -> Void) {
+    init(url: URL) {
         self.url = url
-        self.onSave = handler
     }
 
     func add(tag name: String) {
@@ -65,6 +63,10 @@ final class DocumentInformationViewModel {
 
                 text += pageContent
             }
+            
+            if text.isEmpty {
+                Logger.archiveStore.debug("Could not extract text from PDF")
+            }
 
             if foundDate == nil {
                 foundDate = DateParser.parse(text)?.date
@@ -77,21 +79,6 @@ final class DocumentInformationViewModel {
         date = foundDate ?? Date()
         tags = foundTags ?? []
         specification = foundSpecification ?? ""
-    }
-
-    func save() {
-        specification = specification.slugified(withSeparator: "-")
-
-        let filename = Document.createFilename(date: date, specification: specification, tags: Set(tags))
-        Task {
-            do {
-                try await NewArchiveStore.shared.archiveFile(from: url, to: filename)
-                self.onSave()
-            } catch {
-                Logger.archiveStore.error("Failed to save document \(error)")
-                NotificationCenter.default.postAlert(error)
-            }
-        }
     }
 
     /// get new new tag suggestions
@@ -140,26 +127,27 @@ final class DocumentInformationViewModel {
 }
 
 struct DocumentInformation: View {
+    @Environment(NavigationModel.self) private var navigationModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.modelContext) private var modelContext
-    @Bindable var information: DocumentInformationViewModel
+    @Bindable var viewModel: DocumentInformationViewModel
 
     var body: some View {
         Form {
             Section {
-                DatePicker("Date", selection: $information.date, displayedComponents: .date)
+                DatePicker("Date", selection: $viewModel.date, displayedComponents: .date)
                 HStack {
                     Spacer()
 
-                    ForEach(information.dateSuggestions, id: \.self
+                    ForEach(viewModel.dateSuggestions, id: \.self
                     ) { date in
                         Button("Today" as LocalizedStringKey) {
-                            information.date = date
+                            viewModel.date = date
                             FeedbackGenerator.selectionChanged()
                         }
                     }
                     Button("Today" as LocalizedStringKey) {
-                        information.date = Date()
+                        viewModel.date = Date()
                         FeedbackGenerator.selectionChanged()
                     }
 
@@ -168,7 +156,7 @@ struct DocumentInformation: View {
             }
 
             Section {
-                TextField(text: $information.specification, prompt: Text("Enter specification")) {
+                TextField(text: $viewModel.specification, prompt: Text("Enter specification")) {
                     Text("Specification")
                 }
                 #if os(macOS)
@@ -177,35 +165,35 @@ struct DocumentInformation: View {
             }
 
             Section {
-                if information.tags.isEmpty {
+                if viewModel.tags.isEmpty {
                     Text("No tags selected")
                         .foregroundStyle(.secondary)
                 } else {
-                    TagListView(tags: information.tags,
+                    TagListView(tags: viewModel.tags,
                                 isEditable: true,
                                 isSuggestion: false,
                                 isMultiLine: true,
-                                tapHandler: information.remove(tag:))
+                                tapHandler: viewModel.remove(tag:))
                     .focusable(false)
                 }
 
                 if horizontalSizeClass != .compact {
-                    TagListView(tags: information.tagSuggestions,
+                    TagListView(tags: viewModel.tagSuggestions,
                                 isEditable: false,
                                 isSuggestion: true,
                                 isMultiLine: true,
-                                tapHandler: information.add(tag:))
+                                tapHandler: viewModel.add(tag:))
                     .focusable(false)
                 }
 
-                TextField("Enter Tag", text: $information.tagSearchterm)
+                TextField("Enter Tag", text: $viewModel.tagSearchterm)
                     .onSubmit {
-                        let selectedTag = information.tagSuggestions.first ?? information.tagSearchterm.lowercased().slugified(withSeparator: "")
+                        let selectedTag = viewModel.tagSuggestions.first ?? viewModel.tagSearchterm.lowercased().slugified(withSeparator: "")
                         guard !selectedTag.isEmpty else { return }
 
-                        information.add(tag: selectedTag)
+                        viewModel.add(tag: selectedTag)
                         DispatchQueue.main.async {
-                            information.tagSearchterm = ""
+                            viewModel.tagSearchterm = ""
                         }
                     }
                     #if os(macOS)
@@ -215,15 +203,19 @@ struct DocumentInformation: View {
                     .autocorrectionDisabled()
                     #endif
             }
-            .onChange(of: information.tagSearchterm) { _, term in
-                information.searchtermChanged(to: term, with: modelContext)
+            .onChange(of: viewModel.tagSearchterm) { _, term in
+                viewModel.searchtermChanged(to: term, with: modelContext)
             }
 
             Section {
                 HStack {
                     Spacer()
                     Button("Save" as LocalizedStringKey) {
-                        information.save()
+                        
+                        viewModel.specification = viewModel.specification.slugified(withSeparator: "-")
+                        
+                        let filename = Document.createFilename(date: viewModel.date, specification: viewModel.specification, tags: Set(viewModel.tags))
+                        navigationModel.saveDocument(viewModel.url, to: filename)
                         FeedbackGenerator.selectionChanged()
                     }
                     .keyboardShortcut("s", modifiers: [.command])
@@ -233,16 +225,16 @@ struct DocumentInformation: View {
         }
         .formStyle(.grouped)
         .task {
-            await information.analyseDocument()
+            await viewModel.analyseDocument()
         }
         .toolbar {
             ToolbarItemGroup(placement: .keyboard) {
                 ScrollView(.horizontal, showsIndicators: false) {
-                    TagListView(tags: information.tagSuggestions,
+                    TagListView(tags: viewModel.tagSuggestions,
                                 isEditable: false,
                                 isSuggestion: true,
                                 isMultiLine: false,
-                                tapHandler: information.add(tag:))
+                                tapHandler: viewModel.add(tag:))
                 }
             }
         }
@@ -252,13 +244,13 @@ struct DocumentInformation: View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Document Tags")
                 .font(.caption)
-            TagListView(tags: information.tags,
+            TagListView(tags: viewModel.tags,
                         isEditable: true,
                         isSuggestion: false,
                         isMultiLine: true,
                         tapHandler: { print($0) })
 
-            TextField("Enter Tag", text: $information.tagSearchterm)
+            TextField("Enter Tag", text: $viewModel.tagSearchterm)
                 #if os(iOS)
                 .keyboardType(.alphabet)
                 #endif
@@ -282,12 +274,12 @@ struct DocumentInformation: View {
 
 #if DEBUG
 #Preview("Document Information", traits: .fixedLayout(width: 400, height: 600)) {
-    let information = DocumentInformationViewModel(url: .documentsDirectory, onSave: {})
+    let information = DocumentInformationViewModel(url: .documentsDirectory)
     information.specification = "test-specification"
     information.add(tag: "tag1")
     information.add(tag: "tag2")
     information.tagSuggestions = ["suggestion1", "suggestion2"]
-    return DocumentInformation(information: information)
+    return DocumentInformation(viewModel: information)
         .modelContainer(previewContainer())
 }
 #endif

@@ -9,30 +9,29 @@ import SwiftData
 import SwiftUI
 
 struct UntaggedDocumentsList: View {
+    @Environment(NavigationModel.self) private var navigationModel
     @Query private var untaggedDocuments: [Document]
-    @Binding var selectedDocumentId: String?
 
-    init(selectedDocumentId: Binding<String?>) {
+    init() {
+        #warning("TODO: is this still true?")
         // we need this id because when the "last document button" was tapped, we want to show that document, too.
-        let id = selectedDocumentId.wrappedValue ?? ""
+//        let id = navigationModel.selectedDocument?.id ?? ""
         let predicate = #Predicate<Document> { document in
-            return !document.isTagged || document.id == id
+//            return !document.isTagged || document.id == id
+            return !document.isTagged
         }
         var descriptor = FetchDescriptor(predicate: predicate, sortBy: [SortDescriptor(\Document.date, order: .reverse)])
         descriptor.fetchLimit = 100
         self._untaggedDocuments = Query(descriptor)
-        self._selectedDocumentId = selectedDocumentId
     }
 
     var body: some View {
+        @Bindable var navigationModel = navigationModel
         if untaggedDocuments.isEmpty {
             ContentUnavailableView("No document", systemImage: "checkmark.seal", description: Text("Congratulations! All documents are tagged. 🎉"))
         } else {
-            List(selection: $selectedDocumentId) {
-                ForEach(untaggedDocuments) { document in
-                    Text(document.filename)
-                        .lineLimit(1)
-                }
+            List(untaggedDocuments, selection: $navigationModel.selectedDocument) { document in
+                NavigationLink(document.filename, value: document)
             }
             .listStyle(.plain)
             #if os(macOS)
@@ -44,7 +43,8 @@ struct UntaggedDocumentsList: View {
 
 #if DEBUG
 #Preview {
-    UntaggedDocumentsList(selectedDocumentId: .constant(nil))
+    UntaggedDocumentsList()
         .modelContainer(previewContainer())
+        .environment(NavigationModel())
 }
 #endif

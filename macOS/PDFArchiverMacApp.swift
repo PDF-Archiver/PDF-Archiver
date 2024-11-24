@@ -13,6 +13,7 @@ struct PDFArchiverMacApp: App, Log {
 
     @StateObject private var moreViewModel = SettingsViewModel()
     @State private var subscription = Subscription()
+    private var navigationModel: NavigationModel = .shared
 
     var body: some Scene {
         WindowGroup {
@@ -20,6 +21,7 @@ struct PDFArchiverMacApp: App, Log {
                 .inAppPurchasesSetup()
                 .task(initializePdfArchiver)
         }
+        .environment(navigationModel)
         .modelContainer(container)
         .environment(subscription)
 

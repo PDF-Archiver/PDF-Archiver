@@ -34,7 +34,6 @@ import SwiftUI
     }()
      var body: some View {
         OnboardingScreens(isPresenting: $isPresenting, onboardSet: onboardSet)
-            .frame(width: 500, height: 400)
     }
 }
 

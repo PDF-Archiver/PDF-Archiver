@@ -10,19 +10,18 @@ import SwiftUI
 import OSLog
 
 struct IosSplitNavigation: View, Log {
+    @Environment(NavigationModel.self) private var navigationModel
     @Environment(Subscription.self) private var subscription
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.modelContext) private var modelContext
 
     @StateObject private var moreViewModel = SettingsViewModel()
     @State private var dropHandler = PDFDropHandler()
-    @State private var selectedTaggedDocumentId: String?
-    @State private var selectedUntaggedDocumentId: String?
-    @AppStorage("selectedTab", store: .appGroup) private var selectedTab: TabType = .scan
     @AppStorage("tutorialShown", store: .appGroup) private var tutorialShown = false
 
     var body: some View {
-        TabView(selection: $selectedTab) {
+        @Bindable var navigationModel = navigationModel
+        TabView(selection: $navigationModel.selectedTab) {
             Tab("Scan", systemImage: "doc.text.viewfinder", value: .scan) {
                 Text("BETA: The scan tab is not implemented yet")
             }
@@ -43,18 +42,22 @@ struct IosSplitNavigation: View, Log {
             }
         }
         .tabViewStyle(.tabBarOnly)
-        .onChange(of: selectedTab) { _, _ in
-            selectNewUntaggedDocument()
+        .onChange(of: navigationModel.selectedTab) { _, _ in
+            navigationModel.selectNewUntaggedDocument(in: modelContext)
         }
-        .onChange(of: selectedUntaggedDocumentId) { _, _ in
-            selectNewUntaggedDocument()
+        .onChange(of: navigationModel.selectedDocument) { _, _ in
+            guard navigationModel.untaggedMode else { return }
+            navigationModel.selectNewUntaggedDocument(in: modelContext)
+        }
+        .sheet(isPresented: $tutorialShown.flipped) {
+            OnboardingView(isPresenting: $tutorialShown.flipped)
         }
         .task {
-            selectNewUntaggedDocument()
+            navigationModel.selectNewUntaggedDocument(in: modelContext)
 
             let changeUrlStream = NotificationCenter.default.notifications(named: .documentUpdate)
             for await _ in changeUrlStream {
-                selectNewUntaggedDocument()
+                navigationModel.selectNewUntaggedDocument(in: modelContext)
             }
         }
     }
@@ -68,13 +71,9 @@ struct IosSplitNavigation: View, Log {
 
     private var archiveView: some View {
         NavigationSplitView {
-            ArchiveView(selectedDocumentId: $selectedTaggedDocumentId)
+            ArchiveView()
         } detail: {
-            DocumentDetailView(documentId: $selectedTaggedDocumentId, untaggedMode: Binding(get: {
-                selectedTab == .tag
-            }, set: { value in
-                selectedTab = value ? .tag : .archive
-            }))
+            DocumentDetailView()
         }
     }
 
@@ -83,12 +82,12 @@ struct IosSplitNavigation: View, Log {
         if horizontalSizeClass == .compact {
             // We must not use a NavigationStack here, because it prevents showing the keyboard toolbar.
             // More Information: https://forums.developer.apple.com/forums/thread/736040
-            UntaggedDocumentView(documentId: $selectedUntaggedDocumentId)
+            UntaggedDocumentView()
         } else {
             NavigationSplitView {
-                UntaggedDocumentsList(selectedDocumentId: $selectedUntaggedDocumentId)
+                UntaggedDocumentsList()
             } detail: {
-                UntaggedDocumentView(documentId: $selectedUntaggedDocumentId)
+                UntaggedDocumentView()
             }
         }
     }
@@ -96,33 +95,6 @@ struct IosSplitNavigation: View, Log {
     private var settingsView: some View {
         NavigationStack {
             SettingsView(viewModel: moreViewModel)
-        }
-    }
-
-    private func selectNewUntaggedDocument() {
-        guard case TabType.tag = selectedTab,
-              selectedUntaggedDocumentId == nil else { return }
-
-        do {
-            let predicate = #Predicate<Document> {
-                !$0.isTagged
-            }
-
-            var descriptor = FetchDescriptor<Document>(
-                predicate: predicate,
-                sortBy: [SortDescriptor(\Document.id)]
-            )
-            descriptor.fetchLimit = 1
-            let documents = try modelContext.fetch(descriptor)
-            if let document = documents.first {
-                Task {
-                    await NewArchiveStore.shared.startDownload(of: document.url)
-                }
-            }
-            selectedUntaggedDocumentId = documents.first?.id
-        } catch {
-            selectedUntaggedDocumentId = nil
-            Logger.newDocument.errorAndAssert("Found error \(error)")
         }
     }
 }

@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-#warning("TODO: fix iOS layout")
 struct OnboardingScreens: View {
     @Binding var isPresenting: Bool
     @State private var gesture: CGSize = .zero
@@ -15,27 +14,26 @@ struct OnboardingScreens: View {
 
     let onboardSet: OnboardSet
     var body: some View {
-        VStack {
+        VStack(alignment: .center, spacing: 40) {
             OBCardView(card: onboardSet.cards[cardIndex])
                 .padding(.top, 25)
 
-            Spacer()
             progressView
-            HStack {
-                Spacer()
-                Button(action: {
-                    withAnimation {
-                        showNextHandler()
-                    }
-                }) {
-                    Image(systemName: (cardIndex + 1) == onboardSet.cards.count ? "checkmark.circle.fill" : "arrow.right.circle.fill")
-                        .font(.system(size: 40))
-                }
-                .buttonStyle(BorderlessButtonStyle())
-                .focusable(false)
-            }
+            .padding(.top, 40)
         }
         .padding()
+        .overlay(alignment: .bottomTrailing) {
+            Button(action: {
+                withAnimation {
+                    showNextHandler()
+                }
+            }) {
+                Image(systemName: (cardIndex + 1) == onboardSet.cards.count ? "checkmark.circle.fill" : "arrow.right.circle.fill")
+                    .font(.system(size: 40))
+            }
+            .buttonStyle(BorderlessButtonStyle())
+            .focusable(false)
+        }
     }
 
     private var progressView: some View {

@@ -17,7 +17,6 @@ struct ArchiveView: View {
 
     @Query private var tags: [Tag]
 
-    @Binding var selectedDocumentId: String?
     @State private var searchText = ""
     @State private var tokens: [SearchToken] = []
     @State private var suggestedTokens: [SearchToken] = [.year(2024), .year(2023), .year(2022), .tag("arzt")]
@@ -25,8 +24,7 @@ struct ArchiveView: View {
     @State private var shoudLoadAll = false
 
     var body: some View {
-        ArchiveListView(selectedDocumentId: $selectedDocumentId,
-                        shoudLoadAll: $shoudLoadAll,
+        ArchiveListView(shoudLoadAll: $shoudLoadAll,
                         searchString: searchText,
                         descriptor: updateQuery())
         .searchable(text: $searchText, tokens: $tokens, suggestedTokens: $suggestedTokens, placement: .toolbar, prompt: "Search your documents", token: { token in

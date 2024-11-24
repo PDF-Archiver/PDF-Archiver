@@ -13,6 +13,7 @@ extension Notification.Name {
 }
 
 extension NotificationCenter {
+    #warning("TODO: move this notification to navigation model")
     func postAlert(_ error: any Error, file: StaticString = #file, function: StaticString = #function, line: UInt = #line) {
         let defaultTitle = "An error occurred 😳"
 

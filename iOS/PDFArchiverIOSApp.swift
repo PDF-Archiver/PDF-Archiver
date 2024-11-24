@@ -12,6 +12,7 @@ import SwiftUI
 struct PDFArchiverIOSApp: App, Log {
 
     @State private var subscription = Subscription()
+    private var navigationModel: NavigationModel = .shared
 
     var body: some Scene {
         #warning("TODO: also look for more 'TODO:' not in warnings")
@@ -20,6 +21,7 @@ struct PDFArchiverIOSApp: App, Log {
                 .inAppPurchasesSetup()
                 .task(initializePdfArchiver)
         }
+        .environment(navigationModel)
         .modelContainer(container)
         .environment(subscription)
     }

@@ -119,7 +119,8 @@ actor NewArchiveStore: ModelActor {
     }
 
     func archiveFile(from url: URL, to filename: String) async throws {
-        assert(!Thread.isMainThread, "This should not be called from the main thread.")
+//        assert(!Thread.isMainThread, "This should not be called from the main thread.")
+        let filename = filename.lowercased()
 
         let foldername = String(filename.prefix(4))
 
@@ -149,14 +150,12 @@ actor NewArchiveStore: ModelActor {
         }
     }
 
-    func startDownload(of url: URL) {
-        Task.detached(priority: .userInitiated) {
-            do {
-                let provider = try await self.getProvider(for: url)
-                try await provider.startDownload(of: url)
-            } catch {
-                Logger.archiveStore.errorAndAssert("Failed to start download", metadata: ["error": "\(error)"])
-            }
+    func startDownload(of url: URL) async {
+        do {
+            let provider = try getProvider(for: url)
+            try await provider.startDownload(of: url)
+        } catch {
+            Logger.archiveStore.errorAndAssert("Failed to start download", metadata: ["error": "\(error)"])
         }
     }
 
@@ -229,6 +228,9 @@ actor NewArchiveStore: ModelActor {
                     tagCache[tagName] = tag.persistentModelID
                 }
                 tags.append(tag)
+                
+                #warning("TODO: performance test this")
+//                tags.append(Tag.getOrCreate(name: tagName, in: modelContext))
             }
 
             let document = Document(id: "\(id)",

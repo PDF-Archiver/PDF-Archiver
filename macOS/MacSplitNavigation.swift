@@ -9,20 +9,19 @@ import SwiftUI
 import OSLog
 
 struct MacSplitNavigation: View {
+    @Environment(NavigationModel.self) private var navigationModel
     @Environment(Subscription.self) var subscription
 
     @State private var dropHandler = PDFDropHandler()
-    @State private var selectedDocumentId: String?
-    @AppStorage("taggingMode", store: .appGroup) private var untaggedMode = false
     @AppStorage("tutorialShown", store: .appGroup) private var tutorialShown = false
-
+    
     var body: some View {
         NavigationSplitView {
             Group {
-                if untaggedMode {
-                    UntaggedDocumentsList(selectedDocumentId: $selectedDocumentId)
+                if navigationModel.untaggedMode {
+                    UntaggedDocumentsList()
                 } else {
-                    ArchiveView(selectedDocumentId: $selectedDocumentId)
+                    ArchiveView()
                 }
             }
             .modifier(ArchiveStoreLoading())
@@ -30,36 +29,37 @@ struct MacSplitNavigation: View {
             .toolbar {
                 ToolbarItem(placement: .automatic) {
                     Button {
-                        untaggedMode.toggle()
-                        selectedDocumentId = nil
+                        navigationModel.switchToUntaggedMode()
                     } label: {
-                        Label(untaggedMode ? "Tagging Mode" : "Archive Mode", systemImage: untaggedMode ? "tag.fill" : "archivebox.fill")
+                        Label(navigationModel.untaggedMode ? "Tagging Mode" : "Archive Mode", systemImage: navigationModel.untaggedMode ? "tag.fill" : "archivebox.fill")
                             .labelStyle(.titleAndIcon)
                     }
                 }
             }
         } detail: {
-            if untaggedMode {
-                UntaggedDocumentView(documentId: $selectedDocumentId)
+            if navigationModel.untaggedMode {
+                UntaggedDocumentView()
                     .sheet(isPresented: subscription.isSubscribed, content: {
                         InAppPurchaseView(onCancel: {
-                            untaggedMode = false
+                            navigationModel.switchToUntaggedMode()
                         })
                     })
             } else {
-                DocumentDetailView(documentId: $selectedDocumentId, untaggedMode: $untaggedMode)
+                DocumentDetailView()
             }
         }
-        .overlay(alignment: .bottomTrailing, content: {
+        .overlay(alignment: .bottomTrailing) {
             DropButton(state: dropHandler.documentProcessingState, action: {
                 dropHandler.startImport()
             })
             .padding(.bottom, 16)
             .padding(.trailing, 16)
-        })
-        .sheet(isPresented: $tutorialShown.flipped, content: {
+            .opacity(navigationModel.untaggedMode ? 0 : 1)
+        }
+        .sheet(isPresented: $tutorialShown.flipped) {
             OnboardingView(isPresenting: $tutorialShown.flipped)
-        })
+                .frame(width: 500, height: 400)
+        }
         .onDrop(of: [.image, .pdf, .fileURL],
                 delegate: dropHandler)
         .fileImporter(isPresented: $dropHandler.isImporting, allowedContentTypes: [.pdf, .image]) { result in
