@@ -48,16 +48,20 @@ struct TagListView: View {
     }
 }
 
-#Preview {
+#Preview("Size 1", traits: .fixedLayout(width: 350, height: 50)) {
     let tags = (0..<5).map { "tag\($0)" }
 
-    // Example: Document View
     TagListView(tags: tags, isEditable: true, isSuggestion: true, isMultiLine: false, tapHandler: nil)
-        .previewLayout(.fixed(width: 350, height: 50))
+}
+
+#Preview("Size 2", traits: .fixedLayout(width: 250, height: 400)) {
+    let tags = (0..<5).map { "tag\($0)" }
+    
+    TagListView(tags: tags, isEditable: true, isSuggestion: true, isMultiLine: true, tapHandler: nil)
+}
+
+#Preview("Size 3", traits: .fixedLayout(width: 400, height: 250)) {
+    let tags = (0..<5).map { "tag\($0)" }
 
     TagListView(tags: tags, isEditable: true, isSuggestion: true, isMultiLine: true, tapHandler: nil)
-        .previewLayout(.fixed(width: 250, height: 400))
-
-    TagListView(tags: tags, isEditable: true, isSuggestion: true, isMultiLine: true, tapHandler: nil)
-        .previewLayout(.fixed(width: 400, height: 250))
 }

@@ -24,14 +24,14 @@ struct WrappingHStack<Item: Hashable, Content: View>: View {
     var body: some View {
         VStack {
             GeometryReader { geometry in
-                self.generateContent(in: geometry)
+                self.generateContent(with: geometry.size.width)
             }
         }
         .frame(height: totalHeight)// << variant for ScrollView/List
         // .frame(maxHeight: totalHeight) // << variant for VStack
     }
 
-    private func generateContent(in proxy: GeometryProxy) -> some View {
+    private func generateContent(with width: CGFloat) -> some View {
         var width = CGFloat.zero
         var height = CGFloat.zero
 
@@ -40,7 +40,7 @@ struct WrappingHStack<Item: Hashable, Content: View>: View {
                 content(item)
                     .padding([.horizontal, .vertical], 4)
                     .alignmentGuide(.leading) { dimensions in
-                        if abs(width - dimensions.width) > proxy.size.width {
+                        if abs(width - dimensions.width) > width {
                             width = 0
                             height -= dimensions.height
                         }

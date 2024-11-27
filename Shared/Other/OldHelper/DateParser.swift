@@ -24,7 +24,10 @@ enum DateParser: Log {
         let input = String(raw.prefix(10))
         let results = localParse(raw)
         if !results.isEmpty {
-            return results
+            let uniqueResults = results.reduce(into: [String: ParserResult]()) { partialResult, result in
+                partialResult[DateFormatter.yyyyMMdd.string(from: result.date)] = result
+            }
+            return uniqueResults.map(\.value).sorted(by: { $0.date < $1.date }).reversed()
         } else if let date = DateFormatter.yyyyMMdd.date(from: input) {
             return [ParserResult(date: date, rawDate: input)]
         } else if let date = DateFormatter.yyyyMMdd.date(from: input.replacingOccurrences(of: "_", with: "-")) {
@@ -44,7 +47,6 @@ enum DateParser: Log {
         // the NSDataDetector parses times as "today" Date so we filter out all dates that are today
         return detector.matches(in: raw, range: NSRange(location: 0, length: raw.count))
             .lazy
-            .prefix(5)
             .compactMap { match in
                 guard let date = match.date,
                       !Calendar.current.isDate(date, inSameDayAs: Date()) else { return nil }

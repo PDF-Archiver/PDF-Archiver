@@ -15,7 +15,7 @@ struct DocumentInformation: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.modelContext) private var modelContext
     @FocusState private var focusedField: DocumentInformation.ViewModel.Field?
-    @Bindable var viewModel: DocumentInformation.ViewModel
+    @Binding var viewModel: DocumentInformation.ViewModel
 
     var body: some View {
         Form {
@@ -27,7 +27,7 @@ struct DocumentInformation: View {
 
                     ForEach(viewModel.dateSuggestions, id: \.self
                     ) { date in
-                        Button(date.formatted(.dateTime.day(.defaultDigits).month(.defaultDigits).year(.twoDigits))) {
+                        Button(date.formatted(.dateTime.day(.twoDigits).month(.twoDigits).year(.twoDigits))) {
                             viewModel.date = date
                             FeedbackGenerator.selectionChanged()
                         }
@@ -74,6 +74,9 @@ struct DocumentInformation: View {
         .formStyle(.grouped)
         .onChange(of: viewModel.tagSearchterm) { _, term in
             viewModel.searchtermChanged(to: term, with: modelContext)
+        }
+        .onChange(of: viewModel.url) { _, url in
+            Logger.debugging.info("URL changed to \(url.lastPathComponent)")
         }
         .toolbar {
             ToolbarItemGroup(placement: .keyboard) {
@@ -186,8 +189,7 @@ extension DocumentInformation {
             let foundTags = tagNames.isEmpty ? nil : tagNames
             let foundSpecification = parserOutput.specification
 
-            if foundDate == nil || foundTags == nil,
-               let pdfDocument = PDFDocument(url: url) {
+            if let pdfDocument = PDFDocument(url: url) {
                 // get the pdf content of first 3 pages
                 var text = ""
                 for index in 0 ..< min(pdfDocument.pageCount, 3) {
@@ -201,15 +203,17 @@ extension DocumentInformation {
                     Logger.taggingView.warning("Could not extract text from PDF")
                 }
 
+                let results = DateParser.parse(text)
+                let newResults = results
+                    .dropFirst()    // skip first because it is set to foundDate
+                    .map(\.date)
+                    .filter { !Calendar.current.isDate($0, inSameDayAs: Date()) }   // skip found "today" dates, because a today button will always be shown
+                    .sorted().reversed().prefix(3)  // get the most recent 3 dates
+                    .sorted()
+                dateSuggestions = Array(newResults)
+                
                 if foundDate == nil {
-                    let results = DateParser.parse(text)
                     foundDate = results.first?.date
-
-                    dateSuggestions = results
-                        .dropFirst()    // skip first because it is set to foundDate
-                        .map(\.date)
-                        .filter { !Calendar.current.isDate($0, inSameDayAs: Date()) }   // skip found "today" dates, because a today button will always be shown
-                        .sorted()
                 }
                 if foundTags == nil {
                     tagSuggestions = TagParser.parse(text)
@@ -273,7 +277,7 @@ extension DocumentInformation {
     information.specification = "test-specification"
     information.add(tag: "tag1")
     information.add(tag: "tag2")
-    return DocumentInformation(viewModel: information)
+    return DocumentInformation(viewModel: .constant(information))
         .modelContainer(previewContainer())
 }
 #endif

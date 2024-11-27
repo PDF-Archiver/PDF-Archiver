@@ -9,14 +9,15 @@ import SwiftData
 import SwiftUI
 import OSLog
 
-#warning("TODO: select a new untagged document if the current was saved")
 struct UntaggedDocumentView: View {
+    private static let placeholderUrl = URL.temporaryDirectory
+    
     @Environment(NavigationModel.self) private var navigationModel
     @Environment(\.modelContext) private var modelContext
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     @State private var document: Document?
-    @State private var documentInformationViewModel: DocumentInformation.ViewModel?
+    @State private var documentInformationViewModel: DocumentInformation.ViewModel = .init(url: placeholderUrl)
 
     var body: some View {
         Group {
@@ -32,8 +33,8 @@ struct UntaggedDocumentView: View {
                         ContentUnavailableView("Select a Document", systemImage: "doc", description: Text("Select a document from the list."))
                     }
 
-                    if let documentInformationViewModel {
-                        DocumentInformation(viewModel: documentInformationViewModel)
+                    if documentInformationViewModel.url != Self.placeholderUrl {
+                        DocumentInformation(viewModel: $documentInformationViewModel)
                     } else {
                         EmptyView()
                     }
@@ -51,8 +52,8 @@ struct UntaggedDocumentView: View {
                     }
 
                     Group {
-                        if let documentInformationViewModel {
-                            DocumentInformation(viewModel: documentInformationViewModel)
+                        if documentInformationViewModel.url != Self.placeholderUrl {
+                            DocumentInformation(viewModel: $documentInformationViewModel)
                         } else {
                             EmptyView()
                         }
@@ -67,7 +68,7 @@ struct UntaggedDocumentView: View {
             if let newDocument {
                 documentInformationViewModel = DocumentInformation.ViewModel(url: newDocument.url)
             } else {
-                documentInformationViewModel = nil
+                documentInformationViewModel = DocumentInformation.ViewModel(url: Self.placeholderUrl)
             }
         }
         .navigationTitle(document?.filename ?? "")
@@ -91,7 +92,6 @@ struct UntaggedDocumentView: View {
         }
     }
 
-    #warning("TODO: implement/fix disabling")
     private var revertButton: some View {
         Button(role: .none) {
             navigationModel.revertDocumentSave(in: modelContext)

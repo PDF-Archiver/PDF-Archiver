@@ -187,7 +187,6 @@ actor ArchiveStore: ModelActor {
             if isInitialSync {
                 let predicate = #Predicate<Document> { $0._created < folderDidchangeStart }
 
-                let docs = try! modelContext.fetch(FetchDescriptor(predicate: predicate))
                 try modelContext.delete(model: Document.self, where: predicate)
             }
 

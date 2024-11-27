@@ -154,10 +154,6 @@ final class ICloudFolderProvider: FolderProvider {
             log.errorAndAssert("Could not parse Metadata Size.")
             return nil
         }
-        guard let filename = item.value(forAttribute: NSMetadataItemDisplayNameKey) as? String else {
-            log.errorAndAssert("Could not parse Metadata DisplayName.")
-            return nil
-        }
 
         // Check if it is a local document. These two values are possible for the "NSMetadataUbiquitousItemDownloadingStatusKey":
         // - NSMetadataUbiquitousItemDownloadingStatusCurrent

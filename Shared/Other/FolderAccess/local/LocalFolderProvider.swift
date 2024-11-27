@@ -122,16 +122,6 @@ final class LocalFolderProvider: FolderProvider {
                 }
 
                 let downloadStatus = getDownloadStatus(from: resourceValues)
-                let filename: String
-                if downloadStatus == .local {
-                    filename = url.deletingPathExtension().lastPathComponent
-                } else if let localizedName = resourceValues.localizedName {
-                    filename = localizedName
-                } else {
-                    log.errorAndAssert("Filename could not be fetched.", metadata: ["url": "\(url.path)"])
-                    return nil
-                }
-
                 return FileChange.Details(url: url, sizeInBytes: Double(fileSize), downloadStatus: downloadStatus)
             }
             .sorted { $0.url.path < $1.url.path }

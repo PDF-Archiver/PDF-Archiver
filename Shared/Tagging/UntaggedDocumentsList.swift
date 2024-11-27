@@ -14,11 +14,7 @@ struct UntaggedDocumentsList: View {
     @Query private var untaggedDocuments: [Document]
 
     init() {
-        #warning("TODO: is this still true?")
-        // we need this id because when the "last document button" was tapped, we want to show that document, too.
-//        let id = navigationModel.selectedDocument?.id ?? ""
         let predicate = #Predicate<Document> { document in
-//            return !document.isTagged || document.id == id
             return !document.isTagged
         }
         var descriptor = FetchDescriptor(predicate: predicate, sortBy: Self.untaggedDocumentSortOrder)

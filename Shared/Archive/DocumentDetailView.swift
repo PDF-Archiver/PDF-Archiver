@@ -17,10 +17,10 @@ struct DocumentDetailView: View {
     @State private var showDeleteConfirmation = false
 
     func update() {
-        #warning("TODO: check if document and download status can be deleted completly")
+        #warning("TODO: iOS check if document and download status can be deleted completly")
         let document = navigationModel.selectedDocument
 
-        assert(document?.isTagged ?? true, "Document with id \(document?.id) is not tagged.")
+        assert(document?.isTagged ?? true, "Document with id \(document?.id ?? "") is not tagged.")
 
         // we need to update the document and downloadStatus manual, because changes in document will not trigger a view update
         self.document = document
@@ -52,7 +52,7 @@ struct DocumentDetailView: View {
             update()
         }
         .task {
-            #warning("TODO: do we really need this anymore?")
+            #warning("TODO: iOS do we really need this anymore?")
             // Currently we need to update this view on changes in Document, because it will not be triggered via SwiftData changes automatically.
             // Example use case: select a document that will be downloaded and the download status changes
             let changeUrlStream = NotificationCenter.default.notifications(named: .documentUpdate)
@@ -68,15 +68,14 @@ struct DocumentDetailView: View {
             ToolbarItemGroup(placement: .primaryAction) {
                 // editButton
                 Button(action: {
-                    #warning("TODO: test this")
                     navigationModel.editDocument()
                 }, label: {
-#if os(macOS)
+                    #if os(macOS)
                     Label("Edit", systemImage: "pencil")
-#else
+                    #else
                     Label("Edit", systemImage: "pencil")
                         .labelStyle(VerticalLabelStyle())
-#endif
+                    #endif
                 })
 
                 if let document {
