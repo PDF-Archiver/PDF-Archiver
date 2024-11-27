@@ -14,6 +14,7 @@ final class PDFProcessingTests: XCTestCase {
     private static let tempFolder = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
     private static let referenceDocument = PDFDocument(url: Bundle.billPDFUrl)!
 
+    #warning("TODO: remove this queue because it crashes at runtime in swift 6")
     private let queue: OperationQueue = {
         let queue = OperationQueue()
         queue.qualityOfService = .userInitiated

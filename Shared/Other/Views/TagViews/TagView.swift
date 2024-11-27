@@ -37,6 +37,7 @@ struct TagView: View {
                 Image(systemName: "xmark.circle")
                     .font(.caption)
             }
+            .fixedSize()
         } else {
             Text(tagName.capitalized)
         }

@@ -75,8 +75,8 @@ struct DocumentInformation: View {
         .onChange(of: viewModel.tagSearchterm) { _, term in
             viewModel.searchtermChanged(to: term, with: modelContext)
         }
-        .onChange(of: viewModel.url) { _, url in
-            Logger.debugging.info("URL changed to \(url.lastPathComponent)")
+        .onChange(of: viewModel.url, initial: true) { _, url in
+            viewModel.analyseDocument()
         }
         .toolbar {
             ToolbarItemGroup(placement: .keyboard) {
@@ -120,9 +120,7 @@ struct DocumentInformation: View {
                     guard !selectedTag.isEmpty else { return }
 
                     viewModel.add(tag: selectedTag)
-                    DispatchQueue.main.async {
-                        viewModel.tagSearchterm = ""
-                    }
+                    viewModel.tagSearchterm = ""
                 }
                 .focused($focusedField, equals: .tags)
                 #if os(macOS)
@@ -151,18 +149,8 @@ extension DocumentInformation {
         private(set) var tagSuggestions: Set<String> = []
         private(set) var dateSuggestions: [Date] = []
 
-        private var task: Task<Void, Never>?
-
         init(url: URL) {
             self.url = url
-
-            task = Task(priority: .userInitiated) {
-                await analyseDocument()
-            }
-        }
-
-        deinit {
-            task?.cancel()
         }
 
         func add(tag name: String) {
@@ -178,7 +166,7 @@ extension DocumentInformation {
             tagSuggestions.insert(name.lowercased())
         }
 
-        private func analyseDocument() async {
+        func analyseDocument() {
             Logger.taggingView.debug("Analyzing document \(self.url.lastPathComponent)")
 
             // analyse document content and fill suggestions

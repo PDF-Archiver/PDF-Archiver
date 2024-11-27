@@ -56,7 +56,7 @@ final class Document {
 
 extension Document {
 
-    static func getBy(id documentId: String, in modelContext: ModelContext) async throws -> Document? {
+    static func getBy(id documentId: String, in modelContext: ModelContext) throws -> Document? {
         let predicate = #Predicate<Document> {
             $0.id == documentId
         }
@@ -71,7 +71,10 @@ extension Document {
         guard let document = documents.first else { return nil }
         if document.downloadStatus < 1 {
             Logger.archiveStore.debug("Start download of document \(document.url.lastPathComponent)")
-            await ArchiveStore.shared.startDownload(of: document.url)
+            let url = document.url
+            Task {
+                await ArchiveStore.shared.startDownload(of: url)
+            }
         }
         return document
     }

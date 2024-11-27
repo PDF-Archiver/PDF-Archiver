@@ -27,9 +27,10 @@ struct TagListView: View {
     @ViewBuilder
     var body: some View {
         if isMultiLine {
-            WrappingHStack(items: tags) { tag in
-                TagView(tagName: tag, isEditable: self.isEditable, isSuggestion: self.isSuggestion, tapHandler: self.tapHandler)
-                    .fixedSize()
+            WrappingHStack(alignment: .leading) {
+                ForEach(tags, id: \.self) { tag in
+                    TagView(tagName: tag, isEditable: self.isEditable, isSuggestion: self.isSuggestion, tapHandler: self.tapHandler)
+                }
             }
         } else {
             singleLineView

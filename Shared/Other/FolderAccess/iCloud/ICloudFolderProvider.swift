@@ -11,14 +11,6 @@ import Foundation
 final class ICloudFolderProvider: FolderProvider {
 
     private static let tempFolderName = "temp"
-    private static let workerQueue: OperationQueue = {
-        let workerQueue = OperationQueue()
-
-        workerQueue.name = (Bundle.main.bundleIdentifier ?? "PDFArchiver") + ".browserdatasource.workerQueue"
-        workerQueue.maxConcurrentOperationCount = 1
-
-        return workerQueue
-    }()
 
     let baseUrl: URL
     let folderChangeStream: AsyncStream<[FileChange]>
@@ -64,7 +56,7 @@ final class ICloudFolderProvider: FolderProvider {
          can perform our own background work in sync with item discovery.
          Note that the operationQueue of the `NSMetadataQuery` must be serial.
          */
-        metadataQuery.operationQueue = Self.workerQueue
+        metadataQuery.operationQueue = .current
 
         NotificationCenter.default.addObserver(self, selector: #selector(Self.finishGathering(notification:)), name: .NSMetadataQueryDidFinishGathering, object: metadataQuery)
         NotificationCenter.default.addObserver(self, selector: #selector(Self.queryUpdated(notification:)), name: .NSMetadataQueryDidUpdate, object: metadataQuery)

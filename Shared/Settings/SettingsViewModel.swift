@@ -144,11 +144,9 @@ final class SettingsViewModel: ObservableObject, Log {
             log.error("Bundle Identifier not found.")
         }
 
-        DispatchQueue.main.async {
-            NotificationCenter.default.createAndPost(title: "Reset App",
-                                                     message: "Please restart the app to complete the reset.",
-                                                     primaryButtonTitle: "OK")
-        }
+        NotificationCenter.default.createAndPost(title: "Reset App",
+                                                 message: "Please restart the app to complete the reset.",
+                                                 primaryButtonTitle: "OK")
     }
 
     func openArchiveFolder() {
@@ -173,15 +171,26 @@ final class SettingsViewModel: ObservableObject, Log {
     func updateFinderTags(from documents: [Document]) {
         finderTagUpdateProgress = 0
 
+        struct DocumentTags {
+            let url: URL
+            let tags: Set<String>
+        }
+        
+        let totalDocumentsCount = Double(documents.count)
+        let taggedDocuments = documents
+            .filter(\.isTagged)
+            .map { document in
+                DocumentTags(url: document.url, tags: Set(document.tags))
+            }
+        
         Task.detached(priority: .background) {
             var processedDocumentsCount = 0
-            let taggedDocuments = documents.filter(\.isTagged)
             for taggedDocument in taggedDocuments {
                 let sortedTags = Array(taggedDocument.tags).sorted()
                 taggedDocument.url.setFileTags(sortedTags)
                 processedDocumentsCount += 1
 
-                let tmp = Double(processedDocumentsCount) / Double(documents.count)
+                let tmp = Double(processedDocumentsCount) / totalDocumentsCount
                 await MainActor.run {
                     self.finderTagUpdateProgress = tmp
                 }
