@@ -7,13 +7,13 @@
 
 import SwiftData
 import SwiftUI
+import OSLog
 
 #if os(macOS)
 struct SettingsView: View {
 
     @AppStorage("tutorialShown", store: .appGroup) private var tutorialShown = false
     @ObservedObject var viewModel: SettingsViewModel
-    @State private var showMoreInformation = true
     @Query private var documents: [Document]
 
     init(viewModel: SettingsViewModel) {
@@ -77,10 +77,10 @@ struct SettingsView: View {
             ProgressView("Finder Tag Update", value: viewModel.finderTagUpdateProgress)
                 .opacity(viewModel.finderTagUpdateProgress > 0 ? 1 : 0)
             DetailRowView(name: "Update Finder Tags") {
-                print("DEBUGGING: Starting update")
+                Logger.settings.debug("DEBUGGING: Starting update")
                 viewModel.updateFinderTags(from: documents)
 
-                print("DEBUGGING: completing task")
+                Logger.settings.debug("DEBUGGING: completing task")
             }
         }
         .padding(20)

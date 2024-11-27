@@ -30,14 +30,12 @@ struct MarkdownView: View {
     }
 }
 
-struct MarkdownView_Previews: PreviewProvider {
-    static var previews: some View {
-        MarkdownView(title: "Markdown View", markdown: """
+#Preview {
+    MarkdownView(title: "Markdown View", markdown: """
         # Title
         This is a test list:
         * item 1
         * item 2
         * item 3
         """, scrollView: true)
-    }
 }

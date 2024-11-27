@@ -7,7 +7,6 @@
 
 extension PathManager {
     enum PathError: Error {
-        case archiveNotSelected
         case iCloudDriveNotFound
     }
 }

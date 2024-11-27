@@ -29,11 +29,11 @@ struct ArchiveListItemView: View {
         VStack(alignment: .leading, spacing: 4) {
             Text(documentSpecification)
                 .font(.headline)
-            
+
             Text(documentDate, format: .dateTime.year().month().day())
                 .font(.subheadline)
                 .foregroundStyle(.gray)
-            
+
             // we use a list with an "empty" item to get the same hight as expected with tags
             TagListView(tags: documentTags.isEmpty ? ["empty"] : documentTags.sorted(), isEditable: false, isMultiLine: false, tapHandler: nil)
                 .font(.caption)

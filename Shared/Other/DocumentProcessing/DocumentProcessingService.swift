@@ -64,20 +64,6 @@ final class DocumentProcessingService {
         }
     }
 
-    @MainActor
-    private func updateProgress() async {
-        #warning("TODO: implement this")
-//        if operationCount > 0 {
-//            let completedDocuments = totalDocumentCount - operationCount
-//            let progressString = "\(min(completedDocuments + 1, totalDocumentCount))/\(totalDocumentCount) (\(Int(documentProgress * 100))%)"
-//            self.documentProgress = Float(completedDocuments) / Float(totalDocumentCount)
-//            self.progressLabel = NSLocalizedString("ScanViewController.processing", comment: "") + progressString
-//        } else {
-//            self.documentProgress = 0
-//            self.progressLabel = NSLocalizedString("ScanViewController.processing", comment: "") + "0%"
-//        }
-    }
-
 //    private func removeFromOperations(_ mode: PDFProcessing.Mode) {
 //        operations.removeAll(where: { ($0.imageUUID != nil && $0.imageUUID == mode.imageUUID) || ($0.pdfUrl != nil && $0.pdfUrl == mode.pdfUrl) })
 //    }

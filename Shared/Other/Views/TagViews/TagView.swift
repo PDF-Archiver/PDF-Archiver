@@ -56,30 +56,19 @@ struct TagView: View {
     }
 }
 
-struct TagView_Previews: PreviewProvider {
-    static var tapHandler: ((String) -> Void) = { tag in
-        print("Tapped on tag: \(tag)")
-    }
+#Preview {
+    TagView(tagName: "tag1",
+            isEditable: true,
+            isSuggestion: true,
+            tapHandler: { _ in })
 
-    static var previews: some View {
-        Group {
-            TagView(tagName: "tag1",
-                    isEditable: true,
-                    isSuggestion: true,
-                    tapHandler: tapHandler)
+    TagView(tagName: "tag2",
+            isEditable: false,
+            isSuggestion: false,
+            tapHandler: { _ in })
 
-            TagView(tagName: "tag2",
-                    isEditable: false,
-                    isSuggestion: false,
-                    tapHandler: tapHandler)
-
-            TagView(tagName: "t",
-                    isEditable: false,
-                    isSuggestion: false,
-                    tapHandler: tapHandler)
-
-        }
-        .padding()
-        .previewLayout(.sizeThatFits)
-    }
+    TagView(tagName: "t",
+            isEditable: false,
+            isSuggestion: false,
+            tapHandler: { _ in })
 }

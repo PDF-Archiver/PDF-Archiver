@@ -48,33 +48,16 @@ struct TagListView: View {
     }
 }
 
-struct TagListView_Previews: PreviewProvider {
-//    @State static var tags = [
-//        "billbillbillbill",
-//        "ikeaikeaikea",
-//        "extraLongElement",
-//        "bill",
-//        "ikea",
-//        "flight",
-//        "vacation",
-//        "swift",
-//        "xcode",
-//        "billbillbillbill",
-//        "ikeaikeaikea",
-//        "extraLongElement"
-//    ]
-    @State static var tags = (0..<5).map { "tag\($0)" }
-    static var previews: some View {
-        Group {
-            // Example: Document View
-            TagListView(tags: tags, isEditable: true, isSuggestion: true, isMultiLine: false, tapHandler: nil)
-                .previewLayout(.fixed(width: 350, height: 50))
+#Preview {
+    let tags = (0..<5).map { "tag\($0)" }
 
-            TagListView(tags: tags, isEditable: true, isSuggestion: true, isMultiLine: true, tapHandler: nil)
-                .previewLayout(.fixed(width: 250, height: 400))
+    // Example: Document View
+    TagListView(tags: tags, isEditable: true, isSuggestion: true, isMultiLine: false, tapHandler: nil)
+        .previewLayout(.fixed(width: 350, height: 50))
 
-            TagListView(tags: tags, isEditable: true, isSuggestion: true, isMultiLine: true, tapHandler: nil)
-                .previewLayout(.fixed(width: 400, height: 250))
-        }
-    }
+    TagListView(tags: tags, isEditable: true, isSuggestion: true, isMultiLine: true, tapHandler: nil)
+        .previewLayout(.fixed(width: 250, height: 400))
+
+    TagListView(tags: tags, isEditable: true, isSuggestion: true, isMultiLine: true, tapHandler: nil)
+        .previewLayout(.fixed(width: 400, height: 250))
 }

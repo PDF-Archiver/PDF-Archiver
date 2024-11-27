@@ -11,8 +11,6 @@ import SwiftUI
 struct InAppPurchaseView: View {
     let onCancel: () -> Void
 
-    @State private var chooseSubscription = false
-
     var body: some View {
         ScrollView {
             VStack(spacing: 40) {

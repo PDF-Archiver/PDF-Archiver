@@ -17,7 +17,7 @@ struct PDFArchiverIOSApp: App, Log {
     var body: some Scene {
         #warning("TODO: also look for more 'TODO:' not in warnings")
         WindowGroup {
-            IosSplitNavigation()
+            SplitNavigationView()
                 .inAppPurchasesSetup()
                 .task(initializePdfArchiver)
         }

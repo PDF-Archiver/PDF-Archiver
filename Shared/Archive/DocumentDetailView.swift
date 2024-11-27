@@ -15,91 +15,71 @@ struct DocumentDetailView: View {
     @State private var downloadStatus: Double?
 
     @State private var showDeleteConfirmation = false
-    @Environment(\.modelContext) private var modelContext
 
     func update() {
-        do {
-#warning("TODO: check if document and download status can be deleted completly")
-            let document = navigationModel.selectedDocument
+        #warning("TODO: check if document and download status can be deleted completly")
+        let document = navigationModel.selectedDocument
 
-            assert(document?.isTagged ?? true, "Document with id \(document?.id) is not tagged.")
+        assert(document?.isTagged ?? true, "Document with id \(document?.id) is not tagged.")
 
-            // we need to update the document and downloadStatus manual, because changes in document will not trigger a view update
-            self.document = document
-            self.downloadStatus = document?.downloadStatus
-        } catch {
-            assertionFailure("Failed to fetch document: \(error.localizedDescription)")
-        }
+        // we need to update the document and downloadStatus manual, because changes in document will not trigger a view update
+        self.document = document
+        self.downloadStatus = document?.downloadStatus
     }
 
     var body: some View {
-        content
-            .onChange(of: navigationModel.selectedDocument, { _, _ in
-                update()
-            })
-            .task {
-                update()
+        Group {
+            if let document,
+               let downloadStatus {
+                if downloadStatus < 1 {
+                    DocumentLoadingView(filename: document.filename, downloadStatus: downloadStatus)
+                        .task {
+                            #if DEBUG
+                            guard !ProcessInfo().isSwiftUIPreview else { return }
+                            #endif
+                            await ArchiveStore.shared.startDownload(of: document.url)
+                        }
 
-                #warning("TODO: do we really need this anymore?")
-                // Currently we need to update this view on changes in Document, because it will not be triggered via SwiftData changes automatically.
-                // Example use case: select a document that will be downloaded and the download status changes
-                let changeUrlStream = NotificationCenter.default.notifications(named: .documentUpdate)
-                for await notification in changeUrlStream {
-                    guard let urls = notification.object as? [URL],
-                          let documentUrl = document?.url,
-                          urls.contains(documentUrl) else { continue }
-
-                    update()
+                } else {
+                    PDFCustomView(document.url)
+                        .ignoresSafeArea(edges: .bottom)
                 }
-            }
-    }
-
-    @ViewBuilder
-    var content: some View {
-        if let document,
-           let downloadStatus {
-            if downloadStatus < 1 {
-                DocumentLoadingView(filename: document.filename, downloadStatus: downloadStatus)
-                    .task {
-                        #if DEBUG
-                        guard !ProcessInfo().isSwiftUIPreview else { return }
-                        #endif
-                        await NewArchiveStore.shared.startDownload(of: document.url)
-                    }
-
             } else {
-                documentView(for: document)
+                ContentUnavailableView("Select a Document", systemImage: "doc", description: Text("Select a document from the list."))
             }
-        } else {
-            ContentUnavailableView("Select a Document", systemImage: "doc", description: Text("Select a document from the list."))
         }
-    }
+        .onChange(of: navigationModel.selectedDocument, initial: true) { _, _ in
+            update()
+        }
+        .task {
+            #warning("TODO: do we really need this anymore?")
+            // Currently we need to update this view on changes in Document, because it will not be triggered via SwiftData changes automatically.
+            // Example use case: select a document that will be downloaded and the download status changes
+            let changeUrlStream = NotificationCenter.default.notifications(named: .documentUpdate)
+            for await notification in changeUrlStream {
+                guard let urls = notification.object as? [URL],
+                      let documentUrl = document?.url,
+                      urls.contains(documentUrl) else { continue }
 
-    @ViewBuilder
-    func documentView(for document: Document) -> some View {
-        PDFCustomView(document.url)
-            .navigationTitle(document.specification)
-
+                update()
+            }
+        }
+        .toolbar {
+            ToolbarItemGroup(placement: .primaryAction) {
+                // editButton
+                Button(action: {
+                    #warning("TODO: test this")
+                    navigationModel.editDocument()
+                }, label: {
 #if os(macOS)
-            .navigationSubtitle(Text(document.date, format: .dateTime.year().month().day()))
+                    Label("Edit", systemImage: "pencil")
 #else
-            .navigationBarTitleDisplayMode(.inline)
+                    Label("Edit", systemImage: "pencil")
+                        .labelStyle(VerticalLabelStyle())
 #endif
-            .toolbar {
-                ToolbarItemGroup(placement: .primaryAction) {
-                    // editButton
-                    Button(action: {
-                        #warning("TODO: test this")
-                        navigationModel.editDocument()
-                    }, label: {
-#if os(macOS)
-                        Label("Edit", systemImage: "pencil")
-#else
-                        Label("Edit", systemImage: "pencil")
-                            .labelStyle(VerticalLabelStyle())
-#endif
-                    })
+                })
 
+                if let document {
 #if os(macOS)
                     // showInFinderButton
                     Button(role: .none) {
@@ -110,36 +90,43 @@ struct DocumentDetailView: View {
 #endif
 
                     ShareLink(Text(document.filename), item: document.url)
+                }
 
-                    // deleteButton
-                    Button(role: .destructive, action: {
-                        showDeleteConfirmation = true
-                    }, label: {
-                        Label("Delete", systemImage: "trash")
-                            .foregroundColor(.red)
+                // deleteButton
+                Button(role: .destructive, action: {
+                    showDeleteConfirmation = true
+                }, label: {
+                    Label("Delete", systemImage: "trash")
+                        .foregroundColor(.red)
 #if !os(macOS)
-                            .labelStyle(VerticalLabelStyle())
+                        .labelStyle(VerticalLabelStyle())
 #endif
-                    })
-                }
+                })
+            }
 #if os(macOS)
-                ToolbarItem(placement: .accessoryBar(id: "tags")) {
-                    TagListView(tags: document.tags.sorted(), isEditable: false, isMultiLine: false, tapHandler: nil)
-                        .font(.caption)
-                }
+            ToolbarItem(placement: .accessoryBar(id: "tags")) {
+                TagListView(tags: document?.tags.sorted() ?? [], isEditable: false, isMultiLine: false, tapHandler: nil)
+                    .font(.caption)
+            }
 #endif
+        }
+        .confirmationDialog("Do you really want to delete this document?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
+            Button("Delete", role: .destructive) {
+                guard let document else { return }
+                navigationModel.deleteDocument(url: document.url)
             }
-            .confirmationDialog("Do you really want to delete this document?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
-                Button("Delete", role: .destructive) {
-                    navigationModel.deleteDocument(url: document.url)
-                }
-                Button("Cancel", role: .cancel) {
-                    withAnimation {
-                        showDeleteConfirmation = false
-                    }
+            Button("Cancel", role: .cancel) {
+                withAnimation {
+                    showDeleteConfirmation = false
                 }
             }
-
+        }
+        .navigationTitle(document?.specification ?? "")
+#if os(macOS)
+        .navigationSubtitle(Text(document?.date ?? Date(), format: .dateTime.year().month().day()))
+#else
+        .navigationBarTitleDisplayMode(.inline)
+#endif
     }
 }
 

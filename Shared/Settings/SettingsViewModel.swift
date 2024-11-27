@@ -34,8 +34,8 @@ final class SettingsViewModel: ObservableObject, Log {
     @Published var showArchiveTypeSelection = false
     @Published var newArchiveUrl: URL?
 
-    @Published var finderTagUpdateProgress: Double = 0
     #if os(macOS)
+    @Published var finderTagUpdateProgress: Double = 0
     @Published var observedFolderURL: URL? = UserDefaults.observedFolderURL
     #endif
 
@@ -125,7 +125,7 @@ final class SettingsViewModel: ObservableObject, Log {
                 let untaggedUrl = try PathManager.shared.getUntaggedUrl()
 
                 self.showArchiveTypeSelection = false
-                await NewArchiveStore.shared.update(archiveFolder: archiveUrl, untaggedFolders: [untaggedUrl])
+                await ArchiveStore.shared.update(archiveFolder: archiveUrl, untaggedFolders: [untaggedUrl])
             } catch {
                 NotificationCenter.default.postAlert(error)
             }
@@ -169,25 +169,7 @@ final class SettingsViewModel: ObservableObject, Log {
         }
     }
 
-//    func reloadArchiveDocuments() {
-//        do {
-//            let archiveUrl = try PathManager.shared.getArchiveUrl()
-//            let untaggedUrl = try PathManager.shared.getUntaggedUrl()
-//
-//            #if os(macOS)
-//            let untaggedFolders = [untaggedUrl, UserDefaults.observedFolderURL].compactMap { $0 }
-//            #else
-//            let untaggedFolders = [untaggedUrl]
-//            #endif
-//
-//            Task {
-//                await NewArchiveStore.shared.update(archiveFolder: archiveUrl, untaggedFolders: untaggedFolders)
-//            }
-//        } catch {
-//            NotificationCenter.default.postAlert(error)
-//        }
-//    }
-
+    #if os(macOS)
     func updateFinderTags(from documents: [Document]) {
         finderTagUpdateProgress = 0
 
@@ -210,14 +192,13 @@ final class SettingsViewModel: ObservableObject, Log {
         }
     }
 
-    #if os(macOS)
     func clearObservedFolder() {
         observedFolderURL = nil
         UserDefaults.observedFolderURL = nil
         queue.async {
             Task {
                 do {
-                    try await NewArchiveStore.shared.reloadArchiveDocuments()
+                    try await ArchiveStore.shared.reloadArchiveDocuments()
                 } catch {
                     NotificationCenter.default.postAlert(error)
                 }
@@ -241,7 +222,7 @@ final class SettingsViewModel: ObservableObject, Log {
             self.queue.async {
                 Task {
                     do {
-                        try await NewArchiveStore.shared.reloadArchiveDocuments()
+                        try await ArchiveStore.shared.reloadArchiveDocuments()
                     } catch {
                         NotificationCenter.default.postAlert(error)
                     }

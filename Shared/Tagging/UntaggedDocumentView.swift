@@ -13,130 +13,122 @@ import OSLog
 struct UntaggedDocumentView: View {
     @Environment(NavigationModel.self) private var navigationModel
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
-    @State private var date = Date()
-    @State private var specification = ""
-    @State private var tags: [String] = []
+    @State private var document: Document?
+    @State private var documentInformationViewModel: DocumentInformation.ViewModel?
 
     var body: some View {
-        if let document = navigationModel.selectedDocument {
-            if document.downloadStatus < 1 {
-                DocumentLoadingView(filename: document.filename, downloadStatus: document.downloadStatus)
-            } else {
-                DocumentView(for: document)
-                    .navigationTitle(document.specification)
-#if os(macOS)
-                    .navigationSubtitle(Text(document.date, format: .dateTime.year().month().day()))
-#else
-                    .navigationBarTitleDisplayMode(.inline)
-#endif
-            }
-        } else {
-            ContentUnavailableView("Select a Document", systemImage: "doc", description: Text("Select a document from the list."))
-        }
-    }
-
-    struct DocumentView: View {
-        @Environment(NavigationModel.self) private var navigationModel
-        @Environment(\.horizontalSizeClass) var horizontalSizeClass
-
-        let document: Document
-        
-        @State private var showDeleteConfirmation = false
-        @State private var documentInformationViewModel: DocumentInformationViewModel
-        
-        internal init(for document: Document) {
-            self.document = document
-            self.documentInformationViewModel = DocumentInformationViewModel(url: document.url)
-        }
-
-        var body: some View {
+        Group {
             if horizontalSizeClass == .compact {
                 VStack(spacing: 0) {
-                    HStack {
-                        DeleteDocumentButtonView {
-                            Logger.newDocument.debug("Deleting all datapoints, meters and tariffs")
-                            do {
-                                try FileManager.default.trashItem(at: document.url, resultingItemURL: nil)
-                            } catch {
-                                Logger.newDocument.errorAndAssert("Error while trashing file \(error)")
-                            }
+                    if let document {
+                        if document.downloadStatus < 1 {
+                            DocumentLoadingView(filename: document.filename, downloadStatus: document.downloadStatus)
+                        } else {
+                            PDFCustomView(document.url)
                         }
-                        .font(.title)
-                        .padding(.horizontal, 16)
-                        .padding(.bottom, 8)
-
-                        Text(document.specification)
-                            .font(.headline)
+                    } else {
+                        ContentUnavailableView("Select a Document", systemImage: "doc", description: Text("Select a document from the list."))
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.bottom, 4)
-                    
-                    pdf
-                    DocumentInformation(viewModel: documentInformationViewModel)
+
+                    if let documentInformationViewModel {
+                        DocumentInformation(viewModel: documentInformationViewModel)
+                    } else {
+                        EmptyView()
+                    }
                 }
             } else {
                 HStack {
-                    
-                    pdf
-                    DocumentInformation(viewModel: documentInformationViewModel)
-                        .frame(width: 350)
+                    if let document {
+                        if document.downloadStatus < 1 {
+                            DocumentLoadingView(filename: document.filename, downloadStatus: document.downloadStatus)
+                        } else {
+                            PDFCustomView(document.url)
+                        }
+                    } else {
+                        ContentUnavailableView("Select a Document", systemImage: "doc", description: Text("Select a document from the list."))
+                    }
+
+                    Group {
+                        if let documentInformationViewModel {
+                            DocumentInformation(viewModel: documentInformationViewModel)
+                        } else {
+                            EmptyView()
+                        }
+                    }
+                    .frame(width: 350)
                 }
             }
         }
+        .onChange(of: navigationModel.selectedDocument, initial: true) { _, newDocument in
+            document = newDocument
 
-        var pdf: some View {
-            PDFCustomView(document.url)
-                .toolbar {
-                    ToolbarItemGroup(placement: .confirmationAction) {
-                        if horizontalSizeClass == .compact {
-                            revertButton
-                        }
-                    }
-                    ToolbarItemGroup(placement: .cancellationAction) {
-                        if horizontalSizeClass != .compact {
-                            revertButton
-                            showInFinderButton
-                        }
-                        DeleteDocumentButtonView {
-                            Logger.newDocument.debug("Deleting all datapoints, meters and tariffs")
-                            do {
-                                try FileManager.default.trashItem(at: document.url, resultingItemURL: nil)
-                            } catch {
-                                Logger.newDocument.errorAndAssert("Error while trashing file \(error)")
-                            }
-                        }
-                    }
-                }
-        }
-
-#warning("TODO: implement/fix disabling")
-        private var revertButton: some View {
-            Button(role: .none) {
-                navigationModel.revertDocumentSave()
-            } label: {
-                Label("Revert", systemImage: "arrow.uturn.backward")
-                    #if !os(macOS)
-                    .labelStyle(VerticalLabelStyle())
-                    #endif
+            if let newDocument {
+                documentInformationViewModel = DocumentInformation.ViewModel(url: newDocument.url)
+            } else {
+                documentInformationViewModel = nil
             }
-//            .disabled(self.onRevert == nil)
         }
+        .navigationTitle(document?.filename ?? "")
+        #if os(macOS)
+        .navigationSubtitle(Text(document?.date ?? Date(), format: .dateTime.year().month().day()))
+        #else
+        .navigationBarTitleDisplayMode(.inline)
+        #endif
+        .toolbar {
+            ToolbarItemGroup(placement: .confirmationAction) {
+                if horizontalSizeClass == .compact {
+                   deleteButton
+                }
+            }
+            ToolbarItemGroup(placement: .cancellationAction) {
+                if horizontalSizeClass != .compact {
+                    revertButton
+                    showInFinderButton
+                }
+            }
+        }
+    }
 
-        private var showInFinderButton: some View {
-            Button(role: .none) {
-                #if os(macOS)
-                NSWorkspace.shared.activateFileViewerSelecting([document.url])
-                #else
-                open(document.url)
+    #warning("TODO: implement/fix disabling")
+    private var revertButton: some View {
+        Button(role: .none) {
+            navigationModel.revertDocumentSave(in: modelContext)
+        } label: {
+            Label("Revert", systemImage: "arrow.uturn.backward")
+                #if !os(macOS)
+                .labelStyle(VerticalLabelStyle())
                 #endif
-            } label: {
-                Label("Show in Finder", systemImage: "folder")
-                    #if !os(macOS)
-                    .labelStyle(VerticalLabelStyle())
-                    #endif
+        }
+        .disabled(navigationModel.lastSavedDocumentId == nil)
+    }
+
+    private var showInFinderButton: some View {
+        Button(role: .none) {
+            navigationModel.showInFinder()
+        } label: {
+            Label("Show in Finder", systemImage: "folder")
+                #if !os(macOS)
+                .labelStyle(VerticalLabelStyle())
+                #endif
+        }
+    }
+
+    private var deleteButton: some View {
+        DeleteDocumentButtonView {
+            Logger.newDocument.debug("Deleting all datapoints, meters and tariffs")
+            do {
+                guard let document else {
+                    assertionFailure("No document selected")
+                    return
+                }
+                try FileManager.default.trashItem(at: document.url, resultingItemURL: nil)
+            } catch {
+                Logger.newDocument.errorAndAssert("Error while trashing file \(error)")
             }
         }
+        .disabled(document == nil)
     }
 }
 

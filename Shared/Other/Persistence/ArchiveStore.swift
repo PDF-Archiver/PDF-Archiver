@@ -1,11 +1,10 @@
 //
-//  NewArchiveStore.swift
+//  ArchiveStore.swift
 //  
 //
 //  Created by Julian Kahnert on 14.03.24.
 //
 
-import AsyncAlgorithms
 import Foundation
 import SwiftData
 import PDFKit.PDFDocument
@@ -13,18 +12,11 @@ import OSLog
 import AsyncExtensions
 
 extension Notification.Name {
-    class UrlContainer {
-        let urls: [URL]
-        init(urls: [URL]) {
-            self.urls = urls
-        }
-    }
     static let documentUpdate = Notification.Name("documentUpdate")
 }
 
-actor NewArchiveStore: ModelActor {
-
-    static let shared = NewArchiveStore(modelContainer: container)
+actor ArchiveStore: ModelActor {
+    static let shared = ArchiveStore(modelContainer: container)
 
     #if DEBUG
     private static let availableProvider: [any FolderProvider.Type] = {
@@ -48,9 +40,6 @@ actor NewArchiveStore: ModelActor {
     private var untaggedFolders: [URL] = []
     private var providers: [any FolderProvider] = []
     private var folderObservationTasks: [Task<Void, Never>] = []
-    private let fileManager = FileManager.default
-
-    private var tagCache: [String: PersistentIdentifier] = [:]
 
     private init(modelContainer: ModelContainer) {
         self.modelContainer = modelContainer
@@ -78,9 +67,11 @@ actor NewArchiveStore: ModelActor {
         providers = foundProviders.compactMap { $0 }
         for provider in providers {
             let task = Task {
+                var isInitialSync = true
                 let folderChangeStream = await provider.folderChangeStream
                 for await changes in folderChangeStream {
-                    await self.folderDidChange(changes)
+                    await self.folderDidChange(changes, isInitialSync: isInitialSync)
+                    isInitialSync = false
                 }
             }
             folderObservationTasks.append(task)
@@ -112,20 +103,21 @@ actor NewArchiveStore: ModelActor {
         //         /var/mobile/Containers/Data/Application/8F70A72B-026D-4F6B-98E8-2C6ACE940133/Documents/
 
         guard let provider = providers.first(where: { url.path.contains($0.baseUrl.path) }) else {
-            throw NewArchiveStore.Error.providerNotFound
+            throw ArchiveStore.Error.providerNotFound
         }
 
         return provider
     }
 
-    func archiveFile(from url: URL, to filename: String) async throws {
+    @discardableResult
+    func archiveFile(from url: URL, to filename: String) async throws -> URL {
 //        assert(!Thread.isMainThread, "This should not be called from the main thread.")
         let filename = filename.lowercased()
 
         let foldername = String(filename.prefix(4))
 
         guard let archiveFolder = self.archiveFolder else {
-            throw NewArchiveStore.Error.providerNotFound
+            throw ArchiveStore.Error.providerNotFound
         }
         let documentProvider = try getProvider(for: url)
         let archiveProvider = try getProvider(for: archiveFolder)
@@ -148,6 +140,8 @@ actor NewArchiveStore: ModelActor {
            !tags.isEmpty {
             newFilepath.setFileTags(tags.sorted())
         }
+
+        return newFilepath
     }
 
     func startDownload(of url: URL) async {
@@ -174,12 +168,28 @@ actor NewArchiveStore: ModelActor {
         }
     }
 
-    private func folderDidChange(_ changes: [FileChange]) async {
+    private func folderDidChange(_ changes: [FileChange], isInitialSync: Bool) async {
+        // improve performance by caching for this "folderDidChange" run
+        var tagCache: [String: PersistentIdentifier] = [:]
+
+        // if this is the initial sync, delete all documents before this date
+        let folderDidchangeStart = Date()
+
         do {
+
+            // create/update documents
             for change in changes {
-                try processFileChange(with: change)
+                try processFileChange(with: change, tagCache: &tagCache, created: folderDidchangeStart)
             }
             try modelContext.save()
+
+            // delete old documents in db
+            if isInitialSync {
+                let predicate = #Predicate<Document> { $0._created < folderDidchangeStart }
+
+                let docs = try! modelContext.fetch(FetchDescriptor(predicate: predicate))
+                try modelContext.delete(model: Document.self, where: predicate)
+            }
 
             let changedUrls = changes.map(\.url)
             NotificationCenter.default.post(name: .documentUpdate, object: changedUrls)
@@ -190,59 +200,17 @@ actor NewArchiveStore: ModelActor {
         isLoadingStream.send(false)
     }
 
-    private func processFileChange(with fileChange: FileChange) throws {
+    private func processFileChange(with fileChange: FileChange, tagCache: inout [String: PersistentIdentifier], created: Date) throws {
         switch fileChange {
         case .added(let details):
-            let downloadStatus: Double
-            switch details.downloadStatus {
-            case .downloading(percent: let percent):
-                downloadStatus = percent / 100
-            case .remote:
-                downloadStatus = 0
-            case .local:
-                downloadStatus = 1
-            }
-
-            guard let id = details.url.uniqueId() else {
-                Logger.archiveStore.errorAndAssert("Failed to get uniqueId")
+            let document = upsert(document: nil,
+                                  details: details,
+                                  tagCache: &tagCache,
+                                  created: created)
+            guard let document else {
+                Logger.archiveStore.errorAndAssert("Failed to get uniqueId for delete")
                 return
             }
-
-            guard let filename = details.url.filename() else {
-                Logger.archiveStore.errorAndAssert("Failed to get filename")
-                return
-            }
-
-            let data = Document.parseFilename(filename)
-            let isTagged = isTagged(details.url)
-
-            var tags: [Tag] = []
-            for tagName in data.tagNames ?? [] {
-                let tag: Tag
-                if let foundTagId = tagCache[tagName],
-                   // get Tag via the persistent identifier
-                   let foundTag = self[foundTagId, as: Tag.self] {
-                    tag = foundTag
-                } else {
-                    tag = Tag.getOrCreate(name: tagName, in: modelContext)
-                    tagCache[tagName] = tag.persistentModelID
-                }
-                tags.append(tag)
-                
-                #warning("TODO: performance test this")
-//                tags.append(Tag.getOrCreate(name: tagName, in: modelContext))
-            }
-
-            let document = Document(id: "\(id)",
-                                    url: details.url,
-                                    isTagged: isTagged,
-                                    filename: isTagged ? filename.replacingOccurrences(of: "-", with: " ") : filename,
-                                    sizeInBytes: details.sizeInBytes,
-                                    date: data.date ?? details.url.fileCreationDate() ?? Date(),
-                                    specification: isTagged ? (data.specification ?? "n/a").replacingOccurrences(of: "-", with: " ") : (data.specification ?? "n/a"),
-                                    tags: tags,
-                                    content: "",    // we write the content later on a background thread
-                                    downloadStatus: downloadStatus)
             modelContext.insert(document)
 
         case .removed(let url):
@@ -274,36 +242,21 @@ actor NewArchiveStore: ModelActor {
                 predicate: predicate, sortBy: [SortDescriptor(\Document.date, order: .reverse)]
             )
             let documents = try modelContext.fetch(descriptor)
+            let foundDocument = documents.first
 
-            guard let foundDocument = documents.first else {
-                assertionFailure("Failed to get one document")
-                return
+            let document = upsert(document: foundDocument,
+                                  details: details,
+                                  tagCache: &tagCache,
+                                  created: created)
+
+            // insert a document if a new one was created
+            if foundDocument == nil,
+               let document {
+                modelContext.insert(document)
             }
 
-            let downloadStatus: Double
-            switch details.downloadStatus {
-            case .downloading(percent: let percent):
-                downloadStatus = percent / 100
-            case .remote:
-                downloadStatus = 0
-            case .local:
-                downloadStatus = 1
-            }
-
-            guard let filename = details.url.filename() else {
-                Logger.archiveStore.errorAndAssert("Failed to get filename")
-                return
-            }
-
-            let data = Document.parseFilename(filename)
-            if let date = data.date {
-                foundDocument.date = date
-            }
-            let isTagged = isTagged(details.url)
-            foundDocument.specification = isTagged ? (data.specification ?? "n/a").replacingOccurrences(of: "-", with: " ") : (data.specification ?? "n/a")
-            foundDocument.downloadStatus = downloadStatus
-
-            Logger.archiveStore.debug("Updating document", metadata: ["specification": foundDocument.specification, "downloadStatus": "\(foundDocument.downloadStatus)"])
+            assert(document != nil, "Failed to update document")
+            Logger.archiveStore.debug("Updated document", metadata: ["specification": document?.specification ?? "", "downloadStatus": "\(document?.downloadStatus ?? 0)"])
 
             for document in documents.dropFirst() {
                 assertionFailure("There should not be more than one document in the database")
@@ -325,5 +278,75 @@ actor NewArchiveStore: ModelActor {
             !url.lastPathComponent.lowercased().contains(Constants.documentTagPlaceholder.lowercased()) else { return false }
 
         return true
+    }
+
+    private func upsert(document: Document?, details: FileChange.Details, tagCache: inout [String: PersistentIdentifier], created: Date) -> Document? {
+        let downloadStatus: Double
+        switch details.downloadStatus {
+        case .downloading(percent: let percent):
+            downloadStatus = percent / 100
+        case .remote:
+            downloadStatus = 0
+        case .local:
+            downloadStatus = 1
+        }
+
+        guard let id = details.url.uniqueId() else {
+            Logger.archiveStore.errorAndAssert("Failed to get uniqueId")
+            return nil
+        }
+
+        guard let filename = details.url.filename() else {
+            Logger.archiveStore.errorAndAssert("Failed to get filename")
+            return nil
+        }
+
+        let data = Document.parseFilename(filename)
+        let isTagged = isTagged(details.url)
+
+        var tags: [Tag] = []
+        for tagName in data.tagNames ?? [] {
+            let tag: Tag
+            if let foundTagId = tagCache[tagName],
+               // get Tag via the persistent identifier
+               let foundTag = self[foundTagId, as: Tag.self] {
+                tag = foundTag
+            } else {
+                tag = Tag.getOrCreate(name: tagName, in: modelContext)
+                tagCache[tagName] = tag.persistentModelID
+            }
+            tags.append(tag)
+        }
+
+        let date = data.date ?? details.url.fileCreationDate() ?? Date()
+        let specification = isTagged ? (data.specification ?? "n/a").replacingOccurrences(of: "-", with: " ") : (data.specification ?? "n/a")
+        let content = "" // we write the content later on a background thread
+        if let document {
+//            document.id = id
+            document.url = details.url
+            document.isTagged = isTagged
+            document.filename = filename
+            document._sizeInBytes = details.sizeInBytes
+            document.date = date
+            document.specification = specification
+            document.tagItems = tags
+            document.content = content
+            document.downloadStatus = downloadStatus
+//            document._created = created
+
+            return document
+        } else {
+            return Document(id: "\(id)",
+                            url: details.url,
+                            isTagged: isTagged,
+                            filename: isTagged ? filename.replacingOccurrences(of: "-", with: " ") : filename,
+                            sizeInBytes: details.sizeInBytes,
+                            date: date,
+                            specification: specification,
+                            tags: tags,
+                            content: content,
+                            downloadStatus: downloadStatus,
+                            created: created)
+        }
     }
 }

@@ -11,15 +11,6 @@ enum SearchToken: Hashable, Identifiable {
 
     var id: String { description }
 
-    var isYear: Bool {
-        switch self {
-        case .year:
-            return true
-        default:
-            return false
-        }
-    }
-
     var description: String {
         switch self {
         case .tag(let tag):
@@ -29,12 +20,4 @@ enum SearchToken: Hashable, Identifiable {
         }
     }
 
-    var term: String {
-        switch self {
-        case .tag(let tag):
-            tag
-        case .year(let year):
-            "\(year)"
-        }
-    }
 }

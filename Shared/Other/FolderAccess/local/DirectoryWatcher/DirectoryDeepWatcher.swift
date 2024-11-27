@@ -12,13 +12,11 @@ final class DirectoryDeepWatcher: Log {
     typealias FolderChangeHandler = (URL) -> Void
     private typealias SourceObject = (source: any DispatchSourceFileSystemObject, descriptor: Int32)
 
-    let baseUrl: URL
     private let queue = DispatchQueue(label: "DirectoryDeepWatcher \(UUID().uuidString)", qos: .background)
     private let folderChangeHandler: FolderChangeHandler
     private var sources = [URL: SourceObject]()
 
     init(_ baseUrl: URL, withHandler handler: @escaping FolderChangeHandler) throws {
-        self.baseUrl = baseUrl
         self.folderChangeHandler = handler
 
         Self.log.debug("Creating new directory watcher.", metadata: ["path": "\(baseUrl.path)"])

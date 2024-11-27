@@ -1,27 +1,29 @@
 //
-//  MacSplitNavigation.swift
-//  macOS
+//  SplitNavigationView.swift
+//  PDFArchiver
 //
-//  Created by Julian Kahnert on 28.03.24.
+//  Created by Julian Kahnert on 25.11.24.
 //
 
 import SwiftUI
 import OSLog
 
-struct MacSplitNavigation: View {
+struct SplitNavigationView: View {
     @Environment(NavigationModel.self) private var navigationModel
+    @Environment(\.modelContext) private var modelContext
     @Environment(Subscription.self) var subscription
 
     @State private var dropHandler = PDFDropHandler()
     @AppStorage("tutorialShown", store: .appGroup) private var tutorialShown = false
-    
+
     var body: some View {
         NavigationSplitView {
             Group {
-                if navigationModel.untaggedMode {
-                    UntaggedDocumentsList()
-                } else {
+                switch navigationModel.mode {
+                case .archive:
                     ArchiveView()
+                case .tagging:
+                    UntaggedDocumentsList()
                 }
             }
             .modifier(ArchiveStoreLoading())
@@ -29,36 +31,68 @@ struct MacSplitNavigation: View {
             .toolbar {
                 ToolbarItem(placement: .automatic) {
                     Button {
-                        navigationModel.switchToUntaggedMode()
+                        navigationModel.switchTaggingMode(in: modelContext)
                     } label: {
-                        Label(navigationModel.untaggedMode ? "Tagging Mode" : "Archive Mode", systemImage: navigationModel.untaggedMode ? "tag.fill" : "archivebox.fill")
-                            .labelStyle(.titleAndIcon)
+                        Label(navigationModel.mode == .archive ? "Archive Mode" : "Tagging Mode", systemImage: navigationModel.mode == .archive ? "archivebox" : "tag")
                     }
                 }
+                #if !os(macOS)
+                ToolbarItem(placement: .automatic) {
+                    Menu {
+                        Button {
+                            navigationModel.showScan()
+                        } label: {
+                            Label("Scan", systemImage: "doc.viewfinder")
+                                .labelStyle(.titleAndIcon)
+                        }
+                        Button {
+                            navigationModel.showPreferences()
+                        } label: {
+                            Label("Preferences", systemImage: "gear")
+                                .labelStyle(.titleAndIcon)
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                    }
+                }
+                #endif
             }
         } detail: {
-            if navigationModel.untaggedMode {
+            switch navigationModel.mode {
+            case .archive:
+                DocumentDetailView()
+            case .tagging:
                 UntaggedDocumentView()
+                    #if !DEBUG
                     .sheet(isPresented: subscription.isSubscribed, content: {
                         InAppPurchaseView(onCancel: {
-                            navigationModel.switchToUntaggedMode()
+                            navigationModel.switchTaggingMode(in: modelContext)
                         })
                     })
-            } else {
-                DocumentDetailView()
+                    #endif
             }
         }
+        .modifier(AlertDataModelProvider())
         .overlay(alignment: .bottomTrailing) {
             DropButton(state: dropHandler.documentProcessingState, action: {
+                #if os(macOS)
                 dropHandler.startImport()
+                #else
+                navigationModel.showScan()
+                #endif
             })
+            .padding(4)
+            .background(Color.paPlaceholderGray)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
             .padding(.bottom, 16)
             .padding(.trailing, 16)
-            .opacity(navigationModel.untaggedMode ? 0 : 1)
+            .opacity(navigationModel.mode == .archive ? 1 : 0)
         }
         .sheet(isPresented: $tutorialShown.flipped) {
             OnboardingView(isPresenting: $tutorialShown.flipped)
+                #if os(macOS)
                 .frame(width: 500, height: 400)
+                #endif
         }
         .onDrop(of: [.image, .pdf, .fileURL],
                 delegate: dropHandler)
@@ -83,12 +117,15 @@ struct MacSplitNavigation: View {
         }
         .task {
             _ = await DocumentProcessingService.shared
+
         }
     }
+
+    @State var alert: Alert?
 }
 
 #if DEBUG
 #Preview {
-    MacSplitNavigation()
+    SplitNavigationView()
 }
 #endif

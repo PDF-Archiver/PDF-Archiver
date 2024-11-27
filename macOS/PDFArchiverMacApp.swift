@@ -17,7 +17,7 @@ struct PDFArchiverMacApp: App, Log {
 
     var body: some Scene {
         WindowGroup {
-            MacSplitNavigation()
+            SplitNavigationView()
                 .inAppPurchasesSetup()
                 .task(initializePdfArchiver)
         }

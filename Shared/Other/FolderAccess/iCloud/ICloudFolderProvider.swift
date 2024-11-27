@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import AsyncAlgorithms
 
 // TODO: test if this should be written like this: https://fatbobman.com/en/posts/in-depth-guide-to-icloud-documents/
 final class ICloudFolderProvider: FolderProvider {
@@ -22,7 +21,8 @@ final class ICloudFolderProvider: FolderProvider {
     }()
 
     let baseUrl: URL
-    let folderChangeStream = AsyncChannel<[FileChange]>()
+    let folderChangeStream: AsyncStream<[FileChange]>
+    private let folderChangeContinuation: AsyncStream<[FileChange]>.Continuation
 
     private let notContainsTempPath = NSPredicate(format: "(NOT (%K CONTAINS[c] %@)) AND (NOT (%K CONTAINS[c] %@))", NSMetadataItemPathKey, "/\(ICloudFolderProvider.tempFolderName)/", NSMetadataItemPathKey, "/.Trash/")
     private var metadataQuery: NSMetadataQuery
@@ -31,6 +31,11 @@ final class ICloudFolderProvider: FolderProvider {
 
     init(baseUrl: URL) throws {
         self.baseUrl = baseUrl
+
+        let (stream, continuation) = AsyncStream.makeStream(of: [FileChange].self)
+        folderChangeStream = stream
+        folderChangeContinuation = continuation
+
         self.metadataQuery = NSMetadataQuery()
 
         // Filter only documents from the current year and the year before
@@ -133,9 +138,7 @@ final class ICloudFolderProvider: FolderProvider {
         changes.append(contentsOf: removed.createDetails(FileChange.removed))
         changes.append(contentsOf: updated.createDetails(FileChange.updated))
 
-        Task {
-            await folderChangeStream.send(changes)
-        }
+        folderChangeContinuation.yield(changes)
     }
 
     nonisolated
@@ -182,7 +185,7 @@ final class ICloudFolderProvider: FolderProvider {
             preconditionFailure("The downloading status '\(downloadingStatus)' was not handled correctly!")
         }
 
-        return FileChange.Details(url: documentPath, filename: filename, sizeInBytes: Double(size), downloadStatus: documentStatus)
+        return FileChange.Details(url: documentPath, sizeInBytes: Double(size), downloadStatus: documentStatus)
     }
 
     // MARK: - Notifications

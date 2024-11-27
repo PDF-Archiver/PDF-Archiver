@@ -24,9 +24,9 @@ extension PlatformImage {
         // swiftlint:disable:next force_unwrapping
         let cgImage = cgImage(forProposedRect: nil, context: nil, hints: nil)!
         let bitmapRep = NSBitmapImageRep(cgImage: cgImage)
-        return bitmapRep.representation(using: .jpeg, properties: [.compressionFactor: NSNumber(value: 1)])
+        return bitmapRep.representation(using: .jpeg, properties: [.compressionFactor: NSNumber(value: quality)])
         #else
-        return jpegData(compressionQuality: 1)
+        return jpegData(compressionQuality: quality)
         #endif
     }
 }

@@ -83,10 +83,6 @@ struct PDFCustomView: UIViewRepresentable {
 }
 #endif
 
-#if DEBUG
-struct PDFCustomView_Previews: PreviewProvider {
-    static var previews: some View {
-        PDFCustomView(PDFDocument(url: Bundle.main.resourceURL!.appendingPathComponent("example-bill.pdf", conformingTo: .pdf)))
-    }
+#Preview {
+    PDFCustomView(PDFDocument(url: Bundle.main.resourceURL!.appendingPathComponent("example-bill.pdf", conformingTo: .pdf)))
 }
-#endif

@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import AsyncAlgorithms
 
 @globalActor actor FolderProviderActor: GlobalActor {
     static let shared = FolderProviderActor()
@@ -20,7 +19,7 @@ protocol FolderProvider: AnyObject, Log, Sendable {
     // this is a constant, not sure how to declare it in the protocol
     nonisolated
     var baseUrl: URL { get }
-    var folderChangeStream: AsyncChannel<[FileChange]> { get }
+    var folderChangeStream: AsyncStream<[FileChange]> { get }
 
     init(baseUrl: URL) throws
 

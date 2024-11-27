@@ -23,10 +23,6 @@ private typealias Color = NSColor
 private typealias DrawingOptions = NSString.DrawingOptions
 #endif
 
-enum PDFProcessingError: Error {
-    case untaggedDocumentsPathNotFound
-}
-
 @StorageActor
 final class PDFProcessingOperation: AsyncOperation {
     private static let log = Logger(subsystem: "processing", category: "pdf-processing-operation")
@@ -36,9 +32,6 @@ final class PDFProcessingOperation: AsyncOperation {
     private let mode: Mode
     private let destinationFolder: URL
     private var tempUrls: [URL] = []
-
-    private(set) var error: (any Error)?
-    private(set) var outputUrl: URL?
 
     init(of mode: Mode, destinationFolder: URL) {
         self.mode = mode
@@ -75,8 +68,6 @@ final class PDFProcessingOperation: AsyncOperation {
             let filepath = destinationFolder.appendingPathComponent(filename)
             document.write(to: filepath)
 
-            self.outputUrl = filepath
-
             // delete original images
             for tempUrl in tempUrls {
                 do {
@@ -90,7 +81,6 @@ final class PDFProcessingOperation: AsyncOperation {
             let timeDiff = Date().timeIntervalSinceReferenceDate - start.timeIntervalSinceReferenceDate
             Logger.documentProcessing.info("Process completed.", metadata: ["processing_time": "\(timeDiff)", "document_page_count": "\(document.pageCount)"])
         } catch {
-            self.error = error
             Logger.documentProcessing.errorAndAssert("An error occurred while processing", metadata: ["error": "\(error)"])
         }
     }
@@ -122,7 +112,7 @@ final class PDFProcessingOperation: AsyncOperation {
             }
 
             // parse the date
-            let parsedDate = DateParser.parse(content)?.date ?? Date()
+            let parsedDate = DateParser.parse(content).first?.date ?? Date()
 
             // parse the tags
             let tags = Set([Constants.documentTagPlaceholder])

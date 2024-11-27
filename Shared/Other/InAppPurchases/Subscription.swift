@@ -33,7 +33,6 @@ enum SubscriptionStatus: String {
 }
 
 private struct IAPTaskModifier: ViewModifier {
-    @Environment(\.modelContext) private var modelContext
     @Environment(Subscription.self) var subscription
 
     func body(content: Content) -> some View {

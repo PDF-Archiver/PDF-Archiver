@@ -13,8 +13,6 @@ import PDFKit
 #endif
 import OSLog
 
-private let dateFormatter = DateFormatter.with("yyyy-MM-dd")
-
 extension Document {
 
     /// Parse the filename from an URL.
@@ -29,7 +27,7 @@ extension Document {
         if let parsed = Document.getFilenameDate(filename) {
             date = parsed.date
             rawDate = parsed.rawDate
-        } else if let parsed = DateParser.parse(filename) {
+        } else if let parsed = DateParser.parse(filename).first {
             date = parsed.date
             rawDate = parsed.rawDate
         }
@@ -47,25 +45,25 @@ extension Document {
             // try to parse the real specification from scheme
             specification = raw
 
-        } else {
-
-            // save a first "raw" specification
-            let tempSepcification = filename.lowercased()
-                // drop the already parsed date
-                .dropFirst(rawDate.count)
-                // drop the extension and the last .
-                .dropLast(filename.hasSuffix(".pdf") ? 4 : 0)
-                // exclude tags, if they exist
-                .components(separatedBy: "__")[0]
-                // clean up all "_" - they are for tag use only!
-                .replacingOccurrences(of: "_", with: "-")
-                // remove a pre or suffix from the string
-                .trimmingCharacters(in: ["-", " "])
-
-            // save the raw specification, if it is not empty
-            if !tempSepcification.isEmpty {
-                specification = tempSepcification
-            }
+//        } else {
+//
+//            // save a first "raw" specification
+//            let tempSepcification = filename.lowercased()
+//                // drop the already parsed date
+//                .dropFirst(rawDate.count)
+//                // drop the extension and the last .
+//                .dropLast(filename.hasSuffix(".pdf") ? 4 : 0)
+//                // exclude tags, if they exist
+//                .components(separatedBy: "__")[0]
+//                // clean up all "_" - they are for tag use only!
+//                .replacingOccurrences(of: "_", with: "-")
+//                // remove a pre or suffix from the string
+//                .trimmingCharacters(in: ["-", " "])
+//
+//            // save the raw specification, if it is not empty
+//            if !tempSepcification.isEmpty {
+//                specification = tempSepcification
+//            }
         }
 
         // parse the tags
@@ -75,7 +73,9 @@ extension Document {
            let raw = filename.components(separatedBy: separator).last?.dropLast(filename.hasSuffix(".pdf") ? 4 : 0),
            !raw.isEmpty {
             // parse the tags of a document
-            tagNames = raw.components(separatedBy: "_")
+            tagNames = raw.lowercased()
+                .components(separatedBy: "_")
+                .flatMap { $0.components(separatedBy: .whitespacesAndNewlines) }
         }
 
         if let foundSpecification = specification,

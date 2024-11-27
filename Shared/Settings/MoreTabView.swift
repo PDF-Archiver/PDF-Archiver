@@ -10,7 +10,7 @@ import SwiftUI
 
 #if !os(macOS)
 struct SettingsView: View {
-    private static let appId = 1433801905
+//    private static let appId = 1433801905
 
     @Environment(\.requestReview) private var requestReview
     @ObservedObject var viewModel: SettingsViewModel
@@ -26,10 +26,10 @@ struct SettingsView: View {
         .foregroundColor(.primary)
         .navigationTitle("Preferences & More")
         .navigationViewStyle(StackNavigationViewStyle())
-        //        .sheet(isPresented: $showActivityView) {
-        //            // swiftlint:disable:next force_unwrapping
-        //            AppActivityView(activityItems: [URL(string: "https://apps.apple.com/app/pdf-archiver/id\(Self.appId)")!])
-        //        }
+//        .sheet(isPresented: $showActivityView) {
+//            // swiftlint:disable:next force_unwrapping
+//            AppActivityView(activityItems: [URL(string: "https://apps.apple.com/app/pdf-archiver/id\(Self.appId)")!])
+//        }
     }
 
     @ViewBuilder
@@ -101,15 +101,11 @@ struct SettingsView: View {
 }
 #endif
 
-#if DEBUG && !os(macOS)
-struct MoreTabView_Previews: PreviewProvider {
-    @State static var viewModel = SettingsViewModel()
-    static var previews: some View {
-        Group {
-            SettingsView(viewModel: viewModel)
-                .preferredColorScheme(.dark)
-                .padding()
-        }
-    }
+#if !os(macOS)
+#Preview {
+    let viewModel = SettingsViewModel()
+    SettingsView(viewModel: viewModel)
+        .preferredColorScheme(.dark)
+        .padding()
 }
 #endif

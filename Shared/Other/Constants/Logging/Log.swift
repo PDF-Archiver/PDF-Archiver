@@ -32,14 +32,11 @@ extension Logger {
     static let newDocument = Logger(subsystem: subsystem, category: "new-document")
     static let pdfDropHandler = Logger(subsystem: subsystem, category: "pdf-drop-handler")
     static let documentProcessing = Logger(subsystem: subsystem, category: "document-processing")
+    static let navigationModel = Logger(subsystem: subsystem, category: "navigation-model")
+    static let settings = Logger(subsystem: subsystem, category: "settings")
+    static let taggingView = Logger(subsystem: subsystem, category: "tagging-view")
 
     func errorAndAssert(_ message: String) {
-        assertionFailure(message)
-        error("\(message)")
-    }
-
-    func assert(_ condition: Bool, _ message: String) {
-        guard !condition else { return }
         assertionFailure(message)
         error("\(message)")
     }

@@ -6,7 +6,6 @@
 //
 // swiftlint:disable force_unwrapping
 
-import AsyncAlgorithms
 import Foundation
 
 #if DEBUG
@@ -17,10 +16,15 @@ final class DemoFolderProvider: FolderProvider, Log {
     }
 
     let baseUrl: URL
-    let folderChangeStream = AsyncChannel<[FileChange]>()
+    let folderChangeStream: AsyncStream<[FileChange]>
+    private let folderChangeContinuation: AsyncStream<[FileChange]>.Continuation
 
     init(baseUrl: URL) throws {
         self.baseUrl = baseUrl
+
+        let (stream, continuation) = AsyncStream.makeStream(of: [FileChange].self)
+        folderChangeStream = stream
+        folderChangeContinuation = continuation
 
         guard !Self.isInitialized,
               baseUrl.lastPathComponent != "untagged" else { throw DemoFolderProviderError.alreadyInitialized }
@@ -60,9 +64,7 @@ final class DemoFolderProvider: FolderProvider, Log {
             baseUrl.appendingPathComponent(NSLocalizedString("test_file3", comment: "")),
             destination
         ]
-        Task {
-            await folderChangeStream.send(urls.map { FileChange.added(.init(fileUrl: $0)) })
-        }
+        folderChangeContinuation.yield(urls.map { FileChange.added(.init(fileUrl: $0)) })
     }
 }
 

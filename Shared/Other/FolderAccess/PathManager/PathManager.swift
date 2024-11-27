@@ -7,82 +7,10 @@
 
 import Foundation
 
-extension UserDefaults {
-    var archivePathType: PathManager.ArchivePathType? {
-        get {
-
-            do {
-                var staleBookmarkData = false
-                if let type: PathManager.ArchivePathType = try? getObject(forKey: .archivePathType) {
-                    return type
-                } else if let bookmarkData = object(forKey: Names.archivePathType.rawValue) as? Data {
-                    #if os(macOS)
-                    let url = try URL(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &staleBookmarkData)
-                    if staleBookmarkData {
-                        set(nil, forKey: Names.archivePathType.rawValue)
-                        log.errorAndAssert("Found stale bookmark data.")
-                        return nil
-                    }
-                    return .local(url)
-                    #else
-                    let url = try URL(resolvingBookmarkData: bookmarkData, bookmarkDataIsStale: &staleBookmarkData)
-                    guard !staleBookmarkData else {
-                        // Handle stale data here.
-                        log.errorAndAssert("Error while getting archive url. Stale bookmark data.")
-                        return nil
-                    }
-                    return .local(url)
-                    #endif
-                } else {
-                    return nil
-                }
-            } catch {
-                set(nil, forKey: Names.archivePathType.rawValue)
-                log.errorAndAssert("Error while getting archive url.", metadata: ["error": "\(String(describing: error))"])
-                NotificationCenter.default.postAlert(error)
-                return nil
-            }
-        }
-        set {
-            do {
-                switch newValue {
-                    case .local(let url):
-                        #if os(macOS)
-                        let bookmark = try url.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
-                        set(bookmark, forKey: Names.archivePathType.rawValue)
-                        #else
-                        // Securely access the URL to save a bookmark
-                        guard url.startAccessingSecurityScopedResource() else {
-                            // Handle the failure here.
-                            return
-                        }
-                        // We have to stop accessing the resource no matter what
-                        defer { url.stopAccessingSecurityScopedResource() }
-                        do {
-                            // Make sure the bookmark is minimal!
-                            let bookmark = try url.bookmarkData(options: .minimalBookmark, includingResourceValuesForKeys: nil, relativeTo: nil)
-                            set(bookmark, forKey: Names.archivePathType.rawValue)
-                        } catch {
-                            print("Bookmark error \(error)")
-                        }
-                        #endif
-                    default:
-                        try setObject(newValue, forKey: .archivePathType)
-                }
-            } catch {
-                set(nil, forKey: Names.archivePathType.rawValue)
-                log.errorAndAssert("Failed to set ArchivePathType.", metadata: ["error": "\(error)"])
-                NotificationCenter.default.postAlert(error)
-            }
-        }
-    }
-}
-
 @MainActor
 final class PathManager: Log {
 
     static let shared = PathManager()
-    private static let userDefaults: UserDefaults = .appGroup
 
     private(set) var archivePathType: ArchivePathType
     private let fileManager = FileManager.default
@@ -90,12 +18,12 @@ final class PathManager: Log {
     private init() {
         let iCloudDriveAvailable = FileManager.default.iCloudDriveURL != nil
         if iCloudDriveAvailable {
-            archivePathType = PathManager.userDefaults.archivePathType ?? .iCloudDrive
+            archivePathType = UserDefaults.archivePathType ?? .iCloudDrive
         } else {
             #if os(macOS)
-            archivePathType = PathManager.userDefaults.archivePathType ?? .local(FileManager.default.documentsDirectoryURL.appendingPathComponent("PDFArchiver"))
+            archivePathType = UserDefaults.archivePathType ?? .local(FileManager.default.documentsDirectoryURL.appendingPathComponent("PDFArchiver"))
             #else
-            archivePathType = PathManager.userDefaults.archivePathType ?? .appContainer
+            archivePathType = UserDefaults.archivePathType ?? .appContainer
             #endif
         }
     }
@@ -155,7 +83,7 @@ final class PathManager: Log {
         }
 
         self.archivePathType = type
-        Self.userDefaults.archivePathType = type
+        UserDefaults.archivePathType = type
 
         if let moveError = moveError {
             throw moveError

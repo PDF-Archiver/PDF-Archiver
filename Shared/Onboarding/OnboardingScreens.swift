@@ -9,7 +9,6 @@ import SwiftUI
 
 struct OnboardingScreens: View {
     @Binding var isPresenting: Bool
-    @State private var gesture: CGSize = .zero
     @State private var cardIndex = 0
 
     let onboardSet: OnboardSet

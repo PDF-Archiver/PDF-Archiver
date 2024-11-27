@@ -54,14 +54,6 @@ struct ArchiveListView: View {
         }
 }
 
-    private func status(for document: Document) -> some View {
-        VStack {
-            Image(systemName: "icloud.and.arrow.down")
-            Text(document.size.converted(to: .bytes).formatted(.byteCount(style: .file)))
-                .font(.caption)
-        }
-        .foregroundColor(.gray)
-    }
 }
 
 #Preview {

@@ -13,7 +13,6 @@ extension Notification.Name {
 }
 
 extension NotificationCenter {
-    #warning("TODO: move this notification to navigation model")
     func postAlert(_ error: any Error, file: StaticString = #file, function: StaticString = #function, line: UInt = #line) {
         let defaultTitle = "An error occurred 😳"
 
@@ -28,13 +27,15 @@ extension NotificationCenter {
 
             alertDataModel = AlertDataModel(title: title,
                                             message: LocalizedStringKey(message),
-                                            primaryButton: .default(Text("Dismiss")),
-                                            secondaryButton: nil)
+                                            primaryButton: .init(role: .cancel,
+                                                                 action: nil,
+                                                                 label: "Dismiss"))
         } else {
             alertDataModel = AlertDataModel(title: LocalizedStringKey(defaultTitle),
                                             message: "\(error.localizedDescription)\n\n\(String(describing: error))",
-                                            primaryButton: .default(Text("Dismiss")),
-                                            secondaryButton: nil)
+                                            primaryButton: .init(role: .cancel,
+                                                                 action: nil,
+                                                                 label: "Dismiss"))
         }
         postAlert(alertDataModel, file: file, function: function, line: line)
     }
@@ -43,24 +44,10 @@ extension NotificationCenter {
         let completion = {}
         let alertDataModel = AlertDataModel(title: title,
                                             message: message,
-                                            primaryButton: .default(Text(primaryButtonTitle),
-                                                                    action: completion),
-                                            secondaryButton: nil)
+                                            primaryButton: .init(role: nil,
+                                                                 action: completion,
+                                                                 label: primaryButtonTitle))
         postAlert(alertDataModel, file: file, function: function, line: line)
-    }
-
-    func createAndPost(title: LocalizedStringKey, message: LocalizedStringKey, primaryButton: Alert.Button, secondaryButton: Alert.Button, file: StaticString = #file, function: StaticString = #function, line: UInt = #line) {
-        let alertDataModel = AlertDataModel(title: title,
-                                            message: message,
-                                            primaryButton: primaryButton,
-                                            secondaryButton: secondaryButton)
-        postAlert(alertDataModel, file: file, function: function, line: line)
-    }
-
-    func createAndPostNoICloudDrive(completion: @escaping () -> Void) {
-        createAndPost(title: "Attention",
-                      message: "Could not find iCloud Drive.",
-                      primaryButtonTitle: "OK")
     }
 
     private func postAlert(_ alertDataModel: AlertDataModel, file: StaticString = #file, function: StaticString = #function, line: UInt = #line) {
@@ -73,10 +60,8 @@ extension NotificationCenter {
                    ]))
     }
 
-    func alertPublisher() -> AnyPublisher<AlertDataModel?, Never> {
-        publisher(for: .alertMessage)
+    func alertStream() -> any AsyncSequence<AlertDataModel, Never> {
+        NotificationCenter.default.notifications(named: .alertMessage)
             .compactMap { $0.object as? AlertDataModel }
-            .map { Optional($0) }
-            .eraseToAnyPublisher()
     }
 }

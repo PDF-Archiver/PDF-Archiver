@@ -65,15 +65,6 @@ struct WrappingHStack<Item: Hashable, Content: View>: View {
         }.background(viewHeightReader($totalHeight))
     }
 
-    private func item(for text: String) -> some View {
-        Text(text)
-            .padding(.all, 5)
-            .font(.body)
-            .background(Color.blue)
-            .foregroundColor(Color.white)
-            .cornerRadius(5)
-    }
-
     private func viewHeightReader(_ binding: Binding<CGFloat>) -> some View {
         return GeometryReader { geometry -> Color in
             let rect = geometry.frame(in: .local)
@@ -85,19 +76,15 @@ struct WrappingHStack<Item: Hashable, Content: View>: View {
     }
 }
 
-#if DEBUG
-struct WrappingHStack_Previews: PreviewProvider {
-    static var previews: some View {
-        WrappingHStack(items: ["Nintendo", "XBox", "PlayStation", "PlayStation 2", "PlayStation 3", "PlayStation 4"]) { text in
-            TagView(tagName: text, isEditable: true, isSuggestion: true, tapHandler: { print($0) })
-//            Label(text, systemImage: "tag")
-//                .padding(.all, 5)
-                .font(.body)
-                .fixedSize()
-                .background(Color.blue)
-                .foregroundColor(Color.white)
-                .cornerRadius(5)
-        }
+#Preview {
+    WrappingHStack(items: ["Nintendo", "XBox", "PlayStation", "PlayStation 2", "PlayStation 3", "PlayStation 4"]) { text in
+        TagView(tagName: text, isEditable: true, isSuggestion: true, tapHandler: { print($0) })
+        //            Label(text, systemImage: "tag")
+        //                .padding(.all, 5)
+            .font(.body)
+            .fixedSize()
+            .background(Color.blue)
+            .foregroundColor(Color.white)
+            .cornerRadius(5)
     }
 }
-#endif

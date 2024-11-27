@@ -34,11 +34,4 @@ extension String {
         CharacterSet.decimalDigits.isSuperset(of: CharacterSet(charactersIn: self))
     }
 
-    var localized: String {
-        return NSLocalizedString(self, comment: "")
-    }
-
-    static var afterCrashMessage: String {
-        "A crash occurred! Please answere the following questions to help investigate the problem.\n* What were the last steps (before the crash) in the app?\n\n\n* Was a particularly large or possibly corrupt PDF file opened?\n\n\n* How long was the app used before the crash?\n\n\n* Is there any other important information that could help with troubleshooting?\n\n\n* Can the crash be reproduced? If so, what steps are needed?\n".localized
-    }
 }

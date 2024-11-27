@@ -7,12 +7,12 @@
 
 import DeepDiff
 import Foundation
-import AsyncAlgorithms
 
 final class LocalFolderProvider: FolderProvider {
 
     let baseUrl: URL
-    let folderChangeStream = AsyncChannel<[FileChange]>()
+    let folderChangeStream: AsyncStream<[FileChange]>
+    private let folderChangeContinuation: AsyncStream<[FileChange]>.Continuation
 
     private let didAccessSecurityScope: Bool
 
@@ -24,6 +24,11 @@ final class LocalFolderProvider: FolderProvider {
 
     required init(baseUrl: URL) throws {
         self.baseUrl = baseUrl
+
+        let (stream, continuation) = AsyncStream.makeStream(of: [FileChange].self)
+        folderChangeStream = stream
+        folderChangeContinuation = continuation
+
         self.didAccessSecurityScope = baseUrl.startAccessingSecurityScopedResource()
 
         Self.log.debug("Creating file provider.", metadata: ["url": "\(baseUrl.path)"])
@@ -32,15 +37,13 @@ final class LocalFolderProvider: FolderProvider {
             guard let self = self else { return }
 
             let changes = self.createChanges()
-            Task {
-                await self.folderChangeStream.send(changes)
-            }
+            self.folderChangeContinuation.yield(changes)
         })
 
         // build initial changes
         Task.detached(priority: .background) {
             let changes = await self.createChanges()
-            await self.folderChangeStream.send(changes)
+            self.folderChangeContinuation.yield(changes)
         }
     }
 
@@ -129,7 +132,7 @@ final class LocalFolderProvider: FolderProvider {
                     return nil
                 }
 
-                return FileChange.Details(url: url, filename: filename, sizeInBytes: Double(fileSize), downloadStatus: downloadStatus)
+                return FileChange.Details(url: url, sizeInBytes: Double(fileSize), downloadStatus: downloadStatus)
             }
             .sorted { $0.url.path < $1.url.path }
 

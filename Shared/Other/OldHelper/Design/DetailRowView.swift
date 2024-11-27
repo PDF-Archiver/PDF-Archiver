@@ -25,11 +25,3 @@ struct DetailRowView: View {
         })
     }
 }
-
-struct DetailRowVIew_Previews: PreviewProvider {
-    static var previews: some View {
-        DetailRowView(name: "Test Row") {
-            print("Row Tapped")
-        }
-    }
-}

@@ -16,7 +16,6 @@ struct StatisticsView: View {
     @Environment(\.horizontalSizeClass) private var sizeClass
 //    #endif
 
-    @Environment(\.modelContext) private var modelContext
     @Query private var documents: [Document]
 
     private let viewModel = StatisticsViewModel()
@@ -50,12 +49,9 @@ struct StatisticsView: View {
             }
         }
         .redacted(reason: viewModel.isLoading ? .placeholder : [])
-        .task {
-            viewModel.updateData(with: documents)
-        }
-        .onChange(of: documents, { _, newValue in
+        .onChange(of: documents, initial: true) { _, newValue in
             viewModel.updateData(with: newValue)
-        })
+        }
     }
 
     private var documentsView: some View {
@@ -118,10 +114,6 @@ struct StatisticsView: View {
     }
 }
 
-#if DEBUG
-struct StatisticsView_Previews: PreviewProvider {
-    static var previews: some View {
-        StatisticsView()
-    }
+#Preview {
+    StatisticsView()
 }
-#endif

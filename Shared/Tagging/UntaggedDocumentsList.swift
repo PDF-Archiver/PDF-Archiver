@@ -9,6 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct UntaggedDocumentsList: View {
+    static let untaggedDocumentSortOrder = [SortDescriptor(\Document.filename, order: .forward), SortDescriptor(\Document.id)]
     @Environment(NavigationModel.self) private var navigationModel
     @Query private var untaggedDocuments: [Document]
 
@@ -20,24 +21,30 @@ struct UntaggedDocumentsList: View {
 //            return !document.isTagged || document.id == id
             return !document.isTagged
         }
-        var descriptor = FetchDescriptor(predicate: predicate, sortBy: [SortDescriptor(\Document.date, order: .reverse)])
+        var descriptor = FetchDescriptor(predicate: predicate, sortBy: Self.untaggedDocumentSortOrder)
         descriptor.fetchLimit = 100
         self._untaggedDocuments = Query(descriptor)
     }
 
     var body: some View {
         @Bindable var navigationModel = navigationModel
-        if untaggedDocuments.isEmpty {
-            ContentUnavailableView("No document", systemImage: "checkmark.seal", description: Text("Congratulations! All documents are tagged. 🎉"))
-        } else {
-            List(untaggedDocuments, selection: $navigationModel.selectedDocument) { document in
-                NavigationLink(document.filename, value: document)
+        Group {
+            if untaggedDocuments.isEmpty {
+                ContentUnavailableView("No document", systemImage: "checkmark.seal", description: Text("Congratulations! All documents are tagged. 🎉"))
+            } else {
+                List(untaggedDocuments, selection: $navigationModel.selectedDocument) { document in
+                    NavigationLink(document.filename, value: document)
+                }
+                .listStyle(.plain)
+                #if os(macOS)
+                .alternatingRowBackgrounds()
+                #endif
             }
-            .listStyle(.plain)
-            #if os(macOS)
-            .alternatingRowBackgrounds()
-            #endif
         }
+        .navigationTitle("Untagged Documents")
+        #if !os(macOS)
+        .navigationBarTitleDisplayMode(.inline)
+        #endif
     }
 }
 
@@ -45,6 +52,6 @@ struct UntaggedDocumentsList: View {
 #Preview {
     UntaggedDocumentsList()
         .modelContainer(previewContainer())
-        .environment(NavigationModel())
+        .environment(NavigationModel.shared)
 }
 #endif

@@ -11,7 +11,7 @@ import Foundation
 func initializePdfArchiver() {
     Task.detached(priority: .userInitiated) {
         do {
-            try await NewArchiveStore.shared.reloadArchiveDocuments()
+            try await ArchiveStore.shared.reloadArchiveDocuments()
         } catch {
             NotificationCenter.default.postAlert(error)
         }

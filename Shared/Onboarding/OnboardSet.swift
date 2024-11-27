@@ -10,8 +10,6 @@ import Foundation
 
 struct OnboardSet {
     private(set) var cards: [OnboardCard] = []
-    private(set) var width: CGFloat = 350
-    private(set) var height: CGFloat = 500
 
     mutating func newCard(title: String, image: String, text: String) {
         cards.append(OnboardCard(title: title, image: image, text: text))

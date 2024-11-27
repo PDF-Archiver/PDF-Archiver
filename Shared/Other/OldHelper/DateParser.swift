@@ -20,40 +20,37 @@ enum DateParser: Log {
     ///
     /// - Parameter raw: Raw string which might contain a date.
     /// - Returns: The found date or nil if no date was found.
-    static func parse(_ raw: String) -> ParserResult? {
+    static func parse(_ raw: String) -> [ParserResult] {
         let input = String(raw.prefix(10))
-        if let result = localParse(raw) {
-            return result
+        let results = localParse(raw)
+        if !results.isEmpty {
+            return results
         } else if let date = DateFormatter.yyyyMMdd.date(from: input) {
-            return ParserResult(date: date, rawDate: input)
+            return [ParserResult(date: date, rawDate: input)]
         } else if let date = DateFormatter.yyyyMMdd.date(from: input.replacingOccurrences(of: "_", with: "-")) {
-            return ParserResult(date: date, rawDate: input)
+            return [ParserResult(date: date, rawDate: input)]
         } else {
-            return nil
+            return []
         }
     }
 
-    private static func localParse(_ raw: String) -> ParserResult? {
+    private static func localParse(_ raw: String) -> [ParserResult] {
         let types: NSTextCheckingResult.CheckingType = .date
         guard let detector = try? NSDataDetector(types: types.rawValue) else {
             Self.log.criticalAndAssert("Could not create NSDataDetector")
-            return nil
+            return []
         }
-  
+
         // the NSDataDetector parses times as "today" Date so we filter out all dates that are today
-        let match = detector.matches(in: raw, range: NSRange(location: 0, length: raw.count))
-            .first { match in
+        return detector.matches(in: raw, range: NSRange(location: 0, length: raw.count))
+            .lazy
+            .prefix(5)
+            .compactMap { match in
                 guard let date = match.date,
-                      !Calendar.current.isDate(date, inSameDayAs: Date()) else { return false }
-                return true
-            }
+                      !Calendar.current.isDate(date, inSameDayAs: Date()) else { return nil }
 
-        guard let match = match,
-              let date = match.date else {
-                return nil
+                let rawDate = (raw as NSString).substring(with: match.range)
+                return ParserResult(date: date, rawDate: rawDate)
             }
-        let rawDate = (raw as NSString).substring(with: match.range)
-
-        return ParserResult(date: date, rawDate: rawDate)
     }
 }

@@ -27,15 +27,11 @@ struct ExpertSettingsView: View {
     }
 }
 
-#if DEBUG
-struct ExpertSettingsView_Previews: PreviewProvider {
-    static var previews: some View {
-        ExpertSettingsView(notSaveDocumentTagsAsPDFMetadata: .constant(true),
-                           documentTagsNotRequired: .constant(false),
-                           documentSpecificationNotRequired: .constant(false),
-                           resetApp: {
-                            print("Tapped reset")
-                           })
-    }
+#Preview {
+    ExpertSettingsView(notSaveDocumentTagsAsPDFMetadata: .constant(true),
+                       documentTagsNotRequired: .constant(false),
+                       documentSpecificationNotRequired: .constant(false),
+                       resetApp: {
+        print("Tapped reset")
+    })
 }
-#endif

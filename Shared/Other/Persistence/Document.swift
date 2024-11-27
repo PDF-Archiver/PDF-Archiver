@@ -7,9 +7,11 @@
 
 import Foundation
 import SwiftData
+import OSLog
 
 @Model
 final class Document {
+    @Attribute(.unique)
     private(set) var id: String = ""
     var url: URL = URL(filePath: "")
     var isTagged = false
@@ -30,10 +32,14 @@ final class Document {
 
     var _sizeInBytes: Double
 
+    // this property will be set when the object is created and saved to the DB the first time
+    // it will be used in the first (full) sync after the app starts
+    private(set) var _created = Date()
+
     // 0: remote - 1: local
     var downloadStatus: Double
 
-    init(id: String, url: URL, isTagged: Bool, filename: String, sizeInBytes: Double, date: Date, specification: String, tags: [Tag], content: String, downloadStatus: Double) {
+    init(id: String, url: URL, isTagged: Bool, filename: String, sizeInBytes: Double, date: Date, specification: String, tags: [Tag], content: String, downloadStatus: Double, created: Date) {
         self.id = id
         self.url = url
         self.isTagged = isTagged
@@ -44,13 +50,29 @@ final class Document {
         self.tagItems = tags
         self.content = content
         self.downloadStatus = downloadStatus
+        self._created = created
     }
 }
 
 extension Document {
-    enum DownloadStatus: Equatable, Codable {
-        case remote
-        case downloading(percent: Double)
-        case local
+
+    static func getBy(id documentId: String, in modelContext: ModelContext) async throws -> Document? {
+        let predicate = #Predicate<Document> {
+            $0.id == documentId
+        }
+
+        var descriptor = FetchDescriptor<Document>(
+            predicate: predicate,
+            sortBy: [SortDescriptor(\Document.id)]
+        )
+        descriptor.fetchLimit = 1
+        let documents = try modelContext.fetch(descriptor)
+
+        guard let document = documents.first else { return nil }
+        if document.downloadStatus < 1 {
+            Logger.archiveStore.debug("Start download of document \(document.url.lastPathComponent)")
+            await ArchiveStore.shared.startDownload(of: document.url)
+        }
+        return document
     }
 }

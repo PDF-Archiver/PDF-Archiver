@@ -7,14 +7,14 @@
 //
 
 import Foundation
+import OSLog
 
 extension UserDefaults: Log {
 
     enum Names: String, CaseIterable {
         case tutorialShown = "tutorial-v1"
-        case lastSelectedTabName
+        case isTaggingMode
         case pdfQuality
-        case firstDocumentScanAlertPresented
         case lastAppUsagePermitted
         case archiveURL
         case untaggedURL
@@ -34,59 +34,16 @@ extension UserDefaults: Log {
         static let defaultQualityIndex = 1  // e.g. "good"
     }
 
-    static func shouldManipulatePdfDocument() -> Bool {
-        if #available(iOS 17, macOS 14, *) {
-            if #available(iOS 17.2, macOS 14.2, *) {
-                // creation of PDFs is fixed in iOS 17.2
-                return true
-            } else {
-                // iOS 17.0 to 17.1
-                return false
-            }
-        } else {
-            return true
-        }
-    }
-
     static var isInDemoMode: Bool {
         UserDefaults.standard.bool(forKey: "demoMode")
     }
 
-    static var tutorialShown: Bool {
+    static var isTaggingMode: Bool {
         get {
-            appGroup.bool(forKey: Names.tutorialShown.rawValue)
+            appGroup.bool(forKey: Names.isTaggingMode.rawValue)
         }
         set {
-            appGroup.set(newValue, forKey: Names.tutorialShown.rawValue)
-        }
-    }
-
-    static var firstDocumentScanAlertPresented: Bool {
-        get {
-            appGroup.bool(forKey: Names.firstDocumentScanAlertPresented.rawValue)
-        }
-        set {
-            appGroup.set(newValue, forKey: Names.firstDocumentScanAlertPresented.rawValue)
-        }
-    }
-
-    static var lastAppUsagePermitted: Bool {
-        get {
-            appGroup.bool(forKey: Names.lastAppUsagePermitted.rawValue)
-        }
-        set {
-            appGroup.set(newValue, forKey: Names.lastAppUsagePermitted.rawValue)
-        }
-    }
-
-    static var lastSelectedTab: TabType {
-        get {
-            guard let name = appGroup.string(forKey: Names.lastSelectedTabName.rawValue),
-                let tab = TabType(rawValue: name) else { return .scan }
-            return tab
-        }
-        set {
-            appGroup.set(newValue.rawValue, forKey: Names.lastSelectedTabName.rawValue)
+            appGroup.set(newValue, forKey: Names.isTaggingMode.rawValue)
         }
     }
 
@@ -105,24 +62,6 @@ extension UserDefaults: Log {
         set {
             log.info("PDF Quality Changed.", metadata: ["quality": "\(newValue.rawValue)"])
             appGroup.set(newValue.rawValue, forKey: Names.pdfQuality.rawValue)
-        }
-    }
-
-    static var archiveURL: URL? {
-        get {
-            appGroup.object(forKey: Names.archiveURL.rawValue) as? URL
-        }
-        set {
-            appGroup.set(newValue, forKey: Names.archiveURL.rawValue)
-        }
-    }
-
-    static var untaggedURL: URL? {
-        get {
-            appGroup.object(forKey: Names.untaggedURL.rawValue) as? URL
-        }
-        set {
-            appGroup.set(newValue, forKey: Names.untaggedURL.rawValue)
         }
     }
 
@@ -191,7 +130,76 @@ extension UserDefaults: Log {
         }
     }
 
-    func setObject<T: Encodable>(_ object: T?, forKey key: Names) throws {
+    static var archivePathType: PathManager.ArchivePathType? {
+        get {
+
+            do {
+                var staleBookmarkData = false
+                if let type: PathManager.ArchivePathType = try? appGroup.getObject(forKey: .archivePathType) {
+                    return type
+                } else if let bookmarkData = appGroup.object(forKey: Names.archivePathType.rawValue) as? Data {
+                    #if os(macOS)
+                    let url = try URL(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &staleBookmarkData)
+                    if staleBookmarkData {
+                        appGroup.set(nil, forKey: Names.archivePathType.rawValue)
+                        log.errorAndAssert("Found stale bookmark data.")
+                        return nil
+                    }
+                    return .local(url)
+                    #else
+                    let url = try URL(resolvingBookmarkData: bookmarkData, bookmarkDataIsStale: &staleBookmarkData)
+                    guard !staleBookmarkData else {
+                        // Handle stale data here.
+                        log.errorAndAssert("Error while getting archive url. Stale bookmark data.")
+                        return nil
+                    }
+                    return .local(url)
+                    #endif
+                } else {
+                    return nil
+                }
+            } catch {
+                appGroup.set(nil, forKey: Names.archivePathType.rawValue)
+                log.errorAndAssert("Error while getting archive url.", metadata: ["error": "\(String(describing: error))"])
+                NotificationCenter.default.postAlert(error)
+                return nil
+            }
+        }
+        set {
+            do {
+                switch newValue {
+                    case .local(let url):
+                        #if os(macOS)
+                        let bookmark = try url.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
+                        appGroup.set(bookmark, forKey: Names.archivePathType.rawValue)
+                        #else
+                        // Securely access the URL to save a bookmark
+                        guard url.startAccessingSecurityScopedResource() else {
+                            // Handle the failure here.
+                            return
+                        }
+                        // We have to stop accessing the resource no matter what
+                        defer { url.stopAccessingSecurityScopedResource() }
+                        do {
+                            // Make sure the bookmark is minimal!
+                            let bookmark = try url.bookmarkData(options: .minimalBookmark, includingResourceValuesForKeys: nil, relativeTo: nil)
+                            appGroup.set(bookmark, forKey: Names.archivePathType.rawValue)
+                        } catch {
+                            Logger.settings.errorAndAssert("Bookmark error \(error)")
+                        }
+                        #endif
+                    default:
+                    try appGroup.setObject(newValue, forKey: .archivePathType)
+                }
+            } catch {
+                appGroup.set(nil, forKey: Names.archivePathType.rawValue)
+                log.errorAndAssert("Failed to set ArchivePathType.", metadata: ["error": "\(error)"])
+                NotificationCenter.default.postAlert(error)
+            }
+        }
+    }
+
+    private func setObject<T: Encodable>(_ object: T?, forKey key: Names) throws {
         guard let object = object else {
             set(nil, forKey: key.rawValue)
             return
@@ -200,7 +208,7 @@ extension UserDefaults: Log {
         set(data, forKey: key.rawValue)
     }
 
-    func getObject<T: Decodable>(forKey key: Names) throws -> T? {
+    private func getObject<T: Decodable>(forKey key: Names) throws -> T? {
         guard let data = object(forKey: key.rawValue) as? Data else { return nil }
         return try JSONDecoder().decode(T.self, from: data)
     }

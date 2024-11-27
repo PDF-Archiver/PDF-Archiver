@@ -57,8 +57,6 @@ struct StorageSelectionView: View {
     }
 }
 
-struct StorageSelectionView_Previews: PreviewProvider {
-    static var previews: some View {
-        StorageSelectionView(selection: .constant(.local), onCompletion: { print($0) })
-    }
+#Preview {
+    StorageSelectionView(selection: .constant(.local), onCompletion: { print($0) })
 }
