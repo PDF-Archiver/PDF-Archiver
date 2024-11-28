@@ -102,11 +102,16 @@ actor ArchiveStore: ModelActor {
         // /private/var/mobile/Containers/Data/Application/8F70A72B-026D-4F6B-98E8-2C6ACE940133/Documents/untagged/document1.pdf
         //         /var/mobile/Containers/Data/Application/8F70A72B-026D-4F6B-98E8-2C6ACE940133/Documents/
 
-        guard let provider = providers.first(where: { url.path.contains($0.baseUrl.path) }) else {
-            throw ArchiveStore.Error.providerNotFound
+//        guard let provider = providers.first(where: { url.path.contains($0.baseUrl.path) }) else {
+//            throw ArchiveStore.Error.providerNotFound
+//        }
+        for provider in providers {
+            let baseUrlPath = provider.baseUrl.path()
+            guard url.path.contains(baseUrlPath) else { continue }
+            return provider
         }
 
-        return provider
+        throw ArchiveStore.Error.providerNotFound
     }
 
     @discardableResult
