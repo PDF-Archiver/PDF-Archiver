@@ -56,7 +56,7 @@ final class ICloudFolderProvider: FolderProvider {
          can perform our own background work in sync with item discovery.
          Note that the operationQueue of the `NSMetadataQuery` must be serial.
          */
-        metadataQuery.operationQueue = .current
+        metadataQuery.operationQueue = .main
 
         NotificationCenter.default.addObserver(self, selector: #selector(Self.finishGathering(notification:)), name: .NSMetadataQueryDidFinishGathering, object: metadataQuery)
         NotificationCenter.default.addObserver(self, selector: #selector(Self.queryUpdated(notification:)), name: .NSMetadataQueryDidUpdate, object: metadataQuery)
