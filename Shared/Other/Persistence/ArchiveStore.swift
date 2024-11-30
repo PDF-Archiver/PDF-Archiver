@@ -101,16 +101,14 @@ actor ArchiveStore: ModelActor {
         // This fixes a problem, where we get different file urls back:
         // /private/var/mobile/Containers/Data/Application/8F70A72B-026D-4F6B-98E8-2C6ACE940133/Documents/untagged/document1.pdf
         //         /var/mobile/Containers/Data/Application/8F70A72B-026D-4F6B-98E8-2C6ACE940133/Documents/
-
-//        guard let provider = providers.first(where: { url.path.contains($0.baseUrl.path) }) else {
-//            throw ArchiveStore.Error.providerNotFound
-//        }
         for provider in providers {
             let baseUrlPath = provider.baseUrl.path()
-            guard url.path.contains(baseUrlPath) else { continue }
+            guard url.path().contains(baseUrlPath) else { continue }
             return provider
         }
 
+        Logger.archiveStore.error("No provider found for \(url.path())")
+        Logger.archiveStore.debug("Providers \(self.providers.map(\.baseUrl).map({ $0.path() }).joined(separator: ", "))")
         throw ArchiveStore.Error.providerNotFound
     }
 
