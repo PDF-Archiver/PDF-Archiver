@@ -10,13 +10,13 @@ import SwiftUI
 struct SubscriptionSectionView: View {
     private static let manageSubscriptionUrl = URL(string: "https://apps.apple.com/account/subscriptions")!
 
-    @Environment(Subscription.self) var subscription
+    @Environment(NavigationModel.self) var navigationModel
 
     var body: some View {
         Section {
             HStack {
                 Text("Status:")
-                Text(subscription.isSubscribed.wrappedValue ? "Active ✅" : "Inactive ❌")
+                Text(navigationModel.isSubscribed.wrappedValue ? "Active ✅" : "Inactive ❌")
             }
 
             DetailRowView(name: "Activate/Restore Premium") {
@@ -34,6 +34,6 @@ struct SubscriptionSectionView: View {
 #if DEBUG
 #Preview {
     SubscriptionSectionView()
-        .environment(Subscription())
+        .environment(NavigationModel.shared)
 }
 #endif

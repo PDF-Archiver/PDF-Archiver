@@ -11,7 +11,6 @@ import SwiftUI
 @main
 struct PDFArchiverIOSApp: App, Log {
 
-    @State private var subscription = Subscription()
     private var navigationModel: NavigationModel = .shared
 
     var body: some Scene {
@@ -23,6 +22,5 @@ struct PDFArchiverIOSApp: App, Log {
         }
         .environment(navigationModel)
         .modelContainer(container)
-        .environment(subscription)
     }
 }

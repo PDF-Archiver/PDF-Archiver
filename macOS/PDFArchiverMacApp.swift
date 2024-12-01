@@ -12,7 +12,6 @@ import SwiftUI
 struct PDFArchiverMacApp: App, Log {
 
     @StateObject private var moreViewModel = SettingsViewModel()
-    @State private var subscription = Subscription()
     private var navigationModel: NavigationModel = .shared
 
     var body: some Scene {
@@ -23,13 +22,12 @@ struct PDFArchiverMacApp: App, Log {
         }
         .environment(navigationModel)
         .modelContainer(container)
-        .environment(subscription)
 
         Settings {
             SettingsView(viewModel: moreViewModel)
         }
         .windowStyle(HiddenTitleBarWindowStyle())
+        .environment(navigationModel)
         .modelContainer(container)
-        .environment(subscription)
     }
 }

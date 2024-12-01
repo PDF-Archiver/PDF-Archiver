@@ -11,7 +11,6 @@ import OSLog
 struct SplitNavigationView: View {
     @Environment(NavigationModel.self) private var navigationModel
     @Environment(\.modelContext) private var modelContext
-    @Environment(Subscription.self) var subscription
 
     @State private var dropHandler = PDFDropHandler()
     @AppStorage("tutorialShown", store: .appGroup) private var tutorialShown = false
@@ -63,13 +62,13 @@ struct SplitNavigationView: View {
                 DocumentDetailView()
             case .tagging:
                 UntaggedDocumentView()
-                    #if !DEBUG
-                    .sheet(isPresented: subscription.isSubscribed, content: {
-                        InAppPurchaseView(onCancel: {
+//                    #if !DEBUG
+                    .sheet(isPresented: navigationModel.isSubscribed) {
+                        InAppPurchaseView() {
                             navigationModel.switchTaggingMode(in: modelContext)
-                        })
-                    })
-                    #endif
+                        }
+                    }
+//                    #endif
             }
         }
         .modifier(AlertDataModelProvider())

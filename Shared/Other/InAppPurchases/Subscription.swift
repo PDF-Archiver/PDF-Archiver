@@ -16,24 +16,8 @@ import OSLog
 import StoreKit
 import SwiftUI
 
-@MainActor
-@Observable final class Subscription {
-    fileprivate(set) var status: SubscriptionStatus = .loading
-    var isSubscribed: Binding<Bool> {
-        Binding(get: {
-            self.status != .active
-        }, set: { _ in
-            Logger.inAppPurchase.errorAndAssert("Must not set isSubscribed state")
-        })
-    }
-}
-
-enum SubscriptionStatus: String {
-    case loading, active, inactive
-}
-
 private struct IAPTaskModifier: ViewModifier {
-    @Environment(Subscription.self) var subscription
+    @Environment(NavigationModel.self) var navigationModel
 
     func body(content: Content) -> some View {
         content
@@ -43,16 +27,16 @@ private struct IAPTaskModifier: ViewModifier {
                 switch state {
                 case .failure(let error):
                     Logger.inAppPurchase.error("Failed to check subscription status: \(error)")
-                    subscription.status = .inactive
+                    navigationModel.subscriptionStatus = .inactive
                 case .success(let status):
                     let hasSubscription = !status
                         .filter { [.subscribed, .inBillingRetryPeriod, .inGracePeriod].contains($0.state) }
                         .isEmpty
                     Logger.inAppPurchase.info("Successfully received statusTask - hasSubscription: \(hasSubscription)")
-                    subscription.status = hasSubscription ? .active : .inactive
+                    navigationModel.subscriptionStatus = hasSubscription ? .active : .inactive
                 case .loading:
                     Logger.inAppPurchase.debug("Got loading status task")
-                    subscription.status = .loading
+                    navigationModel.subscriptionStatus = .loading
                     @unknown default:
                     Logger.inAppPurchase.errorAndAssert("Got unkown status in subscriptionStatusTask")
                 }
@@ -78,7 +62,7 @@ private struct IAPTaskModifier: ViewModifier {
                                 Processing unfinished transaction ID \(unsafeTransaction.id) for \
                                 \(unsafeTransaction.productID)
                                 """)
-                    Task.detached(priority: .background) {
+                    Task(priority: .background) {
                         await process(transaction: transaction)
                     }
                 }
@@ -120,9 +104,9 @@ private struct IAPTaskModifier: ViewModifier {
             guard transaction.productID == "LIFETIME" else { return }
             if let revocationDate = transaction.revocationDate,
                revocationDate > Date() {
-                subscription.status = .active
+                navigationModel.subscriptionStatus = .active
             } else {
-                subscription.status = .active
+                navigationModel.subscriptionStatus = .active
             }
         } else {
             Logger.inAppPurchase.errorAndAssert("Found a non auto renewable product type \(transaction.productType)")
