@@ -36,12 +36,14 @@ final class LocalFolderProvider: FolderProvider {
         self.watcher = try DirectoryDeepWatcher(baseUrl, withHandler: { [weak self] _ in
             guard let self = self else { return }
 
-            let changes = self.createChanges()
-            self.folderChangeContinuation.yield(changes)
+            Task {
+                let changes = await self.createChanges()
+                self.folderChangeContinuation.yield(changes)
+            }
         })
 
         // build initial changes
-        Task.detached(priority: .background) {
+        Task(priority: .background) {
             let changes = await self.createChanges()
             self.folderChangeContinuation.yield(changes)
         }
@@ -106,7 +108,7 @@ final class LocalFolderProvider: FolderProvider {
 
     // MARK: - Helper Functions
 
-    private func createChanges() -> [FileChange] {
+    private func createChanges() async -> [FileChange] {
         let oldFiles = currentFiles
         let newFiles = fileManager.getFilesRecursive(at: baseUrl, with: fileProperties)
             .filter { $0.pathExtension.lowercased() == "pdf" }

@@ -24,7 +24,7 @@ actor BackgroundProcessingActor<OperationType: AsyncOperation> {
     // we do not want to wait for the DocumentProcessingActor to be available to receive any new input, so we use nonisolated here add something to the queue
     nonisolated func queue(_ operation: OperationType) {
         log.debug("Receiving a new document")
-        Task.detached(priority: .userInitiated) {
+        Task(priority: .userInitiated) {
             await self.add(operation)
         }
     }
@@ -40,7 +40,7 @@ actor BackgroundProcessingActor<OperationType: AsyncOperation> {
     private func startProcessing() {
         log.debug("Start processing")
 
-        processingTask = Task.detached(priority: .userInitiated) {
+        processingTask = Task(priority: .userInitiated) {
             self.log.debug("Start iterating over documents")
             // iterate over async stream and process documents
             for await operation in self.operationStream.stream {

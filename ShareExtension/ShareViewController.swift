@@ -46,7 +46,7 @@ final class ShareViewController: UIViewController {
         super.viewDidAppear(animated)
 
         minTimeDeadline = .now() + .milliseconds(750)
-        Task.detached(priority: .userInitiated) {
+        Task(priority: .userInitiated) {
             await self.handleAttachments()
         }
     }

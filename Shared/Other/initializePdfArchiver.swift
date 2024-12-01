@@ -8,8 +8,8 @@
 import Foundation
 
 @Sendable
-func initializePdfArchiver() {
-    Task.detached(priority: .userInitiated) {
+func initializePdfArchiver() async {
+    Task(priority: .userInitiated) {
         do {
             try await ArchiveStore.shared.reloadArchiveDocuments()
         } catch {

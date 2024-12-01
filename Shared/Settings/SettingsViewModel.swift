@@ -183,7 +183,7 @@ final class SettingsViewModel: ObservableObject, Log {
                 DocumentTags(url: document.url, tags: Set(document.tags))
             }
         
-        Task.detached(priority: .background) {
+        Task(priority: .background) {
             var processedDocumentsCount = 0
             for taggedDocument in taggedDocuments {
                 let sortedTags = Array(taggedDocument.tags).sorted()
