@@ -29,7 +29,7 @@ final class NavigationModel {
 
     var selectedDocument: Document?
 
-    var lastSavedDocumentId: String?
+    var lastSavedDocumentId: Int?
     
     var subscriptionStatus: SubscriptionStatus
     
@@ -78,7 +78,7 @@ final class NavigationModel {
                 let newUrl = try await ArchiveStore.shared.archiveFile(from: oldUrl, to: filename)
 
                 if let id = newUrl.uniqueId() {
-                    lastSavedDocumentId = "\(id)"
+                    lastSavedDocumentId = id
                 } else {
                     lastSavedDocumentId = nil
                 }
@@ -159,9 +159,15 @@ final class NavigationModel {
 
     private func selectNewUntaggedDocument(in modelContext: ModelContext) {
         do {
-            let selectedDocumentId = selectedDocument?.id ?? ""
-            let predicate = #Predicate<Document> {
-                !$0.isTagged && $0.id != selectedDocumentId
+            let predicate: Predicate<Document>
+            if let selectedDocumentId = selectedDocument?.id {
+                predicate = #Predicate<Document> {
+                    !$0.isTagged && $0.id != selectedDocumentId
+                }
+            } else {
+                predicate = #Predicate<Document> {
+                    !$0.isTagged
+                }
             }
 
             var descriptor = FetchDescriptor<Document>(

@@ -16,10 +16,7 @@ final class ICloudFolderProvider: FolderProvider {
     let folderChangeStream: AsyncStream<[FileChange]>
     private let folderChangeContinuation: AsyncStream<[FileChange]>.Continuation
 
-    private let notContainsTempPath = NSPredicate(format: "(NOT (%K CONTAINS[c] %@)) AND (NOT (%K CONTAINS[c] %@))", NSMetadataItemPathKey, "/\(ICloudFolderProvider.tempFolderName)/", NSMetadataItemPathKey, "/.Trash/")
-    private var metadataQuery: NSMetadataQuery
-
-    private let fileManager = FileManager.default
+    private let metadataQuery: NSMetadataQuery
 
     init(baseUrl: URL) throws {
         self.baseUrl = baseUrl
@@ -36,6 +33,7 @@ final class ICloudFolderProvider: FolderProvider {
         // get all pdf documents
         let predicate = NSPredicate(format: "%K ENDSWITH[c] '.pdf'", NSMetadataItemFSNameKey)
 
+        let notContainsTempPath = NSPredicate(format: "(NOT (%K CONTAINS[c] %@)) AND (NOT (%K CONTAINS[c] %@))", NSMetadataItemPathKey, "/\(ICloudFolderProvider.tempFolderName)/", NSMetadataItemPathKey, "/.Trash/")
         metadataQuery.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, notContainsTempPath] )
 
         // update the file status 3 times per second, while downloading
@@ -58,11 +56,46 @@ final class ICloudFolderProvider: FolderProvider {
          */
         metadataQuery.operationQueue = .main
 
-        NotificationCenter.default.addObserver(self, selector: #selector(Self.finishGathering(notification:)), name: .NSMetadataQueryDidFinishGathering, object: metadataQuery)
-        NotificationCenter.default.addObserver(self, selector: #selector(Self.queryUpdated(notification:)), name: .NSMetadataQueryDidUpdate, object: metadataQuery)
+        Task(priority: .utility) {
+            await withTaskGroup(of: Void.self) { group in
+                group.addTask {
+                    for await _ in NotificationCenter.default.notifications(named: .NSMetadataQueryDidFinishGathering) {
+                        Self.log.debug("Documents query finished initial fetch.")
 
-        metadataQuery.start()
-        log.debug("Starting the documents query.")
+                        self.metadataQuery.disableUpdates()
+                        let metadataQueryResults = self.metadataQuery.results as? [NSMetadataItem]
+                        self.metadataQuery.enableUpdates()
+                        
+                        // update the archive
+                        guard let metadataQueryResults else { return }
+                        let changes = metadataQueryResults.compactMap(Self.createDetails(from: ))
+                            .map { FileChange.added($0) }
+                        self.folderChangeContinuation.yield(changes)
+                    }
+                }
+
+                group.addTask {
+                    for await notification in NotificationCenter.default.notifications(named: .NSMetadataQueryDidUpdate) {
+                        let addedMetadataItems = (notification.userInfo?[NSMetadataQueryUpdateAddedItemsKey] as? [NSMetadataItem]) ?? []
+                        let updatedMetadataItems = (notification.userInfo?[NSMetadataQueryUpdateChangedItemsKey] as? [NSMetadataItem]) ?? []
+                        let removedMetadataItems = (notification.userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem]) ?? []
+                        
+                        // update the archive
+                        let added = addedMetadataItems.compactMap(Self.createDetails(from: ))
+                            .map { FileChange.added($0) }
+                        let updated = updatedMetadataItems.compactMap(Self.createDetails(from: ))
+                            .map { FileChange.updated($0) }
+                        let removed = removedMetadataItems.compactMap(Self.createDetails(from: ))
+                            .map { FileChange.removed($0.url) }
+
+                        self.folderChangeContinuation.yield(added + updated + removed)
+                    }
+                }
+
+                metadataQuery.start()
+                log.debug("Starting the documents query.")
+            }
+        }
     }
 
     deinit {
@@ -81,10 +114,10 @@ final class ICloudFolderProvider: FolderProvider {
     }
 
     func save(data: Data, at url: URL) throws {
-        try fileManager.createFolderIfNotExists(url.deletingLastPathComponent())
+        try FileManager.default.createFolderIfNotExists(url.deletingLastPathComponent())
 
         // test if the document name already exists in archive, otherwise move it
-        if fileManager.fileExists(atPath: url.path) {
+        if FileManager.default.fileExists(atPath: url.path) {
             throw FolderProviderError.renameFailedFileAlreadyExists
         }
 
@@ -92,12 +125,12 @@ final class ICloudFolderProvider: FolderProvider {
     }
 
     func startDownload(of url: URL) throws {
-//        guard fileManager.fileExists(atPath: url.path) else {
+//        guard FileManager.default.fileExists(atPath: url.path) else {
 //            log.assertOrCritical("Could not find file at path: \(url.path)")
 //            return
 //        }
 
-        try fileManager.startDownloadingUbiquitousItem(at: url)
+        try FileManager.default.startDownloadingUbiquitousItem(at: url)
     }
 
     func fetch(url: URL) throws -> Data {
@@ -106,32 +139,22 @@ final class ICloudFolderProvider: FolderProvider {
 
     func delete(url: URL) throws {
         // trash items (not remove) to let users restore them if needed
-        try fileManager.trashItem(at: url, resultingItemURL: nil)
+        try FileManager.default.trashItem(at: url, resultingItemURL: nil)
     }
 
     func rename(from source: URL, to destination: URL) throws {
         guard source != destination else { return }
-        try fileManager.createFolderIfNotExists(destination.deletingLastPathComponent())
+        try FileManager.default.createFolderIfNotExists(destination.deletingLastPathComponent())
 
         // test if the document name already exists in archive, otherwise move it
-        if fileManager.fileExists(atPath: destination.path) {
+        if FileManager.default.fileExists(atPath: destination.path) {
             throw FolderProviderError.renameFailedFileAlreadyExists
         }
 
-        try fileManager.moveItem(at: source, to: destination)
+        try FileManager.default.moveItem(at: source, to: destination)
     }
 
     // MARK: - Helper Functions
-
-    private func update(added: [NSMetadataItem], removed: [NSMetadataItem], updated: [NSMetadataItem]) {
-        var changes = [FileChange]()
-
-        changes.append(contentsOf: added.createDetails(FileChange.added))
-        changes.append(contentsOf: removed.createDetails(FileChange.removed))
-        changes.append(contentsOf: updated.createDetails(FileChange.updated))
-
-        folderChangeContinuation.yield(changes)
-    }
 
     nonisolated
     static func createDetails(from item: NSMetadataItem) -> FileChange.Details? {
@@ -174,48 +197,6 @@ final class ICloudFolderProvider: FolderProvider {
         }
 
         return FileChange.Details(url: documentPath, sizeInBytes: Double(size), downloadStatus: documentStatus)
-    }
-
-    // MARK: - Notifications
-
-    @objc
-    private func queryUpdated(notification: NSNotification) {
-
-        let changedMetadataItems = (notification.userInfo?[NSMetadataQueryUpdateChangedItemsKey] as? [NSMetadataItem]) ?? []
-        let removedMetadataItems = (notification.userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem]) ?? []
-        let addedMetadataItems = (notification.userInfo?[NSMetadataQueryUpdateAddedItemsKey] as? [NSMetadataItem]) ?? []
-
-        // update the archive
-        update(added: addedMetadataItems, removed: removedMetadataItems, updated: changedMetadataItems)
-    }
-
-    @objc
-    private func finishGathering(notification: NSNotification) {
-
-        log.debug("Documents query finished initial fetch.")
-        guard let metadataQueryResults = metadataQuery.results as? [NSMetadataItem] else { return }
-
-        // update the archive
-        update(added: metadataQueryResults, removed: [], updated: [])
-    }
-}
-
-fileprivate extension Array where Array.Element == NSMetadataItem {
-    func createDetails(_ handler: (FileChange.Details) -> FileChange) -> [FileChange] {
-        self.compactMap { item -> FileChange? in
-            if let details = ICloudFolderProvider.createDetails(from: item) {
-                return handler(details)
-            } else {
-                Self.log.errorAndAssert("Could not create details for item.", metadata: ["item": "\(item)"])
-                return nil
-            }
-        }
-    }
-
-    func createDetails(_ handler: (URL) -> FileChange) -> [FileChange] {
-        self.createDetails { details in
-            handler(details.url)
-        }
     }
 }
 

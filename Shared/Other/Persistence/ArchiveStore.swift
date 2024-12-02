@@ -183,8 +183,10 @@ actor ArchiveStore: ModelActor {
             // create/update documents
             for change in changes {
                 try processFileChange(with: change, tagCache: &tagCache, created: folderDidchangeStart)
+                
+                // we throttle the creation of
+                try await Task.sleep(for: .milliseconds(1))
             }
-            try modelContext.save()
 
             // delete old documents in db
             if isInitialSync {
@@ -192,6 +194,8 @@ actor ArchiveStore: ModelActor {
 
                 try modelContext.delete(model: Document.self, where: predicate)
             }
+            
+            try modelContext.save()
 
             let changedUrls = changes.map(\.url)
             NotificationCenter.default.post(name: .documentUpdate, object: changedUrls)
@@ -222,7 +226,7 @@ actor ArchiveStore: ModelActor {
             }
 
             let predicate = #Predicate<Document> {
-                $0.id == "\(id)"
+                $0.id == id
             }
             let descriptor = FetchDescriptor<Document>(
                 predicate: predicate, sortBy: [SortDescriptor(\Document.date, order: .reverse)]
@@ -238,7 +242,7 @@ actor ArchiveStore: ModelActor {
                 return
             }
             let predicate = #Predicate<Document> {
-                $0.id == "\(id)"
+                $0.id == id
             }
             let descriptor = FetchDescriptor<Document>(
                 predicate: predicate, sortBy: [SortDescriptor(\Document.date, order: .reverse)]
@@ -331,7 +335,7 @@ actor ArchiveStore: ModelActor {
             let specification = isTagged ? (data.specification ?? "n/a").replacingOccurrences(of: "-", with: " ") : (data.specification ?? "n/a")
             let content = "" // we write the content later on a background thread
             
-            return Document(id: "\(id)",
+            return Document(id: id,
                             url: details.url,
                             isTagged: isTagged,
                             filename: isTagged ? filename.replacingOccurrences(of: "-", with: " ") : filename,

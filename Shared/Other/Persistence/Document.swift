@@ -12,7 +12,7 @@ import OSLog
 @Model
 final class Document {
     @Attribute(.unique)
-    private(set) var id: String = ""
+    private(set) var id: Int = 42
     var url: URL = URL(filePath: "")
     var isTagged = false
     var date = Date()
@@ -39,7 +39,7 @@ final class Document {
     // 0: remote - 1: local
     var downloadStatus: Double
 
-    init(id: String, url: URL, isTagged: Bool, filename: String, sizeInBytes: Double, date: Date, specification: String, tags: [Tag], content: String, downloadStatus: Double, created: Date) {
+    init(id: Int, url: URL, isTagged: Bool, filename: String, sizeInBytes: Double, date: Date, specification: String, tags: [Tag], content: String, downloadStatus: Double, created: Date) {
         self.id = id
         self.url = url
         self.isTagged = isTagged
@@ -56,7 +56,7 @@ final class Document {
 
 extension Document {
 
-    static func getBy(id documentId: String, in modelContext: ModelContext) throws -> Document? {
+    static func getBy(id documentId: Int, in modelContext: ModelContext) throws -> Document? {
         let predicate = #Predicate<Document> {
             $0.id == documentId
         }

@@ -14,7 +14,7 @@ let container = {
     }
 
     do {
-        let version = 0
+        let version = 1
 
         // delete old DB is it exists
         let oldDbUrl = getDbURL(with: version - 1)
@@ -42,17 +42,17 @@ func createMockData(in modelContext: ModelContext) {
     let ikea = Tag(name: "ikea", documents: [])
     let coffee = Tag(name: "coffee", documents: [])
 
-    modelContext.insert(Document(id: "debug-document-id", url: examplePdfUrl, isTagged: true, filename: "test", sizeInBytes: 128, date: Date(), specification: "macbook pro", tags: [bill, longterm], content: "", downloadStatus: 0, created: Date()))
-    modelContext.insert(Document(id: "error", url: URL(filePath: "/tmp/invalid-path.pdf"), isTagged: true, filename: "test", sizeInBytes: 128, date: Date(), specification: "tv board", tags: [bill, home, ikea], content: "", downloadStatus: 0.25, created: Date()))
-    modelContext.insert(Document(id: UUID().uuidString, url: URL(filePath: ""), isTagged: true, filename: "test", sizeInBytes: 128, date: Date(), specification: "large picture", tags: [bill, ikea], content: "", downloadStatus: 0.5, created: Date()))
-    modelContext.insert(Document(id: UUID().uuidString, url: URL(filePath: ""), isTagged: true, filename: "test", sizeInBytes: 128, date: Date(), specification: "coffee bags", tags: [bill, coffee], content: "", downloadStatus: 0.75, created: Date()))
-    modelContext.insert(Document(id: UUID().uuidString, url: URL(filePath: ""), isTagged: true, filename: "test", sizeInBytes: 128, date: Date(), specification: "tools", tags: [bill], content: "", downloadStatus: 1, created: Date()))
-    modelContext.insert(Document(id: UUID().uuidString, url: URL(filePath: ""), isTagged: false, filename: "scan1", sizeInBytes: 128, date: Date(), specification: "", tags: [], content: "", downloadStatus: 1, created: Date()))
-    modelContext.insert(Document(id: UUID().uuidString, url: URL(filePath: ""), isTagged: false, filename: "scan2", sizeInBytes: 128, date: Date(), specification: "", tags: [], content: "", downloadStatus: 1, created: Date()))
+    modelContext.insert(Document(id: 1, url: examplePdfUrl, isTagged: true, filename: "test", sizeInBytes: 128, date: Date(), specification: "macbook pro", tags: [bill, longterm], content: "", downloadStatus: 0, created: Date()))
+    modelContext.insert(Document(id: 2, url: URL(filePath: "/tmp/invalid-path.pdf"), isTagged: true, filename: "test", sizeInBytes: 128, date: Date(), specification: "tv board", tags: [bill, home, ikea], content: "", downloadStatus: 0.25, created: Date()))
+    modelContext.insert(Document(id: 3, url: URL(filePath: ""), isTagged: true, filename: "test", sizeInBytes: 128, date: Date(), specification: "large picture", tags: [bill, ikea], content: "", downloadStatus: 0.5, created: Date()))
+    modelContext.insert(Document(id: 4, url: URL(filePath: ""), isTagged: true, filename: "test", sizeInBytes: 128, date: Date(), specification: "coffee bags", tags: [bill, coffee], content: "", downloadStatus: 0.75, created: Date()))
+    modelContext.insert(Document(id: 5, url: URL(filePath: ""), isTagged: true, filename: "test", sizeInBytes: 128, date: Date(), specification: "tools", tags: [bill], content: "", downloadStatus: 1, created: Date()))
+    modelContext.insert(Document(id: 6, url: URL(filePath: ""), isTagged: false, filename: "scan1", sizeInBytes: 128, date: Date(), specification: "", tags: [], content: "", downloadStatus: 1, created: Date()))
+    modelContext.insert(Document(id: 7, url: URL(filePath: ""), isTagged: false, filename: "scan2", sizeInBytes: 128, date: Date(), specification: "", tags: [], content: "", downloadStatus: 1, created: Date()))
 }
 
 @MainActor
-func previewContainer(documents: [(id: String, downloadStatus: Double)] = []) -> ModelContainer {
+func previewContainer(documents: [(id: Int, downloadStatus: Double)] = []) -> ModelContainer {
     createMockData(in: container.mainContext)
 
     let bill = Tag(name: "bill", documents: [])

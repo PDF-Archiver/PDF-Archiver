@@ -20,7 +20,7 @@ struct DocumentDetailView: View {
         #warning("TODO: iOS check if document and download status can be deleted completly")
         let document = navigationModel.selectedDocument
 
-        assert(document?.isTagged ?? true, "Document with id \(document?.id ?? "") is not tagged.")
+        assert(document?.isTagged ?? true, "Document with id \(document?.id ?? 42) is not tagged.")
 
         // we need to update the document and downloadStatus manual, because changes in document will not trigger a view update
         self.document = document
@@ -135,13 +135,13 @@ struct DocumentDetailView: View {
     NavigationStack {
         DocumentDetailView()
     }
-    .modelContainer(previewContainer(documents: [(id: "document-100", downloadStatus: 1)]))
+    .modelContainer(previewContainer(documents: [(id: 100, downloadStatus: 1)]))
     #else
     NavigationSplitView {
         Text("Sidebar")
     } detail: {
         DocumentDetailView()
-            .modelContainer(previewContainer(documents: [(id: "document-100", downloadStatus: 1)]))
+            .modelContainer(previewContainer(documents: [(id: 100, downloadStatus: 1)]))
     }
     #endif
 }
@@ -151,13 +151,13 @@ struct DocumentDetailView: View {
     NavigationStack {
         DocumentDetailView()
     }
-    .modelContainer(previewContainer(documents: [(id: "document-33", downloadStatus: 0.33)]))
+    .modelContainer(previewContainer(documents: [(id: 33, downloadStatus: 0.33)]))
     #else
     NavigationSplitView {
         Text("Sidebar")
     } detail: {
         DocumentDetailView()
-            .modelContainer(previewContainer(documents: [(id: "document-33", downloadStatus: 0.33)]))
+            .modelContainer(previewContainer(documents: [(id: 33, downloadStatus: 0.33)]))
     }
     #endif
 }
