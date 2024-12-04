@@ -61,14 +61,24 @@ struct SplitNavigationView: View {
             case .archive:
                 DocumentDetailView()
             case .tagging:
+#if os(macOS)
                 UntaggedDocumentView()
-//                    #if !DEBUG
                     .sheet(isPresented: navigationModel.isSubscribed) {
                         InAppPurchaseView() {
                             navigationModel.switchTaggingMode(in: modelContext)
                         }
                     }
-//                    #endif
+#else
+                Group {
+                    if navigationModel.isSubscribed.wrappedValue {
+                        UntaggedDocumentView()
+                    } else {
+                        InAppPurchaseView() {
+                            navigationModel.switchTaggingMode(in: modelContext)
+                        }
+                    }
+                }
+#endif
             }
         }
         .modifier(AlertDataModelProvider())

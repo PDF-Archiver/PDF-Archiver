@@ -188,14 +188,17 @@ actor ArchiveStore: ModelActor {
                 try await Task.sleep(for: .milliseconds(1))
             }
 
+            // we have to save the documents here, because the upsert will be done on save
+            // otherwise the deletion predicate will match all documents
+            try modelContext.save()
+            
             // delete old documents in db
             if isInitialSync {
                 let predicate = #Predicate<Document> { $0._created < folderDidchangeStart }
 
                 try modelContext.delete(model: Document.self, where: predicate)
+                try modelContext.save()
             }
-            
-            try modelContext.save()
 
             let changedUrls = changes.map(\.url)
             NotificationCenter.default.post(name: .documentUpdate, object: changedUrls)
