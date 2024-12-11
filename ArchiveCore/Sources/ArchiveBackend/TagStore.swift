@@ -98,9 +98,9 @@ public final class TagStore {
     }
 
     public func getTags(from text: String) -> Set<String> {
+        var text = text.lowercased()
         let tokenizer = NLTokenizer(unit: .word)
-        tokenizer.string = text.lowercased()
-
+        tokenizer.string = text
         var tokens = Set<String>()
         tokenizer.enumerateTokens(in: text.startIndex..<text.endIndex) { tokenRange, _ in
             tokens.insert(String(text[tokenRange]))
