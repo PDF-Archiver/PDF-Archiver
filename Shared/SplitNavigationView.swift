@@ -16,6 +16,7 @@ struct SplitNavigationView: View {
     @AppStorage("tutorialShown", store: .appGroup) private var tutorialShown = false
 
     var body: some View {
+        @Bindable var navigationModel = navigationModel
         NavigationSplitView {
             Group {
                 switch navigationModel.mode {
@@ -103,6 +104,20 @@ struct SplitNavigationView: View {
                 .frame(width: 500, height: 400)
                 #endif
         }
+        #if !os(macOS)
+        .sheet(isPresented: $navigationModel.isScanPresented) {
+            DocumentCameraView(
+                isShown: $navigationModel.isScanPresented,
+                imageHandler: { images in
+                    Task {
+                        FeedbackGenerator.notify(.success)
+                        await DocumentProcessingService.shared.handle(images)
+                    }
+                })
+                .edgesIgnoringSafeArea(.all)
+                .statusBar(hidden: true)
+        }
+        #endif
         .onDrop(of: [.image, .pdf, .fileURL],
                 delegate: dropHandler)
         .fileImporter(isPresented: $dropHandler.isImporting, allowedContentTypes: [.pdf, .image]) { result in

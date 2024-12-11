@@ -26,6 +26,8 @@ final class NavigationModel {
             UserDefaults.isTaggingMode = mode == .tagging
         }
     }
+    
+    var isScanPresented = false
 
     var selectedDocument: Document?
 
@@ -148,7 +150,7 @@ final class NavigationModel {
     }
 
     func showScan() {
-        #warning("TODO: fix this")
+        isScanPresented = true
     }
 
     #if !os(macOS)

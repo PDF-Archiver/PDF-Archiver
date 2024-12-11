@@ -18,14 +18,14 @@ final class DocumentProcessingService {
     static let shared = DocumentProcessingService()
     private let backgroundProcessing = BackgroundProcessingActor<PDFProcessingOperation>()
 
-    @MainActor
-    private(set) var documentProgress: Float = 0
-    @MainActor
-    private(set) var progressLabel = ""
-    @MainActor
-    private(set) var totalDocumentCount = 0
-    @MainActor
-    private(set) var processedDocumentUrl: URL?
+//    @MainActor
+//    private(set) var documentProgress: Float = 0
+//    @MainActor
+//    private(set) var progressLabel = ""
+//    @MainActor
+//    private(set) var totalDocumentCount = 0
+//    @MainActor
+//    private(set) var processedDocumentUrl: URL?
 
     private init() {
         triggerFolderObservation()

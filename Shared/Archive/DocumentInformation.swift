@@ -29,12 +29,16 @@ struct DocumentInformation: View {
                     ) { date in
                         Button(date.formatted(.dateTime.day(.twoDigits).month(.twoDigits).year(.twoDigits))) {
                             viewModel.date = date
+                            #if canImport(UIKit)
                             FeedbackGenerator.selectionChanged()
+                            #endif
                         }
                     }
                     Button("Today" as LocalizedStringKey) {
                         viewModel.date = Date()
+                        #if canImport(UIKit)
                         FeedbackGenerator.selectionChanged()
+                        #endif
                     }
 
                 }
@@ -62,7 +66,9 @@ struct DocumentInformation: View {
                         let filename = Document.createFilename(date: viewModel.date, specification: viewModel.specification, tags: Set(viewModel.tags))
                         navigationModel.saveDocument(viewModel.url, to: filename, modelContext: modelContext)
 
+                        #if canImport(UIKit)
                         FeedbackGenerator.selectionChanged()
+                        #endif
                         focusedField = .date
                     }
                     .focused($focusedField, equals: .save)
