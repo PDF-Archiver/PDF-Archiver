@@ -17,6 +17,7 @@ final class DocumentProcessingService {
 
     static let shared = DocumentProcessingService()
     private let backgroundProcessing = BackgroundProcessingActor<PDFProcessingOperation>()
+    private var backgroundProcessingIds = Set<String>()
 
 //    @MainActor
 //    private(set) var documentProgress: Float = 0
@@ -33,7 +34,9 @@ final class DocumentProcessingService {
 
     /// Fetch all documents in folder and test if PDF processing operations should be added.
     func triggerFolderObservation() {
-//        handleFileChanges(at: Constants.tempDocumentURL)
+        Task.detached(priority: .background) {
+            await self.handleFolderContents(at: Constants.tempDocumentURL)
+        }
     }
 
     func handle(_ images: [PlatformImage]) async {
@@ -64,7 +67,46 @@ final class DocumentProcessingService {
         }
     }
 
-//    private func removeFromOperations(_ mode: PDFProcessing.Mode) {
-//        operations.removeAll(where: { ($0.imageUUID != nil && $0.imageUUID == mode.imageUUID) || ($0.pdfUrl != nil && $0.pdfUrl == mode.pdfUrl) })
-//    }
+    private func handleFolderContents(at url: URL) async {
+        Logger.documentProcessing.trace("Check files in url", metadata: ["url": "\(url.path())"])
+
+        guard FileManager.default.directoryExists(at: url) else {
+            Logger.documentProcessing.info("Folder does not exist")
+            return
+        }
+
+        do {
+            let urls = try FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+
+            let pdfUrls = Set(urls.filter { $0.lastPathComponent.lowercased().hasSuffix("pdf") })
+            let imageUrls = Set(urls.filter { $0.lastPathComponent.lowercased().hasSuffix("jpeg") })
+
+            await withTaskGroup(of: Void.self) { group in
+                for pdfUrl in pdfUrls {
+                    guard let document = PDFDocument(url: pdfUrl) else {
+                        Logger.documentProcessing.errorAndAssert("Failed to create PDFDocument \(pdfUrl.path())")
+                        continue
+                    }
+                    group.addTask {
+                        await self.handle(document)
+                    }
+                }
+
+                for imageUrl in imageUrls {
+                    do {
+                        let data = try Data(contentsOf: imageUrl)
+                        guard let image = PlatformImage(data: data) else { continue }
+                        group.addTask {
+                            await self.handle([image])
+                        }
+                    } catch {
+                        Logger.documentProcessing.errorAndAssert("Failed to create Image \(imageUrl.path())", metadata: ["error": "\(error)"])
+                    }
+                }
+            }
+
+        } catch {
+            Logger.documentProcessing.errorAndAssert("Failed ", metadata: ["error": "\(error)"])
+        }
+    }
 }

@@ -81,7 +81,7 @@ struct DocumentInformation: View {
         .onChange(of: viewModel.tagSearchterm) { _, term in
             viewModel.searchtermChanged(to: term, with: modelContext)
         }
-        .onChange(of: viewModel.url, initial: true) { _, url in
+        .onChange(of: viewModel.url, initial: true) { _, _ in
             viewModel.analyseDocument()
         }
         .toolbar {
@@ -205,7 +205,7 @@ extension DocumentInformation {
                     .sorted().reversed().prefix(3)  // get the most recent 3 dates
                     .sorted()
                 dateSuggestions = Array(newResults)
-                
+
                 if foundDate == nil {
                     foundDate = results.first?.date
                 }

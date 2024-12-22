@@ -65,7 +65,7 @@ final class ICloudFolderProvider: FolderProvider {
                         self.metadataQuery.disableUpdates()
                         let metadataQueryResults = self.metadataQuery.results as? [NSMetadataItem]
                         self.metadataQuery.enableUpdates()
-                        
+
                         // update the archive
                         guard let metadataQueryResults else { return }
                         let changes = metadataQueryResults.compactMap(Self.createDetails(from: ))
@@ -79,7 +79,7 @@ final class ICloudFolderProvider: FolderProvider {
                         let addedMetadataItems = (notification.userInfo?[NSMetadataQueryUpdateAddedItemsKey] as? [NSMetadataItem]) ?? []
                         let updatedMetadataItems = (notification.userInfo?[NSMetadataQueryUpdateChangedItemsKey] as? [NSMetadataItem]) ?? []
                         let removedMetadataItems = (notification.userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem]) ?? []
-                        
+
                         // update the archive
                         let added = addedMetadataItems.compactMap(Self.createDetails(from: ))
                             .map { FileChange.added($0) }

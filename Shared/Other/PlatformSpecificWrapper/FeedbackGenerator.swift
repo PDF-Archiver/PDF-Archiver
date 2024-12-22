@@ -10,7 +10,7 @@ import UIKit
 
 @MainActor
 enum FeedbackGenerator {
-    
+
     enum FeedbackType {
         case success, warning, error
     }
@@ -23,12 +23,11 @@ enum FeedbackGenerator {
         selectionFeedback.selectionChanged()
     }
 
-    
     static func notify(_ status: FeedbackType) {
         Task {
             await MainActor.run {
                 notificationFeedback.prepare()
-                
+
                 let type: UINotificationFeedbackGenerator.FeedbackType
                 switch status {
                 case .success:

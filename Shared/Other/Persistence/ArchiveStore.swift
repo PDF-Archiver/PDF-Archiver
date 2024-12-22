@@ -183,7 +183,7 @@ actor ArchiveStore: ModelActor {
             // create/update documents
             for change in changes {
                 try processFileChange(with: change, tagCache: &tagCache, created: folderDidchangeStart)
-                
+
                 // we throttle the creation of
                 try await Task.sleep(for: .milliseconds(1))
             }
@@ -191,7 +191,7 @@ actor ArchiveStore: ModelActor {
             // we have to save the documents here, because the upsert will be done on save
             // otherwise the deletion predicate will match all documents
             try modelContext.save()
-            
+
             // delete old documents in db
             if isInitialSync {
                 let predicate = #Predicate<Document> { $0._created < folderDidchangeStart }
@@ -305,7 +305,7 @@ actor ArchiveStore: ModelActor {
             document.downloadStatus = downloadStatus
 
             return document
-            
+
         } else {
             guard let id = details.url.uniqueId() else {
                 Logger.archiveStore.errorAndAssert("Failed to get uniqueId")
@@ -337,7 +337,7 @@ actor ArchiveStore: ModelActor {
             let date = data.date ?? details.url.fileCreationDate() ?? Date()
             let specification = isTagged ? (data.specification ?? "n/a").replacingOccurrences(of: "-", with: " ") : (data.specification ?? "n/a")
             let content = "" // we write the content later on a background thread
-            
+
             return Document(id: id,
                             url: details.url,
                             isTagged: isTagged,

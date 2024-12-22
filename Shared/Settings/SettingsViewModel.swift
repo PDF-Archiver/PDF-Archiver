@@ -175,14 +175,14 @@ final class SettingsViewModel: ObservableObject, Log {
             let url: URL
             let tags: Set<String>
         }
-        
+
         let totalDocumentsCount = Double(documents.count)
         let taggedDocuments = documents
             .filter(\.isTagged)
             .map { document in
                 DocumentTags(url: document.url, tags: Set(document.tags))
             }
-        
+
         Task(priority: .background) {
             var processedDocumentsCount = 0
             for taggedDocument in taggedDocuments {

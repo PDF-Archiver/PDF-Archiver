@@ -11,7 +11,7 @@ import OSLog
 
 struct UntaggedDocumentView: View {
     private static let placeholderUrl = URL.temporaryDirectory
-    
+
     @Environment(NavigationModel.self) private var navigationModel
     @Environment(\.modelContext) private var modelContext
     @Environment(\.horizontalSizeClass) var horizontalSizeClass

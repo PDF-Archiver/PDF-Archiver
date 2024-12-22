@@ -23,13 +23,13 @@ extension Document {
 
         // try to parse the current filename
         var date: Date?
-        //var rawDate = ""
+        // var rawDate = ""
         if let parsed = Document.getFilenameDate(filename) {
             date = parsed.date
-            //rawDate = parsed.rawDate
+            // rawDate = parsed.rawDate
         } else if let parsed = DateParser.parse(filename).first {
             date = parsed.date
-            //rawDate = parsed.rawDate
+            // rawDate = parsed.rawDate
         }
 
         // parse the specification

@@ -57,7 +57,7 @@ struct TagListView: View {
 
 #Preview("Size 2", traits: .fixedLayout(width: 250, height: 400)) {
     let tags = (0..<5).map { "tag\($0)" }
-    
+
     TagListView(tags: tags, isEditable: true, isSuggestion: true, isMultiLine: true, tapHandler: nil)
 }
 
