@@ -17,27 +17,23 @@ final class NavigationModel {
         case archive, tagging
     }
 
-    enum SubscriptionStatus: String {
-        case loading, active, inactive
-    }
-
     private(set) var mode: Mode = .archive {
         didSet {
             UserDefaults.isTaggingMode = mode == .tagging
         }
     }
-    
+
     var isScanPresented = false
 
     var selectedDocument: Document?
 
     var lastSavedDocumentId: Int?
-    
-    var subscriptionStatus: SubscriptionStatus
-    
-    var isSubscribed: Binding<Bool> {
+
+    var premiumStatus: IAP.Status
+
+    var isSubscribedOrLoading: Binding<Bool> {
         Binding(get: {
-            self.subscriptionStatus != .active
+            self.premiumStatus == .active || self.premiumStatus == .loading
         }, set: { isSubscribed in
             guard !isSubscribed else { return }
             // this will be triggered if a dismiss happend
@@ -53,7 +49,7 @@ final class NavigationModel {
     /// visibility, selected recipe category, and navigation state based on recipe data.
     private init() {
         mode = UserDefaults.isTaggingMode ? .tagging : .archive
-        subscriptionStatus = .loading
+        premiumStatus = .loading
     }
 
     func switchTaggingMode(in modelContext: ModelContext) {
@@ -106,7 +102,7 @@ final class NavigationModel {
 
         Task {
             do {
-                selectedDocument = try await Document.getBy(id: lastSavedDocumentId, in: modelContext)
+                selectedDocument = try Document.getBy(id: lastSavedDocumentId, in: modelContext)
                 self.lastSavedDocumentId = nil
             } catch {
                 self.lastSavedDocumentId = nil

@@ -64,17 +64,17 @@ struct SplitNavigationView: View {
             case .tagging:
 #if os(macOS)
                 UntaggedDocumentView()
-                    .sheet(isPresented: navigationModel.isSubscribed) {
-                        InAppPurchaseView() {
+                    .sheet(isPresented: navigationModel.isSubscribedOrLoading.flipped) {
+                        IAPView {
                             navigationModel.switchTaggingMode(in: modelContext)
                         }
                     }
 #else
                 Group {
-                    if navigationModel.isSubscribed.wrappedValue {
+                    if navigationModel.isSubscribedOrLoading.wrappedValue {
                         UntaggedDocumentView()
                     } else {
-                        InAppPurchaseView() {
+                        IAPView {
                             navigationModel.switchTaggingMode(in: modelContext)
                         }
                     }

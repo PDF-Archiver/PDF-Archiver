@@ -1,5 +1,5 @@
 //
-//  Subscription.swift
+//  IAP.swift
 //  PDFArchiver
 //
 //  Created by Julian Kahnert on 23.05.24.
@@ -16,32 +16,53 @@ import OSLog
 import StoreKit
 import SwiftUI
 
-private struct IAPTaskModifier: ViewModifier {
+struct IAP: ViewModifier {
+    enum Status: String {
+        case loading, active, inactive
+    }
+
     @Environment(NavigationModel.self) var navigationModel
+
+    @State private var subscriptionStatus: Status = .loading
+    @State private var lifetimePurchaseStatus: Status = .loading
 
     func body(content: Content) -> some View {
         content
+            .onChange(of: subscriptionStatus.rawValue, { oldValue, newValue in
+                Logger.inAppPurchase.debug("subscriptionStatus changed: \(oldValue) -> \(newValue)")
+                updatePremiumStatus()
+            })
+            .onChange(of: lifetimePurchaseStatus.rawValue, { oldValue, newValue in
+                Logger.inAppPurchase.debug("lifetimePurchaseStatus changed: \(oldValue) -> \(newValue)")
+                updatePremiumStatus()
+            })
             .subscriptionStatusTask(for: Constants.inAppPurchaseGroupId) { state in
                 Logger.inAppPurchase.info("Received a new subscriptionStatus")
 
                 switch state {
                 case .failure(let error):
                     Logger.inAppPurchase.error("Failed to check subscription status: \(error)")
-                    navigationModel.subscriptionStatus = .inactive
+                    subscriptionStatus = .inactive
                 case .success(let status):
                     let hasSubscription = !status
                         .filter { [.subscribed, .inBillingRetryPeriod, .inGracePeriod].contains($0.state) }
                         .isEmpty
                     Logger.inAppPurchase.info("Successfully received statusTask - hasSubscription: \(hasSubscription)")
-                    navigationModel.subscriptionStatus = hasSubscription ? .active : .inactive
+                    subscriptionStatus = hasSubscription ? .active : .inactive
                 case .loading:
                     Logger.inAppPurchase.debug("Got loading status task")
-                    navigationModel.subscriptionStatus = .loading
-                    @unknown default:
+                @unknown default:
                     Logger.inAppPurchase.errorAndAssert("Got unkown status in subscriptionStatusTask")
                 }
             }
             .task {
+                // if no lifetime purchase was found after 2 seconds, we assume there is no active subscription
+                Task {
+                    try await Task.sleep(for: .seconds(2))
+                    guard lifetimePurchaseStatus == .loading else { return }
+                    lifetimePurchaseStatus = .inactive
+                }
+
                 // look for lifetime purchase
                 for await result in Transaction.currentEntitlements {
                     await process(transaction: result)
@@ -52,7 +73,6 @@ private struct IAPTaskModifier: ViewModifier {
                 for await update in StoreKit.Transaction.updates {
                     await process(transaction: update)
                 }
-
             }
             .task {
                 // checkForUnfinishedTransactions
@@ -66,8 +86,19 @@ private struct IAPTaskModifier: ViewModifier {
                         await process(transaction: transaction)
                     }
                 }
-
             }
+    }
+
+    private func updatePremiumStatus() {
+        // if either the subscription or lifetime purchase is loading, we still want to stay in the loading state
+        guard subscriptionStatus != .loading && lifetimePurchaseStatus != .loading else {
+            navigationModel.premiumStatus = .loading
+            return
+        }
+
+        // validate subscription
+        let hasPremium = subscriptionStatus == .active || lifetimePurchaseStatus == .active
+        navigationModel.premiumStatus = hasPremium ? .active : .inactive
     }
 
     private func process(transaction verificationResult: VerificationResult<StoreKit.Transaction>) async {
@@ -104,9 +135,9 @@ private struct IAPTaskModifier: ViewModifier {
             guard transaction.productID == "LIFETIME" else { return }
             if let revocationDate = transaction.revocationDate,
                revocationDate > Date() {
-                navigationModel.subscriptionStatus = .active
+                lifetimePurchaseStatus = .inactive
             } else {
-                navigationModel.subscriptionStatus = .active
+                lifetimePurchaseStatus = .active
             }
         } else {
             Logger.inAppPurchase.errorAndAssert("Found a non auto renewable product type \(transaction.productType)")
@@ -116,6 +147,6 @@ private struct IAPTaskModifier: ViewModifier {
 
 extension View {
     func inAppPurchasesSetup() -> some View {
-        modifier(IAPTaskModifier())
+        modifier(IAP())
     }
 }

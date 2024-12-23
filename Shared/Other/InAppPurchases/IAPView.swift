@@ -1,5 +1,5 @@
 //
-//  InAppPurchaseView.swift
+//  IAPView.swift
 //  PDFArchiver
 //
 //  Created by Julian Kahnert on 23.05.24.
@@ -8,12 +8,12 @@
 import StoreKit
 import SwiftUI
 
-struct InAppPurchaseView: View {
+struct IAPView: View {
     let onCancel: () -> Void
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 40) {
+            VStack(spacing: 30) {
                 VStack(spacing: 10) {
                     Text("No Subscription")
                         .font(.title)
@@ -23,13 +23,31 @@ struct InAppPurchaseView: View {
                 features
                 ProductView(id: "LIFETIME")
                     .productViewStyle(.large)
+                    .padding()
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(Color.paDarkRed, lineWidth: 2)
+                    )
 
                 VStack(alignment: .leading, spacing: 16) {
                     ForEach(["SUBSCRIPTION_YEARLY_IOS_NEW", "SUBSCRIPTION_MONTHLY_IOS"], id: \.self) { id in
                         ProductView(id: id)
                             .productViewStyle(.compact)
                     }
+                    HStack {
+                        Spacer()
+                        Text("You get a 2-week free trail before all subscriptions.")
+                            .foregroundStyle(.secondary)
+                            .font(.caption)
+                        Spacer()
+                    }
                 }
+                .padding()
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.paDarkGray.opacity(0.125), lineWidth: 2)
+                )
+
                 HStack {
                     Spacer()
                     restore
@@ -123,12 +141,12 @@ struct InAppPurchaseView: View {
 
 #if DEBUG
 #Preview("IAP light", traits: .fixedLayout(width: 400, height: 500)) {
-    InAppPurchaseView(onCancel: { print("Cancel pressed") })
+    IAPView(onCancel: { print("Cancel pressed") })
         .preferredColorScheme(.light)
 }
 
 #Preview("IAP dark", traits: .fixedLayout(width: 400, height: 500)) {
-    InAppPurchaseView(onCancel: { print("Cancel pressed") })
+    IAPView(onCancel: { print("Cancel pressed") })
         .preferredColorScheme(.dark)
 }
 #endif

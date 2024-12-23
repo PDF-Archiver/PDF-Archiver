@@ -1,4 +1,14 @@
 {
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
+      {
+        "locale" : "en_US",
+        "policyText" : "",
+        "policyURL" : ""
+      }
+    ]
+  },
   "identifier" : "7CCDE553",
   "nonRenewingSubscriptions" : [
 
@@ -29,7 +39,7 @@
     "_applicationInternalID" : "1433801905",
     "_developerTeamID" : "87KNVHZ8C7",
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 738188088.34752703,
+    "_lastSynchronizedDate" : 756575672.34638798,
     "_locale" : "en_US",
     "_storefront" : "USA",
     "_storeKitErrors" : [
@@ -100,7 +110,7 @@
           "groupNumber" : 1,
           "internalID" : "1457749808",
           "introductoryOffer" : {
-            "internalID" : "4AA7351C",
+            "internalID" : "E23A05C9",
             "numberOfPeriods" : 1,
             "paymentMode" : "free",
             "subscriptionPeriod" : "P2W"
@@ -121,7 +131,10 @@
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Monthly Subscription",
           "subscriptionGroupID" : "20516661",
-          "type" : "RecurringSubscription"
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
         },
         {
           "adHocOffers" : [
@@ -134,7 +147,7 @@
                 "new",
                 "expired"
               ],
-              "internalID" : "68C72AD0",
+              "internalID" : "648974C6",
               "isStackable" : false,
               "numberOfPeriods" : 1,
               "paymentMode" : "payAsYouGo",
@@ -142,15 +155,15 @@
               "subscriptionPeriod" : "P1Y"
             }
           ],
-          "displayPrice" : "0.99",
+          "displayPrice" : "6.99",
           "familyShareable" : true,
           "groupNumber" : 1,
           "internalID" : "1469750159",
           "introductoryOffer" : {
-            "internalID" : "D4A5E5FF",
+            "internalID" : "104E3300",
             "numberOfPeriods" : 1,
             "paymentMode" : "free",
-            "subscriptionPeriod" : "P1W"
+            "subscriptionPeriod" : "P2W"
           },
           "localizations" : [
             {
@@ -168,13 +181,16 @@
           "recurringSubscriptionPeriod" : "P1Y",
           "referenceName" : "Yearly Subscription",
           "subscriptionGroupID" : "20516661",
-          "type" : "RecurringSubscription"
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
         }
       ]
     }
   ],
   "version" : {
-    "major" : 3,
+    "major" : 4,
     "minor" : 0
   }
 }
