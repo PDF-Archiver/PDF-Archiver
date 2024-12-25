@@ -48,12 +48,12 @@ final class DocumentProcessingService {
         backgroundProcessing.queue(operation)
     }
 
-    func handle(_ document: PDFDocument) async {
+    func handle(_ pdfData: Data, url: URL?) async {
         guard let destinationFolder = await getDocumentDestination() else {
             Logger.documentProcessing.errorAndAssert("Failed to get document")
             return
         }
-        let operation = PDFProcessingOperation(of: .pdf(document), destinationFolder: destinationFolder)
+        let operation = PDFProcessingOperation(of: .pdf(pdfData: pdfData, url: url), destinationFolder: destinationFolder)
         backgroundProcessing.queue(operation)
     }
 
@@ -88,7 +88,13 @@ final class DocumentProcessingService {
                         continue
                     }
                     group.addTask {
-                        await self.handle(document)
+                        guard let destinationFolder = await self.getDocumentDestination(),
+                            let pdfData = document.dataRepresentation() else {
+                            Logger.documentProcessing.errorAndAssert("Failed to get document")
+                            return
+                        }
+                        let operation = await PDFProcessingOperation(of: .pdf(pdfData: pdfData, url: document.documentURL), destinationFolder: destinationFolder)
+                        self.backgroundProcessing.queue(operation)
                     }
                 }
 

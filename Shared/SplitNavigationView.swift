@@ -110,7 +110,7 @@ struct SplitNavigationView: View {
                 isShown: $navigationModel.isScanPresented,
                 imageHandler: { images in
                     Task {
-                        FeedbackGenerator.notify(.success)
+                        await FeedbackGenerator.notify(.success)
                         await DocumentProcessingService.shared.handle(images)
                     }
                 })

@@ -8,15 +8,15 @@
 
 #if !os(macOS)
 import SwiftUI
-import VisionKit
+@preconcurrency import VisionKit
 
 struct DocumentCameraView: UIViewControllerRepresentable, Log {
 
     private let controller = VNDocumentCameraViewController()
     private let isShown: Binding<Bool>
-    private let imageHandler: ([PlatformImage]) -> Void
+    private let imageHandler: @Sendable ([PlatformImage]) -> Void
 
-    init(isShown: Binding<Bool>, imageHandler: @escaping ([PlatformImage]) -> Void) {
+    init(isShown: Binding<Bool>, imageHandler: @Sendable @escaping ([PlatformImage]) -> Void) {
         self.isShown = isShown
         self.imageHandler = imageHandler
     }
@@ -32,12 +32,12 @@ struct DocumentCameraView: UIViewControllerRepresentable, Log {
         Coordinator(isShown: isShown, imageHandler: imageHandler)
     }
 
-    final class Coordinator: NSObject, VNDocumentCameraViewControllerDelegate {
+    final class Coordinator: NSObject, VNDocumentCameraViewControllerDelegate, Sendable {
 
         private let isShown: Binding<Bool>
-        private let imageHandler: ([PlatformImage]) -> Void
+        private let imageHandler: @Sendable ([PlatformImage]) -> Void
 
-        fileprivate init(isShown: Binding<Bool>, imageHandler: @escaping ([PlatformImage]) -> Void) {
+        fileprivate init(isShown: Binding<Bool>, imageHandler: @Sendable @escaping ([PlatformImage]) -> Void) {
             self.isShown = isShown
             self.imageHandler = imageHandler
         }
@@ -64,6 +64,4 @@ struct DocumentCameraView: UIViewControllerRepresentable, Log {
         }
     }
 }
-
-extension VNDocumentCameraScan: @unchecked @retroactive Sendable {}
 #endif

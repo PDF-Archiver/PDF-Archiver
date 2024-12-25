@@ -131,7 +131,7 @@ final class NavigationModel {
         Logger.navigationModel.debug("Deleting all datapoints, meters and tariffs")
         do {
             try FileManager.default.trashItem(at: url, resultingItemURL: nil)
-            
+
             // unselect current document
             self.selectedDocument = nil
         } catch {

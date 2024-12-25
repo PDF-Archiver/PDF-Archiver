@@ -62,13 +62,11 @@ final class ICloudFolderProvider: FolderProvider {
                     for await _ in NotificationCenter.default.notifications(named: .NSMetadataQueryDidFinishGathering) {
                         Self.log.debug("Documents query finished initial fetch.")
 
-                        self.metadataQuery.disableUpdates()
-                        let metadataQueryResults = self.metadataQuery.results as? [NSMetadataItem]
-                        self.metadataQuery.enableUpdates()
+                        let details = await self.getFileChangeDetails()
 
                         // update the archive
-                        guard let metadataQueryResults else { return }
-                        let changes = metadataQueryResults.compactMap(Self.createDetails(from: ))
+                        let changes = details
+                            .compactMap(\.self)
                             .map { FileChange.added($0) }
                         self.folderChangeContinuation.yield(changes)
                     }
@@ -101,6 +99,20 @@ final class ICloudFolderProvider: FolderProvider {
     deinit {
         Self.log.debug("deinit ICloudFolderProvider")
         metadataQuery.stop()
+    }
+
+    private func getFileChangeDetails() -> [FileChange.Details?] {
+        self.metadataQuery.disableUpdates()
+        var changes: [FileChange.Details?] = []
+        for index in 0..<self.metadataQuery.resultCount {
+            guard let result = self.metadataQuery.result(at: index) as? NSMetadataItem else {
+                assertionFailure("Could not cast result \(index) to NSMetadataItem")
+                continue
+            }
+            changes.append(Self.createDetails(from: result))
+        }
+        self.metadataQuery.enableUpdates()
+        return changes
     }
 
     // MARK: - API

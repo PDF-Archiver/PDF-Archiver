@@ -20,7 +20,7 @@ import UniformTypeIdentifiers
 
 @Observable
 @MainActor
-final class PDFDropHandler {
+final class PDFDropHandler: Log {
     private(set) var documentProcessingState: DropButton.State = .noDocument
     var isImporting = false
 
@@ -85,7 +85,12 @@ final class PDFDropHandler {
     private func handle(pdf: PDFDocument) {
         Logger.pdfDropHandler.info("Handle PDF Document")
         Task {
-            await DocumentProcessingService.shared.handle(pdf)
+            guard let pdfData = pdf.dataRepresentation() else {
+                Self.log.errorAndAssert("Could not convert PDF document to data")
+                return
+            }
+
+            await DocumentProcessingService.shared.handle(pdfData, url: pdf.documentURL)
         }
     }
 

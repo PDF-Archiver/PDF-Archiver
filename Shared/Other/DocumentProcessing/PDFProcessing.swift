@@ -55,10 +55,11 @@ final class PDFProcessingOperation: AsyncOperation {
 
                 // apply OCR and create a PDF
                 document = try createPdf(from: images)
-            case .pdf(let inputDocument):
+            case .pdf(let pdfData, let url):
 
                 // just use the input PDF
-                document = inputDocument
+                #warning("TODO: remove force unwrapping")
+                document = PDFDocument(data: pdfData)!
             }
 
             guard !Task.isCancelled else { return }
@@ -265,10 +266,10 @@ final class PDFProcessingOperation: AsyncOperation {
             try FileManager.default.createFolderIfNotExists(Self.tempDocumentURL)
 
             switch mode {
-            case .pdf(let document):
-                let filename = document.documentURL?.lastPathComponent ?? UUID().uuidString
+            case .pdf(let pdfData, let url):
+                let filename = url?.lastPathComponent ?? UUID().uuidString
                 let pdfUrl = Self.tempDocumentURL.appendingPathComponent(filename, isDirectory: false)
-                document.write(to: pdfUrl)
+                try pdfData.write(to: pdfUrl)
                 tempUrls = [pdfUrl]
 
             case .images(let images):
@@ -298,7 +299,7 @@ final class PDFProcessingOperation: AsyncOperation {
     // MARK: - Helper Types
 
     enum Mode {
-        case pdf(PDFDocument)
+        case pdf(pdfData: Data, url: URL?)
         case images([PlatformImage])
     }
 
