@@ -52,7 +52,6 @@ struct DocumentDetailView: View {
             update()
         }
         .task {
-            #warning("TODO: iOS do we really need this anymore?")
             // Currently we need to update this view on changes in Document, because it will not be triggered via SwiftData changes automatically.
             // Example use case: select a document that will be downloaded and the download status changes
             let changeUrlStream = NotificationCenter.default.notifications(named: .documentUpdate)

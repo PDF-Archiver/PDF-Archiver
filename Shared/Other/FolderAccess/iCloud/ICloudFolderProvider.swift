@@ -79,11 +79,14 @@ final class ICloudFolderProvider: FolderProvider {
                         let removedMetadataItems = (notification.userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem]) ?? []
 
                         // update the archive
-                        let added = addedMetadataItems.compactMap(Self.createDetails(from: ))
+                        let added = addedMetadataItems
+                            .compactMap { $0.createDetails() }
                             .map { FileChange.added($0) }
-                        let updated = updatedMetadataItems.compactMap(Self.createDetails(from: ))
+                        let updated = updatedMetadataItems
+                            .compactMap { $0.createDetails() }
                             .map { FileChange.updated($0) }
-                        let removed = removedMetadataItems.compactMap(Self.createDetails(from: ))
+                        let removed = removedMetadataItems
+                            .compactMap { $0.createDetails() }
                             .map { FileChange.removed($0.url) }
 
                         self.folderChangeContinuation.yield(added + updated + removed)
@@ -109,7 +112,7 @@ final class ICloudFolderProvider: FolderProvider {
                 assertionFailure("Could not cast result \(index) to NSMetadataItem")
                 continue
             }
-            changes.append(Self.createDetails(from: result))
+            changes.append(result.createDetails())
         }
         self.metadataQuery.enableUpdates()
         return changes
@@ -165,19 +168,18 @@ final class ICloudFolderProvider: FolderProvider {
 
         try FileManager.default.moveItem(at: source, to: destination)
     }
+}
 
-    // MARK: - Helper Functions
-
-    nonisolated
-    static func createDetails(from item: NSMetadataItem) -> FileChange.Details? {
+extension NSMetadataItem: Log {
+    func createDetails() -> FileChange.Details? {
         // get the document path
-        guard let documentPath = item.value(forAttribute: NSMetadataItemURLKey) as? URL else {
+        guard let documentPath = value(forAttribute: NSMetadataItemURLKey) as? URL else {
             log.errorAndAssert("Could not parse Metadata URL.")
             return nil
         }
 
         // get file size and filename
-        guard let size = item.value(forAttribute: NSMetadataItemFSSizeKey) as? Int64 else {
+        guard let size = value(forAttribute: NSMetadataItemFSSizeKey) as? Int64 else {
             log.errorAndAssert("Could not parse Metadata Size.")
             return nil
         }
@@ -185,7 +187,7 @@ final class ICloudFolderProvider: FolderProvider {
         // Check if it is a local document. These two values are possible for the "NSMetadataUbiquitousItemDownloadingStatusKey":
         // - NSMetadataUbiquitousItemDownloadingStatusCurrent
         // - NSMetadataUbiquitousItemDownloadingStatusNotDownloaded
-        guard let downloadingStatus = item.value(forAttribute: NSMetadataUbiquitousItemDownloadingStatusKey) as? String else {
+        guard let downloadingStatus = value(forAttribute: NSMetadataUbiquitousItemDownloadingStatusKey) as? String else {
             log.errorAndAssert("Could not parse Metadata DownloadStatus.")
             return nil
         }
@@ -196,9 +198,9 @@ final class ICloudFolderProvider: FolderProvider {
             documentStatus = .local
         case NSMetadataUbiquitousItemDownloadingStatusNotDownloaded:
 
-            if let isDownloading = item.value(forAttribute: NSMetadataUbiquitousItemIsDownloadingKey) as? Bool,
+            if let isDownloading = value(forAttribute: NSMetadataUbiquitousItemIsDownloadingKey) as? Bool,
                 isDownloading {
-                let percentDownloaded = (item.value(forAttribute: NSMetadataUbiquitousItemPercentDownloadedKey) as? NSNumber)?.doubleValue ?? 0
+                let percentDownloaded = (value(forAttribute: NSMetadataUbiquitousItemPercentDownloadedKey) as? NSNumber)?.doubleValue ?? 0
                 documentStatus = .downloading(percent: percentDownloaded)
             } else {
                 documentStatus = .remote

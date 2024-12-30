@@ -101,8 +101,8 @@ final class DocumentProcessingService {
                 for imageUrl in imageUrls {
                     do {
                         let data = try Data(contentsOf: imageUrl)
-                        guard let image = PlatformImage(data: data) else { continue }
                         group.addTask {
+                            guard let image = PlatformImage(data: data) else { return }
                             await self.handle([image])
                         }
                     } catch {

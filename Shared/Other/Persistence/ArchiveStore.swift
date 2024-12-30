@@ -95,20 +95,21 @@ actor ArchiveStore: ModelActor {
         }
     }
 
-    func getProvider(for url: URL) throws -> any FolderProvider {
+    func getProvider(for url: URL) async throws -> any FolderProvider {
 
         // Use `contains` instead of `prefix` to avoid problems with local files.
         // This fixes a problem, where we get different file urls back:
         // /private/var/mobile/Containers/Data/Application/8F70A72B-026D-4F6B-98E8-2C6ACE940133/Documents/untagged/document1.pdf
         //         /var/mobile/Containers/Data/Application/8F70A72B-026D-4F6B-98E8-2C6ACE940133/Documents/
         for provider in providers {
-            let baseUrlPath = provider.baseUrl.path()
+            let baseUrlPath = await provider.baseUrl.path()
             guard url.path().contains(baseUrlPath) else { continue }
             return provider
         }
 
         Logger.archiveStore.error("No provider found for \(url.path())")
-        Logger.archiveStore.debug("Providers \(self.providers.map(\.baseUrl).map({ $0.path() }).joined(separator: ", "))")
+        let baseUrls = await self.providers.asyncMap { await $0.baseUrl }
+        Logger.archiveStore.debug("Providers \(baseUrls.map({ $0.path() }).joined(separator: ", "))")
         throw ArchiveStore.Error.providerNotFound
     }
 
@@ -122,15 +123,15 @@ actor ArchiveStore: ModelActor {
         guard let archiveFolder = self.archiveFolder else {
             throw ArchiveStore.Error.providerNotFound
         }
-        let documentProvider = try getProvider(for: url)
-        let archiveProvider = try getProvider(for: archiveFolder)
+        let documentProvider = try await getProvider(for: url)
+        let archiveProvider = try await getProvider(for: archiveFolder)
 
         // check, if this path already exists ... create it
         let newFilepath = archiveFolder
             .appendingPathComponent(foldername)
             .appendingPathComponent(filename)
 
-        if archiveProvider.baseUrl == documentProvider.baseUrl {
+        if await archiveProvider.baseUrl == documentProvider.baseUrl {
             try await archiveProvider.rename(from: url, to: newFilepath)
         } else {
             let documentData = try await documentProvider.fetch(url: url)
@@ -149,7 +150,7 @@ actor ArchiveStore: ModelActor {
 
     func startDownload(of url: URL) async {
         do {
-            let provider = try getProvider(for: url)
+            let provider = try await getProvider(for: url)
             try await provider.startDownload(of: url)
         } catch {
             Logger.archiveStore.errorAndAssert("Failed to start download", metadata: ["error": "\(error)"])

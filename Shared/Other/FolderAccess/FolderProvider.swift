@@ -17,7 +17,6 @@ protocol FolderProvider: AnyObject, Log, Sendable {
     static func canHandle(_ url: URL) -> Bool
 
     // this is a constant, not sure how to declare it in the protocol
-    nonisolated
     var baseUrl: URL { get }
     var folderChangeStream: AsyncStream<[FileChange]> { get }
 

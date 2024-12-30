@@ -55,11 +55,10 @@ final class PDFProcessingOperation: AsyncOperation {
 
                 // apply OCR and create a PDF
                 document = try createPdf(from: images)
-            case .pdf(let pdfData, let url):
+            case .pdf(let pdfData, _):
 
                 // just use the input PDF
-                #warning("TODO: remove force unwrapping")
-                document = PDFDocument(data: pdfData)!
+                document = try PDFDocument(data: pdfData).get(with: Self.log)
             }
 
             guard !Task.isCancelled else { return }
