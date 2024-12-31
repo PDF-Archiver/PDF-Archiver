@@ -11,7 +11,7 @@ import Foundation
 /// Parse several kinds of dates in a String.
 enum DateParser: Log {
 
-    struct ParserResult: Codable {
+    private struct ParserResult: Codable {
         let date: Date
         let rawDate: String
     }
@@ -20,18 +20,23 @@ enum DateParser: Log {
     ///
     /// - Parameter raw: Raw string which might contain a date.
     /// - Returns: The found date or nil if no date was found.
-    static func parse(_ raw: String) -> [ParserResult] {
+    static func parse(_ raw: String) -> [Date] {
         let input = String(raw.prefix(10))
         let results = localParse(raw)
         if !results.isEmpty {
-            let uniqueResults = results.reduce(into: [String: ParserResult]()) { partialResult, result in
-                partialResult[DateFormatter.yyyyMMdd.string(from: result.date)] = result
-            }
-            return uniqueResults.map(\.value).sorted(by: { $0.date < $1.date }).reversed()
+            let dates = results.map(\.date)
+            let dateString = results.map { DateFormatter.yyyyMMdd.string(from: $0.date) }
+            
+            var uniqueUnorderedResults = Set<String>()
+            return zip(dates, dateString)
+                .filter { (date, dateString) in
+                    uniqueUnorderedResults.insert(dateString).inserted
+                }
+                .map(\.0)
         } else if let date = DateFormatter.yyyyMMdd.date(from: input) {
-            return [ParserResult(date: date, rawDate: input)]
+            return [date]
         } else if let date = DateFormatter.yyyyMMdd.date(from: input.replacingOccurrences(of: "_", with: "-")) {
-            return [ParserResult(date: date, rawDate: input)]
+            return [date]
         } else {
             return []
         }

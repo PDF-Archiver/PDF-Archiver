@@ -197,17 +197,23 @@ extension DocumentInformation {
                     Logger.taggingView.warning("Could not extract text from PDF")
                 }
 
-                let results = DateParser.parse(text)
+                var results = DateParser.parse(text)
+                if let foundDate {
+                    results = results.filter { resultDate in
+                        !Calendar.current.isDate(resultDate, inSameDayAs: foundDate)
+                    }
+                }
+                
                 let newResults = results
-                    .dropFirst()    // skip first because it is set to foundDate
-                    .map(\.date)
+                    .dropFirst(foundDate == nil ? 1 : 0)    // skip first because it is set to foundDate
                     .filter { !Calendar.current.isDate($0, inSameDayAs: Date()) }   // skip found "today" dates, because a today button will always be shown
-                    .sorted().reversed().prefix(3)  // get the most recent 3 dates
-                    .sorted()
+//                    .sorted().reversed().prefix(3)  // get the most recent 3 dates
+//                    .sorted()
+                    .prefix(3)
                 dateSuggestions = Array(newResults)
 
                 if foundDate == nil {
-                    foundDate = results.first?.date
+                    foundDate = results.first
                 }
                 if foundTags == nil {
                     tagSuggestions = TagParser.parse(text)

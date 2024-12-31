@@ -27,9 +27,8 @@ extension Document {
         if let parsed = Document.getFilenameDate(filename) {
             date = parsed.date
             // rawDate = parsed.rawDate
-        } else if let parsed = DateParser.parse(filename).first {
-            date = parsed.date
-            // rawDate = parsed.rawDate
+        } else if let parsedDate = DateParser.parse(filename).first {
+            date = parsedDate
         }
 
         // parse the specification

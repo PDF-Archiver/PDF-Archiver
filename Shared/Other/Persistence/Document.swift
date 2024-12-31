@@ -22,13 +22,15 @@ final class Document {
         Measurement(value: _sizeInBytes, unit: .bytes)
     }
     var specification: String = ""
-    @Relationship(inverse: \Tag.documents) var tagItems: [Tag]
+    @Relationship(inverse: \Tag.documents) var tagItems: [Tag] = []
 
     @Transient
     var tags: [String] {
         tagItems.map(\.name)
     }
-    var content: String = ""
+    
+    // the content will be fetched and set on a background thread
+    private(set) var content: String = ""
 
     var _sizeInBytes: Double
 
@@ -39,7 +41,7 @@ final class Document {
     // 0: remote - 1: local
     var downloadStatus: Double
 
-    init(id: Int, url: URL, isTagged: Bool, filename: String, sizeInBytes: Double, date: Date, specification: String, tags: [Tag], content: String, downloadStatus: Double, created: Date) {
+    init(id: Int, url: URL, isTagged: Bool, filename: String, sizeInBytes: Double, date: Date, specification: String, tags: [Tag], downloadStatus: Double, created: Date) {
         self.id = id
         self.url = url
         self.isTagged = isTagged
@@ -48,9 +50,12 @@ final class Document {
         self.date = date
         self.specification = specification
         self.tagItems = tags
-        self.content = content
         self.downloadStatus = downloadStatus
         self._created = created
+    }
+    
+    func setContent(_ content: String) {
+        self.content = content
     }
 }
 

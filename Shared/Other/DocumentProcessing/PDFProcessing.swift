@@ -112,7 +112,7 @@ final class PDFProcessingOperation: AsyncOperation {
             }
 
             // parse the date
-            let parsedDate = DateParser.parse(content).first?.date ?? Date()
+            let parsedDate = DateParser.parse(content).first ?? Date()
 
             // parse the tags
             let tags = Set([Constants.documentTagPlaceholder])

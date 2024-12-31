@@ -20,7 +20,7 @@ struct SubscriptionSectionView: View {
             }
 
             DetailRowView(name: "Activate/Restore Premium") {
-#warning("TODO: implement this")
+#warning("TODO: implement the subscription activation")
                 //                NotificationCenter.default.post(.showSubscriptionView)
             }
 

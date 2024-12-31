@@ -23,7 +23,7 @@
 "document_failure_reason__no_document_selected" = "No document was selected.";
 
 /* Rename failed. */
-"document_failure_reason__rename_failed_file_already_exists" = "Renaming the document failed.";
+"document_failure_reason__rename_failed_file_already_exists" = "Renaming the document failed, because a file with this name already exists.";
 
 /* No tags could be found, e.g. while renaming the document. */
 "document_failure_reason__tags_missing" = "No tags were entered for the document.";

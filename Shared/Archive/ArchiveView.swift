@@ -35,7 +35,7 @@ struct ArchiveView: View {
                 Label(Self.formatter.string(from: year as NSNumber) ?? "", systemImage: "calendar")
             }
         })
-        .onChange(of: tags) { _, _ in
+        .onChange(of: tags, initial: true) { _, _ in
 
             // ideally the tags should be filtered + sorted via a fetch descriptor,
             //                var descriptor = FetchDescriptor<Tag>(sortBy: [SortDescriptor(\.documents.count, order: .forward)])

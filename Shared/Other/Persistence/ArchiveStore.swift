@@ -95,7 +95,7 @@ actor ArchiveStore: ModelActor {
         }
     }
 
-    func getProvider(for url: URL) async throws -> any FolderProvider {
+    private func getProvider(for url: URL) async throws -> any FolderProvider {
 
         // Use `contains` instead of `prefix` to avoid problems with local files.
         // This fixes a problem, where we get different file urls back:
@@ -115,7 +115,6 @@ actor ArchiveStore: ModelActor {
 
     @discardableResult
     func archiveFile(from url: URL, to filename: String) async throws -> URL {
-//        assert(!Thread.isMainThread, "This should not be called from the main thread.")
         let filename = filename.lowercased()
 
         let foldername = String(filename.prefix(4))
@@ -291,6 +290,15 @@ actor ArchiveStore: ModelActor {
     }
 
     private func upsert(document: Document?, details: FileChange.Details, tagCache: inout [String: PersistentIdentifier], created: Date) -> Document? {
+        guard let id = details.url.uniqueId() else {
+            Logger.archiveStore.errorAndAssert("Failed to get uniqueId")
+            return nil
+        }
+        guard let filename = details.url.filename() else {
+            Logger.archiveStore.errorAndAssert("Failed to get filename")
+            return nil
+        }
+        
         let downloadStatus: Double
         switch details.downloadStatus {
         case .downloading(percent: let percent):
@@ -300,45 +308,43 @@ actor ArchiveStore: ModelActor {
         case .local:
             downloadStatus = 1
         }
+        
+        let data = Document.parseFilename(filename)
+        let isTagged = isTagged(details.url)
 
+        var tags: [Tag] = []
+        for tagName in data.tagNames ?? [] {
+            let tag: Tag
+            if let foundTagId = tagCache[tagName],
+               // get Tag via the persistent identifier
+               let foundTag = self[foundTagId, as: Tag.self] {
+                tag = foundTag
+            } else {
+                tag = Tag.getOrCreate(name: tagName, in: modelContext)
+                tagCache[tagName] = tag.persistentModelID
+            }
+            tags.append(tag)
+        }
+
+        let date = data.date ?? details.url.fileCreationDate() ?? Date()
+        let specification = isTagged ? (data.specification ?? "n/a").replacingOccurrences(of: "-", with: " ") : (data.specification ?? "n/a")
+        
         if let document {
+            assert(id == document.id, "Document IDs do not match")
+            
             document._sizeInBytes = details.sizeInBytes
             document.downloadStatus = downloadStatus
-
+            document.url = details.url
+            document.isTagged = isTagged
+            document.filename = isTagged ? filename.replacingOccurrences(of: "-", with: " ") : filename
+            document._sizeInBytes = details.sizeInBytes
+            document.date = date
+            document.specification = specification
+            document.tagItems = tags
+            document.downloadStatus = downloadStatus
+            
             return document
-
         } else {
-            guard let id = details.url.uniqueId() else {
-                Logger.archiveStore.errorAndAssert("Failed to get uniqueId")
-                return nil
-            }
-
-            guard let filename = details.url.filename() else {
-                Logger.archiveStore.errorAndAssert("Failed to get filename")
-                return nil
-            }
-
-            let data = Document.parseFilename(filename)
-            let isTagged = isTagged(details.url)
-
-            var tags: [Tag] = []
-            for tagName in data.tagNames ?? [] {
-                let tag: Tag
-                if let foundTagId = tagCache[tagName],
-                   // get Tag via the persistent identifier
-                   let foundTag = self[foundTagId, as: Tag.self] {
-                    tag = foundTag
-                } else {
-                    tag = Tag.getOrCreate(name: tagName, in: modelContext)
-                    tagCache[tagName] = tag.persistentModelID
-                }
-                tags.append(tag)
-            }
-
-            let date = data.date ?? details.url.fileCreationDate() ?? Date()
-            let specification = isTagged ? (data.specification ?? "n/a").replacingOccurrences(of: "-", with: " ") : (data.specification ?? "n/a")
-            let content = "" // we write the content later on a background thread
-
             return Document(id: id,
                             url: details.url,
                             isTagged: isTagged,
@@ -347,7 +353,6 @@ actor ArchiveStore: ModelActor {
                             date: date,
                             specification: specification,
                             tags: tags,
-                            content: content,
                             downloadStatus: downloadStatus,
                             created: created)
         }
