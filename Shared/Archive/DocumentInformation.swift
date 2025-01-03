@@ -33,14 +33,17 @@ struct DocumentInformation: View {
                             FeedbackGenerator.selectionChanged()
                             #endif
                         }
+                        .fixedSize()
+                        .buttonStyle(.bordered)
                     }
-                    Button("Today" as LocalizedStringKey) {
+                    Button("Today" as LocalizedStringKey, systemImage: "calendar") {
                         viewModel.date = Date()
                         #if canImport(UIKit)
                         FeedbackGenerator.selectionChanged()
                         #endif
                     }
-
+                    .labelStyle(.iconOnly)
+                    .buttonStyle(.bordered)
                 }
                 .focusable(false)
             }
