@@ -22,11 +22,11 @@ struct OnboardingScreens: View {
         }
         .padding()
         .overlay(alignment: .bottomTrailing) {
-            Button(action: {
+            Button {
                 withAnimation {
                     showNextHandler()
                 }
-            }) {
+            } label: {
                 Image(systemName: (cardIndex + 1) == onboardSet.cards.count ? "checkmark.circle.fill" : "arrow.right.circle.fill")
                     .font(.system(size: 40))
             }

@@ -12,9 +12,9 @@ struct DetailRowView: View {
     let name: LocalizedStringKey
     let action: () -> Void
     var body: some View {
-        Button(action: {
+        Button {
             self.action()
-        }, label: {
+        } label: {
             HStack {
                 Text(name)
 //                Spacer()
@@ -22,6 +22,6 @@ struct DetailRowView: View {
 //                    .foregroundColor(Color(.quaternaryLabel))
 //                    .font(.system(.headline))
             }.accentColor(.primary)
-        })
+        }
     }
 }

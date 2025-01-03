@@ -16,14 +16,13 @@ struct UntaggedDocumentView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
-    @State private var document: Document?
     @State private var documentInformationViewModel: DocumentInformation.ViewModel = .init(url: placeholderUrl)
 
     var body: some View {
         Group {
             if horizontalSizeClass == .compact {
                 VStack(spacing: 0) {
-                    if let document {
+                    if let document = navigationModel.selectedDocument {
                         if document.downloadStatus < 1 {
                             DocumentLoadingView(filename: document.filename, downloadStatus: document.downloadStatus)
                         } else {
@@ -41,7 +40,7 @@ struct UntaggedDocumentView: View {
                 }
             } else {
                 HStack {
-                    if let document {
+                    if let document = navigationModel.selectedDocument {
                         if document.downloadStatus < 1 {
                             DocumentLoadingView(filename: document.filename, downloadStatus: document.downloadStatus)
                         } else {
@@ -63,31 +62,34 @@ struct UntaggedDocumentView: View {
             }
         }
         .onChange(of: navigationModel.selectedDocument, initial: true) { _, newDocument in
-            document = newDocument
-
             if let newDocument {
                 documentInformationViewModel = DocumentInformation.ViewModel(url: newDocument.url)
             } else {
                 documentInformationViewModel = DocumentInformation.ViewModel(url: Self.placeholderUrl)
             }
         }
-        .navigationTitle(document?.filename ?? "")
+        .navigationTitle(navigationModel.selectedDocument?.filename ?? "")
         #if os(macOS)
-        .navigationSubtitle(Text(document?.date ?? Date(), format: .dateTime.year().month().day()))
+        .navigationSubtitle(Text(navigationModel.selectedDocument?.date ?? Date(), format: .dateTime.year().month().day()))
         #else
         .navigationBarTitleDisplayMode(.inline)
         #endif
         .toolbar {
+            #if !os(macOS)
             ToolbarItemGroup(placement: .confirmationAction) {
                 if horizontalSizeClass == .compact {
                    deleteButton
                 }
             }
+            #endif
             ToolbarItemGroup(placement: .cancellationAction) {
                 if horizontalSizeClass != .compact {
                     revertButton
                     showInFinderButton
                 }
+                #if os(macOS)
+                deleteButton
+                #endif
             }
         }
     }
@@ -113,22 +115,18 @@ struct UntaggedDocumentView: View {
                 .labelStyle(VerticalLabelStyle())
                 #endif
         }
+        .disabled(navigationModel.selectedDocument == nil)
     }
 
     private var deleteButton: some View {
-        DeleteDocumentButtonView {
+        DeleteDocumentButtonView(documentUrl: navigationModel.selectedDocument?.url) { documentUrl in
             Logger.newDocument.debug("Deleting all datapoints, meters and tariffs")
             do {
-                guard let document else {
-                    assertionFailure("No document selected")
-                    return
-                }
-                try FileManager.default.trashItem(at: document.url, resultingItemURL: nil)
+                try FileManager.default.trashItem(at: documentUrl, resultingItemURL: nil)
             } catch {
                 Logger.newDocument.errorAndAssert("Error while trashing file \(error)")
             }
         }
-        .disabled(document == nil)
     }
 }
 

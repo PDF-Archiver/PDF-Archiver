@@ -14,8 +14,6 @@ struct DocumentDetailView: View {
     @State private var document: Document?
     @State private var downloadStatus: Double?
 
-    @State private var showDeleteConfirmation = false
-
     func update() {
         #warning("TODO: iOS check if document and download status can be deleted completly")
         let document = navigationModel.selectedDocument
@@ -66,16 +64,16 @@ struct DocumentDetailView: View {
         .toolbar {
             ToolbarItemGroup(placement: .primaryAction) {
                 // editButton
-                Button(action: {
+                Button {
                     navigationModel.editDocument()
-                }, label: {
+                } label: {
                     #if os(macOS)
                     Label("Edit", systemImage: "pencil")
                     #else
                     Label("Edit", systemImage: "pencil")
                         .labelStyle(VerticalLabelStyle())
                     #endif
-                })
+                }
 
                 if let document {
 #if os(macOS)
@@ -91,15 +89,9 @@ struct DocumentDetailView: View {
                 }
 
                 // deleteButton
-                Button(role: .destructive, action: {
-                    showDeleteConfirmation = true
-                }, label: {
-                    Label("Delete", systemImage: "trash")
-                        .foregroundColor(.red)
-#if !os(macOS)
-                        .labelStyle(VerticalLabelStyle())
-#endif
-                })
+                DeleteDocumentButtonView(documentUrl: navigationModel.selectedDocument?.url) { documentUrl in
+                    navigationModel.deleteDocument(url: documentUrl)
+                }
             }
 #if os(macOS)
             ToolbarItem(placement: .accessoryBar(id: "tags")) {
@@ -107,17 +99,6 @@ struct DocumentDetailView: View {
                     .font(.caption)
             }
 #endif
-        }
-        .confirmationDialog("Do you really want to delete this document?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
-            Button("Delete", role: .destructive) {
-                guard let document else { return }
-                navigationModel.deleteDocument(url: document.url)
-            }
-            Button("Cancel", role: .cancel) {
-                withAnimation {
-                    showDeleteConfirmation = false
-                }
-            }
         }
         .navigationTitle(document?.specification ?? "")
 #if os(macOS)

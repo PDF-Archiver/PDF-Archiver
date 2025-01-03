@@ -18,12 +18,12 @@ struct StorageSelectionView: View {
         Form {
             ForEach(SettingsViewModel.StorageType.allCases) { storageType in
                 Section(footer: storageType.descriptionView) {
-                    Button(action: {
+                    Button {
                         selection = storageType
                         if storageType == .local {
                             showDocumentPicker = true
                         }
-                    }) {
+                    } label: {
                         HStack {
                             Text(storageType.title)
                                 .fixedSize()

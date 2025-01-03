@@ -84,13 +84,13 @@ struct SplitNavigationView: View {
         }
         .modifier(AlertDataModelProvider())
         .overlay(alignment: .bottomTrailing) {
-            DropButton(state: dropHandler.documentProcessingState, action: {
+            DropButton(state: dropHandler.documentProcessingState) {
                 #if os(macOS)
                 dropHandler.startImport()
                 #else
                 navigationModel.showScan()
                 #endif
-            })
+            }
             .padding(4)
             .background(Color.paPlaceholderGray)
             .clipShape(RoundedRectangle(cornerRadius: 8))

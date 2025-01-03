@@ -28,14 +28,14 @@ struct IAP: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .onChange(of: subscriptionStatus.rawValue, { oldValue, newValue in
+            .onChange(of: subscriptionStatus.rawValue) { oldValue, newValue in
                 Logger.inAppPurchase.debug("subscriptionStatus changed: \(oldValue) -> \(newValue)")
                 updatePremiumStatus()
-            })
-            .onChange(of: lifetimePurchaseStatus.rawValue, { oldValue, newValue in
+            }
+            .onChange(of: lifetimePurchaseStatus.rawValue) { oldValue, newValue in
                 Logger.inAppPurchase.debug("lifetimePurchaseStatus changed: \(oldValue) -> \(newValue)")
                 updatePremiumStatus()
-            })
+            }
             .subscriptionStatusTask(for: Constants.inAppPurchaseGroupId) { state in
                 Logger.inAppPurchase.info("Received a new subscriptionStatus")
 
