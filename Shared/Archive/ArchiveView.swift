@@ -64,7 +64,7 @@ struct ArchiveView: View {
 
         assert(tokens.count <= 1, "Too many tokens: \(tokens)")
         let token = tokens.first
-        let searchString = self.searchText
+        let searchString = self.searchText.slugified()
 
         var predicate: Predicate<Document>?
 
