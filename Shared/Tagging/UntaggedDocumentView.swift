@@ -17,14 +17,16 @@ struct UntaggedDocumentView: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     @State private var documentInformationViewModel: DocumentInformation.ViewModel = .init(url: placeholderUrl)
+    @State private var downloadStatus: Double?
 
     var body: some View {
         Group {
             if horizontalSizeClass == .compact {
                 VStack(spacing: 0) {
                     if let document = navigationModel.selectedDocument {
-                        if document.downloadStatus < 1 {
-                            DocumentLoadingView(filename: document.filename, downloadStatus: document.downloadStatus)
+                        if let downloadStatus,
+                           downloadStatus < 1 {
+                            DocumentLoadingView(filename: document.filename, downloadStatus: downloadStatus)
                         } else {
                             PDFCustomView(document.url)
                         }
@@ -41,8 +43,9 @@ struct UntaggedDocumentView: View {
             } else {
                 HStack {
                     if let document = navigationModel.selectedDocument {
-                        if document.downloadStatus < 1 {
-                            DocumentLoadingView(filename: document.filename, downloadStatus: document.downloadStatus)
+                        if let downloadStatus,
+                           downloadStatus < 1 {
+                            DocumentLoadingView(filename: document.filename, downloadStatus: downloadStatus)
                         } else {
                             PDFCustomView(document.url)
                         }
@@ -61,6 +64,21 @@ struct UntaggedDocumentView: View {
                 }
             }
         }
+        .onChange(of: navigationModel.selectedDocument, initial: true) { _, _ in
+            update()
+        }
+        .task {
+            // Currently we need to update this view on changes in Document, because it will not be triggered via SwiftData changes automatically.
+            // Example use case: select a document that will be downloaded and the download status changes
+            let changeUrlStream = NotificationCenter.default.notifications(named: .documentUpdate)
+            for await notification in changeUrlStream {
+                guard let urls = notification.object as? [URL],
+                      let documentUrl = navigationModel.selectedDocument?.url,
+                      urls.contains(documentUrl) else { continue }
+
+                update()
+            }
+        }
         .onChange(of: navigationModel.selectedDocument, initial: true) { _, newDocument in
             if let newDocument {
                 documentInformationViewModel = DocumentInformation.ViewModel(url: newDocument.url)
@@ -75,22 +93,29 @@ struct UntaggedDocumentView: View {
         .navigationBarTitleDisplayMode(.inline)
         #endif
         .toolbar {
-            #if !os(macOS)
-            ToolbarItemGroup(placement: .confirmationAction) {
-                if horizontalSizeClass == .compact {
-                   deleteButton
+            #if os(macOS)
+            ToolbarItemGroup(placement: .primaryAction) {
+                revertButton
+                showInFinderButton
+                deleteButton
+            }
+            #else
+            
+            if horizontalSizeClass == .compact {
+                // iOS
+                ToolbarItemGroup(placement: .topBarTrailing) {
+                    revertButton
+                    deleteButton
+                }
+            } else {
+                // iPadOS
+                ToolbarItemGroup(placement: .topBarTrailing) {
+                    revertButton
+                    showInFinderButton
+                    deleteButton
                 }
             }
             #endif
-            ToolbarItemGroup(placement: .cancellationAction) {
-                if horizontalSizeClass != .compact {
-                    revertButton
-                    showInFinderButton
-                }
-                #if os(macOS)
-                deleteButton
-                #endif
-            }
         }
     }
 
@@ -127,6 +152,13 @@ struct UntaggedDocumentView: View {
                 Logger.newDocument.errorAndAssert("Error while trashing file \(error)")
             }
         }
+    }
+    
+    func update() {
+        let document = navigationModel.selectedDocument
+
+        // we need to update the document and downloadStatus manual, because changes in document will not trigger a view update
+        self.downloadStatus = document?.downloadStatus
     }
 }
 

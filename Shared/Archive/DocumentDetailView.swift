@@ -15,7 +15,6 @@ struct DocumentDetailView: View {
     @State private var downloadStatus: Double?
 
     func update() {
-        #warning("TODO: iOS check if document and download status can be deleted completly")
         let document = navigationModel.selectedDocument
 
         assert(document?.isTagged ?? true, "Document with id \(document?.id ?? 42) is not tagged.")
@@ -74,6 +73,7 @@ struct DocumentDetailView: View {
                         .labelStyle(VerticalLabelStyle())
                     #endif
                 }
+                .disabled(document == nil)
 
                 if let document {
 #if os(macOS)

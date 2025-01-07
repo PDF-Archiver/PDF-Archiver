@@ -37,6 +37,9 @@ struct ArchiveListView: View {
                     NavigationLink(value: document) {
                         ArchiveListItemView(document: document)
                     }
+                    #if !os(macOS)
+                    .listRowBackground(navigationModel.selectedDocument == document ? Color.secondaryBackground : nil)
+                    #endif
                 }
 
                 if searchString.isEmpty {

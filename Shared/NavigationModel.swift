@@ -154,7 +154,7 @@ final class NavigationModel {
 
     #if !os(macOS)
     func showPreferences() {
-        #warning("TODO: fix this")
+        #warning("TODO: add preferences on iOS")
     }
     #endif
 
