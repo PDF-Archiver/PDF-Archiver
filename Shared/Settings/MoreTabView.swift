@@ -17,15 +17,18 @@ struct SettingsView: View {
     @State private var showActivityView = false
 
     var body: some View {
-        Form {
-            preferences
-            SubscriptionSectionView()
-            statistics
-            moreInformation
+        NavigationStack {
+            Form {
+                preferences
+                SubscriptionSectionView()
+                statistics
+                moreInformation
+            }
+            .foregroundColor(.primary)
+            .navigationTitle("Preferences & More")
+            .navigationViewStyle(StackNavigationViewStyle())
+            .navigationBarTitleDisplayMode(.inline)
         }
-        .foregroundColor(.primary)
-        .navigationTitle("Preferences & More")
-        .navigationViewStyle(StackNavigationViewStyle())
 //        .sheet(isPresented: $showActivityView) {
 //            // swiftlint:disable:next force_unwrapping
 //            AppActivityView(activityItems: [URL(string: "https://apps.apple.com/app/pdf-archiver/id\(Self.appId)")!])

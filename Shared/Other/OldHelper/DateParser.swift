@@ -26,10 +26,10 @@ enum DateParser: Log {
         if !results.isEmpty {
             let dates = results.map(\.date)
             let dateString = results.map { DateFormatter.yyyyMMdd.string(from: $0.date) }
-            
+
             var uniqueUnorderedResults = Set<String>()
             return zip(dates, dateString)
-                .filter { (date, dateString) in
+                .filter { (_, dateString) in
                     uniqueUnorderedResults.insert(dateString).inserted
                 }
                 .map(\.0)

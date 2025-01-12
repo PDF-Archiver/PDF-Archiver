@@ -12,6 +12,9 @@ struct SplitNavigationView: View {
     @Environment(NavigationModel.self) private var navigationModel
     @Environment(\.modelContext) private var modelContext
 
+    #if !os(macOS)
+    @StateObject private var settingsViewModel = SettingsViewModel()
+    #endif
     @State private var dropHandler = PDFDropHandler()
     @AppStorage("tutorialShown", store: .appGroup) private var tutorialShown = false
 
@@ -105,6 +108,9 @@ struct SplitNavigationView: View {
                 #endif
         }
         #if !os(macOS)
+        .sheet(isPresented: $navigationModel.isPreferencesPresented) {
+            SettingsView(viewModel: settingsViewModel)
+        }
         .sheet(isPresented: $navigationModel.isScanPresented) {
             DocumentCameraView(
                 isShown: $navigationModel.isScanPresented,

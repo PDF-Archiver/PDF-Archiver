@@ -28,7 +28,7 @@ final class Document {
     var tags: [String] {
         tagItems.map(\.name)
     }
-    
+
     // the content will be fetched and set on a background thread
     private(set) var content: String = ""
 
@@ -53,7 +53,7 @@ final class Document {
         self.downloadStatus = downloadStatus
         self._created = created
     }
-    
+
     func setContent(_ content: String) {
         self.content = content
     }

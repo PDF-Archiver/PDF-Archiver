@@ -206,7 +206,7 @@ extension DocumentInformation {
                         !Calendar.current.isDate(resultDate, inSameDayAs: foundDate)
                     }
                 }
-                
+
                 let newResults = results
                     .dropFirst(foundDate == nil ? 1 : 0)    // skip first because it is set to foundDate
                     .filter { !Calendar.current.isDate($0, inSameDayAs: Date()) }   // skip found "today" dates, because a today button will always be shown

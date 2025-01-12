@@ -27,7 +27,7 @@ struct DeleteDocumentButtonView: View {
                     assertionFailure("No document selected")
                     return
                 }
-                
+
                 action(documentUrl)
             }
             Button("Cancel", role: .cancel) {

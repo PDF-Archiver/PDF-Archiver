@@ -100,7 +100,7 @@ struct UntaggedDocumentView: View {
                 deleteButton
             }
             #else
-            
+
             if horizontalSizeClass == .compact {
                 // iOS
                 ToolbarItemGroup(placement: .topBarTrailing) {
@@ -153,7 +153,7 @@ struct UntaggedDocumentView: View {
             }
         }
     }
-    
+
     func update() {
         let document = navigationModel.selectedDocument
 

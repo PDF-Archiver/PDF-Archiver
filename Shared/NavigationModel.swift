@@ -25,6 +25,8 @@ final class NavigationModel {
 
     var isScanPresented = false
 
+    var isPreferencesPresented = false
+
     var selectedDocument: Document?
 
     var lastSavedDocumentId: Int?
@@ -154,7 +156,7 @@ final class NavigationModel {
 
     #if !os(macOS)
     func showPreferences() {
-        #warning("TODO: add preferences on iOS")
+        isPreferencesPresented = true
     }
     #endif
 

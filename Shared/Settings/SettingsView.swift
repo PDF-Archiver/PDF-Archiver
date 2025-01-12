@@ -1,6 +1,5 @@
 //
 //  SwiftUIView.swift
-//  
 //
 //  Created by Julian Kahnert on 14.11.20.
 //
@@ -45,11 +44,13 @@ struct SettingsView: View {
                     Label("Statistics", systemImage: "list.number")
                 }
                 .tag(Tabs.statistics)
-            SubscriptionSectionView()
-                .tabItem {
-                    Label("Premium", systemImage: "purchased.circle")
-                }
-                .tag(Tabs.subscription)
+            Form {
+                SubscriptionSectionView()
+            }
+            .tabItem {
+                Label("Premium", systemImage: "purchased.circle")
+            }
+            .tag(Tabs.subscription)
             moreInformation
                 .tabItem {
                     Label("More", systemImage: "info.circle")
@@ -66,14 +67,12 @@ struct SettingsView: View {
                 }
             }
             Spacer()
-//                .frame(maxHeight: 28)
             DetailRowView(name: "Show Intro") {
                 withAnimation {
                     tutorialShown = false
                 }
             }
             Spacer()
-//                .frame(maxHeight: 28)
             ProgressView("Finder Tag Update", value: viewModel.finderTagUpdateProgress)
                 .opacity(viewModel.finderTagUpdateProgress > 0 ? 1 : 0)
             DetailRowView(name: "Update Finder Tags") {
@@ -93,8 +92,8 @@ struct SettingsView: View {
                            documentSpecificationNotRequired: $viewModel.documentSpecificationNotRequired,
                            showPermissions: nil,
                            resetApp: viewModel.resetApp)
-            .padding()
-            .frame(width: 450, height: 160)
+        .padding()
+        .frame(width: 450, height: 160)
     }
 
     private var storage: some View {

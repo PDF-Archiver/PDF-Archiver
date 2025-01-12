@@ -16,7 +16,14 @@ struct SubscriptionSectionView: View {
         Section {
             HStack {
                 Text("Status:")
-                Text(navigationModel.isSubscribedOrLoading.wrappedValue ? "Active ✅" : "Inactive ❌")
+                switch navigationModel.premiumStatus {
+                case .loading:
+                    ProgressView("Loading ...")
+                case .active:
+                    Text("Active ✅")
+                case .inactive:
+                    Text("Inactive ❌")
+                }
             }
 
             DetailRowView(name: "Activate/Restore Premium") {
@@ -28,6 +35,7 @@ struct SubscriptionSectionView: View {
         } header: {
             Text("⭐️ Premium")
         }
+        .frame(width: 450, height: 50)
     }
 }
 

@@ -298,7 +298,7 @@ actor ArchiveStore: ModelActor {
             Logger.archiveStore.errorAndAssert("Failed to get filename")
             return nil
         }
-        
+
         let downloadStatus: Double
         switch details.downloadStatus {
         case .downloading(percent: let percent):
@@ -308,7 +308,7 @@ actor ArchiveStore: ModelActor {
         case .local:
             downloadStatus = 1
         }
-        
+
         let data = Document.parseFilename(filename)
         let isTagged = isTagged(details.url)
 
@@ -328,10 +328,10 @@ actor ArchiveStore: ModelActor {
 
         let date = data.date ?? details.url.fileCreationDate() ?? Date()
         let specification = isTagged ? (data.specification ?? "n/a").replacingOccurrences(of: "-", with: " ") : (data.specification ?? "n/a")
-        
+
         if let document {
             assert(id == document.id, "Document IDs do not match")
-            
+
             document._sizeInBytes = details.sizeInBytes
             document.downloadStatus = downloadStatus
             document.url = details.url
@@ -342,7 +342,7 @@ actor ArchiveStore: ModelActor {
             document.specification = specification
             document.tagItems = tags
             document.downloadStatus = downloadStatus
-            
+
             return document
         } else {
             return Document(id: id,

@@ -13,14 +13,12 @@ struct OnboardingScreens: View {
 
     let onboardSet: OnboardSet
     var body: some View {
-        VStack(alignment: .center, spacing: 40) {
-            OBCardView(card: onboardSet.cards[cardIndex])
-                .padding(.top, 25)
-
+        OBCardView(card: onboardSet.cards[cardIndex])
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .overlay(alignment: .bottom) {
             progressView
-            .padding(.top, 40)
+                .padding(.bottom)
         }
-        .padding()
         .overlay(alignment: .bottomTrailing) {
             Button {
                 withAnimation {
@@ -33,6 +31,7 @@ struct OnboardingScreens: View {
             .buttonStyle(BorderlessButtonStyle())
             .focusable(false)
         }
+        .padding()
     }
 
     private var progressView: some View {
