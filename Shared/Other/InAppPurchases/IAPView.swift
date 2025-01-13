@@ -70,9 +70,9 @@ struct IAPView: View {
         VStack(alignment: .center, spacing: 8) {
             WidthSyncedRow(spacing: 8) {
                 VStack(alignment: .leading, spacing: 6) {
-                    Label("Search PDFs" as LocalizedStringKey, systemImage: "magnifyingglass")
-                    Label("iCloud Sync" as LocalizedStringKey, systemImage: "cloud")
-                    Label("Open Source" as LocalizedStringKey, systemImage: "lock.open")
+                    Label("Search PDFs", systemImage: "magnifyingglass")
+                    Label("iCloud Sync", systemImage: "cloud")
+                    Label("Open Source", systemImage: "lock.open")
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
@@ -80,9 +80,9 @@ struct IAPView: View {
                 .cornerRadius(8)
                 ZStack(alignment: .topTrailing) {
                     VStack(alignment: .leading, spacing: 6) {
-                        Label("Scanner" as LocalizedStringKey, systemImage: "doc.text.viewfinder")
-                        Label("Searchable PDFs" as LocalizedStringKey, systemImage: "doc.text.magnifyingglass")
-                        Label("Tag PDFs" as LocalizedStringKey, systemImage: "tag")
+                        Label("Scanner", systemImage: "doc.text.viewfinder")
+                        Label("Searchable PDFs", systemImage: "doc.text.magnifyingglass")
+                        Label("Tag PDFs", systemImage: "tag")
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()

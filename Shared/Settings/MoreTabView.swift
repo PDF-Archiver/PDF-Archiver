@@ -57,21 +57,15 @@ struct SettingsView: View {
                 Spacer()
                 Text(viewModel.selectedArchiveType.title)
             }
-            // TODO: fix error:
-//            Do not put a navigation destination modifier inside a "lazy” container, like `List` or `LazyVStack`. These containers create child views only when needed to render on screen. Add the navigation destination modifier outside these containers so that the navigation stack can always see the destination. There's a misplaced `navigationDestination(isPresented:destination:)` modifier presenting `StorageSelectionView`. It will be ignored in a future release.
             .navigationDestination(isPresented: $viewModel.showArchiveTypeSelection) {
                 StorageSelectionView(selection: $viewModel.selectedArchiveType, onCompletion: viewModel.handleDocumentPicker)
             }
 
-            Button("Open Archive Folder" as LocalizedStringKey, action: viewModel.openArchiveFolder)
+            Button("Open Archive Folder", action: viewModel.openArchiveFolder)
                 // if statement in view not possible, because the StorageSelectionView was not returning to the overview
                 // after the selection has changed.
                 .disabled(!PathManager.shared.archivePathType.isFileBrowserCompatible)
                 .opacity(PathManager.shared.archivePathType.isFileBrowserCompatible ? 1 : 0.3)
-            DetailRowView(name: "Show Intro") {
-                #warning("TODO: showIntro ")
-                //                self.viewModel.showIntro()
-            }
             NavigationLink(destination: ExpertSettingsView(notSaveDocumentTagsAsPDFMetadata: $viewModel.notSaveDocumentTagsAsPDFMetadata,
                                                            documentTagsNotRequired: $viewModel.documentTagsNotRequired,
                                                            documentSpecificationNotRequired: $viewModel.documentSpecificationNotRequired,

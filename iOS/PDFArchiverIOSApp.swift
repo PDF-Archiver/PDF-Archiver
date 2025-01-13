@@ -14,7 +14,6 @@ struct PDFArchiverIOSApp: App, Log {
     private var navigationModel: NavigationModel = .shared
 
     var body: some Scene {
-        #warning("TODO: also look for more 'TODO:' not in warnings")
         WindowGroup {
             SplitNavigationView()
                 .inAppPurchasesSetup()

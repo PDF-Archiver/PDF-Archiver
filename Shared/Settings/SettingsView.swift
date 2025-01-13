@@ -83,7 +83,7 @@ struct SettingsView: View {
             }
         }
         .padding(20)
-        .frame(width: 450, height: 250)
+        .frame(width: 450, height: 150)
     }
 
     private var expertSettings: some View {
@@ -104,7 +104,7 @@ struct SettingsView: View {
                 .padding(.vertical, 8)
             StorageSelectionView(selection: $viewModel.selectedArchiveType, onCompletion: viewModel.handleDocumentPicker)
                 .listStyle(InsetListStyle())
-            Button("Open Archive Folder" as LocalizedStringKey, action: viewModel.openArchiveFolder)
+            Button("Open Archive Folder", action: viewModel.openArchiveFolder)
                 .frame(maxWidth: .infinity)
             Divider()
                 .padding(.vertical, 10)
@@ -139,7 +139,7 @@ struct SettingsView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(Color.paSecondaryBackground)
             .cornerRadius(4)
-            Button("Select" as LocalizedStringKey, action: viewModel.selectObservedFolder)
+            Button("Select", action: viewModel.selectObservedFolder)
         }
     }
 

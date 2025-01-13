@@ -36,7 +36,7 @@ struct DocumentInformation: View {
                         .fixedSize()
                         .buttonStyle(.bordered)
                     }
-                    Button("Today" as LocalizedStringKey, systemImage: "calendar") {
+                    Button("Today", systemImage: "calendar") {
                         viewModel.date = Date()
                         #if canImport(UIKit)
                         FeedbackGenerator.selectionChanged()
@@ -63,7 +63,7 @@ struct DocumentInformation: View {
             Section {
                 HStack {
                     Spacer()
-                    Button("Save" as LocalizedStringKey) {
+                    Button("Save") {
                         viewModel.specification = viewModel.specification.slugified(withSeparator: "-")
 
                         let filename = Document.createFilename(date: viewModel.date, specification: viewModel.specification, tags: Set(viewModel.tags))

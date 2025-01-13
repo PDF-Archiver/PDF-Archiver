@@ -26,11 +26,6 @@ struct SubscriptionSectionView: View {
                 }
             }
 
-            #warning("TODO: implement the subscription activation")
-//            DetailRowView(name: "Activate/Restore Premium") {
-//                //                NotificationCenter.default.post(.showSubscriptionView)
-//            }
-
             Link("Manage Subscription", destination: Self.manageSubscriptionUrl)
         } header: {
             Text("⭐️ Premium")
