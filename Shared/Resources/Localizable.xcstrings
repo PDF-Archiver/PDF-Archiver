@@ -1,0 +1,1491 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "" : {
+      "shouldTranslate" : false
+    },
+    "⁉️ More Information" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⁉️ Mehr Informationen"
+          }
+        }
+      }
+    },
+    "%@" : {
+      "shouldTranslate" : false
+    },
+    "%@\n\n%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n\n%2$@"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "%lld" : {
+      "shouldTranslate" : false
+    },
+    "☁️ iCloud Drive" : {
+      "shouldTranslate" : false
+    },
+    "⭐️ Premium" : {
+      "shouldTranslate" : false
+    },
+    "💾 Drive" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "💾 Festplatte"
+          }
+        }
+      }
+    },
+    "📱 Local" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "📱 Lokal"
+          }
+        }
+      }
+    },
+    "🗂️ Folder" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "🗂️ Ordner"
+          }
+        }
+      }
+    },
+    "🧾 Statistics" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "🧾 Statistiken"
+          }
+        }
+      }
+    },
+    "🛠 Preferences" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "🛠 Einstellungen"
+          }
+        }
+      }
+    },
+    "25% - Small 💾" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "25% - Klein 💾"
+          }
+        }
+      }
+    },
+    "50% - Normal 👍" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "50% - Normal 👍"
+          }
+        }
+      }
+    },
+    "75% - Good 👌 (Default)" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "75% - Gut 👌 (Standard)"
+          }
+        }
+      }
+    },
+    "100% - Lossless 🤯" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "100% - Lossless 🤯"
+          }
+        }
+      }
+    },
+    "About  👤" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Über  👤"
+          }
+        }
+      }
+    },
+    "AboutMeViewText" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hallo 🤗,\n\nich bin Julian - der Entwickler von PDF Archiver. Ich habe dieses Projekt 2017 mit der macOS App gestartet und stecke seitdem viel Herzblut hinein. 🙄\nFreunde und ich 👨🏻‍💻 haben nach einem Weg gesucht Dokumente digital zu sortieren, sodass sie einfach wiedergefunden werden können. 🕵🏻‍♂️ Hierbei wollten wir keine Cloud Lösung verwenden, bei der unsere Dokumente in irgendeiner Datenbank verschwinden. Es sollte ein Konzept her, bei dem möglichst viele Informationen im Dateinamen gespeichert werden können. 💾 So legten wir das folgende Namensschema fest:\n\n2019-07-04--blauer-lieblingspullover__kleidung_rechnung.pdf\n\nEs enthält ein Datum, eine Beschreibung und Tags. Alles zusammen bildet den Dateinamen, der auf den verschiedensten Betriebssystemen einfach durchsucht werden kann.\nUm diese Sortierung so einfach wie möglich zu gestalten habe ich PDF Archiver auf das iPhone gebracht. Hier können Dokumente nun eingescannt und anschließend automatisch analysiert werden. 🤯 Die intelligente Texterkennung findet ausschließlich auf deinem Gerät statt, sodass keine privaten Informationen dein Gerät verlassen! 🔒\n\nPDF Archiver ist als Hilfsmittel für deinen persönlichen Dokumenten Workflow gedacht. Falls also auch du etwas Zeit bei der Archivierung sparen konntest oder wenn es einen Moment gab, bei dem du froh warst all deine Dokumente auf dem iPhone zu haben, schreib gerne einen kurzen Kommentar im App Store. 🖋\n\nMade with 💚 and 🙇🏻‍♂️ in Oldenburg, Germany."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hello 🤗\n\nI'm Julian - the developer of PDF Archiver. I started this project in 2017 with the macOS App and put a lot of heart and soul into it. 🙄\nFriends of mine and I 👨🏻‍💻 have been looking for a way to digitally sort documents so that they can be easily retrieved. 🕵🏻 We didn't want to use a cloud service where our documents would disappear into any database. We wanted a concept where as much information as possible could be stored in the file name. 💾 This is how we defined the following naming scheme:\n\n2019-07-04--blue-pullover__clothing_invoice.pdf\n\nIt contains a date, a description and tags. Everything together forms the file name, which can be easily searched on various operating systems.\nTo make this sorting as easy as possible I brought PDF Archiver to the iPhone. Here documents can be scanned and then automatically analyzed. 🤯 The intelligent text recognition takes place exclusively on your device, so no private information leaves your device! 🔒\n\nPDF Archiver is intended as a tool for your personal document workflow. So if you saved some time archiving your documents, or if there was a moment when you were happy to have all your documents on your iPhone, feel free to write a short comment on the App Store. 🖋\n\nMade with 💚 and 🙇🏻‍♂️ in Oldenburg, Germany."
+          }
+        }
+      }
+    },
+    "Active ✅" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktiv ✅"
+          }
+        }
+      }
+    },
+    "Advanced" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erweitert"
+          }
+        }
+      }
+    },
+    "An error occurred 😳" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fehler aufgetreten 😳"
+          }
+        }
+      }
+    },
+    "Archive" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Archiv"
+          }
+        }
+      }
+    },
+    "Archive Mode" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Archiv Modus"
+          }
+        }
+      }
+    },
+    "Cancel" : {
+      "comment" : "Camera access in ScanViewController.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abbrechen"
+          }
+        }
+      }
+    },
+    "Choose the observed folder" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wählen Sie den überwachten Ordner"
+          }
+        }
+      }
+    },
+    "Congratulations! All documents are tagged. 🎉" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Herzlichen Glückwunsch! Alle Dokumente sind getaggt. 🎉"
+          }
+        }
+      }
+    },
+    "Contact Support  🚑" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Support kontaktieren  🚑"
+          }
+        }
+      }
+    },
+    "Could not find a folder provider for path:\n%@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Es konnte kein Ordnerprovider für den Pfad gefunden werden:\n%@"
+          }
+        }
+      }
+    },
+    "Could not find a subscription or lifetime purchase. Please choose one of the options below to support the app development." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Es konnte kein Abonnement oder lebenslanger Kauf gefunden werden. Bitte wählen Sie eine der folgenden Optionen, um die Entwicklung der App zu unterstützen."
+          }
+        }
+      }
+    },
+    "Date" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datum"
+          }
+        }
+      }
+    },
+    "Delete" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Löschen"
+          }
+        }
+      }
+    },
+    "Dismiss" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schließen"
+          }
+        }
+      }
+    },
+    "Do you really want to delete this document?" : {
+      "comment" : "Camera access in ScanViewController.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Möchtest du dieses Dokument wirklich löschen?"
+          }
+        }
+      }
+    },
+    "document_error_description__date_missing" : {
+      "comment" : "No date could be found, e.g. while renaming the document.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datum Fehlt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Date missing"
+          }
+        }
+      }
+    },
+    "document_error_description__description_missing" : {
+      "comment" : "No description could be found, e.g. while renaming the document.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beschreibung Fehlt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Description missing"
+          }
+        }
+      }
+    },
+    "document_error_description__rename_failed_file_already_exists" : {
+      "comment" : "Rename failed.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Umbenennung Fehlgeschlagen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Renaming Failed"
+          }
+        }
+      }
+    },
+    "document_error_description__tags_missing" : {
+      "comment" : "No tags could be found, e.g. while renaming the document.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tags Fehlen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Missing tags"
+          }
+        }
+      }
+    },
+    "document_failure_reason__date_missing" : {
+      "comment" : "No date could be found, e.g. while renaming the document.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Datum des Dokumentes wurde nicht angegeben."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The date of the document was not specified."
+          }
+        }
+      }
+    },
+    "document_failure_reason__description_missing" : {
+      "comment" : "No description could be found, e.g. while renaming the document.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Es konnte keine Dokumentenbeschreibung gefunden werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No document description could be found."
+          }
+        }
+      }
+    },
+    "document_failure_reason__rename_failed_file_already_exists" : {
+      "comment" : "Rename failed.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Umbenennen des Dokumentes ist fehlgeschlagen, da eine Datei mit diesem Namen bereits existiert."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Renaming the document failed, because a file with this name already exists."
+          }
+        }
+      }
+    },
+    "document_failure_reason__tags_missing" : {
+      "comment" : "No tags could be found, e.g. while renaming the document.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Es wurden keine Tags für das Dokument eingegeben."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No tags were entered for the document."
+          }
+        }
+      }
+    },
+    "document_recovery_suggestion__date_missing" : {
+      "comment" : "No date could be found, e.g. while renaming the document.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte füge ein Datum hinzu."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please add a date."
+          }
+        }
+      }
+    },
+    "document_recovery_suggestion__description_missing" : {
+      "comment" : "No description could be found, e.g. while renaming the document.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte gib eine Beschreibung ein."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please enter a description."
+          }
+        }
+      }
+    },
+    "document_recovery_suggestion__rename_failed_file_already_exists" : {
+      "comment" : "Rename failed - file already exists.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte ändere z.B. die Beschreibung des Dokumentes."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please change e.g. the description of the document."
+          }
+        }
+      }
+    },
+    "document_recovery_suggestion__tags_missing" : {
+      "comment" : "No tags could be found, e.g. while renaming the document.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte füge Tags hinzu."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please add tags."
+          }
+        }
+      }
+    },
+    "Documents" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dokumente"
+          }
+        }
+      }
+    },
+    "Done" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fertig"
+          }
+        }
+      }
+    },
+    "Downloading Document" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dokument wird heruntergeladen"
+          }
+        }
+      }
+    },
+    "Drop to import file" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ablegen zum Importieren von Dateien"
+          }
+        }
+      }
+    },
+    "Edit" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bearbeiten"
+          }
+        }
+      }
+    },
+    "Empty Archive" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leeres Archiv"
+          }
+        }
+      }
+    },
+    "Enter specification" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beschreibung eingeben"
+          }
+        }
+      }
+    },
+    "Enter Tag" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tag eingeben"
+          }
+        }
+      }
+    },
+    "Error" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fehler"
+          }
+        }
+      }
+    },
+    "Finder Tag Update" : {
+      "shouldTranslate" : false
+    },
+    "Folder Provider Error" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordneranbieter Fehler"
+          }
+        }
+      }
+    },
+    "General" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allgemein"
+          }
+        }
+      }
+    },
+    "https://support.apple.com/en-us/HT210598" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://support.apple.com/de-de/HT210598"
+          }
+        }
+      }
+    },
+    "iCloud Sync" : {
+      "shouldTranslate" : false
+    },
+    "Imprint" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impressum"
+          }
+        }
+      }
+    },
+    "Inactive ❌" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inaktiv ❌"
+          }
+        }
+      }
+    },
+    "intro.find.description" : {
+      "comment" : "Intro: Find Description",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Über das Archiv oder die iCloud Drive App kannst du deine Dokumente schnell und einfach jederzeit finden so hast du deine wichtigsten Informationen immer in deiner Tasche!"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can find your documents quickly and easily at any time via the archive or the iCloud Drive app so you always have your most important information in your pocket!"
+          }
+        }
+      }
+    },
+    "intro.find.title" : {
+      "comment" : "Intro: Find Title",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Find it."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Find it."
+          }
+        }
+      }
+    },
+    "intro.last.description" : {
+      "comment" : "Intro: Last Page Description",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Und nun viel Spaß beim Archivieren mit\nPDF Archiver!"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "And now have fun archiving with\nPDF Archiver!"
+          }
+        }
+      }
+    },
+    "intro.last.title" : {
+      "comment" : "Intro: Last Page Title",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Let's go!"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Let's go!"
+          }
+        }
+      }
+    },
+    "intro.scan.description" : {
+      "comment" : "Intro: Scan Description",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scanne deine Dokumente, Briefe oder Rechnungen einfach und mit nur zwei Klicks mit PDF Archiver. Die App erkennt den Text in deinen Dokumenten und speichert ihn sicher als PDF Datei in iCloud Drive."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan your documents, letters or invoices easily and with just two clicks with PDF Archiver. The app recognizes the text in your documents and saves it securely as a PDF file in iCloud Drive."
+          }
+        }
+      }
+    },
+    "intro.scan.title" : {
+      "comment" : "Intro: Scan Title",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan it."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan it."
+          }
+        }
+      }
+    },
+    "intro.subscription.description" : {
+      "comment" : "Intro: Subscription Description",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ich bin ein Indie-Entwickler und arbeite an der App in meiner Freizeit. Unterstütze die Weiterentwicklung und schalte alle Features frei, indem du ein monatliches oder jährliches Abo abschließt.\n\nVielen Dank für deine Hilfe! ☺️"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I'm an indie developer and work on the app in my spare time. Support the development and unlock all features by signing up for a monthly or annual subscription.\n\nThanks for your help! ☺️️"
+          }
+        }
+      }
+    },
+    "intro.subscription.title" : {
+      "comment" : "Intro: Subscription Title",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch'n Abo?!\n😡 🤬 🤭"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Another Subscription?!\n😡 🤬 🤭"
+          }
+        }
+      }
+    },
+    "intro.tag.description" : {
+      "comment" : "Intro: Tag Description",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du hast zwischendurch etwas Zeit?\nTagge nun deine Dokumente.\nDie intelligente Texterkennung schlägt dir Datum und Tags vor.\nBeschreibe dein Dokument z.B.\n'Blauer Lieblingspullover'\nund speichere es im Archiv."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You have some time in between?\nTag your documents and find them quickly at any time. The intelligent text recognition automatically suggests the date and matching tags.\nDescribe your document e.g. with\n'Blue Favorite Sweater'\nand save it in your archive."
+          }
+        }
+      }
+    },
+    "intro.tag.title" : {
+      "comment" : "Intro: Tag Title",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tag it."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tag it."
+          }
+        }
+      }
+    },
+    "Load all documents" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Dokumente laden"
+          }
+        }
+      }
+    },
+    "Load less documents" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weniger Dokumente laden"
+          }
+        }
+      }
+    },
+    "Loading ..." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laden …"
+          }
+        }
+      }
+    },
+    "Loading documents..." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dokumente laden..."
+          }
+        }
+      }
+    },
+    "Manage Subscription" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abo verwalten"
+          }
+        }
+      }
+    },
+    "More" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mehr"
+          }
+        }
+      }
+    },
+    "No document" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Dokument"
+          }
+        }
+      }
+    },
+    "No document found" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Dokument gefunden"
+          }
+        }
+      }
+    },
+    "No Subscription" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abo inaktiv"
+          }
+        }
+      }
+    },
+    "No tags selected" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Tags ausgewählt"
+          }
+        }
+      }
+    },
+    "Not Selected" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Auswahl"
+          }
+        }
+      }
+    },
+    "Not synchronized - your documents are only stored locally in this app. They can be transferred via the Finder on a Mac, for example." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht synchronisiert - Deine Dokumente werden nur lokal in der App gespeichert. Sie können z.B. über den Finder an einem Mac übertragen werden."
+          }
+        }
+      }
+    },
+    "Not synchronized - Your documents are stored in a folder you choose on your computer. PDF Archiver does not initiate synchronization." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht synchronisiert - Deine Dokumente werden in einem von dir ausgewählten Ordner auf deinem Computer gespeichert. Eine Synchronisation wird von PDF Archiver nicht initiiert."
+          }
+        }
+      }
+    },
+    "Observed Folder" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Überwachter Ordner"
+          }
+        }
+      }
+    },
+    "OK" : {
+      "shouldTranslate" : false
+    },
+    "Open Archive Folder" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Archiv Ordner öffnen"
+          }
+        }
+      }
+    },
+    "Open Source" : {
+      "shouldTranslate" : false
+    },
+    "PDF Archiver" : {
+      "shouldTranslate" : false
+    },
+    "PDF Archiver Website  🖥" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PDF Archiver Webseite  🖥"
+          }
+        }
+      }
+    },
+    "PDF Quality" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PDF Qualität"
+          }
+        }
+      }
+    },
+    "Please restart the app to complete the reset." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte starte die App neu, um das Zurücksetzen abzuschließen."
+          }
+        }
+      }
+    },
+    "Preferences" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungen"
+          }
+        }
+      }
+    },
+    "Preferences & More" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungen & Mehr"
+          }
+        }
+      }
+    },
+    "Premium" : {
+      "shouldTranslate" : false
+    },
+    "Premium Status:" : {
+      "shouldTranslate" : false
+    },
+    "Privacy" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datenschutz"
+          }
+        }
+      }
+    },
+    "Rate App ⭐️" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App bewerten ⭐️"
+          }
+        }
+      }
+    },
+    "Require Document Specification" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dokument-Beschreibung erforderlich"
+          }
+        }
+      }
+    },
+    "Require Document Tags" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dokument-Tags erforderlich"
+          }
+        }
+      }
+    },
+    "Reset App" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Zurücksetzen"
+          }
+        }
+      }
+    },
+    "Reset App Preferences" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungen zurücksetzen"
+          }
+        }
+      }
+    },
+    "Restore purchases" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Käufe wiederherstellen"
+          }
+        }
+      }
+    },
+    "Revert" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rückgängig machen"
+          }
+        }
+      }
+    },
+    "Save" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speichern"
+          }
+        }
+      }
+    },
+    "Save Tags in PDF Metadata" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tags in PDF-Metadaten speichern"
+          }
+        }
+      }
+    },
+    "Scan" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan"
+          }
+        }
+      }
+    },
+    "Scan it. Tag it. Find it." : {
+      "shouldTranslate" : false
+    },
+    "Scanner" : {
+      "shouldTranslate" : false
+    },
+    "Search PDFs" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suche PDFs"
+          }
+        }
+      }
+    },
+    "Search your documents" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Durchsuchen deine Dokumente"
+          }
+        }
+      }
+    },
+    "Searchable PDFs" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Textanalyse"
+          }
+        }
+      }
+    },
+    "Select" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auswählen"
+          }
+        }
+      }
+    },
+    "Select a document" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dokument auswählen"
+          }
+        }
+      }
+    },
+    "Select a document from the list." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dokument aus der Liste auswählen."
+          }
+        }
+      }
+    },
+    "Share PDF Archiver 📱❤️🫵" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PDF Archiver teilen 📱❤️🫵"
+          }
+        }
+      }
+    },
+    "Show in Finder" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im Finder anzeigen"
+          }
+        }
+      }
+    },
+    "Show Intro" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Intro anzeigen"
+          }
+        }
+      }
+    },
+    "Show Permissions" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Berechtigungen anzeigen"
+          }
+        }
+      }
+    },
+    "Specification" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beschreibung"
+          }
+        }
+      }
+    },
+    "Start scanning and tagging your first document." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beginne mit dem Scannen und Verschlagworten deines ersten Dokuments."
+          }
+        }
+      }
+    },
+    "Statistics" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Statistiken"
+          }
+        }
+      }
+    },
+    "Storage" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speicher"
+          }
+        }
+      }
+    },
+    "Support further development of a 1 person team." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unterstütze die Arbeit eines einzelnen Entwicklers."
+          }
+        }
+      }
+    },
+    "Synchronized - Your documents are stored in iCloud Drive. They are available to you on all devices with the same iCloud account, e.g. iPhone, iPad and Mac." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synchronisiert - Deine Dokumente werden in iCloud Drive gespeichert. Sie stehen dir auf allen Geräten mit dem selben iCloud Account zur Verfügung, z.B. iPhone, iPad und Mac."
+          }
+        }
+      }
+    },
+    "Tag PDFs" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tagge PDFs"
+          }
+        }
+      }
+    },
+    "tagged" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ver­schlag­wor­tet"
+          }
+        }
+      }
+    },
+    "Tagging Mode" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tagging Modus"
+          }
+        }
+      }
+    },
+    "Terms & Privacy" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datenschutz"
+          }
+        }
+      }
+    },
+    "test_file1" : {
+      "comment" : "Simulator test data set",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "archive/2018/2018-04-05--gehalt-april__arbeit_steuer_gehalt.pdf"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "archive/2018/2018-04-05--salary-april__tax_work.pdf"
+          }
+        }
+      }
+    },
+    "test_file2" : {
+      "comment" : "Simulator test data set",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "archive/2017/2017-04-04--gff-info__spenden_steuer.pdf"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "archive/2017/2017-04-04--gff-info__donation_tax.pdf"
+          }
+        }
+      }
+    },
+    "test_file3" : {
+      "comment" : "Simulator test data set",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "archive/2016/2016-04-03--versicherung-report__brief_versicherung.pdf"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "archive/2016/2016-04-03--insurance-report__letter_insurance.pdf"
+          }
+        }
+      }
+    },
+    "The document will be downloaded to your device. Please wait." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Dokument wird heruntergeladen. Bitte warte."
+          }
+        }
+      }
+    },
+    "Today" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heute"
+          }
+        }
+      }
+    },
+    "Top Tags" : {
+      "shouldTranslate" : false
+    },
+    "Top Years" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Top Jahre"
+          }
+        }
+      }
+    },
+    "Try another search query." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versuche eine andere Suchanfrage."
+          }
+        }
+      }
+    },
+    "untagged" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "unbearbeitet"
+          }
+        }
+      }
+    },
+    "Untagged Documents" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unbeschriftete Dokumente"
+          }
+        }
+      }
+    },
+    "Update Finder Tags" : {
+      "shouldTranslate" : false
+    },
+    "Version %@" : {
+      "shouldTranslate" : false
+    },
+    "You get a 2-week free trail before all subscriptions." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du erhältst eine 2-wöchige kostenlose Testphase vor allen Abonnements.\n"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

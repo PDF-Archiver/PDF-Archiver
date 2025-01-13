@@ -26,7 +26,7 @@ struct AlertDataModelProvider: ViewModifier, Log {
                     self.alertDataModel = alertDataModel
                 }
             }
-            .alert(alertDataModel?.title ?? "",
+            .alert(alertDataModel?.title ?? "Error",
                    isPresented: isPresented,
                    presenting: alertDataModel) { viewModel in
 

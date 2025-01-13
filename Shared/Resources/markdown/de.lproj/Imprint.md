@@ -1,9 +1,9 @@
 ## Angaben gemäß § 5 TMG:
 **Julian Kahnert**
 
-Wechloyer Tor 7
+Postfach 53 29
 
-26129 Oldenburg
+26043 Oldenburg
 
 ## Kontakt
 Telefon: +49 (0) 441 55979822

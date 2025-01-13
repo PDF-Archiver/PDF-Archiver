@@ -13,6 +13,7 @@ struct SettingsView: View {
 //    private static let appId = 1433801905
 
     @Environment(\.requestReview) private var requestReview
+    @Environment(\.dismiss) private var dismiss
     @ObservedObject var viewModel: SettingsViewModel
     @State private var showActivityView = false
 
@@ -28,6 +29,13 @@ struct SettingsView: View {
             .navigationTitle("Preferences & More")
             .navigationViewStyle(StackNavigationViewStyle())
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+            }
         }
 //        .sheet(isPresented: $showActivityView) {
 //            // swiftlint:disable:next force_unwrapping

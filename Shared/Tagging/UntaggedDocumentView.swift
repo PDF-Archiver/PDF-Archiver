@@ -31,7 +31,7 @@ struct UntaggedDocumentView: View {
                             PDFCustomView(document.url)
                         }
                     } else {
-                        ContentUnavailableView("Select a Document", systemImage: "doc", description: Text("Select a document from the list."))
+                        ContentUnavailableView("Select a document", systemImage: "doc", description: Text("Select a document from the list."))
                     }
 
                     if documentInformationViewModel.url != Self.placeholderUrl {
@@ -50,7 +50,7 @@ struct UntaggedDocumentView: View {
                             PDFCustomView(document.url)
                         }
                     } else {
-                        ContentUnavailableView("Select a Document", systemImage: "doc", description: Text("Select a document from the list."))
+                        ContentUnavailableView("Select a document", systemImage: "doc", description: Text("Select a document from the list."))
                     }
 
                     Group {

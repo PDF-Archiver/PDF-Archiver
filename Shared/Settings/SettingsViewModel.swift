@@ -24,7 +24,7 @@ final class SettingsViewModel: ObservableObject, Log {
         return MarkdownView(title: title, markdown: markdown, scrollView: scrollView)
     }
 
-    let qualities: [String] = ["100% - Lossless 🤯", "75% - Good 👌 (Default)", "50% - Normal 👍", "25% - Small 💾"]
+    let qualities: [LocalizedStringKey] = ["100% - Lossless 🤯", "75% - Good 👌 (Default)", "50% - Normal 👍", "25% - Small 💾"]
     let storageTypes: [String] = StorageType.allCases.map(\.title).map { "\($0)" }
     @Published var selectedQualityIndex = UserDefaults.PDFQuality.toIndex(UserDefaults.pdfQuality) ?? UserDefaults.PDFQuality.defaultQualityIndex
     @Published var notSaveDocumentTagsAsPDFMetadata = UserDefaults.notSaveDocumentTagsAsPDFMetadata

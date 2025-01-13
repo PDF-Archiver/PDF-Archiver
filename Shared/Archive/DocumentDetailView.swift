@@ -42,7 +42,7 @@ struct DocumentDetailView: View {
                         .ignoresSafeArea(edges: .bottom)
                 }
             } else {
-                ContentUnavailableView("Select a Document", systemImage: "doc", description: Text("Select a document from the list."))
+                ContentUnavailableView("Select a document", systemImage: "doc", description: Text("Select a document from the list."))
             }
         }
         .onChange(of: navigationModel.selectedDocument, initial: true) { _, _ in

@@ -15,7 +15,7 @@ struct SubscriptionSectionView: View {
     var body: some View {
         Section {
             HStack {
-                Text("Status:")
+                Text("Premium Status:")
                 switch navigationModel.premiumStatus {
                 case .loading:
                     ProgressView("Loading ...")
@@ -26,10 +26,10 @@ struct SubscriptionSectionView: View {
                 }
             }
 
-            DetailRowView(name: "Activate/Restore Premium") {
-#warning("TODO: implement the subscription activation")
-                //                NotificationCenter.default.post(.showSubscriptionView)
-            }
+            #warning("TODO: implement the subscription activation")
+//            DetailRowView(name: "Activate/Restore Premium") {
+//                //                NotificationCenter.default.post(.showSubscriptionView)
+//            }
 
             Link("Manage Subscription", destination: Self.manageSubscriptionUrl)
         } header: {
