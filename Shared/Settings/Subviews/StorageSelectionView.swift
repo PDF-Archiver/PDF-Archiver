@@ -38,6 +38,10 @@ struct StorageSelectionView: View {
                 Spacer(minLength: 8)
                 #endif
             }
+            Text("PDF Archiver is not a backup solution. Please make backups of the archieved PDFs regularly.")
+                .foregroundStyle(.secondary)
+                .font(.footnote)
+                .padding(.vertical)
             .fileImporter(isPresented: $showDocumentPicker, allowedContentTypes: [UTType.folder], onCompletion: { result in
                 switch result {
                 case .success(let url):

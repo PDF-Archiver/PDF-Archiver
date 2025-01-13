@@ -984,6 +984,16 @@
     "PDF Archiver" : {
       "shouldTranslate" : false
     },
+    "PDF Archiver is not a backup solution. Please make backups of the archieved PDFs regularly." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PDF Archiver ist keine Backup-Lösung. Bitte erstelle regelmäßig Backups der archivierten PDFs."
+          }
+        }
+      }
+    },
     "PDF Archiver Website  🖥" : {
       "localizations" : {
         "de" : {

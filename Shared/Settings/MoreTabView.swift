@@ -52,10 +52,14 @@ struct SettingsView: View {
                 }
             }
 
-            HStack {
-                Text("Storage")
-                Spacer()
-                Text(viewModel.selectedArchiveType.title)
+            Button {
+                viewModel.showArchiveTypeSelection = true
+            } label: {
+                HStack {
+                    Text("Storage")
+                    Spacer()
+                    Text(viewModel.selectedArchiveType.title)
+                }
             }
             .navigationDestination(isPresented: $viewModel.showArchiveTypeSelection) {
                 StorageSelectionView(selection: $viewModel.selectedArchiveType, onCompletion: viewModel.handleDocumentPicker)

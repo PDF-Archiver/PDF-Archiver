@@ -30,7 +30,9 @@ struct SubscriptionSectionView: View {
         } header: {
             Text("⭐️ Premium")
         }
+        #if os(macOS)
         .frame(width: 450, height: 50)
+        #endif
     }
 }
 
