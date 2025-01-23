@@ -36,7 +36,7 @@ struct SplitNavigationView: View {
                     Button {
                         navigationModel.switchTaggingMode(in: modelContext)
                     } label: {
-                        Label(navigationModel.mode == .archive ? "Archive Mode" : "Tagging Mode", systemImage: navigationModel.mode == .archive ? "archivebox" : "tag")
+                        Label(navigationModel.mode == .archive ? "Tagging Mode" : "Archive Mode", systemImage: navigationModel.mode == .archive ? "tag" : "archivebox")
                     }
                 }
                 #if !os(macOS)
@@ -109,7 +109,7 @@ struct SplitNavigationView: View {
         }
         #if !os(macOS)
         .sheet(isPresented: $navigationModel.isPreferencesPresented) {
-            SettingsView(viewModel: settingsViewModel)
+            SettingsViewIOS(viewModel: settingsViewModel)
         }
         .sheet(isPresented: $navigationModel.isScanPresented) {
             DocumentCameraView(

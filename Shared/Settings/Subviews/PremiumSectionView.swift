@@ -1,5 +1,5 @@
 //
-//  SubscriptionSectionView.swift
+//  PremiumSectionView.swift
 //  PDFArchiver
 //
 //  Created by Julian Kahnert on 24.06.24.
@@ -7,10 +7,11 @@
 
 import SwiftUI
 
-struct SubscriptionSectionView: View {
+struct PremiumSectionView: View {
     private static let manageSubscriptionUrl = URL(string: "https://apps.apple.com/account/subscriptions")!
 
     @Environment(NavigationModel.self) var navigationModel
+    @State private var showIapView: Bool = false
 
     var body: some View {
         Section {
@@ -25,6 +26,18 @@ struct SubscriptionSectionView: View {
                     Text("Inactive ❌")
                 }
             }
+            if !navigationModel.isSubscribedOrLoading.wrappedValue {
+                Button {
+                    showIapView = true
+                } label: {
+                    Text("Activate premium")
+                }
+                .navigationDestination(isPresented: $showIapView) {
+                    IAPView {
+                        showIapView = false
+                    }
+                }
+            }
 
             Link("Manage Subscription", destination: Self.manageSubscriptionUrl)
         } header: {
@@ -33,12 +46,16 @@ struct SubscriptionSectionView: View {
         #if os(macOS)
         .frame(width: 450, height: 50)
         #endif
+        .onChange(of: navigationModel.premiumStatus) { oldValue, newValue in
+            guard showIapView && newValue == .active else { return }
+            showIapView = false
+        }
     }
 }
 
 #if DEBUG
 #Preview {
-    SubscriptionSectionView()
+    PremiumSectionView()
         .environment(NavigationModel.shared)
 }
 #endif

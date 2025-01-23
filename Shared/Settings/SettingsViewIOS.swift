@@ -1,5 +1,5 @@
 //
-//  SettingsView.swift
+//  SettingsViewIOS.swift
 //  PDFArchiver
 //
 //  Created by Julian Kahnert on 13.11.19.
@@ -9,8 +9,8 @@
 import SwiftUI
 
 #if !os(macOS)
-struct SettingsView: View {
-//    private static let appId = 1433801905
+struct SettingsViewIOS: View {
+    private static let appId = 1433801905
 
     @Environment(\.requestReview) private var requestReview
     @Environment(\.dismiss) private var dismiss
@@ -21,7 +21,7 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 preferences
-                SubscriptionSectionView()
+                PremiumSectionView()
                 statistics
                 moreInformation
             }
@@ -37,10 +37,10 @@ struct SettingsView: View {
                 }
             }
         }
-//        .sheet(isPresented: $showActivityView) {
-//            // swiftlint:disable:next force_unwrapping
-//            AppActivityView(activityItems: [URL(string: "https://apps.apple.com/app/pdf-archiver/id\(Self.appId)")!])
-//        }
+        .sheet(isPresented: $showActivityView) {
+            // swiftlint:disable:next force_unwrapping
+            AppActivityView(activityItems: [URL(string: "https://apps.apple.com/app/pdf-archiver/id\(Self.appId)")!])
+        }
     }
 
     @ViewBuilder
@@ -113,7 +113,7 @@ struct SettingsView: View {
 #if !os(macOS)
 #Preview {
     let viewModel = SettingsViewModel()
-    SettingsView(viewModel: viewModel)
+    SettingsViewIOS(viewModel: viewModel)
         .preferredColorScheme(.dark)
         .padding()
 }

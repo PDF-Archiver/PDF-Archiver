@@ -24,7 +24,7 @@ struct PDFArchiverMacApp: App, Log {
         .modelContainer(container)
 
         Settings {
-            SettingsView(viewModel: moreViewModel)
+            SettingsViewMacOS(viewModel: moreViewModel)
         }
         .windowStyle(HiddenTitleBarWindowStyle())
         .environment(navigationModel)

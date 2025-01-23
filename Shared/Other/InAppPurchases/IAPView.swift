@@ -7,6 +7,7 @@
 
 import StoreKit
 import SwiftUI
+import OSLog
 
 struct IAPView: View {
     let onCancel: () -> Void
@@ -120,7 +121,7 @@ struct IAPView: View {
                 do {
                     try await AppStore.sync()
                 } catch {
-                    print("AppStore sync failed: \(error)")
+                    Logger.inAppPurchase.errorAndAssert("AppStore sync failed: \(error)")
                 }
             }
         } label: {

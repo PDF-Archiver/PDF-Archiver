@@ -9,7 +9,7 @@ import SwiftUI
 import OSLog
 
 #if os(macOS)
-struct SettingsView: View {
+struct SettingsViewMacOS: View {
 
     @AppStorage("tutorialShown", store: .appGroup) private var tutorialShown = false
     @ObservedObject var viewModel: SettingsViewModel
@@ -189,7 +189,7 @@ struct SettingsView: View {
 struct SettingsPreviewView: View {
     @State var viewModel = SettingsViewModel()
     var body: some View {
-        SettingsView(viewModel: viewModel)
+        SettingsViewMacOS(viewModel: viewModel)
     }
 }
 
