@@ -14,11 +14,10 @@ struct DropButton: View {
     }
 
     let state: State
-    let action: () -> Void
+    let action: (_ isLongPress: Bool) -> Void
 
     var body: some View {
         Button {
-            action()
         } label: {
             if state == .noDocument {
                 Image(systemName: "doc.viewfinder")
@@ -51,14 +50,28 @@ struct DropButton: View {
 
             }
         }
+        .simultaneousGesture(
+            LongPressGesture()
+                .onEnded { _ in
+                    let isLongPress = true
+                    action(isLongPress)
+                }
+        )
+        .highPriorityGesture(
+            TapGesture()
+                .onEnded { _ in
+                    let isLongPress = false
+                    action(isLongPress)
+                }
+        )
     }
 }
 
 #Preview("DropButton") {
     Group {
-        DropButton(state: .noDocument, action: {})
-        DropButton(state: .targeted, action: {})
-        DropButton(state: .processing, action: {})
-        DropButton(state: .finished, action: {})
+        DropButton(state: .noDocument, action: { _ in })
+        DropButton(state: .targeted, action: { _ in })
+        DropButton(state: .processing, action: { _ in })
+        DropButton(state: .finished, action: { _ in })
     }
 }

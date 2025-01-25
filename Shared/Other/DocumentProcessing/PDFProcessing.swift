@@ -31,11 +31,13 @@ final class PDFProcessingOperation: AsyncOperation {
 
     private let mode: Mode
     private let destinationFolder: URL
+    private let onComplete: (_ createdDocumentUrl: URL) -> Void
     private var tempUrls: [URL] = []
 
-    init(of mode: Mode, destinationFolder: URL) {
+    init(of mode: Mode, destinationFolder: URL, onComplete: @escaping (_ createdDocumentUrl: URL) -> Void) {
         self.mode = mode
         self.destinationFolder = destinationFolder
+        self.onComplete = onComplete
 
         save(mode)
     }
@@ -80,6 +82,8 @@ final class PDFProcessingOperation: AsyncOperation {
             // log the processing time
             let timeDiff = Date().timeIntervalSinceReferenceDate - start.timeIntervalSinceReferenceDate
             Logger.documentProcessing.info("Process completed.", metadata: ["processing_time": "\(timeDiff)", "document_page_count": "\(document.pageCount)"])
+            
+            onComplete(filepath)
         } catch {
             Logger.documentProcessing.errorAndAssert("An error occurred while processing", metadata: ["error": "\(error)"])
         }

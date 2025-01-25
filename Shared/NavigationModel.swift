@@ -43,6 +43,11 @@ final class NavigationModel {
             self.selectedDocument = nil
         })
     }
+    
+    #if !os(macOS)
+    var shareNextDocument = false
+    var lastProcessedDocumentUrl: URL?
+    #endif
 
     /// The shared singleton navigation model object.
     static let shared = NavigationModel()

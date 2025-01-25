@@ -19,15 +19,6 @@ final class DocumentProcessingService {
     private let backgroundProcessing = BackgroundProcessingActor<PDFProcessingOperation>()
     private var backgroundProcessingIds = Set<String>()
 
-//    @MainActor
-//    private(set) var documentProgress: Float = 0
-//    @MainActor
-//    private(set) var progressLabel = ""
-//    @MainActor
-//    private(set) var totalDocumentCount = 0
-//    @MainActor
-//    private(set) var processedDocumentUrl: URL?
-
     private init() {
         triggerFolderObservation()
     }
@@ -44,7 +35,15 @@ final class DocumentProcessingService {
             Logger.documentProcessing.errorAndAssert("Failed to get document")
             return
         }
-        let operation = PDFProcessingOperation(of: .images(images), destinationFolder: destinationFolder)
+        let operation = PDFProcessingOperation(of: .images(images), destinationFolder: destinationFolder, onComplete: { documentUrl in
+            #if !os(macOS)
+            Task {
+                await MainActor.run {
+                    NavigationModel.shared.lastProcessedDocumentUrl = documentUrl
+                }
+            }
+            #endif
+        })
         backgroundProcessing.queue(operation)
     }
 
@@ -53,7 +52,15 @@ final class DocumentProcessingService {
             Logger.documentProcessing.errorAndAssert("Failed to get document")
             return
         }
-        let operation = PDFProcessingOperation(of: .pdf(pdfData: pdfData, url: url), destinationFolder: destinationFolder)
+        let operation = PDFProcessingOperation(of: .pdf(pdfData: pdfData, url: url), destinationFolder: destinationFolder, onComplete: { documentUrl in
+            #if !os(macOS)
+            Task {
+                await MainActor.run {
+                    NavigationModel.shared.lastProcessedDocumentUrl = documentUrl
+                }
+            }
+            #endif
+        })
         backgroundProcessing.queue(operation)
     }
 
@@ -93,7 +100,7 @@ final class DocumentProcessingService {
                             Logger.documentProcessing.errorAndAssert("Failed to get document")
                             return
                         }
-                        let operation = await PDFProcessingOperation(of: .pdf(pdfData: pdfData, url: document.documentURL), destinationFolder: destinationFolder)
+                        let operation = await PDFProcessingOperation(of: .pdf(pdfData: pdfData, url: document.documentURL), destinationFolder: destinationFolder, onComplete: { _ in })
                         self.backgroundProcessing.queue(operation)
                     }
                 }

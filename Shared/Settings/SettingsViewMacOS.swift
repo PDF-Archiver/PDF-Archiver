@@ -45,7 +45,7 @@ struct SettingsViewMacOS: View {
                 }
                 .tag(Tabs.statistics)
             Form {
-                SubscriptionSectionView()
+                PremiumSectionView()
             }
             .tabItem {
                 Label("Premium", systemImage: "purchased.circle")

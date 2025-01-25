@@ -8,12 +8,20 @@
 import SwiftUI
 import OSLog
 
+struct ShareUrl: Identifiable {
+    var id: Int {
+        url.hashValue
+    }
+    let url: URL
+}
+
 struct SplitNavigationView: View {
     @Environment(NavigationModel.self) private var navigationModel
     @Environment(\.modelContext) private var modelContext
 
     #if !os(macOS)
     @StateObject private var settingsViewModel = SettingsViewModel()
+    @State private var shareItem: ShareUrl?
     #endif
     @State private var dropHandler = PDFDropHandler()
     @AppStorage("tutorialShown", store: .appGroup) private var tutorialShown = false
@@ -87,10 +95,12 @@ struct SplitNavigationView: View {
         }
         .modifier(AlertDataModelProvider())
         .overlay(alignment: .bottomTrailing) {
-            DropButton(state: dropHandler.documentProcessingState) {
+            DropButton(state: dropHandler.documentProcessingState) { isLongPress in
                 #if os(macOS)
                 dropHandler.startImport()
                 #else
+                navigationModel.shareNextDocument = isLongPress
+                navigationModel.lastProcessedDocumentUrl = nil
                 navigationModel.showScan()
                 #endif
             }
@@ -123,6 +133,17 @@ struct SplitNavigationView: View {
                 .edgesIgnoringSafeArea(.all)
                 .statusBar(hidden: true)
         }
+        .sheet(item: $shareItem) { shareItem in
+            AppActivityView(activityItems: [shareItem.url])
+        }
+        .onChange(of: navigationModel.lastProcessedDocumentUrl) { _, url in
+            guard navigationModel.shareNextDocument,
+                let url else { return }
+            shareItem = ShareUrl(url: url)
+            
+            navigationModel.shareNextDocument = false
+            navigationModel.lastProcessedDocumentUrl = nil
+        }
         #endif
         .onDrop(of: [.image, .pdf, .fileURL],
                 delegate: dropHandler)
@@ -150,8 +171,6 @@ struct SplitNavigationView: View {
 
         }
     }
-
-    @State var alert: Alert?
 }
 
 #if DEBUG
