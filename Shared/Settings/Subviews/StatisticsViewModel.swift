@@ -12,24 +12,20 @@ import OSLog
 @Observable
 class StatisticsViewModel {
 
+    private(set) var isInitialized = false
     private(set) var isLoading = true
-    private(set) var documents: [Document] = []
     private(set) var topTags: [(String, Int)] = []
     private(set) var topYears: [(String, Int)] = []
 
-    var taggedDocumentCount: Int {
-        documents.filter(\.isTagged)
-            .count
-    }
-
-    var untaggedDocumentCount: Int {
-        documents.filter(\.isTagged.flipped)
-            .count
-    }
+    private(set) var taggedDocumentCount: Int = 0
+    private(set) var untaggedDocumentCount: Int = 0
 
     func updateData(with documents: [Document]) {
         self.isLoading = true
-        self.documents = documents
+
+        let taggedDocumentCount = documents.filter(\.isTagged).count
+        self.taggedDocumentCount = taggedDocumentCount
+        untaggedDocumentCount = documents.count - taggedDocumentCount
 
         let taggedDocuments = documents.filter(\.isTagged)
         let tmpTopTags = taggedDocuments
@@ -53,5 +49,6 @@ class StatisticsViewModel {
             .prefix(3)
         self.topYears = Array(tmpTopYears)
         self.isLoading = false
+        self.isInitialized = true
     }
 }

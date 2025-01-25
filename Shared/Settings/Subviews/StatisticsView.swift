@@ -9,23 +9,15 @@ import SwiftData
 import SwiftUI
 
 struct StatisticsView: View {
-//    #if os(macOS)
-//    private static let bodyFont: Font = .body
-//    #else
     private static let bodyFont: Font = .subheadline
     @Environment(\.horizontalSizeClass) private var sizeClass
-//    #endif
 
     @Query private var documents: [Document]
 
-    private let viewModel = StatisticsViewModel()
+    @State private var viewModel = StatisticsViewModel()
 
     var body: some View {
-//        #if os(macOS)
-//        let isCompact = false
-//        #else
         let isCompact = sizeClass == .compact
-//        #endif
         VStack {
             HStack(alignment: .top, spacing: 12) {
                 documentsView
@@ -49,7 +41,14 @@ struct StatisticsView: View {
             }
         }
         .redacted(reason: viewModel.isLoading ? .placeholder : [])
-        .onChange(of: documents, initial: true) { _, newValue in
+        // Currently MVVM is difficult with SwiftData when you want to listen to changes in documets.
+        // So we have built this workaround to only run updateData when the view gets initialized the first time or when some changes happen.
+        // It will not be triggered again, when navigating back and forth in the SettingsView.
+        .task {
+            guard !viewModel.isInitialized else { return }
+            viewModel.updateData(with: documents)
+        }
+        .onChange(of: documents, initial: false) { _, newValue in
             viewModel.updateData(with: newValue)
         }
     }
