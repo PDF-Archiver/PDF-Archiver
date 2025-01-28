@@ -87,9 +87,7 @@ struct UntaggedDocumentView: View {
             }
         }
         .navigationTitle(navigationModel.selectedDocument?.filename ?? "")
-        #if os(macOS)
-        .navigationSubtitle(Text(navigationModel.selectedDocument?.date ?? Date(), format: .dateTime.year().month().day()))
-        #else
+        #if !os(macOS)
         .navigationBarTitleDisplayMode(.inline)
         #endif
         .toolbar {

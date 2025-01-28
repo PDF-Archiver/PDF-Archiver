@@ -20,6 +20,7 @@ struct AboutMeView: View {
                 text
             }
         }
+        .navigationTitle("About  👤")
     }
 
     private var headline: some View {
