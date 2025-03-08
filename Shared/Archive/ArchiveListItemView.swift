@@ -5,8 +5,8 @@
 //  Created by Julian Kahnert on 19.03.24.
 //
 
-import SwiftUI
 import OSLog
+import SwiftUI
 
 struct ArchiveListItemView: View {
     let documentSpecification: String

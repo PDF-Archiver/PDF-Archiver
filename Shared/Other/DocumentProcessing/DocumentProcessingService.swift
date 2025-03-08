@@ -7,9 +7,9 @@
 //
 
 import Foundation
+import OSLog
 import PDFKit
 import Vision
-import OSLog
 
 @StorageActor
 @Observable

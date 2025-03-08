@@ -5,8 +5,8 @@
 //  Created by Julian Kahnert on 03.10.24.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 @Model
 final class Tag {

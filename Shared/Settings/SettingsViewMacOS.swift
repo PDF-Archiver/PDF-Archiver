@@ -4,9 +4,9 @@
 //  Created by Julian Kahnert on 14.11.20.
 //
 
+import OSLog
 import SwiftData
 import SwiftUI
-import OSLog
 
 #if os(macOS)
 struct SettingsViewMacOS: View {

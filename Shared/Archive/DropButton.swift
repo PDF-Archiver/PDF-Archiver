@@ -5,8 +5,8 @@
 //  Created by Julian Kahnert on 28.05.24.
 //
 
-import SwiftUI
 import OSLog
+import SwiftUI
 
 struct DropButton: View {
     enum State {

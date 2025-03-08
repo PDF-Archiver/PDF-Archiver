@@ -5,8 +5,8 @@
 //  Created by Julian Kahnert on 14.03.24.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct ArchiveView: View {
     private static let formatter: NumberFormatter = {

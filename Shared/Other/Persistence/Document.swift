@@ -6,14 +6,14 @@
 //
 
 import Foundation
-import SwiftData
 import OSLog
+import SwiftData
 
 @Model
 final class Document {
     @Attribute(.unique)
     private(set) var id: Int = 42
-    var url: URL = URL(filePath: "")
+    var url = URL(filePath: "")
     var isTagged = false
     var date = Date()
     var filename: String = ""

@@ -46,7 +46,7 @@ struct PremiumSectionView: View {
         #if os(macOS)
         .frame(width: 450, height: 50)
         #endif
-        .onChange(of: navigationModel.premiumStatus) { oldValue, newValue in
+        .onChange(of: navigationModel.premiumStatus) { _, newValue in
             guard showIapView && newValue == .active else { return }
             showIapView = false
         }

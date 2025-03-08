@@ -5,9 +5,9 @@
 //  Created by Julian Kahnert on 27.12.20.
 //
 
+import OSLog
 import SwiftData
 import SwiftUI
-import OSLog
 
 @Observable
 class StatisticsViewModel {

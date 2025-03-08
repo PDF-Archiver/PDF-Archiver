@@ -6,10 +6,10 @@
 //  Copyright © 2020 Julian Kahnert. All rights reserved.
 //
 
+import OSLog
 import PDFKit
 import UIKit
 import UniformTypeIdentifiers
-import OSLog
 
 final class ShareViewController: UIViewController {
     private static let log = Logger(subsystem: "PDFArchiverShareExtension", category: "ShareViewController")
