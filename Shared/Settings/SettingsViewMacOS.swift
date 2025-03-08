@@ -168,6 +168,11 @@ struct SettingsViewMacOS: View {
                     Spacer()
                 }
 
+                HStack {
+                    Link("Terms of Use", destination: viewModel.termsOfUseUrl)
+                    Link("Privacy Policy", destination: viewModel.privacyPolicyUrl)
+                }
+
                 VStack {
                     Text("Privacy")
                         .font(.title)

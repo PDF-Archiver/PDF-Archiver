@@ -43,6 +43,14 @@ final class SettingsViewModel: ObservableObject, Log {
         URL(string: "https://pdf-archiver.io")!
     }
 
+    var termsOfUseUrl: URL {
+        URL(string: "https://pdf-archiver.io/terms")!
+    }
+
+    var privacyPolicyUrl: URL {
+        URL(string: "https://pdf-archiver.io/privacy")!
+    }
+
     private var disposables = Set<AnyCancellable>()
     private let queue = DispatchQueue(label: "MoreTabViewModel", qos: .userInitiated)
 
