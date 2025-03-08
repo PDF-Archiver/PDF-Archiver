@@ -176,5 +176,6 @@ struct SplitNavigationView: View {
 #if DEBUG
 #Preview {
     SplitNavigationView()
+        .environment(NavigationModel.shared)
 }
 #endif
