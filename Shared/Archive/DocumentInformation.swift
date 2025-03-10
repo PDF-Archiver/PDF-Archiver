@@ -22,6 +22,7 @@ struct DocumentInformation: View {
             Section {
                 DatePicker("Date", selection: $viewModel.date, displayedComponents: .date)
                     .focused($focusedField, equals: .date)
+                    .listRowSeparator(.hidden)
                 HStack {
                     Spacer()
 
@@ -102,42 +103,44 @@ struct DocumentInformation: View {
 
     private var documentTagsSection: some View {
         Section {
-            if viewModel.tags.isEmpty {
-                Text("No tags selected")
-                    .foregroundStyle(.secondary)
-            } else {
-                TagListView(tags: viewModel.tags.sorted(),
-                            isEditable: true,
-                            isSuggestion: false,
-                            isMultiLine: true,
-                            tapHandler: viewModel.remove(tag:))
-                .focusable(false)
-            }
-
-            if horizontalSizeClass != .compact {
-                TagListView(tags: viewModel.tagSuggestions.sorted(),
-                            isEditable: false,
-                            isSuggestion: true,
-                            isMultiLine: true,
-                            tapHandler: viewModel.add(tag:))
-                .focusable(false)
-            }
-
-            TextField("Enter Tag", text: $viewModel.tagSearchterm)
-                .onSubmit {
-                    let selectedTag = viewModel.tagSuggestions.sorted().first ?? viewModel.tagSearchterm.lowercased().slugified(withSeparator: "")
-                    guard !selectedTag.isEmpty else { return }
-
-                    viewModel.add(tag: selectedTag)
-                    viewModel.tagSearchterm = ""
+            VStack(alignment: .leading, spacing: 16) {
+                if viewModel.tags.isEmpty {
+                    Text("No tags selected")
+                        .foregroundStyle(.secondary)
+                } else {
+                    TagListView(tags: viewModel.tags.sorted(),
+                                isEditable: true,
+                                isSuggestion: false,
+                                isMultiLine: true,
+                                tapHandler: viewModel.remove(tag:))
+                    .focusable(false)
                 }
-                .focused($focusedField, equals: .tags)
-                #if os(macOS)
-                .textFieldStyle(.squareBorder)
-                #else
-                .keyboardType(.alphabet)
-                .autocorrectionDisabled()
-                #endif
+                
+                if horizontalSizeClass != .compact {
+                    TagListView(tags: viewModel.tagSuggestions.sorted(),
+                                isEditable: false,
+                                isSuggestion: true,
+                                isMultiLine: true,
+                                tapHandler: viewModel.add(tag:))
+                    .focusable(false)
+                }
+                
+                TextField("Enter Tag", text: $viewModel.tagSearchterm)
+                    .onSubmit {
+                        let selectedTag = viewModel.tagSuggestions.sorted().first ?? viewModel.tagSearchterm.lowercased().slugified(withSeparator: "")
+                        guard !selectedTag.isEmpty else { return }
+                        
+                        viewModel.add(tag: selectedTag)
+                        viewModel.tagSearchterm = ""
+                    }
+                    .focused($focusedField, equals: .tags)
+                    #if os(macOS)
+                    .textFieldStyle(.squareBorder)
+                    #else
+                    .keyboardType(.alphabet)
+                    .autocorrectionDisabled()
+                    #endif
+            }
         }
     }
 }

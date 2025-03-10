@@ -116,7 +116,6 @@
 		A3356F852BA4D364000AA51A /* ArchiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9AA62BA4CF04009F8381 /* ArchiveView.swift */; };
 		A3356F872BA4D364000AA51A /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A9F2BA4CF04009F8381 /* SettingsViewModel.swift */; };
 		A3356F8C2BA4D364000AA51A /* DetailRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9AC32BA4CF04009F8381 /* DetailRowView.swift */; };
-		A3356F8E2BA4D364000AA51A /* WidthSyncedRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9AB22BA4CF04009F8381 /* WidthSyncedRow.swift */; };
 		A3356F902BA4D364000AA51A /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9AAE2BA4CF04009F8381 /* Document.swift */; };
 		A3356F912BA4D364000AA51A /* VerticalLabelStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9AB62BA4CF04009F8381 /* VerticalLabelStyle.swift */; };
 		A3356F922BA4D364000AA51A /* MarkdownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9AB72BA4CF04009F8381 /* MarkdownView.swift */; };
@@ -142,7 +141,6 @@
 		A3356FC22BA4D365000AA51A /* ArchiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9AA62BA4CF04009F8381 /* ArchiveView.swift */; };
 		A3356FC42BA4D365000AA51A /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A9F2BA4CF04009F8381 /* SettingsViewModel.swift */; };
 		A3356FC92BA4D365000AA51A /* DetailRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9AC32BA4CF04009F8381 /* DetailRowView.swift */; };
-		A3356FCB2BA4D365000AA51A /* WidthSyncedRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9AB22BA4CF04009F8381 /* WidthSyncedRow.swift */; };
 		A3356FCD2BA4D365000AA51A /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9AAE2BA4CF04009F8381 /* Document.swift */; };
 		A3356FCE2BA4D365000AA51A /* VerticalLabelStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9AB62BA4CF04009F8381 /* VerticalLabelStyle.swift */; };
 		A3356FCF2BA4D365000AA51A /* MarkdownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9AB72BA4CF04009F8381 /* MarkdownView.swift */; };
@@ -400,7 +398,6 @@
 		A3FE9AA92BA4CF04009F8381 /* PDFCustomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFCustomView.swift; sourceTree = "<group>"; };
 		A3FE9AAD2BA4CF04009F8381 /* ArchiveStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveStore.swift; sourceTree = "<group>"; };
 		A3FE9AAE2BA4CF04009F8381 /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
-		A3FE9AB22BA4CF04009F8381 /* WidthSyncedRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidthSyncedRow.swift; sourceTree = "<group>"; };
 		A3FE9AB62BA4CF04009F8381 /* VerticalLabelStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalLabelStyle.swift; sourceTree = "<group>"; };
 		A3FE9AB72BA4CF04009F8381 /* MarkdownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownView.swift; sourceTree = "<group>"; };
 		A3FE9ABF2BA4CF04009F8381 /* WrappingHStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrappingHStack.swift; sourceTree = "<group>"; };
@@ -658,7 +655,6 @@
 				A31BE2D92BB8A9DA00022885 /* ErrorView.swift */,
 				A3FE9AA92BA4CF04009F8381 /* PDFCustomView.swift */,
 				A3FE9AB62BA4CF04009F8381 /* VerticalLabelStyle.swift */,
-				A3FE9AB22BA4CF04009F8381 /* WidthSyncedRow.swift */,
 				A3FE9ACD2BA4CF04009F8381 /* TagViews */,
 			);
 			path = Views;
@@ -1295,7 +1291,6 @@
 				A3356EC82BA4D318000AA51A /* Array.swift in Sources */,
 				A37FEB862C1E3A53003F7F14 /* PlatformImage.swift in Sources */,
 				A3356EEA2BA4D318000AA51A /* DirectoryDeepWatcher.swift in Sources */,
-				A3356F8E2BA4D364000AA51A /* WidthSyncedRow.swift in Sources */,
 				A3356FB92BA4D364000AA51A /* SettingsViewMacOS.swift in Sources */,
 				A3356F9E2BA4D364000AA51A /* TagView.swift in Sources */,
 				A3356ECD2BA4D318000AA51A /* NewArchiveStore+Error.swift in Sources */,
@@ -1391,7 +1386,6 @@
 				A37FEB852C1E3A53003F7F14 /* PlatformImage.swift in Sources */,
 				A34AF49D2C138C110043D56A /* StorageActor.swift in Sources */,
 				A3356F152BA4D319000AA51A /* DirectoryDeepWatcher.swift in Sources */,
-				A3356FCB2BA4D365000AA51A /* WidthSyncedRow.swift in Sources */,
 				A3356FF62BA4D365000AA51A /* SettingsViewMacOS.swift in Sources */,
 				A31BE2ED2BBB4A4000022885 /* UntaggedDocumentView.swift in Sources */,
 				A3356FDB2BA4D365000AA51A /* TagView.swift in Sources */,

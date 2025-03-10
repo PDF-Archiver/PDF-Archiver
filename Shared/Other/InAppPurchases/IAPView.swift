@@ -68,37 +68,36 @@ struct IAPView: View {
     }
 
     private var features: some View {
-        VStack(alignment: .center, spacing: 8) {
-            WidthSyncedRow(spacing: 8) {
+        VStack(alignment: .center, spacing: 16) {
+            HStack(spacing: 16) {
                 VStack(alignment: .leading, spacing: 6) {
                     Label("Search PDFs", systemImage: "magnifyingglass")
                     Label("iCloud Sync", systemImage: "cloud")
                     Label("Open Source", systemImage: "lock.open")
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
+                .frame(maxWidth: 220, alignment: .leading)
                 .padding()
                 .background(Color.paDarkGray.opacity(0.125))
                 .cornerRadius(8)
-                ZStack(alignment: .topTrailing) {
-                    VStack(alignment: .leading, spacing: 6) {
-                        Label("Scanner", systemImage: "doc.text.viewfinder")
-                        Label("Searchable PDFs", systemImage: "doc.text.magnifyingglass")
-                        Label("Tag PDFs", systemImage: "tag")
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding()
-                    .background(Color.paDarkGray.opacity(0.125))
-                    .cornerRadius(8)
-                    ZStack {
-                        Text("Premium")
-                            .padding(4)
-                            .font(.footnote)
-                            .foregroundColor(.paWhite)
-                            .background(Color.paDarkRed)
-                            .cornerRadius(8)
-                            .transition(.scale)
-                    }
-                    .offset(x: -16, y: -12)
+                
+                VStack(alignment: .leading, spacing: 6) {
+                    Label("Scanner", systemImage: "doc.text.viewfinder")
+                    Label("Searchable PDFs", systemImage: "doc.text.magnifyingglass")
+                    Label("Tag PDFs", systemImage: "tag")
+                }
+                .frame(maxWidth: 220, alignment: .leading)
+                .padding()
+                .background(Color.paDarkGray.opacity(0.125))
+                .cornerRadius(8)
+                .overlay(alignment: .topTrailing) {
+                    Text("Premium")
+                        .padding(4)
+                        .font(.footnote)
+                        .foregroundColor(.paWhite)
+                        .background(Color.paDarkRed)
+                        .cornerRadius(8)
+                        .transition(.scale)
+                        .offset(x: -16, y: -12)
                 }
             }
 
