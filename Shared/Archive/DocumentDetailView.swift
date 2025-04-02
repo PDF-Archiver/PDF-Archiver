@@ -11,6 +11,7 @@ import OSLog
 
 struct DocumentDetailView: View {
     @Environment(NavigationModel.self) private var navigationModel
+    @Environment(\.modelContext) private var modelContext
     @State private var document: Document?
     @State private var downloadStatus: Double?
 
@@ -90,7 +91,7 @@ struct DocumentDetailView: View {
 
                 // deleteButton
                 DeleteDocumentButtonView(documentUrl: navigationModel.selectedDocument?.url) { documentUrl in
-                    navigationModel.deleteDocument(url: documentUrl)
+                    navigationModel.deleteDocument(url: documentUrl, modelContext: modelContext)
                 }
             }
 #if os(macOS)
