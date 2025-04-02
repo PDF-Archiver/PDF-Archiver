@@ -1,23 +1,13 @@
-name: ASN1Swift, nameSpecified: ASN1Swift, owner: tikhop, version: 1.2.4
+name: DeepDiff, nameSpecified: DeepDiff, owner: onmyway133, version: 2.3.3, source: https://github.com/onmyway133/DeepDiff
 
-name: DeepDiff, nameSpecified: DeepDiff, owner: onmyway133, version: 2.3.3
+name: Down, nameSpecified: Down, owner: iwasrobbed, version: 0.11.0, source: https://github.com/iwasrobbed/Down
 
-name: Diagnostics, nameSpecified: Diagnostics, owner: WeTransfer, version: 1.12.0
+name: Parma, nameSpecified: Parma, owner: dasautoooo, version: 0.3.0, source: https://github.com/dasautoooo/Parma
 
-name: Down, nameSpecified: Down, owner: iwasrobbed, version: 0.11.0
+name: swift-async-algorithms, nameSpecified: swift-async-algorithms, owner: apple, version: 1.0.2, source: https://github.com/apple/swift-async-algorithms
 
-name: GraphicsRenderer, nameSpecified: GraphicsRenderer, owner: shaps80, version: 1.4.4
-
-name: Parma, nameSpecified: Parma, owner: dasautoooo, version: 0.3.0
-
-name: sentry-cocoa, nameSpecified: Sentry, owner: getsentry, version: 7.4.7
-
-name: swift-log, nameSpecified: swift-log, owner: apple, version: 1.4.2
-
-name: SwiftUIX, nameSpecified: SwiftUIX, owner: SwiftUIX, version: 
-
-name: TPInAppReceipt, nameSpecified: TPInAppReceipt, owner: tikhop, version: 3.3.0
+name: swift-collections, nameSpecified: swift-collections, owner: apple, version: 1.1.4, source: https://github.com/apple/swift-collections
 
 add-version-numbers: true
 
-LicensePlist Version: 3.13.0
+LicensePlist Version: 3.25.1

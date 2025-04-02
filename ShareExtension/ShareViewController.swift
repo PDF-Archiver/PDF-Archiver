@@ -6,12 +6,13 @@
 //  Copyright © 2020 Julian Kahnert. All rights reserved.
 //
 
-import ArchiveSharedConstants
+import OSLog
 import PDFKit
 import UIKit
 import UniformTypeIdentifiers
 
 final class ShareViewController: UIViewController {
+    private static let log = Logger(subsystem: "PDFArchiverShareExtension", category: "ShareViewController")
 
     fileprivate enum ShareError: Error {
         case containerNotFound
@@ -45,14 +46,14 @@ final class ShareViewController: UIViewController {
         super.viewDidAppear(animated)
 
         minTimeDeadline = .now() + .milliseconds(750)
-        DispatchQueue.global(qos: .userInitiated).async {
-            self.handleAttachments()
+        Task(priority: .userInitiated) {
+            await self.handleAttachments()
         }
     }
 
     // MARK: - Helper Functions
 
-    private func complete(with error: Error? = nil) {
+    private func complete(with error: (any Error)? = nil) {
         DispatchQueue.main.asyncAfter(deadline: minTimeDeadline ?? .now()) { [weak self] in
 
             if error != nil {
@@ -68,9 +69,11 @@ final class ShareViewController: UIViewController {
         }
     }
 
-    private func handleAttachments() {
+    private func handleAttachments() async {
         do {
-            let url = PathConstants.extensionTempPdfURL
+            let url = Constants.tempDocumentURL
+            try FileManager.default.createFolderIfNotExists(url)
+
             let inputItems = (extensionContext?.inputItems as? [NSExtensionItem]) ?? []
             var success = false
 
@@ -78,7 +81,7 @@ final class ShareViewController: UIViewController {
             // if we share a pdf from a website, there are 2 inputItems (pdf/url) with 1 attachment
             for item in inputItems {
                 for attachment in (item.attachments ?? []) {
-                    let attachmentSuccess = try attachment.saveData(at: url, with: Self.validUTIs)
+                    let attachmentSuccess = try await attachment.saveData(at: url, with: Self.validUTIs)
                     success = success || attachmentSuccess
                 }
 
@@ -88,7 +91,7 @@ final class ShareViewController: UIViewController {
                 }
             }
 
-            var error: Error?
+            var error: (any Error)?
             if !success {
                 error = ShareError.invalidData
             }
@@ -99,3 +102,5 @@ final class ShareViewController: UIViewController {
         }
     }
 }
+
+extension NSItemProvider: @unchecked @retroactive Sendable {}

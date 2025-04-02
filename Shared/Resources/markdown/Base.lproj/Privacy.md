@@ -15,7 +15,7 @@ Please note that data transmitted via the internet (e.g. via email communication
 ## 3. Data collection
 ### Log Data/Crash Reports
 
-The website provider/PDF Archiver/PDF Archive Viewer collect and store information that your browser/the app transmits to Sentry in "log files" or crash reports. These are:
+The website provider/PDF Archiver/PDF Archive Viewer collect and store information that your browser/the app transmits to Apple in "log files" or crash reports. These are:
 
 * Browser type and browser version
 * Device name
