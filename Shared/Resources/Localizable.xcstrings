@@ -1070,6 +1070,16 @@
         }
       }
     },
+    "Privacy Policy" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datenschutzerklärung"
+          }
+        }
+      }
+    },
     "Rate App ⭐️" : {
       "localizations" : {
         "de" : {
@@ -1372,6 +1382,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Datenschutz"
+          }
+        }
+      }
+    },
+    "Terms of Use" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AGBs"
           }
         }
       }

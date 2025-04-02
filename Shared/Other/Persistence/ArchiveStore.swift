@@ -5,11 +5,11 @@
 //  Created by Julian Kahnert on 14.03.24.
 //
 
-import Foundation
-import SwiftData
-import PDFKit.PDFDocument
-import OSLog
 import AsyncExtensions
+import Foundation
+import OSLog
+import PDFKit.PDFDocument
+import SwiftData
 
 extension Notification.Name {
     static let documentUpdate = Notification.Name("documentUpdate")

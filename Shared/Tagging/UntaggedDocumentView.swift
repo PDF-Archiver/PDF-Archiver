@@ -5,9 +5,9 @@
 //  Created by Julian Kahnert on 01.04.24.
 //
 
+import OSLog
 import SwiftData
 import SwiftUI
-import OSLog
 
 struct UntaggedDocumentView: View {
     private static let placeholderUrl = URL.temporaryDirectory

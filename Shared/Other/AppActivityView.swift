@@ -9,15 +9,15 @@ import SwiftUI
 #if os(iOS) || targetEnvironment(macCatalyst)
 struct AppActivityView: UIViewControllerRepresentable {
     typealias UIViewControllerType = UIActivityViewController
-    
+
     private let activityItems: [Any]
     private let applicationActivities: [UIActivity]?
-    
+
     private var excludedActivityTypes: [UIActivity.ActivityType] = []
-    
+
     private var onCancel: () -> Void = { }
-    private var onComplete: (Result<(activity: UIActivity.ActivityType, items: [Any]?), Error>) -> () = { _ in }
-    
+    private var onComplete: (Result<(activity: UIActivity.ActivityType, items: [Any]?), Error>) -> Void = { _ in }
+
     init(
         activityItems: [Any],
         applicationActivities: [UIActivity]? = nil
@@ -25,18 +25,18 @@ struct AppActivityView: UIViewControllerRepresentable {
         self.activityItems = activityItems
         self.applicationActivities = applicationActivities
     }
-    
+
     func makeUIViewController(context: Context) -> UIViewControllerType {
         let viewController = UIViewControllerType(
             activityItems: activityItems,
             applicationActivities: applicationActivities
         )
-        
+
         viewController.excludedActivityTypes = excludedActivityTypes
-        
+
         return viewController
     }
-    
+
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
         uiViewController.excludedActivityTypes = excludedActivityTypes
 
@@ -52,7 +52,7 @@ struct AppActivityView: UIViewControllerRepresentable {
             }
         }
     }
-    
+
     static func dismantleUIViewController(_ uiViewController: UIViewControllerType, coordinator: Coordinator) {
         uiViewController.completionWithItemsHandler = nil
     }

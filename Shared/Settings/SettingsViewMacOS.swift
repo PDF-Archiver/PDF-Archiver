@@ -4,9 +4,9 @@
 //  Created by Julian Kahnert on 14.11.20.
 //
 
+import OSLog
 import SwiftData
 import SwiftUI
-import OSLog
 
 #if os(macOS)
 struct SettingsViewMacOS: View {
@@ -166,6 +166,11 @@ struct SettingsViewMacOS: View {
                     Spacer()
                     Link("PDF Archiver Website  🖥", destination: viewModel.pdfArchiverUrl)
                     Spacer()
+                }
+
+                HStack {
+                    Link("Terms of Use", destination: viewModel.termsOfUseUrl)
+                    Link("Privacy Policy", destination: viewModel.privacyPolicyUrl)
                 }
 
                 VStack {

@@ -5,8 +5,8 @@
 //  Created by Julian Kahnert on 25.11.24.
 //
 
-import SwiftUI
 import OSLog
+import SwiftUI
 
 struct ShareUrl: Identifiable {
     var id: Int {
@@ -140,7 +140,7 @@ struct SplitNavigationView: View {
             guard navigationModel.shareNextDocument,
                 let url else { return }
             shareItem = ShareUrl(url: url)
-            
+
             navigationModel.shareNextDocument = false
             navigationModel.lastProcessedDocumentUrl = nil
         }
@@ -156,7 +156,7 @@ struct SplitNavigationView: View {
                         Logger.pdfDropHandler.errorAndAssert("Failed to get imported url", metadata: ["error": "\(error)"])
                         NotificationCenter.default.postAlert(error)
                     }
-                }
+            }
         }
         .onChange(of: dropHandler.isImporting) { oldValue, newValue in
             // special case: abort importing
@@ -176,5 +176,6 @@ struct SplitNavigationView: View {
 #if DEBUG
 #Preview {
     SplitNavigationView()
+        .environment(NavigationModel.shared)
 }
 #endif

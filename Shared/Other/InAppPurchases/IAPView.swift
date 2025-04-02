@@ -5,9 +5,9 @@
 //  Created by Julian Kahnert on 23.05.24.
 //
 
+import OSLog
 import StoreKit
 import SwiftUI
-import OSLog
 
 struct IAPView: View {
     let onCancel: () -> Void

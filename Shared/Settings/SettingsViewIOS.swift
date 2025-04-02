@@ -94,6 +94,7 @@ struct SettingsViewIOS: View {
                 Text("About  👤")
             }
             Link("PDF Archiver Website  🖥", destination: viewModel.pdfArchiverUrl)
+            Link("Terms of Use", destination: viewModel.termsOfUseUrl)
             SettingsViewModel.markdownView(for: "Terms & Privacy", withKey: "Privacy")
             SettingsViewModel.markdownView(for: "Imprint", withKey: "Imprint")
             DetailRowView(name: "Contact Support  🚑") {

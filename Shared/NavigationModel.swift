@@ -5,9 +5,9 @@
 //  Created by Julian Kahnert on 24.11.24.
 //
 
+import OSLog
 import SwiftData
 import SwiftUI
-import OSLog
 
 /// A navigation model used to persist and restore the navigation state.
 @Observable
@@ -43,7 +43,7 @@ final class NavigationModel {
             self.selectedDocument = nil
         })
     }
-    
+
     #if !os(macOS)
     var shareNextDocument = false
     var lastProcessedDocumentUrl: URL?

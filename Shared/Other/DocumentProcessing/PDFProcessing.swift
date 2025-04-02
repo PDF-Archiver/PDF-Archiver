@@ -7,9 +7,9 @@
 //
 // swiftlint:disable cyclomatic_complexity function_body_length
 
+import OSLog
 import PDFKit
 import Vision
-import OSLog
 
 #if canImport(UIKit)
 import UIKit
@@ -82,7 +82,7 @@ final class PDFProcessingOperation: AsyncOperation {
             // log the processing time
             let timeDiff = Date().timeIntervalSinceReferenceDate - start.timeIntervalSinceReferenceDate
             Logger.documentProcessing.info("Process completed.", metadata: ["processing_time": "\(timeDiff)", "document_page_count": "\(document.pageCount)"])
-            
+
             onComplete(filepath)
         } catch {
             Logger.documentProcessing.errorAndAssert("An error occurred while processing", metadata: ["error": "\(error)"])

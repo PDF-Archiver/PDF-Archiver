@@ -5,9 +5,9 @@
 //  Created by Julian Kahnert on 19.03.24.
 //
 
+import OSLog
 import SwiftData
 import SwiftUI
-import OSLog
 
 struct ArchiveListView: View {
     @Environment(NavigationModel.self) private var navigationModel

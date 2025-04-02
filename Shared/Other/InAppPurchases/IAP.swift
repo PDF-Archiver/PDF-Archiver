@@ -36,7 +36,7 @@ struct IAP: ViewModifier {
                 Logger.inAppPurchase.debug("lifetimePurchaseStatus changed: \(oldValue) -> \(newValue)")
                 updatePremiumStatus()
             }
-            .subscriptionStatusTask(for: Constants.inAppPurchaseGroupId) { state in
+            .subscriptionStatusTask(for: Constants.inAppPurchaseGroupId, priority: .background) { (state: EntitlementTaskState<[Product.SubscriptionInfo.Status]>) in
                 Logger.inAppPurchase.info("Received a new subscriptionStatus")
 
                 switch state {
@@ -77,14 +77,7 @@ struct IAP: ViewModifier {
             .task {
                 // checkForUnfinishedTransactions
                 for await transaction in Transaction.unfinished {
-                    let unsafeTransaction = transaction.unsafePayloadValue
-                    Logger.inAppPurchase.log("""
-                                Processing unfinished transaction ID \(unsafeTransaction.id) for \
-                                \(unsafeTransaction.productID)
-                                """)
-                    Task(priority: .background) {
-                        await process(transaction: transaction)
-                    }
+                    await process(transaction: transaction)
                 }
             }
     }

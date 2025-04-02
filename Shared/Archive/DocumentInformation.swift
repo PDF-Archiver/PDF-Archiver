@@ -5,10 +5,10 @@
 //  Created by Julian Kahnert on 03.04.24.
 //
 
-import SwiftData
-import SwiftUI
 import OSLog
 import PDFKit
+import SwiftData
+import SwiftUI
 
 struct DocumentInformation: View {
     @Environment(NavigationModel.self) private var navigationModel
