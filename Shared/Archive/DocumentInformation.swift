@@ -183,10 +183,9 @@ extension DocumentInformation {
 
             // analyse document content and fill suggestions
             let parserOutput = Document.parseFilename(url.lastPathComponent)
-            let tagNames = Set(parserOutput.tagNames ?? [])
+            var tagNames = Set(parserOutput.tagNames ?? [])
 
             var foundDate = parserOutput.date
-            let foundTags = tagNames.isEmpty ? nil : tagNames
             let foundSpecification = parserOutput.specification
 
             if let pdfDocument = PDFDocument(url: url) {
@@ -221,13 +220,16 @@ extension DocumentInformation {
                 if foundDate == nil {
                     foundDate = results.first
                 }
-                if foundTags == nil {
+                if tagNames.isEmpty {
                     tagSuggestions = TagParser.parse(text)
                 }
             }
 
+            // add tags from Finder tags
+            tagNames.formUnion(url.getFileTags())
+
             date = foundDate ?? Date()
-            tags = foundTags ?? []
+            tags = tagNames
             specification = foundSpecification ?? ""
         }
 
