@@ -7,18 +7,39 @@
 
 import Foundation
 
-final class DirectoryDeepWatcher: Log {
+actor DirectoryDeepWatcher: Log {
+    let baseUrl: URL
+    let changedUrlStream: AsyncStream<URL>
+    private let changedUrlContinuation: AsyncStream<URL>.Continuation
+    private let queue: DispatchQueue
 
-    typealias FolderChangeHandler = (URL) -> Void
-    private typealias SourceObject = (source: any DispatchSourceFileSystemObject, descriptor: Int32)
+    private var sources: [URL: (DispatchSourceWatcher, Task<Void, Never>)] = [:]
 
-    private let queue = DispatchQueue(label: "DirectoryDeepWatcher \(UUID().uuidString)", qos: .background)
-    private let folderChangeHandler: FolderChangeHandler
-    private var sources = [URL: SourceObject]()
+    init(at baseUrl: URL) throws {
+        self.baseUrl = baseUrl
 
-    init(_ baseUrl: URL, withHandler handler: @escaping FolderChangeHandler) throws {
-        self.folderChangeHandler = handler
+        let (stream, continuantion) = AsyncStream<URL>.makeStream()
+        self.changedUrlStream = stream
+        self.changedUrlContinuation = continuantion
 
+        self.queue = DispatchQueue(label: "DirectoryDeepWatcher-\(baseUrl.hashValue)", qos: .background)
+
+        Task {
+            try await initializeWatcher()
+        }
+    }
+
+    deinit {
+        Task { [sources] in
+            for (_, source) in sources {
+                source.1.cancel()
+                await source.0.cancel()
+            }
+        }
+        sources.removeAll()
+    }
+
+    private func initializeWatcher() async throws {
         Self.log.debug("Creating new directory watcher.", metadata: ["path": "\(baseUrl.path)"])
 
         do {
@@ -37,39 +58,29 @@ final class DirectoryDeepWatcher: Log {
         }
     }
 
-    deinit {
-        sources.forEach { $0.value.source.cancel() }
-        sources.removeAll()
-    }
-
     private func createAndAddSource(from url: URL) throws {
-
         // no need to create a second source
         guard sources[url] == nil else { return }
 
-        let descriptor = open(url.path, O_EVTONLY)
-        guard descriptor != -1 else { throw WatcherError.failedToCreateFileDescriptor }
+        let watcher = try DispatchSourceWatcher(queue: queue, url: url)
+        let task = Task { [weak self] in
+            for await url in watcher.changedUrlStream {
+                guard let self,
+                      !Task.isCancelled else { return }
+                self.changedUrlContinuation.yield(url)
 
-        let source = DispatchSource.makeFileSystemObjectSource(fileDescriptor: descriptor, eventMask: [.write, .rename, .delete], queue: queue)
-        source.setEventHandler { [weak self] in
-            self?.folderChangeHandler(url)
-
-            Self.log.debug("DispatchSource event has happened.", metadata: ["path": "\(url.path)"])
-            do {
-                // iterate (once again) over all folders and subfolders, to get all changes
-                try self?.startWatching(contentsOf: url)
-            } catch {
-                Self.log.error("Failed to start watching in event handler", metadata: ["error": "\(error)"])
+                Self.log.debug("DispatchSource event has happened.", metadata: ["path": "\(url.path)"])
+                do {
+                    // iterate (once again) over all folders and subfolders, to get all changes
+                    try await self.startWatching(contentsOf: url)
+                } catch {
+                    Self.log.error("Failed to start watching in event handler", metadata: ["error": "\(error)"])
+                }
             }
         }
 
-        source.setCancelHandler {
-            close(descriptor)
-        }
-        source.resume()
-
         // add new source to the source dictionary
-        sources[url] = (source, descriptor)
+        sources[url] = (watcher, task)
     }
 
     private func startWatching(contentsOf url: URL) throws {
@@ -95,5 +106,39 @@ final class DirectoryDeepWatcher: Log {
     private enum WatcherError: Error {
         case failedToCreateEnumerator
         case failedToCreateFileDescriptor
+    }
+}
+
+extension DirectoryDeepWatcher {
+    private actor DispatchSourceWatcher: Log {
+        let url: URL
+        let changedUrlStream: AsyncStream<URL>
+        private let source: DispatchSourceFileSystemObject
+
+        init(queue: DispatchQueue, url: URL) throws {
+            self.url = url
+
+            let (stream, continuantion) = AsyncStream<URL>.makeStream()
+            self.changedUrlStream = stream
+
+            let descriptor = open(url.path, O_EVTONLY)
+            guard descriptor != -1 else { throw WatcherError.failedToCreateFileDescriptor }
+
+            source = DispatchSource.makeFileSystemObjectSource(fileDescriptor: descriptor,
+                                                               eventMask: [.write, .rename, .delete],
+                                                               queue: queue)
+            source.setEventHandler {
+                continuantion.yield(url)
+            }
+
+            source.setCancelHandler {
+                close(descriptor)
+            }
+            source.resume()
+        }
+
+        func cancel() {
+            source.cancel()
+        }
     }
 }

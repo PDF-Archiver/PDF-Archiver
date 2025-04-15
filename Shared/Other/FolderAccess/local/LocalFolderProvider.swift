@@ -16,7 +16,7 @@ final class LocalFolderProvider: FolderProvider {
 
     private let didAccessSecurityScope: Bool
 
-    private var watcher: DirectoryDeepWatcher! = nil
+    private let watcher: DirectoryDeepWatcher
     private let fileManager = FileManager.default
     private let fileProperties: [URLResourceKey] = [.ubiquitousItemDownloadingStatusKey, .ubiquitousItemIsDownloadingKey, .fileSizeKey, .localizedNameKey]
 
@@ -33,19 +33,18 @@ final class LocalFolderProvider: FolderProvider {
 
         Self.log.debug("Creating file provider.", metadata: ["url": "\(baseUrl.path)"])
 
-        self.watcher = try DirectoryDeepWatcher(baseUrl, withHandler: { [weak self] _ in
-            guard let self = self else { return }
+        self.watcher = try DirectoryDeepWatcher(at: baseUrl)
 
-            Task {
+        Task(priority: .background) {
+            // build initial changes
+            let changes = await self.createChanges()
+            self.folderChangeContinuation.yield(changes)
+
+            // listen to changes in folder
+            for await _ in self.watcher.changedUrlStream {
                 let changes = await self.createChanges()
                 self.folderChangeContinuation.yield(changes)
             }
-        })
-
-        // build initial changes
-        Task(priority: .background) {
-            let changes = await self.createChanges()
-            self.folderChangeContinuation.yield(changes)
         }
     }
 
