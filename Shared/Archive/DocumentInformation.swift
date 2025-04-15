@@ -115,7 +115,7 @@ struct DocumentInformation: View {
                                 tapHandler: viewModel.remove(tag:))
                     .focusable(false)
                 }
-                
+
                 if horizontalSizeClass != .compact {
                     TagListView(tags: viewModel.tagSuggestions.sorted(),
                                 isEditable: false,
@@ -124,12 +124,12 @@ struct DocumentInformation: View {
                                 tapHandler: viewModel.add(tag:))
                     .focusable(false)
                 }
-                
+
                 TextField("Enter Tag", text: $viewModel.tagSearchterm)
                     .onSubmit {
                         let selectedTag = viewModel.tagSuggestions.sorted().first ?? viewModel.tagSearchterm.lowercased().slugified(withSeparator: "")
                         guard !selectedTag.isEmpty else { return }
-                        
+
                         viewModel.add(tag: selectedTag)
                         viewModel.tagSearchterm = ""
                     }

@@ -79,7 +79,7 @@ struct IAPView: View {
                 .padding()
                 .background(Color.paDarkGray.opacity(0.125))
                 .cornerRadius(8)
-                
+
                 VStack(alignment: .leading, spacing: 6) {
                     Label("Scanner", systemImage: "doc.text.viewfinder")
                     Label("Searchable PDFs", systemImage: "doc.text.magnifyingglass")

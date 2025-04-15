@@ -23,7 +23,7 @@ final class Document {
     }
     var specification: String = ""
     @Relationship(inverse: \Tag.documents) var _tagItems: [Tag]?
-    
+
     @Transient
     var tagItems: [Tag] {
         _tagItems ?? []
