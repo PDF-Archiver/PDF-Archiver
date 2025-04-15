@@ -340,7 +340,7 @@ actor ArchiveStore: ModelActor {
             document._sizeInBytes = details.sizeInBytes
             document.date = date
             document.specification = specification
-            document._tagItems = tags
+            document.tagItems = tags
             document.downloadStatus = downloadStatus
 
             return document
