@@ -203,7 +203,6 @@
 		A39DBD7D2C29B02B000DD224 /* PremiumSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39DBD7B2C29B02B000DD224 /* PremiumSectionView.swift */; };
 		A3AEBC2C2DADA6B400DE392E /* DirectoryDeepWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3AEBC2B2DADA6B400DE392E /* DirectoryDeepWatcher.swift */; };
 		A3AEBC2D2DADA6B400DE392E /* DirectoryDeepWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3AEBC2B2DADA6B400DE392E /* DirectoryDeepWatcher.swift */; };
-		A3AEBC2E2DADB43000DE392E /* DeepDirectoryWatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9AE92BA4CF2B009F8381 /* DeepDirectoryWatcherTests.swift */; };
 		A3B277292BA4D89C00F6F8D0 /* Parma in Frameworks */ = {isa = PBXBuildFile; productRef = A3B277282BA4D89C00F6F8D0 /* Parma */; };
 		A3B2772B2BA4D90300F6F8D0 /* NSItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A432BA4CF04009F8381 /* NSItemProvider.swift */; };
 		A3B5D8FB2BB36414002B9FF1 /* SearchToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B5D8FA2BB36414002B9FF1 /* SearchToken.swift */; };
@@ -1450,7 +1449,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A3AEBC2E2DADB43000DE392E /* DeepDirectoryWatcherTests.swift in Sources */,
 				3489D73B24A3C53E0035E64F /* Tests_macOS.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
