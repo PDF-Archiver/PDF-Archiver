@@ -196,7 +196,13 @@ actor ArchiveStore: ModelActor {
             if isInitialSync {
                 let predicate = #Predicate<Document> { $0._created < folderDidchangeStart }
 
-                try modelContext.delete(model: Document.self, where: predicate)
+                // do not batch delete the documents, since sometimes a "Batch delete failed due to mandatory OTO nullify inverse on ..." occurs
+                // try modelContext.delete(model: Document.self, where: predicate)
+                let documents = try modelContext.fetch(.init(predicate: predicate))
+                for document in documents {
+                    modelContext.delete(document)
+                }
+
                 try modelContext.save()
             }
 
