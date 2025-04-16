@@ -24,7 +24,8 @@ extension URL: Log {
 
     func uniqueId() -> Int? {
         do {
-            return try resourceValues(forKeys: [.documentIdentifierKey]).documentIdentifier
+            // we use the path hashValue as a backup
+            return try resourceValues(forKeys: [.documentIdentifierKey]).documentIdentifier ?? path().hashValue
         } catch {
             log.error("Error while getting unique document identifier", metadata: ["error": "\(error)"])
             return nil
