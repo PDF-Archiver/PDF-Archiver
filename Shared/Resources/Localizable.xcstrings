@@ -549,6 +549,16 @@
         }
       }
     },
+    "Drag and drop a PDF document to this area to import it.\n\nOr click here to open the file browser." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ziehen Sie ein PDF-Dokument per Drag & Drop in diesen Bereich, um es zu importieren.\n\nOder klicken Sie hier, um den Dateibrowser zu öffnen."
+          }
+        }
+      }
+    },
     "Drop to import file" : {
       "localizations" : {
         "de" : {
@@ -644,6 +654,16 @@
     },
     "iCloud Sync" : {
       "shouldTranslate" : false
+    },
+    "Import Document" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importiere Dokument"
+          }
+        }
+      }
     },
     "Imprint" : {
       "localizations" : {
@@ -831,6 +851,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tag it."
+          }
+        }
+      }
+    },
+    "Keyboard Shortcuts" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tastaturbefehle"
           }
         }
       }
@@ -1180,6 +1210,16 @@
         }
       }
     },
+    "Scan Document" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan Dokument"
+          }
+        }
+      }
+    },
     "Scan it. Tag it. Find it." : {
       "shouldTranslate" : false
     },
@@ -1376,6 +1416,16 @@
         }
       }
     },
+    "Tap short to start scanning a document.\n\nLong press to scan and share the document after processing." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kurz antippen, um das Scannen eines Dokuments zu starten.\n\nLang drücken, um das Dokument nach der Verarbeitung zu scannen und zu teilen."
+          }
+        }
+      }
+    },
     "Terms & Privacy" : {
       "localizations" : {
         "de" : {
@@ -1512,6 +1562,16 @@
     },
     "Update Finder Tags" : {
       "shouldTranslate" : false
+    },
+    "Use keyboard shortcuts to navigate the document information:\n\n**TAB** to move to the next field\n**CMD S** to save the document" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verwende Tastenkombinationen, um in den Dokumentinformationen zu navigieren:\n\n**TAB** zum Wechseln in das nächste Feld\n**CMD S** zum Speichern des Dokuments"
+          }
+        }
+      }
     },
     "Version %@" : {
       "shouldTranslate" : false

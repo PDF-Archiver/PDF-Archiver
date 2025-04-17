@@ -8,6 +8,7 @@
 import OSLog
 import SwiftData
 import SwiftUI
+import TipKit
 
 /// A navigation model used to persist and restore the navigation state.
 @Observable
@@ -57,6 +58,7 @@ final class NavigationModel {
     private init() {
         mode = UserDefaults.isTaggingMode ? .tagging : .archive
         premiumStatus = .loading
+        try? Tips.configure()
     }
 
     func switchTaggingMode(in modelContext: ModelContext) {

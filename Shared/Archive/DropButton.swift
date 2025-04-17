@@ -18,6 +18,9 @@ struct DropButton: View {
 
     var body: some View {
         Button {
+            #if os(macOS)
+            action(false)
+            #endif
         } label: {
             if state == .noDocument {
                 Image(systemName: "doc.viewfinder")
@@ -50,6 +53,7 @@ struct DropButton: View {
 
             }
         }
+        #if !os(macOS)
         .simultaneousGesture(
             LongPressGesture()
                 .onEnded { _ in
@@ -64,6 +68,14 @@ struct DropButton: View {
                     action(isLongPress)
                 }
         )
+        #endif
+        .popoverTip(ArchiverTips.dropButton) { tipAction in
+            if tipAction.id == "scan" {
+                action(false)
+            } else if tipAction.id == "scanAndShare" {
+                action(true)
+            }
+        }
     }
 }
 
