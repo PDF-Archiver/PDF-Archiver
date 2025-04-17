@@ -9,16 +9,19 @@ import OSLog
 import SwiftUI
 
 struct DropButton: View {
-    enum State {
+    enum ButtonState {
         case noDocument, targeted, processing, finished
     }
 
-    let state: State
+    let state: ButtonState
     let action: (_ isLongPress: Bool) -> Void
-
+    
+    @State private var sensoryTrigger = false
+    
     var body: some View {
         Button {
             #if os(macOS)
+            sensoryTrigger.toggle()
             action(false)
             #endif
         } label: {
@@ -57,6 +60,7 @@ struct DropButton: View {
         .simultaneousGesture(
             LongPressGesture()
                 .onEnded { _ in
+                    sensoryTrigger.toggle()
                     let isLongPress = true
                     action(isLongPress)
                 }
@@ -64,18 +68,21 @@ struct DropButton: View {
         .highPriorityGesture(
             TapGesture()
                 .onEnded { _ in
+                    sensoryTrigger.toggle()
                     let isLongPress = false
                     action(isLongPress)
                 }
         )
         #endif
         .popoverTip(ArchiverTips.dropButton) { tipAction in
+            sensoryTrigger.toggle()
             if tipAction.id == "scan" {
                 action(false)
             } else if tipAction.id == "scanAndShare" {
                 action(true)
             }
         }
+        .sensoryFeedback(.success, trigger: sensoryTrigger)
     }
 }
 

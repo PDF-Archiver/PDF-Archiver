@@ -77,7 +77,9 @@ struct DocumentInformation: View {
                     }
                     .focused($focusedField, equals: .save)
                     .keyboardShortcut("s", modifiers: [.command])
+                    #if os(macOS)
                     .popoverTip(ArchiverTips.saveDocumentInformation, arrowEdge: .trailing)
+                    #endif
                     .tipImageSize(.init(width: 24, height: 24))
                     Spacer()
                 }
