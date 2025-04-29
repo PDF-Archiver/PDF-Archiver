@@ -74,14 +74,14 @@ struct DropButton: View {
                 }
         )
         #endif
-        .popoverTip(ArchiverTips.dropButton) { tipAction in
-            sensoryTrigger.toggle()
-            if tipAction.id == "scan" {
-                action(false)
-            } else if tipAction.id == "scanAndShare" {
-                action(true)
-            }
-        }
+//        .popoverTip(ArchiverTips.dropButton) { tipAction in
+//            sensoryTrigger.toggle()
+//            if tipAction.id == "scan" {
+//                action(false)
+//            } else if tipAction.id == "scanAndShare" {
+//                action(true)
+//            }
+//        }
         .sensoryFeedback(.success, trigger: sensoryTrigger)
     }
 }
