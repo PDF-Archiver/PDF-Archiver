@@ -15,7 +15,7 @@ extension Notification.Name {
     static let documentUpdate = Notification.Name("documentUpdate")
 }
 
-actor ArchiveStore: ModelActor {
+actor ArchiveStore: ModelActor, Log {
     static let shared = ArchiveStore(modelContainer: container)
 
     #if DEBUG
@@ -40,6 +40,8 @@ actor ArchiveStore: ModelActor {
     private var untaggedFolders: [URL] = []
     private var providers: [any FolderProvider] = []
     private var folderObservationTasks: [Task<Void, Never>] = []
+    // Since we run a full sync at startup, we have to remove all old documents initially.
+    private var removeOldDocumentsInNextSync = true
 
     private init(modelContainer: ModelContainer) {
         self.modelContainer = modelContainer
@@ -67,11 +69,10 @@ actor ArchiveStore: ModelActor {
         providers = foundProviders.compactMap { $0 }
         for provider in providers {
             let task = Task {
-                var isInitialSync = true
                 let folderChangeStream = await provider.folderChangeStream
                 for await changes in folderChangeStream {
-                    await self.folderDidChange(changes, isInitialSync: isInitialSync)
-                    isInitialSync = false
+                    Self.log.debug("Found changes \(changes)")
+                    self.folderDidChange(changes)
                 }
             }
             folderObservationTasks.append(task)
@@ -158,6 +159,9 @@ actor ArchiveStore: ModelActor {
 
     func reloadArchiveDocuments() throws {
         Task {
+            folderObservationTasks.forEach { $0.cancel() }
+            folderObservationTasks.removeAll()
+            
             let archiveUrl = try await PathManager.shared.getArchiveUrl()
             let untaggedUrl = try await PathManager.shared.getUntaggedUrl()
 
@@ -167,11 +171,18 @@ actor ArchiveStore: ModelActor {
             let untaggedFolders = [untaggedUrl]
             #endif
 
+            removeOldDocumentsInNextSync = true
             await update(archiveFolder: archiveUrl, untaggedFolders: untaggedFolders)
         }
     }
 
-    private func folderDidChange(_ changes: [FileChange], isInitialSync: Bool) async {
+    /// Process the changes of one folder
+    ///
+    /// Attention: There will be a fatalError, when this function is async:
+    /// ```
+    /// Thread 1: Fatal error: This model instance was invalidated because its backing data could no longer be found the store. PersistentIdentifier(id: SwiftData.PersistentIdentifier.ID(backing: SwiftData.PersistentIdentifier.PersistentIdentifierBacking.managedObjectID
+    /// ```
+    private func folderDidChange(_ changes: [FileChange]) {
         // improve performance by caching for this "folderDidChange" run
         var tagCache: [String: PersistentIdentifier] = [:]
 
@@ -183,9 +194,6 @@ actor ArchiveStore: ModelActor {
             // create/update documents
             for change in changes {
                 try processFileChange(with: change, tagCache: &tagCache, created: folderDidchangeStart)
-
-                // we throttle the creation of
-                try await Task.sleep(for: .milliseconds(1))
             }
 
             // we have to save the documents here, because the upsert will be done on save
@@ -193,7 +201,8 @@ actor ArchiveStore: ModelActor {
             try modelContext.save()
 
             // delete old documents in db
-            if isInitialSync {
+            if removeOldDocumentsInNextSync {
+                removeOldDocumentsInNextSync = false
                 let predicate = #Predicate<Document> { $0._created < folderDidchangeStart }
 
                 // do not batch delete the documents, since sometimes a "Batch delete failed due to mandatory OTO nullify inverse on ..." occurs
