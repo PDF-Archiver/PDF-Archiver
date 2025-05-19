@@ -184,6 +184,8 @@
 		A36FB1852CCC3A76006ADDE9 /* DeleteDocumentButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36FB1832CCC3A76006ADDE9 /* DeleteDocumentButtonView.swift */; };
 		A370DF8F2D22D6BB0062CDC9 /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = A370DF8E2D22D6B80062CDC9 /* Sequence.swift */; };
 		A370DF902D22D6BB0062CDC9 /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = A370DF8E2D22D6B80062CDC9 /* Sequence.swift */; };
+		A37360AF2DB17057002C1A81 /* ArchiverTips.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37360AE2DB1704E002C1A81 /* ArchiverTips.swift */; };
+		A37360B02DB17057002C1A81 /* ArchiverTips.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37360AE2DB1704E002C1A81 /* ArchiverTips.swift */; };
 		A37FEB822C1E1642003F7F14 /* BackgroundProcessingActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37FEB812C1E1640003F7F14 /* BackgroundProcessingActor.swift */; };
 		A37FEB832C1E1642003F7F14 /* BackgroundProcessingActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37FEB812C1E1640003F7F14 /* BackgroundProcessingActor.swift */; };
 		A37FEB852C1E3A53003F7F14 /* PlatformImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37FEB842C1E3A4D003F7F14 /* PlatformImage.swift */; };
@@ -203,7 +205,6 @@
 		A39DBD7D2C29B02B000DD224 /* PremiumSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39DBD7B2C29B02B000DD224 /* PremiumSectionView.swift */; };
 		A3AEBC2C2DADA6B400DE392E /* DirectoryDeepWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3AEBC2B2DADA6B400DE392E /* DirectoryDeepWatcher.swift */; };
 		A3AEBC2D2DADA6B400DE392E /* DirectoryDeepWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3AEBC2B2DADA6B400DE392E /* DirectoryDeepWatcher.swift */; };
-		A3AEBC2E2DADB43000DE392E /* DeepDirectoryWatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9AE92BA4CF2B009F8381 /* DeepDirectoryWatcherTests.swift */; };
 		A3B277292BA4D89C00F6F8D0 /* Parma in Frameworks */ = {isa = PBXBuildFile; productRef = A3B277282BA4D89C00F6F8D0 /* Parma */; };
 		A3B2772B2BA4D90300F6F8D0 /* NSItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3FE9A432BA4CF04009F8381 /* NSItemProvider.swift */; };
 		A3B5D8FB2BB36414002B9FF1 /* SearchToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B5D8FA2BB36414002B9FF1 /* SearchToken.swift */; };
@@ -334,6 +335,7 @@
 		A36FB1802CCC23B3006ADDE9 /* DocumentLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentLoadingView.swift; sourceTree = "<group>"; };
 		A36FB1832CCC3A76006ADDE9 /* DeleteDocumentButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteDocumentButtonView.swift; sourceTree = "<group>"; };
 		A370DF8E2D22D6B80062CDC9 /* Sequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
+		A37360AE2DB1704E002C1A81 /* ArchiverTips.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiverTips.swift; sourceTree = "<group>"; };
 		A37FEB812C1E1640003F7F14 /* BackgroundProcessingActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundProcessingActor.swift; sourceTree = "<group>"; };
 		A37FEB842C1E3A4D003F7F14 /* PlatformImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformImage.swift; sourceTree = "<group>"; };
 		A38256BF2C1F552C00416A08 /* PDFArchiverIOSApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFArchiverIOSApp.swift; sourceTree = "<group>"; };
@@ -635,6 +637,7 @@
 		A3002ADB2BAA295300663B4F /* Other */ = {
 			isa = PBXGroup;
 			children = (
+				A37360AD2DB17046002C1A81 /* Tips */,
 				A31698882D42E2F200065A9A /* AppActivityView.swift */,
 				A3FE9A932BA4CF04009F8381 /* DateParser.swift */,
 				A36FB1802CCC23B3006ADDE9 /* DocumentLoadingView.swift */,
@@ -689,6 +692,14 @@
 				A3579A552BFFD802001D921C /* IAP.swift */,
 			);
 			path = InAppPurchases;
+			sourceTree = "<group>";
+		};
+		A37360AD2DB17046002C1A81 /* Tips */ = {
+			isa = PBXGroup;
+			children = (
+				A37360AE2DB1704E002C1A81 /* ArchiverTips.swift */,
+			);
+			path = Tips;
 			sourceTree = "<group>";
 		};
 		A39D50832BFDF7190028696A /* Tagging */ = {
@@ -1313,6 +1324,7 @@
 				A3356FB72BA4D364000AA51A /* StorageSelectionView.swift in Sources */,
 				A3356FBB2BA4D364000AA51A /* TagListView.swift in Sources */,
 				A3356F962BA4D364000AA51A /* OnboardingView.swift in Sources */,
+				A37360B02DB17057002C1A81 /* ArchiverTips.swift in Sources */,
 				A34CECB72CAC8EA000453AD6 /* ArchiveListItemView.swift in Sources */,
 				A3356F8C2BA4D364000AA51A /* DetailRowView.swift in Sources */,
 				A3356F922BA4D364000AA51A /* MarkdownView.swift in Sources */,
@@ -1409,6 +1421,7 @@
 				A3579A542BFF6187001D921C /* IAPView.swift in Sources */,
 				A3356F042BA4D319000AA51A /* FolderProvider.swift in Sources */,
 				A3356FF42BA4D365000AA51A /* StorageSelectionView.swift in Sources */,
+				A37360AF2DB17057002C1A81 /* ArchiverTips.swift in Sources */,
 				A36FB1852CCC3A76006ADDE9 /* DeleteDocumentButtonView.swift in Sources */,
 				A3D8F9412BB607B100BE3E3A /* DocumentDetailView.swift in Sources */,
 				A3356FF82BA4D365000AA51A /* TagListView.swift in Sources */,
@@ -1450,7 +1463,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A3AEBC2E2DADB43000DE392E /* DeepDirectoryWatcherTests.swift in Sources */,
 				3489D73B24A3C53E0035E64F /* Tests_macOS.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

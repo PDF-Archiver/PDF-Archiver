@@ -21,7 +21,7 @@ import UniformTypeIdentifiers
 @Observable
 @MainActor
 final class PDFDropHandler: Log {
-    private(set) var documentProcessingState: DropButton.State = .noDocument
+    private(set) var documentProcessingState: DropButton.ButtonState = .noDocument
     var isImporting = false
 
     func startImport() {

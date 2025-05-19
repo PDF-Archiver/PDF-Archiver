@@ -22,12 +22,9 @@ final class Document {
         Measurement(value: _sizeInBytes, unit: .bytes)
     }
     var specification: String = ""
-    @Relationship(inverse: \Tag.documents) var _tagItems: [Tag]?
 
-    @Transient
-    var tagItems: [Tag] {
-        _tagItems ?? []
-    }
+    @Relationship(deleteRule: .cascade, inverse: \Tag.documents)
+    var tagItems: [Tag] = []
 
     @Transient
     var tags: [String] {
@@ -54,7 +51,7 @@ final class Document {
         self._sizeInBytes = sizeInBytes
         self.date = date
         self.specification = specification
-        self._tagItems = tags
+        self.tagItems = tags
         self.downloadStatus = downloadStatus
         self._created = created
     }
