@@ -125,11 +125,6 @@ struct SettingsViewMacOS: View {
             HStack(spacing: 4) {
                 if let observedFolderURL = viewModel.observedFolderURL {
                     Text(observedFolderURL.path)
-//                    Spacer()
-//                    Button(action: viewModel.clearObservedFolder) {
-//                        Image(systemName: "xmark.circle.fill")
-//                            .foregroundColor(.secondary)
-//                    }
                 } else {
                     Text("Not Selected")
                         .opacity(0.4)
@@ -139,7 +134,14 @@ struct SettingsViewMacOS: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(Color.paSecondaryBackground)
             .cornerRadius(4)
-            Button("Select", action: viewModel.selectObservedFolder)
+            if viewModel.observedFolderURL != nil {
+                Button(action: viewModel.clearObservedFolder) {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(.secondary)
+                }
+            } else {
+                Button("Select", action: viewModel.selectObservedFolder)
+            }
         }
     }
 
