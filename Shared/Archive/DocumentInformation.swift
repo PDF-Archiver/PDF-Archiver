@@ -22,6 +22,7 @@ struct DocumentInformation: View {
             Section {
                 DatePicker("Date", selection: $viewModel.date, displayedComponents: .date)
                     .focused($focusedField, equals: .date)
+                    .listRowSeparator(.hidden)
                 HStack {
                     Spacer()
 
@@ -76,6 +77,10 @@ struct DocumentInformation: View {
                     }
                     .focused($focusedField, equals: .save)
                     .keyboardShortcut("s", modifiers: [.command])
+//                    #if os(macOS)
+//                    .popoverTip(ArchiverTips.saveDocumentInformation, arrowEdge: .trailing)
+//                    #endif
+                    .tipImageSize(.init(width: 24, height: 24))
                     Spacer()
                 }
             }
@@ -102,42 +107,44 @@ struct DocumentInformation: View {
 
     private var documentTagsSection: some View {
         Section {
-            if viewModel.tags.isEmpty {
-                Text("No tags selected")
-                    .foregroundStyle(.secondary)
-            } else {
-                TagListView(tags: viewModel.tags.sorted(),
-                            isEditable: true,
-                            isSuggestion: false,
-                            isMultiLine: true,
-                            tapHandler: viewModel.remove(tag:))
-                .focusable(false)
-            }
-
-            if horizontalSizeClass != .compact {
-                TagListView(tags: viewModel.tagSuggestions.sorted(),
-                            isEditable: false,
-                            isSuggestion: true,
-                            isMultiLine: true,
-                            tapHandler: viewModel.add(tag:))
-                .focusable(false)
-            }
-
-            TextField("Enter Tag", text: $viewModel.tagSearchterm)
-                .onSubmit {
-                    let selectedTag = viewModel.tagSuggestions.sorted().first ?? viewModel.tagSearchterm.lowercased().slugified(withSeparator: "")
-                    guard !selectedTag.isEmpty else { return }
-
-                    viewModel.add(tag: selectedTag)
-                    viewModel.tagSearchterm = ""
+            VStack(alignment: .leading, spacing: 16) {
+                if viewModel.tags.isEmpty {
+                    Text("No tags selected")
+                        .foregroundStyle(.secondary)
+                } else {
+                    TagListView(tags: viewModel.tags.sorted(),
+                                isEditable: true,
+                                isSuggestion: false,
+                                isMultiLine: true,
+                                tapHandler: viewModel.remove(tag:))
+                    .focusable(false)
                 }
-                .focused($focusedField, equals: .tags)
-                #if os(macOS)
-                .textFieldStyle(.squareBorder)
-                #else
-                .keyboardType(.alphabet)
-                .autocorrectionDisabled()
-                #endif
+
+                if horizontalSizeClass != .compact {
+                    TagListView(tags: viewModel.tagSuggestions.sorted(),
+                                isEditable: false,
+                                isSuggestion: true,
+                                isMultiLine: true,
+                                tapHandler: viewModel.add(tag:))
+                    .focusable(false)
+                }
+
+                TextField("Enter Tag", text: $viewModel.tagSearchterm)
+                    .onSubmit {
+                        let selectedTag = viewModel.tagSuggestions.sorted().first ?? viewModel.tagSearchterm.lowercased().slugified(withSeparator: "")
+                        guard !selectedTag.isEmpty else { return }
+
+                        viewModel.add(tag: selectedTag)
+                        viewModel.tagSearchterm = ""
+                    }
+                    .focused($focusedField, equals: .tags)
+                    #if os(macOS)
+                    .textFieldStyle(.squareBorder)
+                    #else
+                    .keyboardType(.alphabet)
+                    .autocorrectionDisabled()
+                    #endif
+            }
         }
     }
 }
@@ -180,10 +187,9 @@ extension DocumentInformation {
 
             // analyse document content and fill suggestions
             let parserOutput = Document.parseFilename(url.lastPathComponent)
-            let tagNames = Set(parserOutput.tagNames ?? [])
+            var tagNames = Set(parserOutput.tagNames ?? [])
 
             var foundDate = parserOutput.date
-            let foundTags = tagNames.isEmpty ? nil : tagNames
             let foundSpecification = parserOutput.specification
 
             if let pdfDocument = PDFDocument(url: url) {
@@ -218,13 +224,16 @@ extension DocumentInformation {
                 if foundDate == nil {
                     foundDate = results.first
                 }
-                if foundTags == nil {
+                if tagNames.isEmpty {
                     tagSuggestions = TagParser.parse(text)
                 }
             }
 
+            // add tags from Finder tags
+            tagNames.formUnion(url.getFileTags())
+
             date = foundDate ?? Date()
-            tags = foundTags ?? []
+            tags = tagNames
             specification = foundSpecification ?? ""
         }
 

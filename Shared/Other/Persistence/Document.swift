@@ -22,7 +22,9 @@ final class Document {
         Measurement(value: _sizeInBytes, unit: .bytes)
     }
     var specification: String = ""
-    @Relationship(inverse: \Tag.documents) var tagItems: [Tag] = []
+
+    @Relationship(deleteRule: .cascade, inverse: \Tag.documents)
+    var tagItems: [Tag] = []
 
     @Transient
     var tags: [String] {

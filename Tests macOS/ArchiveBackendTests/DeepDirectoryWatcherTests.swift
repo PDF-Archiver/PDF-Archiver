@@ -4,6 +4,7 @@
 //  Created by Julian Kahnert on 24.06.20.
 //
 
+@testable import PDFArchiver
 import XCTest
 
 final class DeepDirectoryWatcherTests: XCTestCase {
@@ -49,9 +50,12 @@ final class DeepDirectoryWatcherTests: XCTestCase {
         let folderToRemove = try XCTUnwrap(folders.shuffled().first)
 
         let expectation = XCTestExpectation(description: "Document processing completed.")
-        watcher = try DirectoryDeepWatcher(path, withHandler: { _ in
-            expectation.fulfill()
-        })
+        watcher = try DirectoryDeepWatcher(at: path)
+        Task {
+            for await _ in await watcher!.changedUrlStream {
+                expectation.fulfill()
+            }
+        }
 
         try FileManager.default.removeItem(at: folderToRemove)
 
@@ -65,10 +69,13 @@ final class DeepDirectoryWatcherTests: XCTestCase {
         let fileToRemove = try XCTUnwrap(files?.shuffled().first)
 
         let expectation = XCTestExpectation(description: "Document processing completed.")
-        watcher = try DirectoryDeepWatcher(path, withHandler: { changedUrl in
-            guard changedUrl == fileToRemove.deletingLastPathComponent() else { return }
-            expectation.fulfill()
-        })
+        watcher = try DirectoryDeepWatcher(at: path)
+        Task {
+            for await changedUrl in await watcher!.changedUrlStream {
+                guard changedUrl == fileToRemove.deletingLastPathComponent() else { return }
+                expectation.fulfill()
+            }
+        }
 
         try FileManager.default.removeItem(at: fileToRemove)
 
@@ -87,9 +94,12 @@ final class DeepDirectoryWatcherTests: XCTestCase {
             result[parentUrl] = XCTestExpectation(description: "Document processing completed of \(parentUrl.absoluteString).")
         }
 
-        watcher = try DirectoryDeepWatcher(path, withHandler: { changedUrl in
-            expectations[changedUrl]?.fulfill()
-        })
+        watcher = try DirectoryDeepWatcher(at: path)
+        Task {
+            for await changedUrl in await watcher!.changedUrlStream {
+                expectations[changedUrl]?.fulfill()
+            }
+        }
 
         for file in filesToRemove {
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(Int.random(in: 0..<5))) {
@@ -105,9 +115,13 @@ final class DeepDirectoryWatcherTests: XCTestCase {
         guard let path = tempDir else { return }
 
         let expectation = XCTestExpectation(description: "Document processing completed.")
-        watcher = try DirectoryDeepWatcher(path, withHandler: { _ in
-            expectation.fulfill()
-        })
+
+        watcher = try DirectoryDeepWatcher(at: path)
+        Task {
+            for await _ in await watcher!.changedUrlStream {
+                expectation.fulfill()
+            }
+        }
 
         let fileToRemove = try XCTUnwrap(files?.shuffled().first)
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(7)) {
