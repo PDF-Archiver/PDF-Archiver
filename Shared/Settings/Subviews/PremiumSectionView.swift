@@ -32,11 +32,20 @@ struct PremiumSectionView: View {
                 } label: {
                     Text("Activate premium")
                 }
+                #if os(macOS)
+                .sheet(isPresented: $showIapView) {
+                    IAPView {
+                        showIapView = false
+                    }
+                    .frame(width: 500, height: 600)
+                }
+                #else
                 .navigationDestination(isPresented: $showIapView) {
                     IAPView {
                         showIapView = false
                     }
                 }
+                #endif
             }
 
             Link("Manage Subscription", destination: Self.manageSubscriptionUrl)
