@@ -37,7 +37,6 @@ struct PremiumSectionView: View {
                     IAPView {
                         showIapView = false
                     }
-                    .frame(width: 500, height: 600)
                 }
                 #else
                 .navigationDestination(isPresented: $showIapView) {
