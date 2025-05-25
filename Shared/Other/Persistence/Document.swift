@@ -23,7 +23,8 @@ final class Document {
     }
     var specification: String = ""
 
-    @Relationship(deleteRule: .cascade, inverse: \Tag.documents)
+    // TODO: is this cascade correct?
+    @Relationship(deleteRule: .nullify, inverse: \Tag.documents)
     var tagItems: [Tag] = []
 
     @Transient
