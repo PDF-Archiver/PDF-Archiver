@@ -12,20 +12,18 @@ import SwiftData
 @Model
 final class Document {
     @Attribute(.unique)
-    private(set) var id: Int = 42
-    var url = URL(filePath: "")
-    var isTagged = false
-    var date = Date()
-    var filename: String = ""
+    private(set) var id: Int
+    var url: URL
+    var isTagged: Bool
+    var date: Date
+    var filename: String
     @Transient
     var size: Measurement<UnitInformationStorage> {
         Measurement(value: _sizeInBytes, unit: .bytes)
     }
-    var specification: String = ""
+    var specification: String
 
-    // TODO: is this cascade correct?
-    @Relationship(deleteRule: .nullify, inverse: \Tag.documents)
-    var tagItems: [Tag] = []
+    var tagItems: [Tag]
 
     @Transient
     var tags: [String] {
@@ -33,13 +31,13 @@ final class Document {
     }
 
     // the content will be fetched and set on a background thread
-    private(set) var content: String = ""
+    private(set) var content: String
 
     var _sizeInBytes: Double
 
     // this property will be set when the object is created and saved to the DB the first time
     // it will be used in the first (full) sync after the app starts
-    private(set) var _created = Date()
+    private(set) var _created: Date
 
     // 0: remote - 1: local
     var downloadStatus: Double
@@ -48,13 +46,14 @@ final class Document {
         self.id = id
         self.url = url
         self.isTagged = isTagged
-        self.filename = filename
-        self._sizeInBytes = sizeInBytes
         self.date = date
+        self.filename = filename
         self.specification = specification
         self.tagItems = tags
-        self.downloadStatus = downloadStatus
+        self.content = ""
+        self._sizeInBytes = sizeInBytes
         self._created = created
+        self.downloadStatus = downloadStatus
     }
 
     func setContent(_ content: String) {

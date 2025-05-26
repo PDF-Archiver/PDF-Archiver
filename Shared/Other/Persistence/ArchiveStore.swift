@@ -215,6 +215,15 @@ actor ArchiveStore: ModelActor, Log {
                 try modelContext.save()
             }
 
+            // we have deleted the SwiftData deleteRule and use nullify since it seems more robust
+            // so we need to clean up the stale tags manually
+            let staleTagsPredicate = #Predicate<Tag> { $0.documents.isEmpty }
+            try modelContext.delete(model: Tag.self, where: staleTagsPredicate)
+            if modelContext.hasChanges {
+                Logger.archiveStore.debug("Found changes after tag deletion, saving")
+                try modelContext.save()
+            }
+
             let changedUrls = changes.map(\.url)
             NotificationCenter.default.post(name: .documentUpdate, object: changedUrls)
         } catch {
