@@ -15,9 +15,9 @@ struct DropButton: View {
 
     let state: ButtonState
     let action: (_ isLongPress: Bool) -> Void
-    
+
     @State private var sensoryTrigger = false
-    
+
     var body: some View {
         Button {
             #if os(macOS)
@@ -74,14 +74,6 @@ struct DropButton: View {
                 }
         )
         #endif
-//        .popoverTip(ArchiverTips.dropButton) { tipAction in
-//            sensoryTrigger.toggle()
-//            if tipAction.id == "scan" {
-//                action(false)
-//            } else if tipAction.id == "scanAndShare" {
-//                action(true)
-//            }
-//        }
         .sensoryFeedback(.success, trigger: sensoryTrigger)
     }
 }

@@ -49,7 +49,7 @@ extension URL: Log {
             return nil
         }
     }
-    
+
     func getFileTags() -> [String] {
         do {
             #if os(macOS)
@@ -78,7 +78,7 @@ extension URL: Log {
     }
 
     // MARK: - iOS finder tags
-    
+
     private func getiOSFileTags() throws -> [String] {
         var tags = [String]()
         let data = try self.getExtendedAttribute(forName: URL.itemUserTagsName)
@@ -92,8 +92,8 @@ extension URL: Log {
 
         // some lokal tags are saved with a "\n0" or "\n1" suffix, e.g. "ikea\n1"
         let fixedTags = tags
-            .compactMap { $0.split(separator: "\n").first}
-            .map { String($0)}
+            .compactMap { $0.split(separator: "\n").first }
+            .map { String($0) }
 
         return fixedTags
     }
@@ -102,7 +102,7 @@ extension URL: Log {
         let data = try NSKeyedArchiver.archivedData(withRootObject: fileTags, requiringSecureCoding: false)
         try setExtendedAttribute(data: data, forName: URL.itemUserTagsName)
     }
-    
+
     /// Get extended attribute.
     private func getExtendedAttribute(forName name: String, follow: Bool = false) throws -> Data {
         var options: Int32 = 0

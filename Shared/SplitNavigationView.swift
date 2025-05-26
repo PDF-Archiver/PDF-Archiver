@@ -7,6 +7,7 @@
 
 import OSLog
 import SwiftUI
+import TipKit
 
 struct ShareUrl: Identifiable {
     var id: Int {
@@ -18,6 +19,10 @@ struct ShareUrl: Identifiable {
 struct SplitNavigationView: View {
     @Environment(NavigationModel.self) private var navigationModel
     @Environment(\.modelContext) private var modelContext
+    @State private var tips = TipGroup(.ordered) {
+        ScanShareTip()
+        UntaggedViewTip()
+    }
 
     #if !os(macOS)
     @StateObject private var settingsViewModel = SettingsViewModel()
@@ -46,6 +51,7 @@ struct SplitNavigationView: View {
                     } label: {
                         Label(navigationModel.mode == .archive ? "Tagging Mode" : "Archive Mode", systemImage: navigationModel.mode == .archive ? "tag" : "archivebox")
                     }
+                    .popoverTip(((tips.currentTip as? UntaggedViewTip) != nil && navigationModel.mode == .archive) ? tips.currentTip : nil)
                 }
                 #if !os(macOS)
                 ToolbarItem(placement: .automatic) {
@@ -110,6 +116,15 @@ struct SplitNavigationView: View {
             .padding(.bottom, 16)
             .padding(.trailing, 16)
             .opacity(navigationModel.mode == .archive ? 1 : 0)
+            .popoverTip(tips.currentTip as? ScanShareTip) { tipAction in
+                #if os(macOS)
+                dropHandler.startImport()
+                #else
+                navigationModel.shareNextDocument = tipAction.id == "scanAndShare"
+                navigationModel.lastProcessedDocumentUrl = nil
+                navigationModel.showScan()
+                #endif
+            }
         }
         .sheet(isPresented: $tutorialShown.flipped) {
             OnboardingView(isPresenting: $tutorialShown.flipped)

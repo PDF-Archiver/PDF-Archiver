@@ -74,12 +74,18 @@ struct DocumentInformation: View {
                         FeedbackGenerator.selectionChanged()
                         #endif
                         focusedField = .date
+
+                        #if os(macOS)
+                        Task {
+                            await TaggingShortCutTip.documentSaved.donate()
+                        }
+                        #endif
                     }
                     .focused($focusedField, equals: .save)
                     .keyboardShortcut("s", modifiers: [.command])
-//                    #if os(macOS)
-//                    .popoverTip(ArchiverTips.saveDocumentInformation, arrowEdge: .trailing)
-//                    #endif
+                    #if os(macOS)
+                    .popoverTip(TaggingShortCutTip(), arrowEdge: .trailing)
+                    #endif
                     .tipImageSize(.init(width: 24, height: 24))
                     Spacer()
                 }

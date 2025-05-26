@@ -184,8 +184,8 @@
 		A36FB1852CCC3A76006ADDE9 /* DeleteDocumentButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36FB1832CCC3A76006ADDE9 /* DeleteDocumentButtonView.swift */; };
 		A370DF8F2D22D6BB0062CDC9 /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = A370DF8E2D22D6B80062CDC9 /* Sequence.swift */; };
 		A370DF902D22D6BB0062CDC9 /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = A370DF8E2D22D6B80062CDC9 /* Sequence.swift */; };
-		A37360AF2DB17057002C1A81 /* ArchiverTips.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37360AE2DB1704E002C1A81 /* ArchiverTips.swift */; };
-		A37360B02DB17057002C1A81 /* ArchiverTips.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37360AE2DB1704E002C1A81 /* ArchiverTips.swift */; };
+		A37360AF2DB17057002C1A81 /* OnboardingTips.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37360AE2DB1704E002C1A81 /* OnboardingTips.swift */; };
+		A37360B02DB17057002C1A81 /* OnboardingTips.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37360AE2DB1704E002C1A81 /* OnboardingTips.swift */; };
 		A37FEB822C1E1642003F7F14 /* BackgroundProcessingActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37FEB812C1E1640003F7F14 /* BackgroundProcessingActor.swift */; };
 		A37FEB832C1E1642003F7F14 /* BackgroundProcessingActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37FEB812C1E1640003F7F14 /* BackgroundProcessingActor.swift */; };
 		A37FEB852C1E3A53003F7F14 /* PlatformImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37FEB842C1E3A4D003F7F14 /* PlatformImage.swift */; };
@@ -335,7 +335,7 @@
 		A36FB1802CCC23B3006ADDE9 /* DocumentLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentLoadingView.swift; sourceTree = "<group>"; };
 		A36FB1832CCC3A76006ADDE9 /* DeleteDocumentButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteDocumentButtonView.swift; sourceTree = "<group>"; };
 		A370DF8E2D22D6B80062CDC9 /* Sequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
-		A37360AE2DB1704E002C1A81 /* ArchiverTips.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiverTips.swift; sourceTree = "<group>"; };
+		A37360AE2DB1704E002C1A81 /* OnboardingTips.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingTips.swift; sourceTree = "<group>"; };
 		A37FEB812C1E1640003F7F14 /* BackgroundProcessingActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundProcessingActor.swift; sourceTree = "<group>"; };
 		A37FEB842C1E3A4D003F7F14 /* PlatformImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformImage.swift; sourceTree = "<group>"; };
 		A38256BF2C1F552C00416A08 /* PDFArchiverIOSApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFArchiverIOSApp.swift; sourceTree = "<group>"; };
@@ -699,7 +699,7 @@
 		A37360AD2DB17046002C1A81 /* Tips */ = {
 			isa = PBXGroup;
 			children = (
-				A37360AE2DB1704E002C1A81 /* ArchiverTips.swift */,
+				A37360AE2DB1704E002C1A81 /* OnboardingTips.swift */,
 			);
 			path = Tips;
 			sourceTree = "<group>";
@@ -1326,7 +1326,7 @@
 				A3356FB72BA4D364000AA51A /* StorageSelectionView.swift in Sources */,
 				A3356FBB2BA4D364000AA51A /* TagListView.swift in Sources */,
 				A3356F962BA4D364000AA51A /* OnboardingView.swift in Sources */,
-				A37360B02DB17057002C1A81 /* ArchiverTips.swift in Sources */,
+				A37360B02DB17057002C1A81 /* OnboardingTips.swift in Sources */,
 				A34CECB72CAC8EA000453AD6 /* ArchiveListItemView.swift in Sources */,
 				A3356F8C2BA4D364000AA51A /* DetailRowView.swift in Sources */,
 				A3356F922BA4D364000AA51A /* MarkdownView.swift in Sources */,
@@ -1423,7 +1423,7 @@
 				A3579A542BFF6187001D921C /* IAPView.swift in Sources */,
 				A3356F042BA4D319000AA51A /* FolderProvider.swift in Sources */,
 				A3356FF42BA4D365000AA51A /* StorageSelectionView.swift in Sources */,
-				A37360AF2DB17057002C1A81 /* ArchiverTips.swift in Sources */,
+				A37360AF2DB17057002C1A81 /* OnboardingTips.swift in Sources */,
 				A36FB1852CCC3A76006ADDE9 /* DeleteDocumentButtonView.swift in Sources */,
 				A3D8F9412BB607B100BE3E3A /* DocumentDetailView.swift in Sources */,
 				A3356FF82BA4D365000AA51A /* TagListView.swift in Sources */,

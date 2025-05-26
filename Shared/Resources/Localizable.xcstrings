@@ -554,7 +554,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ziehen Sie ein PDF-Dokument per Drag & Drop in diesen Bereich, um es zu importieren.\n\nOder klicken Sie hier, um den Dateibrowser zu öffnen."
+            "value" : "Zieh ein PDF-Dokument per Drag & Drop in diesen Bereich, um es zu importieren.\n\nAlternativ kannst du auch klicken um den Dateibrowser zu öffnen."
           }
         }
       }
@@ -1412,6 +1412,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tagging Modus"
+          }
+        }
+      }
+    },
+    "Tagging View" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tagging Ansicht"
+          }
+        }
+      }
+    },
+    "Tap here to see a list of your untagged documents.\nThey can be found in your archive view after tagging." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tippe hier, um deine unbearbeiteten Dokumente zu sehen.\nSie erscheinen nach dem Taggen in deinem Archiv."
           }
         }
       }

@@ -161,7 +161,7 @@ actor ArchiveStore: ModelActor, Log {
         Task {
             folderObservationTasks.forEach { $0.cancel() }
             folderObservationTasks.removeAll()
-            
+
             let archiveUrl = try await PathManager.shared.getArchiveUrl()
             let untaggedUrl = try await PathManager.shared.getUntaggedUrl()
 

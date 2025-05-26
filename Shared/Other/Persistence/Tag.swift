@@ -12,7 +12,7 @@ import SwiftUI
 final class Tag {
     @Attribute(.unique)
     var name: String
-    
+
     @Relationship(inverse: \Document.tagItems)
     private(set) var documents: [Document]
 
