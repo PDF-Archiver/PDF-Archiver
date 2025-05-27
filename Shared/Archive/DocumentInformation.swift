@@ -21,7 +21,9 @@ struct DocumentInformation: View {
         TaggingTips.Date()
         TaggingTips.Specification()
         TaggingTips.Tags()
+        #if os(macOS)
         TaggingTips.KeyboardShortCut()
+        #endif
     }
 
     var body: some View {
@@ -73,8 +75,10 @@ struct DocumentInformation: View {
             documentTagsSection
 
             Section {
+                #if os(macOS)
                 TipView(tips.currentTip as? TaggingTips.KeyboardShortCut)
                     .tipImageSize(TaggingTips.size)
+                #endif
                 HStack {
                     Spacer()
                     Button("Save") {

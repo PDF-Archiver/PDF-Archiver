@@ -186,6 +186,10 @@
 		A370DF902D22D6BB0062CDC9 /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = A370DF8E2D22D6B80062CDC9 /* Sequence.swift */; };
 		A372F41B2DE62EB400D6E9AA /* TaggingTips.swift in Sources */ = {isa = PBXBuildFile; fileRef = A372F41A2DE62EAB00D6E9AA /* TaggingTips.swift */; };
 		A372F41C2DE62EB400D6E9AA /* TaggingTips.swift in Sources */ = {isa = PBXBuildFile; fileRef = A372F41A2DE62EAB00D6E9AA /* TaggingTips.swift */; };
+		A372F41E2DE63E1E00D6E9AA /* AppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A372F41D2DE63E1000D6E9AA /* AppIntent.swift */; };
+		A372F41F2DE63E1E00D6E9AA /* AppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A372F41D2DE63E1000D6E9AA /* AppIntent.swift */; };
+		A372F4212DE64F2F00D6E9AA /* AppShortcut.swift in Sources */ = {isa = PBXBuildFile; fileRef = A372F4202DE64F2C00D6E9AA /* AppShortcut.swift */; };
+		A372F4222DE64F2F00D6E9AA /* AppShortcut.swift in Sources */ = {isa = PBXBuildFile; fileRef = A372F4202DE64F2C00D6E9AA /* AppShortcut.swift */; };
 		A37360AF2DB17057002C1A81 /* OnboardingTips.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37360AE2DB1704E002C1A81 /* OnboardingTips.swift */; };
 		A37360B02DB17057002C1A81 /* OnboardingTips.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37360AE2DB1704E002C1A81 /* OnboardingTips.swift */; };
 		A37FEB822C1E1642003F7F14 /* BackgroundProcessingActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37FEB812C1E1640003F7F14 /* BackgroundProcessingActor.swift */; };
@@ -338,6 +342,8 @@
 		A36FB1832CCC3A76006ADDE9 /* DeleteDocumentButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteDocumentButtonView.swift; sourceTree = "<group>"; };
 		A370DF8E2D22D6B80062CDC9 /* Sequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
 		A372F41A2DE62EAB00D6E9AA /* TaggingTips.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaggingTips.swift; sourceTree = "<group>"; };
+		A372F41D2DE63E1000D6E9AA /* AppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntent.swift; sourceTree = "<group>"; };
+		A372F4202DE64F2C00D6E9AA /* AppShortcut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppShortcut.swift; sourceTree = "<group>"; };
 		A37360AE2DB1704E002C1A81 /* OnboardingTips.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingTips.swift; sourceTree = "<group>"; };
 		A37FEB812C1E1640003F7F14 /* BackgroundProcessingActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundProcessingActor.swift; sourceTree = "<group>"; };
 		A37FEB842C1E3A4D003F7F14 /* PlatformImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformImage.swift; sourceTree = "<group>"; };
@@ -529,6 +535,8 @@
 		3489D71324A3C53D0035E64F /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				A372F41D2DE63E1000D6E9AA /* AppIntent.swift */,
+				A372F4202DE64F2C00D6E9AA /* AppShortcut.swift */,
 				A389AB5A2CF3174E00ADE6BD /* NavigationModel.swift */,
 				A33A3E8E2CF507E700932B17 /* SplitNavigationView.swift */,
 				A3FE9AD52BA4CF04009F8381 /* Onboarding */,
@@ -1346,8 +1354,10 @@
 				A3356ECA2BA4D318000AA51A /* TagParser.swift in Sources */,
 				A3579A532BFF6187001D921C /* IAPView.swift in Sources */,
 				A3356F552BA4D32E000AA51A /* Log.swift in Sources */,
+				A372F4212DE64F2F00D6E9AA /* AppShortcut.swift in Sources */,
 				A3356F4D2BA4D32E000AA51A /* PlatfromWrapper.swift in Sources */,
 				A3579A562BFFD802001D921C /* IAP.swift in Sources */,
+				A372F41F2DE63E1E00D6E9AA /* AppIntent.swift in Sources */,
 				A39A29D32CC99F850072EFDE /* ArchiveStoreLoading.swift in Sources */,
 				A3991D432CAEC85900CEEDC9 /* Tag.swift in Sources */,
 				A3356FAE2BA4D364000AA51A /* StatisticsViewModel.swift in Sources */,
@@ -1444,8 +1454,10 @@
 				A3356EFC2BA4D319000AA51A /* Document+Helper.swift in Sources */,
 				A3F4EA232C067AA2003E8500 /* DropButton.swift in Sources */,
 				A3B5D8FC2BB36414002B9FF1 /* SearchToken.swift in Sources */,
+				A372F4222DE64F2F00D6E9AA /* AppShortcut.swift in Sources */,
 				A3356EF92BA4D319000AA51A /* ICloudFolderProvider.swift in Sources */,
 				A3356EF52BA4D319000AA51A /* TagParser.swift in Sources */,
+				A372F41E2DE63E1E00D6E9AA /* AppIntent.swift in Sources */,
 				A3356F682BA4D32F000AA51A /* Log.swift in Sources */,
 				A31BE2DB2BB8A9DA00022885 /* ErrorView.swift in Sources */,
 				A3356F602BA4D32F000AA51A /* PlatfromWrapper.swift in Sources */,

@@ -1230,12 +1230,42 @@
         }
       }
     },
+    "Scan & Share" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan & Teilen"
+          }
+        }
+      }
+    },
+    "Scan & share document and add it to the archive." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dokument scannen & teilen und zum Archiv hinzufügen."
+          }
+        }
+      }
+    },
     "Scan Document" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Scan Dokument"
+          }
+        }
+      }
+    },
+    "Scan document and add it to the archive." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scanne das Dokument und fügen Sie es dem Archiv hinzu."
           }
         }
       }
