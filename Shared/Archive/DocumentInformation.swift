@@ -9,6 +9,7 @@ import OSLog
 import PDFKit
 import SwiftData
 import SwiftUI
+import TipKit
 
 struct DocumentInformation: View {
     @Environment(NavigationModel.self) private var navigationModel
@@ -16,10 +17,18 @@ struct DocumentInformation: View {
     @Environment(\.modelContext) private var modelContext
     @FocusState private var focusedField: DocumentInformation.ViewModel.Field?
     @Binding var viewModel: DocumentInformation.ViewModel
+    @State private var tips = TipGroup(.ordered) {
+        TaggingTips.Date()
+        TaggingTips.Specification()
+        TaggingTips.Tags()
+        TaggingTips.KeyboardShortCut()
+    }
 
     var body: some View {
         Form {
             Section {
+                TipView(tips.currentTip as? TaggingTips.Date)
+                    .tipImageSize(TaggingTips.size)
                 DatePicker("Date", selection: $viewModel.date, displayedComponents: .date)
                     .focused($focusedField, equals: .date)
                     .listRowSeparator(.hidden)
@@ -50,6 +59,8 @@ struct DocumentInformation: View {
             }
 
             Section {
+                TipView(tips.currentTip as? TaggingTips.Specification)
+                    .tipImageSize(TaggingTips.size)
                 TextField(text: $viewModel.specification, prompt: Text("Enter specification")) {
                     Text("Specification")
                 }
@@ -62,6 +73,8 @@ struct DocumentInformation: View {
             documentTagsSection
 
             Section {
+                TipView(tips.currentTip as? TaggingTips.KeyboardShortCut)
+                    .tipImageSize(TaggingTips.size)
                 HStack {
                     Spacer()
                     Button("Save") {
@@ -77,16 +90,12 @@ struct DocumentInformation: View {
 
                         #if os(macOS)
                         Task {
-                            await TaggingShortCutTip.documentSaved.donate()
+                            await TaggingTips.KeyboardShortCut.documentSaved.donate()
                         }
                         #endif
                     }
                     .focused($focusedField, equals: .save)
                     .keyboardShortcut("s", modifiers: [.command])
-                    #if os(macOS)
-                    .popoverTip(TaggingShortCutTip(), arrowEdge: .trailing)
-                    #endif
-                    .tipImageSize(.init(width: 24, height: 24))
                     Spacer()
                 }
             }
@@ -113,6 +122,8 @@ struct DocumentInformation: View {
 
     private var documentTagsSection: some View {
         Section {
+            TipView(tips.currentTip as? TaggingTips.Tags)
+                .tipImageSize(TaggingTips.size)
             VStack(alignment: .leading, spacing: 16) {
                 if viewModel.tags.isEmpty {
                     Text("No tags selected")

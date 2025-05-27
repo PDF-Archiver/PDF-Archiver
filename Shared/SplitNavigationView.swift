@@ -116,7 +116,7 @@ struct SplitNavigationView: View {
             .padding(.bottom, 16)
             .padding(.trailing, 16)
             .opacity(navigationModel.mode == .archive ? 1 : 0)
-            .popoverTip(tips.currentTip as? ScanShareTip) { tipAction in
+            .popoverTip((navigationModel.mode == .archive && (tips.currentTip as? ScanShareTip) != nil) ? tips.currentTip : nil) { tipAction in
                 #if os(macOS)
                 dropHandler.startImport()
                 #else

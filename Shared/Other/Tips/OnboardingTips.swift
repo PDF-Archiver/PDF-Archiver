@@ -54,31 +54,3 @@ struct UntaggedViewTip: Tip {
         Image(systemName: "tag")
     }
 }
-
-#if os(macOS)
-struct TaggingShortCutTip: Tip {
-    static let documentSaved = Event(id: "documentSaved")
-
-    var title: Text {
-            Text("Keyboard Shortcuts")
-    }
-
-    var message: Text? {
-            Text("Use keyboard shortcuts to navigate the document information:\n\n**TAB** to move to the next field\n**CMD S** to save the document")
-    }
-
-    var image: Image? {
-        Image(systemName: "keyboard")
-    }
-
-    var options: [any TipOption] {
-        [MaxDisplayCount(2)]
-    }
-
-    var rules: [Rule] {
-        #Rule(Self.documentSaved) {
-            $0.donations.donatedWithin(.hour).count == 2
-        }
-    }
-}
-#endif

@@ -294,6 +294,16 @@
         }
       }
     },
+    "Description" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beschreibung"
+          }
+        }
+      }
+    },
     "Dismiss" : {
       "localizations" : {
         "de" : {
@@ -915,6 +925,16 @@
         }
       }
     },
+    "Meaningful description, e.g. _blue hoodie_" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aussagekräftige Beschreibung, z.B. _blauer Pullover_"
+          }
+        }
+      }
+    },
     "More" : {
       "localizations" : {
         "de" : {
@@ -1336,6 +1356,16 @@
         }
       }
     },
+    "Specify the Date of the Document" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gib das Datum des Dokumentes an"
+          }
+        }
+      }
+    },
     "Start scanning and tagging your first document." : {
       "localizations" : {
         "de" : {
@@ -1422,6 +1452,19 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tagging Ansicht"
+          }
+        }
+      }
+    },
+    "Tags" : {
+      "shouldTranslate" : false
+    },
+    "Tags of the document, e.g. _bill_ and _clothing_" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlagworte des Dokumentes, z.B. _Rechnung_ und _Kleidung_"
           }
         }
       }
