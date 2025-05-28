@@ -100,6 +100,10 @@ struct SplitNavigationView: View {
             }
         }
         .modifier(AlertDataModelProvider())
+        .onChange(of: dropHandler.documentProcessingState) { oldValue, newValue in
+            guard oldValue == .processing else { return }
+            navigationModel.switchTaggingMode(in: modelContext)
+        }
         .overlay(alignment: .bottomTrailing) {
             DropButton(state: dropHandler.documentProcessingState) { isLongPress in
                 #if os(macOS)
