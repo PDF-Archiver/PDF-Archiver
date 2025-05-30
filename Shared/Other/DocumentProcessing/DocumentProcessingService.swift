@@ -36,13 +36,14 @@ final class DocumentProcessingService {
             return
         }
         let operation = PDFProcessingOperation(of: .images(images), destinationFolder: destinationFolder, onComplete: { documentUrl in
-            #if !os(macOS)
             Task {
+                #if !os(macOS)
                 await MainActor.run {
                     NavigationModel.shared.lastProcessedDocumentUrl = documentUrl
                 }
+                #endif
+                await AfterFirstImportTip.documentImported.donate()
             }
-            #endif
         })
         backgroundProcessing.queue(operation)
     }
@@ -53,13 +54,14 @@ final class DocumentProcessingService {
             return
         }
         let operation = PDFProcessingOperation(of: .pdf(pdfData: pdfData, url: url), destinationFolder: destinationFolder, onComplete: { documentUrl in
-            #if !os(macOS)
             Task {
+                #if !os(macOS)
                 await MainActor.run {
                     NavigationModel.shared.lastProcessedDocumentUrl = documentUrl
                 }
+                #endif
+                await AfterFirstImportTip.documentImported.donate()
             }
-            #endif
         })
         backgroundProcessing.queue(operation)
     }
