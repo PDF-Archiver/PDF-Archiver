@@ -19,9 +19,10 @@ struct ShareUrl: Identifiable {
 struct SplitNavigationView: View {
     @Environment(NavigationModel.self) private var navigationModel
     @Environment(\.modelContext) private var modelContext
-    @State private var tips = TipGroup(.ordered) {
+    @State private var tips = TipGroup(.firstAvailable) {
         ScanShareTip()
         UntaggedViewTip()
+        AfterFirstImportTip()
     }
 
     #if !os(macOS)
@@ -52,6 +53,8 @@ struct SplitNavigationView: View {
                         Label(navigationModel.mode == .archive ? "Tagging Mode" : "Archive Mode", systemImage: navigationModel.mode == .archive ? "tag" : "archivebox")
                     }
                     .popoverTip(((tips.currentTip as? UntaggedViewTip) != nil && navigationModel.mode == .archive) ? tips.currentTip : nil)
+                    .popoverTip(((tips.currentTip as? AfterFirstImportTip) != nil && navigationModel.mode == .archive) ? tips.currentTip : nil)
+                    .tipImageSize(.init(width: 24, height: 24))
                 }
                 #if !os(macOS)
                 ToolbarItem(placement: .automatic) {
@@ -106,6 +109,10 @@ struct SplitNavigationView: View {
         }
         .overlay(alignment: .bottomTrailing) {
             DropButton(state: dropHandler.documentProcessingState) { isLongPress in
+                Task {
+                    await AfterFirstImportTip.documentImported.donate()
+                }
+
                 #if os(macOS)
                 dropHandler.startImport()
                 #else
@@ -129,6 +136,7 @@ struct SplitNavigationView: View {
                 navigationModel.showScan()
                 #endif
             }
+            .tipImageSize(.init(width: 24, height: 24))
         }
         .sheet(isPresented: $tutorialShown.flipped) {
             OnboardingView(isPresenting: $tutorialShown.flipped)

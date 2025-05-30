@@ -945,6 +945,16 @@
         }
       }
     },
+    "New Document" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neues Dokument"
+          }
+        }
+      }
+    },
     "No document" : {
       "localizations" : {
         "de" : {
@@ -1401,7 +1411,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Beginne mit dem Scannen und Verschlagworten deines ersten Dokuments."
+            "value" : "Beginne mit dem Scannen und Archivieren deines ersten Dokuments."
           }
         }
       }
@@ -1461,7 +1471,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ver­schlag­wor­tet"
+            "value" : "archiviert"
           }
         }
       }
@@ -1675,6 +1685,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Du erhältst eine 2-wöchige kostenlose Testphase vor allen Abonnements.\n"
+          }
+        }
+      }
+    },
+    "Your first document was imported. **Tap here** to see and archive it." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein erstes Dokument wurde importiert. **Tippe hier** um es anzusehen und zu archivieren."
           }
         }
       }

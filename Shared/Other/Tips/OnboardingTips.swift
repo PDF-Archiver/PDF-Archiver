@@ -54,3 +54,25 @@ struct UntaggedViewTip: Tip {
         Image(systemName: "tag")
     }
 }
+
+struct AfterFirstImportTip: Tip {
+    static let documentImported = Tips.Event(id: "documentImported")
+    
+    var title: Text {
+        Text("New Document")
+    }
+
+    var message: Text? {
+        Text("Your first document was imported. **Tap here** to see and archive it.")
+    }
+
+    var image: Image? {
+        Image(systemName: "arrow.down.document")
+    }
+    
+    var rules: [Rule] {
+        // Tip will only display when the landmarksAppDidOpen event has been donated 3 or more times in the last week.
+        #Rule(Self.documentImported) {
+            $0.donations.count == 1
+        }
+    }}
