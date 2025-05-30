@@ -37,9 +37,11 @@
   ],
   "settings" : {
     "_applicationInternalID" : "1433801905",
+    "_billingIssuesEnabled" : false,
     "_developerTeamID" : "87KNVHZ8C7",
+    "_disableDialogs" : true,
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 756575672.34638798,
+    "_lastSynchronizedDate" : 770305031.27646899,
     "_locale" : "en_US",
     "_storefront" : "USA",
     "_storeKitErrors" : [
@@ -110,7 +112,7 @@
           "groupNumber" : 1,
           "internalID" : "1457749808",
           "introductoryOffer" : {
-            "internalID" : "E23A05C9",
+            "internalID" : "F5E419D6",
             "numberOfPeriods" : 1,
             "paymentMode" : "free",
             "subscriptionPeriod" : "P2W"
@@ -133,7 +135,16 @@
           "subscriptionGroupID" : "20516661",
           "type" : "RecurringSubscription",
           "winbackOffers" : [
-
+            {
+              "displayPrice" : "0.99",
+              "internalID" : "D2583548",
+              "isEligible" : true,
+              "numberOfPeriods" : 1,
+              "offerID" : "monthly_win_back_offer",
+              "paymentMode" : "payUpFront",
+              "referenceName" : "Monthly Win-Back Offer",
+              "subscriptionPeriod" : "P6M"
+            }
           ]
         },
         {
@@ -147,7 +158,7 @@
                 "new",
                 "expired"
               ],
-              "internalID" : "648974C6",
+              "internalID" : "5FFE85B4",
               "isStackable" : false,
               "numberOfPeriods" : 1,
               "paymentMode" : "payAsYouGo",
@@ -160,7 +171,7 @@
           "groupNumber" : 1,
           "internalID" : "1469750159",
           "introductoryOffer" : {
-            "internalID" : "104E3300",
+            "internalID" : "15FE3D58",
             "numberOfPeriods" : 1,
             "paymentMode" : "free",
             "subscriptionPeriod" : "P2W"
@@ -183,7 +194,16 @@
           "subscriptionGroupID" : "20516661",
           "type" : "RecurringSubscription",
           "winbackOffers" : [
-
+            {
+              "displayPrice" : "3.99",
+              "internalID" : "3EE8672F",
+              "isEligible" : true,
+              "numberOfPeriods" : 1,
+              "offerID" : "yearly_win_back_offer",
+              "paymentMode" : "payAsYouGo",
+              "referenceName" : "Yearly Win-Back Offer",
+              "subscriptionPeriod" : "P1Y"
+            }
           ]
         }
       ]
