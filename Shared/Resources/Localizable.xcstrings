@@ -14,6 +14,26 @@
         }
       }
     },
+    "**Drag and drop** a PDF document to this area to import it.\n\nOr **click** here to open the file browser." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zieh ein PDF-Dokument per **Drag & Drop** in diesen Bereich, um es zu importieren.\n\nAlternativ kannst du auch **klicken**, um den Dateibrowser zu öffnen."
+          }
+        }
+      }
+    },
+    "**Tap** short to start scanning a document.\n\n**Long press** to scan and share the document after processing." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**Kurz antippen**, um das Scannen eines Dokuments zu starten.\n\n**Lang drücken**, um das Dokument nach dem Scannen und zu teilen."
+          }
+        }
+      }
+    },
     "%@" : {
       "shouldTranslate" : false
     },
@@ -555,26 +575,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dokument wird heruntergeladen"
-          }
-        }
-      }
-    },
-    "Drag and drop a PDF document to this area to import it.\n\nOr click here to open the file browser." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zieh ein PDF-Dokument per Drag & Drop in diesen Bereich, um es zu importieren.\n\nAlternativ kannst du auch klicken um den Dateibrowser zu öffnen."
-          }
-        }
-      }
-    },
-    "Drop to import file" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ablegen zum Importieren von Dateien"
           }
         }
       }
@@ -1515,16 +1515,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tippe hier, um deine unbearbeiteten Dokumente zu sehen.\nSie erscheinen nach dem Taggen in deinem Archiv."
-          }
-        }
-      }
-    },
-    "Tap short to start scanning a document.\n\nLong press to scan and share the document after processing." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kurz antippen, um das Scannen eines Dokuments zu starten.\n\nLang drücken, um das Dokument nach der Verarbeitung zu scannen und zu teilen."
           }
         }
       }

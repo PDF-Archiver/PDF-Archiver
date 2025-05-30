@@ -19,7 +19,7 @@ struct ShareUrl: Identifiable {
 struct SplitNavigationView: View {
     @Environment(NavigationModel.self) private var navigationModel
     @Environment(\.modelContext) private var modelContext
-    @State private var tips = TipGroup(.firstAvailable) {
+    @State private var tips = TipGroup(.ordered) {
         ScanShareTip()
         UntaggedViewTip()
         AfterFirstImportTip()
@@ -103,16 +103,8 @@ struct SplitNavigationView: View {
             }
         }
         .modifier(AlertDataModelProvider())
-        .onChange(of: dropHandler.documentProcessingState) { oldValue, _ in
-            guard oldValue == .processing else { return }
-            navigationModel.switchTaggingMode(in: modelContext)
-        }
         .overlay(alignment: .bottomTrailing) {
             DropButton(state: dropHandler.documentProcessingState) { isLongPress in
-                Task {
-                    await AfterFirstImportTip.documentImported.donate()
-                }
-
                 #if os(macOS)
                 dropHandler.startImport()
                 #else
@@ -121,9 +113,6 @@ struct SplitNavigationView: View {
                 navigationModel.showScan()
                 #endif
             }
-            .padding(4)
-            .background(Color.paPlaceholderGray)
-            .clipShape(RoundedRectangle(cornerRadius: 8))
             .padding(.bottom, 16)
             .padding(.trailing, 16)
             .opacity(navigationModel.mode == .archive ? 1 : 0)
