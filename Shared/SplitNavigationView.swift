@@ -100,7 +100,7 @@ struct SplitNavigationView: View {
             }
         }
         .modifier(AlertDataModelProvider())
-        .onChange(of: dropHandler.documentProcessingState) { oldValue, newValue in
+        .onChange(of: dropHandler.documentProcessingState) { oldValue, _ in
             guard oldValue == .processing else { return }
             navigationModel.switchTaggingMode(in: modelContext)
         }
