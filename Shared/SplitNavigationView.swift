@@ -17,6 +17,7 @@ struct ShareUrl: Identifiable {
 }
 
 struct SplitNavigationView: View {
+    @Namespace var splitNavigationView
     @Environment(NavigationModel.self) private var navigationModel
     @Environment(\.modelContext) private var modelContext
     @State private var tips = TipGroup(.ordered) {
@@ -126,6 +127,7 @@ struct SplitNavigationView: View {
                 #endif
             }
             .tipImageSize(.init(width: 24, height: 24))
+            .matchedTransitionSource(id: "scanButton", in: splitNavigationView)
         }
         .sheet(isPresented: $tutorialShown.flipped) {
             OnboardingView(isPresenting: $tutorialShown.flipped)
@@ -148,6 +150,7 @@ struct SplitNavigationView: View {
                 })
                 .edgesIgnoringSafeArea(.all)
                 .statusBar(hidden: true)
+                .navigationTransition(.zoom(sourceID: "scanButton", in: splitNavigationView))
         }
         .sheet(item: $shareItem) { shareItem in
             AppActivityView(activityItems: [shareItem.url])
