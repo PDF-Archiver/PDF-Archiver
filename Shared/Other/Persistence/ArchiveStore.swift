@@ -161,7 +161,7 @@ actor ArchiveStore: ModelActor, Log {
         Task {
             folderObservationTasks.forEach { $0.cancel() }
             folderObservationTasks.removeAll()
-            
+
             let archiveUrl = try await PathManager.shared.getArchiveUrl()
             let untaggedUrl = try await PathManager.shared.getUntaggedUrl()
 
@@ -212,6 +212,15 @@ actor ArchiveStore: ModelActor, Log {
                     modelContext.delete(document)
                 }
 
+                try modelContext.save()
+            }
+
+            // we have deleted the SwiftData deleteRule and use nullify since it seems more robust
+            // so we need to clean up the stale tags manually
+            let staleTagsPredicate = #Predicate<Tag> { $0.documents.isEmpty }
+            try modelContext.delete(model: Tag.self, where: staleTagsPredicate)
+            if modelContext.hasChanges {
+                Logger.archiveStore.debug("Found changes after tag deletion, saving")
                 try modelContext.save()
             }
 

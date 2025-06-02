@@ -61,6 +61,9 @@ struct IAPView: View {
         }
 
         .frame(minWidth: 400, idealWidth: 500)
+        #if os(macOS)
+        .frame(width: 500, height: 600)
+        #endif
         .listRowSeparator(.hidden)
         .listSectionSeparator(.hidden)
         .foregroundStyle(Color.paDarkGray)

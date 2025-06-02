@@ -15,9 +15,11 @@ struct DropButton: View {
 
     let state: ButtonState
     let action: (_ isLongPress: Bool) -> Void
-    
+
     @State private var sensoryTrigger = false
-    
+    // chandes of this value wiggles the Image
+    @State private var shouldWiggle = 0
+
     var body: some View {
         Button {
             #if os(macOS)
@@ -25,38 +27,31 @@ struct DropButton: View {
             action(false)
             #endif
         } label: {
-            if state == .noDocument {
+            ZStack {
                 Image(systemName: "doc.viewfinder")
                     .font(.title)
                     .foregroundColor(Color.paLightRed)
-                    .padding(4)
-            } else {
-                ZStack {
-                    VStack(spacing: 4) {
-                        Image(systemName: "doc.viewfinder")
-                            .font(.title)
-                            .foregroundColor(Color.paLightRed)
-                        Text("Drop to import file")
-                            .font(.caption)
-                            .foregroundColor(Color.paDarkGray)
-                    }
-                    .padding(2)
-                    .opacity(state == .targeted ? 1 : 0)
+                    .symbolEffect(.pulse.byLayer, options: .speed(2), value: shouldWiggle)
+                    .opacity(![.processing, .finished].contains(state) ? 1 : 0)
 
-//                    ProgressView(value: DocumentProcessingService.shared.documentProgress)
-//                        .progressViewStyle(.circular)
-                    ProgressView()
-                        .opacity(state == .processing ? 1 : 0)
+                ProgressView()
+                    .opacity(state == .processing ? 1 : 0)
 
-                    Image(systemName: "checkmark.circle")
-                        .font(.largeTitle)
-                        .foregroundStyle(.green)
-                        .opacity(state == .finished ? 1 : 0)
-                }
-
+                Image(systemName: "checkmark.circle")
+                    .font(.largeTitle)
+                    .foregroundStyle(.green)
+                    .opacity(state == .finished ? 1 : 0)
             }
+            .symbolRenderingMode(.hierarchical)
+
+            #if os(macOS)
+            .frame(width: 40, height: 40)
+            #else
+            .frame(width: 60, height: 60)
+            #endif
         }
         #if !os(macOS)
+        .background(Color.paPlaceholderGray, in: Capsule())
         .simultaneousGesture(
             LongPressGesture()
                 .onEnded { _ in
@@ -74,15 +69,13 @@ struct DropButton: View {
                 }
         )
         #endif
-//        .popoverTip(ArchiverTips.dropButton) { tipAction in
-//            sensoryTrigger.toggle()
-//            if tipAction.id == "scan" {
-//                action(false)
-//            } else if tipAction.id == "scanAndShare" {
-//                action(true)
-//            }
-//        }
+        .onChange(of: state) { _, newValue in
+            guard newValue == .targeted else { return }
+            shouldWiggle += 1
+        }
         .sensoryFeedback(.success, trigger: sensoryTrigger)
+        .scaleEffect(state == .targeted ? 1.5 : 1)
+        .animation(.snappy, value: state)
     }
 }
 
@@ -93,4 +86,5 @@ struct DropButton: View {
         DropButton(state: .processing, action: { _ in })
         DropButton(state: .finished, action: { _ in })
     }
+    .padding()
 }

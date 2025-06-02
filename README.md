@@ -48,11 +48,11 @@ This structure is independent from your OS and filesystem and makes it very easy
 
 
 ## :floppy_disk: Installation
-Download it from the App Stores [iOS](http://ios.pdf-archiver.io) and [macOS](http://macos.pdf-archiver.io)!
+Download it from the [App Store](https://apps.apple.com/us/app/pdf-archiver/id1433801905)!
 
 Or clone the repository and build it:
 * Downloaded and install [Xcode.app](https://apps.apple.com/app/xcode/id497799835)
-* Get the project: `git clone --recurse-submodules https://github.com/PDF-Archiver/PDF-Archiver.git`
+* Get the project: `git clone https://github.com/PDF-Archiver/PDF-Archiver.git`
 * Build and run `PDF Archiver`
 
 ## <a name="pro-tips"></a>:mortar_board: Pro Tips
@@ -70,7 +70,7 @@ Or clone the repository and build it:
 * Get in contact with us at [Discord](http://discord.pdf-archiver.io).
 
 ## :octocat: How to contribute
-Rate the App in the [Mac App Store](http://macos.pdf-archiver.io).
+Rate the App in the [App Store](http://macos.pdf-archiver.io).
 
 All [contributions](https://github.com/PDF-Archiver/PDF-Archiver/blob/develop/.github/CONTRIBUTING.md) are welcome!
 Feel free to contribute to this project.

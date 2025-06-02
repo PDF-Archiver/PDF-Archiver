@@ -7,6 +7,7 @@
 
 import OSLog
 import SwiftUI
+import TipKit
 
 struct ShareUrl: Identifiable {
     var id: Int {
@@ -16,8 +17,14 @@ struct ShareUrl: Identifiable {
 }
 
 struct SplitNavigationView: View {
+    @Namespace var splitNavigationView
     @Environment(NavigationModel.self) private var navigationModel
     @Environment(\.modelContext) private var modelContext
+    @State private var tips = TipGroup(.ordered) {
+        ScanShareTip()
+        UntaggedViewTip()
+        AfterFirstImportTip()
+    }
 
     #if !os(macOS)
     @StateObject private var settingsViewModel = SettingsViewModel()
@@ -46,6 +53,9 @@ struct SplitNavigationView: View {
                     } label: {
                         Label(navigationModel.mode == .archive ? "Tagging Mode" : "Archive Mode", systemImage: navigationModel.mode == .archive ? "tag" : "archivebox")
                     }
+                    .popoverTip(((tips.currentTip as? UntaggedViewTip) != nil && navigationModel.mode == .archive) ? tips.currentTip : nil)
+                    .popoverTip(((tips.currentTip as? AfterFirstImportTip) != nil && navigationModel.mode == .archive) ? tips.currentTip : nil)
+                    .tipImageSize(.init(width: 24, height: 24))
                 }
                 #if !os(macOS)
                 ToolbarItem(placement: .automatic) {
@@ -104,12 +114,20 @@ struct SplitNavigationView: View {
                 navigationModel.showScan()
                 #endif
             }
-            .padding(4)
-            .background(Color.paPlaceholderGray)
-            .clipShape(RoundedRectangle(cornerRadius: 8))
             .padding(.bottom, 16)
             .padding(.trailing, 16)
             .opacity(navigationModel.mode == .archive ? 1 : 0)
+            .popoverTip((navigationModel.mode == .archive && (tips.currentTip as? ScanShareTip) != nil) ? tips.currentTip : nil) { tipAction in
+                #if os(macOS)
+                dropHandler.startImport()
+                #else
+                navigationModel.shareNextDocument = tipAction.id == "scanAndShare"
+                navigationModel.lastProcessedDocumentUrl = nil
+                navigationModel.showScan()
+                #endif
+            }
+            .tipImageSize(.init(width: 24, height: 24))
+            .matchedTransitionSource(id: "scanButton", in: splitNavigationView)
         }
         .sheet(isPresented: $tutorialShown.flipped) {
             OnboardingView(isPresenting: $tutorialShown.flipped)
@@ -132,6 +150,7 @@ struct SplitNavigationView: View {
                 })
                 .edgesIgnoringSafeArea(.all)
                 .statusBar(hidden: true)
+                .navigationTransition(.zoom(sourceID: "scanButton", in: splitNavigationView))
         }
         .sheet(item: $shareItem) { shareItem in
             AppActivityView(activityItems: [shareItem.url])

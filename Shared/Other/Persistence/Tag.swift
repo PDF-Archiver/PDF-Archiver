@@ -10,8 +10,11 @@ import SwiftUI
 
 @Model
 final class Tag {
-    @Attribute(.unique) var name: String
-    @Relationship(deleteRule: .nullify) private(set) var documents: [Document]
+    @Attribute(.unique)
+    var name: String
+
+    @Relationship(inverse: \Document.tagItems)
+    private(set) var documents: [Document]
 
     init(name: String, documents: [Document]) {
         self.name = name

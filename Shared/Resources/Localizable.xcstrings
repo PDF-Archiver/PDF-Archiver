@@ -14,6 +14,26 @@
         }
       }
     },
+    "**Drag and drop** a PDF document to this area to import it.\n\nOr **click** here to open the file browser." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zieh ein PDF-Dokument per **Drag & Drop** in diesen Bereich, um es zu importieren.\n\nAlternativ kannst du auch **klicken**, um den Dateibrowser zu öffnen."
+          }
+        }
+      }
+    },
+    "**Tap** short to start scanning a document.\n\n**Long press** to scan and share the document after processing." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "**Kurz antippen**, um das Scannen eines Dokuments zu starten.\n\n**Lang drücken**, um das Dokument nach dem Scannen und zu teilen."
+          }
+        }
+      }
+    },
     "%@" : {
       "shouldTranslate" : false
     },
@@ -294,6 +314,16 @@
         }
       }
     },
+    "Description" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beschreibung"
+          }
+        }
+      }
+    },
     "Dismiss" : {
       "localizations" : {
         "de" : {
@@ -545,26 +575,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dokument wird heruntergeladen"
-          }
-        }
-      }
-    },
-    "Drag and drop a PDF document to this area to import it.\n\nOr click here to open the file browser." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ziehen Sie ein PDF-Dokument per Drag & Drop in diesen Bereich, um es zu importieren.\n\nOder klicken Sie hier, um den Dateibrowser zu öffnen."
-          }
-        }
-      }
-    },
-    "Drop to import file" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ablegen zum Importieren von Dateien"
           }
         }
       }
@@ -915,12 +925,32 @@
         }
       }
     },
+    "Meaningful description, e.g. _blue hoodie_" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aussagekräftige Beschreibung, z.B. _blauer Pullover_"
+          }
+        }
+      }
+    },
     "More" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mehr"
+          }
+        }
+      }
+    },
+    "New Document" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neues Dokument"
           }
         }
       }
@@ -1210,12 +1240,42 @@
         }
       }
     },
+    "Scan & Share" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan & Teilen"
+          }
+        }
+      }
+    },
+    "Scan & share document and add it to the archive." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dokument scannen & teilen und zum Archiv hinzufügen."
+          }
+        }
+      }
+    },
     "Scan Document" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Scan Dokument"
+          }
+        }
+      }
+    },
+    "Scan document and add it to the archive." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scanne das Dokument und fügen Sie es dem Archiv hinzu."
           }
         }
       }
@@ -1336,12 +1396,22 @@
         }
       }
     },
+    "Specify the Date of the Document" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gib das Datum des Dokumentes an"
+          }
+        }
+      }
+    },
     "Start scanning and tagging your first document." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Beginne mit dem Scannen und Verschlagworten deines ersten Dokuments."
+            "value" : "Beginne mit dem Scannen und Archivieren deines ersten Dokuments."
           }
         }
       }
@@ -1401,7 +1471,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ver­schlag­wor­tet"
+            "value" : "archiviert"
           }
         }
       }
@@ -1416,12 +1486,35 @@
         }
       }
     },
-    "Tap short to start scanning a document.\n\nLong press to scan and share the document after processing." : {
+    "Tagging View" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kurz antippen, um das Scannen eines Dokuments zu starten.\n\nLang drücken, um das Dokument nach der Verarbeitung zu scannen und zu teilen."
+            "value" : "Tagging Ansicht"
+          }
+        }
+      }
+    },
+    "Tags" : {
+      "shouldTranslate" : false
+    },
+    "Tags of the document, e.g. _bill_ and _clothing_" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlagworte des Dokumentes, z.B. _Rechnung_ und _Kleidung_"
+          }
+        }
+      }
+    },
+    "Tap here to see a list of your untagged documents.\nThey can be found in your archive view after tagging." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tippe hier, um deine unbearbeiteten Dokumente zu sehen.\nSie erscheinen nach dem Taggen in deinem Archiv."
           }
         }
       }
@@ -1582,6 +1675,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Du erhältst eine 2-wöchige kostenlose Testphase vor allen Abonnements.\n"
+          }
+        }
+      }
+    },
+    "Your first document was imported. **Tap here** to see and archive it." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein erstes Dokument wurde importiert. **Tippe hier** um es anzusehen und zu archivieren."
           }
         }
       }
