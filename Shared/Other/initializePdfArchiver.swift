@@ -7,8 +7,7 @@
 
 import Foundation
 
-@Sendable
-func initializePdfArchiver() async {
+func initializePdfArchiver() {
     Task(priority: .userInitiated) {
         do {
             try await ArchiveStore.shared.reloadArchiveDocuments()

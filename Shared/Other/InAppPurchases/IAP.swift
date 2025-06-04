@@ -56,24 +56,20 @@ struct IAP: ViewModifier {
                 }
             }
             .task {
+                guard subscriptionStatus == .loading else { return }
+
                 // if no subscription was found after 2 seconds, we assume there is no active subscription
-                do {
-                    try await Task.sleep(for: .seconds(3))
-                    guard subscriptionStatus == .loading else { return }
-                    lifetimePurchaseStatus = .inactive
-                } catch {
-                    Logger.inAppPurchase.errorAndAssert("Faile to get subscription after 2 seconds")
-                }
+                try? await Task.sleep(for: .seconds(3))
+                guard subscriptionStatus == .loading else { return }
+                lifetimePurchaseStatus = .inactive
             }
             .task {
+                guard subscriptionStatus == .loading else { return }
+
                 // if no lifetime purchase was found after 2 seconds, we assume there is no active subscription
-                do {
-                    try await Task.sleep(for: .seconds(3))
-                    guard lifetimePurchaseStatus == .loading else { return }
-                    lifetimePurchaseStatus = .inactive
-                } catch {
-                    Logger.inAppPurchase.errorAndAssert("Faile to get lifetime purchsase after 2 seconds")
-                }
+                try? await Task.sleep(for: .seconds(3))
+                guard lifetimePurchaseStatus == .loading else { return }
+                lifetimePurchaseStatus = .inactive
             }
             .task {
                 // look for lifetime purchase
