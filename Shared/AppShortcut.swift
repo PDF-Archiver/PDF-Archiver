@@ -7,6 +7,7 @@
 
 import AppIntents
 import Foundation
+import IntentLib
 
 class AppShortcuts: AppShortcutsProvider {
 

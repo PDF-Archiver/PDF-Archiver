@@ -5,10 +5,12 @@
 //  Created by Julian Kahnert on 24.11.24.
 //
 
+import IntentLib
 import OSLog
 import SwiftData
 import SwiftUI
 import TipKit
+import WidgetKit
 
 /// A navigation model used to persist and restore the navigation state.
 @Observable
@@ -59,6 +61,36 @@ final class NavigationModel {
         mode = UserDefaults.isTaggingMode ? .tagging : .archive
         premiumStatus = .loading
         try? Tips.configure()
+
+        Self.updateWidget()
+    }
+
+    private static func updateWidget() {
+        Task.detached(priority: .background) {
+            defer {
+                WidgetCenter.shared.reloadAllTimelines()
+            }
+
+            let context = ModelContext(container)
+            guard let documents = try? context.fetch(FetchDescriptor<Document>()) else {
+                Logger.navigationModel.error("Failed to fetch documents for widget update")
+                assertionFailure()
+                return
+            }
+
+            // stats widget
+            var statistics: [Int: Int] = [:]
+            for document in documents {
+                let year = Calendar.current.component(.year, from: document.date)
+                statistics[year, default: 0] += 1
+            }
+
+            SharedDefaults.set(statistics: statistics)
+
+            // untagged documents widget
+            let count = documents.filter(\.isTagged.flipped).count
+            SharedDefaults.set(untaggedDocumentsCount: count)
+        }
     }
 
     func switchTaggingMode(in modelContext: ModelContext) {
@@ -159,7 +191,12 @@ final class NavigationModel {
         #endif
     }
 
-    func showScan() {
+    func showScan(share: Bool = false) {
+        #if !os(macOS)
+        shareNextDocument = share
+        lastProcessedDocumentUrl = nil
+        #endif
+
         isScanPresented = true
     }
 
