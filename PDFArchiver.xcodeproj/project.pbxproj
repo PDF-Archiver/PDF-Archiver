@@ -33,6 +33,7 @@
 		34D470BB255B249B000302A8 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34D470BA255B249B000302A8 /* StoreKit.framework */; };
 		A3002AE22BAA30D100663B4F /* ArchiveListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3002AE12BAA30D100663B4F /* ArchiveListView.swift */; };
 		A3002AE32BAA321800663B4F /* ArchiveListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3002AE12BAA30D100663B4F /* ArchiveListView.swift */; };
+		A30DDBF62DF2370800E65E89 /* IntentLib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A37697812DEF4000006D052B /* IntentLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A31698892D42E2F800065A9A /* AppActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31698882D42E2F200065A9A /* AppActivityView.swift */; };
 		A316988A2D42E2F800065A9A /* AppActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31698882D42E2F200065A9A /* AppActivityView.swift */; };
 		A31BE2DA2BB8A9DA00022885 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31BE2D92BB8A9DA00022885 /* ErrorView.swift */; };
@@ -194,11 +195,9 @@
 		A37360AF2DB17057002C1A81 /* OnboardingTips.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37360AE2DB1704E002C1A81 /* OnboardingTips.swift */; };
 		A37360B02DB17057002C1A81 /* OnboardingTips.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37360AE2DB1704E002C1A81 /* OnboardingTips.swift */; };
 		A37697892DEF4000006D052B /* IntentLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A37697812DEF4000006D052B /* IntentLib.framework */; };
-		A376978A2DEF4000006D052B /* IntentLib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A37697812DEF4000006D052B /* IntentLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A37697912DF07CFA006D052B /* IntentLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A37697812DEF4000006D052B /* IntentLib.framework */; };
 		A37697922DF07CFA006D052B /* IntentLib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A37697812DEF4000006D052B /* IntentLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A376979B2DF07E4D006D052B /* IntentLib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A37697812DEF4000006D052B /* IntentLib.framework */; };
-		A376979C2DF07E4D006D052B /* IntentLib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A37697812DEF4000006D052B /* IntentLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A37FEB822C1E1642003F7F14 /* BackgroundProcessingActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37FEB812C1E1640003F7F14 /* BackgroundProcessingActor.swift */; };
 		A37FEB832C1E1642003F7F14 /* BackgroundProcessingActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37FEB812C1E1640003F7F14 /* BackgroundProcessingActor.swift */; };
 		A37FEB852C1E3A53003F7F14 /* PlatformImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37FEB842C1E3A4D003F7F14 /* PlatformImage.swift */; };
@@ -329,7 +328,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				A376978A2DEF4000006D052B /* IntentLib.framework in Embed Frameworks */,
+				A30DDBF62DF2370800E65E89 /* IntentLib.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -351,7 +350,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				A376979C2DF07E4D006D052B /* IntentLib.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
