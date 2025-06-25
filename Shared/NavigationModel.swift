@@ -105,6 +105,11 @@ final class NavigationModel {
         }
     }
 
+    func openTaggingMode(in modelContext: ModelContext) {
+        mode = .tagging
+        selectNewUntaggedDocument(in: modelContext)
+    }
+
     func saveDocument(_ oldUrl: URL, to filename: String, modelContext: ModelContext) {
         guard let selectedDocument,
               selectedDocument.url == oldUrl else {

@@ -13,6 +13,5 @@ struct PdfArchiverWidgetBundle: WidgetBundle {
     var body: some Widget {
         StatsWidget()
         UntaggedDocumentsWidget()
-        UntaggedDocumentsWidgetT()
     }
 }
