@@ -9,6 +9,7 @@ import AppIntents
 
 public enum DeepLink: String, CaseIterable {
     case scan, scanAndShare
+    case tag
 
     public var url: URL {
         URL(string: "pdfarchiver:///widget/\(rawValue)")!

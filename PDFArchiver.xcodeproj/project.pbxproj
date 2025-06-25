@@ -215,6 +215,7 @@
 		A39D507E2BFDE4AE0028696A /* Bool.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39D507C2BFDE4AE0028696A /* Bool.swift */; };
 		A39DBD7C2C29B02B000DD224 /* PremiumSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39DBD7B2C29B02B000DD224 /* PremiumSectionView.swift */; };
 		A39DBD7D2C29B02B000DD224 /* PremiumSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A39DBD7B2C29B02B000DD224 /* PremiumSectionView.swift */; };
+		A39E5F512E0C766B00244D3A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3416B1AE24A9282800D5F4E0 /* Assets.xcassets */; };
 		A3AEBC2C2DADA6B400DE392E /* DirectoryDeepWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3AEBC2B2DADA6B400DE392E /* DirectoryDeepWatcher.swift */; };
 		A3AEBC2D2DADA6B400DE392E /* DirectoryDeepWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3AEBC2B2DADA6B400DE392E /* DirectoryDeepWatcher.swift */; };
 		A3B277292BA4D89C00F6F8D0 /* Parma in Frameworks */ = {isa = PBXBuildFile; productRef = A3B277282BA4D89C00F6F8D0 /* Parma */; };
@@ -1429,6 +1430,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A39E5F512E0C766B00244D3A /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

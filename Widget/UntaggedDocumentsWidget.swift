@@ -46,53 +46,178 @@ struct WidgetUntaggedDocumentsEntryView: View {
 
     var entry: UntaggedDocumentsProvider.Entry
 
-    var body: some View {
-        VStack {
-            ZStack {
-                VStack(spacing: 8) {
-                    HStack(alignment: .bottom) {
-                        Text(entry.untaggedDocuments, format: .number)
-                            .fontWeight(.semibold)
-                        Image(systemName: "document.on.document")
-                            .foregroundStyle(Color.green)
-                            .symbolRenderingMode(.hierarchical)
-                    }
-                    .font(.title)
-
-                    Text("Untagged Documents")
-                        .foregroundStyle(.secondary)
-                        .font(.caption)
-                }
-                .opacity(entry.untaggedDocuments == 0 ? 0 : 1)
-
-                VStack {
-                    Image(systemName: "checkmark.seal")
-                        .font(.title)
-                        .foregroundStyle(Color.green)
-                        .symbolRenderingMode(.hierarchical)
-
-                    Text("All documents are tagged. 🎉")
-                        .foregroundStyle(.secondary)
-                        .font(.caption)
-                }
-                .opacity(entry.untaggedDocuments == 0 ? 1 : 0)
-            }
-
-            HStack {
-                Spacer()
+    var actionButtons: some View {
+         HStack {
+            if entry.untaggedDocuments <= 0 {
                 Link(destination: DeepLink.scan.url) {
                     Label("Scan", systemImage: "document.viewfinder")
+                        .frame(maxWidth: .infinity)
                         .padding(10)
-                        .background(ContainerRelativeShape().fill(Color.gray.opacity(0.3)))
+                        .background(
+                            Capsule().fill(Color("paDarkRedAsset"))
+                        )
+                        .foregroundColor(.white)
                 }
             }
-            .padding(.top, 8)
+
+            if entry.untaggedDocuments > 0 {
+                Link(destination: DeepLink.scan.url) {
+                    Image(systemName: "doc.viewfinder")
+                }
+                .padding(10)
+                .background(Circle().fill(Color.gray.opacity(0.3)))
+
+            }
+
+            if entry.untaggedDocuments > 0 {
+                Link(destination: DeepLink.tag.url) {
+                    Label("Tag", systemImage: "tag")
+                        .frame(maxWidth: .infinity)
+                        .padding(10)
+                        .background(
+                            Capsule().fill(Color("paDarkRedAsset"))
+                        )
+                        .foregroundColor(.white)
+                }
+            }
+         }
+        .padding(.top, 8)
+    }
+
+    var body: some View {
+        switch widgetFamily {
+        case .systemSmall:
+            VStack(alignment: .leading) {
+                if entry.untaggedDocuments > 0 {
+                    VStack(spacing: 8) {
+                        HStack(alignment: .bottom, spacing: 8) {
+                            Text(entry.untaggedDocuments, format: .number)
+                                .fontWeight(.black)
+
+                            Image(systemName: "document.on.document")
+                                .foregroundStyle(Color("paDarkRedAsset"))
+                                .symbolRenderingMode(.hierarchical)
+                        }
+                        .font(.largeTitle)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                        Text("Untagged Documents")
+                            .foregroundStyle(.secondary)
+                            .font(.caption)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                } else {
+                    ZStack(alignment: .topTrailing) {
+                        Image(systemName: "checkmark.seal.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 100, height: 100)
+                            .foregroundStyle(Color("paDarkRedAsset").opacity(0.4))
+                            .padding([.top, .trailing], -40)
+
+                        Text("All documents are tagged. 🎉")
+                            .foregroundStyle(.secondary)
+                            .font(.caption)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.top, 40)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+
+                Spacer()
+
+                actionButtons
+            }
+
+        case .systemMedium:
+            VStack(alignment: .leading) {
+                if entry.untaggedDocuments > 0 {
+                    HStack(alignment: .firstTextBaseline, spacing: 8) {
+                        Text(entry.untaggedDocuments, format: .number)
+                            .font(.system(size: 48, weight: .black))
+
+                        Image(systemName: "document.on.document")
+                            .foregroundStyle(Color("paDarkRedAsset"))
+                            .symbolRenderingMode(.hierarchical)
+                            .font(.title)
+
+                        Text("Untagged Documents")
+                            .foregroundStyle(.secondary)
+                            .font(.body)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.2)
+
+                        Spacer()
+                    }
+                } else {
+                    ZStack(alignment: .topTrailing) {
+                        Image(systemName: "checkmark.seal.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 100, height: 100)
+                            .foregroundStyle(Color("paDarkRedAsset").opacity(0.4))
+                            .padding([.top, .trailing], -40)
+
+                        Text("All documents are tagged. 🎉")
+                            .foregroundStyle(.secondary)
+                            .font(.caption)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.top, 40)
+                    }
+                }
+
+                Spacer()
+
+                actionButtons
+            }
+        default:
+            VStack(alignment: .leading) {
+                if entry.untaggedDocuments > 0 {
+                    VStack(spacing: 8) {
+                        HStack(alignment: .bottom, spacing: 8) {
+                            Text(entry.untaggedDocuments, format: .number)
+                                .fontWeight(.black)
+
+                            Image(systemName: "document.on.document")
+                                .foregroundStyle(Color("paDarkRedAsset"))
+                                .symbolRenderingMode(.hierarchical)
+                        }
+                        .font(.largeTitle)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                        Text("Untagged Documents")
+                            .foregroundStyle(.secondary)
+                            .font(.caption)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                } else {
+                    ZStack(alignment: .topTrailing) {
+                        Image(systemName: "checkmark.seal.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 100, height: 100)
+                            .foregroundStyle(Color("paDarkRedAsset").opacity(0.4))
+                            .padding([.top, .trailing], -40)
+
+                        Text("All documents are tagged. 🎉")
+                            .foregroundStyle(.secondary)
+                            .font(.caption)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.top, 40)
+                    }
+                }
+
+                Spacer()
+
+                actionButtons
+            }
         }
     }
 }
 
 struct UntaggedDocumentsWidget: Widget {
-    let kind: String = "UntaggedDocumentsWidget"
+    let kind: String = "UntaggedDocumentsWidgetT"
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind,
@@ -100,13 +225,29 @@ struct UntaggedDocumentsWidget: Widget {
             WidgetUntaggedDocumentsEntryView(entry: entry)
                 .containerBackground(.fill.tertiary, for: .widget)
         }
-        .configurationDisplayName("Untagged Documents")
-        .description("Number of PDFs that are currently untagged.")
-        .supportedFamilies([.systemSmall])
+        .configurationDisplayName("Untagged Documents by Tristan")
+        .description("See how many documents are currently untagged or scan a new document.")
+        .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
 
-#Preview(as: .systemSmall) {
+#Preview("Small", as: .systemSmall) {
+    UntaggedDocumentsWidget()
+} timeline: {
+    UntaggedDocumentsEntry(date: .now, untaggedDocuments: 0)
+    UntaggedDocumentsEntry(date: .now, untaggedDocuments: 5)
+    UntaggedDocumentsEntry(date: .now, untaggedDocuments: 42)
+}
+
+#Preview("Middle", as: .systemMedium) {
+    UntaggedDocumentsWidget()
+} timeline: {
+    UntaggedDocumentsEntry(date: .now, untaggedDocuments: 0)
+    UntaggedDocumentsEntry(date: .now, untaggedDocuments: 5)
+    UntaggedDocumentsEntry(date: .now, untaggedDocuments: 542)
+}
+
+#Preview("Large", as: .systemLarge) {
     UntaggedDocumentsWidget()
 } timeline: {
     UntaggedDocumentsEntry(date: .now, untaggedDocuments: 0)

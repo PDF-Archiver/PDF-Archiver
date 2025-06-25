@@ -71,27 +71,32 @@ struct WidgetStatsEntryView: View {
                     x: .value("Amount", item.count),
                     y: .value("Period", "\(item.year)")
                 )
+                .annotation(position: .leading) {
+                    Text(item.year, format: .number.grouping(.never))
+                }
                 .annotation(position: .trailing) {
                     Text("\(item.count)")
                 }
             }
             .fixedSize(horizontal: false, vertical: true)
             .chartXAxis(.hidden)
+            .chartYAxis(.hidden)
             .chartYAxis {
                 AxisMarks(stroke: StrokeStyle(lineWidth: 0))
             }
             .chartXAxis {
                 AxisMarks(stroke: StrokeStyle(lineWidth: 0))
             }
+            .foregroundStyle(Color("paDarkRedAsset").opacity(0.6))
 
-            HStack {
-                Spacer()
-                Link(destination: DeepLink.scan.url) {
-                    Label("Scan", systemImage: "document.viewfinder")
-                        .labelStyle(includingText: widgetFamily == .systemMedium)
-                        .padding(10)
-                        .background(ContainerRelativeShape().fill(Color.gray.opacity(0.3)))
-                }
+            Link(destination: DeepLink.scan.url) {
+                Label("Scan", systemImage: "document.viewfinder")
+                    .frame(maxWidth: .infinity)
+                    .padding(10)
+                    .background(
+                        Capsule().fill(Color("paDarkRedAsset"))
+                    )
+                    .foregroundColor(.white)
             }
         }
     }

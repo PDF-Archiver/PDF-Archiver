@@ -8,6 +8,7 @@
 
 import SwiftUI
 
+#warning("TODO: move this to library")
 extension Color {
     static let paDarkGray = Color("paDarkGrayAsset")
     static let paLightGray = Color("paLightGrayAsset")
