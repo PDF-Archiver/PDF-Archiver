@@ -9,7 +9,7 @@ import AppIntents
 import Foundation
 import IntentLib
 
-class AppShortcuts: AppShortcutsProvider {
+final class AppShortcuts: AppShortcutsProvider {
 
     /// The color the system uses to display the App Shortcuts in the Shortcuts app.
     static let shortcutTileColor = ShortcutTileColor.yellow

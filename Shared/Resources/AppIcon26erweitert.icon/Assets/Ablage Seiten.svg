@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g transform="matrix(0.24,0,0,0.24,0,0)">
+        <g id="Ablage-Seiten" serif:id="Ablage Seiten">
+            <g transform="matrix(6.06601e-17,-0.990654,0.957142,5.86081e-17,-1826.19,3755.77)">
+                <path d="M867,2750L974,2964L760,2964L867,2750Z" style="fill:rgb(0,224,255);"/>
+            </g>
+            <g transform="matrix(-6.06601e-17,-0.990654,-0.957142,5.86081e-17,6092.41,3755.77)">
+                <path d="M867,2750L974,2964L760,2964L867,2750Z" style="fill:rgb(0,224,255);"/>
+            </g>
+        </g>
+    </g>
+</svg>
