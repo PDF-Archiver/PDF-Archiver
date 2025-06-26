@@ -8,14 +8,21 @@
 
 import SwiftUI
 
-struct TagView: View {
+public struct TagView: View {
 
     let tagName: String
     let isEditable: Bool
     let isSuggestion: Bool
     let tapHandler: ((String) -> Void)?
+    
+    public init(tagName: String, isEditable: Bool, isSuggestion: Bool, tapHandler: ((String) -> Void)?) {
+        self.tagName = tagName
+        self.isEditable = isEditable
+        self.isSuggestion = isSuggestion
+        self.tapHandler = tapHandler
+    }
 
-    var body: some View {
+    public var body: some View {
         if let tapHandler = tapHandler {
             Button {
                 tapHandler(self.tagName)

@@ -232,16 +232,20 @@ final class SettingsViewModel: ObservableObject, Log {
         openPanel.allowsMultipleSelection = false
         openPanel.canCreateDirectories = true
         openPanel.begin { response in
-            guard response == .OK,
-                  let url = openPanel.url else { return }
-            self.observedFolderURL = url
-            UserDefaults.observedFolderURL = url
-            self.queue.async {
-                Task {
-                    do {
-                        try await ArchiveStore.shared.reloadArchiveDocuments()
-                    } catch {
-                        NotificationCenter.default.postAlert(error)
+            Task {
+                await MainActor.run {
+                    guard response == .OK,
+                          let url = openPanel.url else { return }
+                    self.observedFolderURL = url
+                    UserDefaults.observedFolderURL = url
+                    self.queue.async {
+                        Task {
+                            do {
+                                try await ArchiveStore.shared.reloadArchiveDocuments()
+                            } catch {
+                                NotificationCenter.default.postAlert(error)
+                            }
+                        }
                     }
                 }
             }

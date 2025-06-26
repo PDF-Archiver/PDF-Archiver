@@ -38,7 +38,7 @@ struct ArchiveListView: View {
                         ArchiveListItemView(document: document)
                     }
                     #if !os(macOS)
-                    .listRowBackground(navigationModel.selectedDocument == document ? Color.secondaryBackground : nil)
+                    .listRowBackground(navigationModel.selectedDocument == document ? Color(.paSecondaryBackground) : nil)
                     #endif
                 }
 

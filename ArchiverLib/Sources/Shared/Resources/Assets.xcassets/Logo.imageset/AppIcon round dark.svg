@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Pixodesk SVG (https://pixodesk.com) -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:pixodesk="https://pixodesk.com" viewBox="0 0 512 512" text-rendering="geometricPrecision" shape-rendering="geometricPrecision">
+  <defs>
+    <filter>
+      <feDropShadow result="drop-shadow-0" dy="10" stdDeviation="10" flood-opacity="0.3"/>
+    </filter>
+    <filter>
+      <feDropShadow result="drop-shadow-0" dy="10" stdDeviation="10" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  <ellipse fill="#353e49" stroke="none" transform="translate(395.8384, 402.7828)" cx="-139.8384" cy="-146.7828" rx="256" ry="256"/>
+  <g transform="translate(25.06, 32.7775)scale(0.45, 0.45)">
+    <path id="svg_8" class="st3" fill="#ffffff" d="M577,320.6L577,177L305.8,177C279.4,177,257.9,198.4,257.9,224.9L257.9,767.2C257.9,793.6,279.3,815.1,305.8,815.1L720.5,815.1C746.9,815.1,768.4,793.7,768.4,767.2L768.4,368.4L624.8,368.4C598.4,368.4,577,347,577,320.6z"/>
+    <path id="svg_10" class="st4" fill="#231f20" opacity="0.2" d="M593.2,357.2L768.4,512L768.4,368.4"/>
+    <path id="svg_12" class="st5" fill="#ca414f" d="M577,177L577,320.6C577,347,598.4,368.5,624.9,368.5L768.5,368.5L577,177z"/>
+    <rect id="svg_14" class="st6" fill="#222d3c" opacity="0.5" x="353.7" y="336.5" width="153.5" height="31.9"/>
+    <rect id="svg_16" class="st6" fill="#222d3c" opacity="0.5" x="353.7" y="496" width="319" height="31.9"/>
+    <rect id="svg_18" class="st6" fill="#222d3c" opacity="0.5" x="353.7" y="416.3" width="319" height="31.9"/>
+    <rect id="svg_20" class="st6" fill="#222d3c" opacity="0.5" x="353.7" y="575.8" width="319" height="31.9"/>
+    <rect id="svg_22" class="st6" fill="#222d3c" opacity="0.5" x="353.7" y="655.6" width="319" height="31.9"/>
+  </g>
+</svg>

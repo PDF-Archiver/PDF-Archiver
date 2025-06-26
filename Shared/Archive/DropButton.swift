@@ -51,7 +51,7 @@ struct DropButton: View {
             #endif
         }
         #if !os(macOS)
-        .background(Color.paPlaceholderGray, in: Capsule())
+        .background(Color(.paPlaceholderGray), in: Capsule())
         .simultaneousGesture(
             LongPressGesture()
                 .onEnded { _ in
