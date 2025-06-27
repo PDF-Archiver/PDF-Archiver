@@ -61,7 +61,7 @@ struct WidgetStatsEntryView: View {
     func color(for count: Int, max: Int) -> Color {
         let relative = Double(count) / Double(max)
         let brightness = 0.5 + (1 - relative) * 0.4  // Helle Werte bei kleinen Zahlen
-        return Color(hue: 0, saturation: 0.1, brightness: brightness)
+        return Color(hue: 0, saturation: 0.2, brightness: brightness)
     }
 
     var body: some View {
@@ -69,7 +69,7 @@ struct WidgetStatsEntryView: View {
             .map { YearCount(year: $0.key, count: $0.value) }
             .sorted { $0.year < $1.year }
 //            .reversed()
-            .prefix(5)
+            .prefix(widgetFamily == .systemSmall ? 2 : 5)
 
         VStack(alignment: .leading) {
             
