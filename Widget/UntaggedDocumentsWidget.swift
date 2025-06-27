@@ -51,34 +51,30 @@ struct WidgetUntaggedDocumentsEntryView: View {
             if entry.untaggedDocuments <= 0 {
                 Link(destination: DeepLink.scan.url) {
                     Label("Scan", systemImage: "document.viewfinder")
-                        .frame(maxWidth: .infinity)
-                        .padding(10)
-                        .background(
-                            Capsule().fill(Color("paDarkRedAsset"))
-                        )
-                        .foregroundColor(.white)
                 }
-            }
-
-            if entry.untaggedDocuments > 0 {
+                .frame(maxWidth: .infinity)
+                .padding(10)
+                .background(
+                    Capsule().fill(Color("paDarkRedAsset"))
+                )
+                .foregroundColor(.white)
+            } else {
                 Link(destination: DeepLink.scan.url) {
                     Image(systemName: "doc.viewfinder")
                 }
                 .padding(10)
                 .background(Circle().fill(Color.gray.opacity(0.3)))
 
-            }
-
-            if entry.untaggedDocuments > 0 {
                 Link(destination: DeepLink.tag.url) {
                     Label("Tag", systemImage: "tag")
-                        .frame(maxWidth: .infinity)
-                        .padding(10)
-                        .background(
-                            Capsule().fill(Color("paDarkRedAsset"))
-                        )
-                        .foregroundColor(.white)
+                        .minimumScaleFactor(0.5)
                 }
+                .frame(maxWidth: .infinity)
+                .padding(10)
+                .background(
+                    Capsule().fill(Color("paDarkRedAsset"))
+                )
+                .foregroundColor(.white)
             }
          }
         .padding(.top, 8)
@@ -225,7 +221,7 @@ struct UntaggedDocumentsWidget: Widget {
             WidgetUntaggedDocumentsEntryView(entry: entry)
                 .containerBackground(.fill.tertiary, for: .widget)
         }
-        .configurationDisplayName("Untagged Documents by Tristan")
+        .configurationDisplayName("Untagged Documents")
         .description("See how many documents are currently untagged or scan a new document.")
         .supportedFamilies([.systemSmall, .systemMedium])
     }
