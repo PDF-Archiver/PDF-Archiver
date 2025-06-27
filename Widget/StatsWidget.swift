@@ -58,36 +58,65 @@ struct WidgetStatsEntryView: View {
 
     var entry: StatsProvider.Entry
 
+    func color(for count: Int, max: Int) -> Color {
+        let relative = Double(count) / Double(max)
+        let brightness = 0.5 + (1 - relative) * 0.4  // Helle Werte bei kleinen Zahlen
+        return Color(hue: 0, saturation: 0.1, brightness: brightness)
+    }
+
     var body: some View {
         let yearStats = entry.yearStats
             .map { YearCount(year: $0.key, count: $0.value) }
             .sorted { $0.year < $1.year }
-            .reversed()
-            .prefix(3)
+//            .reversed()
+            .prefix(5)
 
         VStack(alignment: .leading) {
-            Chart(yearStats, id: \.self) { item in
-                BarMark(
-                    x: .value("Amount", item.count),
-                    y: .value("Period", "\(item.year)")
-                )
-                .annotation(position: .leading) {
-                    Text(item.year, format: .number.grouping(.never))
-                }
-                .annotation(position: .trailing) {
-                    Text("\(item.count)")
+            
+            Text("Documents per year")
+                .minimumScaleFactor(0.8)
+            
+            Spacer()
+            
+            let maxCount = yearStats.map(\.count).max() ?? 1
+
+            Chart {
+                ForEach(Array(yearStats.enumerated()), id: \.element) { _, item in
+                    BarMark(
+                        x: .value("Amount", item.count),
+                        stacking: .normalized
+                    )
+                    .foregroundStyle(color(for: item.count, max: maxCount))
+//                    .cornerRadius(50)
+                    .annotation(position: .overlay) {
+                        Text("\(item.count)")
+                            .font(.caption2)
+                            .minimumScaleFactor(0.2)
+                            .foregroundColor(.white)
+                            .opacity(item.count > 0 ? 1 : 0.5)
+                    }
                 }
             }
-            .fixedSize(horizontal: false, vertical: true)
+            .clipShape(RoundedRectangle(cornerRadius: 5))
+            .frame(height: 30)
+            .chartLegend(position: .bottom, alignment: .center, spacing: 6)
             .chartXAxis(.hidden)
             .chartYAxis(.hidden)
-            .chartYAxis {
-                AxisMarks(stroke: StrokeStyle(lineWidth: 0))
+            
+            HStack(spacing: 0) {
+                ForEach(Array(yearStats.enumerated()), id: \.element) { index, item in
+                    HStack(spacing: 4) {
+                        Circle()
+                            .fill(color(for: item.count, max: maxCount))
+                            .frame(width: 8, height: 8)
+                        Text(item.year.formatted(.number.grouping(.never)))
+                            .font(.caption2)
+                    }
+                    .frame(maxWidth: .infinity)
+                }
             }
-            .chartXAxis {
-                AxisMarks(stroke: StrokeStyle(lineWidth: 0))
-            }
-            .foregroundStyle(Color("paDarkRedAsset").opacity(0.6))
+            
+            Spacer()
 
             Link(destination: DeepLink.scan.url) {
                 Label("Scan", systemImage: "document.viewfinder")
@@ -133,20 +162,20 @@ struct StatsWidget: Widget {
     StatsWidget()
 } timeline: {
     StatsEntry(date: .now, yearStats: [
-        2022: 3,
-        2022 + 1: 7,
-        2022 + 2: 5,
-        2022 + 3: 8,
-        2022 + 4: 10
+        2022: 30,
+        2022 + 1: 117,
+        2022 + 2: 145,
+        2022 + 3: 380,
+        2022 + 4: 550
     ])
     StatsEntry(date: .now, yearStats: [
-        2023: 3,
-        2023 + 1: 7,
-        2023 + 2: 5
+        2023: 433,
+        2023 + 1: 700,
+        2023 + 2: 10
     ])
     StatsEntry(date: .now, yearStats: [
-        2024: 3,
-        2024 + 1: 7,
-        2024 + 2: 5
+        2024: 300,
+        2024 + 1: 70,
+        2024 + 2: 505
     ])
 }
