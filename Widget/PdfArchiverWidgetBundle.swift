@@ -11,7 +11,8 @@ import WidgetKit
 @main
 struct PdfArchiverWidgetBundle: WidgetBundle {
     var body: some Widget {
-        StatsWidget()
+        StatsWidget1()
+        StatsWidget2()
         UntaggedDocumentsWidget()
     }
 }
