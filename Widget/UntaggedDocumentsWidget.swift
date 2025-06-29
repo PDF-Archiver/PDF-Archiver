@@ -49,32 +49,62 @@ struct WidgetUntaggedDocumentsEntryView: View {
     var actionButtons: some View {
          HStack {
             if entry.untaggedDocuments <= 0 {
-                Link(destination: DeepLink.scan.url) {
-                    Label("Scan", systemImage: "document.viewfinder")
+                
+                if #available(iOS 26.0, *) {
+                    Link(destination: DeepLink.scan.url) {
+                        Label("Scan", systemImage: "document.viewfinder")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.glass)
+                    .tint(Color("paDarkRedAsset"))
+                } else {
+                    Link(destination: DeepLink.scan.url) {
+                        Label("Scan", systemImage: "document.viewfinder")
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(10)
+                    .background(
+                        Capsule().fill(Color("paDarkRedAsset"))
+                    )
+                    .foregroundColor(.white)
                 }
-                .frame(maxWidth: .infinity)
-                .padding(10)
-                .background(
-                    Capsule().fill(Color("paDarkRedAsset"))
-                )
-                .foregroundColor(.white)
-            } else {
-                Link(destination: DeepLink.scan.url) {
-                    Image(systemName: "doc.viewfinder")
-                }
-                .padding(10)
-                .background(Circle().fill(Color.gray.opacity(0.3)))
+                
 
-                Link(destination: DeepLink.tag.url) {
-                    Label("Tag", systemImage: "tag")
-                        .minimumScaleFactor(0.5)
+                
+            } else {
+                if #available(iOS 26.0, *) {
+                    Link(destination: DeepLink.scan.url) {
+                        Image(systemName: "doc.viewfinder")
+                    }
+                    .buttonStyle(.glass)
+                    .tint(Color(.gray))
+
+                    Link(destination: DeepLink.tag.url) {
+                        Label("Tag", systemImage: "tag")
+                            .minimumScaleFactor(0.5)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.glass)
+                    .tint(Color("paDarkRedAsset"))
+                } else {
+                    Link(destination: DeepLink.scan.url) {
+                        Image(systemName: "doc.viewfinder")
+                    }
+                    .padding(10)
+                    .background(Circle().fill(Color.gray.opacity(0.3)))
+
+                    Link(destination: DeepLink.tag.url) {
+                        Label("Tag", systemImage: "tag")
+                            .minimumScaleFactor(0.5)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .padding(10)
+                    .background(
+                        Capsule().fill(Color("paDarkRedAsset"))
+                    )
+                    .foregroundColor(.white)
                 }
-                .frame(maxWidth: .infinity)
-                .padding(10)
-                .background(
-                    Capsule().fill(Color("paDarkRedAsset"))
-                )
-                .foregroundColor(.white)
+                
             }
          }
         .padding(.top, 8)
@@ -89,6 +119,7 @@ struct WidgetUntaggedDocumentsEntryView: View {
                         HStack(alignment: .bottom, spacing: 8) {
                             Text(entry.untaggedDocuments, format: .number)
                                 .fontWeight(.black)
+                                .foregroundStyle(Color(.black))
 
                             Image(systemName: "document.on.document")
                                 .foregroundStyle(Color("paDarkRedAsset"))

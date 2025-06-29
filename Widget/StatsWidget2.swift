@@ -98,7 +98,7 @@ struct WidgetStatsEntryView2: View {
                 }
             }
             .clipShape(RoundedRectangle(cornerRadius: 5))
-            .frame(height: 30)
+            .frame(maxHeight: .infinity)
             .chartLegend(position: .bottom, alignment: .center, spacing: 6)
             .chartXAxis(.hidden)
             .chartYAxis(.hidden)
@@ -117,15 +117,24 @@ struct WidgetStatsEntryView2: View {
             }
             
             Spacer()
-
-            Link(destination: DeepLink.scan.url) {
-                Label("Scan", systemImage: "document.viewfinder")
-                    .frame(maxWidth: .infinity)
-                    .padding(10)
-                    .background(
-                        Capsule().fill(Color("paDarkRedAsset"))
-                    )
-                    .foregroundColor(.white)
+            
+            if #available(iOS 26.0, *) {
+                Link(destination: DeepLink.scan.url) {
+                    Label("Scan", systemImage: "document.viewfinder")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.glass)
+                .tint(Color("paDarkRedAsset"))
+            } else {
+                Link(destination: DeepLink.scan.url) {
+                    Label("Scan", systemImage: "document.viewfinder")
+                }
+                .frame(maxWidth: .infinity)
+                .padding(10)
+                .background(
+                    Capsule().fill(Color("paDarkRedAsset"))
+                )
+                .foregroundColor(.white)
             }
         }
     }
