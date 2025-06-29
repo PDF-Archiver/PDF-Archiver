@@ -23,10 +23,12 @@ let package = Package(
                     .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                     "Shared"
                 ]),
+//                swiftSettings: [.defaultIsolaion(MainActor.self)]),
         .target(name: "Shared",
                 dependencies: [
                     .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
                 ]),
+//                swiftSettings: [.defaultIsolaion(MainActor.self)]),
         .testTarget(
             name: "DocumentInformationUITests",
             dependencies: ["DocumentInformationUI"]
