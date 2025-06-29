@@ -103,6 +103,7 @@ struct WidgetStatsEntryView1: View {
                 .annotation(position: .leading) {
                     Text(item.year, format: .number.grouping(.never))
                         .font(.caption2)
+                        .monospacedDigit()
                         .foregroundStyle(Color(.secondaryLabel))
                 }
                 .annotation(position: .trailing) {
