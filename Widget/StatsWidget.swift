@@ -72,7 +72,7 @@ struct WidgetStatsEntryView: View {
             HStack(alignment: .top) {
                 Text("Documents per year")
                     .minimumScaleFactor(0.8)
-                    .foregroundStyle(Color(.black))
+                    .foregroundStyle(.primary)
                 
                 Spacer()
                 
@@ -81,7 +81,7 @@ struct WidgetStatsEntryView: View {
                 }
                 .padding(10)
                 .background(Circle().fill(Color("paDarkRedAsset")))
-                .foregroundColor(Color(.white))
+                .foregroundColor(.white)
             }
             
             
@@ -101,7 +101,7 @@ struct WidgetStatsEntryView: View {
                 .annotation(position: .trailing) {
                     Text("\(item.count)")
                         .font(.caption)
-                        .foregroundStyle(Color(.black))
+                        .foregroundStyle(.primary)
                 }
                 .foregroundStyle(Color("paDarkRedAsset").opacity(Double(item.count) / Double(maxCount)))
             }

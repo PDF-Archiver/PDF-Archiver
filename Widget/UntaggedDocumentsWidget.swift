@@ -92,7 +92,7 @@ struct WidgetUntaggedDocumentsEntryView: View {
                         HStack(alignment: .bottom, spacing: 8) {
                             Text(entry.untaggedDocuments, format: .number)
                                 .fontWeight(.black)
-                                .foregroundStyle(Color(.black))
+                                .foregroundStyle(.primary)
 
                             Image(systemName: "document.on.document")
                                 .foregroundStyle(Color("paDarkRedAsset"))
