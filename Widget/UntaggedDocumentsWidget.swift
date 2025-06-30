@@ -49,7 +49,7 @@ struct WidgetUntaggedDocumentsEntryView: View {
     var actionButtons: some View {
          HStack {
             if entry.untaggedDocuments <= 0 {
-                
+
                 Link(destination: DeepLink.scan.url) {
                     Label("Scan", systemImage: "document.viewfinder")
                 }
@@ -59,7 +59,7 @@ struct WidgetUntaggedDocumentsEntryView: View {
                     Capsule().fill(Color("paDarkRedAsset"))
                 )
                 .foregroundColor(.white)
-       
+
             } else {
                 Link(destination: DeepLink.scan.url) {
                     Image(systemName: "doc.viewfinder")
@@ -73,11 +73,9 @@ struct WidgetUntaggedDocumentsEntryView: View {
                         .frame(maxWidth: .infinity)
                 }
                 .padding(10)
-                .background(
-                    Capsule().fill(Color("paDarkRedAsset"))
-                )
+                .background(Capsule().fill(Color("paDarkRedAsset")))
                 .foregroundColor(.white)
-                
+
             }
          }
         .padding(.top, 8)
