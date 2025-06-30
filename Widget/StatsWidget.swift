@@ -64,18 +64,18 @@ struct WidgetStatsEntryView: View {
             .sorted { $0.year < $1.year }
             .reversed()
             .prefix(5)
-        
+
         let maxCount = yearStats.map(\.count).max() ?? 1
 
         VStack(alignment: .leading) {
-            
+
             HStack(alignment: .top) {
                 Text("Documents per year")
                     .minimumScaleFactor(0.8)
                     .foregroundStyle(.primary)
-                
+
                 Spacer()
-                
+
                 Link(destination: DeepLink.scan.url) {
                     Image(systemName: "doc.viewfinder")
                 }
@@ -83,10 +83,9 @@ struct WidgetStatsEntryView: View {
                 .background(Circle().fill(Color("paDarkRedAsset")))
                 .foregroundColor(.white)
             }
-            
-            
+
             Spacer()
-            
+
             Chart(yearStats, id: \.self) { item in
                 BarMark(
                     x: .value("Amount", item.count),
@@ -115,11 +114,8 @@ struct WidgetStatsEntryView: View {
             .chartXAxis {
                 AxisMarks(stroke: StrokeStyle(lineWidth: 0))
             }
-            
         }
-//        .background(Color.yellow.opacity(0.2)) // SafeArea coloring
     }
-    
 }
 
 fileprivate extension View {
@@ -160,7 +156,6 @@ struct StatsWidget: Widget {
         2023: 10,
         2024: 6,
         2025: 15
-        
     ])
     StatsEntry(date: .now, yearStats: [
         2022: 8,
