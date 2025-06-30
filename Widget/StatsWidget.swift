@@ -1,5 +1,5 @@
 //
-//  StatsWidget1.swift
+//  StatsWidget.swift
 //  Widget
 //
 //  Created by Julian Kahnert on 29.05.25.
@@ -12,28 +12,28 @@ import SwiftData
 import SwiftUI
 import WidgetKit
 
-struct StatsProvider1: AppIntentTimelineProvider {
-    func placeholder(in context: Context) -> StatsEntry1 {
+struct StatsProvider: AppIntentTimelineProvider {
+    func placeholder(in context: Context) -> StatsEntry {
         let configuration = ConfigurationAppIntent()
         let yearStats: [Int: Int] = [
             configuration.firstYear: 3,
             configuration.firstYear + 1: 7,
             configuration.firstYear + 2: 5
         ]
-        return StatsEntry1(date: Date(), yearStats: yearStats)
+        return StatsEntry(date: Date(), yearStats: yearStats)
     }
 
-    func snapshot(for configuration: ConfigurationAppIntent, in context: Context) async -> StatsEntry1 {
+    func snapshot(for configuration: ConfigurationAppIntent, in context: Context) async -> StatsEntry {
         let configuration = ConfigurationAppIntent()
 
         let statistics = SharedDefaults.getStatistics()
         let yearStats = statistics.filter { $0.key >= configuration.firstYear }
 
-        return StatsEntry1(date: Date(), yearStats: yearStats)
+        return StatsEntry(date: Date(), yearStats: yearStats)
     }
 
-    func timeline(for configuration: ConfigurationAppIntent, in context: Context) async -> Timeline<StatsEntry1> {
-        var entries: [StatsEntry1] = []
+    func timeline(for configuration: ConfigurationAppIntent, in context: Context) async -> Timeline<StatsEntry> {
+        var entries: [StatsEntry] = []
 
         // we can only calculate the current state of the archive
         let entry = await snapshot(for: configuration, in: context)
@@ -43,12 +43,12 @@ struct StatsProvider1: AppIntentTimelineProvider {
     }
 }
 
-struct StatsEntry1: TimelineEntry {
+struct StatsEntry: TimelineEntry {
     let date: Date
     let yearStats: [Int: Int]   // year: count
 }
 
-struct WidgetStatsEntryView1: View {
+struct WidgetStatsEntryView: View {
     @Environment(\.widgetFamily) var widgetFamily
 
     struct YearCount: Hashable {
@@ -56,7 +56,7 @@ struct WidgetStatsEntryView1: View {
         let count: Int
     }
 
-    var entry: StatsProvider1.Entry
+    var entry: StatsProvider.Entry
 
     var body: some View {
         let yearStats = entry.yearStats
@@ -141,14 +141,14 @@ fileprivate extension View {
     }
 }
 
-struct StatsWidget1: Widget {
-    let kind: String = "StatsWidget1"
+struct StatsWidget: Widget {
+    let kind: String = "StatsWidget"
 
     var body: some WidgetConfiguration {
         AppIntentConfiguration(kind: kind,
                                intent: ConfigurationAppIntent.self,
-                               provider: StatsProvider1()) { entry in
-            WidgetStatsEntryView1(entry: entry)
+                               provider: StatsProvider()) { entry in
+            WidgetStatsEntryView(entry: entry)
                 .containerBackground(.fill.tertiary, for: .widget)
         }
         .configurationDisplayName("PDF Statistics")
@@ -158,9 +158,9 @@ struct StatsWidget1: Widget {
 }
 
 #Preview(as: .systemMedium) {
-    StatsWidget1()
+    StatsWidget()
 } timeline: {
-    StatsEntry1(date: .now, yearStats: [
+    StatsEntry(date: .now, yearStats: [
         2019: 3,
         2020: 7,
         2021: 5,
@@ -170,22 +170,22 @@ struct StatsWidget1: Widget {
         2025: 15
         
     ])
-    StatsEntry1(date: .now, yearStats: [
+    StatsEntry(date: .now, yearStats: [
         2022: 8,
         2023: 3,
         2024: 7,
         2025: 5
     ])
-    StatsEntry1(date: .now, yearStats: [
+    StatsEntry(date: .now, yearStats: [
         2023: 133,
         2024: 89,
         2025: 50
     ])
-    StatsEntry1(date: .now, yearStats: [
+    StatsEntry(date: .now, yearStats: [
         2024: 45,
         2025: 50
     ])
-    StatsEntry1(date: .now, yearStats: [
+    StatsEntry(date: .now, yearStats: [
         2025: 50
     ])
 }
