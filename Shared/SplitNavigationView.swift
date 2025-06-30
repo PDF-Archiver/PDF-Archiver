@@ -54,7 +54,7 @@ struct SplitNavigationView: View {
 
                 case DeepLink.scanAndShare.url:
                     navigationModel.showScan(share: true)
-                    
+
                 case DeepLink.tag.url:
                     navigationModel.openTaggingMode(in: modelContext)
 

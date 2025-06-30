@@ -181,6 +181,7 @@
 		A36FB1822CCC23BD006ADDE9 /* DocumentLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36FB1802CCC23B3006ADDE9 /* DocumentLoadingView.swift */; };
 		A36FB1842CCC3A76006ADDE9 /* DeleteDocumentButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36FB1832CCC3A76006ADDE9 /* DeleteDocumentButtonView.swift */; };
 		A36FB1852CCC3A76006ADDE9 /* DeleteDocumentButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A36FB1832CCC3A76006ADDE9 /* DeleteDocumentButtonView.swift */; };
+		A370912C2E13060800625922 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = A3FE005B2D3109F9005D4BE1 /* Localizable.xcstrings */; };
 		A370DF8F2D22D6BB0062CDC9 /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = A370DF8E2D22D6B80062CDC9 /* Sequence.swift */; };
 		A370DF902D22D6BB0062CDC9 /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = A370DF8E2D22D6B80062CDC9 /* Sequence.swift */; };
 		A372F41B2DE62EB400D6E9AA /* TaggingTips.swift in Sources */ = {isa = PBXBuildFile; fileRef = A372F41A2DE62EAB00D6E9AA /* TaggingTips.swift */; };
@@ -1426,6 +1427,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A370912C2E13060800625922 /* Localizable.xcstrings in Resources */,
 				A39E5F512E0C766B00244D3A /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
