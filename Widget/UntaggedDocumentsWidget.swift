@@ -50,60 +50,33 @@ struct WidgetUntaggedDocumentsEntryView: View {
          HStack {
             if entry.untaggedDocuments <= 0 {
                 
-                if #available(iOS 26.0, *) {
-                    Link(destination: DeepLink.scan.url) {
-                        Label("Scan", systemImage: "document.viewfinder")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.glass)
-                    .tint(Color("paDarkRedAsset"))
-                } else {
-                    Link(destination: DeepLink.scan.url) {
-                        Label("Scan", systemImage: "document.viewfinder")
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(10)
-                    .background(
-                        Capsule().fill(Color("paDarkRedAsset"))
-                    )
-                    .foregroundColor(.white)
+                Link(destination: DeepLink.scan.url) {
+                    Label("Scan", systemImage: "document.viewfinder")
                 }
-                
-
-                
+                .frame(maxWidth: .infinity)
+                .padding(10)
+                .background(
+                    Capsule().fill(Color("paDarkRedAsset"))
+                )
+                .foregroundColor(.white)
+       
             } else {
-                if #available(iOS 26.0, *) {
-                    Link(destination: DeepLink.scan.url) {
-                        Image(systemName: "doc.viewfinder")
-                    }
-                    .buttonStyle(.glass)
-                    .tint(Color(.gray))
-
-                    Link(destination: DeepLink.tag.url) {
-                        Label("Tag", systemImage: "tag")
-                            .minimumScaleFactor(0.5)
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.glass)
-                    .tint(Color("paDarkRedAsset"))
-                } else {
-                    Link(destination: DeepLink.scan.url) {
-                        Image(systemName: "doc.viewfinder")
-                    }
-                    .padding(10)
-                    .background(Circle().fill(Color.gray.opacity(0.3)))
-
-                    Link(destination: DeepLink.tag.url) {
-                        Label("Tag", systemImage: "tag")
-                            .minimumScaleFactor(0.5)
-                            .frame(maxWidth: .infinity)
-                    }
-                    .padding(10)
-                    .background(
-                        Capsule().fill(Color("paDarkRedAsset"))
-                    )
-                    .foregroundColor(.white)
+                Link(destination: DeepLink.scan.url) {
+                    Image(systemName: "doc.viewfinder")
                 }
+                .padding(10)
+                .background(Circle().fill(Color.gray.opacity(0.3)))
+
+                Link(destination: DeepLink.tag.url) {
+                    Label("Tag", systemImage: "tag")
+                        .minimumScaleFactor(0.5)
+                        .frame(maxWidth: .infinity)
+                }
+                .padding(10)
+                .background(
+                    Capsule().fill(Color("paDarkRedAsset"))
+                )
+                .foregroundColor(.white)
                 
             }
          }

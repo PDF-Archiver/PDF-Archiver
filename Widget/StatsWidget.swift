@@ -76,20 +76,12 @@ struct WidgetStatsEntryView: View {
                 
                 Spacer()
                 
-                if #available(iOS 26.0, *) {
-                    Link(destination: DeepLink.scan.url) {
-                        Image(systemName: "doc.viewfinder")
-                    }
-                    .buttonStyle(.glass)
-                    .tint(Color("paDarkRedAsset"))
-                } else {
-                    Link(destination: DeepLink.scan.url) {
-                        Image(systemName: "doc.viewfinder")
-                    }
-                    .padding(10)
-                    .background(Circle().fill(Color("paDarkRedAsset")))
-                    .foregroundColor(Color(.white))
+                Link(destination: DeepLink.scan.url) {
+                    Image(systemName: "doc.viewfinder")
                 }
+                .padding(10)
+                .background(Circle().fill(Color("paDarkRedAsset")))
+                .foregroundColor(Color(.white))
             }
             
             
