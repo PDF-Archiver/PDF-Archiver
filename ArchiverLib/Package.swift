@@ -10,7 +10,7 @@ let package = Package(
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "ArchiverLib",
-            targets: ["DocumentInformationUI"]),
+            targets: ["Features"]),
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.20.2")
@@ -18,20 +18,35 @@ let package = Package(
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
-        .target(name: "DocumentInformationUI",
+        .target(name: "Features",
                 dependencies: [
-                    .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
-                    "Shared"
-                ]),
-//                swiftSettings: [.defaultIsolaion(MainActor.self)]),
-        .target(name: "Shared",
-                dependencies: [
+                    "DomainModels",
+                    "Shared",
                     .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
                 ]),
+//        .target(name: "DocumentDetails",
+//                dependencies: [
+//                    "DomainModels",
+//                    "Shared",
+//                    .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+//                ]),
+//        .target(name: "DocumentInformationForm",
+//                dependencies: [
+//                    "DomainModels",
+//                    "Shared",
+//                    .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+//                ]),
+        .target(name: "Shared",
+                dependencies: [
+                    "DomainModels",
+                    .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+                ]),
+        .target(name: "DomainModels",
+                dependencies: []),
 //                swiftSettings: [.defaultIsolaion(MainActor.self)]),
         .testTarget(
-            name: "DocumentInformationUITests",
-            dependencies: ["DocumentInformationUI"]
+            name: "FeaturesTests",
+            dependencies: ["Features"]
         ),
     ]
 )

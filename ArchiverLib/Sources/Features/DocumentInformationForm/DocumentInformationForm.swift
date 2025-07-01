@@ -1,5 +1,5 @@
 //
-//  DocumentInformation.swift
+//  DocumentInformationForm.swift
 //  ArchiverLib
 //
 //  Created by Julian Kahnert on 26.06.25.
@@ -9,28 +9,24 @@ import ComposableArchitecture
 import SwiftUI
 import TipKit
 import Shared
+import DomainModels
 
 @Reducer
-struct DocumentInformationFeature {
+public struct DocumentInformationForm {
     @ObservableState
-    struct State {
+    public struct State: Equatable {
         enum Field: Hashable {
             case date, specification, tags, save
         }
-        
-        var documentDate = Date()
+        var document: Document
+
         var suggestedDates: [Date] = []
-        
-        var documentDescription = ""
-        
         var suggestedTags: [String] = []
-        var documentTags: [String] = []
-        
         var tagSearchterm: String = ""
         
         var focusedField: Field?
     }
-    enum Action: BindableAction {
+    public enum Action: BindableAction {
         case tagSearchtermSubmitted
         case tagSuggestionTapped(String)
         case tagOnDocumentTapped(String)
@@ -40,7 +36,7 @@ struct DocumentInformationFeature {
         case binding(BindingAction<State>)
     }
     
-    var body: some ReducerOf<Self> {
+    public var body: some ReducerOf<Self> {
         BindingReducer()
 
         Reduce { state, action in
@@ -65,11 +61,11 @@ struct DocumentInformationFeature {
     }
 }
 
-struct DocumentInformation: View {
-    @Bindable var store: StoreOf<DocumentInformationFeature>
+public struct DocumentInformationFormView: View {
+    @Bindable var store: StoreOf<DocumentInformationForm>
     
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @FocusState var focusedField: DocumentInformationFeature.State.Field?
+    @FocusState var focusedField: DocumentInformationForm.State.Field?
     
     @State private var tips = TipGroup(.ordered) {
         TaggingTips.Date()
@@ -80,12 +76,12 @@ struct DocumentInformation: View {
         #endif
     }
 
-    var body: some View {
+    public var body: some View {
         Form {
             Section {
                 TipView(tips.currentTip as? TaggingTips.Date)
                     .tipImageSize(TaggingTips.size)
-                DatePicker("Date", selection: $store.documentDate, displayedComponents: .date)
+                DatePicker("Date", selection: $store.document.date, displayedComponents: .date)
                     .focused($focusedField, equals: .date)
                     .listRowSeparator(.hidden)
                 HStack {
@@ -123,7 +119,7 @@ struct DocumentInformation: View {
             Section {
                 TipView(tips.currentTip as? TaggingTips.Specification)
                     .tipImageSize(TaggingTips.size)
-                TextField(text: $store.documentDescription, prompt: Text("Enter specification")) {
+                TextField(text: $store.document.specification, prompt: Text("Enter specification")) {
                     Text("Specification")
                 }
                 .focused($focusedField, equals: .specification)
@@ -194,7 +190,7 @@ struct DocumentInformation: View {
             TipView(tips.currentTip as? TaggingTips.Tags)
                 .tipImageSize(TaggingTips.size)
             VStack(alignment: .leading, spacing: 16) {
-                if store.documentTags.isEmpty {
+                if store.document.tags.isEmpty {
                     Text("No tags selected")
                         .foregroundStyle(.secondary)
                 } else {
@@ -239,9 +235,9 @@ struct DocumentInformation: View {
 }
 
 #Preview {
-    DocumentInformation(
-        store: Store(initialState: DocumentInformationFeature.State()) {
-            DocumentInformationFeature()
+    DocumentInformationFormView(
+        store: Store(initialState: DocumentInformationForm.State(document: .mock())) {
+            DocumentInformationForm()
                 ._printChanges()
         }
     )
