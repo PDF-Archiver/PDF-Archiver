@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Document: Equatable, Identifiable {
+public struct Document: Equatable, Identifiable, Hashable {
     public var id: URL { url }
     public var url: URL
     public var date: Date

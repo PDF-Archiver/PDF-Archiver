@@ -10,7 +10,7 @@ let package = Package(
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "ArchiverLib",
-            targets: ["Features"]),
+            targets: ["ArchiverFeatures"]),
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.20.2")
@@ -18,7 +18,7 @@ let package = Package(
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
-        .target(name: "Features",
+        .target(name: "ArchiverFeatures",
                 dependencies: [
                     "DomainModels",
                     "Shared",
@@ -45,8 +45,8 @@ let package = Package(
                 dependencies: []),
 //                swiftSettings: [.defaultIsolaion(MainActor.self)]),
         .testTarget(
-            name: "FeaturesTests",
-            dependencies: ["Features"]
+            name: "ArchiverFeaturesTests",
+            dependencies: ["ArchiverFeatures"]
         ),
     ]
 )

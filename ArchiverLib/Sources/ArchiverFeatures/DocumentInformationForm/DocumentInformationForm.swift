@@ -12,9 +12,9 @@ import Shared
 import DomainModels
 
 @Reducer
-public struct DocumentInformationForm {
+struct DocumentInformationForm {
     @ObservableState
-    public struct State: Equatable {
+    struct State: Equatable {
         enum Field: Hashable {
             case date, specification, tags, save
         }
@@ -26,7 +26,7 @@ public struct DocumentInformationForm {
         
         var focusedField: Field?
     }
-    public enum Action: BindableAction {
+    enum Action: BindableAction {
         case tagSearchtermSubmitted
         case tagSuggestionTapped(String)
         case tagOnDocumentTapped(String)
@@ -36,7 +36,7 @@ public struct DocumentInformationForm {
         case binding(BindingAction<State>)
     }
     
-    public var body: some ReducerOf<Self> {
+    var body: some ReducerOf<Self> {
         BindingReducer()
 
         Reduce { state, action in
@@ -61,7 +61,7 @@ public struct DocumentInformationForm {
     }
 }
 
-public struct DocumentInformationFormView: View {
+struct DocumentInformationFormView: View {
     @Bindable var store: StoreOf<DocumentInformationForm>
     
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -76,7 +76,7 @@ public struct DocumentInformationFormView: View {
         #endif
     }
 
-    public var body: some View {
+    var body: some View {
         Form {
             Section {
                 TipView(tips.currentTip as? TaggingTips.Date)

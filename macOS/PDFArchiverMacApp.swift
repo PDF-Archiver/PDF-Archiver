@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import ArchiverFeatures
 
 @main
 struct PDFArchiverMacApp: App, Log {
@@ -20,8 +21,9 @@ struct PDFArchiverMacApp: App, Log {
 
     var body: some Scene {
         WindowGroup {
-            SplitNavigationView()
-                .inAppPurchasesSetup()
+            RootView()
+//            SplitNavigationView()
+//                .inAppPurchasesSetup()
         }
         .environment(navigationModel)
         .modelContainer(container)

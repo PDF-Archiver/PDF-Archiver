@@ -11,46 +11,31 @@ import DomainModels
 import Shared
 
 @Reducer
-public struct DocumentDetails {
+struct DocumentDetails {
     
     @ObservableState
-    public struct State {
-        @Presents var documentInformationForm: DocumentInformationForm.State?
-        var document: Document?
+    struct State: Equatable {
+//        var documentInformationForm: DocumentInformationForm.State?
+        var document: Document
+        var documentInformationForm: DocumentInformationForm.State {
+            DocumentInformationForm.State(document: document)
+        }
     }
 
-    public enum Action: BindableAction {
-        case showInspector
-        case showDocumentInformationFormInspector(PresentationAction<DocumentInformationForm.Action>)
+    enum Action: BindableAction {
+        case showDocumentInformationFormInspector(DocumentInformationForm.Action)
 
         case tagSearchtermSubmitted
         
         case binding(BindingAction<State>)
     }
     
-    public var body: some ReducerOf<Self> {
-        // TODO: is this correct?
+    var body: some ReducerOf<Self> {
         BindingReducer()
-            .onChange(of: \.document) { oldValue, newValue in
-                Reduce { state, action in
-                    if let document = newValue {
-                        state.documentInformationForm = .init(document: document)
-                    } else {
-                        state.documentInformationForm = nil
-                    }
-                    
-                    return .none
-                }
-            }
         Reduce { state, action in
             #warning("TODO: add this")
             switch action {
             case .binding:
-                return .none
-            case .showInspector:
-                if let document = state.document {
-                    state.documentInformationForm = .init(document: document)
-                }
                 return .none
             case .tagSearchtermSubmitted:
                 return .none
@@ -58,13 +43,13 @@ public struct DocumentDetails {
                 return .none
             }
         }
-        .ifLet(\.$documentInformationForm, action: \.showDocumentInformationFormInspector) {
-            DocumentInformationForm()
-        }
+//        .ifLet(\.documentInformationForm, action: \.showDocumentInformationFormInspector) {
+//            DocumentInformationForm()
+//        }
     }
 }
 
-public struct DocumentDetailsView: View {
+struct DocumentDetailsView: View {
     @Bindable var store: StoreOf<DocumentDetails>
 
 //    @Environment(NavigationModel.self) private var navigationModel
@@ -82,32 +67,25 @@ public struct DocumentDetailsView: View {
 //        self.downloadStatus = document?.downloadStatus
 //    }
 
-    public var body: some View {
+    var body: some View {
         Group {
-            if let document = store.document {
-                if document.downloadStatus < 1 {
-                    DocumentLoadingView(filename: document.filename, downloadStatus: document.downloadStatus)
-                        .task {
+//            if let document = store.document {
+            if store.document.downloadStatus < 1 {
+                DocumentLoadingView(filename: store.document.filename, downloadStatus: store.document.downloadStatus)
+                    .task {
 #warning("TODO: add this")
-                            //                            #if DEBUG
-                            //                            guard !ProcessInfo().isSwiftUIPreview else { return }
-                            //                            #endif
-                            //                            await ArchiveStore.shared.startDownload(of: document.url)
-                        }
-                    
-                } else {
-                    PDFCustomView(document.url)
-                        .ignoresSafeArea(edges: .bottom)
-                        .onAppear {
-                            // TODO: not sure if this is the best way to show the inspector
-                            store.send(.showInspector)
-                        }
-                        .inspector(item: $store.scope(state: \.documentInformationForm, action: \.showDocumentInformationFormInspector)) { formStore in
-                            DocumentInformationFormView(store: formStore)
-                        }
-                }
+                        //                            #if DEBUG
+                        //                            guard !ProcessInfo().isSwiftUIPreview else { return }
+                        //                            #endif
+                        //                            await ArchiveStore.shared.startDownload(of: document.url)
+                    }
+                
             } else {
-                ContentUnavailableView("Select a document", systemImage: "doc", description: Text("Select a document from the list."))
+                PDFCustomView(store.document.url)
+                    .ignoresSafeArea(edges: .bottom)
+                    .inspector(isPresented: .constant(true)) {
+                        DocumentInformationFormView(store: store.scope(state: \.documentInformationForm, action: \.showDocumentInformationFormInspector))
+                    }
             }
         }
 //        .onChange(of: navigationModel.selectedDocument, initial: true) { _, _ in
@@ -213,26 +191,6 @@ public struct DocumentDetailsView: View {
     } detail: {
         DocumentDetailsView(
             store: Store(initialState: DocumentDetails.State(document: .mock(downloadStatus: 0.33))) {
-                DocumentDetails()
-                    ._printChanges()
-            }
-        )
-    }
-    #endif
-}
-
-#Preview("No Document", traits: .fixedLayout(width: 800, height: 600)) {
-    #if os(iOS)
-    NavigationStack {
-        DocumentDetailView()
-    }
-    .modelContainer(previewContainer())
-    #else
-    NavigationSplitView {
-        Text("Sidebar")
-    } detail: {
-        DocumentDetailsView(
-            store: Store(initialState: DocumentDetails.State()) {
                 DocumentDetails()
                     ._printChanges()
             }
