@@ -160,12 +160,6 @@ struct DocumentDetailsView: View {
 
 #if DEBUG
 #Preview("Document", traits: .fixedLayout(width: 800, height: 600)) {
-    #if os(iOS)
-    NavigationStack {
-        DocumentDetailView()
-    }
-    .modelContainer(previewContainer(documents: [(id: 100, downloadStatus: 1)]))
-    #else
     NavigationSplitView {
         Text("Sidebar")
     } detail: {
@@ -176,16 +170,9 @@ struct DocumentDetailsView: View {
             }
         )
     }
-    #endif
 }
 
 #Preview("Loading", traits: .fixedLayout(width: 800, height: 600)) {
-    #if os(iOS)
-    NavigationStack {
-        DocumentDetailView()
-    }
-    .modelContainer(previewContainer(documents: [(id: 33, downloadStatus: 0.33)]))
-    #else
     NavigationSplitView {
         Text("Sidebar")
     } detail: {
@@ -196,6 +183,5 @@ struct DocumentDetailsView: View {
             }
         )
     }
-    #endif
 }
 #endif

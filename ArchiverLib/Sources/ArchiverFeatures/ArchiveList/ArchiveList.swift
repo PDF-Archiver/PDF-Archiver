@@ -19,11 +19,6 @@ struct ArchiveList {
             guard let selectedDocument else { return nil }
             return DocumentDetails.State(document: selectedDocument)
         }
-        
-        init(documents: IdentifiedArrayOf<Document>, selectedDocument: Document? = nil) {
-            self.documents = documents
-            self.selectedDocument = selectedDocument
-        }
     }
 
     enum Action: BindableAction {

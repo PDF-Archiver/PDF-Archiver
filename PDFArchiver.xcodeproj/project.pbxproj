@@ -231,6 +231,7 @@
 		A3D5A4932BBDDC8D0089B016 /* DocumentInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3D5A4922BBDDC8D0089B016 /* DocumentInformation.swift */; };
 		A3D5A4942BBDDC8D0089B016 /* DocumentInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3D5A4922BBDDC8D0089B016 /* DocumentInformation.swift */; };
 		A3D8F9412BB607B100BE3E3A /* DocumentDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3D8F9402BB607B100BE3E3A /* DocumentDetailView.swift */; };
+		A3EEFBD62E1AEE8600E70A8C /* ArchiverLib in Frameworks */ = {isa = PBXBuildFile; productRef = A3EEFBD52E1AEE8600E70A8C /* ArchiverLib */; };
 		A3F4EA222C067AA2003E8500 /* DropButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F4EA212C067AA2003E8500 /* DropButton.swift */; };
 		A3F4EA232C067AA2003E8500 /* DropButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F4EA212C067AA2003E8500 /* DropButton.swift */; };
 		A3FE005C2D3109F9005D4BE1 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = A3FE005B2D3109F9005D4BE1 /* Localizable.xcstrings */; };
@@ -538,6 +539,7 @@
 			files = (
 				A37697892DEF4000006D052B /* IntentLib.framework in Frameworks */,
 				34A5CF8224A93A3C002409EF /* StoreKit.framework in Frameworks */,
+				A3EEFBD62E1AEE8600E70A8C /* ArchiverLib in Frameworks */,
 				A39A29D72CCAE6BD0072EFDE /* AsyncExtensions in Frameworks */,
 				A35CBAA62C1F2A2600CFBA20 /* DeepDiff in Frameworks */,
 				A35CBAAA2C1F2A2600CFBA20 /* Parma in Frameworks */,
@@ -1140,6 +1142,7 @@
 				A35CBAA52C1F2A2600CFBA20 /* DeepDiff */,
 				A35CBAA92C1F2A2600CFBA20 /* Parma */,
 				A39A29D62CCAE6BD0072EFDE /* AsyncExtensions */,
+				A3EEFBD52E1AEE8600E70A8C /* ArchiverLib */,
 			);
 			productName = iOS;
 			productReference = 3489D71B24A3C53E0035E64F /* PDFArchiver.app */;
@@ -2541,6 +2544,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A3BF936F2BA4D686002411DB /* XCRemoteSwiftPackageReference "DeepDiff" */;
 			productName = DeepDiff;
+		};
+		A3EEFBD52E1AEE8600E70A8C /* ArchiverLib */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ArchiverLib;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
