@@ -1,68 +1,30 @@
-//
-//  UserDefaults.swift
-//  PDFArchiver
-//
-//  Created by Julian Kahnert on 10.08.19.
-//  Copyright © 2019 Julian Kahnert. All rights reserved.
-//
-
 import Foundation
 import OSLog
+import Shared
 
-extension UserDefaults {
-
-    enum Names: String, CaseIterable {
-        case tutorialShown = "tutorial-v1"
-        case isTaggingMode
-        case pdfQuality
-        case lastAppUsagePermitted
-        case archiveURL
-        case untaggedURL
-        case observedFolderURL
-        case archivePathType
-        case notSaveDocumentTagsAsPDFMetadata
-        case documentTagsNotRequired
-        case documentSpecificationNotRequired
+extension UserDefaults: Log {
+    static var appGroup: UserDefaults {
+        // swiftlint:disable:next force_unwrapping
+//        UserDefaults(suiteName: Constants.sharedContainerIdentifier)!
+        UserDefaults.standard
     }
 
-    enum PDFQuality: Float, CaseIterable {
-        case lossless = 1.0
-        case good = 0.75
-        case normal = 0.5
-        case small = 0.25
-
-        static let defaultQualityIndex = 1  // e.g. "good"
+    enum Names: String, CaseIterable {
+//        case tutorialShown = "tutorial-v1"
+//        case isTaggingMode
+//        case pdfQuality
+//        case lastAppUsagePermitted
+//        case archiveURL
+//        case untaggedURL
+        case observedFolderURL
+        case archivePathType
+//        case notSaveDocumentTagsAsPDFMetadata
+//        case documentTagsNotRequired
+//        case documentSpecificationNotRequired
     }
 
     static var isInDemoMode: Bool {
         UserDefaults.standard.bool(forKey: "demoMode")
-    }
-
-    static var isTaggingMode: Bool {
-        get {
-            appGroup.bool(forKey: Names.isTaggingMode.rawValue)
-        }
-        set {
-            appGroup.set(newValue, forKey: Names.isTaggingMode.rawValue)
-        }
-    }
-
-    static var pdfQuality: PDFQuality {
-        get {
-            var value = appGroup.float(forKey: Names.pdfQuality.rawValue)
-
-            // set default to 0.75
-            if value == 0.0 {
-                value = PDFQuality.allCases[PDFQuality.defaultQualityIndex].rawValue
-            }
-
-            guard let level = PDFQuality(rawValue: value) else { fatalError("Could not parse level from value \(value).") }
-            return level
-        }
-        set {
-            log.info("PDF Quality Changed.", metadata: ["quality": "\(newValue.rawValue)"])
-            appGroup.set(newValue.rawValue, forKey: Names.pdfQuality.rawValue)
-        }
     }
 
     #if os(macOS)
@@ -82,7 +44,8 @@ extension UserDefaults {
             } catch {
                 appGroup.set(nil, forKey: Names.observedFolderURL.rawValue)
                 log.errorAndAssert("Failed to get observedFolderURL", metadata: ["error": "\(error)"])
-                NotificationCenter.default.postAlert(error)
+                #warning("TODO: throw/handle error better")
+//                NotificationCenter.default.postAlert(error)
                 return nil
             }
         }
@@ -97,38 +60,12 @@ extension UserDefaults {
             } catch {
                 appGroup.set(nil, forKey: Names.observedFolderURL.rawValue)
                 log.errorAndAssert("Failed to set observedFolderURL.", metadata: ["error": "\(error)"])
-                NotificationCenter.default.postAlert(error)
+                #warning("TODO: throw/handle error better")
+//                NotificationCenter.default.postAlert(error)
             }
         }
     }
     #endif
-
-    static var notSaveDocumentTagsAsPDFMetadata: Bool {
-        get {
-            appGroup.bool(forKey: Names.notSaveDocumentTagsAsPDFMetadata.rawValue)
-        }
-        set {
-            appGroup.set(newValue, forKey: Names.notSaveDocumentTagsAsPDFMetadata.rawValue)
-        }
-    }
-
-    static var documentTagsNotRequired: Bool {
-        get {
-            appGroup.bool(forKey: Names.documentTagsNotRequired.rawValue)
-        }
-        set {
-            appGroup.set(newValue, forKey: Names.documentTagsNotRequired.rawValue)
-        }
-    }
-
-    static var documentSpecificationNotRequired: Bool {
-        get {
-            appGroup.bool(forKey: Names.documentSpecificationNotRequired.rawValue)
-        }
-        set {
-            appGroup.set(newValue, forKey: Names.documentSpecificationNotRequired.rawValue)
-        }
-    }
 
     static var archivePathType: PathManager.ArchivePathType? {
         get {
@@ -161,7 +98,6 @@ extension UserDefaults {
             } catch {
                 appGroup.set(nil, forKey: Names.archivePathType.rawValue)
                 log.errorAndAssert("Error while getting archive url.", metadata: ["error": "\(String(describing: error))"])
-                NotificationCenter.default.postAlert(error)
                 return nil
             }
         }
@@ -194,7 +130,6 @@ extension UserDefaults {
             } catch {
                 appGroup.set(nil, forKey: Names.archivePathType.rawValue)
                 log.errorAndAssert("Failed to set ArchivePathType.", metadata: ["error": "\(error)"])
-                NotificationCenter.default.postAlert(error)
             }
         }
     }
@@ -211,13 +146,5 @@ extension UserDefaults {
     private func getObject<T: Decodable>(forKey key: Names) throws -> T? {
         guard let data = object(forKey: key.rawValue) as? Data else { return nil }
         return try JSONDecoder().decode(T.self, from: data)
-    }
-
-    // MARK: - Migration
-
-    static var appGroup: UserDefaults {
-        // swiftlint:disable:next force_unwrapping
-//        UserDefaults(suiteName: Constants.sharedContainerIdentifier)!
-        UserDefaults.standard
     }
 }

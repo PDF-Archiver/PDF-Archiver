@@ -142,7 +142,7 @@ actor ArchiveStore: ModelActor, Log {
         // save file tags
         if let tags = Document.parseFilename(filename).tagNames,
            !tags.isEmpty {
-            newFilepath.setFileTags(tags.sorted())
+//            newFilepath.setFileTags(tags.sorted())
         }
 
         return newFilepath

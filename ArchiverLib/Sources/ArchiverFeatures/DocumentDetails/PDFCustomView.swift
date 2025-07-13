@@ -7,8 +7,8 @@
 //
 
 import PDFKit
-import SwiftUI
 import Shared
+import SwiftUI
 
 #if os(macOS)
 struct PDFCustomView: NSViewRepresentable {

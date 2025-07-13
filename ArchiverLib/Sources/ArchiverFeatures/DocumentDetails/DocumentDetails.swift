@@ -5,156 +5,125 @@
 //  Created by Julian Kahnert on 30.06.25.
 //
 
+import ArchiverModels
 import ComposableArchitecture
-import SwiftUI
-import DomainModels
 import Shared
+import SwiftUI
 
 @Reducer
 struct DocumentDetails {
-    
+
     @ObservableState
     struct State: Equatable {
-//        var documentInformationForm: DocumentInformationForm.State?
-        var document: Document
-        var documentInformationForm: DocumentInformationForm.State {
-            DocumentInformationForm.State(document: document)
+        @Presents var alert: AlertState<Action.Alert>?
+        @Shared var document: Document
+        var documentInformationForm: DocumentInformationForm.State
+        var showInspector: Bool
+
+        init(document: Shared<Document>) {
+            self._document = document
+            self.documentInformationForm = DocumentInformationForm.State(document: document.wrappedValue)
+            self.showInspector = !document.wrappedValue.isTagged
         }
     }
 
     enum Action: BindableAction {
-        case showDocumentInformationFormInspector(DocumentInformationForm.Action)
-
-        case tagSearchtermSubmitted
-        
+        case alert(PresentationAction<Alert>)
+        case showDocumentInformationForm(DocumentInformationForm.Action)
+        case delegate(Delegate)
+        case deleteDocumentButtonTapped
+        case editButtonTapped
+        case remoteDocumentAppeared
         case binding(BindingAction<State>)
+
+        enum Alert {
+          case confirmDeleteButtonTapped
+        }
+
+        enum Delegate: Equatable {
+          case deleteDocument(Document)
+        }
     }
-    
+
+    @Dependency(\.archiveStore.startDownloadOf) var startDownloadOf
     var body: some ReducerOf<Self> {
+        Scope(state: \.documentInformationForm, action: \.showDocumentInformationForm) {
+            DocumentInformationForm()
+        }
+
         BindingReducer()
         Reduce { state, action in
-            #warning("TODO: add this")
             switch action {
+            case .alert(.presented(.confirmDeleteButtonTapped)):
+                return .send(.delegate(.deleteDocument(state.document)))
+
+            case .alert:
+                return .none
+
             case .binding:
                 return .none
-            case .tagSearchtermSubmitted:
+
+            case .delegate:
                 return .none
-            case .showDocumentInformationFormInspector(_):
+
+            case .deleteDocumentButtonTapped:
+                state.alert = AlertState<Action.Alert> {
+                    TextState("Delete document?")
+                } actions: {
+                    ButtonState(role: .destructive, action: .confirmDeleteButtonTapped) {
+                        TextState("Delete")
+                    }
+                    ButtonState(role: .cancel) {
+                        TextState("Cancel")
+                    }
+                } message: {
+                    TextState("You are delete the current document. Are you sure?")
+                }
+                return .none
+
+            case .editButtonTapped:
+                if state.showInspector {
+                    // reset the inspector state when it should disappear
+                    state.documentInformationForm = DocumentInformationForm.State(document: state.document)
+                }
+                state.showInspector.toggle()
+                return .none
+
+            case .remoteDocumentAppeared:
+                return .run { [documentUrl = state.document.url] _ in
+                    try await startDownloadOf(documentUrl)
+                }
+            case .showDocumentInformationForm:
                 return .none
             }
         }
-//        .ifLet(\.documentInformationForm, action: \.showDocumentInformationFormInspector) {
-//            DocumentInformationForm()
-//        }
+        .ifLet(\.$alert, action: \.alert)
     }
 }
 
 struct DocumentDetailsView: View {
     @Bindable var store: StoreOf<DocumentDetails>
 
-//    @Environment(NavigationModel.self) private var navigationModel
-//    @Environment(\.modelContext) private var modelContext
-//    @State private var document: Document?
-//    @State private var downloadStatus: Double?
-
-//    func update() {
-//        let document = navigationModel.selectedDocument
-//
-//        assert(document?.isTagged ?? true, "Document with id \(document?.id ?? 42) is not tagged.")
-//
-//        // we need to update the document and downloadStatus manual, because changes in document will not trigger a view update
-//        self.document = document
-//        self.downloadStatus = document?.downloadStatus
-//    }
-
     var body: some View {
         Group {
-//            if let document = store.document {
             if store.document.downloadStatus < 1 {
                 DocumentLoadingView(filename: store.document.filename, downloadStatus: store.document.downloadStatus)
                     .task {
-#warning("TODO: add this")
-                        //                            #if DEBUG
-                        //                            guard !ProcessInfo().isSwiftUIPreview else { return }
-                        //                            #endif
-                        //                            await ArchiveStore.shared.startDownload(of: document.url)
+                        store.send(.remoteDocumentAppeared)
                     }
-                
+
             } else {
                 PDFCustomView(store.document.url)
                     .ignoresSafeArea(edges: .bottom)
-                    .inspector(isPresented: .constant(true)) {
-                        DocumentInformationFormView(store: store.scope(state: \.documentInformationForm, action: \.showDocumentInformationFormInspector))
+                    .inspector(isPresented: $store.showInspector) {
+                        DocumentInformationFormView(store: store.scope(state: \.documentInformationForm, action: \.showDocumentInformationForm))
+                    }
+                    .task {
+                        await store.scope(state: \.documentInformationForm, action: \.showDocumentInformationForm).send(.onTask).finish()
                     }
             }
         }
-//        .onChange(of: navigationModel.selectedDocument, initial: true) { _, _ in
-//            #warning("TODO: add this")
-////            update()
-//        }
-        .task {
-            #warning("TODO: add this")
-            // Currently we need to update this view on changes in Document, because it will not be triggered via SwiftData changes automatically.
-            // Example use case: select a document that will be downloaded and the download status changes
-//            let changeUrlStream = NotificationCenter.default.notifications(named: .documentUpdate)
-//            for await notification in changeUrlStream {
-//                guard let urls = notification.object as? [URL],
-//                      let documentUrl = document?.url,
-//                      urls.contains(documentUrl) else { continue }
-//
-//                update()
-//            }
-        }
-//        .toolbar {
-//#warning("TODO: move these to upper level")
-//            ToolbarItemGroup(placement: .primaryAction) {
-//                // editButton
-//                Button {
-//                    #warning("TODO: add this")
-////                    navigationModel.editDocument()
-//                } label: {
-//                    #if os(macOS)
-//                    Label("Edit", systemImage: "pencil")
-//                    #else
-//                    Label("Edit", systemImage: "pencil")
-//                        .labelStyle(VerticalLabelStyle())
-//                    #endif
-//                }
-//                .disabled(store.document == nil)
-//
-//                if let document = store.document {
-//#if os(macOS)
-//                    // showInFinderButton
-//                    Button(role: .none) {
-//                        NSWorkspace.shared.activateFileViewerSelecting([document.url])
-//                    } label: {
-//                        Label("Show in Finder", systemImage: "folder")
-//                    }
-//#endif
-//
-//                    ShareLink(Text(document.filename), item: document.url)
-//                }
-//
-//                // deleteButton
-//                DeleteDocumentButtonView(documentUrl: store.document?.url) { documentUrl in
-//                    
-//                    #warning("TODO: add this")
-////                    navigationModel.deleteDocument(url: documentUrl, modelContext: modelContext)
-//                }
-//            }
-//#if os(macOS)
-//            ToolbarItem(placement: .accessoryBar(id: "tags")) {
-//                TagListView(tags: store.document?.tags.sorted() ?? [], isEditable: false, isMultiLine: false, tapHandler: nil)
-//                    .font(.caption)
-//            }
-//#endif
-//        }
-//        .navigationTitle(store.document?.specification ?? "")
-//#if os(macOS)
-//        .navigationSubtitle(Text(store.document?.date ?? Date(), format: .dateTime.year().month().day()))
-//#else
-//        .navigationBarTitleDisplayMode(.inline)
-//#endif
+        .alert($store.scope(state: \.alert, action: \.alert))
     }
 }
 
@@ -164,7 +133,7 @@ struct DocumentDetailsView: View {
         Text("Sidebar")
     } detail: {
         DocumentDetailsView(
-            store: Store(initialState: DocumentDetails.State(document: .mock(downloadStatus: 1))) {
+            store: Store(initialState: DocumentDetails.State(document: Shared(value: .mock(downloadStatus: 1)))) {
                 DocumentDetails()
                     ._printChanges()
             }
@@ -177,7 +146,7 @@ struct DocumentDetailsView: View {
         Text("Sidebar")
     } detail: {
         DocumentDetailsView(
-            store: Store(initialState: DocumentDetails.State(document: .mock(downloadStatus: 0.33))) {
+            store: Store(initialState: DocumentDetails.State(document: Shared(value: .mock(downloadStatus: 0.33)))) {
                 DocumentDetails()
                     ._printChanges()
             }

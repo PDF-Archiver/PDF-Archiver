@@ -5,9 +5,9 @@
 //  Created by Julian Kahnert on 26.03.24.
 //
 
+import ArchiverFeatures
 import Foundation
 import SwiftUI
-import ArchiverFeatures
 
 @main
 struct PDFArchiverMacApp: App, Log {
@@ -16,7 +16,7 @@ struct PDFArchiverMacApp: App, Log {
     private var navigationModel: NavigationModel = .shared
 
     init() {
-        initializePdfArchiver()
+//        initializePdfArchiver()
     }
 
     var body: some Scene {
@@ -25,14 +25,14 @@ struct PDFArchiverMacApp: App, Log {
 //            SplitNavigationView()
 //                .inAppPurchasesSetup()
         }
-        .environment(navigationModel)
-        .modelContainer(container)
+//        .environment(navigationModel)
+//        .modelContainer(container)
 
         Settings {
             SettingsViewMacOS(viewModel: moreViewModel)
         }
         .windowStyle(HiddenTitleBarWindowStyle())
-        .environment(navigationModel)
-        .modelContainer(container)
+//        .environment(navigationModel)
+//        .modelContainer(container)
     }
 }

@@ -251,7 +251,7 @@ extension DocumentInformation {
             }
 
             // add tags from Finder tags
-            tagNames.formUnion(url.getFileTags())
+//            tagNames.formUnion(url.getFileTags())
 
             date = foundDate ?? Date()
             tags = tagNames

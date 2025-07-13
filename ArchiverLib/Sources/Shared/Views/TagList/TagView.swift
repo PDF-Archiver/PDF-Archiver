@@ -14,7 +14,7 @@ public struct TagView: View {
     let isEditable: Bool
     let isSuggestion: Bool
     let tapHandler: ((String) -> Void)?
-    
+
     public init(tagName: String, isEditable: Bool, isSuggestion: Bool, tapHandler: ((String) -> Void)?) {
         self.tagName = tagName
         self.isEditable = isEditable

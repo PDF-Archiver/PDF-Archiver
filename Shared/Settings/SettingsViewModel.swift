@@ -195,7 +195,7 @@ final class SettingsViewModel: ObservableObject, Log {
             var processedDocumentsCount = 0
             for taggedDocument in taggedDocuments {
                 let sortedTags = Array(taggedDocument.tags).sorted()
-                taggedDocument.url.setFileTags(sortedTags)
+//                taggedDocument.url.setFileTags(sortedTags)
                 processedDocumentsCount += 1
 
                 let tmp = Double(processedDocumentsCount) / totalDocumentsCount

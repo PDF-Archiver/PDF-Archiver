@@ -5,68 +5,230 @@
 //  Created by Julian Kahnert on 26.06.25.
 //
 
+import ArchiverModels
 import ComposableArchitecture
+import Shared
 import SwiftUI
 import TipKit
-import Shared
-import DomainModels
 
 @Reducer
 struct DocumentInformationForm {
+
+    enum CancelID { case updateTagSuggestions }
+
     @ObservableState
     struct State: Equatable {
         enum Field: Hashable {
             case date, specification, tags, save
         }
+
+        /// Initial version of the document (e.g. in the global state)
+        ///
+        /// This will be needed for comparison if changes were made.
+        let initialDocument: Document
+
+        /// Information of the `Document`
+        ///
+        /// We explicitly stick to a copy (not `@Shared`) of `Document` because in this case we do not want to manipulate the "global state" in the documents array.
+        /// Changes will be done on a copy and only be propagated when `save` was called.
         var document: Document
 
         var suggestedDates: [Date] = []
         var suggestedTags: [String] = []
         var tagSearchterm: String = ""
-        
+
         var focusedField: Field?
+
+        init(document: Document) {
+            self.document = document
+            self.initialDocument = document
+        }
     }
     enum Action: BindableAction {
+        case binding(BindingAction<State>)
+        case delegate(Delegate)
+        case onTask
         case tagSearchtermSubmitted
         case tagSuggestionTapped(String)
+        case tagSuggestionsUpdated([String])
         case tagOnDocumentTapped(String)
         case todayButtonTapped
         case saveButtonTapped
         case suggestedDateButtonTapped(Date)
-        case binding(BindingAction<State>)
+        case updateDocumentData(DocumentParsingResult)
+        case updateTagSuggestions
+
+        enum Delegate {
+            case saveDocument(Document)
+        }
     }
-    
+
+    @Dependency(\.archiveStore) var archiveStore
+    @Dependency(\.textAnalyser) var textAnalyser
+    @Dependency(\.calendar) var calendar
+
     var body: some ReducerOf<Self> {
         BindingReducer()
+            .onChange(of: \.tagSearchterm) { _, _ in
+                Reduce { _, _ in
+                    return .send(.updateTagSuggestions)
+                }
+            }
 
         Reduce { state, action in
-            #warning("TODO: add this")
             switch action {
             case .binding:
                 return .none
+
+            case .delegate:
+                return .none
+
             case .tagSearchtermSubmitted:
-                return .none
+                let selectedTag = state.suggestedTags.first ?? state.tagSearchterm.lowercased().slugified(withSeparator: "")
+                guard !selectedTag.isEmpty else { return .none }
+
+                _ = state.document.tags.insert(selectedTag)
+                state.suggestedTags.removeAll()
+                state.tagSearchterm = ""
+
+                return .send(.updateTagSuggestions)
+
             case .saveButtonTapped:
+                state.document.specification = state.document.specification.slugified(withSeparator: "-")
+                return .send(.delegate(.saveDocument(state.document)))
+
+            case .suggestedDateButtonTapped(let date):
+                state.document.date = date
                 return .none
-            case .suggestedDateButtonTapped(_):
+
+            case .onTask:
+                // skip analysis for tagged documents
+                guard !state.document.isTagged else { return .none }
+                return .run { [documentUrl = state.document.url] send in
+                    await send(.updateTagSuggestions)
+
+                    let result = await parseDocumentData(url: documentUrl)
+                    await send(.updateDocumentData(result))
+                }
+
+            case .tagSuggestionsUpdated(let suggestedTags):
+                state.suggestedTags = suggestedTags
                 return .none
-            case .tagSuggestionTapped(_):
-                return .none
-            case .tagOnDocumentTapped(_):
-                return .none
+
+            case .tagSuggestionTapped(var tag):
+                tag = tag.lowercased()
+                _ = state.document.tags.insert(tag)
+                state.suggestedTags.removeAll { $0 == tag }
+
+                // remove current tagSearchteam - this will also trigger the new analyses of the tags
+                state.tagSearchterm = ""
+
+                return .send(.updateTagSuggestions)
+
+            case .tagOnDocumentTapped(var tag):
+                tag = tag.lowercased()
+                _ = state.document.tags.remove(tag)
+                return .send(.updateTagSuggestions)
+
             case .todayButtonTapped:
+                state.document.date = Date()
                 return .none
+
+            case .updateDocumentData(let result):
+                if let date = result.date {
+                    state.document.date = date
+                }
+                if let specification = result.specification {
+                    state.document.specification = specification
+                }
+                if let tags = result.tags {
+                    state.document.tags = tags
+                }
+                if let dateSuggestions = result.dateSuggestions {
+                    state.suggestedDates = dateSuggestions
+                }
+                if let tagSuggestions = result.tagSuggestions {
+                    state.suggestedTags = tagSuggestions
+                }
+                return .none
+
+            case .updateTagSuggestions:
+#warning("also run this on appear")
+                return .run { [tagSearchterm = state.tagSearchterm, documentTags = state.document.tags] send in
+                    let tags: [String]
+                    if tagSearchterm.isEmpty {
+                        tags = await archiveStore.getTagSuggestionsSimilarTo(documentTags)
+                    } else {
+                        tags = await archiveStore.getTagSuggestionsFor(tagSearchterm.lowercased())
+                    }
+
+                    await send(.tagSuggestionsUpdated(tags))
+                }
+                // we do not need multiple fetches of tag suggestions - so we cancelInFlight suggestions
+                .cancellable(id: CancelID.updateTagSuggestions, cancelInFlight: true)
             }
         }
+    }
+
+    struct DocumentParsingResult {
+        let date: Date?
+        let specification: String?
+        let tags: Set<String>?
+        let dateSuggestions: [Date]?
+        let tagSuggestions: [String]?
+    }
+    private func parseDocumentData(url: URL) async -> DocumentParsingResult {
+
+        // analyse document content and fill suggestions
+        let parserOutput = await archiveStore.parseFilename(url.lastPathComponent)
+        var tagNames = Set(parserOutput.tagNames ?? [])
+
+        var foundDate = parserOutput.date
+        let foundSpecification = parserOutput.specification
+        var dateSuggestions: [Date]?
+        var tagSuggestions: [String]?
+
+        if let text = await textAnalyser.getTextFrom(url) {
+
+            var results = await textAnalyser.parseDateFrom(text)
+            if let foundDate {
+                results = results.filter { resultDate in
+                    !Calendar.current.isDate(resultDate, inSameDayAs: foundDate)
+                }
+            }
+
+            let newResults = results
+                .dropFirst(foundDate == nil ? 1 : 0)    // skip first because it is set to foundDate
+                .filter { !calendar.isDate($0, inSameDayAs: Date()) }   // skip found "today" dates, because a today button will always be shown
+            //                    .sorted().reversed().prefix(3)  // get the most recent 3 dates
+            //                    .sorted()
+                .prefix(3)
+            dateSuggestions = Array(newResults)
+
+            if foundDate == nil {
+                foundDate = results.first
+            }
+            if tagNames.isEmpty {
+                tagSuggestions = await textAnalyser.parseTagsFrom(text).sorted()
+            }
+        }
+
+        // add tags from Finder tags
+        tagNames.formUnion((try? await textAnalyser.getFileTagsFrom(url)) ?? [])
+
+        let date = foundDate ?? Date()
+        let tags = tagNames
+        let specification = foundSpecification ?? ""
+
+        return DocumentParsingResult(date: date, specification: specification, tags: tags, dateSuggestions: dateSuggestions, tagSuggestions: tagSuggestions)
     }
 }
 
 struct DocumentInformationFormView: View {
     @Bindable var store: StoreOf<DocumentInformationForm>
-    
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @FocusState var focusedField: DocumentInformationForm.State.Field?
-    
+
     @State private var tips = TipGroup(.ordered) {
         TaggingTips.Date()
         TaggingTips.Specification()
@@ -84,6 +246,7 @@ struct DocumentInformationFormView: View {
                 DatePicker("Date", selection: $store.document.date, displayedComponents: .date)
                     .focused($focusedField, equals: .date)
                     .listRowSeparator(.hidden)
+                    .sensoryFeedback(.selection, trigger: store.document.date)
                 HStack {
                     Spacer()
 
@@ -91,24 +254,12 @@ struct DocumentInformationFormView: View {
                     ) { date in
                         Button(date.formatted(.dateTime.day(.twoDigits).month(.twoDigits).year(.twoDigits))) {
                             store.send(.suggestedDateButtonTapped(date))
-                            
-                            #warning("TODO: add this")
-//                            viewModel.date = date
-//                            #if canImport(UIKit)
-//                            FeedbackGenerator.selectionChanged()
-//                            #endif
                         }
                         .fixedSize()
                         .buttonStyle(.bordered)
                     }
                     Button("Today", systemImage: "calendar") {
                         store.send(.todayButtonTapped)
-                        
-                        #warning("TODO: add this")
-//                        viewModel.date = Date()
-//                        #if canImport(UIKit)
-//                        FeedbackGenerator.selectionChanged()
-//                        #endif
                     }
                     .labelStyle(.iconOnly)
                     .buttonStyle(.bordered)
@@ -139,25 +290,15 @@ struct DocumentInformationFormView: View {
                     Spacer()
                     Button("Save") {
                         store.send(.saveButtonTapped)
-                        
-                        #warning("TODO: add this")
-//                        viewModel.specification = viewModel.specification.slugified(withSeparator: "-")
-//
-//                        let filename = Document.createFilename(date: viewModel.date, specification: viewModel.specification, tags: Set(viewModel.tags))
-//                        navigationModel.saveDocument(viewModel.url, to: filename, modelContext: modelContext)
-//
-//                        #if canImport(UIKit)
-//                        FeedbackGenerator.selectionChanged()
-//                        #endif
-//                        focusedField = .date
-
-//                        #if os(macOS)
-//                        Task {
-//                            await TaggingTips.KeyboardShortCut.documentSaved.donate()
-//                        }
-//                        #endif
+                        #if os(macOS)
+                        Task {
+                            await TaggingTips.KeyboardShortCut.documentSaved.donate()
+                        }
+                        #endif
                     }
+                    .buttonStyle(.bordered)
                     .focused($focusedField, equals: .save)
+                    .disabled(store.initialDocument == store.document)
                     .keyboardShortcut("s", modifiers: [.command])
                     Spacer()
                 }
@@ -165,24 +306,10 @@ struct DocumentInformationFormView: View {
         }
         .formStyle(.grouped)
         .bind($store.focusedField, to: $focusedField)
-        // TODO: test this
-//        .onChange(of: viewModel.tagSearchterm) { _, term in
-//            viewModel.searchtermChanged(to: term, with: modelContext)
-//        }
+        #warning("Add this")
 //        .onChange(of: viewModel.url, initial: true) { _, _ in
 //            viewModel.analyseDocument()
 //        }
-        .toolbar {
-            ToolbarItemGroup(placement: .keyboard) {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    TagListView(tags: store.suggestedTags.sorted(),
-                                isEditable: false,
-                                isSuggestion: true,
-                                isMultiLine: false,
-                                tapHandler: { store.send(.tagSuggestionTapped($0)) })
-                }
-            }
-        }
     }
 
     private var documentTagsSection: some View {
@@ -194,7 +321,7 @@ struct DocumentInformationFormView: View {
                     Text("No tags selected")
                         .foregroundStyle(.secondary)
                 } else {
-                    TagListView(tags: store.suggestedTags.sorted(),
+                    TagListView(tags: store.document.tags.sorted(),
                                 isEditable: true,
                                 isSuggestion: false,
                                 isMultiLine: true,
@@ -202,25 +329,16 @@ struct DocumentInformationFormView: View {
                     .focusable(false)
                 }
 
-                if horizontalSizeClass != .compact {
-                    TagListView(tags: store.suggestedTags.sorted(),
-                                isEditable: false,
-                                isSuggestion: true,
-                                isMultiLine: true,
-                                tapHandler: { store.send(.tagSuggestionTapped($0)) })
-                    .focusable(false)
-                }
+                TagListView(tags: store.suggestedTags,
+                            isEditable: false,
+                            isSuggestion: true,
+                            isMultiLine: true,
+                            tapHandler: { store.send(.tagSuggestionTapped($0)) })
+                .focusable(false)
 
                 TextField("Enter Tag", text: $store.tagSearchterm)
                     .onSubmit {
                         store.send(.tagSearchtermSubmitted)
-                        
-                        #warning("TODO: add this")
-//                        let selectedTag = viewModel.tagSuggestions.sorted().first ?? viewModel.tagSearchterm.lowercased().slugified(withSeparator: "")
-//                        guard !selectedTag.isEmpty else { return }
-//
-//                        viewModel.add(tag: selectedTag)
-//                        viewModel.tagSearchterm = ""
                     }
                     .focused($focusedField, equals: .tags)
                     #if os(macOS)
@@ -230,6 +348,7 @@ struct DocumentInformationFormView: View {
                     .autocorrectionDisabled()
                     #endif
             }
+            .sensoryFeedback(.selection, trigger: store.document.tags)
         }
     }
 }

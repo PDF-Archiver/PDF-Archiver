@@ -1,80 +1,31 @@
 //
-//  Url.swift
-//  
+//  URL.swift
+//  ArchiverLib
 //
-//  Created by Julian Kahnert on 29.11.19.
+//  Created by Julian Kahnert on 11.07.25.
 //
 
 import Foundation
 
-// Source Code from: https://github.com/amyspark/xattr
-extension URL {
-
+public extension URL {
     private static let itemUserTagsName = "com.apple.metadata:_kMDItemUserTags"
 
-    func securityScope<T>(closure: (URL) throws -> T) rethrows -> T {
-        let didAccessSecurityScope = startAccessingSecurityScopedResource()
-        defer {
-            if didAccessSecurityScope {
-                stopAccessingSecurityScopedResource()
-            }
-        }
-        return try closure(self)
+    func getFileTags() throws -> [String] {
+#if os(macOS)
+        // prefer native tagNames https://stackoverflow.com/a/47340666
+        return try resourceValues(forKeys: [.tagNamesKey]).tagNames ?? []
+#else
+        return try getiOSFileTags()
+#endif
     }
 
-    func uniqueId() -> Int? {
-        do {
-            // we use the path hashValue as a backup
-            return try resourceValues(forKeys: [.documentIdentifierKey]).documentIdentifier ?? path().hashValue
-        } catch {
-            log.error("Error while getting unique document identifier", metadata: ["error": "\(error)"])
-            return nil
-        }
-    }
-
-    func filename() -> String? {
-         do {
-             return try resourceValues(forKeys: [.localizedNameKey]).localizedName
-         } catch {
-             log.error("Error while getting filename", metadata: ["error": "\(error)"])
-             return nil
-         }
-    }
-
-    func fileCreationDate() -> Date? {
-        do {
-            return try resourceValues(forKeys: [.creationDateKey]).creationDate
-        } catch {
-            log.error("Error while getting filename", metadata: ["error": "\(error)"])
-            return nil
-        }
-    }
-
-    func getFileTags() -> [String] {
-        do {
-            #if os(macOS)
-            // prefer native tagNames https://stackoverflow.com/a/47340666
-            return try resourceValues(forKeys: [.tagNamesKey]).tagNames ?? []
-            #else
-            return try getiOSFileTags()
-            #endif
-        } catch {
-            log.error("Error while getting tag names", metadata: ["error": "\(error)"])
-            return []
-        }
-    }
-
-    func setFileTags(_ tags: [String]) {
-        do {
-            #if os(macOS)
-            // https://stackoverflow.com/a/47340666
-            try (self as NSURL).setResourceValue(tags, forKey: URLResourceKey.tagNamesKey)
-            #else
-            try setiOSFileTags(tags)
-            #endif
-        } catch {
-            log.error("Error while setting tag names", metadata: ["error": "\(error)"])
-        }
+    func setFileTags(_ tags: [String]) throws {
+#if os(macOS)
+        // https://stackoverflow.com/a/47340666
+        try (self as NSURL).setResourceValue(tags, forKey: URLResourceKey.tagNamesKey)
+#else
+        try setiOSFileTags(tags)
+#endif
     }
 
     // MARK: - iOS finder tags
@@ -83,10 +34,8 @@ extension URL {
         var tags = [String]()
         let data = try self.getExtendedAttribute(forName: URL.itemUserTagsName)
         if let tagPlist = try PropertyListSerialization.propertyList(from: data, options: [], format: nil) as? [String] {
-            log.debug("using PropertyListSerialization")
             tags = tagPlist
         } else if let newTags = try NSKeyedUnarchiver.unarchivedArrayOfObjects(ofClass: NSString.self, from: data) as? [String] {
-            log.debug("using NSKeyedUnarchiver")
             tags = newTags
         }
 

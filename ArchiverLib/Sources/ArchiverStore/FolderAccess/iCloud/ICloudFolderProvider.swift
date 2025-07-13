@@ -6,23 +6,26 @@
 //
 
 import Foundation
+import Shared
 
 final class ICloudFolderProvider: FolderProvider {
 
     private static let tempFolderName = "temp"
 
     let baseUrl: URL
-    let folderChangeStream: AsyncStream<[FileChange]>
-    private let folderChangeContinuation: AsyncStream<[FileChange]>.Continuation
+    let currentDocumentsStream: AsyncStream<[DocumentInformation]>
+    private let currentDocumentsStreamContinuation: AsyncStream<[DocumentInformation]>.Continuation
 
     private let metadataQuery: NSMetadataQuery
+
+    private var currentDocuments: [URL: DocumentInformation] = [:]
 
     init(baseUrl: URL) throws {
         self.baseUrl = baseUrl
 
-        let (stream, continuation) = AsyncStream.makeStream(of: [FileChange].self)
-        folderChangeStream = stream
-        folderChangeContinuation = continuation
+        let (stream, continuation) = AsyncStream.makeStream(of: [DocumentInformation].self)
+        currentDocumentsStream = stream
+        currentDocumentsStreamContinuation = continuation
 
         self.metadataQuery = NSMetadataQuery()
 
@@ -66,8 +69,8 @@ final class ICloudFolderProvider: FolderProvider {
                         // update the archive
                         let changes = details
                             .compactMap(\.self)
-                            .map { FileChange.added($0) }
-                        self.folderChangeContinuation.yield(changes)
+
+                        await self.sendDocuments(added: changes, updated: [], removed: [])
                     }
                 }
 
@@ -80,15 +83,12 @@ final class ICloudFolderProvider: FolderProvider {
                         // update the archive
                         let added = addedMetadataItems
                             .compactMap { $0.createDetails() }
-                            .map { FileChange.added($0) }
                         let updated = updatedMetadataItems
                             .compactMap { $0.createDetails() }
-                            .map { FileChange.updated($0) }
                         let removed = removedMetadataItems
                             .compactMap { $0.createDetails() }
-                            .map { FileChange.removed($0.url) }
 
-                        self.folderChangeContinuation.yield(added + updated + removed)
+                        await self.sendDocuments(added: added, updated: updated, removed: removed)
                     }
                 }
 
@@ -102,10 +102,23 @@ final class ICloudFolderProvider: FolderProvider {
         Self.log.debug("deinit ICloudFolderProvider")
         metadataQuery.stop()
     }
+    var lastDocuments: [DocumentInformation] = []
+    private func sendDocuments(added: [DocumentInformation], updated: [DocumentInformation], removed: [DocumentInformation]) {
+        for change in added + updated {
+            currentDocuments[change.url] = change
+        }
+        for change in removed {
+            currentDocuments[change.url] = nil
+        }
+        let documents = Array(currentDocuments.values)
+        guard lastDocuments.sorted() != documents.sorted() else { return }
+        currentDocumentsStreamContinuation.yield(documents)
+        lastDocuments = documents
+    }
 
-    private func getFileChangeDetails() -> [FileChange.Details?] {
+    private func getFileChangeDetails() -> [DocumentInformation?] {
         self.metadataQuery.disableUpdates()
-        var changes: [FileChange.Details?] = []
+        var changes: [DocumentInformation?] = []
         for index in 0..<self.metadataQuery.resultCount {
             guard let result = self.metadataQuery.result(at: index) as? NSMetadataItem else {
                 assertionFailure("Could not cast result \(index) to NSMetadataItem")
@@ -169,10 +182,10 @@ final class ICloudFolderProvider: FolderProvider {
     }
 }
 
-extension NSMetadataItem {
-    func createDetails() -> FileChange.Details? {
+extension NSMetadataItem: Log {
+    func createDetails() -> DocumentInformation? {
         // get the document path
-        guard let documentPath = value(forAttribute: NSMetadataItemURLKey) as? URL else {
+        guard let documentUrl = value(forAttribute: NSMetadataItemURLKey) as? URL else {
             log.errorAndAssert("Could not parse Metadata URL.")
             return nil
         }
@@ -191,25 +204,27 @@ extension NSMetadataItem {
             return nil
         }
 
-        var documentStatus: FileChange.DownloadStatus
+        var documentStatus: Double
         switch downloadingStatus {
         case NSMetadataUbiquitousItemDownloadingStatusCurrent, NSMetadataUbiquitousItemDownloadingStatusDownloaded:
-            documentStatus = .local
+            // local
+            documentStatus = 1
         case NSMetadataUbiquitousItemDownloadingStatusNotDownloaded:
 
             if let isDownloading = value(forAttribute: NSMetadataUbiquitousItemIsDownloadingKey) as? Bool,
                 isDownloading {
                 let percentDownloaded = (value(forAttribute: NSMetadataUbiquitousItemPercentDownloadedKey) as? NSNumber)?.doubleValue ?? 0
-                documentStatus = .downloading(percent: percentDownloaded)
+                documentStatus = percentDownloaded / 100
             } else {
-                documentStatus = .remote
+                // remote
+                documentStatus = 0
             }
         default:
             log.criticalAndAssert("Unkown download status.", metadata: ["status": "\(downloadingStatus)"])
             preconditionFailure("The downloading status '\(downloadingStatus)' was not handled correctly!")
         }
 
-        return FileChange.Details(url: documentPath, sizeInBytes: Double(size), downloadStatus: documentStatus)
+        return DocumentInformation(url: documentUrl, downloadStatus: documentStatus, sizeInBytes: Double(size))
     }
 }
 

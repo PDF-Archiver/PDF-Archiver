@@ -28,8 +28,8 @@ public struct TagListView: View {
     public var body: some View {
         if isMultiLine {
             WrappingHStack(alignment: .leading) {
-                ForEach(tags, id: \.self) { tag in
-                    TagView(tagName: tag, isEditable: self.isEditable, isSuggestion: self.isSuggestion, tapHandler: self.tapHandler)
+                ForEach(tags, id: \.self) { tagName in
+                    TagView(tagName: tagName, isEditable: self.isEditable, isSuggestion: self.isSuggestion, tapHandler: self.tapHandler)
                 }
             }
         } else {
