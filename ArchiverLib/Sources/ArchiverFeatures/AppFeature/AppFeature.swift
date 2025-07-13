@@ -36,8 +36,8 @@ struct AppFeature {
     enum Action {
         case archiveList(ArchiveList.Action)
         case documentsChanged([Document])
+        case onSetSelectedTab(State.Tab)
         case onTask
-        case setSelectedTab(State.Tab)
     }
 
     @Dependency(\.archiveStore) var archiveStore
@@ -84,7 +84,7 @@ struct AppFeature {
             case .archiveList:
                 return .none
 
-            case .setSelectedTab(let tab):
+            case .onSetSelectedTab(let tab):
                 state.selectedTab = tab
                 switch tab {
                 case .search:
@@ -166,7 +166,7 @@ struct AppView: View {
     @State var searchText = ""
 
     var body: some View {
-        TabView(selection: $store.selectedTab.sending(\.setSelectedTab)) {
+        TabView(selection: $store.selectedTab.sending(\.onSetSelectedTab)) {
             // Test this with macOS 26 - is there a search tab item?
 //            Tab(value: AppFeature.State.Tab.search, role: .search) {
             Tab("Archive", systemImage: "magnifyingglass", value: AppFeature.State.Tab.search) {

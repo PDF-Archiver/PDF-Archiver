@@ -48,13 +48,13 @@ struct DocumentInformationForm {
         case binding(BindingAction<State>)
         case delegate(Delegate)
         case onTask
-        case tagSearchtermSubmitted
-        case tagSuggestionTapped(String)
-        case tagSuggestionsUpdated([String])
-        case tagOnDocumentTapped(String)
-        case todayButtonTapped
-        case saveButtonTapped
-        case suggestedDateButtonTapped(Date)
+        case onTagOnDocumentTapped(String)
+        case onTagSearchtermSubmitted
+        case onTagSuggestionTapped(String)
+        case onTagSuggestionsUpdated([String])
+        case onTodayButtonTapped
+        case onSaveButtonTapped
+        case onSuggestedDateButtonTapped(Date)
         case updateDocumentData(DocumentParsingResult)
         case updateTagSuggestions
 
@@ -83,7 +83,7 @@ struct DocumentInformationForm {
             case .delegate:
                 return .none
 
-            case .tagSearchtermSubmitted:
+            case .onTagSearchtermSubmitted:
                 let selectedTag = state.suggestedTags.first ?? state.tagSearchterm.lowercased().slugified(withSeparator: "")
                 guard !selectedTag.isEmpty else { return .none }
 
@@ -93,11 +93,11 @@ struct DocumentInformationForm {
 
                 return .send(.updateTagSuggestions)
 
-            case .saveButtonTapped:
+            case .onSaveButtonTapped:
                 state.document.specification = state.document.specification.slugified(withSeparator: "-")
                 return .send(.delegate(.saveDocument(state.document)))
 
-            case .suggestedDateButtonTapped(let date):
+            case .onSuggestedDateButtonTapped(let date):
                 state.document.date = date
                 return .none
 
@@ -112,11 +112,11 @@ struct DocumentInformationForm {
                     await send(.updateDocumentData(result))
                 }
 
-            case .tagSuggestionsUpdated(let suggestedTags):
+            case .onTagSuggestionsUpdated(let suggestedTags):
                 state.suggestedTags = suggestedTags
                 return .none
 
-            case .tagSuggestionTapped(var tag):
+            case .onTagSuggestionTapped(var tag):
                 tag = tag.lowercased()
                 _ = state.document.tags.insert(tag)
                 state.suggestedTags.removeAll { $0 == tag }
@@ -126,12 +126,12 @@ struct DocumentInformationForm {
 
                 return .send(.updateTagSuggestions)
 
-            case .tagOnDocumentTapped(var tag):
+            case .onTagOnDocumentTapped(var tag):
                 tag = tag.lowercased()
                 _ = state.document.tags.remove(tag)
                 return .send(.updateTagSuggestions)
 
-            case .todayButtonTapped:
+            case .onTodayButtonTapped:
                 state.document.date = Date()
                 return .none
 
@@ -163,7 +163,7 @@ struct DocumentInformationForm {
                         tags = await archiveStore.getTagSuggestionsFor(tagSearchterm.lowercased())
                     }
 
-                    await send(.tagSuggestionsUpdated(tags))
+                    await send(.onTagSuggestionsUpdated(tags))
                 }
                 // we do not need multiple fetches of tag suggestions - so we cancelInFlight suggestions
                 .cancellable(id: CancelID.updateTagSuggestions, cancelInFlight: true)
@@ -254,13 +254,13 @@ struct DocumentInformationFormView: View {
                     ForEach(store.suggestedDates, id: \.self
                     ) { date in
                         Button(date.formatted(.dateTime.day(.twoDigits).month(.twoDigits).year(.twoDigits))) {
-                            store.send(.suggestedDateButtonTapped(date))
+                            store.send(.onSuggestedDateButtonTapped(date))
                         }
                         .fixedSize()
                         .buttonStyle(.bordered)
                     }
                     Button("Today", systemImage: "calendar") {
-                        store.send(.todayButtonTapped)
+                        store.send(.onTodayButtonTapped)
                     }
                     .labelStyle(.iconOnly)
                     .buttonStyle(.bordered)
@@ -290,7 +290,7 @@ struct DocumentInformationFormView: View {
                 HStack {
                     Spacer()
                     Button("Save") {
-                        store.send(.saveButtonTapped)
+                        store.send(.onSaveButtonTapped)
                         #if os(macOS)
                         Task {
                             await TaggingTips.KeyboardShortCut.documentSaved.donate()
@@ -329,7 +329,7 @@ struct DocumentInformationFormView: View {
                                 isEditable: true,
                                 isSuggestion: false,
                                 isMultiLine: true,
-                                tapHandler: { store.send(.tagOnDocumentTapped($0)) })
+                                tapHandler: { store.send(.onTagOnDocumentTapped($0)) })
                     .focusable(false)
                 }
 
@@ -337,12 +337,12 @@ struct DocumentInformationFormView: View {
                             isEditable: false,
                             isSuggestion: true,
                             isMultiLine: true,
-                            tapHandler: { store.send(.tagSuggestionTapped($0)) })
+                            tapHandler: { store.send(.onTagSuggestionTapped($0)) })
                 .focusable(false)
 
                 TextField("Enter Tag", text: $store.tagSearchterm)
                     .onSubmit {
-                        store.send(.tagSearchtermSubmitted)
+                        store.send(.onTagSearchtermSubmitted)
                     }
                     .focused($focusedField, equals: .tags)
                     #if os(macOS)

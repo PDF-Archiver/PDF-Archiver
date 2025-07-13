@@ -29,12 +29,12 @@ struct DocumentDetails {
 
     enum Action: BindableAction {
         case alert(PresentationAction<Alert>)
-        case showDocumentInformationForm(DocumentInformationForm.Action)
-        case delegate(Delegate)
-        case deleteDocumentButtonTapped
-        case editButtonTapped
-        case remoteDocumentAppeared
         case binding(BindingAction<State>)
+        case delegate(Delegate)
+        case onDeleteDocumentButtonTapped
+        case onEditButtonTapped
+        case onRemoteDocumentAppeared
+        case showDocumentInformationForm(DocumentInformationForm.Action)
 
         enum Alert {
           case confirmDeleteButtonTapped
@@ -66,7 +66,7 @@ struct DocumentDetails {
             case .delegate:
                 return .none
 
-            case .deleteDocumentButtonTapped:
+            case .onDeleteDocumentButtonTapped:
                 state.alert = AlertState<Action.Alert> {
                     TextState("Delete document?")
                 } actions: {
@@ -81,7 +81,7 @@ struct DocumentDetails {
                 }
                 return .none
 
-            case .editButtonTapped:
+            case .onEditButtonTapped:
                 if state.showInspector {
                     // reset the inspector state when it should disappear
                     state.documentInformationForm = DocumentInformationForm.State(document: state.document)
@@ -89,7 +89,7 @@ struct DocumentDetails {
                 state.showInspector.toggle()
                 return .none
 
-            case .remoteDocumentAppeared:
+            case .onRemoteDocumentAppeared:
                 return .run { [documentUrl = state.document.url] _ in
                     try await startDownloadOf(documentUrl)
                 }
@@ -109,7 +109,7 @@ struct DocumentDetailsView: View {
             if store.document.downloadStatus < 1 {
                 DocumentLoadingView(filename: store.document.filename, downloadStatus: store.document.downloadStatus)
                     .task {
-                        store.send(.remoteDocumentAppeared)
+                        store.send(.onRemoteDocumentAppeared)
                     }
 
             } else {

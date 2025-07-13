@@ -18,9 +18,8 @@ final class ICloudFolderProvider: FolderProvider {
 
     private let metadataQuery: NSMetadataQuery
 
-#warning("use here the id as key instead of URL")
-#warning("do we have the same problem in other folderproviders?")
-    private var currentDocuments: [URL: DocumentInformation] = [:]
+    private var currentDocuments: [Int: DocumentInformation] = [:]
+    private var lastDocuments: [DocumentInformation] = []
 
     init(baseUrl: URL) throws {
         self.baseUrl = baseUrl
@@ -104,15 +103,22 @@ final class ICloudFolderProvider: FolderProvider {
         Self.log.debug("deinit ICloudFolderProvider")
         metadataQuery.stop()
     }
-    var lastDocuments: [DocumentInformation] = []
+
     private func sendDocuments(added: [DocumentInformation], updated: [DocumentInformation], removed: [DocumentInformation]) {
-#warning("we have a race condition here")
-//        var currentDocuments = self.currentDocuments
         for change in added + updated {
-            currentDocuments[change.url] = change
+            guard let id = change.url.uniqueId() else {
+                assertionFailure("Failed to get uniqueId for \(change.url)")
+                continue
+            }
+            currentDocuments[id] = change
         }
         for change in removed {
-            currentDocuments[change.url] = nil
+            guard let id = change.url.uniqueId() else {
+                assertionFailure("Failed to get uniqueId for \(change.url)")
+                currentDocuments = currentDocuments.filter { $0.value.url != change.url }
+                continue
+            }
+            currentDocuments[id] = nil
         }
         let documents = Array(currentDocuments.values)
         guard lastDocuments.sorted() != documents.sorted() else { return }

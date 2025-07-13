@@ -75,8 +75,8 @@ struct ArchiveList {
     }
 
     enum Action: BindableAction {
-        case documentDetails(PresentationAction<DocumentDetails.Action>)
         case binding(BindingAction<State>)
+        case documentDetails(PresentationAction<DocumentDetails.Action>)
     }
 
     var body: some ReducerOf<Self> {
@@ -161,7 +161,7 @@ struct ArchiveListView: View {
                     ToolbarItemGroup(placement: .primaryAction) {
                         // editButton
                         Button {
-                            documentStore.send(.editButtonTapped)
+                            documentStore.send(.onEditButtonTapped)
                         } label: {
                             Label("Edit", systemImage: "pencil")
                         }
@@ -182,7 +182,7 @@ struct ArchiveListView: View {
 
                         // deleteButton
                         Button(role: .destructive) {
-                            documentStore.send(.deleteDocumentButtonTapped)
+                            documentStore.send(.onDeleteDocumentButtonTapped)
                         } label: {
                             Label("Delete", systemImage: "trash")
                                 .foregroundColor(.red)
