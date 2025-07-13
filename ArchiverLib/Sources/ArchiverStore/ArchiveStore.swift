@@ -129,9 +129,9 @@ public actor ArchiveStore: Log {
         throw ArchiveStore.Error.providerNotFound
     }
 
-    @discardableResult
-    func archiveFile(from url: URL, to filename: String) async throws -> URL {
-        let filename = filename.lowercased()
+    public func save(_ document: Document) async throws {
+        let url = document.url
+        let filename = document.createFilename()
 
         let foldername = String(filename.prefix(4))
 
@@ -159,8 +159,6 @@ public actor ArchiveStore: Log {
            !tags.isEmpty {
             try newFilepath.setFileTags(tags.sorted())
         }
-
-        return newFilepath
     }
 
     public func startDownload(of url: URL) async throws {
@@ -175,7 +173,6 @@ public actor ArchiveStore: Log {
 
     /// Returns tags that where used similarly on tagged documents
     public func getTagSuggestionsSimilar(to tags: Set<String>) -> [String] {
-        #warning("Implement this")
         let filteredTagCombinations = currentDocuments
             .map(\.tags)
             .filter { $0.isSuperset(of: tags) }

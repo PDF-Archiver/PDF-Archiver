@@ -32,3 +32,8 @@ struct DocumentLoadingView: View {
         }
     }
 }
+
+#Preview {
+    DocumentLoadingView(filename: "test.pdf",
+                        downloadStatus: 0.33)
+}

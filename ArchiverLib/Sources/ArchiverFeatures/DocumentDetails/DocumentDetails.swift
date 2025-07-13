@@ -114,7 +114,6 @@ struct DocumentDetailsView: View {
 
             } else {
                 PDFCustomView(store.document.url)
-                    .ignoresSafeArea(edges: .bottom)
                     .inspector(isPresented: $store.showInspector) {
                         DocumentInformationFormView(store: store.scope(state: \.documentInformationForm, action: \.showDocumentInformationForm))
                     }

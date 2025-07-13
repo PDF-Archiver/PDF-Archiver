@@ -18,6 +18,8 @@ final class ICloudFolderProvider: FolderProvider {
 
     private let metadataQuery: NSMetadataQuery
 
+#warning("use here the id as key instead of URL")
+#warning("do we have the same problem in other folderproviders?")
     private var currentDocuments: [URL: DocumentInformation] = [:]
 
     init(baseUrl: URL) throws {
@@ -104,6 +106,8 @@ final class ICloudFolderProvider: FolderProvider {
     }
     var lastDocuments: [DocumentInformation] = []
     private func sendDocuments(added: [DocumentInformation], updated: [DocumentInformation], removed: [DocumentInformation]) {
+#warning("we have a race condition here")
+//        var currentDocuments = self.currentDocuments
         for change in added + updated {
             currentDocuments[change.url] = change
         }
@@ -211,13 +215,14 @@ extension NSMetadataItem: Log {
             documentStatus = 1
         case NSMetadataUbiquitousItemDownloadingStatusNotDownloaded:
 
+            let minValue = 0.05
             if let isDownloading = value(forAttribute: NSMetadataUbiquitousItemIsDownloadingKey) as? Bool,
                 isDownloading {
                 let percentDownloaded = (value(forAttribute: NSMetadataUbiquitousItemPercentDownloadedKey) as? NSNumber)?.doubleValue ?? 0
-                documentStatus = percentDownloaded / 100
+                documentStatus = max(percentDownloaded / 100, minValue)
             } else {
                 // remote
-                documentStatus = 0
+                documentStatus = minValue
             }
         default:
             log.criticalAndAssert("Unkown download status.", metadata: ["status": "\(downloadingStatus)"])

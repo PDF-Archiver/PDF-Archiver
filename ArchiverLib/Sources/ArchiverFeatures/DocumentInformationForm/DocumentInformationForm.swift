@@ -102,10 +102,11 @@ struct DocumentInformationForm {
                 return .none
 
             case .onTask:
-                // skip analysis for tagged documents
-                guard !state.document.isTagged else { return .none }
-                return .run { [documentUrl = state.document.url] send in
+                return .run { [documentUrl = state.document.url, isTagged = state.document.isTagged] send in
                     await send(.updateTagSuggestions)
+
+                    // skip analysis for tagged documents
+                    guard !isTagged else { return }
 
                     let result = await parseDocumentData(url: documentUrl)
                     await send(.updateDocumentData(result))
@@ -306,6 +307,9 @@ struct DocumentInformationFormView: View {
         }
         .formStyle(.grouped)
         .bind($store.focusedField, to: $focusedField)
+        .task {
+            await store.send(.onTask).finish()
+        }
         #warning("Add this")
 //        .onChange(of: viewModel.url, initial: true) { _, _ in
 //            viewModel.analyseDocument()

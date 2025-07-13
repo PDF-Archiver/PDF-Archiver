@@ -76,18 +76,9 @@ struct AppFeature {
                     state.archiveList.documentDetails = nil
                     state.archiveList.$selectedDocumentId.withLock { $0 = nil }
 
-#warning("TODO: add this")
-
-//                        viewModel.specification = viewModel.specification.slugified(withSeparator: "-")
-//
-//                        let filename = Document.createFilename(date: viewModel.date, specification: viewModel.specification, tags: Set(viewModel.tags))
-//                        navigationModel.saveDocument(viewModel.url, to: filename, modelContext: modelContext)
-
-//                    return .run { _ in
-//                        try await archiveStore.saveDocuemtn(document)
-//                    }
-
-                    return .none
+                    return .run { _ in
+                        try await archiveStore.saveDocument(document)
+                    }
                 }
 
             case .archiveList:

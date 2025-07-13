@@ -18,6 +18,7 @@ struct ArchiveStoreDependency {
     var getTagSuggestionsFor: @Sendable (String) async -> [String] = { _ in [] }
     var getTagSuggestionsSimilarTo: @Sendable (Set<String>) async -> [String] = { _ in [] }
     var parseFilename: @Sendable (String) async -> (date: Date?, specification: String?, tagNames: [String]?) = { _ in (nil, nil, nil) }
+    var saveDocument: @Sendable (Document) async throws -> Void
 }
 
 extension ArchiveStoreDependency: TestDependencyKey {
@@ -51,7 +52,8 @@ extension ArchiveStoreDependency: TestDependencyKey {
         deleteDocumentAt: { _ in },
         getTagSuggestionsFor: { _ in [] },
         getTagSuggestionsSimilarTo: { _ in [] },
-        parseFilename: { _ in (nil, nil, nil) }
+        parseFilename: { _ in (nil, nil, nil) },
+        saveDocument: { _ in }
     )
 
     static let testValue = Self()
@@ -82,6 +84,9 @@ extension ArchiveStoreDependency: DependencyKey {
     },
     parseFilename: { filename in
         Document.parseFilename(filename)
+    },
+    saveDocument: { document in
+        try await ArchiveStore.shared.save(document)
     }
   )
 }
