@@ -53,7 +53,9 @@ struct ArchiveList {
         @Presents var documentDetails: DocumentDetails.State?
 
         private func getFilteredDocument() -> IdentifiedArrayOf<Document> {
-            documents.filter { document in
+            documents
+                .filter(\.isTagged)
+                .filter { document in
                 for searchToken in searchTokens {
                     switch searchToken {
                     case .tag(let tag):
@@ -70,7 +72,7 @@ struct ArchiveList {
                     return document.url.lastPathComponent.contains(newSearchText)
                 }
                 return true
-            }
+                }
         }
     }
 
@@ -190,6 +192,13 @@ struct ArchiveListView: View {
                     }
 #if os(macOS)
                     ToolbarItem(placement: .accessoryBar(id: "tags")) {
+                        // fix for the high cpu usage
+//                        HStack {
+//                            ForEach(documentStore.document.tags.sorted(), id: \.self) { tag in
+//                                Text(tag)
+//                                    .frame(width: 50)
+//                            }
+//                        }
                         TagListView(tags: documentStore.document.tags.sorted(),
                                     isEditable: false,
                                     isMultiLine: false,
@@ -199,8 +208,8 @@ struct ArchiveListView: View {
 #endif
                 }
         }
-        }
     }
+}
 
 #Preview {
     NavigationStack {

@@ -29,15 +29,19 @@ struct AppFeature {
         var tabTagSuggestions: [String] = []
         var tabYearSuggestions: [Int] = []
         var untaggedDocumentsCount: Int = 0
+        var isDocumentLoading = true
 
         var archiveList = ArchiveList.State()
+        var untaggedDocumentList = UntaggedDocumentList.State()
     }
 
     enum Action {
         case archiveList(ArchiveList.Action)
         case documentsChanged([Document])
+        case isLoadingChanged(Bool)
         case onSetSelectedTab(State.Tab)
         case onTask
+        case untaggedDocumentList(UntaggedDocumentList.Action)
     }
 
     @Dependency(\.archiveStore) var archiveStore
@@ -47,11 +51,15 @@ struct AppFeature {
         Scope(state: \.archiveList, action: \.archiveList) {
             ArchiveList()
         }
+        Scope(state: \.untaggedDocumentList, action: \.untaggedDocumentList) {
+            UntaggedDocumentList()
+        }
 
         // ... second, run AppFeature reducer, if we need to interact (from an AppFeature domain point of view) with it
         Reduce { state, action in
             switch action {
-            case .archiveList(.documentDetails(.presented(.delegate(let delegateAction)))):
+            case .archiveList(.documentDetails(.presented(.delegate(let delegateAction)))),
+                    .untaggedDocumentList(.documentDetails(.presented(.delegate(let delegateAction)))):
                 switch delegateAction {
                 case .deleteDocument(let document):
                     _ = state.$documents.withLock { $0.remove(document) }
@@ -63,7 +71,8 @@ struct AppFeature {
                     }
                 }
 
-            case .archiveList(.documentDetails(.presented(.showDocumentInformationForm(.delegate(let delegateAction))))):
+            case .archiveList(.documentDetails(.presented(.showDocumentInformationForm(.delegate(let delegateAction))))),
+                    .untaggedDocumentList(.documentDetails(.presented(.showDocumentInformationForm(.delegate(let delegateAction))))):
                 switch delegateAction {
                 case .saveDocument(let document):
                     state.$documents.withLock { documents in
@@ -76,6 +85,8 @@ struct AppFeature {
                     state.archiveList.documentDetails = nil
                     state.archiveList.$selectedDocumentId.withLock { $0 = nil }
 
+                    #warning("select next document for tagging")
+
                     return .run { _ in
                         try await archiveStore.saveDocument(document)
                     }
@@ -84,31 +95,14 @@ struct AppFeature {
             case .archiveList:
                 return .none
 
-            case .onSetSelectedTab(let tab):
-                state.selectedTab = tab
-                switch tab {
-                case .search:
-                    state.archiveList.searchTokens = []
-                case .sectionTags(let tag):
-                    state.archiveList.searchTokens = [.tag(tag)]
-                case .sectionYears(let year):
-                    state.archiveList.searchTokens = [.year(year)]
-                case .inbox, .statistics:
-                    break
-                #if !os(macOS)
-                case .settings:
-                    break
-                #endif
-                }
-                return .none
-
-            case .documentsChanged(let documents):
-                let taggedDocuments = documents
-                    .filter { $0.isTagged }
+            case .documentsChanged(var documents):
+                documents = documents
                     .sorted { $0.date < $1.date }
                     .reversed()
-                let newDocuments = IdentifiedArrayOf(uniqueElements: taggedDocuments)
-                state.$documents.withLock { $0 = newDocuments }
+                state.$documents.withLock { $0 = IdentifiedArrayOf(uniqueElements: documents) }
+
+                let taggedDocuments = documents
+                    .filter { $0.isTagged }
 
                 // create year suggestions
                 let years = taggedDocuments
@@ -148,13 +142,46 @@ struct AppFeature {
 
                 return .none
 
+            case .isLoadingChanged(let isLoading):
+                state.isDocumentLoading = isLoading
+                return .none
+
+            case .onSetSelectedTab(let tab):
+                state.selectedTab = tab
+                switch tab {
+                case .search:
+                    state.archiveList.searchTokens = []
+                case .sectionTags(let tag):
+                    state.archiveList.searchTokens = [.tag(tag)]
+                case .sectionYears(let year):
+                    state.archiveList.searchTokens = [.year(year)]
+                case .inbox, .statistics:
+                    break
+                #if !os(macOS)
+                case .settings:
+                    break
+                #endif
+                }
+                return .none
+
             case .onTask:
                 return .run { send in
-                    for await documents in await archiveStore.documentChanges() {
-
-                        await send(.documentsChanged(documents))
+                    await withTaskGroup(of: Void.self) { group in
+                        group.addTask {
+                            for await documents in await archiveStore.documentChanges() {
+                                await send(.documentsChanged(documents))
+                            }
+                        }
+                        group.addTask {
+                            for await isLoading in await archiveStore.isLoading() {
+                                await send(.isLoadingChanged(isLoading))
+                            }
+                        }
                     }
                 }
+
+            case .untaggedDocumentList:
+                return .none
             }
         }
     }
@@ -174,7 +201,7 @@ struct AppView: View {
             }
 
             Tab("Inbox", systemImage: "tray", value: AppFeature.State.Tab.inbox) {
-                Text("TODO: untagged documents")
+                untaggedDocumentList
             }
             .badge(store.untaggedDocumentsCount)
 
@@ -209,6 +236,14 @@ struct AppView: View {
             .hidden(horizontalSizeClass == .compact)
         }
         .tabViewStyle(.sidebarAdaptable)
+        .toolbar {
+            #warning("Not showing on iOS")
+            ToolbarItem(placement: .destructiveAction) {
+                ProgressView()
+                    .controlSize(.small)
+                    .opacity(store.isDocumentLoading ? 1 : 0)
+            }
+        }
         .task {
             await store.send(.onTask).finish()
         }
@@ -220,10 +255,17 @@ struct AppView: View {
                 .navigationTitle("Archive")
         }
     }
+
+    private var untaggedDocumentList: some View {
+        NavigationStack {
+            UntaggedDocumentListView(store: store.scope(state: \.untaggedDocumentList, action: \.untaggedDocumentList))
+                .navigationTitle("Inbox")
+        }
+    }
 }
 
 #Preview {
-    AppView(store: Store(initialState: AppFeature.State()) {
+    AppView(store: Store(initialState: AppFeature.State(isDocumentLoading: true)) {
         AppFeature()
             ._printChanges()
     }

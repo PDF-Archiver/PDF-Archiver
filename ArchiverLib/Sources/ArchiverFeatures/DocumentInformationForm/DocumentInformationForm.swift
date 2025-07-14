@@ -103,13 +103,12 @@ struct DocumentInformationForm {
 
             case .onTask:
                 return .run { [documentUrl = state.document.url, isTagged = state.document.isTagged] send in
-                    await send(.updateTagSuggestions)
-
-                    // skip analysis for tagged documents
-                    guard !isTagged else { return }
-
-                    let result = await parseDocumentData(url: documentUrl)
-                    await send(.updateDocumentData(result))
+                    if isTagged {
+                        await send(.updateTagSuggestions)
+                    } else {
+                        let result = await parseDocumentData(url: documentUrl)
+                        await send(.updateDocumentData(result))
+                    }
                 }
 
             case .onTagSuggestionsUpdated(let suggestedTags):
@@ -154,10 +153,10 @@ struct DocumentInformationForm {
                 return .none
 
             case .updateTagSuggestions:
-#warning("also run this on appear")
                 return .run { [tagSearchterm = state.tagSearchterm, documentTags = state.document.tags] send in
                     let tags: [String]
                     if tagSearchterm.isEmpty {
+                        guard !documentTags.isEmpty else { return }
                         tags = await archiveStore.getTagSuggestionsSimilarTo(documentTags)
                     } else {
                         tags = await archiveStore.getTagSuggestionsFor(tagSearchterm.lowercased())
@@ -310,10 +309,6 @@ struct DocumentInformationFormView: View {
         .task {
             await store.send(.onTask).finish()
         }
-        #warning("Add this")
-//        .onChange(of: viewModel.url, initial: true) { _, _ in
-//            viewModel.analyseDocument()
-//        }
     }
 
     private var documentTagsSection: some View {

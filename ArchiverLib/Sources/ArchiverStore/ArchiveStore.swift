@@ -27,7 +27,7 @@ public actor ArchiveStore: Log {
     private static let availableProvider: [any FolderProvider.Type] = [ICloudFolderProvider.self, LocalFolderProvider.self]
     #endif
 
-    var isLoadingStream = AsyncCurrentValueSubject(true)
+    public let isLoadingStream = AsyncCurrentValueSubject(true)
     public let documentsStream: AsyncStream<[Document]>
     private let documentsStreamContinuation: AsyncStream<[Document]>.Continuation
     private var currentDocuments: [Document] = []
@@ -173,6 +173,7 @@ public actor ArchiveStore: Log {
 
     /// Returns tags that where used similarly on tagged documents
     public func getTagSuggestionsSimilar(to tags: Set<String>) -> [String] {
+        guard !tags.isEmpty else { return [] }
         let filteredTagCombinations = currentDocuments
             .map(\.tags)
             .filter { $0.isSuperset(of: tags) }

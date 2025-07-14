@@ -8,12 +8,6 @@
 import ArchiverModels
 import ComposableArchitecture
 
-// extension SharedReaderKey where Self == InMemoryKey<IdentifiedArrayOf<Document>> {
-//  static var documents: Self {
-//    inMemory("documents")
-//  }
-// }
-
 extension SharedReaderKey where Self == FileStorageKey<IdentifiedArrayOf<Document>> {
   static var documents: Self {
       fileStorage(.temporaryDirectory.appending(component: "documents.json"))

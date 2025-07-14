@@ -117,16 +117,12 @@ struct DocumentDetailsView: View {
                     .inspector(isPresented: $store.showInspector) {
                         DocumentInformationFormView(store: store.scope(state: \.documentInformationForm, action: \.showDocumentInformationForm))
                     }
-                    .task {
-                        await store.scope(state: \.documentInformationForm, action: \.showDocumentInformationForm).send(.onTask).finish()
-                    }
             }
         }
         .alert($store.scope(state: \.alert, action: \.alert))
     }
 }
 
-#if DEBUG
 #Preview("Document", traits: .fixedLayout(width: 800, height: 600)) {
     NavigationSplitView {
         Text("Sidebar")
@@ -152,4 +148,3 @@ struct DocumentDetailsView: View {
         )
     }
 }
-#endif

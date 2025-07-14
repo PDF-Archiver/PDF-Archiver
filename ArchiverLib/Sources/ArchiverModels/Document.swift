@@ -36,7 +36,6 @@ public struct Document: Equatable, Identifiable, Hashable, Sendable, Codable {
     }
 }
 
-#if DEBUG
 extension Document {
     public static func mock(url: URL = URL(string: "https://example.com")!, date: Date = Date(), specification: String = "", tags: Set<String> = [], isTagged: Bool = true, sizeInBytes: Double = 1000, downloadStatus: Double = 0) -> Self {
         .init(
@@ -51,4 +50,3 @@ extension Document {
         )
     }
 }
-#endif

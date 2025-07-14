@@ -13,6 +13,7 @@ import Foundation
 @DependencyClient
 struct ArchiveStoreDependency {
     var documentChanges: @Sendable () async -> AsyncStream<[Document]> = { AsyncStream<[Document]> { $0.yield([]) } }
+    var isLoading: @Sendable () async -> AsyncStream<Bool> = { AsyncStream<Bool> { $0.yield(false) } }
     var startDownloadOf: @Sendable (URL) async throws -> Void
     var deleteDocumentAt: @Sendable (URL) async throws -> Void
     var getTagSuggestionsFor: @Sendable (String) async -> [String] = { _ in [] }
@@ -48,6 +49,7 @@ extension ArchiveStoreDependency: TestDependencyKey {
                 }
             }
         },
+        isLoading: { AsyncStream { $0.yield(false) } },
         startDownloadOf: { _ in },
         deleteDocumentAt: { _ in },
         getTagSuggestionsFor: { _ in [] },
@@ -66,6 +68,15 @@ extension ArchiveStoreDependency: DependencyKey {
             Task {
                 for await documents in await ArchiveStore.shared.documentsStream {
                     stream.yield(documents)
+                }
+            }
+        }
+    },
+    isLoading: {
+        return AsyncStream { stream in
+            Task {
+                for await isLoading in await ArchiveStore.shared.isLoadingStream {
+                    stream.yield(isLoading)
                 }
             }
         }
