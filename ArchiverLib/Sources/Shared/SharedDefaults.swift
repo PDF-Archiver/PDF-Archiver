@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 public enum SharedDefaults {
     private static let sharedDefaults = UserDefaults(suiteName: "group.PDFArchiverShared")!
 

@@ -10,13 +10,20 @@ let package = Package(
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "ArchiverLib",
-            targets: ["ArchiverFeatures"])
+            targets: ["ArchiverFeatures", "ArchiverIntents"])
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.20.2"),
         .package(url: "https://github.com/sideeffect-io/AsyncExtensions", from: "0.5.3")
     ],
     targets: [
+        .target(name: "ArchiverFeatures",
+                dependencies: [
+                    "ArchiverStore",
+                    "ArchiverModels",
+                    "Shared",
+                    .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+                ]),
         .target(name: "ArchiverStore",
                 dependencies: [
                     "ArchiverModels",
@@ -24,12 +31,9 @@ let package = Package(
                     .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                     "AsyncExtensions"
                 ]),
-        .target(name: "ArchiverFeatures",
+        .target(name: "ArchiverIntents",
                 dependencies: [
-                    "ArchiverStore",
-                    "ArchiverModels",
-                    "Shared",
-                    .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+                    "Shared"
                 ]),
 //                swiftSettings: [.defaultIsolaion(MainActor.self)]),
         .target(name: "ArchiverModels",

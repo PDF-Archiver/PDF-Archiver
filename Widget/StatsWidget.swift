@@ -6,12 +6,14 @@
 //
 
 import AppIntents
+import ArchiverIntents
 import Charts
-import IntentLib
+import Shared
 import SwiftData
 import SwiftUI
 import WidgetKit
 
+@MainActor
 struct StatsProvider: AppIntentTimelineProvider {
     func placeholder(in context: Context) -> StatsEntry {
         let configuration = ConfigurationAppIntent()
@@ -48,76 +50,6 @@ struct StatsEntry: TimelineEntry {
     let yearStats: [Int: Int]   // year: count
 }
 
-struct WidgetStatsEntryView: View {
-    @Environment(\.widgetFamily) var widgetFamily
-
-    struct YearCount: Hashable {
-        let year: Int
-        let count: Int
-    }
-
-    var entry: StatsProvider.Entry
-
-    var body: some View {
-        let yearStats = entry.yearStats
-            .map { YearCount(year: $0.key, count: $0.value) }
-            .sorted { $0.year < $1.year }
-            .reversed()
-            .prefix(5)
-
-        let maxCount = yearStats.map(\.count).max() ?? 1
-
-        VStack(alignment: .leading) {
-
-            HStack(alignment: .top) {
-                Text("Documents per year")
-                    .minimumScaleFactor(0.8)
-                    .foregroundStyle(.primary)
-
-                Spacer()
-
-                Link(destination: DeepLink.scan.url) {
-                    Image(systemName: "doc.viewfinder")
-                }
-                .padding(10)
-                .background(Circle().fill(Color("paDarkRedAsset")))
-                .foregroundColor(.white)
-            }
-
-            Spacer()
-
-            Chart(yearStats, id: \.self) { item in
-                BarMark(
-                    x: .value("Amount", item.count),
-                    y: .value("Period", "\(item.year)")
-                )
-                .annotation(position: .leading) {
-                    Text(item.year, format: .number.grouping(.never))
-                        .font(.caption2)
-                        .monospacedDigit()
-                        .foregroundStyle(Color(.secondaryLabel))
-                }
-                .annotation(position: .trailing) {
-                    Text("\(item.count)")
-                        .font(.caption)
-                        .foregroundStyle(.primary)
-                }
-                .foregroundStyle(Color("paDarkRedAsset").opacity(Double(item.count) / Double(maxCount)))
-            }
-            .frame(height: 80)
-            .fixedSize(horizontal: false, vertical: true)
-            .chartXAxis(.hidden)
-            .chartYAxis(.hidden)
-            .chartYAxis {
-                AxisMarks(stroke: StrokeStyle(lineWidth: 0))
-            }
-            .chartXAxis {
-                AxisMarks(stroke: StrokeStyle(lineWidth: 0))
-            }
-        }
-    }
-}
-
 fileprivate extension View {
     @ViewBuilder
     func labelStyle(includingText: Bool) -> some View {
@@ -129,14 +61,31 @@ fileprivate extension View {
     }
 }
 
+extension StatsView.Size {
+    static func create(from size: WidgetFamily) -> Self {
+        switch size {
+        case .systemSmall:
+            return .small
+        case .systemMedium:
+            return .medium
+        case .systemLarge, .systemExtraLarge:
+            return .large
+        default:
+            return .small
+        }
+    }
+}
+
 struct StatsWidget: Widget {
+    @Environment(\.widgetFamily) var widgetFamily
     let kind: String = "StatsWidget"
 
     var body: some WidgetConfiguration {
         AppIntentConfiguration(kind: kind,
                                intent: ConfigurationAppIntent.self,
                                provider: StatsProvider()) { entry in
-            WidgetStatsEntryView(entry: entry)
+            StatsView(yearStats: entry.yearStats,
+                      size: .create(from: widgetFamily))
                 .containerBackground(.fill.tertiary, for: .widget)
         }
         .configurationDisplayName("PDF Statistics")

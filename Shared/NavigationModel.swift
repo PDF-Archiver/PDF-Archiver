@@ -5,8 +5,8 @@
 //  Created by Julian Kahnert on 24.11.24.
 //
 
-import IntentLib
 import OSLog
+import Shared
 import SwiftData
 import SwiftUI
 import TipKit

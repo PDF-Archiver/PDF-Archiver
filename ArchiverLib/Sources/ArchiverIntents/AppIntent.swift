@@ -6,6 +6,7 @@
 //
 
 import AppIntents
+import Shared
 
 public protocol IntentNavigation: Sendable {
     func open(link: DeepLink)

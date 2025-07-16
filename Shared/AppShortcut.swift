@@ -6,8 +6,8 @@
 //
 
 import AppIntents
+import ArchiverIntents
 import Foundation
-import IntentLib
 
 struct AppShortcuts: AppShortcutsProvider {
 
