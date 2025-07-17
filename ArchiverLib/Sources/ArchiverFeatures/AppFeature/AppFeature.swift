@@ -33,6 +33,7 @@ struct AppFeature {
 
         var archiveList = ArchiveList.State()
         var untaggedDocumentList = UntaggedDocumentList.State()
+        var statistics = Statistics.State()
     }
 
     enum Action {
@@ -42,6 +43,7 @@ struct AppFeature {
         case onSetSelectedTab(State.Tab)
         case onTask
         case untaggedDocumentList(UntaggedDocumentList.Action)
+        case statistics(Statistics.Action)
     }
 
     @Dependency(\.archiveStore) var archiveStore
@@ -53,6 +55,9 @@ struct AppFeature {
         }
         Scope(state: \.untaggedDocumentList, action: \.untaggedDocumentList) {
             UntaggedDocumentList()
+        }
+        Scope(state: \.statistics, action: \.statistics) {
+            Statistics()
         }
 
         // ... second, run AppFeature reducer, if we need to interact (from an AppFeature domain point of view) with it
@@ -182,6 +187,9 @@ struct AppFeature {
 
             case .untaggedDocumentList:
                 return .none
+
+            case .statistics:
+                return .none
             }
         }
     }
@@ -206,7 +214,7 @@ struct AppView: View {
             .badge(store.untaggedDocumentsCount)
 
             Tab("Statistics", systemImage: "chart.bar.xaxis", value: AppFeature.State.Tab.statistics) {
-                Text("TODO: Some charts")
+                StatisticsView(store: store.scope(state: \.statistics, action: \.statistics))
             }
 
             #if !os(macOS)

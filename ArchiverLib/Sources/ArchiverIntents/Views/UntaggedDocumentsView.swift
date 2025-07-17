@@ -13,12 +13,10 @@ public struct UntaggedDocumentsView: View {
         case small, medium, large
     }
 
-    let date: Date
     let untaggedDocuments: Int
     let size: Size
 
-    public init(date: Date, untaggedDocuments: Int, size: Size) {
-        self.date = date
+    public init(untaggedDocuments: Int, size: Size) {
         self.untaggedDocuments = untaggedDocuments
         self.size = size
     }
@@ -33,7 +31,7 @@ public struct UntaggedDocumentsView: View {
                 .frame(maxWidth: .infinity)
                 .padding(10)
                 .background(
-                    Capsule().fill(Color("paDarkRedAsset"))
+                    Capsule().fill(Color.paDarkRedAsset)
                 )
                 .foregroundColor(.white)
 
@@ -50,7 +48,7 @@ public struct UntaggedDocumentsView: View {
                         .frame(maxWidth: .infinity)
                 }
                 .padding(10)
-                .background(Capsule().fill(Color("paDarkRedAsset")))
+                .background(Capsule().fill(Color.paDarkRedAsset))
                 .foregroundColor(.white)
 
             }
@@ -70,7 +68,7 @@ public struct UntaggedDocumentsView: View {
                                 .foregroundStyle(.primary)
 
                             Image(systemName: "document.on.document")
-                                .foregroundStyle(Color("paDarkRedAsset"))
+                                .foregroundStyle(Color.paDarkRedAsset)
                                 .symbolRenderingMode(.hierarchical)
                         }
                         .font(.largeTitle)
@@ -88,7 +86,7 @@ public struct UntaggedDocumentsView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 100, height: 100)
-                            .foregroundStyle(Color("paDarkRedAsset").opacity(0.4))
+                            .foregroundStyle(Color.paDarkRedAsset.opacity(0.4))
                             .padding([.top, .trailing], -40)
 
                         Text("All documents are tagged. 🎉")
@@ -113,7 +111,7 @@ public struct UntaggedDocumentsView: View {
                             .font(.system(size: 48, weight: .black))
 
                         Image(systemName: "document.on.document")
-                            .foregroundStyle(Color("paDarkRedAsset"))
+                            .foregroundStyle(Color.paDarkRedAsset)
                             .symbolRenderingMode(.hierarchical)
                             .font(.title)
 
@@ -131,7 +129,7 @@ public struct UntaggedDocumentsView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 100, height: 100)
-                            .foregroundStyle(Color("paDarkRedAsset").opacity(0.4))
+                            .foregroundStyle(Color.paDarkRedAsset.opacity(0.4))
                             .padding([.top, .trailing], -40)
 
                         Text("All documents are tagged. 🎉")
@@ -155,7 +153,7 @@ public struct UntaggedDocumentsView: View {
                                 .fontWeight(.black)
 
                             Image(systemName: "document.on.document")
-                                .foregroundStyle(Color("paDarkRedAsset"))
+                                .foregroundStyle(Color.paDarkRedAsset)
                                 .symbolRenderingMode(.hierarchical)
                         }
                         .font(.largeTitle)
@@ -172,7 +170,7 @@ public struct UntaggedDocumentsView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 100, height: 100)
-                            .foregroundStyle(Color("paDarkRedAsset").opacity(0.4))
+                            .foregroundStyle(Color.paDarkRedAsset.opacity(0.4))
                             .padding([.top, .trailing], -40)
 
                         Text("All documents are tagged. 🎉")
@@ -193,42 +191,33 @@ public struct UntaggedDocumentsView: View {
 
 #Preview("Small") {
     Group {
-        UntaggedDocumentsView(date: Date(),
-                              untaggedDocuments: 0,
+        UntaggedDocumentsView(untaggedDocuments: 0,
                               size: .small)
-        UntaggedDocumentsView(date: Date(),
-                              untaggedDocuments: 0,
+        UntaggedDocumentsView(untaggedDocuments: 0,
                               size: .small)
-        UntaggedDocumentsView(date: Date(),
-                              untaggedDocuments: 0,
+        UntaggedDocumentsView(untaggedDocuments: 0,
                               size: .small)
     }
 }
 
 #Preview("Medium") {
     Group {
-        UntaggedDocumentsView(date: Date(),
-                              untaggedDocuments: 0,
+        UntaggedDocumentsView(untaggedDocuments: 0,
                               size: .medium)
-        UntaggedDocumentsView(date: Date(),
-                              untaggedDocuments: 0,
+        UntaggedDocumentsView(untaggedDocuments: 0,
                               size: .medium)
-        UntaggedDocumentsView(date: Date(),
-                              untaggedDocuments: 0,
+        UntaggedDocumentsView(untaggedDocuments: 0,
                               size: .medium)
     }
 }
 
 #Preview("Large") {
     Group {
-        UntaggedDocumentsView(date: Date(),
-                              untaggedDocuments: 0,
+        UntaggedDocumentsView(untaggedDocuments: 0,
                               size: .large)
-        UntaggedDocumentsView(date: Date(),
-                              untaggedDocuments: 0,
+        UntaggedDocumentsView(untaggedDocuments: 0,
                               size: .large)
-        UntaggedDocumentsView(date: Date(),
-                              untaggedDocuments: 0,
+        UntaggedDocumentsView(untaggedDocuments: 0,
                               size: .large)
     }
 }
