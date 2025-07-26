@@ -27,7 +27,7 @@ struct DocumentDetails {
         }
     }
 
-    enum Action: BindableAction {
+    enum Action: BindableAction, Equatable {
         case alert(PresentationAction<Alert>)
         case binding(BindingAction<State>)
         case delegate(Delegate)
