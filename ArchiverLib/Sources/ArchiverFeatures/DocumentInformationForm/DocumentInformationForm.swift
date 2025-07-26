@@ -39,12 +39,14 @@ struct DocumentInformationForm {
 
         var focusedField: Field?
 
-        init(document: Document) {
+        init(document: Document, suggestedTags: [String] = []) {
             self.document = document
             self.initialDocument = document
+            
+            self.suggestedTags = suggestedTags
         }
     }
-    enum Action: BindableAction {
+    enum Action: BindableAction, Equatable {
         case binding(BindingAction<State>)
         case delegate(Delegate)
         case onTask
@@ -58,7 +60,7 @@ struct DocumentInformationForm {
         case updateDocumentData(DocumentParsingResult)
         case updateTagSuggestions
 
-        enum Delegate {
+        enum Delegate: Equatable {
             case saveDocument(Document)
         }
     }
@@ -88,7 +90,6 @@ struct DocumentInformationForm {
                 guard !selectedTag.isEmpty else { return .none }
 
                 _ = state.document.tags.insert(selectedTag)
-                state.suggestedTags.removeAll()
                 state.tagSearchterm = ""
 
                 return .send(.updateTagSuggestions)
@@ -170,7 +171,7 @@ struct DocumentInformationForm {
         }
     }
 
-    struct DocumentParsingResult {
+    struct DocumentParsingResult: Equatable {
         let date: Date?
         let specification: String?
         let tags: Set<String>?

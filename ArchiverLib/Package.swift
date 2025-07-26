@@ -21,6 +21,7 @@ let package = Package(
                 dependencies: [
                     "ArchiverStore",
                     "ArchiverModels",
+                    "ArchiverIntents",
                     "Shared",
                     .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
                 ]),
