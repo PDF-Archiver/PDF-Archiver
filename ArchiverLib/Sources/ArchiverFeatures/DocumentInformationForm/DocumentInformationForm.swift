@@ -42,7 +42,7 @@ struct DocumentInformationForm {
         init(document: Document, suggestedTags: [String] = []) {
             self.document = document
             self.initialDocument = document
-            
+
             self.suggestedTags = suggestedTags
         }
     }

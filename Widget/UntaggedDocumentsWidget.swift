@@ -65,8 +65,7 @@ struct UntaggedDocumentsWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind,
                             provider: UntaggedDocumentsProvider()) { entry in
-            UntaggedDocumentsView(date: entry.date,
-                                  untaggedDocuments: entry.untaggedDocuments,
+            UntaggedDocumentsView(untaggedDocuments: entry.untaggedDocuments,
                                   size: .create(from: widgetFamily))
                 .containerBackground(.fill.tertiary, for: .widget)
         }
