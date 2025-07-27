@@ -31,7 +31,7 @@ struct UntaggedDocumentsList: View {
                 List(untaggedDocuments, selection: $navigationModel.selectedDocument) { document in
                     NavigationLink(document.filename, value: document)
                     #if !os(macOS)
-                    .listRowBackground(navigationModel.selectedDocument == document ? Color.secondaryBackground : nil)
+                    .listRowBackground(navigationModel.selectedDocument == document ? Color(.paSecondaryBackground) : nil)
                     #endif
                 }
                 .listStyle(.plain)

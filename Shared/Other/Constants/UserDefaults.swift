@@ -9,7 +9,7 @@
 import Foundation
 import OSLog
 
-extension UserDefaults: Log {
+extension UserDefaults {
 
     enum Names: String, CaseIterable {
         case tutorialShown = "tutorial-v1"

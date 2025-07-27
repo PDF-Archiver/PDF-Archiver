@@ -6,6 +6,7 @@
 //
 
 import AppIntents
+import ArchiverFeatures
 import Foundation
 import SwiftUI
 
@@ -19,13 +20,14 @@ struct PDFArchiverIOSApp: App, Log {
         navigationModel = model
         AppDependencyManager.shared.add(dependency: model)
 
-        initializePdfArchiver()
+//        initializePdfArchiver()
     }
 
     var body: some Scene {
         WindowGroup {
-            SplitNavigationView()
-                .inAppPurchasesSetup()
+            RootView()
+//            SplitNavigationView()
+//                .inAppPurchasesSetup()
         }
         .environment(navigationModel)
         .modelContainer(container)

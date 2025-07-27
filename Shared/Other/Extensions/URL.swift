@@ -8,7 +8,7 @@
 import Foundation
 
 // Source Code from: https://github.com/amyspark/xattr
-extension URL: Log {
+extension URL {
 
     private static let itemUserTagsName = "com.apple.metadata:_kMDItemUserTags"
 

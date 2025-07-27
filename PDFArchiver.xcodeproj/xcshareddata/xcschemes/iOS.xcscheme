@@ -120,7 +120,7 @@
          </CommandLineArgument>
       </CommandLineArguments>
       <StoreKitConfigurationFileReference
-         identifier = "../../Shared/Resources/PDFArchiverIAP.storekit">
+         identifier = "../Shared/Resources/PDFArchiverIAP.storekit">
       </StoreKitConfigurationFileReference>
    </LaunchAction>
    <ProfileAction

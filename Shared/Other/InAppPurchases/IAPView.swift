@@ -27,7 +27,7 @@ struct IAPView: View {
                     .padding()
                     .overlay(
                         RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.paDarkRed, lineWidth: 2)
+                            .stroke(Color(.paDarkRed), lineWidth: 2)
                     )
 
                 VStack(alignment: .leading, spacing: 16) {
@@ -97,7 +97,7 @@ struct IAPView: View {
                         .padding(4)
                         .font(.footnote)
                         .foregroundColor(.paWhite)
-                        .background(Color.paDarkRed)
+                        .background(Color(.paDarkRed))
                         .cornerRadius(8)
                         .transition(.scale)
                         .offset(x: -16, y: -12)

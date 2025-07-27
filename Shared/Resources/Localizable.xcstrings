@@ -204,6 +204,7 @@
       }
     },
     "All documents are tagged. 🎉" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -214,6 +215,7 @@
       }
     },
     "Amount" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -580,6 +582,7 @@
       }
     },
     "Documents per year" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1145,6 +1148,7 @@
       }
     },
     "Period" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1525,9 +1529,6 @@
           }
         }
       }
-    },
-    "Tag" : {
-      "shouldTranslate" : false
     },
     "Tag PDFs" : {
       "localizations" : {

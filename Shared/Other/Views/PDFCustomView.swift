@@ -26,7 +26,7 @@ struct PDFCustomView: NSViewRepresentable {
     func makeNSView(context: Context) -> PDFView {
         let view = PDFView()
         view.interpolationQuality = .low
-        view.backgroundColor = .init(Color.paPDFBackground)
+        view.backgroundColor = .init(Color(.paPDFBackground))
         return view
     }
 
@@ -62,7 +62,7 @@ struct PDFCustomView: UIViewRepresentable {
     func makeUIView(context: Context) -> PDFView {
         let view = PDFView()
         view.interpolationQuality = .low
-        view.backgroundColor = .init(Color.paPDFBackground)
+        view.backgroundColor = .init(Color(.paPDFBackground))
         return view
     }
 

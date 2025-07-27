@@ -208,7 +208,7 @@ extension DocumentInformation {
 
             // analyse document content and fill suggestions
             let parserOutput = Document.parseFilename(url.lastPathComponent)
-            var tagNames = Set(parserOutput.tagNames ?? [])
+            let tagNames = Set(parserOutput.tagNames ?? [])
 
             var foundDate = parserOutput.date
             let foundSpecification = parserOutput.specification
@@ -251,7 +251,7 @@ extension DocumentInformation {
             }
 
             // add tags from Finder tags
-            tagNames.formUnion(url.getFileTags())
+//            tagNames.formUnion(url.getFileTags())
 
             date = foundDate ?? Date()
             tags = tagNames

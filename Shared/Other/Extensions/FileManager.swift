@@ -6,8 +6,13 @@
 //
 
 import Foundation
+import OSLog
 
 extension FileManager: Log {
+    var log: Logger {
+        Logger(subsystem: "tmp", category: String(describing: self))
+    }
+
     func fileExists(at url: URL) -> Bool {
         fileExists(atPath: url.path)
     }

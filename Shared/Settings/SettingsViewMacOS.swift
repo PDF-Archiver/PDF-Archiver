@@ -132,7 +132,7 @@ struct SettingsViewMacOS: View {
             }
             .padding(6)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color.paSecondaryBackground)
+            .background(Color(.paSecondaryBackground))
             .cornerRadius(4)
             if viewModel.observedFolderURL != nil {
                 Button(action: viewModel.clearObservedFolder) {

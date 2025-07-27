@@ -195,7 +195,7 @@ final class SettingsViewModel: ObservableObject, Log {
             var processedDocumentsCount = 0
             for taggedDocument in taggedDocuments {
                 let sortedTags = Array(taggedDocument.tags).sorted()
-                taggedDocument.url.setFileTags(sortedTags)
+//                taggedDocument.url.setFileTags(sortedTags)
                 processedDocumentsCount += 1
 
                 let tmp = Double(processedDocumentsCount) / totalDocumentsCount
@@ -232,16 +232,20 @@ final class SettingsViewModel: ObservableObject, Log {
         openPanel.allowsMultipleSelection = false
         openPanel.canCreateDirectories = true
         openPanel.begin { response in
-            guard response == .OK,
-                  let url = openPanel.url else { return }
-            self.observedFolderURL = url
-            UserDefaults.observedFolderURL = url
-            self.queue.async {
-                Task {
-                    do {
-                        try await ArchiveStore.shared.reloadArchiveDocuments()
-                    } catch {
-                        NotificationCenter.default.postAlert(error)
+            Task {
+                await MainActor.run {
+                    guard response == .OK,
+                          let url = openPanel.url else { return }
+                    self.observedFolderURL = url
+                    UserDefaults.observedFolderURL = url
+                    self.queue.async {
+                        Task {
+                            do {
+                                try await ArchiveStore.shared.reloadArchiveDocuments()
+                            } catch {
+                                NotificationCenter.default.postAlert(error)
+                            }
+                        }
                     }
                 }
             }
