@@ -5,10 +5,12 @@
 //  Created by Julian Kahnert on 24.11.24.
 //
 
+import IntentLib
 import OSLog
 import SwiftData
 import SwiftUI
 import TipKit
+import WidgetKit
 
 /// A navigation model used to persist and restore the navigation state.
 @Observable
@@ -25,13 +27,9 @@ final class NavigationModel {
     }
 
     var isScanPresented = false
-
     var isPreferencesPresented = false
-
     var selectedDocument: Document?
-
     var lastSavedDocumentId: Int?
-
     var premiumStatus: IAP.Status
 
     var isSubscribedOrLoading: Binding<Bool> {
@@ -39,7 +37,7 @@ final class NavigationModel {
             self.premiumStatus == .active || self.premiumStatus == .loading
         }, set: { isSubscribed in
             guard !isSubscribed else { return }
-            // this will be triggered if a dismiss happend
+            // Triggered if a dismiss happened
             self.mode = .archive
             self.selectedDocument = nil
         })
@@ -59,6 +57,45 @@ final class NavigationModel {
         mode = UserDefaults.isTaggingMode ? .tagging : .archive
         premiumStatus = .loading
         try? Tips.configure()
+
+        listenToDocumentChanges()
+    }
+
+    /// Starts listening for document changes and updates the widget when changes occur.
+    private func listenToDocumentChanges() {
+        Task.detached(priority: .background) {
+            await Self.updateWidget()
+            for await _ in NotificationCenter.default.notifications(named: .documentUpdate) {
+                await Self.updateWidget()
+            }
+        }
+    }
+
+    /// Updates the widget data.
+    private static func updateWidget() {
+        defer {
+            WidgetCenter.shared.reloadAllTimelines()
+        }
+
+        let context = ModelContext(container)
+        guard let documents = try? context.fetch(FetchDescriptor<Document>()) else {
+            Logger.navigationModel.error("Failed to fetch documents for widget update")
+            assertionFailure()
+            return
+        }
+
+        // Stats widget
+        var statistics: [Int: Int] = [:]
+        for document in documents {
+            let year = Calendar.current.component(.year, from: document.date)
+            statistics[year, default: 0] += 1
+        }
+
+        SharedDefaults.set(statistics: statistics)
+
+        // Untagged documents widget
+        let count = documents.filter(\.isTagged.flipped).count
+        SharedDefaults.set(untaggedDocumentsCount: count)
     }
 
     func switchTaggingMode(in modelContext: ModelContext) {
@@ -73,10 +110,15 @@ final class NavigationModel {
         }
     }
 
+    func openTaggingMode(in modelContext: ModelContext) {
+        mode = .tagging
+        selectNewUntaggedDocument(in: modelContext)
+    }
+
     func saveDocument(_ oldUrl: URL, to filename: String, modelContext: ModelContext) {
         guard let selectedDocument,
               selectedDocument.url == oldUrl else {
-            assertionFailure("The selected document is not the same as the old url - the button should be disabled if no selectedDocument was found")
+            assertionFailure("The selected document is not the same as the old URL - the button should be disabled if no selectedDocument was found")
             return
         }
 
@@ -90,7 +132,7 @@ final class NavigationModel {
                     lastSavedDocumentId = nil
                 }
 
-                // remove the old document from DB
+                // Remove the old document from DB
                 modelContext.delete(selectedDocument)
                 try modelContext.save()
                 self.selectedDocument = nil
@@ -137,11 +179,11 @@ final class NavigationModel {
     }
 
     func deleteDocument(url: URL, modelContext: ModelContext) {
-        Logger.navigationModel.debug("Deleting all datapoints, meters and tariffs")
+        Logger.navigationModel.debug("Deleting all data points, meters, and tariffs")
         do {
             try FileManager.default.trashItem(at: url, resultingItemURL: nil)
 
-            // unselect current document
+            // Unselect the current document
             self.selectedDocument = nil
 
             selectNewUntaggedDocument(in: modelContext)
@@ -159,7 +201,12 @@ final class NavigationModel {
         #endif
     }
 
-    func showScan() {
+    func showScan(share: Bool = false) {
+        #if !os(macOS)
+        shareNextDocument = share
+        lastProcessedDocumentUrl = nil
+        #endif
+
         isScanPresented = true
     }
 

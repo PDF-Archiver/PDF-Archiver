@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 25.11.24.
 //
 
+import IntentLib
 import OSLog
 import SwiftUI
 import TipKit
@@ -46,6 +47,21 @@ struct SplitNavigationView: View {
             }
             .modifier(ArchiveStoreLoading())
             .frame(minWidth: 300)
+            .onOpenURL { url in
+                switch url {
+                case DeepLink.scan.url:
+                    navigationModel.showScan()
+
+                case DeepLink.scanAndShare.url:
+                    navigationModel.showScan(share: true)
+
+                case DeepLink.tag.url:
+                    navigationModel.openTaggingMode(in: modelContext)
+
+                default:
+                    break
+                }
+            }
             .toolbar {
                 ToolbarItem(placement: .automatic) {
                     Button {
@@ -109,9 +125,7 @@ struct SplitNavigationView: View {
                 #if os(macOS)
                 dropHandler.startImport()
                 #else
-                navigationModel.shareNextDocument = isLongPress
-                navigationModel.lastProcessedDocumentUrl = nil
-                navigationModel.showScan()
+                navigationModel.showScan(share: isLongPress)
                 #endif
             }
             .padding(.bottom, 16)
@@ -121,9 +135,7 @@ struct SplitNavigationView: View {
                 #if os(macOS)
                 dropHandler.startImport()
                 #else
-                navigationModel.shareNextDocument = tipAction.id == "scanAndShare"
-                navigationModel.lastProcessedDocumentUrl = nil
-                navigationModel.showScan()
+                navigationModel.showScan(share: tipAction.id == "scanAndShare")
                 #endif
             }
             .tipImageSize(.init(width: 24, height: 24))

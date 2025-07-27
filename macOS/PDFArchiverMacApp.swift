@@ -14,11 +14,14 @@ struct PDFArchiverMacApp: App, Log {
     @StateObject private var moreViewModel = SettingsViewModel()
     private var navigationModel: NavigationModel = .shared
 
+    init() {
+        initializePdfArchiver()
+    }
+
     var body: some Scene {
         WindowGroup {
             SplitNavigationView()
                 .inAppPurchasesSetup()
-                .task(initializePdfArchiver)
         }
         .environment(navigationModel)
         .modelContainer(container)

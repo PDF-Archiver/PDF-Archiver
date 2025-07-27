@@ -203,6 +203,26 @@
         }
       }
     },
+    "All documents are tagged. 🎉" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Dokumente sind archiviert. 🎉"
+          }
+        }
+      }
+    },
+    "Amount" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anzahl"
+          }
+        }
+      }
+    },
     "An error occurred 😳" : {
       "localizations" : {
         "de" : {
@@ -259,7 +279,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Herzlichen Glückwunsch! Alle Dokumente sind getaggt. 🎉"
+            "value" : "Herzlichen Glückwunsch! Alle Dokumente sind archiviert. 🎉"
           }
         }
       }
@@ -559,6 +579,16 @@
         }
       }
     },
+    "Documents per year" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dokumente pro Jahr"
+          }
+        }
+      }
+    },
     "Done" : {
       "localizations" : {
         "de" : {
@@ -631,6 +661,16 @@
     },
     "Finder Tag Update" : {
       "shouldTranslate" : false
+    },
+    "First year in statistics" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erste Jahr in den Statistiken"
+          }
+        }
+      }
     },
     "Folder Provider Error" : {
       "localizations" : {
@@ -1025,6 +1065,16 @@
         }
       }
     },
+    "Number of PDFs per year in your archive." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anzahl der PDFs pro Jahr in deinem Archiv."
+          }
+        }
+      }
+    },
     "Observed Folder" : {
       "localizations" : {
         "de" : {
@@ -1080,6 +1130,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "PDF Qualität"
+          }
+        }
+      }
+    },
+    "PDF Statistics" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PDF Statistiken"
+          }
+        }
+      }
+    },
+    "Period" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeitraum"
           }
         }
       }
@@ -1250,32 +1320,12 @@
         }
       }
     },
-    "Scan & share document and add it to the archive." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dokument scannen & teilen und zum Archiv hinzufügen."
-          }
-        }
-      }
-    },
     "Scan Document" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Scan Dokument"
-          }
-        }
-      }
-    },
-    "Scan document and add it to the archive." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scanne das Dokument und fügen Sie es dem Archiv hinzu."
           }
         }
       }
@@ -1312,6 +1362,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Textanalyse"
+          }
+        }
+      }
+    },
+    "See how many documents are currently untagged or scan a new document." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siehe, wie viele Dokumente derzeit nicht gekennzeichnet sind oder scanne ein neues Dokument."
           }
         }
       }
@@ -1426,6 +1486,16 @@
         }
       }
     },
+    "Statistics widget of your documents." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Statistik-Widget für deine Dokumente."
+          }
+        }
+      }
+    },
     "Storage" : {
       "localizations" : {
         "de" : {
@@ -1455,6 +1525,9 @@
           }
         }
       }
+    },
+    "Tag" : {
+      "shouldTranslate" : false
     },
     "Tag PDFs" : {
       "localizations" : {
@@ -1668,6 +1741,16 @@
     },
     "Version %@" : {
       "shouldTranslate" : false
+    },
+    "Widget Configuration" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widget Konfiguration"
+          }
+        }
+      }
     },
     "You get a 2-week free trail before all subscriptions." : {
       "localizations" : {

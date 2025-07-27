@@ -18,13 +18,14 @@ struct PDFArchiverIOSApp: App, Log {
         let model = NavigationModel.shared
         navigationModel = model
         AppDependencyManager.shared.add(dependency: model)
+
+        initializePdfArchiver()
     }
 
     var body: some Scene {
         WindowGroup {
             SplitNavigationView()
                 .inAppPurchasesSetup()
-                .task(initializePdfArchiver)
         }
         .environment(navigationModel)
         .modelContainer(container)
