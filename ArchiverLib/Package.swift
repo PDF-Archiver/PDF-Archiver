@@ -47,6 +47,10 @@ let package = Package(
         .testTarget(
             name: "ArchiverFeaturesTests",
             dependencies: ["ArchiverFeatures"]
+        ),
+        .testTarget(
+            name: "ArchiverStoreTests",
+            dependencies: ["ArchiverStore"]
         )
     ]
 )

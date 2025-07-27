@@ -6,28 +6,29 @@
 //
 // swiftlint:disable trailing_closure
 
+@testable import ArchiverStore
 import Foundation
 import PDFKit
-import XCTest
+import Testing
 
-final class PathManagerTests: XCTestCase {
-    static let tempFolder = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+@MainActor
+final class PathManagerTests {
+    nonisolated static let tempFolder = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
+    init() throws {
         try FileManager.default.createDirectory(at: Self.tempFolder, withIntermediateDirectories: true, attributes: nil)
     }
 
-    override func tearDownWithError() throws {
-        try super.tearDownWithError()
-        try FileManager.default.removeItem(at: Self.tempFolder)
+    deinit {
+        try! FileManager.default.removeItem(at: Self.tempFolder)
     }
 
     #if os(macOS)
+    @Test
     func testArchiveChangeMacOS() throws {
         let currentArchiveFolder = Self.tempFolder.appendingPathComponent("CurrentArchive")
-        XCTAssertNoThrow(try FileManager.default.createDirectory(at: currentArchiveFolder, withIntermediateDirectories: true, attributes: nil))
-        UserDefaults.appGroup.archivePathType = .local(currentArchiveFolder)
+        try FileManager.default.createDirectory(at: currentArchiveFolder, withIntermediateDirectories: true, attributes: nil)
+        UserDefaults.archivePathType = .local(currentArchiveFolder)
 
         let archiveUrl = try PathManager.shared.getArchiveUrl()
 
@@ -48,17 +49,18 @@ final class PathManagerTests: XCTestCase {
         try PathManager.shared.setArchiveUrl(with: type)
 
         let urls = try FileManager.default.contentsOfDirectory(at: newArchiveUrl, includingPropertiesForKeys: nil, options: [])
-        XCTAssert(urls.contains(where: { $0.lastPathComponent == "untagged" }))
-        XCTAssert(urls.contains(where: { $0.lastPathComponent == "2020" }))
-        XCTAssert(urls.contains(where: { $0.lastPathComponent == "2019" }))
-        XCTAssert(urls.contains(where: { $0.lastPathComponent == "2018" }))
+        #expect(urls.contains(where: { $0.lastPathComponent == "untagged" }))
+        #expect(urls.contains(where: { $0.lastPathComponent == "2020" }))
+        #expect(urls.contains(where: { $0.lastPathComponent == "2019" }))
+        #expect(urls.contains(where: { $0.lastPathComponent == "2018" }))
 
-        XCTAssertFalse(urls.contains(where: { $0.lastPathComponent == "inbox" }))
-        XCTAssertFalse(urls.contains(where: { $0.lastPathComponent == "test" }))
+        #expect(false == urls.contains(where: { $0.lastPathComponent == "inbox" }))
+        #expect(false == urls.contains(where: { $0.lastPathComponent == "test" }))
     }
     #endif
 
     #if !os(macOS)
+    @Test
     func testPDFInput() throws {
         UserDefaults.appGroup.archivePathType = .appContainer
 

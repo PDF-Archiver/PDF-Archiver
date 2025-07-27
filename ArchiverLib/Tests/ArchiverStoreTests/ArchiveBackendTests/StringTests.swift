@@ -5,10 +5,13 @@
 //  Created by Julian Kahnert on 29.11.20.
 //
 
-import XCTest
+import Shared
+import Testing
 
-final class StringExtensionTests: XCTestCase {
-
+@MainActor
+struct StringExtensionTests {
+    
+    @Test
     func testSlugify() {
 
         // setup
@@ -34,10 +37,11 @@ final class StringExtensionTests: XCTestCase {
             let newSlugifiedString = raw.slugified()
 
             // assert
-            XCTAssertEqual(newSlugifiedString, slugified)
+            #expect(newSlugifiedString == slugified)
         }
     }
 
+    @Test
     func testCapitalizingFirstLetter() {
 
         // setup
@@ -47,9 +51,10 @@ final class StringExtensionTests: XCTestCase {
         let output = testString.capitalized
 
         // assert
-        XCTAssertEqual(output, "Test")
+        #expect(output == "Test")
     }
 
+    @Test
     func testCapitalizingFirstLetter2() {
 
         // setup
@@ -59,6 +64,6 @@ final class StringExtensionTests: XCTestCase {
         let output = testString.capitalized
 
         // assert
-        XCTAssertEqual(output, "This Is Another Test")
+        #expect(output == "This Is Another Test")
     }
 }
