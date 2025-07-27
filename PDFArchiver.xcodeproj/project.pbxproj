@@ -12,7 +12,6 @@
 		3416B23D24A9282800D5F4E0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3416B1AE24A9282800D5F4E0 /* Assets.xcassets */; };
 		3416B24024A9282800D5F4E0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3416B1B124A9282800D5F4E0 /* LaunchScreen.storyboard */; };
 		345A497E24AFB0CE00EC4DC2 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3416B1AD24A9282700D5F4E0 /* Settings.bundle */; };
-		3489D73024A3C53E0035E64F /* TestsIOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3489D72F24A3C53E0035E64F /* TestsIOS.swift */; };
 		3489D73B24A3C53E0035E64F /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3489D73A24A3C53E0035E64F /* Tests_macOS.swift */; };
 		34A23FCF2519386200EBE1D5 /* Imprint.md in Resources */ = {isa = PBXBuildFile; fileRef = 34B254602512774400EC5DD9 /* Imprint.md */; };
 		34A23FD02519386200EBE1D5 /* Privacy.md in Resources */ = {isa = PBXBuildFile; fileRef = 34B2546B251277A700EC5DD9 /* Privacy.md */; };
@@ -22,7 +21,6 @@
 		34A5CF8224A93A3C002409EF /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34A5CF8124A93A3C002409EF /* StoreKit.framework */; };
 		34A6576125A8DCCA0040E5A4 /* example-bill.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 34A6576025A8DCCA0040E5A4 /* example-bill.pdf */; };
 		34A6576225A8DCCA0040E5A4 /* example-bill.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 34A6576025A8DCCA0040E5A4 /* example-bill.pdf */; };
-		34A6576325A8DCCA0040E5A4 /* example-bill.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 34A6576025A8DCCA0040E5A4 /* example-bill.pdf */; };
 		34A6576425A8DCCA0040E5A4 /* example-bill.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 34A6576025A8DCCA0040E5A4 /* example-bill.pdf */; };
 		34A6576525A8DCCA0040E5A4 /* example-bill.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 34A6576025A8DCCA0040E5A4 /* example-bill.pdf */; };
 		34B1BAB325A8EB440014FF77 /* UITests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B1BAB225A8EB440014FF77 /* UITests_iOS.swift */; };
@@ -232,20 +230,12 @@
 		A3F4EA232C067AA2003E8500 /* DropButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F4EA212C067AA2003E8500 /* DropButton.swift */; };
 		A3FE005C2D3109F9005D4BE1 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = A3FE005B2D3109F9005D4BE1 /* Localizable.xcstrings */; };
 		A3FE005D2D3109F9005D4BE1 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = A3FE005B2D3109F9005D4BE1 /* Localizable.xcstrings */; };
-		A3FE005E2D3109F9005D4BE1 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = A3FE005B2D3109F9005D4BE1 /* Localizable.xcstrings */; };
 		A3FE005F2D3109F9005D4BE1 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = A3FE005B2D3109F9005D4BE1 /* Localizable.xcstrings */; };
 		A3FE00602D3109F9005D4BE1 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = A3FE005B2D3109F9005D4BE1 /* Localizable.xcstrings */; };
 		A3FE00612D3109F9005D4BE1 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = A3FE005B2D3109F9005D4BE1 /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		3489D72C24A3C53E0035E64F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 3489D70F24A3C53D0035E64F /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 3489D71A24A3C53E0035E64F;
-			remoteInfo = iOS;
-		};
 		3489D73724A3C53E0035E64F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 3489D70F24A3C53D0035E64F /* Project object */;
@@ -341,9 +331,6 @@
 		3489D72324A3C53E0035E64F /* PDFArchiver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PDFArchiver.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3489D72524A3C53E0035E64F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3489D72624A3C53E0035E64F /* macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = macOS.entitlements; sourceTree = "<group>"; };
-		3489D72B24A3C53E0035E64F /* Tests iOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests iOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		3489D72F24A3C53E0035E64F /* TestsIOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestsIOS.swift; sourceTree = "<group>"; };
-		3489D73124A3C53E0035E64F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3489D73624A3C53E0035E64F /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3489D73A24A3C53E0035E64F /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		3489D73C24A3C53E0035E64F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -528,13 +515,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		3489D72824A3C53E0035E64F /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		3489D73324A3C53E0035E64F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -592,7 +572,6 @@
 				3489D71324A3C53D0035E64F /* Shared */,
 				3489D71D24A3C53E0035E64F /* iOS */,
 				3489D72424A3C53E0035E64F /* macOS */,
-				3489D72E24A3C53E0035E64F /* Tests iOS */,
 				3489D73924A3C53E0035E64F /* Tests macOS */,
 				34A53F9824AA656B008A3377 /* ShareExtension */,
 				34B1BAB125A8EB440014FF77 /* UITests iOS */,
@@ -624,7 +603,6 @@
 			children = (
 				3489D71B24A3C53E0035E64F /* PDFArchiver.app */,
 				3489D72324A3C53E0035E64F /* PDFArchiver.app */,
-				3489D72B24A3C53E0035E64F /* Tests iOS.xctest */,
 				3489D73624A3C53E0035E64F /* Tests macOS.xctest */,
 				34A53F9724AA656B008A3377 /* ShareExtension.appex */,
 				34B1BAB025A8EB440014FF77 /* UITests iOS.xctest */,
@@ -651,15 +629,6 @@
 				A3B5D9052BB36E9A002B9FF1 /* PDFArchiverMacApp.swift */,
 			);
 			path = macOS;
-			sourceTree = "<group>";
-		};
-		3489D72E24A3C53E0035E64F /* Tests iOS */ = {
-			isa = PBXGroup;
-			children = (
-				3489D72F24A3C53E0035E64F /* TestsIOS.swift */,
-				3489D73124A3C53E0035E64F /* Info.plist */,
-			);
-			path = "Tests iOS";
 			sourceTree = "<group>";
 		};
 		3489D73924A3C53E0035E64F /* Tests macOS */ = {
@@ -1121,24 +1090,6 @@
 			productReference = 3489D72324A3C53E0035E64F /* PDFArchiver.app */;
 			productType = "com.apple.product-type.application";
 		};
-		3489D72A24A3C53E0035E64F /* Tests iOS */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 3489D74B24A3C53E0035E64F /* Build configuration list for PBXNativeTarget "Tests iOS" */;
-			buildPhases = (
-				3489D72724A3C53E0035E64F /* Sources */,
-				3489D72824A3C53E0035E64F /* Frameworks */,
-				3489D72924A3C53E0035E64F /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				3489D72D24A3C53E0035E64F /* PBXTargetDependency */,
-			);
-			name = "Tests iOS";
-			productName = "Tests iOS";
-			productReference = 3489D72B24A3C53E0035E64F /* Tests iOS.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 		3489D73524A3C53E0035E64F /* Tests macOS */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3489D74E24A3C53E0035E64F /* Build configuration list for PBXNativeTarget "Tests macOS" */;
@@ -1234,10 +1185,6 @@
 					3489D72224A3C53E0035E64F = {
 						CreatedOnToolsVersion = 12.0;
 					};
-					3489D72A24A3C53E0035E64F = {
-						CreatedOnToolsVersion = 12.0;
-						TestTargetID = 3489D71A24A3C53E0035E64F;
-					};
 					3489D73524A3C53E0035E64F = {
 						CreatedOnToolsVersion = 12.0;
 						TestTargetID = 3489D72224A3C53E0035E64F;
@@ -1277,7 +1224,6 @@
 			targets = (
 				3489D71A24A3C53E0035E64F /* iOS */,
 				3489D72224A3C53E0035E64F /* macOS */,
-				3489D72A24A3C53E0035E64F /* Tests iOS */,
 				34B1BAAF25A8EB440014FF77 /* UITests iOS */,
 				3489D73524A3C53E0035E64F /* Tests macOS */,
 				34A53F9624AA656B008A3377 /* ShareExtension */,
@@ -1311,15 +1257,6 @@
 				34A6576225A8DCCA0040E5A4 /* example-bill.pdf in Resources */,
 				A3FE005D2D3109F9005D4BE1 /* Localizable.xcstrings in Resources */,
 				34031DC6250FCED500C46C88 /* Settings.bundle in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		3489D72924A3C53E0035E64F /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				34A6576325A8DCCA0040E5A4 /* example-bill.pdf in Resources */,
-				A3FE005E2D3109F9005D4BE1 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1581,14 +1518,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		3489D72724A3C53E0035E64F /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				3489D73024A3C53E0035E64F /* TestsIOS.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		3489D73224A3C53E0035E64F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1627,11 +1556,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		3489D72D24A3C53E0035E64F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 3489D71A24A3C53E0035E64F /* iOS */;
-			targetProxy = 3489D72C24A3C53E0035E64F /* PBXContainerItemProxy */;
-		};
 		3489D73824A3C53E0035E64F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 3489D72224A3C53E0035E64F /* macOS */;
@@ -1823,7 +1747,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.2.0;
+				MARKETING_VERSION = 4.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer;
 				PRODUCT_NAME = PDFArchiver;
 				SDKROOT = iphoneos;
@@ -1850,7 +1774,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.2.0;
+				MARKETING_VERSION = 4.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer;
 				PRODUCT_NAME = PDFArchiver;
 				SDKROOT = iphoneos;
@@ -1884,7 +1808,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 4.2.0;
+				MARKETING_VERSION = 4.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer;
 				PRODUCT_NAME = PDFArchiver;
 				REGISTER_APP_GROUPS = YES;
@@ -1915,53 +1839,12 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 4.2.0;
+				MARKETING_VERSION = 4.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer;
 				PRODUCT_NAME = PDFArchiver;
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = macosx;
 				SWIFT_VERSION = 6.0;
-			};
-			name = Release;
-		};
-		3489D74C24A3C53E0035E64F /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = "Tests iOS/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "de.juliankahnert.Tests-iOS";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = iOS;
-			};
-			name = Debug;
-		};
-		3489D74D24A3C53E0035E64F /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = "Tests iOS/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "de.juliankahnert.Tests-iOS";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = iOS;
-				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
@@ -2021,7 +1904,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 4.2.0;
+				MARKETING_VERSION = 4.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -2047,7 +1930,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 4.2.0;
+				MARKETING_VERSION = 4.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -2129,7 +2012,7 @@
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 4.2.0;
+				MARKETING_VERSION = 4.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer.Widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -2173,7 +2056,7 @@
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 4.2.0;
+				MARKETING_VERSION = 4.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer.Widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -2213,15 +2096,6 @@
 			buildConfigurations = (
 				3489D74924A3C53E0035E64F /* Debug */,
 				3489D74A24A3C53E0035E64F /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		3489D74B24A3C53E0035E64F /* Build configuration list for PBXNativeTarget "Tests iOS" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				3489D74C24A3C53E0035E64F /* Debug */,
-				3489D74D24A3C53E0035E64F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
