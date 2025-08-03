@@ -1,13 +1,13 @@
 {
-  "originHash" : "326c2aa2e52d926b5f30c335a545ffe8bc878518e18492cf4d088b390d41b2e6",
+  "originHash" : "788520725d5cc57ea7ea4848a0fbea3518445402579834a0525c31fdf6120283",
   "pins" : [
     {
       "identity" : "asyncextensions",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/sideeffect-io/AsyncExtensions",
       "state" : {
-        "revision" : "3442d3d046800f1974bda096faaf0ac510b21154",
-        "version" : "0.5.3"
+        "revision" : "735748a3ffb7ec880aa252e1c38ec0a65929cb87",
+        "version" : "0.5.4"
       }
     },
     {
@@ -87,8 +87,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-composable-architecture",
       "state" : {
-        "revision" : "6574de2396319a58e86e2178577268cb4aeccc30",
-        "version" : "1.20.2"
+        "revision" : "af0a2c74087aea4aa305eaac332d106fb0bb625e",
+        "version" : "1.21.0"
       }
     },
     {
