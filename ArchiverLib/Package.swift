@@ -14,7 +14,8 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.20.2"),
-        .package(url: "https://github.com/sideeffect-io/AsyncExtensions", from: "0.5.3")
+        .package(url: "https://github.com/sideeffect-io/AsyncExtensions", from: "0.5.3"),
+        .package(url: "https://github.com/apple/swift-async-algorithms", from: "1.0.0"),
     ],
     targets: [
         .target(name: "ArchiverFeatures",
@@ -30,7 +31,8 @@ let package = Package(
                     "ArchiverModels",
                     "Shared",
                     .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
-                    "AsyncExtensions"
+                    "AsyncExtensions",
+                    .product(name: "AsyncAlgorithms", package: "swift-async-algorithms")
                 ]),
         .target(name: "ArchiverIntents",
                 dependencies: [

@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 17.08.20.
 //
 
+import AsyncAlgorithms
 import Foundation
 
 final class LocalFolderProvider: FolderProvider {
@@ -38,7 +39,8 @@ final class LocalFolderProvider: FolderProvider {
             self.currentDocumentsStreamContinuation.yield(documents)
 
             // listen to changes in folder
-            for await _ in self.watcher.changedUrlStream {
+            // we debouce this because the `DirectoryDeepWatcher` currently triggers too often
+            for await _ in self.watcher.changedUrlStream.debounce(for: .milliseconds(500)) {
                 let documents = await self.createDocuments()
                 self.currentDocumentsStreamContinuation.yield(documents)
             }

@@ -36,7 +36,7 @@ extension Document {
                         downloadStatus: downloadStatus)
     }
 
-    func createFilename() -> String {
+    static func createFilename(date: Date, specification: String, tags: Set<String>) -> String {
         // get formatted date
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"

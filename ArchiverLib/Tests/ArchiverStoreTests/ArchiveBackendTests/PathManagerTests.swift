@@ -85,13 +85,13 @@ final class PathManagerTests {
             try PathManager.shared.setArchiveUrl(with: type)
 
             let urls = try FileManager.default.contentsOfDirectory(at: newArchiveUrl, includingPropertiesForKeys: nil, options: [])
-            XCTAssert(urls.contains(where: { $0.lastPathComponent == "untagged" }))
-            XCTAssert(urls.contains(where: { $0.lastPathComponent == "2020" }))
-            XCTAssert(urls.contains(where: { $0.lastPathComponent == "2019" }))
-            XCTAssert(urls.contains(where: { $0.lastPathComponent == "2018" }))
+            #expect(urls.contains(where: { $0.lastPathComponent == "untagged" }))
+            #expect(urls.contains(where: { $0.lastPathComponent == "2020" }))
+            #expect(urls.contains(where: { $0.lastPathComponent == "2019" }))
+            #expect(urls.contains(where: { $0.lastPathComponent == "2018" }))
 
-            XCTAssertFalse(urls.contains(where: { $0.lastPathComponent == "inbox" }))
-            XCTAssertFalse(urls.contains(where: { $0.lastPathComponent == "test" }))
+            #expect(!urls.contains(where: { $0.lastPathComponent == "inbox" }))
+            #expect(!urls.contains(where: { $0.lastPathComponent == "test" }))
         } catch {
             throw XCTSkip()
         }

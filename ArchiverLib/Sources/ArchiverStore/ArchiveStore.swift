@@ -131,7 +131,7 @@ public actor ArchiveStore: Log {
 
     public func save(_ document: Document) async throws {
         let url = document.url
-        let filename = document.createFilename()
+        let filename = Document.createFilename(date: document.date, specification: document.specification, tags: document.tags)
 
         let foldername = String(filename.prefix(4))
 

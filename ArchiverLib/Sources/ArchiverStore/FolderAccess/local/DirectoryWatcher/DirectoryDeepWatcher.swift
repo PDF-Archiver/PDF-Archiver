@@ -39,6 +39,15 @@ actor DirectoryDeepWatcher: Log {
         }
         sources.removeAll()
     }
+    
+    func stop() async {
+        for (_, source) in sources {
+            source.1.cancel()
+            await source.0.cancel()
+        }
+
+        sources.removeAll()
+    }
 
     private func initializeWatcher() async throws {
         Self.log.debug("Creating new directory watcher.", metadata: ["path": "\(baseUrl.path)"])
