@@ -35,10 +35,10 @@
 ////          |
 ////          - file22
 //
-//import Foundation
-//import XCTest
+// import Foundation
+// import XCTest
 //
-//final class FileManagerMoveTests: XCTestCase {
+// final class FileManagerMoveTests: XCTestCase {
 //
 //    var tempDir: URL?
 //    var files: [URL]?
@@ -102,4 +102,4 @@
 //        XCTAssert(fm.directoryExists(at: destination.appendingPathComponent("subfolder").appendingPathComponent("subsubfolder")))
 //        XCTAssert(fm.fileExists(at: destination.appendingPathComponent("subfolder").appendingPathComponent("subsubfolder").appendingPathComponent("file22")))
 //    }
-//}
+// }

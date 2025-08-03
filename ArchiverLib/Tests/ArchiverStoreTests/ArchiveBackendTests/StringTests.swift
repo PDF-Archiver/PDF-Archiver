@@ -10,7 +10,7 @@ import Testing
 
 @MainActor
 struct StringExtensionTests {
-    
+
     @Test
     func testSlugify() {
 

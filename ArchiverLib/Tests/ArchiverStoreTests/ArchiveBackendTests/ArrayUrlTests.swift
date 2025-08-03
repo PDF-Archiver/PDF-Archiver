@@ -6,8 +6,8 @@
 //
 // swiftlint:disable force_unwrapping
 
-import Foundation
 @testable import ArchiverStore
+import Foundation
 import Testing
 
 @MainActor

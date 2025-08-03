@@ -6,10 +6,10 @@
 //
 
 import ArchiverModels
-import Foundation
-import Testing
-import Shared
 @testable import ArchiverStore
+import Foundation
+import Shared
+import Testing
 
 @MainActor
 struct DocumentTests {
@@ -314,7 +314,7 @@ struct DocumentTests {
         #expect(specification?.localizedCapitalized == "Example-Filename")
         #expect(tagNames == ["test"])
     }
-    
+
     @Test
     func testDocumentDateParsingFormat1() throws {
 

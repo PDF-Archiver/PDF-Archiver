@@ -6,10 +6,10 @@
 ////
 //// swiftlint:disable identifier_name force_unwrapping
 //
-//import PDFKit
-//import XCTest
+// import PDFKit
+// import XCTest
 //
-//extension XCTestCase {
+// extension XCTestCase {
 //
 //    func assertEqualPDFDocuments(left: PDFDocument, right: PDFDocument) {
 //        guard left.pageCount == right.pageCount else {
@@ -41,9 +41,9 @@
 //            }
 //        }
 //    }
-//}
+// }
 //
-//private func diff(_ firstImageData: Data?, _ secondImageData: Data?) -> Data? {
+// private func diff(_ firstImageData: Data?, _ secondImageData: Data?) -> Data? {
 //    guard let firstImageData = firstImageData,
 //          let secondImageData = secondImageData,
 //          let first = CIImage(data: firstImageData),
@@ -68,4 +68,4 @@
 //    #else
 //    return UIImage(cgImage: cgImage).png
 //    #endif
-//}
+// }

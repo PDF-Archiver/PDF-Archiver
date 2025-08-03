@@ -44,7 +44,7 @@ struct Statistics {
                     statistics[year, default: 0] += 1
                 }
                 state.yearStats = statistics
-                
+
                 #warning("add user defaults saving here? run/trigger action from AppFeature")
 
                 state.isLoading = false

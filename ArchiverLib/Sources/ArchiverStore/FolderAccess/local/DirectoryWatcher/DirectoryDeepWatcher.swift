@@ -39,7 +39,7 @@ actor DirectoryDeepWatcher: Log {
         }
         sources.removeAll()
     }
-    
+
     func stop() async {
         for (_, source) in sources {
             source.1.cancel()

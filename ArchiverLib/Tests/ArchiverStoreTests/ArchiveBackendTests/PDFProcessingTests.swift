@@ -6,11 +6,11 @@
 ////
 //// swiftlint:disable force_unwrapping
 //
-//import Foundation
-//import PDFKit
-//import XCTest
+// import Foundation
+// import PDFKit
+// import XCTest
 //
-//final class PDFProcessingTests: XCTestCase {
+// final class PDFProcessingTests: XCTestCase {
 //    private static let tempFolder = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
 //    private static let referenceDocument = PDFDocument(url: Bundle.billPDFUrl)!
 //
@@ -172,4 +172,4 @@
 //        XCTAssert(content.contains("Nachlassbetrag"))
 //        XCTAssert(content.contains("Mitglied werden"))
 //    }
-//}
+// }

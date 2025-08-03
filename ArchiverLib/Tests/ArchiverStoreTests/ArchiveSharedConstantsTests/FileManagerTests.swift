@@ -4,9 +4,9 @@
 ////  Created by Julian Kahnert on 24.06.20.
 ////
 //
-//import XCTest
+// import XCTest
 //
-//final class FileManagerTests: XCTestCase {
+// final class FileManagerTests: XCTestCase {
 //
 //    var tempDir: URL?
 //
@@ -70,4 +70,4 @@
 //        }
 //        XCTAssertEqual(files.count, 1000)
 //    }
-//}
+// }
