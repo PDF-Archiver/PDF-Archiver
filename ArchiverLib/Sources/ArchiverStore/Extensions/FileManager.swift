@@ -8,7 +8,7 @@
 import Foundation
 import Shared
 
-extension FileManager: Log {
+extension FileManager {
     var iCloudDriveURL: URL? {
         log.debug("Getting iCloudDriveURL")
 
