@@ -37,6 +37,25 @@ public struct Document: Equatable, Identifiable, Hashable, Sendable, Codable {
 }
 
 extension Document {
+    public static func createFilename(date: Date, specification: String, tags: Set<String>) -> String {
+        // get formatted date
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let dateStr = dateFormatter.string(from: date)
+
+        // get description
+
+        // get tags
+        var tagStr = ""
+        for tag in tags.sorted() {
+            tagStr += "\(tag)_"
+        }
+        tagStr = String(tagStr.dropLast(1))
+
+        // create new file path
+        return "\(dateStr)--\(specification)__\(tagStr).pdf".lowercased()
+    }
+
     public static func mock(url: URL = URL(string: "https://example.com")!, date: Date = Date(), specification: String = "", tags: Set<String> = [], isTagged: Bool = true, sizeInBytes: Double = 1000, downloadStatus: Double = 0) -> Self {
         .init(
             id: url.hashValue,

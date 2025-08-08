@@ -41,6 +41,8 @@ let package = Package(
 //                swiftSettings: [.defaultIsolaion(MainActor.self)]),
         .target(name: "ArchiverModels",
                 dependencies: []),
+        .target(name: "ArchiverDocumentProcessing",
+                dependencies: ["Shared"]),
         .target(name: "Shared",
                 dependencies: [
                     "ArchiverModels",
@@ -53,6 +55,13 @@ let package = Package(
         .testTarget(
             name: "ArchiverStoreTests",
             dependencies: ["ArchiverStore"]
+        ),
+        .testTarget(
+            name: "ArchiverDocumentProcessingTests",
+            dependencies: ["ArchiverDocumentProcessing"],
+            resources: [
+                .process("assets")
+            ]
         )
     ]
 )

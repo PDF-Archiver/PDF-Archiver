@@ -1,8 +1,11 @@
 excluded: # paths to ignore during linting. Takes precedence over `included`.
   - ArchiverLib/.build/*
 
+disabled_rules: # rule identifiers to exclude from running
+  - line_length
+  - large_tuple
+
 opt_in_rules:
-  - attributes
   - closure_end_indentation
   - closure_spacing
   - convenience_type
@@ -39,3 +42,15 @@ nesting:
     error: 5
 
 function_parameter_count: 10
+
+identifier_name:
+  allowed_symbols: "_"
+  excluded: # excluded via string array
+    - t
+    - x
+    - y
+    - z
+    - id
+    - at
+    - of
+    - to

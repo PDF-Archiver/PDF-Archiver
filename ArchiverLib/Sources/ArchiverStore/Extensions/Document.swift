@@ -35,24 +35,4 @@ extension Document {
                         sizeInBytes: sizeInBytes,
                         downloadStatus: downloadStatus)
     }
-
-    static func createFilename(date: Date, specification: String, tags: Set<String>) -> String {
-        // get formatted date
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        let dateStr = dateFormatter.string(from: date)
-
-        // get description
-
-        // get tags
-        var tagStr = ""
-        for tag in tags.sorted() {
-            tagStr += "\(tag)_"
-        }
-        tagStr = String(tagStr.dropLast(1))
-
-        // create new file path
-        return "\(dateStr)--\(specification)__\(tagStr).pdf".lowercased()
-    }
-
 }
