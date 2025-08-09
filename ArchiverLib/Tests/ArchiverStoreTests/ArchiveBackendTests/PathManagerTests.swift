@@ -1,15 +1,15 @@
 //
 //  PDFProcessingTests.swift
-//  
+//
 //
 //  Created by Julian Kahnert on 01.12.20.
 //
-// swiftlint:disable trailing_closure
 
-@testable import ArchiverStore
 import Foundation
 import PDFKit
 import Testing
+
+@testable import ArchiverStore
 
 @MainActor
 final class PathManagerTests {

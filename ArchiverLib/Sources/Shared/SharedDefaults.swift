@@ -9,6 +9,7 @@ import Foundation
 
 @MainActor
 public enum SharedDefaults {
+    // swiftlint:disable:next force_unwrapping
     private static let sharedDefaults = UserDefaults(suiteName: "group.PDFArchiverShared")!
 
     public static func set(untaggedDocumentsCount count: Int) {
@@ -31,7 +32,9 @@ public enum SharedDefaults {
     }
 
     public static func getStatistics() -> StatisticsType {
-        guard let data = sharedDefaults.object(forKey: "widgetStatistics") as? Data else { return [:] }
+        guard let data = sharedDefaults.object(forKey: "widgetStatistics") as? Data else {
+            return [:]
+        }
         do {
             return try JSONDecoder().decode(StatisticsType.self, from: data)
         } catch {

@@ -12,6 +12,7 @@ public enum DeepLink: String, CaseIterable {
     case tag
 
     public var url: URL {
+        // swiftlint:disable:next force_unwrapping
         URL(string: "pdfarchiver:///widget/\(rawValue)")!
     }
 }

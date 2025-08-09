@@ -22,7 +22,8 @@ public enum Constants {
     public static let tempDocumentURL = URL.temporaryDirectory.appendingPathComponent("TempDocuments")
     #else
     public static let sharedContainerIdentifier = "group.PDFArchiverShared"
-    public static let appGroupContainerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: Self.sharedContainerIdentifier)!
+    // swiftlint:disable:next force_unwrapping
+    static let appGroupContainerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: Self.sharedContainerIdentifier)!
     public static let tempDocumentURL = appGroupContainerURL.appendingPathComponent("TempDocuments")
     #endif
 }

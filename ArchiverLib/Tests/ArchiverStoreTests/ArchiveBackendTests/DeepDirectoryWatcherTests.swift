@@ -1,6 +1,7 @@
-@testable import ArchiverStore
 import Foundation
 import Testing
+
+@testable import ArchiverStore
 
 /// Tests of the DeepDirectoryWatcher tests
 ///

@@ -1,14 +1,14 @@
 //
 //  ArrayUrlTests.swift
-//  
+//
 //
 //  Created by Julian Kahnert on 22.08.20.
 //
-// swiftlint:disable force_unwrapping
 
-@testable import ArchiverStore
 import Foundation
 import Testing
+
+@testable import ArchiverStore
 
 @MainActor
 struct ArrayURLTests {

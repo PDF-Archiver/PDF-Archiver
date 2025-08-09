@@ -84,4 +84,5 @@ public struct AfterFirstImportTip: Tip {
         #Rule(Self.documentImported) {
             $0.donations.count >= 1
         }
-    }}
+    }
+}

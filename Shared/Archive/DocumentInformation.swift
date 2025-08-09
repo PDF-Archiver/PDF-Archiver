@@ -216,7 +216,7 @@ extension DocumentInformation {
             if let pdfDocument = PDFDocument(url: url) {
                 // get the pdf content of first 3 pages
                 var text = ""
-                for index in 0 ..< min(pdfDocument.pageCount, 3) {
+                for index in 0..<min(pdfDocument.pageCount, 3) {
                     guard let page = pdfDocument.page(at: index),
                           let pageContent = page.string else { return }
 

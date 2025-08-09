@@ -6,10 +6,11 @@
 //
 
 import ArchiverModels
-@testable import ArchiverStore
 import Foundation
 import Shared
 import Testing
+
+@testable import ArchiverStore
 
 @MainActor
 struct DocumentTests {

@@ -1,20 +1,22 @@
 //
 //  PDFProcessingTests.swift
-//  
+//
 //
 //  Created by Julian Kahnert on 01.12.20.
 //
-// swiftlint:disable force_unwrapping
 
-@testable import ArchiverDocumentProcessing
 import Foundation
 import PDFKit
 import Testing
 
+@testable import ArchiverDocumentProcessing
+
 @StorageActor
 final class PDFProcessingTests {
 
-    nonisolated private static let tempFolder = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+    nonisolated private static let tempFolder = FileManager.default.temporaryDirectory
+        .appendingPathComponent(UUID().uuidString)
+    // swiftlint:disable:next force_unwrapping
     private static let referenceDocument = PDFDocument(url: Bundle.billPDFUrl)!
 
     init() throws {
@@ -26,8 +28,10 @@ final class PDFProcessingTests {
     }
 
     @Test
+    // swiftlint:disable:next function_body_length
     func testPDFInput() async throws {
-        let exampleUrl = Self.tempFolder.appendingPathComponent(UUID().uuidString).appendingPathExtension("pdf")
+        let exampleUrl = Self.tempFolder.appendingPathComponent(UUID().uuidString)
+            .appendingPathExtension("pdf")
         try FileManager.default.copyItem(at: Bundle.longTextPDFUrl, to: exampleUrl)
         let inputDocument = try #require(PDFDocument(url: exampleUrl))
         let inputDocumentString = try #require(inputDocument.string)
@@ -52,6 +56,7 @@ final class PDFProcessingTests {
 
     @Test
     func testPNGInput() async throws {
+    // swiftlint:disable:next function_body_length
         let image = try #require(PlatformImage(contentsOf: Bundle.billPNGUrl))
 
         var documentUrl: URL?
@@ -123,6 +128,7 @@ final class PDFProcessingTests {
 
     @Test
     func testJPGInput() async throws {
+    // swiftlint:disable:next function_body_length
         let image = try #require(PlatformImage(contentsOf: Bundle.billJPGGUrl))
 
         var documentUrl: URL?
@@ -193,6 +199,7 @@ final class PDFProcessingTests {
 
     @Test
     func testJPGMultiplePages() async throws {
+    // swiftlint:disable:next function_body_length
         let image = try #require(PlatformImage(contentsOf: Bundle.billJPGGUrl))
 
         var documentUrl: URL?

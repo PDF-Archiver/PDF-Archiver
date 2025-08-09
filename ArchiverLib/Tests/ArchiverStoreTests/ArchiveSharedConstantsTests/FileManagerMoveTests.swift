@@ -1,6 +1,6 @@
 ////
 ////  FileManagerTests.swift
-////  
+////
 ////
 ////  Created by Julian Kahnert on 07.01.21.
 ////
@@ -91,7 +91,7 @@
 //        let files2 = FileManager.default.getFilesRecursive(at: url)
 //        XCTAssertEqual(files2.count, 6)
 //
-//        // swiftlint:disable identifier_name
+//
 //        let fm = FileManager.default
 //        XCTAssert(fm.fileExists(at: destination.appendingPathComponent("file1")))
 //        XCTAssert(fm.fileExists(at: destination.appendingPathComponent("file3")))

@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct PremiumSectionView: View {
-    private static let manageSubscriptionUrl = URL(string: "https://apps.apple.com/account/subscriptions")!
+    // swiftlint:disable:next force_unwrapping
+    private static let manageSubscriptionUrl = URL(
+        string: "https://apps.apple.com/account/subscriptions")!
 
     @Environment(NavigationModel.self) var navigationModel
     @State private var showIapView: Bool = false

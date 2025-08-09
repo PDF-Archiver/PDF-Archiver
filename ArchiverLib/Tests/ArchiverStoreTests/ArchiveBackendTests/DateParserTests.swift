@@ -4,11 +4,11 @@
 //
 //  Created by Julian Kahnert on 30.11.18.
 //
-// swiftlint:disable function_body_length force_unwrapping
 
 import PDFKit
-@testable import Shared
 import Testing
+
+@testable import Shared
 
 @MainActor
 struct DateParserTests {

@@ -104,27 +104,27 @@ extension UserDefaults: Log {
         set {
             do {
                 switch newValue {
-                    case .local(let url):
-                        #if os(macOS)
-                        let bookmark = try url.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
+                case .local(let url):
+                    #if os(macOS)
+                    let bookmark = try url.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
+                    appGroup.set(bookmark, forKey: Names.archivePathType.rawValue)
+                    #else
+                    // Securely access the URL to save a bookmark
+                    guard url.startAccessingSecurityScopedResource() else {
+                        // Handle the failure here.
+                        return
+                    }
+                    // We have to stop accessing the resource no matter what
+                    defer { url.stopAccessingSecurityScopedResource() }
+                    do {
+                        // Make sure the bookmark is minimal!
+                        let bookmark = try url.bookmarkData(options: .minimalBookmark, includingResourceValuesForKeys: nil, relativeTo: nil)
                         appGroup.set(bookmark, forKey: Names.archivePathType.rawValue)
-                        #else
-                        // Securely access the URL to save a bookmark
-                        guard url.startAccessingSecurityScopedResource() else {
-                            // Handle the failure here.
-                            return
-                        }
-                        // We have to stop accessing the resource no matter what
-                        defer { url.stopAccessingSecurityScopedResource() }
-                        do {
-                            // Make sure the bookmark is minimal!
-                            let bookmark = try url.bookmarkData(options: .minimalBookmark, includingResourceValuesForKeys: nil, relativeTo: nil)
-                            appGroup.set(bookmark, forKey: Names.archivePathType.rawValue)
-                        } catch {
-                            Logger.settings.errorAndAssert("Bookmark error \(error)")
-                        }
-                        #endif
-                    default:
+                    } catch {
+                        Logger.settings.errorAndAssert("Bookmark error \(error)")
+                    }
+                    #endif
+                default:
                     try appGroup.setObject(newValue, forKey: .archivePathType)
                 }
             } catch {

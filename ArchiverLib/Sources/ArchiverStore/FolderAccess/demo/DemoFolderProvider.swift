@@ -1,10 +1,9 @@
 //
 //  DemoFileProvider.swift
-//  
+//
 //
 //  Created by Julian Kahnert on 08.01.21.
 //
-// swiftlint:disable force_unwrapping
 
 import Foundation
 import Shared
@@ -18,7 +17,8 @@ final class DemoFolderProvider: FolderProvider, Log {
 
     let baseUrl: URL
     let currentDocumentsStream: AsyncStream<[DocumentInformation]>
-    private let currentDocumentsStreamContinuation: AsyncStream<[DocumentInformation]>.Continuation
+    private let currentDocumentsStreamContinuation:
+        AsyncStream<[DocumentInformation]>.Continuation
 
     init(baseUrl: URL) throws {
         self.baseUrl = baseUrl
@@ -28,7 +28,7 @@ final class DemoFolderProvider: FolderProvider, Log {
         currentDocumentsStreamContinuation = continuation
 
         guard !Self.isInitialized,
-              baseUrl.lastPathComponent != "untagged" else { throw DemoFolderProviderError.alreadyInitialized }
+            baseUrl.lastPathComponent != "untagged" else { throw DemoFolderProviderError.alreadyInitialized }
         initialize()
         Self.isInitialized = true
     }
@@ -55,6 +55,7 @@ final class DemoFolderProvider: FolderProvider, Log {
     }
 
     private func initialize() {
+        // swiftlint:disable:next force_unwrapping
         let url = Bundle.main.url(forResource: "example-bill", withExtension: "pdf")!
         let destination = baseUrl.appendingPathComponent("untagged").appendingPathComponent("2021 01 08 - scan1.pdf")
         try? FileManager.default.copyItem(at: url, to: destination)
@@ -65,7 +66,8 @@ final class DemoFolderProvider: FolderProvider, Log {
             baseUrl.appendingPathComponent(NSLocalizedString("test_file3", comment: "")),
             destination
         ]
-        currentDocumentsStreamContinuation.yield(urls.map { DocumentInformation(url: $0, downloadStatus: 1, sizeInBytes: 1000) })
+        currentDocumentsStreamContinuation.yield(
+            urls.map { DocumentInformation(url: $0, downloadStatus: 1, sizeInBytes: 1000) })
     }
 }
 

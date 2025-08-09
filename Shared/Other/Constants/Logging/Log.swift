@@ -1,6 +1,6 @@
 //
 //  Log.swift
-//  
+//
 //
 //  Created by Julian Kahnert on 20.10.20.
 //
@@ -21,6 +21,7 @@ extension Log {
 }
 
 extension Logger {
+    // swiftlint:disable:next force_unwrapping
     fileprivate static let subsystem = Bundle.main.bundleIdentifier!
 
     #if DEBUG

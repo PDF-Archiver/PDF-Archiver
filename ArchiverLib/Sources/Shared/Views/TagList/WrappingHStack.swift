@@ -225,14 +225,14 @@ extension WrappingHStack {
     }
 }
 
-private extension CGSize {
-    static var infinity: Self {
+extension CGSize {
+    fileprivate static var infinity: Self {
         .init(width: CGFloat.infinity, height: CGFloat.infinity)
     }
 }
 
-private extension UnitPoint {
-    init(_ alignment: Alignment) {
+extension UnitPoint {
+    fileprivate init(_ alignment: Alignment) {
         switch alignment {
         case .leading:
             self = .leading
