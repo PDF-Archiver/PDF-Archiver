@@ -11,7 +11,7 @@ public typealias PlatformImage = UIImage
 #else
 import AppKit.NSImage
 public typealias PlatformImage = NSImage
-extension NSImage {
+public extension NSImage {
     var cgImage: CGImage? {
         cgImage(forProposedRect: nil, context: nil, hints: nil)
     }

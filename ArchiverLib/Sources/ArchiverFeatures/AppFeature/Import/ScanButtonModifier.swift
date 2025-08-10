@@ -29,6 +29,7 @@ struct ScanButtonModifier: ViewModifier {
 //                    navigationModel.showScan(share: isLongPress)
 //                    #endif
                 }
+                .padding(6)
                 .padding(.bottom, 16)
                 .padding(.trailing, 16)
                 .opacity(showButton ? 1 : 0)

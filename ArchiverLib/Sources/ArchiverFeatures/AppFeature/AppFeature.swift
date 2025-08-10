@@ -227,6 +227,7 @@ struct AppView: View {
 //            Tab(value: AppFeature.State.Tab.search, role: .search) {
             Tab("Archive", systemImage: "magnifyingglass", value: AppFeature.State.Tab.search) {
                 archiveList
+                    .modifier(ScanButtonModifier(showButton: store.archiveList.documentDetails == nil, currentTip: tips.currentTip))
             }
 
             Tab("Inbox", systemImage: "tray", value: AppFeature.State.Tab.inbox) {
@@ -267,7 +268,6 @@ struct AppView: View {
         .tabViewStyle(.sidebarAdaptable)
 //        #warning("TODO: test this")
 //        .modifier(AlertDataModelProvider())
-        .modifier(ScanButtonModifier(showButton: store.selectedTab == .search, currentTip: tips.currentTip))
         .toolbar {
             #warning("Not showing on iOS")
             ToolbarItem(placement: .destructiveAction) {

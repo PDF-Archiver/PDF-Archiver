@@ -75,7 +75,7 @@ struct DropButton: View {
             shouldWiggle += 1
         }
         .sensoryFeedback(.success, trigger: sensoryTrigger)
-        .scaleEffect(state == .targeted ? 1.5 : 1)
+        .scaleEffect(state == .targeted ? 1.1 : 1)
         .animation(.snappy, value: state)
     }
 }
