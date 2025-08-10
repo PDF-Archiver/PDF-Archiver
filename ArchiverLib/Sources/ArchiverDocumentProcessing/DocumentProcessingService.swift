@@ -27,11 +27,11 @@ public final class DocumentProcessingService {
     }
 
     /// Fetch all documents in folder and test if PDF processing operations should be added.
-    public func runObservation() async {
+    public func triggerObservation() async {
         await self.handleFolderContents(at: self.tempDocumentURL)
     }
 
-    func handle(_ images: [PlatformImage]) async {
+    public func handle(_ images: [PlatformImage]) async {
         guard let destinationFolder = await getDocumentDestination() else {
             Logger.documentProcessing.errorAndAssert("Failed to get document")
             return
@@ -50,7 +50,7 @@ public final class DocumentProcessingService {
         backgroundProcessing.queue(operation)
     }
 
-    func handle(_ pdfData: Data, url: URL?) async {
+    public func handle(_ pdfData: Data, url: URL?) async {
         guard let destinationFolder = await getDocumentDestination() else {
             Logger.documentProcessing.errorAndAssert("Failed to get document")
             return

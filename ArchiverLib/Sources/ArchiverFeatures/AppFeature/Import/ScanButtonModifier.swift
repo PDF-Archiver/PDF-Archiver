@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 09.08.25.
 //
 
+import Dependencies
 import OSLog
 import Shared
 import SwiftUI
@@ -14,6 +15,7 @@ struct ScanButtonModifier: ViewModifier {
     let showButton: Bool
     let currentTip: (any Tip)?
 
+    @Dependency(\.documentProcessor) var documentProcessor
     @Namespace var scanButtonNamespace
     @State private var dropHandler = PDFDropHandler()
     @State private var isScanPresented = false
@@ -22,24 +24,27 @@ struct ScanButtonModifier: ViewModifier {
         content
             .overlay(alignment: .bottomTrailing) {
                 DropButton(state: dropHandler.documentProcessingState) { _ in
+                    #if os(macOS)
                     #warning("TODO: add this")
-//                    #if os(macOS)
 //                    dropHandler.startImport()
-//                    #else
-//                    navigationModel.showScan(share: isLongPress)
-//                    #endif
+                    #else
+                    #warning("TODO: handle long press")
+                    isScanPresented = true
+                    #endif
                 }
                 .padding(6)
                 .padding(.bottom, 16)
                 .padding(.trailing, 16)
                 .opacity(showButton ? 1 : 0)
                 .popoverTip((showButton && (currentTip as? ScanShareTip) != nil) ? currentTip : nil) { _ in
+                    #if os(macOS)
                     #warning("TODO: add this")
-//                    #if os(macOS)
-//                    dropHandler.startImport()
-//                    #else
+                    //                    dropHandler.startImport()
+                    #else
+                    #warning("TODO: handle long press")
 //                    navigationModel.showScan(share: tipAction.id == "scanAndShare")
-//                    #endif
+                    isScanPresented = true
+                    #endif
                 }
                 .tipImageSize(.init(width: 24, height: 24))
                 .matchedTransitionSource(id: "scanButton", in: scanButtonNamespace)
@@ -48,12 +53,12 @@ struct ScanButtonModifier: ViewModifier {
             .sheet(isPresented: $isScanPresented) {
                 DocumentCameraView(
                     isShown: $isScanPresented,
-                    imageHandler: { _ in
-                        #warning("TODO: add this")
-//                        Task {
+                    imageHandler: { images in
+                        Task {
+                            #warning("TODO: add this as a separate dependency")
 //                            await FeedbackGenerator.notify(.success)
-//                            await DocumentProcessingService.shared.handle(images)
-//                        }
+                            await documentProcessor.handleImages(images)
+                        }
                     })
                     .edgesIgnoringSafeArea(.all)
                     .statusBar(hidden: true)

@@ -177,8 +177,8 @@ struct AppFeature {
                 return .run { send in
                     await withTaskGroup(of: Void.self) { group in
                         group.addTask(priority: .background) {
-                            // run the document processing service
-                            await documentProcessor.run()
+                            // check the temp folder at startup for new documents
+                            await documentProcessor.triggerFolderObservation()
                         }
                         group.addTask {
                             for await documents in await archiveStore.documentChanges() {

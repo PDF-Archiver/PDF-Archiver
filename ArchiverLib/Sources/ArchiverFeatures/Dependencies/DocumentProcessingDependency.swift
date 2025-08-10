@@ -14,33 +14,56 @@ import Shared
 
 @DependencyClient
 struct DocumentProcessingDependency {
-    var run: @Sendable () async -> Void
+    var triggerFolderObservation: @Sendable () async -> Void
+    var handleImages: @Sendable ([PlatformImage]) async -> Void
+    var handlePdf: @Sendable (_ pdfData: Data, _ documentURL: URL?) async -> Void
 }
 
 extension DocumentProcessingDependency: TestDependencyKey {
     static let previewValue = Self(
-        run: { }
+        triggerFolderObservation: { },
+        handleImages: { _ in },
+        handlePdf: { _, _ in },
     )
 
     static let testValue = Self()
 }
 
 extension DocumentProcessingDependency: DependencyKey {
-  static let liveValue = DocumentProcessingDependency(
-    run: {
-        let service = await DocumentProcessingService(tempDocumentURL: Constants.tempDocumentURL,
-                                                      documentDestination: {
+    @StorageActor
+    private static var _documentProcessingService: DocumentProcessingService?
+    
+    @StorageActor
+    private static func getDocumentProcessingService() async -> DocumentProcessingService {
+        if let service = _documentProcessingService {
+            return service
+        }
+
+        let service = DocumentProcessingService(tempDocumentURL: Constants.tempDocumentURL,
+                                                documentDestination: {
             try await PathManager.shared.getUntaggedUrl()
         })
+        _documentProcessingService = service
 
-        await service.runObservation()
+        return service
     }
-  )
+
+    static let liveValue = DocumentProcessingDependency(
+        triggerFolderObservation: {
+            await getDocumentProcessingService().triggerObservation()
+        },
+        handleImages: { images in
+            await getDocumentProcessingService().handle(images)
+        },
+        handlePdf: { pdfData, documentURL in
+            await getDocumentProcessingService().handle(pdfData, url: documentURL)
+        },
+    )
 }
 
 extension DependencyValues {
-  var documentProcessor: DocumentProcessingDependency {
-    get { self[DocumentProcessingDependency.self] }
-    set { self[DocumentProcessingDependency.self] = newValue }
-  }
+    var documentProcessor: DocumentProcessingDependency {
+        get { self[DocumentProcessingDependency.self] }
+        set { self[DocumentProcessingDependency.self] = newValue }
+    }
 }

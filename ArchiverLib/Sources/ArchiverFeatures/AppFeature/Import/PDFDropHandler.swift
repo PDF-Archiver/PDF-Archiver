@@ -5,15 +5,8 @@
 //  Created by Julian Kahnert on 06.06.24.
 //
 
-#if os(macOS)
-import AppKit.NSImage
-private typealias Image = NSImage
-#else
-import UIKit.UIImage
-private typealias Image = UIImage
-#endif
-
 import ArchiverDocumentProcessing
+import Dependencies
 import OSLog
 import PDFKit
 import Shared
@@ -23,6 +16,8 @@ import UniformTypeIdentifiers
 @Observable
 @MainActor
 final class PDFDropHandler: Log {
+    @ObservationIgnored @Dependency(\.documentProcessor) var documentProcessor
+
     private(set) var documentProcessingState: DropButton.ButtonState = .noDocument
     var isImporting = false
 
@@ -47,7 +42,7 @@ final class PDFDropHandler: Log {
         if let data = item as? Data {
             if let pdf = PDFDocument(data: data) {
                 handle(pdf: pdf)
-            } else if let image = Image(data: data) {
+            } else if let image = PlatformImage(data: data) {
                 handle(image: image)
             }
 
@@ -57,14 +52,14 @@ final class PDFDropHandler: Log {
                     handle(pdf: pdf)
                     return
                 } else if let data = try Data(contentsOf: url) as Data?,
-                          let image = Image(data: data) {
+                          let image = PlatformImage(data: data) {
                     handle(image: image)
                 } else {
                     Logger.pdfDropHandler.errorAndAssert("Could not handle url")
                 }
             }
 
-        } else if let image = item as? Image {
+        } else if let image = item as? PlatformImage {
             handle(image: image)
 
         } else if let pdfDocument = item as? PDFDocument {
@@ -79,8 +74,7 @@ final class PDFDropHandler: Log {
     private func handle(image: PlatformImage) {
         Logger.pdfDropHandler.info("Handle Image")
         Task {
-            #warning("TODO: add this")
-//            await DocumentProcessingService.shared.handle([image])
+            await documentProcessor.handleImages([image])
         }
     }
 
@@ -93,8 +87,7 @@ final class PDFDropHandler: Log {
                 return
             }
 
-            #warning("TODO: add this")
-//            await DocumentProcessingService.shared.handle(pdfData, url: pdf.documentURL)
+            await documentProcessor.handlePdf(pdfData, pdf.documentURL)
         }
     }
 
@@ -105,8 +98,7 @@ final class PDFDropHandler: Log {
         documentProcessingState = wasProcessing ? .finished : .noDocument
 
         guard wasProcessing else { return }
-        #warning("TODO: add this")
-//        await DocumentProcessingService.shared.triggerFolderObservation()
+        await documentProcessor.triggerFolderObservation()
 
         try? await Task.sleep(for: .seconds(2))
 
@@ -145,7 +137,7 @@ extension PDFDropHandler: DropDelegate {
                     guard let data else { continue }
                     if let pdf = PDFDocument(data: data) {
                         await handle(pdf: pdf)
-                    } else if let image = Image(data: data) {
+                    } else if let image = PlatformImage(data: data) {
                         await handle(image: image)
                     }
                 }
@@ -178,7 +170,7 @@ extension NSItemProvider {
             }
             return data
 
-        } else if let image = item as? Image {
+        } else if let image = item as? PlatformImage {
             return image.jpg(quality: 1)
 
         } else if let pdfDocument = item as? PDFDocument {
