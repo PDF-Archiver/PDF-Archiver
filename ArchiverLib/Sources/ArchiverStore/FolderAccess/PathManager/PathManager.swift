@@ -9,9 +9,9 @@ import Foundation
 import Shared
 
 @MainActor
-final class PathManager: Log {
+public final class PathManager: Log {
 
-    static let shared = PathManager()
+    public static let shared = PathManager()
 
     private(set) var archivePathType: ArchivePathType
     private let fileManager = FileManager.default
@@ -40,7 +40,7 @@ final class PathManager: Log {
         return archiveURL
     }
 
-    func getUntaggedUrl() throws -> URL {
+    public func getUntaggedUrl() throws -> URL {
         let untaggedURL = try getArchiveUrl().appendingPathComponent("untagged")
         try FileManager.default.createFolderIfNotExists(untaggedURL)
         return untaggedURL

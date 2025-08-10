@@ -12,6 +12,14 @@ public extension Color {
         Color(.paDarkRed)
     }
 
+    static var paLightRedAsset: Color {
+        Color(.paLightRed)
+    }
+
+    static var paPlaceholderGrayAsset: Color {
+        Color(.paPlaceholderGray)
+    }
+
     static var secondaryLabelAsset: Color {
         #if os(macOS)
         Color(.secondaryLabelColor)

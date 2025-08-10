@@ -28,6 +28,16 @@ public extension URL {
 #endif
     }
 
+    func securityScope<T>(closure: (URL) throws -> T) rethrows -> T {
+        let didAccessSecurityScope = startAccessingSecurityScopedResource()
+        defer {
+            if didAccessSecurityScope {
+                stopAccessingSecurityScopedResource()
+            }
+        }
+        return try closure(self)
+    }
+
     // MARK: - iOS finder tags
 
     private func getiOSFileTags() throws -> [String] {

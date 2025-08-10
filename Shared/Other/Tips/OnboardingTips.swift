@@ -13,7 +13,7 @@ import TipKit
 //    case archive
 // }
 
-public struct ScanShareTip: Tip {
+struct ScanShareTip: Tip {
     var title: Text {
         #if os(macOS)
         Text("Import Document")
@@ -46,7 +46,7 @@ public struct ScanShareTip: Tip {
     }
 }
 
-public struct UntaggedViewTip: Tip {
+struct UntaggedViewTip: Tip {
     var title: Text {
         Text("Tagging View")
     }
@@ -60,7 +60,7 @@ public struct UntaggedViewTip: Tip {
     }
 }
 
-public struct AfterFirstImportTip: Tip {
+struct AfterFirstImportTip: Tip {
     static let documentImported = Tips.Event(id: "documentImported")
 
     var title: Text {

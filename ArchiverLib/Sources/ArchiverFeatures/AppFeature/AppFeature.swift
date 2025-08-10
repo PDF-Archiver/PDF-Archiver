@@ -7,7 +7,9 @@
 
 import ArchiverModels
 import ComposableArchitecture
+import Shared
 import SwiftUI
+import TipKit
 
 @Reducer
 struct AppFeature {
@@ -44,8 +46,10 @@ struct AppFeature {
         case onTask
         case untaggedDocumentList(UntaggedDocumentList.Action)
         case statistics(Statistics.Action)
+        case handleDocumentCameraViewImages([PlatformImage])
     }
 
+    @Dependency(\.documentProcessor) var documentProcessor
     @Dependency(\.archiveStore) var archiveStore
 
     var body: some ReducerOf<Self> {
@@ -172,6 +176,10 @@ struct AppFeature {
             case .onTask:
                 return .run { send in
                     await withTaskGroup(of: Void.self) { group in
+                        group.addTask(priority: .background) {
+                            // run the document processing service
+                            await documentProcessor.run()
+                        }
                         group.addTask {
                             for await documents in await archiveStore.documentChanges() {
                                 await send(.documentsChanged(documents))
@@ -190,6 +198,13 @@ struct AppFeature {
 
             case .statistics:
                 return .none
+
+            case .handleDocumentCameraViewImages(let images):
+
+                #warning("TODO: add this")
+//                await FeedbackGenerator.notify(.success)
+//                await DocumentProcessingService.shared.handle(images)
+                return .none
             }
         }
     }
@@ -199,6 +214,12 @@ struct AppView: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Bindable var store: StoreOf<AppFeature>
     @State var searchText = ""
+    #warning("TODO: add all tips")
+    @State private var tips = TipGroup(.ordered) {
+        ScanShareTip()
+        UntaggedViewTip()
+        AfterFirstImportTip()
+    }
 
     var body: some View {
         TabView(selection: $store.selectedTab.sending(\.onSetSelectedTab)) {
@@ -244,6 +265,9 @@ struct AppView: View {
             .hidden(horizontalSizeClass == .compact)
         }
         .tabViewStyle(.sidebarAdaptable)
+//        #warning("TODO: test this")
+//        .modifier(AlertDataModelProvider())
+        .modifier(ScanButtonModifier(showButton: store.selectedTab == .search, currentTip: tips.currentTip))
         .toolbar {
             #warning("Not showing on iOS")
             ToolbarItem(placement: .destructiveAction) {

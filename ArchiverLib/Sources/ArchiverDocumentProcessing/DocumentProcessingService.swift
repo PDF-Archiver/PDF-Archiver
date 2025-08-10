@@ -14,26 +14,21 @@ import Vision
 
 @StorageActor
 @Observable
-final class DocumentProcessingService {
+public final class DocumentProcessingService {
 
     private let tempDocumentURL: URL
     private let documentDestination: () async throws -> URL?
     private let backgroundProcessing = BackgroundProcessingActor<PDFProcessingOperation>()
     private var backgroundProcessingIds = Set<String>()
 
-    init(tempDocumentURL: URL, documentDestination: @escaping () throws -> URL?) {
+    public init(tempDocumentURL: URL, documentDestination: @escaping () async throws -> URL?) {
         self.tempDocumentURL = tempDocumentURL
-        // PathManager.shared.getUntaggedUrl()
         self.documentDestination = documentDestination
-
-        triggerFolderObservation()
     }
 
     /// Fetch all documents in folder and test if PDF processing operations should be added.
-    func triggerFolderObservation() {
-        Task.detached(priority: .background) {
-            await self.handleFolderContents(at: self.tempDocumentURL)
-        }
+    public func runObservation() async {
+        await self.handleFolderContents(at: self.tempDocumentURL)
     }
 
     func handle(_ images: [PlatformImage]) async {
@@ -41,11 +36,12 @@ final class DocumentProcessingService {
             Logger.documentProcessing.errorAndAssert("Failed to get document")
             return
         }
-        let operation = PDFProcessingOperation(of: .images(images), destinationFolder: destinationFolder, onComplete: { documentUrl in
+        let operation = PDFProcessingOperation(of: .images(images), destinationFolder: destinationFolder, onComplete: { _ in
             Task {
                 #if !os(macOS)
                 await MainActor.run {
-                    NavigationModel.shared.lastProcessedDocumentUrl = documentUrl
+                    #warning("TODO: add this")
+//                    NavigationModel.shared.lastProcessedDocumentUrl = documentUrl
                 }
                 #endif
                 await AfterFirstImportTip.documentImported.donate()
@@ -59,11 +55,12 @@ final class DocumentProcessingService {
             Logger.documentProcessing.errorAndAssert("Failed to get document")
             return
         }
-        let operation = PDFProcessingOperation(of: .pdf(pdfData: pdfData, url: url), destinationFolder: destinationFolder, onComplete: { documentUrl in
+        let operation = PDFProcessingOperation(of: .pdf(pdfData: pdfData, url: url), destinationFolder: destinationFolder, onComplete: { _ in
             Task {
                 #if !os(macOS)
                 await MainActor.run {
-                    NavigationModel.shared.lastProcessedDocumentUrl = documentUrl
+                    #warning("TODO: add this")
+//                    NavigationModel.shared.lastProcessedDocumentUrl = documentUrl
                 }
                 #endif
                 await AfterFirstImportTip.documentImported.donate()

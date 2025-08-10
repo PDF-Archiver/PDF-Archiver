@@ -36,14 +36,4 @@ extension URL: Log {
             return nil
         }
     }
-
-    func securityScope<T>(closure: (URL) throws -> T) rethrows -> T {
-        let didAccessSecurityScope = startAccessingSecurityScopedResource()
-        defer {
-            if didAccessSecurityScope {
-                stopAccessingSecurityScopedResource()
-            }
-        }
-        return try closure(self)
-    }
 }

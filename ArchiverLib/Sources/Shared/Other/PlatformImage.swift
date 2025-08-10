@@ -7,10 +7,10 @@
 
 #if canImport(UIKit)
 import UIKit.UIImage
-typealias PlatformImage = UIImage
+public typealias PlatformImage = UIImage
 #else
 import AppKit.NSImage
-typealias PlatformImage = NSImage
+public typealias PlatformImage = NSImage
 extension NSImage {
     var cgImage: CGImage? {
         cgImage(forProposedRect: nil, context: nil, hints: nil)
@@ -19,7 +19,7 @@ extension NSImage {
 #endif
 
 extension PlatformImage {
-    func jpg(quality: CGFloat) -> Data? {
+    public func jpg(quality: CGFloat) -> Data? {
         #if os(macOS)
         // swiftlint:disable:next force_unwrapping
         let cgImage = cgImage(forProposedRect: nil, context: nil, hints: nil)!
