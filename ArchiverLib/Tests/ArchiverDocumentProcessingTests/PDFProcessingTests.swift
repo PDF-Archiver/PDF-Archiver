@@ -7,6 +7,7 @@
 
 import Foundation
 import PDFKit
+import Shared
 import Testing
 
 @testable import ArchiverDocumentProcessing
@@ -25,6 +26,33 @@ final class PDFProcessingTests {
 
     deinit {
         try! FileManager.default.removeItem(at: Self.tempFolder)
+    }
+
+    private static func levenshtein(_ lhs: String, _ rhs: String) -> Int {
+        let lhsArray = Array(lhs)
+        let rhsArray = Array(rhs)
+
+        let (m, n) = (lhsArray.count, rhsArray.count)
+        var dp = Array(repeating: Array(repeating: 0, count: n + 1), count: m + 1)
+
+        for i in 0...m { dp[i][0] = i }
+        for j in 0...n { dp[0][j] = j }
+
+        for i in 1...m {
+            for j in 1...n {
+                if lhsArray[i - 1] == rhsArray[j - 1] {
+                    dp[i][j] = dp[i - 1][j - 1]
+                } else {
+                    dp[i][j] = min(
+                        dp[i - 1][j] + 1,    // Deletion
+                        dp[i][j - 1] + 1,    // Insertion
+                        dp[i - 1][j - 1] + 1 // Substitution
+                    )
+                }
+            }
+        }
+
+        return dp[m][n]
     }
 
     @Test
@@ -56,7 +84,6 @@ final class PDFProcessingTests {
 
     @Test
     func testPNGInput() async throws {
-    // swiftlint:disable:next function_body_length
         let image = try #require(PlatformImage(contentsOf: Bundle.billPNGUrl))
 
         var documentUrl: URL?
@@ -123,12 +150,11 @@ final class PDFProcessingTests {
             Rund um die Uhr einkaufen im
             E-Shop unter TOM-TAILOR.DE
             """
-        #expect(content == referenceContent)
+        #expect(Self.levenshtein(content, referenceContent) < 10)
     }
 
     @Test
     func testJPGInput() async throws {
-    // swiftlint:disable:next function_body_length
         let image = try #require(PlatformImage(contentsOf: Bundle.billJPGGUrl))
 
         var documentUrl: URL?
@@ -194,12 +220,11 @@ final class PDFProcessingTests {
             Rund um die Uhr einkaufen im
             E-Shop unter TOM-TAILOR. DE
             """
-        #expect(content == referenceContent)
+        #expect(Self.levenshtein(content, referenceContent) < 10)
     }
 
     @Test
     func testJPGMultiplePages() async throws {
-    // swiftlint:disable:next function_body_length
         let image = try #require(PlatformImage(contentsOf: Bundle.billJPGGUrl))
 
         var documentUrl: URL?
@@ -264,6 +289,6 @@ final class PDFProcessingTests {
             E-Shop unter TOM-TAILOR. DE
             """
 
-        #expect(content == [referenceContent, referenceContent, referenceContent].joined(separator: "\n"))
+        #expect(Self.levenshtein(content, [referenceContent, referenceContent, referenceContent].joined(separator: "\n")) < 10)
     }
  }

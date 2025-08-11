@@ -62,7 +62,9 @@ final class PathManagerTests {
     #if !os(macOS)
     @Test
     func testPDFInput() throws {
-        UserDefaults.appGroup.archivePathType = .appContainer
+        let currentArchiveFolder = Self.tempFolder.appendingPathComponent("CurrentArchive")
+        try FileManager.default.createDirectory(at: currentArchiveFolder, withIntermediateDirectories: true, attributes: nil)
+        UserDefaults.archivePathType = .local(currentArchiveFolder)
 
         let archiveUrl = try PathManager.shared.getArchiveUrl()
 
@@ -75,26 +77,23 @@ final class PathManagerTests {
         try FileManager.default.createDirectory(at: archiveUrl.appendingPathComponent("inbox"), withIntermediateDirectories: true, attributes: nil)
         try FileManager.default.createDirectory(at: archiveUrl.appendingPathComponent("test"), withIntermediateDirectories: true, attributes: nil)
 
-        let type = PathManager.ArchivePathType.iCloudDrive
+        let type = PathManager.ArchivePathType.local(Self.tempFolder.appendingPathComponent("NewArchive"))
 
-        do {
-            let newArchiveUrl = try type.getArchiveUrl()
+        let newArchiveUrl = try type.getArchiveUrl()
 
-            try FileManager.default.createFolderIfNotExists(newArchiveUrl)
+        try FileManager.default.createFolderIfNotExists(newArchiveUrl)
 
-            try PathManager.shared.setArchiveUrl(with: type)
+        try PathManager.shared.setArchiveUrl(with: type)
 
-            let urls = try FileManager.default.contentsOfDirectory(at: newArchiveUrl, includingPropertiesForKeys: nil, options: [])
-            #expect(urls.contains(where: { $0.lastPathComponent == "untagged" }))
-            #expect(urls.contains(where: { $0.lastPathComponent == "2020" }))
-            #expect(urls.contains(where: { $0.lastPathComponent == "2019" }))
-            #expect(urls.contains(where: { $0.lastPathComponent == "2018" }))
+        let urls = try FileManager.default.contentsOfDirectory(at: newArchiveUrl, includingPropertiesForKeys: nil, options: [])
+        print(urls)
+        #expect(urls.contains(where: { $0.lastPathComponent == "untagged" }))
+        #expect(urls.contains(where: { $0.lastPathComponent == "2020" }))
+        #expect(urls.contains(where: { $0.lastPathComponent == "2019" }))
+        #expect(urls.contains(where: { $0.lastPathComponent == "2018" }))
 
-            #expect(!urls.contains(where: { $0.lastPathComponent == "inbox" }))
-            #expect(!urls.contains(where: { $0.lastPathComponent == "test" }))
-        } catch {
-            throw XCTSkip()
-        }
+        #expect(!urls.contains(where: { $0.lastPathComponent == "inbox" }))
+        #expect(!urls.contains(where: { $0.lastPathComponent == "test" }))
     }
     #endif
 }

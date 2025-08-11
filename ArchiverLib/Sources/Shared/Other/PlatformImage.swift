@@ -8,6 +8,11 @@
 #if canImport(UIKit)
 import UIKit.UIImage
 public typealias PlatformImage = UIImage
+public extension UIImage {
+    convenience init?(contentsOf url: URL) {
+        self.init(contentsOfFile: url.path())
+    }
+}
 #else
 import AppKit.NSImage
 public typealias PlatformImage = NSImage
@@ -16,6 +21,7 @@ public extension NSImage {
         cgImage(forProposedRect: nil, context: nil, hints: nil)
     }
 }
+extension PlatformImage: @unchecked @retroactive Sendable {}
 #endif
 
 extension PlatformImage {

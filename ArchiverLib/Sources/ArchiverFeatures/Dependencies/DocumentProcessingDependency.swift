@@ -32,7 +32,7 @@ extension DocumentProcessingDependency: TestDependencyKey {
 extension DocumentProcessingDependency: DependencyKey {
     @StorageActor
     private static var _documentProcessingService: DocumentProcessingService?
-    
+
     @StorageActor
     private static func getDocumentProcessingService() async -> DocumentProcessingService {
         if let service = _documentProcessingService {

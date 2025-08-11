@@ -381,6 +381,7 @@
 		A3CED6E32BA4E26C00443F77 /* DatabaseConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseConfiguration.swift; sourceTree = "<group>"; };
 		A3D5A4922BBDDC8D0089B016 /* DocumentInformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentInformation.swift; sourceTree = "<group>"; };
 		A3D8F9402BB607B100BE3E3A /* DocumentDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentDetailView.swift; sourceTree = "<group>"; };
+		A3EB300F2E4A77B9001602DA /* ArchiverLib.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = ArchiverLib.xctestplan; sourceTree = "<group>"; };
 		A3F4EA212C067AA2003E8500 /* DropButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropButton.swift; sourceTree = "<group>"; };
 		A3FE005B2D3109F9005D4BE1 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		A3FE9A3A2BA4CF04009F8381 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -528,6 +529,7 @@
 		3489D70E24A3C53D0035E64F = {
 			isa = PBXGroup;
 			children = (
+				A3EB300F2E4A77B9001602DA /* ArchiverLib.xctestplan */,
 				A3B579A72DE2310B0086D39E /* README.md */,
 				3489D71324A3C53D0035E64F /* Shared */,
 				3489D71D24A3C53E0035E64F /* iOS */,
