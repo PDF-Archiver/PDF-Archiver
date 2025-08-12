@@ -64,13 +64,7 @@ extension ArchiveStoreDependency: TestDependencyKey {
 extension ArchiveStoreDependency: DependencyKey {
   static let liveValue = ArchiveStoreDependency(
     documentChanges: {
-        return AsyncStream { stream in
-            Task {
-                for await documents in await ArchiveStore.shared.documentsStream {
-                    stream.yield(documents)
-                }
-            }
-        }
+        return await ArchiveStore.shared.documentsStream
     },
     isLoading: {
         return AsyncStream { stream in

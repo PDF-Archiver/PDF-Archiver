@@ -43,7 +43,7 @@ struct AppFeature {
         case documentsChanged([Document])
         case isLoadingChanged(Bool)
         case onSetSelectedTab(State.Tab)
-        case onTask
+        case onLongBackgroundTask
         case untaggedDocumentList(UntaggedDocumentList.Action)
         case statistics(Statistics.Action)
         case handleDocumentCameraViewImages([PlatformImage])
@@ -173,7 +173,7 @@ struct AppFeature {
                 }
                 return .none
 
-            case .onTask:
+            case .onLongBackgroundTask:
                 return .run { send in
                     await withTaskGroup(of: Void.self) { group in
                         group.addTask(priority: .background) {
@@ -221,6 +221,14 @@ struct AppView: View {
         AfterFirstImportTip()
     }
 
+    init(store: StoreOf<AppFeature>) {
+        self.store = store
+        
+        Task.detached(priority: .background) {
+            await store.send(.onLongBackgroundTask).finish()
+        }
+    }
+    
     var body: some View {
         TabView(selection: $store.selectedTab.sending(\.onSetSelectedTab)) {
             // Test this with macOS 26 - is there a search tab item?
@@ -275,9 +283,6 @@ struct AppView: View {
                     .controlSize(.small)
                     .opacity(store.isDocumentLoading ? 1 : 0)
             }
-        }
-        .task {
-            await store.send(.onTask).finish()
         }
     }
 
