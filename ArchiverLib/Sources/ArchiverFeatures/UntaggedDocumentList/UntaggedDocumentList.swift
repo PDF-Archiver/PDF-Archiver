@@ -99,7 +99,8 @@ struct UntaggedDocumentListView: View {
                         }
 #endif
 
-                        ShareLink(Text(documentStore.document.filename), item: documentStore.document.url)
+                        // we do not add this button because it has no functionality when the inspector is active
+//                        ShareLink(Text(documentStore.document.filename), item: documentStore.document.url)
 
                         #warning("add this in iOS26")
 //                        ToolbarSpacer()

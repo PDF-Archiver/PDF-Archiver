@@ -72,9 +72,24 @@ struct AppFeature {
                 switch delegateAction {
                 case .deleteDocument(let document):
                     _ = state.$documents.withLock { $0.remove(document) }
-                    state.archiveList.documentDetails = nil
-                    state.archiveList.$selectedDocumentId.withLock { $0 = nil }
-
+                    
+                    let nextDocument = state.documents.elements.first { $0.id != document.id && $0.isTagged == document.isTagged }
+                    if document.isTagged {
+                        if let nextDocument {
+                            state.archiveList.documentDetails = .init(document: Shared(value: nextDocument))
+                        } else {
+                            state.archiveList.documentDetails = nil
+                        }
+                        state.archiveList.$selectedDocumentId.withLock { $0 = nextDocument?.id }
+                    } else {
+                        if let nextDocument {
+                            state.untaggedDocumentList.documentDetails = .init(document: Shared(value: nextDocument))
+                        } else {
+                            state.untaggedDocumentList.documentDetails = nil
+                        }
+                        state.untaggedDocumentList.$selectedDocumentId.withLock { $0 = nextDocument?.id }
+                    }
+                    
                     return .run { _ in
                         try await archiveStore.deleteDocumentAt(document.url)
                     }
