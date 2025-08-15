@@ -72,7 +72,7 @@ struct AppFeature {
                 switch delegateAction {
                 case .deleteDocument(let document):
                     _ = state.$documents.withLock { $0.remove(document) }
-                    
+
                     let nextDocument = state.documents.elements.first { $0.id != document.id && $0.isTagged == document.isTagged }
                     if document.isTagged {
                         if let nextDocument {
@@ -89,7 +89,7 @@ struct AppFeature {
                         }
                         state.untaggedDocumentList.$selectedDocumentId.withLock { $0 = nextDocument?.id }
                     }
-                    
+
                     return .run { _ in
                         try await archiveStore.deleteDocumentAt(document.url)
                     }
@@ -238,12 +238,12 @@ struct AppView: View {
 
     init(store: StoreOf<AppFeature>) {
         self.store = store
-        
+
         Task.detached(priority: .background) {
             await store.send(.onLongBackgroundTask).finish()
         }
     }
-    
+
     var body: some View {
         TabView(selection: $store.selectedTab.sending(\.onSetSelectedTab)) {
             // Test this with macOS 26 - is there a search tab item?
