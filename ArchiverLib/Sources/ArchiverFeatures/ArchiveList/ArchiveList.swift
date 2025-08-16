@@ -159,54 +159,6 @@ struct ArchiveListView: View {
 #else
                 .navigationBarTitleDisplayMode(.inline)
 #endif
-                .toolbar {
-                    ToolbarItemGroup(placement: .primaryAction) {
-                        // editButton
-                        Button {
-                            documentStore.send(.onEditButtonTapped)
-                        } label: {
-                            Label("Edit", systemImage: "pencil")
-                        }
-
-#if os(macOS)
-                        // showInFinderButton
-                        Button(role: .none) {
-                            NSWorkspace.shared.activateFileViewerSelecting([documentStore.document.url])
-                        } label: {
-                            Label("Show in Finder", systemImage: "folder")
-                        }
-#endif
-
-                        ShareLink(Text(documentStore.document.filename), item: documentStore.document.url)
-
-                        #warning("add this in iOS26")
-//                        ToolbarSpacer()
-
-                        // deleteButton
-                        Button(role: .destructive) {
-                            documentStore.send(.onDeleteDocumentButtonTapped)
-                        } label: {
-                            Label("Delete", systemImage: "trash")
-                                .foregroundColor(.red)
-                        }
-                    }
-#if os(macOS)
-                    ToolbarItem(placement: .accessoryBar(id: "tags")) {
-                        // fix for the high cpu usage
-//                        HStack {
-//                            ForEach(documentStore.document.tags.sorted(), id: \.self) { tag in
-//                                Text(tag)
-//                                    .frame(width: 50)
-//                            }
-//                        }
-                        TagListView(tags: documentStore.document.tags.sorted(),
-                                    isEditable: false,
-                                    isMultiLine: false,
-                                    tapHandler: nil)
-                        .font(.caption)
-                    }
-#endif
-                }
         }
     }
 }

@@ -13,12 +13,23 @@ import SwiftUI
 @Reducer
 struct DocumentDetails {
 
+    #if os(iOS)
+    struct ShareData: Equatable, Identifiable {
+        let id: UUID
+        let title: String
+        let url: URL
+    }
+    #endif
+
     @ObservableState
     struct State: Equatable {
         @Presents var alert: AlertState<Action.Alert>?
         @Shared var document: Document
         var documentInformationForm: DocumentInformationForm.State
         var showInspector: Bool
+        #if os(iOS)
+        var shareDocument: ShareData?
+        #endif
 
         init(document: Shared<Document>) {
             self._document = document
@@ -34,6 +45,9 @@ struct DocumentDetails {
         case onDeleteDocumentButtonTapped
         case onEditButtonTapped
         case onRemoteDocumentAppeared
+        #if os(iOS)
+        case onShareButtonTapped
+        #endif
         case showDocumentInformationForm(DocumentInformationForm.Action)
 
         enum Alert {
@@ -77,22 +91,39 @@ struct DocumentDetails {
                         TextState("Cancel")
                     }
                 } message: {
-                    TextState("You are delete the current document. Are you sure?")
+                    TextState("You are deleting the current document. Are you sure?")
                 }
                 return .none
 
             case .onEditButtonTapped:
                 if state.showInspector {
                     // reset the inspector state when it should disappear
-                    state.documentInformationForm = DocumentInformationForm.State(document: state.document)
+                    state.documentInformationForm = DocumentInformationForm.State(
+                        document: state.document)
+                    state.showInspector = false
+                } else {
+                    #if os(iOS)
+                    state.shareDocument = nil
+                    #endif
+                    state.showInspector = true
                 }
-                state.showInspector.toggle()
                 return .none
 
             case .onRemoteDocumentAppeared:
                 return .run { [documentUrl = state.document.url] _ in
                     try await startDownloadOf(documentUrl)
                 }
+
+            #if os(iOS)
+            case .onShareButtonTapped:
+                state.showInspector = false
+                state.shareDocument = ShareData(
+                    id: UUID(),
+                    title: state.document.filename,
+                    url: state.document.url)
+                return .none
+            #endif
+
             case .showDocumentInformationForm:
                 return .none
             }
@@ -120,6 +151,69 @@ struct DocumentDetailsView: View {
             }
         }
         .alert($store.scope(state: \.alert, action: \.alert))
+        #if os(iOS)
+        .sheet(item: $store.shareDocument) { shareDocument in
+            ShareSheet(title: shareDocument.title, url: shareDocument.url)
+        }
+        #endif
+        .toolbar {
+            #if os(macOS)
+            if store.document.isTagged {
+                ToolbarItem(placement: .accessoryBar(id: "tags")) {
+                    // macOS Bug: the accessoryBar will trigger a high CPU usage
+                    TagListView(
+                        tags: store.document.tags.sorted(),
+                        isEditable: false,
+                        isMultiLine: false,
+                        tapHandler: nil
+                    )
+                    .font(.caption)
+                }
+            }
+            #endif
+
+            ToolbarItemGroup(placement: .primaryAction) {
+                // editButton
+                Button {
+                    store.send(.onEditButtonTapped)
+                } label: {
+                    Label("Edit", systemImage: "pencil")
+                }
+
+                #if os(macOS)
+                    // showInFinderButton
+                    Button(role: .none) {
+                        NSWorkspace.shared.activateFileViewerSelecting([store.document.url])
+                    } label: {
+                        Label("Show in Finder", systemImage: "folder")
+                    }
+                #endif
+
+                // share button
+                #if os(iOS)
+                Button(role: .none) {
+                    store.send(.onShareButtonTapped)
+                } label: {
+                    Label("Share", systemImage: "square.and.arrow.up")
+                }
+                #else
+                // iOS 18 Bug: when the inspector is active/shown, ShareLink will not trigger the share sheet.
+                // So we use the workaround with ShareSheet instead.
+                ShareLink(Text(store.document.filename), item: store.document.url)
+                #endif
+
+                #warning("add this in iOS26")
+                // ToolbarSpacer()
+
+                // deleteButton
+                Button(role: .destructive) {
+                    store.send(.onDeleteDocumentButtonTapped)
+                } label: {
+                    Label("Delete", systemImage: "trash")
+                        .foregroundColor(.red)
+                }
+            }
+        }
     }
 }
 

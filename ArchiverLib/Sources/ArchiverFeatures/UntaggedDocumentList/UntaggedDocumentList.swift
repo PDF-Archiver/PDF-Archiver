@@ -81,48 +81,6 @@ struct UntaggedDocumentListView: View {
 #else
                 .navigationBarTitleDisplayMode(.inline)
 #endif
-                .toolbar {
-                    ToolbarItemGroup(placement: .primaryAction) {
-                        // editButton
-                        Button {
-                            documentStore.send(.onEditButtonTapped)
-                        } label: {
-                            Label("Edit", systemImage: "pencil")
-                        }
-
-#if os(macOS)
-                        // showInFinderButton
-                        Button(role: .none) {
-                            NSWorkspace.shared.activateFileViewerSelecting([documentStore.document.url])
-                        } label: {
-                            Label("Show in Finder", systemImage: "folder")
-                        }
-#endif
-
-                        // we do not add this button because it has no functionality when the inspector is active
-//                        ShareLink(Text(documentStore.document.filename), item: documentStore.document.url)
-
-                        #warning("add this in iOS26")
-//                        ToolbarSpacer()
-
-                        // deleteButton
-                        Button(role: .destructive) {
-                            documentStore.send(.onDeleteDocumentButtonTapped)
-                        } label: {
-                            Label("Delete", systemImage: "trash")
-                                .foregroundColor(.red)
-                        }
-                    }
-#if os(macOS)
-                    ToolbarItem(placement: .accessoryBar(id: "tags")) {
-                        TagListView(tags: documentStore.document.tags.sorted(),
-                                    isEditable: false,
-                                    isMultiLine: false,
-                                    tapHandler: nil)
-                        .font(.caption)
-                    }
-#endif
-                }
         }
     }
 }
