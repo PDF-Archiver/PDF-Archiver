@@ -26,6 +26,7 @@ struct AppFeature {
             case sectionYears(Int)
         }
         @Shared(.documents) var documents: IdentifiedArrayOf<Document> = []
+        @Shared(.tutorialShown) var tutorialShown = false
 
         var selectedTab = Tab.search
         var tabTagSuggestions: [String] = []
@@ -46,7 +47,6 @@ struct AppFeature {
         case onLongBackgroundTask
         case untaggedDocumentList(UntaggedDocumentList.Action)
         case statistics(Statistics.Action)
-        case handleDocumentCameraViewImages([PlatformImage])
     }
 
     @Dependency(\.documentProcessor) var documentProcessor
@@ -73,22 +73,7 @@ struct AppFeature {
                 case .deleteDocument(let document):
                     _ = state.$documents.withLock { $0.remove(document) }
 
-                    let nextDocument = state.documents.elements.first { $0.id != document.id && $0.isTagged == document.isTagged }
-                    if document.isTagged {
-                        if let nextDocument {
-                            state.archiveList.documentDetails = .init(document: Shared(value: nextDocument))
-                        } else {
-                            state.archiveList.documentDetails = nil
-                        }
-                        state.archiveList.$selectedDocumentId.withLock { $0 = nextDocument?.id }
-                    } else {
-                        if let nextDocument {
-                            state.untaggedDocumentList.documentDetails = .init(document: Shared(value: nextDocument))
-                        } else {
-                            state.untaggedDocumentList.documentDetails = nil
-                        }
-                        state.untaggedDocumentList.$selectedDocumentId.withLock { $0 = nextDocument?.id }
-                    }
+                    selectNextDocument(current: document, &state)
 
                     return .run { _ in
                         try await archiveStore.deleteDocumentAt(document.url)
@@ -109,7 +94,9 @@ struct AppFeature {
                     state.archiveList.documentDetails = nil
                     state.archiveList.$selectedDocumentId.withLock { $0 = nil }
 
-                    #warning("select next document for tagging")
+                    if case .untaggedDocumentList = action {
+                        selectNextDocument(current: document, &state)
+                    }
 
                     return .run { _ in
                         try await archiveStore.saveDocument(document)
@@ -171,6 +158,10 @@ struct AppFeature {
                 return .none
 
             case .onSetSelectedTab(let tab):
+
+                struct TestError: Error {}
+                NotificationCenter.default.postAlert(TestError())
+
                 state.selectedTab = tab
                 switch tab {
                 case .search:
@@ -214,13 +205,26 @@ struct AppFeature {
             case .statistics:
                 return .none
 
-            case .handleDocumentCameraViewImages(let images):
-
-                #warning("TODO: add this")
-//                await FeedbackGenerator.notify(.success)
-//                await DocumentProcessingService.shared.handle(images)
-                return .none
             }
+        }
+    }
+
+    private func selectNextDocument(current document: Document, _ state: inout State) {
+        let nextDocument = state.documents.elements.first { $0.id != document.id && $0.isTagged == document.isTagged }
+        if document.isTagged {
+            if let nextDocument {
+                state.archiveList.documentDetails = .init(document: Shared(value: nextDocument))
+            } else {
+                state.archiveList.documentDetails = nil
+            }
+            state.archiveList.$selectedDocumentId.withLock { $0 = nextDocument?.id }
+        } else {
+            if let nextDocument {
+                state.untaggedDocumentList.documentDetails = .init(document: Shared(value: nextDocument))
+            } else {
+                state.untaggedDocumentList.documentDetails = nil
+            }
+            state.untaggedDocumentList.$selectedDocumentId.withLock { $0 = nextDocument?.id }
         }
     }
 }
@@ -229,6 +233,8 @@ struct AppView: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Bindable var store: StoreOf<AppFeature>
     @State var searchText = ""
+    #warning("TODO: replace this with TCA")
+    @AppStorage("tutorial-v1") var tutorialShown = false
     #warning("TODO: add all tips")
     @State private var tips = TipGroup(.ordered) {
         ScanShareTip()
@@ -289,8 +295,7 @@ struct AppView: View {
             .hidden(horizontalSizeClass == .compact)
         }
         .tabViewStyle(.sidebarAdaptable)
-//        #warning("TODO: test this")
-//        .modifier(AlertDataModelProvider())
+        .modifier(AlertDataModelProvider())
         .toolbar {
             #warning("Not showing on iOS")
             ToolbarItem(placement: .destructiveAction) {
@@ -298,6 +303,12 @@ struct AppView: View {
                     .controlSize(.small)
                     .opacity(store.isDocumentLoading ? 1 : 0)
             }
+        }
+        .sheet(isPresented: $tutorialShown.flipped) {
+            OnboardingView(isPresented: $tutorialShown.flipped)
+                #if os(macOS)
+                .frame(width: 500, height: 400)
+                #endif
         }
     }
 

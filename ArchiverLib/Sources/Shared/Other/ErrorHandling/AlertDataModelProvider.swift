@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AlertDataModelProvider: ViewModifier, Log {
+public struct AlertDataModelProvider: ViewModifier, Log {
     @State private var alertDataModel: AlertDataModel?
 
     private var isPresented: Binding<Bool> {
@@ -18,14 +18,15 @@ struct AlertDataModelProvider: ViewModifier, Log {
         })
     }
 
-    func body(content: Content) -> some View {
+    public init() {}
+
+    public func body(content: Content) -> some View {
         content
             .task {
-                // Shared will not be used anymore
-//                let alertDataModelStream = NotificationCenter.default.alertStream()
-//                for await alertDataModel in alertDataModelStream {
-//                    self.alertDataModel = alertDataModel
-//                }
+                let alertDataModelStream = NotificationCenter.default.alertStream()
+                for await alertDataModel in alertDataModelStream {
+                    self.alertDataModel = alertDataModel
+                }
             }
             .alert(alertDataModel?.title ?? "Error",
                    isPresented: isPresented,

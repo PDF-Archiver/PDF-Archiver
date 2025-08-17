@@ -16,6 +16,7 @@ import Vision
 @Observable
 public final class DocumentProcessingService {
 
+    public private(set) var lastProcessedDocumentUrl: URL?
     private let tempDocumentURL: URL
     private let documentDestination: () async throws -> URL?
     private let backgroundProcessing = BackgroundProcessingActor<PDFProcessingOperation>()
@@ -36,14 +37,9 @@ public final class DocumentProcessingService {
             Logger.documentProcessing.errorAndAssert("Failed to get document")
             return
         }
-        let operation = PDFProcessingOperation(of: .images(images), destinationFolder: destinationFolder, onComplete: { _ in
+        let operation = PDFProcessingOperation(of: .images(images), destinationFolder: destinationFolder, onComplete: { documentUrl in
             Task {
-                #if !os(macOS)
-                await MainActor.run {
-                    #warning("TODO: add this")
-//                    NavigationModel.shared.lastProcessedDocumentUrl = documentUrl
-                }
-                #endif
+                self.lastProcessedDocumentUrl = documentUrl
                 await AfterFirstImportTip.documentImported.donate()
             }
         })
@@ -55,14 +51,9 @@ public final class DocumentProcessingService {
             Logger.documentProcessing.errorAndAssert("Failed to get document")
             return
         }
-        let operation = PDFProcessingOperation(of: .pdf(pdfData: pdfData, url: url), destinationFolder: destinationFolder, onComplete: { _ in
+        let operation = PDFProcessingOperation(of: .pdf(pdfData: pdfData, url: url), destinationFolder: destinationFolder, onComplete: { documentUrl in
             Task {
-                #if !os(macOS)
-                await MainActor.run {
-                    #warning("TODO: add this")
-//                    NavigationModel.shared.lastProcessedDocumentUrl = documentUrl
-                }
-                #endif
+                self.lastProcessedDocumentUrl = documentUrl
                 await AfterFirstImportTip.documentImported.donate()
             }
         })

@@ -14,6 +14,12 @@ extension SharedReaderKey where Self == FileStorageKey<IdentifiedArrayOf<Documen
   }
 }
 
+extension SharedReaderKey where Self == AppStorageKey<Bool> {
+  static var tutorialShown: Self {
+      appStorage("tutorial-v1", store: .standard)
+  }
+}
+
 extension SharedReaderKey where Self == InMemoryKey<Int?> {
   static var selectedDocumentId: Self {
     inMemory("selectedDocumentId")
