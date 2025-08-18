@@ -39,11 +39,11 @@ struct AppFeature {
         var statistics = Statistics.State()
     }
 
-    enum Action {
+    enum Action: BindableAction {
+        case binding(BindingAction<State>)
         case archiveList(ArchiveList.Action)
         case documentsChanged([Document])
         case isLoadingChanged(Bool)
-        case onSetSelectedTab(State.Tab)
         case onLongBackgroundTask
         case untaggedDocumentList(UntaggedDocumentList.Action)
         case statistics(Statistics.Action)
@@ -53,6 +53,8 @@ struct AppFeature {
     @Dependency(\.archiveStore) var archiveStore
 
     var body: some ReducerOf<Self> {
+        BindingReducer()
+
         // frist, run the ArchiveList reducer ...
         Scope(state: \.archiveList, action: \.archiveList) {
             ArchiveList()
@@ -106,6 +108,26 @@ struct AppFeature {
             case .archiveList:
                 return .none
 
+            case .binding(\.selectedTab):
+                switch state.selectedTab {
+                case .search:
+                    state.archiveList.searchTokens = []
+                case .sectionTags(let tag):
+                    state.archiveList.searchTokens = [.tag(tag)]
+                case .sectionYears(let year):
+                    state.archiveList.searchTokens = [.year(year)]
+                case .inbox, .statistics:
+                    break
+                #if !os(macOS)
+                case .settings:
+                    break
+                #endif
+                }
+                return .none
+
+            case .binding:
+                return .none
+
             case .documentsChanged(var documents):
                 documents = documents
                     .sorted { $0.date < $1.date }
@@ -155,28 +177,6 @@ struct AppFeature {
 
             case .isLoadingChanged(let isLoading):
                 state.isDocumentLoading = isLoading
-                return .none
-
-            case .onSetSelectedTab(let tab):
-
-                struct TestError: Error {}
-                NotificationCenter.default.postAlert(TestError())
-
-                state.selectedTab = tab
-                switch tab {
-                case .search:
-                    state.archiveList.searchTokens = []
-                case .sectionTags(let tag):
-                    state.archiveList.searchTokens = [.tag(tag)]
-                case .sectionYears(let year):
-                    state.archiveList.searchTokens = [.year(year)]
-                case .inbox, .statistics:
-                    break
-                #if !os(macOS)
-                case .settings:
-                    break
-                #endif
-                }
                 return .none
 
             case .onLongBackgroundTask:
@@ -233,8 +233,6 @@ struct AppView: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Bindable var store: StoreOf<AppFeature>
     @State var searchText = ""
-    #warning("TODO: replace this with TCA")
-    @AppStorage("tutorial-v1") var tutorialShown = false
     #warning("TODO: add all tips")
     @State private var tips = TipGroup(.ordered) {
         ScanShareTip()
@@ -251,7 +249,7 @@ struct AppView: View {
     }
 
     var body: some View {
-        TabView(selection: $store.selectedTab.sending(\.onSetSelectedTab)) {
+        TabView(selection: $store.selectedTab) {
             // Test this with macOS 26 - is there a search tab item?
 //            Tab(value: AppFeature.State.Tab.search, role: .search) {
             Tab("Archive", systemImage: "magnifyingglass", value: AppFeature.State.Tab.search) {
@@ -304,8 +302,8 @@ struct AppView: View {
                     .opacity(store.isDocumentLoading ? 1 : 0)
             }
         }
-        .sheet(isPresented: $tutorialShown.flipped) {
-            OnboardingView(isPresented: $tutorialShown.flipped)
+        .sheet(isPresented: $store.tutorialShown.flipped) {
+            OnboardingView(isPresented: $store.tutorialShown.flipped)
                 #if os(macOS)
                 .frame(width: 500, height: 400)
                 #endif

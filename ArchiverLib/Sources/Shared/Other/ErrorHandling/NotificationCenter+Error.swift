@@ -12,8 +12,8 @@ extension Notification.Name {
     fileprivate static let alertMessage = Notification.Name("Error.Message")
 }
 
-public extension NotificationCenter {
-    func postAlert(_ error: any Error, file: StaticString = #file, function: StaticString = #function, line: UInt = #line) {
+extension NotificationCenter {
+    public func postAlert(_ error: any Error, file: StaticString = #file, function: StaticString = #function, line: UInt = #line) {
         let defaultTitle = "An error occurred 😳"
 
         let alertDataModel: AlertDataModel
@@ -40,7 +40,7 @@ public extension NotificationCenter {
         postAlert(alertDataModel, file: file, function: function, line: line)
     }
 
-    func createAndPost(title: LocalizedStringKey, message: LocalizedStringKey, primaryButtonTitle: LocalizedStringKey, file: StaticString = #file, function: StaticString = #function, line: UInt = #line) {
+    public func createAndPost(title: LocalizedStringKey, message: LocalizedStringKey, primaryButtonTitle: LocalizedStringKey, file: StaticString = #file, function: StaticString = #function, line: UInt = #line) {
         let completion = {}
         let alertDataModel = AlertDataModel(title: title,
                                             message: message,

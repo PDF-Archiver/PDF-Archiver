@@ -96,8 +96,7 @@ public actor ArchiveStore: Log {
     private func initProvider(for folder: URL) -> FolderProvider? {
         guard let provider = Self.availableProvider.first(where: { $0.canHandle(folder) }) else {
             Logger.archiveStore.errorAndAssert("Could not find a FolderProvider - path: \(folder.path)")
-            #warning("TODO: throw and handle this error")
-//            NotificationCenter.default.createAndPost(title: "Folder Provider Error", message: "Could not find a folder provider for path:\n\(folder.absoluteString)", primaryButtonTitle: "OK")
+            NotificationCenter.default.createAndPost(title: "Folder Provider Error", message: "Could not find a folder provider for path:\n\(folder.absoluteString)", primaryButtonTitle: "OK")
             return nil
         }
         Logger.archiveStore.debug("Initialize new provider for: \(folder.path)")
@@ -105,8 +104,7 @@ public actor ArchiveStore: Log {
             return try provider.init(baseUrl: folder)
         } catch {
             Logger.archiveStore.error("Failed to create FolderProvider - error: \(error)")
-            #warning("TODO: throw and handle this error")
-//            NotificationCenter.default.postAlert(error)
+            NotificationCenter.default.postAlert(error)
             return nil
         }
     }

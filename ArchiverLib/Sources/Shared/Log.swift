@@ -97,6 +97,16 @@ public extension Logger {
         assertionFailure(message, file: file, line: line)
     }
 
+    func faultAndAssert(_ message: String,
+                        metadata: @autoclosure () -> [String: String]? = nil,
+                        file: StaticString = #file,
+                        function: StaticString = #function,
+                        line: UInt = #line) {
+        let tmp = input2message(message, metadata: metadata(), file: file, function: function, line: line)
+        fault("\(tmp)")
+        assertionFailure(message, file: file, line: line)
+    }
+
     private func input2message(_ message: String,
                                metadata: [String: String]?,
                                file: StaticString,

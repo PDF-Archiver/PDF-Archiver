@@ -74,8 +74,7 @@ struct ScanButtonModifier: ViewModifier {
                         try await dropHandler.handleImport(of: url)
                         } catch {
                             Logger.pdfDropHandler.errorAndAssert("Failed to get imported url", metadata: ["error": "\(error)"])
-                            #warning("TODO: add this")
-//                            NotificationCenter.default.postAlert(error)
+                            NotificationCenter.default.postAlert(error)
                         }
                 }
             }

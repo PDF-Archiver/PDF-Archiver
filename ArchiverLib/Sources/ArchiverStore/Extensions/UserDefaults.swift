@@ -44,8 +44,7 @@ extension UserDefaults: Log {
             } catch {
                 appGroup.set(nil, forKey: Names.observedFolderURL.rawValue)
                 log.errorAndAssert("Failed to get observedFolderURL", metadata: ["error": "\(error)"])
-                #warning("TODO: throw/handle error better")
-//                NotificationCenter.default.postAlert(error)
+                NotificationCenter.default.postAlert(error)
                 return nil
             }
         }
@@ -60,8 +59,7 @@ extension UserDefaults: Log {
             } catch {
                 appGroup.set(nil, forKey: Names.observedFolderURL.rawValue)
                 log.errorAndAssert("Failed to set observedFolderURL.", metadata: ["error": "\(error)"])
-                #warning("TODO: throw/handle error better")
-//                NotificationCenter.default.postAlert(error)
+                NotificationCenter.default.postAlert(error)
             }
         }
     }
