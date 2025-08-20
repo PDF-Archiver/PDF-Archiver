@@ -1,5 +1,5 @@
 {
-  "originHash" : "b5af5bf4339bb093ba56ba6ae61df2a17dec50c89dde1956fc4c6c1ad0341940",
+  "originHash" : "7bb5d4aa00f599767fcd59ed796a0f62ecbb012f3d3bd94f4affcce60b2e1af7",
   "pins" : [
     {
       "identity" : "asyncextensions",
@@ -87,8 +87,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-composable-architecture",
       "state" : {
-        "revision" : "4c47829a080789cf20d82c64d8c27291352391d4",
-        "version" : "1.21.1"
+        "revision" : "9dae1ff6f69ce8764341f5c341f1b3fe6a640e64",
+        "version" : "1.22.0"
       }
     },
     {
@@ -114,8 +114,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-dependencies",
       "state" : {
-        "revision" : "eefcdaa88d2e2fd82e3405dfb6eb45872011a0b5",
-        "version" : "1.9.3"
+        "revision" : "a501eebe552fd23691c560adf474fca2169ad8aa",
+        "version" : "1.9.4"
       }
     },
     {
@@ -141,8 +141,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-perception",
       "state" : {
-        "revision" : "328a0b49e2690135c4c2660661f0ed83f16853e3",
-        "version" : "2.0.4"
+        "revision" : "7d3509c7f4de78ad3eb3d804e036fb62e3585141",
+        "version" : "2.0.5"
       }
     },
     {
@@ -150,8 +150,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-sharing",
       "state" : {
-        "revision" : "5d87dda90ed048f216826efbad404110141161bb",
-        "version" : "2.6.0"
+        "revision" : "530c98ac2c3e393615616bd6d8fc604600c99f6f",
+        "version" : "2.7.2"
       }
     },
     {
