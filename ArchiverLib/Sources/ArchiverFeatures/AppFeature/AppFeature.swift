@@ -37,6 +37,7 @@ struct AppFeature {
         var archiveList = ArchiveList.State()
         var untaggedDocumentList = UntaggedDocumentList.State()
         var statistics = Statistics.State()
+        var settings = Settings.State()
     }
 
     enum Action: BindableAction {
@@ -47,6 +48,7 @@ struct AppFeature {
         case onLongBackgroundTask
         case untaggedDocumentList(UntaggedDocumentList.Action)
         case statistics(Statistics.Action)
+        case settings(Settings.Action)
     }
 
     @Dependency(\.documentProcessor) var documentProcessor
@@ -64,6 +66,9 @@ struct AppFeature {
         }
         Scope(state: \.statistics, action: \.statistics) {
             Statistics()
+        }
+        Scope(state: \.settings, action: \.settings) {
+            Settings()
         }
 
         // ... second, run AppFeature reducer, if we need to interact (from an AppFeature domain point of view) with it
@@ -203,6 +208,9 @@ struct AppFeature {
             case .untaggedDocumentList:
                 return .none
 
+            case .settings:
+                return .none
+                
             case .statistics:
                 return .none
 
