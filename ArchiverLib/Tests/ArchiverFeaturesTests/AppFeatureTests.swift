@@ -34,7 +34,7 @@ struct AppFeatureTests {
             $0.archiveList.searchSuggestedTokens = [.year(currentYear)]
         }
 
-        await store.send(.onSetSelectedTab(.inbox)) {
+        await store.send(.binding(.set(\.selectedTab, .inbox))) {
             $0.selectedTab = .inbox
         }
 
@@ -76,7 +76,7 @@ struct AppFeatureTests {
             $0.archiveList.searchSuggestedTokens = [.year(currentYear)]
         }
 
-        await store.send(.onSetSelectedTab(.search))
+        await store.send(.binding(.set(\.selectedTab, .search)))
 
         await store.send(.archiveList(.documentDetails(.presented(.delegate(.deleteDocument(document2)))))) {
             $0.archiveList.$documents.withLock { $0 = [document6, document5, document4, document3, document1] }

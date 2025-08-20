@@ -165,15 +165,16 @@ struct AppFeature {
                 state.tabTagSuggestions = Array(top5Tags)
 
                 // also update suggestions in archive list
-                state.archiveList.searchSuggestedTokens = [
+                let searchSuggestedTokens = [
                     top5Tags.prefix(3).map { ArchiveList.State.SearchToken.tag($0) },
                     years.prefix(3).map { ArchiveList.State.SearchToken.year($0) }
                 ].flatMap(\.self)
 
                 // update the untagged documents
                 state.untaggedDocumentsCount = documents.filter(\Document.isTagged.flipped).count
-
-                return .none
+                
+                // https://pointfreeco.github.io/swift-composable-architecture/main/documentation/composablearchitecture/performance/#Sharing-logic-in-child-features
+                return reduce(into: &state, action: .archiveList(.searchSuggestionsUpdated(searchSuggestedTokens)))
 
             case .isLoadingChanged(let isLoading):
                 state.isDocumentLoading = isLoading
