@@ -13,14 +13,35 @@ import StoreKit
 
 @Reducer
 struct Settings {
+    @Reducer
+    enum Destination {
+        case archiveStorage
+        case expertSettings(ExpertSettings)
+        case aboutMe
+        case termsAndPrivacy
+        case imprint
+    }
 
     @ObservableState
     struct State: Equatable {
+        @Presents var destination: Destination.State?
+        
+        let appStoreUrl = URL(string: "https://apps.apple.com/app/pdf-archiver/id1433801905")!
+        let pdfArchiverWebsiteUrl = URL(string: "https://pdf-archiver.io")!
+        let termsOfUseUrl = URL(string: "https://pdf-archiver.io/terms")!
     }
+    
+    @Dependency(\.openURL) var openURL
 
-    enum Action: BindableAction, Equatable {
+    enum Action: BindableAction {
         case binding(BindingAction<State>)
+        case destination(PresentationAction<Destination.Action>)
+        case onAboutMeTapped
         case onContactSupportTapped
+        case onImprintTapped
+        case onOpenPdfArchiverWebsiteTapped
+        case onTermsAndPrivacyTapped
+        case onTermsOfUseTapped
     }
 
     var body: some ReducerOf<Self> {
@@ -29,12 +50,41 @@ struct Settings {
             switch action {
             case .binding:
                 return .none
+            case .onAboutMeTapped:
+#warning("TODO: Add this")
+//                NavigationLink(destination: AboutMeView()) {
+//                    Text("About  👤")
+//                }
+                return .none
             case .onContactSupportTapped:
+#warning("TODO: Add this")
+                return .none
+            case .onImprintTapped:
+#warning("TODO: Add this")
+//                SettingsViewModel.markdownView(for: "Imprint", withKey: "Imprint")
+                return .none
+            case .onOpenPdfArchiverWebsiteTapped:
+                return .run { [pdfArchiverWebsiteUrl = state.pdfArchiverWebsiteUrl] _ in
+                    await openURL(pdfArchiverWebsiteUrl)
+                }
+            case .onTermsAndPrivacyTapped:
+                #warning("TODO: Add this")
+//                SettingsViewModel.markdownView(for: "Terms & Privacy", withKey: "Privacy")
+                return .none
+
+            case .onTermsOfUseTapped:
+                return .run { [termsOfUseUrl = state.termsOfUseUrl] _ in
+                    await openURL(termsOfUseUrl)
+                }
+            case .destination(_):
                 return .none
             }
         }
+        .ifLet(\.$destination, action: \.destination)
     }
 }
+
+extension Settings.Destination.State: Sendable, Equatable {}
 
 struct SettingsView: View {
     @Bindable var store: StoreOf<Settings>
@@ -42,8 +92,6 @@ struct SettingsView: View {
 
     @Environment(\.requestReview) private var requestReview
     @Environment(\.dismiss) private var dismiss
-//    @ObservedObject var viewModel: SettingsViewModel
-//    @State private var showActivityView = false
 
     var body: some View {
         NavigationStack {
@@ -67,10 +115,14 @@ struct SettingsView: View {
             }
             #endif
         }
-//        .sheet(isPresented: $showActivityView) {
-//            // swiftlint:disable:next force_unwrapping
-//            AppActivityView(activityItems: [URL(string: "https://apps.apple.com/app/pdf-archiver/id1433801905")!])
-//        }
+        .navigationDestination(
+          item: $store.scope(
+            state: \.destination?.expertSettings,
+            action: \.destination.expertSettings
+          )
+        ) { store in
+          ExpertSettingsView(store: store)
+        }
     }
 
     @ViewBuilder
@@ -114,21 +166,28 @@ struct SettingsView: View {
 
     private var moreInformation: some View {
         Section(header: Text("⁉️ More Information")) {
-//            NavigationLink(destination: AboutMeView()) {
-//                Text("About  👤")
-//            }
-//            Link("PDF Archiver Website  🖥", destination: viewModel.pdfArchiverUrl)
-//            Link("Terms of Use", destination: viewModel.termsOfUseUrl)
-//            SettingsViewModel.markdownView(for: "Terms & Privacy", withKey: "Privacy")
-//            SettingsViewModel.markdownView(for: "Imprint", withKey: "Imprint")
-            
+            Button("About  👤") {
+                store.send(.onAboutMeTapped)
+            }
+            Button("PDF Archiver Website  🖥") {
+                store.send(.onOpenPdfArchiverWebsiteTapped)
+            }
+            Button("Terms of Use") {
+                store.send(.onTermsOfUseTapped)
+            }
+            Button("Terms & Privacy") {
+                store.send(.onTermsAndPrivacyTapped)
+            }
+            Button("Imprint") {
+                store.send(.onImprintTapped)
+            }
             Button("Contact Support  🚑") {
                 store.send(.onContactSupportTapped)
             }
             Button("Rate App ⭐️") {
                 requestReview()
             }
-            ShareLink(item: URL(string: "https://apps.apple.com/app/pdf-archiver/id1433801905")!) {
+            ShareLink(item: store.appStoreUrl) {
                 Text("Share PDF Archiver 📱❤️🫵")
             }
         }

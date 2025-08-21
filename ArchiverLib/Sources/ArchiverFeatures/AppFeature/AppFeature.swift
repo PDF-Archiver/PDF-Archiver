@@ -277,7 +277,7 @@ struct AppView: View {
 
             #if !os(macOS)
             Tab("Settings", systemImage: "gear", value: AppFeature.State.Tab.settings) {
-                Text("TODO: Settings")
+                SettingsView(store: store.scope(state: \.settings, action: \.settings))
             }
             #endif
 
