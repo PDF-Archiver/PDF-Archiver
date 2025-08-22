@@ -20,6 +20,18 @@ extension SharedReaderKey where Self == AppStorageKey<Bool> {
   }
 }
 
+extension SharedReaderKey where Self == AppStorageKey<PDFQuality> {
+    static var pdfQuality: Self {
+        appStorage("pdfQuality", store: .standard)
+    }
+}
+
+extension SharedReaderKey where Self == AppStorageKey<StorageType> {
+    static var archivePathType: Self {
+        appStorage("archivePathType", store: .standard)
+    }
+}
+
 extension SharedReaderKey where Self == InMemoryKey<Int?> {
   static var selectedDocumentId: Self {
     inMemory("selectedDocumentId")

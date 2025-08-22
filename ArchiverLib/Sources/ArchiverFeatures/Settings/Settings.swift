@@ -11,6 +11,58 @@ import Shared
 import SwiftUI
 import StoreKit
 
+extension PDFQuality {
+    var name: LocalizedStringKey {
+        switch self {
+        case .lossless:
+            return "100% - Lossless 🤯"
+        case .good:
+            return "75% - Good 👌 (Default)"
+        case .normal:
+            return "50% - Normal 👍"
+        case .small:
+            return "25% - Small 💾"
+        }
+    }
+}
+
+extension StorageType {
+    var title: LocalizedStringKey {
+        switch self {
+            case .iCloudDrive:
+                return "☁️ iCloud Drive"
+            #if !os(macOS)
+            case .appContainer:
+                return "📱 Local"
+            #endif
+            case .local:
+                #if os(macOS)
+                return "💾 Drive"
+                #else
+                return "🗂️ Folder"
+                #endif
+        }
+    }
+
+    @ViewBuilder
+    var descriptionView: some View {
+        switch self {
+            case .iCloudDrive:
+                Text("Synchronized - Your documents are stored in iCloud Drive. They are available to you on all devices with the same iCloud account, e.g. iPhone, iPad and Mac.")
+            #if !os(macOS)
+            case .appContainer:
+                VStack(alignment: .leading) {
+                    Text("Not synchronized - your documents are only stored locally in this app. They can be transferred via the Finder on a Mac, for example.")
+                    // swiftlint:disable:next force_unwrapping
+                    Link("https://support.apple.com/en-us/HT210598", destination: URL(string: NSLocalizedString("https://support.apple.com/en-us/HT210598", comment: ""))!)
+                }
+            #endif
+            case .local:
+                Text("Not synchronized - Your documents are stored in a folder you choose on your computer. PDF Archiver does not initiate synchronization.")
+        }
+    }
+}
+
 @Reducer
 struct Settings {
     @Reducer
@@ -26,6 +78,12 @@ struct Settings {
     struct State: Equatable {
         @Presents var destination: Destination.State?
         
+        @Shared(.pdfQuality)
+        var pdfQuality: PDFQuality = .normal
+        
+        @Shared(.archivePathType)
+        var selectedArchiveType: StorageType = .iCloudDrive
+        
         let appStoreUrl = URL(string: "https://apps.apple.com/app/pdf-archiver/id1433801905")!
         let pdfArchiverWebsiteUrl = URL(string: "https://pdf-archiver.io")!
         let termsOfUseUrl = URL(string: "https://pdf-archiver.io/terms")!
@@ -40,6 +98,7 @@ struct Settings {
         case onContactSupportTapped
         case onImprintTapped
         case onOpenPdfArchiverWebsiteTapped
+        case onShowArchiveTypeSelectionTapped
         case onTermsAndPrivacyTapped
         case onTermsOfUseTapped
     }
@@ -67,6 +126,11 @@ struct Settings {
                 return .run { [pdfArchiverWebsiteUrl = state.pdfArchiverWebsiteUrl] _ in
                     await openURL(pdfArchiverWebsiteUrl)
                 }
+                
+            case .onShowArchiveTypeSelectionTapped:
+                #warning("TODO: Add this")
+                return .none
+                
             case .onTermsAndPrivacyTapped:
                 #warning("TODO: Add this")
 //                SettingsViewModel.markdownView(for: "Terms & Privacy", withKey: "Privacy")
@@ -128,21 +192,22 @@ struct SettingsView: View {
     @ViewBuilder
     private var preferences: some View {
         Section {
-//            Picker(selection: $viewModel.selectedQualityIndex, label: Text("PDF Quality")) {
-//                ForEach(0..<viewModel.qualities.count, id: \.self) {
-//                    Text(self.viewModel.qualities[$0])
-//                }
-//            }
-//
-//            Button {
+            Picker(selection: $store.pdfQuality, label: Text("PDF Quality")) {
+                ForEach(PDFQuality.allCases, id: \.self) { quality in
+                    Text(quality.name)
+                }
+            }
+
+            Button {
+                store.send(.onShowArchiveTypeSelectionTapped)
 //                viewModel.showArchiveTypeSelection = true
-//            } label: {
-//                HStack {
-//                    Text("Storage")
-//                    Spacer()
-//                    Text(viewModel.selectedArchiveType.title)
-//                }
-//            }
+            } label: {
+                HStack {
+                    Text("Storage")
+                    Spacer()
+                    Text(store.selectedArchiveType.title)
+                }
+            }
 //            .navigationDestination(isPresented: $viewModel.showArchiveTypeSelection) {
 //                StorageSelectionView(selection: $viewModel.selectedArchiveType, onCompletion: viewModel.handleDocumentPicker)
 //            }
