@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "ArchiverLib",
+    defaultLocalization: "en",
     platforms: [.iOS(.v18), .macOS(.v15)],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
@@ -26,6 +27,9 @@ let package = Package(
                     "ArchiverIntents",
                     "Shared",
                     .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+                ],
+                resources: [
+                    .process("Localizable.xcstrings")
                 ]),
         .target(name: "ArchiverStore",
                 dependencies: [

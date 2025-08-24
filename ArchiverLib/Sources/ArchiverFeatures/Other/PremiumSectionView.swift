@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-//struct PremiumSectionView: View {
+// struct PremiumSectionView: View {
 //    // swiftlint:disable:next force_unwrapping
 //    private static let manageSubscriptionUrl = URL(
 //        string: "https://apps.apple.com/account/subscriptions")!
@@ -61,11 +61,11 @@ import SwiftUI
 //            showIapView = false
 //        }
 //    }
-//}
+// }
 //
-//#if DEBUG
-//#Preview {
+// #if DEBUG
+// #Preview {
 //    PremiumSectionView()
 //        .environment(NavigationModel.shared)
-//}
-//#endif
+// }
+// #endif

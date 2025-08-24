@@ -24,7 +24,7 @@ struct ExpertSettings {
 
     var body: some ReducerOf<Self> {
         BindingReducer()
-        Reduce { state, action in
+        Reduce { _, action in
             switch action {
             case .binding:
                 return .none

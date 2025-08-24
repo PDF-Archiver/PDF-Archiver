@@ -15,6 +15,7 @@
       }
     },
     "**Drag and drop** a PDF document to this area to import it.\n\nOr **click** here to open the file browser." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -25,6 +26,7 @@
       }
     },
     "**Tap** short to start scanning a document.\n\n**Long press** to scan and share the document after processing." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -37,24 +39,10 @@
     "%@" : {
       "shouldTranslate" : false
     },
-    "%@\n\n%@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@\n\n%2$@"
-          }
-        }
-      },
-      "shouldTranslate" : false
-    },
     "%lld" : {
       "shouldTranslate" : false
     },
     "☁️ iCloud Drive" : {
-      "shouldTranslate" : false
-    },
-    "⭐️ Premium" : {
       "shouldTranslate" : false
     },
     "💾 Drive" : {
@@ -88,6 +76,7 @@
       }
     },
     "🧾 Statistics" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -174,6 +163,7 @@
       }
     },
     "Activate premium" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -184,6 +174,7 @@
       }
     },
     "Active ✅" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -226,6 +217,7 @@
       }
     },
     "An error occurred 😳" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -246,6 +238,7 @@
       }
     },
     "Archive Mode" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -254,6 +247,9 @@
           }
         }
       }
+    },
+    "archiveStorage" : {
+
     },
     "Cancel" : {
       "comment" : "Camera access in ScanViewController.",
@@ -267,6 +263,7 @@
       }
     },
     "Choose the observed folder" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -297,6 +294,7 @@
       }
     },
     "Could not find a folder provider for path:\n%@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -307,6 +305,7 @@
       }
     },
     "Could not find a subscription or lifetime purchase. Please choose one of the options below to support the app development." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -336,6 +335,9 @@
         }
       }
     },
+    "Delete document?" : {
+
+    },
     "Description" : {
       "localizations" : {
         "de" : {
@@ -347,6 +349,7 @@
       }
     },
     "Dismiss" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -369,6 +372,7 @@
     },
     "document_error_description__date_missing" : {
       "comment" : "No date could be found, e.g. while renaming the document.",
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -386,6 +390,7 @@
     },
     "document_error_description__description_missing" : {
       "comment" : "No description could be found, e.g. while renaming the document.",
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -403,6 +408,7 @@
     },
     "document_error_description__rename_failed_file_already_exists" : {
       "comment" : "Rename failed.",
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -420,6 +426,7 @@
     },
     "document_error_description__tags_missing" : {
       "comment" : "No tags could be found, e.g. while renaming the document.",
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -437,6 +444,7 @@
     },
     "document_failure_reason__date_missing" : {
       "comment" : "No date could be found, e.g. while renaming the document.",
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -454,6 +462,7 @@
     },
     "document_failure_reason__description_missing" : {
       "comment" : "No description could be found, e.g. while renaming the document.",
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -471,6 +480,7 @@
     },
     "document_failure_reason__rename_failed_file_already_exists" : {
       "comment" : "Rename failed.",
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -488,6 +498,7 @@
     },
     "document_failure_reason__tags_missing" : {
       "comment" : "No tags could be found, e.g. while renaming the document.",
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -505,6 +516,7 @@
     },
     "document_recovery_suggestion__date_missing" : {
       "comment" : "No date could be found, e.g. while renaming the document.",
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -522,6 +534,7 @@
     },
     "document_recovery_suggestion__description_missing" : {
       "comment" : "No description could be found, e.g. while renaming the document.",
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -539,6 +552,7 @@
     },
     "document_recovery_suggestion__rename_failed_file_already_exists" : {
       "comment" : "Rename failed - file already exists.",
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -556,6 +570,7 @@
     },
     "document_recovery_suggestion__tags_missing" : {
       "comment" : "No tags could be found, e.g. while renaming the document.",
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -572,6 +587,7 @@
       }
     },
     "Documents" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -593,6 +609,7 @@
       }
     },
     "Done" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -653,6 +670,7 @@
       }
     },
     "Error" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -662,10 +680,14 @@
         }
       }
     },
-    "Finder Tag Update" : {
-      "shouldTranslate" : false
+    "Expert Settings" : {
+
+    },
+    "expertSettings(ExpertSettings)" : {
+
     },
     "First year in statistics" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -676,6 +698,7 @@
       }
     },
     "Folder Provider Error" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -686,6 +709,7 @@
       }
     },
     "General" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -705,10 +729,8 @@
         }
       }
     },
-    "iCloud Sync" : {
-      "shouldTranslate" : false
-    },
     "Import Document" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -728,7 +750,24 @@
         }
       }
     },
+    "IMPRINT" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "## Angaben gemäß § 5 TMG:\n**Julian Kahnert**\n\nPostfach 53 29\n\n26043 Oldenburg\n\n## Kontakt\nTelefon: +49 (0) 441 55979822\n\nE-Mail: [mail@pdf-archiver.io](mailto:mail@pdf-archiver.io)\n\n## Haftung für Inhalte\nAls Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen.\n\nVerpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt. Eine diesbezügliche Haftung ist jedoch erst ab dem Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden von entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend entfernen.\n\n## Haftung für Links\nUnser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich. Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht erkennbar.\n\nEine permanente inhaltliche Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Links umgehend entfernen.\n\n## Urheberrecht\nDie durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers. Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerziellen Gebrauch gestattet. Soweit die Inhalte auf dieser Seite nicht vom Betreiber erstellt wurden, werden die Urheberrechte Dritter beachtet. Insbesondere werden Inhalte Dritter als solche gekennzeichnet. Sollten Sie trotzdem auf eine Urheberrechtsverletzung aufmerksam werden, bitten wir um einen entsprechenden Hinweis. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Inhalte umgehend entfernen.\n\nQuelle: [eRecht24](https://www.e-recht24.de)\n"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "## Information provided according to Sec. 5 German Telemedia Act (TMG):\n\n**Julian Kahnert**\n\nPostfach 53 29\n\n26043 Oldenburg\n\n## Contact:\n\nTelephone: +49 (0) 441 55979822\n\nEmail: [mail@pdf-archiver.io](mailto:mail@pdf-archiver.io)\n\n### Liability for Contents\n\nAs service providers, we are liable for own contents of these websites according to Sec. 7, paragraph 1 German Telemedia Act (TMG). However, according to Sec. 8 to 10 German Telemedia Act (TMG), service providers are not obligated to permanently monitor submitted or stored information or to search for evidences that indicate illegal activities.\n\nLegal obligations to removing information or to blocking the use of information remain unchallenged. In this case, liability is only possible at the time of knowledge about a specific violation of law. Illegal contents will be removed immediately at the time we get knowledge of them.\n\n### Liability for Links\n\nOur offer includes links to external third party websites. We have no influence on the contents of those websites, therefore we cannot guarantee for those contents. Providers or administrators of linked websites are always responsible for their own contents.\n\nThe linked websites had been checked for possible violations of law at the time of the establishment of the link. Illegal contents were not detected at the time of the linking. A permanent monitoring of the contents of linked websites cannot be imposed without reasonable indications that there has been a violation of law. Illegal links will be removed immediately at the time we get knowledge of them.\n\n### Copyright\n\nContents and compilations published on these websites by the providers are subject to German copyright laws. Reproduction, editing, distribution as well as the use of any kind outside the scope of the copyright law require a written permission of the author or originator. Downloads and copies of these websites are permitted for private use only.\n\nThe commercial use of our contents without permission of the originator is prohibited.\n\nCopyright laws of third parties are respected as long as the contents on these websites do not originate from the provider. Contributions of third parties on this site are indicated as such. However, if you notice any violations of copyright law, please inform us. Such contents will be removed immediately.\n\nSource: [eRecht24](https://www.e-recht24.de)\n"
+          }
+        }
+      }
+    },
     "Inactive ❌" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -737,6 +776,9 @@
           }
         }
       }
+    },
+    "Inbox" : {
+
     },
     "intro.find.description" : {
       "comment" : "Intro: Find Description",
@@ -919,6 +961,7 @@
       }
     },
     "Load all documents" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -929,6 +972,7 @@
       }
     },
     "Load less documents" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -939,6 +983,7 @@
       }
     },
     "Loading ..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -949,6 +994,7 @@
       }
     },
     "Loading documents..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -959,6 +1005,7 @@
       }
     },
     "Manage Subscription" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -979,6 +1026,7 @@
       }
     },
     "More" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -989,6 +1037,7 @@
       }
     },
     "New Document" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1009,6 +1058,7 @@
       }
     },
     "No document found" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1019,6 +1069,7 @@
       }
     },
     "No Subscription" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1039,6 +1090,7 @@
       }
     },
     "Not Selected" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1069,6 +1121,7 @@
       }
     },
     "Number of PDFs per year in your archive." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1079,6 +1132,7 @@
       }
     },
     "Observed Folder" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1088,10 +1142,8 @@
         }
       }
     },
-    "OK" : {
-      "shouldTranslate" : false
-    },
     "Open Archive Folder" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1101,13 +1153,11 @@
         }
       }
     },
-    "Open Source" : {
-      "shouldTranslate" : false
-    },
     "PDF Archiver" : {
       "shouldTranslate" : false
     },
     "PDF Archiver is not a backup solution. Please make backups of the archieved PDFs regularly." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1138,6 +1188,7 @@
       }
     },
     "PDF Statistics" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1159,6 +1210,7 @@
       }
     },
     "Please restart the app to complete the reset." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1169,6 +1221,7 @@
       }
     },
     "Preferences" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1188,13 +1241,8 @@
         }
       }
     },
-    "Premium" : {
-      "shouldTranslate" : false
-    },
-    "Premium Status:" : {
-      "shouldTranslate" : false
-    },
     "Privacy" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1205,6 +1253,7 @@
       }
     },
     "Privacy Policy" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1225,6 +1274,7 @@
       }
     },
     "Require Document Specification" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1235,6 +1285,7 @@
       }
     },
     "Require Document Tags" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1245,6 +1296,7 @@
       }
     },
     "Reset App" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1255,6 +1307,7 @@
       }
     },
     "Reset App Preferences" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1265,6 +1318,7 @@
       }
     },
     "Restore purchases" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1275,6 +1329,7 @@
       }
     },
     "Revert" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1295,6 +1350,7 @@
       }
     },
     "Save Tags in PDF Metadata" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1305,6 +1361,7 @@
       }
     },
     "Scan" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1315,6 +1372,7 @@
       }
     },
     "Scan & Share" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1325,6 +1383,7 @@
       }
     },
     "Scan Document" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1337,10 +1396,8 @@
     "Scan it. Tag it. Find it." : {
       "shouldTranslate" : false
     },
-    "Scanner" : {
-      "shouldTranslate" : false
-    },
     "Search PDFs" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1361,6 +1418,7 @@
       }
     },
     "Searchable PDFs" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1371,6 +1429,7 @@
       }
     },
     "See how many documents are currently untagged or scan a new document." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1381,6 +1440,7 @@
       }
     },
     "Select" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1391,6 +1451,7 @@
       }
     },
     "Select a document" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1401,6 +1462,7 @@
       }
     },
     "Select a document from the list." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1409,6 +1471,12 @@
           }
         }
       }
+    },
+    "Settings" : {
+
+    },
+    "Share" : {
+
     },
     "Share PDF Archiver 📱❤️🫵" : {
       "localizations" : {
@@ -1431,6 +1499,7 @@
       }
     },
     "Show Intro" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1441,6 +1510,7 @@
       }
     },
     "Show Permissions" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1491,6 +1561,7 @@
       }
     },
     "Statistics widget of your documents." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1511,6 +1582,7 @@
       }
     },
     "Support further development of a 1 person team." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1531,6 +1603,7 @@
       }
     },
     "Tag PDFs" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1541,6 +1614,7 @@
       }
     },
     "tagged" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1551,6 +1625,7 @@
       }
     },
     "Tagging Mode" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1561,6 +1636,7 @@
       }
     },
     "Tagging View" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1584,6 +1660,7 @@
       }
     },
     "Tap here to see a list of your untagged documents.\nThey can be found in your archive view after tagging." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1613,8 +1690,25 @@
         }
       }
     },
+    "TERMS_AND_PRIVACY" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "## 1. Datenschutz auf einen Blick\n### Allgemeine Hinweise\n\nDie folgenden Hinweise geben einen einfachen Überblick darüber, was mit Ihren personenbezogenen Daten passiert, wenn Sie unsere Website besuchen. Personenbezogene Daten sind alle Daten, mit denen Sie persönlich identifiziert werden können. Ausführliche Informationen zum Thema Datenschutz entnehmen Sie unserer unter diesem Text aufgeführten Datenschutzerklärung.\n\n## 2. Allgemeine Hinweise und Pflichtinformationen\n### Datenschutz\n\nDie Betreiber dieser Seiten nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Wir behandeln Ihre personenbezogenen Daten vertraulich und entsprechend der gesetzlichen Datenschutzvorschriften sowie dieser Datenschutzerklärung.\n\nWenn Sie diese Website benutzen, werden verschiedene personenbezogene Daten erhoben. Personenbezogene Daten sind Daten, mit denen Sie persönlich identifiziert werden können. Die vorliegende Datenschutzerklärung erläutert, welche Daten wir erheben und wofür wir sie nutzen. Sie erläutert auch, wie und zu welchem Zweck das geschieht.\n\nWir weisen darauf hin, dass die Datenübertragung im Internet (z.B. bei der Kommunikation per E-Mail) Sicherheitslücken aufweisen kann. Ein lückenloser Schutz der Daten vor dem Zugriff durch Dritte ist nicht möglich.\n\n## 3. Datenerfassung\n### Log-Daten/Absturz-Berichte\n\nDer Provider der Seiten/PDF Archiver/PDF Archive Viewer erheben und speichern Informationen in so genannten Log-Daten bzw. Crash-Reports, die Ihr Browser/die App an Apple übermittelt. Dies sind:\n\n* Browsertyp und Browserversion\n* Gerätename\n* verwendetes Betriebssystem\n* Referrer URL\n* Uhrzeit der Serveranfrage\n* IP-Adresse\n\nEine Zusammenführung dieser Daten mit anderen Datenquellen wird nicht vorgenommen.\n\nGrundlage für die Datenverarbeitung ist Art. 6 Abs. 1 lit. b DSGVO, der die Verarbeitung von Daten zur Erfüllung eines Vertrags oder vorvertraglicher Maßnahmen gestattet.\n\n"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "## 1. An overview of data protection\n### General\n\nThe following gives a simple overview of what happens to your personal information when you visit our website. Personal information is any data with which you could be personally identified. Detailed information on the subject of data protection can be found in our privacy policy found below.\n\n## 2. General information and mandatory information\n### Data protection\n\nThe operators of this website take the protection of your personal data very seriously. We treat your personal data as confidential and in accordance with the statutory data protection regulations and this privacy policy.\n\nIf you use this website, various pieces of personal data will be collected. Personal information is any data with which you could be personally identified. This privacy policy explains what information we collect and what we use it for. It also explains how and for what purpose this happens.\n\nPlease note that data transmitted via the internet (e.g. via email communication) may be subject to security breaches. Complete protection of your data from third-party access is not possible.\n\n## 3. Data collection\n### Log Data/Crash Reports\n\nThe website provider/PDF Archiver/PDF Archive Viewer collect and store information that your browser/the app transmits to Apple in \"log files\" or crash reports. These are:\n\n* Browser type and browser version\n* Device name\n* Operating system used\n* Referrer URL\n* Time and date of your use\n* IP address\n\nThese data will not be combined with data from other sources.\n\nThe basis for data processing is Art. 6 (1) (b) DSGVO, which allows the processing of data to fulfill a contract or for measures preliminary to a contract.\n"
+          }
+        }
+      }
+    },
     "test_file1" : {
       "comment" : "Simulator test data set",
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1632,6 +1726,7 @@
     },
     "test_file2" : {
       "comment" : "Simulator test data set",
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1649,6 +1744,7 @@
     },
     "test_file3" : {
       "comment" : "Simulator test data set",
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1684,10 +1780,8 @@
         }
       }
     },
-    "Top Tags" : {
-      "shouldTranslate" : false
-    },
     "Top Years" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1698,6 +1792,7 @@
       }
     },
     "Try another search query." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1708,6 +1803,7 @@
       }
     },
     "untagged" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1718,6 +1814,7 @@
       }
     },
     "Untagged Documents" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1726,9 +1823,6 @@
           }
         }
       }
-    },
-    "Update Finder Tags" : {
-      "shouldTranslate" : false
     },
     "Use keyboard shortcuts to navigate the document information:\n\n**TAB** to move to the next field\n**CMD S** to save the document" : {
       "localizations" : {
@@ -1740,10 +1834,8 @@
         }
       }
     },
-    "Version %@" : {
-      "shouldTranslate" : false
-    },
     "Widget Configuration" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1753,7 +1845,14 @@
         }
       }
     },
+    "Years" : {
+
+    },
+    "You are deleting the current document. Are you sure?" : {
+
+    },
     "You get a 2-week free trail before all subscriptions." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1764,6 +1863,7 @@
       }
     },
     "Your first document was imported. **Tap here** to see and archive it." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

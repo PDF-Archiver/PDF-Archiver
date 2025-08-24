@@ -8,8 +8,8 @@
 import ArchiverModels
 import ComposableArchitecture
 import Shared
-import SwiftUI
 import StoreKit
+import SwiftUI
 
 extension PDFQuality {
     var name: LocalizedStringKey {
@@ -77,24 +77,25 @@ struct Settings {
     @ObservableState
     struct State: Equatable {
         @Presents var destination: Destination.State?
-        
+
         @Shared(.pdfQuality)
         var pdfQuality: PDFQuality = .normal
-        
+
         @Shared(.archivePathType)
         var selectedArchiveType: StorageType = .iCloudDrive
-        
+
         let appStoreUrl = URL(string: "https://apps.apple.com/app/pdf-archiver/id1433801905")!
         let pdfArchiverWebsiteUrl = URL(string: "https://pdf-archiver.io")!
         let termsOfUseUrl = URL(string: "https://pdf-archiver.io/terms")!
     }
-    
+
     @Dependency(\.openURL) var openURL
 
     enum Action: BindableAction {
         case binding(BindingAction<State>)
         case destination(PresentationAction<Destination.Action>)
         case onAboutMeTapped
+        case onAdvancedSettingsTapped
         case onContactSupportTapped
         case onImprintTapped
         case onOpenPdfArchiverWebsiteTapped
@@ -110,37 +111,42 @@ struct Settings {
             case .binding:
                 return .none
             case .onAboutMeTapped:
-#warning("TODO: Add this")
-//                NavigationLink(destination: AboutMeView()) {
-//                    Text("About  👤")
-//                }
+                state.destination = .aboutMe
                 return .none
+
+            case .onAdvancedSettingsTapped:
+                state.destination = .expertSettings(.init())
+                return .none
+
             case .onContactSupportTapped:
-#warning("TODO: Add this")
-                return .none
+                let url = URL(string: "mailto:\(Constants.mailRecipient)?subject=\(Constants.mailSubject)")!
+                return .run { [url] _ in
+                    await openURL(url)
+                }
+
             case .onImprintTapped:
-#warning("TODO: Add this")
-//                SettingsViewModel.markdownView(for: "Imprint", withKey: "Imprint")
+                state.destination = .imprint
                 return .none
+
             case .onOpenPdfArchiverWebsiteTapped:
                 return .run { [pdfArchiverWebsiteUrl = state.pdfArchiverWebsiteUrl] _ in
                     await openURL(pdfArchiverWebsiteUrl)
                 }
-                
+
             case .onShowArchiveTypeSelectionTapped:
-                #warning("TODO: Add this")
+                state.destination = .archiveStorage
                 return .none
-                
+
             case .onTermsAndPrivacyTapped:
-                #warning("TODO: Add this")
-//                SettingsViewModel.markdownView(for: "Terms & Privacy", withKey: "Privacy")
+                state.destination = .termsAndPrivacy
                 return .none
 
             case .onTermsOfUseTapped:
                 return .run { [termsOfUseUrl = state.termsOfUseUrl] _ in
                     await openURL(termsOfUseUrl)
                 }
-            case .destination(_):
+
+            case .destination:
                 return .none
             }
         }
@@ -161,99 +167,115 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 preferences
-//                PremiumSectionView()
+                #warning("TODO: add the premium section here")
+                //                PremiumSectionView()
                 moreInformation
             }
+            // since we have buttons, we have to "fake" the foreground color - it would be the accent color otherwise
             .foregroundColor(.primary)
             .navigationTitle("Preferences & More")
-            #if os(iOS)
+#if os(iOS)
             .navigationViewStyle(StackNavigationViewStyle())
             .navigationBarTitleDisplayMode(.inline)
-            
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") {
-                        dismiss()
-                    }
+#endif
+            .navigationDestination(item: $store.destination) { destination in
+                switch destination {
+                case .archiveStorage:
+                    #warning("TODO: fix this")
+                    Text("archiveStorage", bundle: #bundle)
+                    //                StorageSelectionView(selection: $viewModel.selectedArchiveType, onCompletion: viewModel.handleDocumentPicker)
+                case .expertSettings:
+                    #warning("TODO: fix this")
+                    Text("expertSettings(ExpertSettings)", bundle: #bundle)
+                    //                ExpertSettingsView(notSaveDocumentTagsAsPDFMetadata: $viewModel.notSaveDocumentTagsAsPDFMetadata,
+                                    //                                                           documentTagsNotRequired: $viewModel.documentTagsNotRequired,
+                                    //                                                           documentSpecificationNotRequired: $viewModel.documentSpecificationNotRequired,
+                                    //                                                           showPermissions: viewModel.showPermissions,
+                                    //                                                           resetApp: viewModel.resetApp)
+
+                case .aboutMe:
+                    AboutMeView()
+                case .termsAndPrivacy:
+                    let content = String(localized: "TERMS_AND_PRIVACY", bundle: #bundle)
+                    MarkdownView(markdown: content)
+                        .navigationTitle(String(localized: "Terms & Privacy", bundle: #bundle))
+                case .imprint:
+                    let content = String(localized: "IMPRINT", bundle: #bundle)
+                    MarkdownView(markdown: content)
+                        .navigationTitle(Text("Imprint", bundle: #bundle))
                 }
             }
-            #endif
-        }
-        .navigationDestination(
-          item: $store.scope(
-            state: \.destination?.expertSettings,
-            action: \.destination.expertSettings
-          )
-        ) { store in
-          ExpertSettingsView(store: store)
         }
     }
 
     @ViewBuilder
     private var preferences: some View {
         Section {
-            Picker(selection: $store.pdfQuality, label: Text("PDF Quality")) {
+            Picker(selection: $store.pdfQuality, label: Text("PDF Quality", bundle: #bundle)) {
                 ForEach(PDFQuality.allCases, id: \.self) { quality in
-                    Text(quality.name)
+                    Text(quality.name, bundle: #bundle)
                 }
             }
 
             Button {
                 store.send(.onShowArchiveTypeSelectionTapped)
-//                viewModel.showArchiveTypeSelection = true
             } label: {
                 HStack {
-                    Text("Storage")
+                    Text("Storage", bundle: #bundle)
                     Spacer()
-                    Text(store.selectedArchiveType.title)
+                    Text(store.selectedArchiveType.title, bundle: #bundle)
                 }
             }
-//            .navigationDestination(isPresented: $viewModel.showArchiveTypeSelection) {
-//                StorageSelectionView(selection: $viewModel.selectedArchiveType, onCompletion: viewModel.handleDocumentPicker)
-//            }
-//
-//            Button("Open Archive Folder", action: viewModel.openArchiveFolder)
-//                // if statement in view not possible, because the StorageSelectionView was not returning to the overview
-//                // after the selection has changed.
-//                .disabled(!PathManager.shared.archivePathType.isFileBrowserCompatible)
-//                .opacity(PathManager.shared.archivePathType.isFileBrowserCompatible ? 1 : 0.3)
-//            NavigationLink(destination: ExpertSettingsView(notSaveDocumentTagsAsPDFMetadata: $viewModel.notSaveDocumentTagsAsPDFMetadata,
-//                                                           documentTagsNotRequired: $viewModel.documentTagsNotRequired,
-//                                                           documentSpecificationNotRequired: $viewModel.documentSpecificationNotRequired,
-//                                                           showPermissions: viewModel.showPermissions,
-//                                                           resetApp: viewModel.resetApp)) {
-//                Text("Advanced")
-//            }
+
+            Button {
+                store.send(.onAdvancedSettingsTapped)
+            } label: {
+                Text("Advanced", bundle: #bundle)
+            }
         } header: {
             Text("🛠 Preferences")
         }
     }
 
     private var moreInformation: some View {
-        Section(header: Text("⁉️ More Information")) {
-            Button("About  👤") {
+        Section(header: Text("⁉️ More Information", bundle: #bundle)) {
+            Button {
                 store.send(.onAboutMeTapped)
+            } label: {
+                Text("About  👤", bundle: #bundle)
             }
-            Button("PDF Archiver Website  🖥") {
+            Button {
                 store.send(.onOpenPdfArchiverWebsiteTapped)
+            } label: {
+                Text("PDF Archiver Website  🖥", bundle: #bundle)
             }
-            Button("Terms of Use") {
+            Button {
                 store.send(.onTermsOfUseTapped)
+            } label: {
+                Text("Terms of Use", bundle: #bundle)
             }
-            Button("Terms & Privacy") {
+            Button {
                 store.send(.onTermsAndPrivacyTapped)
+            } label: {
+                Text("Terms & Privacy", bundle: #bundle)
             }
-            Button("Imprint") {
+            Button {
                 store.send(.onImprintTapped)
+            } label: {
+                Text("Imprint", bundle: #bundle)
             }
-            Button("Contact Support  🚑") {
+            Button {
                 store.send(.onContactSupportTapped)
+            } label: {
+                Text("Contact Support  🚑", bundle: #bundle)
             }
-            Button("Rate App ⭐️") {
+            Button {
                 requestReview()
+            } label: {
+                Text("Rate App ⭐️", bundle: #bundle)
             }
             ShareLink(item: store.appStoreUrl) {
-                Text("Share PDF Archiver 📱❤️🫵")
+                Text("Share PDF Archiver 📱❤️🫵", bundle: #bundle)
             }
         }
     }

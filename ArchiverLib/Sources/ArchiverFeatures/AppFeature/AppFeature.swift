@@ -19,9 +19,10 @@ struct AppFeature {
             case search
             case inbox
             case statistics
-            #if !os(macOS)
+#warning("TODO: where should the settings be?")
+//            #if !os(macOS)
             case settings
-            #endif
+//            #endif
             case sectionTags(String)
             case sectionYears(Int)
         }
@@ -123,10 +124,10 @@ struct AppFeature {
                     state.archiveList.searchTokens = [.year(year)]
                 case .inbox, .statistics:
                     break
-                #if !os(macOS)
+//                #if !os(macOS)
                 case .settings:
                     break
-                #endif
+//                #endif
                 }
                 return .none
 
@@ -177,7 +178,7 @@ struct AppFeature {
 
                 // update the untagged documents
                 state.untaggedDocumentsCount = documents.filter(\Document.isTagged.flipped).count
-                
+
                 // https://pointfreeco.github.io/swift-composable-architecture/main/documentation/composablearchitecture/performance/#Sharing-logic-in-child-features
                 return reduce(into: &state, action: .archiveList(.searchSuggestionsUpdated(searchSuggestedTokens)))
 
@@ -210,7 +211,7 @@ struct AppFeature {
 
             case .settings:
                 return .none
-                
+
             case .statistics:
                 return .none
 
@@ -261,6 +262,7 @@ struct AppView: View {
         TabView(selection: $store.selectedTab) {
             // Test this with macOS 26 - is there a search tab item?
 //            Tab(value: AppFeature.State.Tab.search, role: .search) {
+//            Tab(LocalizedStringResource("Archive", bundle: #bundle), systemImage: "magnifyingglass", value: AppFeature.State.Tab.search) {
             Tab("Archive", systemImage: "magnifyingglass", value: AppFeature.State.Tab.search) {
                 archiveList
                     .modifier(ScanButtonModifier(showButton: store.archiveList.documentDetails == nil, currentTip: tips.currentTip))
@@ -275,11 +277,11 @@ struct AppView: View {
                 StatisticsView(store: store.scope(state: \.statistics, action: \.statistics))
             }
 
-            #if !os(macOS)
+//            #if !os(macOS)
             Tab("Settings", systemImage: "gear", value: AppFeature.State.Tab.settings) {
                 SettingsView(store: store.scope(state: \.settings, action: \.settings))
             }
-            #endif
+//            #endif
 
             TabSection("Tags") {
                 ForEach(store.tabTagSuggestions, id: \.self) { tag in
@@ -338,6 +340,5 @@ struct AppView: View {
     AppView(store: Store(initialState: AppFeature.State(isDocumentLoading: true)) {
         AppFeature()
             ._printChanges()
-    }
-    )
+    })
 }

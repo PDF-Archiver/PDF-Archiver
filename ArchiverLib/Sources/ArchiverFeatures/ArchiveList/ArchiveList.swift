@@ -89,7 +89,7 @@ struct ArchiveList {
             switch action {
             case .documentDetails:
                 return .none
-                
+
             case .searchSuggestionsUpdated(let suggestions):
                 state.searchSuggestedTokens = suggestions
                 return .none

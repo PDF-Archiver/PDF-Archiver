@@ -20,9 +20,9 @@ struct OnboardSet {
 extension OnboardSet {
     static func previewSet() -> OnboardSet {
         var onboardSet = OnboardSet()
-        onboardSet.newCard(title: NSLocalizedString("intro.scan.title", comment: "Intro: Scan Title"),
+        onboardSet.newCard(title: NSLocalizedString("intro.scan.title", bundle: #bundle, comment: "Intro: Scan Title"),
                            image: "scan",
-                           text: NSLocalizedString("intro.scan.description", comment: "Intro: Scan Description"))
+                           text: NSLocalizedString("intro.scan.description", bundle: #bundle, comment: "Intro: Scan Description"))
         onboardSet.newCard(title: "Login", image: "tag-1", text: "Enter your credentials and log in.")
         onboardSet.newCard(title: "Update Profile", image: "scan", text: "Make sure you update your profile and avatar.")
         onboardSet.newCard(title: "Participate", image: "tag-1", text: "Engage with others online.  Join the community.")
