@@ -15,21 +15,21 @@ import SwiftUI
     @Binding  var isPresented: Bool
     var onboardSet: OnboardSet = {
         var onboardSet = OnboardSet()
-        onboardSet.newCard(title: NSLocalizedString("intro.scan.title", bundle: #bundle, comment: "Intro: Scan Title"),
+        onboardSet.newCard(title: NSLocalizedString("intro.scan.title", bundle: .module, comment: "Intro: Scan Title"),
                            image: "scan",
-                           text: NSLocalizedString("intro.scan.description", bundle: #bundle, comment: "Intro: Scan Description"))
-        onboardSet.newCard(title: NSLocalizedString("intro.tag.title", bundle: #bundle, comment: "Intro: Tag Title"),
+                           text: NSLocalizedString("intro.scan.description", bundle: .module, comment: "Intro: Scan Description"))
+        onboardSet.newCard(title: NSLocalizedString("intro.tag.title", bundle: .module, comment: "Intro: Tag Title"),
                            image: "tag-1",
-                           text: NSLocalizedString("intro.tag.description", bundle: #bundle, comment: "Intro: Tag Description"))
-        onboardSet.newCard(title: NSLocalizedString("intro.find.title", bundle: #bundle, comment: "Intro: Find Title"),
+                           text: NSLocalizedString("intro.tag.description", bundle: .module, comment: "Intro: Tag Description"))
+        onboardSet.newCard(title: NSLocalizedString("intro.find.title", bundle: .module, comment: "Intro: Find Title"),
                            image: "find",
-                           text: NSLocalizedString("intro.find.description", bundle: #bundle, comment: "Intro: Find Description"))
-        onboardSet.newCard(title: NSLocalizedString("intro.subscription.title", bundle: #bundle, comment: "Intro: Subscription Title"),
+                           text: NSLocalizedString("intro.find.description", bundle: .module, comment: "Intro: Find Description"))
+        onboardSet.newCard(title: NSLocalizedString("intro.subscription.title", bundle: .module, comment: "Intro: Subscription Title"),
                            image: "piggy-bank",
-                           text: NSLocalizedString("intro.subscription.description", bundle: #bundle, comment: "Intro: Subscription Description"))
-        onboardSet.newCard(title: NSLocalizedString("intro.last.title", bundle: #bundle, comment: "Intro: Last Page Title"),
+                           text: NSLocalizedString("intro.subscription.description", bundle: .module, comment: "Intro: Subscription Description"))
+        onboardSet.newCard(title: NSLocalizedString("intro.last.title", bundle: .module, comment: "Intro: Last Page Title"),
                            image: "start",
-                           text: NSLocalizedString("intro.last.description", bundle: #bundle, comment: "Intro: Last Page Description"))
+                           text: NSLocalizedString("intro.last.description", bundle: .module, comment: "Intro: Last Page Description"))
         return onboardSet
     }()
      var body: some View {

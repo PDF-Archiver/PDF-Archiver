@@ -182,11 +182,11 @@ struct SettingsView: View {
                 switch destination {
                 case .archiveStorage:
                     #warning("TODO: fix this")
-                    Text("archiveStorage", bundle: #bundle)
+                    Text("archiveStorage", bundle: .module)
                     //                StorageSelectionView(selection: $viewModel.selectedArchiveType, onCompletion: viewModel.handleDocumentPicker)
                 case .expertSettings:
                     #warning("TODO: fix this")
-                    Text("expertSettings(ExpertSettings)", bundle: #bundle)
+                    Text("expertSettings(ExpertSettings)", bundle: .module)
                     //                ExpertSettingsView(notSaveDocumentTagsAsPDFMetadata: $viewModel.notSaveDocumentTagsAsPDFMetadata,
                                     //                                                           documentTagsNotRequired: $viewModel.documentTagsNotRequired,
                                     //                                                           documentSpecificationNotRequired: $viewModel.documentSpecificationNotRequired,
@@ -196,13 +196,13 @@ struct SettingsView: View {
                 case .aboutMe:
                     AboutMeView()
                 case .termsAndPrivacy:
-                    let content = String(localized: "TERMS_AND_PRIVACY", bundle: #bundle)
+                    let content = String(localized: "TERMS_AND_PRIVACY", bundle: .module)
                     MarkdownView(markdown: content)
-                        .navigationTitle(String(localized: "Terms & Privacy", bundle: #bundle))
+                        .navigationTitle(String(localized: "Terms & Privacy", bundle: .module))
                 case .imprint:
-                    let content = String(localized: "IMPRINT", bundle: #bundle)
+                    let content = String(localized: "IMPRINT", bundle: .module)
                     MarkdownView(markdown: content)
-                        .navigationTitle(Text("Imprint", bundle: #bundle))
+                        .navigationTitle(Text("Imprint", bundle: .module))
                 }
             }
         }
@@ -211,9 +211,9 @@ struct SettingsView: View {
     @ViewBuilder
     private var preferences: some View {
         Section {
-            Picker(selection: $store.pdfQuality, label: Text("PDF Quality", bundle: #bundle)) {
+            Picker(selection: $store.pdfQuality, label: Text("PDF Quality", bundle: .module)) {
                 ForEach(PDFQuality.allCases, id: \.self) { quality in
-                    Text(quality.name, bundle: #bundle)
+                    Text(quality.name, bundle: .module)
                 }
             }
 
@@ -221,16 +221,16 @@ struct SettingsView: View {
                 store.send(.onShowArchiveTypeSelectionTapped)
             } label: {
                 HStack {
-                    Text("Storage", bundle: #bundle)
+                    Text("Storage", bundle: .module)
                     Spacer()
-                    Text(store.selectedArchiveType.title, bundle: #bundle)
+                    Text(store.selectedArchiveType.title, bundle: .module)
                 }
             }
 
             Button {
                 store.send(.onAdvancedSettingsTapped)
             } label: {
-                Text("Advanced", bundle: #bundle)
+                Text("Advanced", bundle: .module)
             }
         } header: {
             Text("🛠 Preferences")
@@ -238,44 +238,44 @@ struct SettingsView: View {
     }
 
     private var moreInformation: some View {
-        Section(header: Text("⁉️ More Information", bundle: #bundle)) {
+        Section(header: Text("⁉️ More Information", bundle: .module)) {
             Button {
                 store.send(.onAboutMeTapped)
             } label: {
-                Text("About  👤", bundle: #bundle)
+                Text("About  👤", bundle: .module)
             }
             Button {
                 store.send(.onOpenPdfArchiverWebsiteTapped)
             } label: {
-                Text("PDF Archiver Website  🖥", bundle: #bundle)
+                Text("PDF Archiver Website  🖥", bundle: .module)
             }
             Button {
                 store.send(.onTermsOfUseTapped)
             } label: {
-                Text("Terms of Use", bundle: #bundle)
+                Text("Terms of Use", bundle: .module)
             }
             Button {
                 store.send(.onTermsAndPrivacyTapped)
             } label: {
-                Text("Terms & Privacy", bundle: #bundle)
+                Text("Terms & Privacy", bundle: .module)
             }
             Button {
                 store.send(.onImprintTapped)
             } label: {
-                Text("Imprint", bundle: #bundle)
+                Text("Imprint", bundle: .module)
             }
             Button {
                 store.send(.onContactSupportTapped)
             } label: {
-                Text("Contact Support  🚑", bundle: #bundle)
+                Text("Contact Support  🚑", bundle: .module)
             }
             Button {
                 requestReview()
             } label: {
-                Text("Rate App ⭐️", bundle: #bundle)
+                Text("Rate App ⭐️", bundle: .module)
             }
             ShareLink(item: store.appStoreUrl) {
-                Text("Share PDF Archiver 📱❤️🫵", bundle: #bundle)
+                Text("Share PDF Archiver 📱❤️🫵", bundle: .module)
             }
         }
     }

@@ -262,7 +262,7 @@ struct AppView: View {
         TabView(selection: $store.selectedTab) {
             // Test this with macOS 26 - is there a search tab item?
 //            Tab(value: AppFeature.State.Tab.search, role: .search) {
-//            Tab(LocalizedStringResource("Archive", bundle: #bundle), systemImage: "magnifyingglass", value: AppFeature.State.Tab.search) {
+//            Tab(LocalizedStringResource("Archive", bundle: .module), systemImage: "magnifyingglass", value: AppFeature.State.Tab.search) {
             Tab("Archive", systemImage: "magnifyingglass", value: AppFeature.State.Tab.search) {
                 archiveList
                     .modifier(ScanButtonModifier(showButton: store.archiveList.documentDetails == nil, currentTip: tips.currentTip))
