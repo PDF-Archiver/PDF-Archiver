@@ -244,7 +244,7 @@ struct DocumentInformationFormView: View {
             Section {
                 TipView(tips.currentTip as? TaggingTips.Date)
                     .tipImageSize(TaggingTips.size)
-                DatePicker("Date", selection: $store.document.date, displayedComponents: .date)
+                DatePicker(String(localized: "Date", bundle: .module), selection: $store.document.date, displayedComponents: .date)
                     .focused($focusedField, equals: .date)
                     .listRowSeparator(.hidden)
                     .sensoryFeedback(.selection, trigger: store.document.date)
@@ -259,7 +259,7 @@ struct DocumentInformationFormView: View {
                         .fixedSize()
                         .buttonStyle(.bordered)
                     }
-                    Button("Today", systemImage: "calendar") {
+                    Button(String(localized: "Today", bundle: .module), systemImage: "calendar") {
                         store.send(.onTodayButtonTapped)
                     }
                     .labelStyle(.iconOnly)
@@ -271,8 +271,8 @@ struct DocumentInformationFormView: View {
             Section {
                 TipView(tips.currentTip as? TaggingTips.Specification)
                     .tipImageSize(TaggingTips.size)
-                TextField(text: $store.document.specification, prompt: Text("Enter specification")) {
-                    Text("Specification")
+                TextField(text: $store.document.specification, prompt: Text("Enter specification", bundle: .module)) {
+                    Text("Specification", bundle: .module)
                 }
                 .focused($focusedField, equals: .specification)
                 #if os(macOS)
@@ -289,7 +289,7 @@ struct DocumentInformationFormView: View {
                 #endif
                 HStack {
                     Spacer()
-                    Button("Save") {
+                    Button(String(localized: "Save", bundle: .module)) {
                         store.send(.onSaveButtonTapped)
                         #if os(macOS)
                         Task {
@@ -318,7 +318,7 @@ struct DocumentInformationFormView: View {
                 .tipImageSize(TaggingTips.size)
             VStack(alignment: .leading, spacing: 16) {
                 if store.document.tags.isEmpty {
-                    Text("No tags selected")
+                    Text("No tags selected", bundle: .module)
                         .foregroundStyle(.secondary)
                 } else {
                     TagListView(tags: store.document.tags.sorted(),
@@ -336,7 +336,7 @@ struct DocumentInformationFormView: View {
                             tapHandler: { store.send(.onTagSuggestionTapped($0)) })
                 .focusable(false)
 
-                TextField("Enter Tag", text: $store.tagSearchterm)
+                TextField(String(localized: "Enter Tag", bundle: .module), text: $store.tagSearchterm)
                     .onSubmit {
                         store.send(.onTagSearchtermSubmitted)
                     }

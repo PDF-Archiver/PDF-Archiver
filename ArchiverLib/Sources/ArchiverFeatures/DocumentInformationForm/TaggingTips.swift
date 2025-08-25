@@ -12,11 +12,11 @@ enum TaggingTips {
 
     struct Date: Tip {
         var title: Text {
-            Text("Date")
+            Text("Date", bundle: .module)
         }
 
         var message: Text? {
-            Text("Specify the Date of the Document")
+            Text("Specify the Date of the Document", bundle: .module)
         }
 
         var image: Image? {
@@ -26,11 +26,11 @@ enum TaggingTips {
 
     struct Specification: Tip {
         var title: Text {
-            Text("Description")
+            Text("Description", bundle: .module)
         }
 
         var message: Text? {
-            Text("Meaningful description, e.g. _blue hoodie_")
+            Text("Meaningful description, e.g. _blue hoodie_", bundle: .module)
         }
 
         var image: Image? {
@@ -40,11 +40,11 @@ enum TaggingTips {
 
     struct Tags: Tip {
         var title: Text {
-            Text("Tags")
+            Text("Tags", bundle: .module)
         }
 
         var message: Text? {
-            Text("Tags of the document, e.g. _bill_ and _clothing_")
+            Text("Tags of the document, e.g. _bill_ and _clothing_", bundle: .module)
         }
 
         var image: Image? {
@@ -57,11 +57,11 @@ enum TaggingTips {
         static let documentSaved = Event(id: "documentSaved")
 
         var title: Text {
-            Text("Keyboard Shortcuts")
+            Text("Keyboard Shortcuts", bundle: .module)
         }
 
         var message: Text? {
-            Text("Use keyboard shortcuts to navigate the document information:\n\n**TAB** to move to the next field\n**CMD S** to save the document")
+            Text("Use keyboard shortcuts to navigate the document information:\n\n**TAB** to move to the next field\n**CMD S** to save the document", bundle: .module)
         }
 
         var image: Image? {

@@ -37,7 +37,7 @@ struct ExpertSettingsView: View {
     @Bindable var store: StoreOf<ExpertSettings>
 
     var body: some View {
-        Text("Expert Settings")
+        Text("Expert Settings", bundle: .module)
     }
 }
 

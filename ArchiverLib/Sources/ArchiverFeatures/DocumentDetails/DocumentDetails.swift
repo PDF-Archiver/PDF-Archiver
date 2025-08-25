@@ -177,7 +177,7 @@ struct DocumentDetailsView: View {
                 Button {
                     store.send(.onEditButtonTapped)
                 } label: {
-                    Label("Edit", systemImage: "pencil")
+                    Label(String(localized: "Edit", bundle: .module), systemImage: "pencil")
                 }
 
                 #if os(macOS)
@@ -185,7 +185,7 @@ struct DocumentDetailsView: View {
                     Button(role: .none) {
                         NSWorkspace.shared.activateFileViewerSelecting([store.document.url])
                     } label: {
-                        Label("Show in Finder", systemImage: "folder")
+                        Label(String(localized: "Show in Finder", bundle: .module), systemImage: "folder")
                     }
                 #endif
 
@@ -194,7 +194,7 @@ struct DocumentDetailsView: View {
                 Button(role: .none) {
                     store.send(.onShareButtonTapped)
                 } label: {
-                    Label("Share", systemImage: "square.and.arrow.up")
+                    Label(String(localized: "Share", bundle: .module), systemImage: "square.and.arrow.up")
                 }
                 #else
                 // iOS 18 Bug: when the inspector is active/shown, ShareLink will not trigger the share sheet.
@@ -209,7 +209,7 @@ struct DocumentDetailsView: View {
                 Button(role: .destructive) {
                     store.send(.onDeleteDocumentButtonTapped)
                 } label: {
-                    Label("Delete", systemImage: "trash")
+                    Label(String(localized: "Delete", bundle: .module), systemImage: "trash")
                         .foregroundColor(.red)
                 }
             }

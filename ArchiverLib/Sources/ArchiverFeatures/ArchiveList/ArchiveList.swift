@@ -127,7 +127,9 @@ struct ArchiveListView: View {
         Group {
             if store.filteredDocuments.isEmpty {
                 if store.searchText.isEmpty {
-                    ContentUnavailableView("Empty Archive", systemImage: "archivebox", description: Text("Start scanning and tagging your first document."))
+                    ContentUnavailableView(String(localized: "Empty Archive", bundle: .module),
+                                           systemImage: "archivebox",
+                                           description: Text("Start scanning and tagging your first document.", bundle: .module))
                 } else {
                     let text = store.searchTokens.map({ "'\($0.value)' " }).joined() + store.searchText
                     ContentUnavailableView.search(text: text)
@@ -145,7 +147,7 @@ struct ArchiveListView: View {
                     tokens: $store.searchTokens,
                     suggestedTokens: $store.searchSuggestedTokens,
 //                    placement: .toolbar,
-                    prompt: "Search your documents") { token in
+                    prompt: String(localized: "Search your documents", bundle: .module)) { token in
             switch token {
             case .tag(let tag):
                 Label(tag, systemImage: "tag")

@@ -778,7 +778,14 @@
       }
     },
     "Inbox" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eingang"
+          }
+        }
+      }
     },
     "intro.find.description" : {
       "comment" : "Intro: Find Description",
@@ -1473,7 +1480,14 @@
       }
     },
     "Settings" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungen"
+          }
+        }
+      }
     },
     "Share" : {
 

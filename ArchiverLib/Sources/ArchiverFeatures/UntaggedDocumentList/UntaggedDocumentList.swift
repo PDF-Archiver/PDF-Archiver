@@ -58,7 +58,9 @@ struct UntaggedDocumentListView: View {
     var body: some View {
         Group {
             if store.untaggedDocuments.isEmpty {
-                ContentUnavailableView("No document", systemImage: "checkmark.seal", description: Text("Congratulations! All documents are tagged. 🎉"))
+                ContentUnavailableView(String(localized: "No document", bundle: .module),
+                                       systemImage: "checkmark.seal",
+                                       description: Text("Congratulations! All documents are tagged. 🎉", bundle: .module))
             } else {
                 List(store.untaggedDocuments, selection: $store.selectedDocumentId) { document in
                     Text(document.url.lastPathComponent)

@@ -28,10 +28,10 @@ struct PDFArchiverMacApp: App, Log {
 //        .environment(navigationModel)
 //        .modelContainer(container)
 
-        Settings {
-            SettingsViewMacOS(viewModel: moreViewModel)
-        }
-        .windowStyle(HiddenTitleBarWindowStyle())
+//        Settings {
+//            SettingsViewMacOS(viewModel: moreViewModel)
+//        }
+//        .windowStyle(HiddenTitleBarWindowStyle())
 //        .environment(navigationModel)
 //        .modelContainer(container)
     }
