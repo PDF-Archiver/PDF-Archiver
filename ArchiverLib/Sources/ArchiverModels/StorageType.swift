@@ -12,3 +12,9 @@ public enum StorageType: String, CaseIterable, Sendable {
 #endif
     case local
 }
+
+extension StorageType: Identifiable {
+    public var id: String {
+        rawValue
+    }
+}

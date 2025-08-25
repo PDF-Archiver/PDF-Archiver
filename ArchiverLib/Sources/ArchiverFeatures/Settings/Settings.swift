@@ -102,6 +102,7 @@ struct Settings {
         case onShowArchiveTypeSelectionTapped
         case onTermsAndPrivacyTapped
         case onTermsOfUseTapped
+        case receiveStoragePickerResult(Result<URL, any Error>)
     }
 
     var body: some ReducerOf<Self> {
@@ -110,12 +111,16 @@ struct Settings {
             switch action {
             case .binding:
                 return .none
+                
+            case .destination:
+                return .none
+
             case .onAboutMeTapped:
                 state.destination = .aboutMe
                 return .none
 
             case .onAdvancedSettingsTapped:
-                state.destination = .expertSettings(.init())
+                state.destination = .expertSettings(ExpertSettings.State())
                 return .none
 
             case .onContactSupportTapped:
@@ -146,7 +151,8 @@ struct Settings {
                     await openURL(termsOfUseUrl)
                 }
 
-            case .destination:
+            case .receiveStoragePickerResult(let result):
+                #warning("TODO: implement storage picker result handling")
                 return .none
             }
         }
@@ -181,18 +187,16 @@ struct SettingsView: View {
             .navigationDestination(item: $store.destination) { destination in
                 switch destination {
                 case .archiveStorage:
-                    #warning("TODO: fix this")
-                    Text("archiveStorage", bundle: .module)
-                    //                StorageSelectionView(selection: $viewModel.selectedArchiveType, onCompletion: viewModel.handleDocumentPicker)
+                    StorageSelectionView(selection: $store.selectedArchiveType,
+                                         onCompletion: { result in
+                        store.send(.receiveStoragePickerResult(result))
+                    })
                 case .expertSettings:
-                    #warning("TODO: fix this")
-                    Text("expertSettings(ExpertSettings)", bundle: .module)
-                    //                ExpertSettingsView(notSaveDocumentTagsAsPDFMetadata: $viewModel.notSaveDocumentTagsAsPDFMetadata,
-                                    //                                                           documentTagsNotRequired: $viewModel.documentTagsNotRequired,
-                                    //                                                           documentSpecificationNotRequired: $viewModel.documentSpecificationNotRequired,
-                                    //                                                           showPermissions: viewModel.showPermissions,
-                                    //                                                           resetApp: viewModel.resetApp)
-
+                    if let expertSettingsStore = store.scope(state: \.destination?.expertSettings, action: \.destination.expertSettings) {
+                        ExpertSettingsView(store: expertSettingsStore)
+                    } else {
+                        preconditionFailure("Failed to load export nothing found")
+                    }
                 case .aboutMe:
                     AboutMeView()
                 case .termsAndPrivacy:

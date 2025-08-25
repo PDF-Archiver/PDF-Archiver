@@ -248,9 +248,6 @@
         }
       }
     },
-    "archiveStorage" : {
-
-    },
     "Cancel" : {
       "comment" : "Camera access in ScanViewController.",
       "localizations" : {
@@ -683,7 +680,7 @@
     "Expert Settings" : {
 
     },
-    "expertSettings(ExpertSettings)" : {
+    "Failed to load export nothing found" : {
 
     },
     "First year in statistics" : {
@@ -1164,7 +1161,6 @@
       "shouldTranslate" : false
     },
     "PDF Archiver is not a backup solution. Please make backups of the archieved PDFs regularly." : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1860,7 +1856,14 @@
       }
     },
     "Years" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jahre"
+          }
+        }
+      }
     },
     "You are deleting the current document. Are you sure?" : {
 

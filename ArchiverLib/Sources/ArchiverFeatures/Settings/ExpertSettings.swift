@@ -33,6 +33,12 @@ struct ExpertSettings {
     }
 }
 
+//ExpertSettingsView(notSaveDocumentTagsAsPDFMetadata: $viewModel.notSaveDocumentTagsAsPDFMetadata,
+//                   documentTagsNotRequired: $viewModel.documentTagsNotRequired,
+//                   documentSpecificationNotRequired: $viewModel.documentSpecificationNotRequired,
+//                   showPermissions: viewModel.showPermissions,
+//                   resetApp: viewModel.resetApp)
+
 struct ExpertSettingsView: View {
     @Bindable var store: StoreOf<ExpertSettings>
 
