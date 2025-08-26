@@ -28,6 +28,7 @@ struct AppFeature {
         }
         @Shared(.documents) var documents: IdentifiedArrayOf<Document> = []
         @Shared(.tutorialShown) var tutorialShown = false
+        @Shared(.premiumStatus) var premiumStatus: PremiumStatus = .loading
 
         var selectedTab = Tab.search
         var tabTagSuggestions: [String] = []
@@ -305,6 +306,7 @@ struct AppView: View {
         }
         .tabViewStyle(.sidebarAdaptable)
         .modifier(AlertDataModelProvider())
+        .modifier(IAP(premiumStatus: $store.premiumStatus))
         .toolbar {
             #warning("Not showing on iOS")
             ToolbarItem(placement: .destructiveAction) {

@@ -67,11 +67,11 @@ extension StorageType {
 struct Settings {
     @Reducer
     enum Destination {
+        case aboutMe
         case archiveStorage
         case expertSettings(ExpertSettings)
-        case aboutMe
-        case termsAndPrivacy
         case imprint
+        case termsAndPrivacy
     }
 
     @ObservableState
@@ -83,6 +83,8 @@ struct Settings {
 
         @Shared(.archivePathType)
         var selectedArchiveType: StorageType = .iCloudDrive
+
+        let premiumSection = PremiumSection.State()
 
         let appStoreUrl = URL(string: "https://apps.apple.com/app/pdf-archiver/id1433801905")!
         let pdfArchiverWebsiteUrl = URL(string: "https://pdf-archiver.io")!
@@ -102,6 +104,7 @@ struct Settings {
         case onShowArchiveTypeSelectionTapped
         case onTermsAndPrivacyTapped
         case onTermsOfUseTapped
+        case premiumSection(PremiumSection.Action)
         case receiveStoragePickerResult(Result<URL, any Error>)
     }
 
@@ -111,7 +114,7 @@ struct Settings {
             switch action {
             case .binding:
                 return .none
-                
+
             case .destination:
                 return .none
 
@@ -151,6 +154,9 @@ struct Settings {
                     await openURL(termsOfUseUrl)
                 }
 
+            case .premiumSection:
+                return .none
+
             case .receiveStoragePickerResult(let result):
                 #warning("TODO: implement storage picker result handling")
                 return .none
@@ -173,8 +179,7 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 preferences
-                #warning("TODO: add the premium section here")
-                //                PremiumSectionView()
+                PremiumSectionView(store: store.scope(state: \.premiumSection, action: \.premiumSection))
                 moreInformation
             }
             // since we have buttons, we have to "fake" the foreground color - it would be the accent color otherwise

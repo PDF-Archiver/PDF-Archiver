@@ -16,8 +16,6 @@ public enum Constants {
     public static let mailRecipient = "support@pdf-archiver.io"
     public static let mailSubject = "PDF Archiver: Support"
 
-    public static let inAppPurchaseGroupId = "20516661"
-
     #if os(macOS)
     public static let tempDocumentURL = URL.temporaryDirectory.appendingPathComponent("TempDocuments")
     #else

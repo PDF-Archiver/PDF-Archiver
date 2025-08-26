@@ -5,9 +5,7 @@
 //  Created by Julian Kahnert on 30.06.25.
 //
 
-import ArchiverModels
 import ComposableArchitecture
-import Shared
 import SwiftUI
 
 @Reducer
@@ -33,7 +31,7 @@ struct ExpertSettings {
     }
 }
 
-//ExpertSettingsView(notSaveDocumentTagsAsPDFMetadata: $viewModel.notSaveDocumentTagsAsPDFMetadata,
+// ExpertSettingsView(notSaveDocumentTagsAsPDFMetadata: $viewModel.notSaveDocumentTagsAsPDFMetadata,
 //                   documentTagsNotRequired: $viewModel.documentTagsNotRequired,
 //                   documentSpecificationNotRequired: $viewModel.documentSpecificationNotRequired,
 //                   showPermissions: viewModel.showPermissions,

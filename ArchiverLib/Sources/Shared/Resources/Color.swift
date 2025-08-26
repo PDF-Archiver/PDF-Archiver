@@ -24,12 +24,20 @@ public extension Color {
         Color(.paPDFBackground)
     }
 
+    static var paBackgroundAsset: Color {
+        Color(.paBackground)
+    }
+
     static var paDarkGrayAsset: Color {
         Color(.paDarkGray)
     }
 
     static var paLightGrayAsset: Color {
         Color(.paLightGray)
+    }
+
+    static var paWhiteAsset: Color {
+        Color(.paWhite)
     }
 
     static var secondaryLabelAsset: Color {

@@ -45,6 +45,9 @@
     "☁️ iCloud Drive" : {
       "shouldTranslate" : false
     },
+    "⭐️ Premium" : {
+
+    },
     "💾 Drive" : {
       "localizations" : {
         "de" : {
@@ -163,7 +166,6 @@
       }
     },
     "Activate premium" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -174,7 +176,6 @@
       }
     },
     "Active ✅" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -302,7 +303,6 @@
       }
     },
     "Could not find a subscription or lifetime purchase. Please choose one of the options below to support the app development." : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -726,6 +726,9 @@
         }
       }
     },
+    "iCloud Sync" : {
+
+    },
     "Import Document" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -764,7 +767,6 @@
       }
     },
     "Inactive ❌" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -987,7 +989,6 @@
       }
     },
     "Loading ..." : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1009,7 +1010,6 @@
       }
     },
     "Manage Subscription" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1073,7 +1073,6 @@
       }
     },
     "No Subscription" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1156,6 +1155,9 @@
           }
         }
       }
+    },
+    "Open Source" : {
+
     },
     "PDF Archiver" : {
       "shouldTranslate" : false
@@ -1244,6 +1246,12 @@
         }
       }
     },
+    "Premium" : {
+
+    },
+    "Premium Status:" : {
+
+    },
     "Privacy" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1321,7 +1329,6 @@
       }
     },
     "Restore purchases" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1399,8 +1406,10 @@
     "Scan it. Tag it. Find it." : {
       "shouldTranslate" : false
     },
+    "Scanner" : {
+
+    },
     "Search PDFs" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1421,7 +1430,6 @@
       }
     },
     "Searchable PDFs" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1592,7 +1600,6 @@
       }
     },
     "Support further development of a 1 person team." : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1613,7 +1620,6 @@
       }
     },
     "Tag PDFs" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1869,7 +1875,6 @@
 
     },
     "You get a 2-week free trail before all subscriptions." : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

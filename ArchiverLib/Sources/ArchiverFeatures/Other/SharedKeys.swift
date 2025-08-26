@@ -32,8 +32,14 @@ extension SharedReaderKey where Self == AppStorageKey<StorageType> {
     }
 }
 
+extension SharedReaderKey where Self == InMemoryKey<PremiumStatus> {
+    static var premiumStatus: Self {
+        inMemory("premiumStatus")
+    }
+}
+
 extension SharedReaderKey where Self == InMemoryKey<Int?> {
-  static var selectedDocumentId: Self {
-    inMemory("selectedDocumentId")
-  }
+    static var selectedDocumentId: Self {
+        inMemory("selectedDocumentId")
+    }
 }
