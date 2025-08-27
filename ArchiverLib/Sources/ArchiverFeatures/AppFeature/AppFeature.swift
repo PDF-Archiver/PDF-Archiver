@@ -35,6 +35,7 @@ struct AppFeature {
         var tabYearSuggestions: [Int] = []
         var untaggedDocumentsCount: Int = 0
         var isDocumentLoading = true
+        var showIapView = false
 
         var archiveList = ArchiveList.State()
         var untaggedDocumentList = UntaggedDocumentList.State()
@@ -47,6 +48,7 @@ struct AppFeature {
         case archiveList(ArchiveList.Action)
         case documentsChanged([Document])
         case isLoadingChanged(Bool)
+        case onCancelIapButtonTapped
         case onLongBackgroundTask
         case untaggedDocumentList(UntaggedDocumentList.Action)
         case statistics(Statistics.Action)
@@ -132,6 +134,10 @@ struct AppFeature {
                 }
                 return .none
 
+            case .binding(\.premiumStatus):
+                state.showIapView = state.premiumStatus == .inactive
+                return .none
+
             case .binding:
                 return .none
 
@@ -185,6 +191,10 @@ struct AppFeature {
 
             case .isLoadingChanged(let isLoading):
                 state.isDocumentLoading = isLoading
+                return .none
+
+            case .onCancelIapButtonTapped:
+                state.selectedTab = .search
                 return .none
 
             case .onLongBackgroundTask:
@@ -334,6 +344,11 @@ struct AppView: View {
         NavigationStack {
             UntaggedDocumentListView(store: store.scope(state: \.untaggedDocumentList, action: \.untaggedDocumentList))
                 .navigationTitle(Text("Inbox", bundle: .module))
+                .sheet(isPresented: $store.showIapView) {
+                    IAPView {
+                        store.send(.onCancelIapButtonTapped)
+                    }
+                }
         }
     }
 }

@@ -84,7 +84,7 @@ struct Settings {
         @Shared(.archivePathType)
         var selectedArchiveType: StorageType = .iCloudDrive
 
-        let premiumSection = PremiumSection.State()
+        var premiumSection = PremiumSection.State()
 
         let appStoreUrl = URL(string: "https://apps.apple.com/app/pdf-archiver/id1433801905")!
         let pdfArchiverWebsiteUrl = URL(string: "https://pdf-archiver.io")!
@@ -110,6 +110,9 @@ struct Settings {
 
     var body: some ReducerOf<Self> {
         BindingReducer()
+        Scope(state: \.premiumSection, action: \.premiumSection) {
+            PremiumSection()
+        }
         Reduce { state, action in
             switch action {
             case .binding:

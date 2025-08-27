@@ -53,9 +53,6 @@ struct PremiumSection {
     private static let manageSubscriptionUrl = URL(
         string: "https://apps.apple.com/account/subscriptions")!
 
-//    @Environment(NavigationModel.self) var navigationModel
-//    @State private var showIapView: Bool = false
-
      @Bindable var store: StoreOf<PremiumSection>
 
     var body: some View {
@@ -73,31 +70,31 @@ struct PremiumSection {
                     Text("Inactive ❌", bundle: .module)
                 }
             }
-            if store.premiumStatus == .active || store.premiumStatus == .loading {
+            if store.premiumStatus == .inactive {
                 Button {
                     store.send(.onActivatePremiumButtonTapped)
                 } label: {
                     Text("Activate premium", bundle: .module)
                 }
-                #if os(macOS)
-                .sheet(isPresented: $store.showIapView) {
-                    IAPView {
-                        store.send(.onCancelIapButtonTapped)
-                    }
-                }
-                #else
-                .navigationDestination(isPresented: $store.showIapView) {
-                    IAPView {
-                        store.send(.onCancelIapButtonTapped)
-                    }
-                }
-                #endif
             }
 
             Link("Manage Subscription", destination: Self.manageSubscriptionUrl)
         } header: {
             Text("⭐️ Premium")
         }
+        #if os(macOS)
+        .sheet(isPresented: $store.showIapView) {
+            IAPView {
+                store.send(.onCancelIapButtonTapped)
+            }
+        }
+        #else
+        .navigationDestination(isPresented: $store.showIapView) {
+            IAPView {
+                store.send(.onCancelIapButtonTapped)
+            }
+        }
+        #endif
         #if os(macOS)
         .frame(width: 450, height: 50)
         #endif
