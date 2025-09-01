@@ -22,6 +22,7 @@ struct ScanButtonModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .overlay(alignment: .bottomTrailing) {
                 DropButton(state: dropHandler.documentProcessingState) { _ in
                     #if os(macOS)

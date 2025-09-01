@@ -11,6 +11,7 @@ import ArchiverModels
 import OSLog
 import PDFKit
 import Shared
+import Sharing
 import Vision
 
 #if canImport(UIKit)
@@ -27,6 +28,8 @@ private typealias DrawingOptions = NSString.DrawingOptions
 
 @StorageActor
 final class PDFProcessingOperation: AsyncOperation {
+    @Shared(.pdfQuality) private var pdfQuality: PDFQuality = .normal
+
     private static let log = Logger(subsystem: "processing", category: "pdf-processing-operation")
     private static let tempDocumentURL = Constants.tempDocumentURL
     private static let confidenceThreshold = Float(0)
@@ -293,7 +296,8 @@ final class PDFProcessingOperation: AsyncOperation {
                         let filename = "\(index)---\(uuid.uuidString).jpg"
                         let imageUrl = Self.tempDocumentURL.appendingPathComponent(filename, isDirectory: false)
 
-                        try image.jpg(quality: 1)?.write(to: imageUrl)
+                        let quality = CGFloat(pdfQuality.rawValue)
+                        try image.jpg(quality: quality)?.write(to: imageUrl)
                         urls.append(imageUrl)
                     }
                 } catch {

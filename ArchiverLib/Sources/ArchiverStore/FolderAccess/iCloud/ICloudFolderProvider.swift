@@ -19,7 +19,7 @@ final class ICloudFolderProvider: FolderProvider {
     private let metadataQuery: NSMetadataQuery
 
     private var currentDocuments: [Int: DocumentInformation] = [:]
-    private var lastDocuments: [DocumentInformation] = []
+    private var lastDocuments: [DocumentInformation]?
 
     init(baseUrl: URL) throws {
         self.baseUrl = baseUrl
@@ -121,7 +121,7 @@ final class ICloudFolderProvider: FolderProvider {
             currentDocuments[id] = nil
         }
         let documents = Array(currentDocuments.values)
-        guard lastDocuments.sorted() != documents.sorted() else { return }
+        guard lastDocuments?.sorted() != documents.sorted() else { return }
         currentDocumentsStreamContinuation.yield(documents)
         lastDocuments = documents
     }

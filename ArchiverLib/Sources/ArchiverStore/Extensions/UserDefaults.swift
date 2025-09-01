@@ -2,25 +2,15 @@ import Foundation
 import OSLog
 import Shared
 
+// TODO: these last user defaults should be moved to "Sharing" long term
 extension UserDefaults: Log {
     static var appGroup: UserDefaults {
-        // swiftlint:disable:next force_unwrapping
-//        UserDefaults(suiteName: Constants.sharedContainerIdentifier)!
         UserDefaults.standard
     }
 
     enum Names: String, CaseIterable {
-//        case tutorialShown = "tutorial-v1"
-//        case isTaggingMode
-//        case pdfQuality
-//        case lastAppUsagePermitted
-//        case archiveURL
-//        case untaggedURL
         case observedFolderURL
         case archivePathType
-//        case notSaveDocumentTagsAsPDFMetadata
-//        case documentTagsNotRequired
-//        case documentSpecificationNotRequired
     }
 
     static var isInDemoMode: Bool {

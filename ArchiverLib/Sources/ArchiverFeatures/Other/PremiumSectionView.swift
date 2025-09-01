@@ -78,7 +78,7 @@ struct PremiumSection {
                 }
             }
 
-            Link("Manage Subscription", destination: Self.manageSubscriptionUrl)
+            Link(String(localized: "Manage Subscription", bundle: .module), destination: Self.manageSubscriptionUrl)
         } header: {
             Text("⭐️ Premium")
         }
