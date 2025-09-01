@@ -1,3 +1,4 @@
+import ArchiverModels
 import Foundation
 import OSLog
 import Shared
@@ -55,12 +56,12 @@ extension UserDefaults: Log {
     }
     #endif
 
-    static var archivePathType: PathManager.ArchivePathType? {
+    public static var archivePathType: StorageType? {
         get {
 
             do {
                 var staleBookmarkData = false
-                if let type: PathManager.ArchivePathType = try? appGroup.getObject(forKey: .archivePathType) {
+                if let type: StorageType = try? appGroup.getObject(forKey: .archivePathType) {
                     return type
                 } else if let bookmarkData = appGroup.object(forKey: Names.archivePathType.rawValue) as? Data {
                     #if os(macOS)

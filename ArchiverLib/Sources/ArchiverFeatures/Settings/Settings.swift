@@ -78,11 +78,16 @@ struct Settings {
     struct State: Equatable {
         @Presents var destination: Destination.State?
 
-        @Shared(.pdfQuality)
-        var pdfQuality: PDFQuality = .normal
+        @Shared(.pdfQuality) var pdfQuality: PDFQuality
 
-        @Shared(.archivePathType)
-        var selectedArchiveType: StorageType = .iCloudDrive
+        var selectedArchiveType: StorageType {
+            set {
+                UserDefaults.archivePathType = newValue
+            }
+            get {
+                UserDefaults.archivePathType ?? .iCloudDrive
+            }
+        }
 
         var premiumSection = PremiumSection.State()
 
@@ -105,7 +110,6 @@ struct Settings {
         case onTermsAndPrivacyTapped
         case onTermsOfUseTapped
         case premiumSection(PremiumSection.Action)
-        case receiveStoragePickerResult(Result<URL, any Error>)
     }
 
     var body: some ReducerOf<Self> {
@@ -115,6 +119,10 @@ struct Settings {
         }
         Reduce { state, action in
             switch action {
+            case .binding(\.selectedArchiveType):
+                #warning("TODO: implement storage picker result handling")
+                return .none
+
             case .binding:
                 return .none
 
@@ -159,10 +167,6 @@ struct Settings {
 
             case .premiumSection:
                 return .none
-
-            case .receiveStoragePickerResult(let result):
-                #warning("TODO: implement storage picker result handling")
-                return .none
             }
         }
         .ifLet(\.$destination, action: \.destination)
@@ -195,10 +199,7 @@ struct SettingsView: View {
             .navigationDestination(item: $store.destination) { destination in
                 switch destination {
                 case .archiveStorage:
-                    StorageSelectionView(selection: $store.selectedArchiveType,
-                                         onCompletion: { result in
-                        store.send(.receiveStoragePickerResult(result))
-                    })
+                    StorageSelectionView(selection: $store.selectedArchiveType)
                 case .expertSettings:
                     if let expertSettingsStore = store.scope(state: \.destination?.expertSettings, action: \.destination.expertSettings) {
                         ExpertSettingsView(store: expertSettingsStore)

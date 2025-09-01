@@ -12,7 +12,7 @@ import SwiftUI
 @main
 struct PDFArchiverMacApp: App, Log {
 
-    @StateObject private var moreViewModel = SettingsViewModel()
+//    @StateObject private var moreViewModel = SettingsViewModel()
     private var navigationModel: NavigationModel = .shared
 
     init() {

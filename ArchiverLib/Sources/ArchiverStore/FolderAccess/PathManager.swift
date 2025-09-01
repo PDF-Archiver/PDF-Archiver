@@ -5,15 +5,20 @@
 //  Created by Julian Kahnert on 16.11.20.
 //
 
+import ArchiverModels
 import Foundation
 import Shared
+
+private enum PathError: Error {
+    case iCloudDriveNotFound
+}
 
 @MainActor
 public final class PathManager: Log {
 
     public static let shared = PathManager()
 
-    private(set) var archivePathType: ArchivePathType
+    private(set) var archivePathType: StorageType
     private let fileManager = FileManager.default
 
     private init() {
@@ -46,7 +51,7 @@ public final class PathManager: Log {
         return untaggedURL
     }
 
-    func setArchiveUrl(with type: ArchivePathType) throws {
+    func setArchiveUrl(with type: StorageType) throws {
         if type == .iCloudDrive {
             guard fileManager.iCloudDriveURL != nil else { throw PathError.iCloudDriveNotFound }
         }
@@ -88,6 +93,24 @@ public final class PathManager: Log {
 
         if let moveError = moveError {
             throw moveError
+        }
+    }
+}
+
+extension StorageType {
+    func getArchiveUrl() throws -> URL {
+        switch self {
+        case .iCloudDrive:
+            guard let url = FileManager.default.iCloudDriveURL else {
+                throw PathError.iCloudDriveNotFound
+            }
+            return url
+#if os(iOS)
+        case .appContainer:
+            return FileManager.default.appContainerURL
+#endif
+        case .local(let url):
+            return url
         }
     }
 }

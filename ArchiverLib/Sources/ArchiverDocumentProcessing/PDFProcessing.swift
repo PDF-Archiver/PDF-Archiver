@@ -28,7 +28,7 @@ private typealias DrawingOptions = NSString.DrawingOptions
 
 @StorageActor
 final class PDFProcessingOperation: AsyncOperation {
-    @Shared(.pdfQuality) private var pdfQuality: PDFQuality = .normal
+    @Shared(.pdfQuality) private var pdfQuality: PDFQuality
 
     private static let log = Logger(subsystem: "processing", category: "pdf-processing-operation")
     private static let tempDocumentURL = Constants.tempDocumentURL

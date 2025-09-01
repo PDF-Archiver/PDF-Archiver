@@ -27,7 +27,7 @@ struct AppFeature {
             case sectionYears(Int)
         }
         @Shared(.documents) var documents: IdentifiedArrayOf<Document> = []
-        @Shared(.tutorialShown) var tutorialShown = false
+        @Shared(.tutorialShown) var tutorialShown: Bool
         @Shared(.premiumStatus) var premiumStatus: PremiumStatus = .loading
 
         var selectedTab = Tab.search

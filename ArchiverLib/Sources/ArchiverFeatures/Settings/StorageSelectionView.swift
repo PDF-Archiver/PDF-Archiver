@@ -6,22 +6,30 @@
 //
 
 import ArchiverModels
+import OSLog
 import SwiftUI
 import UniformTypeIdentifiers
 
 struct StorageSelectionView: View {
-
     @Binding var selection: StorageType
+
     @State private var showDocumentPicker = false
-    let onCompletion: (Result<URL, any Error>) -> Void
 
     var body: some View {
         Form {
-            ForEach(StorageType.allCases) { storageType in
+            ForEach(StorageSelection.allCases, id: \.rawValue) { storageType in
                 Section(footer: storageType.descriptionView) {
                     Button {
-                        selection = storageType
-                        if storageType == .local {
+                        switch storageType {
+                        case .iCloudDrive:
+                            selection = .iCloudDrive
+
+                        #if !os(macOS)
+                        case .appContainer:
+                            selection = .appContainer
+                        #endif
+
+                        case .local:
                             showDocumentPicker = true
                         }
                     } label: {
@@ -29,7 +37,7 @@ struct StorageSelectionView: View {
                             Text(storageType.title)
                                 .fixedSize()
                             Spacer()
-                            if selection == storageType {
+                            if storageType.equals(selection) {
                                 Image(systemName: "checkmark")
                             }
                         }
@@ -51,10 +59,11 @@ struct StorageSelectionView: View {
                         // Handle the failure here.
                         return
                     }
-                    onCompletion(.success(url))
+                    selection = .local(url)
 
                 case .failure(let error):
-                    onCompletion(.failure(error))
+                    Logger.settings.faultAndAssert("Failed to import a local folder: \(error)")
+                    NotificationCenter.default.postAlert(error)
                 }
                 showDocumentPicker = false
             })
@@ -62,6 +71,66 @@ struct StorageSelectionView: View {
     }
 }
 
+extension StorageSelectionView {
+    private enum StorageSelection: String, CaseIterable {
+        case iCloudDrive
+        #if !os(macOS)
+        case appContainer
+        #endif
+        case local
+
+        func equals(_ type: StorageType) -> Bool {
+            switch type {
+            case .iCloudDrive:
+                return self == .iCloudDrive
+
+            #if !os(macOS)
+            case .appContainer:
+                return self == .appContainer
+            #endif
+
+            case .local:
+                return self == .local
+            }
+        }
+
+        var title: LocalizedStringKey {
+            switch self {
+                case .iCloudDrive:
+                    return "☁️ iCloud Drive"
+                #if !os(macOS)
+                case .appContainer:
+                    return "📱 Local"
+                #endif
+                case .local:
+                    #if os(macOS)
+                    return "💾 Drive"
+                    #else
+                    return "🗂️ Folder"
+                    #endif
+            }
+        }
+
+        @ViewBuilder
+        var descriptionView: some View {
+            switch self {
+                case .iCloudDrive:
+                    Text("Synchronized - Your documents are stored in iCloud Drive. They are available to you on all devices with the same iCloud account, e.g. iPhone, iPad and Mac.")
+                #if !os(macOS)
+                case .appContainer:
+                    VStack(alignment: .leading) {
+                        Text("Not synchronized - your documents are only stored locally in this app. They can be transferred via the Finder on a Mac, for example.")
+                        // swiftlint:disable:next force_unwrapping
+                        Link("https://support.apple.com/en-us/HT210598", destination: URL(string: NSLocalizedString("https://support.apple.com/en-us/HT210598", comment: ""))!)
+                    }
+                #endif
+                case .local:
+                    Text("Not synchronized - Your documents are stored in a folder you choose on your computer. PDF Archiver does not initiate synchronization.")
+            }
+        }
+    }
+}
+
 #Preview {
-    StorageSelectionView(selection: .constant(.local), onCompletion: { print($0) })
+    StorageSelectionView(selection: .constant(.iCloudDrive))
 }
