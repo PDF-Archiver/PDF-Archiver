@@ -7,6 +7,7 @@
 
 import ArchiverModels
 import OSLog
+import Shared
 import SwiftUI
 import UniformTypeIdentifiers
 
@@ -34,11 +35,13 @@ struct StorageSelectionView: View {
                         }
                     } label: {
                         HStack {
-                            Text(storageType.title)
-                                .fixedSize()
+                            Text(storageType.title, bundle: .module)
+                                // since we have buttons, we have to "fake" the foreground color - it would be the accent color otherwise
+                                .foregroundColor(.primary)
                             Spacer()
                             if storageType.equals(selection) {
-                                Image(systemName: "checkmark")
+                                Image(systemName: "checkmark.circle")
+                                    .foregroundStyle(Color.green)
                             }
                         }
                     }
@@ -47,10 +50,21 @@ struct StorageSelectionView: View {
                 Spacer(minLength: 8)
                 #endif
             }
-            Text("PDF Archiver is not a backup solution. Please make backups of the archieved PDFs regularly.")
-                .foregroundStyle(.secondary)
-                .font(.footnote)
-                .padding(.vertical)
+            HStack(spacing: 16) {
+                Image(systemName: "exclamationmark.triangle")
+                    .resizable()
+                    .scaledToFit()
+                    .containerRelativeFrame(.horizontal) { size, _ in
+                        size * 1 / 10
+                    }
+                    .foregroundStyle(Color.tertiaryLabelAsset)
+
+                Text("PDF Archiver is not a backup solution. Please make backups of the archieved PDFs regularly.", bundle: .module)
+                    .foregroundStyle(Color.secondaryLabelAsset)
+                    .font(.footnote)
+            }
+            .padding(.vertical)
+            .navigationTitle(Text("Storage", bundle: .module))
             .fileImporter(isPresented: $showDocumentPicker, allowedContentTypes: [UTType.folder], onCompletion: { result in
                 switch result {
                 case .success(let url):
@@ -115,17 +129,17 @@ extension StorageSelectionView {
         var descriptionView: some View {
             switch self {
                 case .iCloudDrive:
-                    Text("Synchronized - Your documents are stored in iCloud Drive. They are available to you on all devices with the same iCloud account, e.g. iPhone, iPad and Mac.")
+                    Text("Synchronized - Your documents are stored in iCloud Drive. They are available to you on all devices with the same iCloud account, e.g. iPhone, iPad and Mac.", bundle: .module)
                 #if !os(macOS)
                 case .appContainer:
                     VStack(alignment: .leading) {
-                        Text("Not synchronized - your documents are only stored locally in this app. They can be transferred via the Finder on a Mac, for example.")
+                        Text("Not synchronized - your documents are only stored locally in this app. They can be transferred via the Finder on a Mac, for example.", bundle: .module)
                         // swiftlint:disable:next force_unwrapping
                         Link("https://support.apple.com/en-us/HT210598", destination: URL(string: NSLocalizedString("https://support.apple.com/en-us/HT210598", comment: ""))!)
                     }
                 #endif
                 case .local:
-                    Text("Not synchronized - Your documents are stored in a folder you choose on your computer. PDF Archiver does not initiate synchronization.")
+                    Text("Not synchronized - Your documents are stored in a folder you choose on your computer. PDF Archiver does not initiate synchronization.", bundle: .module)
             }
         }
     }

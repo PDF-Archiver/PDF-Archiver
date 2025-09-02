@@ -12,6 +12,9 @@ import Foundation
 enum Names: String {
     case tutorialShown = "tutorial-v1"
     case pdfQuality = "pdf-quality"
+    case notSaveDocumentTagsAsPDFMetadata = "not-save-document-tags-as-pdf-metadata"
+    case documentTagsNotRequired = "document-tags-not-required"
+    case documentSpecificationNotRequired = "document-specification-not-required"
 
     var id: String { "shared-\(rawValue)" }
 }
@@ -51,6 +54,45 @@ public extension SharedKey where Self == AppStorageKey<PDFQuality>.Default {
       }
 
       return Self[.appStorage(Names.pdfQuality.id, store: .standard), default: defaultValue]
+  }
+}
+
+public extension SharedKey where Self == AppStorageKey<Bool> {
+    static var notSaveDocumentTagsAsPDFMetadata: Self {
+        appStorage(Names.notSaveDocumentTagsAsPDFMetadata.id, store: .standard)
+    }
+}
+public extension SharedKey where Self == AppStorageKey<Bool>.Default {
+  static var notSaveDocumentTagsAsPDFMetadata: Self {
+      #warning("TODO: test the default from old version")
+      let defaultValue = (UserDefaults.standard.value(forKey: "notSaveDocumentTagsAsPDFMetadata") as? Bool) ?? false
+      return Self[.appStorage(Names.notSaveDocumentTagsAsPDFMetadata.id, store: .standard), default: defaultValue]
+  }
+}
+
+public extension SharedKey where Self == AppStorageKey<Bool> {
+    static var documentTagsNotRequired: Self {
+        appStorage(Names.documentTagsNotRequired.id, store: .standard)
+    }
+}
+public extension SharedKey where Self == AppStorageKey<Bool>.Default {
+  static var documentTagsNotRequired: Self {
+#warning("TODO: test the default from old version")
+      let defaultValue = (UserDefaults.standard.value(forKey: "documentTagsNotRequired") as? Bool) ?? false
+      return Self[.appStorage(Names.documentTagsNotRequired.id, store: .standard), default: defaultValue]
+  }
+}
+
+public extension SharedKey where Self == AppStorageKey<Bool> {
+    static var documentSpecificationNotRequired: Self {
+        appStorage(Names.documentSpecificationNotRequired.id, store: .standard)
+    }
+}
+public extension SharedKey where Self == AppStorageKey<Bool>.Default {
+  static var documentSpecificationNotRequired: Self {
+#warning("TODO: test the default from old version")
+      let defaultValue = (UserDefaults.standard.value(forKey: "documentSpecificationNotRequired") as? Bool) ?? false
+      return Self[.appStorage(Names.documentSpecificationNotRequired.id, store: .standard), default: defaultValue]
   }
 }
 

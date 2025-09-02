@@ -13,7 +13,14 @@ struct ExpertSettings {
 
     @ObservableState
     struct State: Equatable {
+        @Shared(.notSaveDocumentTagsAsPDFMetadata)
+        var notSaveDocumentTagsAsPDFMetadata: Bool
 
+        @Shared(.documentTagsNotRequired)
+        var documentTagsNotRequired: Bool
+
+        @Shared(.documentSpecificationNotRequired)
+        var documentSpecificationNotRequired: Bool
     }
 
     enum Action: BindableAction, Equatable {
@@ -31,17 +38,20 @@ struct ExpertSettings {
     }
 }
 
-// ExpertSettingsView(notSaveDocumentTagsAsPDFMetadata: $viewModel.notSaveDocumentTagsAsPDFMetadata,
-//                   documentTagsNotRequired: $viewModel.documentTagsNotRequired,
-//                   documentSpecificationNotRequired: $viewModel.documentSpecificationNotRequired,
-//                   showPermissions: viewModel.showPermissions,
-//                   resetApp: viewModel.resetApp)
-
 struct ExpertSettingsView: View {
     @Bindable var store: StoreOf<ExpertSettings>
 
     var body: some View {
-        Text("Expert Settings", bundle: .module)
+        Form {
+            Toggle(String(localized: "Save Tags in PDF Metadata", bundle: .module), isOn: $store.notSaveDocumentTagsAsPDFMetadata.flipped)
+            Toggle(String(localized: "Require Document Tags", bundle: .module), isOn: $store.documentTagsNotRequired.flipped)
+            Toggle(String(localized: "Require Document Specification", bundle: .module), isOn: $store.documentSpecificationNotRequired.flipped)
+            #warning("TODO: add this")
+//            if let showPermissions = showPermissions {
+//                DetailRowView(name: "Show Permissions", action: showPermissions)
+//            }
+//            DetailRowView(name: "Reset App Preferences", action: resetApp)
+        }
     }
 }
 

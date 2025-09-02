@@ -677,9 +677,6 @@
         }
       }
     },
-    "Expert Settings" : {
-
-    },
     "Failed to load export nothing found" : {
 
     },
@@ -1285,7 +1282,6 @@
       }
     },
     "Require Document Specification" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1296,7 +1292,6 @@
       }
     },
     "Require Document Tags" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1360,7 +1355,6 @@
       }
     },
     "Save Tags in PDF Metadata" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

@@ -191,7 +191,7 @@ struct SettingsView: View {
             }
             // since we have buttons, we have to "fake" the foreground color - it would be the accent color otherwise
             .foregroundColor(.primary)
-            .navigationTitle("Preferences & More")
+            .navigationTitle(Text("Preferences & More", bundle: .module))
 #if os(iOS)
             .navigationViewStyle(StackNavigationViewStyle())
             .navigationBarTitleDisplayMode(.inline)
@@ -203,6 +203,7 @@ struct SettingsView: View {
                 case .expertSettings:
                     if let expertSettingsStore = store.scope(state: \.destination?.expertSettings, action: \.destination.expertSettings) {
                         ExpertSettingsView(store: expertSettingsStore)
+                            .navigationTitle(Text("Advanced", bundle: .module))
                     } else {
                         preconditionFailure("Failed to load export nothing found")
                     }
@@ -223,7 +224,7 @@ struct SettingsView: View {
 
     @ViewBuilder
     private var preferences: some View {
-        Section {
+        Section(header: Text("🛠 Preferences", bundle: .module)) {
             Picker(selection: $store.pdfQuality, label: Text("PDF Quality", bundle: .module)) {
                 ForEach(PDFQuality.allCases, id: \.self) { quality in
                     Text(quality.name, bundle: .module)
@@ -245,8 +246,6 @@ struct SettingsView: View {
             } label: {
                 Text("Advanced", bundle: .module)
             }
-        } header: {
-            Text("🛠 Preferences")
         }
     }
 
