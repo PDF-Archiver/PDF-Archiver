@@ -19,29 +19,19 @@ struct PremiumSection {
     }
 
     enum Action: BindableAction, Equatable {
-        case onActivatePremiumButtonTapped
-        case onCancelIapButtonTapped
         case binding(BindingAction<State>)
+        case delegate(Delegate)
+
+        enum Delegate: Equatable {
+          case onShowIapButtonTapped
+        }
     }
 
     var body: some ReducerOf<Self> {
         BindingReducer()
-        Reduce { state, action in
+        Reduce { _, action in
             switch action {
-            case .binding(\.premiumStatus):
-                guard state.showIapView && state.premiumStatus == .active else { return .none }
-                state.showIapView = false
-                return .none
-
-            case .binding:
-                return .none
-
-            case .onActivatePremiumButtonTapped:
-                state.showIapView = true
-                return .none
-
-            case .onCancelIapButtonTapped:
-                state.showIapView = false
+            case .binding, .delegate:
                 return .none
             }
         }
@@ -61,9 +51,7 @@ struct PremiumSection {
                 Text("Premium Status:", bundle: .module)
                 switch store.premiumStatus {
                 case .loading:
-                    ProgressView {
-                        Text("Loading ...", bundle: .module)
-                    }
+                    ProgressView()
                 case .active:
                     Text("Active ✅", bundle: .module)
                 case .inactive:
@@ -72,7 +60,7 @@ struct PremiumSection {
             }
             if store.premiumStatus == .inactive {
                 Button {
-                    store.send(.onActivatePremiumButtonTapped)
+                    store.send(.delegate(.onShowIapButtonTapped))
                 } label: {
                     Text("Activate premium", bundle: .module)
                 }
@@ -82,19 +70,6 @@ struct PremiumSection {
         } header: {
             Text("⭐️ Premium")
         }
-        #if os(macOS)
-        .sheet(isPresented: $store.showIapView) {
-            IAPView {
-                store.send(.onCancelIapButtonTapped)
-            }
-        }
-        #else
-        .navigationDestination(isPresented: $store.showIapView) {
-            IAPView {
-                store.send(.onCancelIapButtonTapped)
-            }
-        }
-        #endif
         #if os(macOS)
         .frame(width: 450, height: 50)
         #endif

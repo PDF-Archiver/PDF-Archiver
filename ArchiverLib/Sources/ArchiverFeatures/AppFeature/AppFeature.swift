@@ -125,18 +125,27 @@ struct AppFeature {
                     state.archiveList.searchTokens = [.tag(tag)]
                 case .sectionYears(let year):
                     state.archiveList.searchTokens = [.year(year)]
-                case .inbox, .statistics:
+                case .inbox:
+                    state.showIapView = state.premiumStatus == .inactive
+
+                case .statistics:
                     break
-//                #if !os(macOS)
+                    //                #if !os(macOS)
                 case .settings:
                     break
-//                #endif
+                    //                #endif
                 }
                 return .none
 
             case .binding(\.premiumStatus):
-                state.showIapView = state.premiumStatus == .inactive
-                return .none
+                if state.selectedTab == .inbox {
+                    state.showIapView = state.premiumStatus == .inactive
+                    return .none
+                } else {
+                    guard state.premiumStatus != .inactive else { return .none }
+                    state.showIapView = false
+                    return .none
+                }
 
             case .binding:
                 return .none
@@ -195,6 +204,7 @@ struct AppFeature {
 
             case .onCancelIapButtonTapped:
                 state.selectedTab = .search
+                state.showIapView = false
                 return .none
 
             case .onLongBackgroundTask:
@@ -218,6 +228,13 @@ struct AppFeature {
                 }
 
             case .untaggedDocumentList:
+                return .none
+
+            case .settings(.premiumSection(.delegate(let delegateAction))):
+                switch delegateAction {
+                case .onShowIapButtonTapped:
+                    state.showIapView = true
+                }
                 return .none
 
             case .settings:
@@ -331,6 +348,11 @@ struct AppView: View {
                 .frame(width: 500, height: 400)
                 #endif
         }
+        .sheet(isPresented: $store.showIapView) {
+            IAPView {
+                store.send(.onCancelIapButtonTapped)
+            }
+        }
     }
 
     private var archiveList: some View {
@@ -344,11 +366,6 @@ struct AppView: View {
         NavigationStack {
             UntaggedDocumentListView(store: store.scope(state: \.untaggedDocumentList, action: \.untaggedDocumentList))
                 .navigationTitle(Text("Inbox", bundle: .module))
-                .sheet(isPresented: $store.showIapView) {
-                    IAPView {
-                        store.send(.onCancelIapButtonTapped)
-                    }
-                }
         }
     }
 }
