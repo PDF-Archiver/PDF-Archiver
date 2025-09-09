@@ -270,7 +270,6 @@ struct AppFeature {
 struct AppView: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Bindable var store: StoreOf<AppFeature>
-    @State var searchText = ""
     #warning("TODO: add all tips")
     @State private var tips = TipGroup(.ordered) {
         ScanShareTip()
@@ -334,14 +333,6 @@ struct AppView: View {
         .tabViewStyle(.sidebarAdaptable)
         .modifier(AlertDataModelProvider())
         .modifier(IAP(premiumStatus: $store.premiumStatus))
-        .toolbar {
-            #warning("Not showing on iOS")
-            ToolbarItem(placement: .destructiveAction) {
-                ProgressView()
-                    .controlSize(.small)
-                    .opacity(store.isDocumentLoading ? 1 : 0)
-            }
-        }
         .sheet(isPresented: $store.tutorialShown.flipped) {
             OnboardingView(isPresented: $store.tutorialShown.flipped)
                 #if os(macOS)
@@ -359,6 +350,9 @@ struct AppView: View {
         NavigationStack {
             ArchiveListView(store: store.scope(state: \.archiveList, action: \.archiveList))
                 .navigationTitle(Text("Archive", bundle: .module))
+                .toolbar {
+                    toolbarLoadingSpinner
+                }
         }
     }
 
@@ -366,6 +360,19 @@ struct AppView: View {
         NavigationStack {
             UntaggedDocumentListView(store: store.scope(state: \.untaggedDocumentList, action: \.untaggedDocumentList))
                 .navigationTitle(Text("Inbox", bundle: .module))
+                .toolbar {
+                    toolbarLoadingSpinner
+                }
+        }
+    }
+
+    private var toolbarLoadingSpinner: some ToolbarContent {
+        ToolbarItem(placement: .destructiveAction) {
+            ProgressView()
+                #if os(macOS)
+                .controlSize(.small)
+                #endif
+                .opacity(store.isDocumentLoading ? 1 : 0)
         }
     }
 }
