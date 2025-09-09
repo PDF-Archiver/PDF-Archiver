@@ -30,6 +30,8 @@ struct AppFeature {
         @Shared(.tutorialShown) var tutorialShown: Bool
         @Shared(.premiumStatus) var premiumStatus: PremiumStatus = .loading
 
+        var scenePhase: ScenePhase?
+
         var selectedTab = Tab.search
         var tabTagSuggestions: [String] = []
         var tabYearSuggestions: [Int] = []
@@ -50,6 +52,7 @@ struct AppFeature {
         case isLoadingChanged(Bool)
         case onCancelIapButtonTapped
         case onLongBackgroundTask
+        case onScenePhaseChanged(old: ScenePhase, new: ScenePhase)
         case untaggedDocumentList(UntaggedDocumentList.Action)
         case statistics(Statistics.Action)
         case settings(Settings.Action)
@@ -227,6 +230,20 @@ struct AppFeature {
                     }
                 }
 
+            case .onScenePhaseChanged(old: let old, new: let new):
+                // there might be situations where a user has made some document modifications while the app is in background
+                // we prevent an inconsistency by triggering a document reload when the app enters forground
+                // since this will already be done initially, we don't want to do it while the app is loading
+                if old != new,
+                   new == .active,
+                   !state.isDocumentLoading {
+                    return .run { _ in
+                        try await archiveStore.reloadDocuments()
+                    }
+                }
+
+                return .none
+
             case .untaggedDocumentList:
                 return .none
 
@@ -269,6 +286,7 @@ struct AppFeature {
 
 struct AppView: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @Environment(\.scenePhase) var scenePhase
     @Bindable var store: StoreOf<AppFeature>
     #warning("TODO: add all tips")
     @State private var tips = TipGroup(.ordered) {
@@ -343,6 +361,9 @@ struct AppView: View {
             IAPView {
                 store.send(.onCancelIapButtonTapped)
             }
+        }
+        .onChange(of: scenePhase) { old, new in
+            store.send(.onScenePhaseChanged(old: old, new: new))
         }
     }
 

@@ -13,6 +13,7 @@ import Foundation
 @DependencyClient
 struct ArchiveStoreDependency {
     var documentChanges: @Sendable () async -> AsyncStream<[Document]> = { AsyncStream<[Document]> { $0.yield([]) } }
+    var reloadDocuments: @Sendable () async throws -> Void
     var isLoading: @Sendable () async -> AsyncStream<Bool> = { AsyncStream<Bool> { $0.yield(false) } }
     var startDownloadOf: @Sendable (URL) async throws -> Void
     var deleteDocumentAt: @Sendable (URL) async throws -> Void
@@ -49,6 +50,7 @@ extension ArchiveStoreDependency: TestDependencyKey {
                 }
             }
         },
+        reloadDocuments: { },
         isLoading: { AsyncStream { $0.yield(false) } },
         startDownloadOf: { _ in },
         deleteDocumentAt: { _ in },
@@ -65,6 +67,9 @@ extension ArchiveStoreDependency: DependencyKey {
   static let liveValue = ArchiveStoreDependency(
     documentChanges: {
         return await ArchiveStore.shared.documentsStream
+    },
+    reloadDocuments: {
+        return try await ArchiveStore.shared.reloadArchiveDocuments()
     },
     isLoading: {
         return AsyncStream { stream in

@@ -46,12 +46,14 @@ public actor ArchiveStore: Log {
 
         Logger.archiveStore.trace("[ArchiveStore] init called")
 
-        Task {
+        Task(priority: .medium) {
             try await reloadArchiveDocuments()
         }
     }
 
     func update(archiveFolder: URL, untaggedFolders: [URL]) async {
+        isLoadingStream.send(true)
+
         // remove all current file providers to prevent watching changes while moving folders
         providers = []
         folderObservationTasks.forEach { $0.cancel() }
@@ -220,23 +222,21 @@ public actor ArchiveStore: Log {
         return top5Tags
     }
 
-    func reloadArchiveDocuments() throws {
-        Task {
-            folderObservationTasks.forEach { $0.cancel() }
-            folderObservationTasks.removeAll()
+    public func reloadArchiveDocuments() async throws {
+        folderObservationTasks.forEach { $0.cancel() }
+        folderObservationTasks.removeAll()
 
-            let archiveUrl = try await PathManager.shared.getArchiveUrl()
-            let untaggedUrl = try await PathManager.shared.getUntaggedUrl()
+        let archiveUrl = try await PathManager.shared.getArchiveUrl()
+        let untaggedUrl = try await PathManager.shared.getUntaggedUrl()
 
-            #if os(macOS)
-            let untaggedFolders = [untaggedUrl, UserDefaults.observedFolderURL].compactMap { $0 }
-            #else
-            let untaggedFolders = [untaggedUrl]
-            #endif
+        #if os(macOS)
+        let untaggedFolders = [untaggedUrl, UserDefaults.observedFolderURL].compactMap { $0 }
+        #else
+        let untaggedFolders = [untaggedUrl]
+        #endif
 
-            removeOldDocumentsInNextSync = true
-            await update(archiveFolder: archiveUrl, untaggedFolders: untaggedFolders)
-        }
+        removeOldDocumentsInNextSync = true
+        await update(archiveFolder: archiveUrl, untaggedFolders: untaggedFolders)
     }
 
     private func isTagged(_ url: URL) -> Bool {
