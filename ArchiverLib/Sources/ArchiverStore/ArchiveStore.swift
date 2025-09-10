@@ -129,7 +129,7 @@ public actor ArchiveStore: Log {
         throw ArchiveStore.Error.providerNotFound
     }
 
-    public func save(_ document: Document) async throws {
+    public func save(_ document: Document, shouldUpdatePdfMetadata: Bool) async throws {
         let url = document.url
         let filename = Document.createFilename(date: document.date, specification: document.specification, tags: document.tags)
 
@@ -155,9 +155,9 @@ public actor ArchiveStore: Log {
         }
 
         // save file tags
-        if let tags = Document.parseFilename(filename).tagNames,
-           !tags.isEmpty {
-            try newFilepath.setFileTags(tags.sorted())
+        if shouldUpdatePdfMetadata,
+           !document.tags.isEmpty {
+            try newFilepath.setFileTags(document.tags.sorted())
         }
     }
 

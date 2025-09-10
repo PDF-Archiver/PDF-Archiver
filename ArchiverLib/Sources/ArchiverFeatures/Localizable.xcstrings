@@ -1028,6 +1028,9 @@
         }
       }
     },
+    "Missing tags" : {
+
+    },
     "More" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1070,6 +1073,9 @@
           }
         }
       }
+    },
+    "No specification" : {
+
     },
     "No Subscription" : {
       "localizations" : {
@@ -1216,6 +1222,12 @@
           }
         }
       }
+    },
+    "Please add at least one tag to your document or change your advanced settings." : {
+
+    },
+    "Please add the document specification or change your advanced settings." : {
+
     },
     "Please restart the app to complete the reset." : {
       "localizations" : {

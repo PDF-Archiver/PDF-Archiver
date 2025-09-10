@@ -14,6 +14,7 @@ struct ExpertSettings {
 
     @ObservableState
     struct State: Equatable {
+
         @Shared(.notSaveDocumentTagsAsPDFMetadata)
         var notSaveDocumentTagsAsPDFMetadata: Bool
 

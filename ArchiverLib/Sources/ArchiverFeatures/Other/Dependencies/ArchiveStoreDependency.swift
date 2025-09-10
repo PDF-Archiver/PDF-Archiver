@@ -20,7 +20,7 @@ struct ArchiveStoreDependency {
     var getTagSuggestionsFor: @Sendable (String) async -> [String] = { _ in [] }
     var getTagSuggestionsSimilarTo: @Sendable (Set<String>) async -> [String] = { _ in [] }
     var parseFilename: @Sendable (String) async -> (date: Date?, specification: String?, tagNames: [String]?) = { _ in (nil, nil, nil) }
-    var saveDocument: @Sendable (Document) async throws -> Void
+    var saveDocument: @Sendable (Document, Bool) async throws -> Void
 }
 
 extension ArchiveStoreDependency: TestDependencyKey {
@@ -57,7 +57,7 @@ extension ArchiveStoreDependency: TestDependencyKey {
         getTagSuggestionsFor: { _ in [] },
         getTagSuggestionsSimilarTo: { _ in [] },
         parseFilename: { _ in (nil, nil, nil) },
-        saveDocument: { _ in }
+        saveDocument: { _, _ in }
     )
 
     static let testValue = Self()
@@ -95,8 +95,8 @@ extension ArchiveStoreDependency: DependencyKey {
     parseFilename: { filename in
         Document.parseFilename(filename)
     },
-    saveDocument: { document in
-        try await ArchiveStore.shared.save(document)
+    saveDocument: { document, shouldUpdatePdfMetadata in
+        try await ArchiveStore.shared.save(document, shouldUpdatePdfMetadata: shouldUpdatePdfMetadata)
     }
   )
 }

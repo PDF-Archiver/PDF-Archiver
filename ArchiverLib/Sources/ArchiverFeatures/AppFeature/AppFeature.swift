@@ -97,7 +97,7 @@ struct AppFeature {
             case .archiveList(.documentDetails(.presented(.showDocumentInformationForm(.delegate(let delegateAction))))),
                     .untaggedDocumentList(.documentDetails(.presented(.showDocumentInformationForm(.delegate(let delegateAction))))):
                 switch delegateAction {
-                case .saveDocument(let document):
+                case .saveDocument(let document, let shouldUpdatePdfMetadata):
                     state.$documents.withLock { documents in
                         let alreadyExistingElement = documents.updateOrAppend(document)
                         if alreadyExistingElement == nil {
@@ -113,7 +113,7 @@ struct AppFeature {
                     }
 
                     return .run { _ in
-                        try await archiveStore.saveDocument(document)
+                        try await archiveStore.saveDocument(document, shouldUpdatePdfMetadata)
                     }
                 }
 

@@ -22,6 +22,15 @@ struct DocumentInformationForm {
             case date, specification, tags, save
         }
 
+        @SharedReader(.notSaveDocumentTagsAsPDFMetadata)
+        var notSaveDocumentTagsAsPDFMetadata: Bool
+
+        @SharedReader(.documentTagsNotRequired)
+        var documentTagsNotRequired: Bool
+
+        @SharedReader(.documentSpecificationNotRequired)
+        var documentSpecificationNotRequired: Bool
+
         /// Initial version of the document (e.g. in the global state)
         ///
         /// This will be needed for comparison if changes were made.
@@ -61,13 +70,14 @@ struct DocumentInformationForm {
         case updateTagSuggestions
 
         enum Delegate: Equatable {
-            case saveDocument(Document)
+            case saveDocument(Document, shouldUpdatePdfMetadata: Bool)
         }
     }
 
     @Dependency(\.archiveStore) var archiveStore
     @Dependency(\.textAnalyser) var textAnalyser
     @Dependency(\.calendar) var calendar
+    @Dependency(\.notificationCenter) var notificationCenter
 
     var body: some ReducerOf<Self> {
         BindingReducer()
@@ -95,8 +105,29 @@ struct DocumentInformationForm {
                 return .send(.updateTagSuggestions)
 
             case .onSaveButtonTapped:
+                let nothingChanged = store.initialDocument.date == store.document.date && store.initialDocument.specification == store.document.specification && store.initialDocument.tags == store.document.tags
+                guard !nothingChanged else {
+                    assertionFailure("")
+                }
+
+                // check tags
+                if !state.documentTagsNotRequired && state.document.tags.isEmpty {
+                    notificationCenter.createAndPost(.init(title: "Missing tags",
+                                                           message: "Please add at least one tag to your document or change your advanced settings.",
+                                                           primaryButtonTitle: "OK"))
+                    return .none
+                }
+
+                // check specification
                 state.document.specification = state.document.specification.slugified(withSeparator: "-")
-                return .send(.delegate(.saveDocument(state.document)))
+                if !state.documentSpecificationNotRequired && state.document.specification.isEmpty {
+                    notificationCenter.createAndPost(.init(title: "No specification",
+                                                           message: "Please add the document specification or change your advanced settings.",
+                                                           primaryButtonTitle: "OK"))
+                    return .none
+                }
+
+                return .send(.delegate(.saveDocument(state.document, shouldUpdatePdfMetadata: !state.notSaveDocumentTagsAsPDFMetadata)))
 
             case .onSuggestedDateButtonTapped(let date):
                 state.document.date = date
@@ -299,7 +330,6 @@ struct DocumentInformationFormView: View {
                     }
                     .buttonStyle(.bordered)
                     .focused($focusedField, equals: .save)
-                    .disabled(store.initialDocument == store.document)
                     .keyboardShortcut("s", modifiers: [.command])
                     Spacer()
                 }
