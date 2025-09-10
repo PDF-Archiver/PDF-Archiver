@@ -68,7 +68,7 @@ struct Settings {
     @Reducer
     enum Destination {
         case aboutMe
-        case archiveStorage
+        case archiveStorage(StorageSelection)
         case expertSettings(ExpertSettings)
         case imprint
         case termsAndPrivacy
@@ -80,14 +80,8 @@ struct Settings {
 
         @Shared(.pdfQuality) var pdfQuality: PDFQuality
 
-        var selectedArchiveType: StorageType {
-            set {
-                UserDefaults.archivePathType = newValue
-            }
-            get {
-                UserDefaults.archivePathType ?? .iCloudDrive
-            }
-        }
+        #warning("TODO: hacky workaroung because we do not use Sharing here")
+        var selectedArchiveType: StorageType = .iCloudDrive
 
         var premiumSection = PremiumSection.State()
 
@@ -97,6 +91,7 @@ struct Settings {
     }
 
     @Dependency(\.openURL) var openURL
+    @Dependency(\.pathManager) var pathManager
 
     enum Action: BindableAction {
         case binding(BindingAction<State>)
@@ -110,6 +105,9 @@ struct Settings {
         case onTermsAndPrivacyTapped
         case onTermsOfUseTapped
         case premiumSection(PremiumSection.Action)
+        #warning("TODO: hacky workaroung because we do not use Sharing here")
+        case onTask
+        case updateArchiveType(StorageType)
     }
 
     var body: some ReducerOf<Self> {
@@ -119,14 +117,14 @@ struct Settings {
         }
         Reduce { state, action in
             switch action {
-            case .binding(\.selectedArchiveType):
-                #warning("TODO: implement storage picker result handling")
-                return .none
-
             case .binding:
                 return .none
 
             case .destination:
+                if state.destination == nil {
+                    #warning("TODO: test this")
+//                    state.selectedArchiveType = pathManager.archivePathType()
+                }
                 return .none
 
             case .onAboutMeTapped:
@@ -153,7 +151,7 @@ struct Settings {
                 }
 
             case .onShowArchiveTypeSelectionTapped:
-                state.destination = .archiveStorage
+                state.destination = .archiveStorage(StorageSelection.State(selectedArchiveType: state.selectedArchiveType))
                 return .none
 
             case .onTermsAndPrivacyTapped:
@@ -167,6 +165,16 @@ struct Settings {
 
             case .premiumSection:
                 return .none
+
+            case .updateArchiveType(let type):
+                state.selectedArchiveType = type
+                return .none
+
+            case .onTask:
+                return .run { send in
+                    let type = await pathManager.archivePathType()
+                    await send(.updateArchiveType(type))
+                }
             }
         }
         .ifLet(\.$destination, action: \.destination)
@@ -199,7 +207,12 @@ struct SettingsView: View {
             .navigationDestination(item: $store.destination) { destination in
                 switch destination {
                 case .archiveStorage:
-                    StorageSelectionView(selection: $store.selectedArchiveType)
+                    if let storageSelectionStore = store.scope(state: \.destination?.archiveStorage, action: \.destination.archiveStorage) {
+                        StorageSelectionView(store: storageSelectionStore)
+                            .navigationTitle(Text("Storage", bundle: .module))
+                    } else {
+                        preconditionFailure("Failed to load export nothing found")
+                    }
                 case .expertSettings:
                     if let expertSettingsStore = store.scope(state: \.destination?.expertSettings, action: \.destination.expertSettings) {
                         ExpertSettingsView(store: expertSettingsStore)
@@ -219,6 +232,9 @@ struct SettingsView: View {
                         .navigationTitle(Text("Imprint", bundle: .module))
                 }
             }
+        }
+        .task {
+            await store.send(.onTask).finish()
         }
     }
 
@@ -295,7 +311,7 @@ struct SettingsView: View {
 
 #Preview("Settings", traits: .fixedLayout(width: 800, height: 600)) {
     SettingsView(
-        store: Store(initialState: Settings.State()) {
+        store: Store(initialState: Settings.State(selectedArchiveType: .iCloudDrive)) {
             Settings()
                 ._printChanges()
         }

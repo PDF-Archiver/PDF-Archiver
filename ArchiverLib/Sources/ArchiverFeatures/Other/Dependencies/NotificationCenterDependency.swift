@@ -20,11 +20,13 @@ struct NotificationCenterDependency: Log {
         let primaryButtonTitle: LocalizedStringKey
     }
     var createAndPost: @Sendable (AlertData) -> Void
+    var postAlert: @Sendable (Error) -> Void
 }
 
 extension NotificationCenterDependency: TestDependencyKey {
     static let previewValue = Self(
         createAndPost: { _ in },
+        postAlert: { _ in },
     )
 
     static let testValue = Self()
@@ -36,6 +38,9 @@ extension NotificationCenterDependency: DependencyKey {
         NotificationCenter.default.createAndPost(title: alertData.title,
                                                  message: alertData.message,
                                                  primaryButtonTitle: alertData.primaryButtonTitle)
+    },
+    postAlert: { error in
+        NotificationCenter.default.postAlert(error)
     }
   )
 }

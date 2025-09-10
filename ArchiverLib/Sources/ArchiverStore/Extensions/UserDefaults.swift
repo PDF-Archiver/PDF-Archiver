@@ -56,6 +56,7 @@ extension UserDefaults: Log {
     }
     #endif
 
+    @available(*, deprecated, message: "This will be moved to the Sharing lib")
     public static var archivePathType: StorageType? {
         get {
 

@@ -105,9 +105,9 @@ struct DocumentInformationForm {
                 return .send(.updateTagSuggestions)
 
             case .onSaveButtonTapped:
-                let nothingChanged = store.initialDocument.date == store.document.date && store.initialDocument.specification == store.document.specification && store.initialDocument.tags == store.document.tags
+                let nothingChanged = state.initialDocument.date == state.document.date && state.initialDocument.specification == state.document.specification && state.initialDocument.tags == state.document.tags
                 guard !nothingChanged else {
-                    assertionFailure("")
+                    return .none
                 }
 
                 // check tags

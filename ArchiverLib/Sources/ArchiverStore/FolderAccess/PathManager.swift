@@ -13,12 +13,13 @@ private enum PathError: Error {
     case iCloudDriveNotFound
 }
 
+#warning("TODO: making the PathManager public is inconsistent - it should be internal and only be accessed via ArchiveStore")
 @MainActor
 public final class PathManager: Log {
 
     public static let shared = PathManager()
 
-    private(set) var archivePathType: StorageType
+    public private(set) var archivePathType: StorageType
     private let fileManager = FileManager.default
 
     private init() {
@@ -34,7 +35,7 @@ public final class PathManager: Log {
         }
     }
 
-    func getArchiveUrl() throws -> URL {
+    public func getArchiveUrl() throws -> URL {
         let archiveURL: URL
         if UserDefaults.isInDemoMode {
             archiveURL = fileManager.temporaryDirectory
@@ -51,7 +52,7 @@ public final class PathManager: Log {
         return untaggedURL
     }
 
-    func setArchiveUrl(with type: StorageType) throws {
+    public func setArchiveUrl(with type: StorageType) throws {
         if type == .iCloudDrive {
             guard fileManager.iCloudDriveURL != nil else { throw PathError.iCloudDriveNotFound }
         }
