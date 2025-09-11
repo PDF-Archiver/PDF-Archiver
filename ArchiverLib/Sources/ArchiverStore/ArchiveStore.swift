@@ -7,6 +7,7 @@
 
 import ArchiverModels
 import AsyncExtensions
+import ComposableArchitecture
 import Foundation
 import OSLog
 import PDFKit.PDFDocument
@@ -15,9 +16,13 @@ import Shared
 public actor ArchiveStore: Log {
     public static let shared = ArchiveStore()
 
+    #if os(macOS)
+    @Shared(.observedFolder) var observedFolderURL: URL?
+    #endif
+
     #if DEBUG
     private static let availableProvider: [any FolderProvider.Type] = {
-        if UserDefaults.isInDemoMode {
+        if UserDefaults.standard.bool(forKey: "demoMode") {
             return [DemoFolderProvider.self]
         } else {
             return [ICloudFolderProvider.self, LocalFolderProvider.self]
@@ -51,7 +56,20 @@ public actor ArchiveStore: Log {
         }
     }
 
-    public func update(archiveFolder: URL, untaggedFolders: [URL]) async {
+    public func update(with type: StorageType) async throws {
+        try await PathManager.shared.setArchiveUrl(with: type)
+
+        let archiveUrl = try await PathManager.shared.getArchiveUrl()
+        let untaggedUrl = try await PathManager.shared.getUntaggedUrl()
+
+        await ArchiveStore.shared.update(archiveFolder: archiveUrl, untaggedFolders: [untaggedUrl])
+    }
+
+    public func getUntaggedUrl() async throws -> URL {
+        try await PathManager.shared.getArchiveUrl()
+    }
+
+    func update(archiveFolder: URL, untaggedFolders: [URL]) async {
         isLoadingStream.send(true)
 
         // remove all current file providers to prevent watching changes while moving folders
@@ -230,7 +248,8 @@ public actor ArchiveStore: Log {
         let untaggedUrl = try await PathManager.shared.getUntaggedUrl()
 
         #if os(macOS)
-        let untaggedFolders = [untaggedUrl, UserDefaults.observedFolderURL].compactMap { $0 }
+        #warning("TODO: test this")
+        let untaggedFolders = [untaggedUrl, observedFolderURL].compactMap { $0 }
         #else
         let untaggedFolders = [untaggedUrl]
         #endif

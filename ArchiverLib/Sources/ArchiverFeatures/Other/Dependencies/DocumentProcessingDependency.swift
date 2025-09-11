@@ -41,7 +41,7 @@ extension DocumentProcessingDependency: DependencyKey {
 
         let service = DocumentProcessingService(tempDocumentURL: Constants.tempDocumentURL,
                                                 documentDestination: {
-            try await PathManager.shared.getUntaggedUrl()
+            try await ArchiveStore.shared.getUntaggedUrl()
         })
         _documentProcessingService = service
 

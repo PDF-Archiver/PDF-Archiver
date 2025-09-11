@@ -79,9 +79,7 @@ struct Settings {
         @Presents var destination: Destination.State?
 
         @Shared(.pdfQuality) var pdfQuality: PDFQuality
-
-        #warning("TODO: hacky workaroung because we do not use Sharing here")
-        var selectedArchiveType: StorageType = .iCloudDrive
+        @SharedReader(.archivePathType) var selectedArchiveType: StorageType?
 
         var premiumSection = PremiumSection.State()
 
@@ -91,7 +89,6 @@ struct Settings {
     }
 
     @Dependency(\.openURL) var openURL
-    @Dependency(\.pathManager) var pathManager
 
     enum Action: BindableAction {
         case binding(BindingAction<State>)
@@ -105,9 +102,6 @@ struct Settings {
         case onTermsAndPrivacyTapped
         case onTermsOfUseTapped
         case premiumSection(PremiumSection.Action)
-        #warning("TODO: hacky workaroung because we do not use Sharing here")
-        case onTask
-        case updateArchiveType(StorageType)
     }
 
     var body: some ReducerOf<Self> {
@@ -121,10 +115,6 @@ struct Settings {
                 return .none
 
             case .destination:
-                if state.destination == nil {
-                    #warning("TODO: test this")
-//                    state.selectedArchiveType = pathManager.archivePathType()
-                }
                 return .none
 
             case .onAboutMeTapped:
@@ -151,7 +141,7 @@ struct Settings {
                 }
 
             case .onShowArchiveTypeSelectionTapped:
-                state.destination = .archiveStorage(StorageSelection.State(selectedArchiveType: state.selectedArchiveType))
+                state.destination = .archiveStorage(StorageSelection.State())
                 return .none
 
             case .onTermsAndPrivacyTapped:
@@ -165,16 +155,6 @@ struct Settings {
 
             case .premiumSection:
                 return .none
-
-            case .updateArchiveType(let type):
-                state.selectedArchiveType = type
-                return .none
-
-            case .onTask:
-                return .run { send in
-                    let type = await pathManager.archivePathType()
-                    await send(.updateArchiveType(type))
-                }
             }
         }
         .ifLet(\.$destination, action: \.destination)
@@ -233,9 +213,6 @@ struct SettingsView: View {
                 }
             }
         }
-        .task {
-            await store.send(.onTask).finish()
-        }
     }
 
     @ViewBuilder
@@ -253,7 +230,7 @@ struct SettingsView: View {
                 HStack {
                     Text("Storage", bundle: .module)
                     Spacer()
-                    Text(store.selectedArchiveType.title, bundle: .module)
+                    Text(store.selectedArchiveType.getPath().title, bundle: .module)
                 }
             }
 
@@ -311,7 +288,7 @@ struct SettingsView: View {
 
 #Preview("Settings", traits: .fixedLayout(width: 800, height: 600)) {
     SettingsView(
-        store: Store(initialState: Settings.State(selectedArchiveType: .iCloudDrive)) {
+        store: Store(initialState: Settings.State()) {
             Settings()
                 ._printChanges()
         }

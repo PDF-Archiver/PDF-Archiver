@@ -9,6 +9,10 @@ import Foundation
 import Shared
 
 extension FileManager {
+    var isICloudDriveAvailable: Bool {
+        iCloudDriveURL != nil
+    }
+
     var iCloudDriveURL: URL? {
         log.debug("Getting iCloudDriveURL")
 

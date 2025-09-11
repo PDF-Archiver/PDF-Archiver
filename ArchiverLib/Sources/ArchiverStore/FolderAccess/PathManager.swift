@@ -6,6 +6,7 @@
 //
 
 import ArchiverModels
+import ComposableArchitecture
 import Foundation
 import Shared
 
@@ -13,46 +14,54 @@ private enum PathError: Error {
     case iCloudDriveNotFound
 }
 
-#warning("TODO: making the PathManager public is inconsistent - it should be internal and only be accessed via ArchiveStore")
-@MainActor
-public final class PathManager: Log {
-
-    public static let shared = PathManager()
-
-    public private(set) var archivePathType: StorageType
-    private let fileManager = FileManager.default
-
-    private init() {
-        let iCloudDriveAvailable = FileManager.default.iCloudDriveURL != nil
-        if iCloudDriveAvailable {
-            archivePathType = UserDefaults.archivePathType ?? .iCloudDrive
+/// Get the "correct" path for the archive
+///
+/// Use the stored path if possible or choose an OS specific path otherwise.
+extension Optional where Wrapped == StorageType {
+    public func getPath() -> StorageType {
+        if let self {
+            return self
+        } else if FileManager.default.isICloudDriveAvailable {
+            return .iCloudDrive
         } else {
             #if os(macOS)
-            archivePathType = UserDefaults.archivePathType ?? .local(FileManager.default.documentsDirectoryURL.appendingPathComponent("PDFArchiver"))
+            return .local(FileManager.default.documentsDirectoryURL.appendingPathComponent("PDFArchiver"))
             #else
-            archivePathType = UserDefaults.archivePathType ?? .appContainer
+            return .appContainer
             #endif
         }
     }
+}
 
-    public func getArchiveUrl() throws -> URL {
+@MainActor
+final class PathManager: Log {
+
+    static let shared = PathManager()
+
+    @Shared(.archivePathType) private(set) var archivePathType: StorageType?
+
+    private let fileManager = FileManager.default
+
+    private init() {}
+
+    func getArchiveUrl() throws -> URL {
         let archiveURL: URL
-        if UserDefaults.isInDemoMode {
+        if UserDefaults.standard.bool(forKey: "demoMode") {
             archiveURL = fileManager.temporaryDirectory
         } else {
-            archiveURL = try archivePathType.getArchiveUrl()
+            archiveURL = try archivePathType.getPath().getArchiveUrl()
         }
         try FileManager.default.createFolderIfNotExists(archiveURL)
         return archiveURL
     }
 
-    public func getUntaggedUrl() throws -> URL {
+    func getUntaggedUrl() throws -> URL {
         let untaggedURL = try getArchiveUrl().appendingPathComponent("untagged")
         try FileManager.default.createFolderIfNotExists(untaggedURL)
         return untaggedURL
     }
 
-    public func setArchiveUrl(with type: StorageType) throws {
+    func setArchiveUrl(with type: StorageType) throws {
         if type == .iCloudDrive {
             guard fileManager.iCloudDriveURL != nil else { throw PathError.iCloudDriveNotFound }
         }
@@ -60,7 +69,7 @@ public final class PathManager: Log {
         log.debug("Setting new archive type.", metadata: ["type": "\(type)"])
 
         let newArchiveUrl = try type.getArchiveUrl()
-        let oldArchiveUrl = try archivePathType.getArchiveUrl()
+        let oldArchiveUrl = try archivePathType.getPath().getArchiveUrl()
 
         guard newArchiveUrl != oldArchiveUrl else {
             log.errorAndAssert("Old and new archive url should be different", metadata: ["newArchiveUrl": "\(newArchiveUrl)"])
@@ -89,8 +98,7 @@ public final class PathManager: Log {
             }
         }
 
-        self.archivePathType = type
-        UserDefaults.archivePathType = type
+        self.$archivePathType.withLock { $0 = type }
 
         if let moveError = moveError {
             throw moveError

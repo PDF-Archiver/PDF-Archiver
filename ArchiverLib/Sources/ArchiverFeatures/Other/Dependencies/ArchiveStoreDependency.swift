@@ -101,12 +101,7 @@ extension ArchiveStoreDependency: DependencyKey {
         try await ArchiveStore.shared.save(document, shouldUpdatePdfMetadata: shouldUpdatePdfMetadata)
     },
     setArchiveStorageType: { type in
-        try await PathManager.shared.setArchiveUrl(with: type)
-
-        let archiveUrl = try await PathManager.shared.getArchiveUrl()
-        let untaggedUrl = try await PathManager.shared.getUntaggedUrl()
-
-        await ArchiveStore.shared.update(archiveFolder: archiveUrl, untaggedFolders: [untaggedUrl])
+        try await ArchiveStore.shared.update(with: type)
     }
   )
 }

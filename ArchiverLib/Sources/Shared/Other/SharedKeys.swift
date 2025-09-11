@@ -117,3 +117,17 @@ public extension SharedKey where Self == FileStorageKey<IdentifiedArrayOf<Docume
       fileStorage(.temporaryDirectory.appending(component: "documents.json"))
   }
 }
+
+public extension SharedKey where Self == ArchivePathTypeCustomSharedKey {
+  static var archivePathType: Self {
+      ArchivePathTypeCustomSharedKey(key: "archivePathType", store: .standard)
+  }
+}
+
+#if os(macOS)
+public extension SharedKey where Self == ObservedFolderCustomSharedKey {
+  static var observedFolder: Self {
+      ObservedFolderCustomSharedKey(key: "observedFolderURL", store: .standard)
+  }
+}
+#endif

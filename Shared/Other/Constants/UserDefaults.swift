@@ -60,7 +60,7 @@ extension UserDefaults {
             return level
         }
         set {
-            log.info("PDF Quality Changed.", metadata: ["quality": "\(newValue.rawValue)"])
+//            log.info("PDF Quality Changed.", metadata: ["quality": "\(newValue.rawValue)"])
             appGroup.set(newValue.rawValue, forKey: Names.pdfQuality.rawValue)
         }
     }
@@ -75,13 +75,13 @@ extension UserDefaults {
                 let url = try URL(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &staleBookmarkData)
                 if staleBookmarkData {
                     appGroup.set(nil, forKey: Names.observedFolderURL.rawValue)
-                    log.errorAndAssert("Found stale bookmark data.")
+//                    log.errorAndAssert("Found stale bookmark data.")
                     return nil
                 }
                 return url
             } catch {
                 appGroup.set(nil, forKey: Names.observedFolderURL.rawValue)
-                log.errorAndAssert("Failed to get observedFolderURL", metadata: ["error": "\(error)"])
+//                log.errorAndAssert("Failed to get observedFolderURL", metadata: ["error": "\(error)"])
                 NotificationCenter.default.postAlert(error)
                 return nil
             }
@@ -96,7 +96,7 @@ extension UserDefaults {
                 }
             } catch {
                 appGroup.set(nil, forKey: Names.observedFolderURL.rawValue)
-                log.errorAndAssert("Failed to set observedFolderURL.", metadata: ["error": "\(error)"])
+//                log.errorAndAssert("Failed to set observedFolderURL.", metadata: ["error": "\(error)"])
                 NotificationCenter.default.postAlert(error)
             }
         }
@@ -142,7 +142,7 @@ extension UserDefaults {
                     let url = try URL(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &staleBookmarkData)
                     if staleBookmarkData {
                         appGroup.set(nil, forKey: Names.archivePathType.rawValue)
-                        log.errorAndAssert("Found stale bookmark data.")
+//                        log.errorAndAssert("Found stale bookmark data.")
                         return nil
                     }
                     return .local(url)
@@ -150,7 +150,7 @@ extension UserDefaults {
                     let url = try URL(resolvingBookmarkData: bookmarkData, bookmarkDataIsStale: &staleBookmarkData)
                     guard !staleBookmarkData else {
                         // Handle stale data here.
-                        log.errorAndAssert("Error while getting archive url. Stale bookmark data.")
+//                        log.errorAndAssert("Error while getting archive url. Stale bookmark data.")
                         return nil
                     }
                     return .local(url)
@@ -160,7 +160,7 @@ extension UserDefaults {
                 }
             } catch {
                 appGroup.set(nil, forKey: Names.archivePathType.rawValue)
-                log.errorAndAssert("Error while getting archive url.", metadata: ["error": "\(String(describing: error))"])
+//                log.errorAndAssert("Error while getting archive url.", metadata: ["error": "\(String(describing: error))"])
                 NotificationCenter.default.postAlert(error)
                 return nil
             }
@@ -193,7 +193,7 @@ extension UserDefaults {
                 }
             } catch {
                 appGroup.set(nil, forKey: Names.archivePathType.rawValue)
-                log.errorAndAssert("Failed to set ArchivePathType.", metadata: ["error": "\(error)"])
+//                log.errorAndAssert("Failed to set ArchivePathType.", metadata: ["error": "\(error)"])
                 NotificationCenter.default.postAlert(error)
             }
         }

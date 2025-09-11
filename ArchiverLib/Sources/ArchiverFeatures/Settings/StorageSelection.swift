@@ -17,7 +17,7 @@ struct StorageSelection {
 
     @ObservableState
     struct State: Equatable {
-        var selectedArchiveType: StorageType
+        @Shared(.archivePathType) var selectedArchiveType: StorageType?
         var showDocumentPicker = false
 
         #warning("TODO: add a loading indicator somewhere")
@@ -78,7 +78,7 @@ struct StorageSelection {
                 state.isProcessing = false
 
                 if let type {
-                    state.selectedArchiveType = type
+                    state.$selectedArchiveType.withLock { $0 = type }
                 }
                 return .none
             }
@@ -102,7 +102,7 @@ struct StorageSelectionView: View {
                                 // since we have buttons, we have to "fake" the foreground color - it would be the accent color otherwise
                                 .foregroundColor(.primary)
                             Spacer()
-                            if storageType.equals(store.selectedArchiveType) {
+                            if storageType.equals(store.selectedArchiveType.getPath()) {
                                 Image(systemName: "checkmark.circle")
                                     .foregroundStyle(Color.green)
                             }
@@ -206,7 +206,7 @@ enum StorageSelectionType: String, CaseIterable {
 
 #Preview("StorageSelection", traits: .fixedLayout(width: 800, height: 600)) {
     StorageSelectionView(
-        store: Store(initialState: StorageSelection.State(selectedArchiveType: .iCloudDrive)) {
+        store: Store(initialState: StorageSelection.State()) {
             StorageSelection()
                 ._printChanges()
         }
