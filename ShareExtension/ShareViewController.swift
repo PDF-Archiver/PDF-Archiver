@@ -12,6 +12,7 @@ import UIKit
 import UniformTypeIdentifiers
 
 final class ShareViewController: UIViewController {
+    private static let tempDocumentURL = URL.temporaryDirectory.appendingPathComponent("TempDocuments")
     private static let log = Logger(subsystem: "PDFArchiverShareExtension", category: "ShareViewController")
 
     fileprivate enum ShareError: Error {
@@ -71,7 +72,7 @@ final class ShareViewController: UIViewController {
 
     private func handleAttachments() async {
         do {
-            let url = Constants.tempDocumentURL
+            let url = Self.tempDocumentURL
             try FileManager.default.createFolderIfNotExists(url)
 
             let inputItems = (extensionContext?.inputItems as? [NSExtensionItem]) ?? []

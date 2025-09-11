@@ -7,7 +7,4 @@
    <FileRef
       location = "group:PDFArchiver.xcodeproj">
    </FileRef>
-   <FileRef
-      location = "group:../ArchiverLib.xctestplan">
-   </FileRef>
 </Workspace>

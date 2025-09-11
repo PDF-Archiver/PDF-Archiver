@@ -11,25 +11,15 @@ import Foundation
 import SwiftUI
 
 @main
-struct PDFArchiverIOSApp: App, Log {
-
-    private let navigationModel: NavigationModel
-
+struct PDFArchiverIOSApp: App {
     init() {
-        let model = NavigationModel.shared
-        navigationModel = model
-        AppDependencyManager.shared.add(dependency: model)
-
-//        initializePdfArchiver()
+        #warning("TODO: add appdependency for Intents!?")
+//        AppDependencyManager.shared.add(dependency: NavigationModel.shared)
     }
 
     var body: some Scene {
         WindowGroup {
             RootView()
-//            SplitNavigationView()
-//                .inAppPurchasesSetup()
         }
-        .environment(navigationModel)
-        .modelContainer(container)
     }
 }
