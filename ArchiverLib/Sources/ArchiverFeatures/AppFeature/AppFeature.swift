@@ -291,8 +291,8 @@ struct AppView: View {
     #warning("TODO: add all tips")
     @State private var tips = TipGroup(.ordered) {
         ScanShareTip()
-        UntaggedViewTip()
-        AfterFirstImportTip()
+//        UntaggedViewTip()
+//        AfterFirstImportTip()
     }
 
     init(store: StoreOf<AppFeature>) {
@@ -310,7 +310,7 @@ struct AppView: View {
 //            Tab(LocalizedStringResource("Archive", bundle: .module), systemImage: "magnifyingglass", value: AppFeature.State.Tab.search) {
             Tab(String(localized: "Archive", bundle: .module), systemImage: "magnifyingglass", value: AppFeature.State.Tab.search) {
                 archiveList
-                    .modifier(ScanButtonModifier(showButton: store.archiveList.documentDetails == nil, currentTip: tips.currentTip))
+                    .modifier(ScanButtonModifier(showButton: store.archiveList.documentDetails == nil, currentTip: store.tutorialShown ? tips.currentTip : nil))
             }
 
             Tab(String(localized: "Inbox", bundle: .module), systemImage: "tray", value: AppFeature.State.Tab.inbox) {

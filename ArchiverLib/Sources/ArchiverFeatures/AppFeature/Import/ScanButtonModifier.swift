@@ -26,8 +26,7 @@ struct ScanButtonModifier: ViewModifier {
             .overlay(alignment: .bottomTrailing) {
                 DropButton(state: dropHandler.documentProcessingState) { _ in
                     #if os(macOS)
-                    #warning("TODO: add this")
-//                    dropHandler.startImport()
+                    dropHandler.startImport()
                     #else
                     #warning("TODO: handle long press")
                     isScanPresented = true
@@ -39,8 +38,7 @@ struct ScanButtonModifier: ViewModifier {
                 .opacity(showButton ? 1 : 0)
                 .popoverTip((showButton && (currentTip as? ScanShareTip) != nil) ? currentTip : nil) { _ in
                     #if os(macOS)
-                    #warning("TODO: add this")
-                    //                    dropHandler.startImport()
+                    dropHandler.startImport()
                     #else
                     #warning("TODO: handle long press")
 //                    navigationModel.showScan(share: tipAction.id == "scanAndShare")
