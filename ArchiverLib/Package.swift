@@ -1,4 +1,4 @@
-// swift-tools-version: 6.1
+// swift-tools-version: 6.2
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -30,6 +30,14 @@ let package = Package(
                 ],
                 resources: [
                     .process("Localizable.xcstrings")
+                ],
+                swiftSettings: [
+                    .enableExperimentalFeature("StrictConcurrency")
+                    // These features can currently not be enabled, see:
+                    // https://github.com/pointfreeco/swift-dependencies/discussions/267
+//                    .defaultIsolation(MainActor.self),
+//                    .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
+//                    .enableUpcomingFeature("InferIsolatedConformances")
                 ]),
         .target(name: "ArchiverStore",
                 dependencies: [
@@ -38,20 +46,49 @@ let package = Package(
                     .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                     "AsyncExtensions",
                     .product(name: "AsyncAlgorithms", package: "swift-async-algorithms")
+                ],
+                swiftSettings: [
+                    .enableExperimentalFeature("StrictConcurrency"),
+                    .defaultIsolation(MainActor.self),
+                    .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
+                    .enableUpcomingFeature("InferIsolatedConformances")
                 ]),
         .target(name: "ArchiverIntents",
                 dependencies: [
                     "Shared"
+                ],
+                swiftSettings: [
+                    .enableExperimentalFeature("StrictConcurrency"),
+                    .defaultIsolation(MainActor.self),
+                    .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
+                    .enableUpcomingFeature("InferIsolatedConformances")
                 ]),
-//                swiftSettings: [.defaultIsolaion(MainActor.self)]),
         .target(name: "ArchiverModels",
-                dependencies: []),
+                dependencies: [],
+                swiftSettings: [
+                    .enableExperimentalFeature("StrictConcurrency"),
+                    .defaultIsolation(MainActor.self),
+                    .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
+                    .enableUpcomingFeature("InferIsolatedConformances")
+                ]),
         .target(name: "ArchiverDocumentProcessing",
-                dependencies: ["Shared"]),
+                dependencies: ["Shared"],
+                swiftSettings: [
+                    .enableExperimentalFeature("StrictConcurrency"),
+                    .defaultIsolation(MainActor.self),
+                    .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
+                    .enableUpcomingFeature("InferIsolatedConformances")
+                ]),
         .target(name: "Shared",
                 dependencies: [
                     "ArchiverModels",
                     .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+                ],
+                swiftSettings: [
+                    .enableExperimentalFeature("StrictConcurrency"),
+                    .defaultIsolation(MainActor.self),
+                    .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
+                    .enableUpcomingFeature("InferIsolatedConformances")
                 ]),
         .testTarget(
             name: "ArchiverFeaturesTests",

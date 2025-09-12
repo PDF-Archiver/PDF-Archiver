@@ -20,9 +20,10 @@ public enum DateParser: Log {
     ///
     /// - Parameter raw: Raw string which might contain a date.
     /// - Returns: The found date or nil if no date was found.
-    public static func parse(_ raw: String) -> [Date] {
+    @concurrent
+    public static func parse(_ raw: String) async -> [Date] {
         let input = String(raw.prefix(10))
-        let results = localParse(raw)
+        let results = await localParse(raw)
         if !results.isEmpty {
             let dates = results.map(\.date)
             let dateString = results.map { DateFormatter.yyyyMMdd.string(from: $0.date) }
@@ -42,7 +43,8 @@ public enum DateParser: Log {
         }
     }
 
-    private static func localParse(_ raw: String) -> [ParserResult] {
+    @concurrent
+    private static func localParse(_ raw: String) async -> [ParserResult] {
         let types: NSTextCheckingResult.CheckingType = .date
         guard let detector = try? NSDataDetector(types: types.rawValue) else {
             Self.log.criticalAndAssert("Could not create NSDataDetector")

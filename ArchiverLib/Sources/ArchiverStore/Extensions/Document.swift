@@ -10,7 +10,7 @@ import Foundation
 import OSLog
 
 extension Document {
-    static func create(url: URL, isTagged: Bool, downloadStatus: Double, sizeInBytes: Double) -> Document? {
+    static func create(url: URL, isTagged: Bool, downloadStatus: Double, sizeInBytes: Double) async -> Document? {
         guard let id = url.uniqueId() else {
             Logger.archiveStore.errorAndAssert("Failed to get uniqueId")
             return nil
@@ -20,7 +20,7 @@ extension Document {
             return nil
         }
 
-        let data = Document.parseFilename(filename)
+        let data = await Document.parseFilename(filename)
         let tags = Set(data.tagNames ?? [])
 
         let date = data.date ?? url.fileCreationDate() ?? Date()

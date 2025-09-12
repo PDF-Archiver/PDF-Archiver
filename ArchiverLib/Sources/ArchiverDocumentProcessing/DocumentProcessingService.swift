@@ -14,7 +14,7 @@ import Vision
 
 @StorageActor
 @Observable
-public final class DocumentProcessingService {
+public final class DocumentProcessingService: Sendable {
 
     public private(set) var lastProcessedDocumentUrl: URL?
     private let tempDocumentURL: URL
@@ -22,7 +22,7 @@ public final class DocumentProcessingService {
     private let backgroundProcessing = BackgroundProcessingActor<PDFProcessingOperation>()
     private var backgroundProcessingIds = Set<String>()
 
-    public init(tempDocumentURL: URL, documentDestination: @escaping () async throws -> URL?) {
+    public init(tempDocumentURL: URL, documentDestination: @escaping @Sendable () async throws -> URL?) {
         self.tempDocumentURL = tempDocumentURL
         self.documentDestination = documentDestination
     }

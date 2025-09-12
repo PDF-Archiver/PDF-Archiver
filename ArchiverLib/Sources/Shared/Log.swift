@@ -12,15 +12,15 @@ public protocol Log {
 }
 
 public extension Log {
-    static var log: Logger {
+    nonisolated static var log: Logger {
         Logger(subsystem: Logger.subsystem, category: String(describing: self))
     }
-    var log: Logger {
+    nonisolated var log: Logger {
         Self.log
     }
 }
 
-public extension Logger {
+public nonisolated extension Logger {
     fileprivate static let subsystem = Bundle.main.bundleIdentifier!
 
     #if DEBUG
@@ -36,12 +36,12 @@ public extension Logger {
     static let settings = Logger(subsystem: subsystem, category: "settings")
     static let taggingView = Logger(subsystem: subsystem, category: "tagging-view")
 
-    func errorAndAssert(_ message: String) {
+    nonisolated func errorAndAssert(_ message: String) {
         assertionFailure(message)
         error("\(message)")
     }
 
-    func trace(_ message: String,
+    nonisolated func trace(_ message: String,
                metadata: @autoclosure () -> [String: String],
                file: StaticString = #file,
                function: StaticString = #function,
@@ -50,7 +50,7 @@ public extension Logger {
         trace("\(tmp)")
     }
 
-    func info(_ message: String,
+    nonisolated func info(_ message: String,
                metadata: @autoclosure () -> [String: String],
                file: StaticString = #file,
                function: StaticString = #function,
@@ -59,7 +59,7 @@ public extension Logger {
         info("\(tmp)")
     }
 
-    func debug(_ message: String,
+    nonisolated func debug(_ message: String,
                metadata: @autoclosure () -> [String: String],
                file: StaticString = #file,
                function: StaticString = #function,
@@ -68,7 +68,7 @@ public extension Logger {
         debug("\(tmp)")
     }
 
-    func error(_ message: String,
+    nonisolated func error(_ message: String,
                metadata: @autoclosure () -> [String: String]?,
                file: StaticString = #file,
                function: StaticString = #function,
@@ -77,7 +77,7 @@ public extension Logger {
         error("\(tmp)")
     }
 
-    func errorAndAssert(_ message: String,
+    nonisolated func errorAndAssert(_ message: String,
                         metadata: @autoclosure () -> [String: String]? = nil,
                         file: StaticString = #file,
                         function: StaticString = #function,
@@ -87,7 +87,7 @@ public extension Logger {
         assertionFailure(message, file: file, line: line)
     }
 
-    func criticalAndAssert(_ message: String,
+    nonisolated func criticalAndAssert(_ message: String,
                            metadata: @autoclosure () -> [String: String]? = nil,
                            file: StaticString = #file,
                            function: StaticString = #function,
@@ -97,7 +97,7 @@ public extension Logger {
         assertionFailure(message, file: file, line: line)
     }
 
-    func faultAndAssert(_ message: String,
+    nonisolated func faultAndAssert(_ message: String,
                         metadata: @autoclosure () -> [String: String]? = nil,
                         file: StaticString = #file,
                         function: StaticString = #function,

@@ -29,36 +29,36 @@ extension TextAnalyserDependency: TestDependencyKey {
 }
 
 extension TextAnalyserDependency: DependencyKey {
-  static let liveValue = TextAnalyserDependency(
-    getTextFrom: { url in
-        guard let pdfDocument = PDFDocument(url: url) else { return nil }
+    static let liveValue = TextAnalyserDependency(
+        getTextFrom: { url in
+            guard let pdfDocument = PDFDocument(url: url) else { return nil }
 
-        // get the pdf content of first 3 pages
-        var text = ""
-        for index in 0 ..< min(pdfDocument.pageCount, 3) {
-            guard let page = pdfDocument.page(at: index),
-                  let pageContent = page.string else { continue }
+            // get the pdf content of first 3 pages
+            var text = ""
+            for index in 0 ..< min(pdfDocument.pageCount, 3) {
+                guard let page = pdfDocument.page(at: index),
+                      let pageContent = page.string else { continue }
 
-            text += pageContent
+                text += pageContent
+            }
+
+            return text.isEmpty ? nil : text
+        },
+        parseDateFrom: { text in
+            return await DateParser.parse(text)
+        },
+        parseTagsFrom: { text in
+            await TagParser.parse(text)
+        },
+        getFileTagsFrom: { url in
+            try url.getFileTags()
         }
-
-        return text.isEmpty ? nil : text
-    },
-    parseDateFrom: { text in
-        return DateParser.parse(text)
-    },
-    parseTagsFrom: { text in
-        TagParser.parse(text)
-    },
-    getFileTagsFrom: { url in
-        try url.getFileTags()
-    }
-  )
+    )
 }
 
 extension DependencyValues {
-  var textAnalyser: TextAnalyserDependency {
-    get { self[TextAnalyserDependency.self] }
-    set { self[TextAnalyserDependency.self] = newValue }
-  }
+    var textAnalyser: TextAnalyserDependency {
+        get { self[TextAnalyserDependency.self] }
+        set { self[TextAnalyserDependency.self] = newValue }
+    }
 }

@@ -25,20 +25,20 @@ extension UserDefaultsDependency: TestDependencyKey {
 }
 
 extension UserDefaultsDependency: DependencyKey {
-  static let liveValue = UserDefaultsDependency(
-    reset: {
-        if let bundleIdentifier = Bundle.main.bundleIdentifier {
-            UserDefaults.standard.removePersistentDomain(forName: bundleIdentifier)
-        } else {
-            log.error("Bundle Identifier not found.")
+    static let liveValue = UserDefaultsDependency(
+        reset: {
+            if let bundleIdentifier = Bundle.main.bundleIdentifier {
+                UserDefaults.standard.removePersistentDomain(forName: bundleIdentifier)
+            } else {
+                log.error("Bundle Identifier not found.")
+            }
         }
-    }
-  )
+    )
 }
 
 extension DependencyValues {
-  var userDefaultsManager: UserDefaultsDependency {
-    get { self[UserDefaultsDependency.self] }
-    set { self[UserDefaultsDependency.self] = newValue }
-  }
+    var userDefaultsManager: UserDefaultsDependency {
+        get { self[UserDefaultsDependency.self] }
+        set { self[UserDefaultsDependency.self] = newValue }
+    }
 }

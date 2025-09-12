@@ -24,16 +24,16 @@ extension FileManagerDependency: TestDependencyKey {
 }
 
 extension FileManagerDependency: DependencyKey {
-  static let liveValue = FileManagerDependency(
-    removeItemAt: { url in
-        try FileManager.default.removeItem(at: url)
-    }
-  )
+    static let liveValue = FileManagerDependency(
+        removeItemAt: { url in
+            try FileManager.default.removeItem(at: url)
+        }
+    )
 }
 
 extension DependencyValues {
-  var fileManager: FileManagerDependency {
-    get { self[FileManagerDependency.self] }
-    set { self[FileManagerDependency.self] = newValue }
-  }
+    var fileManager: FileManagerDependency {
+        get { self[FileManagerDependency.self] }
+        set { self[FileManagerDependency.self] = newValue }
+    }
 }

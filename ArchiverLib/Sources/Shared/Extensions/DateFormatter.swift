@@ -7,12 +7,9 @@
 
 import Foundation
 
-let _formatter = DateFormatter.with("yyyy-MM-dd")
-public extension DateFormatter {
+public nonisolated extension DateFormatter {
 
-    static var yyyyMMdd: DateFormatter {
-        _formatter
-    }
+    nonisolated static let yyyyMMdd = DateFormatter.with("yyyy-MM-dd")
 
     fileprivate static func with(_ template: String) -> DateFormatter {
         let formatter = DateFormatter()

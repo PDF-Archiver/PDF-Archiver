@@ -112,19 +112,21 @@ struct DocumentInformationForm {
 
                 // check tags
                 if !state.documentTagsNotRequired && state.document.tags.isEmpty {
-                    notificationCenter.createAndPost(.init(title: "Missing tags",
-                                                           message: "Please add at least one tag to your document or change your advanced settings.",
-                                                           primaryButtonTitle: "OK"))
-                    return .none
+                    return .run { _ in
+                        await notificationCenter.createAndPost(.init(title: "Missing tags",
+                                                               message: "Please add at least one tag to your document or change your advanced settings.",
+                                                               primaryButtonTitle: "OK"))
+                    }
                 }
 
                 // check specification
                 state.document.specification = state.document.specification.slugified(withSeparator: "-")
                 if !state.documentSpecificationNotRequired && state.document.specification.isEmpty {
-                    notificationCenter.createAndPost(.init(title: "No specification",
-                                                           message: "Please add the document specification or change your advanced settings.",
-                                                           primaryButtonTitle: "OK"))
-                    return .none
+                    return .run { _ in
+                        await notificationCenter.createAndPost(.init(title: "No specification",
+                                                               message: "Please add the document specification or change your advanced settings.",
+                                                               primaryButtonTitle: "OK"))
+                    }
                 }
 
                 return .send(.delegate(.saveDocument(state.document, shouldUpdatePdfMetadata: !state.notSaveDocumentTagsAsPDFMetadata)))

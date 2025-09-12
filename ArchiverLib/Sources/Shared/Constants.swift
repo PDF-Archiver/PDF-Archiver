@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum Constants {
+public nonisolated enum Constants {
     public static let documentDatePlaceholder = "PDFARCHIVER-TEMP-DATE"
     public static let documentDescriptionPlaceholder = "PDF-ARCHIVER-TEMP-DESCRIPTION-"
     public static let documentTagPlaceholder = "PDFARCHIVERTEMPTAG"

@@ -104,16 +104,16 @@ final class ICloudFolderProvider: FolderProvider {
         metadataQuery.stop()
     }
 
-    private func sendDocuments(added: [DocumentInformation], updated: [DocumentInformation], removed: [DocumentInformation]) {
+    private func sendDocuments(added: [DocumentInformation], updated: [DocumentInformation], removed: [DocumentInformation]) async {
         for change in added + updated {
-            guard let id = change.url.uniqueId() else {
+            guard let id = await change.url.uniqueId() else {
                 assertionFailure("Failed to get uniqueId for \(change.url)")
                 continue
             }
             currentDocuments[id] = change
         }
         for change in removed {
-            guard let id = change.url.uniqueId() else {
+            guard let id = await change.url.uniqueId() else {
                 assertionFailure("Failed to get uniqueId for \(change.url)")
                 currentDocuments = currentDocuments.filter { $0.value.url != change.url }
                 continue
@@ -192,8 +192,8 @@ final class ICloudFolderProvider: FolderProvider {
     }
 }
 
-extension NSMetadataItem: Log {
-    func createDetails() -> DocumentInformation? {
+extension NSMetadataItem: nonisolated Log {
+    nonisolated func createDetails() -> DocumentInformation? {
         // get the document path
         guard let documentUrl = value(forAttribute: NSMetadataItemURLKey) as? URL else {
             log.errorAndAssert("Could not parse Metadata URL.")

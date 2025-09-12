@@ -33,21 +33,21 @@ extension NotificationCenterDependency: TestDependencyKey {
 }
 
 extension NotificationCenterDependency: DependencyKey {
-  static let liveValue = NotificationCenterDependency(
-    createAndPost: { alertData in
-        NotificationCenter.default.createAndPost(title: alertData.title,
-                                                 message: alertData.message,
-                                                 primaryButtonTitle: alertData.primaryButtonTitle)
-    },
-    postAlert: { error in
-        NotificationCenter.default.postAlert(error)
-    }
-  )
+    static let liveValue = NotificationCenterDependency(
+        createAndPost: { alertData in
+            NotificationCenter.default.createAndPost(title: alertData.title,
+                                                     message: alertData.message,
+                                                     primaryButtonTitle: alertData.primaryButtonTitle)
+        },
+        postAlert: { error in
+            NotificationCenter.default.postAlert(error)
+        }
+    )
 }
 
 extension DependencyValues {
-  var notificationCenter: NotificationCenterDependency {
-    get { self[NotificationCenterDependency.self] }
-    set { self[NotificationCenterDependency.self] = newValue }
-  }
+    var notificationCenter: NotificationCenterDependency {
+        get { self[NotificationCenterDependency.self] }
+        set { self[NotificationCenterDependency.self] = newValue }
+    }
 }

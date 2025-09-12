@@ -66,49 +66,49 @@ extension ArchiveStoreDependency: TestDependencyKey {
 }
 
 extension ArchiveStoreDependency: DependencyKey {
-  static let liveValue = ArchiveStoreDependency(
-    documentChanges: {
-        return await ArchiveStore.shared.documentsStream
-    },
-    reloadDocuments: {
-        return try await ArchiveStore.shared.reloadArchiveDocuments()
-    },
-    isLoading: {
-        return AsyncStream { stream in
-            Task {
-                for await isLoading in await ArchiveStore.shared.isLoadingStream {
-                    stream.yield(isLoading)
+    static let liveValue = ArchiveStoreDependency(
+        documentChanges: {
+            return await ArchiveStore.shared.documentsStream
+        },
+        reloadDocuments: {
+            return try await ArchiveStore.shared.reloadArchiveDocuments()
+        },
+        isLoading: {
+            return AsyncStream { stream in
+                Task {
+                    for await isLoading in await ArchiveStore.shared.isLoadingStream {
+                        stream.yield(isLoading)
+                    }
                 }
             }
+        },
+        startDownloadOf: { url in
+            try await ArchiveStore.shared.startDownload(of: url)
+        },
+        deleteDocumentAt: { url in
+            try await ArchiveStore.shared.delete(url: url)
+        },
+        getTagSuggestionsFor: { tag in
+            await ArchiveStore.shared.getTagSuggestions(for: tag)
+        },
+        getTagSuggestionsSimilarTo: { tags in
+            await ArchiveStore.shared.getTagSuggestionsSimilar(to: tags)
+        },
+        parseFilename: { filename in
+            await Document.parseFilename(filename)
+        },
+        saveDocument: { document, shouldUpdatePdfMetadata in
+            try await ArchiveStore.shared.save(document, shouldUpdatePdfMetadata: shouldUpdatePdfMetadata)
+        },
+        setArchiveStorageType: { type in
+            try await ArchiveStore.shared.update(with: type)
         }
-    },
-    startDownloadOf: { url in
-        try await ArchiveStore.shared.startDownload(of: url)
-    },
-    deleteDocumentAt: { url in
-        try await ArchiveStore.shared.delete(url: url)
-    },
-    getTagSuggestionsFor: { tag in
-        await ArchiveStore.shared.getTagSuggestions(for: tag)
-    },
-    getTagSuggestionsSimilarTo: { tags in
-        await ArchiveStore.shared.getTagSuggestionsSimilar(to: tags)
-    },
-    parseFilename: { filename in
-        Document.parseFilename(filename)
-    },
-    saveDocument: { document, shouldUpdatePdfMetadata in
-        try await ArchiveStore.shared.save(document, shouldUpdatePdfMetadata: shouldUpdatePdfMetadata)
-    },
-    setArchiveStorageType: { type in
-        try await ArchiveStore.shared.update(with: type)
-    }
-  )
+    )
 }
 
 extension DependencyValues {
-  var archiveStore: ArchiveStoreDependency {
-    get { self[ArchiveStoreDependency.self] }
-    set { self[ArchiveStoreDependency.self] = newValue }
-  }
+    var archiveStore: ArchiveStoreDependency {
+        get { self[ArchiveStoreDependency.self] }
+        set { self[ArchiveStoreDependency.self] = newValue }
+    }
 }

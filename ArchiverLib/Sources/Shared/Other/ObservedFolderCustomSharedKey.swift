@@ -9,7 +9,7 @@ import ComposableArchitecture
 import Foundation
 
 @available(iOS, unavailable)
-public struct ObservedFolderCustomSharedKey: SharedKey, Log {
+public nonisolated struct ObservedFolderCustomSharedKey: SharedKey, Log {
     private let key: String
     private let store: UncheckedSendable<UserDefaults>
 
@@ -60,7 +60,9 @@ public struct ObservedFolderCustomSharedKey: SharedKey, Log {
         } catch {
             store.set(nil, forKey: key)
             log.errorAndAssert("Failed to get observedFolderURL", metadata: ["error": "\(error)"])
-            NotificationCenter.default.postAlert(error)
+            Task {
+                await NotificationCenter.default.postAlert(error)
+            }
             return nil
         }
     }
@@ -76,7 +78,9 @@ public struct ObservedFolderCustomSharedKey: SharedKey, Log {
         } catch {
             store.set(nil, forKey: key)
             log.errorAndAssert("Failed to set observedFolderURL.", metadata: ["error": "\(error)"])
-            NotificationCenter.default.postAlert(error)
+            Task {
+                await NotificationCenter.default.postAlert(error)
+            }
         }
     }
 
@@ -99,7 +103,7 @@ public struct ObservedFolderCustomSharedKey: SharedKey, Log {
 
 @available(iOS, unavailable)
 extension ObservedFolderCustomSharedKey {
-    public struct ObservedFolderCustomSharedKeyId: Hashable {
+    public nonisolated struct ObservedFolderCustomSharedKeyId: Hashable {
       fileprivate let key: String
       fileprivate let store: UserDefaults
     }

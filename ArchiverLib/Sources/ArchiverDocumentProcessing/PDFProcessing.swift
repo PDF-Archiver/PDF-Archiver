@@ -47,6 +47,7 @@ final class PDFProcessingOperation: AsyncOperation {
         save(mode)
     }
 
+    @StorageActor
     func process() async {
         do {
             guard !Task.isCancelled else { return }
@@ -61,7 +62,7 @@ final class PDFProcessingOperation: AsyncOperation {
             case .images(let images):
 
                 // apply OCR and create a PDF
-                document = try createPdf(from: images)
+                document = try await createPdf(from: images)
             case .pdf(let pdfData, _):
 
                 guard let parsedDocument = PDFDocument(data: pdfData) else {
@@ -79,7 +80,7 @@ final class PDFProcessingOperation: AsyncOperation {
             guard !Task.isCancelled else { return }
 
             // generate filename by analysing the image
-            let filename = getFilename(from: document)
+            let filename = await getFilename(from: document)
             let filepath = destinationFolder.appendingPathComponent(filename)
             document.write(to: filepath)
 
@@ -104,9 +105,9 @@ final class PDFProcessingOperation: AsyncOperation {
 
     // MARK: - Helper Functions
 
-    private func getFilename(from document: PDFDocument) -> String {
+    private func getFilename(from document: PDFDocument) async -> String {
         if let documentUrl = document.documentURL,
-           let parsedOutput = Document.parseFilename(documentUrl.lastPathComponent) as (date: Date?, specification: String?, tagNames: [String]?)?,
+           let parsedOutput = await Document.parseFilename(documentUrl.lastPathComponent) as (date: Date?, specification: String?, tagNames: [String]?)?,
            parsedOutput.date != nil,
            let specification = parsedOutput.specification,
            specification != Constants.documentDescriptionPlaceholder {
@@ -129,7 +130,7 @@ final class PDFProcessingOperation: AsyncOperation {
             }
 
             // parse the date
-            let parsedDate = DateParser.parse(content).first ?? Date()
+            let parsedDate = await DateParser.parse(content).first ?? Date()
 
             // parse the tags
             let tags = Set([Constants.documentTagPlaceholder])
@@ -137,7 +138,7 @@ final class PDFProcessingOperation: AsyncOperation {
         }
     }
 
-    private func createPdf(from images: [PlatformImage]) throws -> PDFDocument {
+    private func createPdf(from images: [PlatformImage]) async throws -> PDFDocument {
         var textObservations = [TextObservation]()
         for image in images {
             guard let cgImage = image.cgImage else { fatalError("Could not get cgImage") }
@@ -200,12 +201,12 @@ final class PDFProcessingOperation: AsyncOperation {
         }
 
         // save the pdf
-        let document = Self.renderPdf(from: textObservations)
+        let document = await Self.renderPdf(from: textObservations)
 
         return document
     }
 
-    private static func renderPdf(from observations: [TextObservation]) -> PDFDocument {
+    private static func renderPdf(from observations: [TextObservation]) async -> PDFDocument {
 
         var pages = [PDFPage]()
         for observation in observations {
@@ -235,7 +236,7 @@ final class PDFProcessingOperation: AsyncOperation {
             // save data in context
             observation.image.draw(in: bounds)
             for result in observation.results {
-                result.attributedText.draw(in: result.rect)
+                await result.getAttributedText().draw(in: result.rect)
             }
 
             // close context
@@ -323,7 +324,9 @@ final class PDFProcessingOperation: AsyncOperation {
     private struct TextObservationResult {
         let rect: CGRect
         let text: String
-        var attributedText: NSAttributedString {
+
+        @MainActor
+        func getAttributedText() -> NSAttributedString {
             return NSAttributedString.createCleared(from: text, with: rect.size)
         }
     }
@@ -353,6 +356,7 @@ extension Font {
     }
 }
 
+extension NSAttributedString: @unchecked @retroactive Sendable {}
 extension NSAttributedString {
     fileprivate static func createCleared(from text: String, with size: CGSize) -> NSAttributedString {
 

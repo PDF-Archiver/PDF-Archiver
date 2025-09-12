@@ -79,7 +79,7 @@ public actor ArchiveStore: Log {
 
         self.archiveFolder = archiveFolder
         self.untaggedFolders = untaggedFolders
-        let observedFolders = [[archiveFolder], untaggedFolders]
+        let observedFolders = await [[archiveFolder], untaggedFolders]
             .flatMap { $0 }
             .getUniqueParents()
         var foundProviders: [(any FolderProvider)?] = []
@@ -95,12 +95,13 @@ public actor ArchiveStore: Log {
                 for await changes in folderChangeStream {
                     Self.log.debug("Found documents count: \(changes.count)")
 
-                    await documentsMap[provider.baseUrl] = changes.compactMap { change in
-                        Document.create(url: change.url,
+                    await documentsMap[provider.baseUrl] = changes.asyncMap { change in
+                        await Document.create(url: change.url,
                                         isTagged: isTagged(change.url),
                                         downloadStatus: change.downloadStatus,
                                         sizeInBytes: change.sizeInBytes)
                     }
+                    .compactMap { $0 }
 
                     let documents = documentsMap.values.flatMap(\.self)
                     documentsStreamContinuation.yield(documents)
@@ -273,21 +274,26 @@ public actor ArchiveStore: Log {
         return true
     }
 
-    private func createDocument(url: URL, downloadStatus: Double, sizeInBytes: Double) -> Document? {
-        guard let id = url.uniqueId() else {
+    private func createDocument(url: URL, downloadStatus: Double, sizeInBytes: Double) async -> Document? {
+        guard let id = await url.uniqueId() else {
             Logger.archiveStore.errorAndAssert("Failed to get uniqueId")
             return nil
         }
-        guard let filename = url.filename() else {
+        guard let filename = await url.filename() else {
             Logger.archiveStore.errorAndAssert("Failed to get filename")
             return nil
         }
 
-        let data = Document.parseFilename(filename)
+        let data = await Document.parseFilename(filename)
         let tags = Set(data.tagNames ?? [])
         let isTagged = isTagged(url)
 
-        let date = data.date ?? url.fileCreationDate() ?? Date()
+        let date: Date
+        if let foundDate = data.date {
+            date = foundDate
+        } else {
+            date = await url.fileCreationDate() ?? Date()
+        }
         let specification = isTagged ? (data.specification ?? "n/a").replacingOccurrences(of: "-", with: " ") : (data.specification ?? "n/a")
 
         return Document(id: id,

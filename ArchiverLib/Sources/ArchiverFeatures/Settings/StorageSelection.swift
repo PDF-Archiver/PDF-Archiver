@@ -69,7 +69,7 @@ struct StorageSelection {
                         try await archiveStore.setArchiveStorageType(type)
                         await send(.moveToStorageTypeEndWithNew(type))
                     } catch {
-                        notificationCenter.postAlert(error)
+                        await notificationCenter.postAlert(error)
                         await send(.moveToStorageTypeEndWithNew(nil))
                     }
                 }

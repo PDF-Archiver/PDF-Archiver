@@ -62,11 +62,11 @@ struct ExpertSettings {
                 userDefaultsManager.reset()
 
                 #warning("TODO: notification only pops up for a short amount of time the first time")
-                notificationCenter.createAndPost(.init(title: "Reset App",
-                                                   message: "Please restart the app to complete the reset.",
-                                                   primaryButtonTitle: "OK"))
-
-                return .none
+                return .run { _ in
+                    await notificationCenter.createAndPost(.init(title: "Reset App",
+                                                                 message: "Please restart the app to complete the reset.",
+                                                                 primaryButtonTitle: "OK"))
+                }
             }
         }
     }

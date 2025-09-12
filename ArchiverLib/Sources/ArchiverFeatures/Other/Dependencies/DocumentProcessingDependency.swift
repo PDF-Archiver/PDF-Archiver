@@ -30,16 +30,16 @@ extension DocumentProcessingDependency: TestDependencyKey {
 }
 
 extension DocumentProcessingDependency: DependencyKey {
-    @StorageActor
+    @MainActor
     private static var _documentProcessingService: DocumentProcessingService?
 
-    @StorageActor
+    @MainActor
     private static func getDocumentProcessingService() async -> DocumentProcessingService {
         if let service = _documentProcessingService {
             return service
         }
 
-        let service = DocumentProcessingService(tempDocumentURL: Constants.tempDocumentURL,
+        let service = await DocumentProcessingService(tempDocumentURL: Constants.tempDocumentURL,
                                                 documentDestination: {
             try await ArchiveStore.shared.getUntaggedUrl()
         })

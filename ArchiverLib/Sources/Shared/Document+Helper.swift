@@ -20,7 +20,8 @@ extension Document {
     ///
     /// - Parameter path: Path which should be parsed.
     /// - Returns: Date, specification and tag names which can be parsed from the path.
-    public static func parseFilename(_ filename: String) -> (date: Date?, specification: String?, tagNames: [String]?) {
+    @concurrent
+    public static func parseFilename(_ filename: String) async -> (date: Date?, specification: String?, tagNames: [String]?) {
 
         // try to parse the current filename
         var date: Date?
@@ -28,7 +29,7 @@ extension Document {
         if let parsed = Document.getFilenameDate(filename) {
             date = parsed.date
             // rawDate = parsed.rawDate
-        } else if let parsedDate = DateParser.parse(filename).first {
+        } else if let parsedDate = await DateParser.parse(filename).first {
             date = parsedDate
         }
 
@@ -90,7 +91,7 @@ extension Document {
         return (date, specification, tagNames)
     }
 
-    private static func getFilenameDate(_ filename: String) -> (date: Date, rawDate: String)? {
+    private nonisolated static func getFilenameDate(_ filename: String) -> (date: Date, rawDate: String)? {
         var rawDate: String?
         if let components = filename.components(separatedBy: "--") as [String]?, components.count > 1 {
             rawDate = components.first

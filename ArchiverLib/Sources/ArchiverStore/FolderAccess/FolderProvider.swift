@@ -13,7 +13,7 @@ import Shared
     static let shared = FolderProviderActor()
 }
 
-struct DocumentInformation: Equatable, Comparable {
+struct DocumentInformation: Equatable, Comparable, Sendable {
     static func < (lhs: DocumentInformation, rhs: DocumentInformation) -> Bool {
         lhs.url.path < rhs.url.path
     }

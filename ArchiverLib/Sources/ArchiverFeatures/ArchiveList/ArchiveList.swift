@@ -14,7 +14,7 @@ import SwiftUI
 struct ArchiveList {
     @ObservableState
     struct State: Equatable {
-        enum SearchToken: Hashable, Identifiable {
+        enum SearchToken: Hashable, Identifiable, Sendable {
             case tag(String)
             case year(Int)
             case text(String)

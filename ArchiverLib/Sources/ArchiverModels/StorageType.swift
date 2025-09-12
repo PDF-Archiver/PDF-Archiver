@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum StorageType: Codable, Equatable, Sendable {
+public nonisolated enum StorageType: Codable, Equatable, Sendable {
     case iCloudDrive
 #if !os(macOS)
     case appContainer
