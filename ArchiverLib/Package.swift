@@ -32,7 +32,7 @@ let package = Package(
                     .process("Localizable.xcstrings")
                 ],
                 swiftSettings: [
-                    .enableExperimentalFeature("StrictConcurrency"),
+                    .enableExperimentalFeature("StrictConcurrency")
                     // These features can currently not be enabled, see:
                     // https://github.com/pointfreeco/swift-dependencies/discussions/267
                     // https://github.com/pointfreeco/swift-composable-architecture/discussions/3714

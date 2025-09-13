@@ -221,7 +221,7 @@ struct AppFeature {
                             var prefetchTask: Task<Void, Never>?
                             for await documents in await archiveStore.documentChanges() {
                                 await send(.documentsChanged(documents))
-                                
+
                                 // prefetch all untagged documents
                                 prefetchTask?.cancel()
                                 prefetchTask = Task {
