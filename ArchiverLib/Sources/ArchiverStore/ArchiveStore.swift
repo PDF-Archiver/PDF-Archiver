@@ -176,7 +176,7 @@ public actor ArchiveStore: Log {
         // save file tags
         if shouldUpdatePdfMetadata,
            !document.tags.isEmpty {
-            try newFilepath.setFileTags(document.tags.sorted())
+            try await newFilepath.setFileTags(document.tags.sorted())
         }
     }
 

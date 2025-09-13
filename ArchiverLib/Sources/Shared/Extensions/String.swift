@@ -7,7 +7,7 @@
 
 import Foundation
 
-public extension String {
+public nonisolated extension String {
     /// Slugify the string and separate each part.
     ///
     /// - Parameter separator: Character which will be used for the separation.

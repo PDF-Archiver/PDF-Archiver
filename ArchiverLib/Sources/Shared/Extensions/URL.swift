@@ -10,6 +10,7 @@ import Foundation
 public extension URL {
     private static let itemUserTagsName = "com.apple.metadata:_kMDItemUserTags"
 
+    @MainActor
     func getFileTags() throws -> [String] {
 #if os(macOS)
         // prefer native tagNames https://stackoverflow.com/a/47340666
@@ -19,6 +20,7 @@ public extension URL {
 #endif
     }
 
+    @MainActor
     func setFileTags(_ tags: [String]) throws {
 #if os(macOS)
         // https://stackoverflow.com/a/47340666

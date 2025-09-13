@@ -51,7 +51,7 @@ extension TextAnalyserDependency: DependencyKey {
             await TagParser.parse(text)
         },
         getFileTagsFrom: { url in
-            try url.getFileTags()
+            try await url.getFileTags()
         }
     )
 }
