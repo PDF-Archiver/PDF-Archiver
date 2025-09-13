@@ -71,7 +71,8 @@ struct Settings {
         case archiveStorage(StorageSelection)
         case expertSettings(ExpertSettings)
         case imprint
-        case termsAndPrivacy
+        case privacy
+        case termsOfUse
     }
 
     @ObservableState
@@ -99,7 +100,7 @@ struct Settings {
         case onImprintTapped
         case onOpenPdfArchiverWebsiteTapped
         case onShowArchiveTypeSelectionTapped
-        case onTermsAndPrivacyTapped
+        case onPrivacyTapped
         case onTermsOfUseTapped
         case premiumSection(PremiumSection.Action)
     }
@@ -144,14 +145,13 @@ struct Settings {
                 state.destination = .archiveStorage(StorageSelection.State())
                 return .none
 
-            case .onTermsAndPrivacyTapped:
-                state.destination = .termsAndPrivacy
+            case .onPrivacyTapped:
+                state.destination = .privacy
                 return .none
 
             case .onTermsOfUseTapped:
-                return .run { [termsOfUseUrl = state.termsOfUseUrl] _ in
-                    await openURL(termsOfUseUrl)
-                }
+                state.destination = .termsOfUse
+                return .none
 
             case .premiumSection:
                 return .none
@@ -202,10 +202,14 @@ struct SettingsView: View {
                     }
                 case .aboutMe:
                     AboutMeView()
-                case .termsAndPrivacy:
-                    let content = String(localized: "TERMS_AND_PRIVACY", bundle: .module)
+                case .termsOfUse:
+                    let content = String(localized: "TERMS_OF_USE", bundle: .module)
                     MarkdownView(markdown: content)
-                        .navigationTitle(String(localized: "Terms & Privacy", bundle: .module))
+                        .navigationTitle(String(localized: "Privacy", bundle: .module))
+                case .privacy:
+                    let content = String(localized: "PRIVACY", bundle: .module)
+                    MarkdownView(markdown: content)
+                        .navigationTitle(String(localized: "Privacy", bundle: .module))
                 case .imprint:
                     let content = String(localized: "IMPRINT", bundle: .module)
                     MarkdownView(markdown: content)
@@ -255,21 +259,6 @@ struct SettingsView: View {
                 Text("PDF Archiver Website  🖥", bundle: .module)
             }
             Button {
-                store.send(.onTermsOfUseTapped)
-            } label: {
-                Text("Terms of Use", bundle: .module)
-            }
-            Button {
-                store.send(.onTermsAndPrivacyTapped)
-            } label: {
-                Text("Terms & Privacy", bundle: .module)
-            }
-            Button {
-                store.send(.onImprintTapped)
-            } label: {
-                Text("Imprint", bundle: .module)
-            }
-            Button {
                 store.send(.onContactSupportTapped)
             } label: {
                 Text("Contact Support  🚑", bundle: .module)
@@ -281,6 +270,21 @@ struct SettingsView: View {
             }
             ShareLink(item: store.appStoreUrl) {
                 Text("Share PDF Archiver 📱❤️🫵", bundle: .module)
+            }
+            Button {
+                store.send(.onTermsOfUseTapped)
+            } label: {
+                Text("Terms of Use", bundle: .module)
+            }
+            Button {
+                store.send(.onPrivacyTapped)
+            } label: {
+                Text("Privacy", bundle: .module)
+            }
+            Button {
+                store.send(.onImprintTapped)
+            } label: {
+                Text("Imprint", bundle: .module)
             }
         }
     }

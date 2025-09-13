@@ -365,11 +365,13 @@ struct AppView: View {
                 .frame(width: 500, height: 400)
                 #endif
         }
-        .sheet(isPresented: $store.showIapView) {
+        .sheet(isPresented: $store.showIapView, onDismiss: {
+            store.send(.onCancelIapButtonTapped)
+        }, content: {
             IAPView {
                 store.send(.onCancelIapButtonTapped)
             }
-        }
+        })
         .onChange(of: scenePhase) { old, new in
             store.send(.onScenePhaseChanged(old: old, new: new))
         }

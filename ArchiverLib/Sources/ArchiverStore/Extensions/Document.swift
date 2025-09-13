@@ -24,12 +24,12 @@ extension Document {
         let tags = Set(data.tagNames ?? [])
 
         let date = data.date ?? url.fileCreationDate() ?? Date()
-        let specification = isTagged ? (data.specification ?? "n/a").replacingOccurrences(of: "-", with: " ") : (data.specification ?? "n/a")
+        let specification = isTagged ? data.specification?.replacingOccurrences(of: "-", with: " ") : data.specification
 
         return Document(id: id,
                         url: url,
                         date: date,
-                        specification: specification,
+                        specification: specification ?? "",
                         tags: tags,
                         isTagged: isTagged,
                         sizeInBytes: sizeInBytes,
