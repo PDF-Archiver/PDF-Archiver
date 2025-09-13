@@ -47,21 +47,6 @@ public struct ScanShareTip: Tip {
     }
 }
 
-public struct UntaggedViewTip: Tip {
-    public init() {}
-    public var title: Text {
-        Text("Tagging View")
-    }
-
-    public var message: Text? {
-        Text("Tap here to see a list of your untagged documents.\nThey can be found in your archive view after tagging.")
-    }
-
-    public var image: Image? {
-        Image(systemName: "tag")
-    }
-}
-
 public struct AfterFirstImportTip: Tip {
     public init() {}
     public static let documentImported = Tips.Event(id: "documentImported")
@@ -71,7 +56,7 @@ public struct AfterFirstImportTip: Tip {
     }
 
     public var message: Text? {
-        Text("Your first document was imported. **Tap here** to see and archive it.")
+        Text("Your first document was imported. Switch to **Inbox** to see and archive it.")
     }
 
     public var image: Image? {

@@ -217,12 +217,22 @@ struct AppFeature {
                             // check the temp folder at startup for new documents
                             await documentProcessor.triggerFolderObservation()
                         }
-                        group.addTask {
+                        group.addTask(priority: .background) {
+                            var prefetchTask: Task<Void, Never>?
                             for await documents in await archiveStore.documentChanges() {
                                 await send(.documentsChanged(documents))
+                                
+                                // prefetch all untagged documents
+                                prefetchTask?.cancel()
+                                prefetchTask = Task {
+                                    let untaggedRemoteDocuments = documents.filter { !$0.isTagged && $0.downloadStatus == 0 }
+                                    for untaggedRemoteDocument in untaggedRemoteDocuments {
+                                        try? await archiveStore.startDownloadOf(untaggedRemoteDocument.url)
+                                    }
+                                }
                             }
                         }
-                        group.addTask {
+                        group.addTask(priority: .background) {
                             for await isLoading in await archiveStore.isLoading() {
                                 await send(.isLoadingChanged(isLoading))
                             }
@@ -288,11 +298,9 @@ struct AppView: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Environment(\.scenePhase) var scenePhase
     @Bindable var store: StoreOf<AppFeature>
-    #warning("TODO: add all tips")
     @State private var tips = TipGroup(.ordered) {
         ScanShareTip()
-//        UntaggedViewTip()
-//        AfterFirstImportTip()
+        AfterFirstImportTip()
     }
 
     init(store: StoreOf<AppFeature>) {

@@ -221,7 +221,7 @@ extension NSMetadataItem: nonisolated Log {
             documentStatus = 1
         case NSMetadataUbiquitousItemDownloadingStatusNotDownloaded:
 
-            let minValue = 0.05
+            let minValue = 0.0
             if let isDownloading = value(forAttribute: NSMetadataUbiquitousItemIsDownloadingKey) as? Bool,
                 isDownloading {
                 let percentDownloaded = (value(forAttribute: NSMetadataUbiquitousItemPercentDownloadedKey) as? NSNumber)?.doubleValue ?? 0

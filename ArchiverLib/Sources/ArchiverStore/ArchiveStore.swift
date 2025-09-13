@@ -273,36 +273,4 @@ public actor ArchiveStore: Log {
 
         return true
     }
-
-    private func createDocument(url: URL, downloadStatus: Double, sizeInBytes: Double) async -> Document? {
-        guard let id = await url.uniqueId() else {
-            Logger.archiveStore.errorAndAssert("Failed to get uniqueId")
-            return nil
-        }
-        guard let filename = await url.filename() else {
-            Logger.archiveStore.errorAndAssert("Failed to get filename")
-            return nil
-        }
-
-        let data = await Document.parseFilename(filename)
-        let tags = Set(data.tagNames ?? [])
-        let isTagged = isTagged(url)
-
-        let date: Date
-        if let foundDate = data.date {
-            date = foundDate
-        } else {
-            date = await url.fileCreationDate() ?? Date()
-        }
-        let specification = isTagged ? (data.specification ?? "n/a").replacingOccurrences(of: "-", with: " ") : (data.specification ?? "n/a")
-
-        return Document(id: id,
-                        url: url,
-                        date: date,
-                        specification: specification,
-                        tags: tags,
-                        isTagged: isTagged,
-                        sizeInBytes: sizeInBytes,
-                        downloadStatus: downloadStatus)
-    }
 }
