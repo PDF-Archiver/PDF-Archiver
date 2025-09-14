@@ -64,7 +64,7 @@ struct DateParserTests {
         for (raw, date) in rawStringMapping {
 
             // calculate
-            let parsedOutput = DateParser.parse(raw)
+            let parsedOutput = await DateParser.parse(raw)
 
             // assert
             if let parsedDate = parsedOutput.first {
@@ -77,7 +77,7 @@ struct DateParserTests {
     }
 
     @Test
-    func testParsingAmbiguousDate() throws {
+    func testParsingAmbiguousDate() async throws {
 
         // setup the raw string
         let rawStringMapping = ["20150203": dateFormatter.date(from: "2015-02-03"),
@@ -86,7 +86,7 @@ struct DateParserTests {
         for (raw, date) in rawStringMapping {
 
             // calculate
-            let parsedOutput = DateParser.parse(raw)
+            let parsedOutput = await DateParser.parse(raw)
 
             // assert
             if let parsedDate = parsedOutput.first {
@@ -99,7 +99,7 @@ struct DateParserTests {
     }
 
     @Test
-    func testParsingInvalidDates() {
+    func testParsingInvalidDates() async {
 
         // setup the raw string
         let rawStrings = ["2015-35-12",
@@ -110,7 +110,7 @@ struct DateParserTests {
         for raw in rawStrings {
 
             // calculate
-            let parsedOutput = DateParser.parse(raw)
+            let parsedOutput = await DateParser.parse(raw)
 
             // assert
             #expect(parsedOutput.isEmpty)
@@ -118,7 +118,7 @@ struct DateParserTests {
     }
 
     @Test
-    func testPerformanceExample() throws {
+    func testPerformanceExample() async throws {
 
         // setup the long string
         let hiddenDate = "20050201"
@@ -133,7 +133,7 @@ struct DateParserTests {
         // measure the performance of the date parsing
         var parsedDate: Date?
 //        self.measure {
-        parsedDate = DateParser.parse(longText).first
+        parsedDate = await DateParser.parse(longText).first
 //        }
 
         // assert

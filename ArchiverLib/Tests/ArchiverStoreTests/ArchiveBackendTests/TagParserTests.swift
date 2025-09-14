@@ -23,7 +23,7 @@ struct TagParserTests {
         for (raw, referenceTags) in rawStringMapping {
 
             // calculate
-            let tags = TagParser.parse(raw)
+            let tags = await TagParser.parse(raw)
 
             // assert
             #expect(tags == referenceTags)
@@ -31,7 +31,7 @@ struct TagParserTests {
     }
 
     @Test
-    func testParsingInvalidTags() {
+    func testParsingInvalidTags() async {
 
         // setup the raw string
         let rawStringMapping: [String: Set<String>] = [
@@ -41,7 +41,7 @@ struct TagParserTests {
         for (raw, referenceTags) in rawStringMapping {
 
             // calculate
-            let tags = TagParser.parse(raw)
+            let tags = await TagParser.parse(raw)
 
             // assert
             #expect(tags == referenceTags)
