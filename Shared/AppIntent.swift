@@ -8,6 +8,11 @@
 import AppIntents
 import Shared
 
+/**
+ AppIntents in SPM are currently not supported, so we move them here
+ https://stackoverflow.com/a/76976224
+ */
+
 public protocol IntentNavigation: Sendable {
     func open(link: DeepLink)
 }

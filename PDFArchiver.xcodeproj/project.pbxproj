@@ -147,6 +147,7 @@
 		A35CBAA32C1F294A00CFBA20 /* FileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileManager.swift; sourceTree = "<group>"; };
 		A3708E2C2E774FA3004FC2CF /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		A3708E302E77538F004FC2CF /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		A3708E312E77555F004FC2CF /* AppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntent.swift; sourceTree = "<group>"; };
 		A372F4272DE8484700D6E9AA /* WidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		A372F4282DE8484800D6E9AA /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = /System/Library/Frameworks/WidgetKit.framework; sourceTree = "<absolute>"; };
 		A372F42A2DE8484800D6E9AA /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = /System/Library/Frameworks/SwiftUI.framework; sourceTree = "<absolute>"; };
@@ -258,6 +259,7 @@
 		3489D71324A3C53D0035E64F /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				A3708E312E77555F004FC2CF /* AppIntent.swift */,
 				3416B1AC24A9282700D5F4E0 /* Resources */,
 			);
 			path = Shared;
@@ -590,6 +592,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A38256C12C1F552C00416A08 /* PDFArchiverIOSApp.swift in Sources */,
+				A3708E322E77555F004FC2CF /* AppIntent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -598,6 +601,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A3B5D90B2BB37114002B9FF1 /* PDFArchiverMacApp.swift in Sources */,
+				A3708E332E77555F004FC2CF /* AppIntent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
