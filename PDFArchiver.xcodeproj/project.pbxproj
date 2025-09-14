@@ -25,6 +25,9 @@
 		A35CBAAA2C1F2A2600CFBA20 /* Parma in Frameworks */ = {isa = PBXBuildFile; productRef = A35CBAA92C1F2A2600CFBA20 /* Parma */; };
 		A36033872E18580900A5F573 /* ArchiverLib in Frameworks */ = {isa = PBXBuildFile; productRef = A36033862E18580900A5F573 /* ArchiverLib */; };
 		A36FB17F2CCBDF3E006ADDE9 /* AsyncExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = A36FB17E2CCBDF3E006ADDE9 /* AsyncExtensions */; };
+		A3708E2D2E774FA3004FC2CF /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = A3708E2C2E774FA3004FC2CF /* AppIcon.icon */; };
+		A3708E2E2E774FA3004FC2CF /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = A3708E2C2E774FA3004FC2CF /* AppIcon.icon */; };
+		A3708E2F2E774FA3004FC2CF /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = A3708E2C2E774FA3004FC2CF /* AppIcon.icon */; };
 		A372F4292DE8484800D6E9AA /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A372F4282DE8484800D6E9AA /* WidgetKit.framework */; };
 		A372F42B2DE8484800D6E9AA /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A372F42A2DE8484800D6E9AA /* SwiftUI.framework */; };
 		A372F4392DE8484900D6E9AA /* WidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A372F4272DE8484700D6E9AA /* WidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -142,6 +145,7 @@
 		A31BE2DF2BB8AFF000022885 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		A3579A582BFFD9B6001D921C /* PDFArchiverIAP.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = PDFArchiverIAP.storekit; sourceTree = "<group>"; };
 		A35CBAA32C1F294A00CFBA20 /* FileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileManager.swift; sourceTree = "<group>"; };
+		A3708E2C2E774FA3004FC2CF /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		A372F4272DE8484700D6E9AA /* WidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		A372F4282DE8484800D6E9AA /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = /System/Library/Frameworks/WidgetKit.framework; sourceTree = "<absolute>"; };
 		A372F42A2DE8484800D6E9AA /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = /System/Library/Frameworks/SwiftUI.framework; sourceTree = "<absolute>"; };
@@ -226,6 +230,7 @@
 				A31BE2DE2BB8AFBD00022885 /* Preview Content */,
 				3416B1AD24A9282700D5F4E0 /* Settings.bundle */,
 				3416B1AF24A9282800D5F4E0 /* PDFArchiver.entitlements */,
+				A3708E2C2E774FA3004FC2CF /* AppIcon.icon */,
 				3416B1AE24A9282800D5F4E0 /* Assets.xcassets */,
 				3416B1B124A9282800D5F4E0 /* LaunchScreen.storyboard */,
 				A3579A582BFFD9B6001D921C /* PDFArchiverIAP.storekit */,
@@ -514,6 +519,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3416B24024A9282800D5F4E0 /* LaunchScreen.storyboard in Resources */,
+				A3708E2F2E774FA3004FC2CF /* AppIcon.icon in Resources */,
 				345A497E24AFB0CE00EC4DC2 /* Settings.bundle in Resources */,
 				3416B23C24A9282800D5F4E0 /* Assets.xcassets in Resources */,
 			);
@@ -525,6 +531,7 @@
 			files = (
 				3416B23D24A9282800D5F4E0 /* Assets.xcassets in Resources */,
 				34031DC6250FCED500C46C88 /* Settings.bundle in Resources */,
+				A3708E2D2E774FA3004FC2CF /* AppIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -548,6 +555,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A39E5F512E0C766B00244D3A /* Assets.xcassets in Resources */,
+				A3708E2E2E774FA3004FC2CF /* AppIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -784,6 +792,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = iOS/PDFArchiver.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -810,6 +819,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = iOS/PDFArchiver.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;

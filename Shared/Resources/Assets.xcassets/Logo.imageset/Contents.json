@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "AppIcon round.svg",
+      "filename" : "AppIcon-iOS-Default-1024x1024@1x.png",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "AppIcon round dark.svg",
+      "filename" : "AppIcon-iOS-Dark-1024x1024@1x.png",
       "idiom" : "universal"
     }
   ],
