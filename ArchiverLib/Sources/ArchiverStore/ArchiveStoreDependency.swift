@@ -6,26 +6,26 @@
 //
 
 import ArchiverModels
-import ArchiverStore
 import ComposableArchitecture
 import Foundation
 
 @DependencyClient
-struct ArchiveStoreDependency {
-    var documentChanges: @Sendable () async -> AsyncStream<[Document]> = { AsyncStream<[Document]> { $0.yield([]) } }
-    var reloadDocuments: @Sendable () async throws -> Void
-    var isLoading: @Sendable () async -> AsyncStream<Bool> = { AsyncStream<Bool> { $0.yield(false) } }
-    var startDownloadOf: @Sendable (URL) async throws -> Void
-    var deleteDocumentAt: @Sendable (URL) async throws -> Void
-    var getTagSuggestionsFor: @Sendable (String) async -> [String] = { _ in [] }
-    var getTagSuggestionsSimilarTo: @Sendable (Set<String>) async -> [String] = { _ in [] }
-    var parseFilename: @Sendable (String) async -> (date: Date?, specification: String?, tagNames: [String]?) = { _ in (nil, nil, nil) }
-    var saveDocument: @Sendable (Document, Bool) async throws -> Void
-    var setArchiveStorageType: @Sendable (StorageType) async throws -> Void
+public struct ArchiveStoreDependency: Sendable {
+    public var documentChanges: @Sendable () async -> AsyncStream<[Document]> = { AsyncStream<[Document]> { $0.yield([]) } }
+    public var reloadDocuments: @Sendable () async throws -> Void
+    public var getDocuments: @Sendable () async throws -> [Document]
+    public var isLoading: @Sendable () async -> AsyncStream<Bool> = { AsyncStream<Bool> { $0.yield(false) } }
+    public var startDownloadOf: @Sendable (URL) async throws -> Void
+    public var deleteDocumentAt: @Sendable (URL) async throws -> Void
+    public var getTagSuggestionsFor: @Sendable (String) async -> [String] = { _ in [] }
+    public var getTagSuggestionsSimilarTo: @Sendable (Set<String>) async -> [String] = { _ in [] }
+    public var parseFilename: @Sendable (String) async -> (date: Date?, specification: String?, tagNames: [String]?) = { _ in (nil, nil, nil) }
+    public var saveDocument: @Sendable (Document, Bool) async throws -> Void
+    public var setArchiveStorageType: @Sendable (StorageType) async throws -> Void
 }
 
 extension ArchiveStoreDependency: TestDependencyKey {
-    static let previewValue = Self(
+    public static let previewValue = Self(
         documentChanges: {
             AsyncStream { stream in
                 Task {
@@ -52,6 +52,7 @@ extension ArchiveStoreDependency: TestDependencyKey {
             }
         },
         reloadDocuments: { },
+        getDocuments: { [] },
         isLoading: { AsyncStream { $0.yield(false) } },
         startDownloadOf: { _ in },
         deleteDocumentAt: { _ in },
@@ -62,16 +63,19 @@ extension ArchiveStoreDependency: TestDependencyKey {
         setArchiveStorageType: { _ in }
     )
 
-    static let testValue = Self()
+    public static let testValue = Self()
 }
 
 extension ArchiveStoreDependency: DependencyKey {
-    static let liveValue = ArchiveStoreDependency(
+    public static let liveValue = ArchiveStoreDependency(
         documentChanges: {
             return await ArchiveStore.shared.documentsStream
         },
         reloadDocuments: {
             return try await ArchiveStore.shared.reloadArchiveDocuments()
+        },
+        getDocuments: {
+            return try await ArchiveStore.shared.currentDocuments
         },
         isLoading: {
             return AsyncStream { stream in
@@ -106,8 +110,8 @@ extension ArchiveStoreDependency: DependencyKey {
     )
 }
 
-extension DependencyValues {
-    var archiveStore: ArchiveStoreDependency {
+public extension DependencyValues {
+    public var archiveStore: ArchiveStoreDependency {
         get { self[ArchiveStoreDependency.self] }
         set { self[ArchiveStoreDependency.self] = newValue }
     }

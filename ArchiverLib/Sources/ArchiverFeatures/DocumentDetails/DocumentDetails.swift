@@ -82,16 +82,16 @@ struct DocumentDetails {
 
             case .onDeleteDocumentButtonTapped:
                 state.alert = AlertState<Action.Alert> {
-                    TextState("Delete document?")
+                    TextState("Delete document?", bundle: .module)
                 } actions: {
                     ButtonState(role: .destructive, action: .confirmDeleteButtonTapped) {
-                        TextState("Delete")
+                        TextState("Delete", bundle: .module)
                     }
                     ButtonState(role: .cancel) {
-                        TextState("Cancel")
+                        TextState("Cancel", bundle: .module)
                     }
                 } message: {
-                    TextState("You are deleting the current document. Are you sure?")
+                    TextState("You are deleting the current document. Are you sure?", bundle: .module)
                 }
                 return .none
 

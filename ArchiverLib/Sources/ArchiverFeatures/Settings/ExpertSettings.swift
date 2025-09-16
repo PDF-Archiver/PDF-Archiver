@@ -63,9 +63,9 @@ struct ExpertSettings {
 
                 #warning("TODO: notification only pops up for a short amount of time the first time")
                 return .run { _ in
-                    await notificationCenter.createAndPost(.init(title: "Reset App",
-                                                                 message: "Please restart the app to complete the reset.",
-                                                                 primaryButtonTitle: "OK"))
+                    await notificationCenter.createAndPost(.init(title: LocalizedStringResource("Reset App", bundle: .module),
+                                                                 message: LocalizedStringResource("Please restart the app to complete the reset.", bundle: .module),
+                                                                 primaryButtonTitle: LocalizedStringResource("OK", bundle: .module)))
                 }
             }
         }

@@ -1,5 +1,5 @@
 {
-  "originHash" : "7bb5d4aa00f599767fcd59ed796a0f62ecbb012f3d3bd94f4affcce60b2e1af7",
+  "originHash" : "1e46d45750b0624a794ea10e081ab2032070571431ec061b2d03146529ce692a",
   "pins" : [
     {
       "identity" : "asyncextensions",
@@ -17,33 +17,6 @@
       "state" : {
         "revision" : "5928286acce13def418ec36d05a001a9641086f2",
         "version" : "1.0.3"
-      }
-    },
-    {
-      "identity" : "deepdiff",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/onmyway133/DeepDiff.git",
-      "state" : {
-        "revision" : "2639b3a11054d666a4c5ec1b7dd2808e437f3289",
-        "version" : "2.3.3"
-      }
-    },
-    {
-      "identity" : "down",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/iwasrobbed/Down",
-      "state" : {
-        "revision" : "f34b166be1f1db4aa8f573067e901d72f2a6be57",
-        "version" : "0.11.0"
-      }
-    },
-    {
-      "identity" : "parma",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/dasautoooo/Parma",
-      "state" : {
-        "revision" : "3c8b431fd5ad3cf675c60d0aa89f011cbcbb036c",
-        "version" : "0.3.0"
       }
     },
     {

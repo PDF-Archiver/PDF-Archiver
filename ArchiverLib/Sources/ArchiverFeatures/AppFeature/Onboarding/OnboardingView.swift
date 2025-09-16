@@ -16,19 +16,19 @@ import SwiftUI
     var onboardSet: OnboardSet = {
         var onboardSet = OnboardSet()
         onboardSet.newCard(title: NSLocalizedString("intro.scan.title", bundle: .module, comment: "Intro: Scan Title"),
-                           image: "scan",
+                           image: ImageResource.scanAsset,
                            text: NSLocalizedString("intro.scan.description", bundle: .module, comment: "Intro: Scan Description"))
         onboardSet.newCard(title: NSLocalizedString("intro.tag.title", bundle: .module, comment: "Intro: Tag Title"),
-                           image: "tag-1",
+                           image: ImageResource.tag1Asset,
                            text: NSLocalizedString("intro.tag.description", bundle: .module, comment: "Intro: Tag Description"))
         onboardSet.newCard(title: NSLocalizedString("intro.find.title", bundle: .module, comment: "Intro: Find Title"),
-                           image: "find",
+                           image: ImageResource.findAsset,
                            text: NSLocalizedString("intro.find.description", bundle: .module, comment: "Intro: Find Description"))
         onboardSet.newCard(title: NSLocalizedString("intro.subscription.title", bundle: .module, comment: "Intro: Subscription Title"),
-                           image: "piggy-bank",
+                           image: ImageResource.piggyBankAsset,
                            text: NSLocalizedString("intro.subscription.description", bundle: .module, comment: "Intro: Subscription Description"))
         onboardSet.newCard(title: NSLocalizedString("intro.last.title", bundle: .module, comment: "Intro: Last Page Title"),
-                           image: "start",
+                           image: ImageResource.startAsset,
                            text: NSLocalizedString("intro.last.description", bundle: .module, comment: "Intro: Last Page Description"))
         return onboardSet
     }()

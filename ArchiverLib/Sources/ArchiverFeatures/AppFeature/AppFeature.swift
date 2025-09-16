@@ -54,12 +54,15 @@ struct AppFeature {
         case onLongBackgroundTask
         case onScenePhaseChanged(old: ScenePhase, new: ScenePhase)
         case untaggedDocumentList(UntaggedDocumentList.Action)
+        case updateWidget([Document])
+        case prefetchDocuments([Document])
         case statistics(Statistics.Action)
         case settings(Settings.Action)
     }
 
     @Dependency(\.documentProcessor) var documentProcessor
     @Dependency(\.archiveStore) var archiveStore
+    @Dependency(\.widgetStore) var widgetStore
 
     var body: some ReducerOf<Self> {
         BindingReducer()
@@ -196,10 +199,17 @@ struct AppFeature {
                 ].flatMap(\.self)
 
                 // update the untagged documents
-                state.untaggedDocumentsCount = documents.filter(\Document.isTagged.flipped).count
+                let untaggedDocuments = documents.filter(\Document.isTagged.flipped)
+                state.untaggedDocumentsCount = untaggedDocuments.count
+
+                let untaggedRemoteDocuments = untaggedDocuments.filter { !$0.isTagged && $0.downloadStatus == 0 }
 
                 // https://pointfreeco.github.io/swift-composable-architecture/main/documentation/composablearchitecture/performance/#Sharing-logic-in-child-features
-                return reduce(into: &state, action: .archiveList(.searchSuggestionsUpdated(searchSuggestedTokens)))
+                return .concatenate(
+                    reduce(into: &state, action: .archiveList(.searchSuggestionsUpdated(searchSuggestedTokens))),
+                    .send(.prefetchDocuments(untaggedRemoteDocuments)),
+                    .send(.updateWidget(documents)),
+                )
 
             case .isLoadingChanged(let isLoading):
                 state.isDocumentLoading = isLoading
@@ -217,22 +227,12 @@ struct AppFeature {
                             // check the temp folder at startup for new documents
                             await documentProcessor.triggerFolderObservation()
                         }
-                        group.addTask(priority: .background) {
-                            var prefetchTask: Task<Void, Never>?
+                        group.addTask(priority: .medium) {
                             for await documents in await archiveStore.documentChanges() {
                                 await send(.documentsChanged(documents))
-
-                                // prefetch all untagged documents
-                                prefetchTask?.cancel()
-                                prefetchTask = Task {
-                                    let untaggedRemoteDocuments = documents.filter { !$0.isTagged && $0.downloadStatus == 0 }
-                                    for untaggedRemoteDocument in untaggedRemoteDocuments {
-                                        try? await archiveStore.startDownloadOf(untaggedRemoteDocument.url)
-                                    }
-                                }
                             }
                         }
-                        group.addTask(priority: .background) {
+                        group.addTask(priority: .medium) {
                             for await isLoading in await archiveStore.isLoading() {
                                 await send(.isLoadingChanged(isLoading))
                             }
@@ -256,6 +256,18 @@ struct AppFeature {
 
             case .untaggedDocumentList:
                 return .none
+
+            case .updateWidget(let documents):
+                return .run { _ in
+                    await widgetStore.updateWidgetWith(documents)
+                }
+
+            case .prefetchDocuments(let documents):
+                return .run { _ in
+                    for document in documents {
+                        try? await archiveStore.startDownloadOf(document.url)
+                    }
+                }
 
             case .settings(.premiumSection(.delegate(let delegateAction))):
                 switch delegateAction {

@@ -7,7 +7,7 @@
 
 import ArchiverModels
 import AsyncExtensions
-import ComposableArchitecture
+import Sharing
 import Foundation
 import OSLog
 import PDFKit.PDFDocument
@@ -35,7 +35,7 @@ public actor ArchiveStore: Log {
     public let isLoadingStream = AsyncCurrentValueSubject(true)
     public let documentsStream: AsyncStream<[Document]>
     private let documentsStreamContinuation: AsyncStream<[Document]>.Continuation
-    private var currentDocuments: [Document] = []
+    public private(set) var currentDocuments: [Document] = []
 
     private var archiveFolder: URL!
     private var untaggedFolders: [URL] = []

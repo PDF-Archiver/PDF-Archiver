@@ -5,13 +5,13 @@
 //  Created by Stewart Lynch on 2020-06-27.
 //
 
-import CoreGraphics
+import DeveloperToolsSupport
 import Foundation
 
 struct OnboardSet {
     private(set) var cards: [OnboardCard] = []
 
-    mutating func newCard(title: String, image: String, text: String) {
+    mutating func newCard(title: String, image: ImageResource, text: String) {
         cards.append(OnboardCard(title: title, image: image, text: text))
     }
 }
@@ -21,13 +21,13 @@ extension OnboardSet {
     static func previewSet() -> OnboardSet {
         var onboardSet = OnboardSet()
         onboardSet.newCard(title: NSLocalizedString("intro.scan.title", bundle: .module, comment: "Intro: Scan Title"),
-                           image: "scan",
+                           image: ImageResource.scanAsset,
                            text: NSLocalizedString("intro.scan.description", bundle: .module, comment: "Intro: Scan Description"))
-        onboardSet.newCard(title: "Login", image: "tag-1", text: "Enter your credentials and log in.")
-        onboardSet.newCard(title: "Update Profile", image: "scan", text: "Make sure you update your profile and avatar.")
-        onboardSet.newCard(title: "Participate", image: "tag-1", text: "Engage with others online.  Join the community.")
-        onboardSet.newCard(title: "Leave Feedback", image: "scan", text: "We want to hear from you so please let us know what you think.")
-        onboardSet.newCard(title: "Your Data", image: "tag-1", text: "Your data is your own.  View your stats at any time.")
+        onboardSet.newCard(title: "Login", image: ImageResource.tag1Asset, text: "Enter your credentials and log in.")
+        onboardSet.newCard(title: "Update Profile", image: ImageResource.scanAsset, text: "Make sure you update your profile and avatar.")
+        onboardSet.newCard(title: "Participate", image: ImageResource.tag1Asset, text: "Engage with others online.  Join the community.")
+        onboardSet.newCard(title: "Leave Feedback", image: ImageResource.scanAsset, text: "We want to hear from you so please let us know what you think.")
+        onboardSet.newCard(title: "Your Data", image: ImageResource.tag1Asset, text: "Your data is your own.  View your stats at any time.")
         return onboardSet
     }
 }

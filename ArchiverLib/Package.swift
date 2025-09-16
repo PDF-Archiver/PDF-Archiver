@@ -15,6 +15,8 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.22.0"),
+        .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.4.0"),
+        .package(url: "https://github.com/pointfreeco/swift-sharing", from: "2.7.2"),
         .package(url: "https://github.com/sideeffect-io/AsyncExtensions", from: "0.5.4"),
         .package(url: "https://github.com/apple/swift-async-algorithms", from: "1.0.4")
     ],
@@ -22,9 +24,10 @@ let package = Package(
         .target(name: "ArchiverFeatures",
                 dependencies: [
                     "ArchiverDocumentProcessing",
-                    "ArchiverStore",
                     "ArchiverModels",
                     "ArchiverIntents",
+                    "ArchiverStore",
+                    "ContentExtractorStore",
                     "Shared",
                     .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
                 ],
@@ -44,15 +47,17 @@ let package = Package(
                 dependencies: [
                     "ArchiverModels",
                     "Shared",
-                    .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+                    .product(name: "Dependencies", package: "swift-dependencies"),
+                    .product(name: "DependenciesMacros", package: "swift-dependencies"),
+                    .product(name: "Sharing", package: "swift-sharing"),
                     "AsyncExtensions",
                     .product(name: "AsyncAlgorithms", package: "swift-async-algorithms")
                 ],
                 swiftSettings: [
                     .enableExperimentalFeature("StrictConcurrency"),
-                    .defaultIsolation(MainActor.self),
-                    .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
-                    .enableUpcomingFeature("InferIsolatedConformances")
+//                    .defaultIsolation(MainActor.self),
+//                    .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
+//                    .enableUpcomingFeature("InferIsolatedConformances")
                 ]),
         .target(name: "ArchiverIntents",
                 dependencies: [
@@ -80,10 +85,26 @@ let package = Package(
                     .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
                     .enableUpcomingFeature("InferIsolatedConformances")
                 ]),
+        .target(name: "ContentExtractorStore",
+                dependencies: [
+                    "ArchiverStore",
+                    "ArchiverModels",
+                    .product(name: "Dependencies", package: "swift-dependencies"),
+                    .product(name: "DependenciesMacros", package: "swift-dependencies"),
+                ],
+                swiftSettings: [
+                    .enableExperimentalFeature("StrictConcurrency"),
+//                    .defaultIsolation(MainActor.self),
+//                    .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
+//                    .enableUpcomingFeature("InferIsolatedConformances")
+                ]),
         .target(name: "Shared",
                 dependencies: [
                     "ArchiverModels",
                     .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+                ],
+                resources: [
+                    .process("Resources/Localizable.xcstrings")
                 ],
                 swiftSettings: [
                     .enableExperimentalFeature("StrictConcurrency"),

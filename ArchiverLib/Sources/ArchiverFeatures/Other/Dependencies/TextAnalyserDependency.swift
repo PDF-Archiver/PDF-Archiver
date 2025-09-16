@@ -8,6 +8,7 @@
 import ComposableArchitecture
 import PDFKit
 import Shared
+import ArchiverModels
 
 @DependencyClient
 struct TextAnalyserDependency {

@@ -113,9 +113,9 @@ struct DocumentInformationForm {
                 // check tags
                 if !state.documentTagsNotRequired && state.document.tags.isEmpty {
                     return .run { _ in
-                        await notificationCenter.createAndPost(.init(title: "Missing tags",
-                                                               message: "Please add at least one tag to your document or change your advanced settings.",
-                                                               primaryButtonTitle: "OK"))
+                        await notificationCenter.createAndPost(.init(title: LocalizedStringResource("Missing tags", bundle: .module),
+                                                                     message: LocalizedStringResource("Please add at least one tag to your document or change your advanced settings.", bundle: .module),
+                                                                     primaryButtonTitle: LocalizedStringResource("OK", bundle: .module)))
                     }
                 }
 
@@ -123,9 +123,9 @@ struct DocumentInformationForm {
                 state.document.specification = state.document.specification.slugified(withSeparator: "-")
                 if !state.documentSpecificationNotRequired && state.document.specification.isEmpty {
                     return .run { _ in
-                        await notificationCenter.createAndPost(.init(title: "No specification",
-                                                               message: "Please add the document specification or change your advanced settings.",
-                                                               primaryButtonTitle: "OK"))
+                        await notificationCenter.createAndPost(.init(title: LocalizedStringResource("No specification", bundle: .module),
+                                                                     message: LocalizedStringResource("Please add the document specification or change your advanced settings.", bundle: .module),
+                                                                     primaryButtonTitle: LocalizedStringResource("OK", bundle: .module)))
                     }
                 }
 

@@ -5,7 +5,6 @@
 //  Created by Julian Kahnert on 20.11.18.
 //
 
-import Combine
 import Foundation
 
 /// Parse several kinds of dates in a String.

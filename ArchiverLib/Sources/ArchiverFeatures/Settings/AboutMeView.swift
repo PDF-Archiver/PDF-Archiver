@@ -26,7 +26,7 @@ struct AboutMeView: View {
 
     private var headline: some View {
         HStack {
-            Image("Logo")
+            Image(.logoAsset)
                 .resizable()
                 .frame(width: 50.0, height: 50.0, alignment: .center)
             VStack(alignment: .leading, spacing: 4.0) {

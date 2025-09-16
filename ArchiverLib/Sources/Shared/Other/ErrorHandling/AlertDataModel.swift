@@ -13,11 +13,11 @@ public struct AlertDataModel: Identifiable {
     public struct ButtonData {
         let role: ButtonRole?
         let action: (() -> Void)?
-        let label: LocalizedStringKey
+        let label: LocalizedStringResource
     }
 
     public let id = UUID()
-    public let title: LocalizedStringKey
-    public let message: LocalizedStringKey
+    public let title: LocalizedStringResource
+    public let message: LocalizedStringResource
     public let primaryButton: ButtonData
 }

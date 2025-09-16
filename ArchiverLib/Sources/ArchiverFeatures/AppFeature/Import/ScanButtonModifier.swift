@@ -57,6 +57,9 @@ struct ScanButtonModifier: ViewModifier {
                             #warning("TODO: add this as a separate dependency")
 //                            await FeedbackGenerator.notify(.success)
                             await documentProcessor.handleImages(images)
+
+                            await Task.yield()
+                            await AfterFirstImportTip.documentImported.donate()
                         }
                     })
                     .edgesIgnoringSafeArea(.all)

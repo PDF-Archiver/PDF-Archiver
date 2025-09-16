@@ -40,7 +40,6 @@ public final class DocumentProcessingService: Sendable {
         let operation = PDFProcessingOperation(of: .images(images), destinationFolder: destinationFolder, onComplete: { documentUrl in
             Task {
                 self.lastProcessedDocumentUrl = documentUrl
-                await AfterFirstImportTip.documentImported.donate()
             }
         })
         backgroundProcessing.queue(operation)
@@ -54,7 +53,6 @@ public final class DocumentProcessingService: Sendable {
         let operation = PDFProcessingOperation(of: .pdf(pdfData: pdfData, url: url), destinationFolder: destinationFolder, onComplete: { documentUrl in
             Task {
                 self.lastProcessedDocumentUrl = documentUrl
-                await AfterFirstImportTip.documentImported.donate()
             }
         })
         backgroundProcessing.queue(operation)

@@ -14,11 +14,16 @@ extension Notification.Name {
 
 extension NotificationCenter {
     public func postAlert(_ error: any Error, file: StaticString = #file, function: StaticString = #function, line: UInt = #line) {
-        let defaultTitle = "An error occurred 😳"
+        let defaultTitle = LocalizedStringResource("An error occurred 😳", bundle: .module)
 
         let alertDataModel: AlertDataModel
         if let error = error as? any LocalizedError {
-            let title = LocalizedStringKey(error.errorDescription ?? defaultTitle)
+            let title: LocalizedStringResource
+            if let errorDescription = error.errorDescription {
+                title = LocalizedStringResource(stringLiteral: errorDescription)
+            } else {
+                title = defaultTitle
+            }
             let message = [
                 error.failureReason,
                 error.recoverySuggestion]
@@ -26,21 +31,21 @@ extension NotificationCenter {
                 .joined(separator: "\n\n")
 
             alertDataModel = AlertDataModel(title: title,
-                                            message: LocalizedStringKey(message),
+                                            message: LocalizedStringResource(stringLiteral: message),
                                             primaryButton: .init(role: .cancel,
                                                                  action: nil,
-                                                                 label: "Dismiss"))
+                                                                 label: "Cancel"))
         } else {
-            alertDataModel = AlertDataModel(title: LocalizedStringKey(defaultTitle),
+            alertDataModel = AlertDataModel(title: defaultTitle,
                                             message: "\(error.localizedDescription)\n\n\(String(describing: error))",
                                             primaryButton: .init(role: .cancel,
                                                                  action: nil,
-                                                                 label: "Dismiss"))
+                                                                 label: "Cancel"))
         }
         postAlert(alertDataModel, file: file, function: function, line: line)
     }
 
-    public func createAndPost(title: LocalizedStringKey, message: LocalizedStringKey, primaryButtonTitle: LocalizedStringKey, file: StaticString = #file, function: StaticString = #function, line: UInt = #line) {
+    public func createAndPost(title: LocalizedStringResource, message: LocalizedStringResource, primaryButtonTitle: LocalizedStringResource, file: StaticString = #file, function: StaticString = #function, line: UInt = #line) {
         let completion = {}
         let alertDataModel = AlertDataModel(title: title,
                                             message: message,

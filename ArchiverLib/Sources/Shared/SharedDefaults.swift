@@ -7,7 +7,6 @@
 
 import Foundation
 
-@MainActor
 public enum SharedDefaults {
     // swiftlint:disable:next force_unwrapping
     private static let sharedDefaults = UserDefaults(suiteName: "group.PDFArchiverShared")!

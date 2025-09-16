@@ -15,12 +15,12 @@ import SwiftUI
 @DependencyClient
 struct NotificationCenterDependency: Log {
     struct AlertData {
-        let title: LocalizedStringKey
-        let message: LocalizedStringKey
-        let primaryButtonTitle: LocalizedStringKey
+        let title: LocalizedStringResource
+        let message: LocalizedStringResource
+        let primaryButtonTitle: LocalizedStringResource
     }
-    var createAndPost: @Sendable (AlertData) -> Void
-    var postAlert: @Sendable (Error) -> Void
+    var createAndPost: @Sendable (AlertData) async -> Void
+    var postAlert: @Sendable (Error) async -> Void
 }
 
 extension NotificationCenterDependency: TestDependencyKey {
