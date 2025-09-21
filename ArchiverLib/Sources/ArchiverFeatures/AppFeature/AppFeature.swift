@@ -325,29 +325,26 @@ struct AppView: View {
 
     var body: some View {
         TabView(selection: $store.selectedTab) {
-            // Test this with macOS 26 - is there a search tab item?
-//            Tab(value: AppFeature.State.Tab.search, role: .search) {
-//            Tab(LocalizedStringResource("Archive", bundle: .module), systemImage: "magnifyingglass", value: AppFeature.State.Tab.search) {
-            Tab(String(localized: "Archive", bundle: .module), systemImage: "magnifyingglass", value: AppFeature.State.Tab.search) {
+            Tab(value: AppFeature.State.Tab.search, role: .search) {
                 archiveList
                     .modifier(ScanButtonModifier(showButton: store.archiveList.documentDetails == nil, currentTip: store.tutorialShown ? tips.currentTip : nil))
             }
-
+            
             Tab(String(localized: "Inbox", bundle: .module), systemImage: "tray", value: AppFeature.State.Tab.inbox) {
                 untaggedDocumentList
             }
             .badge(store.untaggedDocumentsCount)
-
+            
             Tab(String(localized: "Statistics", bundle: .module), systemImage: "chart.bar.xaxis", value: AppFeature.State.Tab.statistics) {
                 StatisticsView(store: store.scope(state: \.statistics, action: \.statistics))
             }
-
-//            #if !os(macOS)
+            
+            //            #if !os(macOS)
             Tab(String(localized: "Settings", bundle: .module), systemImage: "gear", value: AppFeature.State.Tab.settings) {
                 SettingsView(store: store.scope(state: \.settings, action: \.settings))
             }
-//            #endif
-
+            //            #endif
+            
             TabSection(String(localized: "Tags", bundle: .module)) {
                 ForEach(store.tabTagSuggestions, id: \.self) { tag in
                     Tab(tag, systemImage: "tag", value: AppFeature.State.Tab.sectionTags(tag)) {
@@ -357,7 +354,7 @@ struct AppView: View {
             }
             .defaultVisibility(.hidden, for: .tabBar)
             .hidden(horizontalSizeClass == .compact)
-
+            
             TabSection("\(String(localized: "Years", bundle: .module))") {
                 ForEach(store.tabYearSuggestions, id: \.self) { year in
                     Tab("\(year, format: .number.grouping(.never))", systemImage: "calendar", value: AppFeature.State.Tab.sectionYears(year)) {
@@ -369,6 +366,10 @@ struct AppView: View {
             .hidden(horizontalSizeClass == .compact)
         }
         .tabViewStyle(.sidebarAdaptable)
+        
+        #if os(macOS)
+        .toolbar { toolbarLoadingSpinner }
+        #endif
         .modifier(AlertDataModelProvider())
         .modifier(IAP(premiumStatus: $store.premiumStatus))
         .sheet(isPresented: $store.tutorialShown.flipped) {
@@ -393,9 +394,9 @@ struct AppView: View {
         NavigationStack {
             ArchiveListView(store: store.scope(state: \.archiveList, action: \.archiveList))
                 .navigationTitle(Text("Archive", bundle: .module))
-                .toolbar {
-                    toolbarLoadingSpinner
-                }
+                #if !os(macOS)
+                .toolbar { toolbarLoadingSpinner }
+                #endif
         }
     }
 
@@ -403,19 +404,26 @@ struct AppView: View {
         NavigationStack {
             UntaggedDocumentListView(store: store.scope(state: \.untaggedDocumentList, action: \.untaggedDocumentList))
                 .navigationTitle(Text("Inbox", bundle: .module))
-                .toolbar {
-                    toolbarLoadingSpinner
-                }
+                #if !os(macOS)
+                .toolbar { toolbarLoadingSpinner }
+                #endif
         }
     }
-
+    
+    @ToolbarContentBuilder
     private var toolbarLoadingSpinner: some ToolbarContent {
-        ToolbarItem(placement: .destructiveAction) {
-            ProgressView()
-                #if os(macOS)
-                .controlSize(.small)
-                #endif
-                .opacity(store.isDocumentLoading ? 1 : 0)
+        if store.isDocumentLoading {
+            #if os(macOS)
+            ToolbarItem(placement: .status) {
+                ProgressView()
+                    .frame(width: 32, height: 32)
+                    .controlSize(.small)
+            }
+            #else
+            ToolbarItem(placement: .destructiveAction) {
+                ProgressView()
+            }
+            #endif
         }
     }
 }

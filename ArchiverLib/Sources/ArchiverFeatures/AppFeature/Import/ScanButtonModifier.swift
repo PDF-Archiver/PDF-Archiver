@@ -32,9 +32,10 @@ struct ScanButtonModifier: ViewModifier {
                     isScanPresented = true
                     #endif
                 }
-                .padding(6)
+                #if os(macOS)
                 .padding(.bottom, 16)
-                .padding(.trailing, 16)
+                #endif
+                .padding(.trailing, 12)
                 .opacity(showButton ? 1 : 0)
                 .popoverTip((showButton && (currentTip as? ScanShareTip) != nil) ? currentTip : nil) { _ in
                     #if os(macOS)
