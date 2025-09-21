@@ -5,14 +5,14 @@
 //  Created by Julian Kahnert on 16.09.25.
 //
 
-import FoundationModels
-import Dependencies
 import ArchiverStore
+import Dependencies
+import FoundationModels
 
 @available(iOS 26, macOS 26, *)
 struct TagCountTool: Tool {
     @Dependency(\.archiveStore) var archiveStore
-    
+
     let name = "getTags"
     let description = "Get already used tags and their counts."
 
@@ -24,19 +24,19 @@ struct TagCountTool: Tool {
 
     func call(arguments: Arguments) async throws -> String {
         let documents = try await archiveStore.getDocuments()
-        
+
         let tagCounts = Dictionary(grouping: documents.flatMap(\.tags)) {
             $0
         }
             .map { (name: $0, count: $1.count) }
             .filter { $0.count >= (arguments.minTagCount ?? 3) }
-        
+
 //        let tagCounts: [String: Int] = [
 //            "rechnung": 20,
 //            "kleidung": 2,
 //            "auto": 122,
 //        ]
-        
+
         let formattedTagCounts = tagCounts.map {
             "'\($0.0)': \($0.1)"
         }

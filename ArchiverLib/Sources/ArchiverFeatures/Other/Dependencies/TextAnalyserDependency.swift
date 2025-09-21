@@ -5,10 +5,10 @@
 //  Created by Julian Kahnert on 07.07.25.
 //
 
+import ArchiverModels
 import ComposableArchitecture
 import PDFKit
 import Shared
-import ArchiverModels
 
 @DependencyClient
 struct TextAnalyserDependency {

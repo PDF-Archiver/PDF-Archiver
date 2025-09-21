@@ -6,9 +6,9 @@
 //
 
 import ArchiverModels
-import Sharing
 import Foundation
 import Shared
+import Sharing
 
 private enum PathError: Error {
     case iCloudDriveNotFound

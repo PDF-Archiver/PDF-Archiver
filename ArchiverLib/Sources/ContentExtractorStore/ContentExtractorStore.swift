@@ -5,12 +5,12 @@
 //  Created by Julian Kahnert on 20.11.18.
 //
 
-import FoundationModels
-import Foundation
 import ArchiverModels
-import Shared
-import Dependencies
 import ArchiverStore
+import Dependencies
+import Foundation
+import FoundationModels
+import Shared
 
 @available(iOS 26, macOS 26, *)
 public actor ContentExtractorStore: Log {
@@ -23,7 +23,7 @@ public actor ContentExtractorStore: Log {
         temperature: 0.0,
         maximumResponseTokens: 512
     )
-    
+
     let session: LanguageModelSession
 
     init() {
@@ -38,7 +38,7 @@ public actor ContentExtractorStore: Log {
             """
             Your task is to archive documents. To do this, you will receive the content of a new document and you should create a description and tags.
             """
-            
+
             // Document tags:
             """
             The tags MUST use the existing tags as far as possible.
@@ -52,7 +52,7 @@ public actor ContentExtractorStore: Log {
             The description should briefly describe the content of the document.
             You MUST ALWAYS use the locale \(ContentExtractorStore.locale.identifier) of the user.
             """
-            
+
                 // TODO: this breaks the tooling
 //            """
 //            You can get example descriptions from the \(descriptionTool.name) tool.
@@ -64,17 +64,17 @@ public actor ContentExtractorStore: Log {
             - Description: blue hoodie
             - Tags: invoice, clothing, tomtailor
             """
-        })
+            })
     }
 
     public static func isAvailable() -> Bool {
         SystemLanguageModel.default.isAvailable
     }
-    
+
     public func prewarm() {
         session.prewarm()
     }
-    
+
     public func extract(from text: String) async throws -> Info? {
         guard Self.isAvailable() else { return nil }
 
@@ -84,7 +84,7 @@ public actor ContentExtractorStore: Log {
             includeSchemaInPrompt: false,
             options: Self.options
         )
-  
+
         return Info(
             description: response.content.description.trimmingCharacters(in: .whitespacesAndNewlines),
             tags: response.content.tags.map { $0.slugified(withSeparator: "") }
@@ -98,27 +98,22 @@ extension ContentExtractorStore {
     struct DocumentInformation {
         @Guide(description: "short document description")
         var description: String
-        
+
         @Guide(description: "document tags; lowercase; no symbols", .maximumCount(10))
         var tags: [String]
     }
-    
+
     public struct Info: Sendable, Equatable {
         public let description: String
         public let tags: [String]
-        
-        init(description: String, tags: [String]) {
-            self.description = description
-            self.tags = tags
-        }
     }
 }
 
-//#if canImport(FoundationModels)
+// #if canImport(FoundationModels)
 //
-//import Playgrounds
-//import FoundationModels
-//#Playground {
+// import Playgrounds
+// import FoundationModels
+// #Playground {
 //
 //    guard #available(macOS 26.0, *) else { return }
 //    
@@ -183,5 +178,5 @@ extension ContentExtractorStore {
 //    }
 //    
 //    print(response)
-//}
-//#endif
+// }
+// #endif

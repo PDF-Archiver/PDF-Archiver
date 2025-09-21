@@ -34,11 +34,11 @@ struct DropButton: View {
                         .font(.title)
                         .foregroundColor(.white)
                         .opacity(![.processing, .finished].contains(state) ? 1 : 0)
-                    
+
                     ProgressView()
                         .tint(.white)
                         .opacity(state == .processing ? 1 : 0)
-                    
+
                     Image(systemName: "checkmark.circle")
                         .font(.largeTitle)
                         .foregroundColor(.white)
@@ -54,7 +54,7 @@ struct DropButton: View {
             .glassEffect(.regular.tint(.accentColor).interactive(), in: Circle())
             .padding()
 #endif
-            
+
 #if !os(macOS)
             .simultaneousGesture(
                 LongPressGesture()
@@ -83,7 +83,7 @@ struct DropButton: View {
                 .padding(6)
         }
     }
-    
+
     private var legacyButton: some View {
         Button {
             #if os(macOS)

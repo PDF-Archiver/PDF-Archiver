@@ -5,9 +5,9 @@
 ////  Created by Julian Kahnert on 16.09.25.
 ////
 //
-//import Playgrounds
+// import Playgrounds
 //
-//#Playground {
+// #Playground {
 //    
 //    guard #available(iOS 26.0, macOS 26.0, *) else {
 //        print("ContentExtractorStore not available")
@@ -87,4 +87,4 @@
 ////            break
 ////        }
 ////    }
-//}
+// }

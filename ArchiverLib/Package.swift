@@ -54,7 +54,7 @@ let package = Package(
                     .product(name: "AsyncAlgorithms", package: "swift-async-algorithms")
                 ],
                 swiftSettings: [
-                    .enableExperimentalFeature("StrictConcurrency"),
+                    .enableExperimentalFeature("StrictConcurrency")
 //                    .defaultIsolation(MainActor.self),
 //                    .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
 //                    .enableUpcomingFeature("InferIsolatedConformances")
@@ -90,10 +90,10 @@ let package = Package(
                     "ArchiverStore",
                     "ArchiverModels",
                     .product(name: "Dependencies", package: "swift-dependencies"),
-                    .product(name: "DependenciesMacros", package: "swift-dependencies"),
+                    .product(name: "DependenciesMacros", package: "swift-dependencies")
                 ],
                 swiftSettings: [
-                    .enableExperimentalFeature("StrictConcurrency"),
+                    .enableExperimentalFeature("StrictConcurrency")
 //                    .defaultIsolation(MainActor.self),
 //                    .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
 //                    .enableUpcomingFeature("InferIsolatedConformances")

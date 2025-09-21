@@ -9,17 +9,16 @@ import ArchiverModels
 import ComposableArchitecture
 import Foundation
 
-
 @DependencyClient
 public struct ContentExtractorStoreDependency: Sendable {
     public struct DocInfo: Sendable {
     }
-    
+
     @available(iOS 26, macOS 26, *)
     private static let contentExtractorStore = ContentExtractorStore()
-    
+
     public var getDocumentInformation: @Sendable (String) async throws -> DocInfo?
-    
+
 //    #if canImport(FoundationModels)
 //    public var instructions: @Sendable () async -> AsyncStream<[Document]> = { AsyncStream<[Document]> { $0.yield([]) } }
 //    #endif
@@ -49,7 +48,7 @@ extension ContentExtractorStoreDependency: DependencyKey {
             guard #available(iOS 26.0, macOS 26.0, *) else { return nil }
             #warning("TODO: fix this")
             let result = try await contentExtractorStore.extract(from: text)
-            
+
             #warning("TODO: fix this")
             return DocInfo()
         },

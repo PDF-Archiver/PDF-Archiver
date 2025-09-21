@@ -329,22 +329,22 @@ struct AppView: View {
                 archiveList
                     .modifier(ScanButtonModifier(showButton: store.archiveList.documentDetails == nil, currentTip: store.tutorialShown ? tips.currentTip : nil))
             }
-            
+
             Tab(String(localized: "Inbox", bundle: .module), systemImage: "tray", value: AppFeature.State.Tab.inbox) {
                 untaggedDocumentList
             }
             .badge(store.untaggedDocumentsCount)
-            
+
             Tab(String(localized: "Statistics", bundle: .module), systemImage: "chart.bar.xaxis", value: AppFeature.State.Tab.statistics) {
                 StatisticsView(store: store.scope(state: \.statistics, action: \.statistics))
             }
-            
+
             //            #if !os(macOS)
             Tab(String(localized: "Settings", bundle: .module), systemImage: "gear", value: AppFeature.State.Tab.settings) {
                 SettingsView(store: store.scope(state: \.settings, action: \.settings))
             }
             //            #endif
-            
+
             TabSection(String(localized: "Tags", bundle: .module)) {
                 ForEach(store.tabTagSuggestions, id: \.self) { tag in
                     Tab(tag, systemImage: "tag", value: AppFeature.State.Tab.sectionTags(tag)) {
@@ -354,7 +354,7 @@ struct AppView: View {
             }
             .defaultVisibility(.hidden, for: .tabBar)
             .hidden(horizontalSizeClass == .compact)
-            
+
             TabSection("\(String(localized: "Years", bundle: .module))") {
                 ForEach(store.tabYearSuggestions, id: \.self) { year in
                     Tab("\(year, format: .number.grouping(.never))", systemImage: "calendar", value: AppFeature.State.Tab.sectionYears(year)) {
@@ -366,7 +366,7 @@ struct AppView: View {
             .hidden(horizontalSizeClass == .compact)
         }
         .tabViewStyle(.sidebarAdaptable)
-        
+
         #if os(macOS)
         .toolbar { toolbarLoadingSpinner }
         #endif
@@ -409,7 +409,7 @@ struct AppView: View {
                 #endif
         }
     }
-    
+
     @ToolbarContentBuilder
     private var toolbarLoadingSpinner: some ToolbarContent {
         if store.isDocumentLoading {
