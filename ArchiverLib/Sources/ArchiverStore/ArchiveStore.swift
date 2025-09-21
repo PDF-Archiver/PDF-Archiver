@@ -66,7 +66,7 @@ public actor ArchiveStore: Log {
     }
 
     public func getUntaggedUrl() async throws -> URL {
-        try await PathManager.shared.getArchiveUrl()
+        try await PathManager.shared.getArchiveUrl().appending(component: "untagged")
     }
 
     func update(archiveFolder: URL, untaggedFolders: [URL]) async {
