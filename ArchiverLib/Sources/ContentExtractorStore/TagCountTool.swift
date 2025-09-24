@@ -37,7 +37,9 @@ struct TagCountTool: Tool {
 //            "auto": 122,
 //        ]
 
-        let formattedTagCounts = tagCounts.map {
+        let formattedTagCounts = tagCounts
+            .prefix(30)
+            .map {
             "'\($0.0)': \($0.1)"
         }
         return """

@@ -85,9 +85,8 @@ public actor ContentExtractorStore: Log {
             options: Self.options
         )
 
-        return Info(
-            description: response.content.description.trimmingCharacters(in: .whitespacesAndNewlines),
-            tags: response.content.tags.map { $0.slugified(withSeparator: "") }
+        return Info(specification: response.content.description.trimmingCharacters(in: .whitespacesAndNewlines),
+                    tags: response.content.tags.prefix(10).map { $0.slugified(withSeparator: "") }
         )
     }
 }
@@ -104,7 +103,7 @@ extension ContentExtractorStore {
     }
 
     public struct Info: Sendable, Equatable {
-        public let description: String
+        public let specification: String
         public let tags: [String]
     }
 }

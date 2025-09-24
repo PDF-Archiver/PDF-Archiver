@@ -12,12 +12,14 @@ import Foundation
 @DependencyClient
 public struct ContentExtractorStoreDependency: Sendable {
     public struct DocInfo: Sendable {
+        public let specification: String
+        public let tags: Set<String>
     }
 
     @available(iOS 26, macOS 26, *)
     private static let contentExtractorStore = ContentExtractorStore()
 
-    public var getDocumentInformation: @Sendable (String) async throws -> DocInfo?
+    public var getDocumentInformation: @Sendable (String) async -> DocInfo?
 
 //    #if canImport(FoundationModels)
 //    public var instructions: @Sendable () async -> AsyncStream<[Document]> = { AsyncStream<[Document]> { $0.yield([]) } }
@@ -46,11 +48,15 @@ extension ContentExtractorStoreDependency: DependencyKey {
     public static let liveValue = ContentExtractorStoreDependency(
         getDocumentInformation: { text in
             guard #available(iOS 26.0, macOS 26.0, *) else { return nil }
-            #warning("TODO: fix this")
-            let result = try await contentExtractorStore.extract(from: text)
-
-            #warning("TODO: fix this")
-            return DocInfo()
+            do {
+                guard let result = try await contentExtractorStore.extract(from: text) else { return nil }
+                
+                return DocInfo(specification: result.specification,
+                               tags: Set(result.tags))
+            } catch {
+                #warning("TODO: add logging here")
+                return nil
+            }
         },
     )
 }

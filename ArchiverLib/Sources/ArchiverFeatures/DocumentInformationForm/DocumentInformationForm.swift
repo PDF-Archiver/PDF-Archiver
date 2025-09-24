@@ -10,6 +10,7 @@ import ComposableArchitecture
 import Shared
 import SwiftUI
 import TipKit
+import ContentExtractorStore
 
 @Reducer
 struct DocumentInformationForm {
@@ -76,6 +77,7 @@ struct DocumentInformationForm {
 
     @Dependency(\.archiveStore) var archiveStore
     @Dependency(\.textAnalyser) var textAnalyser
+    @Dependency(\.contentExtractorStore) var contentExtractorStore
     @Dependency(\.calendar) var calendar
     @Dependency(\.notificationCenter) var notificationCenter
 
@@ -224,13 +226,18 @@ struct DocumentInformationForm {
 
         if let text = await textAnalyser.getTextFrom(url) {
 
+//            if let content = await contentExtractorStore.getDocumentInformation(text) {
+//                foundSpecification = content.specification
+//                tagSuggestions = content.tags.sorted()
+//                
+//            } else {
             var results = await textAnalyser.parseDateFrom(text)
             if let foundDate {
                 results = results.filter { resultDate in
                     !Calendar.current.isDate(resultDate, inSameDayAs: foundDate)
                 }
             }
-
+            
             let newResults = results
                 .dropFirst(foundDate == nil ? 1 : 0)    // skip first because it is set to foundDate
                 .filter { !calendar.isDate($0, inSameDayAs: Date()) }   // skip found "today" dates, because a today button will always be shown
@@ -238,7 +245,7 @@ struct DocumentInformationForm {
             //                    .sorted()
                 .prefix(3)
             dateSuggestions = Array(newResults)
-
+            
             if foundDate == nil {
                 foundDate = results.first
             }
@@ -304,9 +311,10 @@ struct DocumentInformationFormView: View {
             Section {
                 TipView(tips.currentTip as? TaggingTips.Specification)
                     .tipImageSize(TaggingTips.size)
-                TextField(text: $store.document.specification, prompt: Text("Enter specification", bundle: .module)) {
+                TextField(text: $store.document.specification, prompt: Text("Enter specification", bundle: .module), axis: .vertical) {
                     Text("Specification", bundle: .module)
                 }
+                .lineLimit(1...5)
                 .focused($focusedField, equals: .specification)
                 #if os(macOS)
                 .textFieldStyle(.squareBorder)
