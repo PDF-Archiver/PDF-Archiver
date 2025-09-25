@@ -1,0 +1,13 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", "group:all"],
+  "swift": {
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "matchManagers": ["swift"],
+      "rangeStrategy": "bump"
+    }
+  ]
+}

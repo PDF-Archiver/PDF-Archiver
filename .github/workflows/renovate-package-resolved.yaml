@@ -1,0 +1,46 @@
+name: Update Package.resolved for Renovate
+
+on:
+  push:
+    branches:
+      - "renovate/**"
+
+jobs:
+  update-package-resolved:
+    runs-on: macos-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Swift
+        uses: swift-actions/setup-swift@v2
+        with:
+          swift-version: "6.2"
+
+      - name: Run swift package resolve
+        run: |
+          xcodebuild -workspace PDFArchiver.xcworkspace -scheme ArchiverLib -resolvePackageDependencies
+
+      - name: Check for changes in Package.resolved
+        id: changes
+        run: |
+          if git diff --quiet PDFArchiver.xcworkspace/xcshareddata/swiftpm/Package.resolved; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit Package.resolved changes
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add PDFArchiver.xcworkspace/xcshareddata/swiftpm/Package.resolved
+          git commit -m "Package.resolved updated"
+          git push
