@@ -51,7 +51,7 @@ struct DropButton: View {
             .buttonStyle(.glassProminent)
 #else
             .padding(6)
-            .glassEffect(.regular.tint(.accentColor).interactive(), in: Circle())
+            .glassEffect(.regular.tint(.paRedAsset).interactive(), in: Circle())
             .padding()
 #endif
 
@@ -94,7 +94,7 @@ struct DropButton: View {
             ZStack {
                 Image(systemName: "doc.viewfinder")
                     .font(.title)
-                    .foregroundColor(Color.paLightRedAsset)
+                    .foregroundColor(Color.paRedAsset)
                     .symbolEffect(.pulse.byLayer, options: .speed(2), value: shouldWiggle)
                     .opacity(![.processing, .finished].contains(state) ? 1 : 0)
 

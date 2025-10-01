@@ -21,7 +21,7 @@ struct OBCardView: View {
             Text(card.title)
                 .font(.largeTitle)
                 .fontWeight(.bold)
-                .foregroundColor(.paDarkRedAsset)
+                .foregroundColor(.paRedAsset)
                 .multilineTextAlignment(.center)
             Text(card.text)
                 .foregroundColor(.paDarkGrayAsset)

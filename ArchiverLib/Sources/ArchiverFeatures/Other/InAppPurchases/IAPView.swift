@@ -28,7 +28,7 @@ struct IAPView: View {
                     .padding()
                     .overlay(
                         RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.paDarkRedAsset, lineWidth: 2)
+                            .stroke(Color.paRedAsset, lineWidth: 2)
                     )
 
                 VStack(alignment: .leading, spacing: 16) {
@@ -98,7 +98,7 @@ struct IAPView: View {
                         .padding(4)
                         .font(.footnote)
                         .foregroundColor(Color.paWhiteAsset)
-                        .background(Color.paDarkRedAsset)
+                        .background(Color.paRedAsset)
                         .cornerRadius(8)
                         .transition(.scale)
                         .offset(x: -16, y: -12)
@@ -107,7 +107,7 @@ struct IAPView: View {
 
             HStack(spacing: 8) {
                 Image(systemName: "heart.fill")
-                    .foregroundColor(Color.paDarkRedAsset)
+                    .foregroundColor(Color.paRedAsset)
                 Text("Support further development of a 1 person team.", bundle: .module)
                     .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: 250)

@@ -8,12 +8,8 @@
 import SwiftUI
 
 public extension Color {
-    static var paDarkRedAsset: Color {
-        Color(.paDarkRed)
-    }
-
-    static var paLightRedAsset: Color {
-        Color(.paLightRed)
+    static var paRedAsset: Color {
+        Color(.paRed)
     }
 
     static var paPlaceholderGrayAsset: Color {

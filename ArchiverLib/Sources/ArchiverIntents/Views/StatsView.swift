@@ -51,7 +51,7 @@ public struct StatsView: View {
                     Image(systemName: "doc.viewfinder")
                 }
                 .padding(10)
-                .background(Circle().fill(Color.paDarkRedAsset))
+                .background(Circle().fill(Color.paRedAsset))
                 .foregroundColor(.white)
             }
 
@@ -73,7 +73,7 @@ public struct StatsView: View {
                         .font(.caption)
                         .foregroundStyle(.primary)
                 }
-                .foregroundStyle(Color.paDarkRedAsset.opacity(Double(item.count) / Double(maxCount)))
+                .foregroundStyle(Color.paRedAsset.opacity(Double(item.count) / Double(maxCount)))
             }
             .frame(height: 80)
             .fixedSize(horizontal: false, vertical: true)

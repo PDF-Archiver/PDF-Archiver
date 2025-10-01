@@ -31,7 +31,7 @@ public struct UntaggedDocumentsView: View {
                 .frame(maxWidth: .infinity)
                 .padding(10)
                 .background(
-                    Capsule().fill(Color.paDarkRedAsset)
+                    Capsule().fill(Color.paRedAsset)
                 )
                 .foregroundColor(.white)
 
@@ -48,7 +48,7 @@ public struct UntaggedDocumentsView: View {
                         .frame(maxWidth: .infinity)
                 }
                 .padding(10)
-                .background(Capsule().fill(Color.paDarkRedAsset))
+                .background(Capsule().fill(Color.paRedAsset))
                 .foregroundColor(.white)
 
             }
@@ -68,7 +68,7 @@ public struct UntaggedDocumentsView: View {
                                 .foregroundStyle(.primary)
 
                             Image(systemName: "document.on.document")
-                                .foregroundStyle(Color.paDarkRedAsset)
+                                .foregroundStyle(Color.paRedAsset)
                                 .symbolRenderingMode(.hierarchical)
                         }
                         .font(.largeTitle)
@@ -86,7 +86,7 @@ public struct UntaggedDocumentsView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 100, height: 100)
-                            .foregroundStyle(Color.paDarkRedAsset.opacity(0.4))
+                            .foregroundStyle(Color.paRedAsset.opacity(0.4))
                             .padding([.top, .trailing], -40)
 
                         Text("All documents are tagged. 🎉")
@@ -111,7 +111,7 @@ public struct UntaggedDocumentsView: View {
                             .font(.system(size: 48, weight: .black))
 
                         Image(systemName: "document.on.document")
-                            .foregroundStyle(Color.paDarkRedAsset)
+                            .foregroundStyle(Color.paRedAsset)
                             .symbolRenderingMode(.hierarchical)
                             .font(.title)
 
@@ -129,7 +129,7 @@ public struct UntaggedDocumentsView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 100, height: 100)
-                            .foregroundStyle(Color.paDarkRedAsset.opacity(0.4))
+                            .foregroundStyle(Color.paRedAsset.opacity(0.4))
                             .padding([.top, .trailing], -40)
 
                         Text("All documents are tagged. 🎉")
@@ -153,7 +153,7 @@ public struct UntaggedDocumentsView: View {
                                 .fontWeight(.black)
 
                             Image(systemName: "document.on.document")
-                                .foregroundStyle(Color.paDarkRedAsset)
+                                .foregroundStyle(Color.paRedAsset)
                                 .symbolRenderingMode(.hierarchical)
                         }
                         .font(.largeTitle)
@@ -170,7 +170,7 @@ public struct UntaggedDocumentsView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 100, height: 100)
-                            .foregroundStyle(Color.paDarkRedAsset.opacity(0.4))
+                            .foregroundStyle(Color.paRedAsset.opacity(0.4))
                             .padding([.top, .trailing], -40)
 
                         Text("All documents are tagged. 🎉")

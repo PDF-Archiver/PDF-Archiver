@@ -2,10 +2,7 @@
   "fill-specializations" : [
     {
       "value" : {
-        "linear-gradient" : [
-          "display-p3:0.90196,0.41176,0.40392,1.00000",
-          "display-p3:0.72549,0.29020,0.31765,1.00000"
-        ]
+        "automatic-gradient" : "display-p3:0.90196,0.41176,0.40392,1.00000"
       }
     },
     {
@@ -30,7 +27,7 @@
             {
               "appearance" : "dark",
               "value" : {
-                "automatic-gradient" : "display-p3:0.72941,0.29412,0.32157,1.00000"
+                "automatic-gradient" : "display-p3:0.90196,0.41176,0.40392,1.00000"
               }
             }
           ],
