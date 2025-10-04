@@ -50,7 +50,7 @@ extension ContentExtractorStoreDependency: DependencyKey {
             guard #available(iOS 26.0, macOS 26.0, *) else { return nil }
             do {
                 guard let result = try await contentExtractorStore.extract(from: text) else { return nil }
-                
+
                 return DocInfo(specification: result.specification,
                                tags: Set(result.tags))
             } catch {

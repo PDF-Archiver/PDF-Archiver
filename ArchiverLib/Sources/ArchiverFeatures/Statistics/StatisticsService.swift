@@ -17,12 +17,23 @@ struct StatisticsService: Sendable {
     }
 }
 
-struct CalculatedStatistics: Equatable, Sendable {
+struct CalculatedStatistics: Sendable {
     var totalDocuments = 0
     var untaggedDocuments = 0
     var totalStorageSize: Double = 0
     var yearStats: [Int: Int] = [:]
     var topTags: [(tag: String, count: Int)] = []
+}
+
+extension CalculatedStatistics: Equatable {
+    static func == (lhs: CalculatedStatistics, rhs: CalculatedStatistics) -> Bool {
+        lhs.totalDocuments == rhs.totalDocuments &&
+        lhs.untaggedDocuments == rhs.untaggedDocuments &&
+        lhs.totalStorageSize == rhs.totalStorageSize &&
+        lhs.yearStats == rhs.yearStats &&
+        lhs.topTags.count == rhs.topTags.count &&
+        zip(lhs.topTags, rhs.topTags).allSatisfy { $0.tag == $1.tag && $0.count == $1.count }
+    }
 }
 
 extension StatisticsService: DependencyKey {
