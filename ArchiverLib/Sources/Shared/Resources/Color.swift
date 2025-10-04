@@ -36,6 +36,10 @@ public extension Color {
         Color(.paWhite)
     }
 
+    static var paSecondaryBackgroundAsset: Color {
+        Color(.paSecondaryBackground)
+    }
+
     static var secondaryLabelAsset: Color {
         #if os(macOS)
         Color(.secondaryLabelColor)

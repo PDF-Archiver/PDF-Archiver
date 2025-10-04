@@ -126,7 +126,7 @@ private struct StatSection<Content: View>: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(
                     RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.secondarySystemBackground)
+                        .fill(Color.paSecondaryBackgroundAsset)
                 )
         }
     }
