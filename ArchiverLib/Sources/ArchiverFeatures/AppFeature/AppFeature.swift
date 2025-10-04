@@ -366,7 +366,9 @@ struct AppView: View {
             .hidden(horizontalSizeClass == .compact)
         }
         .tabViewStyle(.sidebarAdaptable)
-
+        #if os(iOS)
+        .modifier(LoadingIndicatorModifier(isLoading: store.isDocumentLoading, isTabView: true))
+        #endif
         #if os(macOS)
         .toolbar { toolbarLoadingSpinner }
         #endif
@@ -394,8 +396,8 @@ struct AppView: View {
         NavigationStack {
             ArchiveListView(store: store.scope(state: \.archiveList, action: \.archiveList))
                 .navigationTitle(Text("Archive", bundle: .module))
-                #if !os(macOS)
-                .toolbar { toolbarLoadingSpinner }
+                #if os(iOS)
+                .modifier(LoadingIndicatorModifier(isLoading: store.isDocumentLoading, isTabView: false))
                 #endif
         }
     }
@@ -404,8 +406,8 @@ struct AppView: View {
         NavigationStack {
             UntaggedDocumentListView(store: store.scope(state: \.untaggedDocumentList, action: \.untaggedDocumentList))
                 .navigationTitle(Text("Inbox", bundle: .module))
-                #if !os(macOS)
-                .toolbar { toolbarLoadingSpinner }
+                #if os(iOS)
+                .modifier(LoadingIndicatorModifier(isLoading: store.isDocumentLoading, isTabView: false))
                 #endif
         }
     }
