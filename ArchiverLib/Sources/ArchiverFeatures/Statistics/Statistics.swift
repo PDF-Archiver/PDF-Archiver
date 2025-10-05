@@ -22,7 +22,7 @@ struct Statistics {
         var untaggedDocuments = 0
         var totalDocuments = 0
         var totalStorageSize: Double = 0
-        var topTags: [(tag: String, count: Int)] = []
+        var topTags: [TagCount] = []
     }
 
     enum Action {

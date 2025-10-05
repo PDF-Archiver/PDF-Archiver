@@ -56,7 +56,7 @@ public struct TagView: View {
             .minimumScaleFactor(0.85)
             .padding(EdgeInsets(top: 2.0, leading: 5.0, bottom: 2.0, trailing: 5.0))
             .foregroundColor(.white)
-            .background(isSuggestion ? Color.gray : Color(.paRed))
+            .background(isSuggestion ? Color.gray : Color.paRedAsset)
             .cornerRadius(8.0)
             .transition(.opacity)
 //            .animation(.spring())

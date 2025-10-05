@@ -9,35 +9,35 @@ import SwiftUI
 
 public extension Color {
     static var paRedAsset: Color {
-        Color(.paRed)
+        Color("paRed", bundle: .module)
     }
 
     static var paPlaceholderGrayAsset: Color {
-        Color(.paPlaceholderGray)
+        Color("paPlaceholderGray", bundle: .module)
     }
 
     static var paPDFBackgroundAsset: Color {
-        Color(.paPDFBackground)
+        Color("paPDFBackground", bundle: .module)
     }
 
     static var paBackgroundAsset: Color {
-        Color(.paBackground)
+        Color("paBackground", bundle: .module)
     }
 
     static var paDarkGrayAsset: Color {
-        Color(.paDarkGray)
+        Color("paDarkGray", bundle: .module)
     }
 
     static var paLightGrayAsset: Color {
-        Color(.paLightGray)
+        Color("paLightGray", bundle: .module)
     }
 
     static var paWhiteAsset: Color {
-        Color(.paWhite)
+        Color("paWhite", bundle: .module)
     }
 
     static var paSecondaryBackgroundAsset: Color {
-        Color(.paSecondaryBackground)
+        Color("paSecondaryBackground", bundle: .module)
     }
 
     static var secondaryLabelAsset: Color {

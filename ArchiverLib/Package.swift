@@ -61,6 +61,7 @@ let package = Package(
                 ]),
         .target(name: "ArchiverIntents",
                 dependencies: [
+                    "ArchiverModels",
                     "Shared"
                 ],
                 swiftSettings: [
@@ -104,7 +105,8 @@ let package = Package(
                     .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
                 ],
                 resources: [
-                    .process("Resources/Localizable.xcstrings")
+                    .process("Resources/Localizable.xcstrings"),
+                    .process("Resources/Assets.xcassets")
                 ],
                 swiftSettings: [
                     .enableExperimentalFeature("StrictConcurrency"),

@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 04.10.25.
 //
 
+import ArchiverModels
 import Charts
 import Shared
 import SwiftUI
@@ -16,9 +17,9 @@ public struct TopTagsChart: View {
         let count: Int
     }
 
-    let tags: [(tag: String, count: Int)]
+    let tags: [TagCount]
 
-    public init(tags: [(tag: String, count: Int)]) {
+    public init(tags: [TagCount]) {
         self.tags = tags
     }
 
@@ -74,16 +75,16 @@ public struct TopTagsChart: View {
 #Preview {
     VStack(spacing: 24) {
         TopTagsChart(tags: [
-            ("rechnung", 45),
-            ("versicherung", 32),
-            ("vertrag", 28),
-            ("steuer", 21),
-            ("gehalt", 15)
+            TagCount(tag: "rechnung", count: 45),
+            TagCount(tag: "versicherung", count: 32),
+            TagCount(tag: "vertrag", count: 28),
+            TagCount(tag: "steuer", count: 21),
+            TagCount(tag: "gehalt", count: 15)
         ])
 
         TopTagsChart(tags: [
-            ("rechnung", 5),
-            ("brief", 3)
+            TagCount(tag: "rechnung", count: 5),
+            TagCount(tag: "brief", count: 3)
         ])
 
         TopTagsChart(tags: [])
