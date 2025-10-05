@@ -40,3 +40,6 @@ ArchiveCore/.swiftpm
 .env.default
 ArchiveCore/.build
 Shared/Resources/Assets.xcassets/.DS_Store
+
+# Claude Code
+.claude/
