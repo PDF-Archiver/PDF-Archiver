@@ -41,7 +41,7 @@ struct TagCountTool: Tool {
             .prefix(30)
             .map {
             "'\($0.0)': \($0.1)"
-        }
+            }
         return """
         'tagName': count
         \(formattedTagCounts)

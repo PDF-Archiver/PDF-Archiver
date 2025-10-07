@@ -7,47 +7,44 @@
 
 import SwiftUI
 
-#if os(iOS)
 struct LoadingIndicatorModifier: ViewModifier {
     let isLoading: Bool
-    let isTabView: Bool
 
     func body(content: Content) -> some View {
-        if isTabView {
-            // For TabView: use tabViewBottomAccessory on iOS 26+
-            if #available(iOS 26, *) {
-                content
-                    .tabViewBottomAccessory {
-                        if isLoading {
+        #if os(macOS)
+        content
+            .toolbar {
+                if isLoading {
+                    ToolbarItem(placement: .status) {
+                        ProgressView()
+                            .frame(width: 32, height: 32)
+                            .controlSize(.small)
+                    }
+                }
+            }
+        #else
+        if #available(iOS 26, *) {
+            content
+                .tabViewBottomAccessory {
+                    if isLoading {
+                        HStack(spacing: 8) {
                             ProgressView()
-                                .padding()
+                            Text("Loading documents")
+                                .foregroundStyle(.secondary)
                         }
+                        .padding()
                     }
-            } else {
-                content
-                    .toolbar {
-                        if isLoading {
-                            ToolbarItem(placement: .destructiveAction) {
-                                ProgressView()
-                            }
-                        }
-                    }
-            }
+                }
         } else {
-            // For NavigationStack: use toolbar on iOS < 26
-            if #available(iOS 26, *) {
-                content
-            } else {
-                content
-                    .toolbar {
-                        if isLoading {
-                            ToolbarItem(placement: .destructiveAction) {
-                                ProgressView()
-                            }
+            content
+                .toolbar {
+                    if isLoading {
+                        ToolbarItem(placement: .destructiveAction) {
+                            ProgressView()
                         }
                     }
-            }
+                }
         }
+        #endif
     }
 }
-#endif

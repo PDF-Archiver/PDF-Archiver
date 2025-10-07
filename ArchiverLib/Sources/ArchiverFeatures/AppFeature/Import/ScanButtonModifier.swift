@@ -22,8 +22,7 @@ struct ScanButtonModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .overlay(alignment: .bottomTrailing) {
+            .safeAreaInset(edge: .bottom, alignment: .trailing) {
                 DropButton(state: dropHandler.documentProcessingState) { _ in
                     #if os(macOS)
                     dropHandler.startImport()
@@ -33,9 +32,11 @@ struct ScanButtonModifier: ViewModifier {
                     #endif
                 }
                 #if os(macOS)
-                .padding(.bottom, 16)
+                .padding(.bottom, 24)
+                .padding(.trailing, 40)
+                #else
+                .padding(.trailing, 10)
                 #endif
-                .padding(.trailing, 12)
                 .opacity(showButton ? 1 : 0)
                 .popoverTip((showButton && (currentTip as? ScanShareTip) != nil) ? currentTip : nil) { _ in
                     #if os(macOS)
