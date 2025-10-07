@@ -38,6 +38,9 @@ struct AppFeature {
         var untaggedDocumentsCount: Int = 0
         var isDocumentLoading = true
         var showIapView = false
+        var showScanButton: Bool {
+            selectedTab == .search && archiveList.documentDetails == nil && !archiveList.isSearching
+        }
 
         var archiveList = ArchiveList.State()
         var untaggedDocumentList = UntaggedDocumentList.State()
@@ -327,7 +330,7 @@ struct AppView: View {
         TabView(selection: $store.selectedTab) {
             Tab(value: AppFeature.State.Tab.search, role: .search) {
                 archiveList
-                    .modifier(ScanButtonModifier(showButton: store.archiveList.documentDetails == nil, currentTip: store.tutorialShown ? tips.currentTip : nil))
+                    .modifier(ScanButtonModifier(showButton: store.showScanButton, currentTip: store.tutorialShown ? tips.currentTip : nil))
             }
 
             Tab(String(localized: "Inbox", bundle: .module), systemImage: "tray", value: AppFeature.State.Tab.inbox) {
@@ -366,12 +369,14 @@ struct AppView: View {
             .hidden(horizontalSizeClass == .compact)
         }
         .tabViewStyle(.sidebarAdaptable)
-        #if os(iOS)
-        .modifier(LoadingIndicatorModifier(isLoading: store.isDocumentLoading, isTabView: true))
-        #endif
-        #if os(macOS)
-        .toolbar { toolbarLoadingSpinner }
-        #endif
+        .apply { content in
+            if #available(iOS 26.0, *) {
+                content.tabBarMinimizeBehavior(.onScrollDown)
+            } else {
+                content
+            }
+        }
+        .modifier(LoadingIndicatorModifier(isLoading: store.isDocumentLoading))
         .modifier(AlertDataModelProvider())
         .modifier(IAP(premiumStatus: $store.premiumStatus))
         .sheet(isPresented: $store.tutorialShown.flipped) {
@@ -396,9 +401,6 @@ struct AppView: View {
         NavigationStack {
             ArchiveListView(store: store.scope(state: \.archiveList, action: \.archiveList))
                 .navigationTitle(Text("Archive", bundle: .module))
-                #if os(iOS)
-                .modifier(LoadingIndicatorModifier(isLoading: store.isDocumentLoading, isTabView: false))
-                #endif
         }
     }
 
@@ -406,26 +408,6 @@ struct AppView: View {
         NavigationStack {
             UntaggedDocumentListView(store: store.scope(state: \.untaggedDocumentList, action: \.untaggedDocumentList))
                 .navigationTitle(Text("Inbox", bundle: .module))
-                #if os(iOS)
-                .modifier(LoadingIndicatorModifier(isLoading: store.isDocumentLoading, isTabView: false))
-                #endif
-        }
-    }
-
-    @ToolbarContentBuilder
-    private var toolbarLoadingSpinner: some ToolbarContent {
-        if store.isDocumentLoading {
-            #if os(macOS)
-            ToolbarItem(placement: .status) {
-                ProgressView()
-                    .frame(width: 32, height: 32)
-                    .controlSize(.small)
-            }
-            #else
-            ToolbarItem(placement: .destructiveAction) {
-                ProgressView()
-            }
-            #endif
         }
     }
 }

@@ -47,7 +47,7 @@ struct DropButton: View {
                 .symbolRenderingMode(.hierarchical)
             }
 #if os(macOS)
-            .frame(width: 40, height: 40)
+            .frame(width: 50, height: 50)
             .buttonStyle(.glassProminent)
 #else
             .padding(6)

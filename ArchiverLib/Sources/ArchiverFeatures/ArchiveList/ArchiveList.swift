@@ -47,6 +47,7 @@ struct ArchiveList {
         @Shared(.documents) var documents: IdentifiedArrayOf<Document> = []
         @Shared(.selectedDocumentId) var selectedDocumentId: Int?
         var filteredDocuments: IdentifiedArrayOf<Document> { getFilteredDocument() }
+        var isSearching = false
         var searchText = ""
         var searchTokens: [SearchToken] = []
         var searchSuggestedTokens: [SearchToken] = [.year(2025), .year(2024)]
@@ -80,6 +81,7 @@ struct ArchiveList {
         case binding(BindingAction<State>)
         case searchSuggestionsUpdated([State.SearchToken])
         case documentDetails(PresentationAction<DocumentDetails.Action>)
+        case searchStateChanged(Bool)
     }
 
     var body: some ReducerOf<Self> {
@@ -92,6 +94,10 @@ struct ArchiveList {
 
             case .searchSuggestionsUpdated(let suggestions):
                 state.searchSuggestedTokens = suggestions
+                return .none
+
+            case .searchStateChanged(let isSearching):
+                state.isSearching = isSearching
                 return .none
 
             case .binding(\.selectedDocumentId):
@@ -143,6 +149,9 @@ struct ArchiveListView: View {
                 }
             }
         }
+        .modifier(SearchStateMonitor { _, newValue in
+            store.send(.searchStateChanged(newValue))
+        })
         .searchable(text: $store.searchText,
                     tokens: $store.searchTokens,
                     suggestedTokens: $store.searchSuggestedTokens,
