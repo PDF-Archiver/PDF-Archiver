@@ -342,11 +342,11 @@ struct AppView: View {
                 StatisticsView(store: store.scope(state: \.statistics, action: \.statistics))
             }
 
-            //            #if !os(macOS)
+            #if !os(macOS)
             Tab(String(localized: "Settings", bundle: .module), systemImage: "gear", value: AppFeature.State.Tab.settings) {
                 SettingsView(store: store.scope(state: \.settings, action: \.settings))
             }
-            //            #endif
+            #endif
 
             TabSection(String(localized: "Tags", bundle: .module)) {
                 ForEach(store.tabTagSuggestions, id: \.self) { tag in
@@ -370,11 +370,15 @@ struct AppView: View {
         }
         .tabViewStyle(.sidebarAdaptable)
         .apply { content in
+            #if os(iOS)
             if #available(iOS 26.0, *) {
                 content.tabBarMinimizeBehavior(.onScrollDown)
             } else {
                 content
             }
+            #else
+            content
+            #endif
         }
         .modifier(LoadingIndicatorModifier(isLoading: store.isDocumentLoading))
         .modifier(AlertDataModelProvider())

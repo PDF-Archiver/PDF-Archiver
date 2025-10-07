@@ -290,6 +290,209 @@ struct SettingsView: View {
     }
 }
 
+#if os(macOS)
+struct SettingsMacView: View {
+    @Bindable var store: StoreOf<Settings>
+    private static let appId = 1433801905
+
+    @Environment(\.requestReview) private var requestReview
+
+    var body: some View {
+        TabView {
+            Tab("General", systemImage: "gear") {
+                generalPreferences
+            }
+
+            Tab("Premium", systemImage: "star.fill") {
+                PremiumSectionView(store: store.scope(state: \.premiumSection, action: \.premiumSection))
+            }
+
+            Tab("About", systemImage: "info.circle") {
+                aboutPreferences
+            }
+        }
+        .tabViewStyle(.tabBarOnly)
+        .frame(width: 500, height: 400)
+        .navigationDestination(item: $store.destination) { destination in
+            switch destination {
+            case .archiveStorage:
+                if let storageSelectionStore = store.scope(state: \.destination?.archiveStorage, action: \.destination.archiveStorage) {
+                    StorageSelectionView(store: storageSelectionStore)
+                        .navigationTitle(Text("Storage", bundle: .module))
+                } else {
+                    preconditionFailure("Failed to load storage selection")
+                }
+            case .expertSettings:
+                if let expertSettingsStore = store.scope(state: \.destination?.expertSettings, action: \.destination.expertSettings) {
+                    ExpertSettingsView(store: expertSettingsStore)
+                        .navigationTitle(Text("Advanced", bundle: .module))
+                } else {
+                    preconditionFailure("Failed to load expert settings")
+                }
+            case .aboutMe:
+                AboutMeView()
+            case .termsOfUse:
+                let content = String(localized: "TERMS_OF_USE", bundle: .module)
+                MarkdownView(markdown: content)
+                    .navigationTitle(String(localized: "Terms of Use", bundle: .module))
+            case .privacy:
+                let content = String(localized: "PRIVACY", bundle: .module)
+                MarkdownView(markdown: content)
+                    .navigationTitle(String(localized: "Privacy", bundle: .module))
+            case .imprint:
+                let content = String(localized: "IMPRINT", bundle: .module)
+                MarkdownView(markdown: content)
+                    .navigationTitle(Text("Imprint", bundle: .module))
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var generalPreferences: some View {
+        Form {
+            GroupBox {
+                VStack(alignment: .leading, spacing: 16) {
+                    HStack(alignment: .firstTextBaseline, spacing: 16) {
+                        Text("PDF Quality:", bundle: .module)
+                            .frame(width: 120, alignment: .trailing)
+                        Picker("", selection: $store.pdfQuality) {
+                            ForEach(PDFQuality.allCases, id: \.self) { quality in
+                                Text(quality.name, bundle: .module)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+
+                    Divider()
+
+                    HStack(alignment: .firstTextBaseline, spacing: 16) {
+                        Text("Storage:", bundle: .module)
+                            .frame(width: 120, alignment: .trailing)
+                        HStack {
+                            Text(store.selectedArchiveType.getPath().title, bundle: .module)
+                                .foregroundStyle(.secondary)
+                            Spacer()
+                            Button("Change…") {
+                                store.send(.onShowArchiveTypeSelectionTapped)
+                            }
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                }
+                .padding()
+            } label: {
+                Label("PDF Processing", systemImage: "doc.fill")
+            }
+
+            GroupBox {
+                HStack(alignment: .top, spacing: 12) {
+                    Text("Advanced settings allow you to configure additional options for PDF processing and organization.", bundle: .module)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Spacer()
+                    Button("Configure…") {
+                        store.send(.onAdvancedSettingsTapped)
+                    }
+                }
+                .padding()
+            } label: {
+                Label("Advanced", systemImage: "gearshape.2.fill")
+            }
+        }
+        .formStyle(.grouped)
+    }
+
+    @ViewBuilder
+    private var aboutPreferences: some View {
+        Form {
+            GroupBox {
+                VStack(spacing: 12) {
+                    HStack(spacing: 20) {
+                        Button("Contact Support") {
+                            store.send(.onContactSupportTapped)
+                        }
+                        .buttonStyle(.link)
+
+                        Spacer()
+
+                        Button("Rate App") {
+                            requestReview()
+                        }
+                        .buttonStyle(.link)
+                    }
+
+                    Divider()
+
+                    HStack(spacing: 20) {
+                        Button("PDF Archiver Website") {
+                            store.send(.onOpenPdfArchiverWebsiteTapped)
+                        }
+                        .buttonStyle(.link)
+
+                        Spacer()
+
+                        ShareLink(item: store.appStoreUrl) {
+                            Text("Share App")
+                        }
+                        .buttonStyle(.link)
+                    }
+                }
+                .padding()
+            } label: {
+                Label("Support & Feedback", systemImage: "lifepreserver")
+            }
+
+            GroupBox {
+                HStack {
+                    Button("About Developer") {
+                        store.send(.onAboutMeTapped)
+                    }
+                    .buttonStyle(.link)
+                    Spacer()
+                }
+                .padding()
+            } label: {
+                Label("Developer", systemImage: "person.fill")
+            }
+
+            GroupBox {
+                VStack(spacing: 12) {
+                    HStack(spacing: 20) {
+                        Button("Terms of Use") {
+                            store.send(.onTermsOfUseTapped)
+                        }
+                        .buttonStyle(.link)
+
+                        Spacer()
+
+                        Button("Privacy Policy") {
+                            store.send(.onPrivacyTapped)
+                        }
+                        .buttonStyle(.link)
+                    }
+
+                    Divider()
+
+                    HStack {
+                        Button("Imprint") {
+                            store.send(.onImprintTapped)
+                        }
+                        .buttonStyle(.link)
+
+                        Spacer()
+                    }
+                }
+                .padding()
+            } label: {
+                Label("Legal", systemImage: "doc.text")
+            }
+        }
+        .formStyle(.grouped)
+    }
+}
+
 #Preview("Settings", traits: .fixedLayout(width: 800, height: 600)) {
     SettingsView(
         store: Store(initialState: Settings.State()) {
@@ -298,3 +501,13 @@ struct SettingsView: View {
         }
     )
 }
+
+#Preview("Settings Mac", traits: .fixedLayout(width: 500, height: 400)) {
+    SettingsMacView(
+        store: Store(initialState: Settings.State()) {
+            Settings()
+                ._printChanges()
+        }
+    )
+}
+#endif
