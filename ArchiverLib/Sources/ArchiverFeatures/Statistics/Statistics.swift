@@ -28,10 +28,7 @@ struct Statistics {
     enum Action {
         case onTask
         case documentsUpdated(IdentifiedArrayOf<Document>)
-        case statisticsCalculated(CalculatedStatistics)
     }
-
-    @Dependency(\.statisticsService) var statisticsService
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
@@ -43,17 +40,35 @@ struct Statistics {
                 }
 
             case .documentsUpdated(let documents):
-                return .run { send in
-                    let stats = await statisticsService.calculateStatistics(Array(documents.elements))
-                    await send(.statisticsCalculated(stats))
+                let documentsArray = Array(documents.elements)
+
+                state.totalDocuments = documentsArray.count
+                state.untaggedDocuments = documentsArray.filter { !$0.isTagged }.count
+                state.totalStorageSize = documentsArray.reduce(0.0) { $0 + $1.sizeInBytes }
+
+                var yearStats: [Int: Int] = [:]
+                for document in documentsArray {
+                    let year = Calendar.current.component(.year, from: document.date)
+                    yearStats[year, default: 0] += 1
+                }
+                state.yearStats = yearStats
+
+                var tagCountMap: [String: Int] = [:]
+                for tag in documentsArray.flatMap(\.tags) {
+                    tagCountMap[tag, default: 0] += 1
                 }
 
-            case .statisticsCalculated(let stats):
-                state.totalDocuments = stats.totalDocuments
-                state.untaggedDocuments = stats.untaggedDocuments
-                state.totalStorageSize = stats.totalStorageSize
-                state.yearStats = stats.yearStats
-                state.topTags = stats.topTags
+                state.topTags = tagCountMap
+                    .sorted { lhs, rhs in
+                        if lhs.value == rhs.value {
+                            lhs.key < rhs.key
+                        } else {
+                            lhs.value > rhs.value
+                        }
+                    }
+                    .prefix(10)
+                    .map { TagCount(tag: $0.key, count: $0.value) }
+
                 state.isLoading = false
                 return .none
             }
