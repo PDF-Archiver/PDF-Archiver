@@ -66,6 +66,19 @@ struct UntaggedDocumentListView: View {
 
     var body: some View {
         Group {
+            #if os(macOS)
+            if store.untaggedDocuments.isEmpty {
+                ContentUnavailableView(String(localized: "No document", bundle: .module),
+                                       systemImage: "checkmark.seal",
+                                       description: Text("Congratulations! All documents are tagged. 🎉", bundle: .module))
+            } else {
+                List(store.untaggedDocuments, selection: $store.selectedDocumentId) { document in
+                    Text(document.url.lastPathComponent)
+                        .tag(document.id)
+                }
+                .alternatingRowBackgrounds()
+            }
+            #else
             if store.premiumStatus == .inactive {
                 IAPView {
                     store.send(.delegate(.onCancelIapButtonTapped))
@@ -77,16 +90,18 @@ struct UntaggedDocumentListView: View {
             } else {
                 List(store.untaggedDocuments, selection: $store.selectedDocumentId) { document in
                     Text(document.url.lastPathComponent)
-//                    ArchiveListItemView(documentSpecification: document.specification,
-//                                        documentDate: document.date,
-//                                        documentTags: document.tags.sorted())
-                    .tag(document.id)
+                        .tag(document.id)
                 }
-                #if os(macOS)
-                .alternatingRowBackgrounds()
-                #endif
             }
+            #endif
         }
+        #if os(macOS)
+        .sheet(isPresented: .init(get: { store.premiumStatus == .inactive }, set: { _ in }), content: {
+            IAPView {
+                store.send(.delegate(.onCancelIapButtonTapped))
+            }
+        })
+        #endif
         .sensoryFeedback(.selection, trigger: store.selectedDocumentId)
         .navigationDestination(item: $store.scope(state: \.documentDetails, action: \.documentDetails)) { documentStore in
             DocumentDetailsView(store: documentStore)
