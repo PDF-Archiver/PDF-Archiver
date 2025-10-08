@@ -23,10 +23,12 @@ public struct StatsView: View {
     public typealias Count = Int
     let yearStats: [Year: Count]
     let size: Size
+    let showActions: Bool
 
-    public init(yearStats: [Year: Count], size: Size) {
+    public init(yearStats: [Year: Count], size: Size, showActions: Bool = true) {
         self.yearStats = yearStats
         self.size = size
+        self.showActions = showActions
     }
 
     public var body: some View {
@@ -47,43 +49,53 @@ public struct StatsView: View {
 
                 Spacer()
 
-                Link(destination: DeepLink.scan.url) {
-                    Image(systemName: "doc.viewfinder")
+                if showActions {
+                    Link(destination: DeepLink.scan.url) {
+                        Image(systemName: "doc.viewfinder")
+                    }
+                    .padding(10)
+                    .background(Circle().fill(Color.paRedAsset))
+                    .foregroundColor(.white)
                 }
-                .padding(10)
-                .background(Circle().fill(Color.paRedAsset))
-                .foregroundColor(.white)
             }
 
             Spacer()
 
-            Chart(yearStats, id: \.self) { item in
-                BarMark(
-                    x: .value("Amount", item.count),
-                    y: .value("Period", "\(item.year)")
+            if yearStats.isEmpty {
+                ContentUnavailableView(
+                    "No Documents",
+                    systemImage: "document",
+                    description: Text("Start adding documents to see your yearly statistics")
                 )
-                .annotation(position: .leading) {
-                    Text(item.year, format: .number.grouping(.never))
-                        .font(.caption2)
-                        .monospacedDigit()
-                        .foregroundStyle(Color.secondaryLabelAsset)
+            } else {
+                Chart(yearStats, id: \.self) { item in
+                    BarMark(
+                        x: .value("Amount", item.count),
+                        y: .value("Period", "\(item.year)")
+                    )
+                    .annotation(position: .leading) {
+                        Text(item.year, format: .number.grouping(.never))
+                            .font(.caption2)
+                            .monospacedDigit()
+                            .foregroundStyle(Color.secondaryLabelAsset)
+                    }
+                    .annotation(position: .trailing) {
+                        Text("\(item.count)")
+                            .font(.caption)
+                            .foregroundStyle(.primary)
+                    }
+                    .foregroundStyle(Color.paRedAsset.opacity(Double(item.count) / Double(maxCount)))
                 }
-                .annotation(position: .trailing) {
-                    Text("\(item.count)")
-                        .font(.caption)
-                        .foregroundStyle(.primary)
+                .frame(height: 80)
+                .fixedSize(horizontal: false, vertical: true)
+                .chartXAxis(.hidden)
+                .chartYAxis(.hidden)
+                .chartYAxis {
+                    AxisMarks(stroke: StrokeStyle(lineWidth: 0))
                 }
-                .foregroundStyle(Color.paRedAsset.opacity(Double(item.count) / Double(maxCount)))
-            }
-            .frame(height: 80)
-            .fixedSize(horizontal: false, vertical: true)
-            .chartXAxis(.hidden)
-            .chartYAxis(.hidden)
-            .chartYAxis {
-                AxisMarks(stroke: StrokeStyle(lineWidth: 0))
-            }
-            .chartXAxis {
-                AxisMarks(stroke: StrokeStyle(lineWidth: 0))
+                .chartXAxis {
+                    AxisMarks(stroke: StrokeStyle(lineWidth: 0))
+                }
             }
         }
     }
@@ -91,6 +103,7 @@ public struct StatsView: View {
 
 #Preview {
     Group {
+        StatsView(yearStats: [:], size: .medium)
         StatsView(yearStats: [
             2019: 3,
             2020: 7,

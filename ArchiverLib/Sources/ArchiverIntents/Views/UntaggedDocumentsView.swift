@@ -15,10 +15,12 @@ public struct UntaggedDocumentsView: View {
 
     let untaggedDocuments: Int
     let size: Size
+    let showActions: Bool
 
-    public init(untaggedDocuments: Int, size: Size) {
+    public init(untaggedDocuments: Int, size: Size, showActions: Bool = true) {
         self.untaggedDocuments = untaggedDocuments
         self.size = size
+        self.showActions = showActions
     }
 
     var actionButtons: some View {
@@ -100,7 +102,9 @@ public struct UntaggedDocumentsView: View {
 
                 Spacer()
 
-                actionButtons
+                if showActions {
+                    actionButtons
+                }
             }
 
         case .medium:
@@ -142,7 +146,9 @@ public struct UntaggedDocumentsView: View {
 
                 Spacer()
 
-                actionButtons
+                if showActions {
+                    actionButtons
+                }
             }
         case .large:
             VStack(alignment: .leading) {
@@ -183,7 +189,9 @@ public struct UntaggedDocumentsView: View {
 
                 Spacer()
 
-                actionButtons
+                if showActions {
+                    actionButtons
+                }
             }
         }
     }

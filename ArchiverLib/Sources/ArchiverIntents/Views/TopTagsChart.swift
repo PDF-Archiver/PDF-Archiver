@@ -28,17 +28,20 @@ public struct TopTagsChart: View {
         let maxCount = tagData.map(\.count).max() ?? 1
 
         VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .top) {
+                Text("Most Used Tags")
+                    .minimumScaleFactor(0.8)
+                    .foregroundStyle(.primary)
+
+                Spacer()
+            }
+
             if tagData.isEmpty {
-                VStack(spacing: 8) {
-                    Image(systemName: "tag.slash")
-                        .font(.largeTitle)
-                        .foregroundStyle(.secondary)
-                    Text("Keine Tags gefunden")
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
-                }
-                .frame(maxWidth: .infinity, alignment: .center)
-                .padding(.vertical, 24)
+                ContentUnavailableView(
+                    "No Tags",
+                    systemImage: "tag",
+                    description: Text("Tag your documents to see the most used tags")
+                )
             } else {
                 Chart(tagData) { item in
                     BarMark(

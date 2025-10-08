@@ -8,20 +8,25 @@
 import Shared
 import SwiftUI
 
-public struct StatCard: View {
+struct StatCard<Value: View>: View {
     let title: String
-    let value: String
     let systemImage: String
     let color: Color
+    @ViewBuilder let value: () -> Value
 
-    public init(title: String, value: String, systemImage: String, color: Color = .paRedAsset) {
+    init(
+        title: String,
+        systemImage: String,
+        color: Color = .paRedAsset,
+        @ViewBuilder value: @escaping () -> Value
+    ) {
         self.title = title
-        self.value = value
         self.systemImage = systemImage
         self.color = color
+        self.value = value
     }
 
-    public var body: some View {
+    var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Image(systemName: systemImage)
@@ -30,7 +35,7 @@ public struct StatCard: View {
                 Spacer()
             }
 
-            Text(value)
+            value()
                 .font(.system(size: 28, weight: .bold))
                 .foregroundStyle(.primary)
                 .lineLimit(1)
@@ -54,27 +59,31 @@ public struct StatCard: View {
         HStack(spacing: 12) {
             StatCard(
                 title: "Gesamt",
-                value: "1.234",
                 systemImage: "doc.text.fill"
-            )
+            ) {
+                Text(1234, format: .number)
+            }
             StatCard(
                 title: "Speicher",
-                value: "45,3 MB",
                 systemImage: "internaldrive.fill"
-            )
+            ) {
+                Text(Int64(45_300_000), format: .byteCount(style: .file))
+            }
         }
 
         HStack(spacing: 12) {
             StatCard(
                 title: "Dieses Jahr",
-                value: "89",
                 systemImage: "calendar"
-            )
+            ) {
+                Text(89, format: .number)
+            }
             StatCard(
                 title: "Tags",
-                value: "42",
                 systemImage: "tag.fill"
-            )
+            ) {
+                Text(42, format: .number)
+            }
         }
     }
     .padding()

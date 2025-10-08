@@ -8,6 +8,7 @@
 import ArchiverIntents
 import ArchiverModels
 import ComposableArchitecture
+import Foundation
 import Shared
 import SwiftUI
 
@@ -21,7 +22,7 @@ struct Statistics {
         var yearStats: [Int: Int] = [:]
         var untaggedDocuments = 0
         var totalDocuments = 0
-        var totalStorageSize: Double = 0
+        var totalStorageSize: Measurement<UnitInformationStorage> = Measurement(value: 0, unit: .bytes)
         var topTags: [TagCount] = []
     }
 
@@ -44,7 +45,8 @@ struct Statistics {
 
                 state.totalDocuments = documentsArray.count
                 state.untaggedDocuments = documentsArray.filter { !$0.isTagged }.count
-                state.totalStorageSize = documentsArray.reduce(0.0) { $0 + $1.sizeInBytes }
+                let totalBytes = documentsArray.reduce(0.0) { $0 + $1.sizeInBytes }
+                state.totalStorageSize = Measurement(value: totalBytes, unit: .bytes)
 
                 var yearStats: [Int: Int] = [:]
                 for document in documentsArray {
@@ -85,31 +87,56 @@ struct StatisticsView: View {
                 HStack(spacing: 12) {
                     StatCard(
                         title: String(localized: "Total Documents", bundle: .module),
-                        value: "\(store.totalDocuments)",
                         systemImage: "doc.text.fill"
-                    )
+                    ) {
+                        Text(store.totalDocuments, format: .number)
+                    }
 
                     StatCard(
                         title: String(localized: "Storage", bundle: .module),
-                        value: store.totalStorageSize.formattedByteCount,
                         systemImage: "internaldrive.fill"
-                    )
+                    ) {
+                        if store.totalStorageSize.value == 0 {
+                            Text("0 MB")
+                        } else {
+                            Text(store.totalStorageSize, format: .byteCount(style: .file, allowedUnits: [.mb, .gb]))
+                        }
+                    }
                 }
 
                 VStack(alignment: .leading, spacing: 24) {
-                    StatSection(title: String(localized: "Documents per Year", bundle: .module)) {
-                        StatsView(yearStats: store.yearStats, size: .medium)
-                    }
-
-                    StatSection(title: String(localized: "Most Used Tags", bundle: .module)) {
-                        TopTagsChart(tags: store.topTags)
-                    }
-
-                    StatSection(title: String(localized: "Inbox", bundle: .module)) {
+                    Section {
                         UntaggedDocumentsView(
                             untaggedDocuments: store.untaggedDocuments,
-                            size: .medium
+                            size: .medium,
+                            showActions: false
                         )
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(Color.paSecondaryBackgroundAsset)
+                        )
+                    }
+
+                    Section {
+                        StatsView(yearStats: store.yearStats, size: .medium, showActions: false)
+                            .padding()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(Color.paSecondaryBackgroundAsset)
+                            )
+                    }
+
+                    Section {
+                        TopTagsChart(tags: store.topTags)
+                            .padding()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(Color.paSecondaryBackgroundAsset)
+                            )
                     }
                 }
             }
@@ -122,27 +149,6 @@ struct StatisticsView: View {
             if store.isLoading {
                 ProgressView()
             }
-        }
-    }
-}
-
-private struct StatSection<Content: View>: View {
-    let title: String
-    @ViewBuilder let content: () -> Content
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text(title)
-                .font(.headline)
-                .foregroundStyle(.primary)
-
-            content()
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.paSecondaryBackgroundAsset)
-                )
         }
     }
 }
