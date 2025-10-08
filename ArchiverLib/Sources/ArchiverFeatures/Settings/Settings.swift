@@ -307,7 +307,7 @@ struct SettingsMacView: View {
                 generalPreferences
             }
 
-            Tab("Premium", systemImage: "star.fill") {
+            Tab("Premium", systemImage: "star.hexagon") {
                 PremiumSectionView(store: store.scope(state: \.premiumSection, action: \.premiumSection))
             }
 
@@ -354,42 +354,36 @@ struct SettingsMacView: View {
     @ViewBuilder
     private var generalPreferences: some View {
         Form {
-            GroupBox {
-                VStack(alignment: .leading, spacing: 16) {
-                    HStack(alignment: .firstTextBaseline, spacing: 16) {
-                        Text("PDF Quality:", bundle: .module)
-                            .frame(width: 120, alignment: .trailing)
-                        Picker("", selection: $store.pdfQuality) {
-                            ForEach(PDFQuality.allCases, id: \.self) { quality in
-                                Text(quality.name, bundle: .module)
-                            }
+            Section {
+                LabeledContent {
+                    Picker("", selection: $store.pdfQuality) {
+                        ForEach(PDFQuality.allCases, id: \.self) { quality in
+                            Text(quality.name, bundle: .module)
                         }
-                        .pickerStyle(.menu)
-                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
-
-                    Divider()
-
-                    HStack(alignment: .firstTextBaseline, spacing: 16) {
-                        Text("Storage:", bundle: .module)
-                            .frame(width: 120, alignment: .trailing)
-                        HStack {
-                            Text(store.selectedArchiveType.getPath().title, bundle: .module)
-                                .foregroundStyle(.secondary)
-                            Spacer()
-                            Button("Change…") {
-                                store.send(.onShowArchiveTypeSelectionTapped)
-                            }
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    }
+                    .labelsHidden()
+                    .pickerStyle(.menu)
+                } label: {
+                    Text("PDF Quality:", bundle: .module)
                 }
-                .padding()
-            } label: {
+
+                LabeledContent {
+                    HStack {
+                        Text(store.selectedArchiveType.getPath().title, bundle: .module)
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        Button("Change…") {
+                            store.send(.onShowArchiveTypeSelectionTapped)
+                        }
+                    }
+                } label: {
+                    Text("Storage:", bundle: .module)
+                }
+            } header: {
                 Label("PDF Processing", systemImage: "doc.fill")
             }
 
-            GroupBox {
+            Section {
                 HStack(alignment: .top, spacing: 12) {
                     Text("Advanced settings allow you to configure additional options for PDF processing and organization.", bundle: .module)
                         .font(.subheadline)
@@ -400,8 +394,7 @@ struct SettingsMacView: View {
                         store.send(.onAdvancedSettingsTapped)
                     }
                 }
-                .padding()
-            } label: {
+            } header: {
                 Label("Advanced", systemImage: "gearshape.2.fill")
             }
         }
@@ -411,85 +404,73 @@ struct SettingsMacView: View {
     @ViewBuilder
     private var aboutPreferences: some View {
         Form {
-            GroupBox {
-                VStack(spacing: 12) {
-                    HStack(spacing: 20) {
-                        Button("Contact Support") {
-                            store.send(.onContactSupportTapped)
-                        }
-                        .buttonStyle(.link)
-
-                        Spacer()
-
-                        Button("Rate App") {
-                            requestReview()
-                        }
-                        .buttonStyle(.link)
+            Section {
+                HStack(spacing: 20) {
+                    Button("Contact Support") {
+                        store.send(.onContactSupportTapped)
                     }
+                    .buttonStyle(.link)
 
-                    Divider()
+                    Spacer()
 
-                    HStack(spacing: 20) {
-                        Button("PDF Archiver Website") {
-                            store.send(.onOpenPdfArchiverWebsiteTapped)
-                        }
-                        .buttonStyle(.link)
-
-                        Spacer()
-
-                        ShareLink(item: store.appStoreUrl) {
-                            Text("Share App")
-                        }
-                        .buttonStyle(.link)
+                    Button("Rate App") {
+                        requestReview()
                     }
+                    .buttonStyle(.link)
                 }
-                .padding()
-            } label: {
+
+                Divider()
+
+                HStack(spacing: 20) {
+                    Button("PDF Archiver Website") {
+                        store.send(.onOpenPdfArchiverWebsiteTapped)
+                    }
+                    .buttonStyle(.link)
+
+                    Spacer()
+
+                    ShareLink(item: store.appStoreUrl) {
+                        Text("Share App")
+                    }
+                    .buttonStyle(.link)
+                }
+            } header: {
                 Label("Support & Feedback", systemImage: "lifepreserver")
             }
 
-            GroupBox {
-                HStack {
-                    Button("About Developer") {
-                        store.send(.onAboutMeTapped)
-                    }
-                    .buttonStyle(.link)
-                    Spacer()
+            Section {
+                Button("About Developer") {
+                    store.send(.onAboutMeTapped)
                 }
-                .padding()
-            } label: {
+                .buttonStyle(.link)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            } header: {
                 Label("Developer", systemImage: "person.fill")
             }
 
-            GroupBox {
-                VStack(spacing: 12) {
-                    HStack(spacing: 20) {
-                        Button("Terms of Use") {
-                            store.send(.onTermsOfUseTapped)
-                        }
-                        .buttonStyle(.link)
-
-                        Spacer()
-
-                        Button("Privacy Policy") {
-                            store.send(.onPrivacyTapped)
-                        }
-                        .buttonStyle(.link)
+            Section {
+                HStack(spacing: 20) {
+                    Button("Terms of Use") {
+                        store.send(.onTermsOfUseTapped)
                     }
+                    .buttonStyle(.link)
 
-                    Divider()
+                    Spacer()
 
-                    HStack {
-                        Button("Imprint") {
-                            store.send(.onImprintTapped)
-                        }
-                        .buttonStyle(.link)
-
-                        Spacer()
+                    Button("Privacy Policy") {
+                        store.send(.onPrivacyTapped)
                     }
+                    .buttonStyle(.link)
                 }
-                .padding()
-            } label: {
+
+                Divider()
+
+                Button("Imprint") {
+                    store.send(.onImprintTapped)
+                }
+                .buttonStyle(.link)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            } header: {
                 Label("Legal", systemImage: "doc.text")
             }
         }
