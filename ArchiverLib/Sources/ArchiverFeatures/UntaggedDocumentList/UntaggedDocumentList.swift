@@ -16,6 +16,7 @@ struct UntaggedDocumentList {
     struct State: Equatable {
         @Shared(.documents) var documents: IdentifiedArrayOf<Document> = []
         @Shared(.selectedDocumentId) var selectedDocumentId: Int?
+        @Shared(.premiumStatus) var premiumStatus: PremiumStatus = .loading
         var untaggedDocuments: IdentifiedArrayOf<Document> { documents.filter(\.isTagged.flipped) }
         @Presents var documentDetails: DocumentDetails.State?
     }
@@ -23,6 +24,11 @@ struct UntaggedDocumentList {
     enum Action: BindableAction {
         case binding(BindingAction<State>)
         case documentDetails(PresentationAction<DocumentDetails.Action>)
+        case delegate(Delegate)
+
+        enum Delegate {
+            case onCancelIapButtonTapped
+        }
     }
 
     var body: some ReducerOf<Self> {
@@ -44,6 +50,9 @@ struct UntaggedDocumentList {
 
             case .binding:
                 return .none
+
+            case .delegate:
+                return .none
             }
         }
         .ifLet(\.$documentDetails, action: \.documentDetails) {
@@ -57,7 +66,11 @@ struct UntaggedDocumentListView: View {
 
     var body: some View {
         Group {
-            if store.untaggedDocuments.isEmpty {
+            if store.premiumStatus == .inactive {
+                IAPView {
+                    store.send(.delegate(.onCancelIapButtonTapped))
+                }
+            } else if store.untaggedDocuments.isEmpty {
                 ContentUnavailableView(String(localized: "No document", bundle: .module),
                                        systemImage: "checkmark.seal",
                                        description: Text("Congratulations! All documents are tagged. 🎉", bundle: .module))

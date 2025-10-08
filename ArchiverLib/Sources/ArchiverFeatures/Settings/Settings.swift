@@ -153,6 +153,10 @@ struct Settings {
                 state.destination = .termsOfUse
                 return .none
 
+            case .premiumSection(.delegate):
+                // Forward delegate actions to parent
+                return .none
+
             case .premiumSection:
                 return .none
             }

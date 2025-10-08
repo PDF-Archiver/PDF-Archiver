@@ -23,7 +23,7 @@ struct PremiumSection {
         case delegate(Delegate)
 
         enum Delegate: Equatable {
-          case onShowIapButtonTapped
+          case switchToInboxTab
         }
     }
 
@@ -60,7 +60,7 @@ struct PremiumSection {
             }
             if store.premiumStatus == .inactive {
                 Button {
-                    store.send(.delegate(.onShowIapButtonTapped))
+                    store.send(.delegate(.switchToInboxTab))
                 } label: {
                     Text("Activate premium", bundle: .module)
                 }

@@ -37,7 +37,6 @@ struct AppFeature {
         var tabYearSuggestions: [Int] = []
         var untaggedDocumentsCount: Int = 0
         var isDocumentLoading = true
-        var showIapView = false
         var showScanButton: Bool {
             selectedTab == .search && archiveList.documentDetails == nil && !archiveList.isSearching
         }
@@ -53,7 +52,6 @@ struct AppFeature {
         case archiveList(ArchiveList.Action)
         case documentsChanged([Document])
         case isLoadingChanged(Bool)
-        case onCancelIapButtonTapped
         case onLongBackgroundTask
         case onScenePhaseChanged(old: ScenePhase, new: ScenePhase)
         case untaggedDocumentList(UntaggedDocumentList.Action)
@@ -134,27 +132,10 @@ struct AppFeature {
                     state.archiveList.searchTokens = [.tag(tag)]
                 case .sectionYears(let year):
                     state.archiveList.searchTokens = [.year(year)]
-                case .inbox:
-                    state.showIapView = state.premiumStatus == .inactive
-
-                case .statistics:
+                case .inbox, .statistics, .settings:
                     break
-                    //                #if !os(macOS)
-                case .settings:
-                    break
-                    //                #endif
                 }
                 return .none
-
-            case .binding(\.premiumStatus):
-                if state.selectedTab == .inbox {
-                    state.showIapView = state.premiumStatus == .inactive
-                    return .none
-                } else {
-                    guard state.premiumStatus != .inactive else { return .none }
-                    state.showIapView = false
-                    return .none
-                }
 
             case .binding:
                 return .none
@@ -218,11 +199,6 @@ struct AppFeature {
                 state.isDocumentLoading = isLoading
                 return .none
 
-            case .onCancelIapButtonTapped:
-                state.selectedTab = .search
-                state.showIapView = false
-                return .none
-
             case .onLongBackgroundTask:
                 return .run { send in
                     await withTaskGroup(of: Void.self) { group in
@@ -257,6 +233,13 @@ struct AppFeature {
 
                 return .none
 
+            case .untaggedDocumentList(.delegate(let delegateAction)):
+                switch delegateAction {
+                case .onCancelIapButtonTapped:
+                    state.selectedTab = .search
+                    return .none
+                }
+
             case .untaggedDocumentList:
                 return .none
 
@@ -274,10 +257,10 @@ struct AppFeature {
 
             case .settings(.premiumSection(.delegate(let delegateAction))):
                 switch delegateAction {
-                case .onShowIapButtonTapped:
-                    state.showIapView = true
+                case .switchToInboxTab:
+                    state.selectedTab = .inbox
+                    return .none
                 }
-                return .none
 
             case .settings:
                 return .none
@@ -389,13 +372,6 @@ struct AppView: View {
                 .frame(width: 500, height: 400)
                 #endif
         }
-        .sheet(isPresented: $store.showIapView, onDismiss: {
-            store.send(.onCancelIapButtonTapped)
-        }, content: {
-            IAPView {
-                store.send(.onCancelIapButtonTapped)
-            }
-        })
         .onChange(of: scenePhase) { old, new in
             store.send(.onScenePhaseChanged(old: old, new: new))
         }
