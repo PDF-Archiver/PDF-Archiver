@@ -98,12 +98,16 @@ struct StorageSelectionView: View {
 
                     } label: {
                         HStack {
-                            Text(storageType.title, bundle: .module)
-                                // since we have buttons, we have to "fake" the foreground color - it would be the accent color otherwise
-                                .foregroundColor(.primary)
+                            Label {
+                                Text(storageType.title, bundle: .module)
+                            } icon: {
+                                Image(systemName: storageType.icon)
+                            }
+                            // since we have buttons, we have to "fake" the foreground color - it would be the accent color otherwise
+                            .foregroundColor(.primary)
                             Spacer()
                             if storageType.equals(store.selectedArchiveType.getPath()) {
-                                Image(systemName: "checkmark.circle")
+                                Image(systemName: "checkmark.circle.fill")
                                     .foregroundStyle(Color.green)
                             }
                         }
@@ -171,16 +175,33 @@ enum StorageSelectionType: String, CaseIterable {
     var title: LocalizedStringKey {
         switch self {
             case .iCloudDrive:
-                return "☁️ iCloud Drive"
+                return "iCloud Drive"
             #if !os(macOS)
             case .appContainer:
-                return "📱 Local"
+                return "Local"
             #endif
             case .local:
                 #if os(macOS)
-                return "💾 Drive"
+                return "Drive"
                 #else
-                return "🗂️ Folder"
+                return "Folder"
+                #endif
+        }
+    }
+
+    var icon: String {
+        switch self {
+            case .iCloudDrive:
+                return "icloud"
+            #if !os(macOS)
+            case .appContainer:
+                return "iphone"
+            #endif
+            case .local:
+                #if os(macOS)
+                return "externaldrive"
+                #else
+                return "folder"
                 #endif
         }
     }

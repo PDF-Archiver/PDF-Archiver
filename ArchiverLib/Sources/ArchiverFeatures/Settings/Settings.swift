@@ -10,18 +10,21 @@ import ComposableArchitecture
 import Shared
 import StoreKit
 import SwiftUI
+#if os(iOS)
+import MessageUI
+#endif
 
 extension PDFQuality {
     var name: LocalizedStringKey {
         switch self {
         case .lossless:
-            return "100% - Lossless 🤯"
+            return "100% - Lossless"
         case .good:
-            return "75% - Good 👌 (Default)"
+            return "75% - Good (Default)"
         case .normal:
-            return "50% - Normal 👍"
+            return "50% - Normal"
         case .small:
-            return "25% - Small 💾"
+            return "25% - Small"
         }
     }
 }
@@ -30,16 +33,16 @@ extension StorageType {
     var title: LocalizedStringKey {
         switch self {
             case .iCloudDrive:
-                return "☁️ iCloud Drive"
+                return "iCloud Drive"
             #if !os(macOS)
             case .appContainer:
-                return "📱 Local"
+                return "Local"
             #endif
             case .local:
                 #if os(macOS)
-                return "💾 Drive"
+                return "Drive"
                 #else
-                return "🗂️ Folder"
+                return "Folder"
                 #endif
         }
     }
@@ -71,6 +74,7 @@ struct Settings {
         case archiveStorage(StorageSelection)
         case expertSettings(ExpertSettings)
         case imprint
+        case legal
         case privacy
         case termsOfUse
     }
@@ -83,6 +87,7 @@ struct Settings {
         @SharedReader(.archivePathType) var selectedArchiveType: StorageType?
 
         var premiumSection = PremiumSection.State()
+        var isShowingMailSheet = false
 
         let appStoreUrl = URL(string: "https://apps.apple.com/app/pdf-archiver/id1433801905")!
         let pdfArchiverWebsiteUrl = URL(string: "https://pdf-archiver.io")!
@@ -98,6 +103,7 @@ struct Settings {
         case onAdvancedSettingsTapped
         case onContactSupportTapped
         case onImprintTapped
+        case onLegalTapped
         case onOpenPdfArchiverWebsiteTapped
         case onShowArchiveTypeSelectionTapped
         case onPrivacyTapped
@@ -127,13 +133,22 @@ struct Settings {
                 return .none
 
             case .onContactSupportTapped:
+                #if os(iOS)
+                state.isShowingMailSheet = true
+                return .none
+                #else
                 let url = URL(string: "mailto:\(Constants.mailRecipient)?subject=\(Constants.mailSubject)")!
                 return .run { [url] _ in
                     await openURL(url)
                 }
+                #endif
 
             case .onImprintTapped:
                 state.destination = .imprint
+                return .none
+
+            case .onLegalTapped:
+                state.destination = .legal
                 return .none
 
             case .onOpenPdfArchiverWebsiteTapped:
@@ -179,7 +194,7 @@ struct SettingsView: View {
             Form {
                 preferences
                 PremiumSectionView(store: store.scope(state: \.premiumSection, action: \.premiumSection))
-                moreInformation
+                aboutSection
             }
             // since we have buttons, we have to "fake" the foreground color - it would be the accent color otherwise
             .foregroundColor(.primary)
@@ -187,6 +202,18 @@ struct SettingsView: View {
 #if os(iOS)
             .navigationViewStyle(StackNavigationViewStyle())
             .navigationBarTitleDisplayMode(.inline)
+            .sheet(isPresented: $store.isShowingMailSheet) {
+                if MFMailComposeViewController.canSendMail() {
+                    MailComposeView(
+                        isShowing: $store.isShowingMailSheet,
+                        recipient: Constants.mailRecipient,
+                        subject: Constants.mailSubject
+                    )
+                } else {
+                    Text("Mail is not configured on this device", bundle: .module)
+                        .padding()
+                }
+            }
 #endif
             .navigationDestination(item: $store.destination) { destination in
                 switch destination {
@@ -206,10 +233,13 @@ struct SettingsView: View {
                     }
                 case .aboutMe:
                     AboutMeView()
+                case .legal:
+                    LegalView(store: store)
+                        .navigationTitle(Text("Legal", bundle: .module))
                 case .termsOfUse:
                     let content = String(localized: "TERMS_OF_USE", bundle: .module)
                     MarkdownView(markdown: content)
-                        .navigationTitle(String(localized: "Privacy", bundle: .module))
+                        .navigationTitle(String(localized: "Terms of Use", bundle: .module))
                 case .privacy:
                     let content = String(localized: "PRIVACY", bundle: .module)
                     MarkdownView(markdown: content)
@@ -225,71 +255,77 @@ struct SettingsView: View {
 
     @ViewBuilder
     private var preferences: some View {
-        Section(header: Text("🛠 Preferences", bundle: .module)) {
-            Picker(selection: $store.pdfQuality, label: Text("PDF Quality", bundle: .module)) {
+        Section {
+            Picker(selection: $store.pdfQuality, label: Label("PDF Quality", systemImage: "text.document")) {
                 ForEach(PDFQuality.allCases, id: \.self) { quality in
                     Text(quality.name, bundle: .module)
                 }
             }
 
-            Button {
-                store.send(.onShowArchiveTypeSelectionTapped)
+            NavigationLink {
+                if let storageSelectionStore = store.scope(state: \.destination?.archiveStorage, action: \.destination.archiveStorage) {
+                    StorageSelectionView(store: storageSelectionStore)
+                        .navigationTitle(Text("Storage", bundle: .module))
+                }
             } label: {
                 HStack {
-                    Text("Storage", bundle: .module)
+                    Label("Storage", systemImage: "externaldrive")
                     Spacer()
                     Text(store.selectedArchiveType.getPath().title, bundle: .module)
+                        .foregroundStyle(.secondary)
                 }
             }
+            .simultaneousGesture(TapGesture().onEnded {
+                store.send(.onShowArchiveTypeSelectionTapped)
+            })
 
-            Button {
-                store.send(.onAdvancedSettingsTapped)
+            NavigationLink {
+                if let expertSettingsStore = store.scope(state: \.destination?.expertSettings, action: \.destination.expertSettings) {
+                    ExpertSettingsView(store: expertSettingsStore)
+                        .navigationTitle(Text("Advanced", bundle: .module))
+                }
             } label: {
-                Text("Advanced", bundle: .module)
+                Label("Advanced", systemImage: "gearshape.2")
             }
+            .simultaneousGesture(TapGesture().onEnded {
+                store.send(.onAdvancedSettingsTapped)
+            })
+        } header: {
+            Text("Preferences", bundle: .module)
+                .foregroundStyle(Color.secondary)
         }
     }
 
-    private var moreInformation: some View {
-        Section(header: Text("⁉️ More Information", bundle: .module)) {
-            Button {
-                store.send(.onAboutMeTapped)
-            } label: {
-                Text("About  👤", bundle: .module)
-            }
-            Button {
-                store.send(.onOpenPdfArchiverWebsiteTapped)
-            } label: {
-                Text("PDF Archiver Website  🖥", bundle: .module)
-            }
+    private var aboutSection: some View {
+        Section {
             Button {
                 store.send(.onContactSupportTapped)
             } label: {
-                Text("Contact Support  🚑", bundle: .module)
+                Label("Contact & Help", systemImage: "envelope")
             }
+
             Button {
                 requestReview()
             } label: {
-                Text("Rate App ⭐️", bundle: .module)
+                Label("Rate App", systemImage: "app.gift.fill")
             }
+
             ShareLink(item: store.appStoreUrl) {
-                Text("Share PDF Archiver 📱❤️🫵", bundle: .module)
+                Label("Share App", systemImage: "square.and.arrow.up")
             }
-            Button {
-                store.send(.onTermsOfUseTapped)
+
+            NavigationLink {
+                LegalView(store: store)
+                    .navigationTitle(Text("Legal", bundle: .module))
             } label: {
-                Text("Terms of Use", bundle: .module)
+                Label("Legal", systemImage: "checkmark.seal.text.page")
             }
-            Button {
-                store.send(.onPrivacyTapped)
-            } label: {
-                Text("Privacy", bundle: .module)
-            }
-            Button {
-                store.send(.onImprintTapped)
-            } label: {
-                Text("Imprint", bundle: .module)
-            }
+            .simultaneousGesture(TapGesture().onEnded {
+                store.send(.onLegalTapped)
+            })
+        } header: {
+            Text("About", bundle: .module)
+                .foregroundStyle(Color.secondary)
         }
     }
 }
@@ -335,6 +371,9 @@ struct SettingsMacView: View {
                 }
             case .aboutMe:
                 AboutMeView()
+            case .legal:
+                LegalView(store: store)
+                    .navigationTitle(Text("Legal", bundle: .module))
             case .termsOfUse:
                 let content = String(localized: "TERMS_OF_USE", bundle: .module)
                 MarkdownView(markdown: content)
@@ -406,7 +445,7 @@ struct SettingsMacView: View {
         Form {
             Section {
                 HStack(spacing: 20) {
-                    Button("Contact Support") {
+                    Button("Contact & Help") {
                         store.send(.onContactSupportTapped)
                     }
                     .buttonStyle(.link)
@@ -422,20 +461,15 @@ struct SettingsMacView: View {
                 Divider()
 
                 HStack(spacing: 20) {
-                    Button("PDF Archiver Website") {
-                        store.send(.onOpenPdfArchiverWebsiteTapped)
-                    }
-                    .buttonStyle(.link)
-
-                    Spacer()
-
                     ShareLink(item: store.appStoreUrl) {
                         Text("Share App")
                     }
                     .buttonStyle(.link)
+
+                    Spacer()
                 }
             } header: {
-                Label("Support & Feedback", systemImage: "lifepreserver")
+                Label("Support & Feedback", systemImage: "envelope")
             }
 
             Section {
@@ -449,29 +483,17 @@ struct SettingsMacView: View {
             }
 
             Section {
-                HStack(spacing: 20) {
-                    Button("Terms of Use") {
-                        store.send(.onTermsOfUseTapped)
-                    }
-                    .buttonStyle(.link)
-
-                    Spacer()
-
-                    Button("Privacy Policy") {
-                        store.send(.onPrivacyTapped)
-                    }
-                    .buttonStyle(.link)
+                NavigationLink {
+                    LegalView(store: store)
+                        .navigationTitle(Text("Legal", bundle: .module))
+                } label: {
+                    Text("Legal")
                 }
-
-                Divider()
-
-                Button("Imprint") {
-                    store.send(.onImprintTapped)
-                }
-                .buttonStyle(.link)
-                .frame(maxWidth: .infinity, alignment: .leading)
+                .simultaneousGesture(TapGesture().onEnded {
+                    store.send(.onLegalTapped)
+                })
             } header: {
-                Label("Legal", systemImage: "doc.text")
+                Label("Legal", systemImage: "checkmark.seal.text.page")
             }
         }
         .formStyle(.grouped)

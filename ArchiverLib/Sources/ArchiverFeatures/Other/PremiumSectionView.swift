@@ -48,27 +48,39 @@ struct PremiumSection {
     var body: some View {
         Section {
             HStack {
-                Text("Premium Status:", bundle: .module)
+                Label("Premium Status", systemImage: "star")
+                Spacer()
                 switch store.premiumStatus {
                 case .loading:
                     ProgressView()
                 case .active:
-                    Text("Active ✅", bundle: .module)
+                    HStack(spacing: 4) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(.green)
+                        Text("Active", bundle: .module)
+                    }
                 case .inactive:
-                    Text("Inactive ❌", bundle: .module)
+                    HStack(spacing: 4) {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundStyle(.red)
+                        Text("Inactive", bundle: .module)
+                    }
                 }
             }
             if store.premiumStatus == .inactive {
                 Button {
                     store.send(.delegate(.switchToInboxTab))
                 } label: {
-                    Text("Activate premium", bundle: .module)
+                    Label("Activate premium", systemImage: "cart")
                 }
             }
 
-            Link(String(localized: "Manage Subscription", bundle: .module), destination: Self.manageSubscriptionUrl)
+            Link(destination: Self.manageSubscriptionUrl) {
+                Label("Manage Subscription", systemImage: "switch.2")
+            }
         } header: {
-            Text("⭐️ Premium")
+            Text("Premium", bundle: .module)
+                .foregroundStyle(Color.secondary)
         }
         #if os(macOS)
         .frame(width: 450, height: 50)
