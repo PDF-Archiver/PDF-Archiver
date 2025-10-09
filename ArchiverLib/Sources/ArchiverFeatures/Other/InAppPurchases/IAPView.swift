@@ -38,7 +38,7 @@ struct IAPView: View {
                     }
                     HStack {
                         Spacer()
-                        Text("You get a 2-week free trail before all subscriptions.", bundle: .module)
+                        Text("You get a 2-week free trial before all subscriptions.", bundle: .module)
                             .foregroundStyle(.secondary)
                             .font(.caption)
                         Spacer()

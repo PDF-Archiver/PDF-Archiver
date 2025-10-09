@@ -21,7 +21,7 @@ struct AboutMeView: View {
                 text
             }
         }
-        .navigationTitle(Text("About  👤", bundle: .module))
+        .navigationTitle(Text("About", bundle: .module))
     }
 
     private var headline: some View {

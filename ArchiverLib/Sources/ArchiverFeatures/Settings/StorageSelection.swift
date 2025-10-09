@@ -126,7 +126,7 @@ struct StorageSelectionView: View {
                     }
                     .foregroundStyle(Color.tertiaryLabelAsset)
 
-                Text("PDF Archiver is not a backup solution. Please make backups of the archieved PDFs regularly.", bundle: .module)
+                Text("PDF Archiver is not a backup solution. Please make backups of the archived PDFs regularly.", bundle: .module)
                     .foregroundStyle(Color.secondaryLabelAsset)
                     .font(.footnote)
             }
