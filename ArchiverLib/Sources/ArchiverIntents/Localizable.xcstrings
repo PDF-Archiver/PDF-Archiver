@@ -1,0 +1,144 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@" : {
+      "shouldTranslate" : false
+    },
+    "%lld" : {
+      "shouldTranslate" : false
+    },
+    "All documents are tagged. 🎉" : {
+      "comment" : "A message displayed when a user has no untagged documents.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Dokumente sind getaggt. 🎉"
+          }
+        }
+      }
+    },
+    "Amount" : {
+      "comment" : "Label for the x-axis in the statistics chart.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anzahl"
+          }
+        }
+      }
+    },
+    "Documents per year" : {
+      "comment" : "A title for the section displaying their yearly statistics.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dokumente pro Jahr"
+          }
+        }
+      }
+    },
+    "Most Used Tags" : {
+      "comment" : "The title of the section that displays the most used tags.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meistgenutzte Tags"
+          }
+        }
+      }
+    },
+    "No Documents" : {
+      "comment" : "A message indicating that the user has not added any documents yet.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Dokumente"
+          }
+        }
+      }
+    },
+    "No Tags" : {
+      "comment" : "A message that indicates there are no tags to display.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Tags"
+          }
+        }
+      }
+    },
+    "Period" : {
+      "comment" : "Label on the y-axis of the bar chart in the StatsView.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeitraum"
+          }
+        }
+      }
+    },
+    "Scan" : {
+      "comment" : "A button label that translates to \"Scan\".",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scannen"
+          }
+        }
+      }
+    },
+    "Start adding documents to see your yearly statistics" : {
+      "comment" : "A description text that appears when there are no documents to display statistics for.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fügen Sie Dokumente hinzu, um Ihre jährliche Statistik zu sehen"
+          }
+        }
+      }
+    },
+    "Tag" : {
+      "comment" : "Label for the x-axis in the top tags chart.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tag"
+          }
+        }
+      }
+    },
+    "Tag your documents to see the most used tags" : {
+      "comment" : "A description text that appears when there are no tags available.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Taggen Sie Ihre Dokumente, um die meistgenutzten Tags zu sehen"
+          }
+        }
+      }
+    },
+    "Untagged Documents" : {
+      "comment" : "A label indicating the number of documents that have not been tagged yet.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ungetaggte Dokumente"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.1"
+}

@@ -29,7 +29,7 @@ struct LoadingIndicatorModifier: ViewModifier {
                     if isLoading {
                         HStack(spacing: 8) {
                             ProgressView()
-                            Text("Loading documents")
+                            Text("Loading documents", bundle: .module)
                                 .foregroundStyle(.secondary)
                         }
                         .padding()

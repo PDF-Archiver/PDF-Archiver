@@ -64,6 +64,9 @@ let package = Package(
                     "ArchiverModels",
                     "Shared"
                 ],
+                resources: [
+                    .process("Localizable.xcstrings"),
+                ],
                 swiftSettings: [
                     .enableExperimentalFeature("StrictConcurrency"),
                     .defaultIsolation(MainActor.self),

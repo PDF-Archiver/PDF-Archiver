@@ -17,17 +17,17 @@ public struct ScanShareTip: Tip {
     public init() {}
     public var title: Text {
         #if os(macOS)
-        Text("Import Document")
+        Text("Import Document", bundle: .module)
         #else
-        Text("Scan Document")
+        Text("Scan Document", bundle: .module)
         #endif
     }
 
     public var message: Text? {
             #if os(macOS)
-            Text("**Drag and drop** a PDF document to this area to import it.\n\nOr **click** here to open the file browser.")
+            Text("**Drag and drop** a PDF document to this area to import it.\n\nOr **click** here to open the file browser.", bundle: .module)
             #else
-            Text("**Tap** short to start scanning a document.\n\n**Long press** to scan and share the document after processing.")
+            Text("**Tap** short to start scanning a document.\n\n**Long press** to scan and share the document after processing.", bundle: .module)
             #endif
     }
 
@@ -40,8 +40,8 @@ public struct ScanShareTip: Tip {
         []
         #else
         [
-        Action(id: "scan", title: "Scan"),
-        Action(id: "scanAndShare", title: "Scan & Share")
+        Action(id: "scan", title: String(localized: "Scan", bundle: .module)),
+        Action(id: "scanAndShare", title: String(localized: "Scan & Share", bundle: .module))
         ]
         #endif
     }
@@ -52,11 +52,11 @@ public struct AfterFirstImportTip: Tip {
     public static let documentImported = Tips.Event(id: "documentImported")
 
     public var title: Text {
-        Text("New Document")
+        Text("New Document", bundle: .module)
     }
 
     public var message: Text? {
-        Text("Your first document was imported. Switch to **Inbox** to see and archive it.")
+        Text("Your first document was imported. Switch to **Inbox** to see and archive it.", bundle: .module)
     }
 
     public var image: Image? {

@@ -28,7 +28,7 @@ public struct UntaggedDocumentsView: View {
             if untaggedDocuments <= 0 {
 
                 Link(destination: DeepLink.scan.url) {
-                    Label("Scan", systemImage: "document.viewfinder")
+                    Label(String(localized: "Scan", bundle: .module), systemImage: "document.viewfinder")
                 }
                 .frame(maxWidth: .infinity)
                 .padding(10)
@@ -45,7 +45,7 @@ public struct UntaggedDocumentsView: View {
                 .background(Circle().fill(Color.gray.opacity(0.3)))
 
                 Link(destination: DeepLink.tag.url) {
-                    Label("Tag", systemImage: "tag")
+                    Label(String(localized: "Tag", bundle: .module), systemImage: "tag")
                         .minimumScaleFactor(0.5)
                         .frame(maxWidth: .infinity)
                 }
@@ -76,7 +76,7 @@ public struct UntaggedDocumentsView: View {
                         .font(.largeTitle)
                         .frame(maxWidth: .infinity, alignment: .leading)
 
-                        Text("Untagged Documents")
+                        Text("Untagged Documents", bundle: .module)
                             .foregroundStyle(.secondary)
                             .font(.caption)
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -91,7 +91,7 @@ public struct UntaggedDocumentsView: View {
                             .foregroundStyle(Color.paRedAsset.opacity(0.4))
                             .padding([.top, .trailing], -40)
 
-                        Text("All documents are tagged. 🎉")
+                        Text("All documents are tagged. 🎉", bundle: .module)
                             .foregroundStyle(.secondary)
                             .font(.caption)
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -119,7 +119,7 @@ public struct UntaggedDocumentsView: View {
                             .symbolRenderingMode(.hierarchical)
                             .font(.title)
 
-                        Text("Untagged Documents")
+                        Text("Untagged Documents", bundle: .module)
                             .foregroundStyle(.secondary)
                             .font(.body)
                             .lineLimit(1)
@@ -136,7 +136,7 @@ public struct UntaggedDocumentsView: View {
                             .foregroundStyle(Color.paRedAsset.opacity(0.4))
                             .padding([.top, .trailing], -40)
 
-                        Text("All documents are tagged. 🎉")
+                        Text("All documents are tagged. 🎉", bundle: .module)
                             .foregroundStyle(.secondary)
                             .font(.caption)
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -165,7 +165,7 @@ public struct UntaggedDocumentsView: View {
                         .font(.largeTitle)
                         .frame(maxWidth: .infinity, alignment: .leading)
 
-                        Text("Untagged Documents")
+                        Text("Untagged Documents", bundle: .module)
                             .foregroundStyle(.secondary)
                             .font(.caption)
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -179,7 +179,7 @@ public struct UntaggedDocumentsView: View {
                             .foregroundStyle(Color.paRedAsset.opacity(0.4))
                             .padding([.top, .trailing], -40)
 
-                        Text("All documents are tagged. 🎉")
+                        Text("All documents are tagged. 🎉", bundle: .module)
                             .foregroundStyle(.secondary)
                             .font(.caption)
                             .frame(maxWidth: .infinity, alignment: .leading)
