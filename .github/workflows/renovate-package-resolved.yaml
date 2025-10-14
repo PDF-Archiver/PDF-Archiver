@@ -7,7 +7,7 @@ on:
 
 jobs:
   update-package-resolved:
-    runs-on: macos-latest
+    runs-on: macos-26
     permissions:
       contents: write
 
