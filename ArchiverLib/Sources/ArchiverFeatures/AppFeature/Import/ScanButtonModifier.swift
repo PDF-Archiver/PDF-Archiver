@@ -113,5 +113,18 @@ struct ScanButtonModifier: ViewModifier {
 
                 dropHandler.abortImport()
             }
+            .onOpenURL { url in
+                switch url {
+                case DeepLink.scan.url:
+                    isScanPresented = true
+
+                case DeepLink.scanAndShare.url:
+                    isScanPresented = true
+                    shouldShareAfterScan = true
+
+                default:
+                    break
+                }
+            }
     }
 }
