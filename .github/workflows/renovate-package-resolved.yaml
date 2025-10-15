@@ -27,20 +27,29 @@ jobs:
         run: |
           xcodebuild -workspace PDFArchiver.xcworkspace -scheme ArchiverLib -resolvePackageDependencies
 
-      - name: Check for changes in Package.resolved
+      - name: Install LicensePlist
+        run: |
+          brew install licenseplist
+
+      - name: Update Settings.bundle with licenses
+        run: |
+          license-plist --suppress-opening-directory --add-version-numbers --force --output-path Shared/Resources/Settings.bundle
+
+      - name: Check for changes in Package.resolved and Settings.bundle
         id: changes
         run: |
-          if git diff --quiet PDFArchiver.xcworkspace/xcshareddata/swiftpm/Package.resolved; then
+          if git diff --quiet PDFArchiver.xcworkspace/xcshareddata/swiftpm/Package.resolved Shared/Resources/Settings.bundle/; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
 
-      - name: Commit Package.resolved changes
+      - name: Commit Package.resolved and Settings.bundle changes
         if: steps.changes.outputs.changed == 'true'
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add PDFArchiver.xcworkspace/xcshareddata/swiftpm/Package.resolved
-          git commit -m "Package.resolved updated"
+          git add Shared/Resources/Settings.bundle/
+          git commit -m "Package.resolved and Settings.bundle updated"
           git push

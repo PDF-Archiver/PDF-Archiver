@@ -12,25 +12,17 @@
 		</dict>
 		<dict>
 			<key>File</key>
-			<string>com.mono0926.LicensePlist/DeepDiff</string>
+			<string>com.mono0926.LicensePlist/AsyncExtensions</string>
 			<key>Title</key>
-			<string>DeepDiff (2.3.3)</string>
+			<string>AsyncExtensions (0.5.4)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
 		<dict>
 			<key>File</key>
-			<string>com.mono0926.LicensePlist/Down</string>
+			<string>com.mono0926.LicensePlist/combine-schedulers</string>
 			<key>Title</key>
-			<string>Down (0.11.0)</string>
-			<key>Type</key>
-			<string>PSChildPaneSpecifier</string>
-		</dict>
-		<dict>
-			<key>File</key>
-			<string>com.mono0926.LicensePlist/Parma</string>
-			<key>Title</key>
-			<string>Parma (0.3.0)</string>
+			<string>combine-schedulers (1.0.3)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -38,7 +30,23 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-async-algorithms</string>
 			<key>Title</key>
-			<string>swift-async-algorithms (1.0.2)</string>
+			<string>swift-async-algorithms (1.0.4)</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+		</dict>
+		<dict>
+			<key>File</key>
+			<string>com.mono0926.LicensePlist/swift-case-paths</string>
+			<key>Title</key>
+			<string>swift-case-paths (1.7.2)</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+		</dict>
+		<dict>
+			<key>File</key>
+			<string>com.mono0926.LicensePlist/swift-clocks</string>
+			<key>Title</key>
+			<string>swift-clocks (1.0.6)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -46,7 +54,87 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-collections</string>
 			<key>Title</key>
-			<string>swift-collections (1.1.4)</string>
+			<string>swift-collections (1.3.0)</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+		</dict>
+		<dict>
+			<key>File</key>
+			<string>com.mono0926.LicensePlist/swift-composable-architecture</string>
+			<key>Title</key>
+			<string>swift-composable-architecture (1.23.0)</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+		</dict>
+		<dict>
+			<key>File</key>
+			<string>com.mono0926.LicensePlist/swift-concurrency-extras</string>
+			<key>Title</key>
+			<string>swift-concurrency-extras (1.3.2)</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+		</dict>
+		<dict>
+			<key>File</key>
+			<string>com.mono0926.LicensePlist/swift-custom-dump</string>
+			<key>Title</key>
+			<string>swift-custom-dump (1.3.3)</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+		</dict>
+		<dict>
+			<key>File</key>
+			<string>com.mono0926.LicensePlist/swift-dependencies</string>
+			<key>Title</key>
+			<string>swift-dependencies (1.10.0)</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+		</dict>
+		<dict>
+			<key>File</key>
+			<string>com.mono0926.LicensePlist/swift-identified-collections</string>
+			<key>Title</key>
+			<string>swift-identified-collections (1.1.1)</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+		</dict>
+		<dict>
+			<key>File</key>
+			<string>com.mono0926.LicensePlist/swift-navigation</string>
+			<key>Title</key>
+			<string>swift-navigation (2.5.1)</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+		</dict>
+		<dict>
+			<key>File</key>
+			<string>com.mono0926.LicensePlist/swift-perception</string>
+			<key>Title</key>
+			<string>swift-perception (2.0.9)</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+		</dict>
+		<dict>
+			<key>File</key>
+			<string>com.mono0926.LicensePlist/swift-sharing</string>
+			<key>Title</key>
+			<string>swift-sharing (2.7.4)</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+		</dict>
+		<dict>
+			<key>File</key>
+			<string>com.mono0926.LicensePlist/swift-syntax</string>
+			<key>Title</key>
+			<string>swift-syntax (602.0.0)</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+		</dict>
+		<dict>
+			<key>File</key>
+			<string>com.mono0926.LicensePlist/xctest-dynamic-overlay</string>
+			<key>Title</key>
+			<string>xctest-dynamic-overlay (1.7.0)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
