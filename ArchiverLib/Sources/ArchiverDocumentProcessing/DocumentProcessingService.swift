@@ -32,17 +32,21 @@ public final class DocumentProcessingService: Sendable {
         await self.handleFolderContents(at: self.tempDocumentURL)
     }
 
-    public func handle(_ images: [PlatformImage]) async {
+    public func handle(_ images: [PlatformImage]) async -> URL? {
         guard let destinationFolder = await getDocumentDestination() else {
             Logger.documentProcessing.errorAndAssert("Failed to get document")
-            return
+            return nil
         }
-        let operation = PDFProcessingOperation(of: .images(images), destinationFolder: destinationFolder, onComplete: { documentUrl in
-            Task {
-                self.lastProcessedDocumentUrl = documentUrl
-            }
-        })
-        backgroundProcessing.queue(operation)
+
+        return await withCheckedContinuation { continuation in
+            let operation = PDFProcessingOperation(of: .images(images), destinationFolder: destinationFolder, onComplete: { documentUrl in
+                Task {
+                    self.lastProcessedDocumentUrl = documentUrl
+                    continuation.resume(returning: documentUrl)
+                }
+            })
+            backgroundProcessing.queue(operation)
+        }
     }
 
     public func handle(_ pdfData: Data, url: URL?) async {
@@ -103,7 +107,7 @@ public final class DocumentProcessingService: Sendable {
                         let data = try Data(contentsOf: imageUrl)
                         group.addTask {
                             guard let image = PlatformImage(data: data) else { return }
-                            await self.handle([image])
+                            _ = await self.handle([image])
                         }
                     } catch {
                         Logger.documentProcessing.errorAndAssert("Failed to create Image \(imageUrl.path())", metadata: ["error": "\(error)"])

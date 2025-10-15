@@ -15,15 +15,17 @@ import Shared
 @DependencyClient
 struct DocumentProcessingDependency {
     var triggerFolderObservation: @Sendable () async -> Void
-    var handleImages: @Sendable ([PlatformImage]) async -> Void
+    var handleImages: @Sendable ([PlatformImage]) async -> URL?
     var handlePdf: @Sendable (_ pdfData: Data, _ documentURL: URL?) async -> Void
+    var getLastProcessedDocumentUrl: @Sendable () async -> URL?
 }
 
 extension DocumentProcessingDependency: TestDependencyKey {
     static let previewValue = Self(
         triggerFolderObservation: { },
-        handleImages: { _ in },
+        handleImages: { _ in nil },
         handlePdf: { _, _ in },
+        getLastProcessedDocumentUrl: { nil }
     )
 
     static let testValue = Self()
@@ -58,6 +60,9 @@ extension DocumentProcessingDependency: DependencyKey {
         handlePdf: { pdfData, documentURL in
             await getDocumentProcessingService().handle(pdfData, url: documentURL)
         },
+        getLastProcessedDocumentUrl: {
+            await getDocumentProcessingService().lastProcessedDocumentUrl
+        }
     )
 }
 

@@ -250,8 +250,12 @@ struct AppFeature {
 
             case .prefetchDocuments(let documents):
                 return .run { _ in
-                    for document in documents {
-                        try? await archiveStore.startDownloadOf(document.url)
+                    await withTaskGroup(of: Void.self) { group in
+                        for document in documents {
+                            group.addTask {
+                                try? await archiveStore.startDownloadOf(document.url)
+                            }
+                        }
                     }
                 }
 

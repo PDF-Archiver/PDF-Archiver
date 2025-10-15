@@ -713,6 +713,17 @@
         }
       }
     },
+    "Migrating documents..." : {
+      "comment" : "A loading message displayed when documents are being migrated to a new storage location.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dokumente werden migriert..."
+          }
+        }
+      }
+    },
     "Manage Subscription" : {
       "localizations" : {
         "de" : {

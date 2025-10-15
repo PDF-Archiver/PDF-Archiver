@@ -16,18 +16,22 @@ struct ScanButtonModifier: ViewModifier {
     let currentTip: (any Tip)?
 
     @Dependency(\.documentProcessor) var documentProcessor
+    @Dependency(\.feedbackGenerator) var feedbackGenerator
     @Namespace var scanButtonNamespace
     @State private var dropHandler = PDFDropHandler()
     @State private var isScanPresented = false
+    @State private var shouldShareAfterScan = false
+    @State private var isShareSheetPresented = false
+    @State private var documentToShare: URL?
 
     func body(content: Content) -> some View {
         content
             .safeAreaInset(edge: .bottom, alignment: .trailing) {
-                DropButton(state: dropHandler.documentProcessingState) { _ in
+                DropButton(state: dropHandler.documentProcessingState) { isLongPress in
                     #if os(macOS)
                     dropHandler.startImport()
                     #else
-                    #warning("TODO: handle long press")
+                    shouldShareAfterScan = isLongPress
                     isScanPresented = true
                     #endif
                 }
@@ -38,12 +42,11 @@ struct ScanButtonModifier: ViewModifier {
                 .padding(.trailing, 10)
                 #endif
                 .opacity(showButton ? 1 : 0)
-                .popoverTip((showButton && (currentTip as? ScanShareTip) != nil) ? currentTip : nil) { _ in
+                .popoverTip((showButton && (currentTip as? ScanShareTip) != nil) ? currentTip : nil) { tipAction in
                     #if os(macOS)
                     dropHandler.startImport()
                     #else
-                    #warning("TODO: handle long press")
-//                    navigationModel.showScan(share: tipAction.id == "scanAndShare")
+                    shouldShareAfterScan = (tipAction.id == "scanAndShare")
                     isScanPresented = true
                     #endif
                 }
@@ -56,17 +59,37 @@ struct ScanButtonModifier: ViewModifier {
                     isShown: $isScanPresented,
                     imageHandler: { images in
                         Task {
-                            #warning("TODO: add this as a separate dependency")
-//                            await FeedbackGenerator.notify(.success)
-                            await documentProcessor.handleImages(images)
+                            await feedbackGenerator.notify(.success)
 
-                            await Task.yield()
+                            // Handle images and get the processed document URL
+                            let processedDocumentUrl = await documentProcessor.handleImages(images)
+
+                            // If long press was used, share the scanned document
+                            if let url = processedDocumentUrl {
+                                await MainActor.run {
+                                    if shouldShareAfterScan {
+                                        documentToShare = url
+                                        isShareSheetPresented = true
+                                        shouldShareAfterScan = false
+                                    }
+                                }
+                            } else {
+                                await MainActor.run {
+                                    shouldShareAfterScan = false
+                                }
+                            }
+                            
                             await AfterFirstImportTip.documentImported.donate()
                         }
                     })
                     .edgesIgnoringSafeArea(.all)
                     .statusBar(hidden: true)
                     .navigationTransition(.zoom(sourceID: "scanButton", in: scanButtonNamespace))
+            }
+            .sheet(isPresented: $isShareSheetPresented) {
+                if let url = documentToShare {
+                    ShareSheet(title: url.lastPathComponent, url: url)
+                }
             }
             #endif
             .onDrop(of: [.image, .pdf, .fileURL],

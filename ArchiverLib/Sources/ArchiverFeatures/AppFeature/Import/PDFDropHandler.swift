@@ -74,7 +74,7 @@ final class PDFDropHandler: Log {
     private func handle(image: PlatformImage) {
         Logger.pdfDropHandler.info("Handle Image")
         Task {
-            await documentProcessor.handleImages([image])
+            _ = await documentProcessor.handleImages([image])
         }
     }
 

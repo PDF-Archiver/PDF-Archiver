@@ -19,28 +19,28 @@ struct LegalView: View {
                     MarkdownView(markdown: String(localized: "TERMS_OF_USE", bundle: .module))
                         .navigationTitle(String(localized: "Terms of Use", bundle: .module))
                 } label: {
-                    Label("Terms of Use", systemImage: "doc.text")
+                    Label(String(localized: "Terms of Use", bundle: .module), systemImage: "doc.text")
                 }
 
                 NavigationLink {
                     MarkdownView(markdown: String(localized: "PRIVACY", bundle: .module))
                         .navigationTitle(String(localized: "Privacy", bundle: .module))
                 } label: {
-                    Label("Privacy", systemImage: "hand.raised")
+                    Label(String(localized: "Privacy", bundle: .module), systemImage: "hand.raised")
                 }
 
                 NavigationLink {
                     MarkdownView(markdown: String(localized: "IMPRINT", bundle: .module))
                         .navigationTitle(Text("Imprint", bundle: .module))
                 } label: {
-                    Label("Imprint", systemImage: "envelope.front")
+                    Label(String(localized: "Imprint", bundle: .module), systemImage: "envelope.front")
                 }
 
                 Button {
                     store.send(.onOpenPdfArchiverWebsiteTapped)
                 } label: {
                     HStack {
-                        Label("PDF Archiver Website", systemImage: "globe")
+                        Label(String(localized: "PDF Archiver Website", bundle: .module), systemImage: "globe")
                         Spacer()
                         Image(systemName: "chevron.right")
                             .font(.system(size: 14, weight: .semibold))

@@ -256,7 +256,7 @@ struct SettingsView: View {
     @ViewBuilder
     private var preferences: some View {
         Section {
-            Picker(selection: $store.pdfQuality, label: Label("PDF Quality", systemImage: "text.document")) {
+            Picker(selection: $store.pdfQuality, label: Label(String(localized: "PDF Quality", bundle: .module), systemImage: "text.document")) {
                 ForEach(PDFQuality.allCases, id: \.self) { quality in
                     Text(quality.name, bundle: .module)
                 }
@@ -269,7 +269,7 @@ struct SettingsView: View {
                 }
             } label: {
                 HStack {
-                    Label("Storage", systemImage: "externaldrive")
+                    Label(String(localized: "Storage", bundle: .module), systemImage: "externaldrive")
                     Spacer()
                     Text(store.selectedArchiveType.getPath().title, bundle: .module)
                         .foregroundStyle(.secondary)
@@ -285,7 +285,7 @@ struct SettingsView: View {
                         .navigationTitle(Text("Advanced", bundle: .module))
                 }
             } label: {
-                Label("Advanced", systemImage: "gearshape.2")
+                Label(String(localized: "Advanced", bundle: .module), systemImage: "gearshape.2")
             }
             .simultaneousGesture(TapGesture().onEnded {
                 store.send(.onAdvancedSettingsTapped)
@@ -301,24 +301,24 @@ struct SettingsView: View {
             Button {
                 store.send(.onContactSupportTapped)
             } label: {
-                Label("Contact & Help", systemImage: "envelope")
+                Label(String(localized: "Contact & Help", bundle: .module), systemImage: "envelope")
             }
 
             Button {
                 requestReview()
             } label: {
-                Label("Rate App", systemImage: "app.gift.fill")
+                Label(String(localized: "Rate App", bundle: .module), systemImage: "app.gift.fill")
             }
 
             ShareLink(item: store.appStoreUrl) {
-                Label("Share App", systemImage: "square.and.arrow.up")
+                Label(String(localized: "Share App", bundle: .module), systemImage: "square.and.arrow.up")
             }
 
             NavigationLink {
                 LegalView(store: store)
                     .navigationTitle(Text("Legal", bundle: .module))
             } label: {
-                Label("Legal", systemImage: "checkmark.seal.text.page")
+                Label(String(localized: "Legal", bundle: .module), systemImage: "checkmark.seal.text.page")
             }
             .simultaneousGesture(TapGesture().onEnded {
                 store.send(.onLegalTapped)
@@ -339,15 +339,15 @@ struct SettingsMacView: View {
 
     var body: some View {
         TabView {
-            Tab("General", systemImage: "gear") {
+            Tab(String(localized: "General", bundle: .module), systemImage: "gear") {
                 generalPreferences
             }
 
-            Tab("Premium", systemImage: "star.hexagon") {
+            Tab(String(localized: "Premium", bundle: .module), systemImage: "star.hexagon") {
                 PremiumSectionView(store: store.scope(state: \.premiumSection, action: \.premiumSection))
             }
 
-            Tab("About", systemImage: "info.circle") {
+            Tab(String(localized: "About", bundle: .module), systemImage: "info.circle") {
                 aboutPreferences
             }
         }
@@ -411,7 +411,7 @@ struct SettingsMacView: View {
                         Text(store.selectedArchiveType.getPath().title, bundle: .module)
                             .foregroundStyle(.secondary)
                         Spacer()
-                        Button("Change…") {
+                        Button(String(localized: "Change…", bundle: .module)) {
                             store.send(.onShowArchiveTypeSelectionTapped)
                         }
                     }
@@ -419,7 +419,7 @@ struct SettingsMacView: View {
                     Text("Storage:", bundle: .module)
                 }
             } header: {
-                Label("PDF Processing", systemImage: "doc.fill")
+                Label(String(localized: "PDF Processing", bundle: .module), systemImage: "doc.fill")
             }
 
             Section {
@@ -429,12 +429,12 @@ struct SettingsMacView: View {
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                     Spacer()
-                    Button("Configure…") {
+                    Button(String(localized: "Configure…", bundle: .module)) {
                         store.send(.onAdvancedSettingsTapped)
                     }
                 }
             } header: {
-                Label("Advanced", systemImage: "gearshape.2.fill")
+                Label(String(localized: "Advanced", bundle: .module), systemImage: "gearshape.2.fill")
             }
         }
         .formStyle(.grouped)
@@ -445,14 +445,14 @@ struct SettingsMacView: View {
         Form {
             Section {
                 HStack(spacing: 20) {
-                    Button("Contact & Help") {
+                    Button(String(localized: "Contact & Help", bundle: .module)) {
                         store.send(.onContactSupportTapped)
                     }
                     .buttonStyle(.link)
 
                     Spacer()
 
-                    Button("Rate App") {
+                    Button(String(localized: "Rate App", bundle: .module)) {
                         requestReview()
                     }
                     .buttonStyle(.link)
@@ -462,24 +462,24 @@ struct SettingsMacView: View {
 
                 HStack(spacing: 20) {
                     ShareLink(item: store.appStoreUrl) {
-                        Text("Share App")
+                        Text("Share App", bundle: .module)
                     }
                     .buttonStyle(.link)
 
                     Spacer()
                 }
             } header: {
-                Label("Support & Feedback", systemImage: "envelope")
+                Label(String(localized: "Support & Feedback", bundle: .module), systemImage: "envelope")
             }
 
             Section {
-                Button("About Developer") {
+                Button(String(localized: "About Developer", bundle: .module)) {
                     store.send(.onAboutMeTapped)
                 }
                 .buttonStyle(.link)
                 .frame(maxWidth: .infinity, alignment: .leading)
             } header: {
-                Label("Developer", systemImage: "person.fill")
+                Label(String(localized: "Developer", bundle: .module), systemImage: "person.fill")
             }
 
             Section {
@@ -487,13 +487,13 @@ struct SettingsMacView: View {
                     LegalView(store: store)
                         .navigationTitle(Text("Legal", bundle: .module))
                 } label: {
-                    Text("Legal")
+                    Text("Legal", bundle: .module)
                 }
                 .simultaneousGesture(TapGesture().onEnded {
                     store.send(.onLegalTapped)
                 })
             } header: {
-                Label("Legal", systemImage: "checkmark.seal.text.page")
+                Label(String(localized: "Legal", bundle: .module), systemImage: "checkmark.seal.text.page")
             }
         }
         .formStyle(.grouped)

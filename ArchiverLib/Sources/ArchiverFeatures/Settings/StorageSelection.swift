@@ -19,8 +19,6 @@ struct StorageSelection {
     struct State: Equatable {
         @Shared(.archivePathType) var selectedArchiveType: StorageType?
         var showDocumentPicker = false
-
-        #warning("TODO: add a loading indicator somewhere")
         var isProcessing = false
     }
 
@@ -147,6 +145,24 @@ struct StorageSelectionView: View {
                 store.showDocumentPicker = false
             })
         }
+        .disabled(store.isProcessing)
+        .overlay {
+            if store.isProcessing {
+                Color.black.opacity(0.3)
+                    .ignoresSafeArea()
+                
+                VStack(spacing: 16) {
+                    ProgressView()
+                        .scaleEffect(1.5)
+                    Text("Migrating documents...", bundle: .module)
+                        .font(.headline)
+                        .foregroundStyle(.primary)
+                }
+                .padding(32)
+                .background(.regularMaterial)
+                .cornerRadius(16)
+            }
+        }
     }
 }
 
@@ -156,6 +172,9 @@ enum StorageSelectionType: String, CaseIterable {
     case appContainer
     #endif
     case local
+
+    // swiftlint:disable:next force_unwrapping
+    private static let appleDocumentationURL = URL(string: "https://support.apple.com/en-us/HT210598")!
 
     func equals(_ type: StorageType) -> Bool {
         switch type {
@@ -215,8 +234,7 @@ enum StorageSelectionType: String, CaseIterable {
             case .appContainer:
                 VStack(alignment: .leading) {
                     Text("Not synchronized - your documents are only stored locally in this app. They can be transferred via the Finder on a Mac, for example.", bundle: .module)
-                    // swiftlint:disable:next force_unwrapping
-                    Link("https://support.apple.com/en-us/HT210598", destination: URL(string: NSLocalizedString("https://support.apple.com/en-us/HT210598", comment: ""))!)
+                    Link("https://support.apple.com/en-us/HT210598", destination: Self.appleDocumentationURL)
                 }
             #endif
             case .local:

@@ -48,7 +48,7 @@ struct PremiumSection {
     var body: some View {
         Section {
             HStack {
-                Label("Premium Status", systemImage: "star")
+                Label(String(localized: "Premium Status", bundle: .module), systemImage: "star")
                 Spacer()
                 switch store.premiumStatus {
                 case .loading:
@@ -71,12 +71,12 @@ struct PremiumSection {
                 Button {
                     store.send(.delegate(.switchToInboxTab))
                 } label: {
-                    Label("Activate premium", systemImage: "cart")
+                    Label(String(localized: "Activate premium", bundle: .module), systemImage: "cart")
                 }
             }
 
             Link(destination: Self.manageSubscriptionUrl) {
-                Label("Manage Subscription", systemImage: "switch.2")
+                Label(String(localized: "Manage Subscription", bundle: .module), systemImage: "switch.2")
             }
         } header: {
             Text("Premium", bundle: .module)

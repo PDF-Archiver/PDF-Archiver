@@ -14,6 +14,7 @@ struct ExpertSettings {
 
     @ObservableState
     struct State: Equatable {
+        @Presents var alert: AlertState<Action.Alert>?
 
         @Shared(.notSaveDocumentTagsAsPDFMetadata)
         var notSaveDocumentTagsAsPDFMetadata: Bool
@@ -26,11 +27,16 @@ struct ExpertSettings {
     }
 
     enum Action: BindableAction, Equatable {
+        case alert(PresentationAction<Alert>)
         case binding(BindingAction<State>)
         #if !os(macOS)
         case onShowPermissionsTapped
         #endif
         case onResetAppTapped
+
+        enum Alert {
+            case resetCompleted
+        }
     }
 
     @Dependency(\.openURL) var openURL
@@ -40,8 +46,11 @@ struct ExpertSettings {
 
     var body: some ReducerOf<Self> {
         BindingReducer()
-        Reduce { _, action in
+        Reduce { state, action in
             switch action {
+            case .alert:
+                return .none
+
             case .binding:
                 return .none
 
@@ -54,21 +63,26 @@ struct ExpertSettings {
             #endif
 
             case .onResetAppTapped:
-
                 // remove all temporary files
                 try? fileManager.removeItemAt(Constants.tempDocumentURL)
 
                 // remove all user defaults
                 userDefaultsManager.reset()
 
-                #warning("TODO: notification only pops up for a short amount of time the first time")
-                return .run { _ in
-                    await notificationCenter.createAndPost(.init(title: LocalizedStringResource("Reset App", bundle: .module),
-                                                                 message: LocalizedStringResource("Please restart the app to complete the reset.", bundle: .module),
-                                                                 primaryButtonTitle: LocalizedStringResource("OK", bundle: .module)))
+                // Show alert to inform user about restart requirement
+                state.alert = AlertState {
+                    TextState("Reset App", bundle: .module)
+                } actions: {
+                    ButtonState(action: .resetCompleted) {
+                        TextState("OK", bundle: .module)
+                    }
+                } message: {
+                    TextState("Please restart the app to complete the reset.", bundle: .module)
                 }
+                return .none
             }
         }
+        .ifLet(\.$alert, action: \.alert)
     }
 }
 
@@ -95,6 +109,7 @@ struct ExpertSettingsView: View {
             }
         }
         .foregroundStyle(.primary)
+        .alert($store.scope(state: \.alert, action: \.alert))
     }
 }
 

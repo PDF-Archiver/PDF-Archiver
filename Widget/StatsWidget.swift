@@ -26,8 +26,6 @@ struct StatsProvider: AppIntentTimelineProvider {
     }
 
     func snapshot(for configuration: ConfigurationAppIntent, in context: Context) async -> StatsEntry {
-        let configuration = ConfigurationAppIntent()
-
         let statistics = SharedDefaults.getStatistics()
         let yearStats = statistics.filter { $0.key >= configuration.firstYear }
 
