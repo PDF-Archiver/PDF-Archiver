@@ -8,11 +8,6 @@
 import SwiftUI
 import TipKit
 
-// TODO: Add first document after it has been scanned
-// enum AfterFirstPdfTips: Tip {
-//    case archive
-// }
-
 public struct ScanShareTip: Tip {
     public init() {}
     public var title: Text {

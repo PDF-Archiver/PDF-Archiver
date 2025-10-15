@@ -8,6 +8,8 @@
 import ArchiverModels
 import ComposableArchitecture
 import Foundation
+import Shared
+import OSLog
 
 @DependencyClient
 public struct ContentExtractorStoreDependency: Sendable {
@@ -20,25 +22,11 @@ public struct ContentExtractorStoreDependency: Sendable {
     private static let contentExtractorStore = ContentExtractorStore()
 
     public var getDocumentInformation: @Sendable (String) async -> DocInfo?
-
-//    #if canImport(FoundationModels)
-//    public var instructions: @Sendable () async -> AsyncStream<[Document]> = { AsyncStream<[Document]> { $0.yield([]) } }
-//    #endif
 }
 
 extension ContentExtractorStoreDependency: TestDependencyKey {
     public static let previewValue = Self(
         getDocumentInformation: { _ in nil },
-//        #if canImport(FoundationModels)
-//        instructions: {
-//            AsyncStream { stream in
-//                Task {
-////                    stream.yield([
-////                    ])
-//                }
-//            }
-//        },
-//        #endif
     )
 
     public static let testValue = Self()
@@ -54,7 +42,7 @@ extension ContentExtractorStoreDependency: DependencyKey {
                 return DocInfo(specification: result.specification,
                                tags: Set(result.tags))
             } catch {
-                #warning("TODO: add logging here")
+                Logger.contentExtractor.errorAndAssert("An error occurred while extracting document content", metadata: ["error": "\(error)"])
                 return nil
             }
         },

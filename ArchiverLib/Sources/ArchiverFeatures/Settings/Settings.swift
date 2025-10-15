@@ -262,11 +262,8 @@ struct SettingsView: View {
                 }
             }
 
-            NavigationLink {
-                if let storageSelectionStore = store.scope(state: \.destination?.archiveStorage, action: \.destination.archiveStorage) {
-                    StorageSelectionView(store: storageSelectionStore)
-                        .navigationTitle(Text("Storage", bundle: .module))
-                }
+            Button {
+                store.send(.onShowArchiveTypeSelectionTapped)
             } label: {
                 HStack {
                     Label(String(localized: "Storage", bundle: .module), systemImage: "externaldrive")
@@ -275,21 +272,12 @@ struct SettingsView: View {
                         .foregroundStyle(.secondary)
                 }
             }
-            .simultaneousGesture(TapGesture().onEnded {
-                store.send(.onShowArchiveTypeSelectionTapped)
-            })
 
-            NavigationLink {
-                if let expertSettingsStore = store.scope(state: \.destination?.expertSettings, action: \.destination.expertSettings) {
-                    ExpertSettingsView(store: expertSettingsStore)
-                        .navigationTitle(Text("Advanced", bundle: .module))
-                }
+            Button {
+                store.send(.onAdvancedSettingsTapped)
             } label: {
                 Label(String(localized: "Advanced", bundle: .module), systemImage: "gearshape.2")
             }
-            .simultaneousGesture(TapGesture().onEnded {
-                store.send(.onAdvancedSettingsTapped)
-            })
         } header: {
             Text("Preferences", bundle: .module)
                 .foregroundStyle(Color.secondary)
@@ -314,15 +302,11 @@ struct SettingsView: View {
                 Label(String(localized: "Share App", bundle: .module), systemImage: "square.and.arrow.up")
             }
 
-            NavigationLink {
-                LegalView(store: store)
-                    .navigationTitle(Text("Legal", bundle: .module))
+            Button {
+                store.send(.onLegalTapped)
             } label: {
                 Label(String(localized: "Legal", bundle: .module), systemImage: "checkmark.seal.text.page")
             }
-            .simultaneousGesture(TapGesture().onEnded {
-                store.send(.onLegalTapped)
-            })
         } header: {
             Text("About", bundle: .module)
                 .foregroundStyle(Color.secondary)
@@ -483,15 +467,11 @@ struct SettingsMacView: View {
             }
 
             Section {
-                NavigationLink {
-                    LegalView(store: store)
-                        .navigationTitle(Text("Legal", bundle: .module))
+                Button {
+                    store.send(.onLegalTapped)
                 } label: {
                     Text("Legal", bundle: .module)
                 }
-                .simultaneousGesture(TapGesture().onEnded {
-                    store.send(.onLegalTapped)
-                })
             } header: {
                 Label(String(localized: "Legal", bundle: .module), systemImage: "checkmark.seal.text.page")
             }

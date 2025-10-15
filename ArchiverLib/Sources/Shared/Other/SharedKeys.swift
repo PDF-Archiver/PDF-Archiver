@@ -64,8 +64,7 @@ public extension SharedKey where Self == AppStorageKey<Bool> {
 }
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var notSaveDocumentTagsAsPDFMetadata: Self {
-      #warning("TODO: test the default from old version")
-      let defaultValue = (UserDefaults.standard.value(forKey: "notSaveDocumentTagsAsPDFMetadata") as? Bool) ?? false
+      let defaultValue = UserDefaults.standard.bool(forKey: "notSaveDocumentTagsAsPDFMetadata")
       return Self[.appStorage(Names.notSaveDocumentTagsAsPDFMetadata.id, store: .standard), default: defaultValue]
   }
 }
@@ -77,8 +76,7 @@ public extension SharedKey where Self == AppStorageKey<Bool> {
 }
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var documentTagsNotRequired: Self {
-#warning("TODO: test the default from old version")
-      let defaultValue = (UserDefaults.standard.value(forKey: "documentTagsNotRequired") as? Bool) ?? false
+      let defaultValue = UserDefaults.standard.bool(forKey: "documentTagsNotRequired")
       return Self[.appStorage(Names.documentTagsNotRequired.id, store: .standard), default: defaultValue]
   }
 }
@@ -90,8 +88,7 @@ public extension SharedKey where Self == AppStorageKey<Bool> {
 }
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var documentSpecificationNotRequired: Self {
-#warning("TODO: test the default from old version")
-      let defaultValue = (UserDefaults.standard.value(forKey: "documentSpecificationNotRequired") as? Bool) ?? false
+      let defaultValue = UserDefaults.standard.bool(forKey: "documentSpecificationNotRequired")
       return Self[.appStorage(Names.documentSpecificationNotRequired.id, store: .standard), default: defaultValue]
   }
 }

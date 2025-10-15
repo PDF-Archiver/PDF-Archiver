@@ -35,6 +35,7 @@ public nonisolated extension Logger {
     static let navigationModel = Logger(subsystem: subsystem, category: "navigation-model")
     static let settings = Logger(subsystem: subsystem, category: "settings")
     static let taggingView = Logger(subsystem: subsystem, category: "tagging-view")
+    static let contentExtractor = Logger(subsystem: subsystem, category: "content-extractor")
 
     nonisolated func errorAndAssert(_ message: String) {
         assertionFailure(message)
