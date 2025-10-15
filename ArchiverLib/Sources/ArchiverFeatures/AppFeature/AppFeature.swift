@@ -53,6 +53,7 @@ struct AppFeature {
         case isLoadingChanged(Bool)
         case onLongBackgroundTask
         case onScenePhaseChanged(old: ScenePhase, new: ScenePhase)
+        case onWidgetTagTapped
         case untaggedDocumentList(UntaggedDocumentList.Action)
         case updateWidget([Document])
         case prefetchDocuments([Document])
@@ -235,6 +236,10 @@ struct AppFeature {
                 }
 
                 return .none
+                
+            case .onWidgetTagTapped:
+                state.selectedTab = .inbox
+                return .none
 
             case .untaggedDocumentList(.delegate(let delegateAction)):
                 switch delegateAction {
@@ -381,6 +386,15 @@ struct AppView: View {
         }
         .onChange(of: scenePhase) { old, new in
             store.send(.onScenePhaseChanged(old: old, new: new))
+        }
+        .onOpenURL { url in
+            switch url {
+            case DeepLink.tag.url:
+                store.send(.onWidgetTagTapped)
+
+            default:
+                break
+            }
         }
     }
 
