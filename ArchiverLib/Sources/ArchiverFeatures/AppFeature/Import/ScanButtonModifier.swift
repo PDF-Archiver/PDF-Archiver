@@ -78,7 +78,7 @@ struct ScanButtonModifier: ViewModifier {
                                     shouldShareAfterScan = false
                                 }
                             }
-                            
+
                             await AfterFirstImportTip.documentImported.donate()
                         }
                     })

@@ -65,7 +65,7 @@ let package = Package(
                     "Shared"
                 ],
                 resources: [
-                    .process("Localizable.xcstrings"),
+                    .process("Localizable.xcstrings")
                 ],
                 swiftSettings: [
                     .enableExperimentalFeature("StrictConcurrency"),

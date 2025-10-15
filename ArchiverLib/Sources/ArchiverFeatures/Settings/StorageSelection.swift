@@ -150,7 +150,7 @@ struct StorageSelectionView: View {
             if store.isProcessing {
                 Color.black.opacity(0.3)
                     .ignoresSafeArea()
-                
+
                 VStack(spacing: 16) {
                     ProgressView()
                         .scaleEffect(1.5)

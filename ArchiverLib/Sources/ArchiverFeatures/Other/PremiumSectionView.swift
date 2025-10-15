@@ -28,7 +28,7 @@ struct PremiumSection {
           case switchToInboxTab
         }
     }
-    
+
     @Dependency(\.openURL) var openURL
 
     var body: some ReducerOf<Self> {
@@ -45,7 +45,7 @@ struct PremiumSection {
                     await openURL(url)
                 }
                 #endif
-                
+
             case .binding, .delegate:
                 return .none
             }

@@ -236,7 +236,7 @@ struct AppFeature {
                 }
 
                 return .none
-                
+
             case .onWidgetTagTapped:
                 state.selectedTab = .inbox
                 return .none
