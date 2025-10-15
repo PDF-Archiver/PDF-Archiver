@@ -19,10 +19,9 @@ struct AppFeature {
             case search
             case inbox
             case statistics
-#warning("TODO: where should the settings be?")
-//            #if !os(macOS)
+            #if !os(macOS)
             case settings
-//            #endif
+            #endif
             case sectionTags(String)
             case sectionYears(Int)
         }
@@ -132,8 +131,12 @@ struct AppFeature {
                     state.archiveList.searchTokens = [.tag(tag)]
                 case .sectionYears(let year):
                     state.archiveList.searchTokens = [.year(year)]
-                case .inbox, .statistics, .settings:
+                case .inbox, .statistics:
                     break
+                #if os(iOS)
+                case .settings:
+                    break
+                #endif
                 }
                 return .none
 
