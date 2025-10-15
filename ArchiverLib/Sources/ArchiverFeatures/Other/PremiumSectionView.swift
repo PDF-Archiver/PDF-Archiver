@@ -28,14 +28,23 @@ struct PremiumSection {
           case switchToInboxTab
         }
     }
+    
+    @Dependency(\.openURL) var openURL
 
     var body: some ReducerOf<Self> {
         BindingReducer()
         Reduce { state, action in
             switch action {
             case .showManageSubscription:
+                #if os(iOS)
                 state.showManageSubscription = true
                 return .none
+                #else
+                return .run { _ in
+                    let url = URL(string: "https://apps.apple.com/account/subscriptions")!
+                    await openURL(url)
+                }
+                #endif
                 
             case .binding, .delegate:
                 return .none
@@ -95,8 +104,9 @@ struct PremiumSection {
         }
         #if os(macOS)
         .frame(width: 450, height: 50)
-        #endif
+        #else
         .manageSubscriptionsSheet(isPresented: $store.showManageSubscription)
+        #endif
     }
  }
 
