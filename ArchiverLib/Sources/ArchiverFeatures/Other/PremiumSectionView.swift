@@ -16,10 +16,12 @@ struct PremiumSection {
     struct State: Equatable {
         @Shared(.premiumStatus) var premiumStatus: PremiumStatus = .loading
         var showIapView = false
+        var showManageSubscription = false
     }
 
     enum Action: BindableAction, Equatable {
         case binding(BindingAction<State>)
+        case showManageSubscription
         case delegate(Delegate)
 
         enum Delegate: Equatable {
@@ -29,8 +31,12 @@ struct PremiumSection {
 
     var body: some ReducerOf<Self> {
         BindingReducer()
-        Reduce { _, action in
+        Reduce { state, action in
             switch action {
+            case .showManageSubscription:
+                state.showManageSubscription = true
+                return .none
+                
             case .binding, .delegate:
                 return .none
             }
@@ -39,9 +45,9 @@ struct PremiumSection {
 }
 
  struct PremiumSectionView: View {
-    // swiftlint:disable:next force_unwrapping
-    private static let manageSubscriptionUrl = URL(
-        string: "https://apps.apple.com/account/subscriptions")!
+//    // swiftlint:disable:next force_unwrapping
+//    private static let manageSubscriptionUrl = URL(
+//        string: "https://apps.apple.com/account/subscriptions")!
 
      @Bindable var store: StoreOf<PremiumSection>
 
@@ -75,9 +81,14 @@ struct PremiumSection {
                 }
             }
 
-            Link(destination: Self.manageSubscriptionUrl) {
+            Button {
+                store.send(.showManageSubscription)
+            } label: {
                 Label(String(localized: "Manage Subscription", bundle: .module), systemImage: "switch.2")
             }
+//            Link(destination: Self.manageSubscriptionUrl) {
+//                Label(String(localized: "Manage Subscription", bundle: .module), systemImage: "switch.2")
+//            }
         } header: {
             Text("Premium", bundle: .module)
                 .foregroundStyle(Color.secondary)
@@ -85,6 +96,7 @@ struct PremiumSection {
         #if os(macOS)
         .frame(width: 450, height: 50)
         #endif
+        .manageSubscriptionsSheet(isPresented: $store.showManageSubscription)
     }
  }
 
