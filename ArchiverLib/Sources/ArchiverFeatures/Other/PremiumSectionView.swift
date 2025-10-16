@@ -62,6 +62,7 @@ struct PremiumSection {
 
     var body: some View {
         Section {
+            #if os(macOS)
             HStack {
                 Label(String(localized: "Premium Status", bundle: .module), systemImage: "star")
                 Spacer()
@@ -82,29 +83,68 @@ struct PremiumSection {
                     }
                 }
             }
+            #else
+            HStack {
+                Label(String(localized: "Premium Status", bundle: .module), systemImage: "star")
+                Spacer()
+                switch store.premiumStatus {
+                case .loading:
+                    ProgressView()
+                case .active:
+                    HStack(spacing: 4) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(.green)
+                        Text("Active", bundle: .module)
+                    }
+                case .inactive:
+                    HStack(spacing: 4) {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundStyle(.red)
+                        Text("Inactive", bundle: .module)
+                    }
+                }
+            }
+            #endif
             if store.premiumStatus == .inactive {
                 Button {
                     store.send(.delegate(.switchToInboxTab))
                 } label: {
+                    #if os(macOS)
+                    HStack {
+                        Label(String(localized: "Activate premium", bundle: .module), systemImage: "cart")
+                        Spacer()
+                    }
+                    .contentShape(Rectangle())
+                    #else
                     Label(String(localized: "Activate premium", bundle: .module), systemImage: "cart")
+                    #endif
                 }
+                #if os(macOS)
+                .buttonStyle(.plain)
+                #endif
             }
 
             Button {
                 store.send(.showManageSubscription)
             } label: {
+                #if os(macOS)
+                HStack {
+                    Label(String(localized: "Manage Subscription", bundle: .module), systemImage: "switch.2")
+                    Spacer()
+                }
+                .contentShape(Rectangle())
+                #else
                 Label(String(localized: "Manage Subscription", bundle: .module), systemImage: "switch.2")
+                #endif
             }
-//            Link(destination: Self.manageSubscriptionUrl) {
-//                Label(String(localized: "Manage Subscription", bundle: .module), systemImage: "switch.2")
-//            }
+            #if os(macOS)
+            .buttonStyle(.plain)
+            #endif
         } header: {
             Text("Premium", bundle: .module)
                 .foregroundStyle(Color.secondary)
         }
-        #if os(macOS)
-        .frame(width: 450, height: 50)
-        #else
+        #if !os(macOS)
         .manageSubscriptionsSheet(isPresented: $store.showManageSubscription)
         #endif
     }
