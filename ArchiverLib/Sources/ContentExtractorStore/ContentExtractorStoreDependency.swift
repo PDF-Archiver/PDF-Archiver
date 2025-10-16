@@ -8,8 +8,8 @@
 import ArchiverModels
 import ComposableArchitecture
 import Foundation
-import Shared
 import OSLog
+import Shared
 
 @DependencyClient
 public struct ContentExtractorStoreDependency: Sendable {

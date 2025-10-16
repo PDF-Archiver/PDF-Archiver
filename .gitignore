@@ -43,3 +43,4 @@ Shared/Resources/Assets.xcassets/.DS_Store
 
 # Claude Code
 .claude/
+ArchiverLib/Package.resolved

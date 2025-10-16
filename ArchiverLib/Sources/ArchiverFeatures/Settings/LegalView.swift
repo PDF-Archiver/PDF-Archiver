@@ -13,8 +13,7 @@ struct LegalView: View {
     @Bindable var store: StoreOf<Settings>
 
     var body: some View {
-        Form {
-            Section {
+            Group {
                 NavigationLink {
                     MarkdownView(markdown: String(localized: "TERMS_OF_USE", bundle: .module))
                         .navigationTitle(String(localized: "Terms of Use", bundle: .module))
@@ -41,14 +40,27 @@ struct LegalView: View {
                 } label: {
                     HStack {
                         Label(String(localized: "PDF Archiver Website", bundle: .module), systemImage: "globe")
+                        #if os(iOS)
                         Spacer()
                         Image(systemName: "chevron.right")
                             .font(.system(size: 14, weight: .semibold))
                             .foregroundStyle(.tertiary)
+                        #endif
                     }
                 }
+                #if os(macOS)
+                .buttonStyle(.link)
+                #endif
             }
             .foregroundColor(.primary)
-        }
     }
+}
+
+#Preview("Legal", traits: .fixedLayout(width: 500, height: 400)) {
+    LegalView(
+        store: Store(initialState: Settings.State()) {
+            Settings()
+                ._printChanges()
+        }
+    )
 }
