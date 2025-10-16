@@ -206,7 +206,10 @@ struct Settings {
 
             case .updateObservedFolder(let url):
                 state.showObservedFolderPicker = false
+                // TODO: updateObservedFolder should be macOS only??
+                #if os(macOS)
                 state.$observedFolderURL.withLock { $0 = url }
+                #endif
 
                 // TODO: we have a race condition here - update documents via an function input? and make observedFolderURL read only? SharedReader
                 return .run { _ in
