@@ -21,12 +21,14 @@ public struct ContentExtractorStoreDependency: Sendable {
     @available(iOS 26, macOS 26, *)
     private static let contentExtractorStore = ContentExtractorStore()
 
+    public var isAvailable: @Sendable () async -> AppleIntelligenceAvailability = { .deviceNotCompatible }
     public var getDocumentInformation: @Sendable (String) async -> DocInfo?
 }
 
 extension ContentExtractorStoreDependency: TestDependencyKey {
     public static let previewValue = Self(
-        getDocumentInformation: { _ in nil },
+        isAvailable: { .available },
+        getDocumentInformation: { _ in nil }
     )
 
     public static let testValue = Self()
@@ -34,6 +36,13 @@ extension ContentExtractorStoreDependency: TestDependencyKey {
 
 extension ContentExtractorStoreDependency: DependencyKey {
     public static let liveValue = ContentExtractorStoreDependency(
+        isAvailable: {
+            guard #available(iOS 26.0, macOS 26.0, *) else {
+                return .deviceNotCompatible
+            }
+
+            return ContentExtractorStore.isAvailable() ? .available : .notInstalled
+        },
         getDocumentInformation: { text in
             guard #available(iOS 26.0, macOS 26.0, *) else { return nil }
             do {
@@ -45,7 +54,7 @@ extension ContentExtractorStoreDependency: DependencyKey {
                 Logger.contentExtractor.errorAndAssert("An error occurred while extracting document content", metadata: ["error": "\(error)"])
                 return nil
             }
-        },
+        }
     )
 }
 
