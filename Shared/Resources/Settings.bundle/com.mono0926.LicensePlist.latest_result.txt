@@ -18,6 +18,18 @@ name: swift-custom-dump, nameSpecified: swift-custom-dump, owner: pointfreeco, v
 
 name: swift-dependencies, nameSpecified: swift-dependencies, owner: pointfreeco, version: 1.10.0, source: https://github.com/pointfreeco/swift-dependencies
 
+name: swift-identified-collections, nameSpecified: swift-identified-collections, owner: pointfreeco, version: 1.1.1, source: https://github.com/pointfreeco/swift-identified-collections
+
+name: swift-navigation, nameSpecified: swift-navigation, owner: pointfreeco, version: 2.5.1, source: https://github.com/pointfreeco/swift-navigation
+
+name: swift-perception, nameSpecified: swift-perception, owner: pointfreeco, version: 2.0.9, source: https://github.com/pointfreeco/swift-perception
+
+name: swift-sharing, nameSpecified: swift-sharing, owner: pointfreeco, version: 2.7.4, source: https://github.com/pointfreeco/swift-sharing
+
+name: swift-syntax, nameSpecified: swift-syntax, owner: swiftlang, version: 602.0.0, source: https://github.com/swiftlang/swift-syntax
+
+name: xctest-dynamic-overlay, nameSpecified: xctest-dynamic-overlay, owner: pointfreeco, version: 1.7.0, source: https://github.com/pointfreeco/xctest-dynamic-overlay
+
 add-version-numbers: true
 
 LicensePlist Version: 3.27.1

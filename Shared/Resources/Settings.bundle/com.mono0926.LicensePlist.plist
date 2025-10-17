@@ -90,6 +90,54 @@
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
+		<dict>
+			<key>File</key>
+			<string>com.mono0926.LicensePlist/swift-identified-collections</string>
+			<key>Title</key>
+			<string>swift-identified-collections (1.1.1)</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+		</dict>
+		<dict>
+			<key>File</key>
+			<string>com.mono0926.LicensePlist/swift-navigation</string>
+			<key>Title</key>
+			<string>swift-navigation (2.5.1)</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+		</dict>
+		<dict>
+			<key>File</key>
+			<string>com.mono0926.LicensePlist/swift-perception</string>
+			<key>Title</key>
+			<string>swift-perception (2.0.9)</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+		</dict>
+		<dict>
+			<key>File</key>
+			<string>com.mono0926.LicensePlist/swift-sharing</string>
+			<key>Title</key>
+			<string>swift-sharing (2.7.4)</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+		</dict>
+		<dict>
+			<key>File</key>
+			<string>com.mono0926.LicensePlist/swift-syntax</string>
+			<key>Title</key>
+			<string>swift-syntax (602.0.0)</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+		</dict>
+		<dict>
+			<key>File</key>
+			<string>com.mono0926.LicensePlist/xctest-dynamic-overlay</string>
+			<key>Title</key>
+			<string>xctest-dynamic-overlay (1.7.0)</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+		</dict>
 	</array>
 </dict>
 </plist>
