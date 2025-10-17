@@ -26,6 +26,7 @@ jobs:
       - name: Run swift package resolve
         run: |
           xcodebuild -workspace PDFArchiver.xcworkspace -scheme ArchiverLib -resolvePackageDependencies
+          cd ArchiverLib && swift package resolve
 
       - name: Install LicensePlist
         run: |
@@ -33,7 +34,7 @@ jobs:
 
       - name: Update Settings.bundle with licenses
         run: |
-          license-plist --suppress-opening-directory --add-version-numbers --force --output-path Shared/Resources/Settings.bundle
+          license-plist --suppress-opening-directory --add-version-numbers --force --output-path Shared/Resources/Settings.bundle --xcworkspace-path PDFArchiver.xcworkspace
 
       - name: Check for changes in Package.resolved and Settings.bundle
         id: changes
