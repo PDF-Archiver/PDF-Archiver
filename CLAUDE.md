@@ -84,13 +84,31 @@ The codebase uses Swift 6 strict concurrency:
 
 ### Building
 
-```bash
-# Build the main Xcode project (includes all targets)
-xcodebuild -workspace PDFArchiver.xcworkspace -scheme PDFArchiver -configuration Debug build
+**IMPORTANT**: Always prefer `xcodebuild` over `swift build` for the main app targets, as it uses the same build cache as Xcode and properly handles code signing, app bundles, and extensions.
 
-# Build just the ArchiverLib package
+```bash
+# Build iOS app
+xcodebuild -workspace PDFArchiver.xcworkspace \
+           -scheme PDFArchiver \
+           -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
+           -configuration Debug \
+           build
+
+# Build macOS app
+xcodebuild -workspace PDFArchiver.xcworkspace \
+           -scheme PDFArchiver \
+           -destination 'platform=macOS' \
+           -configuration Debug \
+           build
+
+# Build just the ArchiverLib package (for testing/development)
+# Note: This does NOT build the full app with extensions and code signing
 cd ArchiverLib
 swift build
+
+# Build for specific architecture
+swift build --triple arm64-apple-macosx      # Apple Silicon
+swift build --triple x86_64-apple-macosx     # Intel
 ```
 
 ### Testing
@@ -120,25 +138,6 @@ swiftlint --fix
 ```
 
 SwiftLint configuration excludes `.build` directories and `Shared` folder. Notable opt-in rules include `force_unwrapping`, `sorted_imports`, and `multiline_parameters`.
-
-### Fastlane
-
-```bash
-# Generate screenshots for App Store
-fastlane createNewScreenshots
-
-# Build and upload to TestFlight
-fastlane beta
-
-# Upload metadata to App Store Connect
-fastlane meta_upload
-
-# Download metadata from App Store Connect
-fastlane meta_download
-
-# Submit latest build for review
-fastlane submit_review
-```
 
 ## Key Technical Decisions
 
