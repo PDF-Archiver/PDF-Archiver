@@ -73,6 +73,7 @@ struct Settings {
     @Reducer
     enum Destination {
         case aboutMe
+        case appleIntelligenceSettings(AppleIntelligenceSettings)
         case archiveStorage(StorageSelection)
         case expertSettings(ExpertSettings)
         case imprint
@@ -108,6 +109,7 @@ struct Settings {
         case destination(PresentationAction<Destination.Action>)
         case onAboutMeTapped
         case onAdvancedSettingsTapped
+        case onAppleIntelligenceSettingsTapped
         case onContactSupportTapped
         case onImprintTapped
         case onLegalTapped
@@ -140,6 +142,10 @@ struct Settings {
 
             case .onAdvancedSettingsTapped:
                 state.destination = .expertSettings(ExpertSettings.State())
+                return .none
+
+            case .onAppleIntelligenceSettingsTapped:
+                state.destination = .appleIntelligenceSettings(AppleIntelligenceSettings.State())
                 return .none
 
             case .onContactSupportTapped:
@@ -258,6 +264,13 @@ struct SettingsView: View {
 #endif
             .navigationDestination(item: $store.destination) { destination in
                 switch destination {
+                case .appleIntelligenceSettings:
+                    if let appleIntelligenceSettingsStore = store.scope(state: \.destination?.appleIntelligenceSettings, action: \.destination.appleIntelligenceSettings) {
+                        AppleIntelligenceSettingsView(store: appleIntelligenceSettingsStore)
+                            .navigationTitle(Text("Apple Intelligence", bundle: .module))
+                    } else {
+                        preconditionFailure("Failed to load Apple Intelligence settings")
+                    }
                 case .archiveStorage:
                     if let storageSelectionStore = store.scope(state: \.destination?.archiveStorage, action: \.destination.archiveStorage) {
                         StorageSelectionView(store: storageSelectionStore)
@@ -316,6 +329,12 @@ struct SettingsView: View {
                     Text(store.selectedArchiveType.getPath().title, bundle: .module)
                         .foregroundStyle(.secondary)
                 }
+            }
+
+            Button {
+                store.send(.onAppleIntelligenceSettingsTapped)
+            } label: {
+                Label(String(localized: "Apple Intelligence", bundle: .module), systemImage: "apple.intelligence")
             }
 
             Button {
@@ -392,6 +411,11 @@ struct SettingsMacView: View {
                 NavigationStack {
                     Group {
                         switch destination {
+                        case .appleIntelligenceSettings:
+                            if let appleIntelligenceSettingsStore = store.scope(state: \.destination?.appleIntelligenceSettings, action: \.destination.appleIntelligenceSettings) {
+                                AppleIntelligenceSettingsView(store: appleIntelligenceSettingsStore)
+                                    .navigationTitle(Text("Apple Intelligence", bundle: .module))
+                            }
                         case .archiveStorage:
                             if let storageSelectionStore = store.scope(state: \.destination?.archiveStorage, action: \.destination.archiveStorage) {
                                 StorageSelectionView(store: storageSelectionStore)
@@ -496,6 +520,14 @@ struct SettingsMacView: View {
                     }
                 } label: {
                     Label(String(localized: "Observed Folder", bundle: .module), systemImage: "folder.badge.plus")
+                }
+
+                LabeledContent {
+                    Button(String(localized: "Configure…", bundle: .module)) {
+                        store.send(.onAppleIntelligenceSettingsTapped)
+                    }
+                } label: {
+                    Label(String(localized: "Apple Intelligence", bundle: .module), systemImage: "apple.intelligence")
                 }
 
                 LabeledContent {

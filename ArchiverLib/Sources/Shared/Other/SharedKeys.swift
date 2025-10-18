@@ -15,6 +15,7 @@ enum Names: String {
     case notSaveDocumentTagsAsPDFMetadata = "not-save-document-tags-as-pdf-metadata"
     case documentTagsNotRequired = "document-tags-not-required"
     case documentSpecificationNotRequired = "document-specification-not-required"
+    case appleIntelligenceEnabled = "apple-intelligence-enabled"
 
     var id: String { "shared-\(rawValue)" }
 }
@@ -90,6 +91,18 @@ public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var documentSpecificationNotRequired: Self {
       let defaultValue = UserDefaults.standard.bool(forKey: "documentSpecificationNotRequired")
       return Self[.appStorage(Names.documentSpecificationNotRequired.id, store: .standard), default: defaultValue]
+  }
+}
+
+public extension SharedKey where Self == AppStorageKey<Bool> {
+    static var appleIntelligenceEnabled: Self {
+        appStorage(Names.appleIntelligenceEnabled.id, store: .standard)
+    }
+}
+public extension SharedKey where Self == AppStorageKey<Bool>.Default {
+  static var appleIntelligenceEnabled: Self {
+      let defaultValue = (UserDefaults.standard.value(forKey: "appleIntelligenceEnabled") as? Bool) ?? false
+      return Self[.appStorage(Names.appleIntelligenceEnabled.id, store: .standard), default: defaultValue]
   }
 }
 

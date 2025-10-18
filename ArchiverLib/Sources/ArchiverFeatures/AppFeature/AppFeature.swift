@@ -64,6 +64,7 @@ struct AppFeature {
     @Dependency(\.documentProcessor) var documentProcessor
     @Dependency(\.archiveStore) var archiveStore
     @Dependency(\.widgetStore) var widgetStore
+    @Dependency(\.contentExtractorStore) var contentExtractorStore
 
     var body: some ReducerOf<Self> {
         BindingReducer()
@@ -209,6 +210,10 @@ struct AppFeature {
                         group.addTask(priority: .background) {
                             // check the temp folder at startup for new documents
                             await documentProcessor.triggerFolderObservation()
+                        }
+                        group.addTask(priority: .background) {
+                            // prewarm the foundation model to improve performance for document content extraction
+                            await contentExtractorStore.prewarm()
                         }
                         group.addTask(priority: .medium) {
                             for await documents in await archiveStore.documentChanges() {

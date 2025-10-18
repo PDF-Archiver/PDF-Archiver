@@ -136,9 +136,13 @@ struct ArchiveListView: View {
                     ContentUnavailableView(String(localized: "Empty Archive", bundle: .module),
                                            systemImage: "archivebox",
                                            description: Text("Start scanning and tagging your first document.", bundle: .module))
+                    // fix the alignment of the ScanButton
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
                     let text = store.searchTokens.map({ "'\($0.value)' " }).joined() + store.searchText
                     ContentUnavailableView.search(text: text)
+                        // fix the alignment of the ScanButton
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
             } else {
                 List(store.filteredDocuments, selection: $store.selectedDocumentId) { document in
