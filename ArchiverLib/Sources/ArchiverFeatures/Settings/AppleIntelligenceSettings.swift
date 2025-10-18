@@ -80,7 +80,7 @@ struct AppleIntelligenceSettingsView: View {
                     .foregroundStyle(Color.secondary)
             } footer: {
                 if store.availability == .available {
-                    Text("When enabled, Apple Intelligence will automatically suggest descriptions and tags for your documents.", bundle: .module)
+                    Text("When enabled, Apple Intelligence will automatically suggest descriptions and tags for your documents. This might take some time.", bundle: .module)
                         .foregroundStyle(.secondary)
                         .font(.footnote)
                 }
@@ -103,27 +103,24 @@ struct AppleIntelligenceSettingsView: View {
             case .available:
                 HStack(spacing: 4) {
                     Image(systemName: "checkmark.circle.fill")
-                        .foregroundStyle(.green)
                     Text("Available", bundle: .module)
                         .font(.subheadline)
-                        .foregroundStyle(.green)
                 }
+                .foregroundStyle(.green)
             case .deviceNotCompatible:
                 HStack(spacing: 4) {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundStyle(.orange)
                     Text("Device Not Compatible", bundle: .module)
                         .font(.subheadline)
-                        .foregroundStyle(.orange)
                 }
+                .foregroundStyle(.red)
             case .notInstalled:
                 HStack(spacing: 4) {
                     Image(systemName: "exclamationmark.circle.fill")
-                        .foregroundStyle(.orange)
                     Text("Not Installed", bundle: .module)
                         .font(.subheadline)
-                        .foregroundStyle(.orange)
                 }
+                .foregroundStyle(.red)
             }
         }
     }
@@ -135,7 +132,8 @@ struct AppleIntelligenceSettingsView: View {
             initialState: AppleIntelligenceSettings.State(availability: .available)
         ) {
             AppleIntelligenceSettings()
-                ._printChanges()
+        } withDependencies: {
+            $0.contentExtractorStore.isAvailable = { .available }
         }
     )
 }
@@ -146,7 +144,8 @@ struct AppleIntelligenceSettingsView: View {
             initialState: AppleIntelligenceSettings.State(availability: .deviceNotCompatible)
         ) {
             AppleIntelligenceSettings()
-                ._printChanges()
+        } withDependencies: {
+            $0.contentExtractorStore.isAvailable = { .deviceNotCompatible }
         }
     )
 }
@@ -157,7 +156,8 @@ struct AppleIntelligenceSettingsView: View {
             initialState: AppleIntelligenceSettings.State(availability: .notInstalled)
         ) {
             AppleIntelligenceSettings()
-                ._printChanges()
+        } withDependencies: {
+            $0.contentExtractorStore.isAvailable = { .notInstalled }
         }
     )
 }

@@ -22,12 +22,14 @@ public struct ContentExtractorStoreDependency: Sendable {
     private static let contentExtractorStore = ContentExtractorStore()
 
     public var isAvailable: @Sendable () async -> AppleIntelligenceAvailability = { .deviceNotCompatible }
+    public var prewarm: @Sendable () async -> Void
     public var getDocumentInformation: @Sendable (String) async -> DocInfo?
 }
 
 extension ContentExtractorStoreDependency: TestDependencyKey {
     public static let previewValue = Self(
         isAvailable: { .available },
+        prewarm: {},
         getDocumentInformation: { _ in nil }
     )
 
@@ -42,6 +44,10 @@ extension ContentExtractorStoreDependency: DependencyKey {
             }
 
             return ContentExtractorStore.isAvailable() ? .available : .notInstalled
+        },
+        prewarm: {
+            guard #available(iOS 26.0, macOS 26.0, *) else { return }
+            await contentExtractorStore.prewarm()
         },
         getDocumentInformation: { text in
             guard #available(iOS 26.0, macOS 26.0, *) else { return nil }

@@ -46,6 +46,8 @@ struct DocumentInformationForm {
         /// Changes will be done on a copy and only be propagated when `save` was called.
         var document: Document
 
+        var isLoading = false
+        
         var suggestedDates: [Date] = []
         var suggestedTags: [String] = []
         var tagSearchterm: String = ""
@@ -62,6 +64,7 @@ struct DocumentInformationForm {
     enum Action: BindableAction, Equatable {
         case binding(BindingAction<State>)
         case delegate(Delegate)
+        case finishedLoading
         case onTask
         case onTagOnDocumentTapped(String)
         case onTagSearchtermSubmitted
@@ -98,6 +101,10 @@ struct DocumentInformationForm {
                 return .none
 
             case .delegate:
+                return .none
+                
+            case .finishedLoading:
+                state.isLoading = false
                 return .none
 
             case .onTagSearchtermSubmitted:
@@ -141,13 +148,17 @@ struct DocumentInformationForm {
                 return .none
 
             case .onTask:
+                state.isLoading = true
                 return .run { [documentUrl = state.document.url, isTagged = state.document.isTagged, appleIntelligenceEnabled = state.appleIntelligenceEnabled] send in
+
                     if isTagged {
                         await send(.updateTagSuggestions)
                     } else {
                         let result = await parseDocumentData(url: documentUrl, appleIntelligenceEnabled: appleIntelligenceEnabled)
                         await send(.updateDocumentData(result))
                     }
+
+                    await send(.finishedLoading)
                 }
 
             case .onTagSuggestionsUpdated(let suggestedTags):
@@ -348,6 +359,11 @@ struct DocumentInformationFormView: View {
                     .focused($focusedField, equals: .save)
                     .keyboardShortcut("s", modifiers: [.command])
                     Spacer()
+                }
+            }
+            .overlay(alignment: .trailing) {
+                if store.isLoading {
+                    ProgressView()
                 }
             }
         }
