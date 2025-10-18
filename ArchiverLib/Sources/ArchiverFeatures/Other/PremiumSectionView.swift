@@ -16,7 +16,6 @@ struct PremiumSection {
     struct State: Equatable {
         @Shared(.premiumStatus) var premiumStatus: PremiumStatus = .loading
         var showIapView = false
-        var showManageSubscription = false
     }
 
     enum Action: BindableAction, Equatable {
@@ -36,15 +35,10 @@ struct PremiumSection {
         Reduce { state, action in
             switch action {
             case .showManageSubscription:
-                #if os(iOS)
-                state.showManageSubscription = true
-                return .none
-                #else
                 return .run { _ in
                     let url = URL(string: "https://apps.apple.com/account/subscriptions")!
                     await openURL(url)
                 }
-                #endif
 
             case .binding, .delegate:
                 return .none
@@ -144,9 +138,6 @@ struct PremiumSection {
             Text("Premium", bundle: .module)
                 .foregroundStyle(Color.secondary)
         }
-        #if !os(macOS)
-        .manageSubscriptionsSheet(isPresented: $store.showManageSubscription)
-        #endif
     }
  }
 
