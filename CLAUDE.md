@@ -89,14 +89,14 @@ The codebase uses Swift 6 strict concurrency:
 ```bash
 # Build iOS app
 xcodebuild -workspace PDFArchiver.xcworkspace \
-           -scheme PDFArchiver \
+           -scheme iOS \
            -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
            -configuration Debug \
            build
 
 # Build macOS app
 xcodebuild -workspace PDFArchiver.xcworkspace \
-           -scheme PDFArchiver \
+           -scheme macOS \
            -destination 'platform=macOS' \
            -configuration Debug \
            build
@@ -115,7 +115,7 @@ swift build --triple x86_64-apple-macosx     # Intel
 
 ```bash
 # Run all tests via xcodebuild
-xcodebuild test -workspace PDFArchiver.xcworkspace -scheme PDFArchiver -testPlan ArchiverLib.xctestplan
+xcodebuild test -workspace PDFArchiver.xcworkspace -scheme ArchiverLib -testPlan ArchiverLib.xctestplan
 
 # Run ArchiverLib package tests directly
 cd ArchiverLib
