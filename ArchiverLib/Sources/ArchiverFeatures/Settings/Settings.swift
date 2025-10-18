@@ -187,7 +187,7 @@ struct Settings {
                     await openURL(pdfArchiverWebsiteUrl)
                 }
                 #else
-                NSWorkspace.shared.open(url)
+                NSWorkspace.shared.open(state.pdfArchiverWebsiteUrl)
                 return .none
                 #endif
 
