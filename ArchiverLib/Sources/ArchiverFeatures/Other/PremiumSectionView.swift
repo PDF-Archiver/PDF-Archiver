@@ -14,7 +14,7 @@ struct PremiumSection {
 
     @ObservableState
     struct State: Equatable {
-        @Shared(.premiumStatus) var premiumStatus: PremiumStatus = .loading
+        @Shared(.premiumStatus) var premiumStatus: PremiumStatus = .inactive
         var showIapView = false
     }
 
@@ -51,11 +51,9 @@ struct PremiumSectionView: View {
     @Bindable var store: StoreOf<PremiumSection>
 
     var body: some View {
+        #if os(macOS)
         Section {
-            #if os(macOS)
-            HStack {
-                Label(String(localized: "Premium Status", bundle: .module), systemImage: "star")
-                Spacer()
+            Group {
                 switch store.premiumStatus {
                 case .loading:
                     ProgressView()
@@ -65,75 +63,87 @@ struct PremiumSectionView: View {
                             .foregroundStyle(.green)
                         Text("Active", bundle: .module)
                     }
+                    .font(.largeTitle)
                 case .inactive:
                     HStack(spacing: 4) {
                         Image(systemName: "xmark.circle.fill")
                             .foregroundStyle(.red)
                         Text("Inactive", bundle: .module)
                     }
+                    .font(.largeTitle)
                 }
             }
-            #else
-            HStack {
-                Label(String(localized: "Premium Status", bundle: .module), systemImage: "star")
-                Spacer()
-                switch store.premiumStatus {
-                case .loading:
-                    ProgressView()
-                case .active:
-                    HStack(spacing: 4) {
-                        Image(systemName: "checkmark.circle.fill")
-                            .foregroundStyle(.green)
-                        Text("Active", bundle: .module)
-                    }
-                case .inactive:
-                    HStack(spacing: 4) {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundStyle(.red)
-                        Text("Inactive", bundle: .module)
-                    }
-                }
-            }
-            #endif
+            .padding()
+
             if store.premiumStatus == .inactive {
                 Button {
                     store.send(.delegate(.switchToInboxTab))
                 } label: {
-                    #if os(macOS)
                     HStack {
                         Label(String(localized: "Activate premium", bundle: .module), systemImage: "cart")
                         Spacer()
                     }
                     .contentShape(Rectangle())
-                    #else
-                    Label(String(localized: "Activate premium", bundle: .module), systemImage: "cart")
-                    #endif
                 }
-                #if os(macOS)
-                .buttonStyle(.plain)
-                #endif
+                .buttonStyle(.borderedProminent)
+                .padding()
             }
 
             Button {
                 store.send(.showManageSubscription)
             } label: {
-                #if os(macOS)
                 HStack {
                     Label(String(localized: "Manage Subscription", bundle: .module), systemImage: "switch.2")
                     Spacer()
                 }
                 .contentShape(Rectangle())
-                #else
-                Label(String(localized: "Manage Subscription", bundle: .module), systemImage: "switch.2")
-                #endif
             }
-            #if os(macOS)
-            .buttonStyle(.plain)
-            #endif
+            .buttonStyle(.bordered)
+            .padding(.horizontal)
+            .padding(.bottom)
+        }
+        .frame(width: 300)
+        #else
+        Section {
+            HStack {
+                Label(String(localized: "Premium Status", bundle: .module), systemImage: "star")
+                Spacer()
+                switch store.premiumStatus {
+                case .loading:
+                    ProgressView()
+                case .active:
+                    HStack(spacing: 4) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(.green)
+                        Text("Active", bundle: .module)
+                    }
+                case .inactive:
+                    HStack(spacing: 4) {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundStyle(.red)
+                        Text("Inactive", bundle: .module)
+                    }
+                }
+            }
+
+            if store.premiumStatus == .inactive {
+                Button {
+                    store.send(.delegate(.switchToInboxTab))
+                } label: {
+                    Label(String(localized: "Activate premium", bundle: .module), systemImage: "cart")
+                }
+            }
+
+            Button {
+                store.send(.showManageSubscription)
+            } label: {
+                Label(String(localized: "Manage Subscription", bundle: .module), systemImage: "switch.2")
+            }
         } header: {
             Text("Premium", bundle: .module)
                 .foregroundStyle(Color.secondary)
         }
+        #endif
     }
  }
 

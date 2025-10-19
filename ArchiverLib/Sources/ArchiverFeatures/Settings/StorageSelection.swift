@@ -145,6 +145,7 @@ struct StorageSelectionView: View {
                 store.showDocumentPicker = false
             })
         }
+        .padding()
         .disabled(store.isProcessing)
         .overlay {
             if store.isProcessing {

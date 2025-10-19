@@ -808,17 +808,6 @@
         }
       }
     },
-    "Unavailable" : {
-      "comment" : "Status indicating Apple Intelligence is unavailable",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nicht verfügbar"
-          }
-        }
-      }
-    },
     "Not synchronized - your documents are only stored locally in this app. They can be transferred via the Finder on a Mac, for example." : {
       "localizations" : {
         "de" : {
@@ -1234,17 +1223,6 @@
         }
       }
     },
-    "Status" : {
-      "comment" : "Label for status field",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Status"
-          }
-        }
-      }
-    },
     "Status:" : {
       "comment" : "Label for status field with colon",
       "localizations" : {
@@ -1363,6 +1341,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gesamt"
+          }
+        }
+      }
+    },
+    "Unavailable" : {
+      "comment" : "Status indicating Apple Intelligence is unavailable",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht verfügbar"
           }
         }
       }

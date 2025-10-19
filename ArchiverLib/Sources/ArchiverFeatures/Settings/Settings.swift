@@ -394,6 +394,8 @@ struct SettingsMacView: View {
 
                 Tab(String(localized: "Premium", bundle: .module), systemImage: "star.hexagon") {
                     PremiumSectionView(store: store.scope(state: \.premiumSection, action: \.premiumSection))
+                        .padding(.horizontal)
+                        .focusable(false)
                 }
 
                 Tab(String(localized: "About", bundle: .module), systemImage: "info.circle") {
@@ -402,7 +404,7 @@ struct SettingsMacView: View {
             }
             .tabViewStyle(.tabBarOnly)
         }
-        .frame(width: 500, height: 400)
+        .frame(width: 400, height: 350)
         .sheet(isPresented: Binding(
             get: { store.destination != nil },
             set: { if !$0 { store.destination = nil } }

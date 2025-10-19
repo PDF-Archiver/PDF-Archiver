@@ -75,9 +75,6 @@ struct AppleIntelligenceSettingsView: View {
                         isOn: $store.appleIntelligenceEnabled
                     )
                 }
-            } header: {
-                Text("Status", bundle: .module)
-                    .foregroundStyle(Color.secondary)
             } footer: {
                 if store.availability == .available {
                     Text("When enabled, Apple Intelligence will automatically suggest descriptions and tags for your documents. This might take some time.", bundle: .module)
@@ -85,6 +82,9 @@ struct AppleIntelligenceSettingsView: View {
                         .font(.footnote)
                 }
             }
+            #if os(macOS)
+            .padding(.horizontal)
+            #endif
         }
         .foregroundStyle(.primary)
         .onAppear {
