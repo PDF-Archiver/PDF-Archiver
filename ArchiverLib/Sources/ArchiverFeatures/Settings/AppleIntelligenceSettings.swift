@@ -114,13 +114,13 @@ struct AppleIntelligenceSettingsView: View {
                         .font(.subheadline)
                 }
                 .foregroundStyle(.red)
-            case .notInstalled:
+            case .unavailable:
                 HStack(spacing: 4) {
                     Image(systemName: "exclamationmark.circle.fill")
-                    Text("Not Installed", bundle: .module)
+                    Text("Unavailable", bundle: .module)
                         .font(.subheadline)
                 }
-                .foregroundStyle(.red)
+                .foregroundStyle(.orange)
             }
         }
     }
@@ -150,14 +150,14 @@ struct AppleIntelligenceSettingsView: View {
     )
 }
 
-#Preview("AppleIntelligenceSettings - Not Installed", traits: .fixedLayout(width: 800, height: 600)) {
+#Preview("AppleIntelligenceSettings - Unavailable", traits: .fixedLayout(width: 800, height: 600)) {
     AppleIntelligenceSettingsView(
         store: Store(
-            initialState: AppleIntelligenceSettings.State(availability: .notInstalled)
+            initialState: AppleIntelligenceSettings.State(availability: .unavailable)
         ) {
             AppleIntelligenceSettings()
         } withDependencies: {
-            $0.contentExtractorStore.isAvailable = { .notInstalled }
+            $0.contentExtractorStore.isAvailable = { .unavailable }
         }
     )
 }
