@@ -67,8 +67,15 @@ public actor ContentExtractorStore: Log {
             })
     }
 
-    public static func isAvailable() -> Bool {
-        SystemLanguageModel.default.isAvailable
+    public static func getAvailability() -> AppleIntelligenceAvailability {
+        switch SystemLanguageModel.default.availability {
+        case .available:
+            return .available
+        case .unavailable:
+            return .unavailable
+        @unknown default:
+            return .unavailable
+        }
     }
 
     public func prewarm() {
@@ -76,7 +83,7 @@ public actor ContentExtractorStore: Log {
     }
 
     public func extract(from text: String) async throws -> Info? {
-        guard Self.isAvailable() else { return nil }
+        guard Self.getAvailability().isUsable else { return nil }
 
         let response = try await session.respond(
             to: text,

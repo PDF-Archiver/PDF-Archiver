@@ -43,7 +43,7 @@ extension ContentExtractorStoreDependency: DependencyKey {
                 return .deviceNotCompatible
             }
 
-            return ContentExtractorStore.isAvailable() ? .available : .notInstalled
+            return ContentExtractorStore.getAvailability()
         },
         prewarm: {
             guard #available(iOS 26.0, macOS 26.0, *) else { return }
