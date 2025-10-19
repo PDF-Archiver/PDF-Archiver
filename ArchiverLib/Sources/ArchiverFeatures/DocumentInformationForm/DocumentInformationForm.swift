@@ -47,7 +47,7 @@ struct DocumentInformationForm {
         var document: Document
 
         var isLoading = false
-        
+
         var suggestedDates: [Date] = []
         var suggestedTags: [String] = []
         var tagSearchterm: String = ""
@@ -102,7 +102,7 @@ struct DocumentInformationForm {
 
             case .delegate:
                 return .none
-                
+
             case .finishedLoading:
                 state.isLoading = false
                 return .none

@@ -32,7 +32,7 @@ struct PremiumSection {
 
     var body: some ReducerOf<Self> {
         BindingReducer()
-        Reduce { state, action in
+        Reduce { _, action in
             switch action {
             case .showManageSubscription:
                 return .run { _ in
@@ -47,12 +47,8 @@ struct PremiumSection {
     }
 }
 
- struct PremiumSectionView: View {
-//    // swiftlint:disable:next force_unwrapping
-//    private static let manageSubscriptionUrl = URL(
-//        string: "https://apps.apple.com/account/subscriptions")!
-
-     @Bindable var store: StoreOf<PremiumSection>
+struct PremiumSectionView: View {
+    @Bindable var store: StoreOf<PremiumSection>
 
     var body: some View {
         Section {
