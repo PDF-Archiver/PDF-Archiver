@@ -36,8 +36,12 @@ let package = Package(
                 ],
                 swiftSettings: [
                     .enableExperimentalFeature("StrictConcurrency"),
-                    // NOTE: defaultIsolation(MainActor.self) removed due to TCA macro incompatibility
-                    // TCA's @Reducer macro generates CaseReducerState conformances that don't work with MainActor default isolation
+                    // NOTE: defaultIsolation(MainActor.self) cannot be enabled for ArchiverFeatures
+                    // TCA's @Reducer macro generates code that is incompatible with MainActor default isolation.
+                    // Specifically, @Reducer enums with associated Reducer values (like Settings.Destination)
+                    // create a conflict: the enum needs to be nonisolated (to satisfy Sendable requirements),
+                    // but it contains MainActor-isolated child Reducers, which cannot be used in nonisolated context.
+                    // This is a known limitation tracked in: https://github.com/pointfreeco/swift-composable-architecture/discussions/3714
                     .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
                     .enableUpcomingFeature("InferIsolatedConformances")
                 ]),
