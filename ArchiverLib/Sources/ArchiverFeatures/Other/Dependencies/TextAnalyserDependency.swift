@@ -19,18 +19,18 @@ struct TextAnalyserDependency {
 }
 
 extension TextAnalyserDependency: TestDependencyKey {
-    static let previewValue = Self(
+    nonisolated(unsafe) static let previewValue: Self = MainActor.assumeIsolated { Self(
         getTextFrom: { _ in nil },
         parseDateFrom: { _ in [] },
         parseTagsFrom: { _ in [] },
         getFileTagsFrom: { _ in [] }
-    )
+    ) }
 
-    static let testValue = Self()
+    nonisolated(unsafe) static let testValue: Self = MainActor.assumeIsolated { Self() }
 }
 
 extension TextAnalyserDependency: DependencyKey {
-    static let liveValue = TextAnalyserDependency(
+    nonisolated(unsafe) static let liveValue: Self = MainActor.assumeIsolated { TextAnalyserDependency(
         getTextFrom: { url in
             guard let pdfDocument = PDFDocument(url: url) else { return nil }
 
@@ -54,11 +54,11 @@ extension TextAnalyserDependency: DependencyKey {
         getFileTagsFrom: { url in
             try await url.getFileTags()
         }
-    )
+    ) }
 }
 
 extension DependencyValues {
-    var textAnalyser: TextAnalyserDependency {
+    nonisolated var textAnalyser: TextAnalyserDependency {
         get { self[TextAnalyserDependency.self] }
         set { self[TextAnalyserDependency.self] = newValue }
     }

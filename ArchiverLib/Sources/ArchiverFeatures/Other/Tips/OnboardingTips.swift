@@ -8,7 +8,8 @@
 import SwiftUI
 import TipKit
 
-public struct ScanShareTip: Tip {
+@MainActor
+public struct ScanShareTip: @preconcurrency Tip {
     public init() {}
     public var title: Text {
         #if os(macOS)
@@ -42,7 +43,8 @@ public struct ScanShareTip: Tip {
     }
 }
 
-public struct AfterFirstImportTip: Tip {
+@MainActor
+public struct AfterFirstImportTip: @preconcurrency Tip {
     public init() {}
     public static let documentImported = Tips.Event(id: "documentImported")
 

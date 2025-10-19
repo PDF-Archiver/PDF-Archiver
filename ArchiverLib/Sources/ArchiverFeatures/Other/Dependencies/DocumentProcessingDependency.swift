@@ -21,14 +21,14 @@ struct DocumentProcessingDependency {
 }
 
 extension DocumentProcessingDependency: TestDependencyKey {
-    static let previewValue = Self(
+    nonisolated(unsafe) static let previewValue: Self = MainActor.assumeIsolated { Self(
         triggerFolderObservation: { },
         handleImages: { _ in nil },
         handlePdf: { _, _ in },
         getLastProcessedDocumentUrl: { nil }
-    )
+    ) }
 
-    static let testValue = Self()
+    nonisolated(unsafe) static let testValue: Self = MainActor.assumeIsolated { Self() }
 }
 
 extension DocumentProcessingDependency: DependencyKey {
@@ -50,7 +50,7 @@ extension DocumentProcessingDependency: DependencyKey {
         return service
     }
 
-    static let liveValue = DocumentProcessingDependency(
+    nonisolated(unsafe) static let liveValue: Self = MainActor.assumeIsolated { DocumentProcessingDependency(
         triggerFolderObservation: {
             await getDocumentProcessingService().triggerObservation()
         },
@@ -63,11 +63,11 @@ extension DocumentProcessingDependency: DependencyKey {
         getLastProcessedDocumentUrl: {
             await getDocumentProcessingService().lastProcessedDocumentUrl
         }
-    )
+    ) }
 }
 
 extension DependencyValues {
-    var documentProcessor: DocumentProcessingDependency {
+    nonisolated var documentProcessor: DocumentProcessingDependency {
         get { self[DocumentProcessingDependency.self] }
         set { self[DocumentProcessingDependency.self] = newValue }
     }
