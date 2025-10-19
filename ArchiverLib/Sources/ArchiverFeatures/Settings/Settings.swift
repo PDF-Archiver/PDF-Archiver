@@ -123,7 +123,7 @@ struct Settings {
         case updateObservedFolder(URL?)
     }
 
-    var body: some Reducer<State, Action> {
+    var body: some ReducerOf<Self> {
         BindingReducer()
         Scope(state: \.premiumSection, action: \.premiumSection) {
             PremiumSection()

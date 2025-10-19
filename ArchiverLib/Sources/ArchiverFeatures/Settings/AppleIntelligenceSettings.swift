@@ -30,7 +30,7 @@ struct AppleIntelligenceSettings {
 
     @Dependency(\.contentExtractorStore) var contentExtractorStore
 
-    var body: some Reducer<State, Action> {
+    var body: some ReducerOf<Self> {
         BindingReducer()
         Reduce { state, action in
             switch action {

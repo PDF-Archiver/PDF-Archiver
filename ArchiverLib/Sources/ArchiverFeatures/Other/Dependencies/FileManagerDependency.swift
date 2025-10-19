@@ -16,23 +16,23 @@ struct FileManagerDependency {
 }
 
 extension FileManagerDependency: TestDependencyKey {
-    nonisolated(unsafe) static let previewValue: Self = MainActor.assumeIsolated { Self(
+    static let previewValue = Self(
         removeItemAt: { _ in },
-    ) }
+    )
 
-    nonisolated(unsafe) static let testValue: Self = MainActor.assumeIsolated { Self() }
+    static let testValue = Self()
 }
 
 extension FileManagerDependency: DependencyKey {
-    nonisolated(unsafe) static let liveValue: Self = MainActor.assumeIsolated { FileManagerDependency(
+    static let liveValue = FileManagerDependency(
         removeItemAt: { url in
             try FileManager.default.removeItem(at: url)
         }
-    ) }
+    )
 }
 
 extension DependencyValues {
-    nonisolated var fileManager: FileManagerDependency {
+    var fileManager: FileManagerDependency {
         get { self[FileManagerDependency.self] }
         set { self[FileManagerDependency.self] = newValue }
     }

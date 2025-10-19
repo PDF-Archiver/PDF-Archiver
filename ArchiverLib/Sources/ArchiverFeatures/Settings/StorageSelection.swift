@@ -33,7 +33,7 @@ struct StorageSelection {
     @Dependency(\.userDefaultsManager) var userDefaultsManager
     @Dependency(\.notificationCenter) var notificationCenter
 
-    var body: some Reducer<State, Action> {
+    var body: some ReducerOf<Self> {
         BindingReducer()
         Reduce { state, action in
             switch action {

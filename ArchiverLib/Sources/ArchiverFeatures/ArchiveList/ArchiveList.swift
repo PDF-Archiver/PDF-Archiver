@@ -84,7 +84,7 @@ struct ArchiveList {
         case searchStateChanged(Bool)
     }
 
-    var body: some Reducer<State, Action> {
+    var body: some ReducerOf<Self> {
         BindingReducer()
 
         Reduce { state, action in

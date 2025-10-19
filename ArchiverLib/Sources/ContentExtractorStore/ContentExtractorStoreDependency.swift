@@ -13,7 +13,7 @@ import Shared
 
 @DependencyClient
 public struct ContentExtractorStoreDependency: Sendable {
-    nonisolated public struct DocInfo: Sendable {
+    public struct DocInfo: Sendable {
         public let specification: String
         public let tags: Set<String>
     }
@@ -27,17 +27,17 @@ public struct ContentExtractorStoreDependency: Sendable {
 }
 
 extension ContentExtractorStoreDependency: TestDependencyKey {
-    nonisolated(unsafe) public static let previewValue: Self = MainActor.assumeIsolated { Self(
+    public static let previewValue = Self(
         isAvailable: { .available },
         prewarm: {},
         getDocumentInformation: { _ in nil }
-    ) }
+    )
 
-    nonisolated(unsafe) public static let testValue: Self = MainActor.assumeIsolated { Self() }
+    public static let testValue = Self()
 }
 
 extension ContentExtractorStoreDependency: DependencyKey {
-    nonisolated(unsafe) public static let liveValue: Self = MainActor.assumeIsolated { ContentExtractorStoreDependency(
+    public static let liveValue = ContentExtractorStoreDependency(
         isAvailable: {
             guard #available(iOS 26.0, macOS 26.0, *) else {
                 return .deviceNotCompatible
@@ -61,11 +61,11 @@ extension ContentExtractorStoreDependency: DependencyKey {
                 return nil
             }
         }
-    ) }
+    )
 }
 
 public extension DependencyValues {
-    nonisolated var contentExtractorStore: ContentExtractorStoreDependency {
+    var contentExtractorStore: ContentExtractorStoreDependency {
         get { self[ContentExtractorStoreDependency.self] }
         set { self[ContentExtractorStoreDependency.self] = newValue }
     }

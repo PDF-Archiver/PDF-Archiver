@@ -87,7 +87,7 @@ struct DocumentInformationForm {
     @Dependency(\.calendar) var calendar
     @Dependency(\.notificationCenter) var notificationCenter
 
-    var body: some Reducer<State, Action> {
+    var body: some ReducerOf<Self> {
         BindingReducer()
             .onChange(of: \.tagSearchterm) { _, _ in
                 Reduce { _, _ in

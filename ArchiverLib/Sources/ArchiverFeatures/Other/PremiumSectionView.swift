@@ -30,7 +30,7 @@ struct PremiumSection {
 
     @Dependency(\.openURL) var openURL
 
-    var body: some Reducer<State, Action> {
+    var body: some ReducerOf<Self> {
         BindingReducer()
         Reduce { state, action in
             switch action {

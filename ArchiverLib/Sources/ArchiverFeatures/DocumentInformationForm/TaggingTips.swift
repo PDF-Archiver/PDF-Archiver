@@ -10,8 +10,7 @@ import TipKit
 enum TaggingTips {
     static let size: CGSize = .init(width: 24, height: 24)
 
-    @MainActor
-    struct Date: @preconcurrency Tip {
+    struct Date: Tip {
         var title: Text {
             Text("Date", bundle: .module)
         }
@@ -25,8 +24,7 @@ enum TaggingTips {
         }
     }
 
-    @MainActor
-    struct Specification: @preconcurrency Tip {
+    struct Specification: Tip {
         var title: Text {
             Text("Description", bundle: .module)
         }
@@ -40,8 +38,7 @@ enum TaggingTips {
         }
     }
 
-    @MainActor
-    struct Tags: @preconcurrency Tip {
+    struct Tags: Tip {
         var title: Text {
             Text("Tags", bundle: .module)
         }
@@ -56,8 +53,7 @@ enum TaggingTips {
     }
 
     #if os(macOS)
-    @MainActor
-    struct KeyboardShortCut: @preconcurrency Tip {
+    struct KeyboardShortCut: Tip {
         static let documentSaved = Event(id: "documentSaved")
 
         var title: Text {
