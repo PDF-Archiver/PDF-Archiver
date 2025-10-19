@@ -25,7 +25,7 @@ public struct ArchiveStoreDependency: Sendable {
 }
 
 extension ArchiveStoreDependency: TestDependencyKey {
-    public static let previewValue = Self(
+    nonisolated(unsafe) public static let previewValue: Self = MainActor.assumeIsolated { Self(
         documentChanges: {
             AsyncStream { stream in
                 Task {
@@ -61,13 +61,13 @@ extension ArchiveStoreDependency: TestDependencyKey {
         parseFilename: { _ in (nil, nil, nil) },
         saveDocument: { _, _ in },
         setArchiveStorageType: { _ in }
-    )
+    ) }
 
-    public static let testValue = Self()
+    nonisolated(unsafe) public static let testValue: Self = MainActor.assumeIsolated { Self() }
 }
 
 extension ArchiveStoreDependency: DependencyKey {
-    public static let liveValue = ArchiveStoreDependency(
+    nonisolated(unsafe) public static let liveValue: Self = MainActor.assumeIsolated { ArchiveStoreDependency(
         documentChanges: {
             return await ArchiveStore.shared.documentsStream
         },
@@ -107,11 +107,11 @@ extension ArchiveStoreDependency: DependencyKey {
         setArchiveStorageType: { type in
             try await ArchiveStore.shared.update(with: type)
         }
-    )
+    ) }
 }
 
 public extension DependencyValues {
-    public var archiveStore: ArchiveStoreDependency {
+    nonisolated var archiveStore: ArchiveStoreDependency {
         get { self[ArchiveStoreDependency.self] }
         set { self[ArchiveStoreDependency.self] = newValue }
     }

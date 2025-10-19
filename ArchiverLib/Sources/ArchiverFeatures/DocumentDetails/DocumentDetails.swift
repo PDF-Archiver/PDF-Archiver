@@ -59,8 +59,8 @@ struct DocumentDetails {
         }
     }
 
-    @Dependency(\.archiveStore.startDownloadOf) var startDownloadOf
-    var body: some ReducerOf<Self> {
+    @Dependency(\.archiveStore) var archiveStore
+    var body: some Reducer<State, Action> {
         Scope(state: \.documentInformationForm, action: \.showDocumentInformationForm) {
             DocumentInformationForm()
         }
@@ -111,7 +111,7 @@ struct DocumentDetails {
 
             case .onRemoteDocumentAppeared:
                 return .run { [documentUrl = state.document.url] _ in
-                    try await startDownloadOf(documentUrl)
+                    try await archiveStore.startDownloadOf(documentUrl)
                 }
 
 #if os(iOS)

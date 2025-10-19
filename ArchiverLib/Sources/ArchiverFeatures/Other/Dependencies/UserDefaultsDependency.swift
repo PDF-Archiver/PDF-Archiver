@@ -17,15 +17,15 @@ struct UserDefaultsDependency: Log {
 }
 
 extension UserDefaultsDependency: TestDependencyKey {
-    static let previewValue = Self(
+    nonisolated(unsafe) static let previewValue: Self = MainActor.assumeIsolated { Self(
         reset: { },
-    )
+    ) }
 
-    static let testValue = Self()
+    nonisolated(unsafe) static let testValue: Self = MainActor.assumeIsolated { Self() }
 }
 
 extension UserDefaultsDependency: DependencyKey {
-    static let liveValue = UserDefaultsDependency(
+    nonisolated(unsafe) static let liveValue: Self = MainActor.assumeIsolated { UserDefaultsDependency(
         reset: {
             if let bundleIdentifier = Bundle.main.bundleIdentifier {
                 UserDefaults.standard.removePersistentDomain(forName: bundleIdentifier)
@@ -33,11 +33,11 @@ extension UserDefaultsDependency: DependencyKey {
                 log.error("Bundle Identifier not found.")
             }
         }
-    )
+    ) }
 }
 
 extension DependencyValues {
-    var userDefaultsManager: UserDefaultsDependency {
+    nonisolated var userDefaultsManager: UserDefaultsDependency {
         get { self[UserDefaultsDependency.self] }
         set { self[UserDefaultsDependency.self] = newValue }
     }

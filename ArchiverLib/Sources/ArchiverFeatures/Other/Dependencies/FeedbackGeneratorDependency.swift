@@ -24,15 +24,15 @@ struct FeedbackGeneratorDependency {
 }
 
 extension FeedbackGeneratorDependency: TestDependencyKey {
-    static let previewValue = Self(
+    nonisolated(unsafe) static let previewValue: Self = MainActor.assumeIsolated { Self(
         notify: { _ in }
-    )
+    ) }
 
-    static let testValue = Self()
+    nonisolated(unsafe) static let testValue: Self = MainActor.assumeIsolated { Self() }
 }
 
 extension FeedbackGeneratorDependency: DependencyKey {
-    static let liveValue = FeedbackGeneratorDependency(
+    nonisolated(unsafe) static let liveValue: Self = MainActor.assumeIsolated { FeedbackGeneratorDependency(
         notify: { feedbackType in
             #if !os(macOS)
             await MainActor.run {
@@ -50,11 +50,11 @@ extension FeedbackGeneratorDependency: DependencyKey {
             }
             #endif
         }
-    )
+    ) }
 }
 
 extension DependencyValues {
-    var feedbackGenerator: FeedbackGeneratorDependency {
+    nonisolated var feedbackGenerator: FeedbackGeneratorDependency {
         get { self[FeedbackGeneratorDependency.self] }
         set { self[FeedbackGeneratorDependency.self] = newValue }
     }

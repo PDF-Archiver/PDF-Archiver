@@ -17,15 +17,15 @@ struct WidgetStoreDependency {
 }
 
 extension WidgetStoreDependency: TestDependencyKey {
-    static let previewValue = Self(
+    nonisolated(unsafe) static let previewValue: Self = MainActor.assumeIsolated { Self(
         updateWidgetWith: { _ in },
-    )
+    ) }
 
-    static let testValue = Self()
+    nonisolated(unsafe) static let testValue: Self = MainActor.assumeIsolated { Self() }
 }
 
 extension WidgetStoreDependency: DependencyKey {
-    static let liveValue = WidgetStoreDependency(
+    nonisolated(unsafe) static let liveValue: Self = MainActor.assumeIsolated { WidgetStoreDependency(
         updateWidgetWith: { documents in
             defer {
                 WidgetCenter.shared.reloadAllTimelines()
@@ -44,11 +44,11 @@ extension WidgetStoreDependency: DependencyKey {
             let count = documents.filter(\.isTagged.flipped).count
             await SharedDefaults.set(untaggedDocumentsCount: count)
         }
-    )
+    ) }
 }
 
 extension DependencyValues {
-    var widgetStore: WidgetStoreDependency {
+    nonisolated var widgetStore: WidgetStoreDependency {
         get { self[WidgetStoreDependency.self] }
         set { self[WidgetStoreDependency.self] = newValue }
     }

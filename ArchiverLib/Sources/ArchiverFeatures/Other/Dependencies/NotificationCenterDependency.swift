@@ -24,16 +24,16 @@ struct NotificationCenterDependency: Log {
 }
 
 extension NotificationCenterDependency: TestDependencyKey {
-    static let previewValue = Self(
+    nonisolated(unsafe) static let previewValue: Self = MainActor.assumeIsolated { Self(
         createAndPost: { _ in },
         postAlert: { _ in },
-    )
+    ) }
 
-    static let testValue = Self()
+    nonisolated(unsafe) static let testValue: Self = MainActor.assumeIsolated { Self() }
 }
 
 extension NotificationCenterDependency: DependencyKey {
-    static let liveValue = NotificationCenterDependency(
+    nonisolated(unsafe) static let liveValue: Self = MainActor.assumeIsolated { NotificationCenterDependency(
         createAndPost: { alertData in
             NotificationCenter.default.createAndPost(title: alertData.title,
                                                      message: alertData.message,
@@ -42,11 +42,11 @@ extension NotificationCenterDependency: DependencyKey {
         postAlert: { error in
             NotificationCenter.default.postAlert(error)
         }
-    )
+    ) }
 }
 
 extension DependencyValues {
-    var notificationCenter: NotificationCenterDependency {
+    nonisolated var notificationCenter: NotificationCenterDependency {
         get { self[NotificationCenterDependency.self] }
         set { self[NotificationCenterDependency.self] = newValue }
     }

@@ -66,7 +66,7 @@ struct AppFeature {
     @Dependency(\.widgetStore) var widgetStore
     @Dependency(\.contentExtractorStore) var contentExtractorStore
 
-    var body: some ReducerOf<Self> {
+    var body: some Reducer<State, Action> {
         BindingReducer()
 
         // frist, run the ArchiveList reducer ...

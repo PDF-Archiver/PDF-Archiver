@@ -44,7 +44,7 @@ struct ExpertSettings {
     @Dependency(\.userDefaultsManager) var userDefaultsManager
     @Dependency(\.notificationCenter) var notificationCenter
 
-    var body: some ReducerOf<Self> {
+    var body: some Reducer<State, Action> {
         BindingReducer()
         Reduce { state, action in
             switch action {

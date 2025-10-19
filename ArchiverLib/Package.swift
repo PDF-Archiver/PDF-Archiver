@@ -35,13 +35,11 @@ let package = Package(
                     .process("Localizable.xcstrings")
                 ],
                 swiftSettings: [
-                    .enableExperimentalFeature("StrictConcurrency")
-                    // These features can currently not be enabled, see:
-                    // https://github.com/pointfreeco/swift-dependencies/discussions/267
-                    // https://github.com/pointfreeco/swift-composable-architecture/discussions/3714
-//                    .defaultIsolation(MainActor.self),
-//                    .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
-//                    .enableUpcomingFeature("InferIsolatedConformances")
+                    .enableExperimentalFeature("StrictConcurrency"),
+                    // NOTE: defaultIsolation(MainActor.self) removed due to TCA macro incompatibility
+                    // TCA's @Reducer macro generates CaseReducerState conformances that don't work with MainActor default isolation
+                    .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
+                    .enableUpcomingFeature("InferIsolatedConformances")
                 ]),
         .target(name: "ArchiverStore",
                 dependencies: [
@@ -54,10 +52,10 @@ let package = Package(
                     .product(name: "AsyncAlgorithms", package: "swift-async-algorithms")
                 ],
                 swiftSettings: [
-                    .enableExperimentalFeature("StrictConcurrency")
-//                    .defaultIsolation(MainActor.self),
-//                    .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
-//                    .enableUpcomingFeature("InferIsolatedConformances")
+                    .enableExperimentalFeature("StrictConcurrency"),
+                    .defaultIsolation(MainActor.self),
+                    .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
+                    .enableUpcomingFeature("InferIsolatedConformances")
                 ]),
         .target(name: "ArchiverIntents",
                 dependencies: [
@@ -97,10 +95,10 @@ let package = Package(
                     .product(name: "DependenciesMacros", package: "swift-dependencies")
                 ],
                 swiftSettings: [
-                    .enableExperimentalFeature("StrictConcurrency")
-//                    .defaultIsolation(MainActor.self),
-//                    .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
-//                    .enableUpcomingFeature("InferIsolatedConformances")
+                    .enableExperimentalFeature("StrictConcurrency"),
+                    .defaultIsolation(MainActor.self),
+                    .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
+                    .enableUpcomingFeature("InferIsolatedConformances")
                 ]),
         .target(name: "Shared",
                 dependencies: [
