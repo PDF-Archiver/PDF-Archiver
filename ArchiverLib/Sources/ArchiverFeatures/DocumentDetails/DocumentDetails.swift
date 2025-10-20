@@ -148,8 +148,12 @@ struct DocumentDetailsView: View {
                     .ignoresSafeArea(edges: [.bottom, .top])
                     .inspector(isPresented: $store.showInspector) {
                         DocumentInformationFormView(store: store.scope(state: \.documentInformationForm, action: \.showDocumentInformationForm))
+#if os(iOS)
                             .presentationDetents([.medium, .large])
                             .presentationBackgroundInteraction(.enabled)
+#else
+                            .inspectorColumnWidth(min: 300, ideal: 400, max: 600)
+#endif
                     }
             }
         }
