@@ -156,7 +156,7 @@ struct Settings {
                 let url = URL(string: "mailto:\(Constants.mailRecipient)?subject=\(Constants.mailSubject)")!
 
                 #if DEBUG
-                // TODO: this is currently not working
+                assertionFailure("TODO: this is currently not working on macOS")
                 return .run { [url] _ in
                     await openURL(url)
                 }
@@ -390,6 +390,7 @@ struct SettingsMacView: View {
             TabView {
                 Tab(String(localized: "General", bundle: .module), systemImage: "gear") {
                     generalPreferences
+                        .focusable(false)
                 }
 
                 Tab(String(localized: "Premium", bundle: .module), systemImage: "star.hexagon") {
@@ -400,6 +401,7 @@ struct SettingsMacView: View {
 
                 Tab(String(localized: "About", bundle: .module), systemImage: "info.circle") {
                     aboutPreferences
+                        .focusable(false)
                 }
             }
             .tabViewStyle(.tabBarOnly)

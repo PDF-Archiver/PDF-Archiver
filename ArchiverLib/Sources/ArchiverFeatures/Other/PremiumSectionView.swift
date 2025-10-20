@@ -35,10 +35,15 @@ struct PremiumSection {
         Reduce { _, action in
             switch action {
             case .showManageSubscription:
+                let url = URL(string: "https://apps.apple.com/account/subscriptions")!
+                #if os(iOS)
                 return .run { _ in
-                    let url = URL(string: "https://apps.apple.com/account/subscriptions")!
                     await openURL(url)
                 }
+                #else
+                NSWorkspace.shared.open(url)
+                return .none
+                #endif
 
             case .binding, .delegate:
                 return .none

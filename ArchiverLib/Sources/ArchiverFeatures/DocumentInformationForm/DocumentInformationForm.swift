@@ -15,7 +15,10 @@ import TipKit
 @Reducer
 struct DocumentInformationForm {
 
-    enum CancelID { case updateTagSuggestions }
+    enum CancelID {
+        case updateTagSuggestions
+        case parseDocumentData
+    }
 
     @ObservableState
     struct State: Equatable {
@@ -74,6 +77,7 @@ struct DocumentInformationForm {
         case onSaveButtonTapped
         case onSuggestedDateButtonTapped(Date)
         case updateDocumentData(DocumentParsingResult)
+        case updateContentWithAI(URL)
         case updateTagSuggestions
 
         enum Delegate: Equatable {
@@ -149,13 +153,12 @@ struct DocumentInformationForm {
 
             case .onTask:
                 state.isLoading = true
-                return .run { [documentUrl = state.document.url, isTagged = state.document.isTagged, appleIntelligenceEnabled = state.appleIntelligenceEnabled] send in
+                return .run { [documentUrl = state.document.url, isTagged = state.document.isTagged] send in
 
                     if isTagged {
                         await send(.updateTagSuggestions)
                     } else {
-                        let result = await parseDocumentData(url: documentUrl, appleIntelligenceEnabled: appleIntelligenceEnabled)
-                        await send(.updateDocumentData(result))
+                        await send(.updateContentWithAI(documentUrl))
                     }
 
                     await send(.finishedLoading)
@@ -201,6 +204,14 @@ struct DocumentInformationForm {
                     state.suggestedTags = tagSuggestions
                 }
                 return .none
+
+            case .updateContentWithAI(let documentUrl):
+                return .run { [appleIntelligenceEnabled = state.appleIntelligenceEnabled] send in
+                    let result = await parseDocumentData(url: documentUrl, appleIntelligenceEnabled: appleIntelligenceEnabled)
+                    await send(.updateDocumentData(result))
+                }
+                // we try to abort the foundation model response after content generation
+                .cancellable(id: CancelID.parseDocumentData, cancelInFlight: true)
 
             case .updateTagSuggestions:
                 return .run { [tagSearchterm = state.tagSearchterm, documentTags = state.document.tags] send in

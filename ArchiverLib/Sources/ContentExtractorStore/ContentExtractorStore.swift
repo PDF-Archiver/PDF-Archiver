@@ -83,10 +83,14 @@ public actor ContentExtractorStore: Log {
     }
 
     public func extract(from text: String) async throws -> Info? {
+
+        // as of iOS 26.0 we can not cancel in flight responses, so we have to return early, if a request is currently running
+        guard !session.isResponding else { return nil }
+
         guard Self.getAvailability().isUsable else { return nil }
 
         let response = try await session.respond(
-            to: text,
+            to: String(text.prefix(3500)),  // try to avoid max token error (only 4k possible)
             generating: DocumentInformation.self,
             includeSchemaInPrompt: false,
             options: Self.options

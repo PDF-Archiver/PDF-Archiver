@@ -77,7 +77,7 @@ struct AppleIntelligenceSettingsView: View {
                 }
             } footer: {
                 if store.availability == .available {
-                    Text("When enabled, Apple Intelligence will automatically suggest descriptions and tags for your documents. This might take some time.", bundle: .module)
+                    Text("When enabled, Apple Intelligence will automatically suggest descriptions and tags for your documents. However, this feature may take some time to function.\n\nIn case of a failure, the non-AI version will always be used.", bundle: .module)
                         .foregroundStyle(.secondary)
                         .font(.footnote)
                 }
