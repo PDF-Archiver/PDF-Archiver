@@ -16,8 +16,8 @@ import TipKit
 struct DocumentInformationForm {
 
     enum CancelID {
-        case updateTagSuggestions
-        case parseDocumentData
+        case startUpdatingAllSuggestionsWithAI
+        case startUpdatingTagSuggestions
     }
 
     @ObservableState
@@ -67,18 +67,17 @@ struct DocumentInformationForm {
     enum Action: BindableAction, Equatable {
         case binding(BindingAction<State>)
         case delegate(Delegate)
-        case finishedLoading
-        case onTask
+        case onSaveButtonTapped
+        case onSuggestedDateButtonTapped(Date)
         case onTagOnDocumentTapped(String)
         case onTagSearchtermSubmitted
         case onTagSuggestionTapped(String)
-        case onTagSuggestionsUpdated([String])
+        case onTask
         case onTodayButtonTapped
-        case onSaveButtonTapped
-        case onSuggestedDateButtonTapped(Date)
+        case startUpdatingAllSuggestionsWithAI(URL)
+        case startUpdatingTagSuggestions
         case updateDocumentData(DocumentParsingResult)
-        case updateContentWithAI(URL)
-        case updateTagSuggestions
+        case updateTagSuggestions([String])
 
         enum Delegate: Equatable {
             case saveDocument(Document, shouldUpdatePdfMetadata: Bool)
@@ -95,7 +94,7 @@ struct DocumentInformationForm {
         BindingReducer()
             .onChange(of: \.tagSearchterm) { _, _ in
                 Reduce { _, _ in
-                    return .send(.updateTagSuggestions)
+                    return .send(.startUpdatingTagSuggestions)
                 }
             }
 
@@ -106,19 +105,6 @@ struct DocumentInformationForm {
 
             case .delegate:
                 return .none
-
-            case .finishedLoading:
-                state.isLoading = false
-                return .none
-
-            case .onTagSearchtermSubmitted:
-                let selectedTag = state.suggestedTags.first ?? state.tagSearchterm.lowercased().slugified(withSeparator: "")
-                guard !selectedTag.isEmpty else { return .none }
-
-                _ = state.document.tags.insert(selectedTag)
-                state.tagSearchterm = ""
-
-                return .send(.updateTagSuggestions)
 
             case .onSaveButtonTapped:
                 let nothingChanged = state.initialDocument.date == state.document.date && state.initialDocument.specification == state.document.specification && state.initialDocument.tags == state.document.tags
@@ -151,22 +137,19 @@ struct DocumentInformationForm {
                 state.document.date = date
                 return .none
 
-            case .onTask:
-                state.isLoading = true
-                return .run { [documentUrl = state.document.url, isTagged = state.document.isTagged] send in
+            case .onTagOnDocumentTapped(var tag):
+                tag = tag.lowercased()
+                _ = state.document.tags.remove(tag)
+                return .send(.startUpdatingTagSuggestions)
 
-                    if isTagged {
-                        await send(.updateTagSuggestions)
-                    } else {
-                        await send(.updateContentWithAI(documentUrl))
-                    }
+            case .onTagSearchtermSubmitted:
+                let selectedTag = state.suggestedTags.first ?? state.tagSearchterm.lowercased().slugified(withSeparator: "")
+                guard !selectedTag.isEmpty else { return .none }
 
-                    await send(.finishedLoading)
-                }
+                _ = state.document.tags.insert(selectedTag)
+                state.tagSearchterm = ""
 
-            case .onTagSuggestionsUpdated(let suggestedTags):
-                state.suggestedTags = suggestedTags
-                return .none
+                return .send(.startUpdatingTagSuggestions)
 
             case .onTagSuggestionTapped(var tag):
                 tag = tag.lowercased()
@@ -176,18 +159,48 @@ struct DocumentInformationForm {
                 // remove current tagSearchteam - this will also trigger the new analyses of the tags
                 state.tagSearchterm = ""
 
-                return .send(.updateTagSuggestions)
+                return .send(.startUpdatingTagSuggestions)
 
-            case .onTagOnDocumentTapped(var tag):
-                tag = tag.lowercased()
-                _ = state.document.tags.remove(tag)
-                return .send(.updateTagSuggestions)
+            case .onTask:
+                state.isLoading = true
+                return .run { [documentUrl = state.document.url, isTagged = state.document.isTagged] send in
+                    if isTagged {
+                        await send(.startUpdatingTagSuggestions)
+                    } else {
+                        await send(.startUpdatingAllSuggestionsWithAI(documentUrl))
+                    }
+                }
 
             case .onTodayButtonTapped:
                 state.document.date = Date()
                 return .none
 
+            case .startUpdatingAllSuggestionsWithAI(let documentUrl):
+                return .run { [appleIntelligenceEnabled = state.appleIntelligenceEnabled] send in
+                    let result = await startUpdatingAllSuggestionsWithAI(url: documentUrl, appleIntelligenceEnabled: appleIntelligenceEnabled)
+                    await send(.updateDocumentData(result))
+                }
+                // we try to abort the foundation model response after content generation
+                .cancellable(id: CancelID.startUpdatingAllSuggestionsWithAI, cancelInFlight: true)
+
+            case .startUpdatingTagSuggestions:
+                return .run { [tagSearchterm = state.tagSearchterm, documentTags = state.document.tags] send in
+                    let tags: [String]
+                    if tagSearchterm.isEmpty {
+                        guard !documentTags.isEmpty else { return }
+                        tags = await archiveStore.getTagSuggestionsSimilarTo(documentTags)
+                    } else {
+                        tags = await archiveStore.getTagSuggestionsFor(tagSearchterm.lowercased())
+                    }
+
+                    await send(.updateTagSuggestions(tags))
+                }
+                // we do not need multiple fetches of tag suggestions - so we cancelInFlight suggestions
+                .cancellable(id: CancelID.startUpdatingTagSuggestions, cancelInFlight: true)
+
             case .updateDocumentData(let result):
+                state.isLoading = false
+
                 if let date = result.date {
                     state.document.date = date
                 }
@@ -205,28 +218,10 @@ struct DocumentInformationForm {
                 }
                 return .none
 
-            case .updateContentWithAI(let documentUrl):
-                return .run { [appleIntelligenceEnabled = state.appleIntelligenceEnabled] send in
-                    let result = await parseDocumentData(url: documentUrl, appleIntelligenceEnabled: appleIntelligenceEnabled)
-                    await send(.updateDocumentData(result))
-                }
-                // we try to abort the foundation model response after content generation
-                .cancellable(id: CancelID.parseDocumentData, cancelInFlight: true)
-
-            case .updateTagSuggestions:
-                return .run { [tagSearchterm = state.tagSearchterm, documentTags = state.document.tags] send in
-                    let tags: [String]
-                    if tagSearchterm.isEmpty {
-                        guard !documentTags.isEmpty else { return }
-                        tags = await archiveStore.getTagSuggestionsSimilarTo(documentTags)
-                    } else {
-                        tags = await archiveStore.getTagSuggestionsFor(tagSearchterm.lowercased())
-                    }
-
-                    await send(.onTagSuggestionsUpdated(tags))
-                }
-                // we do not need multiple fetches of tag suggestions - so we cancelInFlight suggestions
-                .cancellable(id: CancelID.updateTagSuggestions, cancelInFlight: true)
+            case .updateTagSuggestions(let suggestedTags):
+                state.isLoading = false
+                state.suggestedTags = suggestedTags
+                return .none
             }
         }
     }
@@ -238,7 +233,7 @@ struct DocumentInformationForm {
         let dateSuggestions: [Date]?
         let tagSuggestions: [String]?
     }
-    private func parseDocumentData(url: URL, appleIntelligenceEnabled: Bool) async -> DocumentParsingResult {
+    private func startUpdatingAllSuggestionsWithAI(url: URL, appleIntelligenceEnabled: Bool) async -> DocumentParsingResult {
 
         // analyse document content and fill suggestions
         let parserOutput = await archiveStore.parseFilename(url.lastPathComponent)
