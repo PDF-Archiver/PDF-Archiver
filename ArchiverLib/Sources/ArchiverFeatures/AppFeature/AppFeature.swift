@@ -126,6 +126,10 @@ struct AppFeature {
                 return .none
 
             case .binding(\.selectedTab):
+                // deselect the last document because the user could not selected e.g. the inspector when switching tabs
+                state.archiveList.$selectedDocumentId.withLock { $0 = nil }
+
+                // switch tab
                 switch state.selectedTab {
                 case .search:
                     state.archiveList.searchTokens = []
