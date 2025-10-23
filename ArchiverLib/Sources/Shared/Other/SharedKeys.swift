@@ -114,8 +114,7 @@ public extension SharedKey where Self == AppStorageKey<String?> {
 }
 public extension SharedKey where Self == AppStorageKey<String?>.Default {
   static var appleIntelligenceCustomPrompt: Self {
-      let defaultValue = UserDefaults.standard.string(forKey: "appleIntelligenceCustomPrompt")
-      return Self[.appStorage(Names.appleIntelligenceCustomPrompt.id, store: .standard), default: defaultValue]
+      return Self[.appStorage(Names.appleIntelligenceCustomPrompt.id, store: .standard), default: nil]
   }
 }
 

@@ -14,9 +14,7 @@ import Shared
 
 @available(iOS 26, macOS 26, *)
 public actor ContentExtractorStore: Log {
-    public static let maxCustomPromptLength = 1000
     private static let maxTotalPromptLength = 3500
-    private static let staticPrefix = "Document content:\n\n"
 
     private static var locale: Locale {
         Locale.current.region == "DE" ? Locale(identifier: "de_DE") : Locale.current
@@ -93,22 +91,18 @@ public actor ContentExtractorStore: Log {
 
         guard Self.getAvailability().isUsable else { return nil }
 
-        // Calculate available space for document text
-        let customPromptText = customPrompt ?? ""
-        let customPromptLength = customPromptText.isEmpty ? 0 : customPromptText.count + 2 // +2 for "\n\n"
-
-        let reservedLength = Self.staticPrefix.count + customPromptLength
-        let availableTextLength = Self.maxTotalPromptLength - reservedLength
+        let availableTextLength = Self.maxTotalPromptLength - (customPrompt?.count ?? 0)
         let truncatedText = String(text.prefix(max(0, availableTextLength)))
 
-        // Build final prompt
-        var finalPrompt = Self.staticPrefix + truncatedText
-        if !customPromptText.isEmpty {
-            finalPrompt += "\n\n\(customPromptText)"
+        let prompt = Prompt {
+            customPrompt ?? ""
+            """
+            document content:\n\(truncatedText)
+            """
         }
 
         let response = try await session.respond(
-            to: finalPrompt,
+            to: prompt,
             generating: DocumentInformation.self,
             includeSchemaInPrompt: false,
             options: Self.options

@@ -13,6 +13,15 @@ import Shared
 
 @DependencyClient
 public struct ContentExtractorStoreDependency: Sendable {
+    public struct DocInfoInput: Sendable {
+        public let text: String
+        public let customPrompt: String?
+
+        public init(text: String, customPrompt: String?) {
+            self.text = text
+            self.customPrompt = customPrompt
+        }
+    }
     public struct DocInfo: Sendable {
         public let specification: String
         public let tags: Set<String>
@@ -23,7 +32,7 @@ public struct ContentExtractorStoreDependency: Sendable {
 
     public var isAvailable: @Sendable () async -> AppleIntelligenceAvailability = { .deviceNotCompatible }
     public var prewarm: @Sendable () async -> Void
-    public var getDocumentInformation: @Sendable (String) async -> DocInfo?
+    public var getDocumentInformation: @Sendable (DocInfoInput) async -> DocInfo?
 }
 
 extension ContentExtractorStoreDependency: TestDependencyKey {
@@ -49,11 +58,10 @@ extension ContentExtractorStoreDependency: DependencyKey {
             guard #available(iOS 26.0, macOS 26.0, *) else { return }
             await contentExtractorStore.prewarm()
         },
-        getDocumentInformation: { text in
+        getDocumentInformation: { input in
             guard #available(iOS 26.0, macOS 26.0, *) else { return nil }
             do {
-                let customPrompt = UserDefaults.standard.string(forKey: "shared-apple-intelligence-custom-prompt")
-                guard let result = try await contentExtractorStore.extract(from: text, customPrompt: customPrompt) else { return nil }
+                guard let result = try await contentExtractorStore.extract(from: input.text, customPrompt: input.customPrompt) else { return nil }
 
                 return DocInfo(specification: result.specification,
                                tags: Set(result.tags))

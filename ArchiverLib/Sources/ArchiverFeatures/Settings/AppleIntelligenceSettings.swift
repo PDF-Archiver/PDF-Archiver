@@ -81,7 +81,7 @@ struct AppleIntelligenceSettingsView: View {
                 }
             } footer: {
                 if store.availability == .available {
-                    Text("When enabled, Apple Intelligence will automatically suggest descriptions and tags for your documents. However, this feature may take some time to function.\n\nIn case of a failure, the non-AI version will always be used.", bundle: .module)
+                    Text("When enabled, Apple Intelligence will automatically suggest descriptions and tags for your documents. However, this feature may take some time to function.\nIn case of a failure, the non-AI version will always be used.", bundle: .module)
                         .foregroundStyle(.secondary)
                         .font(.footnote)
                 }
@@ -89,38 +89,23 @@ struct AppleIntelligenceSettingsView: View {
 
             if store.availability == .available {
                 Section {
-                    VStack(alignment: .trailing, spacing: 8) {
-                        TextEditor(text: Binding(
-                            get: { store.customPrompt ?? "" },
-                            set: { newValue in
-                                let trimmed = String(newValue.prefix(AppleIntelligenceSettings.maxCustomPromptLength))
-                                store.customPrompt = trimmed.isEmpty ? nil : trimmed
-                            }
-                        ))
-                        .frame(minHeight: 100)
-                        #if os(iOS)
-                        .scrollContentBackground(.hidden)
-                        .background(Color(.systemGray6))
-                        .cornerRadius(8)
-                        #endif
+                    TextField("Custom Prompt", text: Binding(
+                        get: { store.customPrompt ?? "" },
+                        set: { newValue in
+                            let trimmed = String(newValue.prefix(AppleIntelligenceSettings.maxCustomPromptLength))
+                            store.customPrompt = trimmed.isEmpty ? nil : trimmed
+                        }
+                    ), prompt: Text("Optional: Enter your custom prompt additions", bundle: .module), axis: .vertical)
+                    .lineLimit(1...)
 
-                        Text("\(store.customPrompt?.count ?? 0)/\(AppleIntelligenceSettings.maxCustomPromptLength)")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                } header: {
-                    Text("Custom Prompt", bundle: .module)
-                        .foregroundStyle(Color.secondary)
                 } footer: {
-                    Text("Additional instructions for Apple Intelligence. This text is appended to the document content. Maximum \(AppleIntelligenceSettings.maxCustomPromptLength) characters.", bundle: .module)
-                        .foregroundStyle(.secondary)
-                        .font(.footnote)
+                    Text("\(store.customPrompt?.count ?? 0) / \(AppleIntelligenceSettings.maxCustomPromptLength)", bundle: .module)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
                 }
-                #if os(macOS)
-                .padding(.horizontal)
-                #endif
             }
         }
+        .formStyle(.grouped)
         .foregroundStyle(.primary)
         .onAppear {
             store.send(.onAppear)
