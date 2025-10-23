@@ -13,6 +13,7 @@ import SwiftUI
 
 @Reducer
 struct AppleIntelligenceSettings {
+    static let maxCustomPromptLength = 1000
 
     @ObservableState
     struct State: Equatable {
@@ -20,6 +21,9 @@ struct AppleIntelligenceSettings {
 
         @Shared(.appleIntelligenceEnabled)
         var appleIntelligenceEnabled: Bool
+
+        @Shared(.appleIntelligenceCustomPrompt)
+        var customPrompt: String?
     }
 
     enum Action: BindableAction, Equatable {
@@ -77,15 +81,34 @@ struct AppleIntelligenceSettingsView: View {
                 }
             } footer: {
                 if store.availability == .available {
-                    Text("When enabled, Apple Intelligence will automatically suggest descriptions and tags for your documents. However, this feature may take some time to function.\n\nIn case of a failure, the non-AI version will always be used.", bundle: .module)
+                    Text("When enabled, Apple Intelligence will automatically suggest descriptions and tags for your documents. However, this feature may take some time to function.\nIn case of a failure, the non-AI version will always be used.", bundle: .module)
                         .foregroundStyle(.secondary)
                         .font(.footnote)
                 }
             }
-            #if os(macOS)
-            .padding(.horizontal)
-            #endif
+
+            if store.availability == .available {
+                Section {
+                    TextField(String(localized: "Custom Prompt", bundle: .module),
+                              text: Binding(
+                                get: { store.customPrompt ?? "" },
+                                set: { newValue in
+                                    let trimmed = String(newValue.prefix(AppleIntelligenceSettings.maxCustomPromptLength))
+                                    store.customPrompt = trimmed.isEmpty ? nil : trimmed
+                                }
+                              ),
+                              prompt: Text("Optional: Enter your custom prompt additions", bundle: .module),
+                              axis: .vertical)
+                    .lineLimit(1...)
+
+                } footer: {
+                    Text("\(store.customPrompt?.count ?? 0) / \(AppleIntelligenceSettings.maxCustomPromptLength)", bundle: .module)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                }
+            }
         }
+        .formStyle(.grouped)
         .foregroundStyle(.primary)
         .onAppear {
             store.send(.onAppear)

@@ -14,6 +14,8 @@ import Shared
 
 @available(iOS 26, macOS 26, *)
 public actor ContentExtractorStore: Log {
+    private static let maxTotalPromptLength = 3500
+
     private static var locale: Locale {
         Locale.current.region == "DE" ? Locale(identifier: "de_DE") : Locale.current
     }
@@ -82,15 +84,25 @@ public actor ContentExtractorStore: Log {
         session.prewarm()
     }
 
-    public func extract(from text: String) async throws -> Info? {
+    public func extract(from text: String, customPrompt: String? = nil) async throws -> Info? {
 
         // as of iOS 26.0 we can not cancel in flight responses, so we have to return early, if a request is currently running
         guard !session.isResponding else { return nil }
 
         guard Self.getAvailability().isUsable else { return nil }
 
+        let availableTextLength = Self.maxTotalPromptLength - (customPrompt?.count ?? 0)
+        let truncatedText = String(text.prefix(max(0, availableTextLength)))
+
+        let prompt = Prompt {
+            customPrompt ?? ""
+            """
+            document content:\n\(truncatedText)
+            """
+        }
+
         let response = try await session.respond(
-            to: String(text.prefix(3500)),  // try to avoid max token error (only 4k possible)
+            to: prompt,
             generating: DocumentInformation.self,
             includeSchemaInPrompt: false,
             options: Self.options
