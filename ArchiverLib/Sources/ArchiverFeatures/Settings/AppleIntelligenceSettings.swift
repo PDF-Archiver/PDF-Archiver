@@ -13,6 +13,7 @@ import SwiftUI
 
 @Reducer
 struct AppleIntelligenceSettings {
+    static let maxCustomPromptLength = 1000
 
     @ObservableState
     struct State: Equatable {
@@ -20,6 +21,9 @@ struct AppleIntelligenceSettings {
 
         @Shared(.appleIntelligenceEnabled)
         var appleIntelligenceEnabled: Bool
+
+        @Shared(.appleIntelligenceCustomPrompt)
+        var customPrompt: String?
     }
 
     enum Action: BindableAction, Equatable {
@@ -82,9 +86,40 @@ struct AppleIntelligenceSettingsView: View {
                         .font(.footnote)
                 }
             }
-            #if os(macOS)
-            .padding(.horizontal)
-            #endif
+
+            if store.availability == .available {
+                Section {
+                    VStack(alignment: .trailing, spacing: 8) {
+                        TextEditor(text: Binding(
+                            get: { store.customPrompt ?? "" },
+                            set: { newValue in
+                                let trimmed = String(newValue.prefix(AppleIntelligenceSettings.maxCustomPromptLength))
+                                store.customPrompt = trimmed.isEmpty ? nil : trimmed
+                            }
+                        ))
+                        .frame(minHeight: 100)
+                        #if os(iOS)
+                        .scrollContentBackground(.hidden)
+                        .background(Color(.systemGray6))
+                        .cornerRadius(8)
+                        #endif
+
+                        Text("\(store.customPrompt?.count ?? 0)/\(AppleIntelligenceSettings.maxCustomPromptLength)")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                } header: {
+                    Text("Custom Prompt", bundle: .module)
+                        .foregroundStyle(Color.secondary)
+                } footer: {
+                    Text("Additional instructions for Apple Intelligence. This text is appended to the document content. Maximum \(AppleIntelligenceSettings.maxCustomPromptLength) characters.", bundle: .module)
+                        .foregroundStyle(.secondary)
+                        .font(.footnote)
+                }
+                #if os(macOS)
+                .padding(.horizontal)
+                #endif
+            }
         }
         .foregroundStyle(.primary)
         .onAppear {

@@ -52,7 +52,8 @@ extension ContentExtractorStoreDependency: DependencyKey {
         getDocumentInformation: { text in
             guard #available(iOS 26.0, macOS 26.0, *) else { return nil }
             do {
-                guard let result = try await contentExtractorStore.extract(from: text) else { return nil }
+                let customPrompt = UserDefaults.standard.string(forKey: "shared-apple-intelligence-custom-prompt")
+                guard let result = try await contentExtractorStore.extract(from: text, customPrompt: customPrompt) else { return nil }
 
                 return DocInfo(specification: result.specification,
                                tags: Set(result.tags))
