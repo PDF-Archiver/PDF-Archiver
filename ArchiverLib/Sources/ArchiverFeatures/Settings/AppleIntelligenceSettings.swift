@@ -89,13 +89,16 @@ struct AppleIntelligenceSettingsView: View {
 
             if store.availability == .available {
                 Section {
-                    TextField("Custom Prompt", text: Binding(
-                        get: { store.customPrompt ?? "" },
-                        set: { newValue in
-                            let trimmed = String(newValue.prefix(AppleIntelligenceSettings.maxCustomPromptLength))
-                            store.customPrompt = trimmed.isEmpty ? nil : trimmed
-                        }
-                    ), prompt: Text("Optional: Enter your custom prompt additions", bundle: .module), axis: .vertical)
+                    TextField(String(localized: "Custom Prompt", bundle: .module),
+                              text: Binding(
+                                get: { store.customPrompt ?? "" },
+                                set: { newValue in
+                                    let trimmed = String(newValue.prefix(AppleIntelligenceSettings.maxCustomPromptLength))
+                                    store.customPrompt = trimmed.isEmpty ? nil : trimmed
+                                }
+                              ),
+                              prompt: Text("Optional: Enter your custom prompt additions", bundle: .module),
+                              axis: .vertical)
                     .lineLimit(1...)
 
                 } footer: {
