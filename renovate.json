@@ -1,12 +1,13 @@
 {
-  "extends": [
-    "config:base"
-  ],
-  "assigneesFromCodeOwners": true,
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", "group:all"],
+  "swift": {
+    "enabled": true
+  },
   "packageRules": [
     {
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-      "automerge": true
+      "matchManagers": ["swift"],
+      "rangeStrategy": "bump"
     }
   ]
 }

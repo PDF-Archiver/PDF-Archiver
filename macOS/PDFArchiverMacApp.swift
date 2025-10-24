@@ -5,32 +5,20 @@
 //  Created by Julian Kahnert on 26.03.24.
 //
 
+import ArchiverFeatures
 import Foundation
 import SwiftUI
 
 @main
-struct PDFArchiverMacApp: App, Log {
-
-    @StateObject private var moreViewModel = SettingsViewModel()
-    private var navigationModel: NavigationModel = .shared
-
-    init() {
-        initializePdfArchiver()
-    }
+struct PDFArchiverMacApp: App {
 
     var body: some Scene {
         WindowGroup {
-            SplitNavigationView()
-                .inAppPurchasesSetup()
+            RootView()
         }
-        .environment(navigationModel)
-        .modelContainer(container)
 
         Settings {
-            SettingsViewMacOS(viewModel: moreViewModel)
+            RootView.settings
         }
-        .windowStyle(HiddenTitleBarWindowStyle())
-        .environment(navigationModel)
-        .modelContainer(container)
     }
 }

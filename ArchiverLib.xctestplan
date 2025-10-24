@@ -1,0 +1,39 @@
+{
+  "configurations" : [
+    {
+      "id" : "742E6D3A-0674-46FA-92BB-C5DA340685C4",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "language" : "de",
+    "region" : "DE"
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "ArchiverFeaturesTests",
+        "name" : "ArchiverFeaturesTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "ArchiverStoreTests",
+        "name" : "ArchiverStoreTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "ArchiverDocumentProcessingTests",
+        "name" : "ArchiverDocumentProcessingTests"
+      }
+    }
+  ],
+  "version" : 1
+}

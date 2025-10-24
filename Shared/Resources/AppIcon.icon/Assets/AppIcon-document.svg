@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Pixodesk SVG (https://pixodesk.com) -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" fill="#ca414f">
+  <defs>
+    <filter>
+      <feDropShadow result="drop-shadow-0" dy="10" stdDeviation="10" flood-opacity="0.3"/>
+    </filter>
+    <filter>
+      <feDropShadow result="drop-shadow-0" dy="10" stdDeviation="10" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  <g transform="translate(-1.2, 15.95)">
+    <path id="svg_8" class="st3" fill="#ffffff" d="M577,320.6L577,177L305.8,177C279.4,177,257.9,198.4,257.9,224.9L257.9,767.2C257.9,793.6,279.3,815.1,305.8,815.1L720.5,815.1C746.9,815.1,768.4,793.7,768.4,767.2L768.4,368.4L624.8,368.4C598.4,368.4,577,347,577,320.6z"/>
+  </g>
+</svg>

@@ -1,0 +1,56 @@
+name: Update Package.resolved for Renovate
+
+on:
+  push:
+    branches:
+      - "renovate/**"
+
+jobs:
+  update-package-resolved:
+    runs-on: macos-26
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Swift
+        uses: JulianKahnert/setup-swift@patch-1
+        with:
+          swift-version: "6.2"
+
+      - name: Run swift package resolve
+        run: |
+          xcodebuild -workspace PDFArchiver.xcworkspace -scheme ArchiverLib -resolvePackageDependencies
+          cd ArchiverLib && swift package resolve
+
+      - name: Install LicensePlist
+        run: |
+          brew install licenseplist
+
+      - name: Update Settings.bundle with licenses
+        run: |
+          license-plist --suppress-opening-directory --add-version-numbers --force --output-path Shared/Resources/Settings.bundle --xcworkspace-path PDFArchiver.xcworkspace
+
+      - name: Check for changes in Package.resolved and Settings.bundle
+        id: changes
+        run: |
+          if git diff --quiet PDFArchiver.xcworkspace/xcshareddata/swiftpm/Package.resolved Shared/Resources/Settings.bundle/; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit Package.resolved and Settings.bundle changes
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add PDFArchiver.xcworkspace/xcshareddata/swiftpm/Package.resolved
+          git add Shared/Resources/Settings.bundle/
+          git commit -m "Package.resolved and Settings.bundle updated"
+          git push

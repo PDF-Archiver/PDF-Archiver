@@ -8,11 +8,11 @@
 import AppIntents
 import WidgetKit
 
-#warning("TODO: remove this config")
 struct ConfigurationAppIntent: WidgetConfigurationIntent {
     static var title: LocalizedStringResource { "Widget Configuration" }
     static var description: IntentDescription { "Statistics widget of your documents." }
 
-    @Parameter(title: "First year in statistics", default: 2023)
+    // Default shows statistics from 2020 onwards (approximately last 5 years)
+    @Parameter(title: "First year in statistics", default: 2020)
     var firstYear: Int
 }

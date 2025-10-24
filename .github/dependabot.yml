@@ -1,0 +1,9 @@
+version: 2
+updates:
+  - package-ecosystem: "swift" # Swift Package Manager (SPM)
+    directory: "ArchiverLib" # Pfad zur Package.swift (Standard: Root)
+    schedule:
+      interval: "daily" # Prüft täglich auf Updates
+    open-pull-requests-limit: 10 # Max. 10 offene PRs gleichzeitig
+    labels:
+      - "dependencies" # Optional: Label für PRs
