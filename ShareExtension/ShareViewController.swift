@@ -8,17 +8,11 @@
 
 import OSLog
 import PDFKit
+import Shared
 import UIKit
 import UniformTypeIdentifiers
 
 final class ShareViewController: UIViewController {
-    // IMPORTANT: This must match Constants.tempDocumentURL from ArchiverLib/Sources/Shared/Constants.swift
-    // Using App Group Container to share files with main app
-    private static let sharedContainerIdentifier = "group.PDFArchiverShared"
-    // swiftlint:disable:next force_unwrapping
-    private static let appGroupContainerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: sharedContainerIdentifier)!
-    private static let tempDocumentURL = appGroupContainerURL.appendingPathComponent("TempDocuments")
-
     private static let log = Logger(subsystem: "PDFArchiverShareExtension", category: "ShareViewController")
 
     fileprivate enum ShareError: Error {
@@ -81,7 +75,7 @@ final class ShareViewController: UIViewController {
             // Migrate any documents from legacy temp location before processing new attachment
             await migrateLegacyDocuments()
 
-            let url = Self.tempDocumentURL
+            let url = Constants.tempDocumentURL
             try FileManager.default.createFolderIfNotExists(url)
 
             let inputItems = (extensionContext?.inputItems as? [NSExtensionItem]) ?? []
@@ -141,11 +135,11 @@ final class ShareViewController: UIViewController {
             }
 
             // Ensure target directory exists
-            try FileManager.default.createFolderIfNotExists(Self.tempDocumentURL)
+            try FileManager.default.createFolderIfNotExists(Constants.tempDocumentURL)
 
             var migratedCount = 0
             for legacyURL in legacyURLs {
-                let targetURL = Self.tempDocumentURL.appendingPathComponent(legacyURL.lastPathComponent)
+                let targetURL = Constants.tempDocumentURL.appendingPathComponent(legacyURL.lastPathComponent)
 
                 do {
                     // Check if file already exists at target
