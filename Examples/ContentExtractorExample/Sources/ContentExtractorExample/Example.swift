@@ -21,9 +21,8 @@ extension Transcript.Entry {
 }
 
 #Playground {
-    // Create store and prewarm
+    // Create store
     let store = ExampleContentExtractorStore()
-    await store.prewarm()
 
     // Process mock documents
     let text = MockDocuments.invoice

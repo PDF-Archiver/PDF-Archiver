@@ -30,59 +30,10 @@ actor ExampleContentExtractorStore {
         maximumResponseTokens: 512
     )
 
-    private let session: LanguageModelSession
-
-    init() {
-        let tagCountTool = MockTagCountTool()
-        let documentDescriptionTool = MockDocumentDescriptionTool()
-
-        session = LanguageModelSession(
-            model: .default,
-            tools: [tagCountTool], // TODO: no tool calls will happen when documentDescriptionTool is active
-            instructions: Instructions {
-
-            // Task description
-            """
-            Your task is to archive documents by analyzing their content and generating appropriate descriptions and tags.
-            """
-
-            // Document tags:
-            """
-            Tags MUST prioritize existing tags from the system whenever applicable.
-            Use the \(tagCountTool.name) tool to query available tags and their usage frequency.
-            Prefer frequently used tags to maintain consistency.
-            If no suitable existing tags are found, create new appropriate tags.
-            """
-
-            // Document description:
-            """
-            The description should provide a concise summary of the document's content.
-            You MUST ALWAYS use the user's locale: \(Self.locale.identifier).
-            """
-
-            """
-            You MUST ALWAYS retrieve example descriptions using the \(documentDescriptionTool.name) tool.
-            Model your new description after the examples, adapting the style and format to match the current document's content.
-            """
-
-            // Example:
-            """
-            For an invoice for a blue jumper from Tom Tailor, the ideal output would be:
-            - Description: Blue hoodie
-            - Tags: invoice, clothing, tomtailor
-            """
-            })
-    }
-
-    func prewarm() {
-        session.prewarm()
-    }
-
     @MainActor
     func extract(from text: String, customPrompt: String? = nil) async throws -> LanguageModelSession.Response<DocumentInformation>? {
 
-        // as of iOS 26.0 we can not cancel in flight responses, so we have to return early, if a request is currently running
-        guard !session.isResponding else { return nil }
+        let session = Self.createSession()
 
         let availableTextLength = Self.maxTotalPromptLength - (customPrompt?.count ?? 0)
         let truncatedText = String(text.prefix(max(0, availableTextLength)))
@@ -102,6 +53,89 @@ actor ExampleContentExtractorStore {
         )
 
         return response
+    }
+
+    // MARK: - internal helper functions
+
+    private static func createSession() -> LanguageModelSession {
+        let docStats = getMockDocumentStats()
+        return LanguageModelSession(
+            model: .default,
+            tools: [],
+            instructions: Instructions {
+
+            // Task description
+            """
+            Your task is to archive documents by analyzing their content and generating appropriate descriptions and tags.
+            """
+
+            // Document tags:
+            """
+            Tags MUST ALWAYS use existing tags from the system whenever applicable.
+            Prefer frequently used tags to maintain consistency: \(docStats.tagCounts)
+            If no suitable existing tags are found, create new appropriate tags.
+            """
+
+            // Document description:
+            """
+            The description should provide a concise summary of the document's content (5-10 words maximum).
+            You MUST ALWAYS use the user's locale: \(Self.locale.identifier).
+            You MUST ALWAYS model your new description after the examples, adapting the style and format to match the current document's content.
+            Only use the current document content. DO NOT hallucinate.
+            Example descriptions: \(docStats.specifications)
+            """
+
+            // Example:
+            """
+            For an invoice for a blue jumper from Tom Tailor, the ideal output would be:
+            - Description: Blue hoodie
+            - Tags: invoice, clothing, tomtailor
+            """
+            })
+    }
+
+    private struct DocStats {
+        let tagCounts: String
+        let specifications: String
+    }
+
+    private static func getMockDocumentStats() -> DocStats {
+        // Mock data: frequently used tags
+        let mockTagCounts = [
+            "'invoice': 45",
+            "'contract': 32",
+            "'insurance': 28",
+            "'bank': 25",
+            "'tax': 22",
+            "'salary': 18",
+            "'rent': 15",
+            "'car': 12",
+            "'doctor': 10",
+            "'internet': 8",
+            "'electricity': 7",
+            "'mobile': 6",
+            "'shipping': 5",
+            "'clothing': 4",
+            "'electronics': 3"
+        ]
+
+        let tagCountsString = """
+        'tagName': count
+        \(mockTagCounts.joined(separator: "\n"))
+        """
+
+        // Mock document descriptions
+        let mockDescriptions = [
+            "blue-hoodie",
+            "insurance-letter",
+            "tax-relevant",
+            "income-tax"
+        ]
+
+        let specificationsString = mockDescriptions.joined(separator: "\n")
+
+        return DocStats(tagCounts: tagCountsString,
+                        specifications: specificationsString)
     }
 }
 
