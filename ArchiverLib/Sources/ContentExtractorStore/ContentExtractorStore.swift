@@ -7,7 +7,6 @@
 
 import ArchiverModels
 import ArchiverStore
-import Dependencies
 import Foundation
 import FoundationModels
 import Shared
@@ -26,49 +25,6 @@ public actor ContentExtractorStore: Log {
         maximumResponseTokens: 512
     )
 
-    let session: LanguageModelSession
-
-    init() {
-        let tagCountTool = TagCountTool()
-        let descriptionTool = DescriptionTool()
-        session = LanguageModelSession(
-            model: .default,
-            tools: [tagCountTool],  // TODO: when I add the descriptionTool here - there will be no tool use at all
-            instructions: Instructions {
-
-            // task description
-            """
-            Your task is to archive documents. To do this, you will receive the content of a new document and you should create a description and tags.
-            """
-
-            // Document tags:
-            """
-            The tags MUST use the existing tags as far as possible.
-            Prioritise frequently used tags.
-            Use the \(tagCountTool.name) tool to query the existing tags.
-            Choose tags by yourself if no tags were provided.
-            """
-
-            // Document description:
-            """
-            The description should briefly describe the content of the document.
-            You MUST ALWAYS use the locale \(ContentExtractorStore.locale.identifier) of the user.
-            """
-
-                // TODO: this breaks the tooling
-//            """
-//            You can get example descriptions from the \(descriptionTool.name) tool.
-//            """                    
-
-            // Example:
-            """
-            For an invoice for a blue jumper from Tom Tailor, the following would be the perfect answer:
-            - Description: blue hoodie
-            - Tags: invoice, clothing, tomtailor
-            """
-            })
-    }
-
     public static func getAvailability() -> AppleIntelligenceAvailability {
         switch SystemLanguageModel.default.availability {
         case .available:
@@ -80,16 +36,10 @@ public actor ContentExtractorStore: Log {
         }
     }
 
-    public func prewarm() {
-        session.prewarm()
-    }
-
-    public func extract(from text: String, customPrompt: String? = nil) async throws -> Info? {
-
-        // as of iOS 26.0 we can not cancel in flight responses, so we have to return early, if a request is currently running
-        guard !session.isResponding else { return nil }
-
+    public func extract(from text: String, customPrompt: String? = nil, with documents: [Document]) async throws -> Info? {
         guard Self.getAvailability().isUsable else { return nil }
+        
+        let session = Self.createSession(with: documents)
 
         let availableTextLength = Self.maxTotalPromptLength - (customPrompt?.count ?? 0)
         let truncatedText = String(text.prefix(max(0, availableTextLength)))
@@ -111,6 +61,77 @@ public actor ContentExtractorStore: Log {
         return Info(specification: response.content.description.trimmingCharacters(in: .whitespacesAndNewlines),
                     tags: response.content.tags.prefix(10).map { $0.slugified(withSeparator: "") }
         )
+    }
+    
+    // MARK: - internal helper functions
+
+    private static func createSession(with documents: [Document]) -> LanguageModelSession {
+        let docStats = Self.getDocumentStats(minTagCount: 3, maxSpecifications: 20, with: documents)
+        return LanguageModelSession(
+            model: .default,
+            tools: [],  // TODO: when I add the descriptionTool here - there will be no tool use at all
+            instructions: Instructions {
+
+            // Task description
+            """
+            Your task is to archive documents by analyzing their content and generating appropriate descriptions and tags.
+            """
+
+            // Document tags:
+            """
+            Tags MUST ALWAYS use existing tags from the system whenever applicable.
+            Prefer frequently used tags to maintain consistency: \(docStats.tagCounts.prefix(500))
+            If no suitable existing tags are found, create new appropriate tags.
+            """
+
+            // Document description:
+            """
+            The description should provide a concise summary of the document's content (5-10 words maximum).
+            You MUST ALWAYS use the user's locale: \(Self.locale.identifier).
+            You MUST ALWAYS model your new description after the examples, adapting the style and format to match the current document's content.
+            Only use the current document content. DO NOT hallucinate.
+            Example descriptions: \(docStats.specifications.prefix(500))
+            """
+
+            // Example:
+            """
+            For an invoice for a blue jumper from Tom Tailor, the ideal output would be:
+            - Description: Blue hoodie
+            - Tags: invoice, clothing, tomtailor
+            """
+            })
+    }
+    
+    private struct DocStats {
+        let tagCounts: String
+        let specifications: String
+    }
+
+    private static func getDocumentStats(minTagCount: Int, maxSpecifications: Int, with documents: [Document]) -> DocStats {        
+        let tagCounts = Dictionary(grouping: documents.flatMap(\.tags)) {
+            $0
+        }
+            .map { (name: $0, count: $1.count) }
+            .filter { $0.count >= minTagCount }
+        
+        
+        let formattedTagCounts = tagCounts
+            .prefix(30)
+            .map {
+                "'\($0.0)': \($0.1)"
+            }
+        let tagCountsString = """
+        'tagName': count
+        \(formattedTagCounts)
+        """
+        
+        let specificationsString = documents.sorted { $0.date > $1.date }
+            .prefix(maxSpecifications)
+            .map(\.specification)
+            .joined(separator: "\n")
+        
+        return DocStats(tagCounts: tagCountsString,
+                        specifications: specificationsString)
     }
 }
 

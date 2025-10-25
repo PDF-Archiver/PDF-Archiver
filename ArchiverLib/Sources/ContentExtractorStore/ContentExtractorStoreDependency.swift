@@ -10,14 +10,19 @@ import ComposableArchitecture
 import Foundation
 import OSLog
 import Shared
+import ArchiverStore
 
 @DependencyClient
 public struct ContentExtractorStoreDependency: Sendable {
+    @Dependency(\.archiveStore) var archiveStore
+    
     public struct DocInfoInput: Sendable {
+        public let currentDocuments: [Document]
         public let text: String
         public let customPrompt: String?
 
-        public init(text: String, customPrompt: String?) {
+        public init(currentDocuments: [Document], text: String, customPrompt: String?) {
+            self.currentDocuments = currentDocuments
             self.text = text
             self.customPrompt = customPrompt
         }
@@ -31,14 +36,12 @@ public struct ContentExtractorStoreDependency: Sendable {
     private static let contentExtractorStore = ContentExtractorStore()
 
     public var isAvailable: @Sendable () async -> AppleIntelligenceAvailability = { .deviceNotCompatible }
-    public var prewarm: @Sendable () async -> Void
     public var getDocumentInformation: @Sendable (DocInfoInput) async -> DocInfo?
 }
 
 extension ContentExtractorStoreDependency: TestDependencyKey {
     public static let previewValue = Self(
         isAvailable: { .available },
-        prewarm: {},
         getDocumentInformation: { _ in nil }
     )
 
@@ -54,14 +57,12 @@ extension ContentExtractorStoreDependency: DependencyKey {
 
             return ContentExtractorStore.getAvailability()
         },
-        prewarm: {
-            guard #available(iOS 26.0, macOS 26.0, *) else { return }
-            await contentExtractorStore.prewarm()
-        },
         getDocumentInformation: { input in
             guard #available(iOS 26.0, macOS 26.0, *) else { return nil }
             do {
-                guard let result = try await contentExtractorStore.extract(from: input.text, customPrompt: input.customPrompt) else { return nil }
+                guard let result = try await contentExtractorStore.extract(from: input.text,
+                                                                           customPrompt: input.customPrompt,
+                                                                           with: input.currentDocuments) else { return nil }
 
                 return DocInfo(specification: result.specification,
                                tags: Set(result.tags))

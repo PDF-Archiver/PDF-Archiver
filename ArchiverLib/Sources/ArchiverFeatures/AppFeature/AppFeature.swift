@@ -215,10 +215,6 @@ struct AppFeature {
                             // check the temp folder at startup for new documents
                             await documentProcessor.triggerFolderObservation()
                         }
-                        group.addTask(priority: .background) {
-                            // prewarm the foundation model to improve performance for document content extraction
-                            await contentExtractorStore.prewarm()
-                        }
                         group.addTask(priority: .medium) {
                             for await documents in await archiveStore.documentChanges() {
                                 await send(.documentsChanged(documents))

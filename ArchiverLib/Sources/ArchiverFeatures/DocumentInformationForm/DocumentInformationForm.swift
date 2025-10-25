@@ -248,10 +248,11 @@ struct DocumentInformationForm {
         var tagSuggestions: [String]?
 
         if let text = await textAnalyser.getTextFrom(url) {
+            let documents = (try? await archiveStore.getDocuments()) ?? []
             // Try Apple Intelligence first if enabled and available
             if appleIntelligenceEnabled,
                await contentExtractorStore.isAvailable() == .available,
-               let content = await contentExtractorStore.getDocumentInformation(.init(text: text, customPrompt: customPrompt)) {
+               let content = await contentExtractorStore.getDocumentInformation(.init(currentDocuments: documents, text: text, customPrompt: customPrompt)) {
                 foundSpecification = content.specification
                 tagSuggestions = Array(content.tags).sorted()
             } else {
