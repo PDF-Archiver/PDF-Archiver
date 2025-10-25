@@ -11,7 +11,10 @@ let package = Package(
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "ArchiverLib",
-            targets: ["ArchiverFeatures", "ArchiverIntents"])
+            targets: ["ArchiverFeatures", "ArchiverIntents"]),
+        .library(
+            name: "Shared",
+            targets: ["Shared"])
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.23.0"),
