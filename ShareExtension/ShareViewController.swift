@@ -109,6 +109,8 @@ final class ShareViewController: UIViewController {
     /// Migrates documents from the old temporary directory (used before App Group Container)
     /// to the new shared App Group Container location.
     /// This ensures documents shared via ShareExtension before the fix are not lost.
+    ///
+    /// This was a bug in version 4.3.0. it can be removed after some time.
     private func migrateLegacyDocuments() async {
         // Old location: URL.temporaryDirectory/TempDocuments (extension-specific temp directory)
         let legacyTempURL = URL.temporaryDirectory.appendingPathComponent("TempDocuments")
@@ -144,9 +146,7 @@ final class ShareViewController: UIViewController {
                 do {
                     // Check if file already exists at target
                     if FileManager.default.fileExists(atPath: targetURL.path) {
-                        Self.log.warning("File already exists at target, removing legacy file", metadata: [
-                            "file": "\(legacyURL.lastPathComponent)"
-                        ])
+                        Self.log.warning("File already exists at target, removing legacy file: \(legacyURL.lastPathComponent)")
                         try FileManager.default.removeItem(at: legacyURL)
                     } else {
                         // Move the file to the new location
