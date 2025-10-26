@@ -162,24 +162,13 @@
         }
       }
     },
-    "Apple Intelligence requires iOS 26 or later, or macOS 26 or later. Please update your device to use this feature." : {
+    "Apple Intelligence requires iOS/macOS 26 or later. Please update your device to use this feature." : {
       "comment" : "Message shown when device OS version is too old to support Apple Intelligence",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple Intelligence erfordert iOS 26 oder neuer oder macOS 26 oder neuer. Bitte aktualisiere dein Gerät, um diese Funktion zu nutzen."
-          }
-        }
-      }
-    },
-    "Operating System Not Compatible" : {
-      "comment" : "Status label when operating system version is too old for Apple Intelligence",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Betriebssystem nicht kompatibel"
+            "value" : "Apple Intelligence erfordert iOS/macOS 26 oder neuer. Bitte aktualisiere dein Gerät, um diese Funktion zu nutzen."
           }
         }
       }
@@ -889,6 +878,17 @@
     "Open Source" : {
       "shouldTranslate" : false
     },
+    "Operating System Not Compatible" : {
+      "comment" : "Status label when operating system version is too old for Apple Intelligence",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Betriebssystem nicht kompatibel"
+          }
+        }
+      }
+    },
     "Optional: Enter your custom prompt additions" : {
       "localizations" : {
         "de" : {
@@ -1276,16 +1276,8 @@
         }
       }
     },
-    "Status:" : {
-      "comment" : "Label for status field with colon",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Status:"
-          }
-        }
-      }
+    "Status" : {
+      "shouldTranslate" : false
     },
     "Storage" : {
       "localizations" : {
