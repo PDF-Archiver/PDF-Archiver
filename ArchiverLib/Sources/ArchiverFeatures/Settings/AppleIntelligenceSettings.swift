@@ -73,6 +73,12 @@ struct AppleIntelligenceSettingsView: View {
                     availabilityView
                 }
 
+                if store.availability == .deviceNotCompatible {
+                    Text("Apple Intelligence requires iOS 26 or later, or macOS 26 or later. Please update your device to use this feature.", bundle: .module)
+                        .foregroundStyle(.secondary)
+                        .font(.footnote)
+                }
+
                 if store.availability == .available {
                     Toggle(
                         String(localized: "Use Apple Intelligence", bundle: .module),

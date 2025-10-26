@@ -162,6 +162,17 @@
         }
       }
     },
+    "Apple Intelligence requires iOS 26 or later, or macOS 26 or later. Please update your device to use this feature." : {
+      "comment" : "Message shown when device OS version is too old to support Apple Intelligence",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence erfordert iOS 26 oder neuer, oder macOS 26 oder neuer. Bitte aktualisiere dein Gerät, um diese Funktion zu nutzen."
+          }
+        }
+      }
+    },
     "Archive" : {
       "localizations" : {
         "de" : {
