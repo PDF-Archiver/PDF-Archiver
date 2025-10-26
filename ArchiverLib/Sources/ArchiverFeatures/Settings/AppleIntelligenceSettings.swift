@@ -17,7 +17,7 @@ struct AppleIntelligenceSettings {
 
     @ObservableState
     struct State: Equatable {
-        var availability: AppleIntelligenceAvailability = .deviceNotCompatible
+        var availability: AppleIntelligenceAvailability = .operatingSystemNotCompatible
 
         @Shared(.appleIntelligenceEnabled)
         var appleIntelligenceEnabled: Bool
@@ -69,7 +69,9 @@ struct AppleIntelligenceSettingsView: View {
                         Image(systemName: "apple.intelligence")
                             .foregroundStyle(.blue)
                     }
+                }
 
+                LabeledContent(String(localized: "Status", bundle: .module)) {
                     availabilityView
                 }
 
@@ -117,33 +119,40 @@ struct AppleIntelligenceSettingsView: View {
 
     @ViewBuilder
     private var availabilityView: some View {
-        HStack {
-            Text("Status:", bundle: .module)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-
-            switch store.availability {
-            case .available:
-                HStack(spacing: 4) {
-                    Image(systemName: "checkmark.circle.fill")
-                    Text("Available", bundle: .module)
-                        .font(.subheadline)
-                }
-                .foregroundStyle(.green)
-            case .deviceNotCompatible:
+        switch store.availability {
+        case .available:
+            HStack(spacing: 4) {
+                Image(systemName: "checkmark.circle.fill")
+                Text("Available", bundle: .module)
+                    .font(.subheadline)
+            }
+            .foregroundStyle(.green)
+        case .deviceNotCompatible:
+            HStack(spacing: 4) {
+                Image(systemName: "xmark.circle.fill")
+                Text("Device Not Compatible", bundle: .module)
+                    .font(.subheadline)
+            }
+            .foregroundStyle(.red)
+        case .unavailable:
+            HStack(spacing: 4) {
+                Image(systemName: "exclamationmark.circle.fill")
+                Text("Unavailable", bundle: .module)
+                    .font(.subheadline)
+            }
+            .foregroundStyle(.orange)
+        case .operatingSystemNotCompatible:
+            VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 4) {
                     Image(systemName: "xmark.circle.fill")
-                    Text("Device Not Compatible", bundle: .module)
+                    Text("Operating System Not Compatible", bundle: .module)
                         .font(.subheadline)
                 }
                 .foregroundStyle(.red)
-            case .unavailable:
-                HStack(spacing: 4) {
-                    Image(systemName: "exclamationmark.circle.fill")
-                    Text("Unavailable", bundle: .module)
-                        .font(.subheadline)
-                }
-                .foregroundStyle(.orange)
+
+                Text("Apple Intelligence requires iOS/macOS 26 or later. Please update your device to use this feature.", bundle: .module)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
         }
     }
@@ -161,7 +170,7 @@ struct AppleIntelligenceSettingsView: View {
     )
 }
 
-#Preview("AppleIntelligenceSettings - Not Compatible", traits: .fixedLayout(width: 800, height: 600)) {
+#Preview("AppleIntelligenceSettings - Device Not Compatible", traits: .fixedLayout(width: 800, height: 600)) {
     AppleIntelligenceSettingsView(
         store: Store(
             initialState: AppleIntelligenceSettings.State(availability: .deviceNotCompatible)
@@ -169,6 +178,18 @@ struct AppleIntelligenceSettingsView: View {
             AppleIntelligenceSettings()
         } withDependencies: {
             $0.contentExtractorStore.isAvailable = { .deviceNotCompatible }
+        }
+    )
+}
+
+#Preview("AppleIntelligenceSettings - OS Not Compatible", traits: .fixedLayout(width: 800, height: 600)) {
+    AppleIntelligenceSettingsView(
+        store: Store(
+            initialState: AppleIntelligenceSettings.State(availability: .operatingSystemNotCompatible)
+        ) {
+            AppleIntelligenceSettings()
+        } withDependencies: {
+            $0.contentExtractorStore.isAvailable = { .operatingSystemNotCompatible }
         }
     )
 }

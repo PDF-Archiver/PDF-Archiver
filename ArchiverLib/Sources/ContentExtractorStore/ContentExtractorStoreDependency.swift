@@ -35,7 +35,7 @@ public struct ContentExtractorStoreDependency: Sendable {
     @available(iOS 26, macOS 26, *)
     private static let contentExtractorStore = ContentExtractorStore()
 
-    public var isAvailable: @Sendable () async -> AppleIntelligenceAvailability = { .deviceNotCompatible }
+    public var isAvailable: @Sendable () async -> AppleIntelligenceAvailability = { .operatingSystemNotCompatible }
     public var getDocumentInformation: @Sendable (DocInfoInput) async -> DocInfo?
 }
 
@@ -52,7 +52,7 @@ extension ContentExtractorStoreDependency: DependencyKey {
     public static let liveValue = ContentExtractorStoreDependency(
         isAvailable: {
             guard #available(iOS 26.0, macOS 26.0, *) else {
-                return .deviceNotCompatible
+                return .operatingSystemNotCompatible
             }
 
             return ContentExtractorStore.getAvailability()
