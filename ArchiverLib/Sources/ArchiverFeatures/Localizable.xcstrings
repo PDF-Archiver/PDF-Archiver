@@ -168,7 +168,18 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple Intelligence erfordert iOS 26 oder neuer, oder macOS 26 oder neuer. Bitte aktualisiere dein Gerät, um diese Funktion zu nutzen."
+            "value" : "Apple Intelligence erfordert iOS 26 oder neuer oder macOS 26 oder neuer. Bitte aktualisiere dein Gerät, um diese Funktion zu nutzen."
+          }
+        }
+      }
+    },
+    "Operating System Not Compatible" : {
+      "comment" : "Status label when operating system version is too old for Apple Intelligence",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Betriebssystem nicht kompatibel"
           }
         }
       }

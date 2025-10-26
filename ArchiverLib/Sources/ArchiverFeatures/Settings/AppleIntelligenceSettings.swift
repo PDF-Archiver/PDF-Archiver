@@ -17,7 +17,7 @@ struct AppleIntelligenceSettings {
 
     @ObservableState
     struct State: Equatable {
-        var availability: AppleIntelligenceAvailability = .deviceNotCompatible
+        var availability: AppleIntelligenceAvailability = .operatingSystemNotCompatible
 
         @Shared(.appleIntelligenceEnabled)
         var appleIntelligenceEnabled: Bool
@@ -71,12 +71,6 @@ struct AppleIntelligenceSettingsView: View {
                     }
 
                     availabilityView
-                }
-
-                if store.availability == .deviceNotCompatible {
-                    Text("Apple Intelligence requires iOS 26 or later, or macOS 26 or later. Please update your device to use this feature.", bundle: .module)
-                        .foregroundStyle(.secondary)
-                        .font(.footnote)
                 }
 
                 if store.availability == .available {
@@ -150,6 +144,19 @@ struct AppleIntelligenceSettingsView: View {
                         .font(.subheadline)
                 }
                 .foregroundStyle(.orange)
+            case .operatingSystemNotCompatible:
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "xmark.circle.fill")
+                        Text("Operating System Not Compatible", bundle: .module)
+                            .font(.subheadline)
+                    }
+                    .foregroundStyle(.red)
+
+                    Text("Apple Intelligence requires iOS 26 or later, or macOS 26 or later. Please update your device to use this feature.", bundle: .module)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
         }
     }
@@ -167,7 +174,7 @@ struct AppleIntelligenceSettingsView: View {
     )
 }
 
-#Preview("AppleIntelligenceSettings - Not Compatible", traits: .fixedLayout(width: 800, height: 600)) {
+#Preview("AppleIntelligenceSettings - Device Not Compatible", traits: .fixedLayout(width: 800, height: 600)) {
     AppleIntelligenceSettingsView(
         store: Store(
             initialState: AppleIntelligenceSettings.State(availability: .deviceNotCompatible)
@@ -175,6 +182,18 @@ struct AppleIntelligenceSettingsView: View {
             AppleIntelligenceSettings()
         } withDependencies: {
             $0.contentExtractorStore.isAvailable = { .deviceNotCompatible }
+        }
+    )
+}
+
+#Preview("AppleIntelligenceSettings - OS Not Compatible", traits: .fixedLayout(width: 800, height: 600)) {
+    AppleIntelligenceSettingsView(
+        store: Store(
+            initialState: AppleIntelligenceSettings.State(availability: .operatingSystemNotCompatible)
+        ) {
+            AppleIntelligenceSettings()
+        } withDependencies: {
+            $0.contentExtractorStore.isAvailable = { .operatingSystemNotCompatible }
         }
     )
 }
