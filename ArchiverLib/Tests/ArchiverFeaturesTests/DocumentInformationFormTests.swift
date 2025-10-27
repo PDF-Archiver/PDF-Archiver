@@ -27,7 +27,7 @@ struct DocumentInformationFormTests {
             $0.archiveStore.getTagSuggestionsSimilarTo = { _ in [] }
         }
 
-        await store.send(.onTagSuggestionsUpdated(["tag1", "tag2"])) {
+        await store.send(.updateTagSuggestions(["tag1", "tag2"])) {
             $0.suggestedTags = ["tag1", "tag2"]
         }
 
@@ -36,8 +36,8 @@ struct DocumentInformationFormTests {
             $0.document.tags = ["tag1"]
         }
 
-        await store.receive(.updateTagSuggestions)
-        await store.receive(.onTagSuggestionsUpdated([])) {
+        await store.receive(.startUpdatingTagSuggestions)
+        await store.receive(.updateTagSuggestions([])) {
             $0.suggestedTags = []
         }
     }
@@ -54,8 +54,8 @@ struct DocumentInformationFormTests {
             $0.document.tags = ["first"]
         }
 
-        await store.receive(.updateTagSuggestions)
-        await store.receive(.onTagSuggestionsUpdated(["fitsfirst"])) {
+        await store.receive(.startUpdatingTagSuggestions)
+        await store.receive(.updateTagSuggestions(["fitsfirst"])) {
             $0.suggestedTags = ["fitsfirst"]
         }
     }

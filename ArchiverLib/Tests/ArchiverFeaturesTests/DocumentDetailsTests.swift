@@ -35,8 +35,8 @@ struct DocumentDetailsTests {
         await store.send(.showDocumentInformationForm(.onTagSuggestionTapped("tag1"))) {
             $0.documentInformationForm.document.tags = ["tag1"]
         }
-        await store.receive(.showDocumentInformationForm(.updateTagSuggestions))
-        await store.receive(.showDocumentInformationForm(.onTagSuggestionsUpdated([])))
+        await store.receive(.showDocumentInformationForm(.startUpdatingTagSuggestions))
+        await store.receive(.showDocumentInformationForm(.updateTagSuggestions([])))
 
         // close inspector without saving
         await store.send(.onEditButtonTapped) {

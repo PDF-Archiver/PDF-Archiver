@@ -69,18 +69,18 @@ extension ArchiveStoreDependency: TestDependencyKey {
 extension ArchiveStoreDependency: DependencyKey {
     public static let liveValue = ArchiveStoreDependency(
         documentChanges: {
-            return await ArchiveStore.shared.documentsStream
+            return ArchiveStore.shared.documentsStream
         },
         reloadDocuments: {
             return try await ArchiveStore.shared.reloadArchiveDocuments()
         },
         getDocuments: {
-            return try await ArchiveStore.shared.currentDocuments
+            return await ArchiveStore.shared.currentDocuments
         },
         isLoading: {
             return AsyncStream { stream in
                 Task {
-                    for await isLoading in await ArchiveStore.shared.isLoadingStream {
+                    for await isLoading in ArchiveStore.shared.isLoadingStream {
                         stream.yield(isLoading)
                     }
                 }
@@ -111,7 +111,7 @@ extension ArchiveStoreDependency: DependencyKey {
 }
 
 public extension DependencyValues {
-    public var archiveStore: ArchiveStoreDependency {
+    var archiveStore: ArchiveStoreDependency {
         get { self[ArchiveStoreDependency.self] }
         set { self[ArchiveStoreDependency.self] = newValue }
     }

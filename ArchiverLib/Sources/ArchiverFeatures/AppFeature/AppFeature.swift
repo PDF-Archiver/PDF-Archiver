@@ -236,7 +236,7 @@ struct AppFeature {
                    new == .active,
                    !state.isDocumentLoading {
                     return .run { _ in
-                        try await withThrowingTaskGroup(of: Void.self) { group in
+                        await withThrowingTaskGroup(of: Void.self) { group in
                             group.addTask(priority: .background) {
                                 await documentProcessor.triggerFolderObservation()
                             }
