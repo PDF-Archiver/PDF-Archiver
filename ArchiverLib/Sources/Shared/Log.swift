@@ -21,11 +21,12 @@ public extension Log {
 }
 
 public nonisolated extension Logger {
+    // swiftlint:disable:next force_unwrapping
     fileprivate static let subsystem = Bundle.main.bundleIdentifier!
 
-    #if DEBUG
+#if DEBUG
     static let debugging = Logger(subsystem: subsystem, category: "debugging")
-    #endif
+#endif
 
     static let archiveStore = Logger(subsystem: subsystem, category: "archive-store")
     static let inAppPurchase = Logger(subsystem: subsystem, category: "in-app-purchase")
@@ -43,66 +44,66 @@ public nonisolated extension Logger {
     }
 
     nonisolated func trace(_ message: String,
-               metadata: @autoclosure () -> [String: String],
-               file: StaticString = #file,
-               function: StaticString = #function,
-               line: UInt = #line) {
+                           metadata: @autoclosure () -> [String: String],
+                           file: StaticString = #file,
+                           function: StaticString = #function,
+                           line: UInt = #line) {
         let tmp = input2message(message, metadata: metadata(), file: file, function: function, line: line)
         trace("\(tmp)")
     }
 
     nonisolated func info(_ message: String,
-               metadata: @autoclosure () -> [String: String],
-               file: StaticString = #file,
-               function: StaticString = #function,
-               line: UInt = #line) {
+                          metadata: @autoclosure () -> [String: String],
+                          file: StaticString = #file,
+                          function: StaticString = #function,
+                          line: UInt = #line) {
         let tmp = input2message(message, metadata: metadata(), file: file, function: function, line: line)
         info("\(tmp)")
     }
 
     nonisolated func debug(_ message: String,
-               metadata: @autoclosure () -> [String: String],
-               file: StaticString = #file,
-               function: StaticString = #function,
-               line: UInt = #line) {
+                           metadata: @autoclosure () -> [String: String],
+                           file: StaticString = #file,
+                           function: StaticString = #function,
+                           line: UInt = #line) {
         let tmp = input2message(message, metadata: metadata(), file: file, function: function, line: line)
         debug("\(tmp)")
     }
 
     nonisolated func error(_ message: String,
-               metadata: @autoclosure () -> [String: String]?,
-               file: StaticString = #file,
-               function: StaticString = #function,
-               line: UInt = #line) {
+                           metadata: @autoclosure () -> [String: String]?,
+                           file: StaticString = #file,
+                           function: StaticString = #function,
+                           line: UInt = #line) {
         let tmp = input2message(message, metadata: metadata(), file: file, function: function, line: line)
         error("\(tmp)")
     }
 
     nonisolated func errorAndAssert(_ message: String,
-                        metadata: @autoclosure () -> [String: String]? = nil,
-                        file: StaticString = #file,
-                        function: StaticString = #function,
-                        line: UInt = #line) {
+                                    metadata: @autoclosure () -> [String: String]? = nil,
+                                    file: StaticString = #file,
+                                    function: StaticString = #function,
+                                    line: UInt = #line) {
         let tmp = input2message(message, metadata: metadata(), file: file, function: function, line: line)
         error("\(tmp)")
         assertionFailure(message, file: file, line: line)
     }
 
     nonisolated func criticalAndAssert(_ message: String,
-                           metadata: @autoclosure () -> [String: String]? = nil,
-                           file: StaticString = #file,
-                           function: StaticString = #function,
-                           line: UInt = #line) {
+                                       metadata: @autoclosure () -> [String: String]? = nil,
+                                       file: StaticString = #file,
+                                       function: StaticString = #function,
+                                       line: UInt = #line) {
         let tmp = input2message(message, metadata: metadata(), file: file, function: function, line: line)
         critical("\(tmp)")
         assertionFailure(message, file: file, line: line)
     }
 
     nonisolated func faultAndAssert(_ message: String,
-                        metadata: @autoclosure () -> [String: String]? = nil,
-                        file: StaticString = #file,
-                        function: StaticString = #function,
-                        line: UInt = #line) {
+                                    metadata: @autoclosure () -> [String: String]? = nil,
+                                    file: StaticString = #file,
+                                    function: StaticString = #function,
+                                    line: UInt = #line) {
         let tmp = input2message(message, metadata: metadata(), file: file, function: function, line: line)
         fault("\(tmp)")
         assertionFailure(message, file: file, line: line)

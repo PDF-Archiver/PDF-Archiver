@@ -21,6 +21,7 @@ final class PathManagerTests {
     }
 
     deinit {
+        // swiftlint:disable:next force_try
         try! FileManager.default.removeItem(at: Self.tempFolder)
     }
 

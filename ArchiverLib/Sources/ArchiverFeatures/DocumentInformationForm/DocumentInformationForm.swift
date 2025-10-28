@@ -37,7 +37,7 @@ struct DocumentInformationForm {
 
         @SharedReader(.appleIntelligenceEnabled)
         var appleIntelligenceEnabled: Bool
-        
+
         @SharedReader(.appleIntelligenceCustomPrompt)
         var customPrompt: String?
 

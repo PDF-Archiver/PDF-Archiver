@@ -111,19 +111,21 @@ public nonisolated struct ArchivePathTypeCustomSharedKey: SharedKey, Log {
     }
 
     private final class Observer: NSObject, Sendable {
-      let didChange: @Sendable () -> Void
-      init(didChange: @escaping @Sendable () -> Void) {
-        self.didChange = didChange
-        super.init()
-      }
-      override func observeValue(
-        forKeyPath keyPath: String?,
-        of object: Any?,
-        change: [NSKeyValueChangeKey: Any]?,
-        context: UnsafeMutableRawPointer?
-      ) {
-        self.didChange()
-      }
+        let didChange: @Sendable () -> Void
+        init(didChange: @escaping @Sendable () -> Void) {
+            self.didChange = didChange
+            super.init()
+        }
+
+        // swiftlint:disable:next block_based_kvo
+        override func observeValue(
+            forKeyPath keyPath: String?,
+            of object: Any?,
+            change: [NSKeyValueChangeKey: Any]?,
+            context: UnsafeMutableRawPointer?
+        ) {
+            self.didChange()
+        }
     }
 }
 

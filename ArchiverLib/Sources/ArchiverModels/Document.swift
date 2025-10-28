@@ -56,6 +56,7 @@ extension Document {
         return "\(dateStr)--\(specification)__\(tagStr).pdf".lowercased()
     }
 
+    // swiftlint:disable:next force_unwrapping
     public static func mock(url: URL = URL(string: "https://example.com")!, date: Date = Date(), specification: String = "", tags: Set<String> = [], isTagged: Bool = true, sizeInBytes: Double = 1000, downloadStatus: Double = 0) -> Self {
         .init(
             id: url.hashValue,

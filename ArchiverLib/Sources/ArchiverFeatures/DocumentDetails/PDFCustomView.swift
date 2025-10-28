@@ -85,5 +85,6 @@ struct PDFCustomView: UIViewRepresentable {
 #endif
 
 #Preview {
+    // swiftlint:disable:next force_unwrapping
     PDFCustomView(PDFDocument(url: Bundle.main.resourceURL!.appendingPathComponent("example-bill.pdf", conformingTo: .pdf)))
 }

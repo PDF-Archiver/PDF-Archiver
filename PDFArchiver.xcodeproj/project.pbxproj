@@ -377,6 +377,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3489D74824A3C53E0035E64F /* Build configuration list for PBXNativeTarget "macOS" */;
 			buildPhases = (
+				A33C6EE32EB01262009832FA /* Swiftlint */,
 				3489D71F24A3C53E0035E64F /* Sources */,
 				3489D72024A3C53E0035E64F /* Frameworks */,
 				3489D72124A3C53E0035E64F /* Resources */,
@@ -584,6 +585,25 @@
 			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
 			shellScript = "export PATH=\"/opt/homebrew/bin:$HOME/.mint/bin:$PATH\"\n\n# Update settings.bundle with new license plist files\n# https://github.com/mono0926/LicensePlist\nif which license-plist >/dev/null; then\n    license-plist --suppress-opening-directory --add-version-numbers --force --output-path Shared/Resources/Settings.bundle\nelse\n    echo \"warning: license-plist not installed, download from https://github.com/mono0926/LicensePlist\"\nfi\n\n# Source: https://stackoverflow.com/a/39030153\n/usr/libexec/PlistBuddy -c \"Set PreferenceSpecifiers:0:DefaultValue $MARKETING_VERSION ($CURRENT_PROJECT_VERSION)\" \"$PROJECT_DIR/Shared/Resources/Settings.bundle/Root.plist\"\n";
+		};
+		A33C6EE32EB01262009832FA /* Swiftlint */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = Swiftlint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Add Homebrew to PATH\nexport PATH=\"/opt/homebrew/bin:$PATH\"\n\n# Check if swiftlint is available\nif which swiftlint >/dev/null; then\n    swiftlint\nelse\n    echo \"warning: swiftlint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

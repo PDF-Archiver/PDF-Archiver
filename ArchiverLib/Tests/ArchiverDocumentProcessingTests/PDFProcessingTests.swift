@@ -25,9 +25,11 @@ final class PDFProcessingTests {
     }
 
     deinit {
+        // swiftlint:disable:next force_try
         try! FileManager.default.removeItem(at: Self.tempFolder)
     }
 
+    // swiftlint:disable identifier_name
     private static func levenshtein(_ lhs: String, _ rhs: String) -> Int {
         let lhsArray = Array(lhs)
         let rhsArray = Array(rhs)
@@ -54,9 +56,9 @@ final class PDFProcessingTests {
 
         return dp[m][n]
     }
+    // swiftlint:enable identifier_name
 
     @Test
-    // swiftlint:disable:next function_body_length
     func testPDFInput() async throws {
         let exampleUrl = Self.tempFolder.appendingPathComponent(UUID().uuidString)
             .appendingPathExtension("pdf")

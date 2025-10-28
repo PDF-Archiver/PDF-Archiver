@@ -38,7 +38,7 @@ public actor ContentExtractorStore: Log {
 
     public func extract(from text: String, customPrompt: String? = nil, with documents: [Document]) async throws -> Info? {
         guard Self.getAvailability().isUsable else { return nil }
-        
+
         let session = Self.createSession(with: documents)
 
         let availableTextLength = Self.maxTotalPromptLength - (customPrompt?.count ?? 0)
@@ -62,14 +62,14 @@ public actor ContentExtractorStore: Log {
                     tags: response.content.tags.prefix(10).map { $0.slugified(withSeparator: "") }
         )
     }
-    
+
     // MARK: - internal helper functions
 
     private static func createSession(with documents: [Document]) -> LanguageModelSession {
         let docStats = Self.getDocumentStats(minTagCount: 3, maxSpecifications: 20, with: documents)
         return LanguageModelSession(
             model: .default,
-            tools: [],  // TODO: when I add the descriptionTool here - there will be no tool use at all
+            tools: [],
             instructions: Instructions {
 
             // Task description
@@ -101,20 +101,19 @@ public actor ContentExtractorStore: Log {
             """
             })
     }
-    
+
     private struct DocStats {
         let tagCounts: String
         let specifications: String
     }
 
-    private static func getDocumentStats(minTagCount: Int, maxSpecifications: Int, with documents: [Document]) -> DocStats {        
+    private static func getDocumentStats(minTagCount: Int, maxSpecifications: Int, with documents: [Document]) -> DocStats {
         let tagCounts = Dictionary(grouping: documents.flatMap(\.tags)) {
             $0
         }
             .map { (name: $0, count: $1.count) }
             .filter { $0.count >= minTagCount }
-        
-        
+
         let formattedTagCounts = tagCounts
             .prefix(30)
             .map {
@@ -124,12 +123,12 @@ public actor ContentExtractorStore: Log {
         'tagName': count
         \(formattedTagCounts)
         """
-        
+
         let specificationsString = documents.sorted { $0.date > $1.date }
             .prefix(maxSpecifications)
             .map(\.specification)
             .joined(separator: "\n")
-        
+
         return DocStats(tagCounts: tagCountsString,
                         specifications: specificationsString)
     }
@@ -152,11 +151,11 @@ extension ContentExtractorStore {
     }
 }
 
-//#if canImport(FoundationModels)
-//import Playgrounds
+// #if canImport(FoundationModels)
+// import Playgrounds
 //
-//@available(macOS 26.0, *)
-//extension Transcript.Entry {
+// @available(macOS 26.0, *)
+// extension Transcript.Entry {
 //    var toolCallCount: Int {
 //        switch self {
 //        case .toolCalls(let calls):
@@ -165,10 +164,10 @@ extension ContentExtractorStore {
 //            return 0
 //        }
 //    }
-//}
+// }
 //
 ////    let text = "Bill of a blue hoddie from tom tailor"
-//let text = """
+// let text = """
 //    TOM TAILOR
 //    TOM TAILOR Retail GmbH
 //    Garstedter Weg 14

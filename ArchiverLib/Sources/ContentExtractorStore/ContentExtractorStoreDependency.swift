@@ -6,16 +6,16 @@
 //
 
 import ArchiverModels
+import ArchiverStore
 import ComposableArchitecture
 import Foundation
 import OSLog
 import Shared
-import ArchiverStore
 
 @DependencyClient
 public struct ContentExtractorStoreDependency: Sendable {
     @Dependency(\.archiveStore) var archiveStore
-    
+
     public struct DocInfoInput: Sendable {
         public let currentDocuments: [Document]
         public let text: String
