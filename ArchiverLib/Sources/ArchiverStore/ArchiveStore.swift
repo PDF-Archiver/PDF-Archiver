@@ -176,7 +176,19 @@ public actor ArchiveStore: Log {
         // save file tags
         if shouldUpdatePdfMetadata,
            !document.tags.isEmpty {
-            try await newFilepath.setFileTags(document.tags.sorted())
+            let tags = document.tags.sorted()
+
+            // write pdf metadata
+            if let pdfDocument = PDFDocument(url: newFilepath) {
+                var attributes = pdfDocument.documentAttributes ?? [:]
+                attributes[PDFDocumentAttribute.keywordsAttribute] = tags
+                pdfDocument.documentAttributes = attributes
+
+                pdfDocument.write(to: newFilepath)
+            }
+
+            // write finder tags
+            try await newFilepath.setFileTags(tags)
         }
     }
 
