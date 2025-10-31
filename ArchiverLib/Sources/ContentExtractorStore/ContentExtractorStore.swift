@@ -92,13 +92,6 @@ public actor ContentExtractorStore: Log {
             Only use the current document content. DO NOT hallucinate.
             Example descriptions: \(docStats.specifications.prefix(500))
             """
-
-            // Example:
-            """
-            For an invoice for a blue jumper from Tom Tailor, the ideal output would be:
-            - Description: Blue hoodie
-            - Tags: invoice, clothing, tomtailor
-            """
             })
     }
 
