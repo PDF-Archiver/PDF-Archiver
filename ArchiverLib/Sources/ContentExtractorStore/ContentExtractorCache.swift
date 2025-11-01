@@ -22,12 +22,6 @@ actor ContentExtractorCache: Log {
         let documentId: Document.ID
         let specification: String
         let tags: [String]
-
-        init(documentId: Document.ID, specification: String, tags: [String]) {
-            self.documentId = documentId
-            self.specification = specification
-            self.tags = tags
-        }
     }
 
     // MARK: - Properties

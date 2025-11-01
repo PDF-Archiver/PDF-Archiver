@@ -9,7 +9,7 @@ import ArchiverModels
 import ComposableArchitecture
 import Foundation
 
-public nonisolated struct ArchivePathTypeCustomSharedKey: SharedKey, Log {
+nonisolated public struct ArchivePathTypeCustomSharedKey: SharedKey, Log {
     private let key: String
     private let store: UncheckedSendable<UserDefaults>
 
@@ -130,7 +130,7 @@ public nonisolated struct ArchivePathTypeCustomSharedKey: SharedKey, Log {
 }
 
 extension ArchivePathTypeCustomSharedKey {
-    public nonisolated struct ArchivePathTypeCustomaredKeyId: Hashable {
+    nonisolated public struct ArchivePathTypeCustomaredKeyId: Hashable {
       fileprivate let key: String
       fileprivate let store: UserDefaults
     }
@@ -140,7 +140,7 @@ extension ArchivePathTypeCustomSharedKey {
     }
 }
 
-fileprivate nonisolated extension UserDefaults {
+nonisolated fileprivate extension UserDefaults {
     func setObject<T: Encodable>(_ object: T?, forKey key: String) throws {
         guard let object = object else {
             set(nil, forKey: key)

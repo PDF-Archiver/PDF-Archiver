@@ -11,7 +11,7 @@ public enum AppleIntelligenceAvailability: String, Sendable, Equatable {
     case deviceNotCompatible
     case operatingSystemNotCompatible // iOS < 26 or macOS < 26
 
-    public nonisolated var isUsable: Bool {
+    nonisolated public var isUsable: Bool {
         self == .available
     }
 }

@@ -9,7 +9,7 @@ import ComposableArchitecture
 import Foundation
 
 @available(iOS, unavailable)
-public nonisolated struct ObservedFolderCustomSharedKey: SharedKey, Log {
+nonisolated public struct ObservedFolderCustomSharedKey: SharedKey, Log {
     private let key: String
     private let store: UncheckedSendable<UserDefaults>
 
@@ -105,7 +105,7 @@ public nonisolated struct ObservedFolderCustomSharedKey: SharedKey, Log {
 
 @available(iOS, unavailable)
 extension ObservedFolderCustomSharedKey {
-    public nonisolated struct ObservedFolderCustomSharedKeyId: Hashable {
+    nonisolated public struct ObservedFolderCustomSharedKeyId: Hashable {
       fileprivate let key: String
       fileprivate let store: UserDefaults
     }

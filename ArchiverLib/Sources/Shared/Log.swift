@@ -20,7 +20,7 @@ public extension Log {
     }
 }
 
-public nonisolated extension Logger {
+nonisolated public extension Logger {
     // swiftlint:disable:next force_unwrapping
     fileprivate static let subsystem = Bundle.main.bundleIdentifier!
 
