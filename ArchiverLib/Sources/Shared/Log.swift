@@ -28,15 +28,17 @@ public nonisolated extension Logger {
     static let debugging = Logger(subsystem: subsystem, category: "debugging")
 #endif
 
+    static let app = Logger(subsystem: subsystem, category: "app")
     static let archiveStore = Logger(subsystem: subsystem, category: "archive-store")
+    static let backgroundTask = Logger(subsystem: subsystem, category: "background-task")
+    static let contentExtractor = Logger(subsystem: subsystem, category: "content-extractor")
+    static let documentProcessing = Logger(subsystem: subsystem, category: "document-processing")
     static let inAppPurchase = Logger(subsystem: subsystem, category: "in-app-purchase")
+    static let navigationModel = Logger(subsystem: subsystem, category: "navigation-model")
     static let newDocument = Logger(subsystem: subsystem, category: "new-document")
     static let pdfDropHandler = Logger(subsystem: subsystem, category: "pdf-drop-handler")
-    static let documentProcessing = Logger(subsystem: subsystem, category: "document-processing")
-    static let navigationModel = Logger(subsystem: subsystem, category: "navigation-model")
     static let settings = Logger(subsystem: subsystem, category: "settings")
     static let taggingView = Logger(subsystem: subsystem, category: "tagging-view")
-    static let contentExtractor = Logger(subsystem: subsystem, category: "content-extractor")
 
     nonisolated func errorAndAssert(_ message: String) {
         assertionFailure(message)

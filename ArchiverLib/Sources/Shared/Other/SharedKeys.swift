@@ -17,6 +17,7 @@ enum Names: String {
     case documentSpecificationNotRequired = "document-specification-not-required"
     case appleIntelligenceEnabled = "apple-intelligence-enabled"
     case appleIntelligenceCustomPrompt = "apple-intelligence-custom-prompt"
+    case appleIntelligenceCacheEnabled = "apple-intelligence-cache-enabled"
 
     var id: String { "shared-\(rawValue)" }
 }
@@ -115,6 +116,18 @@ public extension SharedKey where Self == AppStorageKey<String?> {
 public extension SharedKey where Self == AppStorageKey<String?>.Default {
   static var appleIntelligenceCustomPrompt: Self {
       return Self[.appStorage(Names.appleIntelligenceCustomPrompt.id, store: .standard), default: nil]
+  }
+}
+
+public extension SharedKey where Self == AppStorageKey<Bool> {
+    static var appleIntelligenceCacheEnabled: Self {
+        appStorage(Names.appleIntelligenceCacheEnabled.id, store: .standard)
+    }
+}
+public extension SharedKey where Self == AppStorageKey<Bool>.Default {
+  static var appleIntelligenceCacheEnabled: Self {
+      let defaultValue = (UserDefaults.standard.value(forKey: "appleIntelligenceCacheEnabled") as? Bool) ?? true
+      return Self[.appStorage(Names.appleIntelligenceCacheEnabled.id, store: .standard), default: defaultValue]
   }
 }
 

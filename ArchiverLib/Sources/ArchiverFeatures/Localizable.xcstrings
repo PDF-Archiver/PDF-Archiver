@@ -173,6 +173,72 @@
         }
       }
     },
+    "Cache Entries" : {
+      "comment" : "Label for displaying the number of cache entries",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cache-Einträge"
+          }
+        }
+      }
+    },
+    "Cache improves performance by storing previously analyzed documents. Cached entries are stored locally and not synced across devices. The system may automatically remove cache files when storage is needed." : {
+      "comment" : "Footer text explaining cache functionality",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Cache verbessert die Leistung, indem er bereits analysierte Dokumente speichert. Cache-Einträge werden lokal gespeichert und nicht über Geräte hinweg synchronisiert. Das System kann Cache-Dateien automatisch entfernen, wenn Speicherplatz benötigt wird."
+          }
+        }
+      }
+    },
+    "Cache Management" : {
+      "comment" : "Section header for cache management settings",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cache-Verwaltung"
+          }
+        }
+      }
+    },
+    "Clear Cache" : {
+      "comment" : "Button to clear all cache entries",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cache leeren"
+          }
+        }
+      }
+    },
+    "Clearing Cache..." : {
+      "comment" : "Text shown while cache is being cleared",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cache wird geleert..."
+          }
+        }
+      }
+    },
+    "Use Cache" : {
+      "comment" : "Toggle to enable or disable cache usage",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cache verwenden"
+          }
+        }
+      }
+    },
     "Archive" : {
       "localizations" : {
         "de" : {

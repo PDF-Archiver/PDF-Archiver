@@ -9,6 +9,7 @@ import ArchiverModels
 import ArchiverStore
 import Foundation
 import FoundationModels
+import OSLog
 import Shared
 
 @available(iOS 26, macOS 26, *)
@@ -25,6 +26,12 @@ public actor ContentExtractorStore: Log {
         maximumResponseTokens: 512
     )
 
+    private let cache: ContentExtractorCache
+
+    init() {
+        self.cache = ContentExtractorCache()
+    }
+
     public static func getAvailability() -> AppleIntelligenceAvailability {
         switch SystemLanguageModel.default.availability {
         case .available:
@@ -36,8 +43,21 @@ public actor ContentExtractorStore: Log {
         }
     }
 
-    public func extract(from text: String, customPrompt: String? = nil, with documents: [Document]) async throws -> Info? {
+    /// Extract document information using Apple Intelligence
+    /// - Parameters:
+    ///   - text: The document text content to analyze
+    ///   - customPrompt: Optional custom prompt to guide the extraction
+    ///   - documents: Existing documents for context (tags, specifications)
+    ///   - documentId: Optional document ID for caching results
+    /// - Returns: Extracted specification and tags, or nil if unavailable
+    public func extract(from text: String, customPrompt: String? = nil, with documents: [Document], documentId: Document.ID? = nil) async throws -> Info? {
         guard Self.getAvailability().isUsable else { return nil }
+
+        // Check cache if document ID is provided
+        if let documentId, let cachedEntry = await cache.getCachedResult(for: documentId) {
+            Logger.contentExtractor.info("Using cached result for document ID: \(documentId)")
+            return Info(specification: cachedEntry.specification, tags: cachedEntry.tags)
+        }
 
         let session = Self.createSession(with: documents)
 
@@ -58,9 +78,87 @@ public actor ContentExtractorStore: Log {
             options: Self.options
         )
 
-        return Info(specification: response.content.description.trimmingCharacters(in: .whitespacesAndNewlines),
-                    tags: response.content.tags.prefix(10).map { $0.slugified(withSeparator: "") }
+        let info = Info(specification: response.content.description.trimmingCharacters(in: .whitespacesAndNewlines),
+                        tags: response.content.tags.prefix(10).map { $0.slugified(withSeparator: "") }
         )
+
+        // Save result to cache for faster subsequent access
+        if let documentId {
+            let cacheEntry = ContentExtractorCache.CacheEntry(
+                documentId: documentId,
+                specification: info.specification,
+                tags: info.tags
+            )
+            await cache.saveCacheEntry(cacheEntry)
+        }
+
+        return info
+    }
+
+    // MARK: - Cache Management
+
+    /// Clear all cache entries
+    public func clearCache() async {
+        await cache.clearCache()
+    }
+
+    /// Get the number of cache entries
+    public func getCacheCount() async -> Int {
+        await cache.getCacheCount()
+    }
+
+    /// Update cache enabled state
+    public func setCacheEnabled(_ enabled: Bool) async {
+        await cache.setEnabled(enabled)
+    }
+
+    /// Prune cache entries that don't have matching documents
+    /// - Parameter validIds: Set of valid document IDs to keep in cache
+    public func pruneCache(keepingOnly validIds: Set<Document.ID>) async {
+        await cache.pruneCache(keepingOnly: validIds)
+    }
+
+    /// Process untagged documents in the background to create cache entries
+    /// This method should be called when the device is idle and connected to power
+    /// - Parameters:
+    ///   - documents: All documents to process
+    ///   - textExtractor: Closure to extract text from document URL
+    ///   - customPrompt: Optional custom prompt for extraction
+    public func processUntaggedDocumentsInBackground(documents: [Document], textExtractor: (URL) async -> String?, customPrompt: String?) async {
+        // Only process untagged documents
+        let untaggedDocuments = documents.filter { !$0.isTagged }
+
+        Logger.contentExtractor.info("Background cache processing started for \(untaggedDocuments.count) untagged documents")
+
+        for document in untaggedDocuments {
+            let documentId = document.id
+
+            // Skip if already cached
+            if await cache.getCachedResult(for: documentId) != nil {
+                continue
+            }
+
+            // Extract text and process (cache will be saved inside extract())
+            guard let text = await textExtractor(document.url) else {
+                continue
+            }
+
+            do {
+                _ = try await extract(from: text,
+                                     customPrompt: customPrompt,
+                                     with: documents,
+                                     documentId: documentId)
+                Logger.contentExtractor.debug("Background cache entry created for document ID: \(documentId)")
+            } catch {
+                Logger.contentExtractor.error("Failed to create cache entry in background for document ID \(documentId): \(error)")
+            }
+        }
+
+        // Prune cache entries for documents that no longer exist in untagged folder
+        let untaggedIds = Set(untaggedDocuments.map(\.id))
+        await cache.pruneCache(keepingOnly: untaggedIds)
+
+        Logger.contentExtractor.info("Background cache processing completed")
     }
 
     // MARK: - internal helper functions

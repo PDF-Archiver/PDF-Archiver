@@ -251,10 +251,36 @@ struct DocumentInformationForm {
             let documents = (try? await archiveStore.getDocuments()) ?? []
             // Try Apple Intelligence first if enabled and available
             if appleIntelligenceEnabled,
-               await contentExtractorStore.isAvailable() == .available,
-               let content = await contentExtractorStore.getDocumentInformation(.init(currentDocuments: documents, text: text, customPrompt: customPrompt)) {
-                foundSpecification = content.specification
-                tagSuggestions = Array(content.tags).sorted()
+               await contentExtractorStore.isAvailable() == .available {
+                // Find document ID from URL
+                let documentId = documents.first(where: { $0.url == url })?.id
+                if let content = await contentExtractorStore.getDocumentInformation(.init(currentDocuments: documents, text: text, customPrompt: customPrompt, documentId: documentId)) {
+                    foundSpecification = content.specification
+                    tagSuggestions = Array(content.tags).sorted()
+                } else {
+                    // Fall back to traditional text analysis
+                    var results = await textAnalyser.parseDateFrom(text)
+                    if let foundDate {
+                        results = results.filter { resultDate in
+                            !Calendar.current.isDate(resultDate, inSameDayAs: foundDate)
+                        }
+                    }
+
+                    let newResults = results
+                        .dropFirst(foundDate == nil ? 1 : 0)    // skip first because it is set to foundDate
+                        .filter { !calendar.isDate($0, inSameDayAs: Date()) }   // skip found "today" dates, because a today button will always be shown
+                    //                    .sorted().reversed().prefix(3)  // get the most recent 3 dates
+                    //                    .sorted()
+                        .prefix(3)
+                    dateSuggestions = Array(newResults)
+
+                    if foundDate == nil {
+                        foundDate = results.first
+                    }
+                    if tagNames.isEmpty {
+                        tagSuggestions = await textAnalyser.parseTagsFrom(text).sorted()
+                    }
+                }
             } else {
                 // Fall back to traditional text analysis
                 var results = await textAnalyser.parseDateFrom(text)

@@ -7,8 +7,11 @@
 
 import Foundation
 
-public nonisolated struct Document: Equatable, Identifiable, Hashable, Sendable, Codable {
-    public var id: Int
+public nonisolated struct Document: Equatable, Hashable, Sendable, Codable {
+    /// Type alias for document identifier
+    public typealias ID = Int
+
+    public var id: ID
     public var url: URL
     public var date: Date
     public var specification: String
@@ -24,7 +27,7 @@ public nonisolated struct Document: Equatable, Identifiable, Hashable, Sendable,
         url.lastPathComponent
     }
 
-    public init(id: Int, url: URL, date: Date, specification: String, tags: Set<String>, isTagged: Bool, sizeInBytes: Double, downloadStatus: Double) {
+    public init(id: ID, url: URL, date: Date, specification: String, tags: Set<String>, isTagged: Bool, sizeInBytes: Double, downloadStatus: Double) {
         self.id = id
         self.url = url
         self.date = date
