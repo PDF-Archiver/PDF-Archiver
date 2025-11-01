@@ -27,18 +27,16 @@ actor ContentExtractorCache: Log {
     // MARK: - Properties
 
     private let cacheDirectory: URL
-    private var isEnabled: Bool
 
     // MARK: - Initialization
 
-    init(cacheDirectory: URL? = nil, isEnabled: Bool = true) {
+    init(cacheDirectory: URL? = nil) {
         // Use app's cache directory by default (system can remove if needed)
         if let cacheDirectory {
             self.cacheDirectory = cacheDirectory
         } else {
             self.cacheDirectory = URL.cachesDirectory.appendingPathComponent("ContentExtractor", isDirectory: true)
         }
-        self.isEnabled = isEnabled
 
         // Create cache directory if it doesn't exist
         do {
@@ -54,8 +52,6 @@ actor ContentExtractorCache: Log {
     /// - Parameter documentId: The unique identifier of the document
     /// - Returns: The cached entry if found and valid, nil otherwise
     func getCachedResult(for documentId: Document.ID) -> CacheEntry? {
-        guard isEnabled else { return nil }
-
         let cacheURL = cacheFileURL(for: documentId)
 
         guard FileManager.default.fileExists(atPath: cacheURL.path) else {
@@ -82,8 +78,6 @@ actor ContentExtractorCache: Log {
     /// Save extraction result to cache
     /// - Parameter entry: The cache entry to save
     func saveCacheEntry(_ entry: CacheEntry) {
-        guard isEnabled else { return }
-
         let cacheURL = cacheFileURL(for: entry.documentId)
 
         do {
@@ -97,16 +91,7 @@ actor ContentExtractorCache: Log {
 
     /// Clear all cache entries
     func clearCache() {
-        do {
-            let contents = try FileManager.default.contentsOfDirectory(at: cacheDirectory,
-                                                                       includingPropertiesForKeys: nil)
-            for fileURL in contents {
-                try FileManager.default.removeItem(at: fileURL)
-            }
-            Logger.contentExtractor.info("Cache cleared successfully")
-        } catch {
-            Logger.contentExtractor.error("Failed to clear cache: \(error)")
-        }
+        pruneCache(keepingOnly: [])
     }
 
     /// Get the number of cache entries
@@ -130,9 +115,11 @@ actor ContentExtractorCache: Log {
                                                                        includingPropertiesForKeys: nil)
             var ids = Set<Document.ID>()
             for fileURL in contents {
-                if let entry = try? JSONDecoder().decode(CacheEntry.self, from: Data(contentsOf: fileURL)) {
-                    ids.insert(entry.documentId)
+                guard let documentId = Self.getDocumentId(from: fileURL) else {
+                    try? FileManager.default.removeItem(at: fileURL)
+                    continue
                 }
+                ids.insert(documentId)
             }
             return ids
         } catch {
@@ -148,21 +135,19 @@ actor ContentExtractorCache: Log {
             let contents = try FileManager.default.contentsOfDirectory(at: cacheDirectory,
                                                                        includingPropertiesForKeys: nil)
             for fileURL in contents {
-                if let entry = try? JSONDecoder().decode(CacheEntry.self, from: Data(contentsOf: fileURL)),
-                   !validIds.contains(entry.documentId) {
+                guard let documentId = Self.getDocumentId(from: fileURL) else {
                     try? FileManager.default.removeItem(at: fileURL)
-                    Logger.contentExtractor.debug("Pruned cache entry for document ID: \(entry.documentId)")
+                    continue
+                }
+                
+                if !validIds.contains(documentId) {
+                    try? FileManager.default.removeItem(at: fileURL)
+                    Logger.contentExtractor.debug("Pruned cache entry for document ID: \(documentId)")
                 }
             }
         } catch {
             Logger.contentExtractor.error("Failed to prune cache: \(error)")
         }
-    }
-
-    /// Update cache enabled state
-    /// - Parameter enabled: Whether the cache should be enabled
-    func setEnabled(_ enabled: Bool) {
-        self.isEnabled = enabled
     }
 
     // MARK: - Private Methods
@@ -173,5 +158,16 @@ actor ContentExtractorCache: Log {
     private func cacheFileURL(for documentId: Document.ID) -> URL {
         // Use document ID directly as filename (Int is unique and safe for filesystem)
         return cacheDirectory.appendingPathComponent("\(documentId).json")
+    }
+    
+    /// Get the document ID from an URL.
+    /// - Parameter url: URL of the cache entry `<documentId>.json`
+    /// - Returns: The document ID if the document.
+    static func getDocumentId(from url: URL) -> Document.ID? {
+        let filename = url.lastPathComponent
+        let idString = filename.split(separator: ".json").first
+        guard let idString,
+              let documentId = Int(idString) else { return nil }
+        return documentId
     }
 }

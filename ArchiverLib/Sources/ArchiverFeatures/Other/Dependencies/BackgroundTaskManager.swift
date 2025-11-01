@@ -5,58 +5,64 @@
 //  Created by Claude on 31.10.25.
 //
 
+#if os(iOS)
 import BackgroundTasks
 import ComposableArchitecture
 import Foundation
 import OSLog
 import Shared
+import UserNotifications
+
+extension BGProcessingTask: @unchecked @retroactive Sendable {}
+extension BGTaskScheduler: @unchecked @retroactive Sendable {}
 
 /// Manages background tasks for cache processing on iOS
-@available(iOS 26, macOS 26, *)
+@available(iOS 26, *)
 public actor BackgroundTaskManager: Log {
     /// Background task identifier for cache processing
-    public static let cacheProcessingTaskIdentifier = "com.pdf-archiver.cache-processing"
+    public static let cacheProcessingTaskIdentifier = "de.JulianKahnert.PDFArchiveViewer.pdf-processing"
+
+    // TODO: change this debug flag
+    private static let shouldNotify = true
+    private static let scheduler = BGTaskScheduler.shared
 
     @Dependency(\.contentExtractorStore) var contentExtractorStore
     @Dependency(\.archiveStore) var archiveStore
     @Dependency(\.textAnalyser) var textAnalyser
+    @SharedReader(.appleIntelligenceCustomPrompt) var customPrompt: String?
 
-    private var customPrompt: String?
-
-    public init() {}
+    private init() {}
 
     /// Register background task handlers
     /// Must be called early in app lifecycle (in app init)
     public static func registerTaskHandlers() {
-        #if os(iOS)
-        BGTaskScheduler.shared.register(
+        scheduler.register(
             forTaskWithIdentifier: cacheProcessingTaskIdentifier,
             using: nil
         ) { task in
-            guard let processingTask = task as? BGProcessingTask else { return }
+            guard let processingTask = task as? BGProcessingTask else {
+                Logger.backgroundTask.error("Did not receive a BGProcessingTask")
+                return
+            }
+            let manager = BackgroundTaskManager()
             Task {
-                await BackgroundTaskManager().handleCacheProcessing(task: processingTask)
+                await manager.handleCacheProcessing(task: processingTask)
             }
         }
         Logger.backgroundTask.info("Background task handler registered")
-        #endif
     }
 
     /// Schedule the cache processing background task
-    /// - Parameter customPrompt: Optional custom prompt for extraction
-    public static func scheduleCacheProcessing(customPrompt: String? = nil) {
-        #if os(iOS)
+    public static func scheduleCacheProcessing() {
         let request = BGProcessingTaskRequest(identifier: cacheProcessingTaskIdentifier)
         request.requiresNetworkConnectivity = false
         request.requiresExternalPower = true // Only run when connected to power
-
         do {
-            try BGTaskScheduler.shared.submit(request)
+            try scheduler.submit(request)
             Logger.backgroundTask.info("Cache processing task scheduled")
         } catch {
             Logger.backgroundTask.error("Failed to schedule cache processing task: \(error)")
         }
-        #endif
     }
 
     /// Handle cache processing background task
@@ -76,14 +82,33 @@ public actor BackgroundTaskManager: Log {
                 textAnalyser.getTextFrom,
                 customPrompt
             )
+
+            if Self.shouldNotify {
+                // Show local notification on success
+                await UNUserNotificationCenter.current().showLocalNotification(
+                    title: "Processing Completed",
+                    body: "Apple Intelligence cache processing completed successfully."
+                )
+            }
+
             task.setTaskCompleted(success: true)
             Logger.backgroundTask.info("Background cache processing completed successfully")
         } catch {
             Logger.backgroundTask.error("Background cache processing failed: \(error)")
+
+            if Self.shouldNotify {
+                // Show local notification on failure
+                await UNUserNotificationCenter.current().showLocalNotification(
+                    title: "Processing Failed",
+                    body: "Apple Intelligence cache processing failed: \(error.localizedDescription)"
+                )
+            }
+
             task.setTaskCompleted(success: false)
         }
 
         // Reschedule for next time
-        Self.scheduleCacheProcessing(customPrompt: customPrompt)
+        Self.scheduleCacheProcessing()
     }
 }
+#endif

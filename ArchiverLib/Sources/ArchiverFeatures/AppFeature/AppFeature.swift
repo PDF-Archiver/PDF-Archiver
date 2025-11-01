@@ -225,6 +225,14 @@ struct AppFeature {
                         group.addTask(priority: .background) {
                             // check the temp folder at startup for new documents
                             await documentProcessor.triggerFolderObservation()
+
+                            #if os(iOS)
+                            if #available(iOS 26, *) {
+                                // trigger task scheduling
+                                BackgroundTaskManager.registerTaskHandlers()
+                                BackgroundTaskManager.scheduleCacheProcessing()
+                            }
+                            #endif
                         }
                         group.addTask(priority: .medium) {
                             for await documents in await archiveStore.documentChanges() {

@@ -26,11 +26,8 @@ public actor ContentExtractorStore: Log {
         maximumResponseTokens: 512
     )
 
-    private let cache: ContentExtractorCache
-
-    init() {
-        self.cache = ContentExtractorCache()
-    }
+    private var useCache = true
+    private let cache = ContentExtractorCache()
 
     public static func getAvailability() -> AppleIntelligenceAvailability {
         switch SystemLanguageModel.default.availability {
@@ -54,7 +51,9 @@ public actor ContentExtractorStore: Log {
         guard Self.getAvailability().isUsable else { return nil }
 
         // Check cache if document ID is provided
-        if let documentId, let cachedEntry = await cache.getCachedResult(for: documentId) {
+        if let documentId,
+           useCache,
+           let cachedEntry = await cache.getCachedResult(for: documentId) {
             Logger.contentExtractor.info("Using cached result for document ID: \(documentId)")
             return Info(specification: cachedEntry.specification, tags: cachedEntry.tags)
         }
@@ -109,12 +108,12 @@ public actor ContentExtractorStore: Log {
 
     /// Update cache enabled state
     public func setCacheEnabled(_ enabled: Bool) async {
-        await cache.setEnabled(enabled)
+        useCache = enabled
     }
 
     /// Prune cache entries that don't have matching documents
     /// - Parameter validIds: Set of valid document IDs to keep in cache
-    public func pruneCache(keepingOnly validIds: Set<Document.ID>) async {
+    private func pruneCache(keepingOnly validIds: Set<Document.ID>) async {
         await cache.pruneCache(keepingOnly: validIds)
     }
 
