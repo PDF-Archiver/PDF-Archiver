@@ -7,8 +7,11 @@
 
 import Foundation
 
-public nonisolated struct Document: Equatable, Identifiable, Hashable, Sendable, Codable {
-    public var id: Int
+nonisolated public struct Document: Equatable, Hashable, Sendable, Codable, Identifiable {
+    /// Type alias for document identifier
+    public typealias ID = Int
+
+    public var id: ID
     public var url: URL
     public var date: Date
     public var specification: String
@@ -37,7 +40,7 @@ public nonisolated struct Document: Equatable, Identifiable, Hashable, Sendable,
 }
 
 extension Document {
-    public nonisolated static func createFilename(date: Date, specification: String, tags: Set<String>) -> String {
+    nonisolated public static func createFilename(date: Date, specification: String, tags: Set<String>) -> String {
         // get formatted date
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"

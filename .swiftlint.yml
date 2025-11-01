@@ -9,6 +9,7 @@ disabled_rules: # rule identifiers to exclude from running
   - file_length
   - cyclomatic_complexity
   - large_tuple
+  - type_body_length
 
 opt_in_rules:
   - closure_end_indentation
@@ -59,3 +60,7 @@ identifier_name:
     - at
     - of
     - to
+
+type_name:
+  excluded:
+    - ID

@@ -10,7 +10,7 @@ import Foundation
 import NaturalLanguage
 
 /// Parse tags from a String.
-public nonisolated enum TagParser {
+nonisolated public enum TagParser {
 
     private static let seperator = "-"
 
