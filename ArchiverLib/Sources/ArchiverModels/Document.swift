@@ -27,7 +27,7 @@ nonisolated public struct Document: Equatable, Hashable, Sendable, Codable, Iden
         url.lastPathComponent
     }
 
-    public init(id: Int, url: URL, date: Date, specification: String, tags: Set<String>, isTagged: Bool, sizeInBytes: Double, downloadStatus: Double) {
+    public init(id: ID, url: URL, date: Date, specification: String, tags: Set<String>, isTagged: Bool, sizeInBytes: Double, downloadStatus: Double) {
         self.id = id
         self.url = url
         self.date = date

@@ -24,12 +24,21 @@ struct AppleIntelligenceSettings {
 
         @Shared(.appleIntelligenceCustomPrompt)
         var customPrompt: String?
+
+        @Shared(.appleIntelligenceCacheEnabled)
+        var cacheEnabled: Bool
+
+        var cacheEntryCount: Int = 0
+        var isClearingCache: Bool = false
     }
 
     enum Action: BindableAction, Equatable {
         case binding(BindingAction<State>)
         case onAppear
         case availabilityLoaded(AppleIntelligenceAvailability)
+        case cacheCountLoaded(Int)
+        case clearCacheTapped
+        case cacheCleared
     }
 
     @Dependency(\.contentExtractorStore) var contentExtractorStore
@@ -38,6 +47,11 @@ struct AppleIntelligenceSettings {
         BindingReducer()
         Reduce { state, action in
             switch action {
+            case .binding(\.$cacheEnabled):
+                return .run { [enabled = state.cacheEnabled] _ in
+                    await contentExtractorStore.setCacheEnabled(enabled)
+                }
+
             case .binding:
                 return .none
 
@@ -45,10 +59,29 @@ struct AppleIntelligenceSettings {
                 return .run { send in
                     let availability = await contentExtractorStore.isAvailable()
                     await send(.availabilityLoaded(availability))
+
+                    let cacheCount = await contentExtractorStore.getCacheCount()
+                    await send(.cacheCountLoaded(cacheCount))
                 }
 
             case let .availabilityLoaded(availability):
                 state.availability = availability
+                return .none
+
+            case let .cacheCountLoaded(count):
+                state.cacheEntryCount = count
+                return .none
+
+            case .clearCacheTapped:
+                state.isClearingCache = true
+                return .run { send in
+                    await contentExtractorStore.clearCache()
+                    await send(.cacheCleared)
+                }
+
+            case .cacheCleared:
+                state.isClearingCache = false
+                state.cacheEntryCount = 0
                 return .none
             }
         }
@@ -107,6 +140,40 @@ struct AppleIntelligenceSettingsView: View {
                     Text("\(store.customPrompt?.count ?? 0) / \(AppleIntelligenceSettings.maxCustomPromptLength)", bundle: .module)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
+                }
+
+                Section {
+                    LabeledContent(String(localized: "Cache Entries", bundle: .module)) {
+                        Text("\(store.cacheEntryCount)")
+                            .foregroundStyle(.secondary)
+                    }
+
+                    Toggle(
+                        String(localized: "Use Cache", bundle: .module),
+                        isOn: $store.cacheEnabled
+                    )
+
+                    Button(role: .destructive) {
+                        store.send(.clearCacheTapped)
+                    } label: {
+                        if store.isClearingCache {
+                            HStack {
+                                Text("Clearing Cache...", bundle: .module)
+                                ProgressView()
+                                    .controlSize(.small)
+                            }
+                        } else {
+                            Text("Clear Cache", bundle: .module)
+                        }
+                    }
+                    .disabled(store.isClearingCache || store.cacheEntryCount == 0)
+
+                } header: {
+                    Text("Cache Management", bundle: .module)
+                } footer: {
+                    Text("Cache improves performance by storing previously analyzed documents. Cached entries are stored locally and not synced across devices. The system may automatically remove cache files when storage is needed.", bundle: .module)
+                        .foregroundStyle(.secondary)
+                        .font(.footnote)
                 }
             }
         }
