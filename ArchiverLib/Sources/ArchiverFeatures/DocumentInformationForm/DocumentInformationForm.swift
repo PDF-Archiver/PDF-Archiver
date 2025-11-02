@@ -111,7 +111,7 @@ struct DocumentInformationForm {
 
             case .onSaveButtonTapped:
                 let nothingChanged = state.initialDocument.date == state.document.date && state.initialDocument.specification == state.document.specification && state.initialDocument.tags == state.document.tags
-                guard !nothingChanged else {
+                if nothingChanged && state.document.isTagged {
                     return .none
                 }
 
