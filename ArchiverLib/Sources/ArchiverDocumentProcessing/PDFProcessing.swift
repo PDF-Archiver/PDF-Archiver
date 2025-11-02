@@ -56,13 +56,15 @@ final class PDFProcessingOperation: AsyncOperation {
             let start = Date()
             Logger.documentProcessing.info("Process a document", metadata: ["filename": "\(mode)"])
 
+            var url: URL?
             let document: PDFDocument
             switch mode {
             case .images(let images):
 
                 // apply OCR and create a PDF
                 document = try await createPdf(from: images)
-            case .pdf(let pdfData, _):
+            case .pdf(let pdfData, let pdfUrl):
+                url = pdfUrl
 
                 guard let parsedDocument = PDFDocument(data: pdfData) else {
                     enum OptionalError: String, Error {
@@ -79,7 +81,7 @@ final class PDFProcessingOperation: AsyncOperation {
             guard !Task.isCancelled else { return }
 
             // generate filename by analysing the image
-            let filename = await getFilename(from: document)
+            let filename = await getFilename(from: document, with: url)
             let filepath = destinationFolder.appendingPathComponent(filename)
             document.write(to: filepath)
 
@@ -104,8 +106,8 @@ final class PDFProcessingOperation: AsyncOperation {
 
     // MARK: - Helper Functions
 
-    private func getFilename(from document: PDFDocument) async -> String {
-        if let documentUrl = document.documentURL,
+    private func getFilename(from document: PDFDocument, with url: URL?) async -> String {
+        if let documentUrl = document.documentURL ?? url,
            let parsedOutput = await Document.parseFilename(documentUrl.lastPathComponent) as (date: Date?, specification: String?, tagNames: [String]?)?,
            parsedOutput.date != nil,
            let specification = parsedOutput.specification,
