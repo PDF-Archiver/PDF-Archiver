@@ -424,7 +424,6 @@ struct AppView: View {
             content
             #endif
         }
-        .modifier(LoadingIndicatorModifier(isLoading: store.isDocumentLoading))
         .modifier(AlertDataModelProvider())
         .modifier(IAP(premiumStatus: $store.premiumStatus))
         .sheet(isPresented: $store.tutorialShown.flipped) {
@@ -451,6 +450,9 @@ struct AppView: View {
         NavigationStack {
             ArchiveListView(store: store.scope(state: \.archiveList, action: \.archiveList))
                 .navigationTitle(Text("Archive", bundle: .module))
+                .toolbar {
+                    loadingIndicator
+                }
         }
     }
 
@@ -458,6 +460,26 @@ struct AppView: View {
         NavigationStack {
             UntaggedDocumentListView(store: store.scope(state: \.untaggedDocumentList, action: \.untaggedDocumentList))
                 .navigationTitle(Text("Inbox", bundle: .module))
+                .toolbar {
+                    loadingIndicator
+                }
+        }
+    }
+
+    @ToolbarContentBuilder
+    private var loadingIndicator: some ToolbarContent {
+        if store.isDocumentLoading {
+            #if os(macOS)
+            ToolbarItem(placement: .status) {
+                ProgressView()
+                    .frame(width: 32, height: 32)
+                    .controlSize(.small)
+            }
+            #else
+            ToolbarItem(placement: .destructiveAction) {
+                ProgressView()
+            }
+            #endif
         }
     }
 }

@@ -139,7 +139,7 @@ actor ContentExtractorCache: Log {
                     try? FileManager.default.removeItem(at: fileURL)
                     continue
                 }
-                
+
                 if !validIds.contains(documentId) {
                     try? FileManager.default.removeItem(at: fileURL)
                     Logger.contentExtractor.debug("Pruned cache entry for document ID: \(documentId)")
@@ -159,7 +159,7 @@ actor ContentExtractorCache: Log {
         // Use document ID directly as filename (Int is unique and safe for filesystem)
         return cacheDirectory.appendingPathComponent("\(documentId).json")
     }
-    
+
     /// Get the document ID from an URL.
     /// - Parameter url: URL of the cache entry `<documentId>.json`
     /// - Returns: The document ID if the document.
