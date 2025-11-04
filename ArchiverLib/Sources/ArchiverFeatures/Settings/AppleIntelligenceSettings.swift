@@ -28,6 +28,9 @@ struct AppleIntelligenceSettings {
         @Shared(.appleIntelligenceCacheEnabled)
         var cacheEnabled: Bool
 
+        @Shared(.backgroundCacheNotificationsEnabled)
+        var backgroundNotificationsEnabled: Bool
+
         var cacheEntryCount: Int = 0
         var isClearingCache: Bool = false
     }
@@ -153,6 +156,13 @@ struct AppleIntelligenceSettingsView: View {
                         isOn: $store.cacheEnabled
                     )
 
+                    if store.cacheEnabled {
+                        Toggle(
+                            String(localized: "Background Processing Notifications", bundle: .module),
+                            isOn: $store.backgroundNotificationsEnabled
+                        )
+                    }
+
                     Button(role: .destructive) {
                         store.send(.clearCacheTapped)
                     } label: {
@@ -168,10 +178,8 @@ struct AppleIntelligenceSettingsView: View {
                     }
                     .disabled(store.isClearingCache || store.cacheEntryCount == 0)
 
-                } header: {
-                    Text("Cache Management", bundle: .module)
                 } footer: {
-                    Text("Cache improves performance by storing previously analyzed documents. Cached entries are stored locally and not synced across devices. The system may automatically remove cache files when storage is needed.", bundle: .module)
+                    Text("Cache improves performance by storing previously analyzed documents. Cached entries are stored locally and not synced across devices. The system may automatically remove cache files when storage is needed.\n\nWhen background notifications are enabled, you'll receive alerts about cache processing, including duration and number of caches created.", bundle: .module)
                         .foregroundStyle(.secondary)
                         .font(.footnote)
                 }

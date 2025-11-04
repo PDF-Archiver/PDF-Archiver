@@ -71,7 +71,8 @@ public struct ContentExtractorStoreDependency: Sendable {
     ///   - documents: All documents to process
     ///   - textExtractor: Closure to extract text from document URL
     ///   - customPrompt: Optional custom prompt for extraction
-    public var processUntaggedDocumentsInBackground: @Sendable ([Document], @Sendable (URL) async -> String?, String?) async -> Void = { _, _, _ in }
+    /// - Returns: Number of new cache entries created
+    public var processUntaggedDocumentsInBackground: @Sendable ([Document], @Sendable (URL) async -> String?, String?) async -> Int = { _, _, _ in 0 }
 }
 
 extension ContentExtractorStoreDependency: TestDependencyKey {
@@ -81,7 +82,7 @@ extension ContentExtractorStoreDependency: TestDependencyKey {
         clearCache: {},
         getCacheCount: { 0 },
         setCacheEnabled: { _ in },
-        processUntaggedDocumentsInBackground: { _, _, _ in }
+        processUntaggedDocumentsInBackground: { _, _, _ in 0 }
     )
 
     public static let testValue = Self()
@@ -124,10 +125,10 @@ extension ContentExtractorStoreDependency: DependencyKey {
             await contentExtractorStore.setCacheEnabled(enabled)
         },
         processUntaggedDocumentsInBackground: { documents, textExtractor, customPrompt in
-            guard #available(iOS 26.0, macOS 26.0, *) else { return }
-            await contentExtractorStore.processUntaggedDocumentsInBackground(documents: documents,
-                                                                             textExtractor: textExtractor,
-                                                                             customPrompt: customPrompt)
+            guard #available(iOS 26.0, macOS 26.0, *) else { return 0 }
+            return await contentExtractorStore.processUntaggedDocumentsInBackground(documents: documents,
+                                                                                    textExtractor: textExtractor,
+                                                                                    customPrompt: customPrompt)
         }
     )
 }

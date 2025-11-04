@@ -123,11 +123,13 @@ public actor ContentExtractorStore: Log {
     ///   - documents: All documents to process
     ///   - textExtractor: Closure to extract text from document URL
     ///   - customPrompt: Optional custom prompt for extraction
-    public func processUntaggedDocumentsInBackground(documents: [Document], textExtractor: (URL) async -> String?, customPrompt: String?) async {
+    public func processUntaggedDocumentsInBackground(documents: [Document], textExtractor: (URL) async -> String?, customPrompt: String?) async -> Int {
         // Only process untagged documents
         let untaggedDocuments = documents.filter { !$0.isTagged }
 
         Logger.contentExtractor.info("Background cache processing started for \(untaggedDocuments.count) untagged documents")
+
+        var newCachesCreated = 0
 
         for document in untaggedDocuments {
             let documentId = document.id
@@ -147,6 +149,7 @@ public actor ContentExtractorStore: Log {
                                      customPrompt: customPrompt,
                                      with: documents,
                                      documentId: documentId)
+                newCachesCreated += 1
                 Logger.contentExtractor.debug("Background cache entry created for document ID: \(documentId)")
             } catch {
                 Logger.contentExtractor.error("Failed to create cache entry in background for document ID \(documentId): \(error)")
@@ -157,7 +160,9 @@ public actor ContentExtractorStore: Log {
         let untaggedIds = Set(untaggedDocuments.map(\.id))
         await cache.pruneCache(keepingOnly: untaggedIds)
 
-        Logger.contentExtractor.info("Background cache processing completed")
+        Logger.contentExtractor.info("Background cache processing completed: \(newCachesCreated) new caches created")
+
+        return newCachesCreated
     }
 
     // MARK: - internal helper functions

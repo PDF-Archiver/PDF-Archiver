@@ -18,6 +18,7 @@ enum Names: String {
     case appleIntelligenceEnabled = "apple-intelligence-enabled"
     case appleIntelligenceCustomPrompt = "apple-intelligence-custom-prompt"
     case appleIntelligenceCacheEnabled = "apple-intelligence-cache-enabled"
+    case backgroundCacheNotificationsEnabled = "background-cache-notifications-enabled"
 
     var id: String { "shared-\(rawValue)" }
 }
@@ -128,6 +129,18 @@ public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var appleIntelligenceCacheEnabled: Self {
       let defaultValue = (UserDefaults.standard.value(forKey: "appleIntelligenceCacheEnabled") as? Bool) ?? true
       return Self[.appStorage(Names.appleIntelligenceCacheEnabled.id, store: .standard), default: defaultValue]
+  }
+}
+
+public extension SharedKey where Self == AppStorageKey<Bool> {
+    static var backgroundCacheNotificationsEnabled: Self {
+        appStorage(Names.backgroundCacheNotificationsEnabled.id, store: .standard)
+    }
+}
+public extension SharedKey where Self == AppStorageKey<Bool>.Default {
+  static var backgroundCacheNotificationsEnabled: Self {
+      let defaultValue = (UserDefaults.standard.value(forKey: "backgroundCacheNotificationsEnabled") as? Bool) ?? false
+      return Self[.appStorage(Names.backgroundCacheNotificationsEnabled.id, store: .standard), default: defaultValue]
   }
 }
 

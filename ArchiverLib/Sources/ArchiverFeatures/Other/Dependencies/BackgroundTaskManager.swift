@@ -22,14 +22,13 @@ public actor BackgroundTaskManager: Log {
     /// Background task identifier for cache processing
     public static let cacheProcessingTaskIdentifier = "de.JulianKahnert.PDFArchiveViewer.pdf-processing"
 
-    // TODO: change this debug flag
-    private static let shouldNotify = true
     private static let scheduler = BGTaskScheduler.shared
 
     @Dependency(\.contentExtractorStore) var contentExtractorStore
     @Dependency(\.archiveStore) var archiveStore
     @Dependency(\.textAnalyser) var textAnalyser
     @SharedReader(.appleIntelligenceCustomPrompt) var customPrompt: String?
+    @SharedReader(.backgroundCacheNotificationsEnabled) var shouldNotify: Bool
 
     private init() {}
 
@@ -68,6 +67,7 @@ public actor BackgroundTaskManager: Log {
     /// Handle cache processing background task
     private func handleCacheProcessing(task: BGProcessingTask) async {
         Logger.backgroundTask.info("Background cache processing started")
+        let startTime = Date()
 
         // Set expiration handler
         task.expirationHandler = {
@@ -77,26 +77,31 @@ public actor BackgroundTaskManager: Log {
 
         do {
             let documents = try await archiveStore.getDocuments()
-            await contentExtractorStore.processUntaggedDocumentsInBackground(
+            let newCachesCreated = await contentExtractorStore.processUntaggedDocumentsInBackground(
                 documents,
                 textAnalyser.getTextFrom,
                 customPrompt
             )
 
-            if Self.shouldNotify {
+            let processingDuration = Date().timeIntervalSince(startTime)
+
+            if shouldNotify {
                 // Show local notification on success
+                let duration = Duration.seconds(processingDuration)
+                let durationText = duration.formatted(.units(width: .wide))
+                let body = "Created \(newCachesCreated) new cache\(newCachesCreated == 1 ? "" : "s") in \(durationText)."
                 await UNUserNotificationCenter.current().showLocalNotification(
                     title: "Processing Completed",
-                    body: "Apple Intelligence cache processing completed successfully."
+                    body: body
                 )
             }
 
             task.setTaskCompleted(success: true)
-            Logger.backgroundTask.info("Background cache processing completed successfully")
+            Logger.backgroundTask.info("Background cache processing completed: \(newCachesCreated) caches in \(processingDuration)s")
         } catch {
             Logger.backgroundTask.error("Background cache processing failed: \(error)")
 
-            if Self.shouldNotify {
+            if shouldNotify {
                 // Show local notification on failure
                 await UNUserNotificationCenter.current().showLocalNotification(
                     title: "Processing Failed",
