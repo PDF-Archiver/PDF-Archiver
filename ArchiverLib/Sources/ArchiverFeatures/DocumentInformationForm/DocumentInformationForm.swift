@@ -37,7 +37,7 @@ struct DocumentInformationForm {
 
         @SharedReader(.appleIntelligenceEnabled)
         var appleIntelligenceEnabled: Bool
-        
+
         @SharedReader(.appleIntelligenceCustomPrompt)
         var customPrompt: String?
 
@@ -111,7 +111,7 @@ struct DocumentInformationForm {
 
             case .onSaveButtonTapped:
                 let nothingChanged = state.initialDocument.date == state.document.date && state.initialDocument.specification == state.document.specification && state.initialDocument.tags == state.document.tags
-                guard !nothingChanged else {
+                if nothingChanged && state.document.isTagged {
                     return .none
                 }
 
@@ -179,8 +179,8 @@ struct DocumentInformationForm {
                 return .none
 
             case .startUpdatingAllSuggestionsWithAI(let documentUrl):
-                return .run { [appleIntelligenceEnabled = state.appleIntelligenceEnabled, customPrompt = state.customPrompt] send in
-                    let result = await startUpdatingAllSuggestionsWithAI(url: documentUrl, appleIntelligenceEnabled: appleIntelligenceEnabled, customPrompt: customPrompt)
+                return .run { [appleIntelligenceEnabled = state.appleIntelligenceEnabled, customPrompt = state.customPrompt, documentId = state.document.id] send in
+                    let result = await startUpdatingAllSuggestionsWithAI(url: documentUrl, appleIntelligenceEnabled: appleIntelligenceEnabled, customPrompt: customPrompt, documentId: documentId)
                     await send(.updateDocumentData(result))
                 }
                 // we try to abort the foundation model response after content generation
@@ -236,7 +236,8 @@ struct DocumentInformationForm {
         let dateSuggestions: [Date]?
         let tagSuggestions: [String]?
     }
-    private func startUpdatingAllSuggestionsWithAI(url: URL, appleIntelligenceEnabled: Bool, customPrompt: String?) async -> DocumentParsingResult {
+
+    private func startUpdatingAllSuggestionsWithAI(url: URL, appleIntelligenceEnabled: Bool, customPrompt: String?, documentId: Document.ID) async -> DocumentParsingResult {
 
         // analyse document content and fill suggestions
         let parserOutput = await archiveStore.parseFilename(url.lastPathComponent)
@@ -248,12 +249,14 @@ struct DocumentInformationForm {
         var tagSuggestions: [String]?
 
         if let text = await textAnalyser.getTextFrom(url) {
+            let documents = (try? await archiveStore.getDocuments()) ?? []
             // Try Apple Intelligence first if enabled and available
             if appleIntelligenceEnabled,
                await contentExtractorStore.isAvailable() == .available,
-               let content = await contentExtractorStore.getDocumentInformation(.init(text: text, customPrompt: customPrompt)) {
+               let content = await contentExtractorStore.getDocumentInformation(.init(currentDocuments: documents, text: text, customPrompt: customPrompt, documentId: documentId)) {
                 foundSpecification = content.specification
                 tagSuggestions = Array(content.tags).sorted()
+
             } else {
                 // Fall back to traditional text analysis
                 var results = await textAnalyser.parseDateFrom(text)

@@ -7,9 +7,9 @@
 
 import ArchiverModels
 import ArchiverStore
-import Dependencies
 import Foundation
 import FoundationModels
+import OSLog
 import Shared
 
 @available(iOS 26, macOS 26, *)
@@ -26,48 +26,8 @@ public actor ContentExtractorStore: Log {
         maximumResponseTokens: 512
     )
 
-    let session: LanguageModelSession
-
-    init() {
-        let tagCountTool = TagCountTool()
-        let descriptionTool = DescriptionTool()
-        session = LanguageModelSession(
-            model: .default,
-            tools: [tagCountTool],  // TODO: when I add the descriptionTool here - there will be no tool use at all
-            instructions: Instructions {
-
-            // task description
-            """
-            Your task is to archive documents. To do this, you will receive the content of a new document and you should create a description and tags.
-            """
-
-            // Document tags:
-            """
-            The tags MUST use the existing tags as far as possible.
-            Prioritise frequently used tags.
-            Use the \(tagCountTool.name) tool to query the existing tags.
-            Choose tags by yourself if no tags were provided.
-            """
-
-            // Document description:
-            """
-            The description should briefly describe the content of the document.
-            You MUST ALWAYS use the locale \(ContentExtractorStore.locale.identifier) of the user.
-            """
-
-                // TODO: this breaks the tooling
-//            """
-//            You can get example descriptions from the \(descriptionTool.name) tool.
-//            """                    
-
-            // Example:
-            """
-            For an invoice for a blue jumper from Tom Tailor, the following would be the perfect answer:
-            - Description: blue hoodie
-            - Tags: invoice, clothing, tomtailor
-            """
-            })
-    }
+    private var useCache = true
+    private let cache = ContentExtractorCache()
 
     public static func getAvailability() -> AppleIntelligenceAvailability {
         switch SystemLanguageModel.default.availability {
@@ -80,16 +40,25 @@ public actor ContentExtractorStore: Log {
         }
     }
 
-    public func prewarm() {
-        session.prewarm()
-    }
-
-    public func extract(from text: String, customPrompt: String? = nil) async throws -> Info? {
-
-        // as of iOS 26.0 we can not cancel in flight responses, so we have to return early, if a request is currently running
-        guard !session.isResponding else { return nil }
-
+    /// Extract document information using Apple Intelligence
+    /// - Parameters:
+    ///   - text: The document text content to analyze
+    ///   - customPrompt: Optional custom prompt to guide the extraction
+    ///   - documents: Existing documents for context (tags, specifications)
+    ///   - documentId: Optional document ID for caching results
+    /// - Returns: Extracted specification and tags, or nil if unavailable
+    public func extract(from text: String, customPrompt: String? = nil, with documents: [Document], documentId: Document.ID? = nil) async throws -> Info? {
         guard Self.getAvailability().isUsable else { return nil }
+
+        // Check cache if document ID is provided
+        if let documentId,
+           useCache,
+           let cachedEntry = await cache.getCachedResult(for: documentId) {
+            Logger.contentExtractor.info("Using cached result for document ID: \(documentId)")
+            return Info(specification: cachedEntry.specification, tags: cachedEntry.tags)
+        }
+
+        let session = Self.createSession(with: documents)
 
         let availableTextLength = Self.maxTotalPromptLength - (customPrompt?.count ?? 0)
         let truncatedText = String(text.prefix(max(0, availableTextLength)))
@@ -108,9 +77,151 @@ public actor ContentExtractorStore: Log {
             options: Self.options
         )
 
-        return Info(specification: response.content.description.trimmingCharacters(in: .whitespacesAndNewlines),
-                    tags: response.content.tags.prefix(10).map { $0.slugified(withSeparator: "") }
+        let info = Info(specification: response.content.description.trimmingCharacters(in: .whitespacesAndNewlines),
+                        tags: response.content.tags.prefix(10).map { $0.slugified(withSeparator: "") }
         )
+
+        // Save result to cache for faster subsequent access
+        if let documentId {
+            let cacheEntry = ContentExtractorCache.CacheEntry(
+                documentId: documentId,
+                specification: info.specification,
+                tags: info.tags
+            )
+            await cache.saveCacheEntry(cacheEntry)
+        }
+
+        return info
+    }
+
+    // MARK: - Cache Management
+
+    /// Clear all cache entries
+    public func clearCache() async {
+        await cache.clearCache()
+    }
+
+    /// Get the number of cache entries
+    public func getCacheCount() async -> Int {
+        await cache.getCacheCount()
+    }
+
+    /// Update cache enabled state
+    public func setCacheEnabled(_ enabled: Bool) async {
+        useCache = enabled
+    }
+
+    /// Prune cache entries that don't have matching documents
+    /// - Parameter validIds: Set of valid document IDs to keep in cache
+    private func pruneCache(keepingOnly validIds: Set<Document.ID>) async {
+        await cache.pruneCache(keepingOnly: validIds)
+    }
+
+    /// Process untagged documents in the background to create cache entries
+    /// This method should be called when the device is idle and connected to power
+    /// - Parameters:
+    ///   - documents: All documents to process
+    ///   - textExtractor: Closure to extract text from document URL
+    ///   - customPrompt: Optional custom prompt for extraction
+    public func processUntaggedDocumentsInBackground(documents: [Document], textExtractor: (URL) async -> String?, customPrompt: String?) async {
+        // Only process untagged documents
+        let untaggedDocuments = documents.filter { !$0.isTagged }
+
+        Logger.contentExtractor.info("Background cache processing started for \(untaggedDocuments.count) untagged documents")
+
+        for document in untaggedDocuments {
+            let documentId = document.id
+
+            // Skip if already cached
+            if await cache.getCachedResult(for: documentId) != nil {
+                continue
+            }
+
+            // Extract text and process (cache will be saved inside extract())
+            guard let text = await textExtractor(document.url) else {
+                continue
+            }
+
+            do {
+                _ = try await extract(from: text,
+                                     customPrompt: customPrompt,
+                                     with: documents,
+                                     documentId: documentId)
+                Logger.contentExtractor.debug("Background cache entry created for document ID: \(documentId)")
+            } catch {
+                Logger.contentExtractor.error("Failed to create cache entry in background for document ID \(documentId): \(error)")
+            }
+        }
+
+        // Prune cache entries for documents that no longer exist in untagged folder
+        let untaggedIds = Set(untaggedDocuments.map(\.id))
+        await cache.pruneCache(keepingOnly: untaggedIds)
+
+        Logger.contentExtractor.info("Background cache processing completed")
+    }
+
+    // MARK: - internal helper functions
+
+    private static func createSession(with documents: [Document]) -> LanguageModelSession {
+        let docStats = Self.getDocumentStats(minTagCount: 3, maxSpecifications: 20, with: documents)
+        return LanguageModelSession(
+            model: .default,
+            tools: [],
+            instructions: Instructions {
+
+            // Task description
+            """
+            Your task is to archive documents by analyzing their content and generating appropriate descriptions and tags.
+            If the document content does not contain enough information to create good tags/description, you MUST NOT hallucinate them - just return empty values.
+            """
+
+            // Document tags:
+            """
+            Tags MUST ALWAYS use existing tags from the system whenever applicable.
+            Prefer frequently used tags to maintain consistency: \(docStats.tagCounts.prefix(500))
+            If no suitable existing tags are found, create new appropriate tags.
+            """
+
+            // Document description:
+            """
+            The description should provide a concise summary of the document's content (5-10 words maximum).
+            You MUST ALWAYS use the user's locale: \(Self.locale.identifier).
+            You MUST ALWAYS model your new description after the examples, adapting the style and format to match the current document's content.
+            Only use the current document content. DO NOT hallucinate.
+            Example descriptions: \(docStats.specifications.prefix(500))
+            """
+            })
+    }
+
+    private struct DocStats {
+        let tagCounts: String
+        let specifications: String
+    }
+
+    private static func getDocumentStats(minTagCount: Int, maxSpecifications: Int, with documents: [Document]) -> DocStats {
+        let tagCounts = Dictionary(grouping: documents.flatMap(\.tags)) {
+            $0
+        }
+            .map { (name: $0, count: $1.count) }
+            .filter { $0.count >= minTagCount }
+
+        let formattedTagCounts = tagCounts
+            .prefix(30)
+            .map {
+                "'\($0.0)': \($0.1)"
+            }
+        let tagCountsString = """
+        'tagName': count
+        \(formattedTagCounts)
+        """
+
+        let specificationsString = documents.sorted { $0.date > $1.date }
+            .prefix(maxSpecifications)
+            .map(\.specification)
+            .joined(separator: "\n")
+
+        return DocStats(tagCounts: tagCountsString,
+                        specifications: specificationsString)
     }
 }
 
@@ -131,11 +242,11 @@ extension ContentExtractorStore {
     }
 }
 
-//#if canImport(FoundationModels)
-//import Playgrounds
+// #if canImport(FoundationModels)
+// import Playgrounds
 //
-//@available(macOS 26.0, *)
-//extension Transcript.Entry {
+// @available(macOS 26.0, *)
+// extension Transcript.Entry {
 //    var toolCallCount: Int {
 //        switch self {
 //        case .toolCalls(let calls):
@@ -144,10 +255,10 @@ extension ContentExtractorStore {
 //            return 0
 //        }
 //    }
-//}
+// }
 //
 ////    let text = "Bill of a blue hoddie from tom tailor"
-//let text = """
+// let text = """
 //    TOM TAILOR
 //    TOM TAILOR Retail GmbH
 //    Garstedter Weg 14

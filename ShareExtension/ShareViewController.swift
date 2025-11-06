@@ -28,7 +28,6 @@ final class ShareViewController: UIViewController {
         .image
     ]
 
-    @IBOutlet private weak var backgroundView: UIView!
     @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet private weak var checkmark: UIImageView!
 
@@ -37,7 +36,6 @@ final class ShareViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        backgroundView.layer.cornerRadius = 25
         activityIndicator.startAnimating()
         activityIndicator.hidesWhenStopped = true
         checkmark.isHidden = true

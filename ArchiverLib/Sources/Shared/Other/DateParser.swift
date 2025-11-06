@@ -8,7 +8,7 @@
 import Foundation
 
 /// Parse several kinds of dates in a String.
-public nonisolated enum DateParser: Log {
+nonisolated public enum DateParser: Log {
 
     private struct ParserResult: Codable {
         let date: Date

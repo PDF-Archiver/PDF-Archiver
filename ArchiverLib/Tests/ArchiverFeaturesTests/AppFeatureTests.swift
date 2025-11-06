@@ -10,12 +10,14 @@ struct AppFeatureTests {
     @Test(.disabled("Currently not working"))
     func deleteUntaggedDocument() async throws {
         let currentYear = Calendar.current.component(.year, from: Date())
+        // swiftlint:disable force_unwrapping
         let document1 = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: true)
         let document2 = Document.mock(url: URL(string: "https://example.com/2")!, isTagged: true)
         let document3 = Document.mock(url: URL(string: "https://example.com/3")!, isTagged: true)
         let document4 = Document.mock(url: URL(string: "https://example.com/4")!, isTagged: false)
         let document5 = Document.mock(url: URL(string: "https://example.com/5")!, isTagged: false)
         let document6 = Document.mock(url: URL(string: "https://example.com/6")!, isTagged: false)
+        // swiftlint:enable force_unwrapping
         let documents = IdentifiedArrayOf(uniqueElements: [document1, document2, document3, document4, document5, document6])
 
         let store = TestStore(initialState: AppFeature.State(documents: documents,
@@ -52,12 +54,14 @@ struct AppFeatureTests {
     @Test(.disabled("Currently not working"))
     func deleteTaggedDocument() async throws {
         let currentYear = Calendar.current.component(.year, from: Date())
+        // swiftlint:disable force_unwrapping
         let document1 = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: true)
         let document2 = Document.mock(url: URL(string: "https://example.com/2")!, isTagged: true)
         let document3 = Document.mock(url: URL(string: "https://example.com/3")!, isTagged: true)
         let document4 = Document.mock(url: URL(string: "https://example.com/4")!, isTagged: false)
         let document5 = Document.mock(url: URL(string: "https://example.com/5")!, isTagged: false)
         let document6 = Document.mock(url: URL(string: "https://example.com/6")!, isTagged: false)
+        // swiftlint:enable force_unwrapping
         let documents = IdentifiedArrayOf(uniqueElements: [document1, document2, document3, document4, document5, document6])
 
         let store = TestStore(initialState: AppFeature.State(documents: documents,

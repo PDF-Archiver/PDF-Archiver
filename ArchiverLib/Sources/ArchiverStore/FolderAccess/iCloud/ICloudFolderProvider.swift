@@ -106,14 +106,14 @@ final class ICloudFolderProvider: FolderProvider {
 
     private func sendDocuments(added: [DocumentInformation], updated: [DocumentInformation], removed: [DocumentInformation]) async {
         for change in added + updated {
-            guard let id = await change.url.uniqueId() else {
+            guard let id = change.url.uniqueId() else {
                 assertionFailure("Failed to get uniqueId for \(change.url)")
                 continue
             }
             currentDocuments[id] = change
         }
         for change in removed {
-            guard let id = await change.url.uniqueId() else {
+            guard let id = change.url.uniqueId() else {
                 assertionFailure("Failed to get uniqueId for \(change.url)")
                 currentDocuments = currentDocuments.filter { $0.value.url != change.url }
                 continue

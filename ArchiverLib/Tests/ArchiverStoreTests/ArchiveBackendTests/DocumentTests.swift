@@ -295,7 +295,7 @@ struct DocumentTests {
 
         // assert - placeholders must not be in the tags or specification
         #expect(document.tags == [])
-        #expect(document.specification == "")
+        #expect(document.specification.isEmpty)
     }
 
     @Test
