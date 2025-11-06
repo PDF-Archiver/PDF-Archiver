@@ -24,6 +24,7 @@
 		A305ACD12E781B3B00CADC3D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = A305ACCF2E781B3B00CADC3D /* Localizable.xcstrings */; };
 		A305ACD22E781B3B00CADC3D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = A305ACCF2E781B3B00CADC3D /* Localizable.xcstrings */; };
 		A305ACD32E781B3B00CADC3D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = A305ACCF2E781B3B00CADC3D /* Localizable.xcstrings */; };
+		A316AC092EAD561000F750DA /* Shared in Frameworks */ = {isa = PBXBuildFile; productRef = A316AC082EAD561000F750DA /* Shared */; };
 		A35CBAA42C1F294A00CFBA20 /* FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35CBAA32C1F294A00CFBA20 /* FileManager.swift */; };
 		A36033872E18580900A5F573 /* ArchiverLib in Frameworks */ = {isa = PBXBuildFile; productRef = A36033862E18580900A5F573 /* ArchiverLib */; };
 		A36FB17F2CCBDF3E006ADDE9 /* AsyncExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = A36FB17E2CCBDF3E006ADDE9 /* AsyncExtensions */; };
@@ -202,6 +203,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A316AC092EAD561000F750DA /* Shared in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -407,6 +409,7 @@
 			);
 			name = ShareExtension;
 			packageProductDependencies = (
+				A316AC082EAD561000F750DA /* Shared */,
 			);
 			productName = ShareExtension;
 			productReference = 34A53F9724AA656B008A3377 /* ShareExtension.appex */;
@@ -813,7 +816,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.3.0;
+				MARKETING_VERSION = 4.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer;
 				PRODUCT_NAME = PDFArchiver;
 				SDKROOT = iphoneos;
@@ -843,7 +846,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.3.0;
+				MARKETING_VERSION = 4.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer;
 				PRODUCT_NAME = PDFArchiver;
 				SDKROOT = iphoneos;
@@ -879,7 +882,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 4.3.0;
+				MARKETING_VERSION = 4.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer;
 				PRODUCT_NAME = PDFArchiver;
 				REGISTER_APP_GROUPS = YES;
@@ -913,7 +916,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 4.3.0;
+				MARKETING_VERSION = 4.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer;
 				PRODUCT_NAME = PDFArchiver;
 				REGISTER_APP_GROUPS = YES;
@@ -938,7 +941,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 4.3.0;
+				MARKETING_VERSION = 4.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -966,7 +969,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 4.3.0;
+				MARKETING_VERSION = 4.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1048,7 +1051,7 @@
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 4.3.0;
+				MARKETING_VERSION = 4.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer.Widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -1092,7 +1095,7 @@
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 4.3.0;
+				MARKETING_VERSION = 4.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer.Widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -1187,6 +1190,10 @@
 		A301EA442E28376100560BD9 /* ArchiverLib */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ArchiverLib;
+		};
+		A316AC082EAD561000F750DA /* Shared */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Shared;
 		};
 		A36033862E18580900A5F573 /* ArchiverLib */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -240,7 +240,14 @@ struct AppFeature {
                    new == .active,
                    !state.isDocumentLoading {
                     return .run { _ in
-                        try await archiveStore.reloadDocuments()
+                        try await withThrowingTaskGroup(of: Void.self) { group in
+                            group.addTask(priority: .background) {
+                                await documentProcessor.triggerFolderObservation()
+                            }
+                            group.addTask(priority: .medium) {
+                                try await archiveStore.reloadDocuments()
+                            }
+                        }
                     }
                 }
 
