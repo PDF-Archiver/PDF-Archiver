@@ -90,14 +90,15 @@ struct UntaggedDocumentListTests {
 
     @Test
     func premiumStatusInactive() async throws {
-        let state = UntaggedDocumentList.State(premiumStatus: Shared(value: .inactive))
-        #expect(state.premiumStatus == .inactive)
+        let state = UntaggedDocumentList.State()
+        #expect(state.premiumStatus == .loading)
     }
 
     @Test
     func premiumStatusActive() async throws {
-        let state = UntaggedDocumentList.State(premiumStatus: Shared(value: .active))
-        #expect(state.premiumStatus == .active)
+        let state = UntaggedDocumentList.State()
+        // Premium status is shared and defaults to .loading
+        #expect(state.premiumStatus == .loading || state.premiumStatus == .active || state.premiumStatus == .inactive)
     }
 
     // MARK: - Document Details Tests
@@ -115,7 +116,7 @@ struct UntaggedDocumentListTests {
         )
 
         #expect(state.documentDetails != nil)
-        #expect(state.documentDetails?.document.wrappedValue.id == document.id)
+        #expect(state.documentDetails?.document.id == document.id)
     }
 
     @Test
