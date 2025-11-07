@@ -54,6 +54,7 @@ struct AppFeature {
         var untaggedDocumentList = UntaggedDocumentList.State()
         var statistics = Statistics.State()
         var settings = Settings.State()
+        var scanButton = ScanButtonFeature.State()
     }
 
     enum Action: BindableAction {
@@ -69,6 +70,7 @@ struct AppFeature {
         case prefetchDocuments([Document])
         case statistics(Statistics.Action)
         case settings(Settings.Action)
+        case scanButton(ScanButtonFeature.Action)
     }
 
     @Dependency(\.documentProcessor) var documentProcessor
@@ -92,6 +94,9 @@ struct AppFeature {
         }
         Scope(state: \.settings, action: \.settings) {
             Settings()
+        }
+        Scope(state: \.scanButton, action: \.scanButton) {
+            ScanButtonFeature()
         }
 
         // ... second, run AppFeature reducer, if we need to interact (from an AppFeature domain point of view) with it
@@ -134,6 +139,8 @@ struct AppFeature {
                 }
 
             case .archiveList:
+                // update scan button visibility when archive list state changes
+                state.scanButton.showButton = state.showScanButton
                 return .none
 
             case .binding(\.selectedTab):
@@ -155,6 +162,9 @@ struct AppFeature {
                     break
                 #endif
                 }
+
+                // update scan button visibility
+                state.scanButton.showButton = state.showScanButton
                 return .none
 
             case .binding:
@@ -329,6 +339,9 @@ struct AppFeature {
             case .statistics:
                 return .none
 
+            case .scanButton:
+                return .none
+
             }
         }
     }
@@ -371,10 +384,11 @@ struct AppView: View {
     }
 
     var body: some View {
+        let _ = { store.scanButton.currentTip = store.tutorialShown ? tips.currentTip : nil }()
         TabView(selection: $store.selectedTab) {
             Tab(value: AppFeature.State.Tab.search, role: .search) {
                 archiveList
-                    .modifier(ScanButtonModifier(showButton: store.showScanButton, currentTip: store.tutorialShown ? tips.currentTip : nil))
+                    .scanButton(store: store.scope(state: \.scanButton, action: \.scanButton))
             }
 
             Tab(String(localized: "Inbox", bundle: .module), systemImage: "tray", value: AppFeature.State.Tab.inbox) {
