@@ -32,3 +32,6 @@ jobs:
 
       - name: Build ArchiverLib
         run: cd ArchiverLib && swift build
+
+      - name: Test ArchiverLib
+        run: cd ArchiverLib && swift test
