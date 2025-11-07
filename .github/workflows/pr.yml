@@ -17,7 +17,7 @@ jobs:
         env:
           DIFF_BASE: ${{ github.base_ref }}
 
-  Build:
+  BuildAndTest:
     runs-on: macos-26
     permissions:
       contents: write
