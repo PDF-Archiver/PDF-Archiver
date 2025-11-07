@@ -48,12 +48,14 @@ struct ArchiveListTests {
     func searchTextFiltersDocuments() async throws {
         // swiftlint:disable force_unwrapping
         let doc1 = Document.mock(
-            url: URL(string: "https://example.com/1")!,
-            specification: "invoice"
+            url: URL(fileURLWithPath: "/tmp/2024-01-01--invoice__tag1.pdf"),
+            specification: "invoice",
+            isTagged: true
         )
         let doc2 = Document.mock(
-            url: URL(string: "https://example.com/2")!,
-            specification: "receipt"
+            url: URL(fileURLWithPath: "/tmp/2024-01-01--receipt__tag1.pdf"),
+            specification: "receipt",
+            isTagged: true
         )
         // swiftlint:enable force_unwrapping
 
@@ -134,15 +136,18 @@ struct ArchiveListTests {
         // swiftlint:disable force_unwrapping
         let doc1 = Document.mock(
             url: URL(string: "https://example.com/1")!,
-            tags: ["invoice"]
+            tags: ["invoice"],
+            isTagged: true
         )
         let doc2 = Document.mock(
             url: URL(string: "https://example.com/2")!,
-            tags: ["receipt"]
+            tags: ["receipt"],
+            isTagged: true
         )
         let doc3 = Document.mock(
             url: URL(string: "https://example.com/3")!,
-            tags: ["invoice", "work"]
+            tags: ["invoice", "work"],
+            isTagged: true
         )
         // swiftlint:enable force_unwrapping
 
@@ -164,12 +169,14 @@ struct ArchiveListTests {
 
         // swiftlint:disable force_unwrapping
         let doc1 = Document.mock(
-            url: URL(string: "https://example.com/1")!,
-            date: date2024
+            url: URL(fileURLWithPath: "/tmp/2024-01-01--document__tag1.pdf"),
+            date: date2024,
+            isTagged: true
         )
         let doc2 = Document.mock(
-            url: URL(string: "https://example.com/2")!,
-            date: date2023
+            url: URL(fileURLWithPath: "/tmp/2023-01-01--document__tag1.pdf"),
+            date: date2023,
+            isTagged: true
         )
         // swiftlint:enable force_unwrapping
 
@@ -189,19 +196,22 @@ struct ArchiveListTests {
 
         // swiftlint:disable force_unwrapping
         let doc1 = Document.mock(
-            url: URL(string: "https://example.com/1")!,
+            url: URL(fileURLWithPath: "/tmp/2024-01-01--document__invoice.pdf"),
             date: date2024,
-            tags: ["invoice"]
+            tags: ["invoice"],
+            isTagged: true
         )
         let doc2 = Document.mock(
-            url: URL(string: "https://example.com/2")!,
+            url: URL(fileURLWithPath: "/tmp/2024-01-01--document__receipt.pdf"),
             date: date2024,
-            tags: ["receipt"]
+            tags: ["receipt"],
+            isTagged: true
         )
         let doc3 = Document.mock(
-            url: URL(string: "https://example.com/3")!,
+            url: URL(fileURLWithPath: "/tmp/2025-01-01--document__invoice.pdf"),
             date: Date(),
-            tags: ["invoice"]
+            tags: ["invoice"],
+            isTagged: true
         )
         // swiftlint:enable force_unwrapping
 
