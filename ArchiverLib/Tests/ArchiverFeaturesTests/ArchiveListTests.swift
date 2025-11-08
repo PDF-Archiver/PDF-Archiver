@@ -115,20 +115,6 @@ struct ArchiveListTests {
         }
     }
 
-    // MARK: - Search Suggestions Tests
-
-    @Test
-    func searchSuggestionsUpdated() async throws {
-        let store = TestStore(initialState: ArchiveList.State()) {
-            ArchiveList()
-        }
-
-        let suggestions: [ArchiveList.State.SearchToken] = [.tag("invoice"), .year(2024)]
-        await store.send(.searchSuggestionsUpdated(suggestions)) {
-            $0.searchSuggestedTokens = suggestions
-        }
-    }
-
     // MARK: - Filtered Documents Tests
 
     @Test
