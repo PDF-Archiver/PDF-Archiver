@@ -101,6 +101,7 @@ struct DocumentInformationForm {
     @Dependency(\.contentExtractorStore) var contentExtractorStore
     @Dependency(\.calendar) var calendar
     @Dependency(\.notificationCenter) var notificationCenter
+    @Dependency(\.continuousClock) var clock
 
     var body: some ReducerOf<Self> {
         BindingReducer()
@@ -176,13 +177,13 @@ struct DocumentInformationForm {
                     state.isTagSelectionDelayActive = true
                     state.tagSelectionDelayProgress = 0.0
 
-                    return .run { send in
+                    return .run { [clock] send in
                         let delayDuration: Double = 2.0
                         let steps = 20
                         let stepDuration = delayDuration / Double(steps)
 
                         for step in 1...steps {
-                            try await Task.sleep(for: .seconds(stepDuration))
+                            try await clock.sleep(for: .seconds(stepDuration))
                             await send(.updateTagSelectionDelayProgress(Double(step) / Double(steps)))
                         }
 
