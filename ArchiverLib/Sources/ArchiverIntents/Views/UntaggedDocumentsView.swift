@@ -26,7 +26,6 @@ public struct UntaggedDocumentsView: View {
     var actionButtons: some View {
          HStack {
             if untaggedDocuments <= 0 {
-
                 Link(destination: DeepLink.scan.url) {
                     Label(String(localized: "Scan", bundle: .module), systemImage: "document.viewfinder")
                 }
@@ -47,8 +46,8 @@ public struct UntaggedDocumentsView: View {
                 Link(destination: DeepLink.tag.url) {
                     Label(String(localized: "Tag", bundle: .module), systemImage: "tag")
                         .minimumScaleFactor(0.5)
-                        .frame(maxWidth: .infinity)
                 }
+                .frame(maxWidth: .infinity)
                 .padding(10)
                 .background(Capsule().fill(Color.paRedAsset))
                 .foregroundColor(.white)
@@ -74,14 +73,7 @@ public struct UntaggedDocumentsView: View {
                                 .symbolRenderingMode(.hierarchical)
                         }
                         .font(.largeTitle)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-
-                        Text("Untagged Documents", bundle: .module)
-                            .foregroundStyle(.secondary)
-                            .font(.caption)
-                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
                 } else {
                     ZStack(alignment: .topTrailing) {
                         Image(systemName: "checkmark.seal.fill")
@@ -94,10 +86,8 @@ public struct UntaggedDocumentsView: View {
                         Text("All documents are tagged. 🎉", bundle: .module)
                             .foregroundStyle(.secondary)
                             .font(.caption)
-                            .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.top, 40)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
 
                 Spacer()
@@ -139,7 +129,6 @@ public struct UntaggedDocumentsView: View {
                         Text("All documents are tagged. 🎉", bundle: .module)
                             .foregroundStyle(.secondary)
                             .font(.caption)
-                            .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.top, 40)
                     }
                 }
@@ -163,12 +152,10 @@ public struct UntaggedDocumentsView: View {
                                 .symbolRenderingMode(.hierarchical)
                         }
                         .font(.largeTitle)
-                        .frame(maxWidth: .infinity, alignment: .leading)
 
                         Text("Untagged Documents", bundle: .module)
                             .foregroundStyle(.secondary)
                             .font(.caption)
-                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 } else {
                     ZStack(alignment: .topTrailing) {
@@ -182,7 +169,6 @@ public struct UntaggedDocumentsView: View {
                         Text("All documents are tagged. 🎉", bundle: .module)
                             .foregroundStyle(.secondary)
                             .font(.caption)
-                            .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.top, 40)
                     }
                 }
