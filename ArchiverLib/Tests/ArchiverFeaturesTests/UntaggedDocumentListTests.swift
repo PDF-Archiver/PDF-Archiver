@@ -23,6 +23,10 @@ struct UntaggedDocumentListTests {
             $0.$selectedDocumentId.withLock { $0 = document.id }
             $0.documentDetails = .init(document: Shared(value: document))
         }
+
+        await store.receive(\.documentDetails.presented.updateShowInspector) {
+            $0.documentDetails?.showInspector = true
+        }
     }
 
     @Test
