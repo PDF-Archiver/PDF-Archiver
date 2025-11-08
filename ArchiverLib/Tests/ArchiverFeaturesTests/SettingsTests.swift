@@ -142,14 +142,21 @@ struct SettingsTests {
 
     @Test
     func premiumSectionShowManageSubscription() async throws {
+        let openedURL = LockIsolated<URL?>(nil)
+
         let store = TestStore(initialState: Settings.State()) {
             Settings()
         } withDependencies: {
-            $0.openURL = .init { _ in true }
+            $0.openURL = .init { [openedURL] url in
+                openedURL.setValue(url)
+                return true
+            }
         }
 
-        // Premium section actions should be handled
         await store.send(.premiumSection(.showManageSubscription))
+
+        // Verify the correct URL was opened
+        #expect(openedURL.value?.absoluteString == "https://apps.apple.com/account/subscriptions")
     }
 
     // MARK: - State Initialization Tests

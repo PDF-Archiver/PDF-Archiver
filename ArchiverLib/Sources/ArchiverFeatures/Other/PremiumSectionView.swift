@@ -42,8 +42,14 @@ struct PremiumSection {
                     await openURL(url)
                 }
                 #else
+                #if DEBUG
+                return .run { _ in
+                    await openURL(url)
+                }
+                #else
                 NSWorkspace.shared.open(url)
                 return .none
+                #endif
                 #endif
 
             case .binding, .delegate:
