@@ -33,7 +33,7 @@ struct DocumentTests {
         let path = URL(fileURLWithPath: "~/Downloads/2010-05-12--example-description__tag1_tag2_tag4.pdf")
 
         // calculate
-        let parsingOutput = await await Document.parseFilename(path.lastPathComponent)
+        let parsingOutput = await Document.parseFilename(path.lastPathComponent)
 
         // assert
         #expect(parsingOutput.date == dateFormatter.date(from: "2010-05-12"))
