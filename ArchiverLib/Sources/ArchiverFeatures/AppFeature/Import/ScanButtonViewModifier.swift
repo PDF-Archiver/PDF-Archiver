@@ -13,7 +13,7 @@ import TipKit
 import UniformTypeIdentifiers
 
 struct ScanButtonViewModifier: ViewModifier {
-    @Bindable var store: StoreOf<ScanButtonFeature>
+    @Bindable var store: StoreOf<ScanButton>
     @Namespace var scanButtonNamespace
 
     func body(content: Content) -> some View {
@@ -68,7 +68,7 @@ struct ScanButtonViewModifier: ViewModifier {
 // MARK: - TCA Drop Delegate
 
 private struct TCADropDelegate: DropDelegate {
-    let store: StoreOf<ScanButtonFeature>
+    let store: StoreOf<ScanButton>
 
     func dropEntered(info: DropInfo) {
         store.send(.dropHandler(.dropEntered))
@@ -91,7 +91,7 @@ private struct TCADropDelegate: DropDelegate {
 // MARK: - View Extension
 
 extension View {
-    func scanButton(store: StoreOf<ScanButtonFeature>) -> some View {
+    func scanButton(store: StoreOf<ScanButton>) -> some View {
         modifier(ScanButtonViewModifier(store: store))
     }
 }

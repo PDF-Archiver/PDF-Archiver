@@ -54,7 +54,7 @@ struct AppFeature {
         var untaggedDocumentList = UntaggedDocumentList.State()
         var statistics = Statistics.State()
         var settings = Settings.State()
-        var scanButton = ScanButtonFeature.State()
+        var scanButton = ScanButton.State()
     }
 
     enum Action: BindableAction {
@@ -70,7 +70,7 @@ struct AppFeature {
         case prefetchDocuments([Document])
         case statistics(Statistics.Action)
         case settings(Settings.Action)
-        case scanButton(ScanButtonFeature.Action)
+        case scanButton(ScanButton.Action)
     }
 
     @Dependency(\.documentProcessor) var documentProcessor
@@ -96,7 +96,7 @@ struct AppFeature {
             Settings()
         }
         Scope(state: \.scanButton, action: \.scanButton) {
-            ScanButtonFeature()
+            ScanButton()
         }
 
         // ... second, run AppFeature reducer, if we need to interact (from an AppFeature domain point of view) with it

@@ -15,7 +15,7 @@ import TipKit
 import UniformTypeIdentifiers
 
 @Reducer
-struct ScanButtonFeature {
+struct ScanButton {
     @ObservableState
     struct State: Equatable {
         var showButton: Bool = false
