@@ -475,7 +475,7 @@ struct AppView: View {
                     .controlSize(.small)
             }
             #else
-            ToolbarItem(placement: .destructiveAction) {
+            ToolbarItem(placement: .automatic) {
                 ProgressView()
             }
             #endif

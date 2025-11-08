@@ -1,5 +1,5 @@
 //
-//  UntaggedDocumentsView.swift
+//  UntaggedDocumentsStatsView.swift
 //  ArchiverLib
 //
 //  Created by Julian Kahnert on 16.07.25.
@@ -8,7 +8,7 @@
 import Shared
 import SwiftUI
 
-public struct UntaggedDocumentsView: View {
+public struct UntaggedDocumentsStatsView: View {
     public enum Size {
         case small, medium, large
     }
@@ -75,19 +75,7 @@ public struct UntaggedDocumentsView: View {
                         .font(.largeTitle)
                     }
                 } else {
-                    ZStack(alignment: .topTrailing) {
-                        Image(systemName: "checkmark.seal.fill")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 100, height: 100)
-                            .foregroundStyle(Color.paRedAsset.opacity(0.4))
-                            .padding([.top, .trailing], -40)
-
-                        Text("All documents are tagged. 🎉", bundle: .module)
-                            .foregroundStyle(.secondary)
-                            .font(.caption)
-                            .padding(.top, 40)
-                    }
+                    allDocumentsTagged
                 }
 
                 Spacer()
@@ -118,19 +106,7 @@ public struct UntaggedDocumentsView: View {
                         Spacer()
                     }
                 } else {
-                    ZStack(alignment: .topTrailing) {
-                        Image(systemName: "checkmark.seal.fill")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 100, height: 100)
-                            .foregroundStyle(Color.paRedAsset.opacity(0.4))
-                            .padding([.top, .trailing], -40)
-
-                        Text("All documents are tagged. 🎉", bundle: .module)
-                            .foregroundStyle(.secondary)
-                            .font(.caption)
-                            .padding(.top, 40)
-                    }
+                    allDocumentsTagged
                 }
 
                 Spacer()
@@ -158,19 +134,7 @@ public struct UntaggedDocumentsView: View {
                             .font(.caption)
                     }
                 } else {
-                    ZStack(alignment: .topTrailing) {
-                        Image(systemName: "checkmark.seal.fill")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 100, height: 100)
-                            .foregroundStyle(Color.paRedAsset.opacity(0.4))
-                            .padding([.top, .trailing], -40)
-
-                        Text("All documents are tagged. 🎉", bundle: .module)
-                            .foregroundStyle(.secondary)
-                            .font(.caption)
-                            .padding(.top, 40)
-                    }
+                    allDocumentsTagged
                 }
 
                 Spacer()
@@ -181,37 +145,60 @@ public struct UntaggedDocumentsView: View {
             }
         }
     }
+
+    private var allDocumentsTagged: some View {
+        Text("All documents are tagged. 🎉", bundle: .module)
+            .foregroundStyle(.secondary)
+            .font(.caption)
+            .frame(height: 80)
+            .frame(maxWidth: .infinity)
+            .overlay(alignment: .topTrailing) {
+                Image(systemName: "checkmark.seal.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .foregroundStyle(Color.paRedAsset.opacity(0.4))
+                    .frame(width: 80, height: 80)
+                    .offset(x: 30, y: -30)
+
+            }
+    }
 }
 
 #Preview("Small") {
-    Group {
-        UntaggedDocumentsView(untaggedDocuments: 0,
-                              size: .small)
-        UntaggedDocumentsView(untaggedDocuments: 0,
-                              size: .small)
-        UntaggedDocumentsView(untaggedDocuments: 0,
-                              size: .small)
+    List {
+        Section {
+            UntaggedDocumentsStatsView(untaggedDocuments: 0,
+                                       size: .small)
+        }
+        Section {
+            UntaggedDocumentsStatsView(untaggedDocuments: 0,
+                                       size: .small)
+        }
     }
 }
 
 #Preview("Medium") {
-    Group {
-        UntaggedDocumentsView(untaggedDocuments: 0,
-                              size: .medium)
-        UntaggedDocumentsView(untaggedDocuments: 0,
-                              size: .medium)
-        UntaggedDocumentsView(untaggedDocuments: 0,
-                              size: .medium)
+    List {
+        Section {
+            UntaggedDocumentsStatsView(untaggedDocuments: 0,
+                                       size: .medium)
+        }
+        Section {
+            UntaggedDocumentsStatsView(untaggedDocuments: 0,
+                                       size: .medium)
+        }
     }
 }
 
 #Preview("Large") {
-    Group {
-        UntaggedDocumentsView(untaggedDocuments: 0,
-                              size: .large)
-        UntaggedDocumentsView(untaggedDocuments: 0,
-                              size: .large)
-        UntaggedDocumentsView(untaggedDocuments: 0,
-                              size: .large)
+    List {
+        Section {
+            UntaggedDocumentsStatsView(untaggedDocuments: 0,
+                                       size: .large)
+        }
+        Section {
+            UntaggedDocumentsStatsView(untaggedDocuments: 0,
+                                       size: .large)
+        }
     }
 }
