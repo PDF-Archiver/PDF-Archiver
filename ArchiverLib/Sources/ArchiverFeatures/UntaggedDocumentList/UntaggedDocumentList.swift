@@ -44,7 +44,6 @@ struct UntaggedDocumentList {
                    let document = Shared(state.$documents[id: selectedDocumentId]) {
                     state.documentDetails = .init(document: document)
                     return .run { send in
-                        try await Task.sleep(for: .milliseconds(300))
                         await send(.documentDetails(.presented(.updateShowInspector(true))))
                     }
                 } else {
