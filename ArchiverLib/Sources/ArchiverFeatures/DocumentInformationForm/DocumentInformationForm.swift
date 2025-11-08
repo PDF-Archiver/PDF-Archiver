@@ -442,19 +442,19 @@ struct DocumentInformationFormView: View {
                     .focusable(false)
                 }
 
-                HStack {
+                HStack(alignment: .top) {
                     TagListView(tags: store.suggestedTags,
                                 isEditable: false,
                                 isSuggestion: true,
                                 isMultiLine: true,
                                 tapHandler: { store.send(.onTagSuggestionTapped($0)) })
-                    .focusable(false)
 
                     if store.isTagSelectionDelayActive {
                         CircularProgressView(progress: store.tagSelectionDelayProgress)
                             .frame(width: 20, height: 20)
                     }
                 }
+                .focusable(false)
 
                 TextField(String(localized: "Enter Tag", bundle: .module), text: $store.tagSearchterm)
                     .onSubmit {
@@ -483,10 +483,11 @@ struct CircularProgressView: View {
 
             Circle()
                 .trim(from: 0, to: progress)
-                .stroke(Color.blue, style: StrokeStyle(lineWidth: 2, lineCap: .round))
+                .stroke(Color.paRedAsset, style: StrokeStyle(lineWidth: 2, lineCap: .round))
                 .rotationEffect(.degrees(-90))
                 .animation(.linear(duration: 0.1), value: progress)
         }
+        .frame(width: 16, height: 16)
     }
 }
 
