@@ -81,6 +81,12 @@ struct AppFeature {
 
     var body: some ReducerOf<Self> {
         BindingReducer()
+            .onChange(of: \.showScanButton) { _, newValue in
+                Reduce { state, _ in
+                    state.scanButton.showButton = newValue
+                    return .none
+                }
+            }
 
         // frist, run the ArchiveList reducer ...
         Scope(state: \.archiveList, action: \.archiveList) {
@@ -139,8 +145,6 @@ struct AppFeature {
                 }
 
             case .archiveList:
-                // update scan button visibility when archive list state changes
-                state.scanButton.showButton = state.showScanButton
                 return .none
 
             case .binding(\.selectedTab):
@@ -163,8 +167,6 @@ struct AppFeature {
                 #endif
                 }
 
-                // update scan button visibility
-                state.scanButton.showButton = state.showScanButton
                 return .none
 
             case .binding:
