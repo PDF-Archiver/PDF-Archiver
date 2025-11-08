@@ -16,7 +16,13 @@ struct DateParserTests {
     var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
         return formatter
+    }
+
+    var isGermanLocale: Bool {
+        let locale = Locale.current
+        return locale.identifier.hasPrefix("de")
     }
 
     @Test
@@ -31,35 +37,56 @@ struct DateParserTests {
         Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
         At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
         """
-        let rawStringMapping = [
-            "28.01.2019": dateFormatter.date(from: "2019-01-28"),
-            "Jan 16, 2019": dateFormatter.date(from: "2019-01-16"),
-//            "n16072018n": dateFormatter.date(from: "2018-07-16"),
-//            "Berlin16072018test": dateFormatter.date(from: "2018-07-16"),
-//            "Berlin16072018": dateFormatter.date(from: "2018-07-16"),
-            "1.05.2015": dateFormatter.date(from: "2015-05-01"),
-            "12.05.2015": dateFormatter.date(from: "2015-05-12"),
-            "12-05-2015": dateFormatter.date(from: "2015-05-12"),
-            "2015-05-12": dateFormatter.date(from: "2015-05-12"),
-//            "2015-13-12": dateFormatter.date(from: "2015-12-13"),
-            "1990_02_11": dateFormatter.date(from: "1990-02-11"),
-            "20050301": dateFormatter.date(from: "2005-03-01"),
-            "2010_05_12_15_17": dateFormatter.date(from: "2010-05-12"),
-            "09/10/2018": dateFormatter.date(from: "2018-10-09"),
-//            "nn09/10/2018nn": dateFormatter.date(from: "2018-10-09"),
-//            "199002_11": dateFormatter.date(from: "1990-02-11"),
-//            "12.05-2020": dateFormatter.date(from: "2020-05-12"),
-            "12. Januar 2020": dateFormatter.date(from: "2020-01-12"),
-            "2. Jan 2020": dateFormatter.date(from: "2020-01-02"),
-            "23. Feb. 2020": dateFormatter.date(from: "2020-02-23"),
-            "23. February 2020": dateFormatter.date(from: "2020-02-23"),
-            "19. february 2020": dateFormatter.date(from: "2020-02-19"),
-            "6. dec 2020": dateFormatter.date(from: "2020-12-06"),
-            "24. December 2020": dateFormatter.date(from: "2020-12-24"),
-            "December 25, 2020": dateFormatter.date(from: "2020-12-25"),
-//            "05 01 18": dateFormatter.date(from: "2018-01-05"),
-            longText: dateFormatter.date(from: "2005-02-01")
-        ]
+
+        // Different expectations based on locale
+        // In de_DE: dd.MM.yyyy, in en_US: MM/dd/yyyy
+        let rawStringMapping: [String: Date?]
+        if isGermanLocale {
+            rawStringMapping = [
+                "28.01.2019": dateFormatter.date(from: "2019-01-28"),
+                "Jan 16, 2019": dateFormatter.date(from: "2019-01-16"),
+                "1.05.2015": dateFormatter.date(from: "2015-05-01"),
+                "12.05.2015": dateFormatter.date(from: "2015-05-12"),
+                "12-05-2015": dateFormatter.date(from: "2015-05-12"),
+                "2015-05-12": dateFormatter.date(from: "2015-05-12"),
+                "1990_02_11": dateFormatter.date(from: "1990-02-11"),
+                "20050301": dateFormatter.date(from: "2005-03-01"),
+                "2010_05_12_15_17": dateFormatter.date(from: "2010-05-12"),
+                "09/10/2018": dateFormatter.date(from: "2018-10-09"),
+                "12. Januar 2020": dateFormatter.date(from: "2020-01-12"),
+                "2. Jan 2020": dateFormatter.date(from: "2020-01-02"),
+                "23. Feb. 2020": dateFormatter.date(from: "2020-02-23"),
+                "23. February 2020": dateFormatter.date(from: "2020-02-23"),
+                "19. february 2020": dateFormatter.date(from: "2020-02-19"),
+                "6. dec 2020": dateFormatter.date(from: "2020-12-06"),
+                "24. December 2020": dateFormatter.date(from: "2020-12-24"),
+                "December 25, 2020": dateFormatter.date(from: "2020-12-25"),
+                longText: dateFormatter.date(from: "2005-02-01")
+            ]
+        } else {
+            // US locale: MM/dd/yyyy format
+            rawStringMapping = [
+                "28.01.2019": dateFormatter.date(from: "2019-01-28"),
+                "Jan 16, 2019": dateFormatter.date(from: "2019-01-16"),
+                "1.05.2015": dateFormatter.date(from: "2015-01-05"),  // US: MM.dd.yyyy
+                "12.05.2015": dateFormatter.date(from: "2015-12-05"),  // US: MM.dd.yyyy
+                "12-05-2015": dateFormatter.date(from: "2015-12-05"),
+                "2015-05-12": dateFormatter.date(from: "2015-05-12"),
+                "1990_02_11": dateFormatter.date(from: "1990-02-11"),
+                "20050301": dateFormatter.date(from: "2005-03-01"),
+                "2010_05_12_15_17": dateFormatter.date(from: "2010-05-12"),
+                "09/10/2018": dateFormatter.date(from: "2018-09-10"),  // US: MM/dd/yyyy
+                "12. Januar 2020": dateFormatter.date(from: "2020-01-12"),
+                "2. Jan 2020": dateFormatter.date(from: "2020-01-02"),
+                "23. Feb. 2020": dateFormatter.date(from: "2020-02-23"),
+                "23. February 2020": dateFormatter.date(from: "2020-02-23"),
+                "19. february 2020": dateFormatter.date(from: "2020-02-19"),
+                "6. dec 2020": dateFormatter.date(from: "2020-12-06"),
+                "24. December 2020": dateFormatter.date(from: "2020-12-24"),
+                "December 25, 2020": dateFormatter.date(from: "2020-12-25"),
+                longText: dateFormatter.date(from: "2005-02-01")
+            ]
+        }
 
         for (raw, date) in rawStringMapping {
 
@@ -79,9 +106,19 @@ struct DateParserTests {
     @Test
     func testParsingAmbiguousDate() async throws {
 
-        // setup the raw string
-        let rawStringMapping = ["20150203": dateFormatter.date(from: "2015-02-03"),
-                                "02.03.2015": dateFormatter.date(from: "2015-03-02")]
+        // setup the raw string - different expectations based on locale
+        let rawStringMapping: [String: Date?]
+        if isGermanLocale {
+            rawStringMapping = [
+                "20150203": dateFormatter.date(from: "2015-02-03"),
+                "02.03.2015": dateFormatter.date(from: "2015-03-02")  // de: dd.MM.yyyy
+            ]
+        } else {
+            rawStringMapping = [
+                "20150203": dateFormatter.date(from: "2015-02-03"),
+                "02.03.2015": dateFormatter.date(from: "2015-02-03")  // en_US: MM.dd.yyyy
+            ]
+        }
 
         for (raw, date) in rawStringMapping {
 
