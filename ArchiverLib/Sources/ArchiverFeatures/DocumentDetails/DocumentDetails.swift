@@ -151,6 +151,8 @@ struct DocumentDetailsView: View {
 #if os(iOS)
                             .presentationDetents([.medium, .large])
                             .presentationBackgroundInteraction(.enabled)
+                            // hacky workaround to remove the transparency in the inspector
+                            .presentationBackground(Color.paBackgroundAsset)
 #else
                             .inspectorColumnWidth(min: 300, ideal: 400, max: 600)
 #endif

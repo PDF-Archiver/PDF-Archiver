@@ -118,11 +118,11 @@ struct AppFeatureTests {
     @Test
     func documentsChangedCreatesYearSuggestions() async throws {
         let calendar = Calendar.current
+        // swiftlint:disable force_unwrapping
         let date2024 = calendar.date(from: DateComponents(year: 2024, month: 1, day: 1))!
         let date2023 = calendar.date(from: DateComponents(year: 2023, month: 1, day: 1))!
         let date2022 = calendar.date(from: DateComponents(year: 2022, month: 1, day: 1))!
 
-        // swiftlint:disable force_unwrapping
         let doc1 = Document.mock(url: URL(string: "https://example.com/1")!, date: date2024, isTagged: true)
         let doc2 = Document.mock(url: URL(string: "https://example.com/2")!, date: date2023, isTagged: true)
         let doc3 = Document.mock(url: URL(string: "https://example.com/3")!, date: date2022, isTagged: true)

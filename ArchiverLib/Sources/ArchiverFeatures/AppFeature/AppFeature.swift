@@ -251,7 +251,7 @@ struct AppFeature {
 
                                 do {
                                     let documents = try await archiveStore.getDocuments()
-                                    await contentExtractorStore.processUntaggedDocumentsInBackground(
+                                    _ = await contentExtractorStore.processUntaggedDocumentsInBackground(
                                         documents,
                                         textAnalyser.getTextFrom,
                                         customPrompt

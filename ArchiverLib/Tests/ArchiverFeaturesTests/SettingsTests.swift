@@ -31,12 +31,10 @@ struct SettingsTests {
     func storageTypeTitles() async throws {
         #if os(macOS)
         #expect(StorageType.iCloudDrive.title == "iCloud Drive")
-        // swiftlint:disable:next force_unwrapping
         #expect(StorageType.local(URL(fileURLWithPath: "/test")).title == "Drive")
         #else
         #expect(StorageType.iCloudDrive.title == "iCloud Drive")
         #expect(StorageType.appContainer.title == "Local")
-        // swiftlint:disable:next force_unwrapping
         #expect(StorageType.local(URL(fileURLWithPath: "/test")).title == "Folder")
         #endif
     }

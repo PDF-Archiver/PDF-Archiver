@@ -46,7 +46,6 @@ struct ArchiveListTests {
 
     @Test
     func searchTextFiltersDocuments() async throws {
-        // swiftlint:disable force_unwrapping
         let doc1 = Document.mock(
             url: URL(fileURLWithPath: "/tmp/2024-01-01--invoice__tag1.pdf"),
             specification: "invoice",
@@ -57,7 +56,6 @@ struct ArchiveListTests {
             specification: "receipt",
             isTagged: true
         )
-        // swiftlint:enable force_unwrapping
 
         let state = ArchiveList.State(documents: [doc1, doc2], searchText: "invoice")
 
@@ -150,10 +148,10 @@ struct ArchiveListTests {
     @Test
     func filteredDocumentsByYear() async throws {
         let calendar = Calendar.current
+        // swiftlint:disable force_unwrapping
         let date2024 = calendar.date(from: DateComponents(year: 2024, month: 1, day: 1))!
         let date2023 = calendar.date(from: DateComponents(year: 2023, month: 1, day: 1))!
 
-        // swiftlint:disable force_unwrapping
         let doc1 = Document.mock(
             url: URL(fileURLWithPath: "/tmp/2024-01-01--document__tag1.pdf"),
             date: date2024,
@@ -178,9 +176,9 @@ struct ArchiveListTests {
     @Test
     func filteredDocumentsByMultipleTokens() async throws {
         let calendar = Calendar.current
+        // swiftlint:disable:next force_unwrapping
         let date2024 = calendar.date(from: DateComponents(year: 2024, month: 1, day: 1))!
 
-        // swiftlint:disable force_unwrapping
         let doc1 = Document.mock(
             url: URL(fileURLWithPath: "/tmp/2024-01-01--document__invoice.pdf"),
             date: date2024,
@@ -199,7 +197,6 @@ struct ArchiveListTests {
             tags: ["invoice"],
             isTagged: true
         )
-        // swiftlint:enable force_unwrapping
 
         let state = ArchiveList.State(
             documents: [doc1, doc2, doc3],
