@@ -231,7 +231,9 @@ struct DocumentInformationFormTests {
         }
 
         await store.receive(.startUpdatingTagSuggestions)
-        await store.receive(.updateTagSuggestions([]))
+        await store.receive(.updateTagSuggestions([])) {
+            $0.suggestedTags = []
+        }
     }
 
     // MARK: - Document Data Update Tests

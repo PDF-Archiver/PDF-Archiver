@@ -100,6 +100,11 @@ struct DocumentInformationForm {
                     return .send(.startUpdatingTagSuggestions)
                 }
             }
+            .onChange(of: \.document.tags) { _, _ in
+                Reduce { _, _ in
+                    return .send(.startUpdatingTagSuggestions)
+                }
+            }
 
         Reduce { state, action in
             switch action {

@@ -73,6 +73,7 @@ struct AppFeatureTests {
             AppFeature()
         } withDependencies: {
             $0.widgetStore.updateWidgetWith = { _ in }
+            $0.archiveStore.startDownloadOf = { _ in }
         }
 
         await store.send(.documentsChanged([document1, document2, document3])) {
@@ -82,12 +83,13 @@ struct AppFeatureTests {
             $0.archiveList.searchSuggestedTokens = [.year(currentYear)]
         }
 
-        await store.receive(\.updateWidget)
         await store.receive(\.prefetchDocuments)
+        await store.receive(\.updateWidget)
     }
 
     @Test
     func documentsChangedCreatesTagSuggestions() async throws {
+        let currentYear = Calendar.current.component(.year, from: Date())
         // swiftlint:disable force_unwrapping
         let doc1 = Document.mock(url: URL(string: "https://example.com/1")!, tags: ["invoice", "work"], isTagged: true)
         let doc2 = Document.mock(url: URL(string: "https://example.com/2")!, tags: ["invoice", "personal"], isTagged: true)
@@ -98,13 +100,19 @@ struct AppFeatureTests {
             AppFeature()
         } withDependencies: {
             $0.widgetStore.updateWidgetWith = { _ in }
+            $0.archiveStore.startDownloadOf = { _ in }
         }
 
         await store.send(.documentsChanged([doc1, doc2, doc3])) {
             $0.$documents.withLock { $0 = [doc3, doc2, doc1] }
             $0.untaggedDocumentsCount = 0
             $0.tabTagSuggestions = ["invoice", "personal", "work"]
+            $0.tabYearSuggestions = [currentYear]
+            $0.archiveList.searchSuggestedTokens = [.tag("invoice"), .tag("personal"), .tag("work"), .year(currentYear)]
         }
+
+        await store.receive(\.prefetchDocuments)
+        await store.receive(\.updateWidget)
     }
 
     @Test
@@ -124,12 +132,17 @@ struct AppFeatureTests {
             AppFeature()
         } withDependencies: {
             $0.widgetStore.updateWidgetWith = { _ in }
+            $0.archiveStore.startDownloadOf = { _ in }
         }
 
         await store.send(.documentsChanged([doc1, doc2, doc3])) {
-            $0.$documents.withLock { $0 = [doc3, doc2, doc1] }
+            $0.$documents.withLock { $0 = [doc1, doc2, doc3] }
             $0.tabYearSuggestions = [2024, 2023, 2022]
+            $0.archiveList.searchSuggestedTokens = [.year(2024), .year(2023), .year(2022)]
         }
+
+        await store.receive(\.prefetchDocuments)
+        await store.receive(\.updateWidget)
     }
 
     // MARK: - Scene Phase Tests
