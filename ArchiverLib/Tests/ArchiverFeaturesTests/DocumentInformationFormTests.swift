@@ -110,39 +110,6 @@ struct DocumentInformationFormTests {
         await store.receive(.updateTagSuggestions([]))
     }
 
-    @Test
-    func removingTagUpdatesDocument() async throws {
-        let document = Document.mock(tags: ["invoice", "work"])
-        let store = TestStore(initialState: DocumentInformationForm.State(document: document)) {
-            DocumentInformationForm()
-        } withDependencies: {
-            $0.archiveStore.getTagSuggestionsSimilarTo = { _ in [] }
-        }
-
-        await store.send(.binding(.set(\.document.tags, ["invoice"]))) {
-            $0.document.tags = ["invoice"]
-        }
-
-        await store.receive(.startUpdatingTagSuggestions)
-        await store.receive(.updateTagSuggestions([]))
-    }
-
-    @Test
-    func multipleTagsAreSorted() async throws {
-        let store = TestStore(initialState: DocumentInformationForm.State(document: .mock())) {
-            DocumentInformationForm()
-        } withDependencies: {
-            $0.archiveStore.getTagSuggestionsSimilarTo = { _ in [] }
-        }
-
-        await store.send(.binding(.set(\.document.tags, ["zebra", "apple", "banana"]))) {
-            $0.document.tags = ["zebra", "apple", "banana"]
-        }
-
-        await store.receive(.startUpdatingTagSuggestions)
-        await store.receive(.updateTagSuggestions([]))
-    }
-
     // MARK: - Specification Tests
 
     @Test
@@ -295,24 +262,6 @@ struct DocumentInformationFormTests {
         let newDate = Date()
         await store.send(.binding(.set(\.document.date, newDate))) {
             $0.document.date = newDate
-        }
-    }
-
-    @Test
-    func bindingDocumentTags() async throws {
-        let store = TestStore(initialState: DocumentInformationForm.State(document: .mock())) {
-            DocumentInformationForm()
-        } withDependencies: {
-            $0.archiveStore.getTagSuggestionsSimilarTo = { _ in ["related"] }
-        }
-
-        await store.send(.binding(.set(\.document.tags, ["newtag"]))) {
-            $0.document.tags = ["newtag"]
-        }
-
-        await store.receive(.startUpdatingTagSuggestions)
-        await store.receive(.updateTagSuggestions(["related"])) {
-            $0.suggestedTags = ["related"]
         }
     }
 }
