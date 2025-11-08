@@ -19,6 +19,7 @@ enum Names: String {
     case appleIntelligenceCustomPrompt = "apple-intelligence-custom-prompt"
     case appleIntelligenceCacheEnabled = "apple-intelligence-cache-enabled"
     case backgroundCacheNotificationsEnabled = "background-cache-notifications-enabled"
+    case multiTagSelectionDelayEnabled = "multi-tag-selection-delay-enabled"
 
     var id: String { "shared-\(rawValue)" }
 }
@@ -141,6 +142,18 @@ public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var backgroundCacheNotificationsEnabled: Self {
       let defaultValue = (UserDefaults.standard.value(forKey: "backgroundCacheNotificationsEnabled") as? Bool) ?? false
       return Self[.appStorage(Names.backgroundCacheNotificationsEnabled.id, store: .standard), default: defaultValue]
+  }
+}
+
+public extension SharedKey where Self == AppStorageKey<Bool> {
+    static var multiTagSelectionDelayEnabled: Self {
+        appStorage(Names.multiTagSelectionDelayEnabled.id, store: .standard)
+    }
+}
+public extension SharedKey where Self == AppStorageKey<Bool>.Default {
+  static var multiTagSelectionDelayEnabled: Self {
+      let defaultValue = (UserDefaults.standard.value(forKey: "multiTagSelectionDelayEnabled") as? Bool) ?? true
+      return Self[.appStorage(Names.multiTagSelectionDelayEnabled.id, store: .standard), default: defaultValue]
   }
 }
 

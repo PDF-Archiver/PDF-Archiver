@@ -18,6 +18,7 @@ struct DocumentInformationForm {
     enum CancelID {
         case startUpdatingAllSuggestionsWithAI
         case startUpdatingTagSuggestions
+        case tagSelectionDelayTimer
     }
 
     @ObservableState
@@ -41,6 +42,9 @@ struct DocumentInformationForm {
         @SharedReader(.appleIntelligenceCustomPrompt)
         var customPrompt: String?
 
+        @SharedReader(.multiTagSelectionDelayEnabled)
+        var multiTagSelectionDelayEnabled: Bool
+
         /// Initial version of the document (e.g. in the global state)
         ///
         /// This will be needed for comparison if changes were made.
@@ -59,6 +63,9 @@ struct DocumentInformationForm {
         var tagSearchterm: String = ""
 
         var focusedField: Field?
+
+        var tagSelectionDelayProgress: Double = 0.0
+        var isTagSelectionDelayActive = false
 
         init(document: Document, suggestedTags: [String] = []) {
             self.document = document
@@ -81,6 +88,8 @@ struct DocumentInformationForm {
         case startUpdatingTagSuggestions
         case updateDocumentData(DocumentParsingResult)
         case updateTagSuggestions([String])
+        case updateTagSelectionDelayProgress(Double)
+        case tagSelectionDelayCompleted
 
         enum Delegate: Equatable {
             case saveDocument(Document, shouldUpdatePdfMetadata: Bool)
@@ -159,10 +168,31 @@ struct DocumentInformationForm {
                 _ = state.document.tags.insert(tag)
                 state.suggestedTags.removeAll { $0 == tag }
 
-                // remove current tagSearchteam - this will also trigger the new analyses of the tags
+                // remove current tagSearchteam
                 state.tagSearchterm = ""
 
-                return .send(.startUpdatingTagSuggestions)
+                // If multi-tag selection delay is enabled, start the timer
+                if state.multiTagSelectionDelayEnabled {
+                    state.isTagSelectionDelayActive = true
+                    state.tagSelectionDelayProgress = 0.0
+
+                    return .run { send in
+                        let delayDuration: Double = 2.0
+                        let steps = 20
+                        let stepDuration = delayDuration / Double(steps)
+
+                        for step in 1...steps {
+                            try await Task.sleep(for: .seconds(stepDuration))
+                            await send(.updateTagSelectionDelayProgress(Double(step) / Double(steps)))
+                        }
+
+                        await send(.tagSelectionDelayCompleted)
+                    }
+                    .cancellable(id: CancelID.tagSelectionDelayTimer, cancelInFlight: true)
+                } else {
+                    // If delay is disabled, update suggestions immediately
+                    return .send(.startUpdatingTagSuggestions)
+                }
 
             case .onTask:
                 state.isLoading = true
@@ -225,6 +255,15 @@ struct DocumentInformationForm {
                 state.isLoading = false
                 state.suggestedTags = suggestedTags
                 return .none
+
+            case .updateTagSelectionDelayProgress(let progress):
+                state.tagSelectionDelayProgress = progress
+                return .none
+
+            case .tagSelectionDelayCompleted:
+                state.isTagSelectionDelayActive = false
+                state.tagSelectionDelayProgress = 0.0
+                return .send(.startUpdatingTagSuggestions)
             }
         }
     }
@@ -403,12 +442,19 @@ struct DocumentInformationFormView: View {
                     .focusable(false)
                 }
 
-                TagListView(tags: store.suggestedTags,
-                            isEditable: false,
-                            isSuggestion: true,
-                            isMultiLine: true,
-                            tapHandler: { store.send(.onTagSuggestionTapped($0)) })
-                .focusable(false)
+                HStack {
+                    TagListView(tags: store.suggestedTags,
+                                isEditable: false,
+                                isSuggestion: true,
+                                isMultiLine: true,
+                                tapHandler: { store.send(.onTagSuggestionTapped($0)) })
+                    .focusable(false)
+
+                    if store.isTagSelectionDelayActive {
+                        CircularProgressView(progress: store.tagSelectionDelayProgress)
+                            .frame(width: 20, height: 20)
+                    }
+                }
 
                 TextField(String(localized: "Enter Tag", bundle: .module), text: $store.tagSearchterm)
                     .onSubmit {
@@ -423,6 +469,23 @@ struct DocumentInformationFormView: View {
                     #endif
             }
             .sensoryFeedback(.selection, trigger: store.document.tags)
+        }
+    }
+}
+
+struct CircularProgressView: View {
+    let progress: Double
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .stroke(Color.gray.opacity(0.3), lineWidth: 2)
+
+            Circle()
+                .trim(from: 0, to: progress)
+                .stroke(Color.blue, style: StrokeStyle(lineWidth: 2, lineCap: .round))
+                .rotationEffect(.degrees(-90))
+                .animation(.linear(duration: 0.1), value: progress)
         }
     }
 }
