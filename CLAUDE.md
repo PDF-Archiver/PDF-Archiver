@@ -198,6 +198,53 @@ swiftlint --fix
 
 SwiftLint configuration excludes `.build` directories and `Shared` folder. Notable opt-in rules include `force_unwrapping`, `sorted_imports`, and `multiline_parameters`.
 
+### Version Management
+
+**This project uses modern Xcode versioning** with centralized version numbers in Build Settings. Version numbers are stored in `project.pbxproj` and automatically propagated to all targets via variables in Info.plist files.
+
+#### Updating Versions
+
+**Via Xcode GUI (Recommended):**
+1. Select the project in Xcode
+2. Select a target (e.g. iOS)
+3. Go to Build Settings tab
+4. Search for "Versioning"
+5. Update `Marketing Version` (e.g. `4.4.0`) or `Current Project Version` (build number, e.g. `1`)
+6. Changes automatically apply to all targets
+
+**Via Command Line:**
+```bash
+# Update marketing version (e.g. 4.5.0)
+sed -i '' 's/MARKETING_VERSION = [^;]*;/MARKETING_VERSION = 4.5.0;/g' PDFArchiver.xcodeproj/project.pbxproj
+
+# Update build number (e.g. 2)
+sed -i '' 's/CURRENT_PROJECT_VERSION = [^;]*;/CURRENT_PROJECT_VERSION = 2;/g' PDFArchiver.xcodeproj/project.pbxproj
+```
+
+**Important:**
+- All Info.plist files use `$(MARKETING_VERSION)` and `$(CURRENT_PROJECT_VERSION)` variables
+- Do NOT use `agvtool` - it's incompatible with the modern variable-based approach
+- Version numbers are defined in Build Settings for each configuration (Debug/Release)
+
+### App Store Connect Version Management
+
+Use the `asc` CLI tool to manage app versions in App Store Connect:
+
+```bash
+# Update version with release notes (both languages required)
+asc version de.JulianKahnert.PDFArchiveViewer <VERSION> \
+  --hintGerman "<GERMAN_VERSION_HINT>" \
+  --hintEnglish "<ENGLISH_VERSION_HINT>"
+
+# Example:
+# asc version de.JulianKahnert.PDFArchiveViewer 3.5.0 \
+#   --hintGerman "Fehlerbehebungen und Verbesserungen" \
+#   --hintEnglish "Bug fixes and improvements"
+
+# List all apps in your account
+asc list-apps
+```
+
 ## Key Technical Decisions
 
 ### Why AppIntents are in Shared/ not ArchiverLib/

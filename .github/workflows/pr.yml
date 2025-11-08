@@ -3,6 +3,10 @@ on:
 
 name: Run PR Checks
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   SwiftLint:
     runs-on: ubuntu-latest
@@ -13,7 +17,7 @@ jobs:
         env:
           DIFF_BASE: ${{ github.base_ref }}
 
-  Build:
+  BuildAndTest:
     runs-on: macos-26
     permissions:
       contents: write
@@ -32,3 +36,6 @@ jobs:
 
       - name: Build ArchiverLib
         run: cd ArchiverLib && swift build
+
+      - name: Test ArchiverLib
+        run: cd ArchiverLib && swift test
