@@ -19,6 +19,7 @@ enum Names: String {
     case appleIntelligenceCustomPrompt = "apple-intelligence-custom-prompt"
     case appleIntelligenceCacheEnabled = "apple-intelligence-cache-enabled"
     case backgroundCacheNotificationsEnabled = "background-cache-notifications-enabled"
+    case multiTagSelectionDelayEnabled = "multi-tag-selection-delay-enabled"
 
     var id: String { "shared-\(rawValue)" }
 }
@@ -33,6 +34,7 @@ public extension SharedKey where Self == AppStorageKey<Bool> {
 }
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var tutorialShown: Self {
+      // try to fetch the value from a previous version
       let defaultValue = (UserDefaults.standard.value(forKey: "tutorial-v1") as? Bool) ?? false
       return Self[.appStorage(Names.tutorialShown.id, store: .standard), default: defaultValue]
   }
@@ -68,6 +70,7 @@ public extension SharedKey where Self == AppStorageKey<Bool> {
 }
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var notSaveDocumentTagsAsPDFMetadata: Self {
+      // try to fetch the value from a previous version
       let defaultValue = UserDefaults.standard.bool(forKey: "notSaveDocumentTagsAsPDFMetadata")
       return Self[.appStorage(Names.notSaveDocumentTagsAsPDFMetadata.id, store: .standard), default: defaultValue]
   }
@@ -80,6 +83,7 @@ public extension SharedKey where Self == AppStorageKey<Bool> {
 }
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var documentTagsNotRequired: Self {
+      // try to fetch the value from a previous version
       let defaultValue = UserDefaults.standard.bool(forKey: "documentTagsNotRequired")
       return Self[.appStorage(Names.documentTagsNotRequired.id, store: .standard), default: defaultValue]
   }
@@ -92,6 +96,7 @@ public extension SharedKey where Self == AppStorageKey<Bool> {
 }
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var documentSpecificationNotRequired: Self {
+      // try to fetch the value from a previous version
       let defaultValue = UserDefaults.standard.bool(forKey: "documentSpecificationNotRequired")
       return Self[.appStorage(Names.documentSpecificationNotRequired.id, store: .standard), default: defaultValue]
   }
@@ -104,8 +109,7 @@ public extension SharedKey where Self == AppStorageKey<Bool> {
 }
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var appleIntelligenceEnabled: Self {
-      let defaultValue = (UserDefaults.standard.value(forKey: "appleIntelligenceEnabled") as? Bool) ?? false
-      return Self[.appStorage(Names.appleIntelligenceEnabled.id, store: .standard), default: defaultValue]
+      return Self[.appStorage(Names.appleIntelligenceEnabled.id, store: .standard), default: true]
   }
 }
 
@@ -127,8 +131,7 @@ public extension SharedKey where Self == AppStorageKey<Bool> {
 }
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var appleIntelligenceCacheEnabled: Self {
-      let defaultValue = (UserDefaults.standard.value(forKey: "appleIntelligenceCacheEnabled") as? Bool) ?? true
-      return Self[.appStorage(Names.appleIntelligenceCacheEnabled.id, store: .standard), default: defaultValue]
+      return Self[.appStorage(Names.appleIntelligenceCacheEnabled.id, store: .standard), default: true]
   }
 }
 
@@ -139,8 +142,18 @@ public extension SharedKey where Self == AppStorageKey<Bool> {
 }
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var backgroundCacheNotificationsEnabled: Self {
-      let defaultValue = (UserDefaults.standard.value(forKey: "backgroundCacheNotificationsEnabled") as? Bool) ?? false
-      return Self[.appStorage(Names.backgroundCacheNotificationsEnabled.id, store: .standard), default: defaultValue]
+      return Self[.appStorage(Names.backgroundCacheNotificationsEnabled.id, store: .standard), default: false]
+  }
+}
+
+public extension SharedKey where Self == AppStorageKey<Bool> {
+    static var multiTagSelectionDelayEnabled: Self {
+        appStorage(Names.multiTagSelectionDelayEnabled.id, store: .standard)
+    }
+}
+public extension SharedKey where Self == AppStorageKey<Bool>.Default {
+  static var multiTagSelectionDelayEnabled: Self {
+      return Self[.appStorage(Names.multiTagSelectionDelayEnabled.id, store: .standard), default: true]
   }
 }
 

@@ -12,7 +12,6 @@ struct StatisticsTests {
     @Test
     func statisticsWithDocuments() async throws {
         let calendar = Calendar.current
-        let currentYear = calendar.component(.year, from: Date())
 
         // swiftlint:disable force_unwrapping
         let doc1 = Document.mock(
