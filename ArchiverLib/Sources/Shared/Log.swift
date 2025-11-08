@@ -21,8 +21,7 @@ public extension Log {
 }
 
 nonisolated public extension Logger {
-    // swiftlint:disable:next force_unwrapping
-    fileprivate static let subsystem = Bundle.main.bundleIdentifier!
+    fileprivate static let subsystem = Bundle.main.bundleIdentifier ?? "de.JulianKahnert.PDFArchiveViewer"
 
 #if DEBUG
     static let debugging = Logger(subsystem: subsystem, category: "debugging")

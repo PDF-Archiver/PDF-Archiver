@@ -26,6 +26,8 @@ struct ScanButtonFeature {
         var documentToShare: URL?
         var dropHandler = PDFDropHandlerState()
 
+        // Custom Equatable implementation excludes currentTip since Tip conformance
+        // to Equatable is not available and comparing tips is not necessary for state equality
         static func == (lhs: State, rhs: State) -> Bool {
             lhs.showButton == rhs.showButton &&
             lhs.isScanPresented == rhs.isScanPresented &&
@@ -84,10 +86,15 @@ struct ScanButtonFeature {
 
             case let .onScanCompleted(images):
                 return .run { send in
-                    await feedbackGenerator.notify(.success)
-                    let processedUrl = await documentProcessor.handleImages(images)
-                    await send(.onDocumentProcessed(processedUrl))
-                    await AfterFirstImportTip.documentImported.donate()
+                    do {
+                        await feedbackGenerator.notify(.success)
+                        let processedUrl = await documentProcessor.handleImages(images)
+                        await send(.onDocumentProcessed(processedUrl))
+                        await AfterFirstImportTip.documentImported.donate()
+                    } catch {
+                        Logger.pdfDropHandler.errorAndAssert("Failed to handle scanned images", metadata: ["error": "\(error)"])
+                        NotificationCenter.default.postAlert(error)
+                    }
                 }
 
             case let .onDocumentProcessed(url):
@@ -246,23 +253,27 @@ struct ScanButtonFeature {
     }
 
     private func handleFileImport(_ url: URL) async throws {
+        var pdfData: Data?
+        var imageData: Data?
+
+        // Synchronous security scope to read file data
         try url.securityScope { url in
             if let pdf = PDFDocument(url: url) {
-                if let pdfData = pdf.dataRepresentation() {
-                    Task {
-                        await documentProcessor.handlePdf(pdfData, url)
-                    }
-                } else {
-                    Logger.pdfDropHandler.errorAndAssert("Could not convert PDF document to data")
-                }
-            } else if let data = try? Data(contentsOf: url),
-                      let image = PlatformImage(data: data) {
-                Task {
-                    _ = await documentProcessor.handleImages([image])
-                }
+                pdfData = pdf.dataRepresentation()
+                imageData = nil
             } else {
-                Logger.pdfDropHandler.errorAndAssert("Could not handle url")
+                pdfData = nil
+                imageData = try? Data(contentsOf: url)
             }
+        }
+
+        // Async processing outside security scope
+        if let pdfData {
+            await documentProcessor.handlePdf(pdfData, url)
+        } else if let imageData, let image = PlatformImage(data: imageData) {
+            _ = await documentProcessor.handleImages([image])
+        } else {
+            Logger.pdfDropHandler.errorAndAssert("Could not handle url")
         }
     }
 }
