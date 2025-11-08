@@ -79,7 +79,6 @@ struct ArchiveList {
 
     enum Action: BindableAction {
         case binding(BindingAction<State>)
-        case searchSuggestionsUpdated([State.SearchToken])
         case documentDetails(PresentationAction<DocumentDetails.Action>)
         case searchStateChanged(Bool)
     }
@@ -90,10 +89,6 @@ struct ArchiveList {
         Reduce { state, action in
             switch action {
             case .documentDetails:
-                return .none
-
-            case .searchSuggestionsUpdated(let suggestions):
-                state.searchSuggestedTokens = suggestions
                 return .none
 
             case .searchStateChanged(let isSearching):

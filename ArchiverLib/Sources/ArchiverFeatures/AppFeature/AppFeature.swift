@@ -201,6 +201,7 @@ struct AppFeature {
                     top5Tags.prefix(3).map { ArchiveList.State.SearchToken.tag($0) },
                     years.prefix(3).map { ArchiveList.State.SearchToken.year($0) }
                 ].flatMap(\.self)
+                state.archiveList.searchSuggestedTokens = searchSuggestedTokens
 
                 // update the untagged documents
                 let untaggedDocuments = documents.filter(\Document.isTagged.flipped)
@@ -208,11 +209,9 @@ struct AppFeature {
 
                 let untaggedRemoteDocuments = untaggedDocuments.filter { !$0.isTagged && $0.downloadStatus == 0 }
 
-                // https://pointfreeco.github.io/swift-composable-architecture/main/documentation/composablearchitecture/performance/#Sharing-logic-in-child-features
                 return .concatenate(
-                    reduce(into: &state, action: .archiveList(.searchSuggestionsUpdated(searchSuggestedTokens))),
                     .send(.prefetchDocuments(untaggedRemoteDocuments)),
-                    .send(.updateWidget(documents)),
+                    .send(.updateWidget(documents))
                 )
 
             case .isLoadingChanged(let isLoading):
@@ -252,7 +251,7 @@ struct AppFeature {
 
                                 do {
                                     let documents = try await archiveStore.getDocuments()
-                                    await contentExtractorStore.processUntaggedDocumentsInBackground(
+                                    _ = await contentExtractorStore.processUntaggedDocumentsInBackground(
                                         documents,
                                         textAnalyser.getTextFrom,
                                         customPrompt
