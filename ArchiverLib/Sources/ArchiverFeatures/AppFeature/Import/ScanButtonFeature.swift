@@ -8,7 +8,6 @@
 import ComposableArchitecture
 import Foundation
 import OSLog
-import PDFKit
 import Shared
 import SwiftUI
 import TipKit
@@ -106,7 +105,7 @@ struct ScanButton {
                 return .none
 
             case let .onDropImportResult(result):
-                return .run { [state] send in
+                return .run { send in
                     do {
                         let url = try result.get()
                         await send(.dropHandler(.handleImport(url)))
@@ -155,9 +154,9 @@ struct ScanButton {
 
         case let .handleImport(url):
             state.dropHandler.documentProcessingState = .processing
-            return .run { send in
+            return .run { [documentProcessor] send in
                 do {
-                    try await handleFileImport(url)
+                    try await documentProcessor.handleFileImportUrl(url)
                     await send(.dropHandler(.finishDropHandling))
                 } catch {
                     Logger.pdfDropHandler.errorAndAssert("Failed to handle import", metadata: ["error": "\(error)"])
@@ -199,81 +198,9 @@ struct ScanButton {
         case let .performDrop(wrappedProviders):
             state.dropHandler.documentProcessingState = .processing
             return .run { [documentProcessor] send in
-                for provider in wrappedProviders.providers {
-                    guard let type = provider.registeredContentTypes.first else {
-                        Logger.pdfDropHandler.errorAndAssert("Failed to get content type")
-                        continue
-                    }
-
-                    do {
-                        let item = try await provider.loadItem(forTypeIdentifier: type.identifier)
-
-                        if let data = item as? Data {
-                            if let pdf = PDFDocument(data: data) {
-                                if let pdfData = pdf.dataRepresentation() {
-                                    await documentProcessor.handlePdf(pdfData, nil)
-                                }
-                            } else if let image = PlatformImage(data: data) {
-                                _ = await documentProcessor.handleImages([image])
-                            }
-                        } else if let url = item as? URL {
-                            var data: Data?
-                            try url.securityScope { url in
-                                if let pdf = PDFDocument(url: url) {
-                                    data = pdf.dataRepresentation()
-                                } else if let receivedData = try? Data(contentsOf: url) {
-                                    data = receivedData
-                                } else {
-                                    Logger.pdfDropHandler.errorAndAssert("Could not handle url")
-                                }
-                            }
-                            if let data {
-                                if let pdf = PDFDocument(data: data) {
-                                    if let pdfData = pdf.dataRepresentation() {
-                                        await documentProcessor.handlePdf(pdfData, nil)
-                                    }
-                                } else if let image = PlatformImage(data: data) {
-                                    _ = await documentProcessor.handleImages([image])
-                                }
-                            }
-                        } else if let image = item as? PlatformImage {
-                            _ = await documentProcessor.handleImages([image])
-                        } else if let pdfDocument = item as? PDFDocument {
-                            if let pdfData = pdfDocument.dataRepresentation() {
-                                await documentProcessor.handlePdf(pdfData, nil)
-                            }
-                        }
-                    } catch {
-                        Logger.pdfDropHandler.errorAndAssert("Received error \(error)")
-                    }
-                }
+                await documentProcessor.handleDropProviders(wrappedProviders.providers)
                 await send(.dropHandler(.finishDropHandling))
             }
-        }
-    }
-
-    private func handleFileImport(_ url: URL) async throws {
-        var pdfData: Data?
-        var imageData: Data?
-
-        // Synchronous security scope to read file data
-        try url.securityScope { url in
-            if let pdf = PDFDocument(url: url) {
-                pdfData = pdf.dataRepresentation()
-                imageData = nil
-            } else {
-                pdfData = nil
-                imageData = try? Data(contentsOf: url)
-            }
-        }
-
-        // Async processing outside security scope
-        if let pdfData {
-            await documentProcessor.handlePdf(pdfData, url)
-        } else if let imageData, let image = PlatformImage(data: imageData) {
-            _ = await documentProcessor.handleImages([image])
-        } else {
-            Logger.pdfDropHandler.errorAndAssert("Could not handle url")
         }
     }
 }
