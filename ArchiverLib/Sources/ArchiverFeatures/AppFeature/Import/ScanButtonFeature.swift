@@ -229,22 +229,4 @@ enum PDFDropHandlerAction: Equatable {
     case dropEntered
     case dropExited
     case performDrop(UncheckedSendableProviders)
-
-    static func == (lhs: PDFDropHandlerAction, rhs: PDFDropHandlerAction) -> Bool {
-        switch (lhs, rhs) {
-        case (.startImport, .startImport),
-             (.abortImport, .abortImport),
-             (.finishDropHandling, .finishDropHandling),
-             (.resetState, .resetState),
-             (.dropEntered, .dropEntered),
-             (.dropExited, .dropExited):
-            return true
-        case let (.handleImport(lhsUrl), .handleImport(rhsUrl)):
-            return lhsUrl == rhsUrl
-        case let (.performDrop(lhsProviders), .performDrop(rhsProviders)):
-            return lhsProviders == rhsProviders
-        default:
-            return false
-        }
-    }
 }
