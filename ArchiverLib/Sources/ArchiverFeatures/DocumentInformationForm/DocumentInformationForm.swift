@@ -178,7 +178,7 @@ struct DocumentInformationForm {
                     state.tagSelectionDelayProgress = 0.0
 
                     return .run { [clock] send in
-                        let delayDuration: Double = 2.0
+                        let delayDuration: TimeInterval = 2
                         let steps = 20
                         let stepDuration = delayDuration / Double(steps)
 
