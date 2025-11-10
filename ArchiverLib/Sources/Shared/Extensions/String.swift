@@ -16,17 +16,17 @@ nonisolated public extension String {
         // this function is inspired by:
         // https://github.com/malt03/SwiftString/blob/0aeb47cbfa77cf8552bbadf49360ef529fbb8c03/Sources/StringExtensions.swift#L194
         let slugCharacterSet = NSCharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\(separator)")
-        return replacingOccurrences(of: "ß", with: "ss")
-            .replacingOccurrences(of: "Ä", with: "Ae")
-            .replacingOccurrences(of: "Ö", with: "Oe")
-            .replacingOccurrences(of: "Ü", with: "Ue")
-            .replacingOccurrences(of: "ä", with: "ae")
-            .replacingOccurrences(of: "ö", with: "oe")
-            .replacingOccurrences(of: "ü", with: "ue")
+        return replacing("ß", with: "ss")
+            .replacing("Ä", with: "Ae")
+            .replacing("Ö", with: "Oe")
+            .replacing("Ü", with: "Ue")
+            .replacing("ä", with: "ae")
+            .replacing("ö", with: "oe")
+            .replacing("ü", with: "ue")
             .folding(options: .diacriticInsensitive, locale: .current)
             .components(separatedBy: slugCharacterSet.inverted)
             .filter { !$0.isEmpty }
             .joined(separator: separator)
-            .replacingOccurrences(of: "[^0-9a-zA-Z]+", with: separator, options: .regularExpression, range: nil)
+            .replacing(/[^0-9a-zA-Z]+/, with: separator)
     }
 }

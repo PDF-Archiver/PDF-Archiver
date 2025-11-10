@@ -181,4 +181,22 @@ struct DateParserTests {
             Issue.record("No date was found, this should not happen in this test.")
         }
     }
+
+    @Test
+    func testParsingDateWithUnderscores() async throws {
+
+        // setup - test replacing underscores with dashes
+        let input = "1990_02_11"
+
+        // calculate
+        let parsedOutput = await DateParser.parse(input)
+
+        // assert
+        if let parsedDate = parsedOutput.first {
+            let expectedDate = try #require(dateFormatter.date(from: "1990-02-11"))
+            #expect(Calendar.current.isDate(parsedDate, inSameDayAs: expectedDate))
+        } else {
+            Issue.record("No date was found for underscore-separated date format.")
+        }
+    }
 }
