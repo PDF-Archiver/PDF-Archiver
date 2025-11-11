@@ -157,8 +157,8 @@ private enum MarkdownParser {
 
     static func parse(_ text: String) -> [Block] {
         var blocks: [Block] = []
-        let lines = text.replacingOccurrences(of: "\r\n", with: "\n")
-                        .replacingOccurrences(of: "\r", with: "\n")
+        let lines = text.replacing("\r\n", with: "\n")
+                        .replacing("\r", with: "\n")
                         .split(omittingEmptySubsequences: false, whereSeparator: \.isNewline)
                         .map(String.init)
 

@@ -35,7 +35,7 @@ nonisolated public enum DateParser: Log {
                 .map(\.0)
         } else if let date = DateFormatter.yyyyMMdd.date(from: input) {
             return [date]
-        } else if let date = DateFormatter.yyyyMMdd.date(from: input.replacingOccurrences(of: "_", with: "-")) {
+        } else if let date = DateFormatter.yyyyMMdd.date(from: input.replacing("_", with: "-")) {
             return [date]
         } else {
             return []

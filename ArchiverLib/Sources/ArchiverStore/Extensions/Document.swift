@@ -24,7 +24,7 @@ extension Document {
         let tags = Set(data.tagNames ?? [])
 
         let date = data.date ?? url.fileCreationDate() ?? Date()
-        let specification = isTagged ? data.specification?.replacingOccurrences(of: "-", with: " ") : data.specification
+        let specification = isTagged ? data.specification?.replacing("-", with: " ") : data.specification
 
         return Document(id: id,
                         url: url,
