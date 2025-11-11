@@ -13,3 +13,64 @@ jobs:
         uses: actions/checkout@v5
       - name: Release
         uses: softprops/action-gh-release@v2
+
+  bump-version:
+    needs: build
+    runs-on: macos-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          echo "tag=$TAG_NAME" >> $GITHUB_OUTPUT
+
+          # Parse version (e.g., 4.4.0 -> next is 4.5.0)
+          IFS='.' read -ra VERSION_PARTS <<< "$TAG_NAME"
+          MAJOR=${VERSION_PARTS[0]}
+          MINOR=${VERSION_PARTS[1]}
+          PATCH=${VERSION_PARTS[2]}
+
+          # Bump minor version for next release
+          NEXT_MINOR=$((MINOR + 1))
+          NEXT_VERSION="${MAJOR}.${NEXT_MINOR}.0"
+          echo "next_version=$NEXT_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create version bump branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b feature/bump-version-${{ steps.version.outputs.next_version }}
+
+      - name: Bump version in project
+        run: |
+          NEXT_VERSION="${{ steps.version.outputs.next_version }}"
+          sed -i '' "s/MARKETING_VERSION = [^;]*;/MARKETING_VERSION = $NEXT_VERSION;/g" PDFArchiver.xcodeproj/project.pbxproj
+
+      - name: Commit and push changes
+        run: |
+          git add PDFArchiver.xcodeproj/project.pbxproj
+          git commit -m "chore: bump version to ${{ steps.version.outputs.next_version }}"
+          git push origin feature/bump-version-${{ steps.version.outputs.next_version }}
+
+      - name: Create pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr create \
+            --title "chore: bump version to ${{ steps.version.outputs.next_version }}" \
+            --body "Automated version bump after release ${{ steps.version.outputs.tag }}
+
+          ## Changes
+          - Update MARKETING_VERSION to ${{ steps.version.outputs.next_version }}
+
+          🤖 Automated PR created by GitHub Actions" \
+            --base develop \
+            --head feature/bump-version-${{ steps.version.outputs.next_version }}

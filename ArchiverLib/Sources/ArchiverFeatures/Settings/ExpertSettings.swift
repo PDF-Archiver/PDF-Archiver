@@ -24,6 +24,9 @@ struct ExpertSettings {
 
         @Shared(.documentSpecificationNotRequired)
         var documentSpecificationNotRequired: Bool
+
+        @Shared(.multiTagSelectionDelayEnabled)
+        var multiTagSelectionDelayEnabled: Bool
     }
 
     enum Action: BindableAction, Equatable {
@@ -94,6 +97,7 @@ struct ExpertSettingsView: View {
             Toggle(String(localized: "Save Tags in PDF Metadata", bundle: .module), isOn: $store.notSaveDocumentTagsAsPDFMetadata.flipped)
             Toggle(String(localized: "Require Document Tags", bundle: .module), isOn: $store.documentTagsNotRequired.flipped)
             Toggle(String(localized: "Require Document Specification", bundle: .module), isOn: $store.documentSpecificationNotRequired.flipped)
+            Toggle(String(localized: "Multi-Tag Selection Delay", bundle: .module), isOn: $store.multiTagSelectionDelayEnabled)
             #if !os(macOS)
             Button {
                 store.send(.onShowPermissionsTapped)

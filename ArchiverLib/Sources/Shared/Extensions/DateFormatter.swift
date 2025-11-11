@@ -7,7 +7,7 @@
 
 import Foundation
 
-public nonisolated extension DateFormatter {
+nonisolated public extension DateFormatter {
 
     nonisolated static let yyyyMMdd = DateFormatter.with("yyyy-MM-dd")
 

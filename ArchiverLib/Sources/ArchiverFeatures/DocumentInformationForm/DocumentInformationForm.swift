@@ -18,6 +18,7 @@ struct DocumentInformationForm {
     enum CancelID {
         case startUpdatingAllSuggestionsWithAI
         case startUpdatingTagSuggestions
+        case tagSelectionDelayTimer
     }
 
     @ObservableState
@@ -37,9 +38,12 @@ struct DocumentInformationForm {
 
         @SharedReader(.appleIntelligenceEnabled)
         var appleIntelligenceEnabled: Bool
-        
+
         @SharedReader(.appleIntelligenceCustomPrompt)
         var customPrompt: String?
+
+        @SharedReader(.multiTagSelectionDelayEnabled)
+        var multiTagSelectionDelayEnabled: Bool
 
         /// Initial version of the document (e.g. in the global state)
         ///
@@ -59,6 +63,9 @@ struct DocumentInformationForm {
         var tagSearchterm: String = ""
 
         var focusedField: Field?
+
+        var tagSelectionDelayProgress: Double = 0.0
+        var isTagSelectionDelayActive = false
 
         init(document: Document, suggestedTags: [String] = []) {
             self.document = document
@@ -81,6 +88,8 @@ struct DocumentInformationForm {
         case startUpdatingTagSuggestions
         case updateDocumentData(DocumentParsingResult)
         case updateTagSuggestions([String])
+        case updateTagSelectionDelayProgress(Double)
+        case tagSelectionDelayCompleted
 
         enum Delegate: Equatable {
             case saveDocument(Document, shouldUpdatePdfMetadata: Bool)
@@ -92,6 +101,7 @@ struct DocumentInformationForm {
     @Dependency(\.contentExtractorStore) var contentExtractorStore
     @Dependency(\.calendar) var calendar
     @Dependency(\.notificationCenter) var notificationCenter
+    @Dependency(\.continuousClock) var clock
 
     var body: some ReducerOf<Self> {
         BindingReducer()
@@ -111,7 +121,7 @@ struct DocumentInformationForm {
 
             case .onSaveButtonTapped:
                 let nothingChanged = state.initialDocument.date == state.document.date && state.initialDocument.specification == state.document.specification && state.initialDocument.tags == state.document.tags
-                guard !nothingChanged else {
+                if nothingChanged && state.document.isTagged {
                     return .none
                 }
 
@@ -159,10 +169,31 @@ struct DocumentInformationForm {
                 _ = state.document.tags.insert(tag)
                 state.suggestedTags.removeAll { $0 == tag }
 
-                // remove current tagSearchteam - this will also trigger the new analyses of the tags
+                // remove current tagSearchteam
                 state.tagSearchterm = ""
 
-                return .send(.startUpdatingTagSuggestions)
+                // If multi-tag selection delay is enabled, start the timer
+                if state.multiTagSelectionDelayEnabled {
+                    state.isTagSelectionDelayActive = true
+                    state.tagSelectionDelayProgress = 0.0
+
+                    return .run { [clock] send in
+                        let delayDuration: TimeInterval = 2
+                        let steps = 20
+                        let stepDuration = delayDuration / Double(steps)
+
+                        for step in 1...steps {
+                            try await clock.sleep(for: .seconds(stepDuration))
+                            await send(.updateTagSelectionDelayProgress(Double(step) / Double(steps)))
+                        }
+
+                        await send(.tagSelectionDelayCompleted)
+                    }
+                    .cancellable(id: CancelID.tagSelectionDelayTimer, cancelInFlight: true)
+                } else {
+                    // If delay is disabled, update suggestions immediately
+                    return .send(.startUpdatingTagSuggestions)
+                }
 
             case .onTask:
                 state.isLoading = true
@@ -179,8 +210,8 @@ struct DocumentInformationForm {
                 return .none
 
             case .startUpdatingAllSuggestionsWithAI(let documentUrl):
-                return .run { [appleIntelligenceEnabled = state.appleIntelligenceEnabled, customPrompt = state.customPrompt] send in
-                    let result = await startUpdatingAllSuggestionsWithAI(url: documentUrl, appleIntelligenceEnabled: appleIntelligenceEnabled, customPrompt: customPrompt)
+                return .run { [appleIntelligenceEnabled = state.appleIntelligenceEnabled, customPrompt = state.customPrompt, documentId = state.document.id] send in
+                    let result = await startUpdatingAllSuggestionsWithAI(url: documentUrl, appleIntelligenceEnabled: appleIntelligenceEnabled, customPrompt: customPrompt, documentId: documentId)
                     await send(.updateDocumentData(result))
                 }
                 // we try to abort the foundation model response after content generation
@@ -225,6 +256,15 @@ struct DocumentInformationForm {
                 state.isLoading = false
                 state.suggestedTags = suggestedTags
                 return .none
+
+            case .updateTagSelectionDelayProgress(let progress):
+                state.tagSelectionDelayProgress = progress
+                return .none
+
+            case .tagSelectionDelayCompleted:
+                state.isTagSelectionDelayActive = false
+                state.tagSelectionDelayProgress = 0.0
+                return .send(.startUpdatingTagSuggestions)
             }
         }
     }
@@ -236,7 +276,8 @@ struct DocumentInformationForm {
         let dateSuggestions: [Date]?
         let tagSuggestions: [String]?
     }
-    private func startUpdatingAllSuggestionsWithAI(url: URL, appleIntelligenceEnabled: Bool, customPrompt: String?) async -> DocumentParsingResult {
+
+    private func startUpdatingAllSuggestionsWithAI(url: URL, appleIntelligenceEnabled: Bool, customPrompt: String?, documentId: Document.ID) async -> DocumentParsingResult {
 
         // analyse document content and fill suggestions
         let parserOutput = await archiveStore.parseFilename(url.lastPathComponent)
@@ -248,12 +289,14 @@ struct DocumentInformationForm {
         var tagSuggestions: [String]?
 
         if let text = await textAnalyser.getTextFrom(url) {
+            let documents = (try? await archiveStore.getDocuments()) ?? []
             // Try Apple Intelligence first if enabled and available
             if appleIntelligenceEnabled,
                await contentExtractorStore.isAvailable() == .available,
-               let content = await contentExtractorStore.getDocumentInformation(.init(text: text, customPrompt: customPrompt)) {
+               let content = await contentExtractorStore.getDocumentInformation(.init(currentDocuments: documents, text: text, customPrompt: customPrompt, documentId: documentId)) {
                 foundSpecification = content.specification
                 tagSuggestions = Array(content.tags).sorted()
+
             } else {
                 // Fall back to traditional text analysis
                 var results = await textAnalyser.parseDateFrom(text)
@@ -400,11 +443,18 @@ struct DocumentInformationFormView: View {
                     .focusable(false)
                 }
 
-                TagListView(tags: store.suggestedTags,
-                            isEditable: false,
-                            isSuggestion: true,
-                            isMultiLine: true,
-                            tapHandler: { store.send(.onTagSuggestionTapped($0)) })
+                HStack(alignment: .top) {
+                    TagListView(tags: store.suggestedTags,
+                                isEditable: false,
+                                isSuggestion: true,
+                                isMultiLine: true,
+                                tapHandler: { store.send(.onTagSuggestionTapped($0)) })
+
+                    if store.isTagSelectionDelayActive {
+                        CircularProgressView(progress: store.tagSelectionDelayProgress)
+                            .frame(width: 20, height: 20)
+                    }
+                }
                 .focusable(false)
 
                 TextField(String(localized: "Enter Tag", bundle: .module), text: $store.tagSearchterm)

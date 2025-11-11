@@ -7,6 +7,7 @@
 
 import ArchiverModels
 import ComposableArchitecture
+import OSLog
 import Shared
 import SwiftUI
 import TipKit
@@ -28,6 +29,15 @@ struct AppFeature {
         @Shared(.documents) var documents: IdentifiedArrayOf<Document> = []
         @Shared(.tutorialShown) var tutorialShown: Bool
         @Shared(.premiumStatus) var premiumStatus: PremiumStatus = .loading
+
+        @SharedReader(.appleIntelligenceEnabled)
+        var appleIntelligenceEnabled: Bool
+
+        @SharedReader(.appleIntelligenceCacheEnabled)
+        var cacheEnabled: Bool
+
+        @SharedReader(.appleIntelligenceCustomPrompt)
+        var customPrompt: String?
 
         var scenePhase: ScenePhase?
 
@@ -65,6 +75,7 @@ struct AppFeature {
     @Dependency(\.archiveStore) var archiveStore
     @Dependency(\.widgetStore) var widgetStore
     @Dependency(\.contentExtractorStore) var contentExtractorStore
+    @Dependency(\.textAnalyser) var textAnalyser
 
     var body: some ReducerOf<Self> {
         BindingReducer()
@@ -190,6 +201,7 @@ struct AppFeature {
                     top5Tags.prefix(3).map { ArchiveList.State.SearchToken.tag($0) },
                     years.prefix(3).map { ArchiveList.State.SearchToken.year($0) }
                 ].flatMap(\.self)
+                state.archiveList.searchSuggestedTokens = searchSuggestedTokens
 
                 // update the untagged documents
                 let untaggedDocuments = documents.filter(\Document.isTagged.flipped)
@@ -197,11 +209,9 @@ struct AppFeature {
 
                 let untaggedRemoteDocuments = untaggedDocuments.filter { !$0.isTagged && $0.downloadStatus == 0 }
 
-                // https://pointfreeco.github.io/swift-composable-architecture/main/documentation/composablearchitecture/performance/#Sharing-logic-in-child-features
                 return .concatenate(
-                    reduce(into: &state, action: .archiveList(.searchSuggestionsUpdated(searchSuggestedTokens))),
                     .send(.prefetchDocuments(untaggedRemoteDocuments)),
-                    .send(.updateWidget(documents)),
+                    .send(.updateWidget(documents))
                 )
 
             case .isLoadingChanged(let isLoading):
@@ -209,15 +219,19 @@ struct AppFeature {
                 return .none
 
             case .onLongBackgroundTask:
-                return .run { send in
+                return .run { [appleIntelligenceEnabled = state.appleIntelligenceEnabled, cacheEnabled = state.cacheEnabled, customPrompt = state.customPrompt] send in
                     await withTaskGroup(of: Void.self) { group in
                         group.addTask(priority: .background) {
                             // check the temp folder at startup for new documents
                             await documentProcessor.triggerFolderObservation()
-                        }
-                        group.addTask(priority: .background) {
-                            // prewarm the foundation model to improve performance for document content extraction
-                            await contentExtractorStore.prewarm()
+
+                            #if os(iOS)
+                            if #available(iOS 26, *) {
+                                // trigger task scheduling
+                                BackgroundTaskManager.registerTaskHandlers()
+                                BackgroundTaskManager.scheduleCacheProcessing()
+                            }
+                            #endif
                         }
                         group.addTask(priority: .medium) {
                             for await documents in await archiveStore.documentChanges() {
@@ -227,6 +241,24 @@ struct AppFeature {
                         group.addTask(priority: .medium) {
                             for await isLoading in await archiveStore.isLoading() {
                                 await send(.isLoadingChanged(isLoading))
+                            }
+                        }
+                        // Background cache processing for untagged documents
+                        if appleIntelligenceEnabled && cacheEnabled {
+                            group.addTask(priority: .background) {
+                                // Wait a bit before starting cache processing to let the app stabilize
+                                try? await Task.sleep(for: .seconds(10))
+
+                                do {
+                                    let documents = try await archiveStore.getDocuments()
+                                    _ = await contentExtractorStore.processUntaggedDocumentsInBackground(
+                                        documents,
+                                        textAnalyser.getTextFrom,
+                                        customPrompt
+                                    )
+                                } catch {
+                                    Logger.app.error("Failed to load documents for background cache processing: \(error)")
+                                }
                             }
                         }
                     }
@@ -240,7 +272,7 @@ struct AppFeature {
                    new == .active,
                    !state.isDocumentLoading {
                     return .run { _ in
-                        try await withThrowingTaskGroup(of: Void.self) { group in
+                        await withThrowingTaskGroup(of: Void.self) { group in
                             group.addTask(priority: .background) {
                                 await documentProcessor.triggerFolderObservation()
                             }
@@ -391,7 +423,6 @@ struct AppView: View {
             content
             #endif
         }
-        .modifier(LoadingIndicatorModifier(isLoading: store.isDocumentLoading))
         .modifier(AlertDataModelProvider())
         .modifier(IAP(premiumStatus: $store.premiumStatus))
         .sheet(isPresented: $store.tutorialShown.flipped) {
@@ -418,6 +449,9 @@ struct AppView: View {
         NavigationStack {
             ArchiveListView(store: store.scope(state: \.archiveList, action: \.archiveList))
                 .navigationTitle(Text("Archive", bundle: .module))
+                .toolbar {
+                    loadingIndicator
+                }
         }
     }
 
@@ -425,6 +459,26 @@ struct AppView: View {
         NavigationStack {
             UntaggedDocumentListView(store: store.scope(state: \.untaggedDocumentList, action: \.untaggedDocumentList))
                 .navigationTitle(Text("Inbox", bundle: .module))
+                .toolbar {
+                    loadingIndicator
+                }
+        }
+    }
+
+    @ToolbarContentBuilder
+    private var loadingIndicator: some ToolbarContent {
+        if store.isDocumentLoading {
+            #if os(macOS)
+            ToolbarItem(placement: .status) {
+                ProgressView()
+                    .frame(width: 32, height: 32)
+                    .controlSize(.small)
+            }
+            #else
+            ToolbarItem(placement: .automatic) {
+                ProgressView()
+            }
+            #endif
         }
     }
 }

@@ -143,10 +143,12 @@ private struct Block: Identifiable {
 // MARK: - Parser
 
 private enum MarkdownParser {
+    // swiftlint:disable force_try
     private static let heading = try! NSRegularExpression(pattern: #"^\s{0,3}(#{1,6})\s+(.*)$"#)
     private static let blockquote = try! NSRegularExpression(pattern: #"^\s*>\s?(.*)$"#)
     private static let ordered = try! NSRegularExpression(pattern: #"^\s*(\d+)\.\s+(.*)$"#)
     private static let unordered = try! NSRegularExpression(pattern: #"^\s*[*+-]\s+(.*)$"#)
+    // swiftlint:enable force_try
 
     private static let inlineOptions = AttributedString.MarkdownParsingOptions(
         interpretedSyntax: .full,
@@ -155,82 +157,82 @@ private enum MarkdownParser {
 
     static func parse(_ text: String) -> [Block] {
         var blocks: [Block] = []
-        let lines = text.replacingOccurrences(of: "\r\n", with: "\n")
-                        .replacingOccurrences(of: "\r", with: "\n")
+        let lines = text.replacing("\r\n", with: "\n")
+                        .replacing("\r", with: "\n")
                         .split(omittingEmptySubsequences: false, whereSeparator: \.isNewline)
                         .map(String.init)
 
-        var i = 0
-        while i < lines.count {
-            let line = lines[i]
+        var index = 0
+        while index < lines.count {
+            let line = lines[index]
             if line.trimmingCharacters(in: .whitespaces).isEmpty {
-                i += 1; continue
+                index += 1; continue
             }
 
             // Headings
-            if let m = firstMatch(heading, in: line) {
-                let level = max(1, min(6, m.int(1) ?? 1))
-                blocks.append(Block(kind: .heading(level), items: [inline(m.string(2))]))
-                i += 1; continue
+            if let match = firstMatch(heading, in: line) {
+                let level = max(1, min(6, match.int(1) ?? 1))
+                blocks.append(Block(kind: .heading(level), items: [inline(match.string(2))]))
+                index += 1; continue
             }
 
             // Blockquote
             if firstMatch(blockquote, in: line) != nil {
                 var quoted: [String] = []
-                while i < lines.count, let mq = firstMatch(blockquote, in: lines[i]) {
-                    quoted.append(mq.string(1)); i += 1
+                while index < lines.count, let matchQ = firstMatch(blockquote, in: lines[index]) {
+                    quoted.append(matchQ.string(1)); index += 1
                 }
                 blocks.append(Block(kind: .blockquote, items: [inline(quoted.joined(separator: "\n"))]))
                 continue
             }
 
             // Ordered list
-            if let m = firstMatch(ordered, in: line) {
-                var items: [AttributedString] = [inline(m.string(2))]
-                let start = m.int(1) ?? 1
-                i += 1
-                while i < lines.count, let mn = firstMatch(ordered, in: lines[i]) {
-                    items.append(inline(mn.string(2))); i += 1
+            if let match = firstMatch(ordered, in: line) {
+                var items: [AttributedString] = [inline(match.string(2))]
+                let start = match.int(1) ?? 1
+                index += 1
+                while index < lines.count, let matchN = firstMatch(ordered, in: lines[index]) {
+                    items.append(inline(matchN.string(2))); index += 1
                 }
                 blocks.append(Block(kind: .orderedList(start: start), items: items))
                 continue
             }
 
             // Unordered list
-            if let m = firstMatch(unordered, in: line) {
-                var items: [AttributedString] = [inline(m.string(1))]
-                i += 1
-                while i < lines.count, let mn = firstMatch(unordered, in: lines[i]) {
-                    items.append(inline(mn.string(1))); i += 1
+            if let match = firstMatch(unordered, in: line) {
+                var items: [AttributedString] = [inline(match.string(1))]
+                index += 1
+                while index < lines.count, let matchN = firstMatch(unordered, in: lines[index]) {
+                    items.append(inline(matchN.string(1))); index += 1
                 }
                 blocks.append(Block(kind: .unorderedList, items: items))
                 continue
             }
 
             // Paragraph
-            var paras: [String] = [line]; i += 1
-            while i < lines.count {
-                let next = lines[i]
+            var paras: [String] = [line]; index += 1
+            while index < lines.count {
+                let next = lines[index]
                 if next.trimmingCharacters(in: .whitespaces).isEmpty { break }
                 if firstMatch(heading, in: next) != nil { break }
                 if firstMatch(blockquote, in: next) != nil { break }
                 if firstMatch(ordered, in: next) != nil { break }
                 if firstMatch(unordered, in: next) != nil { break }
-                paras.append(next); i += 1
+                paras.append(next); index += 1
             }
             blocks.append(Block(kind: .paragraph, items: [inline(paras.joined(separator: "\n"))]))
         }
         return blocks
     }
 
-    private static func inline(_ s: String) -> AttributedString {
-        (try? AttributedString(markdown: s, options: inlineOptions)) ?? AttributedString(s)
+    private static func inline(_ string: String) -> AttributedString {
+        (try? AttributedString(markdown: string, options: inlineOptions)) ?? AttributedString(string)
     }
 
     private static func firstMatch(_ regex: NSRegularExpression, in line: String) -> NSTextCheckingResultWrapper? {
         let range = NSRange(line.startIndex..<line.endIndex, in: line)
-        guard let m = regex.firstMatch(in: line, options: [], range: range) else { return nil }
-        return NSTextCheckingResultWrapper(line: line, match: m)
+        guard let match = regex.firstMatch(in: line, options: [], range: range) else { return nil }
+        return NSTextCheckingResultWrapper(line: line, match: match)
     }
 
     private struct NSTextCheckingResultWrapper {

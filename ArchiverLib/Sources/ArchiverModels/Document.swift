@@ -7,8 +7,11 @@
 
 import Foundation
 
-public nonisolated struct Document: Equatable, Identifiable, Hashable, Sendable, Codable {
-    public var id: Int
+nonisolated public struct Document: Equatable, Hashable, Sendable, Codable, Identifiable {
+    /// Type alias for document identifier
+    public typealias ID = Int
+
+    public var id: ID
     public var url: URL
     public var date: Date
     public var specification: String
@@ -24,7 +27,7 @@ public nonisolated struct Document: Equatable, Identifiable, Hashable, Sendable,
         url.lastPathComponent
     }
 
-    public init(id: Int, url: URL, date: Date, specification: String, tags: Set<String>, isTagged: Bool, sizeInBytes: Double, downloadStatus: Double) {
+    public init(id: ID, url: URL, date: Date, specification: String, tags: Set<String>, isTagged: Bool, sizeInBytes: Double, downloadStatus: Double) {
         self.id = id
         self.url = url
         self.date = date
@@ -37,7 +40,7 @@ public nonisolated struct Document: Equatable, Identifiable, Hashable, Sendable,
 }
 
 extension Document {
-    public nonisolated static func createFilename(date: Date, specification: String, tags: Set<String>) -> String {
+    nonisolated public static func createFilename(date: Date, specification: String, tags: Set<String>) -> String {
         // get formatted date
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -56,6 +59,7 @@ extension Document {
         return "\(dateStr)--\(specification)__\(tagStr).pdf".lowercased()
     }
 
+    // swiftlint:disable:next force_unwrapping
     public static func mock(url: URL = URL(string: "https://example.com")!, date: Date = Date(), specification: String = "", tags: Set<String> = [], isTagged: Bool = true, sizeInBytes: Double = 1000, downloadStatus: Double = 0) -> Self {
         .init(
             id: url.hashValue,

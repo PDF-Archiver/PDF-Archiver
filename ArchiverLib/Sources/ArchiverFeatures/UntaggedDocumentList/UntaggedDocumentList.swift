@@ -43,10 +43,13 @@ struct UntaggedDocumentList {
                 if let selectedDocumentId = state.selectedDocumentId,
                    let document = Shared(state.$documents[id: selectedDocumentId]) {
                     state.documentDetails = .init(document: document)
+                    return .run { send in
+                        await send(.documentDetails(.presented(.updateShowInspector(true))))
+                    }
                 } else {
                     state.documentDetails = nil
+                    return .none
                 }
-                return .none
 
             case .binding:
                 return .none

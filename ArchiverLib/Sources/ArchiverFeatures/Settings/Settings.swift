@@ -34,36 +34,36 @@ extension PDFQuality {
 extension StorageType {
     var title: LocalizedStringKey {
         switch self {
-            case .iCloudDrive:
-                return "iCloud Drive"
-            #if !os(macOS)
-            case .appContainer:
-                return "Local"
+        case .iCloudDrive:
+            return "iCloud Drive"
+        #if !os(macOS)
+        case .appContainer:
+            return "Local"
+        #endif
+        case .local:
+            #if os(macOS)
+            return "Drive"
+            #else
+            return "Folder"
             #endif
-            case .local:
-                #if os(macOS)
-                return "Drive"
-                #else
-                return "Folder"
-                #endif
         }
     }
 
     @ViewBuilder
     var descriptionView: some View {
         switch self {
-            case .iCloudDrive:
+        case .iCloudDrive:
             Text("Synchronized - Your documents are stored in iCloud Drive. They are available to you on all devices with the same iCloud account, e.g. iPhone, iPad and Mac.", bundle: .module)
-            #if !os(macOS)
-            case .appContainer:
-                VStack(alignment: .leading) {
-                    Text("Not synchronized - your documents are only stored locally in this app. They can be transferred via the Finder on a Mac, for example.", bundle: .module)
-                    // swiftlint:disable:next force_unwrapping
-                    Link("https://support.apple.com/en-us/HT210598", destination: URL(string: NSLocalizedString("https://support.apple.com/en-us/HT210598", comment: ""))!)
-                }
-            #endif
-            case .local:
-                Text("Not synchronized - Your documents are stored in a folder you choose on your computer. PDF Archiver does not initiate synchronization.", bundle: .module)
+        #if !os(macOS)
+        case .appContainer:
+            VStack(alignment: .leading) {
+                Text("Not synchronized - your documents are only stored locally in this app. They can be transferred via the Finder on a Mac, for example.", bundle: .module)
+                // swiftlint:disable:next force_unwrapping
+                Link("https://support.apple.com/en-us/HT210598", destination: URL(string: NSLocalizedString("https://support.apple.com/en-us/HT210598", comment: ""))!)
+            }
+        #endif
+        case .local:
+            Text("Not synchronized - Your documents are stored in a folder you choose on your computer. PDF Archiver does not initiate synchronization.", bundle: .module)
         }
     }
 }
@@ -94,10 +94,15 @@ struct Settings {
 
         var premiumSection = PremiumSection.State()
         var isShowingMailSheet = false
+        #if os(macOS)
         var showObservedFolderPicker = false
+        #endif
 
+        // swiftlint:disable:next force_unwrapping
         let appStoreUrl = URL(string: "https://apps.apple.com/app/pdf-archiver/id1433801905")!
+        // swiftlint:disable:next force_unwrapping
         let pdfArchiverWebsiteUrl = URL(string: "https://pdf-archiver.io")!
+        // swiftlint:disable:next force_unwrapping
         let termsOfUseUrl = URL(string: "https://pdf-archiver.io/terms")!
     }
 
@@ -113,14 +118,18 @@ struct Settings {
         case onContactSupportTapped
         case onImprintTapped
         case onLegalTapped
+        #if os(macOS)
         case onObserveredFolderSelectedTapped
         case onObservedFolderRemoveTapped
+        #endif
         case onOpenPdfArchiverWebsiteTapped
         case onShowArchiveTypeSelectionTapped
         case onPrivacyTapped
         case onTermsOfUseTapped
         case premiumSection(PremiumSection.Action)
+        #if os(macOS)
         case updateObservedFolder(URL?)
+        #endif
     }
 
     var body: some ReducerOf<Self> {
@@ -153,6 +162,7 @@ struct Settings {
                 state.isShowingMailSheet = true
                 return .none
                 #else
+                // swiftlint:disable:next force_unwrapping
                 let url = URL(string: "mailto:\(Constants.mailRecipient)?subject=\(Constants.mailSubject)")!
 
                 #if DEBUG
@@ -174,12 +184,14 @@ struct Settings {
                 state.destination = .legal
                 return .none
 
+            #if os(macOS)
             case .onObserveredFolderSelectedTapped:
                 state.showObservedFolderPicker = true
                 return .none
 
             case .onObservedFolderRemoveTapped:
                 return .send(.updateObservedFolder(nil))
+            #endif
 
             case .onOpenPdfArchiverWebsiteTapped:
                 #if os(iOS) || DEBUG
@@ -210,17 +222,15 @@ struct Settings {
             case .premiumSection:
                 return .none
 
+            #if os(macOS)
             case .updateObservedFolder(let url):
                 state.showObservedFolderPicker = false
-                // TODO: updateObservedFolder should be macOS only??
-                #if os(macOS)
                 state.$observedFolderURL.withLock { $0 = url }
-                #endif
 
-                // TODO: we have a race condition here - update documents via an function input? and make observedFolderURL read only? SharedReader
                 return .run { _ in
                     try await archiveStore.reloadDocuments()
                 }
+            #endif
             }
         }
         .ifLet(\.$destination, action: \.destination)

@@ -26,7 +26,8 @@ struct DocumentDetails {
         @Presents var alert: AlertState<Action.Alert>?
         @Shared var document: Document
         var documentInformationForm: DocumentInformationForm.State
-        var showInspector: Bool
+        // initially always false to avoid UI glitches, e.g. not showing the inspector
+        var showInspector = false
 #if os(iOS)
         var shareDocument: ShareData?
 #endif
@@ -34,7 +35,6 @@ struct DocumentDetails {
         init(document: Shared<Document>) {
             self._document = document
             self.documentInformationForm = DocumentInformationForm.State(document: document.wrappedValue)
-            self.showInspector = !document.wrappedValue.isTagged
         }
     }
 
@@ -49,6 +49,7 @@ struct DocumentDetails {
         case onShareButtonTapped
 #endif
         case showDocumentInformationForm(DocumentInformationForm.Action)
+        case updateShowInspector(Bool)
 
         enum Alert {
             case confirmDeleteButtonTapped
@@ -126,6 +127,10 @@ struct DocumentDetails {
 
             case .showDocumentInformationForm:
                 return .none
+
+            case .updateShowInspector(let showInspector):
+                state.showInspector = showInspector
+                return .none
             }
         }
         .ifLet(\.$alert, action: \.alert)
@@ -151,6 +156,8 @@ struct DocumentDetailsView: View {
 #if os(iOS)
                             .presentationDetents([.medium, .large])
                             .presentationBackgroundInteraction(.enabled)
+                            // hacky workaround to remove the transparency in the inspector
+                            .presentationBackground(Color.paBackgroundAsset)
 #else
                             .inspectorColumnWidth(min: 300, ideal: 400, max: 600)
 #endif

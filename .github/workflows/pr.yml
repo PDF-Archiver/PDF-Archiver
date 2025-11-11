@@ -3,6 +3,10 @@ on:
 
 name: Run PR Checks
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   SwiftLint:
     runs-on: ubuntu-latest
@@ -12,3 +16,26 @@ jobs:
         uses: stanfordbdhg/action-swiftlint@v4
         env:
           DIFF_BASE: ${{ github.base_ref }}
+
+  BuildAndTest:
+    runs-on: macos-26
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Swift
+        uses: JulianKahnert/setup-swift@patch-1
+        with:
+          swift-version: "6.2"
+
+      - name: Build ArchiverLib
+        run: cd ArchiverLib && swift build
+
+      - name: Test ArchiverLib
+        run: cd ArchiverLib && swift test

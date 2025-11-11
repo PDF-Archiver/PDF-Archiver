@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 23.09.25.
 //
 
+// TODO: add this again
 // import Foundation
 // import AppIntents
 // import CoreSpotlight
@@ -173,7 +174,6 @@
 // }
 //
 // func updateSpotlightIndex(with documents: [Document]) {
-// #warning("TODO: add efficient diffing here")
 //    try! await CSSearchableIndex.default().deleteAllSearchableItems()
 //    let items = documents.map { document in
 //        let weight = document.isTagged ? 10 : 1

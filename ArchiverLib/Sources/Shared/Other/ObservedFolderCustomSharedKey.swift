@@ -9,7 +9,7 @@ import ComposableArchitecture
 import Foundation
 
 @available(iOS, unavailable)
-public nonisolated struct ObservedFolderCustomSharedKey: SharedKey, Log {
+nonisolated public struct ObservedFolderCustomSharedKey: SharedKey, Log {
     private let key: String
     private let store: UncheckedSendable<UserDefaults>
 
@@ -85,25 +85,27 @@ public nonisolated struct ObservedFolderCustomSharedKey: SharedKey, Log {
     }
 
     private final class Observer: NSObject, Sendable {
-      let didChange: @Sendable () -> Void
-      init(didChange: @escaping @Sendable () -> Void) {
-        self.didChange = didChange
-        super.init()
-      }
-      override func observeValue(
-        forKeyPath keyPath: String?,
-        of object: Any?,
-        change: [NSKeyValueChangeKey: Any]?,
-        context: UnsafeMutableRawPointer?
-      ) {
-        self.didChange()
-      }
+        let didChange: @Sendable () -> Void
+        init(didChange: @escaping @Sendable () -> Void) {
+            self.didChange = didChange
+            super.init()
+        }
+
+        // swiftlint:disable:next block_based_kvo
+        override func observeValue(
+            forKeyPath keyPath: String?,
+            of object: Any?,
+            change: [NSKeyValueChangeKey: Any]?,
+            context: UnsafeMutableRawPointer?
+        ) {
+            self.didChange()
+        }
     }
 }
 
 @available(iOS, unavailable)
 extension ObservedFolderCustomSharedKey {
-    public nonisolated struct ObservedFolderCustomSharedKeyId: Hashable {
+    nonisolated public struct ObservedFolderCustomSharedKeyId: Hashable {
       fileprivate let key: String
       fileprivate let store: UserDefaults
     }

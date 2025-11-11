@@ -43,7 +43,7 @@ struct UntaggedDocumentsEntry: TimelineEntry {
     let untaggedDocuments: Int
 }
 
-extension UntaggedDocumentsView.Size {
+extension UntaggedDocumentsStatsView.Size {
     static func create(from size: WidgetFamily) -> Self {
         switch size {
         case .systemSmall:
@@ -65,7 +65,7 @@ struct UntaggedDocumentsWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind,
                             provider: UntaggedDocumentsProvider()) { entry in
-            UntaggedDocumentsView(untaggedDocuments: entry.untaggedDocuments,
+            UntaggedDocumentsStatsView(untaggedDocuments: entry.untaggedDocuments,
                                   size: .create(from: widgetFamily))
                 .containerBackground(.fill.tertiary, for: .widget)
         }

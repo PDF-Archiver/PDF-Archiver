@@ -79,7 +79,7 @@ public actor ArchiveStore: Log {
 
         self.archiveFolder = archiveFolder
         self.untaggedFolders = untaggedFolders
-        let observedFolders = await [[archiveFolder], untaggedFolders]
+        let observedFolders = [[archiveFolder], untaggedFolders]
             .flatMap { $0 }
             .getUniqueParents()
         var foundProviders: [(any FolderProvider)?] = []
@@ -176,7 +176,19 @@ public actor ArchiveStore: Log {
         // save file tags
         if shouldUpdatePdfMetadata,
            !document.tags.isEmpty {
-            try await newFilepath.setFileTags(document.tags.sorted())
+            let tags = document.tags.sorted()
+
+            // write pdf metadata
+            if let pdfDocument = PDFDocument(url: newFilepath) {
+                var attributes = pdfDocument.documentAttributes ?? [:]
+                attributes[PDFDocumentAttribute.keywordsAttribute] = tags
+                pdfDocument.documentAttributes = attributes
+
+                pdfDocument.write(to: newFilepath)
+            }
+
+            // write finder tags
+            try await newFilepath.setFileTags(tags)
         }
     }
 
@@ -249,7 +261,6 @@ public actor ArchiveStore: Log {
         let untaggedUrl = try await PathManager.shared.getUntaggedUrl()
 
         #if os(macOS)
-        #warning("TODO: test this")
         let untaggedFolders = [untaggedUrl, observedFolderURL].compactMap { $0 }
         #else
         let untaggedFolders = [untaggedUrl]

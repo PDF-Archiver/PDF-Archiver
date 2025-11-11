@@ -91,7 +91,7 @@ extension Document {
         return (date, specification, tagNames)
     }
 
-    private nonisolated static func getFilenameDate(_ filename: String) -> (date: Date, rawDate: String)? {
+    nonisolated private static func getFilenameDate(_ filename: String) -> (date: Date, rawDate: String)? {
         var rawDate: String?
         if let components = filename.components(separatedBy: "--") as [String]?, components.count > 1 {
             rawDate = components.first

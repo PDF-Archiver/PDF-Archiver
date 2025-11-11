@@ -106,7 +106,7 @@ struct StatisticsView: View {
 
                 VStack(alignment: .leading, spacing: 24) {
                     Section {
-                        UntaggedDocumentsView(
+                        UntaggedDocumentsStatsView(
                             untaggedDocuments: store.untaggedDocuments,
                             size: .medium,
                             showActions: false

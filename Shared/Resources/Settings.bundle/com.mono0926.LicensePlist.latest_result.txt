@@ -10,7 +10,7 @@ name: swift-clocks, nameSpecified: swift-clocks, owner: pointfreeco, version: 1.
 
 name: swift-collections, nameSpecified: swift-collections, owner: apple, version: 1.3.0, source: https://github.com/apple/swift-collections
 
-name: swift-composable-architecture, nameSpecified: swift-composable-architecture, owner: pointfreeco, version: 1.23.0, source: https://github.com/pointfreeco/swift-composable-architecture
+name: swift-composable-architecture, nameSpecified: swift-composable-architecture, owner: pointfreeco, version: 1.23.1, source: https://github.com/pointfreeco/swift-composable-architecture
 
 name: swift-concurrency-extras, nameSpecified: swift-concurrency-extras, owner: pointfreeco, version: 1.3.2, source: https://github.com/pointfreeco/swift-concurrency-extras
 

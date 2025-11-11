@@ -35,14 +35,21 @@ struct PremiumSection {
         Reduce { _, action in
             switch action {
             case .showManageSubscription:
+                // swiftlint:disable:next force_unwrapping
                 let url = URL(string: "https://apps.apple.com/account/subscriptions")!
                 #if os(iOS)
                 return .run { _ in
                     await openURL(url)
                 }
                 #else
+                #if DEBUG
+                return .run { _ in
+                    await openURL(url)
+                }
+                #else
                 NSWorkspace.shared.open(url)
                 return .none
+                #endif
                 #endif
 
             case .binding, .delegate:

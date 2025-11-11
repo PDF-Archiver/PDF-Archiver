@@ -21,6 +21,7 @@ final class PathManagerTests {
     }
 
     deinit {
+        // swiftlint:disable:next force_try
         try! FileManager.default.removeItem(at: Self.tempFolder)
     }
 
@@ -65,7 +66,9 @@ final class PathManagerTests {
     func testPDFInput() throws {
         let currentArchiveFolder = Self.tempFolder.appendingPathComponent("CurrentArchive")
         try FileManager.default.createDirectory(at: currentArchiveFolder, withIntermediateDirectories: true, attributes: nil)
-        UserDefaults.archivePathType = .local(currentArchiveFolder)
+
+        // Set initial archive path
+        try PathManager.shared.setArchiveUrl(with: .local(currentArchiveFolder))
 
         let archiveUrl = try PathManager.shared.getArchiveUrl()
 
@@ -78,7 +81,7 @@ final class PathManagerTests {
         try FileManager.default.createDirectory(at: archiveUrl.appendingPathComponent("inbox"), withIntermediateDirectories: true, attributes: nil)
         try FileManager.default.createDirectory(at: archiveUrl.appendingPathComponent("test"), withIntermediateDirectories: true, attributes: nil)
 
-        let type = PathManager.ArchivePathType.local(Self.tempFolder.appendingPathComponent("NewArchive"))
+        let type = StorageType.local(Self.tempFolder.appendingPathComponent("NewArchive"))
 
         let newArchiveUrl = try type.getArchiveUrl()
 
