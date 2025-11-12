@@ -128,9 +128,9 @@ struct ArchiveListView: View {
         Group {
             if store.filteredDocuments.isEmpty {
                 if store.searchText.isEmpty {
-                    ContentUnavailableView(String(localized: "Empty Archive", bundle: .module),
+                    ContentUnavailableView(String(localized: "Empty Archive", bundle: #bundle),
                                            systemImage: "archivebox",
-                                           description: Text("Start scanning and tagging your first document.", bundle: .module))
+                                           description: Text("Start scanning and tagging your first document.", bundle: #bundle))
                     // fix the alignment of the ScanButton
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
@@ -155,7 +155,7 @@ struct ArchiveListView: View {
                     tokens: $store.searchTokens,
                     suggestedTokens: $store.searchSuggestedTokens,
 //                    placement: .toolbar,
-                    prompt: String(localized: "Search your documents", bundle: .module)) { token in
+                    prompt: String(localized: "Search your documents", bundle: #bundle)) { token in
             switch token {
             case .tag(let tag):
                 Label(tag, systemImage: "tag")

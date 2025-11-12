@@ -74,13 +74,13 @@ struct ExpertSettings {
 
                 // Show alert to inform user about restart requirement
                 state.alert = AlertState {
-                    TextState("Reset App", bundle: .module)
+                    TextState("Reset App", bundle: #bundle)
                 } actions: {
                     ButtonState(action: .resetCompleted) {
-                        TextState("OK", bundle: .module)
+                        TextState("OK", bundle: #bundle)
                     }
                 } message: {
-                    TextState("Please restart the app to complete the reset.", bundle: .module)
+                    TextState("Please restart the app to complete the reset.", bundle: #bundle)
                 }
                 return .none
             }
@@ -94,22 +94,22 @@ struct ExpertSettingsView: View {
 
     var body: some View {
         Form {
-            Toggle(String(localized: "Save Tags in PDF Metadata", bundle: .module), isOn: $store.notSaveDocumentTagsAsPDFMetadata.flipped)
-            Toggle(String(localized: "Require Document Tags", bundle: .module), isOn: $store.documentTagsNotRequired.flipped)
-            Toggle(String(localized: "Require Document Specification", bundle: .module), isOn: $store.documentSpecificationNotRequired.flipped)
-            Toggle(String(localized: "Multi-Tag Selection Delay", bundle: .module), isOn: $store.multiTagSelectionDelayEnabled)
+            Toggle(String(localized: "Save Tags in PDF Metadata", bundle: #bundle), isOn: $store.notSaveDocumentTagsAsPDFMetadata.flipped)
+            Toggle(String(localized: "Require Document Tags", bundle: #bundle), isOn: $store.documentTagsNotRequired.flipped)
+            Toggle(String(localized: "Require Document Specification", bundle: #bundle), isOn: $store.documentSpecificationNotRequired.flipped)
+            Toggle(String(localized: "Multi-Tag Selection Delay", bundle: #bundle), isOn: $store.multiTagSelectionDelayEnabled)
             #if !os(macOS)
             Button {
                 store.send(.onShowPermissionsTapped)
             } label: {
-                Text("Show Permissions", bundle: .module)
+                Text("Show Permissions", bundle: #bundle)
             }
             #endif
 
             Button {
                 store.send(.onResetAppTapped)
             } label: {
-                Text("Reset App Preferences", bundle: .module)
+                Text("Reset App Preferences", bundle: #bundle)
             }
         }
         .foregroundStyle(.primary)

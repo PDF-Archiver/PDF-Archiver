@@ -12,17 +12,17 @@ public struct ScanShareTip: Tip {
     public init() {}
     public var title: Text {
         #if os(macOS)
-        Text("Import Document", bundle: .module)
+        Text("Import Document", bundle: #bundle)
         #else
-        Text("Scan Document", bundle: .module)
+        Text("Scan Document", bundle: #bundle)
         #endif
     }
 
     public var message: Text? {
             #if os(macOS)
-            Text("**Drag and drop** a PDF document to this area to import it.\n\nOr **click** here to open the file browser.", bundle: .module)
+            Text("**Drag and drop** a PDF document to this area to import it.\n\nOr **click** here to open the file browser.", bundle: #bundle)
             #else
-            Text("**Tap** short to start scanning a document.\n\n**Long press** to scan and share the document after processing.", bundle: .module)
+            Text("**Tap** short to start scanning a document.\n\n**Long press** to scan and share the document after processing.", bundle: #bundle)
             #endif
     }
 
@@ -35,8 +35,8 @@ public struct ScanShareTip: Tip {
         []
         #else
         [
-        Action(id: "scan", title: String(localized: "Scan", bundle: .module)),
-        Action(id: "scanAndShare", title: String(localized: "Scan & Share", bundle: .module))
+        Action(id: "scan", title: String(localized: "Scan", bundle: #bundle)),
+        Action(id: "scanAndShare", title: String(localized: "Scan & Share", bundle: #bundle))
         ]
         #endif
     }
@@ -47,11 +47,11 @@ public struct AfterFirstImportTip: Tip {
     public static let documentImported = Tips.Event(id: "documentImported")
 
     public var title: Text {
-        Text("New Document", bundle: .module)
+        Text("New Document", bundle: #bundle)
     }
 
     public var message: Text? {
-        Text("Your first document was imported. Switch to **Inbox** to see and archive it.", bundle: .module)
+        Text("Your first document was imported. Switch to **Inbox** to see and archive it.", bundle: #bundle)
     }
 
     public var image: Image? {

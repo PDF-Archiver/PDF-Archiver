@@ -128,9 +128,9 @@ struct DocumentInformationForm {
                 // check tags
                 if !state.documentTagsNotRequired && state.document.tags.isEmpty {
                     return .run { _ in
-                        await notificationCenter.createAndPost(.init(title: LocalizedStringResource("Missing tags", bundle: .module),
-                                                                     message: LocalizedStringResource("Please add at least one tag to your document or change your advanced settings.", bundle: .module),
-                                                                     primaryButtonTitle: LocalizedStringResource("OK", bundle: .module)))
+                        await notificationCenter.createAndPost(.init(title: LocalizedStringResource("Missing tags", bundle: #bundle),
+                                                                     message: LocalizedStringResource("Please add at least one tag to your document or change your advanced settings.", bundle: #bundle),
+                                                                     primaryButtonTitle: LocalizedStringResource("OK", bundle: #bundle)))
                     }
                 }
 
@@ -138,9 +138,9 @@ struct DocumentInformationForm {
                 state.document.specification = state.document.specification.slugified(withSeparator: "-")
                 if !state.documentSpecificationNotRequired && state.document.specification.isEmpty {
                     return .run { _ in
-                        await notificationCenter.createAndPost(.init(title: LocalizedStringResource("No specification", bundle: .module),
-                                                                     message: LocalizedStringResource("Please add the document specification or change your advanced settings.", bundle: .module),
-                                                                     primaryButtonTitle: LocalizedStringResource("OK", bundle: .module)))
+                        await notificationCenter.createAndPost(.init(title: LocalizedStringResource("No specification", bundle: #bundle),
+                                                                     message: LocalizedStringResource("Please add the document specification or change your advanced settings.", bundle: #bundle),
+                                                                     primaryButtonTitle: LocalizedStringResource("OK", bundle: #bundle)))
                     }
                 }
 
@@ -353,7 +353,7 @@ struct DocumentInformationFormView: View {
             Section {
                 TipView(tips.currentTip as? TaggingTips.Date)
                     .tipImageSize(TaggingTips.size)
-                DatePicker(String(localized: "Date", bundle: .module), selection: $store.document.date, displayedComponents: .date)
+                DatePicker(String(localized: "Date", bundle: #bundle), selection: $store.document.date, displayedComponents: .date)
                     .focused($focusedField, equals: .date)
                     .listRowSeparator(.hidden)
                     .sensoryFeedback(.selection, trigger: store.document.date)
@@ -368,7 +368,7 @@ struct DocumentInformationFormView: View {
                         .fixedSize()
                         .buttonStyle(.bordered)
                     }
-                    Button(String(localized: "Today", bundle: .module), systemImage: "calendar") {
+                    Button(String(localized: "Today", bundle: #bundle), systemImage: "calendar") {
                         store.send(.onTodayButtonTapped)
                     }
                     .labelStyle(.iconOnly)
@@ -380,8 +380,8 @@ struct DocumentInformationFormView: View {
             Section {
                 TipView(tips.currentTip as? TaggingTips.Specification)
                     .tipImageSize(TaggingTips.size)
-                TextField(text: $store.document.specification, prompt: Text("Enter specification", bundle: .module), axis: .vertical) {
-                    Text("Specification", bundle: .module)
+                TextField(text: $store.document.specification, prompt: Text("Enter specification", bundle: #bundle), axis: .vertical) {
+                    Text("Specification", bundle: #bundle)
                 }
                 .lineLimit(1...5)
                 .focused($focusedField, equals: .specification)
@@ -399,7 +399,7 @@ struct DocumentInformationFormView: View {
                 #endif
                 HStack {
                     Spacer()
-                    Button(String(localized: "Save", bundle: .module)) {
+                    Button(String(localized: "Save", bundle: #bundle)) {
                         store.send(.onSaveButtonTapped)
                         #if os(macOS)
                         Task {
@@ -432,7 +432,7 @@ struct DocumentInformationFormView: View {
                 .tipImageSize(TaggingTips.size)
             VStack(alignment: .leading, spacing: 16) {
                 if store.document.tags.isEmpty {
-                    Text("No tags selected", bundle: .module)
+                    Text("No tags selected", bundle: #bundle)
                         .foregroundStyle(.secondary)
                 } else {
                     TagListView(tags: store.document.tags.sorted(),
@@ -457,7 +457,7 @@ struct DocumentInformationFormView: View {
                 }
                 .focusable(false)
 
-                TextField(String(localized: "Enter Tag", bundle: .module), text: $store.tagSearchterm)
+                TextField(String(localized: "Enter Tag", bundle: #bundle), text: $store.tagSearchterm)
                     .onSubmit {
                         store.send(.onTagSearchtermSubmitted)
                     }

@@ -73,14 +73,14 @@ struct PremiumSectionView: View {
                     HStack(spacing: 4) {
                         Image(systemName: "checkmark.circle.fill")
                             .foregroundStyle(.green)
-                        Text("Active", bundle: .module)
+                        Text("Active", bundle: #bundle)
                     }
                     .font(.largeTitle)
                 case .inactive:
                     HStack(spacing: 4) {
                         Image(systemName: "xmark.circle.fill")
                             .foregroundStyle(.red)
-                        Text("Inactive", bundle: .module)
+                        Text("Inactive", bundle: #bundle)
                     }
                     .font(.largeTitle)
                 }
@@ -92,7 +92,7 @@ struct PremiumSectionView: View {
                     store.send(.delegate(.switchToInboxTab))
                 } label: {
                     HStack {
-                        Label(String(localized: "Activate premium", bundle: .module), systemImage: "cart")
+                        Label(String(localized: "Activate premium", bundle: #bundle), systemImage: "cart")
                         Spacer()
                     }
                     .contentShape(Rectangle())
@@ -105,7 +105,7 @@ struct PremiumSectionView: View {
                 store.send(.showManageSubscription)
             } label: {
                 HStack {
-                    Label(String(localized: "Manage Subscription", bundle: .module), systemImage: "switch.2")
+                    Label(String(localized: "Manage Subscription", bundle: #bundle), systemImage: "switch.2")
                     Spacer()
                 }
                 .contentShape(Rectangle())
@@ -118,7 +118,7 @@ struct PremiumSectionView: View {
         #else
         Section {
             HStack {
-                Label(String(localized: "Premium Status", bundle: .module), systemImage: "star")
+                Label(String(localized: "Premium Status", bundle: #bundle), systemImage: "star")
                 Spacer()
                 switch store.premiumStatus {
                 case .loading:
@@ -127,13 +127,13 @@ struct PremiumSectionView: View {
                     HStack(spacing: 4) {
                         Image(systemName: "checkmark.circle.fill")
                             .foregroundStyle(.green)
-                        Text("Active", bundle: .module)
+                        Text("Active", bundle: #bundle)
                     }
                 case .inactive:
                     HStack(spacing: 4) {
                         Image(systemName: "xmark.circle.fill")
                             .foregroundStyle(.red)
-                        Text("Inactive", bundle: .module)
+                        Text("Inactive", bundle: #bundle)
                     }
                 }
             }
@@ -142,17 +142,17 @@ struct PremiumSectionView: View {
                 Button {
                     store.send(.delegate(.switchToInboxTab))
                 } label: {
-                    Label(String(localized: "Activate premium", bundle: .module), systemImage: "cart")
+                    Label(String(localized: "Activate premium", bundle: #bundle), systemImage: "cart")
                 }
             }
 
             Button {
                 store.send(.showManageSubscription)
             } label: {
-                Label(String(localized: "Manage Subscription", bundle: .module), systemImage: "switch.2")
+                Label(String(localized: "Manage Subscription", bundle: #bundle), systemImage: "switch.2")
             }
         } header: {
-            Text("Premium", bundle: .module)
+            Text("Premium", bundle: #bundle)
                 .foregroundStyle(Color.secondary)
         }
         #endif
