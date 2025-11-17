@@ -15,31 +15,31 @@ struct LegalView: View {
     var body: some View {
             Group {
                 NavigationLink {
-                    MarkdownView(markdown: String(localized: "TERMS_OF_USE", bundle: .module))
-                        .navigationTitle(String(localized: "Terms of Use", bundle: .module))
+                    MarkdownView(markdown: String(localized: "TERMS_OF_USE", bundle: #bundle))
+                        .navigationTitle(String(localized: "Terms of Use", bundle: #bundle))
                 } label: {
-                    Label(String(localized: "Terms of Use", bundle: .module), systemImage: "doc.text")
+                    Label(String(localized: "Terms of Use", bundle: #bundle), systemImage: "doc.text")
                 }
 
                 NavigationLink {
-                    MarkdownView(markdown: String(localized: "PRIVACY", bundle: .module))
-                        .navigationTitle(String(localized: "Privacy", bundle: .module))
+                    MarkdownView(markdown: String(localized: "PRIVACY", bundle: #bundle))
+                        .navigationTitle(String(localized: "Privacy", bundle: #bundle))
                 } label: {
-                    Label(String(localized: "Privacy", bundle: .module), systemImage: "hand.raised")
+                    Label(String(localized: "Privacy", bundle: #bundle), systemImage: "hand.raised")
                 }
 
                 NavigationLink {
-                    MarkdownView(markdown: String(localized: "IMPRINT", bundle: .module))
-                        .navigationTitle(Text("Imprint", bundle: .module))
+                    MarkdownView(markdown: String(localized: "IMPRINT", bundle: #bundle))
+                        .navigationTitle(Text("Imprint", bundle: #bundle))
                 } label: {
-                    Label(String(localized: "Imprint", bundle: .module), systemImage: "envelope.front")
+                    Label(String(localized: "Imprint", bundle: #bundle), systemImage: "envelope.front")
                 }
 
                 Button {
                     store.send(.onOpenPdfArchiverWebsiteTapped)
                 } label: {
                     HStack {
-                        Label(String(localized: "PDF Archiver Website", bundle: .module), systemImage: "globe")
+                        Label(String(localized: "PDF Archiver Website", bundle: #bundle), systemImage: "globe")
                         #if os(iOS)
                         Spacer()
                         Image(systemName: "chevron.right")

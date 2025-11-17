@@ -27,7 +27,7 @@ public struct UntaggedDocumentsStatsView: View {
          HStack {
             if untaggedDocuments <= 0 {
                 Link(destination: DeepLink.scan.url) {
-                    Label(String(localized: "Scan", bundle: .module), systemImage: "document.viewfinder")
+                    Label(String(localized: "Scan", bundle: #bundle), systemImage: "document.viewfinder")
                 }
                 .frame(maxWidth: .infinity)
                 .padding(10)
@@ -44,7 +44,7 @@ public struct UntaggedDocumentsStatsView: View {
                 .background(Circle().fill(Color.gray.opacity(0.3)))
 
                 Link(destination: DeepLink.tag.url) {
-                    Label(String(localized: "Tag", bundle: .module), systemImage: "tag")
+                    Label(String(localized: "Tag", bundle: #bundle), systemImage: "tag")
                         .minimumScaleFactor(0.5)
                 }
                 .frame(maxWidth: .infinity)
@@ -97,7 +97,7 @@ public struct UntaggedDocumentsStatsView: View {
                             .symbolRenderingMode(.hierarchical)
                             .font(.title)
 
-                        Text("Untagged Documents", bundle: .module)
+                        Text("Untagged Documents", bundle: #bundle)
                             .foregroundStyle(.secondary)
                             .font(.body)
                             .lineLimit(1)
@@ -129,7 +129,7 @@ public struct UntaggedDocumentsStatsView: View {
                         }
                         .font(.largeTitle)
 
-                        Text("Untagged Documents", bundle: .module)
+                        Text("Untagged Documents", bundle: #bundle)
                             .foregroundStyle(.secondary)
                             .font(.caption)
                     }
@@ -147,7 +147,7 @@ public struct UntaggedDocumentsStatsView: View {
     }
 
     private var allDocumentsTagged: some View {
-        Text("All documents are tagged. 🎉", bundle: .module)
+        Text("All documents are tagged. 🎉", bundle: #bundle)
             .foregroundStyle(.secondary)
             .font(.caption)
             .frame(height: 80)

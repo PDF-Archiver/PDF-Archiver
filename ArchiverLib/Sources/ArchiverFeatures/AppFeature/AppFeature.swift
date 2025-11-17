@@ -376,22 +376,22 @@ struct AppView: View {
                     .modifier(ScanButtonModifier(showButton: store.showScanButton, currentTip: store.tutorialShown ? tips.currentTip : nil))
             }
 
-            Tab(String(localized: "Inbox", bundle: .module), systemImage: "tray", value: AppFeature.State.Tab.inbox) {
+            Tab(String(localized: "Inbox", bundle: #bundle), systemImage: "tray", value: AppFeature.State.Tab.inbox) {
                 untaggedDocumentList
             }
             .badge(store.untaggedDocumentsCount)
 
-            Tab(String(localized: "Statistics", bundle: .module), systemImage: "chart.bar.xaxis", value: AppFeature.State.Tab.statistics) {
+            Tab(String(localized: "Statistics", bundle: #bundle), systemImage: "chart.bar.xaxis", value: AppFeature.State.Tab.statistics) {
                 StatisticsView(store: store.scope(state: \.statistics, action: \.statistics))
             }
 
             #if !os(macOS)
-            Tab(String(localized: "Settings", bundle: .module), systemImage: "gear", value: AppFeature.State.Tab.settings) {
+            Tab(String(localized: "Settings", bundle: #bundle), systemImage: "gear", value: AppFeature.State.Tab.settings) {
                 SettingsView(store: store.scope(state: \.settings, action: \.settings))
             }
             #endif
 
-            TabSection(String(localized: "Tags", bundle: .module)) {
+            TabSection(String(localized: "Tags", bundle: #bundle)) {
                 ForEach(store.tabTagSuggestions, id: \.self) { tag in
                     Tab(tag, systemImage: "tag", value: AppFeature.State.Tab.sectionTags(tag)) {
                         archiveList
@@ -401,7 +401,7 @@ struct AppView: View {
             .defaultVisibility(.hidden, for: .tabBar)
             .hidden(horizontalSizeClass == .compact)
 
-            TabSection("\(String(localized: "Years", bundle: .module))") {
+            TabSection("\(String(localized: "Years", bundle: #bundle))") {
                 ForEach(store.tabYearSuggestions, id: \.self) { year in
                     Tab("\(year, format: .number.grouping(.never))", systemImage: "calendar", value: AppFeature.State.Tab.sectionYears(year)) {
                         archiveList
@@ -448,7 +448,7 @@ struct AppView: View {
     private var archiveList: some View {
         NavigationStack {
             ArchiveListView(store: store.scope(state: \.archiveList, action: \.archiveList))
-                .navigationTitle(Text("Archive", bundle: .module))
+                .navigationTitle(Text("Archive", bundle: #bundle))
                 .toolbar {
                     loadingIndicator
                 }
@@ -458,7 +458,7 @@ struct AppView: View {
     private var untaggedDocumentList: some View {
         NavigationStack {
             UntaggedDocumentListView(store: store.scope(state: \.untaggedDocumentList, action: \.untaggedDocumentList))
-                .navigationTitle(Text("Inbox", bundle: .module))
+                .navigationTitle(Text("Inbox", bundle: #bundle))
                 .toolbar {
                     loadingIndicator
                 }

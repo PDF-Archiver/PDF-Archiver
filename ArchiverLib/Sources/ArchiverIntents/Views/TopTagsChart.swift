@@ -29,7 +29,7 @@ public struct TopTagsChart: View {
 
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .top) {
-                Text("Most Used Tags", bundle: .module)
+                Text("Most Used Tags", bundle: #bundle)
                     .minimumScaleFactor(0.8)
                     .foregroundStyle(.primary)
 
@@ -38,9 +38,9 @@ public struct TopTagsChart: View {
 
             if tagData.isEmpty {
                 ContentUnavailableView(
-                    String(localized: "No Tags", bundle: .module),
+                    String(localized: "No Tags", bundle: #bundle),
                     systemImage: "tag",
-                    description: Text("Tag your documents to see the most used tags", bundle: .module)
+                    description: Text("Tag your documents to see the most used tags", bundle: #bundle)
                 )
             } else {
                 Chart(tagData) { item in

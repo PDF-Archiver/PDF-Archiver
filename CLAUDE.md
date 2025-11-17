@@ -232,14 +232,11 @@ Use the `asc` CLI tool to manage app versions in App Store Connect:
 
 ```bash
 # Update version with release notes (both languages required)
-asc version de.JulianKahnert.PDFArchiveViewer <VERSION> \
-  --hintGerman "<GERMAN_VERSION_HINT>" \
-  --hintEnglish "<ENGLISH_VERSION_HINT>"
+asc version de.JulianKahnert.PDFArchiveViewer 4.4.0 --hint "{\"german\": \"<GERMAN_VERSION_HINT>\", \"english\": \"<ENGLISH_VERSION_HINT>\"}"
 
 # Example:
 # asc version de.JulianKahnert.PDFArchiveViewer 3.5.0 \
-#   --hintGerman "Fehlerbehebungen und Verbesserungen" \
-#   --hintEnglish "Bug fixes and improvements"
+#   --hint "{\"german\": \"Fehlerbehebungen und Verbesserungen\", \"english\": \"Bug fixes and improvements\"}"
 
 # List all apps in your account
 asc list-apps

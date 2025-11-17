@@ -97,7 +97,7 @@ struct StorageSelectionView: View {
                     } label: {
                         HStack {
                             Label {
-                                Text(storageType.title, bundle: .module)
+                                Text(storageType.title, bundle: #bundle)
                             } icon: {
                                 Image(systemName: storageType.icon)
                             }
@@ -124,7 +124,7 @@ struct StorageSelectionView: View {
                     }
                     .foregroundStyle(Color.tertiaryLabelAsset)
 
-                Text("PDF Archiver is not a backup solution. Please make backups of the archived PDFs regularly.", bundle: .module)
+                Text("PDF Archiver is not a backup solution. Please make backups of the archived PDFs regularly.", bundle: #bundle)
                     .foregroundStyle(Color.secondaryLabelAsset)
                     .font(.footnote)
             }
@@ -155,7 +155,7 @@ struct StorageSelectionView: View {
                 VStack(spacing: 16) {
                     ProgressView()
                         .scaleEffect(1.5)
-                    Text("Migrating documents...", bundle: .module)
+                    Text("Migrating documents...", bundle: #bundle)
                         .font(.headline)
                         .foregroundStyle(.primary)
                 }
@@ -230,16 +230,16 @@ enum StorageSelectionType: String, CaseIterable {
     var descriptionView: some View {
         switch self {
         case .iCloudDrive:
-            Text("Synchronized - Your documents are stored in iCloud Drive. They are available to you on all devices with the same iCloud account, e.g. iPhone, iPad and Mac.", bundle: .module)
+            Text("Synchronized - Your documents are stored in iCloud Drive. They are available to you on all devices with the same iCloud account, e.g. iPhone, iPad and Mac.", bundle: #bundle)
         #if !os(macOS)
         case .appContainer:
             VStack(alignment: .leading) {
-                Text("Not synchronized - your documents are only stored locally in this app. They can be transferred via the Finder on a Mac, for example.", bundle: .module)
+                Text("Not synchronized - your documents are only stored locally in this app. They can be transferred via the Finder on a Mac, for example.", bundle: #bundle)
                 Link("https://support.apple.com/en-us/HT210598", destination: Self.appleDocumentationURL)
             }
         #endif
         case .local:
-            Text("Not synchronized - Your documents are stored in a folder you choose on your computer. PDF Archiver does not initiate synchronization.", bundle: .module)
+            Text("Not synchronized - Your documents are stored in a folder you choose on your computer. PDF Archiver does not initiate synchronization.", bundle: #bundle)
         }
     }
 }

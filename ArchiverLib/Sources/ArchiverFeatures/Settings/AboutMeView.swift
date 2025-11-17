@@ -21,7 +21,7 @@ struct AboutMeView: View {
                 text
             }
         }
-        .navigationTitle(Text("About", bundle: .module))
+        .navigationTitle(Text("About", bundle: #bundle))
     }
 
     private var headline: some View {
@@ -30,11 +30,11 @@ struct AboutMeView: View {
                 .resizable()
                 .frame(width: 50.0, height: 50.0, alignment: .center)
             VStack(alignment: .leading, spacing: 4.0) {
-                Text("PDF Archiver", bundle: .module)
+                Text("PDF Archiver", bundle: #bundle)
                     .font(.largeTitle)
                     .fontWeight(.heavy)
                     .foregroundColor(.paDarkGrayAsset)
-                Text("Scan it. Tag it. Find it.", bundle: .module)
+                Text("Scan it. Tag it. Find it.", bundle: #bundle)
                     .font(.title)
                     .foregroundColor(.paLightGrayAsset)
             }
@@ -49,7 +49,7 @@ struct AboutMeView: View {
     }
 
     private var text: some View {
-        Text("AboutMeViewText", bundle: .module)
+        Text("AboutMeViewText", bundle: #bundle)
             .padding(EdgeInsets(top: 0.0, leading: 16.0, bottom: 16.0, trailing: 16.0))
     }
 }

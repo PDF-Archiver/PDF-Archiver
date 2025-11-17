@@ -99,7 +99,7 @@ struct AppleIntelligenceSettingsView: View {
             Section {
                 VStack(alignment: .leading, spacing: 8) {
                     Label {
-                        Text("Apple Intelligence", bundle: .module)
+                        Text("Apple Intelligence", bundle: #bundle)
                             .font(.headline)
                     } icon: {
                         Image(systemName: "apple.intelligence")
@@ -107,19 +107,19 @@ struct AppleIntelligenceSettingsView: View {
                     }
                 }
 
-                LabeledContent(String(localized: "Status", bundle: .module)) {
+                LabeledContent(String(localized: "Status", bundle: #bundle)) {
                     availabilityView
                 }
 
                 if store.availability == .available {
                     Toggle(
-                        String(localized: "Use Apple Intelligence", bundle: .module),
+                        String(localized: "Use Apple Intelligence", bundle: #bundle),
                         isOn: $store.appleIntelligenceEnabled
                     )
                 }
             } footer: {
                 if store.availability == .available {
-                    Text("When enabled, Apple Intelligence will automatically suggest descriptions and tags for your documents. However, this feature may take some time to function.\nIn case of a failure, the non-AI version will always be used.", bundle: .module)
+                    Text("When enabled, Apple Intelligence will automatically suggest descriptions and tags for your documents. However, this feature may take some time to function.\nIn case of a failure, the non-AI version will always be used.", bundle: #bundle)
                         .foregroundStyle(.secondary)
                         .font(.footnote)
                 }
@@ -127,7 +127,7 @@ struct AppleIntelligenceSettingsView: View {
 
             if store.availability == .available {
                 Section {
-                    TextField(String(localized: "Custom Prompt", bundle: .module),
+                    TextField(String(localized: "Custom Prompt", bundle: #bundle),
                               text: Binding(
                                 get: { store.customPrompt ?? "" },
                                 set: { newValue in
@@ -135,30 +135,30 @@ struct AppleIntelligenceSettingsView: View {
                                     store.customPrompt = trimmed.isEmpty ? nil : trimmed
                                 }
                               ),
-                              prompt: Text("Optional: Enter your custom prompt additions", bundle: .module),
+                              prompt: Text("Optional: Enter your custom prompt additions", bundle: #bundle),
                               axis: .vertical)
                     .lineLimit(1...)
 
                 } footer: {
-                    Text("\(store.customPrompt?.count ?? 0) / \(AppleIntelligenceSettings.maxCustomPromptLength)", bundle: .module)
+                    Text("\(store.customPrompt?.count ?? 0) / \(AppleIntelligenceSettings.maxCustomPromptLength)", bundle: #bundle)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                 }
 
                 Section {
-                    LabeledContent(String(localized: "Cache Entries", bundle: .module)) {
+                    LabeledContent(String(localized: "Cache Entries", bundle: #bundle)) {
                         Text("\(store.cacheEntryCount)")
                             .foregroundStyle(.secondary)
                     }
 
                     Toggle(
-                        String(localized: "Use Cache", bundle: .module),
+                        String(localized: "Use Cache", bundle: #bundle),
                         isOn: $store.cacheEnabled
                     )
 
                     if store.cacheEnabled {
                         Toggle(
-                            String(localized: "Background Processing Notifications", bundle: .module),
+                            String(localized: "Background Processing Notifications", bundle: #bundle),
                             isOn: $store.backgroundNotificationsEnabled
                         )
                     }
@@ -168,18 +168,18 @@ struct AppleIntelligenceSettingsView: View {
                     } label: {
                         if store.isClearingCache {
                             HStack {
-                                Text("Clearing Cache...", bundle: .module)
+                                Text("Clearing Cache...", bundle: #bundle)
                                 ProgressView()
                                     .controlSize(.small)
                             }
                         } else {
-                            Text("Clear Cache", bundle: .module)
+                            Text("Clear Cache", bundle: #bundle)
                         }
                     }
                     .disabled(store.isClearingCache || store.cacheEntryCount == 0)
 
                 } footer: {
-                    Text("Cache improves performance by storing previously analyzed documents. Cached entries are stored locally and not synced across devices. The system may automatically remove cache files when storage is needed.\n\nWhen background notifications are enabled, you'll receive alerts about cache processing, including duration and number of caches created.", bundle: .module)
+                    Text("Cache improves performance by storing previously analyzed documents. Cached entries are stored locally and not synced across devices. The system may automatically remove cache files when storage is needed.\n\nWhen background notifications are enabled, you'll receive alerts about cache processing, including duration and number of caches created.", bundle: #bundle)
                         .foregroundStyle(.secondary)
                         .font(.footnote)
                 }
@@ -198,21 +198,21 @@ struct AppleIntelligenceSettingsView: View {
         case .available:
             HStack(spacing: 4) {
                 Image(systemName: "checkmark.circle.fill")
-                Text("Available", bundle: .module)
+                Text("Available", bundle: #bundle)
                     .font(.subheadline)
             }
             .foregroundStyle(.green)
         case .deviceNotCompatible:
             HStack(spacing: 4) {
                 Image(systemName: "xmark.circle.fill")
-                Text("Device Not Compatible", bundle: .module)
+                Text("Device Not Compatible", bundle: #bundle)
                     .font(.subheadline)
             }
             .foregroundStyle(.red)
         case .unavailable:
             HStack(spacing: 4) {
                 Image(systemName: "exclamationmark.circle.fill")
-                Text("Unavailable", bundle: .module)
+                Text("Unavailable", bundle: #bundle)
                     .font(.subheadline)
             }
             .foregroundStyle(.orange)
@@ -220,12 +220,12 @@ struct AppleIntelligenceSettingsView: View {
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 4) {
                     Image(systemName: "xmark.circle.fill")
-                    Text("Operating System Not Compatible", bundle: .module)
+                    Text("Operating System Not Compatible", bundle: #bundle)
                         .font(.subheadline)
                 }
                 .foregroundStyle(.red)
 
-                Text("Apple Intelligence requires iOS/macOS 26 or later. Please update your device to use this feature.", bundle: .module)
+                Text("Apple Intelligence requires iOS/macOS 26 or later. Please update your device to use this feature.", bundle: #bundle)
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

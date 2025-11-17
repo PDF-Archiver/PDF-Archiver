@@ -71,9 +71,9 @@ struct UntaggedDocumentListView: View {
         Group {
             #if os(macOS)
             if store.untaggedDocuments.isEmpty {
-                ContentUnavailableView(String(localized: "No document", bundle: .module),
+                ContentUnavailableView(String(localized: "No document", bundle: #bundle),
                                        systemImage: "checkmark.seal",
-                                       description: Text("Congratulations! All documents are tagged. 🎉", bundle: .module))
+                                       description: Text("Congratulations! All documents are tagged. 🎉", bundle: #bundle))
             } else {
                 List(store.untaggedDocuments, selection: $store.selectedDocumentId) { document in
                     Text(document.url.lastPathComponent)
@@ -87,9 +87,9 @@ struct UntaggedDocumentListView: View {
                     store.send(.delegate(.onCancelIapButtonTapped))
                 }
             } else if store.untaggedDocuments.isEmpty {
-                ContentUnavailableView(String(localized: "No document", bundle: .module),
+                ContentUnavailableView(String(localized: "No document", bundle: #bundle),
                                        systemImage: "checkmark.seal",
-                                       description: Text("Congratulations! All documents are tagged. 🎉", bundle: .module))
+                                       description: Text("Congratulations! All documents are tagged. 🎉", bundle: #bundle))
             } else {
                 List(store.untaggedDocuments, selection: $store.selectedDocumentId) { document in
                     Text(document.url.lastPathComponent)

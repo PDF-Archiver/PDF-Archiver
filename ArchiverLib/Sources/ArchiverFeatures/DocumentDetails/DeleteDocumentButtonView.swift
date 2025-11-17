@@ -16,15 +16,15 @@ struct DeleteDocumentButtonView: View {
         Button(role: .destructive) {
             showDeleteConfirmation = true
         } label: {
-            Label(String(localized: "Delete", bundle: .module), systemImage: "trash")
+            Label(String(localized: "Delete", bundle: #bundle), systemImage: "trash")
                 .foregroundColor(documentUrl == nil ? Color.gray : .red)
         }
         .disabled(documentUrl == nil)
         .labelStyle(.iconOnly)
-        .confirmationDialog(String(localized: "Do you really want to delete this document?", bundle: .module),
+        .confirmationDialog(String(localized: "Do you really want to delete this document?", bundle: #bundle),
                             isPresented: $showDeleteConfirmation,
                             titleVisibility: .visible) {
-            Button(String(localized: "Delete", bundle: .module), role: .destructive) {
+            Button(String(localized: "Delete", bundle: #bundle), role: .destructive) {
                 guard let documentUrl else {
                     assertionFailure("No document selected")
                     return
@@ -32,7 +32,7 @@ struct DeleteDocumentButtonView: View {
 
                 action(documentUrl)
             }
-            Button(String(localized: "Cancel", bundle: .module), role: .cancel) {
+            Button(String(localized: "Cancel", bundle: #bundle), role: .cancel) {
                 withAnimation {
                     showDeleteConfirmation = false
                 }
