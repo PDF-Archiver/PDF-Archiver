@@ -64,13 +64,13 @@ struct ArchiveList {
                         case .year(let int):
                             guard document.url.lastPathComponent.hasPrefix("\(int)") else { return false }
                         case .text(let text):
-                            guard document.url.lastPathComponent.contains(text) else { return false }
+                            guard document.url.lastPathComponent.localizedCaseInsensitiveContains(text) else { return false }
                         }
                     }
 
                     if !searchText.isEmpty {
-                        let newSearchText = searchText.slugified(withSeparator: "-").lowercased()
-                        return document.url.lastPathComponent.contains(newSearchText)
+                        let newSearchText = searchText.slugified(withSeparator: "-")
+                        return document.url.lastPathComponent.localizedCaseInsensitiveContains(newSearchText)
                     }
                     return true
                 }
