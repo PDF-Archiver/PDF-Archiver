@@ -67,6 +67,8 @@ public struct UntaggedDocumentsStatsView: View {
                             Text(untaggedDocuments, format: .number)
                                 .fontWeight(.black)
                                 .foregroundStyle(.primary)
+                                .minimumScaleFactor(0.5)
+                                .lineLimit(1)
 
                             Image(systemName: "document.on.document")
                                 .foregroundStyle(Color.paRedAsset)
@@ -166,12 +168,24 @@ public struct UntaggedDocumentsStatsView: View {
 
 #Preview("Small") {
     List {
-        Section {
+        Section("Zero documents") {
             UntaggedDocumentsStatsView(untaggedDocuments: 0,
                                        size: .small)
         }
-        Section {
-            UntaggedDocumentsStatsView(untaggedDocuments: 0,
+        Section("Single digit") {
+            UntaggedDocumentsStatsView(untaggedDocuments: 5,
+                                       size: .small)
+        }
+        Section("Double digits") {
+            UntaggedDocumentsStatsView(untaggedDocuments: 42,
+                                       size: .small)
+        }
+        Section("Triple digits") {
+            UntaggedDocumentsStatsView(untaggedDocuments: 542,
+                                       size: .small)
+        }
+        Section("Edge case - 999") {
+            UntaggedDocumentsStatsView(untaggedDocuments: 999,
                                        size: .small)
         }
     }
