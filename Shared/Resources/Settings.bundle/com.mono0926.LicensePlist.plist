@@ -14,7 +14,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/AsyncExtensions</string>
 			<key>Title</key>
-			<string>AsyncExtensions (0.5.4)</string>
+			<string>AsyncExtensions (0.5.5)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -30,7 +30,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-async-algorithms</string>
 			<key>Title</key>
-			<string>swift-async-algorithms (1.0.4)</string>
+			<string>swift-async-algorithms (1.1.1)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>

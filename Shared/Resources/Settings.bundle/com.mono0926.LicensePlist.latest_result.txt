@@ -1,8 +1,8 @@
-name: AsyncExtensions, nameSpecified: AsyncExtensions, owner: sideeffect-io, version: 0.5.4, source: https://github.com/sideeffect-io/AsyncExtensions
+name: AsyncExtensions, nameSpecified: AsyncExtensions, owner: sideeffect-io, version: 0.5.5, source: https://github.com/sideeffect-io/AsyncExtensions
 
 name: combine-schedulers, nameSpecified: combine-schedulers, owner: pointfreeco, version: 1.0.3, source: https://github.com/pointfreeco/combine-schedulers
 
-name: swift-async-algorithms, nameSpecified: swift-async-algorithms, owner: apple, version: 1.0.4, source: https://github.com/apple/swift-async-algorithms
+name: swift-async-algorithms, nameSpecified: swift-async-algorithms, owner: apple, version: 1.1.1, source: https://github.com/apple/swift-async-algorithms
 
 name: swift-case-paths, nameSpecified: swift-case-paths, owner: pointfreeco, version: 1.7.2, source: https://github.com/pointfreeco/swift-case-paths
 
@@ -32,4 +32,4 @@ name: xctest-dynamic-overlay, nameSpecified: xctest-dynamic-overlay, owner: poin
 
 add-version-numbers: true
 
-LicensePlist Version: 3.27.1
+LicensePlist Version: 3.27.2

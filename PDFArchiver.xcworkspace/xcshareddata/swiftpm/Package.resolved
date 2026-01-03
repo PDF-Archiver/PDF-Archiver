@@ -1,13 +1,13 @@
 {
-  "originHash" : "14c4bbacfe58d6572428f3419362e144910cc1d14f32d2ff3bb7afa9bb04dcb0",
+  "originHash" : "287c87eed136cac09afb94683e2c11b917fc5fd969a14bc445f300a0059322db",
   "pins" : [
     {
       "identity" : "asyncextensions",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/sideeffect-io/AsyncExtensions",
       "state" : {
-        "revision" : "735748a3ffb7ec880aa252e1c38ec0a65929cb87",
-        "version" : "0.5.4"
+        "revision" : "c2b32caf189993285b5a782fe7cd658ed1fa9b9a",
+        "version" : "0.5.5"
       }
     },
     {
@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-async-algorithms",
       "state" : {
-        "revision" : "042e1c4d9d19748c9c228f8d4ebc97bb1e339b0b",
-        "version" : "1.0.4"
+        "revision" : "6c050d5ef8e1aa6342528460db614e9770d7f804",
+        "version" : "1.1.1"
       }
     },
     {
