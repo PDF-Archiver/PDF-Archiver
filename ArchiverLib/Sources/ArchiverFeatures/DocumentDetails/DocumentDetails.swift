@@ -26,7 +26,8 @@ struct DocumentDetails {
         @Presents var alert: AlertState<Action.Alert>?
         @Shared var document: Document
         var documentInformationForm: DocumentInformationForm.State
-        var showInspector: Bool
+        // initially always false to avoid UI glitches, e.g. not showing the inspector
+        var showInspector = false
 #if os(iOS)
         var shareDocument: ShareData?
 #endif
@@ -34,7 +35,6 @@ struct DocumentDetails {
         init(document: Shared<Document>) {
             self._document = document
             self.documentInformationForm = DocumentInformationForm.State(document: document.wrappedValue)
-            self.showInspector = !document.wrappedValue.isTagged
         }
     }
 
@@ -49,6 +49,7 @@ struct DocumentDetails {
         case onShareButtonTapped
 #endif
         case showDocumentInformationForm(DocumentInformationForm.Action)
+        case updateShowInspector(Bool)
 
         enum Alert {
             case confirmDeleteButtonTapped
@@ -82,16 +83,16 @@ struct DocumentDetails {
 
             case .onDeleteDocumentButtonTapped:
                 state.alert = AlertState<Action.Alert> {
-                    TextState("Delete document?", bundle: .module)
+                    TextState("Delete document?", bundle: #bundle)
                 } actions: {
                     ButtonState(role: .destructive, action: .confirmDeleteButtonTapped) {
-                        TextState("Delete", bundle: .module)
+                        TextState("Delete", bundle: #bundle)
                     }
                     ButtonState(role: .cancel) {
-                        TextState("Cancel", bundle: .module)
+                        TextState("Cancel", bundle: #bundle)
                     }
                 } message: {
-                    TextState("You are deleting the current document. Are you sure?", bundle: .module)
+                    TextState("You are deleting the current document. Are you sure?", bundle: #bundle)
                 }
                 return .none
 
@@ -126,6 +127,10 @@ struct DocumentDetails {
 
             case .showDocumentInformationForm:
                 return .none
+
+            case .updateShowInspector(let showInspector):
+                state.showInspector = showInspector
+                return .none
             }
         }
         .ifLet(\.$alert, action: \.alert)
@@ -151,6 +156,8 @@ struct DocumentDetailsView: View {
 #if os(iOS)
                             .presentationDetents([.medium, .large])
                             .presentationBackgroundInteraction(.enabled)
+                            // hacky workaround to remove the transparency in the inspector
+                            .presentationBackground(Color.paBackgroundAsset)
 #else
                             .inspectorColumnWidth(min: 300, ideal: 400, max: 600)
 #endif
@@ -184,7 +191,7 @@ struct DocumentDetailsView: View {
                     Button {
                         store.send(.onEditButtonTapped)
                     } label: {
-                        Label(String(localized: "Edit", bundle: .module), systemImage: "pencil")
+                        Label(String(localized: "Edit", bundle: #bundle), systemImage: "pencil")
                     }
                 }
 
@@ -193,7 +200,7 @@ struct DocumentDetailsView: View {
                     Button(role: .none) {
                         NSWorkspace.shared.activateFileViewerSelecting([store.document.url])
                     } label: {
-                        Label(String(localized: "Show in Finder", bundle: .module), systemImage: "folder")
+                        Label(String(localized: "Show in Finder", bundle: #bundle), systemImage: "folder")
                     }
                 }
 #endif
@@ -203,7 +210,7 @@ struct DocumentDetailsView: View {
                     Button(role: .none) {
                         store.send(.onShareButtonTapped)
                     } label: {
-                        Label(String(localized: "Share", bundle: .module), systemImage: "square.and.arrow.up")
+                        Label(String(localized: "Share", bundle: #bundle), systemImage: "square.and.arrow.up")
                     }
 #else
                     // iOS Bug: when the inspector is active/shown, ShareLink will not trigger the share sheet.
@@ -218,7 +225,7 @@ struct DocumentDetailsView: View {
                     Button(role: .destructive) {
                         store.send(.onDeleteDocumentButtonTapped)
                     } label: {
-                        Label(String(localized: "Delete", bundle: .module), systemImage: "trash")
+                        Label(String(localized: "Delete", bundle: #bundle), systemImage: "trash")
                             .foregroundColor(.red)
                     }
                     .buttonStyle(.glass(.identity))
@@ -251,7 +258,7 @@ struct DocumentDetailsView: View {
             Button {
                 store.send(.onEditButtonTapped)
             } label: {
-                Label(String(localized: "Edit", bundle: .module), systemImage: "pencil")
+                Label(String(localized: "Edit", bundle: #bundle), systemImage: "pencil")
             }
 
 #if os(macOS)
@@ -259,7 +266,7 @@ struct DocumentDetailsView: View {
             Button(role: .none) {
                 NSWorkspace.shared.activateFileViewerSelecting([store.document.url])
             } label: {
-                Label(String(localized: "Show in Finder", bundle: .module), systemImage: "folder")
+                Label(String(localized: "Show in Finder", bundle: #bundle), systemImage: "folder")
             }
 #endif
 
@@ -268,7 +275,7 @@ struct DocumentDetailsView: View {
             Button(role: .none) {
                 store.send(.onShareButtonTapped)
             } label: {
-                Label(String(localized: "Share", bundle: .module), systemImage: "square.and.arrow.up")
+                Label(String(localized: "Share", bundle: #bundle), systemImage: "square.and.arrow.up")
             }
 #else
             // iOS 18 Bug: when the inspector is active/shown, ShareLink will not trigger the share sheet.
@@ -280,7 +287,7 @@ struct DocumentDetailsView: View {
             Button(role: .destructive) {
                 store.send(.onDeleteDocumentButtonTapped)
             } label: {
-                Label(String(localized: "Delete", bundle: .module), systemImage: "trash")
+                Label(String(localized: "Delete", bundle: #bundle), systemImage: "trash")
                     .foregroundColor(.red)
             }
         }

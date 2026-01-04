@@ -86,14 +86,14 @@ struct StatisticsView: View {
             VStack(spacing: 20) {
                 HStack(spacing: 12) {
                     StatCard(
-                        title: String(localized: "Total Documents", bundle: .module),
+                        title: String(localized: "Total Documents", bundle: #bundle),
                         systemImage: "doc.text.fill"
                     ) {
                         Text(store.totalDocuments, format: .number)
                     }
 
                     StatCard(
-                        title: String(localized: "Storage", bundle: .module),
+                        title: String(localized: "Storage", bundle: #bundle),
                         systemImage: "internaldrive.fill"
                     ) {
                         if store.totalStorageSize.value == 0 {
@@ -106,7 +106,7 @@ struct StatisticsView: View {
 
                 VStack(alignment: .leading, spacing: 24) {
                     Section {
-                        UntaggedDocumentsView(
+                        UntaggedDocumentsStatsView(
                             untaggedDocuments: store.untaggedDocuments,
                             size: .medium,
                             showActions: false

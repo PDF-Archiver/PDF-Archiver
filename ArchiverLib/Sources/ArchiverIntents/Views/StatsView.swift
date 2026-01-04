@@ -43,7 +43,7 @@ public struct StatsView: View {
         VStack(alignment: .leading) {
 
             HStack(alignment: .top) {
-                Text("Documents per year", bundle: .module)
+                Text("Documents per year", bundle: #bundle)
                     .minimumScaleFactor(0.8)
                     .foregroundStyle(.primary)
 
@@ -63,9 +63,9 @@ public struct StatsView: View {
 
             if yearStats.isEmpty {
                 ContentUnavailableView(
-                    String(localized: "No Documents", bundle: .module),
+                    String(localized: "No Documents", bundle: #bundle),
                     systemImage: "document",
-                    description: Text("Start adding documents to see your yearly statistics", bundle: .module)
+                    description: Text("Start adding documents to see your yearly statistics", bundle: #bundle)
                 )
             } else {
                 Chart(yearStats, id: \.self) { item in

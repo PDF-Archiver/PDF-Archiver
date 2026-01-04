@@ -1,12 +1,14 @@
 //
 //  NSItemProvider.swift
-//  
+//
 //
 //  Created by Julian Kahnert on 28.12.20.
 //
 
+import ArchiverModels
 import Foundation
 import PDFKit
+import Shared
 import UniformTypeIdentifiers
 #if os(macOS)
 import AppKit.NSImage
@@ -24,10 +26,11 @@ extension NSItemProvider {
     func saveData(at url: URL, with validUTIs: [UTType]) async throws -> Bool {
         var error: (any Error)?
         var data: Data?
+        var sourceURL: URL?
 
         for uti in validUTIs where hasItemConformingToTypeIdentifier(uti.identifier) {
             do {
-                data = try await getItem(for: uti)
+                (data, sourceURL) = try await getItem(for: uti)
             } catch let inputError {
                 error = inputError
             }
@@ -40,7 +43,15 @@ extension NSItemProvider {
                 try imageData.write(to: fileUrl)
                 return true
             } else if PDFDocument(data: data) != nil {
-                let fileUrl = url.appendingPathComponent(UUID().uuidString).appendingPathExtension("pdf")
+                // For PDFs, preserve filename only if it has valid structure with tags/description
+                let filename: String
+                if let originalFilename = sourceURL?.lastPathComponent,
+                   await Self.isValidTaggedFilename(originalFilename) {
+                    filename = originalFilename
+                } else {
+                    filename = UUID().uuidString + ".pdf"
+                }
+                let fileUrl = url.appendingPathComponent(filename)
                 try data.write(to: fileUrl)
                 return true
             }
@@ -53,26 +64,42 @@ extension NSItemProvider {
         return false
     }
 
-    private func getItem(for type: UTType) async throws -> Data? {
+    /// Validates if a filename has the correct PDF Archiver structure with date, description, and tags
+    private static func isValidTaggedFilename(_ filename: String) async -> Bool {
+        let parsed = await Document.parseFilename(filename)
+
+        // Valid if we have date, specification, and tags (all non-nil and non-empty)
+        guard parsed.date != nil,
+              let spec = parsed.specification,
+              !spec.isEmpty,
+              let tags = parsed.tagNames,
+              !tags.isEmpty else {
+            return false
+        }
+
+        return true
+    }
+
+    private func getItem(for type: UTType) async throws -> (Data?, URL?) {
         let rawData = try await loadItem(forTypeIdentifier: type.identifier)
 
         if let pathData = rawData as? Data,
            let path = String(data: pathData, encoding: .utf8),
            let url = URL(string: path),
            let inputData = Self.getDataIfValid(from: url) {
-            return inputData
+            return (inputData, url)
 
         } else if let url = rawData as? URL,
                   let inputData = Self.getDataIfValid(from: url) {
-            return inputData
+            return (inputData, url)
 
         } else if let inputData = Self.validate(rawData as? Data) {
-            return inputData
+            return (inputData, nil)
 
         } else if let image = rawData as? Image {
-            return image.jpg(quality: 1)
+            return (image.jpg(quality: 1), nil)
         } else {
-            return nil
+            return (nil, nil)
         }
     }
 

@@ -63,6 +63,7 @@ final class DeepDirectoryWatcherTests {
         }
 
         await confirmation("folder change", expectedCount: 1) { folderChange in
+            // swiftlint:disable:next force_unwrapping
             for await change in await watcher!.changedUrlStream {
                 #expect(change.standardizedFileURL == folderToRemove.deletingLastPathComponent().standardizedFileURL)
                 folderChange()
@@ -93,6 +94,7 @@ final class DeepDirectoryWatcherTests {
         }
 
         await confirmation("folder change", expectedCount: 2) { folderChange in
+            // swiftlint:disable:next force_unwrapping
             for await change in await watcher!.changedUrlStream {
                 #expect(change.standardizedFileURL == folderToRemove0.deletingLastPathComponent().standardizedFileURL || change.standardizedFileURL == folderToRemove1.deletingLastPathComponent().standardizedFileURL)
                 folderChange()
@@ -120,6 +122,7 @@ final class DeepDirectoryWatcherTests {
         }
 
         await confirmation("folder change", expectedCount: 1) { folderChange in
+            // swiftlint:disable:next force_unwrapping
             for await change in await watcher!.changedUrlStream {
                 #expect(change.standardizedFileURL == fileToRemove.deletingLastPathComponent().standardizedFileURL)
                 folderChange()
@@ -148,6 +151,7 @@ final class DeepDirectoryWatcherTests {
         }
 
         await confirmation("folder change", expectedCount: 1) { folderChange in
+            // swiftlint:disable:next force_unwrapping
             for await change in await watcher!.changedUrlStream {
                 #expect(change.standardizedFileURL == newFile.deletingLastPathComponent().standardizedFileURL)
                 folderChange()

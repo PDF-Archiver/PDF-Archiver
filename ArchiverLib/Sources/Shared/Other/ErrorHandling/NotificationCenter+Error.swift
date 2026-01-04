@@ -14,7 +14,7 @@ extension Notification.Name {
 
 extension NotificationCenter {
     public func postAlert(_ error: any Error, file: StaticString = #file, function: StaticString = #function, line: UInt = #line) {
-        let defaultTitle = LocalizedStringResource("An error occurred 😳", bundle: .module)
+        let defaultTitle = LocalizedStringResource("An error occurred 😳", bundle: #bundle)
 
         let alertDataModel: AlertDataModel
         if let error = error as? any LocalizedError {

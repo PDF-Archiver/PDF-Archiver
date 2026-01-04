@@ -43,10 +43,13 @@ struct UntaggedDocumentList {
                 if let selectedDocumentId = state.selectedDocumentId,
                    let document = Shared(state.$documents[id: selectedDocumentId]) {
                     state.documentDetails = .init(document: document)
+                    return .run { send in
+                        await send(.documentDetails(.presented(.updateShowInspector(true))))
+                    }
                 } else {
                     state.documentDetails = nil
+                    return .none
                 }
-                return .none
 
             case .binding:
                 return .none
@@ -68,9 +71,9 @@ struct UntaggedDocumentListView: View {
         Group {
             #if os(macOS)
             if store.untaggedDocuments.isEmpty {
-                ContentUnavailableView(String(localized: "No document", bundle: .module),
+                ContentUnavailableView(String(localized: "No document", bundle: #bundle),
                                        systemImage: "checkmark.seal",
-                                       description: Text("Congratulations! All documents are tagged. 🎉", bundle: .module))
+                                       description: Text("Congratulations! All documents are tagged. 🎉", bundle: #bundle))
             } else {
                 List(store.untaggedDocuments, selection: $store.selectedDocumentId) { document in
                     Text(document.url.lastPathComponent)
@@ -84,9 +87,9 @@ struct UntaggedDocumentListView: View {
                     store.send(.delegate(.onCancelIapButtonTapped))
                 }
             } else if store.untaggedDocuments.isEmpty {
-                ContentUnavailableView(String(localized: "No document", bundle: .module),
+                ContentUnavailableView(String(localized: "No document", bundle: #bundle),
                                        systemImage: "checkmark.seal",
-                                       description: Text("Congratulations! All documents are tagged. 🎉", bundle: .module))
+                                       description: Text("Congratulations! All documents are tagged. 🎉", bundle: #bundle))
             } else {
                 List(store.untaggedDocuments, selection: $store.selectedDocumentId) { document in
                     Text(document.url.lastPathComponent)

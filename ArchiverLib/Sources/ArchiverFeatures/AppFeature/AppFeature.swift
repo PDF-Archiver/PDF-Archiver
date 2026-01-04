@@ -7,6 +7,7 @@
 
 import ArchiverModels
 import ComposableArchitecture
+import OSLog
 import Shared
 import SwiftUI
 import TipKit
@@ -28,6 +29,15 @@ struct AppFeature {
         @Shared(.documents) var documents: IdentifiedArrayOf<Document> = []
         @Shared(.tutorialShown) var tutorialShown: Bool
         @Shared(.premiumStatus) var premiumStatus: PremiumStatus = .loading
+
+        @SharedReader(.appleIntelligenceEnabled)
+        var appleIntelligenceEnabled: Bool
+
+        @SharedReader(.appleIntelligenceCacheEnabled)
+        var cacheEnabled: Bool
+
+        @SharedReader(.appleIntelligenceCustomPrompt)
+        var customPrompt: String?
 
         var scenePhase: ScenePhase?
 
@@ -65,6 +75,7 @@ struct AppFeature {
     @Dependency(\.archiveStore) var archiveStore
     @Dependency(\.widgetStore) var widgetStore
     @Dependency(\.contentExtractorStore) var contentExtractorStore
+    @Dependency(\.textAnalyser) var textAnalyser
 
     var body: some ReducerOf<Self> {
         BindingReducer()
@@ -190,6 +201,7 @@ struct AppFeature {
                     top5Tags.prefix(3).map { ArchiveList.State.SearchToken.tag($0) },
                     years.prefix(3).map { ArchiveList.State.SearchToken.year($0) }
                 ].flatMap(\.self)
+                state.archiveList.searchSuggestedTokens = searchSuggestedTokens
 
                 // update the untagged documents
                 let untaggedDocuments = documents.filter(\Document.isTagged.flipped)
@@ -197,11 +209,9 @@ struct AppFeature {
 
                 let untaggedRemoteDocuments = untaggedDocuments.filter { !$0.isTagged && $0.downloadStatus == 0 }
 
-                // https://pointfreeco.github.io/swift-composable-architecture/main/documentation/composablearchitecture/performance/#Sharing-logic-in-child-features
                 return .concatenate(
-                    reduce(into: &state, action: .archiveList(.searchSuggestionsUpdated(searchSuggestedTokens))),
                     .send(.prefetchDocuments(untaggedRemoteDocuments)),
-                    .send(.updateWidget(documents)),
+                    .send(.updateWidget(documents))
                 )
 
             case .isLoadingChanged(let isLoading):
@@ -209,15 +219,19 @@ struct AppFeature {
                 return .none
 
             case .onLongBackgroundTask:
-                return .run { send in
+                return .run { [appleIntelligenceEnabled = state.appleIntelligenceEnabled, cacheEnabled = state.cacheEnabled, customPrompt = state.customPrompt] send in
                     await withTaskGroup(of: Void.self) { group in
                         group.addTask(priority: .background) {
                             // check the temp folder at startup for new documents
                             await documentProcessor.triggerFolderObservation()
-                        }
-                        group.addTask(priority: .background) {
-                            // prewarm the foundation model to improve performance for document content extraction
-                            await contentExtractorStore.prewarm()
+
+                            #if os(iOS)
+                            if #available(iOS 26, *) {
+                                // trigger task scheduling
+                                BackgroundTaskManager.registerTaskHandlers()
+                                BackgroundTaskManager.scheduleCacheProcessing()
+                            }
+                            #endif
                         }
                         group.addTask(priority: .medium) {
                             for await documents in await archiveStore.documentChanges() {
@@ -227,6 +241,24 @@ struct AppFeature {
                         group.addTask(priority: .medium) {
                             for await isLoading in await archiveStore.isLoading() {
                                 await send(.isLoadingChanged(isLoading))
+                            }
+                        }
+                        // Background cache processing for untagged documents
+                        if appleIntelligenceEnabled && cacheEnabled {
+                            group.addTask(priority: .background) {
+                                // Wait a bit before starting cache processing to let the app stabilize
+                                try? await Task.sleep(for: .seconds(10))
+
+                                do {
+                                    let documents = try await archiveStore.getDocuments()
+                                    _ = await contentExtractorStore.processUntaggedDocumentsInBackground(
+                                        documents,
+                                        textAnalyser.getTextFrom,
+                                        customPrompt
+                                    )
+                                } catch {
+                                    Logger.app.error("Failed to load documents for background cache processing: \(error)")
+                                }
                             }
                         }
                     }
@@ -240,7 +272,7 @@ struct AppFeature {
                    new == .active,
                    !state.isDocumentLoading {
                     return .run { _ in
-                        try await withThrowingTaskGroup(of: Void.self) { group in
+                        await withThrowingTaskGroup(of: Void.self) { group in
                             group.addTask(priority: .background) {
                                 await documentProcessor.triggerFolderObservation()
                             }
@@ -339,27 +371,42 @@ struct AppView: View {
 
     var body: some View {
         TabView(selection: $store.selectedTab) {
+            #if os(iOS)
             Tab(value: AppFeature.State.Tab.search, role: .search) {
                 archiveList
                     .modifier(ScanButtonModifier(showButton: store.showScanButton, currentTip: store.tutorialShown ? tips.currentTip : nil))
             }
+            #else
+            if #available(macOS 26, *) {
+                Tab(value: AppFeature.State.Tab.search, role: .search) {
+                    archiveList
+                        .modifier(ScanButtonModifier(showButton: store.showScanButton, currentTip: store.tutorialShown ? tips.currentTip : nil))
+                }
+            } else {
+                // old fallback solution
+                Tab(String(localized: "Archive", bundle: #bundle), systemImage: "magnifyingglass", value: AppFeature.State.Tab.search) {
+                    archiveList
+                        .modifier(ScanButtonModifier(showButton: store.showScanButton, currentTip: store.tutorialShown ? tips.currentTip : nil))
+                }
+            }
+            #endif
 
-            Tab(String(localized: "Inbox", bundle: .module), systemImage: "tray", value: AppFeature.State.Tab.inbox) {
+            Tab(String(localized: "Inbox", bundle: #bundle), systemImage: "tray", value: AppFeature.State.Tab.inbox) {
                 untaggedDocumentList
             }
             .badge(store.untaggedDocumentsCount)
 
-            Tab(String(localized: "Statistics", bundle: .module), systemImage: "chart.bar.xaxis", value: AppFeature.State.Tab.statistics) {
+            Tab(String(localized: "Statistics", bundle: #bundle), systemImage: "chart.bar.xaxis", value: AppFeature.State.Tab.statistics) {
                 StatisticsView(store: store.scope(state: \.statistics, action: \.statistics))
             }
 
             #if !os(macOS)
-            Tab(String(localized: "Settings", bundle: .module), systemImage: "gear", value: AppFeature.State.Tab.settings) {
+            Tab(String(localized: "Settings", bundle: #bundle), systemImage: "gear", value: AppFeature.State.Tab.settings) {
                 SettingsView(store: store.scope(state: \.settings, action: \.settings))
             }
             #endif
 
-            TabSection(String(localized: "Tags", bundle: .module)) {
+            TabSection(String(localized: "Tags", bundle: #bundle)) {
                 ForEach(store.tabTagSuggestions, id: \.self) { tag in
                     Tab(tag, systemImage: "tag", value: AppFeature.State.Tab.sectionTags(tag)) {
                         archiveList
@@ -369,7 +416,7 @@ struct AppView: View {
             .defaultVisibility(.hidden, for: .tabBar)
             .hidden(horizontalSizeClass == .compact)
 
-            TabSection("\(String(localized: "Years", bundle: .module))") {
+            TabSection("\(String(localized: "Years", bundle: #bundle))") {
                 ForEach(store.tabYearSuggestions, id: \.self) { year in
                     Tab("\(year, format: .number.grouping(.never))", systemImage: "calendar", value: AppFeature.State.Tab.sectionYears(year)) {
                         archiveList
@@ -391,7 +438,6 @@ struct AppView: View {
             content
             #endif
         }
-        .modifier(LoadingIndicatorModifier(isLoading: store.isDocumentLoading))
         .modifier(AlertDataModelProvider())
         .modifier(IAP(premiumStatus: $store.premiumStatus))
         .sheet(isPresented: $store.tutorialShown.flipped) {
@@ -417,14 +463,37 @@ struct AppView: View {
     private var archiveList: some View {
         NavigationStack {
             ArchiveListView(store: store.scope(state: \.archiveList, action: \.archiveList))
-                .navigationTitle(Text("Archive", bundle: .module))
+                .navigationTitle(Text("Archive", bundle: #bundle))
+                .toolbar {
+                    loadingIndicator
+                }
         }
     }
 
     private var untaggedDocumentList: some View {
         NavigationStack {
             UntaggedDocumentListView(store: store.scope(state: \.untaggedDocumentList, action: \.untaggedDocumentList))
-                .navigationTitle(Text("Inbox", bundle: .module))
+                .navigationTitle(Text("Inbox", bundle: #bundle))
+                .toolbar {
+                    loadingIndicator
+                }
+        }
+    }
+
+    @ToolbarContentBuilder
+    private var loadingIndicator: some ToolbarContent {
+        if store.isDocumentLoading {
+            #if os(macOS)
+            ToolbarItem(placement: .status) {
+                ProgressView()
+                    .frame(width: 32, height: 32)
+                    .controlSize(.small)
+            }
+            #else
+            ToolbarItem(placement: .automatic) {
+                ProgressView()
+            }
+            #endif
         }
     }
 }

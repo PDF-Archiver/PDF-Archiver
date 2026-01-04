@@ -8,7 +8,7 @@
 import Foundation
 
 /// Parse several kinds of dates in a String.
-public nonisolated enum DateParser: Log {
+nonisolated public enum DateParser: Log {
 
     private struct ParserResult: Codable {
         let date: Date
@@ -35,7 +35,7 @@ public nonisolated enum DateParser: Log {
                 .map(\.0)
         } else if let date = DateFormatter.yyyyMMdd.date(from: input) {
             return [date]
-        } else if let date = DateFormatter.yyyyMMdd.date(from: input.replacingOccurrences(of: "_", with: "-")) {
+        } else if let date = DateFormatter.yyyyMMdd.date(from: input.replacing("_", with: "-")) {
             return [date]
         } else {
             return []

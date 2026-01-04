@@ -17,9 +17,9 @@ struct IAPView: View {
         ScrollView {
             VStack(spacing: 30) {
                 VStack(spacing: 10) {
-                    Text("No Subscription", bundle: .module)
+                    Text("No Subscription", bundle: #bundle)
                         .font(.title)
-                    Text("Could not find a subscription or lifetime purchase. Please choose one of the options below to support the app development.", bundle: .module)
+                    Text("Could not find a subscription or lifetime purchase. Please choose one of the options below to support the app development.", bundle: #bundle)
                 }
 
                 features
@@ -38,7 +38,7 @@ struct IAPView: View {
                     }
                     HStack {
                         Spacer()
-                        Text("You get a 2-week free trial before all subscriptions.", bundle: .module)
+                        Text("You get a 2-week free trial before all subscriptions.", bundle: #bundle)
                             .foregroundStyle(.secondary)
                             .font(.caption)
                         Spacer()
@@ -75,9 +75,9 @@ struct IAPView: View {
         VStack(alignment: .center, spacing: 16) {
             HStack(spacing: 16) {
                 VStack(alignment: .leading, spacing: 6) {
-                    Label(String(localized: "Search PDFs", bundle: .module), systemImage: "magnifyingglass")
-                    Label(String(localized: "iCloud Sync", bundle: .module), systemImage: "cloud")
-                    Label(String(localized: "Open Source", bundle: .module), systemImage: "lock.open")
+                    Label(String(localized: "Search PDFs", bundle: #bundle), systemImage: "magnifyingglass")
+                    Label(String(localized: "iCloud Sync", bundle: #bundle), systemImage: "cloud")
+                    Label(String(localized: "Open Source", bundle: #bundle), systemImage: "lock.open")
                 }
                 .frame(maxWidth: 220, alignment: .leading)
                 .padding()
@@ -85,16 +85,16 @@ struct IAPView: View {
                 .cornerRadius(8)
 
                 VStack(alignment: .leading, spacing: 6) {
-                    Label(String(localized: "Scanner", bundle: .module), systemImage: "doc.text.viewfinder")
-                    Label(String(localized: "Searchable PDFs", bundle: .module), systemImage: "doc.text.magnifyingglass")
-                    Label(String(localized: "Tag PDFs", bundle: .module), systemImage: "tag")
+                    Label(String(localized: "Scanner", bundle: #bundle), systemImage: "doc.text.viewfinder")
+                    Label(String(localized: "Searchable PDFs", bundle: #bundle), systemImage: "doc.text.magnifyingglass")
+                    Label(String(localized: "Tag PDFs", bundle: #bundle), systemImage: "tag")
                 }
                 .frame(maxWidth: 220, alignment: .leading)
                 .padding()
                 .background(Color.paDarkGrayAsset.opacity(0.125))
                 .cornerRadius(8)
                 .overlay(alignment: .topTrailing) {
-                    Text("Premium", bundle: .module)
+                    Text("Premium", bundle: #bundle)
                         .padding(4)
                         .font(.footnote)
                         .foregroundColor(Color.paWhiteAsset)
@@ -108,7 +108,7 @@ struct IAPView: View {
             HStack(spacing: 8) {
                 Image(systemName: "heart.fill")
                     .foregroundColor(Color.paRedAsset)
-                Text("Support further development of a 1 person team.", bundle: .module)
+                Text("Support further development of a 1 person team.", bundle: #bundle)
                     .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: 250)
             }
@@ -128,7 +128,7 @@ struct IAPView: View {
                 }
             }
         } label: {
-            Text("Restore purchases", bundle: .module)
+            Text("Restore purchases", bundle: #bundle)
         }
         .buttonBorderShape(.capsule)
     }
@@ -137,7 +137,7 @@ struct IAPView: View {
         Button {
             onCancel()
         } label: {
-            Text("Cancel", bundle: .module)
+            Text("Cancel", bundle: #bundle)
         }
         .buttonBorderShape(.capsule)
     }

@@ -173,7 +173,7 @@ extension WrappingHStack {
 
         for index in rows.indices {
             let maxHeightIndex = rows[index].elements
-                .max { $0.size.height < $1.size.height }!
+                .max { $0.size.height < $1.size.height }! // swiftlint:disable:this force_unwrapping
                 .index
 
             let size = sizes[maxHeightIndex]

@@ -21,7 +21,6 @@ public extension NSImage {
         cgImage(forProposedRect: nil, context: nil, hints: nil)
     }
 }
-extension PlatformImage: @unchecked @retroactive Sendable {}
 #endif
 
 extension PlatformImage {

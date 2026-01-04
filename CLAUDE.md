@@ -2,6 +2,35 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Communication Style
+
+### Pull Requests and Issues
+- Keep PR descriptions **concise and bullet-pointed**
+- Use simple lists without elaborate explanations
+- Focus on what changed, not why (code should be self-explanatory)
+- No emoji (🤖 footer is acceptable)
+- Example format:
+  ```
+  ## Changes
+  - Removed background view from Share Extension
+  - Updated storyboard constraints
+  - Removed corner radius setup
+  ```
+
+### Commit Messages
+- Use conventional commits format: `feat:`, `fix:`, `refactor:`, etc.
+- Keep first line under 72 characters
+- Add brief bullet points in body if needed
+
+### Branch Naming
+- **Always** use `feature/` prefix for all branches
+- This applies to both new features and bug fixes
+- Example: `feature/fix-share-extension-crash`, `feature/add-dark-mode`, `feature/update-dependencies`
+
+### Code Comments
+- **ALL code comments MUST be in English**
+- No exceptions for any programming language files
+
 ## Project Overview
 
 PDF Archiver is a cross-platform (iOS/macOS) document management app that helps users organize and tag PDF documents using a specific naming convention: `yyyy-mm-dd--description__tag1_tag2.pdf`. The app supports both local and iCloud storage, with features like document scanning, OCR, tagging, and search.
@@ -90,7 +119,7 @@ The codebase uses Swift 6 strict concurrency:
 # Build iOS app
 xcodebuild -workspace PDFArchiver.xcworkspace \
            -scheme iOS \
-           -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
+           -destination 'platform=iOS Simulator,name=iPhone 17' \
            -configuration Debug \
            build
 
@@ -110,6 +139,36 @@ swift build
 swift build --triple arm64-apple-macosx      # Apple Silicon
 swift build --triple x86_64-apple-macosx     # Intel
 ```
+
+### Localization Workflow
+
+**CRITICAL**: Always check and update localizations before committing any code changes.
+
+```bash
+# 1. Build the project to update localization files
+xcodebuild -workspace PDFArchiver.xcworkspace \
+           -scheme iOS \
+           -destination 'platform=iOS Simulator,name=iPhone 17' \
+           -configuration Debug \
+           build
+
+# 2. Check for stale or missing translations
+# Look for "not translated" or outdated entries in:
+# - Shared/Resources/*.lproj/Localizable.strings
+# - Any .xcstrings files
+
+# 3. Fix all untranslated or stale localizations before committing
+
+# Common localization files to check:
+# - Shared/Resources/en.lproj/Localizable.strings
+# - Shared/Resources/de.lproj/Localizable.strings
+```
+
+**Before every commit:**
+1. Build the project with xcodebuild
+2. Check localization files for stale/untranslated strings
+3. Fix any localization issues
+4. Then commit
 
 ### Testing
 
@@ -138,6 +197,50 @@ swiftlint --fix
 ```
 
 SwiftLint configuration excludes `.build` directories and `Shared` folder. Notable opt-in rules include `force_unwrapping`, `sorted_imports`, and `multiline_parameters`.
+
+### Version Management
+
+**This project uses modern Xcode versioning** with centralized version numbers in Build Settings. Version numbers are stored in `project.pbxproj` and automatically propagated to all targets via variables in Info.plist files.
+
+#### Updating Versions
+
+**Via Xcode GUI (Recommended):**
+1. Select the project in Xcode
+2. Select a target (e.g. iOS)
+3. Go to Build Settings tab
+4. Search for "Versioning"
+5. Update `Marketing Version` (e.g. `4.4.0`) or `Current Project Version` (build number, e.g. `1`)
+6. Changes automatically apply to all targets
+
+**Via Command Line:**
+```bash
+# Update marketing version (e.g. 4.5.0)
+sed -i '' 's/MARKETING_VERSION = [^;]*;/MARKETING_VERSION = 4.5.0;/g' PDFArchiver.xcodeproj/project.pbxproj
+
+# Update build number (e.g. 2)
+sed -i '' 's/CURRENT_PROJECT_VERSION = [^;]*;/CURRENT_PROJECT_VERSION = 2;/g' PDFArchiver.xcodeproj/project.pbxproj
+```
+
+**Important:**
+- All Info.plist files use `$(MARKETING_VERSION)` and `$(CURRENT_PROJECT_VERSION)` variables
+- Do NOT use `agvtool` - it's incompatible with the modern variable-based approach
+- Version numbers are defined in Build Settings for each configuration (Debug/Release)
+
+### App Store Connect Version Management
+
+Use the `asc` CLI tool to manage app versions in App Store Connect:
+
+```bash
+# Update version with release notes (both languages required)
+asc version de.JulianKahnert.PDFArchiveViewer 4.4.0 --hint "{\"german\": \"<GERMAN_VERSION_HINT>\", \"english\": \"<ENGLISH_VERSION_HINT>\"}"
+
+# Example:
+# asc version de.JulianKahnert.PDFArchiveViewer 3.5.0 \
+#   --hint "{\"german\": \"Fehlerbehebungen und Verbesserungen\", \"english\": \"Bug fixes and improvements\"}"
+
+# List all apps in your account
+asc list-apps
+```
 
 ## Key Technical Decisions
 

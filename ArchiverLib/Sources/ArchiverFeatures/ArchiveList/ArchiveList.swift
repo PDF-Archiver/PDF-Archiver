@@ -57,29 +57,28 @@ struct ArchiveList {
             documents
                 .filter(\.isTagged)
                 .filter { document in
-                for searchToken in searchTokens {
-                    switch searchToken {
-                    case .tag(let tag):
-                        guard document.tags.contains(tag) else { return false }
-                    case .year(let int):
-                        guard document.url.lastPathComponent.hasPrefix("\(int)") else { return false }
-                    case .text(let text):
-                        guard document.url.lastPathComponent.contains(text) else { return false }
+                    for searchToken in searchTokens {
+                        switch searchToken {
+                        case .tag(let tag):
+                            guard document.tags.contains(tag) else { return false }
+                        case .year(let int):
+                            guard document.url.lastPathComponent.hasPrefix("\(int)") else { return false }
+                        case .text(let text):
+                            guard document.url.lastPathComponent.localizedCaseInsensitiveContains(text) else { return false }
+                        }
                     }
-                }
 
-                if !searchText.isEmpty {
-                    let newSearchText = searchText.slugified(withSeparator: "-").lowercased()
-                    return document.url.lastPathComponent.contains(newSearchText)
-                }
-                return true
+                    if !searchText.isEmpty {
+                        let newSearchText = searchText.slugified(withSeparator: "-")
+                        return document.url.lastPathComponent.localizedCaseInsensitiveContains(newSearchText)
+                    }
+                    return true
                 }
         }
     }
 
     enum Action: BindableAction {
         case binding(BindingAction<State>)
-        case searchSuggestionsUpdated([State.SearchToken])
         case documentDetails(PresentationAction<DocumentDetails.Action>)
         case searchStateChanged(Bool)
     }
@@ -90,10 +89,6 @@ struct ArchiveList {
         Reduce { state, action in
             switch action {
             case .documentDetails:
-                return .none
-
-            case .searchSuggestionsUpdated(let suggestions):
-                state.searchSuggestedTokens = suggestions
                 return .none
 
             case .searchStateChanged(let isSearching):
@@ -133,9 +128,9 @@ struct ArchiveListView: View {
         Group {
             if store.filteredDocuments.isEmpty {
                 if store.searchText.isEmpty {
-                    ContentUnavailableView(String(localized: "Empty Archive", bundle: .module),
+                    ContentUnavailableView(String(localized: "Empty Archive", bundle: #bundle),
                                            systemImage: "archivebox",
-                                           description: Text("Start scanning and tagging your first document.", bundle: .module))
+                                           description: Text("Start scanning and tagging your first document.", bundle: #bundle))
                     // fix the alignment of the ScanButton
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
@@ -160,7 +155,7 @@ struct ArchiveListView: View {
                     tokens: $store.searchTokens,
                     suggestedTokens: $store.searchSuggestedTokens,
 //                    placement: .toolbar,
-                    prompt: String(localized: "Search your documents", bundle: .module)) { token in
+                    prompt: String(localized: "Search your documents", bundle: #bundle)) { token in
             switch token {
             case .tag(let tag):
                 Label(tag, systemImage: "tag")

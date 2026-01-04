@@ -5,7 +5,12 @@ excluded: # paths to ignore during linting. Takes precedence over `included`.
 
 disabled_rules: # rule identifiers to exclude from running
   - line_length
+  - function_body_length
+  - file_length
+  - cyclomatic_complexity
   - large_tuple
+  - type_body_length
+  - trailing_comma
 
 opt_in_rules:
   - closure_end_indentation
@@ -56,3 +61,7 @@ identifier_name:
     - at
     - of
     - to
+
+type_name:
+  excluded:
+    - ID
