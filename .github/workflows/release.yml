@@ -2,17 +2,83 @@ name: GitHub Release
 
 on:
   push:
-    tags:
-      - "*"
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: read
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-      - name: Release
+        with:
+          fetch-depth: 0
+
+      - name: Check if release merge
+        id: check_release
+        run: |
+          # Get the commit message
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+
+          # Check if this is a merge from a release branch
+          if echo "$COMMIT_MSG" | grep -q "Merge.*release/"; then
+            # Extract version from branch name
+            VERSION=$(echo "$COMMIT_MSG" | grep -o 'release/[0-9]*\.[0-9]*\.[0-9]*' | sed 's/release\///' | head -1)
+
+            if [ -n "$VERSION" ]; then
+              echo "is_release=true" >> $GITHUB_OUTPUT
+              echo "version=$VERSION" >> $GITHUB_OUTPUT
+              echo "Found release version: $VERSION"
+            else
+              echo "is_release=false" >> $GITHUB_OUTPUT
+              echo "No version found in commit message"
+            fi
+          else
+            echo "is_release=false" >> $GITHUB_OUTPUT
+            echo "Not a release merge"
+          fi
+
+      - name: Get PR body
+        if: steps.check_release.outputs.is_release == 'true'
+        id: pr_body
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${{ steps.check_release.outputs.version }}"
+
+          # Find PR from release branch
+          PR_BODY=$(gh pr list --state merged --base main --head "release/$VERSION" --json body --jq '.[0].body')
+
+          if [ -z "$PR_BODY" ] || [ "$PR_BODY" = "null" ]; then
+            echo "No PR found for release/$VERSION, using default notes"
+            PR_BODY="Release $VERSION"
+          fi
+
+          # Save to output using multiline format
+          {
+            echo 'body<<EOF'
+            echo "$PR_BODY"
+            echo 'EOF'
+          } >> $GITHUB_OUTPUT
+
+      - name: Create tag
+        if: steps.check_release.outputs.is_release == 'true'
+        run: |
+          VERSION="${{ steps.check_release.outputs.version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "$VERSION" -m "Release $VERSION"
+          git push origin "$VERSION"
+
+      - name: Create GitHub Release
+        if: steps.check_release.outputs.is_release == 'true'
         uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.check_release.outputs.version }}
+          body: ${{ steps.pr_body.outputs.body }}
 
   bump-version:
     needs: build
@@ -26,14 +92,35 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Extract version from tag
+      - name: Check if release merge
+        id: check_release
+        run: |
+          # Get the commit message
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+
+          # Check if this is a merge from a release branch
+          if echo "$COMMIT_MSG" | grep -q "Merge.*release/"; then
+            # Extract version from branch name (macOS compatible)
+            VERSION=$(echo "$COMMIT_MSG" | grep -o 'release/[0-9]*\.[0-9]*\.[0-9]*' | sed 's/release\///' | head -1)
+
+            if [ -n "$VERSION" ]; then
+              echo "is_release=true" >> $GITHUB_OUTPUT
+              echo "current_version=$VERSION" >> $GITHUB_OUTPUT
+            else
+              echo "is_release=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "is_release=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Calculate next version
+        if: steps.check_release.outputs.is_release == 'true'
         id: version
         run: |
-          TAG_NAME=${GITHUB_REF#refs/tags/}
-          echo "tag=$TAG_NAME" >> $GITHUB_OUTPUT
+          CURRENT_VERSION="${{ steps.check_release.outputs.current_version }}"
 
           # Parse version (e.g., 4.4.0 -> next is 4.5.0)
-          IFS='.' read -ra VERSION_PARTS <<< "$TAG_NAME"
+          IFS='.' read -ra VERSION_PARTS <<< "$CURRENT_VERSION"
           MAJOR=${VERSION_PARTS[0]}
           MINOR=${VERSION_PARTS[1]}
           PATCH=${VERSION_PARTS[2]}
@@ -44,29 +131,33 @@ jobs:
           echo "next_version=$NEXT_VERSION" >> $GITHUB_OUTPUT
 
       - name: Create version bump branch
+        if: steps.check_release.outputs.is_release == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b feature/bump-version-${{ steps.version.outputs.next_version }}
 
       - name: Bump version in project
+        if: steps.check_release.outputs.is_release == 'true'
         run: |
           NEXT_VERSION="${{ steps.version.outputs.next_version }}"
           sed -i '' "s/MARKETING_VERSION = [^;]*;/MARKETING_VERSION = $NEXT_VERSION;/g" PDFArchiver.xcodeproj/project.pbxproj
 
       - name: Commit and push changes
+        if: steps.check_release.outputs.is_release == 'true'
         run: |
           git add PDFArchiver.xcodeproj/project.pbxproj
           git commit -m "chore: bump version to ${{ steps.version.outputs.next_version }}"
           git push origin feature/bump-version-${{ steps.version.outputs.next_version }}
 
       - name: Create pull request
+        if: steps.check_release.outputs.is_release == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh pr create \
             --title "chore: bump version to ${{ steps.version.outputs.next_version }}" \
-            --body "Automated version bump after release ${{ steps.version.outputs.tag }}
+            --body "Automated version bump after release ${{ steps.check_release.outputs.current_version }}
 
           ## Changes
           - Update MARKETING_VERSION to ${{ steps.version.outputs.next_version }}

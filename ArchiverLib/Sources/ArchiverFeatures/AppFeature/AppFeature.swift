@@ -371,10 +371,25 @@ struct AppView: View {
 
     var body: some View {
         TabView(selection: $store.selectedTab) {
+            #if os(iOS)
             Tab(value: AppFeature.State.Tab.search, role: .search) {
                 archiveList
                     .modifier(ScanButtonModifier(showButton: store.showScanButton, currentTip: store.tutorialShown ? tips.currentTip : nil))
             }
+            #else
+            if #available(macOS 26, *) {
+                Tab(value: AppFeature.State.Tab.search, role: .search) {
+                    archiveList
+                        .modifier(ScanButtonModifier(showButton: store.showScanButton, currentTip: store.tutorialShown ? tips.currentTip : nil))
+                }
+            } else {
+                // old fallback solution
+                Tab(String(localized: "Archive", bundle: #bundle), systemImage: "magnifyingglass", value: AppFeature.State.Tab.search) {
+                    archiveList
+                        .modifier(ScanButtonModifier(showButton: store.showScanButton, currentTip: store.tutorialShown ? tips.currentTip : nil))
+                }
+            }
+            #endif
 
             Tab(String(localized: "Inbox", bundle: #bundle), systemImage: "tray", value: AppFeature.State.Tab.inbox) {
                 untaggedDocumentList

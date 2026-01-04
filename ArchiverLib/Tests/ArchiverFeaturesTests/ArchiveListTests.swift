@@ -238,4 +238,150 @@ struct ArchiveListTests {
 
         #expect(state.filteredDocuments.count == 3)
     }
+
+    // MARK: - Case-Insensitive and Locale-Aware Search Tests
+
+    @Test
+    func searchTextCaseInsensitiveUppercase() async throws {
+        let doc1 = Document.mock(
+            url: URL(fileURLWithPath: "/tmp/2024-01-01--invoice__tag1.pdf"),
+            specification: "invoice",
+            isTagged: true
+        )
+        let doc2 = Document.mock(
+            url: URL(fileURLWithPath: "/tmp/2024-01-01--receipt__tag1.pdf"),
+            specification: "receipt",
+            isTagged: true
+        )
+
+        let state = ArchiveList.State(documents: [doc1, doc2], searchText: "INVOICE")
+
+        #expect(state.filteredDocuments.count == 1)
+        #expect(state.filteredDocuments.first?.id == doc1.id)
+    }
+
+    @Test
+    func searchTextCaseInsensitiveMixedCase() async throws {
+        let doc1 = Document.mock(
+            url: URL(fileURLWithPath: "/tmp/2024-01-01--invoice__tag1.pdf"),
+            specification: "invoice",
+            isTagged: true
+        )
+        let doc2 = Document.mock(
+            url: URL(fileURLWithPath: "/tmp/2024-01-01--receipt__tag1.pdf"),
+            specification: "receipt",
+            isTagged: true
+        )
+
+        let state = ArchiveList.State(documents: [doc1, doc2], searchText: "InVoIcE")
+
+        #expect(state.filteredDocuments.count == 1)
+        #expect(state.filteredDocuments.first?.id == doc1.id)
+    }
+
+    @Test
+    func searchTokenTextCaseInsensitive() async throws {
+        let doc1 = Document.mock(
+            url: URL(fileURLWithPath: "/tmp/2024-01-01--important-document__tag1.pdf"),
+            specification: "important-document",
+            isTagged: true
+        )
+        let doc2 = Document.mock(
+            url: URL(fileURLWithPath: "/tmp/2024-01-01--other-file__tag1.pdf"),
+            specification: "other-file",
+            isTagged: true
+        )
+
+        let state = ArchiveList.State(
+            documents: [doc1, doc2],
+            searchTokens: [.text("IMPORTANT")]
+        )
+
+        #expect(state.filteredDocuments.count == 1)
+        #expect(state.filteredDocuments.first?.id == doc1.id)
+    }
+
+    @Test
+    func searchTextWithGermanUmlaut() async throws {
+        // Filenames use slugified format: "ü" -> "ue", "ö" -> "oe"
+        let doc1 = Document.mock(
+            url: URL(fileURLWithPath: "/tmp/2024-01-01--rechnung-fuer-buero__tag1.pdf"),
+            specification: "rechnung-fuer-buero",
+            isTagged: true
+        )
+        let doc2 = Document.mock(
+            url: URL(fileURLWithPath: "/tmp/2024-01-01--invoice__tag1.pdf"),
+            specification: "invoice",
+            isTagged: true
+        )
+
+        // User searches with umlaut, which gets converted to "buero"
+        let state = ArchiveList.State(documents: [doc1, doc2], searchText: "büro")
+
+        #expect(state.filteredDocuments.count == 1)
+        #expect(state.filteredDocuments.first?.id == doc1.id)
+    }
+
+    @Test
+    func searchTextWithGermanUmlautCaseInsensitive() async throws {
+        // Filenames use slugified format: "ü" -> "ue", "ö" -> "oe"
+        let doc1 = Document.mock(
+            url: URL(fileURLWithPath: "/tmp/2024-01-01--rechnung-fuer-buero__tag1.pdf"),
+            specification: "rechnung-fuer-buero",
+            isTagged: true
+        )
+        let doc2 = Document.mock(
+            url: URL(fileURLWithPath: "/tmp/2024-01-01--invoice__tag1.pdf"),
+            specification: "invoice",
+            isTagged: true
+        )
+
+        // User searches with uppercase umlaut, which gets converted to "BUERO"
+        let state = ArchiveList.State(documents: [doc1, doc2], searchText: "BÜRO")
+
+        #expect(state.filteredDocuments.count == 1)
+        #expect(state.filteredDocuments.first?.id == doc1.id)
+    }
+
+    @Test
+    func searchTextPartialMatch() async throws {
+        let doc1 = Document.mock(
+            url: URL(fileURLWithPath: "/tmp/2024-01-01--important-invoice__tag1.pdf"),
+            specification: "important-invoice",
+            isTagged: true
+        )
+        let doc2 = Document.mock(
+            url: URL(fileURLWithPath: "/tmp/2024-01-01--receipt__tag1.pdf"),
+            specification: "receipt",
+            isTagged: true
+        )
+
+        let state = ArchiveList.State(documents: [doc1, doc2], searchText: "port")
+
+        #expect(state.filteredDocuments.count == 1)
+        #expect(state.filteredDocuments.first?.id == doc1.id)
+    }
+
+    @Test
+    func searchTokenWithSpaces() async throws {
+        let doc1 = Document.mock(
+            url: URL(fileURLWithPath: "/tmp/2024-01-01--my-important-document__tag1.pdf"),
+            specification: "my-important-document",
+            isTagged: true
+        )
+        let doc2 = Document.mock(
+            url: URL(fileURLWithPath: "/tmp/2024-01-01--other-file__tag1.pdf"),
+            specification: "other-file",
+            isTagged: true
+        )
+
+        // Search text with spaces should be slugified and match hyphenated filenames
+        let state = ArchiveList.State(
+            documents: [doc1, doc2],
+            searchText: "my important"
+        )
+
+        #expect(state.filteredDocuments.count == 1)
+        #expect(state.filteredDocuments.first?.id == doc1.id)
+    }
 }

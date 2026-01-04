@@ -10,6 +10,7 @@ disabled_rules: # rule identifiers to exclude from running
   - cyclomatic_complexity
   - large_tuple
   - type_body_length
+  - trailing_comma
 
 opt_in_rules:
   - closure_end_indentation
