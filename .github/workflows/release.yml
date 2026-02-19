@@ -41,29 +41,6 @@ jobs:
             echo "Not a release merge"
           fi
 
-      - name: Get PR body
-        if: steps.check_release.outputs.is_release == 'true'
-        id: pr_body
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          VERSION="${{ steps.check_release.outputs.version }}"
-
-          # Find PR from release branch
-          PR_BODY=$(gh pr list --state merged --base main --head "release/$VERSION" --json body --jq '.[0].body')
-
-          if [ -z "$PR_BODY" ] || [ "$PR_BODY" = "null" ]; then
-            echo "No PR found for release/$VERSION, using default notes"
-            PR_BODY="Release $VERSION"
-          fi
-
-          # Save to output using multiline format
-          {
-            echo 'body<<EOF'
-            echo "$PR_BODY"
-            echo 'EOF'
-          } >> $GITHUB_OUTPUT
-
       - name: Create tag
         if: steps.check_release.outputs.is_release == 'true'
         run: |
@@ -73,12 +50,36 @@ jobs:
           git tag -a "$VERSION" -m "Release $VERSION"
           git push origin "$VERSION"
 
+      - name: Generate release notes
+        if: steps.check_release.outputs.is_release == 'true'
+        id: release_notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${{ steps.check_release.outputs.version }}"
+          PREV_TAG=$(git tag --sort=-v:refname | grep -A1 "^$TAG$" | tail -1)
+
+          if [ -n "$PREV_TAG" ] && [ "$PREV_TAG" != "$TAG" ]; then
+            NOTES=$(gh api repos/${{ github.repository }}/releases/generate-notes \
+              -f tag_name="$TAG" \
+              -f previous_tag_name="$PREV_TAG" \
+              --jq '.body')
+          else
+            NOTES="Release $TAG"
+          fi
+
+          {
+            echo 'body<<EOF'
+            echo "$NOTES"
+            echo 'EOF'
+          } >> $GITHUB_OUTPUT
+
       - name: Create GitHub Release
         if: steps.check_release.outputs.is_release == 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.check_release.outputs.version }}
-          body: ${{ steps.pr_body.outputs.body }}
+          body: ${{ steps.release_notes.outputs.body }}
 
   bump-version:
     needs: build
