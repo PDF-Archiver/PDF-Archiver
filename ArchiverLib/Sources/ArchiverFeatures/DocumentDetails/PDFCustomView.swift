@@ -13,6 +13,7 @@ import SwiftUI
 // Identifier for annotations added by this feature
 private let dateHighlightAnnotationKey = "pa-date-highlight"
 
+@MainActor
 private func addDateHighlightAnnotations(to pdfView: PDFView, date: Date?) {
     guard let document = pdfView.document else { return }
 
@@ -36,10 +37,22 @@ private func addDateHighlightAnnotations(to pdfView: PDFView, date: Date?) {
             for page in selection.pages {
                 let bounds = selection.bounds(for: page)
                 guard bounds.width > 0, bounds.height > 0 else { continue }
-                let annotation = PDFAnnotation(bounds: bounds, forType: .highlight, withProperties: nil)
-                annotation.color = .yellow.withAlphaComponent(0.4)
-                annotation.userName = dateHighlightAnnotationKey
-                page.addAnnotation(annotation)
+                // Highlight annotation
+                let highlight = PDFAnnotation(bounds: bounds, forType: .highlight, withProperties: nil)
+                highlight.color = .yellow.withAlphaComponent(0.4)
+                highlight.userName = dateHighlightAnnotationKey
+                page.addAnnotation(highlight)
+
+                // Border annotation
+                let borderBounds = bounds.insetBy(dx: -2, dy: -2)
+                let border = PDFAnnotation(bounds: borderBounds, forType: .square, withProperties: nil)
+                border.color = .init(red: 0.8, green: 0.7, blue: 0.0, alpha: 0.7)
+                let pdfBorder = PDFBorder()
+                pdfBorder.lineWidth = 1
+                border.border = pdfBorder
+                border.interiorColor = nil
+                border.userName = dateHighlightAnnotationKey
+                page.addAnnotation(border)
                 foundMatch = true
             }
         }
@@ -55,9 +68,11 @@ private func dateSearchStrings(for date: Date) -> [String] {
           let month = components.month,
           let day = components.day else { return [] }
 
+    // swiftlint:disable identifier_name
     let dd = String(format: "%02d", day)
     let mm = String(format: "%02d", month)
     let yyyy = String(format: "%04d", year)
+    // swiftlint:enable identifier_name
 
     // yyyy-MM-dd (ISO format, used by the app's naming convention)
     results.append("\(yyyy)-\(mm)-\(dd)")
