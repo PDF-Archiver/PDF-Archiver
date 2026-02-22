@@ -8,6 +8,7 @@
 #if os(iOS)
 import BackgroundTasks
 import ComposableArchitecture
+import DocumentProcessingPipeline
 import Foundation
 import OSLog
 import Shared
@@ -24,8 +25,8 @@ public actor BackgroundTaskManager: Log {
 
     private static let scheduler = BGTaskScheduler.shared
 
-    @Dependency(\.contentExtractorStore) var contentExtractorStore
     @Dependency(\.archiveStore) var archiveStore
+    @Dependency(\.documentProcessingPipeline) var documentProcessingPipeline
     @Dependency(\.textAnalyser) var textAnalyser
     @SharedReader(.appleIntelligenceCustomPrompt) var customPrompt: String?
     @SharedReader(.backgroundCacheNotificationsEnabled) var shouldNotify: Bool
@@ -77,11 +78,13 @@ public actor BackgroundTaskManager: Log {
 
         do {
             let documents = try await archiveStore.getDocuments()
-            let newCachesCreated = await contentExtractorStore.processUntaggedDocumentsInBackground(
-                documents,
-                textAnalyser.getTextFrom,
-                customPrompt
+            let context = DocumentProcessingContext(
+                documents: documents,
+                textExtractor: textAnalyser.getTextFrom,
+                customPrompt: customPrompt
             )
+            let results = await documentProcessingPipeline.run(context)
+            let totalProcessed = results.reduce(0) { $0 + $1.documentsProcessed }
 
             let processingDuration = Date().timeIntervalSince(startTime)
 
@@ -89,7 +92,7 @@ public actor BackgroundTaskManager: Log {
                 // Show local notification on success
                 let duration = Duration.seconds(processingDuration)
                 let durationText = duration.formatted(.units(width: .wide))
-                let body = "Created \(newCachesCreated) new cache\(newCachesCreated == 1 ? "" : "s") in \(durationText)."
+                let body = "Processed \(totalProcessed) document\(totalProcessed == 1 ? "" : "s") in \(durationText)."
                 await UNUserNotificationCenter.current().showLocalNotification(
                     title: "Processing Completed",
                     body: body
@@ -97,7 +100,7 @@ public actor BackgroundTaskManager: Log {
             }
 
             task.setTaskCompleted(success: true)
-            Logger.backgroundTask.info("Background cache processing completed: \(newCachesCreated) caches in \(processingDuration)s")
+            Logger.backgroundTask.info("Background processing completed: \(totalProcessed) documents in \(processingDuration)s")
         } catch {
             Logger.backgroundTask.error("Background cache processing failed: \(error)")
 
@@ -105,7 +108,7 @@ public actor BackgroundTaskManager: Log {
                 // Show local notification on failure
                 await UNUserNotificationCenter.current().showLocalNotification(
                     title: "Processing Failed",
-                    body: "Apple Intelligence cache processing failed: \(error.localizedDescription)"
+                    body: "Background processing failed: \(error.localizedDescription)"
                 )
             }
 

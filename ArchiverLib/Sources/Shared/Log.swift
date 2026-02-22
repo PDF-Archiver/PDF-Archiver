@@ -32,6 +32,7 @@ nonisolated public extension Logger {
     static let backgroundTask = Logger(subsystem: subsystem, category: "background-task")
     static let contentExtractor = Logger(subsystem: subsystem, category: "content-extractor")
     static let documentProcessing = Logger(subsystem: subsystem, category: "document-processing")
+    static let processingPipeline = Logger(subsystem: subsystem, category: "processing-pipeline")
     static let inAppPurchase = Logger(subsystem: subsystem, category: "in-app-purchase")
     static let navigationModel = Logger(subsystem: subsystem, category: "navigation-model")
     static let newDocument = Logger(subsystem: subsystem, category: "new-document")

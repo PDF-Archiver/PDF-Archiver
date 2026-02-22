@@ -27,6 +27,9 @@ struct ExpertSettings {
 
         @Shared(.multiTagSelectionDelayEnabled)
         var multiTagSelectionDelayEnabled: Bool
+
+        @Shared(.ocrEnabled)
+        var ocrEnabled: Bool
     }
 
     enum Action: BindableAction, Equatable {
@@ -98,6 +101,7 @@ struct ExpertSettingsView: View {
             Toggle(String(localized: "Require Document Tags", bundle: #bundle), isOn: $store.documentTagsNotRequired.flipped)
             Toggle(String(localized: "Require Document Specification", bundle: #bundle), isOn: $store.documentSpecificationNotRequired.flipped)
             Toggle(String(localized: "Multi-Tag Selection Delay", bundle: #bundle), isOn: $store.multiTagSelectionDelayEnabled)
+            Toggle(String(localized: "Automatic OCR for Image PDFs", bundle: #bundle), isOn: $store.ocrEnabled)
             #if !os(macOS)
             Button {
                 store.send(.onShowPermissionsTapped)

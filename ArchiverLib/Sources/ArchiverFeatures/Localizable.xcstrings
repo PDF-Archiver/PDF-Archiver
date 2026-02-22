@@ -843,6 +843,17 @@
         }
       }
     },
+    "Automatic OCR for Image PDFs" : {
+      "comment" : "Toggle to enable automatic text recognition (OCR) for scanned PDFs without a text layer",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatische OCR für Bild-PDFs"
+          }
+        }
+      }
+    },
     "Multi-Tag Selection Delay" : {
       "comment" : "Toggle to enable/disable a 2-second delay after selecting a tag suggestion before new suggestions are loaded",
       "localizations" : {
