@@ -7,6 +7,7 @@
 
 import ArchiverModels
 import ComposableArchitecture
+import DocumentProcessingPipeline
 import Shared
 import SwiftUI
 
@@ -61,6 +62,7 @@ struct DocumentDetails {
     }
 
     @Dependency(\.archiveStore.startDownloadOf) var startDownloadOf
+    @Dependency(\.documentProcessingPipeline) var documentProcessingPipeline
     var body: some ReducerOf<Self> {
         Scope(state: \.documentInformationForm, action: \.showDocumentInformationForm) {
             DocumentInformationForm()
@@ -124,6 +126,11 @@ struct DocumentDetails {
                     url: state.document.url)
                 return .none
 #endif
+
+            case .showDocumentInformationForm(.delegate(.triggerManualOCR)):
+                return .run { [document = state.document] _ in
+                    _ = await documentProcessingPipeline.runOCROnDocument(document)
+                }
 
             case .showDocumentInformationForm:
                 return .none

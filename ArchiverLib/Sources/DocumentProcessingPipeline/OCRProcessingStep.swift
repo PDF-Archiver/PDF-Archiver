@@ -241,4 +241,24 @@ public struct OCRProcessingStep: DocumentProcessingStep, Sendable {
         document.write(to: tempURL)
         _ = try FileManager.default.replaceItemAt(originalURL, withItemAt: tempURL)
     }
+
+    // MARK: - Manual OCR
+
+    /// Run OCR on a single document regardless of the `ocrEnabled` setting or tagged status.
+    /// Returns `true` if the file was modified.
+    public func performOCROnDocument(_ document: Document) async -> Bool {
+        guard document.downloadStatus == 1 else { return false }
+        let url = document.url
+        guard let pdfDocument = PDFDocument(url: url) else { return false }
+        if pdfHasText(pdfDocument) { return false }
+        guard let ocrDocument = await performOCR(on: pdfDocument) else { return false }
+        do {
+            try replaceFile(at: url, with: ocrDocument)
+            Logger.processingPipeline.info("Manual OCR completed for: \(url.lastPathComponent)")
+            return true
+        } catch {
+            Logger.processingPipeline.error("Manual OCR file replacement failed for \(url.lastPathComponent): \(error)")
+            return false
+        }
+    }
 }

@@ -141,6 +141,17 @@
         }
       }
     },
+    "Add OCR" : {
+      "comment" : "Button to manually trigger OCR on a PDF with no text layer",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OCR hinzufügen"
+          }
+        }
+      }
+    },
     "Advanced" : {
       "localizations" : {
         "de" : {
@@ -919,6 +930,28 @@
         }
       }
     },
+    "No text layer" : {
+      "comment" : "Title shown in popover when the PDF has no searchable text layer",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Text gefunden"
+          }
+        }
+      }
+    },
+    "Not searchable" : {
+      "comment" : "Label on the text-layer status badge when the PDF has no embedded text",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht durchsuchbar"
+          }
+        }
+      }
+    },
     "Not synchronized - your documents are only stored locally in this app. They can be transferred via the Finder on a Mac, for example." : {
       "localizations" : {
         "de" : {
@@ -1237,6 +1270,17 @@
         }
       }
     },
+    "Searchable" : {
+      "comment" : "Label on the text-layer status badge when the PDF has an embedded text layer",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Durchsuchbar"
+          }
+        }
+      }
+    },
     "Searchable PDFs" : {
       "localizations" : {
         "de" : {
@@ -1439,12 +1483,45 @@
         }
       }
     },
+    "Text layer present" : {
+      "comment" : "Title shown in popover when the PDF has a searchable text layer",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text vorhanden"
+          }
+        }
+      }
+    },
     "The document will be downloaded to your device. Please wait." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Das Dokument wird heruntergeladen. Bitte warte."
+          }
+        }
+      }
+    },
+    "This PDF contains a text layer and is fully searchable." : {
+      "comment" : "Explanation shown in popover when PDF has a text layer",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese PDF enthält eine Textebene und kann vollständig durchsucht werden."
+          }
+        }
+      }
+    },
+    "This PDF contains no searchable text. OCR can add a text layer." : {
+      "comment" : "Explanation shown in popover when PDF has no text layer",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese PDF enthält keinen durchsuchbaren Text. OCR kann eine Textebene hinzufügen."
           }
         }
       }
