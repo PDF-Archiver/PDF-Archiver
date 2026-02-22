@@ -9,13 +9,13 @@ assignees: ''
 
 ## Features
 
-<!-- Stichpunktartige Beschreibung der Features -->
+<!-- Bullet-point summary of each deliverable -->
 
 -
 
 ## Problem Description
 
-<!-- Detailliertere Beschreibung ggf. des ursprünglichen Problems -->
+<!-- Detailed description of the underlying problem -->
 
 ## Implementation Plan
 
