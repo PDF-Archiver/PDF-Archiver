@@ -20,9 +20,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Feature Issues
 - **Always** use the feature issue template at `.github/ISSUE_TEMPLATE/feature_request.md` when creating or editing feature/enhancement issues
 - The template structure is:
-  1. **Features** — bulleted list of deliverables (what the user/developer will see or do)
-  2. **Problem Description** — current limitation or pain point
-  3. **Implementation Plan** — overview, affected components table, numbered steps, testing strategy, potential risks
+  1. **Features** — stichpunktartige Beschreibung der Features
+  2. **Problem Description** — detailliertere Beschreibung des ursprünglichen Problems
+  3. **Implementation Plan** — overview, affected components table, numbered steps
 
 ### Commit Messages
 - Use conventional commits format: `feat:`, `fix:`, `refactor:`, etc.
