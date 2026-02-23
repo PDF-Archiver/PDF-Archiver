@@ -30,6 +30,9 @@ struct ExpertSettings {
 
         @Shared(.ocrEnabled)
         var ocrEnabled: Bool
+
+        @Shared(.highlightDetectedDateEnabled)
+        var highlightDetectedDateEnabled: Bool
     }
 
     enum Action: BindableAction, Equatable {
@@ -102,6 +105,7 @@ struct ExpertSettingsView: View {
             Toggle(String(localized: "Require Document Specification", bundle: #bundle), isOn: $store.documentSpecificationNotRequired.flipped)
             Toggle(String(localized: "Multi-Tag Selection Delay", bundle: #bundle), isOn: $store.multiTagSelectionDelayEnabled)
             Toggle(String(localized: "Automatic OCR for Image PDFs", bundle: #bundle), isOn: $store.ocrEnabled)
+            Toggle(String(localized: "Highlight Detected Date", bundle: #bundle), isOn: $store.highlightDetectedDateEnabled)
             #if !os(macOS)
             Button {
                 store.send(.onShowPermissionsTapped)

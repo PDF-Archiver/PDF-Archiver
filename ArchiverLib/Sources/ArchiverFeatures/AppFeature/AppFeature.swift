@@ -354,6 +354,8 @@ struct AppFeature {
         } else {
             if let nextDocument {
                 state.untaggedDocumentList.documentDetails = .init(document: Shared(value: nextDocument))
+                // always show the inspector when the document is not tagged
+                state.untaggedDocumentList.documentDetails?.showInspector = true
             } else {
                 state.untaggedDocumentList.documentDetails = nil
             }
