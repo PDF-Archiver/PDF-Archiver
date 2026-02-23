@@ -84,7 +84,6 @@ struct DocumentInformationForm {
         case onTagSuggestionTapped(String)
         case onTask
         case onTodayButtonTapped
-        case onTriggerManualOCR
         case startUpdatingAllSuggestionsWithAI(URL)
         case startUpdatingTagSuggestions
         case updateDocumentData(DocumentParsingResult)
@@ -94,7 +93,6 @@ struct DocumentInformationForm {
 
         enum Delegate: Equatable {
             case saveDocument(Document, shouldUpdatePdfMetadata: Bool)
-            case triggerManualOCR
         }
     }
 
@@ -120,9 +118,6 @@ struct DocumentInformationForm {
 
             case .delegate:
                 return .none
-
-            case .onTriggerManualOCR:
-                return .send(.delegate(.triggerManualOCR))
 
             case .onSaveButtonTapped:
                 let nothingChanged = state.initialDocument.date == state.document.date && state.initialDocument.specification == state.document.specification && state.initialDocument.tags == state.document.tags
@@ -396,12 +391,6 @@ struct DocumentInformationFormView: View {
             }
 
             documentTagsSection
-
-            Section {
-                TextLayerStatusView(documentURL: store.document.url) {
-                    store.send(.onTriggerManualOCR)
-                }
-            }
 
             Section {
                 #if os(macOS)

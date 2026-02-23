@@ -7,7 +7,6 @@
 
 import ArchiverModels
 import ComposableArchitecture
-import DocumentProcessingPipeline
 import Shared
 import SwiftUI
 
@@ -65,7 +64,6 @@ struct DocumentDetails {
     }
 
     @Dependency(\.archiveStore.startDownloadOf) var startDownloadOf
-    @Dependency(\.documentProcessingPipeline) var documentProcessingPipeline
     var body: some ReducerOf<Self> {
         Scope(state: \.documentInformationForm, action: \.showDocumentInformationForm) {
             DocumentInformationForm()
@@ -130,11 +128,6 @@ struct DocumentDetails {
                 return .none
 #endif
 
-            case .showDocumentInformationForm(.delegate(.triggerManualOCR)):
-                return .run { [document = state.document] _ in
-                    _ = await documentProcessingPipeline.runOCROnDocument(document)
-                }
-
             case .showDocumentInformationForm:
                 return .none
 
@@ -149,6 +142,7 @@ struct DocumentDetails {
 
 struct DocumentDetailsView: View {
     @Bindable var store: StoreOf<DocumentDetails>
+    @SharedReader(.ocrEnabled) private var ocrEnabled: Bool
 
     var body: some View {
         Group {
@@ -229,6 +223,12 @@ struct DocumentDetailsView: View {
 #endif
                 }
 
+                if ocrEnabled, store.document.downloadStatus >= 1 {
+                    ToolbarItem(id: "textLayerStatus") {
+                        TextLayerStatusView(documentURL: store.document.url)
+                    }
+                }
+
                 ToolbarSpacer()
 
                 ToolbarItem(id: "delete") {
@@ -292,6 +292,10 @@ struct DocumentDetailsView: View {
             // So we use the workaround with ShareSheet instead.
             ShareLink(Text(store.document.filename), item: store.document.url)
 #endif
+
+            if ocrEnabled, store.document.downloadStatus >= 1 {
+                TextLayerStatusView(documentURL: store.document.url)
+            }
 
             // deleteButton
             Button(role: .destructive) {
