@@ -98,13 +98,8 @@ struct TextLayerStatusView: View {
 
     private func checkTextLayer(url: URL) -> Bool {
         guard let pdf = PDFDocument(url: url) else { return false }
-        for pageIndex in 0..<min(pdf.pageCount, 3) {
-            if let page = pdf.page(at: pageIndex),
-               let text = page.string,
-               !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                return true
-            }
+        return (0..<min(pdf.pageCount, 3)).contains {
+            pdf.page(at: $0)?.string?.isEmpty == false
         }
-        return false
     }
 }
