@@ -152,7 +152,7 @@ struct DocumentDetailsView: View {
                     }
 
             } else {
-                PDFCustomView(store.document.url, highlightDate: store.highlightDetectedDateEnabled ? store.document.date : nil)
+                PDFCustomView(store.document.url, highlightDate: store.highlightDetectedDateEnabled ? store.documentInformationForm.document.date : nil)
                     .ignoresSafeArea(edges: [.bottom, .top])
                     .inspector(isPresented: $store.showInspector) {
                         DocumentInformationFormView(store: store.scope(state: \.documentInformationForm, action: \.showDocumentInformationForm))
