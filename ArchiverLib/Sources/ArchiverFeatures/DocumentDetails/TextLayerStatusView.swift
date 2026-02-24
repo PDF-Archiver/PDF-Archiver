@@ -11,6 +11,7 @@ import SwiftUI
 
 struct TextLayerStatusView: View {
     let documentURL: URL
+    var onTriggerOCR: (() -> Void)? = nil
 
     @State private var hasTextLayer: Bool?
     @State private var showPopover = false
@@ -56,6 +57,15 @@ struct TextLayerStatusView: View {
 
                     Text("This PDF contains a text layer and is fully searchable.", bundle: #bundle)
                         .font(.body)
+
+                    HStack {
+                        Spacer()
+                        Button(String(localized: "OK", bundle: #bundle)) {
+                            showPopover = false
+                        }
+                        .buttonStyle(.bordered)
+                        Spacer()
+                    }
                 } else {
                     Label(
                         String(localized: "No text layer", bundle: #bundle),
@@ -66,15 +76,30 @@ struct TextLayerStatusView: View {
 
                     Text("This PDF contains no searchable text. OCR can add a text layer.", bundle: #bundle)
                         .font(.body)
-                }
 
-                HStack {
-                    Spacer()
-                    Button(String(localized: "OK", bundle: #bundle)) {
-                        showPopover = false
+                    if let onTriggerOCR {
+                        HStack {
+                            Button(String(localized: "Add OCR", bundle: #bundle)) {
+                                showPopover = false
+                                onTriggerOCR()
+                            }
+                            .buttonStyle(.borderedProminent)
+
+                            Button(String(localized: "Cancel", bundle: #bundle), role: .cancel) {
+                                showPopover = false
+                            }
+                            .buttonStyle(.bordered)
+                        }
+                    } else {
+                        HStack {
+                            Spacer()
+                            Button(String(localized: "OK", bundle: #bundle)) {
+                                showPopover = false
+                            }
+                            .buttonStyle(.bordered)
+                            Spacer()
+                        }
                     }
-                    .buttonStyle(.bordered)
-                    Spacer()
                 }
             }
             .padding()

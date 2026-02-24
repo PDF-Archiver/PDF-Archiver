@@ -136,6 +136,10 @@ struct AppFeature {
                     return .run { _ in
                         try await archiveStore.saveDocument(document, shouldUpdatePdfMetadata)
                     }
+
+                case .triggerManualOCR:
+                    // Handled by DocumentDetails reducer
+                    return .none
                 }
 
             case .archiveList:
