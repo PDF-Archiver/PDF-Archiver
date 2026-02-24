@@ -32,6 +32,9 @@ struct DocumentDetails {
         var shareDocument: ShareData?
 #endif
 
+        @SharedReader(.highlightDetectedDateEnabled)
+        var highlightDetectedDateEnabled: Bool
+
         init(document: Shared<Document>) {
             self._document = document
             self.documentInformationForm = DocumentInformationForm.State(document: document.wrappedValue)
@@ -150,7 +153,7 @@ struct DocumentDetailsView: View {
                     }
 
             } else {
-                PDFCustomView(store.document.url)
+                PDFCustomView(store.document.url, highlightDate: store.highlightDetectedDateEnabled ? store.documentInformationForm.document.date : nil)
                     .ignoresSafeArea(edges: [.bottom, .top])
                     .inspector(isPresented: $store.showInspector) {
                         DocumentInformationFormView(store: store.scope(state: \.documentInformationForm, action: \.showDocumentInformationForm))
