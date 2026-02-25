@@ -61,6 +61,58 @@ struct PDFInfoView: View {
                     .padding()
             }
         }
+        .contextMenu(menuItems: {
+            if let info = pdfInfo {
+                Label(
+                    "\(String(localized: "OCR", bundle: #bundle)): \(info.hasTextLayer ? String(localized: "Available", bundle: #bundle) : String(localized: "Not available", bundle: #bundle))",
+                    systemImage: info.hasTextLayer ? "checkmark.circle.fill" : "xmark.circle.fill"
+                )
+                Label(
+                    "\(String(localized: "Pages", bundle: #bundle)): \(info.pageCount)",
+                    systemImage: "doc.text"
+                )
+                if let fileSize = info.fileSize {
+                    Label(
+                        "\(String(localized: "File Size", bundle: #bundle)): \(fileSize)",
+                        systemImage: "internaldrive"
+                    )
+                }
+                if let title = info.title {
+                    Label(
+                        "\(String(localized: "Title", bundle: #bundle)): \(title)",
+                        systemImage: "textformat"
+                    )
+                }
+                if let author = info.author {
+                    Label(
+                        "\(String(localized: "Author", bundle: #bundle)): \(author)",
+                        systemImage: "person"
+                    )
+                }
+                if let subject = info.subject {
+                    Label(
+                        "\(String(localized: "Subject", bundle: #bundle)): \(subject)",
+                        systemImage: "tag"
+                    )
+                }
+                if let date = info.creationDate {
+                    Label(
+                        "\(String(localized: "Created", bundle: #bundle)): \(date.formatted(date: .abbreviated, time: .shortened))",
+                        systemImage: "calendar"
+                    )
+                }
+                if let date = info.modificationDate {
+                    Label(
+                        "\(String(localized: "Modified", bundle: #bundle)): \(date.formatted(date: .abbreviated, time: .shortened))",
+                        systemImage: "calendar.badge.clock"
+                    )
+                }
+            }
+        }, preview: {
+            if let info = pdfInfo {
+                PopoverView(info: info)
+            }
+        })
         .task(id: documentURL) {
             pdfInfo = await Task.detached(priority: .userInitiated) {
                 await Self.createPdfInfo(from: documentURL)
