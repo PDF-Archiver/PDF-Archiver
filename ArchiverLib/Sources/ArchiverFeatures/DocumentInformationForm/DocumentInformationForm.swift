@@ -291,7 +291,7 @@ struct DocumentInformationForm {
         var tagSuggestions: [String]?
 
         if let text = await textAnalyser.getTextFrom(url) {
-            
+
             // STEP 1 - try to find date
             var results = await textAnalyser.parseDateFrom(text)
             if let foundDate {

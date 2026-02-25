@@ -142,6 +142,7 @@ struct DocumentDetails {
 
 struct DocumentDetailsView: View {
     @Bindable var store: StoreOf<DocumentDetails>
+    @SharedReader(.ocrEnabled) private var ocrEnabled: Bool
 
     var body: some View {
         Group {
@@ -207,6 +208,15 @@ struct DocumentDetailsView: View {
                     }
                 }
 #endif
+
+                ToolbarSpacer()
+
+                if ocrEnabled,
+                   store.document.downloadStatus >= 1 {
+                    ToolbarItem(id: "textLayerStatus") {
+                        PDFInfoView(documentURL: store.document.url)
+                    }
+                }
 
                 ToolbarItem(id: "share") {
 #if os(iOS)
@@ -285,7 +295,6 @@ struct DocumentDetailsView: View {
             // So we use the workaround with ShareSheet instead.
             ShareLink(Text(store.document.filename), item: store.document.url)
 #endif
-
             // deleteButton
             Button(role: .destructive) {
                 store.send(.onDeleteDocumentButtonTapped)
