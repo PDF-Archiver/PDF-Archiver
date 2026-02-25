@@ -202,7 +202,7 @@ public struct UntaggedDocumentsStatsView: View {
                                        size: .medium)
         }
         Section {
-            UntaggedDocumentsStatsView(untaggedDocuments: 0,
+            UntaggedDocumentsStatsView(untaggedDocuments: 525,
                                        size: .medium)
         }
     }
@@ -215,7 +215,7 @@ public struct UntaggedDocumentsStatsView: View {
                                        size: .large)
         }
         Section {
-            UntaggedDocumentsStatsView(untaggedDocuments: 0,
+            UntaggedDocumentsStatsView(untaggedDocuments: 525,
                                        size: .large)
         }
     }

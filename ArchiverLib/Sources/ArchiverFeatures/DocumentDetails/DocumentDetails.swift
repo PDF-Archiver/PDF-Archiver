@@ -211,12 +211,14 @@ struct DocumentDetailsView: View {
 
                 ToolbarSpacer()
 
+#if os(macOS)
                 if ocrEnabled,
                    store.document.downloadStatus >= 1 {
-                    ToolbarItem(id: "textLayerStatus") {
+                    ToolbarItem(id: "pdfInfo") {
                         PDFInfoView(documentURL: store.document.url)
                     }
                 }
+#endif
 
                 ToolbarItem(id: "share") {
 #if os(iOS)
