@@ -62,19 +62,23 @@ public struct UntaggedDocumentsStatsView: View {
         case .small:
             VStack(alignment: .leading) {
                 if untaggedDocuments > 0 {
-                    VStack(spacing: 8) {
-                        HStack(alignment: .bottom, spacing: 8) {
-                            Text(untaggedDocuments, format: .number)
-                                .fontWeight(.black)
-                                .foregroundStyle(.primary)
-                                .minimumScaleFactor(0.5)
-                                .lineLimit(1)
-
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack(spacing: 4) {
+                            Spacer()
                             Image(systemName: "document.on.document")
                                 .foregroundStyle(Color.paRedAsset)
                                 .symbolRenderingMode(.hierarchical)
+                            Text("Untagged Documents", bundle: #bundle)
+                                .foregroundStyle(.secondary)
                         }
-                        .font(.largeTitle)
+                        .font(.caption)
+                        
+                        Text(untaggedDocuments, format: .number)
+                            .font(.system(size: 56, weight: .black))
+                            .minimumScaleFactor(0.3)
+                            .lineLimit(1)
+                            .foregroundStyle(.primary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 } else {
                     allDocumentsTagged
