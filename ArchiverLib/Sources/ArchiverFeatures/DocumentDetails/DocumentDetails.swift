@@ -7,6 +7,7 @@
 
 import ArchiverModels
 import ComposableArchitecture
+import DocumentProcessingPipeline
 import Shared
 import SwiftUI
 
@@ -32,6 +33,8 @@ struct DocumentDetails {
         var shareDocument: ShareData?
 #endif
 
+        var isProcessingOCR = false
+
         @SharedReader(.highlightDetectedDateEnabled)
         var highlightDetectedDateEnabled: Bool
 
@@ -48,6 +51,8 @@ struct DocumentDetails {
         case onDeleteDocumentButtonTapped
         case onEditButtonTapped
         case onRemoteDocumentAppeared
+        case onTriggerManualOCR
+        case ocrProcessingCompleted
 #if os(iOS)
         case onShareButtonTapped
 #endif
@@ -64,6 +69,7 @@ struct DocumentDetails {
     }
 
     @Dependency(\.archiveStore.startDownloadOf) var startDownloadOf
+    @Dependency(\.documentProcessingPipeline) var documentProcessingPipeline
     var body: some ReducerOf<Self> {
         Scope(state: \.documentInformationForm, action: \.showDocumentInformationForm) {
             DocumentInformationForm()
@@ -128,6 +134,21 @@ struct DocumentDetails {
                 return .none
 #endif
 
+            case .onTriggerManualOCR:
+                state.isProcessingOCR = true
+                return .run { [url = state.document.url] send in
+                    let config = PipelineConfiguration(
+                        urls: [url],
+                        steps: [.ocr]
+                    )
+                    _ = await documentProcessingPipeline.processAndWait(config)
+                    await send(.ocrProcessingCompleted)
+                }
+
+            case .ocrProcessingCompleted:
+                state.isProcessingOCR = false
+                return .none
+
             case .showDocumentInformationForm:
                 return .none
 
@@ -142,8 +163,6 @@ struct DocumentDetails {
 
 struct DocumentDetailsView: View {
     @Bindable var store: StoreOf<DocumentDetails>
-    @SharedReader(.ocrEnabled) private var ocrEnabled: Bool
-
     var body: some View {
         Group {
             if store.document.downloadStatus < 1 {
@@ -211,14 +230,17 @@ struct DocumentDetailsView: View {
 
                 ToolbarSpacer()
 
-#if os(macOS)
-                if ocrEnabled,
-                   store.document.downloadStatus >= 1 {
+                if store.document.downloadStatus >= 1 {
                     ToolbarItem(id: "pdfInfo") {
-                        PDFInfoView(documentURL: store.document.url)
+                        PDFInfoView(
+                            documentURL: store.document.url,
+                            isProcessingOCR: store.isProcessingOCR,
+                            onTriggerOCR: {
+                                store.send(.onTriggerManualOCR)
+                            }
+                        )
                     }
                 }
-#endif
 
                 ToolbarItem(id: "share") {
 #if os(iOS)

@@ -140,6 +140,20 @@ swift build --triple arm64-apple-macosx      # Apple Silicon
 swift build --triple x86_64-apple-macosx     # Intel
 ```
 
+### Fixing Macro Build Errors
+
+If `xcodebuild` fails with `Unable to find module dependency: 'SwiftSyntax'` or similar macro plugin errors, run the CI post-clone script to register macro fingerprints:
+
+```bash
+cd ci_scripts && bash ci_post_clone.sh && cd ..
+```
+
+If the error persists, clean DerivedData:
+
+```bash
+rm -rf ~/Library/Developer/Xcode/DerivedData/PDFArchiver-*
+```
+
 ### Localization Workflow
 
 **CRITICAL**: Always check and update localizations before committing any code changes.

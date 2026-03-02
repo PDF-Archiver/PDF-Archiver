@@ -5,12 +5,15 @@
 //  Created by Julian Kahnert on 22.02.26.
 //
 
+import DocumentProcessingPipeline
 import PDFKit
 import Shared
 import SwiftUI
 
 struct PDFInfoView: View {
     let documentURL: URL
+    var isProcessingOCR: Bool = false
+    var onTriggerOCR: (() -> Void)?
 
     @State private var pdfInfo: PDFInfo?
     @State private var showPopover = false
@@ -28,9 +31,7 @@ struct PDFInfoView: View {
         }
 
         return PDFInfo(
-            hasTextLayer: (0..<min(pdf?.pageCount ?? 0, 3)).contains {
-                pdf?.page(at: $0)?.string?.isEmpty == false
-            },
+            hasTextLayer: PDFTextExtractor.extractText(from: url) != nil,
             pageCount: pdf?.pageCount ?? 0,
             fileSize: fileSize,
             creationDate: meta?[PDFDocumentAttribute.creationDateAttribute] as? Date,
@@ -45,17 +46,23 @@ struct PDFInfoView: View {
         Button {
             showPopover = true
         } label: {
-            Label(
-                pdfInfo?.hasTextLayer ?? true
-                    ? String(localized: "Searchable", bundle: #bundle)
-                    : String(localized: "Not searchable", bundle: #bundle),
-                systemImage: "info"
-            )
-            .foregroundStyle(pdfInfo?.hasTextLayer ?? true ? Color.primary : Color.red)
+            if isProcessingOCR {
+                ProgressView()
+                    .controlSize(.small)
+            } else {
+                Label(
+                    pdfInfo?.hasTextLayer ?? true
+                        ? String(localized: "Searchable", bundle: #bundle)
+                        : String(localized: "Not searchable", bundle: #bundle),
+                    systemImage: "info"
+                )
+                .foregroundStyle(pdfInfo?.hasTextLayer ?? true ? Color.primary : Color.red)
+            }
         }
+        .disabled(isProcessingOCR)
         .popover(isPresented: $showPopover) {
             if let info = pdfInfo {
-                PopoverView(info: info)
+                PopoverView(info: info, isProcessingOCR: isProcessingOCR, onTriggerOCR: onTriggerOCR)
             } else {
                 ProgressView()
                     .padding()
@@ -65,6 +72,15 @@ struct PDFInfoView: View {
             pdfInfo = await Task.detached(priority: .userInitiated) {
                 await Self.createPdfInfo(from: documentURL)
             }.value
+        }
+        .onChange(of: isProcessingOCR) { _, isProcessing in
+            guard !isProcessing else { return }
+            // Refresh PDF info after OCR completes
+            Task {
+                pdfInfo = await Task.detached(priority: .userInitiated) {
+                    await Self.createPdfInfo(from: documentURL)
+                }.value
+            }
         }
     }
 }
@@ -83,17 +99,36 @@ extension PDFInfoView {
 
     struct PopoverView: View {
         fileprivate let info: PDFInfo
+        var isProcessingOCR: Bool = false
+        var onTriggerOCR: (() -> Void)?
 
         var body: some View {
             VStack(alignment: .leading, spacing: 4) {
-                infoRow(
-                    label: String(localized: "OCR", bundle: #bundle),
-                    systemImage: info.hasTextLayer ? "checkmark.circle.fill" : "xmark.circle.fill",
-                    color: info.hasTextLayer ? .green : .red,
-                    value: info.hasTextLayer
-                        ? String(localized: "Available", bundle: #bundle)
-                        : String(localized: "Not available", bundle: #bundle)
-                )
+                HStack {
+                    Label(
+                        String(localized: "OCR", bundle: #bundle),
+                        systemImage: info.hasTextLayer ? "checkmark.circle.fill" : "xmark.circle.fill"
+                    )
+                    .foregroundStyle(info.hasTextLayer ? .green : .red)
+                    Spacer()
+                    if isProcessingOCR {
+                        ProgressView()
+                            .controlSize(.small)
+                    } else if !info.hasTextLayer, let onTriggerOCR {
+                        Button(String(localized: "Run OCR", bundle: #bundle)) {
+                            onTriggerOCR()
+                        }
+                        .buttonStyle(.bordered)
+                        .controlSize(.small)
+                    } else {
+                        Text(info.hasTextLayer
+                            ? String(localized: "Available", bundle: #bundle)
+                            : String(localized: "Not available", bundle: #bundle))
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                            .multilineTextAlignment(.trailing)
+                    }
+                }
                 infoRow(
                     label: String(localized: "Pages", bundle: #bundle),
                     systemImage: "doc.text",

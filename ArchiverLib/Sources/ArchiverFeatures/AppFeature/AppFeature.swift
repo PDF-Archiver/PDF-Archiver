@@ -7,6 +7,7 @@
 
 import ArchiverModels
 import ComposableArchitecture
+import DocumentProcessingPipeline
 import OSLog
 import Shared
 import SwiftUI
@@ -30,14 +31,9 @@ struct AppFeature {
         @Shared(.tutorialShown) var tutorialShown: Bool
         @Shared(.premiumStatus) var premiumStatus: PremiumStatus = .loading
 
-        @SharedReader(.appleIntelligenceEnabled)
-        var appleIntelligenceEnabled: Bool
-
-        @SharedReader(.appleIntelligenceCacheEnabled)
-        var cacheEnabled: Bool
-
-        @SharedReader(.appleIntelligenceCustomPrompt)
-        var customPrompt: String?
+        @SharedReader(.ocrEnabled) var ocrEnabled: Bool
+        @SharedReader(.appleIntelligenceEnabled) var aiEnabled: Bool
+        @SharedReader(.appleIntelligenceCacheEnabled) var aiCacheEnabled: Bool
 
         var scenePhase: ScenePhase?
 
@@ -74,7 +70,7 @@ struct AppFeature {
     @Dependency(\.documentProcessor) var documentProcessor
     @Dependency(\.archiveStore) var archiveStore
     @Dependency(\.widgetStore) var widgetStore
-    @Dependency(\.contentExtractorStore) var contentExtractorStore
+    @Dependency(\.documentProcessingPipeline) var documentProcessingPipeline
     @Dependency(\.textAnalyser) var textAnalyser
 
     var body: some ReducerOf<Self> {
@@ -219,7 +215,11 @@ struct AppFeature {
                 return .none
 
             case .onLongBackgroundTask:
-                return .run { [appleIntelligenceEnabled = state.appleIntelligenceEnabled, cacheEnabled = state.cacheEnabled, customPrompt = state.customPrompt] send in
+                return .run { [
+                    ocrEnabled = state.ocrEnabled,
+                    aiEnabled = state.aiEnabled,
+                    aiCacheEnabled = state.aiCacheEnabled
+                ] send in
                     await withTaskGroup(of: Void.self) { group in
                         group.addTask(priority: .background) {
                             // check the temp folder at startup for new documents
@@ -243,22 +243,26 @@ struct AppFeature {
                                 await send(.isLoadingChanged(isLoading))
                             }
                         }
-                        // Background cache processing for untagged documents
-                        if appleIntelligenceEnabled && cacheEnabled {
-                            group.addTask(priority: .background) {
-                                // Wait a bit before starting cache processing to let the app stabilize
-                                try? await Task.sleep(for: .seconds(10))
+                        // Background processing pipeline (OCR + AI Cache)
+                        group.addTask(priority: .background) {
+                            // Wait a bit before starting processing to let the app stabilize
+                            try? await Task.sleep(for: .seconds(5))
 
-                                do {
-                                    let documents = try await archiveStore.getDocuments()
-                                    _ = await contentExtractorStore.processUntaggedDocumentsInBackground(
-                                        documents,
-                                        textAnalyser.getTextFrom,
-                                        customPrompt
-                                    )
-                                } catch {
-                                    Logger.app.error("Failed to load documents for background cache processing: \(error)")
-                                }
+                            do {
+                                var steps: Set<PipelineConfiguration.StepKind> = []
+                                if ocrEnabled { steps.insert(.ocr) }
+                                if aiEnabled && aiCacheEnabled { steps.insert(.aiCache) }
+                                guard !steps.isEmpty else { return }
+
+                                let documents = try await archiveStore.getDocuments()
+                                let untaggedURLs = documents.filter { !$0.isTagged }.map(\.url)
+                                let config = PipelineConfiguration(
+                                    urls: untaggedURLs,
+                                    steps: steps
+                                )
+                                _ = await documentProcessingPipeline.processAndWait(config)
+                            } catch {
+                                Logger.app.error("Background processing pipeline failed: \(error)")
                             }
                         }
                     }

@@ -8,6 +8,7 @@
 #if os(iOS)
 import BackgroundTasks
 import ComposableArchitecture
+import DocumentProcessingPipeline
 import Foundation
 import OSLog
 import Shared
@@ -24,10 +25,11 @@ public actor BackgroundTaskManager: Log {
 
     private static let scheduler = BGTaskScheduler.shared
 
-    @Dependency(\.contentExtractorStore) var contentExtractorStore
     @Dependency(\.archiveStore) var archiveStore
-    @Dependency(\.textAnalyser) var textAnalyser
-    @SharedReader(.appleIntelligenceCustomPrompt) var customPrompt: String?
+    @Dependency(\.documentProcessingPipeline) var documentProcessingPipeline
+    @SharedReader(.ocrEnabled) var ocrEnabled: Bool
+    @SharedReader(.appleIntelligenceEnabled) var aiEnabled: Bool
+    @SharedReader(.appleIntelligenceCacheEnabled) var aiCacheEnabled: Bool
     @SharedReader(.backgroundCacheNotificationsEnabled) var shouldNotify: Bool
 
     private init() {}
@@ -77,19 +79,33 @@ public actor BackgroundTaskManager: Log {
 
         do {
             let documents = try await archiveStore.getDocuments()
-            let newCachesCreated = await contentExtractorStore.processUntaggedDocumentsInBackground(
-                documents,
-                textAnalyser.getTextFrom,
-                customPrompt
+            var steps: Set<PipelineConfiguration.StepKind> = []
+            if ocrEnabled {
+                steps.insert(.ocr)
+            }
+            if aiEnabled && aiCacheEnabled {
+                steps.insert(.aiCache)
+            }
+
+            let untaggedURLs = documents.filter { !$0.isTagged }.map(\.url)
+            let config = PipelineConfiguration(
+                urls: untaggedURLs,
+                steps: steps
             )
+            let result = await documentProcessingPipeline.processAndWait(config)
 
             let processingDuration = Date().timeIntervalSince(startTime)
 
             if shouldNotify {
-                // Show local notification on success
                 let duration = Duration.seconds(processingDuration)
                 let durationText = duration.formatted(.units(width: .wide))
-                let body = "Created \(newCachesCreated) new cache\(newCachesCreated == 1 ? "" : "s") in \(durationText)."
+                let summary = result.stepResults
+                    .filter { $0.processedCount > 0 }
+                    .map { "\($0.step.rawValue): \($0.processedCount)" }
+                    .joined(separator: ", ")
+                let body = summary.isEmpty
+                    ? "No documents to process (\(durationText))."
+                    : "\(summary) in \(durationText)."
                 await UNUserNotificationCenter.current().showLocalNotification(
                     title: "Processing Completed",
                     body: body
@@ -97,7 +113,8 @@ public actor BackgroundTaskManager: Log {
             }
 
             task.setTaskCompleted(success: true)
-            Logger.backgroundTask.info("Background cache processing completed: \(newCachesCreated) caches in \(processingDuration)s")
+            let totalProcessed = result.stepResults.reduce(0) { $0 + $1.processedCount }
+            Logger.backgroundTask.info("Background processing completed: \(totalProcessed) documents in \(processingDuration)s")
         } catch {
             Logger.backgroundTask.error("Background cache processing failed: \(error)")
 
@@ -105,7 +122,7 @@ public actor BackgroundTaskManager: Log {
                 // Show local notification on failure
                 await UNUserNotificationCenter.current().showLocalNotification(
                     title: "Processing Failed",
-                    body: "Apple Intelligence cache processing failed: \(error.localizedDescription)"
+                    body: "Background processing failed: \(error.localizedDescription)"
                 )
             }
 

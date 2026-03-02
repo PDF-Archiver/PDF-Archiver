@@ -33,6 +33,13 @@
         "identifier" : "ArchiverDocumentProcessingTests",
         "name" : "ArchiverDocumentProcessingTests"
       }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "DocumentProcessingPipelineTests",
+        "name" : "DocumentProcessingPipelineTests"
+      }
     }
   ],
   "version" : 1

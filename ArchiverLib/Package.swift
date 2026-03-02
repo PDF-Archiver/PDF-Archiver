@@ -31,6 +31,7 @@ let package = Package(
                     "ArchiverIntents",
                     "ArchiverStore",
                     "ContentExtractorStore",
+                    "DocumentProcessingPipeline",
                     "Shared",
                     .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
                 ],
@@ -66,6 +67,16 @@ let package = Package(
                     .product(name: "Dependencies", package: "swift-dependencies"),
                     .product(name: "DependenciesMacros", package: "swift-dependencies")
                 ]),
+        .target(name: "DocumentProcessingPipeline",
+                dependencies: [
+                    "ArchiverModels",
+                    "ArchiverStore",
+                    "ContentExtractorStore",
+                    "Shared",
+                    .product(name: "Dependencies", package: "swift-dependencies"),
+                    .product(name: "DependenciesMacros", package: "swift-dependencies"),
+                    .product(name: "Sharing", package: "swift-sharing")
+                ]),
         .target(name: "Shared",
                 dependencies: [
                     "ArchiverModels",
@@ -75,9 +86,17 @@ let package = Package(
                     .process("Resources/Localizable.xcstrings"),
                     .process("Resources/Assets.xcassets")
                 ]),
+        .executableTarget(
+            name: "ocr-tool",
+            dependencies: ["DocumentProcessingPipeline"]
+        ),
         .testTarget(
             name: "ArchiverFeaturesTests",
             dependencies: ["ArchiverFeatures"]
+        ),
+        .testTarget(
+            name: "DocumentProcessingPipelineTests",
+            dependencies: ["DocumentProcessingPipeline", "ContentExtractorStore"]
         ),
         .testTarget(
             name: "ArchiverStoreTests",
