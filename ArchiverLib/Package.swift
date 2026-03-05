@@ -21,7 +21,7 @@ let package = Package(
         .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.11.0"),
         .package(url: "https://github.com/pointfreeco/swift-sharing", from: "2.7.4"),
         .package(url: "https://github.com/sideeffect-io/AsyncExtensions", from: "0.5.5"),
-        .package(url: "https://github.com/apple/swift-async-algorithms", from: "1.1.2")
+        .package(url: "https://github.com/apple/swift-async-algorithms", from: "1.1.3")
     ],
     targets: [
         .target(name: "ArchiverFeatures",
