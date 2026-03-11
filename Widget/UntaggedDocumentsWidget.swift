@@ -58,16 +58,24 @@ extension UntaggedDocumentsStatsView.Size {
     }
 }
 
-struct UntaggedDocumentsWidget: Widget {
+private struct UntaggedDocumentsEntryView: View {
     @Environment(\.widgetFamily) var widgetFamily
+    let entry: UntaggedDocumentsEntry
+
+    var body: some View {
+        UntaggedDocumentsStatsView(untaggedDocuments: entry.untaggedDocuments,
+                                   size: .create(from: widgetFamily))
+            .containerBackground(.fill.tertiary, for: .widget)
+    }
+}
+
+struct UntaggedDocumentsWidget: Widget {
     let kind: String = "UntaggedDocumentsWidget"
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind,
                             provider: UntaggedDocumentsProvider()) { entry in
-            UntaggedDocumentsStatsView(untaggedDocuments: entry.untaggedDocuments,
-                                  size: .create(from: widgetFamily))
-                .containerBackground(.fill.tertiary, for: .widget)
+            UntaggedDocumentsEntryView(entry: entry)
         }
         .configurationDisplayName("Untagged Documents")
         .description("See how many documents are currently untagged or scan a new document.")
