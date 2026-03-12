@@ -72,7 +72,7 @@ public struct UntaggedDocumentsStatsView: View {
                                 .foregroundStyle(.secondary)
                         }
                         .font(.caption)
-                        
+
                         Text(untaggedDocuments, format: .number)
                             .font(.system(size: 56, weight: .black))
                             .minimumScaleFactor(0.3)
