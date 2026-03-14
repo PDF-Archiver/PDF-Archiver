@@ -29,6 +29,9 @@ extension WidgetStoreDependency: DependencyKey {
         updateWidgetWith: { documents in
             defer {
                 WidgetCenter.shared.reloadAllTimelines()
+                #if os(iOS)
+                ControlCenter.shared.reloadControls(ofKind: "UntaggedDocumentsControl")
+                #endif
             }
 
             // Stats widget

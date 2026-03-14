@@ -13,8 +13,7 @@ import SwiftUI
 @main
 struct PDFArchiverIOSApp: App {
     init() {
-        #warning("TODO: add appdependency for Intents!?")
-//        AppDependencyManager.shared.add(dependency: NavigationModel.shared)
+        AppDependencyManager.shared.add(dependency: IntentNavigationModel.shared)
     }
 
     var body: some Scene {
