@@ -56,7 +56,7 @@ public final class DocumentProcessingService: Sendable {
         }
         let operation = PDFProcessingOperation(of: .pdf(pdfData: pdfData, url: url), destinationFolder: destinationFolder, onComplete: { documentUrl in
             Task {
-                self.lastProcessedDocumentUrl = documentUrl
+                self.lastProcessedDocumentUrl = documentUrl ?? self.lastProcessedDocumentUrl
             }
         })
         backgroundProcessing.queue(operation)

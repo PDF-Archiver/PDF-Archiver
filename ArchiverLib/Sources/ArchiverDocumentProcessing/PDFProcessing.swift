@@ -35,10 +35,10 @@ final class PDFProcessingOperation: AsyncOperation {
 
     private let mode: Mode
     private let destinationFolder: URL
-    private let onComplete: (_ createdDocumentUrl: URL) -> Void
+    private let onComplete: (_ createdDocumentUrl: URL?) -> Void
     private var tempUrls: [URL] = []
 
-    init(of mode: Mode, destinationFolder: URL, onComplete: @StorageActor @escaping (_ createdDocumentUrl: URL) -> Void) {
+    init(of mode: Mode, destinationFolder: URL, onComplete: @StorageActor @escaping (_ createdDocumentUrl: URL?) -> Void) {
         self.mode = mode
         self.destinationFolder = destinationFolder
         self.onComplete = onComplete
@@ -101,6 +101,7 @@ final class PDFProcessingOperation: AsyncOperation {
             onComplete(filepath)
         } catch {
             Logger.documentProcessing.errorAndAssert("An error occurred while processing", metadata: ["error": "\(error)"])
+            onComplete(nil)
         }
     }
 

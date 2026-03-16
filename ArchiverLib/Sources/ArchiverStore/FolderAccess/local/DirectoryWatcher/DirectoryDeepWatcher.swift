@@ -31,11 +31,8 @@ actor DirectoryDeepWatcher: Log {
     }
 
     deinit {
-        Task { [sources] in
-            for (_, source) in sources {
-                source.1.cancel()
-                await source.0.cancel()
-            }
+        for (_, source) in sources {
+            source.1.cancel()
         }
         sources.removeAll()
     }

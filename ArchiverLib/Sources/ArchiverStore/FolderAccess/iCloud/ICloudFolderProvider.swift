@@ -20,6 +20,7 @@ final class ICloudFolderProvider: FolderProvider {
 
     private var currentDocuments: [Int: DocumentInformation] = [:]
     private var lastDocuments: [DocumentInformation]?
+    private var observationTask: Task<Void, Never>?
 
     init(baseUrl: URL) throws {
         self.baseUrl = baseUrl
@@ -59,10 +60,16 @@ final class ICloudFolderProvider: FolderProvider {
          */
         metadataQuery.operationQueue = .main
 
-        Task(priority: .utility) {
+        observationTask = Task(priority: .utility) { [weak self] in
+            guard let self else { return }
+
+            self.metadataQuery.start()
+            self.log.debug("Starting the documents query.")
+
             await withTaskGroup(of: Void.self) { group in
-                group.addTask {
+                group.addTask { [weak self] in
                     for await _ in NotificationCenter.default.notifications(named: .NSMetadataQueryDidFinishGathering) {
+                        guard let self else { return }
                         Self.log.debug("Documents query finished initial fetch.")
 
                         let details = await self.getFileChangeDetails()
@@ -75,8 +82,9 @@ final class ICloudFolderProvider: FolderProvider {
                     }
                 }
 
-                group.addTask {
+                group.addTask { [weak self] in
                     for await notification in NotificationCenter.default.notifications(named: .NSMetadataQueryDidUpdate) {
+                        guard let self else { return }
                         let addedMetadataItems = (notification.userInfo?[NSMetadataQueryUpdateAddedItemsKey] as? [NSMetadataItem]) ?? []
                         let updatedMetadataItems = (notification.userInfo?[NSMetadataQueryUpdateChangedItemsKey] as? [NSMetadataItem]) ?? []
                         let removedMetadataItems = (notification.userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem]) ?? []
@@ -92,15 +100,19 @@ final class ICloudFolderProvider: FolderProvider {
                         await self.sendDocuments(added: added, updated: updated, removed: removed)
                     }
                 }
-
-                metadataQuery.start()
-                log.debug("Starting the documents query.")
             }
         }
     }
 
     deinit {
         Self.log.debug("deinit ICloudFolderProvider")
+        observationTask?.cancel()
+        metadataQuery.stop()
+    }
+
+    func stop() {
+        observationTask?.cancel()
+        observationTask = nil
         metadataQuery.stop()
     }
 
