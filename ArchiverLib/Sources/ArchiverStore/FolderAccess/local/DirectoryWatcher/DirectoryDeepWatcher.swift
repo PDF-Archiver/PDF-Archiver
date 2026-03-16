@@ -53,8 +53,12 @@ actor DirectoryDeepWatcher: Log {
             // create source for the parent directory
             try createAndAddSource(from: baseUrl)
 
-            // Actor isolation serializes access, so no separate queue synchronization is needed.
-            try startWatching(contentsOf: baseUrl)
+            // We have to startWatching an the queue, because during the initial creating of all sources
+            // one folder (e.g. the first) might be changed, which triggers the event handler on the queue.
+            // By syncing these calls on a serial queue, they will be processed one after another.
+            try queue.sync {
+                try startWatching(contentsOf: baseUrl)
+            }
         } catch {
             log.error("Failed to create DirectoryDeepWatcher", metadata: ["error": "\(error)"])
             throw error
