@@ -40,10 +40,8 @@ public final class DocumentProcessingService: Sendable {
 
         return await withCheckedContinuation { continuation in
             let operation = PDFProcessingOperation(of: .images(images), destinationFolder: destinationFolder, onComplete: { documentUrl in
-                Task {
-                    self.lastProcessedDocumentUrl = documentUrl
-                    continuation.resume(returning: documentUrl)
-                }
+                self.lastProcessedDocumentUrl = documentUrl
+                continuation.resume(returning: documentUrl)
             })
             backgroundProcessing.queue(operation)
         }
@@ -55,9 +53,7 @@ public final class DocumentProcessingService: Sendable {
             return
         }
         let operation = PDFProcessingOperation(of: .pdf(pdfData: pdfData, url: url), destinationFolder: destinationFolder, onComplete: { documentUrl in
-            Task {
-                self.lastProcessedDocumentUrl = documentUrl ?? self.lastProcessedDocumentUrl
-            }
+            self.lastProcessedDocumentUrl = documentUrl ?? self.lastProcessedDocumentUrl
         })
         backgroundProcessing.queue(operation)
     }
