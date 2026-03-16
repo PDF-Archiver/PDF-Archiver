@@ -26,7 +26,7 @@ struct DateParserTests {
     }
 
     @Test
-    func testParsingValidDate() async throws {
+    func parsingValidDate() async throws {
 
         // setup the raw string
         let hiddenDate = "20050201"
@@ -104,7 +104,7 @@ struct DateParserTests {
     }
 
     @Test
-    func testParsingAmbiguousDate() async throws {
+    func parsingAmbiguousDate() async throws {
 
         // setup the raw string - different expectations based on locale
         let rawStringMapping: [String: Date?]
@@ -136,7 +136,7 @@ struct DateParserTests {
     }
 
     @Test
-    func testParsingInvalidDates() async {
+    func parsingInvalidDates() async {
 
         // setup the raw string
         let rawStrings = ["2015-35-12",
@@ -155,7 +155,7 @@ struct DateParserTests {
     }
 
     @Test
-    func testPerformanceExample() async throws {
+    func parsingDateFromLongText() async throws {
 
         // setup the long string
         let hiddenDate = "20050201"
@@ -183,7 +183,7 @@ struct DateParserTests {
     }
 
     @Test
-    func testParsingDateWithUnderscores() async throws {
+    func parsingDateWithUnderscores() async throws {
 
         // setup - test replacing underscores with dashes
         let input = "1990_02_11"

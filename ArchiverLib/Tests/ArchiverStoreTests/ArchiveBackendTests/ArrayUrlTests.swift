@@ -13,7 +13,7 @@ import Testing
 @MainActor
 struct ArrayURLTests {
     @Test
-    func testParents() async throws {
+    func uniqueParents() async throws {
         // swiftlint:disable force_unwrapping
         let url1 = URL(string: "/test/folder1/archive/untagged")!
         let url2 = URL(string: "/test/folder1/archive")!
