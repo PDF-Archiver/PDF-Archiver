@@ -425,6 +425,7 @@ struct DocumentInformationFormView: View {
             .overlay(alignment: .trailing) {
                 if store.isLoading {
                     ProgressView()
+                        .controlSize(.small)
                 }
             }
         }

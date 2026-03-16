@@ -69,20 +69,24 @@ public actor BackgroundTaskManager: Log {
         Logger.backgroundTask.info("Background cache processing started")
         let startTime = Date()
 
-        // Set expiration handler
-        task.expirationHandler = {
-            Logger.backgroundTask.warning("Background cache processing expired")
-            task.setTaskCompleted(success: false)
-        }
-
-        do {
+        // Use a cancellable task so the expiration handler can stop work
+        let processingTask = Task {
             let documents = try await archiveStore.getDocuments()
-            let newCachesCreated = await contentExtractorStore.processUntaggedDocumentsInBackground(
+            return await contentExtractorStore.processUntaggedDocumentsInBackground(
                 documents,
                 textAnalyser.getTextFrom,
                 customPrompt
             )
+        }
 
+        // Set expiration handler to cancel the work instead of completing the task directly
+        task.expirationHandler = {
+            Logger.backgroundTask.warning("Background cache processing expired")
+            processingTask.cancel()
+        }
+
+        do {
+            let newCachesCreated = try await processingTask.value
             let processingDuration = Date().timeIntervalSince(startTime)
 
             if shouldNotify {
@@ -101,8 +105,7 @@ public actor BackgroundTaskManager: Log {
         } catch {
             Logger.backgroundTask.error("Background cache processing failed: \(error)")
 
-            if shouldNotify {
-                // Show local notification on failure
+            if shouldNotify && !Task.isCancelled {
                 await UNUserNotificationCenter.current().showLocalNotification(
                     title: "Processing Failed",
                     body: "Apple Intelligence cache processing failed: \(error.localizedDescription)"

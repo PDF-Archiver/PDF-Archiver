@@ -72,7 +72,10 @@ public actor ArchiveStore: Log {
     func update(archiveFolder: URL, untaggedFolders: [URL]) async {
         isLoadingStream.send(true)
 
-        // remove all current file providers to prevent watching changes while moving folders
+        // stop all current file providers to prevent watching changes while moving folders
+        for provider in providers {
+            await provider.stop()
+        }
         providers = []
         folderObservationTasks.forEach { $0.cancel() }
         folderObservationTasks = []
