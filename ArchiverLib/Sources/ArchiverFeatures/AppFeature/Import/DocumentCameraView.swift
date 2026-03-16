@@ -46,12 +46,13 @@ struct DocumentCameraView: UIViewControllerRepresentable, Log {
         func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
             self.isShown.wrappedValue = false
 
-            DispatchQueue.global(qos: .userInitiated).async {
+            let imageHandler = self.imageHandler
+            Task.detached(priority: .userInitiated) {
                 var images = [PlatformImage]()
                 for index in 0..<scan.pageCount {
                     images.append(scan.imageOfPage(at: index))
                 }
-                self.imageHandler(images)
+                imageHandler(images)
             }
         }
 
