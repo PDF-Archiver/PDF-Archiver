@@ -13,9 +13,5 @@ struct PdfArchiverWidgetBundle: WidgetBundle {
     var body: some Widget {
         StatsWidget()
         UntaggedDocumentsWidget()
-        #if os(iOS)
-        ScanControlWidget()
-        UntaggedDocumentsControlWidget()
-        #endif
     }
 }
