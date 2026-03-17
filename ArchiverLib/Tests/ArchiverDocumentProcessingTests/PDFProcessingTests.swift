@@ -59,7 +59,7 @@ final class PDFProcessingTests {
     // swiftlint:enable identifier_name
 
     @Test
-    func testPDFInput() async throws {
+    func pdfInput() async throws {
         let exampleUrl = Self.tempFolder.appendingPathComponent(UUID().uuidString)
             .appendingPathExtension("pdf")
         try FileManager.default.copyItem(at: Bundle.longTextPDFUrl, to: exampleUrl)
@@ -85,7 +85,7 @@ final class PDFProcessingTests {
     }
 
     @Test(.disabled("Currently not working"))
-    func testPNGInput() async throws {
+    func pngInput() async throws {
         let image = try #require(PlatformImage(contentsOf: Bundle.billPNGUrl))
 
         var documentUrl: URL?
@@ -156,7 +156,7 @@ final class PDFProcessingTests {
     }
 
     @Test(.disabled("Currently not working"))
-    func testJPGInput() async throws {
+    func jpgInput() async throws {
         let image = try #require(PlatformImage(contentsOf: Bundle.billJPGGUrl))
 
         var documentUrl: URL?
@@ -226,7 +226,7 @@ final class PDFProcessingTests {
     }
 
     @Test(.disabled("Currently not working"))
-    func testJPGMultiplePages() async throws {
+    func jpgMultiplePages() async throws {
         let image = try #require(PlatformImage(contentsOf: Bundle.billJPGGUrl))
 
         var documentUrl: URL?

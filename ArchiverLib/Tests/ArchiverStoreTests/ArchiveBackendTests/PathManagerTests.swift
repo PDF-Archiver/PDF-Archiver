@@ -27,7 +27,7 @@ final class PathManagerTests {
 
     #if os(macOS)
     @Test(.disabled("Currently not working"))
-    func testArchiveChangeMacOS() throws {
+    func archiveChangeMacOS() throws {
         let currentArchiveFolder = Self.tempFolder.appendingPathComponent("CurrentArchive")
         try FileManager.default.createDirectory(at: currentArchiveFolder, withIntermediateDirectories: true, attributes: nil)
 //        try PathManager.shared.setArchiveUrl(with: .local(currentArchiveFolder))
@@ -56,14 +56,14 @@ final class PathManagerTests {
         #expect(urls.contains(where: { $0.lastPathComponent == "2019" }))
         #expect(urls.contains(where: { $0.lastPathComponent == "2018" }))
 
-        #expect(false == urls.contains(where: { $0.lastPathComponent == "inbox" }))
-        #expect(false == urls.contains(where: { $0.lastPathComponent == "test" }))
+        #expect(urls.contains(where: { $0.lastPathComponent == "inbox" }) == false)
+        #expect(urls.contains(where: { $0.lastPathComponent == "test" }) == false)
     }
     #endif
 
     #if !os(macOS)
     @Test
-    func testPDFInput() throws {
+    func pdfInput() throws {
         let currentArchiveFolder = Self.tempFolder.appendingPathComponent("CurrentArchive")
         try FileManager.default.createDirectory(at: currentArchiveFolder, withIntermediateDirectories: true, attributes: nil)
 
@@ -96,8 +96,8 @@ final class PathManagerTests {
         #expect(urls.contains(where: { $0.lastPathComponent == "2019" }))
         #expect(urls.contains(where: { $0.lastPathComponent == "2018" }))
 
-        #expect(!urls.contains(where: { $0.lastPathComponent == "inbox" }))
-        #expect(!urls.contains(where: { $0.lastPathComponent == "test" }))
+        #expect(urls.contains(where: { $0.lastPathComponent == "inbox" }) == false)
+        #expect(urls.contains(where: { $0.lastPathComponent == "test" }) == false)
     }
     #endif
 }

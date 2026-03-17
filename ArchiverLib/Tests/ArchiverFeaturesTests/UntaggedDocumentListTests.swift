@@ -64,7 +64,7 @@ struct UntaggedDocumentListTests {
         #expect(state.untaggedDocuments.count == 2)
         #expect(state.untaggedDocuments.contains(where: { $0.id == untaggedDoc1.id }))
         #expect(state.untaggedDocuments.contains(where: { $0.id == untaggedDoc2.id }))
-        #expect(!state.untaggedDocuments.contains(where: { $0.id == taggedDoc.id }))
+        #expect(state.untaggedDocuments.contains(where: { $0.id == taggedDoc.id }) == false)
     }
 
     @Test
@@ -101,8 +101,7 @@ struct UntaggedDocumentListTests {
     @Test
     func premiumStatusActive() async throws {
         let state = UntaggedDocumentList.State()
-        // Premium status is shared and defaults to .loading
-        #expect(state.premiumStatus == .loading || state.premiumStatus == .active || state.premiumStatus == .inactive)
+        #expect(state.premiumStatus == .loading)
     }
 
     // MARK: - Document Details Tests

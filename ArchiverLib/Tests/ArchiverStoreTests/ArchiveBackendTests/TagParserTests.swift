@@ -12,7 +12,7 @@ import Testing
 @MainActor
 struct TagParserTests {
     @Test
-    func testParsingValidTags() async throws {
+    func parsingValidTags() async throws {
 
         // setup the raw string
         let rawStringMapping: [String: Set<String>] = [
@@ -31,7 +31,7 @@ struct TagParserTests {
     }
 
     @Test
-    func testParsingInvalidTags() async {
+    func parsingInvalidTags() async {
 
         // setup the raw string
         let rawStringMapping: [String: Set<String>] = [
