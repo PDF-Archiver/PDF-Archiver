@@ -11,7 +11,6 @@ import SwiftUI
 
 @main
 struct PDFArchiverMacApp: App {
-
     var body: some Scene {
         WindowGroup {
             RootView()
