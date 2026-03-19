@@ -29,5 +29,16 @@ struct PDFArchiverShortcuts: AppShortcutsProvider {
             shortTitle: "Scan & Share",
             systemImageName: "doc.viewfinder.fill"
         )
+        AppShortcut(
+            intent: OpenDocument(),
+            phrases: [
+                "Open \(\.$document) in \(.applicationName)",
+                "Show \(\.$document) in \(.applicationName)",
+                "Öffne \(\.$document) in \(.applicationName)",
+                "Zeige \(\.$document) in \(.applicationName)"
+            ],
+            shortTitle: "Open Document",
+            systemImageName: "doc"
+        )
     }
 }
