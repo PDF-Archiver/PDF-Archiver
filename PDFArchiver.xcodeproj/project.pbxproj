@@ -644,13 +644,9 @@
 				A3B5D90B2BB37114002B9FF1 /* PDFArchiverMacApp.swift in Sources */,
 				A3708E332E77555F004FC2CF /* AppIntent.swift in Sources */,
 				A3708E3F2E8E000B004FC2CF /* PDFArchiverShortcuts.swift in Sources */,
-<<<<<<< HEAD
-||||||| parent of 8ec98f43 (feat: add App Intents with Spotlight indexing and document deep links)
-=======
 				A3708E422E9F000000000001 /* DocumentEntity.swift in Sources */,
 				A3708E452E9F000000000002 /* DocumentEntityQuery.swift in Sources */,
 				A3708E482E9F000000000003 /* OpenDocumentIntent.swift in Sources */,
->>>>>>> 8ec98f43 (feat: add App Intents with Spotlight indexing and document deep links)
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
