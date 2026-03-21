@@ -443,7 +443,13 @@ struct DocumentInformationFormView: View {
             VStack(alignment: .leading, spacing: 16) {
                 if store.document.tags.isEmpty {
                     Text("No tags selected", bundle: #bundle)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.tertiary)
+                        .padding(EdgeInsets(top: 2.0, leading: 5.0, bottom: 2.0, trailing: 5.0))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8.0)
+                                .stroke(Color.tertiaryLabelAsset, lineWidth: 1)
+                        )
+                        .frame(maxWidth: .infinity, alignment: .center)
                 } else {
                     TagListView(tags: store.document.tags.sorted(),
                                 isEditable: true,

@@ -54,9 +54,12 @@ struct ArchiveList {
         @Presents var documentDetails: DocumentDetails.State?
 
         private func getFilteredDocument() -> IdentifiedArrayOf<Document> {
-            documents
-                .filter(\.isTagged)
+            // Pre-compute slugified search text once instead of per document
+            let normalizedSearchText = searchText.isEmpty ? nil : searchText.slugified(withSeparator: "-")
+            return documents
                 .filter { document in
+                    guard document.isTagged else { return false }
+
                     for searchToken in searchTokens {
                         switch searchToken {
                         case .tag(let tag):
@@ -125,8 +128,10 @@ struct ArchiveListView: View {
     @Bindable var store: StoreOf<ArchiveList>
 
     var body: some View {
+        // request filtered documents only once in this render cylce
+        let filteredDocuments = store.filteredDocuments
         Group {
-            if store.filteredDocuments.isEmpty {
+            if filteredDocuments.isEmpty {
                 if store.searchText.isEmpty {
                     ContentUnavailableView(String(localized: "Empty Archive", bundle: #bundle),
                                            systemImage: "archivebox",
@@ -140,7 +145,7 @@ struct ArchiveListView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
             } else {
-                List(store.filteredDocuments, selection: $store.selectedDocumentId) { document in
+                List(filteredDocuments, selection: $store.selectedDocumentId) { document in
                     ArchiveListItemView(documentSpecification: document.specification,
                                         documentDate: document.date,
                                         documentTags: document.tags.sorted())
