@@ -32,6 +32,9 @@ struct DocumentDetails {
         var shareDocument: ShareData?
 #endif
 
+        @SharedReader(.highlightDetectedDateEnabled)
+        var highlightDetectedDateEnabled: Bool
+
         init(document: Shared<Document>) {
             self._document = document
             self.documentInformationForm = DocumentInformationForm.State(document: document.wrappedValue)
@@ -139,6 +142,7 @@ struct DocumentDetails {
 
 struct DocumentDetailsView: View {
     @Bindable var store: StoreOf<DocumentDetails>
+    @SharedReader(.ocrEnabled) private var ocrEnabled: Bool
 
     var body: some View {
         Group {
@@ -149,7 +153,7 @@ struct DocumentDetailsView: View {
                     }
 
             } else {
-                PDFCustomView(store.document.url)
+                PDFCustomView(store.document.url, highlightDate: store.highlightDetectedDateEnabled ? store.documentInformationForm.document.date : nil)
                     .ignoresSafeArea(edges: [.bottom, .top])
                     .inspector(isPresented: $store.showInspector) {
                         DocumentInformationFormView(store: store.scope(state: \.documentInformationForm, action: \.showDocumentInformationForm))
@@ -201,6 +205,17 @@ struct DocumentDetailsView: View {
                         NSWorkspace.shared.activateFileViewerSelecting([store.document.url])
                     } label: {
                         Label(String(localized: "Show in Finder", bundle: #bundle), systemImage: "folder")
+                    }
+                }
+#endif
+
+                ToolbarSpacer()
+
+#if os(macOS)
+                if ocrEnabled,
+                   store.document.downloadStatus >= 1 {
+                    ToolbarItem(id: "pdfInfo") {
+                        PDFInfoView(documentURL: store.document.url)
                     }
                 }
 #endif
@@ -282,7 +297,6 @@ struct DocumentDetailsView: View {
             // So we use the workaround with ShareSheet instead.
             ShareLink(Text(store.document.filename), item: store.document.url)
 #endif
-
             // deleteButton
             Button(role: .destructive) {
                 store.send(.onDeleteDocumentButtonTapped)

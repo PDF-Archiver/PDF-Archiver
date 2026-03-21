@@ -144,6 +144,7 @@ struct DocumentInformationForm {
                     }
                 }
 
+                state.focusedField = .date
                 return .send(.delegate(.saveDocument(state.document, shouldUpdatePdfMetadata: !state.notSaveDocumentTagsAsPDFMetadata)))
 
             case .onSuggestedDateButtonTapped(let date):
@@ -177,7 +178,7 @@ struct DocumentInformationForm {
                     state.isTagSelectionDelayActive = true
                     state.tagSelectionDelayProgress = 0.0
 
-                    return .run { [clock] send in
+                    return .run { send in
                         let delayDuration: TimeInterval = 2
                         let steps = 20
                         let stepDuration = delayDuration / Double(steps)
@@ -197,6 +198,7 @@ struct DocumentInformationForm {
 
             case .onTask:
                 state.isLoading = true
+                state.focusedField = .date
                 return .run { [documentUrl = state.document.url, isTagged = state.document.isTagged] send in
                     if isTagged {
                         await send(.startUpdatingTagSuggestions)
@@ -289,34 +291,41 @@ struct DocumentInformationForm {
         var tagSuggestions: [String]?
 
         if let text = await textAnalyser.getTextFrom(url) {
-            let documents = (try? await archiveStore.getDocuments()) ?? []
+
+            // STEP 1 - try to find date
+            var results = await textAnalyser.parseDateFrom(text)
+            if let foundDate {
+                results = results.filter { resultDate in
+                    !Calendar.current.isDate(resultDate, inSameDayAs: foundDate)
+                }
+            }
+
+            let newResults = results
+                .dropFirst(foundDate == nil ? 1 : 0)    // skip first because it is set to foundDate
+                .filter { !calendar.isDate($0, inSameDayAs: Date()) }   // skip found "today" dates, because a today button will always be shown
+//                .sorted().reversed().prefix(3)  // get the most recent 3 dates
+//                .sorted()
+                .prefix(3)
+            dateSuggestions = Array(newResults)
+
+            if foundDate == nil {
+                foundDate = results.first
+            }
+
+            // STEP 2 - try to find specification and tags
             // Try Apple Intelligence first if enabled and available
             if appleIntelligenceEnabled,
                await contentExtractorStore.isAvailable() == .available,
-               let content = await contentExtractorStore.getDocumentInformation(.init(currentDocuments: documents, text: text, customPrompt: customPrompt, documentId: documentId)) {
+               let content = await contentExtractorStore.getDocumentInformation(.init(currentDocuments: (try? await archiveStore.getDocuments()) ?? [],
+                                                                                      text: text,
+                                                                                      customPrompt: customPrompt,
+                                                                                      documentId: documentId)) {
                 foundSpecification = content.specification
                 tagSuggestions = Array(content.tags).sorted()
 
             } else {
                 // Fall back to traditional text analysis
-                var results = await textAnalyser.parseDateFrom(text)
-                if let foundDate {
-                    results = results.filter { resultDate in
-                        !Calendar.current.isDate(resultDate, inSameDayAs: foundDate)
-                    }
-                }
 
-                let newResults = results
-                    .dropFirst(foundDate == nil ? 1 : 0)    // skip first because it is set to foundDate
-                    .filter { !calendar.isDate($0, inSameDayAs: Date()) }   // skip found "today" dates, because a today button will always be shown
-                //                    .sorted().reversed().prefix(3)  // get the most recent 3 dates
-                //                    .sorted()
-                    .prefix(3)
-                dateSuggestions = Array(newResults)
-
-                if foundDate == nil {
-                    foundDate = results.first
-                }
                 if tagNames.isEmpty {
                     tagSuggestions = await textAnalyser.parseTagsFrom(text).sorted()
                 }
@@ -353,6 +362,7 @@ struct DocumentInformationFormView: View {
             Section {
                 TipView(tips.currentTip as? TaggingTips.Date)
                     .tipImageSize(TaggingTips.size)
+                    .focusable(false)
                 DatePicker(String(localized: "Date", bundle: #bundle), selection: $store.document.date, displayedComponents: .date)
                     .focused($focusedField, equals: .date)
                     .listRowSeparator(.hidden)
@@ -380,14 +390,12 @@ struct DocumentInformationFormView: View {
             Section {
                 TipView(tips.currentTip as? TaggingTips.Specification)
                     .tipImageSize(TaggingTips.size)
+                    .focusable(false)
                 TextField(text: $store.document.specification, prompt: Text("Enter specification", bundle: #bundle), axis: .vertical) {
                     Text("Specification", bundle: #bundle)
                 }
                 .lineLimit(1...5)
                 .focused($focusedField, equals: .specification)
-                #if os(macOS)
-                .textFieldStyle(.squareBorder)
-                #endif
             }
 
             documentTagsSection
@@ -396,6 +404,7 @@ struct DocumentInformationFormView: View {
                 #if os(macOS)
                 TipView(tips.currentTip as? TaggingTips.KeyboardShortCut)
                     .tipImageSize(TaggingTips.size)
+                    .focusable(false)
                 #endif
                 HStack {
                     Spacer()
@@ -421,7 +430,7 @@ struct DocumentInformationFormView: View {
         }
         .formStyle(.grouped)
         .bind($store.focusedField, to: $focusedField)
-        .task {
+        .task(id: store.document.id) {
             await store.send(.onTask).finish()
         }
     }
@@ -433,7 +442,13 @@ struct DocumentInformationFormView: View {
             VStack(alignment: .leading, spacing: 16) {
                 if store.document.tags.isEmpty {
                     Text("No tags selected", bundle: #bundle)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.tertiary)
+                        .padding(EdgeInsets(top: 2.0, leading: 5.0, bottom: 2.0, trailing: 5.0))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8.0)
+                                .stroke(Color.tertiaryLabelAsset, lineWidth: 1)
+                        )
+                        .frame(maxWidth: .infinity, alignment: .center)
                 } else {
                     TagListView(tags: store.document.tags.sorted(),
                                 isEditable: true,
@@ -457,17 +472,17 @@ struct DocumentInformationFormView: View {
                 }
                 .focusable(false)
 
-                TextField(String(localized: "Enter Tag", bundle: #bundle), text: $store.tagSearchterm)
-                    .onSubmit {
-                        store.send(.onTagSearchtermSubmitted)
-                    }
-                    .focused($focusedField, equals: .tags)
-                    #if os(macOS)
-                    .textFieldStyle(.squareBorder)
-                    #else
-                    .keyboardType(.alphabet)
-                    .autocorrectionDisabled()
-                    #endif
+                TextField(text: $store.tagSearchterm, prompt: Text("Enter Tag", bundle: #bundle)) {
+                    Text("Tag", bundle: #bundle)
+                }
+                .onSubmit {
+                    store.send(.onTagSearchtermSubmitted)
+                }
+                .focused($focusedField, equals: .tags)
+                #if os(iOS)
+                .keyboardType(.alphabet)
+                .autocorrectionDisabled()
+                #endif
             }
             .sensoryFeedback(.selection, trigger: store.document.tags)
         }

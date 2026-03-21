@@ -213,10 +213,11 @@ public actor ContentExtractorStore: Log {
         let formattedTagCounts = tagCounts
             .prefix(30)
             .map {
-                "'\($0.0)': \($0.1)"
+                "\($0.0):\($0.1)"
             }
+            .joined(separator: "\n")
         let tagCountsString = """
-        'tagName': count
+        tagName: count
         \(formattedTagCounts)
         """
 

@@ -74,17 +74,25 @@ extension StatsView.Size {
     }
 }
 
-struct StatsWidget: Widget {
+private struct StatsEntryView: View {
     @Environment(\.widgetFamily) var widgetFamily
+    let entry: StatsEntry
+
+    var body: some View {
+        StatsView(yearStats: entry.yearStats,
+                  size: .create(from: widgetFamily))
+            .containerBackground(.fill.tertiary, for: .widget)
+    }
+}
+
+struct StatsWidget: Widget {
     let kind: String = "StatsWidget"
 
     var body: some WidgetConfiguration {
         AppIntentConfiguration(kind: kind,
                                intent: ConfigurationAppIntent.self,
                                provider: StatsProvider()) { entry in
-            StatsView(yearStats: entry.yearStats,
-                      size: .create(from: widgetFamily))
-                .containerBackground(.fill.tertiary, for: .widget)
+            StatsEntryView(entry: entry)
         }
         .configurationDisplayName("PDF Statistics")
         .description("Number of PDFs per year in your archive.")

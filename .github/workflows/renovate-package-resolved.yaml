@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
@@ -36,10 +36,15 @@ jobs:
         run: |
           license-plist --suppress-opening-directory --add-version-numbers --force --output-path Shared/Resources/Settings.bundle --xcworkspace-path PDFArchiver.xcworkspace
 
+      - name: Sync xcodeproj Package.resolved from xcworkspace
+        run: |
+          cp PDFArchiver.xcworkspace/xcshareddata/swiftpm/Package.resolved \
+             PDFArchiver.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+
       - name: Check for changes in Package.resolved and Settings.bundle
         id: changes
         run: |
-          if git diff --quiet PDFArchiver.xcworkspace/xcshareddata/swiftpm/Package.resolved Shared/Resources/Settings.bundle/; then
+          if git diff --quiet PDFArchiver.xcworkspace/xcshareddata/swiftpm/Package.resolved PDFArchiver.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved Shared/Resources/Settings.bundle/; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "changed=true" >> $GITHUB_OUTPUT
@@ -51,6 +56,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add PDFArchiver.xcworkspace/xcshareddata/swiftpm/Package.resolved
+          git add PDFArchiver.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
           git add Shared/Resources/Settings.bundle/
           git commit -m "Package.resolved and Settings.bundle updated"
           git push

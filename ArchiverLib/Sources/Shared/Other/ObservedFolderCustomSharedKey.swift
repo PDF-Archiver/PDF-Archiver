@@ -60,9 +60,7 @@ nonisolated public struct ObservedFolderCustomSharedKey: SharedKey, Log {
         } catch {
             store.set(nil, forKey: key)
             log.errorAndAssert("Failed to get observedFolderURL", metadata: ["error": "\(error)"])
-            Task {
-                await NotificationCenter.default.postAlert(error)
-            }
+            NotificationCenter.default.postAlert(error)
             return nil
         }
     }
@@ -78,9 +76,7 @@ nonisolated public struct ObservedFolderCustomSharedKey: SharedKey, Log {
         } catch {
             store.set(nil, forKey: key)
             log.errorAndAssert("Failed to set observedFolderURL.", metadata: ["error": "\(error)"])
-            Task {
-                await NotificationCenter.default.postAlert(error)
-            }
+            NotificationCenter.default.postAlert(error)
         }
     }
 

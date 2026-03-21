@@ -20,6 +20,8 @@ enum Names: String {
     case appleIntelligenceCacheEnabled = "apple-intelligence-cache-enabled"
     case backgroundCacheNotificationsEnabled = "background-cache-notifications-enabled"
     case multiTagSelectionDelayEnabled = "multi-tag-selection-delay-enabled"
+    case ocrEnabled = "ocr-enabled"
+    case highlightDetectedDateEnabled = "highlight-detected-date-enabled"
 
     var id: String { "shared-\(rawValue)" }
 }
@@ -154,6 +156,21 @@ public extension SharedKey where Self == AppStorageKey<Bool> {
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var multiTagSelectionDelayEnabled: Self {
       return Self[.appStorage(Names.multiTagSelectionDelayEnabled.id, store: .standard), default: true]
+  }
+
+  static var ocrEnabled: Self {
+      return Self[.appStorage(Names.ocrEnabled.id, store: .standard), default: false]
+  }
+}
+
+public extension SharedKey where Self == AppStorageKey<Bool> {
+    static var highlightDetectedDateEnabled: Self {
+        appStorage(Names.highlightDetectedDateEnabled.id, store: .standard)
+    }
+}
+public extension SharedKey where Self == AppStorageKey<Bool>.Default {
+  static var highlightDetectedDateEnabled: Self {
+      return Self[.appStorage(Names.highlightDetectedDateEnabled.id, store: .standard), default: true]
   }
 }
 

@@ -9,6 +9,7 @@ import ArchiverModels
 import ArchiverStore
 import ComposableArchitecture
 import Foundation
+import FoundationModels
 import OSLog
 import Shared
 
@@ -107,6 +108,30 @@ extension ContentExtractorStoreDependency: DependencyKey {
 
                 return DocInfo(specification: result.specification,
                                tags: Set(result.tags))
+            } catch let error as LanguageModelSession.GenerationError {
+                switch error {
+                case .unsupportedLanguageOrLocale:
+                    Logger.contentExtractor.warning("Unsupported language or locale for content extraction")
+                case .guardrailViolation:
+                    Logger.contentExtractor.warning("Content extraction blocked by safety guardrails")
+                case .refusal:
+                    Logger.contentExtractor.warning("Model refused to extract content")
+                case .rateLimited:
+                    Logger.contentExtractor.warning("Content extraction rate limited")
+                case .exceededContextWindowSize:
+                    Logger.contentExtractor.warning("Document too large for content extraction context window")
+                case .decodingFailure:
+                    Logger.contentExtractor.warning("Failed to decode content extraction response")
+                case .assetsUnavailable:
+                    Logger.contentExtractor.warning("Model assets unavailable for content extraction")
+                case .concurrentRequests:
+                    Logger.contentExtractor.warning("Concurrent content extraction request rejected")
+                case .unsupportedGuide:
+                    Logger.contentExtractor.warning("Unsupported generation guide for content extraction")
+                @unknown default:
+                    Logger.contentExtractor.errorAndAssert("An unknown generation error occurred", metadata: ["error": "\(error)"])
+                }
+                return nil
             } catch {
                 Logger.contentExtractor.errorAndAssert("An error occurred while extracting document content", metadata: ["error": "\(error)"])
                 return nil
