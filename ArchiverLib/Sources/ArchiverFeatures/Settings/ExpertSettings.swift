@@ -121,12 +121,12 @@ struct ExpertSettingsView: View {
 
     var body: some View {
         Form {
-            Toggle(String(localized: "Save Tags in PDF Metadata", bundle: #bundle), isOn: $store.notSaveDocumentTagsAsPDFMetadata.flipped)
-            Toggle(String(localized: "Require Document Tags", bundle: #bundle), isOn: $store.documentTagsNotRequired.flipped)
-            Toggle(String(localized: "Require Document Specification", bundle: #bundle), isOn: $store.documentSpecificationNotRequired.flipped)
-            Toggle(String(localized: "Multi-Tag Selection Delay", bundle: #bundle), isOn: $store.multiTagSelectionDelayEnabled)
-            Toggle(String(localized: "Automatic OCR for Image PDFs", bundle: #bundle), isOn: $store.ocrEnabled)
-            Toggle(String(localized: "Highlight Detected Date", bundle: #bundle), isOn: $store.highlightDetectedDateEnabled)
+            Toggle(String(localized: "Save Tags in PDF Metadata", bundle: #bundle), isOn: Binding(store.$notSaveDocumentTagsAsPDFMetadata).flipped)
+            Toggle(String(localized: "Require Document Tags", bundle: #bundle), isOn: Binding(store.$documentTagsNotRequired).flipped)
+            Toggle(String(localized: "Require Document Specification", bundle: #bundle), isOn: Binding(store.$documentSpecificationNotRequired).flipped)
+            Toggle(String(localized: "Multi-Tag Selection Delay", bundle: #bundle), isOn: Binding(store.$multiTagSelectionDelayEnabled))
+            Toggle(String(localized: "Automatic OCR for Image PDFs", bundle: #bundle), isOn: Binding(store.$ocrEnabled))
+            Toggle(String(localized: "Highlight Detected Date", bundle: #bundle), isOn: Binding(store.$highlightDetectedDateEnabled))
             #if !os(macOS)
             Button {
                 store.send(.onShowPermissionsTapped)

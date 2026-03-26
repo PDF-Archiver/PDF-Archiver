@@ -114,7 +114,7 @@ struct AppleIntelligenceSettingsView: View {
                 if store.availability == .available {
                     Toggle(
                         String(localized: "Use Apple Intelligence", bundle: #bundle),
-                        isOn: $store.appleIntelligenceEnabled
+                        isOn: Binding(store.$appleIntelligenceEnabled)
                     )
                 }
             } footer: {
@@ -132,7 +132,7 @@ struct AppleIntelligenceSettingsView: View {
                                 get: { store.customPrompt ?? "" },
                                 set: { newValue in
                                     let trimmed = String(newValue.prefix(AppleIntelligenceSettings.maxCustomPromptLength))
-                                    store.customPrompt = trimmed.isEmpty ? nil : trimmed
+                                    store.$customPrompt.withLock { $0 = trimmed.isEmpty ? nil : trimmed }
                                 }
                               ),
                               prompt: Text("Optional: Enter your custom prompt additions", bundle: #bundle),
@@ -153,13 +153,13 @@ struct AppleIntelligenceSettingsView: View {
 
                     Toggle(
                         String(localized: "Use Cache", bundle: #bundle),
-                        isOn: $store.cacheEnabled
+                        isOn: Binding(store.$cacheEnabled)
                     )
 
                     if store.cacheEnabled {
                         Toggle(
                             String(localized: "Background Processing Notifications", bundle: #bundle),
-                            isOn: $store.backgroundNotificationsEnabled
+                            isOn: Binding(store.$backgroundNotificationsEnabled)
                         )
                     }
 

@@ -71,9 +71,8 @@ struct ArchiveList {
                         }
                     }
 
-                    if !searchText.isEmpty {
-                        let newSearchText = searchText.slugified(withSeparator: "-")
-                        return document.url.lastPathComponent.localizedCaseInsensitiveContains(newSearchText)
+                    if let normalizedSearchText {
+                        return document.url.lastPathComponent.localizedCaseInsensitiveContains(normalizedSearchText)
                     }
                     return true
                 }
@@ -82,6 +81,7 @@ struct ArchiveList {
 
     enum Action: BindableAction {
         case binding(BindingAction<State>)
+        case selectionChanged(Int?)
         case documentDetails(PresentationAction<DocumentDetails.Action>)
         case searchStateChanged(Bool)
     }
@@ -98,9 +98,10 @@ struct ArchiveList {
                 state.isSearching = isSearching
                 return .none
 
-            case .binding(\.selectedDocumentId):
-                if let selectedDocumentId = state.selectedDocumentId,
-                   let document = Shared(state.$documents[id: selectedDocumentId]) {
+            case .selectionChanged(let documentId):
+                state.$selectedDocumentId.withLock { $0 = documentId }
+                if let documentId,
+                   let document = Shared(state.$documents[id: documentId]) {
                     state.documentDetails = .init(document: document)
                 } else {
                     state.documentDetails = nil
@@ -145,7 +146,7 @@ struct ArchiveListView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
             } else {
-                List(filteredDocuments, selection: $store.selectedDocumentId) { document in
+                List(filteredDocuments, selection: Binding(get: { store.selectedDocumentId }, set: { store.send(.selectionChanged($0)) })) { document in
                     ArchiveListItemView(documentSpecification: document.specification,
                                         documentDate: document.date,
                                         documentTags: document.tags.sorted())

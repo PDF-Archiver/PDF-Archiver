@@ -440,9 +440,9 @@ struct AppView: View {
             #endif
         }
         .modifier(AlertDataModelProvider())
-        .modifier(IAP(premiumStatus: $store.premiumStatus))
-        .sheet(isPresented: $store.tutorialShown.flipped) {
-            OnboardingView(isPresented: $store.tutorialShown.flipped)
+        .modifier(IAP(premiumStatus: Binding(store.$premiumStatus)))
+        .sheet(isPresented: Binding(store.$tutorialShown).flipped) {
+            OnboardingView(isPresented: Binding(store.$tutorialShown).flipped)
                 #if os(macOS)
                 .frame(width: 500, height: 400)
                 #endif
