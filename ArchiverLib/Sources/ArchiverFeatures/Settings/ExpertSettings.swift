@@ -38,12 +38,14 @@ struct ExpertSettings {
     enum Action: BindableAction, Equatable {
         case alert(PresentationAction<Alert>)
         case binding(BindingAction<State>)
+        case onClearTempFolderTapped
         #if !os(macOS)
         case onShowPermissionsTapped
         #endif
         case onResetAppTapped
 
-        enum Alert {
+        enum Alert: Equatable {
+            case confirmClearTempFolder
             case resetCompleted
         }
     }
@@ -57,10 +59,29 @@ struct ExpertSettings {
         BindingReducer()
         Reduce { state, action in
             switch action {
+            case .alert(.presented(.confirmClearTempFolder)):
+                try? fileManager.removeItemAt(Constants.tempDocumentURL)
+                return .none
+
             case .alert:
                 return .none
 
             case .binding:
+                return .none
+
+            case .onClearTempFolderTapped:
+                state.alert = AlertState {
+                    TextState("Clear Temp Folder", bundle: #bundle)
+                } actions: {
+                    ButtonState(role: .destructive, action: .confirmClearTempFolder) {
+                        TextState("Clear", bundle: #bundle)
+                    }
+                    ButtonState(role: .cancel) {
+                        TextState("Cancel", bundle: #bundle)
+                    }
+                } message: {
+                    TextState("This removes all unprocessed documents from the temporary import folder. Documents already in your inbox or archive are not affected.", bundle: #bundle)
+                }
                 return .none
 
             #if !os(macOS)
@@ -114,10 +135,18 @@ struct ExpertSettingsView: View {
             }
             #endif
 
-            Button {
-                store.send(.onResetAppTapped)
-            } label: {
-                Text("Reset App Preferences", bundle: #bundle)
+            Section {
+                Button {
+                    store.send(.onClearTempFolderTapped)
+                } label: {
+                    Text("Clear Temp Folder", bundle: #bundle)
+                }
+
+                Button {
+                    store.send(.onResetAppTapped)
+                } label: {
+                    Text("Reset App Preferences", bundle: #bundle)
+                }
             }
         }
         .foregroundStyle(.primary)
