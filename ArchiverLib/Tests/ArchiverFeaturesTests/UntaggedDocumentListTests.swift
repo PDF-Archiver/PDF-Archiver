@@ -19,7 +19,7 @@ struct UntaggedDocumentListTests {
             UntaggedDocumentList()
         }
 
-        await store.send(.binding(.set(\.selectedDocumentId, document.id))) {
+        await store.send(.selectionChanged(document.id)) {
             $0.$selectedDocumentId.withLock { $0 = document.id }
             $0.documentDetails = .init(document: Shared(value: document))
         }
@@ -43,7 +43,7 @@ struct UntaggedDocumentListTests {
             UntaggedDocumentList()
         }
 
-        await store.send(.binding(.set(\.selectedDocumentId, nil))) {
+        await store.send(.selectionChanged(nil)) {
             $0.$selectedDocumentId.withLock { $0 = nil }
             $0.documentDetails = nil
         }
@@ -162,10 +162,7 @@ struct UntaggedDocumentListTests {
         let newDoc = Document.mock(url: URL(string: "https://example.com/2")!, isTagged: false)
         // swiftlint:enable force_unwrapping
 
-        await store.send(.binding(.set(\.documents, [initialDoc, newDoc]))) {
-            $0.$documents.withLock { $0 = [initialDoc, newDoc] }
-        }
-
+        store.state.$documents.withLock { $0 = [initialDoc, newDoc] }
         #expect(store.state.untaggedDocuments.count == 2)
     }
 }

@@ -21,8 +21,8 @@ struct UntaggedDocumentList {
         @Presents var documentDetails: DocumentDetails.State?
     }
 
-    enum Action: BindableAction {
-        case binding(BindingAction<State>)
+    enum Action {
+        case selectionChanged(Int?)
         case documentDetails(PresentationAction<DocumentDetails.Action>)
         case delegate(Delegate)
 
@@ -32,16 +32,15 @@ struct UntaggedDocumentList {
     }
 
     var body: some ReducerOf<Self> {
-        BindingReducer()
-
         Reduce { state, action in
             switch action {
             case .documentDetails:
                 return .none
 
-            case .binding(\.selectedDocumentId):
-                if let selectedDocumentId = state.selectedDocumentId,
-                   let document = Shared(state.$documents[id: selectedDocumentId]) {
+            case .selectionChanged(let documentId):
+                state.$selectedDocumentId.withLock { $0 = documentId }
+                if let documentId,
+                   let document = Shared(state.$documents[id: documentId]) {
                     state.documentDetails = .init(document: document)
                     return .run { send in
                         await send(.documentDetails(.presented(.updateShowInspector(true))))
@@ -50,9 +49,6 @@ struct UntaggedDocumentList {
                     state.documentDetails = nil
                     return .none
                 }
-
-            case .binding:
-                return .none
 
             case .delegate:
                 return .none
@@ -75,7 +71,7 @@ struct UntaggedDocumentListView: View {
                                        systemImage: "checkmark.seal",
                                        description: Text("Congratulations! All documents are tagged. 🎉", bundle: #bundle))
             } else {
-                List(store.untaggedDocuments, selection: $store.selectedDocumentId) { document in
+                List(store.untaggedDocuments, selection: Binding(get: { store.selectedDocumentId }, set: { store.send(.selectionChanged($0)) })) { document in
                     Text(document.url.lastPathComponent)
                         .tag(document.id)
                 }
@@ -91,7 +87,7 @@ struct UntaggedDocumentListView: View {
                                        systemImage: "checkmark.seal",
                                        description: Text("Congratulations! All documents are tagged. 🎉", bundle: #bundle))
             } else {
-                List(store.untaggedDocuments, selection: $store.selectedDocumentId) { document in
+                List(store.untaggedDocuments, selection: Binding(get: { store.selectedDocumentId }, set: { store.send(.selectionChanged($0)) })) { document in
                     Text(document.url.lastPathComponent)
                         .tag(document.id)
                 }

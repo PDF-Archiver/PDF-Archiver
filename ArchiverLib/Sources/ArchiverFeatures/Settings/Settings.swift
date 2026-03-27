@@ -324,7 +324,7 @@ struct SettingsView: View {
     @ViewBuilder
     private var preferences: some View {
         Section {
-            Picker(selection: $store.pdfQuality, label: Label(String(localized: "PDF Quality", bundle: #bundle), systemImage: "text.document")) {
+            Picker(selection: Binding(store.$pdfQuality), label: Label(String(localized: "PDF Quality", bundle: #bundle), systemImage: "text.document")) {
                 ForEach(PDFQuality.allCases, id: \.self) { quality in
                     Text(quality.name, bundle: #bundle)
                 }
@@ -492,7 +492,7 @@ struct SettingsMacView: View {
         Form {
             Section {
                 LabeledContent {
-                    Picker("", selection: $store.pdfQuality) {
+                    Picker("", selection: Binding(store.$pdfQuality)) {
                         ForEach(PDFQuality.allCases, id: \.self) { quality in
                             Text(quality.name, bundle: #bundle)
                         }
