@@ -23,10 +23,17 @@ jobs:
         with:
           swift-version: "6.2"
 
+      - name: Delete existing Package.resolved to force regeneration
+        run: |
+          rm -f PDFArchiver.xcworkspace/xcshareddata/swiftpm/Package.resolved
+          rm -f PDFArchiver.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+
       - name: Run swift package resolve
         run: |
           xcodebuild -workspace PDFArchiver.xcworkspace -scheme ArchiverLib -resolvePackageDependencies
-          cd ArchiverLib && swift package resolve
+          (cd ArchiverLib && swift package resolve)
+          # xcodebuild may not always write the xcworkspace Package.resolved, so copy from ArchiverLib
+          cp ArchiverLib/Package.resolved PDFArchiver.xcworkspace/xcshareddata/swiftpm/Package.resolved
 
       - name: Install LicensePlist
         run: |
