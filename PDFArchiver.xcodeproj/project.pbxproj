@@ -24,6 +24,7 @@
 		A305ACD12E781B3B00CADC3D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = A305ACCF2E781B3B00CADC3D /* Localizable.xcstrings */; };
 		A305ACD22E781B3B00CADC3D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = A305ACCF2E781B3B00CADC3D /* Localizable.xcstrings */; };
 		A305ACD32E781B3B00CADC3D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = A305ACCF2E781B3B00CADC3D /* Localizable.xcstrings */; };
+		A30BCBE22F7B05EB005185F8 /* ContentExtractorStorePlayground.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30BCBE12F7B05EB005185F8 /* ContentExtractorStorePlayground.swift */; };
 		A316AC092EAD561000F750DA /* Shared in Frameworks */ = {isa = PBXBuildFile; productRef = A316AC082EAD561000F750DA /* Shared */; };
 		A35CBAA42C1F294A00CFBA20 /* FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A35CBAA32C1F294A00CFBA20 /* FileManager.swift */; };
 		A36033872E18580900A5F573 /* ArchiverLib in Frameworks */ = {isa = PBXBuildFile; productRef = A36033862E18580900A5F573 /* ArchiverLib */; };
@@ -148,6 +149,7 @@
 		34B1BAF825A8EF7F0014FF77 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
 		34D470BA255B249B000302A8 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		A305ACCF2E781B3B00CADC3D /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		A30BCBE12F7B05EB005185F8 /* ContentExtractorStorePlayground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentExtractorStorePlayground.swift; sourceTree = "<group>"; };
 		A31BE2DF2BB8AFF000022885 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		A3579A582BFFD9B6001D921C /* PDFArchiverIAP.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = PDFArchiverIAP.storekit; sourceTree = "<group>"; };
 		A35CBAA32C1F294A00CFBA20 /* FileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileManager.swift; sourceTree = "<group>"; };
@@ -299,6 +301,7 @@
 				3489D72524A3C53E0035E64F /* Info.plist */,
 				3489D72624A3C53E0035E64F /* macOS.entitlements */,
 				A3B5D9052BB36E9A002B9FF1 /* PDFArchiverMacApp.swift */,
+				A30BCBE12F7B05EB005185F8 /* ContentExtractorStorePlayground.swift */,
 			);
 			path = macOS;
 			sourceTree = "<group>";
@@ -627,6 +630,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A3B5D90B2BB37114002B9FF1 /* PDFArchiverMacApp.swift in Sources */,
+				A30BCBE22F7B05EB005185F8 /* ContentExtractorStorePlayground.swift in Sources */,
 				A3708E332E77555F004FC2CF /* AppIntent.swift in Sources */,
 				A3708E3F2E8E000B004FC2CF /* PDFArchiverShortcuts.swift in Sources */,
 			);

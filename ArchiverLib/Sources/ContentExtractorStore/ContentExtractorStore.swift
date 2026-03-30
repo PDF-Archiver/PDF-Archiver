@@ -29,6 +29,8 @@ public actor ContentExtractorStore: Log {
     private var useCache = true
     private let cache = ContentExtractorCache()
 
+    public init() {}
+
     public static func getAvailability() -> AppleIntelligenceAvailability {
         switch SystemLanguageModel.default.availability {
         case .available:
@@ -169,6 +171,7 @@ public actor ContentExtractorStore: Log {
 
     private static func createSession(with documents: [Document]) -> LanguageModelSession {
         let docStats = Self.getDocumentStats(minTagCount: 3, maxSpecifications: 20, with: documents)
+        print(docStats)
         return LanguageModelSession(
             model: .default,
             tools: [],
@@ -247,86 +250,3 @@ extension ContentExtractorStore {
         public let tags: [String]
     }
 }
-
-// #if canImport(FoundationModels)
-// import Playgrounds
-//
-// @available(macOS 26.0, *)
-// extension Transcript.Entry {
-//    var toolCallCount: Int {
-//        switch self {
-//        case .toolCalls(let calls):
-//            return calls.count
-//        default:
-//            return 0
-//        }
-//    }
-// }
-//
-////    let text = "Bill of a blue hoddie from tom tailor"
-// let text = """
-//    TOM TAILOR
-//    TOM TAILOR Retail GmbH
-//    Garstedter Weg 14
-//    22453 Hamburg
-//    öffnungszeiten: Mo-Sa 9:30-20 Uhr
-//    1 Jeans uni long Slim Aedan
-//    62049720912 1052 31/34
-//    4057655718688 1 × 49,99
-//    Nachlassbetrag : 10,00EUR
-//    49,99
-//    10,00
-//    39.99
-//    Barometer
-//    Bonsumme
-//    Bonsumme (netto)
-//    39,99
-//    33,61
-//    enthaltene MWST 19% 6,38
-//    gegeben : Bar
-//    Rückgeld:
-//    40.00
-//    0,01
-//    Vielen Dank für Ihren Einkauf!
-//    Es bediente Sie:
-//    Ömer G.
-//    Bon: 79535 05.01.17 13:45:30
-//    Filiale: RT100089
-//    Kasse: 01
-//    Store Oldenburg Denim
-//    Schlosshöfe
-//    26122 01 denburg
-//    Tel
-//    USt-IdNr: DE 252291581
-//    TOM TAILOR COLLECTORS CLUB
-//    Mitglied werden und Vorteile genießen!
-//    Rund um die Uhr einkaufen im
-//    E-Shop unter TOM-TAILOR. DE
-//    """
-//
-// #Playground {
-//
-//    guard #available(macOS 26.0, *) else { return }
-//    
-//    let store = ContentExtractorStore()
-//    await store.prewarm()
-//    
-//    let response = try await store.extract(from: text)
-//
-//
-//     let toolCallCount = store.session.transcript.map(\.toolCallCount).reduce(0, +)
-//
-////    for item in store.session.transcript {
-////        switch item {
-////        case .toolCalls(let calls):
-////            print(calls)
-////            
-////        default:
-////            break
-////        }
-////    }
-//    print("Total tool call entries: \(toolCallCount)")
-//    
-//    print(response)
-// }
-// #endif
