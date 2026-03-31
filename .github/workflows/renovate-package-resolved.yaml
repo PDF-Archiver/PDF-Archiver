@@ -53,7 +53,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add ArchiverLib/Package.resolved
+          git add -f ArchiverLib/Package.resolved
           git add PDFArchiver.xcworkspace/xcshareddata/swiftpm/Package.resolved
           git add PDFArchiver.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
           git add Shared/Resources/Settings.bundle/
