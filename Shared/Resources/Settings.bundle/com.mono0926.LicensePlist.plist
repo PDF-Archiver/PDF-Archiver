@@ -62,7 +62,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-composable-architecture</string>
 			<key>Title</key>
-			<string>swift-composable-architecture (1.25.3)</string>
+			<string>swift-composable-architecture (1.25.4)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -110,7 +110,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-perception</string>
 			<key>Title</key>
-			<string>swift-perception (2.0.9)</string>
+			<string>swift-perception (2.0.10)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
