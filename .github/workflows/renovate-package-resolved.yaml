@@ -36,6 +36,8 @@ jobs:
           brew install licenseplist
 
       - name: Update Settings.bundle with licenses
+        env:
+          LICENSE_PLIST_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           license-plist --suppress-opening-directory --add-version-numbers --force --output-path Shared/Resources/Settings.bundle --package-paths ArchiverLib/Package.swift
 
