@@ -18,22 +18,18 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
-      - name: Setup Swift
-        uses: JulianKahnert/setup-swift@patch-1
-        with:
-          swift-version: "6.2"
-
       - name: Delete existing Package.resolved to force regeneration
         run: |
-          rm -f PDFArchiver.xcworkspace/xcshareddata/swiftpm/Package.resolved
-          rm -f PDFArchiver.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+          rm -f ArchiverLib/Package.resolved
 
-      - name: Run swift package resolve
+      - name: Resolve ArchiverLib SPM packages
         run: |
-          xcodebuild -workspace PDFArchiver.xcworkspace -scheme ArchiverLib -resolvePackageDependencies
-          (cd ArchiverLib && swift package resolve)
-          # xcodebuild may not always write the xcworkspace Package.resolved, so copy from ArchiverLib
+          cd ArchiverLib && swift package resolve
+
+      - name: Sync Package.resolved to xcworkspace and xcodeproj
+        run: |
           cp ArchiverLib/Package.resolved PDFArchiver.xcworkspace/xcshareddata/swiftpm/Package.resolved
+          cp ArchiverLib/Package.resolved PDFArchiver.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
 
       - name: Install LicensePlist
         run: |
@@ -41,17 +37,12 @@ jobs:
 
       - name: Update Settings.bundle with licenses
         run: |
-          license-plist --suppress-opening-directory --add-version-numbers --force --output-path Shared/Resources/Settings.bundle --xcworkspace-path PDFArchiver.xcworkspace
-
-      - name: Sync xcodeproj Package.resolved from xcworkspace
-        run: |
-          cp PDFArchiver.xcworkspace/xcshareddata/swiftpm/Package.resolved \
-             PDFArchiver.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+          license-plist --suppress-opening-directory --add-version-numbers --force --output-path Shared/Resources/Settings.bundle --package-paths ArchiverLib/Package.swift
 
       - name: Check for changes in Package.resolved and Settings.bundle
         id: changes
         run: |
-          if git diff --quiet PDFArchiver.xcworkspace/xcshareddata/swiftpm/Package.resolved PDFArchiver.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved Shared/Resources/Settings.bundle/; then
+          if git diff --quiet ArchiverLib/Package.resolved Shared/Resources/Settings.bundle/; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "changed=true" >> $GITHUB_OUTPUT
@@ -62,6 +53,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+          git add ArchiverLib/Package.resolved
           git add PDFArchiver.xcworkspace/xcshareddata/swiftpm/Package.resolved
           git add PDFArchiver.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
           git add Shared/Resources/Settings.bundle/
