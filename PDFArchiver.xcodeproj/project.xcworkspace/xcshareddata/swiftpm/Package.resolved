@@ -1,5 +1,5 @@
 {
-  "originHash" : "869da4e9cfdc13128e2c8f6a9e0a852b144f07cd089e2ea0ae9246831e4323e7",
+  "originHash" : "ed70db2454a888ff476feb02d4cfabcb66faeb9a521dc148e322bb841938fcbe",
   "pins" : [
     {
       "identity" : "asyncextensions",
@@ -61,7 +61,7 @@
       "location" : "https://github.com/pointfreeco/swift-composable-architecture",
       "state" : {
         "revision" : "ce8ee57840b2b46cd6b5cf06ed0526dd1d690126",
-        "version" : "from: "1.25.4""
+        "version" : "1.25.4"
       }
     },
     {
@@ -114,8 +114,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-perception",
       "state" : {
-        "revision" : "4f47ebafed5f0b0172cf5c661454fa8e28fb2ac4",
-        "version" : "2.0.9"
+        "revision" : "25ac73741c3436605d61eceb5207e896973918e7",
+        "version" : "2.0.10"
       }
     },
     {
