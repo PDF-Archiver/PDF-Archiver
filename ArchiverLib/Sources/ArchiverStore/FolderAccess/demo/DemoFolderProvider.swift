@@ -50,6 +50,8 @@ final class DemoFolderProvider: FolderProvider, Log {
         log.debug("delete(url: URL) throws")
     }
 
+    func stop() {}
+
     func rename(from: URL, to: URL) throws {
         log.debug("rename(from: URL, to: URL) throws")
     }

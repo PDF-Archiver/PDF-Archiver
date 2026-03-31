@@ -7,7 +7,6 @@ import Testing
 ///
 /// **Attention:** These tests are skipped, since the current implementation of the `DirectoryDeepWatcher` will trigger too oftern.
 /// We handle this by debouncing these calls.
-@Suite(.serialized)
 @MainActor
 final class DeepDirectoryWatcherTests {
 
@@ -43,7 +42,7 @@ final class DeepDirectoryWatcherTests {
         try? FileManager.default.removeItem(at: tempDir)
     }
 
-    @Test(.enabled(if: false), .timeLimit(.minutes(1)))
+    @Test(.disabled("DirectoryDeepWatcher triggers too often; handled by debouncing"), .timeLimit(.minutes(1)))
     func removeSingleFolder() async throws {
         guard let tempDir else {
             Issue.record("Engine could not find temp folder")
@@ -72,7 +71,7 @@ final class DeepDirectoryWatcherTests {
         watcher = nil
     }
 
-    @Test(.enabled(if: false))
+    @Test(.disabled("DirectoryDeepWatcher triggers too often; handled by debouncing"))
     func removeMultipleFolders() async throws {
         guard let tempDir else {
             Issue.record("Engine could not find temp folder")
@@ -103,8 +102,8 @@ final class DeepDirectoryWatcherTests {
         watcher = nil
     }
 
-    @Test(.enabled(if: false))
-    func testFileRemove() async throws {
+    @Test(.disabled("DirectoryDeepWatcher triggers too often; handled by debouncing"))
+    func fileRemove() async throws {
         guard let tempDir else {
             Issue.record("Engine could not find temp folder")
             return
@@ -131,8 +130,8 @@ final class DeepDirectoryWatcherTests {
         watcher = nil
     }
 
-    @Test(.enabled(if: false))
-    func testFileAdded() async throws {
+    @Test(.disabled("DirectoryDeepWatcher triggers too often; handled by debouncing"))
+    func fileAdded() async throws {
         guard let tempDir else {
             Issue.record("Engine could not find temp folder")
             return

@@ -365,10 +365,6 @@ struct AppView: View {
 
     init(store: StoreOf<AppFeature>) {
         self.store = store
-
-        Task.detached(priority: .background) {
-            await store.send(.onLongBackgroundTask).finish()
-        }
     }
 
     var body: some View {
@@ -429,6 +425,9 @@ struct AppView: View {
             .hidden(horizontalSizeClass == .compact)
         }
         .tabViewStyle(.sidebarAdaptable)
+        .task {
+            await store.send(.onLongBackgroundTask).finish()
+        }
         .apply { content in
             #if os(iOS)
             if #available(iOS 26.0, *) {
@@ -441,9 +440,9 @@ struct AppView: View {
             #endif
         }
         .modifier(AlertDataModelProvider())
-        .modifier(IAP(premiumStatus: $store.premiumStatus))
-        .sheet(isPresented: $store.tutorialShown.flipped) {
-            OnboardingView(isPresented: $store.tutorialShown.flipped)
+        .modifier(IAP(premiumStatus: Binding(store.$premiumStatus)))
+        .sheet(isPresented: Binding(store.$tutorialShown).flipped) {
+            OnboardingView(isPresented: Binding(store.$tutorialShown).flipped)
                 #if os(macOS)
                 .frame(width: 500, height: 400)
                 #endif

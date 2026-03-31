@@ -33,6 +33,8 @@
 		A3708E2F2E774FA3004FC2CF /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = A3708E2C2E774FA3004FC2CF /* AppIcon.icon */; };
 		A3708E322E77555F004FC2CF /* AppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3708E312E77555F004FC2CF /* AppIntent.swift */; };
 		A3708E332E77555F004FC2CF /* AppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3708E312E77555F004FC2CF /* AppIntent.swift */; };
+		A3708E3E2E8E000B004FC2CF /* PDFArchiverShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3708E3D2E8E000B004FC2CF /* PDFArchiverShortcuts.swift */; };
+		A3708E3F2E8E000B004FC2CF /* PDFArchiverShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3708E3D2E8E000B004FC2CF /* PDFArchiverShortcuts.swift */; };
 		A372F4292DE8484800D6E9AA /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A372F4282DE8484800D6E9AA /* WidgetKit.framework */; };
 		A372F42B2DE8484800D6E9AA /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A372F42A2DE8484800D6E9AA /* SwiftUI.framework */; };
 		A372F4392DE8484900D6E9AA /* WidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A372F4272DE8484700D6E9AA /* WidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -152,6 +154,7 @@
 		A3708E2C2E774FA3004FC2CF /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		A3708E302E77538F004FC2CF /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		A3708E312E77555F004FC2CF /* AppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntent.swift; sourceTree = "<group>"; };
+		A3708E3D2E8E000B004FC2CF /* PDFArchiverShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFArchiverShortcuts.swift; sourceTree = "<group>"; };
 		A372F4272DE8484700D6E9AA /* WidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		A372F4282DE8484800D6E9AA /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = /System/Library/Frameworks/WidgetKit.framework; sourceTree = "<absolute>"; };
 		A372F42A2DE8484800D6E9AA /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = /System/Library/Frameworks/SwiftUI.framework; sourceTree = "<absolute>"; };
@@ -262,6 +265,7 @@
 			isa = PBXGroup;
 			children = (
 				A3708E312E77555F004FC2CF /* AppIntent.swift */,
+				A3708E3D2E8E000B004FC2CF /* PDFArchiverShortcuts.swift */,
 				3416B1AC24A9282700D5F4E0 /* Resources */,
 			);
 			path = Shared;
@@ -614,6 +618,7 @@
 			files = (
 				A38256C12C1F552C00416A08 /* PDFArchiverIOSApp.swift in Sources */,
 				A3708E322E77555F004FC2CF /* AppIntent.swift in Sources */,
+				A3708E3E2E8E000B004FC2CF /* PDFArchiverShortcuts.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -623,6 +628,7 @@
 			files = (
 				A3B5D90B2BB37114002B9FF1 /* PDFArchiverMacApp.swift in Sources */,
 				A3708E332E77555F004FC2CF /* AppIntent.swift in Sources */,
+				A3708E3F2E8E000B004FC2CF /* PDFArchiverShortcuts.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -836,7 +842,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.4.1;
+				MARKETING_VERSION = 4.5.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer;
 				PRODUCT_NAME = PDFArchiver;
 				SDKROOT = iphoneos;
@@ -866,7 +872,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.4.1;
+				MARKETING_VERSION = 4.5.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer;
 				PRODUCT_NAME = PDFArchiver;
 				SDKROOT = iphoneos;
@@ -902,7 +908,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 4.4.1;
+				MARKETING_VERSION = 4.5.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer;
 				PRODUCT_NAME = PDFArchiver;
 				REGISTER_APP_GROUPS = YES;
@@ -936,7 +942,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 4.4.1;
+				MARKETING_VERSION = 4.5.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer;
 				PRODUCT_NAME = PDFArchiver;
 				REGISTER_APP_GROUPS = YES;
@@ -961,7 +967,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 4.4.1;
+				MARKETING_VERSION = 4.5.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -989,7 +995,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 4.4.1;
+				MARKETING_VERSION = 4.5.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1071,7 +1077,7 @@
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 4.4.1;
+				MARKETING_VERSION = 4.5.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer.Widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -1115,7 +1121,7 @@
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 4.4.1;
+				MARKETING_VERSION = 4.5.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.JulianKahnert.PDFArchiveViewer.Widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;

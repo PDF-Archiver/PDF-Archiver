@@ -43,8 +43,7 @@ struct SettingsTests {
     func defaultStorageType() async throws {
         let state = Settings.State()
 
-        // Storage type may be nil initially or have a value
-        #expect(state.selectedArchiveType == nil || state.selectedArchiveType != nil)
+        #expect(state.selectedArchiveType == nil)
     }
 
     // MARK: - Navigation Tests
@@ -134,8 +133,7 @@ struct SettingsTests {
     func premiumSectionInitialized() async throws {
         let state = Settings.State()
 
-        // Premium section is always initialized (not optional)
-        #expect(state.premiumSection.premiumStatus == .loading || state.premiumSection.premiumStatus == .active || state.premiumSection.premiumStatus == .inactive)
+        #expect(state.premiumSection.premiumStatus == .inactive)
     }
 
     @Test
@@ -216,8 +214,7 @@ struct SettingsTests {
     func observedFolderURL() async throws {
         let state = Settings.State()
 
-        // Observed folder may be nil initially
-        #expect(state.observedFolderURL == nil || state.observedFolderURL != nil)
+        #expect(state.observedFolderURL == nil)
     }
 
     @Test

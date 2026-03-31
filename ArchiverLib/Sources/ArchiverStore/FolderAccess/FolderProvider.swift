@@ -34,6 +34,8 @@ protocol FolderProvider: AnyObject, Log, Sendable {
 
     init(baseUrl: URL) throws
 
+    func stop()
+
     func save(data: Data, at: URL) throws
     func startDownload(of: URL) throws
     func fetch(url: URL) throws -> Data

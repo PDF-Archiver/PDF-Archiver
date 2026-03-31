@@ -11,38 +11,29 @@ import Testing
 @MainActor
 struct StringExtensionTests {
 
-    @Test
-    func testSlugify() {
-
-        // setup
-        let stringMapping = ["Ä": "Ae",
-                             "Ö": "Oe",
-                             "Ü": "Ue",
-                             "ä": "ae",
-                             "ö": "oe",
-                             "ü": "ue",
-                             "ß": "ss",
-                             "é": "e",
-                             "2017": "2017",
-                             "AbC2017": "AbC2017",
-                             "AbC, 2017 Def": "AbC-2017-Def",
-                             "привет": "",
-                             "Liebe Grüße aus Ovelgönne": "Liebe-Gruesse-aus-Ovelgoenne",
-                             "Hello, ___ this !! is a TEst!?!": "Hello-this-is-a-TEst",
-                             "Hello ---- again!!": "Hello-again"]
-
-        for (raw, slugified) in stringMapping {
-
-            // calculate
-            let newSlugifiedString = raw.slugified()
-
-            // assert
-            #expect(newSlugifiedString == slugified)
-        }
+    @Test(arguments: [
+        ("Ä", "Ae"),
+        ("Ö", "Oe"),
+        ("Ü", "Ue"),
+        ("ä", "ae"),
+        ("ö", "oe"),
+        ("ü", "ue"),
+        ("ß", "ss"),
+        ("é", "e"),
+        ("2017", "2017"),
+        ("AbC2017", "AbC2017"),
+        ("AbC, 2017 Def", "AbC-2017-Def"),
+        ("привет", ""),
+        ("Liebe Grüße aus Ovelgönne", "Liebe-Gruesse-aus-Ovelgoenne"),
+        ("Hello, ___ this !! is a TEst!?!", "Hello-this-is-a-TEst"),
+        ("Hello ---- again!!", "Hello-again"),
+    ])
+    func slugify(input: String, expected: String) {
+        #expect(input.slugified() == expected)
     }
 
     @Test
-    func testCapitalizingFirstLetter() {
+    func capitalizingFirstLetter() {
 
         // setup
         let testString = "test"
@@ -55,7 +46,7 @@ struct StringExtensionTests {
     }
 
     @Test
-    func testCapitalizingFirstLetter2() {
+    func capitalizingFirstLetterMultipleWords() {
 
         // setup
         let testString = "this is another test"
@@ -68,7 +59,7 @@ struct StringExtensionTests {
     }
 
     @Test
-    func testReplacingMethod() {
+    func replacingMethod() {
 
         // setup
         let testString = "Äpfel und Öl"
@@ -82,7 +73,7 @@ struct StringExtensionTests {
     }
 
     @Test
-    func testReplacingWithRegex() {
+    func replacingWithRegex() {
 
         // setup
         let testString = "test--multiple---dashes"
@@ -95,7 +86,7 @@ struct StringExtensionTests {
     }
 
     @Test
-    func testReplacingSpecialCharacters() {
+    func replacingSpecialCharacters() {
 
         // setup
         let testString = "ß test ä ö ü Ä Ö Ü"

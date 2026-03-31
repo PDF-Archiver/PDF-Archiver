@@ -87,7 +87,7 @@ struct ArchiveListTests {
             ArchiveList()
         }
 
-        await store.send(.binding(.set(\.selectedDocumentId, document.id))) {
+        await store.send(.selectionChanged(document.id)) {
             $0.$selectedDocumentId.withLock { $0 = document.id }
             $0.documentDetails = .init(document: Shared(value: document))
         }
@@ -107,7 +107,7 @@ struct ArchiveListTests {
             ArchiveList()
         }
 
-        await store.send(.binding(.set(\.selectedDocumentId, nil))) {
+        await store.send(.selectionChanged(nil)) {
             $0.$selectedDocumentId.withLock { $0 = nil }
             $0.documentDetails = nil
         }

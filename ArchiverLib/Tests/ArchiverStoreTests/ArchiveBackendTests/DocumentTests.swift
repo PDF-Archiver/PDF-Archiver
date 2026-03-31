@@ -27,7 +27,7 @@ struct DocumentTests {
     // MARK: - Test await Document.parseFilename
 
     @Test
-    func testFilenameParsing1() async {
+    func filenameParsing1() async {
 
         // setup
         let path = URL(fileURLWithPath: "~/Downloads/2010-05-12--example-description__tag1_tag2_tag4.pdf")
@@ -42,7 +42,7 @@ struct DocumentTests {
     }
 
     @Test
-    func testFilenameParsing2() async {
+    func filenameParsing2() async {
 
         // setup
         let path = URL(fileURLWithPath: "~/Downloads/2010-05-12__tag1_tag2_tag4.pdf")
@@ -57,7 +57,7 @@ struct DocumentTests {
     }
 
     @Test
-    func testFilenameParsing3() async {
+    func filenameParsing3() async {
 
         // setup
         let path = URL(fileURLWithPath: "~/Downloads/scan 1.pdf")
@@ -72,7 +72,7 @@ struct DocumentTests {
     }
 
     @Test
-    func testFilenameParsing4() async {
+    func filenameParsing4() async {
 
         // setup
         let path = URL(fileURLWithPath: "~/Downloads/2019-09-02--gfwob abrechnung für 2018__hausgeldabrechung_steuer_wohnung.pdf")
@@ -89,7 +89,7 @@ struct DocumentTests {
     // MARK: - Test Document.getRenamingPath
 
     @Test
-    func testDocumentRenaming() async throws {
+    func documentRenaming() async throws {
 
         // setup
         let date = try #require(dateFormatter.date(from: "2010-05-12"))
@@ -102,7 +102,7 @@ struct DocumentTests {
     }
 
     @Test
-    func testDocumentRenamingWithSpaceInDescriptionSlugify() async throws {
+    func documentRenamingWithSpaceInDescriptionSlugify() async throws {
 
         // setup
         let date = try #require(dateFormatter.date(from: "2010-05-12"))
@@ -114,7 +114,7 @@ struct DocumentTests {
     }
 
     @Test
-    func testDocumentRenamingWithFullFilename() async throws {
+    func documentRenamingWithFullFilename() async throws {
 
         // setup
         let date = try #require(dateFormatter.date(from: "2010-05-12"))
@@ -127,7 +127,7 @@ struct DocumentTests {
     }
 
     @Test
-    func testDocumentRenamingWithNoTags() async {
+    func documentRenamingWithNoTags() async {
 
         // setup
         let filename = "scan1.pdf"
@@ -142,7 +142,7 @@ struct DocumentTests {
     }
 
     @Test
-    func testDocumentRenamingWithNoSpecification() async {
+    func documentRenamingWithNoSpecification() async {
 
         // setup
         let filename = "scan1__tag1_tag2.pdf"
@@ -159,7 +159,7 @@ struct DocumentTests {
     // MARK: - Test the whole workflow
 
     @Test
-    func testDocumentNameParsing() async throws {
+    func documentNameParsing() async throws {
 
         // setup some of the testing variables
         let path = URL(fileURLWithPath: "~/Downloads/2010-05-12--example-description__tag1_tag2_tag4.pdf")
@@ -178,7 +178,7 @@ struct DocumentTests {
     }
 
     @Test
-    func testDocumentDateParsingFormat0() async throws {
+    func documentDateParsingFormat0() async throws {
 
         // setup
         let path = URL(fileURLWithPath: "~/Downloads/2010-05-12--example-filename__test.pdf")
@@ -196,7 +196,7 @@ struct DocumentTests {
     }
 
     @Test
-    func testDocumentDateParsingFormat1() async throws {
+    func documentDateParsingFormat1() async throws {
 
         // setup
         let path = URL(fileURLWithPath: "~/Downloads/2010-05-12 example filename.pdf")
@@ -214,7 +214,7 @@ struct DocumentTests {
     }
 
     @Test
-    func testDocumentDateParsingFormat2() async throws {
+    func documentDateParsingFormat2() async throws {
 
         // setup
         let path = URL(fileURLWithPath: "~/Downloads/2010_05_12 example filename.pdf")
@@ -231,7 +231,7 @@ struct DocumentTests {
     }
 
     @Test
-    func testDocumentDateParsingFormat3() async throws {
+    func documentDateParsingFormat3() async throws {
 
         // setup
         let path = URL(fileURLWithPath: "~/Downloads/20100512 example filename.pdf")
@@ -248,7 +248,7 @@ struct DocumentTests {
     }
 
     @Test
-    func testDocumentDateParsingFormat4() async throws {
+    func documentDateParsingFormat4() async throws {
 
         // setup
         let path = URL(fileURLWithPath: "~/Downloads/2010_05_12__15_17.pdf")
@@ -265,7 +265,7 @@ struct DocumentTests {
     }
 
     @Test
-    func testDocumentDateParsingScanSnapFormat() async {
+    func documentDateParsingScanSnapFormat() async {
 
         // setup
         let path = URL(fileURLWithPath: "~/Downloads/2010_05_12_15_17.pdf")
@@ -280,7 +280,7 @@ struct DocumentTests {
     }
 
     @Test
-    func testPlaceholder() async throws {
+    func placeholder() async throws {
 
         // setup
         let date = try #require(dateFormatter.date(from: "2018-05-12"))
@@ -299,7 +299,7 @@ struct DocumentTests {
     }
 
     @Test
-    func testDocumentRenamingPath() async throws {
+    func documentRenamingPath() async throws {
 
         // setup
         let date = try #require(dateFormatter.date(from: "2010-05-12"))

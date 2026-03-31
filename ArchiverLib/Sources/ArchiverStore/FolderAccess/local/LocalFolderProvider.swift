@@ -19,6 +19,7 @@ final class LocalFolderProvider: FolderProvider {
     private let watcher: DirectoryDeepWatcher
     private let fileManager = FileManager.default
     private let fileProperties: [URLResourceKey] = [.ubiquitousItemDownloadingStatusKey, .ubiquitousItemIsDownloadingKey, .fileSizeKey, .localizedNameKey]
+    private var observationTask: Task<Void, Never>?
 
     required init(baseUrl: URL) throws {
         self.baseUrl = baseUrl
@@ -33,13 +34,15 @@ final class LocalFolderProvider: FolderProvider {
 
         self.watcher = try DirectoryDeepWatcher(at: baseUrl)
 
-        Task(priority: .background) {
+        observationTask = Task(priority: .background) { [weak self] in
+            guard let self else { return }
+
             // build initial changes
             let documents = await self.createDocuments()
             self.currentDocumentsStreamContinuation.yield(documents)
 
             // listen to changes in folder
-            // we debouce this because the `DirectoryDeepWatcher` currently triggers too often
+            // we debounce this because the `DirectoryDeepWatcher` currently triggers too often
             for await _ in self.watcher.changedUrlStream.debounce(for: .milliseconds(500)) {
                 let documents = await self.createDocuments()
                 self.currentDocumentsStreamContinuation.yield(documents)
@@ -48,8 +51,14 @@ final class LocalFolderProvider: FolderProvider {
     }
 
     deinit {
+        observationTask?.cancel()
         guard didAccessSecurityScope else { return }
         baseUrl.stopAccessingSecurityScopedResource()
+    }
+
+    func stop() {
+        observationTask?.cancel()
+        observationTask = nil
     }
 
     // MARK: - API
