@@ -1,6 +1,7 @@
 import ArchiverModels
 import ComposableArchitecture
 import Foundation
+import Shared
 import Testing
 
 @testable import ArchiverFeatures
@@ -73,6 +74,7 @@ struct AppFeatureTests {
             AppFeature()
         } withDependencies: {
             $0.widgetStore.updateWidgetWith = { _ in }
+            $0.spotlightStore.updateIndexWith = { _ in }
             $0.archiveStore.startDownloadOf = { _ in }
         }
 
@@ -85,6 +87,7 @@ struct AppFeatureTests {
 
         await store.receive(\.prefetchDocuments)
         await store.receive(\.updateWidget)
+        await store.receive(\.updateSpotlightIndex)
     }
 
     @Test
@@ -100,6 +103,7 @@ struct AppFeatureTests {
             AppFeature()
         } withDependencies: {
             $0.widgetStore.updateWidgetWith = { _ in }
+            $0.spotlightStore.updateIndexWith = { _ in }
             $0.archiveStore.startDownloadOf = { _ in }
         }
 
@@ -113,6 +117,7 @@ struct AppFeatureTests {
 
         await store.receive(\.prefetchDocuments)
         await store.receive(\.updateWidget)
+        await store.receive(\.updateSpotlightIndex)
     }
 
     @Test
@@ -132,6 +137,7 @@ struct AppFeatureTests {
             AppFeature()
         } withDependencies: {
             $0.widgetStore.updateWidgetWith = { _ in }
+            $0.spotlightStore.updateIndexWith = { _ in }
             $0.archiveStore.startDownloadOf = { _ in }
         }
 
@@ -143,6 +149,7 @@ struct AppFeatureTests {
 
         await store.receive(\.prefetchDocuments)
         await store.receive(\.updateWidget)
+        await store.receive(\.updateSpotlightIndex)
     }
 
     // MARK: - Scene Phase Tests
@@ -195,6 +202,84 @@ struct AppFeatureTests {
 
         await store.send(.isLoadingChanged(false)) {
             $0.isDocumentLoading = false
+        }
+    }
+
+    // MARK: - Deep Link Tests
+
+    @Test
+    func deepLinkDocumentIDParsesValidURL() {
+        // swiftlint:disable:next force_unwrapping
+        let url = URL(string: "pdfarchiver://documents/42")!
+        #expect(DeepLink.documentID(from: url) == 42)
+    }
+
+    @Test
+    func deepLinkDocumentIDReturnsNilForWidgetURL() {
+        #expect(DeepLink.documentID(from: DeepLink.tag.url) == nil)
+        #expect(DeepLink.documentID(from: DeepLink.scan.url) == nil)
+    }
+
+    @Test
+    func deepLinkDocumentIDReturnsNilForNonDocumentHost() {
+        // swiftlint:disable:next force_unwrapping
+        let url = URL(string: "pdfarchiver://settings/42")!
+        #expect(DeepLink.documentID(from: url) == nil)
+    }
+
+    @Test
+    func deepLinkDocumentIDReturnsNilForNonNumericID() {
+        // swiftlint:disable:next force_unwrapping
+        let url = URL(string: "pdfarchiver://documents/abc")!
+        #expect(DeepLink.documentID(from: url) == nil)
+    }
+
+    @Test
+    func deepLinkDocumentURLRoundtrip() {
+        let url = DeepLink.documentURL(for: 123)
+        #expect(DeepLink.documentID(from: url) == 123)
+    }
+
+    // MARK: - Open Document URL Tests
+
+    @Test
+    func onOpenDocumentURLSelectsDocument() async throws {
+        let currentYear = Calendar.current.component(.year, from: Date())
+        // swiftlint:disable:next force_unwrapping
+        let document = Document.mock(url: URL(string: "https://example.com/doc1")!, specification: "invoice", isTagged: true)
+
+        let store = TestStore(initialState: AppFeature.State(selectedTab: .inbox)) {
+            AppFeature()
+        } withDependencies: {
+            $0.widgetStore.updateWidgetWith = { _ in }
+            $0.spotlightStore.updateIndexWith = { _ in }
+        }
+
+        await store.send(.documentsChanged([document])) {
+            $0.$documents.withLock { $0 = [document] }
+            $0.tabYearSuggestions = [currentYear]
+            $0.archiveList.searchSuggestedTokens = [.year(currentYear)]
+        }
+
+        await store.receive(\.prefetchDocuments)
+        await store.receive(\.updateWidget)
+        await store.receive(\.updateSpotlightIndex)
+
+        await store.send(.onOpenDocumentURL(document.id)) {
+            $0.selectedTab = .search
+            $0.archiveList.documentDetails = .init(document: Shared(value: document))
+            $0.archiveList.$selectedDocumentId.withLock { $0 = document.id }
+        }
+    }
+
+    @Test
+    func onOpenDocumentURLIgnoresUnknownID() async throws {
+        let store = TestStore(initialState: AppFeature.State(selectedTab: .inbox)) {
+            AppFeature()
+        }
+
+        await store.send(.onOpenDocumentURL(999)) {
+            $0.selectedTab = .search
         }
     }
 

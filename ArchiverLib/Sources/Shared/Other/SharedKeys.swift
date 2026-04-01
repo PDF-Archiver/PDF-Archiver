@@ -190,9 +190,11 @@ public extension SharedKey where Self == InMemoryKey<Int?> {
 
 // MARK: file storage
 
+public let documentsFileURL = URL.temporaryDirectory.appending(component: "documents.json")
+
 public extension SharedKey where Self == FileStorageKey<IdentifiedArrayOf<Document>> {
   static var documents: Self {
-      fileStorage(.temporaryDirectory.appending(component: "documents.json"))
+      fileStorage(documentsFileURL)
   }
 }
 

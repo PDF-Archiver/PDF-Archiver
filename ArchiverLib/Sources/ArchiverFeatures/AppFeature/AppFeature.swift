@@ -7,6 +7,7 @@
 
 import ArchiverModels
 import ComposableArchitecture
+import CoreSpotlight
 import OSLog
 import Shared
 import SwiftUI
@@ -62,10 +63,12 @@ struct AppFeature {
         case documentsChanged([Document])
         case isLoadingChanged(Bool)
         case onLongBackgroundTask
+        case onOpenDocumentURL(Document.ID)
         case onScenePhaseChanged(old: ScenePhase, new: ScenePhase)
         case onWidgetTagTapped
         case untaggedDocumentList(UntaggedDocumentList.Action)
         case updateWidget([Document])
+        case updateSpotlightIndex([Document])
         case prefetchDocuments([Document])
         case statistics(Statistics.Action)
         case settings(Settings.Action)
@@ -74,6 +77,7 @@ struct AppFeature {
     @Dependency(\.documentProcessor) var documentProcessor
     @Dependency(\.archiveStore) var archiveStore
     @Dependency(\.widgetStore) var widgetStore
+    @Dependency(\.spotlightStore) var spotlightStore
     @Dependency(\.contentExtractorStore) var contentExtractorStore
     @Dependency(\.textAnalyser) var textAnalyser
 
@@ -211,7 +215,8 @@ struct AppFeature {
 
                 return .concatenate(
                     .send(.prefetchDocuments(untaggedRemoteDocuments)),
-                    .send(.updateWidget(documents))
+                    .send(.updateWidget(documents)),
+                    .send(.updateSpotlightIndex(documents))
                 )
 
             case .isLoadingChanged(let isLoading):
@@ -288,6 +293,19 @@ struct AppFeature {
             case .onWidgetTagTapped:
                 state.selectedTab = .inbox
                 return .none
+
+            case .onOpenDocumentURL(let documentId):
+                state.selectedTab = .search
+                if let document = Shared(state.$documents[id: documentId]) {
+                    state.archiveList.documentDetails = .init(document: document)
+                    state.archiveList.$selectedDocumentId.withLock { $0 = documentId }
+                }
+                return .none
+
+            case .updateSpotlightIndex(let documents):
+                return .run { _ in
+                    await spotlightStore.updateIndexWith(documents)
+                }
 
             case .untaggedDocumentList(.delegate(let delegateAction)):
                 switch delegateAction {
@@ -456,7 +474,15 @@ struct AppView: View {
                 store.send(.onWidgetTagTapped)
 
             default:
-                break
+                if let documentId = DeepLink.documentID(from: url) {
+                    store.send(.onOpenDocumentURL(documentId))
+                }
+            }
+        }
+        .onContinueUserActivity(CSSearchableItemActionType) { activity in
+            if let identifierString = activity.userInfo?[CSSearchableItemActivityIdentifier] as? String,
+               let documentId = Int(identifierString) {
+                store.send(.onOpenDocumentURL(documentId))
             }
         }
     }

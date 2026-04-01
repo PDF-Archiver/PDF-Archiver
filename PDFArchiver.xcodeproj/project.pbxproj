@@ -36,6 +36,12 @@
 		A3708E332E77555F004FC2CF /* AppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3708E312E77555F004FC2CF /* AppIntent.swift */; };
 		A3708E3E2E8E000B004FC2CF /* PDFArchiverShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3708E3D2E8E000B004FC2CF /* PDFArchiverShortcuts.swift */; };
 		A3708E3F2E8E000B004FC2CF /* PDFArchiverShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3708E3D2E8E000B004FC2CF /* PDFArchiverShortcuts.swift */; };
+		A3708E412E9F000000000001 /* DocumentEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3708E402E9F000000000001 /* DocumentEntity.swift */; };
+		A3708E422E9F000000000001 /* DocumentEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3708E402E9F000000000001 /* DocumentEntity.swift */; };
+		A3708E442E9F000000000002 /* DocumentEntityQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3708E432E9F000000000002 /* DocumentEntityQuery.swift */; };
+		A3708E452E9F000000000002 /* DocumentEntityQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3708E432E9F000000000002 /* DocumentEntityQuery.swift */; };
+		A3708E472E9F000000000003 /* OpenDocumentIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3708E462E9F000000000003 /* OpenDocumentIntent.swift */; };
+		A3708E482E9F000000000003 /* OpenDocumentIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3708E462E9F000000000003 /* OpenDocumentIntent.swift */; };
 		A372F4292DE8484800D6E9AA /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A372F4282DE8484800D6E9AA /* WidgetKit.framework */; };
 		A372F42B2DE8484800D6E9AA /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A372F42A2DE8484800D6E9AA /* SwiftUI.framework */; };
 		A372F4392DE8484900D6E9AA /* WidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A372F4272DE8484700D6E9AA /* WidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -157,6 +163,9 @@
 		A3708E302E77538F004FC2CF /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		A3708E312E77555F004FC2CF /* AppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntent.swift; sourceTree = "<group>"; };
 		A3708E3D2E8E000B004FC2CF /* PDFArchiverShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFArchiverShortcuts.swift; sourceTree = "<group>"; };
+		A3708E402E9F000000000001 /* DocumentEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentEntity.swift; sourceTree = "<group>"; };
+		A3708E432E9F000000000002 /* DocumentEntityQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentEntityQuery.swift; sourceTree = "<group>"; };
+		A3708E462E9F000000000003 /* OpenDocumentIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenDocumentIntent.swift; sourceTree = "<group>"; };
 		A372F4272DE8484700D6E9AA /* WidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		A372F4282DE8484800D6E9AA /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = /System/Library/Frameworks/WidgetKit.framework; sourceTree = "<absolute>"; };
 		A372F42A2DE8484800D6E9AA /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = /System/Library/Frameworks/SwiftUI.framework; sourceTree = "<absolute>"; };
@@ -268,6 +277,9 @@
 			children = (
 				A3708E312E77555F004FC2CF /* AppIntent.swift */,
 				A3708E3D2E8E000B004FC2CF /* PDFArchiverShortcuts.swift */,
+				A3708E402E9F000000000001 /* DocumentEntity.swift */,
+				A3708E432E9F000000000002 /* DocumentEntityQuery.swift */,
+				A3708E462E9F000000000003 /* OpenDocumentIntent.swift */,
 				3416B1AC24A9282700D5F4E0 /* Resources */,
 			);
 			path = Shared;
@@ -622,6 +634,9 @@
 				A38256C12C1F552C00416A08 /* PDFArchiverIOSApp.swift in Sources */,
 				A3708E322E77555F004FC2CF /* AppIntent.swift in Sources */,
 				A3708E3E2E8E000B004FC2CF /* PDFArchiverShortcuts.swift in Sources */,
+				A3708E412E9F000000000001 /* DocumentEntity.swift in Sources */,
+				A3708E442E9F000000000002 /* DocumentEntityQuery.swift in Sources */,
+				A3708E472E9F000000000003 /* OpenDocumentIntent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -633,6 +648,9 @@
 				A30BCBE22F7B05EB005185F8 /* ContentExtractorStorePlayground.swift in Sources */,
 				A3708E332E77555F004FC2CF /* AppIntent.swift in Sources */,
 				A3708E3F2E8E000B004FC2CF /* PDFArchiverShortcuts.swift in Sources */,
+				A3708E422E9F000000000001 /* DocumentEntity.swift in Sources */,
+				A3708E452E9F000000000002 /* DocumentEntityQuery.swift in Sources */,
+				A3708E482E9F000000000003 /* OpenDocumentIntent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
