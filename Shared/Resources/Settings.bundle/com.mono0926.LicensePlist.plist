@@ -38,7 +38,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-case-paths</string>
 			<key>Title</key>
-			<string>swift-case-paths (1.7.2)</string>
+			<string>swift-case-paths (1.7.3)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -62,7 +62,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-composable-architecture</string>
 			<key>Title</key>
-			<string>swift-composable-architecture (1.25.4)</string>
+			<string>swift-composable-architecture (1.25.5)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -102,7 +102,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-navigation</string>
 			<key>Title</key>
-			<string>swift-navigation (2.7.0)</string>
+			<string>swift-navigation (2.8.0)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -126,7 +126,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-syntax</string>
 			<key>Title</key>
-			<string>swift-syntax (602.0.0)</string>
+			<string>swift-syntax (603.0.0)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>

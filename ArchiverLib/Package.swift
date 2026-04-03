@@ -17,7 +17,7 @@ let package = Package(
             targets: ["Shared"])
     ],
     dependencies: [
-        .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.25.4"),
+        .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.25.5"),
         .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.12.0"),
         .package(url: "https://github.com/pointfreeco/swift-sharing", from: "2.8.0"),
         .package(url: "https://github.com/sideeffect-io/AsyncExtensions", from: "0.5.5"),
