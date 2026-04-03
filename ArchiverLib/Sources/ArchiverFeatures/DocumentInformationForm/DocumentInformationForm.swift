@@ -106,9 +106,7 @@ struct DocumentInformationForm {
     var body: some ReducerOf<Self> {
         BindingReducer()
             .onChange(of: \.tagSearchterm) { _, _ in
-                Reduce { _, _ in
-                    return .send(.startUpdatingTagSuggestions)
-                }
+                .send(.startUpdatingTagSuggestions)
             }
 
         Reduce { state, action in

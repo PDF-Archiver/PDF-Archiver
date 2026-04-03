@@ -21,7 +21,7 @@ extension Transcript.Entry {
     }
 }
 
-//let text = "Bill of a blue hoddie from tom tailor"
+// let text = "Bill of a blue hoddie from tom tailor"
 let text = """
     TOM TAILOR
     TOM TAILOR Retail GmbH
@@ -74,7 +74,7 @@ let text = """
 
     let response = try await store.extract(from: text, with: documents)
 
-    print(response?.specification)
-    print(response?.tags)
+    print(response?.specification ?? "")
+    print(response?.tags ?? [])
 }
 #endif

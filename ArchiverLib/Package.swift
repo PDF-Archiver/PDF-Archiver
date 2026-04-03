@@ -17,11 +17,16 @@ let package = Package(
             targets: ["Shared"])
     ],
     dependencies: [
-        .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.25.5"),
-        .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.12.0"),
-        .package(url: "https://github.com/pointfreeco/swift-sharing", from: "2.8.0"),
-        .package(url: "https://github.com/sideeffect-io/AsyncExtensions", from: "0.5.5"),
-        .package(url: "https://github.com/apple/swift-async-algorithms", from: "1.1.3")
+        .package(url: "https://github.com/pointfreeco/swift-composable-architecture",
+                 exact: "1.25.5",
+                 traits: [
+                    "ComposableArchitecture2Deprecations",
+                    "ComposableArchitecture2DeprecationOverloads"
+                 ]),
+        .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "1.12.0"),
+        .package(url: "https://github.com/pointfreeco/swift-sharing", exact: "2.8.0"),
+        .package(url: "https://github.com/sideeffect-io/AsyncExtensions", exact: "0.5.5"),
+        .package(url: "https://github.com/apple/swift-async-algorithms", exact: "1.1.3")
     ],
     targets: [
         .target(name: "ArchiverFeatures",

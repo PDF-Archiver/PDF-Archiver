@@ -209,10 +209,10 @@ struct AppFeature {
 
                 let untaggedRemoteDocuments = untaggedDocuments.filter { !$0.isTagged && $0.downloadStatus == 0 }
 
-                return .concatenate(
-                    .send(.prefetchDocuments(untaggedRemoteDocuments)),
-                    .send(.updateWidget(documents))
-                )
+                return .run { [documents] send in
+                    await send(.prefetchDocuments(untaggedRemoteDocuments))
+                    await send(.updateWidget(documents))
+                }
 
             case .isLoadingChanged(let isLoading):
                 state.isDocumentLoading = isLoading

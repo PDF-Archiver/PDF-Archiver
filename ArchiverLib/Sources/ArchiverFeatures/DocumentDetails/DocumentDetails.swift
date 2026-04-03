@@ -168,7 +168,7 @@ struct DocumentDetailsView: View {
                     }
             }
         }
-        .alert($store.scope(state: \.alert, action: \.alert))
+        .alert($store.scope(state: \.$alert, action: \.alert))
 #if os(iOS)
         .sheet(item: $store.shareDocument) { shareDocument in
             ShareSheet(title: shareDocument.title, url: shareDocument.url)
