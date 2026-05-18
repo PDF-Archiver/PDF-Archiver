@@ -1,5 +1,5 @@
 {
-  "originHash" : "70e154d5775fb65eb7f3fabf884d66d1749d19ef73a18c680b8dcd66f6de7f71",
+  "originHash" : "7a2e8ee30d4f5c425a584d38b6573129d86fbd92f75f1349f34943d35d14286c",
   "pins" : [
     {
       "identity" : "asyncextensions",
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/combine-schedulers",
       "state" : {
-        "revision" : "fd16d76fd8b9a976d88bfb6cacc05ca8d19c91b6",
-        "version" : "1.1.0"
+        "revision" : "dcccb979a2183b8df3334237e3dc1ae2b4116a86",
+        "version" : "1.2.0"
       }
     },
     {
@@ -51,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-collections.git",
       "state" : {
-        "revision" : "6675bc0ff86e61436e615df6fc5174e043e57924",
-        "version" : "1.4.1"
+        "revision" : "fea17c02d767f46b23070fdfdacc28a03a39232a",
+        "version" : "1.5.1"
       }
     },
     {
@@ -132,8 +132,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-syntax",
       "state" : {
-        "revision" : "2b59c0c741e9184ab057fd22950b491076d42e91",
-        "version" : "603.0.0"
+        "revision" : "9de99a78f099e59caf2b2beec65a4c45d54b2081",
+        "version" : "603.0.1"
       }
     },
     {
