@@ -1,5 +1,5 @@
 {
-  "originHash" : "7a2e8ee30d4f5c425a584d38b6573129d86fbd92f75f1349f34943d35d14286c",
+  "originHash" : "bb4c673c3f0c691f7bc25449f69fd550f53d4738f5ea9aed080e30d898951783",
   "pins" : [
     {
       "identity" : "asyncextensions",
@@ -17,6 +17,15 @@
       "state" : {
         "revision" : "dcccb979a2183b8df3334237e3dc1ae2b4116a86",
         "version" : "1.2.0"
+      }
+    },
+    {
+      "identity" : "opencombine",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/OpenCombine/OpenCombine.git",
+      "state" : {
+        "revision" : "8576f0d579b27020beccbccc3ea6844f3ddfc2c2",
+        "version" : "0.14.0"
       }
     },
     {
@@ -87,8 +96,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-dependencies",
       "state" : {
-        "revision" : "706feb7858a7f6c242879d137b8ee30926aa5b26",
-        "version" : "1.12.0"
+        "revision" : "f80552807ec92f72fe3fe4543d71879182b0bfd5",
+        "version" : "1.13.0"
       }
     },
     {
