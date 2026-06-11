@@ -45,6 +45,7 @@ enum SnapshotError: Error, CustomDebugStringConvertible {
         switch self {
         case .cannotFindSimulatorHomeDirectory:
             return "Couldn't find simulator home location. Please, check SIMULATOR_HOST_HOME env variable."
+
         case .cannotRunOnPhysicalDevice:
             return "Can't use Snapshot on a physical device."
         }
@@ -62,16 +63,16 @@ open class Snapshot: NSObject {
 
     open class func setupSnapshot(_ app: XCUIApplication, waitForAnimations: Bool = true) {
 
-        Snapshot.app = app
-        Snapshot.waitForAnimations = waitForAnimations
+        Self.app = app
+        Self.waitForAnimations = waitForAnimations
 
         do {
             let cacheDir = try getCacheDirectory()
-            Snapshot.cacheDirectory = cacheDir
+            Self.cacheDirectory = cacheDir
             setLanguage(app)
             setLocale(app)
             setLaunchArguments(app)
-        } catch let error {
+        } catch {
             NSLog(error.localizedDescription)
         }
     }
@@ -108,7 +109,7 @@ open class Snapshot: NSObject {
             NSLog("Couldn't detect/set locale...")
         }
 
-        if locale.isEmpty && !deviceLanguage.isEmpty {
+        if locale.isEmpty, !deviceLanguage.isEmpty {
             locale = Locale(identifier: deviceLanguage).identifier
         }
 
@@ -146,7 +147,7 @@ open class Snapshot: NSObject {
 
         NSLog("snapshot: \(name)") // more information about this, check out https://docs.fastlane.tools/actions/snapshot/#how-does-it-work
 
-        if Snapshot.waitForAnimations {
+        if Self.waitForAnimations {
             sleep(1) // Waiting for the animation to be finished (kind of)
         }
 
@@ -181,7 +182,7 @@ open class Snapshot: NSObject {
 
                 let path = screenshotsDir.appendingPathComponent("\(simulator)-\(name).png")
                 try image.pngData()?.write(to: path, options: .atomic)
-            } catch let error {
+            } catch {
                 NSLog("Problem writing screenshot: \(name) to \(screenshotsDir)/\(simulator)-\(name).png")
                 NSLog(error.localizedDescription)
             }
@@ -264,7 +265,7 @@ private extension XCUIElementAttributes {
 
 private extension XCUIElementQuery {
     var networkLoadingIndicators: XCUIElementQuery {
-        let isNetworkLoadingIndicator = NSPredicate { (evaluatedObject, _) in
+        let isNetworkLoadingIndicator = NSPredicate { evaluatedObject, _ in
             guard let element = evaluatedObject as? XCUIElementAttributes else { return false }
 
             return element.isNetworkLoadingIndicator
@@ -280,7 +281,7 @@ private extension XCUIElementQuery {
 
         let deviceWidth = app.windows.firstMatch.frame.width
 
-        let isStatusBar = NSPredicate { (evaluatedObject, _) in
+        let isStatusBar = NSPredicate { evaluatedObject, _ in
             guard let element = evaluatedObject as? XCUIElementAttributes else { return false }
 
             return element.isStatusBar(deviceWidth)

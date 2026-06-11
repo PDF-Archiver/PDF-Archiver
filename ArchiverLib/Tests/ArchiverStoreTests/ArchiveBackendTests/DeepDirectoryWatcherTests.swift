@@ -17,7 +17,7 @@ final class DeepDirectoryWatcherTests {
     init() throws {
         tempDir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
 
-        guard let tempDir = tempDir else {
+        guard let tempDir else {
             Issue.record("TempDir could not be created.")
             return
         }
@@ -38,7 +38,7 @@ final class DeepDirectoryWatcherTests {
 
     deinit {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
-        guard let tempDir = tempDir else { return }
+        guard let tempDir else { return }
         try? FileManager.default.removeItem(at: tempDir)
     }
 

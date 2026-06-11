@@ -29,7 +29,7 @@ public struct TagListView: View {
         if isMultiLine {
             WrappingHStack(alignment: .leading) {
                 ForEach(tags, id: \.self) { tagName in
-                    TagView(tagName: tagName, isEditable: self.isEditable, isSuggestion: self.isSuggestion, tapHandler: self.tapHandler)
+                    TagView(tagName: tagName, isEditable: isEditable, isSuggestion: isSuggestion, tapHandler: tapHandler)
                 }
             }
         } else {
@@ -41,9 +41,9 @@ public struct TagListView: View {
         HStack {
             ForEach(tags.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }, id: \.self) { tagName in
                 TagView(tagName: tagName,
-                        isEditable: self.isEditable,
-                        isSuggestion: self.isSuggestion,
-                        tapHandler: self.tapHandler)
+                        isEditable: isEditable,
+                        isSuggestion: isSuggestion,
+                        tapHandler: tapHandler)
             }
         }
     }

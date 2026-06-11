@@ -15,7 +15,7 @@ struct PDFInfoView: View {
     @State private var pdfInfo: PDFInfo?
     @State private var showPopover = false
 
-    private static func createPdfInfo(from url: URL) async -> PDFInfo {
+    private static func createPdfInfo(from url: URL) -> PDFInfo {
         let pdf = PDFDocument(url: url)
         let meta = pdf?.documentAttributes
 
@@ -143,7 +143,6 @@ extension PDFInfoView {
                         value: date.formatted(date: .abbreviated, time: .shortened)
                     )
                 }
-
             }
             .frame(width: 250)
             .padding(8)

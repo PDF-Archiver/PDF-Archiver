@@ -144,12 +144,16 @@ struct AppFeature {
                 switch state.selectedTab {
                 case .search:
                     state.archiveList.searchTokens = []
+
                 case .sectionTags(let tag):
                     state.archiveList.searchTokens = [.tag(tag)]
+
                 case .sectionYears(let year):
                     state.archiveList.searchTokens = [.year(year)]
+
                 case .inbox, .statistics:
                     break
+
                 #if os(iOS)
                 case .settings:
                     break
@@ -167,11 +171,11 @@ struct AppFeature {
                 state.$documents.withLock { $0 = IdentifiedArrayOf(uniqueElements: documents) }
 
                 let taggedDocuments = documents
-                    .filter { $0.isTagged }
+                    .filter(\.isTagged)
 
                 // create year suggestions
                 let years = taggedDocuments
-                    .reduce(into: Set<Int>()) { (result, document) in
+                    .reduce(into: Set<Int>()) { result, document in
                         result.insert(Calendar.current.component(.year, from: document.date))
                     }
                     .sorted()
@@ -244,7 +248,7 @@ struct AppFeature {
                             }
                         }
                         // Background cache processing for untagged documents
-                        if appleIntelligenceEnabled && cacheEnabled {
+                        if appleIntelligenceEnabled, cacheEnabled {
                             group.addTask(priority: .background) {
                                 // Wait a bit before starting cache processing to let the app stabilize
                                 try? await Task.sleep(for: .seconds(10))
@@ -327,7 +331,6 @@ struct AppFeature {
 
             case .statistics:
                 return .none
-
             }
         }
     }

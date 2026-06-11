@@ -13,14 +13,17 @@ disabled_rules: # rule identifiers to exclude from running
   - trailing_comma
 
 opt_in_rules:
+  - async_without_await
   - closure_end_indentation
   - closure_spacing
   - convenience_type
+  - direct_return
   - empty_count
   - empty_string
   - explicit_init
   - fallthrough
   - fatal_error_message
+  - final_test_case
   - first_where
   - force_unwrapping
   - identical_operands
@@ -32,15 +35,29 @@ opt_in_rules:
   - multiline_arguments
   - multiline_parameters
   - operator_usage_whitespace
+  - optional_enum_case_matching
   - overridden_super_call
+  - prefer_condition_list
+  - prefer_key_path
+  - prefer_zero_over_explicit_init
   - private_action
+  - private_swiftui_state
   # - private_outlet
   - redundant_nil_coalescing
+  - redundant_self
   - redundant_type_annotation
+  - return_value_from_void_function
+  - self_binding
+  - shorthand_optional_binding
   - sorted_first_last
   - sorted_imports
+  - test_case_accessibility
   - toggle_bool
   - unavailable_function
+  - unneeded_parentheses_in_closure_argument
+  - untyped_error_in_catch
+  - vertical_whitespace_between_cases
+  - vertical_whitespace_closing_braces
   - yoda_condition
 
 nesting:

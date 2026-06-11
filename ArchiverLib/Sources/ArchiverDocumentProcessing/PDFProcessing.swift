@@ -63,6 +63,7 @@ final class PDFProcessingOperation: AsyncOperation {
 
                 // apply OCR and create a PDF
                 document = try await createPdf(from: images)
+
             case .pdf(let pdfData, let pdfUrl):
                 url = pdfUrl
 
@@ -146,9 +147,9 @@ final class PDFProcessingOperation: AsyncOperation {
             guard let cgImage = image.cgImage else { fatalError("Could not get cgImage") }
             let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
             var detectTextRectangleObservations = [VNTextObservation]()
-            let textBoxRequests = VNDetectTextRectanglesRequest { (request, error) in
+            let textBoxRequests = VNDetectTextRectanglesRequest { request, error in
 
-                if let error = error {
+                if let error {
                     Logger.documentProcessing.errorAndAssert("Error in text recognition.", metadata: ["error": "\(error)"])
                     return
                 }
@@ -169,9 +170,9 @@ final class PDFProcessingOperation: AsyncOperation {
                 if let cgImage = cgImage.cropping(to: textBox) {
 
                     // text recognition (OCR)
-                    let textRecognitionRequest = VNRecognizeTextRequest { (request, error) in
+                    let textRecognitionRequest = VNRecognizeTextRequest { request, error in
 
-                        if let error = error {
+                        if let error {
                             Logger.documentProcessing.errorAndAssert("Error in text recognition.", metadata: ["error": "\(error)"])
                             return
                         }
@@ -203,9 +204,7 @@ final class PDFProcessingOperation: AsyncOperation {
         }
 
         // save the pdf
-        let document = await Self.renderPdf(from: textObservations)
-
-        return document
+        return await Self.renderPdf(from: textObservations)
     }
 
     private static func renderPdf(from observations: [TextObservation]) async -> PDFDocument {
@@ -337,7 +336,6 @@ final class PDFProcessingOperation: AsyncOperation {
         let image: PlatformImage
         let results: [TextObservationResult]
     }
-
 }
 
 extension Font {
@@ -363,7 +361,7 @@ extension NSAttributedString {
     fileprivate static func createCleared(from text: String, with size: CGSize) -> NSAttributedString {
 
         let fontName = Font.systemFont(ofSize: 0).fontName
-        var attributes: [NSAttributedString.Key: Any] = [NSAttributedString.Key.foregroundColor: Color.clear]
+        var attributes: [NSAttributedString.Key: Any] = [Self.Key.foregroundColor: Color.clear]
         let theFont = Font(named: fontName, fitting: text, into: size, with: attributes, options: .usesFontLeading)
         attributes[.font] = theFont
         let actualWidth = NSAttributedString(string: text, attributes: attributes).size()
@@ -372,7 +370,7 @@ extension NSAttributedString {
         // char will work
         // swiftlint:disable:next identifier_name
         let em = actualWidth.width / CGFloat(text.count)
-        attributes[NSAttributedString.Key.expansion] = log(size.width / (actualWidth.width + em / 4))
+        attributes[Self.Key.expansion] = log(size.width / (actualWidth.width + em / 4))
 
         return NSAttributedString(string: text, attributes: attributes)
     }

@@ -113,7 +113,7 @@ extension ObservedFolderCustomSharedKey {
 
 fileprivate extension UserDefaults {
     func setObject<T: Encodable>(_ object: T?, forKey key: String) throws {
-        guard let object = object else {
+        guard let object else {
             set(nil, forKey: key)
             return
         }

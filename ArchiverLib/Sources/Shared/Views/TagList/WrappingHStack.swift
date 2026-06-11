@@ -76,7 +76,7 @@ public struct WrappingHStack: @preconcurrency Layout {
 
         if rows.isEmpty { return cache.minSize }
 
-        var width: CGFloat = rows.map { $0.width }.reduce(.zero) { max($0, $1) }
+        var width: CGFloat = rows.map(\.width).reduce(.zero) { max($0, $1) }
 
         if !fitContentWidth, let proposalWidth = proposal.width {
             width = max(width, proposalWidth)
@@ -237,20 +237,28 @@ extension UnitPoint {
         switch alignment {
         case .leading:
             self = .leading
+
         case .topLeading:
             self = .topLeading
+
         case .top:
             self = .top
+
         case .topTrailing:
             self = .topTrailing
+
         case .trailing:
             self = .trailing
+
         case .bottomTrailing:
             self = .bottomTrailing
+
         case .bottom:
             self = .bottom
+
         case .bottomLeading:
             self = .bottomLeading
+
         default:
             self = .center
         }

@@ -29,7 +29,7 @@ actor BackgroundProcessingActor<OperationType: AsyncOperation> {
         }
     }
 
-    private func add(_ operation: OperationType) async {
+    private func add(_ operation: OperationType) {
         // the startupTask should be completed before running tasks
         if processingTask == nil {
             startProcessing()

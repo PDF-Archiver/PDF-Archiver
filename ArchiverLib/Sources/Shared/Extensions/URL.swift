@@ -44,7 +44,7 @@ public extension URL {
 
     private func getiOSFileTags() throws -> [String] {
         var tags = [String]()
-        let data = try self.getExtendedAttribute(forName: URL.itemUserTagsName)
+        let data = try self.getExtendedAttribute(forName: Self.itemUserTagsName)
         if let tagPlist = try PropertyListSerialization.propertyList(from: data, options: [], format: nil) as? [String] {
             tags = tagPlist
         } else if let newTags = try NSKeyedUnarchiver.unarchivedArrayOfObjects(ofClass: NSString.self, from: data) as? [String] {
@@ -52,16 +52,14 @@ public extension URL {
         }
 
         // some lokal tags are saved with a "\n0" or "\n1" suffix, e.g. "ikea\n1"
-        let fixedTags = tags
+        return tags
             .compactMap { $0.split(separator: "\n").first }
             .map { String($0) }
-
-        return fixedTags
     }
 
     private func setiOSFileTags(_ fileTags: [String]) throws {
         let data = try NSKeyedArchiver.archivedData(withRootObject: fileTags, requiringSecureCoding: false)
-        try setExtendedAttribute(data: data, forName: URL.itemUserTagsName)
+        try setExtendedAttribute(data: data, forName: Self.itemUserTagsName)
     }
 
     /// Get extended attribute.
@@ -70,10 +68,10 @@ public extension URL {
         if !follow {
             options = options | XATTR_NOFOLLOW
         }
-        let data = try withUnsafeFileSystemRepresentation { fileSystemPath -> Data in
+        return try withUnsafeFileSystemRepresentation { fileSystemPath -> Data in
             // Determine attribute size:
             let length = getxattr(fileSystemPath, name, nil, 0, 0, options)
-            guard length >= 0 else { throw URL.posixError(errno) }
+            guard length >= 0 else { throw Self.posixError(errno) }
 
             // Create buffer with required size:
             var data = Data(count: length)
@@ -82,10 +80,9 @@ public extension URL {
             let result = data.withUnsafeMutableBytes { [count = data.count] in
                 getxattr(fileSystemPath, name, $0.baseAddress, count, 0, 0)
             }
-            guard result >= 0 else { throw URL.posixError(errno) }
+            guard result >= 0 else { throw Self.posixError(errno) }
             return data
         }
-        return data
     }
 
     /// Set extended attribute.
@@ -98,7 +95,7 @@ public extension URL {
             let result = data.withUnsafeBytes {
                 setxattr(fileSystemPath, name, $0.baseAddress, data.count, 0, options)
             }
-            guard result >= 0 else { throw URL.posixError(errno) }
+            guard result >= 0 else { throw Self.posixError(errno) }
         }
     }
 

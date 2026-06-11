@@ -29,7 +29,7 @@ nonisolated public enum DateParser: Log {
 
             var uniqueUnorderedResults = Set<String>()
             return zip(dates, dateString)
-                .filter { (_, dateString) in
+                .filter { _, dateString in
                     uniqueUnorderedResults.insert(dateString).inserted
                 }
                 .map(\.0)

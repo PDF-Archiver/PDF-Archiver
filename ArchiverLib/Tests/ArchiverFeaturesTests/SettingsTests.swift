@@ -10,7 +10,7 @@ struct SettingsTests {
     // MARK: - PDF Quality Tests
 
     @Test
-    func defaultPdfQuality() async throws {
+    func defaultPdfQuality() throws {
         let state = Settings.State()
 
         // PDF quality should have a default value from @Shared
@@ -18,7 +18,7 @@ struct SettingsTests {
     }
 
     @Test
-    func pdfQualityNames() async throws {
+    func pdfQualityNames() throws {
         #expect(PDFQuality.lossless.name == "100% - Lossless")
         #expect(PDFQuality.good.name == "75% - Good (Default)")
         #expect(PDFQuality.normal.name == "50% - Normal")
@@ -28,7 +28,7 @@ struct SettingsTests {
     // MARK: - Storage Type Tests
 
     @Test
-    func storageTypeTitles() async throws {
+    func storageTypeTitles() throws {
         #if os(macOS)
         #expect(StorageType.iCloudDrive.title == "iCloud Drive")
         #expect(StorageType.local(URL(fileURLWithPath: "/test")).title == "Drive")
@@ -40,7 +40,7 @@ struct SettingsTests {
     }
 
     @Test
-    func defaultStorageType() async throws {
+    func defaultStorageType() throws {
         let state = Settings.State()
 
         #expect(state.selectedArchiveType == nil)
@@ -130,7 +130,7 @@ struct SettingsTests {
     // MARK: - Premium Section Tests
 
     @Test
-    func premiumSectionInitialized() async throws {
+    func premiumSectionInitialized() throws {
         let state = Settings.State()
 
         #expect(state.premiumSection.premiumStatus == .inactive)
@@ -158,7 +158,7 @@ struct SettingsTests {
     // MARK: - State Initialization Tests
 
     @Test
-    func defaultStateInitialization() async throws {
+    func defaultStateInitialization() throws {
         let state = Settings.State()
 
         #expect(state.destination == nil)
@@ -166,7 +166,7 @@ struct SettingsTests {
     }
 
     @Test
-    func stateWithDestination() async throws {
+    func stateWithDestination() throws {
         let state = Settings.State(destination: .legal)
 
         #expect(state.destination == .legal)
@@ -211,7 +211,7 @@ struct SettingsTests {
     }
 
     @Test
-    func observedFolderURL() async throws {
+    func observedFolderURL() throws {
         let state = Settings.State()
 
         #expect(state.observedFolderURL == nil)
@@ -232,7 +232,7 @@ struct SettingsTests {
     // MARK: - URL Constants Tests
 
     @Test
-    func urlConstantsAreValid() async throws {
+    func urlConstantsAreValid() throws {
         let state = Settings.State()
 
         #expect(state.appStoreUrl.absoluteString.contains("apps.apple.com"))
@@ -243,7 +243,7 @@ struct SettingsTests {
     // MARK: - Equatable Tests
 
     @Test
-    func stateEquality() async throws {
+    func stateEquality() throws {
         let state1 = Settings.State()
         let state2 = Settings.State()
 
@@ -253,7 +253,7 @@ struct SettingsTests {
     }
 
     @Test
-    func stateInequality() async throws {
+    func stateInequality() throws {
         let state1 = Settings.State(isShowingMailSheet: false)
         let state2 = Settings.State(isShowingMailSheet: true)
 

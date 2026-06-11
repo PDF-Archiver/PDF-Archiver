@@ -8,9 +8,9 @@
 import XCTest
 
 #warning("TODO: add these tests again")
-class UITestsiOS: XCTestCase {
+final class UITestsiOS: XCTestCase {
 
-    var app: XCUIApplication!
+    private var app: XCUIApplication!
 
     override func setUpWithError() throws {
         try super.setUpWithError()

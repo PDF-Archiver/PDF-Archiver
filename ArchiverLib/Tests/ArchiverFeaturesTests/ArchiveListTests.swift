@@ -45,7 +45,7 @@ struct ArchiveListTests {
     // MARK: - Search Query Tests
 
     @Test
-    func searchTextFiltersDocuments() async throws {
+    func searchTextFiltersDocuments() throws {
         let doc1 = Document.mock(
             url: URL(fileURLWithPath: "/tmp/2024-01-01--invoice__tag1.pdf"),
             specification: "invoice",
@@ -64,11 +64,9 @@ struct ArchiveListTests {
     }
 
     @Test
-    func emptySearchTextShowsAllDocuments() async throws {
-        // swiftlint:disable force_unwrapping
+    func emptySearchTextShowsAllDocuments() throws {
         let doc1 = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: true)
         let doc2 = Document.mock(url: URL(string: "https://example.com/2")!, isTagged: true)
-        // swiftlint:enable force_unwrapping
 
         let state = ArchiveList.State(documents: [doc1, doc2], searchText: "")
 
@@ -79,9 +77,7 @@ struct ArchiveListTests {
 
     @Test
     func selectingDocumentOpensDetails() async throws {
-        // swiftlint:disable force_unwrapping
         let document = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: true)
-        // swiftlint:enable force_unwrapping
 
         let store = TestStore(initialState: ArchiveList.State(documents: [document])) {
             ArchiveList()
@@ -95,9 +91,7 @@ struct ArchiveListTests {
 
     @Test
     func deselectingDocumentClosesDetails() async throws {
-        // swiftlint:disable force_unwrapping
         let document = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: true)
-        // swiftlint:enable force_unwrapping
 
         let store = TestStore(initialState: ArchiveList.State(
             documents: [document],
@@ -116,8 +110,7 @@ struct ArchiveListTests {
     // MARK: - Filtered Documents Tests
 
     @Test
-    func filteredDocumentsByTag() async throws {
-        // swiftlint:disable force_unwrapping
+    func filteredDocumentsByTag() throws {
         let doc1 = Document.mock(
             url: URL(string: "https://example.com/1")!,
             tags: ["invoice"],
@@ -133,7 +126,6 @@ struct ArchiveListTests {
             tags: ["invoice", "work"],
             isTagged: true
         )
-        // swiftlint:enable force_unwrapping
 
         let state = ArchiveList.State(
             documents: [doc1, doc2, doc3],
@@ -146,10 +138,11 @@ struct ArchiveListTests {
     }
 
     @Test
-    func filteredDocumentsByYear() async throws {
+    func filteredDocumentsByYear() throws {
         let calendar = Calendar.current
-        // swiftlint:disable force_unwrapping
+        // swiftlint:disable:next force_unwrapping
         let date2024 = calendar.date(from: DateComponents(year: 2024, month: 1, day: 1))!
+        // swiftlint:disable:next force_unwrapping
         let date2023 = calendar.date(from: DateComponents(year: 2023, month: 1, day: 1))!
 
         let doc1 = Document.mock(
@@ -162,7 +155,6 @@ struct ArchiveListTests {
             date: date2023,
             isTagged: true
         )
-        // swiftlint:enable force_unwrapping
 
         let state = ArchiveList.State(
             documents: [doc1, doc2],
@@ -174,7 +166,7 @@ struct ArchiveListTests {
     }
 
     @Test
-    func filteredDocumentsByMultipleTokens() async throws {
+    func filteredDocumentsByMultipleTokens() throws {
         let calendar = Calendar.current
         // swiftlint:disable:next force_unwrapping
         let date2024 = calendar.date(from: DateComponents(year: 2024, month: 1, day: 1))!
@@ -227,12 +219,10 @@ struct ArchiveListTests {
     // MARK: - Document Count Tests
 
     @Test
-    func documentCount() async throws {
-        // swiftlint:disable force_unwrapping
+    func documentCount() throws {
         let doc1 = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: true)
         let doc2 = Document.mock(url: URL(string: "https://example.com/2")!, isTagged: true)
         let doc3 = Document.mock(url: URL(string: "https://example.com/3")!, isTagged: true)
-        // swiftlint:enable force_unwrapping
 
         let state = ArchiveList.State(documents: [doc1, doc2, doc3])
 
@@ -242,7 +232,7 @@ struct ArchiveListTests {
     // MARK: - Case-Insensitive and Locale-Aware Search Tests
 
     @Test
-    func searchTextCaseInsensitiveUppercase() async throws {
+    func searchTextCaseInsensitiveUppercase() throws {
         let doc1 = Document.mock(
             url: URL(fileURLWithPath: "/tmp/2024-01-01--invoice__tag1.pdf"),
             specification: "invoice",
@@ -261,7 +251,7 @@ struct ArchiveListTests {
     }
 
     @Test
-    func searchTextCaseInsensitiveMixedCase() async throws {
+    func searchTextCaseInsensitiveMixedCase() throws {
         let doc1 = Document.mock(
             url: URL(fileURLWithPath: "/tmp/2024-01-01--invoice__tag1.pdf"),
             specification: "invoice",
@@ -280,7 +270,7 @@ struct ArchiveListTests {
     }
 
     @Test
-    func searchTokenTextCaseInsensitive() async throws {
+    func searchTokenTextCaseInsensitive() throws {
         let doc1 = Document.mock(
             url: URL(fileURLWithPath: "/tmp/2024-01-01--important-document__tag1.pdf"),
             specification: "important-document",
@@ -302,7 +292,7 @@ struct ArchiveListTests {
     }
 
     @Test
-    func searchTextWithGermanUmlaut() async throws {
+    func searchTextWithGermanUmlaut() throws {
         // Filenames use slugified format: "ü" -> "ue", "ö" -> "oe"
         let doc1 = Document.mock(
             url: URL(fileURLWithPath: "/tmp/2024-01-01--rechnung-fuer-buero__tag1.pdf"),
@@ -323,7 +313,7 @@ struct ArchiveListTests {
     }
 
     @Test
-    func searchTextWithGermanUmlautCaseInsensitive() async throws {
+    func searchTextWithGermanUmlautCaseInsensitive() throws {
         // Filenames use slugified format: "ü" -> "ue", "ö" -> "oe"
         let doc1 = Document.mock(
             url: URL(fileURLWithPath: "/tmp/2024-01-01--rechnung-fuer-buero__tag1.pdf"),
@@ -344,7 +334,7 @@ struct ArchiveListTests {
     }
 
     @Test
-    func searchTextPartialMatch() async throws {
+    func searchTextPartialMatch() throws {
         let doc1 = Document.mock(
             url: URL(fileURLWithPath: "/tmp/2024-01-01--important-invoice__tag1.pdf"),
             specification: "important-invoice",
@@ -363,7 +353,7 @@ struct ArchiveListTests {
     }
 
     @Test
-    func searchTokenWithSpaces() async throws {
+    func searchTokenWithSpaces() throws {
         let doc1 = Document.mock(
             url: URL(fileURLWithPath: "/tmp/2024-01-01--my-important-document__tag1.pdf"),
             specification: "my-important-document",

@@ -31,11 +31,11 @@ extension NSItemProvider {
         for uti in validUTIs where hasItemConformingToTypeIdentifier(uti.identifier) {
             do {
                 (data, sourceURL) = try await getItem(for: uti)
-            } catch let inputError {
+            } catch {
                 error = inputError
             }
 
-            guard let data = data else { continue }
+            guard let data else { continue }
 
             if let image = Image(data: data),
                 let imageData = image.jpg(quality: 1) {
@@ -88,14 +88,11 @@ extension NSItemProvider {
            let url = URL(string: path),
            let inputData = Self.getDataIfValid(from: url) {
             return (inputData, url)
-
         } else if let url = rawData as? URL,
                   let inputData = Self.getDataIfValid(from: url) {
             return (inputData, url)
-
         } else if let inputData = Self.validate(rawData as? Data) {
             return (inputData, nil)
-
         } else if let image = rawData as? Image {
             return (image.jpg(quality: 1), nil)
         } else {
@@ -110,7 +107,7 @@ extension NSItemProvider {
 
     private static func validate(_ data: Data?) -> Data? {
         guard let inputData = data else { return data }
-        if PDFDocument(data: inputData) == nil && Image(data: inputData) == nil {
+        if PDFDocument(data: inputData) == nil, Image(data: inputData) == nil {
             return nil
         }
         return inputData

@@ -38,14 +38,13 @@ final class PDFDropHandler: Log {
     }
 
     @StorageActor
-    private func handle(input item: any NSSecureCoding) async throws {
+    private func handle(input item: any NSSecureCoding) throws {
         if let data = item as? Data {
             if let pdf = PDFDocument(data: data) {
                 handle(pdf: pdf)
             } else if let image = PlatformImage(data: data) {
                 handle(image: image)
             }
-
         } else if let url = item as? URL {
             try url.securityScope { url in
                 if let pdf = PDFDocument(url: url) {
@@ -58,13 +57,10 @@ final class PDFDropHandler: Log {
                     Logger.pdfDropHandler.errorAndAssert("Could not handle url")
                 }
             }
-
         } else if let image = item as? PlatformImage {
             handle(image: image)
-
         } else if let pdfDocument = item as? PDFDocument {
             handle(pdf: pdfDocument)
-
         } else {
             Logger.pdfDropHandler.errorAndAssert("Failed to get data")
         }
@@ -156,7 +152,6 @@ extension NSItemProvider {
 
         if let data = item as? Data {
             return data
-
         } else if let url = item as? URL {
             var data: Data?
             try url.securityScope { url in
@@ -169,13 +164,10 @@ extension NSItemProvider {
                 }
             }
             return data
-
         } else if let image = item as? PlatformImage {
             return image.jpg(quality: 1)
-
         } else if let pdfDocument = item as? PDFDocument {
             return pdfDocument.dataRepresentation()
-
         } else {
             Logger.pdfDropHandler.errorAndAssert("Failed to get data")
             return nil

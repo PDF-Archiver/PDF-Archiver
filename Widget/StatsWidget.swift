@@ -25,7 +25,7 @@ struct StatsProvider: AppIntentTimelineProvider {
         return StatsEntry(date: Date(), yearStats: yearStats)
     }
 
-    func snapshot(for configuration: ConfigurationAppIntent, in context: Context) async -> StatsEntry {
+    func snapshot(for configuration: ConfigurationAppIntent, in context: Context) -> StatsEntry {
         let statistics = SharedDefaults.getStatistics()
         let yearStats = statistics.filter { $0.key >= configuration.firstYear }
 
@@ -64,10 +64,13 @@ extension StatsView.Size {
         switch size {
         case .systemSmall:
             return .small
+
         case .systemMedium:
             return .medium
+
         case .systemLarge, .systemExtraLarge:
             return .large
+
         default:
             return .small
         }

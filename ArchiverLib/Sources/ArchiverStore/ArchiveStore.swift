@@ -83,14 +83,14 @@ public actor ArchiveStore: Log {
         self.archiveFolder = archiveFolder
         self.untaggedFolders = untaggedFolders
         let observedFolders = [[archiveFolder], untaggedFolders]
-            .flatMap { $0 }
+            .flatMap(\.self)
             .getUniqueParents()
         var foundProviders: [(any FolderProvider)?] = []
         for observedFolder in observedFolders {
             let provider = await initProvider(for: observedFolder)
             foundProviders.append(provider)
         }
-        providers = foundProviders.compactMap { $0 }
+        providers = foundProviders.compactMap(\.self)
         var documentsMap: [URL: [Document]] = [:]
         for provider in providers {
             let task = Task {
@@ -104,7 +104,7 @@ public actor ArchiveStore: Log {
                                         downloadStatus: change.downloadStatus,
                                         sizeInBytes: change.sizeInBytes)
                     }
-                    .compactMap { $0 }
+                    .compactMap(\.self)
 
                     let documents = documentsMap.values.flatMap(\.self)
                     documentsStreamContinuation.yield(documents)
@@ -218,7 +218,7 @@ public actor ArchiveStore: Log {
             tagCountMap[tag, default: 0] += 1
         }
 
-        let top5Tags = tagCountMap
+        return tagCountMap
             .sorted { lhs, rhs in
                 if lhs.value == rhs.value {
                     lhs.key < rhs.key
@@ -228,8 +228,6 @@ public actor ArchiveStore: Log {
             }
             .prefix(5)
             .map(\.key)
-
-        return top5Tags
     }
 
     /// Returns tags that start with the searchteerm like autocomplete
@@ -242,7 +240,7 @@ public actor ArchiveStore: Log {
         for tag in currentDocuments.flatMap(\.tags) {
             tagCountMap[tag, default: 0] += 1
         }
-        let top5Tags = tagCountMap
+        return tagCountMap
             .filter { $0.key.hasPrefix(searchTerm) }
             .sorted { lhs, rhs in
                 if lhs.value == rhs.value {
@@ -253,7 +251,6 @@ public actor ArchiveStore: Log {
             }
             .prefix(5)
             .map(\.key)
-        return top5Tags
     }
 
     public func reloadArchiveDocuments() async throws {
@@ -264,7 +261,7 @@ public actor ArchiveStore: Log {
         let untaggedUrl = try await PathManager.shared.getUntaggedUrl()
 
         #if os(macOS)
-        let untaggedFolders = [untaggedUrl, observedFolderURL].compactMap { $0 }
+        let untaggedFolders = [untaggedUrl, observedFolderURL].compactMap(\.self)
         #else
         let untaggedFolders = [untaggedUrl]
         #endif

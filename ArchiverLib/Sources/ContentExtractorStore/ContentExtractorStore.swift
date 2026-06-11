@@ -35,8 +35,10 @@ public actor ContentExtractorStore: Log {
         switch SystemLanguageModel.default.availability {
         case .available:
             return .available
+
         case .unavailable:
             return .unavailable
+
         @unknown default:
             return .unavailable
         }
@@ -109,7 +111,7 @@ public actor ContentExtractorStore: Log {
     }
 
     /// Update cache enabled state
-    public func setCacheEnabled(_ enabled: Bool) async {
+    public func setCacheEnabled(_ enabled: Bool) {
         useCache = enabled
     }
 

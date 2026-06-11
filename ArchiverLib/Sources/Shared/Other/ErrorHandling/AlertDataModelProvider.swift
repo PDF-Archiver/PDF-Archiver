@@ -43,6 +43,5 @@ public struct AlertDataModelProvider: ViewModifier, Log {
             } message: { viewModel in
                 Text(viewModel.message)
             }
-
     }
 }
