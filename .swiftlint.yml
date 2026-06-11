@@ -60,6 +60,12 @@ opt_in_rules:
   - vertical_whitespace_closing_braces
   - yoda_condition
 
+analyzer_rules:
+  - capture_variable
+  - typesafe_array_init
+  - unused_declaration
+  - unused_import
+
 nesting:
   type_level:
     warning: 3

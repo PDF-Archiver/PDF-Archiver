@@ -37,3 +37,18 @@ jobs:
 
       - name: Test ArchiverLib
         run: xcodebuild test -workspace PDFArchiver.xcworkspace -scheme ArchiverLib -testPlan ArchiverLib.xctestplan -destination 'platform=macOS' -configuration Debug
+
+  SwiftLintAnalyze:
+    runs-on: macos-26
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Approve macros
+        run: cd ci_scripts && bash ci_post_clone.sh
+
+      - name: Build ArchiverLib (capture compiler log)
+        run: cd ArchiverLib && swift build -v > build.log
+
+      - name: SwiftLint analyze
+        run: swiftlint analyze --compiler-log-path ArchiverLib/build.log --reporter github-actions-logging
