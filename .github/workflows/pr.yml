@@ -36,4 +36,4 @@ jobs:
         run: xcodebuild -workspace PDFArchiver.xcworkspace -scheme ArchiverLib -destination 'platform=macOS' -configuration Debug build
 
       - name: Test ArchiverLib
-        run: xcodebuild test -workspace PDFArchiver.xcworkspace -scheme ArchiverLib -testPlan ArchiverLib.xctestplan -destination 'platform=macOS' -configuration Debug
+        run: xcodebuild test -workspace PDFArchiver.xcworkspace -scheme ArchiverLib -testPlan ArchiverLib -destination 'platform=macOS' -configuration Debug
