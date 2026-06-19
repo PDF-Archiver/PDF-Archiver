@@ -102,7 +102,7 @@ struct UntaggedDocumentListView: View {
         })
         #endif
         .sensoryFeedback(.selection, trigger: store.selectedDocumentId)
-        .navigationDestination(item: $store.scope(state: \.$documentDetails, action: \.documentDetails)) { documentStore in
+        .navigationDestination(item: $store.scope(\.$documentDetails, action: \.documentDetails)) { documentStore in
             DocumentDetailsView(store: documentStore)
                 .navigationTitle(documentStore.document.specification)
 #if os(macOS)

@@ -6,7 +6,9 @@
 //
 
 import ArchiverModels
+import ArchiverStore
 import ComposableArchitecture
+import ContentExtractorStore
 import OSLog
 import Shared
 import SwiftUI
@@ -81,16 +83,16 @@ struct AppFeature {
         BindingReducer()
 
         // frist, run the ArchiveList reducer ...
-        Scope(state: \.archiveList, action: \.archiveList) {
+        Scope(\.archiveList, action: \.archiveList) {
             ArchiveList()
         }
-        Scope(state: \.untaggedDocumentList, action: \.untaggedDocumentList) {
+        Scope(\.untaggedDocumentList, action: \.untaggedDocumentList) {
             UntaggedDocumentList()
         }
-        Scope(state: \.statistics, action: \.statistics) {
+        Scope(\.statistics, action: \.statistics) {
             Statistics()
         }
-        Scope(state: \.settings, action: \.settings) {
+        Scope(\.settings, action: \.settings) {
             Settings()
         }
 
@@ -395,7 +397,7 @@ struct AppView: View {
             .badge(store.untaggedDocumentsCount)
 
             Tab(String(localized: "Statistics", bundle: #bundle), systemImage: "chart.bar.xaxis", value: AppFeature.State.Tab.statistics) {
-                StatisticsView(store: store.scope(state: \.statistics, action: \.statistics))
+                StatisticsView(store: store.scope(\.statistics, action: \.statistics))
             }
 
             #if !os(macOS)
@@ -463,7 +465,7 @@ struct AppView: View {
 
     private var archiveList: some View {
         NavigationStack {
-            ArchiveListView(store: store.scope(state: \.archiveList, action: \.archiveList))
+            ArchiveListView(store: store.scope(\.archiveList, action: \.archiveList))
                 .navigationTitle(Text("Archive", bundle: #bundle))
                 .toolbar {
                     loadingIndicator
@@ -473,7 +475,7 @@ struct AppView: View {
 
     private var untaggedDocumentList: some View {
         NavigationStack {
-            UntaggedDocumentListView(store: store.scope(state: \.untaggedDocumentList, action: \.untaggedDocumentList))
+            UntaggedDocumentListView(store: store.scope(\.untaggedDocumentList, action: \.untaggedDocumentList))
                 .navigationTitle(Text("Inbox", bundle: #bundle))
                 .toolbar {
                     loadingIndicator

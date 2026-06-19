@@ -6,6 +6,7 @@
 // Inspired by: https://github.com/GianniCarlo/DirectoryWatcher
 
 import Foundation
+import OSLog
 import Shared
 
 actor DirectoryDeepWatcher: Log {
@@ -26,7 +27,11 @@ actor DirectoryDeepWatcher: Log {
         self.queue = DispatchQueue(label: "DirectoryDeepWatcher-\(baseUrl.hashValue)", qos: .background)
 
         Task {
-            try await initializeWatcher()
+            do {
+                try await initializeWatcher()
+            } catch {
+                Logger.archiveStore.error("Failed to initialize watcher: \(error.localizedDescription)")
+            }
         }
     }
 

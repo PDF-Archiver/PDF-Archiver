@@ -65,10 +65,8 @@ struct ArchiveListTests {
 
     @Test
     func emptySearchTextShowsAllDocuments() async throws {
-        // swiftlint:disable force_unwrapping
         let doc1 = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: true)
         let doc2 = Document.mock(url: URL(string: "https://example.com/2")!, isTagged: true)
-        // swiftlint:enable force_unwrapping
 
         let state = ArchiveList.State(documents: [doc1, doc2], searchText: "")
 
@@ -79,9 +77,7 @@ struct ArchiveListTests {
 
     @Test
     func selectingDocumentOpensDetails() async throws {
-        // swiftlint:disable force_unwrapping
         let document = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: true)
-        // swiftlint:enable force_unwrapping
 
         let store = TestStore(initialState: ArchiveList.State(documents: [document])) {
             ArchiveList()
@@ -95,9 +91,7 @@ struct ArchiveListTests {
 
     @Test
     func deselectingDocumentClosesDetails() async throws {
-        // swiftlint:disable force_unwrapping
         let document = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: true)
-        // swiftlint:enable force_unwrapping
 
         let store = TestStore(initialState: ArchiveList.State(
             documents: [document],
@@ -117,7 +111,6 @@ struct ArchiveListTests {
 
     @Test
     func filteredDocumentsByTag() async throws {
-        // swiftlint:disable force_unwrapping
         let doc1 = Document.mock(
             url: URL(string: "https://example.com/1")!,
             tags: ["invoice"],
@@ -133,7 +126,6 @@ struct ArchiveListTests {
             tags: ["invoice", "work"],
             isTagged: true
         )
-        // swiftlint:enable force_unwrapping
 
         let state = ArchiveList.State(
             documents: [doc1, doc2, doc3],
@@ -228,11 +220,9 @@ struct ArchiveListTests {
 
     @Test
     func documentCount() async throws {
-        // swiftlint:disable force_unwrapping
         let doc1 = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: true)
         let doc2 = Document.mock(url: URL(string: "https://example.com/2")!, isTagged: true)
         let doc3 = Document.mock(url: URL(string: "https://example.com/3")!, isTagged: true)
-        // swiftlint:enable force_unwrapping
 
         let state = ArchiveList.State(documents: [doc1, doc2, doc3])
 
