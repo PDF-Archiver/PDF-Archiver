@@ -1,0 +1,9 @@
+{
+  "id" : "cea09749-74ec-4ca0-8c96-4d232b3f515e",
+  "targets" : [
+    {
+      "id" : "6885EE18-0111-41C6-886A-5A5CAE136630",
+      "name" : "PDFArchiver"
+    }
+  ]
+}

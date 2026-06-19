@@ -17,7 +17,7 @@ public struct RootView: View {
 
     #if os(macOS)
     public static var settings: some View {
-        SettingsMacView(store: store.scope(state: \.settings, action: \.settings))
+        SettingsMacView(store: store.scope(\.settings, action: \.settings))
     }
     #endif
 }

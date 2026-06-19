@@ -13,7 +13,6 @@ struct StatisticsTests {
     func statisticsWithDocuments() async throws {
         let calendar = Calendar.current
 
-        // swiftlint:disable force_unwrapping
         let doc1 = Document.mock(
             url: URL(string: "https://example.com/1")!,
             tags: ["invoice", "work"]
@@ -26,7 +25,6 @@ struct StatisticsTests {
             url: URL(string: "https://example.com/3")!,
             tags: ["invoice", "personal"]
         )
-        // swiftlint:enable force_unwrapping
 
         let state = Statistics.State(documents: [doc1, doc2, doc3])
 
@@ -44,7 +42,6 @@ struct StatisticsTests {
 
     @Test
     func tagCountsCalculation() async throws {
-        // swiftlint:disable force_unwrapping
         let doc1 = Document.mock(
             url: URL(string: "https://example.com/1")!,
             tags: ["invoice"]
@@ -57,7 +54,6 @@ struct StatisticsTests {
             url: URL(string: "https://example.com/3")!,
             tags: ["receipt"]
         )
-        // swiftlint:enable force_unwrapping
 
         let state = Statistics.State(documents: [doc1, doc2, doc3])
 
@@ -67,7 +63,6 @@ struct StatisticsTests {
 
     @Test
     func tagCountsWithMultipleTags() async throws {
-        // swiftlint:disable force_unwrapping
         let doc1 = Document.mock(
             url: URL(string: "https://example.com/1")!,
             tags: ["invoice", "work", "tax"]
@@ -76,7 +71,6 @@ struct StatisticsTests {
             url: URL(string: "https://example.com/2")!,
             tags: ["invoice", "personal"]
         )
-        // swiftlint:enable force_unwrapping
 
         let state = Statistics.State(documents: [doc1, doc2])
 
@@ -122,11 +116,9 @@ struct StatisticsTests {
 
     @Test
     func totalDocumentCount() async throws {
-        // swiftlint:disable force_unwrapping
         let doc1 = Document.mock(url: URL(string: "https://example.com/1")!)
         let doc2 = Document.mock(url: URL(string: "https://example.com/2")!)
         let doc3 = Document.mock(url: URL(string: "https://example.com/3")!)
-        // swiftlint:enable force_unwrapping
 
         let state = Statistics.State(documents: [doc1, doc2, doc3])
 
@@ -144,11 +136,9 @@ struct StatisticsTests {
 
     @Test
     func taggedDocumentsCount() async throws {
-        // swiftlint:disable force_unwrapping
         let tagged1 = Document.mock(url: URL(string: "https://example.com/1")!, tags: ["tag1"], isTagged: true)
         let tagged2 = Document.mock(url: URL(string: "https://example.com/2")!, tags: ["tag2"], isTagged: true)
         let untagged = Document.mock(url: URL(string: "https://example.com/3")!, isTagged: false)
-        // swiftlint:enable force_unwrapping
 
         let state = Statistics.State(documents: [tagged1, tagged2, untagged])
         let taggedDocs = state.documents.filter(\.isTagged)
@@ -158,11 +148,9 @@ struct StatisticsTests {
 
     @Test
     func untaggedDocumentsCount() async throws {
-        // swiftlint:disable force_unwrapping
         let tagged = Document.mock(url: URL(string: "https://example.com/1")!, tags: ["tag"], isTagged: true)
         let untagged1 = Document.mock(url: URL(string: "https://example.com/2")!, isTagged: false)
         let untagged2 = Document.mock(url: URL(string: "https://example.com/3")!, isTagged: false)
-        // swiftlint:enable force_unwrapping
 
         let state = Statistics.State(documents: [tagged, untagged1, untagged2])
         let untaggedDocs = state.documents.filter { !$0.isTagged }
@@ -174,11 +162,9 @@ struct StatisticsTests {
 
     @Test
     func totalStorageSize() async throws {
-        // swiftlint:disable force_unwrapping
         let doc1 = Document.mock(url: URL(string: "https://example.com/1")!, sizeInBytes: 1000)
         let doc2 = Document.mock(url: URL(string: "https://example.com/2")!, sizeInBytes: 2000)
         let doc3 = Document.mock(url: URL(string: "https://example.com/3")!, sizeInBytes: 3000)
-        // swiftlint:enable force_unwrapping
 
         let state = Statistics.State(documents: [doc1, doc2, doc3])
         let totalSize = state.documents.reduce(0.0) { $0 + $1.sizeInBytes }
@@ -205,10 +191,8 @@ struct StatisticsTests {
 
     @Test
     func stateWithDocumentsInitialization() async throws {
-        // swiftlint:disable force_unwrapping
         let doc1 = Document.mock(url: URL(string: "https://example.com/1")!)
         let doc2 = Document.mock(url: URL(string: "https://example.com/2")!)
-        // swiftlint:enable force_unwrapping
 
         let state = Statistics.State(documents: [doc1, doc2])
 

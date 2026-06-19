@@ -6,6 +6,7 @@
 //
 
 import ArchiverModels
+import ArchiverStore
 import ComposableArchitecture
 import Shared
 import StoreKit
@@ -98,11 +99,8 @@ struct Settings {
         var showObservedFolderPicker = false
         #endif
 
-        // swiftlint:disable:next force_unwrapping
         let appStoreUrl = URL(string: "https://apps.apple.com/app/pdf-archiver/id1433801905")!
-        // swiftlint:disable:next force_unwrapping
         let pdfArchiverWebsiteUrl = URL(string: "https://pdf-archiver.io")!
-        // swiftlint:disable:next force_unwrapping
         let termsOfUseUrl = URL(string: "https://pdf-archiver.io/terms")!
     }
 
@@ -134,7 +132,7 @@ struct Settings {
 
     var body: some ReducerOf<Self> {
         BindingReducer()
-        Scope(state: \.premiumSection, action: \.premiumSection) {
+        Scope(\.premiumSection, action: \.premiumSection) {
             PremiumSection()
         }
         Reduce { state, action in
@@ -250,7 +248,7 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 preferences
-                PremiumSectionView(store: store.scope(state: \.premiumSection, action: \.premiumSection))
+                PremiumSectionView(store: store.scope(\.premiumSection, action: \.premiumSection))
                 aboutSection
             }
             // since we have buttons, we have to "fake" the foreground color - it would be the accent color otherwise
@@ -275,21 +273,21 @@ struct SettingsView: View {
             .navigationDestination(item: $store.destination) { destination in
                 switch destination {
                 case .appleIntelligenceSettings:
-                    if let appleIntelligenceSettingsStore = store.scope(state: \.destination?.appleIntelligenceSettings, action: \.destination.appleIntelligenceSettings) {
+                    if let appleIntelligenceSettingsStore = store.scope(\.destination?.appleIntelligenceSettings, action: \.destination.appleIntelligenceSettings) {
                         AppleIntelligenceSettingsView(store: appleIntelligenceSettingsStore)
                             .navigationTitle(Text("Apple Intelligence", bundle: #bundle))
                     } else {
                         preconditionFailure("Failed to load Apple Intelligence settings")
                     }
                 case .archiveStorage:
-                    if let storageSelectionStore = store.scope(state: \.destination?.archiveStorage, action: \.destination.archiveStorage) {
+                    if let storageSelectionStore = store.scope(\.destination?.archiveStorage, action: \.destination.archiveStorage) {
                         StorageSelectionView(store: storageSelectionStore)
                             .navigationTitle(Text("Storage", bundle: #bundle))
                     } else {
                         preconditionFailure("Failed to load export nothing found")
                     }
                 case .expertSettings:
-                    if let expertSettingsStore = store.scope(state: \.destination?.expertSettings, action: \.destination.expertSettings) {
+                    if let expertSettingsStore = store.scope(\.destination?.expertSettings, action: \.destination.expertSettings) {
                         ExpertSettingsView(store: expertSettingsStore)
                             .navigationTitle(Text("Advanced", bundle: #bundle))
                     } else {
@@ -404,7 +402,7 @@ struct SettingsMacView: View {
                 }
 
                 Tab(String(localized: "Premium", bundle: #bundle), systemImage: "star.hexagon") {
-                    PremiumSectionView(store: store.scope(state: \.premiumSection, action: \.premiumSection))
+                    PremiumSectionView(store: store.scope(\.premiumSection, action: \.premiumSection))
                         .padding(.horizontal)
                         .focusable(false)
                 }
@@ -426,17 +424,17 @@ struct SettingsMacView: View {
                     Group {
                         switch destination {
                         case .appleIntelligenceSettings:
-                            if let appleIntelligenceSettingsStore = store.scope(state: \.destination?.appleIntelligenceSettings, action: \.destination.appleIntelligenceSettings) {
+                            if let appleIntelligenceSettingsStore = store.scope(\.destination?.appleIntelligenceSettings, action: \.destination.appleIntelligenceSettings) {
                                 AppleIntelligenceSettingsView(store: appleIntelligenceSettingsStore)
                                     .navigationTitle(Text("Apple Intelligence", bundle: #bundle))
                             }
                         case .archiveStorage:
-                            if let storageSelectionStore = store.scope(state: \.destination?.archiveStorage, action: \.destination.archiveStorage) {
+                            if let storageSelectionStore = store.scope(\.destination?.archiveStorage, action: \.destination.archiveStorage) {
                                 StorageSelectionView(store: storageSelectionStore)
                                     .navigationTitle(Text("Storage", bundle: #bundle))
                             }
                         case .expertSettings:
-                            if let expertSettingsStore = store.scope(state: \.destination?.expertSettings, action: \.destination.expertSettings) {
+                            if let expertSettingsStore = store.scope(\.destination?.expertSettings, action: \.destination.expertSettings) {
                                 ExpertSettingsView(store: expertSettingsStore)
                                     .navigationTitle(Text("Advanced", bundle: #bundle))
                             }

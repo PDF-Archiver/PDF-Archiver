@@ -11,9 +11,7 @@ struct UntaggedDocumentListTests {
 
     @Test
     func selectingDocumentOpensDetails() async throws {
-        // swiftlint:disable force_unwrapping
         let document = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: false)
-        // swiftlint:enable force_unwrapping
 
         let store = TestStore(initialState: UntaggedDocumentList.State(documents: [document])) {
             UntaggedDocumentList()
@@ -31,9 +29,7 @@ struct UntaggedDocumentListTests {
 
     @Test
     func deselectingDocumentClosesDetails() async throws {
-        // swiftlint:disable force_unwrapping
         let document = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: false)
-        // swiftlint:enable force_unwrapping
 
         let store = TestStore(initialState: UntaggedDocumentList.State(
             documents: [document],
@@ -53,11 +49,9 @@ struct UntaggedDocumentListTests {
 
     @Test
     func untaggedDocumentsFilter() async throws {
-        // swiftlint:disable force_unwrapping
         let taggedDoc = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: true)
         let untaggedDoc1 = Document.mock(url: URL(string: "https://example.com/2")!, isTagged: false)
         let untaggedDoc2 = Document.mock(url: URL(string: "https://example.com/3")!, isTagged: false)
-        // swiftlint:enable force_unwrapping
 
         let state = UntaggedDocumentList.State(documents: [taggedDoc, untaggedDoc1, untaggedDoc2])
 
@@ -69,10 +63,8 @@ struct UntaggedDocumentListTests {
 
     @Test
     func emptyUntaggedDocuments() async throws {
-        // swiftlint:disable force_unwrapping
         let taggedDoc1 = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: true)
         let taggedDoc2 = Document.mock(url: URL(string: "https://example.com/2")!, isTagged: true)
-        // swiftlint:enable force_unwrapping
 
         let state = UntaggedDocumentList.State(documents: [taggedDoc1, taggedDoc2])
 
@@ -108,9 +100,7 @@ struct UntaggedDocumentListTests {
 
     @Test
     func documentDetailsNotNilWhenSelected() async throws {
-        // swiftlint:disable force_unwrapping
         let document = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: false)
-        // swiftlint:enable force_unwrapping
 
         let state = UntaggedDocumentList.State(
             documents: [document],
@@ -133,11 +123,9 @@ struct UntaggedDocumentListTests {
 
     @Test
     func multipleUntaggedDocuments() async throws {
-        // swiftlint:disable force_unwrapping
         let doc1 = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: false)
         let doc2 = Document.mock(url: URL(string: "https://example.com/2")!, isTagged: false)
         let doc3 = Document.mock(url: URL(string: "https://example.com/3")!, isTagged: false)
-        // swiftlint:enable force_unwrapping
 
         let state = UntaggedDocumentList.State(documents: [doc1, doc2, doc3])
 
@@ -148,9 +136,7 @@ struct UntaggedDocumentListTests {
 
     @Test
     func stateUpdatesOnDocumentChange() async throws {
-        // swiftlint:disable force_unwrapping
         let initialDoc = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: false)
-        // swiftlint:enable force_unwrapping
 
         let store = TestStore(initialState: UntaggedDocumentList.State(documents: [initialDoc])) {
             UntaggedDocumentList()
@@ -158,9 +144,7 @@ struct UntaggedDocumentListTests {
 
         #expect(store.state.untaggedDocuments.count == 1)
 
-        // swiftlint:disable force_unwrapping
         let newDoc = Document.mock(url: URL(string: "https://example.com/2")!, isTagged: false)
-        // swiftlint:enable force_unwrapping
 
         store.state.$documents.withLock { $0 = [initialDoc, newDoc] }
         #expect(store.state.untaggedDocuments.count == 2)

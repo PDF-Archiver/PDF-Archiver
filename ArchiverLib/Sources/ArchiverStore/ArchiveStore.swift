@@ -52,7 +52,11 @@ public actor ArchiveStore: Log {
         Logger.archiveStore.trace("[ArchiveStore] init called")
 
         Task(priority: .medium) {
-            try await reloadArchiveDocuments()
+            do {
+                try await reloadArchiveDocuments()
+            } catch {
+                Logger.archiveStore.error("Failed to reload archive documents: \(error.localizedDescription)")
+            }
         }
     }
 

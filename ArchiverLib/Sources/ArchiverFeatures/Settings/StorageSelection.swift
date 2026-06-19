@@ -6,6 +6,7 @@
 //
 
 import ArchiverModels
+import ArchiverStore
 import ComposableArchitecture
 import OSLog
 import Shared
@@ -174,7 +175,6 @@ enum StorageSelectionType: String, CaseIterable {
     #endif
     case local
 
-    // swiftlint:disable:next force_unwrapping
     private static let appleDocumentationURL = URL(string: "https://support.apple.com/en-us/HT210598")!
 
     func equals(_ type: StorageType) -> Bool {
