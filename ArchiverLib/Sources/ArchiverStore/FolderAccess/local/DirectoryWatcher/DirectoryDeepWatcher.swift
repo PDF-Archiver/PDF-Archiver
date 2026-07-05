@@ -38,14 +38,15 @@ actor DirectoryDeepWatcher: Log {
     deinit {
         for (_, source) in sources {
             source.1.cancel()
+            source.0.cancel()
         }
         sources.removeAll()
     }
 
-    func stop() async {
+    func stop() {
         for (_, source) in sources {
             source.1.cancel()
-            await source.0.cancel()
+            source.0.cancel()
         }
 
         sources.removeAll()
@@ -82,6 +83,10 @@ actor DirectoryDeepWatcher: Log {
                 self.changedUrlContinuation.yield(url)
 
                 Self.log.debug("DispatchSource event has happened.", metadata: ["path": "\(url.path)"])
+
+                // remove watchers of deleted folders, so a recreated folder with the same path gets a fresh source
+                await self.removeStaleSources()
+
                 do {
                     // iterate (once again) over all folders and subfolders, to get all changes
                     try await self.startWatching(contentsOf: url)
@@ -93,6 +98,19 @@ actor DirectoryDeepWatcher: Log {
 
         // add new source to the source dictionary
         sources[url] = (watcher, task)
+    }
+
+    /// Cancel and remove sources whose folder no longer exists.
+    ///
+    /// Without this, the file descriptor of a deleted folder would keep pointing to the dead
+    /// inode and the `sources[url] == nil` guard in `createAndAddSource` would prevent a new
+    /// source from being created when a folder is recreated at the same path.
+    private func removeStaleSources() {
+        for (url, source) in sources where !FileManager.default.directoryExists(at: url) {
+            source.1.cancel()
+            source.0.cancel()
+            sources[url] = nil
+        }
     }
 
     private func startWatching(contentsOf url: URL) throws {
@@ -122,16 +140,20 @@ actor DirectoryDeepWatcher: Log {
 }
 
 extension DirectoryDeepWatcher {
-    private actor DispatchSourceWatcher: Log {
+    // A class (not an actor), so `cancel()` can also be called synchronously from `deinit`.
+    // All stored properties are immutable, which makes the type safe to share.
+    private final class DispatchSourceWatcher: Log, @unchecked Sendable {
         let url: URL
         let changedUrlStream: AsyncStream<URL>
+        private let changedUrlContinuation: AsyncStream<URL>.Continuation
         private let source: DispatchSourceFileSystemObject
 
         init(queue: DispatchQueue, url: URL) throws {
             self.url = url
 
-            let (stream, continuantion) = AsyncStream<URL>.makeStream()
+            let (stream, continuation) = AsyncStream<URL>.makeStream()
             self.changedUrlStream = stream
+            self.changedUrlContinuation = continuation
 
             let descriptor = open(url.path, O_EVTONLY)
             guard descriptor != -1 else { throw WatcherError.failedToCreateFileDescriptor }
@@ -140,17 +162,23 @@ extension DirectoryDeepWatcher {
                                                                eventMask: [.write, .rename, .delete],
                                                                queue: queue)
             source.setEventHandler {
-                continuantion.yield(url)
+                continuation.yield(url)
             }
 
+            // the cancel handler closes the file descriptor, so cancel() must always be called
             source.setCancelHandler {
                 close(descriptor)
             }
             source.resume()
         }
 
+        deinit {
+            cancel()
+        }
+
         func cancel() {
             source.cancel()
+            changedUrlContinuation.finish()
         }
     }
 }
