@@ -28,27 +28,12 @@ extension ArchiveStoreDependency: TestDependencyKey {
     public static let previewValue = Self(
         documentChanges: {
             AsyncStream { stream in
-                Task {
-//                    try! await Task.sleep(for: .seconds(1))
-                    stream.yield([
-                        .mock(url: .temporaryDirectory.appending(component: "file1.pdf"), specification: "document-specification-1", tags: Set(["tag1", "tag2"])),
-                        .mock(url: .temporaryDirectory.appending(component: "file2.pdf"), specification: "document-specification-2", tags: Set(["tag1", "tag2"]), downloadStatus: 1),
-                        .mock(url: .temporaryDirectory.appending(component: "file3.pdf"), specification: "document-specification-3", tags: Set(["tag1", "tag2"]), downloadStatus: 1),
-                        .mock(url: .temporaryDirectory.appending(component: "file4.pdf"), specification: "document-specification-4", tags: Set(["tag1", "tag2"]), downloadStatus: 1)
-                    ])
-//                    try! await Task.sleep(for: .seconds(2))
-//                    stream.yield([
-//                        .mock(url: .temporaryDirectory.appending(component: "file1.pdf"), specification: "document-specification-1", tags: Set(["tag1", "tag2"]), downloadStatus: 0.5)
-//                    ])
-//                    try! await Task.sleep(for: .seconds(1))
-//                    stream.yield([
-//                        .mock(url: .temporaryDirectory.appending(component: "file1.pdf"), specification: "document-specification-1", tags: Set(["tag1", "tag2"]), downloadStatus: 0.75)
-//                    ])
-//                    try! await Task.sleep(for: .seconds(1))
-//                    stream.yield([
-//                        .mock(url: .temporaryDirectory.appending(component: "file1.pdf"), specification: "document-specification-1", tags: Set(["tag1", "tag2"]), downloadStatus: 1)
-//                    ])
-                }
+                stream.yield([
+                    .mock(url: .temporaryDirectory.appending(component: "file1.pdf"), specification: "document-specification-1", tags: Set(["tag1", "tag2"])),
+                    .mock(url: .temporaryDirectory.appending(component: "file2.pdf"), specification: "document-specification-2", tags: Set(["tag1", "tag2"]), downloadStatus: 1),
+                    .mock(url: .temporaryDirectory.appending(component: "file3.pdf"), specification: "document-specification-3", tags: Set(["tag1", "tag2"]), downloadStatus: 1),
+                    .mock(url: .temporaryDirectory.appending(component: "file4.pdf"), specification: "document-specification-4", tags: Set(["tag1", "tag2"]), downloadStatus: 1)
+                ])
             }
         },
         reloadDocuments: { },
@@ -79,10 +64,14 @@ extension ArchiveStoreDependency: DependencyKey {
         },
         isLoading: {
             return AsyncStream { stream in
-                Task {
+                let task = Task {
                     for await isLoading in ArchiveStore.shared.isLoadingStream {
                         stream.yield(isLoading)
                     }
+                    stream.finish()
+                }
+                stream.onTermination = { _ in
+                    task.cancel()
                 }
             }
         },

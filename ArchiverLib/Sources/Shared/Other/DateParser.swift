@@ -52,7 +52,6 @@ nonisolated public enum DateParser: Log {
 
         // the NSDataDetector parses times as "today" Date so we filter out all dates that are today
         return detector.matches(in: raw, range: NSRange(location: 0, length: raw.count))
-            .lazy
             .compactMap { match in
                 guard let date = match.date,
                       !Calendar.current.isDate(date, inSameDayAs: Date()) else { return nil }

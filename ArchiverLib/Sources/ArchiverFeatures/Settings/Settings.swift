@@ -239,7 +239,6 @@ extension Settings.Destination.State: Sendable, Equatable {}
 
 struct SettingsView: View {
     @Bindable var store: StoreOf<Settings>
-    private static let appId = 1433801905
 
     @Environment(\.requestReview) private var requestReview
     @Environment(\.dismiss) private var dismiss
@@ -389,7 +388,6 @@ struct SettingsView: View {
 #if os(macOS)
 struct SettingsMacView: View {
     @Bindable var store: StoreOf<Settings>
-    private static let appId = 1433801905
 
     @Environment(\.requestReview) private var requestReview
 

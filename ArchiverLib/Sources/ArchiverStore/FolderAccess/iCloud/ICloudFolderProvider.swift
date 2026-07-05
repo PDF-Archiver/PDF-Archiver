@@ -31,9 +31,6 @@ final class ICloudFolderProvider: FolderProvider {
 
         self.metadataQuery = NSMetadataQuery()
 
-        // Filter only documents from the current year and the year before
-//        let year = Calendar.current.component(.year, from: Date())
-//        let predicate = NSPredicate(format: "(%K LIKE[c] '\(year)-*.pdf') OR (%K LIKE[c] '\(year - 1)-*.pdf')", NSMetadataItemFSNameKey, NSMetadataItemFSNameKey)
         // get all pdf documents
         let predicate = NSPredicate(format: "%K ENDSWITH[c] '.pdf'", NSMetadataItemFSNameKey)
 
@@ -53,11 +50,7 @@ final class ICloudFolderProvider: FolderProvider {
             NSMetadataQueryUbiquitousDocumentsScope
         ]
 
-        /*
-         We supply our own serializing queue to the `NSMetadataQuery` so that we
-         can perform our own background work in sync with item discovery.
-         Note that the operationQueue of the `NSMetadataQuery` must be serial.
-         */
+        // the operationQueue of the `NSMetadataQuery` must be serial - we use the main queue
         metadataQuery.operationQueue = .main
 
         observationTask = Task(priority: .utility) { [weak self] in
@@ -174,11 +167,6 @@ final class ICloudFolderProvider: FolderProvider {
     }
 
     func startDownload(of url: URL) throws {
-//        guard FileManager.default.fileExists(atPath: url.path) else {
-//            log.assertOrCritical("Could not find file at path: \(url.path)")
-//            return
-//        }
-
         try FileManager.default.startDownloadingUbiquitousItem(at: url)
     }
 
