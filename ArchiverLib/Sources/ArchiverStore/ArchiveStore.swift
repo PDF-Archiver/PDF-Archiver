@@ -279,9 +279,9 @@ public actor ArchiveStore: Log {
         // Do "--" and "__" exist in filename?
         guard url.lastPathComponent.contains("--"),
             url.lastPathComponent.contains("__"),
-            !url.lastPathComponent.lowercased().contains(Constants.documentDatePlaceholder.lowercased()),
-            !url.lastPathComponent.lowercased().contains(Constants.documentDescriptionPlaceholder.lowercased()),
-            !url.lastPathComponent.lowercased().contains(Constants.documentTagPlaceholder.lowercased()) else { return false }
+            !url.lastPathComponent.lowercased().contains(Document.datePlaceholder.lowercased()),
+            !url.lastPathComponent.lowercased().contains(Document.descriptionPlaceholder.lowercased()),
+            !url.lastPathComponent.lowercased().contains(Document.tagPlaceholder.lowercased()) else { return false }
 
         return true
     }

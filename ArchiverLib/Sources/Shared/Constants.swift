@@ -9,10 +9,6 @@
 import Foundation
 
 nonisolated public enum Constants {
-    public static let documentDatePlaceholder = "PDFARCHIVER-TEMP-DATE"
-    public static let documentDescriptionPlaceholder = "PDF-ARCHIVER-TEMP-DESCRIPTION-"
-    public static let documentTagPlaceholder = "PDFARCHIVERTEMPTAG"
-
     public static let mailRecipient = "support@pdf-archiver.io"
     public static let mailSubject = "PDF Archiver: Support"
 

@@ -113,14 +113,14 @@ final class PDFProcessingOperation: AsyncOperation {
             let parsedOutput = await Document.parseFilename(documentUrl.lastPathComponent)
             if parsedOutput.date != nil,
                let specification = parsedOutput.specification,
-               specification != Constants.documentDescriptionPlaceholder {
+               specification != Document.descriptionPlaceholder {
                 // the current filename of the document could be parsed and has no placeholders, so we use it
                 return documentUrl.lastPathComponent
             }
         }
 
         // get default specification
-        let specification = Constants.documentDescriptionPlaceholder + Date().timeIntervalSince1970.description
+        let specification = Document.descriptionPlaceholder + Date().timeIntervalSince1970.description
 
         // get OCR content
         var content = ""
@@ -131,14 +131,14 @@ final class PDFProcessingOperation: AsyncOperation {
 
         // use the default filename if no content could be found
         guard !content.isEmpty else {
-            return Document.createFilename(date: Date(), specification: specification, tags: Set([Constants.documentTagPlaceholder]))
+            return Document.createFilename(date: Date(), specification: specification, tags: Set([Document.tagPlaceholder]))
         }
 
         // parse the date
         let parsedDate = await DateParser.parse(content).first ?? Date()
 
         // parse the tags
-        let tags = Set([Constants.documentTagPlaceholder])
+        let tags = Set([Document.tagPlaceholder])
         return Document.createFilename(date: parsedDate, specification: specification, tags: tags)
     }
 
