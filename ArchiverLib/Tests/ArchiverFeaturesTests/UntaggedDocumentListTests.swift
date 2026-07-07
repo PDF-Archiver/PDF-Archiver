@@ -48,7 +48,7 @@ struct UntaggedDocumentListTests {
     // MARK: - Untagged Documents Filter Tests
 
     @Test
-    func untaggedDocumentsFilter() async throws {
+    func untaggedDocumentsFilter() throws {
         let taggedDoc = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: true)
         let untaggedDoc1 = Document.mock(url: URL(string: "https://example.com/2")!, isTagged: false)
         let untaggedDoc2 = Document.mock(url: URL(string: "https://example.com/3")!, isTagged: false)
@@ -62,7 +62,7 @@ struct UntaggedDocumentListTests {
     }
 
     @Test
-    func emptyUntaggedDocuments() async throws {
+    func emptyUntaggedDocuments() throws {
         let taggedDoc1 = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: true)
         let taggedDoc2 = Document.mock(url: URL(string: "https://example.com/2")!, isTagged: true)
 
@@ -85,13 +85,13 @@ struct UntaggedDocumentListTests {
     // MARK: - Premium Status Tests
 
     @Test
-    func premiumStatusInactive() async throws {
+    func premiumStatusInactive() throws {
         let state = UntaggedDocumentList.State()
         #expect(state.premiumStatus == .loading)
     }
 
     @Test
-    func premiumStatusActive() async throws {
+    func premiumStatusActive() throws {
         let state = UntaggedDocumentList.State()
         #expect(state.premiumStatus == .loading)
     }
@@ -99,7 +99,7 @@ struct UntaggedDocumentListTests {
     // MARK: - Document Details Tests
 
     @Test
-    func documentDetailsNotNilWhenSelected() async throws {
+    func documentDetailsNotNilWhenSelected() throws {
         let document = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: false)
 
         let state = UntaggedDocumentList.State(
@@ -113,7 +113,7 @@ struct UntaggedDocumentListTests {
     }
 
     @Test
-    func documentDetailsNilWhenNotSelected() async throws {
+    func documentDetailsNilWhenNotSelected() throws {
         let state = UntaggedDocumentList.State()
 
         #expect(state.documentDetails == nil)
@@ -122,7 +122,7 @@ struct UntaggedDocumentListTests {
     // MARK: - Multiple Document Tests
 
     @Test
-    func multipleUntaggedDocuments() async throws {
+    func multipleUntaggedDocuments() throws {
         let doc1 = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: false)
         let doc2 = Document.mock(url: URL(string: "https://example.com/2")!, isTagged: false)
         let doc3 = Document.mock(url: URL(string: "https://example.com/3")!, isTagged: false)
@@ -135,7 +135,7 @@ struct UntaggedDocumentListTests {
     // MARK: - State Update Tests
 
     @Test
-    func stateUpdatesOnDocumentChange() async throws {
+    func stateUpdatesOnDocumentChange() throws {
         let initialDoc = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: false)
 
         let store = TestStore(initialState: UntaggedDocumentList.State(documents: [initialDoc])) {

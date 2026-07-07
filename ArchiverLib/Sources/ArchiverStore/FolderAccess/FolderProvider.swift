@@ -14,7 +14,7 @@ import Shared
 }
 
 struct DocumentInformation: Equatable, Comparable, Sendable {
-    static func < (lhs: DocumentInformation, rhs: DocumentInformation) -> Bool {
+    static func < (lhs: Self, rhs: Self) -> Bool {
         lhs.url.path < rhs.url.path
     }
 

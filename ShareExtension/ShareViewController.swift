@@ -109,7 +109,7 @@ final class ShareViewController: UIViewController {
     /// This ensures documents shared via ShareExtension before the fix are not lost.
     ///
     /// This was a bug in version 4.3.0. it can be removed after some time.
-    private func migrateLegacyDocuments() async {
+    private func migrateLegacyDocuments() {
         // Old location: URL.temporaryDirectory/TempDocuments (extension-specific temp directory)
         let legacyTempURL = URL.temporaryDirectory.appendingPathComponent("TempDocuments")
 
@@ -170,7 +170,6 @@ final class ShareViewController: UIViewController {
 
             // Clean up legacy directory after migration
             try? FileManager.default.removeItem(at: legacyTempURL)
-
         } catch {
             Self.log.error("Failed to read legacy temp directory", metadata: ["error": "\(error)"])
         }

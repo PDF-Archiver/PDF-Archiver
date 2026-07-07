@@ -22,10 +22,13 @@ extension PDFQuality {
         switch self {
         case .lossless:
             return "100% - Lossless"
+
         case .good:
             return "75% - Good (Default)"
+
         case .normal:
             return "50% - Normal"
+
         case .small:
             return "25% - Small"
         }
@@ -37,10 +40,12 @@ extension StorageType {
         switch self {
         case .iCloudDrive:
             return "iCloud Drive"
+
         #if !os(macOS)
         case .appContainer:
             return "Local"
         #endif
+
         case .local:
             #if os(macOS)
             return "Drive"
@@ -55,6 +60,7 @@ extension StorageType {
         switch self {
         case .iCloudDrive:
             Text("Synchronized - Your documents are stored in iCloud Drive. They are available to you on all devices with the same iCloud account, e.g. iPhone, iPad and Mac.", bundle: #bundle)
+
         #if !os(macOS)
         case .appContainer:
             VStack(alignment: .leading) {
@@ -63,6 +69,7 @@ extension StorageType {
                 Link("https://support.apple.com/en-us/HT210598", destination: URL(string: NSLocalizedString("https://support.apple.com/en-us/HT210598", comment: ""))!)
             }
         #endif
+
         case .local:
             Text("Not synchronized - Your documents are stored in a folder you choose on your computer. PDF Archiver does not initiate synchronization.", bundle: #bundle)
         }
@@ -278,6 +285,7 @@ struct SettingsView: View {
                     } else {
                         preconditionFailure("Failed to load Apple Intelligence settings")
                     }
+
                 case .archiveStorage:
                     if let storageSelectionStore = store.scope(\.destination?.archiveStorage, action: \.destination.archiveStorage) {
                         StorageSelectionView(store: storageSelectionStore)
@@ -285,6 +293,7 @@ struct SettingsView: View {
                     } else {
                         preconditionFailure("Failed to load export nothing found")
                     }
+
                 case .expertSettings:
                     if let expertSettingsStore = store.scope(\.destination?.expertSettings, action: \.destination.expertSettings) {
                         ExpertSettingsView(store: expertSettingsStore)
@@ -292,8 +301,10 @@ struct SettingsView: View {
                     } else {
                         preconditionFailure("Failed to load export nothing found")
                     }
+
                 case .aboutMe:
                     AboutMeView()
+
                 case .legal:
                     Form {
                         Section {
@@ -301,14 +312,17 @@ struct SettingsView: View {
                         }
                     }
                         .navigationTitle(Text("Legal", bundle: #bundle))
+
                 case .termsOfUse:
                     let content = String(localized: "TERMS_OF_USE", bundle: #bundle)
                     MarkdownView(markdown: content)
                         .navigationTitle(String(localized: "Terms of Use", bundle: #bundle))
+
                 case .privacy:
                     let content = String(localized: "PRIVACY", bundle: #bundle)
                     MarkdownView(markdown: content)
                         .navigationTitle(String(localized: "Privacy", bundle: #bundle))
+
                 case .imprint:
                     let content = String(localized: "IMPRINT", bundle: #bundle)
                     MarkdownView(markdown: content)
@@ -426,29 +440,36 @@ struct SettingsMacView: View {
                                 AppleIntelligenceSettingsView(store: appleIntelligenceSettingsStore)
                                     .navigationTitle(Text("Apple Intelligence", bundle: #bundle))
                             }
+
                         case .archiveStorage:
                             if let storageSelectionStore = store.scope(\.destination?.archiveStorage, action: \.destination.archiveStorage) {
                                 StorageSelectionView(store: storageSelectionStore)
                                     .navigationTitle(Text("Storage", bundle: #bundle))
                             }
+
                         case .expertSettings:
                             if let expertSettingsStore = store.scope(\.destination?.expertSettings, action: \.destination.expertSettings) {
                                 ExpertSettingsView(store: expertSettingsStore)
                                     .navigationTitle(Text("Advanced", bundle: #bundle))
                             }
+
                         case .aboutMe:
                             AboutMeView()
+
                         case .legal:
                             LegalView(store: store)
                                 .navigationTitle(Text("Legal", bundle: #bundle))
+
                         case .termsOfUse:
                             let content = String(localized: "TERMS_OF_USE", bundle: #bundle)
                             MarkdownView(markdown: content)
                                 .navigationTitle(String(localized: "Terms of Use", bundle: #bundle))
+
                         case .privacy:
                             let content = String(localized: "PRIVACY", bundle: #bundle)
                             MarkdownView(markdown: content)
                                 .navigationTitle(String(localized: "Privacy", bundle: #bundle))
+
                         case .imprint:
                             let content = String(localized: "IMPRINT", bundle: #bundle)
                             MarkdownView(markdown: content)
@@ -588,7 +609,6 @@ struct SettingsMacView: View {
                     }
                 }
                 .buttonStyle(.plain)
-
             } header: {
                 Text("About", bundle: #bundle)
                     .foregroundStyle(Color.secondary)

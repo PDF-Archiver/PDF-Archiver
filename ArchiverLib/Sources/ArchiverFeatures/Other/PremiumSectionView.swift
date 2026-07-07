@@ -68,6 +68,7 @@ struct PremiumSectionView: View {
                 switch store.premiumStatus {
                 case .loading:
                     ProgressView()
+
                 case .active:
                     HStack(spacing: 4) {
                         Image(systemName: "checkmark.circle.fill")
@@ -75,6 +76,7 @@ struct PremiumSectionView: View {
                         Text("Active", bundle: #bundle)
                     }
                     .font(.largeTitle)
+
                 case .inactive:
                     HStack(spacing: 4) {
                         Image(systemName: "xmark.circle.fill")
@@ -122,12 +124,14 @@ struct PremiumSectionView: View {
                 switch store.premiumStatus {
                 case .loading:
                     ProgressView()
+
                 case .active:
                     HStack(spacing: 4) {
                         Image(systemName: "checkmark.circle.fill")
                             .foregroundStyle(.green)
                         Text("Active", bundle: #bundle)
                     }
+
                 case .inactive:
                     HStack(spacing: 4) {
                         Image(systemName: "xmark.circle.fill")

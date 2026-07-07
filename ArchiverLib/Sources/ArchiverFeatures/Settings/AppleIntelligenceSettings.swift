@@ -138,7 +138,6 @@ struct AppleIntelligenceSettingsView: View {
                               prompt: Text("Optional: Enter your custom prompt additions", bundle: #bundle),
                               axis: .vertical)
                     .lineLimit(1...)
-
                 } footer: {
                     Text("\(store.customPrompt?.count ?? 0) / \(AppleIntelligenceSettings.maxCustomPromptLength)", bundle: #bundle)
                     .font(.footnote)
@@ -177,7 +176,6 @@ struct AppleIntelligenceSettingsView: View {
                         }
                     }
                     .disabled(store.isClearingCache || store.cacheEntryCount == 0)
-
                 } footer: {
                     Text("Cache improves performance by storing previously analyzed documents. Cached entries are stored locally and not synced across devices. The system may automatically remove cache files when storage is needed.\n\nWhen background notifications are enabled, you'll receive alerts about cache processing, including duration and number of caches created.", bundle: #bundle)
                         .foregroundStyle(.secondary)
@@ -202,6 +200,7 @@ struct AppleIntelligenceSettingsView: View {
                     .font(.subheadline)
             }
             .foregroundStyle(.green)
+
         case .deviceNotCompatible:
             HStack(spacing: 4) {
                 Image(systemName: "xmark.circle.fill")
@@ -209,6 +208,7 @@ struct AppleIntelligenceSettingsView: View {
                     .font(.subheadline)
             }
             .foregroundStyle(.red)
+
         case .unavailable:
             HStack(spacing: 4) {
                 Image(systemName: "exclamationmark.circle.fill")
@@ -216,6 +216,7 @@ struct AppleIntelligenceSettingsView: View {
                     .font(.subheadline)
             }
             .foregroundStyle(.orange)
+
         case .operatingSystemNotCompatible:
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 4) {

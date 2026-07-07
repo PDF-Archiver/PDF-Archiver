@@ -162,7 +162,7 @@ struct DocumentInformationFormTests {
     }
 
     @Test
-    func specificationIsLowercase() async throws {
+    func specificationIsLowercase() throws {
         let document = Document.mock(specification: "Test Specification")
         let state = DocumentInformationForm.State(document: document)
 

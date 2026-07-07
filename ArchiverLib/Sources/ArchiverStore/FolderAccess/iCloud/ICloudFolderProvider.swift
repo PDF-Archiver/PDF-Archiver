@@ -34,7 +34,7 @@ final class ICloudFolderProvider: FolderProvider {
         // get all pdf documents
         let predicate = NSPredicate(format: "%K ENDSWITH[c] '.pdf'", NSMetadataItemFSNameKey)
 
-        let notContainsTempPath = NSPredicate(format: "(NOT (%K CONTAINS[c] %@)) AND (NOT (%K CONTAINS[c] %@))", NSMetadataItemPathKey, "/\(ICloudFolderProvider.tempFolderName)/", NSMetadataItemPathKey, "/.Trash/")
+        let notContainsTempPath = NSPredicate(format: "(NOT (%K CONTAINS[c] %@)) AND (NOT (%K CONTAINS[c] %@))", NSMetadataItemPathKey, "/\(Self.tempFolderName)/", NSMetadataItemPathKey, "/.Trash/")
         metadataQuery.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, notContainsTempPath] )
 
         // update the file status 3 times per second, while downloading
@@ -56,8 +56,8 @@ final class ICloudFolderProvider: FolderProvider {
         observationTask = Task(priority: .utility) { [weak self] in
             guard let self else { return }
 
-            self.metadataQuery.start()
-            self.log.debug("Starting the documents query.")
+            metadataQuery.start()
+            log.debug("Starting the documents query.")
 
             await withTaskGroup(of: Void.self) { group in
                 group.addTask { [weak self] in
@@ -65,13 +65,13 @@ final class ICloudFolderProvider: FolderProvider {
                         guard let self else { return }
                         Self.log.debug("Documents query finished initial fetch.")
 
-                        let details = await self.getFileChangeDetails()
+                        let details = await getFileChangeDetails()
 
                         // update the archive
                         let changes = details
                             .compactMap(\.self)
 
-                        await self.sendDocuments(added: changes, updated: [], removed: [])
+                        await sendDocuments(added: changes, updated: [], removed: [])
                     }
                 }
 
@@ -90,7 +90,7 @@ final class ICloudFolderProvider: FolderProvider {
                         let removed = removedMetadataItems
                             .compactMap { $0.createDetails() }
 
-                        await self.sendDocuments(added: added, updated: updated, removed: removed)
+                        await sendDocuments(added: added, updated: updated, removed: removed)
                     }
                 }
             }
@@ -109,7 +109,7 @@ final class ICloudFolderProvider: FolderProvider {
         metadataQuery.stop()
     }
 
-    private func sendDocuments(added: [DocumentInformation], updated: [DocumentInformation], removed: [DocumentInformation]) async {
+    private func sendDocuments(added: [DocumentInformation], updated: [DocumentInformation], removed: [DocumentInformation]) {
         for change in added + updated {
             guard let id = change.url.uniqueId() else {
                 assertionFailure("Failed to get uniqueId for \(change.url)")
@@ -216,6 +216,7 @@ extension NSMetadataItem: nonisolated Log {
         case NSMetadataUbiquitousItemDownloadingStatusCurrent, NSMetadataUbiquitousItemDownloadingStatusDownloaded:
             // local
             documentStatus = 1
+
         case NSMetadataUbiquitousItemDownloadingStatusNotDownloaded:
 
             let minValue = 0.0
@@ -227,6 +228,7 @@ extension NSMetadataItem: nonisolated Log {
                 // remote
                 documentStatus = minValue
             }
+
         default:
             // do not crash on future/unknown status values - just skip this item
             log.criticalAndAssert("Unkown download status.", metadata: ["status": "\(downloadingStatus)"])

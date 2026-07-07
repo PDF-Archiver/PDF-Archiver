@@ -44,8 +44,8 @@ struct AboutMeView: View {
     private var profilePicture: some View {
         Image("me-photo")
             .resizable()
-            .cornerRadius(AboutMeView.profilePictureWidth / 4)
-            .frame(width: AboutMeView.profilePictureWidth, height: AboutMeView.profilePictureWidth, alignment: .center)
+            .cornerRadius(Self.profilePictureWidth / 4)
+            .frame(width: Self.profilePictureWidth, height: Self.profilePictureWidth, alignment: .center)
     }
 
     private var text: some View {

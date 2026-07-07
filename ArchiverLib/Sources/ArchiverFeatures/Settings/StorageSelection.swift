@@ -94,7 +94,6 @@ struct StorageSelectionView: View {
                 Section(footer: storageType.descriptionView) {
                     Button {
                         store.send(.onStorageTypeTapped(storageType))
-
                     } label: {
                         HStack {
                             Label {
@@ -196,10 +195,12 @@ enum StorageSelectionType: String, CaseIterable {
         switch self {
         case .iCloudDrive:
             return "iCloud Drive"
+
         #if !os(macOS)
         case .appContainer:
             return "Local"
         #endif
+
         case .local:
             #if os(macOS)
             return "Drive"
@@ -213,10 +214,12 @@ enum StorageSelectionType: String, CaseIterable {
         switch self {
         case .iCloudDrive:
             return "icloud"
+
         #if !os(macOS)
         case .appContainer:
             return "iphone"
         #endif
+
         case .local:
             #if os(macOS)
             return "externaldrive"
@@ -231,6 +234,7 @@ enum StorageSelectionType: String, CaseIterable {
         switch self {
         case .iCloudDrive:
             Text("Synchronized - Your documents are stored in iCloud Drive. They are available to you on all devices with the same iCloud account, e.g. iPhone, iPad and Mac.", bundle: #bundle)
+
         #if !os(macOS)
         case .appContainer:
             VStack(alignment: .leading) {
@@ -238,6 +242,7 @@ enum StorageSelectionType: String, CaseIterable {
                 Link("https://support.apple.com/en-us/HT210598", destination: Self.appleDocumentationURL)
             }
         #endif
+
         case .local:
             Text("Not synchronized - Your documents are stored in a folder you choose on your computer. PDF Archiver does not initiate synchronization.", bundle: #bundle)
         }

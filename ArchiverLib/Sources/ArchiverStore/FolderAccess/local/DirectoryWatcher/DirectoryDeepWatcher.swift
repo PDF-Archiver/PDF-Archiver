@@ -48,7 +48,7 @@ actor DirectoryDeepWatcher: Log {
         sources.removeAll()
     }
 
-    private func initializeWatcher() async throws {
+    private func initializeWatcher() throws {
         Self.log.debug("Creating new directory watcher.", metadata: ["path": "\(baseUrl.path)"])
 
         do {
@@ -79,16 +79,16 @@ actor DirectoryDeepWatcher: Log {
             for await url in changedUrlStream {
                 guard let self,
                       !Task.isCancelled else { return }
-                self.changedUrlContinuation.yield(url)
+                changedUrlContinuation.yield(url)
 
                 Self.log.debug("DispatchSource event has happened.", metadata: ["path": "\(url.path)"])
 
                 // remove watchers of deleted folders, so a recreated folder with the same path gets a fresh source
-                await self.removeStaleSources()
+                await removeStaleSources()
 
                 do {
                     // iterate (once again) over all folders and subfolders, to get all changes
-                    try await self.startWatching(contentsOf: url)
+                    try await startWatching(contentsOf: url)
                 } catch {
                     Self.log.error("Failed to start watching in event handler", metadata: ["error": "\(error)"])
                 }
@@ -115,7 +115,7 @@ actor DirectoryDeepWatcher: Log {
     private func startWatching(contentsOf url: URL) throws {
         let enumerator = FileManager.default.enumerator(at: url,
                                                         includingPropertiesForKeys: [.creationDateKey, .isDirectoryKey],
-                                                        options: [.skipsHiddenFiles]) { (url, error) -> Bool in
+                                                        options: [.skipsHiddenFiles]) { url, error -> Bool in
             // if a folder was deleted during enumeration, there occurs a "no such file" error - we assume that there will be another change triggered
             guard (error as NSError).code != NSFileReadNoSuchFileError else { return false }
 

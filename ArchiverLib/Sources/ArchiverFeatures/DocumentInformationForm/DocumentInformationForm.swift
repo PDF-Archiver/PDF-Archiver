@@ -120,12 +120,12 @@ struct DocumentInformationForm {
 
             case .onSaveButtonTapped:
                 let nothingChanged = state.initialDocument.date == state.document.date && state.initialDocument.specification == state.document.specification && state.initialDocument.tags == state.document.tags
-                if nothingChanged && state.document.isTagged {
+                if nothingChanged, state.document.isTagged {
                     return .none
                 }
 
                 // check tags
-                if !state.documentTagsNotRequired && state.document.tags.isEmpty {
+                if !state.documentTagsNotRequired, state.document.tags.isEmpty {
                     return .run { _ in
                         await notificationCenter.createAndPost(.init(title: LocalizedStringResource("Missing tags", bundle: #bundle),
                                                                      message: LocalizedStringResource("Please add at least one tag to your document or change your advanced settings.", bundle: #bundle),
@@ -135,7 +135,7 @@ struct DocumentInformationForm {
 
                 // check specification
                 state.document.specification = state.document.specification.slugified(withSeparator: "-")
-                if !state.documentSpecificationNotRequired && state.document.specification.isEmpty {
+                if !state.documentSpecificationNotRequired, state.document.specification.isEmpty {
                     return .run { _ in
                         await notificationCenter.createAndPost(.init(title: LocalizedStringResource("No specification", bundle: #bundle),
                                                                      message: LocalizedStringResource("Please add the document specification or change your advanced settings.", bundle: #bundle),
@@ -319,7 +319,6 @@ struct DocumentInformationForm {
                                                                                       documentId: documentId)) {
                 foundSpecification = content.specification
                 tagSuggestions = Array(content.tags).sorted()
-
             } else {
                 // Fall back to traditional text analysis
 

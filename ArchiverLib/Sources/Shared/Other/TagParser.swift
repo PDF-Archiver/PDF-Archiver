@@ -28,7 +28,7 @@ nonisolated public enum TagParser {
 
         let tags: [NLTag] = [.personalName, .organizationName, .placeName]
         tagger.enumerateTags(in: text.startIndex..<text.endIndex, unit: .word, scheme: .nameType, options: options) { tag, tokenRange in
-            if let tag = tag,
+            if let tag,
                 tags.contains(tag) {
 
                 // slugify tag
@@ -37,7 +37,7 @@ nonisolated public enum TagParser {
                 // validate the found tag:
                 // * should not contain any sperators, since this is a hint on duplicates, e.g. "zalando" vs. "zalando se"
                 // * should have more than 2 characters
-                if !foundTagName.contains(seperator) && foundTagName.count > 2 {
+                if !foundTagName.contains(seperator), foundTagName.count > 2 {
                     documentTags.insert(foundTagName)
                 }
             }

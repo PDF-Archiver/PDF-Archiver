@@ -103,7 +103,7 @@ final class PathManager: Log {
         // about the documents that were left behind at the old location.
         self.$archivePathType.withLock { $0 = type }
 
-        if let moveError = moveError {
+        if let moveError {
             throw moveError
         }
     }
@@ -117,10 +117,12 @@ extension StorageType {
                 throw PathError.iCloudDriveNotFound
             }
             return url
+
 #if os(iOS)
         case .appContainer:
             return FileManager.default.appContainerURL
 #endif
+
         case .local(let url):
             return url
         }

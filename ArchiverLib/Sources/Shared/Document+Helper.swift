@@ -25,7 +25,7 @@ extension Document {
 
         // try to parse the current filename
         var date: Date?
-        if let parsed = Document.getFilenameDate(filename) {
+        if let parsed = Self.getFilenameDate(filename) {
             date = parsed
         } else if let parsedDate = await DateParser.parse(filename).first {
             date = parsedDate

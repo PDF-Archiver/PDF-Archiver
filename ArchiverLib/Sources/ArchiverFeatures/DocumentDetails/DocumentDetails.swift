@@ -151,7 +151,6 @@ struct DocumentDetailsView: View {
                     .task {
                         store.send(.onRemoteDocumentAppeared)
                     }
-
             } else {
                 PDFCustomView(store.document.url, highlightDate: store.highlightDetectedDateEnabled ? store.documentInformationForm.document.date : nil)
                     .ignoresSafeArea(edges: [.bottom, .top])

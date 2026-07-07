@@ -10,7 +10,7 @@ struct StatisticsTests {
     // MARK: - Document Statistics Tests
 
     @Test
-    func statisticsWithDocuments() async throws {
+    func statisticsWithDocuments() throws {
         let calendar = Calendar.current
 
         let doc1 = Document.mock(
@@ -32,7 +32,7 @@ struct StatisticsTests {
     }
 
     @Test
-    func statisticsWithEmptyDocuments() async throws {
+    func statisticsWithEmptyDocuments() throws {
         let state = Statistics.State()
 
         #expect(state.documents.isEmpty)
@@ -41,7 +41,7 @@ struct StatisticsTests {
     // MARK: - Tag Count Tests
 
     @Test
-    func tagCountsCalculation() async throws {
+    func tagCountsCalculation() throws {
         let doc1 = Document.mock(
             url: URL(string: "https://example.com/1")!,
             tags: ["invoice"]
@@ -62,7 +62,7 @@ struct StatisticsTests {
     }
 
     @Test
-    func tagCountsWithMultipleTags() async throws {
+    func tagCountsWithMultipleTags() throws {
         let doc1 = Document.mock(
             url: URL(string: "https://example.com/1")!,
             tags: ["invoice", "work", "tax"]
@@ -80,17 +80,18 @@ struct StatisticsTests {
     // MARK: - Year Statistics Tests
 
     @Test
-    func statisticsByYear() async throws {
+    func statisticsByYear() throws {
         let calendar = Calendar.current
-        // swiftlint:disable force_unwrapping
+        // swiftlint:disable:next force_unwrapping
         let date2024 = calendar.date(from: DateComponents(year: 2024, month: 1, day: 1))!
+        // swiftlint:disable:next force_unwrapping
         let date2023 = calendar.date(from: DateComponents(year: 2023, month: 1, day: 1))!
+        // swiftlint:disable:next force_unwrapping
         let date2022 = calendar.date(from: DateComponents(year: 2022, month: 1, day: 1))!
 
         let doc1 = Document.mock(url: URL(string: "https://example.com/1")!, date: date2024)
         let doc2 = Document.mock(url: URL(string: "https://example.com/2")!, date: date2023)
         let doc3 = Document.mock(url: URL(string: "https://example.com/3")!, date: date2022)
-        // swiftlint:enable force_unwrapping
 
         let state = Statistics.State(documents: [doc1, doc2, doc3])
 
@@ -98,14 +99,13 @@ struct StatisticsTests {
     }
 
     @Test
-    func statisticsSingleYear() async throws {
+    func statisticsSingleYear() throws {
         let calendar = Calendar.current
-        // swiftlint:disable force_unwrapping
+        // swiftlint:disable:next force_unwrapping
         let date2024 = calendar.date(from: DateComponents(year: 2024, month: 1, day: 1))!
 
         let doc1 = Document.mock(url: URL(string: "https://example.com/1")!, date: date2024)
         let doc2 = Document.mock(url: URL(string: "https://example.com/2")!, date: date2024)
-        // swiftlint:enable force_unwrapping
 
         let state = Statistics.State(documents: [doc1, doc2])
 
@@ -115,7 +115,7 @@ struct StatisticsTests {
     // MARK: - Document Count Tests
 
     @Test
-    func totalDocumentCount() async throws {
+    func totalDocumentCount() throws {
         let doc1 = Document.mock(url: URL(string: "https://example.com/1")!)
         let doc2 = Document.mock(url: URL(string: "https://example.com/2")!)
         let doc3 = Document.mock(url: URL(string: "https://example.com/3")!)
@@ -126,7 +126,7 @@ struct StatisticsTests {
     }
 
     @Test
-    func zeroDocumentCount() async throws {
+    func zeroDocumentCount() throws {
         let state = Statistics.State()
 
         #expect(state.documents.isEmpty)
@@ -135,7 +135,7 @@ struct StatisticsTests {
     // MARK: - Tagged vs Untagged Tests
 
     @Test
-    func taggedDocumentsCount() async throws {
+    func taggedDocumentsCount() throws {
         let tagged1 = Document.mock(url: URL(string: "https://example.com/1")!, tags: ["tag1"], isTagged: true)
         let tagged2 = Document.mock(url: URL(string: "https://example.com/2")!, tags: ["tag2"], isTagged: true)
         let untagged = Document.mock(url: URL(string: "https://example.com/3")!, isTagged: false)
@@ -147,7 +147,7 @@ struct StatisticsTests {
     }
 
     @Test
-    func untaggedDocumentsCount() async throws {
+    func untaggedDocumentsCount() throws {
         let tagged = Document.mock(url: URL(string: "https://example.com/1")!, tags: ["tag"], isTagged: true)
         let untagged1 = Document.mock(url: URL(string: "https://example.com/2")!, isTagged: false)
         let untagged2 = Document.mock(url: URL(string: "https://example.com/3")!, isTagged: false)
@@ -161,7 +161,7 @@ struct StatisticsTests {
     // MARK: - Storage Size Tests
 
     @Test
-    func totalStorageSize() async throws {
+    func totalStorageSize() throws {
         let doc1 = Document.mock(url: URL(string: "https://example.com/1")!, sizeInBytes: 1000)
         let doc2 = Document.mock(url: URL(string: "https://example.com/2")!, sizeInBytes: 2000)
         let doc3 = Document.mock(url: URL(string: "https://example.com/3")!, sizeInBytes: 3000)
@@ -173,7 +173,7 @@ struct StatisticsTests {
     }
 
     @Test
-    func zeroStorageSize() async throws {
+    func zeroStorageSize() throws {
         let state = Statistics.State()
         let totalSize = state.documents.reduce(0.0) { $0 + $1.sizeInBytes }
 
@@ -183,14 +183,14 @@ struct StatisticsTests {
     // MARK: - State Initialization Tests
 
     @Test
-    func defaultStateInitialization() async throws {
+    func defaultStateInitialization() throws {
         let state = Statistics.State()
 
         #expect(state.documents.isEmpty)
     }
 
     @Test
-    func stateWithDocumentsInitialization() async throws {
+    func stateWithDocumentsInitialization() throws {
         let doc1 = Document.mock(url: URL(string: "https://example.com/1")!)
         let doc2 = Document.mock(url: URL(string: "https://example.com/2")!)
 

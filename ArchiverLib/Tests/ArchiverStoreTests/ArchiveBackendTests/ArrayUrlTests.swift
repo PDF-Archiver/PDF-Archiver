@@ -13,7 +13,7 @@ import Testing
 @MainActor
 struct ArrayURLTests {
     @Test
-    func uniqueParents() async throws {
+    func uniqueParents() throws {
         let url1 = URL(string: "/test/folder1/archive/untagged")!
         let url2 = URL(string: "/test/folder1/archive")!
         let url3 = URL(string: "/test/folder2/scans")!

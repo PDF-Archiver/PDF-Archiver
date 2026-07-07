@@ -25,8 +25,10 @@ struct ArchiveList {
                 switch self {
                 case .tag(let tag):
                     "tag: \(tag)"
+
                 case .year(let year):
                     "year: \(year)"
+
                 case .text(let text):
                     "text: \(text)"
                 }
@@ -36,8 +38,10 @@ struct ArchiveList {
                 switch self {
                 case .tag(let tag):
                     return tag
+
                 case .year(let year):
                     return "\(year)"
+
                 case .text(let text):
                     return text
                 }
@@ -68,8 +72,10 @@ struct ArchiveList {
                         switch searchToken {
                         case .tag(let tag):
                             guard document.tags.contains(tag) else { return false }
+
                         case .year(let int):
                             guard document.url.lastPathComponent.hasPrefix("\(int)") else { return false }
+
                         case .text(let text):
                             guard document.url.lastPathComponent.localizedCaseInsensitiveContains(text) else { return false }
                         }
@@ -111,6 +117,7 @@ struct ArchiveList {
                     state.documentDetails = nil
                 }
                 return .none
+
             case .binding(\.searchText):
                 var searchText = state.searchText
                 if searchText.popLast() == " " {
@@ -123,6 +130,7 @@ struct ArchiveList {
                     state.searchText = ""
                 }
                 return .none
+
             case .binding:
                 return .none
             }
@@ -173,8 +181,10 @@ struct ArchiveListView: View {
             switch token {
             case .tag(let tag):
                 Label(tag, systemImage: "tag")
+
             case .year(let year):
                 Label("\(year, format: .number.grouping(.never))", systemImage: "calendar")
+
             case .text(let text):
                 Label(text, systemImage: "text.viewfinder")
             }

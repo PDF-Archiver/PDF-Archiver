@@ -158,7 +158,6 @@ public final class DocumentProcessingService: Sendable {
                     }
                 }
             }
-
         } catch {
             Logger.documentProcessing.errorAndAssert("Failed ", metadata: ["error": "\(error)"])
         }

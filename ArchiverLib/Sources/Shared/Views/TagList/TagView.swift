@@ -23,11 +23,11 @@ public struct TagView: View {
     }
 
     public var body: some View {
-        if let tapHandler = tapHandler {
+        if let tapHandler {
             Button {
-                tapHandler(self.tagName)
+                tapHandler(tagName)
             } label: {
-                self.tag
+                tag
             }
             .buttonStyle(BorderlessButtonStyle())
         } else {

@@ -15,6 +15,7 @@ extension Transcript.Entry {
         switch self {
         case .toolCalls(let calls):
             return calls.count
+
         default:
             return 0
         }

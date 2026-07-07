@@ -13,7 +13,8 @@ public enum SharedDefaults {
     private static let sharedDefaults = UserDefaults(suiteName: "group.PDFArchiverShared")!
 
     public static func set(untaggedDocumentsCount count: Int) {
-        return sharedDefaults.set(count, forKey: "untaggedDocumentsCount")
+        sharedDefaults.set(count, forKey: "untaggedDocumentsCount")
+        return
     }
 
     public static func getUntaggedDocumentsCount() -> Int {
