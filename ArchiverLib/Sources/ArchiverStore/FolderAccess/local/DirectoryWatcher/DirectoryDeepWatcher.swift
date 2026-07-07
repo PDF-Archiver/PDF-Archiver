@@ -35,13 +35,9 @@ actor DirectoryDeepWatcher: Log {
         }
     }
 
-    deinit {
-        for (_, source) in sources {
-            source.1.cancel()
-            source.0.cancel()
-        }
-        sources.removeAll()
-    }
+    // No deinit needed: releasing the actor releases `sources`, each
+    // DispatchSourceWatcher cancels itself in its deinit (closing the file
+    // descriptor), and the finished streams end the observation tasks.
 
     func stop() {
         for (_, source) in sources {
@@ -76,8 +72,11 @@ actor DirectoryDeepWatcher: Log {
         guard sources[url] == nil else { return }
 
         let watcher = try DispatchSourceWatcher(queue: queue, url: url)
+        // Capture only the Sendable stream - the watcher itself is non-Sendable
+        // state confined to this actor.
+        let changedUrlStream = watcher.changedUrlStream
         let task = Task { [weak self] in
-            for await url in watcher.changedUrlStream {
+            for await url in changedUrlStream {
                 guard let self,
                       !Task.isCancelled else { return }
                 self.changedUrlContinuation.yield(url)
@@ -140,17 +139,15 @@ actor DirectoryDeepWatcher: Log {
 }
 
 extension DirectoryDeepWatcher {
-    // A class (not an actor), so `cancel()` can also be called synchronously from `deinit`.
-    // All stored properties are immutable, which makes the type safe to share.
-    private final class DispatchSourceWatcher: Log, @unchecked Sendable {
-        let url: URL
+    // A class (not an actor), so `cancel()` can run synchronously from `deinit`.
+    // Deliberately not Sendable: instances are confined to the DirectoryDeepWatcher
+    // actor; only the Sendable `changedUrlStream` is shared with the observation task.
+    private final class DispatchSourceWatcher {
         let changedUrlStream: AsyncStream<URL>
         private let changedUrlContinuation: AsyncStream<URL>.Continuation
         private let source: DispatchSourceFileSystemObject
 
         init(queue: DispatchQueue, url: URL) throws {
-            self.url = url
-
             let (stream, continuation) = AsyncStream<URL>.makeStream()
             self.changedUrlStream = stream
             self.changedUrlContinuation = continuation
