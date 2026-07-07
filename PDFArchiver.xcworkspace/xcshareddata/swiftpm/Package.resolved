@@ -1,5 +1,5 @@
 {
-  "originHash" : "15b2ac38bd18623a99bfdbee9f75dabe394b148254223a5add3745aee345abde",
+  "originHash" : "c9b0b37f1489769551f63dff140bde318baafc1611ca97ffe909ab9e7b4bf63b",
   "pins" : [
     {
       "identity" : "asyncextensions",
@@ -78,8 +78,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-custom-dump",
       "state" : {
-        "revision" : "b9b59eb58c946236d6f16305c576ad194c36444e",
-        "version" : "1.6.0"
+        "revision" : "a8cd6c976f335ed361dcecddb0dc39ebda51bc3e",
+        "version" : "1.6.1"
       }
     },
     {
@@ -105,8 +105,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-navigation",
       "state" : {
-        "revision" : "32f35241b8be0719c4c7f00eb27713b1cadb6248",
-        "version" : "2.8.0"
+        "revision" : "fad75807c596fecd724b0fc81cd61c94008faad4",
+        "version" : "2.10.3"
       }
     },
     {
