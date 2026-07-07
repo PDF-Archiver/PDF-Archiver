@@ -6,15 +6,13 @@
 //
 
 import ArchiverModels
-import CryptoKit
 import Foundation
 import OSLog
-import Shared
 
 /// Manages caching of content extraction results to improve performance
 /// Only used internally by ContentExtractorStore
 @available(iOS 26, macOS 26, *)
-actor ContentExtractorCache: Log {
+actor ContentExtractorCache {
 
     // MARK: - Types
 

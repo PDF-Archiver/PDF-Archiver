@@ -66,10 +66,7 @@ let package = Package(
                 dependencies: ["Shared"]),
         .target(name: "ContentExtractorStore",
                 dependencies: [
-                    "ArchiverStore",
-                    "ArchiverModels",
-                    .product(name: "Dependencies", package: "swift-dependencies"),
-                    .product(name: "DependenciesMacros", package: "swift-dependencies")
+                    "ArchiverModels"
                 ]),
         .target(name: "Shared",
                 dependencies: [

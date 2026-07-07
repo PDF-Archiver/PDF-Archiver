@@ -6,14 +6,12 @@
 //
 
 import ArchiverModels
-import ArchiverStore
 import Foundation
 import FoundationModels
 import OSLog
-import Shared
 
 @available(iOS 26, macOS 26, *)
-public actor ContentExtractorStore: Log {
+public actor ContentExtractorStore {
     private static let maxTotalPromptLength = 3500
 
     private static var locale: Locale {
