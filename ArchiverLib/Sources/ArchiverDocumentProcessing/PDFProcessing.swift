@@ -144,7 +144,10 @@ final class PDFProcessingOperation: AsyncOperation {
     private func createPdf(from images: [PlatformImage]) async throws -> PDFDocument {
         var textObservations = [TextObservation]()
         for image in images {
-            guard let cgImage = image.cgImage else { fatalError("Could not get cgImage") }
+            guard let cgImage = image.cgImage else {
+                Logger.documentProcessing.errorAndAssert("Could not get cgImage - skipping image")
+                continue
+            }
             let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
             var detectTextRectangleObservations = [VNTextObservation]()
             let textBoxRequests = VNDetectTextRectanglesRequest { (request, error) in
@@ -187,6 +190,9 @@ final class PDFProcessingOperation: AsyncOperation {
                                 thisObservation.append(candidate.string)
                             }
                             let fullObservation = thisObservation.joined(separator: " ")
+
+                            // skip empty observations - they would produce a NaN font expansion in createCleared
+                            guard !fullObservation.isEmpty else { return }
                             textObservationResults.append(TextObservationResult(rect: textBox, text: fullObservation))
                         }
                     }
@@ -253,7 +259,10 @@ final class PDFProcessingOperation: AsyncOperation {
 
             // extract pdf from context
             guard let document = PDFDocument(data: data as Data),
-                  let page = document.page(at: 0) else { fatalError("Could not generate PDF document.") }
+                  let page = document.page(at: 0) else {
+                Logger.documentProcessing.errorAndAssert("Could not generate PDF document - skipping page")
+                continue
+            }
             pages.append(page)
         }
 

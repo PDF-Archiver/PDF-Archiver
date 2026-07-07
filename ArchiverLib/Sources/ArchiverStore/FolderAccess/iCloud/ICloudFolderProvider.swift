@@ -118,12 +118,9 @@ final class ICloudFolderProvider: FolderProvider {
             currentDocuments[id] = change
         }
         for change in removed {
-            guard let id = change.url.uniqueId() else {
-                assertionFailure("Failed to get uniqueId for \(change.url)")
-                currentDocuments = currentDocuments.filter { $0.value.url != change.url }
-                continue
-            }
-            currentDocuments[id] = nil
+            // match removed files by URL - reading the uniqueId (a resource value)
+            // of an already deleted file would fail
+            currentDocuments = currentDocuments.filter { $0.value.url != change.url }
         }
         let documents = Array(currentDocuments.values)
         guard lastDocuments?.sorted() != documents.sorted() else { return }
@@ -231,8 +228,9 @@ extension NSMetadataItem: nonisolated Log {
                 documentStatus = minValue
             }
         default:
+            // do not crash on future/unknown status values - just skip this item
             log.criticalAndAssert("Unkown download status.", metadata: ["status": "\(downloadingStatus)"])
-            preconditionFailure("The downloading status '\(downloadingStatus)' was not handled correctly!")
+            return nil
         }
 
         return DocumentInformation(url: documentUrl, downloadStatus: documentStatus, sizeInBytes: Double(size))

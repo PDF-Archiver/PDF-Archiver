@@ -105,7 +105,7 @@ public actor BackgroundTaskManager: Log {
         } catch {
             Logger.backgroundTask.error("Background cache processing failed: \(error)")
 
-            if shouldNotify && !Task.isCancelled {
+            if shouldNotify && !processingTask.isCancelled {
                 await UNUserNotificationCenter.current().showLocalNotification(
                     title: "Processing Failed",
                     body: "Apple Intelligence cache processing failed: \(error.localizedDescription)"
