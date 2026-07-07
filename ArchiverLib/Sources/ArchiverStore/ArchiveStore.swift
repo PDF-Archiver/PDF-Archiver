@@ -41,8 +41,6 @@ public actor ArchiveStore: Log {
     private var untaggedFolders: [URL] = []
     private var providers: [any FolderProvider] = []
     private var folderObservationTasks: [Task<Void, Never>] = []
-    // Since we run a full sync at startup, we have to remove all old documents initially.
-    private var removeOldDocumentsInNextSync = true
 
     private init() {
         let (stream, continuation) = AsyncStream<[Document]>.makeStream()
@@ -66,11 +64,11 @@ public actor ArchiveStore: Log {
         let archiveUrl = try await PathManager.shared.getArchiveUrl()
         let untaggedUrl = try await PathManager.shared.getUntaggedUrl()
 
-        await ArchiveStore.shared.update(archiveFolder: archiveUrl, untaggedFolders: [untaggedUrl])
+        await update(archiveFolder: archiveUrl, untaggedFolders: [untaggedUrl])
     }
 
     public func getUntaggedUrl() async throws -> URL {
-        try await PathManager.shared.getArchiveUrl().appending(component: "untagged")
+        try await PathManager.shared.getUntaggedUrl()
     }
 
     func update(archiveFolder: URL, untaggedFolders: [URL]) async {
@@ -273,7 +271,6 @@ public actor ArchiveStore: Log {
         let untaggedFolders = [untaggedUrl]
         #endif
 
-        removeOldDocumentsInNextSync = true
         await update(archiveFolder: archiveUrl, untaggedFolders: untaggedFolders)
     }
 

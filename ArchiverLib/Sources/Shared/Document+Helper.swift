@@ -25,10 +25,8 @@ extension Document {
 
         // try to parse the current filename
         var date: Date?
-        // var rawDate = ""
         if let parsed = Document.getFilenameDate(filename) {
-            date = parsed.date
-            // rawDate = parsed.rawDate
+            date = parsed
         } else if let parsedDate = await DateParser.parse(filename).first {
             date = parsedDate
         }
@@ -45,26 +43,6 @@ extension Document {
 
             // try to parse the real specification from scheme
             specification = raw
-
-//        } else {
-//
-//            // save a first "raw" specification
-//            let tempSepcification = filename.lowercased()
-//                // drop the already parsed date
-//                .dropFirst(rawDate.count)
-//                // drop the extension and the last .
-//                .dropLast(filename.hasSuffix(".pdf") ? 4 : 0)
-//                // exclude tags, if they exist
-//                .components(separatedBy: "__")[0]
-//                // clean up all "_" - they are for tag use only!
-//                .replacingOccurrences(of: "_", with: "-")
-//                // remove a pre or suffix from the string
-//                .trimmingCharacters(in: ["-", " "])
-//
-//            // save the raw specification, if it is not empty
-//            if !tempSepcification.isEmpty {
-//                specification = tempSepcification
-//            }
         }
 
         // parse the tags
@@ -91,16 +69,18 @@ extension Document {
         return (date, specification, tagNames)
     }
 
-    nonisolated private static func getFilenameDate(_ filename: String) -> (date: Date, rawDate: String)? {
+    nonisolated private static func getFilenameDate(_ filename: String) -> Date? {
         var rawDate: String?
-        if let components = filename.components(separatedBy: "--") as [String]?, components.count > 1 {
-            rawDate = components.first
-        } else if let components = filename.components(separatedBy: "__") as [String]?, components.count > 1 {
-            rawDate = components.first
+
+        let dashComponents = filename.components(separatedBy: "--")
+        let underscoreComponents = filename.components(separatedBy: "__")
+        if dashComponents.count > 1 {
+            rawDate = dashComponents.first
+        } else if underscoreComponents.count > 1 {
+            rawDate = underscoreComponents.first
         }
 
-        guard let rawDate,
-              let date = DateFormatter.yyyyMMdd.date(from: rawDate) else { return nil }
-        return (date, rawDate)
+        guard let rawDate else { return nil }
+        return DateFormatter.yyyyMMdd.date(from: rawDate)
     }
 }

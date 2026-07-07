@@ -27,6 +27,11 @@ public final class DocumentProcessingService: Sendable {
     public init(tempDocumentURL: URL, documentDestination: @escaping @Sendable () async throws -> URL?) {
         self.tempDocumentURL = tempDocumentURL
         self.documentDestination = documentDestination
+
+        // Recover before any processing operation of this session could have
+        // written a working copy - files in the processing subfolder are
+        // guaranteed to be orphans of an interrupted run at this point.
+        recoverOrphanedProcessingFiles()
     }
 
     /// Fetch all documents in folder and test if PDF processing operations should be added.
@@ -66,6 +71,32 @@ public final class DocumentProcessingService: Sendable {
         backgroundProcessing.queue(operation)
     }
 
+    /// Move files that were left behind in the processing subfolder (e.g. because
+    /// the app was terminated mid-processing) back into the observed temp folder,
+    /// so the next folder observation imports them again.
+    private func recoverOrphanedProcessingFiles() {
+        let processingFolder = tempDocumentURL.appendingPathComponent(Constants.processingTempFolderName)
+        guard FileManager.default.directoryExists(at: processingFolder) else { return }
+
+        do {
+            let orphanedUrls = try FileManager.default.contentsOfDirectory(at: processingFolder, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+            for orphanedUrl in orphanedUrls {
+                var destinationUrl = tempDocumentURL.appendingPathComponent(orphanedUrl.lastPathComponent)
+                if FileManager.default.fileExists(atPath: destinationUrl.path) {
+                    destinationUrl = tempDocumentURL.appendingPathComponent("\(UUID().uuidString)-\(orphanedUrl.lastPathComponent)")
+                }
+                do {
+                    try FileManager.default.moveItem(at: orphanedUrl, to: destinationUrl)
+                    Logger.documentProcessing.info("Recovered orphaned document from processing folder", metadata: ["file": "\(orphanedUrl.lastPathComponent)"])
+                } catch {
+                    Logger.documentProcessing.errorAndAssert("Failed to recover orphaned document", metadata: ["url": orphanedUrl.path(), "error": "\(error)"])
+                }
+            }
+        } catch {
+            Logger.documentProcessing.errorAndAssert("Failed to read processing folder", metadata: ["error": "\(error)"])
+        }
+    }
+
     private func getDocumentDestination() async -> URL? {
         do {
             return try await documentDestination()
@@ -86,8 +117,8 @@ public final class DocumentProcessingService: Sendable {
         do {
             let urls = try FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
 
-            let pdfUrls = Set(urls.filter { $0.lastPathComponent.lowercased().hasSuffix("pdf") })
-            let imageUrls = Set(urls.filter { $0.lastPathComponent.lowercased().hasSuffix("jpeg") })
+            let pdfUrls = Set(urls.filter { $0.pathExtension.lowercased() == "pdf" })
+            let imageUrls = Set(urls.filter { ["jpg", "jpeg"].contains($0.pathExtension.lowercased()) })
 
             await withTaskGroup(of: Void.self) { group in
                 for pdfUrl in pdfUrls {
@@ -103,6 +134,10 @@ public final class DocumentProcessingService: Sendable {
                         }
                         let operation = await PDFProcessingOperation(of: .pdf(pdfData: pdfData, url: document.documentURL), destinationFolder: destinationFolder, onComplete: { _ in })
                         self.backgroundProcessing.queue(operation)
+                        // The operation keeps its own working copy in the processing
+                        // subfolder, so the original must be removed - otherwise it
+                        // would be imported again on the next folder observation.
+                        try? FileManager.default.removeItem(at: pdfUrl)
                     }
                 }
 

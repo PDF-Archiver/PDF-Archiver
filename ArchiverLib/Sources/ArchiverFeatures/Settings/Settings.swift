@@ -160,18 +160,18 @@ struct Settings {
                 state.isShowingMailSheet = true
                 return .none
                 #else
-                // swiftlint:disable:next force_unwrapping
-                let url = URL(string: "mailto:\(Constants.mailRecipient)?subject=\(Constants.mailSubject)")!
-
-                #if DEBUG
-                assertionFailure("TODO: this is currently not working on macOS")
-                return .run { [url] _ in
-                    await openURL(url)
+                // build the mailto URL via URLComponents to get proper percent encoding
+                var components = URLComponents()
+                components.scheme = "mailto"
+                components.path = Constants.mailRecipient
+                components.queryItems = [URLQueryItem(name: "subject", value: Constants.mailSubject)]
+                guard let url = components.url else {
+                    Logger.settings.errorAndAssert("Failed to create mailto url")
+                    return .none
                 }
-                #else
+
                 NSWorkspace.shared.open(url)
                 return .none
-                #endif
                 #endif
 
             case .onImprintTapped:
@@ -239,7 +239,6 @@ extension Settings.Destination.State: Sendable, Equatable {}
 
 struct SettingsView: View {
     @Bindable var store: StoreOf<Settings>
-    private static let appId = 1433801905
 
     @Environment(\.requestReview) private var requestReview
     @Environment(\.dismiss) private var dismiss
@@ -389,7 +388,6 @@ struct SettingsView: View {
 #if os(macOS)
 struct SettingsMacView: View {
     @Bindable var store: StoreOf<Settings>
-    private static let appId = 1433801905
 
     @Environment(\.requestReview) private var requestReview
 

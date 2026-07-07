@@ -15,8 +15,6 @@ import Shared
 
 @DependencyClient
 public struct ContentExtractorStoreDependency: Sendable {
-    @Dependency(\.archiveStore) var archiveStore
-
     /// Input for document information extraction
     public struct DocInfoInput: Sendable {
         /// Existing documents for context (tags, specifications)

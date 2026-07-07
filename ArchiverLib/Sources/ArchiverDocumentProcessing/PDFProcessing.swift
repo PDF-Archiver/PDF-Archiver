@@ -30,7 +30,7 @@ final class PDFProcessingOperation: AsyncOperation {
     @Shared(.pdfQuality) private var pdfQuality: PDFQuality
 
     private static let log = Logger(subsystem: "processing", category: "pdf-processing-operation")
-    private static let tempDocumentURL = Constants.tempDocumentURL
+    private static let processingTempDocumentURL = Constants.processingTempDocumentURL
     private static let confidenceThreshold = Float(0)
 
     private let mode: Mode
@@ -108,42 +108,46 @@ final class PDFProcessingOperation: AsyncOperation {
     // MARK: - Helper Functions
 
     private func getFilename(from document: PDFDocument, with url: URL?) async -> String {
-        if let documentUrl = document.documentURL ?? url,
-           let parsedOutput = await Document.parseFilename(documentUrl.lastPathComponent) as (date: Date?, specification: String?, tagNames: [String]?)?,
-           parsedOutput.date != nil,
-           let specification = parsedOutput.specification,
-           specification != Constants.documentDescriptionPlaceholder {
-            // the current filename of the document could be parsed and has no placeholders, so we use it
-            return documentUrl.lastPathComponent
-        } else {
-            // get default specification
-            let specification = Constants.documentDescriptionPlaceholder + Date().timeIntervalSince1970.description
-
-            // get OCR content
-            var content = ""
-            for pageNumber in 0..<min(document.pageCount, 3) {
-                guard content.count < 5000 else { break }
-                content += document.page(at: pageNumber)?.string ?? ""
+        if let documentUrl = document.documentURL ?? url {
+            let parsedOutput = await Document.parseFilename(documentUrl.lastPathComponent)
+            if parsedOutput.date != nil,
+               let specification = parsedOutput.specification,
+               specification != Constants.documentDescriptionPlaceholder {
+                // the current filename of the document could be parsed and has no placeholders, so we use it
+                return documentUrl.lastPathComponent
             }
-
-            // use the default filename if no content could be found
-            guard !content.isEmpty else {
-                return Document.createFilename(date: Date(), specification: specification, tags: Set([Constants.documentTagPlaceholder]))
-            }
-
-            // parse the date
-            let parsedDate = await DateParser.parse(content).first ?? Date()
-
-            // parse the tags
-            let tags = Set([Constants.documentTagPlaceholder])
-            return Document.createFilename(date: parsedDate, specification: specification, tags: tags)
         }
+
+        // get default specification
+        let specification = Constants.documentDescriptionPlaceholder + Date().timeIntervalSince1970.description
+
+        // get OCR content
+        var content = ""
+        for pageNumber in 0..<min(document.pageCount, 3) {
+            guard content.count < 5000 else { break }
+            content += document.page(at: pageNumber)?.string ?? ""
+        }
+
+        // use the default filename if no content could be found
+        guard !content.isEmpty else {
+            return Document.createFilename(date: Date(), specification: specification, tags: Set([Constants.documentTagPlaceholder]))
+        }
+
+        // parse the date
+        let parsedDate = await DateParser.parse(content).first ?? Date()
+
+        // parse the tags
+        let tags = Set([Constants.documentTagPlaceholder])
+        return Document.createFilename(date: parsedDate, specification: specification, tags: tags)
     }
 
     private func createPdf(from images: [PlatformImage]) async throws -> PDFDocument {
         var textObservations = [TextObservation]()
         for image in images {
-            guard let cgImage = image.cgImage else { fatalError("Could not get cgImage") }
+            guard let cgImage = image.cgImage else {
+                Logger.documentProcessing.errorAndAssert("Could not get cgImage - skipping image")
+                continue
+            }
             let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
             var detectTextRectangleObservations = [VNTextObservation]()
             let textBoxRequests = VNDetectTextRectanglesRequest { (request, error) in
@@ -186,6 +190,9 @@ final class PDFProcessingOperation: AsyncOperation {
                                 thisObservation.append(candidate.string)
                             }
                             let fullObservation = thisObservation.joined(separator: " ")
+
+                            // skip empty observations - they would produce a NaN font expansion in createCleared
+                            guard !fullObservation.isEmpty else { return }
                             textObservationResults.append(TextObservationResult(rect: textBox, text: fullObservation))
                         }
                     }
@@ -252,7 +259,10 @@ final class PDFProcessingOperation: AsyncOperation {
 
             // extract pdf from context
             guard let document = PDFDocument(data: data as Data),
-                  let page = document.page(at: 0) else { fatalError("Could not generate PDF document.") }
+                  let page = document.page(at: 0) else {
+                Logger.documentProcessing.errorAndAssert("Could not generate PDF document - skipping page")
+                continue
+            }
             pages.append(page)
         }
 
@@ -282,12 +292,12 @@ final class PDFProcessingOperation: AsyncOperation {
 
     private func save(_ mode: Mode) {
         do {
-            try FileManager.default.createFolderIfNotExists(Self.tempDocumentURL)
+            try FileManager.default.createFolderIfNotExists(Self.processingTempDocumentURL)
 
             switch mode {
             case .pdf(let pdfData, let url):
                 let filename = url?.lastPathComponent ?? UUID().uuidString
-                let pdfUrl = Self.tempDocumentURL.appendingPathComponent(filename, isDirectory: false)
+                let pdfUrl = Self.processingTempDocumentURL.appendingPathComponent(filename, isDirectory: false)
                 try pdfData.write(to: pdfUrl)
                 tempUrls = [pdfUrl]
 
@@ -297,7 +307,7 @@ final class PDFProcessingOperation: AsyncOperation {
                     let uuid = UUID()
                     for (index, image) in images.enumerated() {
                         let filename = "\(index)---\(uuid.uuidString).jpg"
-                        let imageUrl = Self.tempDocumentURL.appendingPathComponent(filename, isDirectory: false)
+                        let imageUrl = Self.processingTempDocumentURL.appendingPathComponent(filename, isDirectory: false)
 
                         let quality = CGFloat(pdfQuality.rawValue)
                         try image.jpg(quality: quality)?.write(to: imageUrl)

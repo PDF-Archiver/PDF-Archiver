@@ -119,7 +119,7 @@ struct AppFeature {
                     state.$documents.withLock { documents in
                         let alreadyExistingElement = documents.updateOrAppend(document)
                         if alreadyExistingElement == nil {
-                            XCTFail("Document that was saved not found in array - this should not happen")
+                            reportIssue("Document that was saved not found in array - this should not happen")
                             documents.sort { $0.date < $1.date }
                         }
                     }
@@ -209,7 +209,7 @@ struct AppFeature {
                 let untaggedDocuments = documents.filter(\Document.isTagged.flipped)
                 state.untaggedDocumentsCount = untaggedDocuments.count
 
-                let untaggedRemoteDocuments = untaggedDocuments.filter { !$0.isTagged && $0.downloadStatus == 0 }
+                let untaggedRemoteDocuments = untaggedDocuments.filter { $0.downloadStatus == 0 }
 
                 return .run { [documents] send in
                     await send(.prefetchDocuments(untaggedRemoteDocuments))
@@ -229,8 +229,8 @@ struct AppFeature {
 
                             #if os(iOS)
                             if #available(iOS 26, *) {
-                                // trigger task scheduling
-                                BackgroundTaskManager.registerTaskHandlers()
+                                // trigger task scheduling - the handler itself is registered
+                                // in the app initializer, as required by BGTaskScheduler
                                 BackgroundTaskManager.scheduleCacheProcessing()
                             }
                             #endif
