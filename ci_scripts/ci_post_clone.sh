@@ -12,6 +12,7 @@ swift-dependencies DependenciesMacrosPlugin
 swift-composable-architecture ComposableArchitectureMacros
 swift-case-paths CasePathsMacros
 swift-perception PerceptionMacros
+swift-navigation SwiftNavigationMacros
 "
 
 entries=""
