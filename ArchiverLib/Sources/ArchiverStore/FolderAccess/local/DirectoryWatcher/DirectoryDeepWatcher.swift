@@ -84,7 +84,7 @@ actor DirectoryDeepWatcher: Log {
                 Self.log.debug("DispatchSource event has happened.", metadata: ["path": "\(url.path)"])
 
                 // remove watchers of deleted folders, so a recreated folder with the same path gets a fresh source
-                await self.removeStaleSources()
+                await removeStaleSources()
 
                 do {
                     // iterate (once again) over all folders and subfolders, to get all changes
