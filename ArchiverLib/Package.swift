@@ -91,6 +91,17 @@ let package = Package(
             resources: [
                 .process("assets")
             ]
+        ),
+        .testTarget(
+            name: "ContentExtractorStoreTests",
+            dependencies: [
+                "ContentExtractorStore",
+                "ArchiverModels"
+            ],
+            exclude: ["README.md"],
+            resources: [
+                .copy("Samples")
+            ]
         )
     ]
 )

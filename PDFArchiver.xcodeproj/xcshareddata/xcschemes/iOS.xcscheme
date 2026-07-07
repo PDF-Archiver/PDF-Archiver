@@ -33,6 +33,9 @@
             reference = "container:ArchiverLib/iOS.xctestplan"
             default = "YES">
          </TestPlanReference>
+         <TestPlanReference
+            reference = "container:ArchiverLib.xctestplan">
+         </TestPlanReference>
       </TestPlans>
       <Testables>
          <TestableReference

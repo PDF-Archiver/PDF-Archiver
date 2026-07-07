@@ -1,0 +1,4 @@
+# Never commit personal documents used as evaluation samples.
+*.pdf
+!.gitignore
+!README.md
