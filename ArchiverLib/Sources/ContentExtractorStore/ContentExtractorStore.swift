@@ -171,7 +171,6 @@ public actor ContentExtractorStore: Log {
 
     private static func createSession(with documents: [Document]) -> LanguageModelSession {
         let docStats = Self.getDocumentStats(minTagCount: 3, maxSpecifications: 20, with: documents)
-        print(docStats)
         return LanguageModelSession(
             model: .default,
             tools: [],
@@ -214,6 +213,8 @@ public actor ContentExtractorStore: Log {
             .filter { $0.count >= minTagCount }
 
         let formattedTagCounts = tagCounts
+            // most frequently used tags first - the prompt tells the model to prefer them
+            .sorted { $0.count > $1.count }
             .prefix(30)
             .map {
                 "\($0.0):\($0.1)"

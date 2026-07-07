@@ -229,8 +229,8 @@ struct AppFeature {
 
                             #if os(iOS)
                             if #available(iOS 26, *) {
-                                // trigger task scheduling
-                                BackgroundTaskManager.registerTaskHandlers()
+                                // trigger task scheduling - the handler itself is registered
+                                // in the app initializer, as required by BGTaskScheduler
                                 BackgroundTaskManager.scheduleCacheProcessing()
                             }
                             #endif
