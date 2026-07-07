@@ -98,6 +98,9 @@ final class PathManager: Log {
             }
         }
 
+        // Save the new path even if some folders could not be moved: the user chose the
+        // new location and should continue working there - the error below only informs
+        // about the documents that were left behind at the old location.
         self.$archivePathType.withLock { $0 = type }
 
         if let moveError {

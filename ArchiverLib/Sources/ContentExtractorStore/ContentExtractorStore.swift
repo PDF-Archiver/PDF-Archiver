@@ -136,6 +136,8 @@ public actor ContentExtractorStore: Log {
         var newCachesCreated = 0
 
         for document in untaggedDocuments {
+            guard !Task.isCancelled else { break }
+
             let documentId = document.id
 
             // Skip if already cached
@@ -145,24 +147,34 @@ public actor ContentExtractorStore: Log {
 
             // Extract text and process (cache will be saved inside extract())
             guard let text = await textExtractor(document.url) else {
+                Logger.contentExtractor.info("Skipping document without extractable text (e.g. not downloaded yet) - document ID: \(documentId)")
                 continue
             }
 
             do {
-                _ = try await extract(from: text,
-                                     customPrompt: customPrompt,
-                                     with: documents,
-                                     documentId: documentId)
-                newCachesCreated += 1
-                Logger.contentExtractor.debug("Background cache entry created for document ID: \(documentId)")
+                let info = try await extract(from: text,
+                                             customPrompt: customPrompt,
+                                             with: documents,
+                                             documentId: documentId)
+                if info != nil {
+                    newCachesCreated += 1
+                    Logger.contentExtractor.debug("Background cache entry created for document ID: \(documentId)")
+                } else {
+                    // e.g. the language model is currently not available
+                    Logger.contentExtractor.info("No cache entry created for document ID: \(documentId)")
+                }
             } catch {
                 Logger.contentExtractor.error("Failed to create cache entry in background for document ID \(documentId): \(error)")
             }
         }
 
-        // Prune cache entries for documents that no longer exist in untagged folder
-        let untaggedIds = Set(untaggedDocuments.map(\.id))
-        await cache.pruneCache(keepingOnly: untaggedIds)
+        // Prune cache entries for documents that no longer exist in untagged folder.
+        // Never prune while the document list is empty (e.g. the store has not finished
+        // loading) - that would wipe all valid cache entries.
+        if !documents.isEmpty {
+            let untaggedIds = Set(untaggedDocuments.map(\.id))
+            await cache.pruneCache(keepingOnly: untaggedIds)
+        }
 
         Logger.contentExtractor.info("Background cache processing completed: \(newCachesCreated) new caches created")
 
@@ -173,7 +185,6 @@ public actor ContentExtractorStore: Log {
 
     private static func createSession(with documents: [Document]) -> LanguageModelSession {
         let docStats = Self.getDocumentStats(minTagCount: 3, maxSpecifications: 20, with: documents)
-        print(docStats)
         return LanguageModelSession(
             model: .default,
             tools: [],
@@ -216,6 +227,8 @@ public actor ContentExtractorStore: Log {
             .filter { $0.count >= minTagCount }
 
         let formattedTagCounts = tagCounts
+            // most frequently used tags first - the prompt tells the model to prefer them
+            .sorted { $0.count > $1.count }
             .prefix(30)
             .map {
                 "\($0.0):\($0.1)"

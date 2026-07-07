@@ -6,6 +6,7 @@
 //
 
 import ArchiverModels
+import ArchiverStore
 import ComposableArchitecture
 import Shared
 import StoreKit
@@ -138,7 +139,7 @@ struct Settings {
 
     var body: some ReducerOf<Self> {
         BindingReducer()
-        Scope(state: \.premiumSection, action: \.premiumSection) {
+        Scope(\.premiumSection, action: \.premiumSection) {
             PremiumSection()
         }
         Reduce { state, action in
@@ -166,18 +167,18 @@ struct Settings {
                 state.isShowingMailSheet = true
                 return .none
                 #else
-                // swiftlint:disable:next force_unwrapping
-                let url = URL(string: "mailto:\(Constants.mailRecipient)?subject=\(Constants.mailSubject)")!
-
-                #if DEBUG
-                assertionFailure("TODO: this is currently not working on macOS")
-                return .run { [url] _ in
-                    await openURL(url)
+                // build the mailto URL via URLComponents to get proper percent encoding
+                var components = URLComponents()
+                components.scheme = "mailto"
+                components.path = Constants.mailRecipient
+                components.queryItems = [URLQueryItem(name: "subject", value: Constants.mailSubject)]
+                guard let url = components.url else {
+                    Logger.settings.errorAndAssert("Failed to create mailto url")
+                    return .none
                 }
-                #else
+
                 NSWorkspace.shared.open(url)
                 return .none
-                #endif
                 #endif
 
             case .onImprintTapped:
@@ -245,7 +246,6 @@ extension Settings.Destination.State: Sendable, Equatable {}
 
 struct SettingsView: View {
     @Bindable var store: StoreOf<Settings>
-    private static let appId = 1433801905
 
     @Environment(\.requestReview) private var requestReview
     @Environment(\.dismiss) private var dismiss
@@ -254,7 +254,7 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 preferences
-                PremiumSectionView(store: store.scope(state: \.premiumSection, action: \.premiumSection))
+                PremiumSectionView(store: store.scope(\.premiumSection, action: \.premiumSection))
                 aboutSection
             }
             // since we have buttons, we have to "fake" the foreground color - it would be the accent color otherwise
@@ -279,7 +279,7 @@ struct SettingsView: View {
             .navigationDestination(item: $store.destination) { destination in
                 switch destination {
                 case .appleIntelligenceSettings:
-                    if let appleIntelligenceSettingsStore = store.scope(state: \.destination?.appleIntelligenceSettings, action: \.destination.appleIntelligenceSettings) {
+                    if let appleIntelligenceSettingsStore = store.scope(\.destination?.appleIntelligenceSettings, action: \.destination.appleIntelligenceSettings) {
                         AppleIntelligenceSettingsView(store: appleIntelligenceSettingsStore)
                             .navigationTitle(Text("Apple Intelligence", bundle: #bundle))
                     } else {
@@ -287,7 +287,7 @@ struct SettingsView: View {
                     }
 
                 case .archiveStorage:
-                    if let storageSelectionStore = store.scope(state: \.destination?.archiveStorage, action: \.destination.archiveStorage) {
+                    if let storageSelectionStore = store.scope(\.destination?.archiveStorage, action: \.destination.archiveStorage) {
                         StorageSelectionView(store: storageSelectionStore)
                             .navigationTitle(Text("Storage", bundle: #bundle))
                     } else {
@@ -295,7 +295,7 @@ struct SettingsView: View {
                     }
 
                 case .expertSettings:
-                    if let expertSettingsStore = store.scope(state: \.destination?.expertSettings, action: \.destination.expertSettings) {
+                    if let expertSettingsStore = store.scope(\.destination?.expertSettings, action: \.destination.expertSettings) {
                         ExpertSettingsView(store: expertSettingsStore)
                             .navigationTitle(Text("Advanced", bundle: #bundle))
                     } else {
@@ -402,7 +402,6 @@ struct SettingsView: View {
 #if os(macOS)
 struct SettingsMacView: View {
     @Bindable var store: StoreOf<Settings>
-    private static let appId = 1433801905
 
     @Environment(\.requestReview) private var requestReview
 
@@ -415,7 +414,7 @@ struct SettingsMacView: View {
                 }
 
                 Tab(String(localized: "Premium", bundle: #bundle), systemImage: "star.hexagon") {
-                    PremiumSectionView(store: store.scope(state: \.premiumSection, action: \.premiumSection))
+                    PremiumSectionView(store: store.scope(\.premiumSection, action: \.premiumSection))
                         .padding(.horizontal)
                         .focusable(false)
                 }
@@ -437,19 +436,19 @@ struct SettingsMacView: View {
                     Group {
                         switch destination {
                         case .appleIntelligenceSettings:
-                            if let appleIntelligenceSettingsStore = store.scope(state: \.destination?.appleIntelligenceSettings, action: \.destination.appleIntelligenceSettings) {
+                            if let appleIntelligenceSettingsStore = store.scope(\.destination?.appleIntelligenceSettings, action: \.destination.appleIntelligenceSettings) {
                                 AppleIntelligenceSettingsView(store: appleIntelligenceSettingsStore)
                                     .navigationTitle(Text("Apple Intelligence", bundle: #bundle))
                             }
 
                         case .archiveStorage:
-                            if let storageSelectionStore = store.scope(state: \.destination?.archiveStorage, action: \.destination.archiveStorage) {
+                            if let storageSelectionStore = store.scope(\.destination?.archiveStorage, action: \.destination.archiveStorage) {
                                 StorageSelectionView(store: storageSelectionStore)
                                     .navigationTitle(Text("Storage", bundle: #bundle))
                             }
 
                         case .expertSettings:
-                            if let expertSettingsStore = store.scope(state: \.destination?.expertSettings, action: \.destination.expertSettings) {
+                            if let expertSettingsStore = store.scope(\.destination?.expertSettings, action: \.destination.expertSettings) {
                                 ExpertSettingsView(store: expertSettingsStore)
                                     .navigationTitle(Text("Advanced", bundle: #bundle))
                             }

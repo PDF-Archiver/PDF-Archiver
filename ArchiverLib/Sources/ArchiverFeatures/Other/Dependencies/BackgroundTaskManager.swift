@@ -71,6 +71,11 @@ public actor BackgroundTaskManager: Log {
 
         // Use a cancellable task so the expiration handler can stop work
         let processingTask = Task {
+            // The background task may have launched the app in the background - in that case
+            // ArchiveStore has only just started its asynchronous folder scan and
+            // getDocuments() would return an empty snapshot.
+            await waitForInitialDocumentLoad()
+
             let documents = try await archiveStore.getDocuments()
             return await contentExtractorStore.processUntaggedDocumentsInBackground(
                 documents,
@@ -105,7 +110,7 @@ public actor BackgroundTaskManager: Log {
         } catch {
             Logger.backgroundTask.error("Background cache processing failed: \(error)")
 
-            if shouldNotify, !Task.isCancelled {
+            if shouldNotify, !processingTask.isCancelled {
                 await UNUserNotificationCenter.current().showLocalNotification(
                     title: "Processing Failed",
                     body: "Apple Intelligence cache processing failed: \(error.localizedDescription)"
@@ -117,6 +122,25 @@ public actor BackgroundTaskManager: Log {
 
         // Reschedule for next time
         Self.scheduleCacheProcessing()
+    }
+
+    /// Wait until the initial document load has finished, but no longer than a fixed
+    /// timeout - the background execution window is limited.
+    private func waitForInitialDocumentLoad() async {
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask {
+                for await isLoading in await self.archiveStore.isLoading() {
+                    guard isLoading else { return }
+                }
+            }
+            group.addTask {
+                try? await Task.sleep(for: .seconds(30))
+                guard !Task.isCancelled else { return }
+                Logger.backgroundTask.warning("Timed out waiting for the initial document load")
+            }
+            await group.next()
+            group.cancelAll()
+        }
     }
 }
 #endif

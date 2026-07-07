@@ -6,6 +6,7 @@
 //
 
 import ArchiverModels
+import ArchiverStore
 import ComposableArchitecture
 import ContentExtractorStore
 import Shared
@@ -301,8 +302,6 @@ struct DocumentInformationForm {
             let newResults = results
                 .dropFirst(foundDate == nil ? 1 : 0)    // skip first because it is set to foundDate
                 .filter { !calendar.isDate($0, inSameDayAs: Date()) }   // skip found "today" dates, because a today button will always be shown
-//                .sorted().reversed().prefix(3)  // get the most recent 3 dates
-//                .sorted()
                 .prefix(3)
             dateSuggestions = Array(newResults)
 

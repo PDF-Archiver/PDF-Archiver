@@ -54,7 +54,11 @@ struct ArchiveList {
         var isSearching = false
         var searchText = ""
         var searchTokens: [SearchToken] = []
-        var searchSuggestedTokens: [SearchToken] = [.year(2025), .year(2024)]
+        // fallback until real suggestions are derived from the documents in AppFeature
+        var searchSuggestedTokens: [SearchToken] = {
+            let currentYear = Calendar.current.component(.year, from: Date())
+            return [.year(currentYear), .year(currentYear - 1)]
+        }()
         @Presents var documentDetails: DocumentDetails.State?
 
         private func getFilteredDocument() -> IdentifiedArrayOf<Document> {
@@ -118,7 +122,11 @@ struct ArchiveList {
                 var searchText = state.searchText
                 if searchText.popLast() == " " {
                     let newSearchText = searchText.slugified(withSeparator: "").lowercased()
-                    state.searchTokens.append(.text(newSearchText))
+
+                    // an empty token would filter out all documents
+                    if !newSearchText.isEmpty {
+                        state.searchTokens.append(.text(newSearchText))
+                    }
                     state.searchText = ""
                 }
                 return .none
@@ -182,7 +190,7 @@ struct ArchiveListView: View {
             }
         }
         .sensoryFeedback(.selection, trigger: store.selectedDocumentId)
-        .navigationDestination(item: $store.scope(state: \.$documentDetails, action: \.documentDetails)) { documentStore in
+        .navigationDestination(item: $store.scope(\.$documentDetails, action: \.documentDetails)) { documentStore in
             DocumentDetailsView(store: documentStore)
                 .navigationTitle(documentStore.document.specification)
 #if os(macOS)

@@ -65,7 +65,7 @@ struct DocumentDetails {
 
     @Dependency(\.archiveStore.startDownloadOf) var startDownloadOf
     var body: some ReducerOf<Self> {
-        Scope(state: \.documentInformationForm, action: \.showDocumentInformationForm) {
+        Scope(\.documentInformationForm, action: \.showDocumentInformationForm) {
             DocumentInformationForm()
         }
 
@@ -155,7 +155,7 @@ struct DocumentDetailsView: View {
                 PDFCustomView(store.document.url, highlightDate: store.highlightDetectedDateEnabled ? store.documentInformationForm.document.date : nil)
                     .ignoresSafeArea(edges: [.bottom, .top])
                     .inspector(isPresented: $store.showInspector) {
-                        DocumentInformationFormView(store: store.scope(state: \.documentInformationForm, action: \.showDocumentInformationForm))
+                        DocumentInformationFormView(store: store.scope(\.documentInformationForm, action: \.showDocumentInformationForm))
 #if os(iOS)
                             .presentationDetents([.medium, .large])
                             .presentationBackgroundInteraction(.enabled)
@@ -167,7 +167,7 @@ struct DocumentDetailsView: View {
                     }
             }
         }
-        .alert($store.scope(state: \.$alert, action: \.alert))
+        .alert($store.scope(\.$alert, action: \.alert))
 #if os(iOS)
         .sheet(item: $store.shareDocument) { shareDocument in
             ShareSheet(title: shareDocument.title, url: shareDocument.url)
