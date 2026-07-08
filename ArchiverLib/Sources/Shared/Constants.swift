@@ -24,12 +24,4 @@ nonisolated public enum Constants {
     static let appGroupContainerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: Self.sharedContainerIdentifier)!
     public static let tempDocumentURL = appGroupContainerURL.appendingPathComponent("TempDocuments")
     #endif
-
-    // Working copies of documents that are currently being processed.
-    // Must live in a subfolder of tempDocumentURL so the folder observation
-    // (which only looks at the top level) does not import them a second time.
-    // Files that are still here on the next app start are orphans from an
-    // interrupted processing run and will be recovered.
-    public static let processingTempFolderName = "processing"
-    public static let processingTempDocumentURL = tempDocumentURL.appendingPathComponent(processingTempFolderName)
 }

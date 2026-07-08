@@ -34,7 +34,6 @@ let package = Package(
     targets: [
         .target(name: "ArchiverFeatures",
                 dependencies: [
-                    "ArchiverDocumentProcessing",
                     "ArchiverModels",
                     "ArchiverIntents",
                     "ArchiverStore",
@@ -66,8 +65,6 @@ let package = Package(
                 ]),
         .target(name: "ArchiverModels",
                 dependencies: []),
-        .target(name: "ArchiverDocumentProcessing",
-                dependencies: ["Shared"]),
         .target(name: "ContentExtractorStore",
                 dependencies: [
                     "ArchiverModels"
@@ -93,13 +90,6 @@ let package = Package(
         .testTarget(
             name: "ArchiverStoreTests",
             dependencies: ["ArchiverStore"]
-        ),
-        .testTarget(
-            name: "ArchiverDocumentProcessingTests",
-            dependencies: ["ArchiverDocumentProcessing"],
-            resources: [
-                .process("assets")
-            ]
         ),
         .testTarget(
             name: "DocumentProcessingPipelineTests",

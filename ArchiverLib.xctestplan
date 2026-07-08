@@ -30,13 +30,6 @@
     {
       "target" : {
         "containerPath" : "container:",
-        "identifier" : "ArchiverDocumentProcessingTests",
-        "name" : "ArchiverDocumentProcessingTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:",
         "identifier" : "ContentExtractorStoreTests",
         "name" : "ContentExtractorStoreTests"
       }
