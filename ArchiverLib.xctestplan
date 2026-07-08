@@ -40,6 +40,13 @@
         "identifier" : "ContentExtractorStoreTests",
         "name" : "ContentExtractorStoreTests"
       }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "DocumentProcessingPipelineTests",
+        "name" : "DocumentProcessingPipelineTests"
+      }
     }
   ],
   "version" : 1

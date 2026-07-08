@@ -14,7 +14,10 @@ let package = Package(
             targets: ["ArchiverFeatures", "ArchiverIntents"]),
         .library(
             name: "Shared",
-            targets: ["Shared"])
+            targets: ["Shared"]),
+        .library(
+            name: "DocumentProcessingPipeline",
+            targets: ["DocumentProcessingPipeline"])
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture",
@@ -68,6 +71,11 @@ let package = Package(
                 dependencies: [
                     "ArchiverModels"
                 ]),
+        .target(name: "DocumentProcessingPipeline",
+                dependencies: [
+                    "ArchiverModels",
+                    "ContentExtractorStore"
+                ]),
         .target(name: "Shared",
                 dependencies: [
                     "ArchiverModels",
@@ -88,6 +96,13 @@ let package = Package(
         .testTarget(
             name: "ArchiverDocumentProcessingTests",
             dependencies: ["ArchiverDocumentProcessing"],
+            resources: [
+                .process("assets")
+            ]
+        ),
+        .testTarget(
+            name: "DocumentProcessingPipelineTests",
+            dependencies: ["DocumentProcessingPipeline"],
             resources: [
                 .process("assets")
             ]
