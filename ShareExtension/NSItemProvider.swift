@@ -31,7 +31,7 @@ extension NSItemProvider {
         for uti in validUTIs where hasItemConformingToTypeIdentifier(uti.identifier) {
             do {
                 (data, sourceURL) = try await getItem(for: uti)
-            } catch {
+            } catch let inputError {
                 error = inputError
             }
 
