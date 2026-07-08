@@ -39,6 +39,7 @@ let package = Package(
                     "ArchiverIntents",
                     "ArchiverStore",
                     "ContentExtractorStore",
+                    "DocumentProcessingPipeline",
                     "Shared",
                     .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
                 ],

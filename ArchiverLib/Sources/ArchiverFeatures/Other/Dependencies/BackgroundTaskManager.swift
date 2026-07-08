@@ -24,10 +24,8 @@ public actor BackgroundTaskManager: Log {
 
     private static let scheduler = BGTaskScheduler.shared
 
-    @Dependency(\.contentExtractorStore) var contentExtractorStore
+    @Dependency(\.documentProcessor) var documentProcessor
     @Dependency(\.archiveStore) var archiveStore
-    @Dependency(\.textAnalyser) var textAnalyser
-    @SharedReader(.appleIntelligenceCustomPrompt) var customPrompt: String?
     @SharedReader(.backgroundCacheNotificationsEnabled) var shouldNotify: Bool
 
     private init() {}
@@ -77,11 +75,9 @@ public actor BackgroundTaskManager: Log {
             await waitForInitialDocumentLoad()
 
             let documents = try await archiveStore.getDocuments()
-            return await contentExtractorStore.processUntaggedDocumentsInBackground(
-                documents,
-                textAnalyser.getTextFrom,
-                customPrompt
-            )
+            // Runs OCR (if enabled) before the AI cache pass, so the text
+            // layers exist when the cache entries are computed.
+            return await documentProcessor.processUntaggedDocuments(documents)
         }
 
         // Set expiration handler to cancel the work instead of completing the task directly
@@ -91,14 +87,14 @@ public actor BackgroundTaskManager: Log {
         }
 
         do {
-            let newCachesCreated = try await processingTask.value
+            let result = try await processingTask.value
             let processingDuration = Date().timeIntervalSince(startTime)
 
             if shouldNotify {
                 // Show local notification on success
                 let duration = Duration.seconds(processingDuration)
                 let durationText = duration.formatted(.units(width: .wide))
-                let body = "Created \(newCachesCreated) new cache\(newCachesCreated == 1 ? "" : "s") in \(durationText)."
+                let body = "Added a text layer to \(result.ocrCount) document\(result.ocrCount == 1 ? "" : "s") and created \(result.aiCacheCount) new cache\(result.aiCacheCount == 1 ? "" : "s") in \(durationText)."
                 await UNUserNotificationCenter.current().showLocalNotification(
                     title: "Processing Completed",
                     body: body
@@ -106,7 +102,7 @@ public actor BackgroundTaskManager: Log {
             }
 
             task.setTaskCompleted(success: true)
-            Logger.backgroundTask.info("Background cache processing completed: \(newCachesCreated) caches in \(processingDuration)s")
+            Logger.backgroundTask.info("Background processing completed: \(result.ocrCount) OCR, \(result.aiCacheCount) caches in \(processingDuration)s")
         } catch {
             Logger.backgroundTask.error("Background cache processing failed: \(error)")
 

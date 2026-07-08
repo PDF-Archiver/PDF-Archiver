@@ -12,6 +12,19 @@ import Foundation
 import OSLog
 import PDFKit
 
+/// Result of one untagged-documents sweep.
+public struct UntaggedSweepResult: Sendable, Equatable {
+    /// Number of documents that received an OCR text layer.
+    public let ocrCount: Int
+    /// Number of newly created AI suggestion cache entries.
+    public let aiCacheCount: Int
+
+    public init(ocrCount: Int, aiCacheCount: Int) {
+        self.ocrCount = ocrCount
+        self.aiCacheCount = aiCacheCount
+    }
+}
+
 /// The single entry point for document processing.
 ///
 /// The actor accepts requests (scanned pages, imported PDF data, files found
@@ -108,32 +121,37 @@ public actor DocumentProcessor {
     /// task) propagates into the per-page OCR checks. It does not enter the
     /// import queue: the sweep and the import queue never touch the same file.
     ///
-    /// - Parameter documents: ALL documents of the archive. The sweep filters
-    ///   untagged, locally available documents itself; the tagged rest serves
-    ///   as prompt context for the AI pass.
-    /// - Returns: Number of documents that received a text layer.
+    /// - Parameters:
+    ///   - documents: ALL documents of the archive. The sweep filters
+    ///     untagged, locally available documents itself; the tagged rest
+    ///     serves as prompt context for the AI pass.
+    ///   - ocr: Whether image-only PDFs should get a text layer.
+    ///   - ai: Set to pre-compute AI suggestion cache entries.
     @discardableResult
-    public func processUntaggedDocuments(in documents: [Document], config: ProcessingConfig, ai: AIContext?) async -> Int {
+    public func processUntaggedDocuments(in documents: [Document], config: ProcessingConfig, ocr: Bool, ai: AIContext?) async -> UntaggedSweepResult {
         let untaggedDocuments = documents.filter { !$0.isTagged && $0.downloadStatus >= 1 }
 
         var ocrCount = 0
-        for document in untaggedDocuments {
-            guard !Task.isCancelled else { return ocrCount }
-            if await Self.addOcrTextLayerIfNeeded(at: document.url, config: config) {
-                ocrCount += 1
+        if ocr {
+            for document in untaggedDocuments {
+                guard !Task.isCancelled else { break }
+                if await Self.addOcrTextLayerIfNeeded(at: document.url, config: config) {
+                    ocrCount += 1
+                }
             }
+            Logger.documentProcessor.info("Untagged sweep: added a text layer to \(ocrCount) documents")
         }
-        Logger.documentProcessor.info("Untagged sweep: added a text layer to \(ocrCount) documents")
 
+        var aiCacheCount = 0
         if let ai, !Task.isCancelled, #available(iOS 26.0, macOS 26.0, *) {
-            let cacheCount = await contentExtractor.processUntaggedDocumentsInBackground(
+            aiCacheCount = await contentExtractor.processUntaggedDocumentsInBackground(
                 documents: documents,
                 textExtractor: { await Self.extractText(from: $0) },
                 customPrompt: ai.customPrompt)
-            Logger.documentProcessor.info("Untagged sweep: created \(cacheCount) AI cache entries")
+            Logger.documentProcessor.info("Untagged sweep: created \(aiCacheCount) AI cache entries")
         }
 
-        return ocrCount
+        return UntaggedSweepResult(ocrCount: ocrCount, aiCacheCount: aiCacheCount)
     }
 
     // MARK: - Progress
