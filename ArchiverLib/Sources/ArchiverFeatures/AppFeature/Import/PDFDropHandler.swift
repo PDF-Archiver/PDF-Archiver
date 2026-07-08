@@ -5,7 +5,6 @@
 //  Created by Julian Kahnert on 06.06.24.
 //
 
-import ArchiverDocumentProcessing
 import Dependencies
 import OSLog
 import PDFKit
@@ -20,6 +19,16 @@ final class PDFDropHandler: Log {
 
     private(set) var documentProcessingState: DropButton.ButtonState = .noDocument
     var isImporting = false
+    /// Number of import requests currently queued in the processor. Derived
+    /// from the processor's progress events, so the button state reflects the
+    /// real background queue (including staged Share Extension imports).
+    private var queuedCount = 0
+
+    init() {
+        Task {
+            await observeProcessingEvents()
+        }
+    }
 
     func startImport() {
         documentProcessingState = .processing
@@ -37,68 +46,90 @@ final class PDFDropHandler: Log {
         await finishDropHandling()
     }
 
-    @StorageActor
-    private func handle(input item: any NSSecureCoding) throws {
+    @concurrent
+    private nonisolated func handle(input item: any NSSecureCoding) async throws {
         if let data = item as? Data {
             if let pdf = PDFDocument(data: data) {
-                handle(pdf: pdf)
+                await handle(pdf: pdf)
             } else if let image = PlatformImage(data: data) {
-                handle(image: image)
+                await handle(image: image)
             }
         } else if let url = item as? URL {
+            var pdf: PDFDocument?
+            var image: PlatformImage?
             try url.securityScope { url in
-                if let pdf = PDFDocument(url: url) {
-                    handle(pdf: pdf)
-                    return
+                if let document = PDFDocument(url: url) {
+                    pdf = document
                 } else if let data = try Data(contentsOf: url) as Data?,
-                          let image = PlatformImage(data: data) {
-                    handle(image: image)
+                          let loadedImage = PlatformImage(data: data) {
+                    image = loadedImage
                 } else {
                     Logger.pdfDropHandler.errorAndAssert("Could not handle url")
                 }
             }
+            if let pdf {
+                await handle(pdf: pdf)
+            } else if let image {
+                await handle(image: image)
+            }
         } else if let image = item as? PlatformImage {
-            handle(image: image)
+            await handle(image: image)
         } else if let pdfDocument = item as? PDFDocument {
-            handle(pdf: pdfDocument)
+            await handle(pdf: pdfDocument)
         } else {
             Logger.pdfDropHandler.errorAndAssert("Failed to get data")
         }
     }
 
-    @StorageActor
-    private func handle(image: PlatformImage) {
+    private nonisolated func handle(image: PlatformImage) async {
         Logger.pdfDropHandler.info("Handle Image")
-        Task {
-            _ = await documentProcessor.handleImages([image])
-        }
+        _ = await documentProcessor.handleImages([image])
     }
 
-    @StorageActor
-    private func handle(pdf: PDFDocument) {
+    private nonisolated func handle(pdf: PDFDocument) async {
         Logger.pdfDropHandler.info("Handle PDF Document")
-        Task {
-            guard let pdfData = pdf.dataRepresentation() else {
-                Self.log.errorAndAssert("Could not convert PDF document to data")
-                return
-            }
-
-            await documentProcessor.handlePdf(pdfData, pdf.documentURL)
+        guard let pdfData = pdf.dataRepresentation() else {
+            Self.log.errorAndAssert("Could not convert PDF document to data")
+            return
         }
+
+        await documentProcessor.handlePdf(pdfData, pdf.documentURL)
     }
 
     private func finishDropHandling() async {
-        guard documentProcessingState != .noDocument else { return }
+        // pick up anything that was staged but not queued (e.g. files from the
+        // Share Extension)
+        await documentProcessor.processStagedFiles()
 
-        let wasProcessing = documentProcessingState == .processing
-        documentProcessingState = wasProcessing ? .finished : .noDocument
+        // Nothing entered the queue (e.g. the drop failed): reset the button.
+        // Otherwise the progress events drive the state to .finished.
+        if queuedCount == 0, documentProcessingState == .processing {
+            documentProcessingState = .noDocument
+        }
+    }
 
-        guard wasProcessing else { return }
-        await documentProcessor.triggerFolderObservation()
+    /// Drive the drop button from the processor's progress events.
+    private func observeProcessingEvents() async {
+        for await event in await documentProcessor.progressEvents() {
+            switch event {
+            case .queued:
+                queuedCount += 1
+                documentProcessingState = .processing
 
-        try? await Task.sleep(for: .seconds(2))
+            case .processing:
+                break
 
-        self.documentProcessingState = .noDocument
+            case .finished, .failed:
+                queuedCount = max(0, queuedCount - 1)
+                guard queuedCount == 0 else { break }
+
+                documentProcessingState = .finished
+                try? await Task.sleep(for: .seconds(2))
+                if queuedCount == 0, documentProcessingState == .finished {
+                    documentProcessingState = .noDocument
+                }
+            }
+        }
     }
 }
 

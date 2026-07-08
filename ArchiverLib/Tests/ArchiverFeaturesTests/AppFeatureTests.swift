@@ -150,7 +150,7 @@ struct AppFeatureTests {
         let store = TestStore(initialState: AppFeature.State(isDocumentLoading: false)) {
             AppFeature()
         } withDependencies: {
-            $0.documentProcessor.triggerFolderObservation = { }
+            $0.documentProcessor.processStagedFiles = { }
             $0.archiveStore.reloadDocuments = { }
         }
 

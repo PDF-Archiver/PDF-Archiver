@@ -230,7 +230,7 @@ struct AppFeature {
                     await withTaskGroup(of: Void.self) { group in
                         group.addTask(priority: .background) {
                             // check the temp folder at startup for new documents
-                            await documentProcessor.triggerFolderObservation()
+                            await documentProcessor.processStagedFiles()
 
                             #if os(iOS)
                             if #available(iOS 26, *) {
@@ -263,7 +263,7 @@ struct AppFeature {
                     return .run { _ in
                         await withThrowingTaskGroup(of: Void.self) { group in
                             group.addTask(priority: .background) {
-                                await documentProcessor.triggerFolderObservation()
+                                await documentProcessor.processStagedFiles()
                             }
                             group.addTask(priority: .medium) {
                                 try await archiveStore.reloadDocuments()
