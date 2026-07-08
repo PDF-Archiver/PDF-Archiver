@@ -47,7 +47,7 @@ final class PDFDropHandler: Log {
     }
 
     @concurrent
-    private nonisolated func handle(input item: any NSSecureCoding) async throws {
+    nonisolated private func handle(input item: any NSSecureCoding) async throws {
         if let data = item as? Data {
             if let pdf = PDFDocument(data: data) {
                 await handle(pdf: pdf)
@@ -81,12 +81,12 @@ final class PDFDropHandler: Log {
         }
     }
 
-    private nonisolated func handle(image: PlatformImage) async {
+    nonisolated private func handle(image: PlatformImage) async {
         Logger.pdfDropHandler.info("Handle Image")
         _ = await documentProcessor.handleImages([image])
     }
 
-    private nonisolated func handle(pdf: PDFDocument) async {
+    nonisolated private func handle(pdf: PDFDocument) async {
         Logger.pdfDropHandler.info("Handle PDF Document")
         guard let pdfData = pdf.dataRepresentation() else {
             Self.log.errorAndAssert("Could not convert PDF document to data")

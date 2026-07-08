@@ -109,12 +109,12 @@ extension DocumentProcessingDependency: DependencyKey {
             @Shared(.appleIntelligenceCacheEnabled) var cacheEnabled: Bool
             @Shared(.appleIntelligenceCustomPrompt) var customPrompt: String?
 
-            let ai: AIContext? = (appleIntelligenceEnabled && cacheEnabled) ? AIContext(customPrompt: customPrompt) : nil
-            guard ocrEnabled || ai != nil else { return UntaggedSweepResult(ocrCount: 0, aiCacheCount: 0) }
+            let aiContext: AIContext? = (appleIntelligenceEnabled && cacheEnabled) ? AIContext(customPrompt: customPrompt) : nil
+            guard ocrEnabled || aiContext != nil else { return UntaggedSweepResult(ocrCount: 0, aiCacheCount: 0) }
 
             do {
                 let config = try await makeConfig()
-                return await documentProcessor.processUntaggedDocuments(in: documents, config: config, ocr: ocrEnabled, ai: ai)
+                return await documentProcessor.processUntaggedDocuments(in: documents, config: config, ocr: ocrEnabled, aiContext: aiContext)
             } catch {
                 Logger.app.error("Untagged sweep failed to resolve the untagged folder: \(error)")
                 return UntaggedSweepResult(ocrCount: 0, aiCacheCount: 0)

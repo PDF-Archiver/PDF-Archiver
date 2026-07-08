@@ -126,9 +126,9 @@ public actor DocumentProcessor {
     ///     untagged, locally available documents itself; the tagged rest
     ///     serves as prompt context for the AI pass.
     ///   - ocr: Whether image-only PDFs should get a text layer.
-    ///   - ai: Set to pre-compute AI suggestion cache entries.
+    ///   - aiContext: Set to pre-compute AI suggestion cache entries.
     @discardableResult
-    public func processUntaggedDocuments(in documents: [Document], config: ProcessingConfig, ocr: Bool, ai: AIContext?) async -> UntaggedSweepResult {
+    public func processUntaggedDocuments(in documents: [Document], config: ProcessingConfig, ocr: Bool, aiContext: AIContext?) async -> UntaggedSweepResult {
         let untaggedDocuments = documents.filter { !$0.isTagged && $0.downloadStatus >= 1 }
 
         var ocrCount = 0
@@ -143,11 +143,11 @@ public actor DocumentProcessor {
         }
 
         var aiCacheCount = 0
-        if let ai, !Task.isCancelled, #available(iOS 26.0, macOS 26.0, *) {
+        if let aiContext, !Task.isCancelled, #available(iOS 26.0, macOS 26.0, *) {
             aiCacheCount = await contentExtractor.processUntaggedDocumentsInBackground(
                 documents: documents,
                 textExtractor: { await Self.extractText(from: $0) },
-                customPrompt: ai.customPrompt)
+                customPrompt: aiContext.customPrompt)
             Logger.documentProcessor.info("Untagged sweep: created \(aiCacheCount) AI cache entries")
         }
 
