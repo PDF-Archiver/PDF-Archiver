@@ -47,28 +47,6 @@ extension DocumentProcessingDependency: TestDependencyKey {
 extension DocumentProcessingDependency: DependencyKey {
     private static let documentProcessor = DocumentProcessor(stagingFolder: Constants.tempDocumentURL)
 
-    /// One-time migration: move working copies that a pre-pipeline app version
-    /// left in the legacy `processing/` subfolder back into the staging folder,
-    /// so they are imported again.
-    private static let legacyProcessingFolderMigration: Void = {
-        let legacyFolder = Constants.tempDocumentURL.appendingPathComponent("processing")
-        guard let urls = try? FileManager.default.contentsOfDirectory(at: legacyFolder, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants]) else { return }
-
-        for url in urls {
-            var destination = Constants.tempDocumentURL.appendingPathComponent(url.lastPathComponent)
-            if FileManager.default.fileExists(atPath: destination.path) {
-                destination = Constants.tempDocumentURL.appendingPathComponent("\(UUID().uuidString)-\(url.lastPathComponent)")
-            }
-            do {
-                try FileManager.default.moveItem(at: url, to: destination)
-                Logger.app.info("Recovered legacy processing file \(url.lastPathComponent, privacy: .public)")
-            } catch {
-                Logger.app.error("Failed to recover legacy processing file: \(error)")
-            }
-        }
-        try? FileManager.default.removeItem(at: legacyFolder)
-    }()
-
     /// Resolve the per-request pipeline config from the current user settings.
     private static func makeConfig() async throws -> ProcessingConfig {
         @Shared(.pdfQuality) var pdfQuality: PDFQuality
@@ -80,7 +58,6 @@ extension DocumentProcessingDependency: DependencyKey {
 
     static let liveValue = DocumentProcessingDependency(
         processStagedFiles: {
-            _ = legacyProcessingFolderMigration
             do {
                 let config = try await makeConfig()
                 await documentProcessor.processStagedFiles(config: config)
