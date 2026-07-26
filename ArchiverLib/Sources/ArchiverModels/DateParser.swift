@@ -11,8 +11,6 @@ import OSLog
 /// Parse several kinds of dates in a String.
 nonisolated public enum DateParser {
 
-    private static let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "de.JulianKahnert.PDFArchiveViewer", category: "date-parser")
-
     private struct ParserResult: Codable {
         let date: Date
         let rawDate: String
@@ -49,7 +47,7 @@ nonisolated public enum DateParser {
     private static func localParse(_ raw: String) async -> [ParserResult] {
         let types: NSTextCheckingResult.CheckingType = .date
         guard let detector = try? NSDataDetector(types: types.rawValue) else {
-            logger.critical("Could not create NSDataDetector")
+            Logger.dateParser.critical("Could not create NSDataDetector")
             assertionFailure("Could not create NSDataDetector")
             return []
         }

@@ -11,5 +11,5 @@ import OSLog
 nonisolated extension Logger {
     fileprivate static let subsystem = Bundle.main.bundleIdentifier ?? "de.JulianKahnert.PDFArchiveViewer"
 
-    static let contentExtractor = Logger(subsystem: subsystem, category: "content-extractor")
+    static let dateParser = Logger(subsystem: subsystem, category: "date-parser")
 }
