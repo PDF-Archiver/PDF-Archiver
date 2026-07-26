@@ -88,7 +88,9 @@ extension DocumentProcessingDependency: DependencyKey {
         handleImages: { images in
             do {
                 let config = try await makeConfig()
-                let pages = images.compactMap(\.cgImage)
+                // Normalize the orientation first: `cgImage` returns the raw
+                // bitmap and would drop the EXIF rotation of camera images.
+                let pages = images.compactMap { $0.normalizedOrientation().cgImage }
                 return await documentProcessor.importScan(pages, config: config)
             } catch {
                 Logger.app.error("Scan import failed to resolve the untagged folder: \(error)")
@@ -130,5 +132,21 @@ extension DependencyValues {
     var documentProcessor: DocumentProcessingDependency {
         get { self[DocumentProcessingDependency.self] }
         set { self[DocumentProcessingDependency.self] = newValue }
+    }
+}
+
+extension PlatformImage {
+    /// Bake the EXIF orientation into the bitmap so `cgImage` matches what
+    /// the user saw. NSImage has no orientation concept, so this is a no-op
+    /// on macOS.
+    fileprivate func normalizedOrientation() -> PlatformImage {
+        #if canImport(UIKit)
+        guard imageOrientation != .up else { return self }
+        return UIGraphicsImageRenderer(size: size).image { _ in
+            draw(in: CGRect(origin: .zero, size: size))
+        }
+        #else
+        return self
+        #endif
     }
 }

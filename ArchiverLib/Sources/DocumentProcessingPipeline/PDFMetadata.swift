@@ -51,10 +51,13 @@ public enum PDFMetadata {
     ///
     /// Called after every OCR attempt (including failures) so the same file
     /// is never retried in a loop.
-    public static func markAsProcessed(_ pdf: PDFDocument, marker: String, writeTo url: URL) {
+    ///
+    /// - Returns: Whether the file was written successfully.
+    @discardableResult
+    public static func markAsProcessed(_ pdf: PDFDocument, marker: String, writeTo url: URL) -> Bool {
         var attributes = pdf.documentAttributes ?? [:]
         attributes[PDFDocumentAttribute.creatorAttribute] = marker
         pdf.documentAttributes = attributes
-        pdf.write(to: url)
+        return pdf.write(to: url)
     }
 }

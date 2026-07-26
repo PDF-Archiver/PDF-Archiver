@@ -94,6 +94,9 @@ struct ScanButtonModifier: ViewModifier {
             #endif
             .onDrop(of: [.image, .pdf, .fileURL],
                     delegate: dropHandler)
+            .task {
+                await dropHandler.observeProcessingEvents()
+            }
             .fileImporter(isPresented: $dropHandler.isImporting, allowedContentTypes: [.pdf, .image]) { result in
                 Task {
                     do {

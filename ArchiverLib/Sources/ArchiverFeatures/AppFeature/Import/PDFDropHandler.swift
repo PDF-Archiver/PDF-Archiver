@@ -24,12 +24,6 @@ final class PDFDropHandler: Log {
     /// real background queue (including staged Share Extension imports).
     private var queuedCount = 0
 
-    init() {
-        Task {
-            await observeProcessingEvents()
-        }
-    }
-
     func startImport() {
         documentProcessingState = .processing
         isImporting = true
@@ -109,7 +103,11 @@ final class PDFDropHandler: Log {
     }
 
     /// Drive the drop button from the processor's progress events.
-    private func observeProcessingEvents() async {
+    ///
+    /// Call from a SwiftUI `.task` so the observation is cancelled when the
+    /// hosting view disappears and runs only for the retained handler
+    /// instance (never for throwaway `@State` default values).
+    func observeProcessingEvents() async {
         for await event in await documentProcessor.progressEvents() {
             switch event {
             case .queued:

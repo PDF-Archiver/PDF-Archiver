@@ -53,6 +53,10 @@ public actor DocumentProcessor {
     private let stagingFolder: URL
     private var queueTail: Task<URL?, Never>?
     private var inFlight = Set<URL>()
+    /// Files the untagged sweep is currently rewriting. Prevents overlapping
+    /// sweeps (documentsChanged restart, background task) from opening or
+    /// writing the same document concurrently.
+    private var sweepInFlight = Set<URL>()
     private var eventContinuations: [UUID: AsyncStream<ProcessingEvent>.Continuation] = [:]
     /// Lazily created `ContentExtractorStore` (type-erased because stored
     /// properties cannot be `@available`-gated).
@@ -106,7 +110,9 @@ public actor DocumentProcessor {
     /// interrupted run, or files placed there by other means.
     public func processStagedFiles(config: ProcessingConfig) {
         for batch in Staging.batches(in: stagingFolder) {
-            guard !batch.sourceUrls.contains(where: { inFlight.contains($0) }) else { continue }
+            // Compare symlink-resolved paths: directory enumeration may return
+            // /private/var URLs for files that were staged under /var.
+            guard !batch.sourceUrls.contains(where: { inFlight.contains($0.resolvingSymlinksInPath()) }) else { continue }
             enqueue(batch, config: config)
         }
     }
@@ -135,6 +141,14 @@ public actor DocumentProcessor {
         if ocr {
             for document in untaggedDocuments {
                 guard !Task.isCancelled else { break }
+
+                // Skip files another (e.g. just-cancelled or background) sweep
+                // is still rewriting - the next documentsChanged retries them.
+                let url = document.url.resolvingSymlinksInPath()
+                guard !sweepInFlight.contains(url) else { continue }
+                sweepInFlight.insert(url)
+                defer { sweepInFlight.remove(url) }
+
                 if await Self.addOcrTextLayerIfNeeded(at: document.url, config: config) {
                     ocrCount += 1
                 }
@@ -192,7 +206,7 @@ public actor DocumentProcessor {
     @discardableResult
     private func enqueue(_ batch: Staging.Batch, config: ProcessingConfig) -> Task<URL?, Never> {
         for url in batch.sourceUrls {
-            inFlight.insert(url)
+            inFlight.insert(url.resolvingSymlinksInPath())
         }
         if let source = batch.primarySource {
             emit(.queued(source: source))
@@ -225,7 +239,7 @@ public actor DocumentProcessor {
             // Delete-after-success: only now the staged originals may go away.
             for url in batch.sourceUrls {
                 try? FileManager.default.removeItem(at: url)
-                inFlight.remove(url)
+                inFlight.remove(url.resolvingSymlinksInPath())
             }
 
             let timeDiff = Date().timeIntervalSinceReferenceDate - start.timeIntervalSinceReferenceDate
@@ -234,9 +248,14 @@ public actor DocumentProcessor {
             return documentUrl
         } catch {
             // Expected for invalid input (e.g. a corrupt PDF was dropped). The
-            // staged files stay for the next launch; they also stay in the
-            // in-flight set so this session does not retry them in a loop.
+            // staged files stay in the folder AND are released from the
+            // in-flight set, so a transient failure (file still being written
+            // by the Share Extension, destination briefly unavailable) is
+            // retried on the next processStagedFiles trigger.
             Logger.documentProcessor.error("Processing failed: \(error)")
+            for url in batch.sourceUrls {
+                inFlight.remove(url.resolvingSymlinksInPath())
+            }
             emit(.failed(source: source, message: "\(error)"))
             return nil
         }
@@ -287,7 +306,13 @@ public actor DocumentProcessor {
 
         do {
             try await PDFOCREngine.addTextLayer(to: pdf, quality: config.pdfQuality)
-            PDFMetadata.markAsProcessed(pdf, marker: config.processedMarker, writeTo: url)
+            // A sweep cancelled during OCR must not write the modified pdf -
+            // a successor sweep may already be reading the file.
+            try Task.checkCancellation()
+            if !PDFMetadata.markAsProcessed(pdf, marker: config.processedMarker, writeTo: url) {
+                Logger.ocrProcessing.error("Failed to write OCR result for \(url.lastPathComponent, privacy: .public)")
+                return false
+            }
             Logger.ocrProcessing.info("OCR completed for \(url.lastPathComponent, privacy: .public) (\(pdf.pageCount) pages)")
             return true
         } catch is CancellationError {
@@ -298,7 +323,7 @@ public actor DocumentProcessor {
         } catch {
             Logger.ocrProcessing.error("OCR failed for \(url.lastPathComponent, privacy: .public): \(error)")
             // Mark as processed even on failure to prevent infinite retries.
-            PDFMetadata.markAsProcessed(pdf, marker: config.processedMarker, writeTo: url)
+            _ = PDFMetadata.markAsProcessed(pdf, marker: config.processedMarker, writeTo: url)
             return false
         }
     }

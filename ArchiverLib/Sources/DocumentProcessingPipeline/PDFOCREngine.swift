@@ -98,6 +98,11 @@ enum PDFOCREngine {
     /// the recognized positions. The page image is re-encoded as JPEG at
     /// `quality` so the rewritten pages stay compact.
     static func addTextLayer(to pdf: PDFDocument, quality: PDFQuality, maxPages: Int = 10) async throws {
+        // Pages are rasterized once at 3x their point size (~216 DPI) — enough
+        // to preserve the quality of typical scans; rendering at 1x (72 DPI)
+        // would irreversibly degrade the user's document.
+        let renderScale: CGFloat = 3
+
         for pageIndex in 0..<min(pdf.pageCount, maxPages) {
             // Cooperative cancellation: a CancellationError here propagates
             // to the caller, which must NOT write the partially-modified pdf.
@@ -106,16 +111,15 @@ enum PDFOCREngine {
             guard let page = pdf.page(at: pageIndex) else { continue }
             let bounds = page.bounds(for: .mediaBox)
 
-            // 2x resolution for OCR quality.
-            let ocrImageSize = CGSize(width: bounds.width * 2, height: bounds.height * 2)
-            let ocrImage = page.thumbnail(of: ocrImageSize, for: .mediaBox)
+            let imageSize = CGSize(width: bounds.width * renderScale, height: bounds.height * renderScale)
+            let pageImage = page.thumbnail(of: imageSize, for: .mediaBox)
 
-            let ocrResults = try recognizeText(in: ocrImage)
+            let ocrResults = try recognizeText(in: pageImage)
             guard !ocrResults.isEmpty else { continue }
 
-            // Scale OCR coordinates back from the 2x image to page coordinates.
-            let scaleX = bounds.width / ocrImageSize.width
-            let scaleY = bounds.height / ocrImageSize.height
+            // Scale OCR coordinates back from the rendered image to page coordinates.
+            let scaleX = bounds.width / imageSize.width
+            let scaleY = bounds.height / imageSize.height
             let scaledResults = ocrResults.map { result in
                 TextObservationResult(
                     rect: CGRect(x: result.rect.origin.x * scaleX,
@@ -126,10 +130,9 @@ enum PDFOCREngine {
             }
             let textEntries = await makeTextEntries(from: scaledResults)
 
-            // Original page rendered at 1:1 so drawing coordinates match the
-            // PDF context's media box. Re-encode as JPEG so the new page does
-            // not blow up the file size with a losslessly stored bitmap.
-            let pageImage = page.thumbnail(of: bounds.size, for: .mediaBox)
+            // Re-encode the high-resolution page image as JPEG so the new page
+            // does not blow up the file size with a losslessly stored bitmap.
+            // It is drawn into the original media box, keeping the page size.
             let drawImage: PlatformImage
             if let jpegData = pageImage.jpg(quality: CGFloat(quality.rawValue)),
                let jpegImage = PlatformImage(data: jpegData) {
