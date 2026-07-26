@@ -12,6 +12,9 @@ import DocumentProcessingPipeline
 import Foundation
 import OSLog
 import Shared
+#if canImport(UIKit)
+import UIKit
+#endif
 
 @DependencyClient
 struct DocumentProcessingDependency {
