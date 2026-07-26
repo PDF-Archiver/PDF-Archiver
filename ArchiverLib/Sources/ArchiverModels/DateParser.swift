@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import OSLog
 
 /// Parse several kinds of dates in a String.
 nonisolated public enum DateParser {
@@ -47,7 +46,6 @@ nonisolated public enum DateParser {
     private static func localParse(_ raw: String) async -> [ParserResult] {
         let types: NSTextCheckingResult.CheckingType = .date
         guard let detector = try? NSDataDetector(types: types.rawValue) else {
-            Logger.dateParser.critical("Could not create NSDataDetector")
             assertionFailure("Could not create NSDataDetector")
             return []
         }
