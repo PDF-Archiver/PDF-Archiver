@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 07.07.26.
 //
 
+import ArchiverModels
 import Foundation
 import OSLog
 

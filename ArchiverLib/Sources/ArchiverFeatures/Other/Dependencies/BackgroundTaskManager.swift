@@ -6,6 +6,7 @@
 //
 
 #if os(iOS)
+import ArchiverModels
 import BackgroundTasks
 import ComposableArchitecture
 import Foundation
