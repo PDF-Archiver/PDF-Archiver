@@ -6,6 +6,7 @@
 //  Copyright © 2020 Julian Kahnert. All rights reserved.
 //
 
+import ArchiverModels
 import OSLog
 import PDFKit
 import Shared

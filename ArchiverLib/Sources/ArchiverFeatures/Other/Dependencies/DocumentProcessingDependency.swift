@@ -25,9 +25,9 @@ struct DocumentProcessingDependency {
     var handleImages: @Sendable ([PlatformImage]) async -> URL?
     /// Import PDF data (drag & drop, file importer). Returns after staging.
     var handlePdf: @Sendable (_ pdfData: Data, _ documentURL: URL?) async -> Void
-    /// Runs the untagged sweep (OCR text layers + AI suggestion cache) with
+    /// Runs the untagged processing (OCR text layers + AI suggestion cache) with
     /// the current user settings.
-    var processUntaggedDocuments: @Sendable (_ documents: [Document]) async -> UntaggedSweepResult = { _ in UntaggedSweepResult(ocrCount: 0, aiCacheCount: 0) }
+    var processUntaggedDocuments: @Sendable (_ documents: [Document]) async -> UntaggedProcessingResult = { _ in UntaggedProcessingResult(ocrCount: 0, aiCacheCount: 0) }
     /// Progress events of the import queue.
     var progressEvents: @Sendable () async -> AsyncStream<ProcessingEvent> = { AsyncStream { $0.finish() } }
 }
@@ -37,7 +37,7 @@ extension DocumentProcessingDependency: TestDependencyKey {
         processStagedFiles: { },
         handleImages: { _ in nil },
         handlePdf: { _, _ in },
-        processUntaggedDocuments: { _ in UntaggedSweepResult(ocrCount: 0, aiCacheCount: 0) },
+        processUntaggedDocuments: { _ in UntaggedProcessingResult(ocrCount: 0, aiCacheCount: 0) },
         progressEvents: { AsyncStream { $0.finish() } }
     )
 
@@ -92,14 +92,14 @@ extension DocumentProcessingDependency: DependencyKey {
             @Shared(.appleIntelligenceCustomPrompt) var customPrompt: String?
 
             let aiContext: AIContext? = (appleIntelligenceEnabled && cacheEnabled) ? AIContext(customPrompt: customPrompt) : nil
-            guard ocrEnabled || aiContext != nil else { return UntaggedSweepResult(ocrCount: 0, aiCacheCount: 0) }
+            guard ocrEnabled || aiContext != nil else { return UntaggedProcessingResult(ocrCount: 0, aiCacheCount: 0) }
 
             do {
                 let config = try await makeConfig()
                 return await documentProcessor.processUntaggedDocuments(in: documents, config: config, ocr: ocrEnabled, aiContext: aiContext)
             } catch {
-                Logger.app.error("Untagged sweep failed to resolve the untagged folder: \(error)")
-                return UntaggedSweepResult(ocrCount: 0, aiCacheCount: 0)
+                Logger.app.error("Untagged processing failed to resolve the untagged folder: \(error)")
+                return UntaggedProcessingResult(ocrCount: 0, aiCacheCount: 0)
             }
         },
         progressEvents: {

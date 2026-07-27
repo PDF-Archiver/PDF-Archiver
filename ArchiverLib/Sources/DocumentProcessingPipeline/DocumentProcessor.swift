@@ -12,8 +12,8 @@ import Foundation
 import OSLog
 import PDFKit
 
-/// Result of one untagged-documents sweep.
-public struct UntaggedSweepResult: Sendable, Equatable {
+/// Result of one untagged-documents pass.
+public struct UntaggedProcessingResult: Sendable, Equatable {
     /// Number of documents that received an OCR text layer.
     public let ocrCount: Int
     /// Number of newly created AI suggestion cache entries.
@@ -53,14 +53,15 @@ public actor DocumentProcessor {
     private let stagingFolder: URL
     private var queueTail: Task<URL?, Never>?
     private var inFlight = Set<URL>()
-    /// Files the untagged sweep is currently rewriting. Prevents overlapping
-    /// sweeps (documentsChanged restart, background task) from opening or
+    /// Files the untagged processing is currently rewriting. Prevents overlapping
+    /// passes (documentsChanged restart, background task) from opening or
     /// writing the same document concurrently.
-    private var sweepInFlight = Set<URL>()
+    private var untaggedInFlight = Set<URL>()
     private var eventContinuations: [UUID: AsyncStream<ProcessingEvent>.Continuation] = [:]
-    /// Lazily created `ContentExtractorStore` (type-erased because stored
-    /// properties cannot be `@available`-gated).
-    private var contentExtractorStorage: Any?
+    /// Lazily created `ContentExtractorStore`. Type-erased because Swift does
+    /// not allow stored properties of an `@available(iOS 26, macOS 26)` type
+    /// while the package still deploys to iOS 18 / macOS 15.
+    private var contentExtractorStorage: AnyObject?
 
     /// - Parameter stagingFolder: Crash-safe inbox for incoming documents.
     ///   In the app this is the shared temp folder the Share Extension also
@@ -117,7 +118,7 @@ public actor DocumentProcessor {
         }
     }
 
-    // MARK: - Untagged sweep
+    // MARK: - Untagged processing
 
     /// Process untagged documents where they are: add an OCR text layer to
     /// image-only PDFs (in place, dedup via the `Creator` marker) and — when
@@ -125,16 +126,16 @@ public actor DocumentProcessor {
     ///
     /// Runs in the caller's task so cancellation (e.g. an expiring background
     /// task) propagates into the per-page OCR checks. It does not enter the
-    /// import queue: the sweep and the import queue never touch the same file.
+    /// import queue: the pass and the import queue never touch the same file.
     ///
     /// - Parameters:
-    ///   - documents: ALL documents of the archive. The sweep filters
+    ///   - documents: ALL documents of the archive. The pass filters
     ///     untagged, locally available documents itself; the tagged rest
     ///     serves as prompt context for the AI pass.
     ///   - ocr: Whether image-only PDFs should get a text layer.
     ///   - aiContext: Set to pre-compute AI suggestion cache entries.
     @discardableResult
-    public func processUntaggedDocuments(in documents: [Document], config: ProcessingConfig, ocr: Bool, aiContext: AIContext?) async -> UntaggedSweepResult {
+    public func processUntaggedDocuments(in documents: [Document], config: ProcessingConfig, ocr: Bool, aiContext: AIContext?) async -> UntaggedProcessingResult {
         let untaggedDocuments = documents.filter { !$0.isTagged && $0.downloadStatus >= 1 }
 
         var ocrCount = 0
@@ -142,18 +143,18 @@ public actor DocumentProcessor {
             for document in untaggedDocuments {
                 guard !Task.isCancelled else { break }
 
-                // Skip files another (e.g. just-cancelled or background) sweep
+                // Skip files another (e.g. just-cancelled or background) pass
                 // is still rewriting - the next documentsChanged retries them.
                 let url = document.url.resolvingSymlinksInPath()
-                guard !sweepInFlight.contains(url) else { continue }
-                sweepInFlight.insert(url)
-                defer { sweepInFlight.remove(url) }
+                guard !untaggedInFlight.contains(url) else { continue }
+                untaggedInFlight.insert(url)
+                defer { untaggedInFlight.remove(url) }
 
                 if await Self.addOcrTextLayerIfNeeded(at: document.url, config: config) {
                     ocrCount += 1
                 }
             }
-            Logger.documentProcessor.info("Untagged sweep: added a text layer to \(ocrCount) documents")
+            Logger.documentProcessor.info("Untagged processing: added a text layer to \(ocrCount) documents")
         }
 
         var aiCacheCount = 0
@@ -162,10 +163,10 @@ public actor DocumentProcessor {
                 documents: documents,
                 textExtractor: { await Self.extractText(from: $0) },
                 customPrompt: aiContext.customPrompt)
-            Logger.documentProcessor.info("Untagged sweep: created \(aiCacheCount) AI cache entries")
+            Logger.documentProcessor.info("Untagged processing: created \(aiCacheCount) AI cache entries")
         }
 
-        return UntaggedSweepResult(ocrCount: ocrCount, aiCacheCount: aiCacheCount)
+        return UntaggedProcessingResult(ocrCount: ocrCount, aiCacheCount: aiCacheCount)
     }
 
     // MARK: - Progress
@@ -278,7 +279,7 @@ public actor DocumentProcessor {
     private static func processPdf(at url: URL, config: ProcessingConfig) async throws -> URL {
         // Validate only - the file is moved as-is, without re-encoding it
         // through PDFKit. Text layers for image-only PDFs are added later by
-        // the untagged sweep.
+        // the untagged processing.
         guard PDFDocument(url: url) != nil else { throw ProcessingError.invalidPdf }
 
         let filename = await FilenameGenerator.filename(reusing: url.lastPathComponent)
@@ -306,8 +307,8 @@ public actor DocumentProcessor {
 
         do {
             try await PDFOCREngine.addTextLayer(to: pdf, quality: config.pdfQuality)
-            // A sweep cancelled during OCR must not write the modified pdf -
-            // a successor sweep may already be reading the file.
+            // A pass cancelled during OCR must not write the modified pdf -
+            // a successor pass may already be reading the file.
             try Task.checkCancellation()
             if !PDFMetadata.markAsProcessed(pdf, marker: config.processedMarker, writeTo: url) {
                 Logger.ocrProcessing.error("Failed to write OCR result for \(url.lastPathComponent, privacy: .public)")
@@ -317,7 +318,7 @@ public actor DocumentProcessor {
             return true
         } catch is CancellationError {
             // Partially-modified `pdf` is discarded without writing, so the
-            // document is retried on the next sweep.
+            // document is retried on the next pass.
             Logger.ocrProcessing.info("OCR cancelled for \(url.lastPathComponent, privacy: .public)")
             return false
         } catch {
@@ -368,16 +369,5 @@ public actor DocumentProcessor {
         case invalidPdf
         case noPagesRendered
         case failedToWritePdf
-    }
-}
-
-nonisolated extension Logger {
-    fileprivate func errorAndAssert(_ message: String) {
-        assertionFailure(message)
-        error("\(message)")
-    }
-
-    fileprivate func info(_ message: String, metadata: [String: String]) {
-        info("\(message) - \(metadata.map { "\($0)=\($1)" }.joined(separator: " "))")
     }
 }

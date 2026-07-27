@@ -64,7 +64,7 @@ struct PDFOCREngineTests {
     // MARK: - addOcrTextLayerIfNeeded
 
     @Test
-    func sweepSkipsPDFWithTextLayer() async throws {
+    func passSkipsPDFWithTextLayer() async throws {
         // Copy a text PDF into the temp folder so processIfNeeded would have
         // a writable file to modify if it chose to — it must not.
         let dest = tempFolder.appendingPathComponent("text-pdf.pdf")
@@ -83,7 +83,7 @@ struct PDFOCREngineTests {
     }
 
     @Test
-    func sweepSkipsAlreadyMarkedPDF() async throws {
+    func passSkipsAlreadyMarkedPDF() async throws {
         // Start from an image-only PDF, then mark it as processed manually to
         // simulate a previous failed OCR run.
         let url = try writeImageOnlyPDF(name: "already-marked.pdf")
@@ -96,7 +96,7 @@ struct PDFOCREngineTests {
     }
 
     @Test
-    func sweepMarksImageOnlyPDFAfterOCR() async throws {
+    func passMarksImageOnlyPDFAfterOCR() async throws {
         let url = try writeImageOnlyPDF(name: "to-process.pdf")
 
         let result = await DocumentProcessor.addOcrTextLayerIfNeeded(at: url, config: config)
@@ -110,7 +110,7 @@ struct PDFOCREngineTests {
     }
 
     @Test
-    func sweepReturnsFalseForMissingFile() async {
+    func passReturnsFalseForMissingFile() async {
         let missing = tempFolder.appendingPathComponent("does-not-exist.pdf")
         let result = await DocumentProcessor.addOcrTextLayerIfNeeded(at: missing, config: config)
         #expect(result == false)

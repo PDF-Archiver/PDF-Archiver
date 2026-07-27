@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 06.06.24.
 //
 
+import ArchiverModels
 import Dependencies
 import OSLog
 import PDFKit

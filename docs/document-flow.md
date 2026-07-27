@@ -2,7 +2,7 @@
 
 This document describes how documents move through the app: from the entry
 points through the `DocumentProcessor` into the untagged folder, and how the
-untagged sweep adds OCR text layers and AI suggestion caches.
+untagged processing adds OCR text layers and AI suggestion caches.
 
 ## Flow
 
@@ -30,7 +30,7 @@ flowchart TD
 
     UNT -.->|file watcher| DC["AppFeature.documentsChanged"]
     DC --> UI["Inbox badge / lists / widget"]
-    DC -->|"restartable effect"| SWEEP["Untagged sweep<br/>1. OCR text layer in place (ocrEnabled)<br/>2. AI suggestion cache (Apple Intelligence)"]
+    DC -->|"restartable effect"| SWEEP["Untagged processing<br/>1. OCR text layer in place (ocrEnabled)<br/>2. AI suggestion cache (Apple Intelligence)"]
     BG["BGProcessingTask (iOS 26+)<br/>runs on external power"] --> SWEEP
     SWEEP -->|"ContentExtractorStore"| CACHE[("AI suggestion cache")]
 
@@ -42,13 +42,13 @@ flowchart TD
 
 | Component | Target | Responsibility |
 |---|---|---|
-| `DocumentProcessor` (actor) | `DocumentProcessingPipeline` | Accepts requests, serializes them in a FIFO queue, tracks progress events, runs the untagged sweep |
+| `DocumentProcessor` (actor) | `DocumentProcessingPipeline` | Accepts requests, serializes them in a FIFO queue, tracks progress events, runs the untagged processing |
 | `PDFOCREngine` | `DocumentProcessingPipeline` | Vision OCR + invisible-text page rendering (scan → PDF and in-place OCR share one core) |
 | `PDFMetadata` | `DocumentProcessingPipeline` | Text-layer probe and `Creator`-marker deduplication |
 | `Staging` | `DocumentProcessingPipeline` | Crash-safe inbox handling (persist, group, delete after success) |
 | `ContentExtractorStore` (actor) | `ContentExtractorStore` | Apple Intelligence: document text in → description + tags out, with file-based cache |
 | `DocumentProcessingDependency` | `ArchiverFeatures` | TCA seam: resolves user settings + untagged folder into a `ProcessingConfig` per request |
-| `BackgroundTaskManager` | `ArchiverFeatures` | iOS 26+ `BGProcessingTask` that runs the untagged sweep on external power |
+| `BackgroundTaskManager` | `ArchiverFeatures` | iOS 26+ `BGProcessingTask` that runs the untagged processing on external power |
 | `ArchiveStore` / `FolderProvider` | `ArchiverStore` | Watches archive + untagged folders and streams document changes to the UI |
 
 The pipeline target depends only on `ArchiverModels` and `ContentExtractorStore`
@@ -63,8 +63,8 @@ per request:
 
 | Setting | Key | Effect |
 |---|---|---|
-| Automatic OCR for image PDFs | `ocrEnabled` (default `false`) | OCR pass of the untagged sweep |
-| Apple Intelligence + cache | `appleIntelligenceEnabled`, `appleIntelligenceCacheEnabled` | AI pass of the untagged sweep |
+| Automatic OCR for image PDFs | `ocrEnabled` (default `false`) | OCR pass of the untagged processing |
+| Apple Intelligence + cache | `appleIntelligenceEnabled`, `appleIntelligenceCacheEnabled` | AI pass of the untagged processing |
 | Custom prompt | `appleIntelligenceCustomPrompt` | Forwarded to the content extraction prompt |
 | PDF quality | `pdfQuality` | JPEG compression of scanned pages and re-rendered OCR pages |
 
@@ -82,7 +82,7 @@ document.
 ## OCR deduplication
 
 Externally added PDFs without a text layer are OCR'd **in place** (filenames
-untouched). To avoid re-processing on every sweep, the `Creator` PDF attribute
+untouched). To avoid re-processing on every pass, the `Creator` PDF attribute
 is set to the processed marker (`"PDF Archiver"`) after every OCR attempt —
 including failed ones, which prevents retry loops:
 
@@ -95,7 +95,7 @@ otherwise                   → Vision OCR → invisible text layer → set Crea
 `Creator` is used instead of `Producer` because `PDFDocument.write(to:)`
 unconditionally overwrites `Producer` with the Quartz PDFContext value. A
 cancelled OCR run (expiring background task) discards the partially modified
-document *without* marking it, so it is retried on the next sweep. If a
+document *without* marking it, so it is retried on the next pass. If a
 document later gains a text layer by other means, the text-layer check wins
 over the marker.
 
@@ -103,5 +103,5 @@ over the marker.
 
 One `BGProcessingTask` (`de.JulianKahnert.PDFArchiveViewer.pdf-processing`,
 iOS 26+, `requiresExternalPower`) waits for the initial document load and runs
-the same untagged sweep as `documentsChanged`: OCR first, then the AI cache
+the same untagged processing as `documentsChanged`: OCR first, then the AI cache
 pass, so text layers exist when cache entries are computed.

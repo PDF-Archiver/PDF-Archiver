@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 16.12.20.
 //
 
+import ArchiverModels
 import SwiftUI
 
 public struct AlertDataModelProvider: ViewModifier, Log {

@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 22.08.20.
 //
 
+import ArchiverModels
 import Foundation
 
 extension FileManager: Log {

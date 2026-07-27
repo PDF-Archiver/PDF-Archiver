@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 19.08.20.
 //
 
+import ArchiverModels
 import Foundation
 import Shared
 

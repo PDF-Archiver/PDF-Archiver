@@ -68,7 +68,7 @@ struct AppFeature {
     @Dependency(\.widgetStore) var widgetStore
 
     private enum CancelID {
-        case untaggedSweep
+        case untaggedProcessing
     }
 
     var body: some ReducerOf<Self> {
@@ -212,12 +212,12 @@ struct AppFeature {
                         await send(.prefetchDocuments(untaggedRemoteDocuments))
                         await send(.updateWidget(documents))
                     },
-                    // The sweep restarts whenever the documents change; the OCR
+                    // The pass restarts whenever the documents change; the OCR
                     // marker and the AI cache make repeated runs cheap no-ops.
                     .run { [documents] _ in
                         _ = await documentProcessor.processUntaggedDocuments(documents)
                     }
-                    .cancellable(id: CancelID.untaggedSweep, cancelInFlight: true)
+                    .cancellable(id: CancelID.untaggedProcessing, cancelInFlight: true)
                 )
 
             case .isLoadingChanged(let isLoading):

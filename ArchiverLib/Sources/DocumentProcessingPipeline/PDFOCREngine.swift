@@ -33,8 +33,8 @@ extension NSAttributedString: @unchecked @retroactive Sendable {}
 /// One shared core (`recognizeText` + `renderPage`) drives both entry points:
 /// - ``createSearchablePDF(fromImagesAt:marker:)`` — the scan path: staged
 ///   page images become a brand-new searchable PDF.
-/// - ``addTextLayer(to:quality:maxPages:)`` — the sweep path: image-only pages
-///   of an existing PDF are replaced in place by pages that additionally carry
+/// - ``addTextLayer(to:quality:maxPages:)`` — the in-place path: image-only
+///   pages of an existing PDF are replaced by pages that additionally carry
 ///   the recognized text.
 ///
 /// Attributed strings are always pre-computed on the main actor *before* the
