@@ -188,9 +188,11 @@ public actor ContentExtractorStore {
     private static let liveResponder: Responder = { documents, customPrompt, text in
         let session = makeSession(with: documents)
 
+        let customPrompt = ContentExtractionPromptFactory.truncatedCustomPrompt(customPrompt)
         let truncatedText = ContentExtractionPromptFactory.truncatedText(
             from: text,
-            customPromptLength: customPrompt?.count ?? 0
+            customPromptLength: customPrompt?.count ?? 0,
+            budget: ContentExtractionPromptFactory.promptBudget(contextSize: SystemLanguageModel.default.contextSize)
         )
 
         let prompt = Prompt {

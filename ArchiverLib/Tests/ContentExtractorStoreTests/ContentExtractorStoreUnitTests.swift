@@ -73,13 +73,32 @@ struct ContentExtractionPromptFactoryTests {
 
     @Test("Text is truncated to the prompt budget minus the custom prompt")
     func truncationRespectsBudget() {
-        let text = String(repeating: "x", count: 5000)
-        #expect(ContentExtractionPromptFactory.truncatedText(from: text, customPromptLength: 0).count
-                == ContentExtractionPromptFactory.maxTotalPromptLength)
-        #expect(ContentExtractionPromptFactory.truncatedText(from: text, customPromptLength: 1000).count
-                == ContentExtractionPromptFactory.maxTotalPromptLength - 1000)
+        let budget = ContentExtractionPromptFactory.promptBudget(contextSize: 4096)
+        let text = String(repeating: "x", count: budget + 1000)
+        #expect(ContentExtractionPromptFactory.truncatedText(from: text, customPromptLength: 0, budget: budget).count
+                == budget)
+        #expect(ContentExtractionPromptFactory.truncatedText(from: text, customPromptLength: 1000, budget: budget).count
+                == budget - 1000)
         // A custom prompt larger than the whole budget leaves no room for text.
-        #expect(ContentExtractionPromptFactory.truncatedText(from: text, customPromptLength: 99_999).isEmpty)
+        #expect(ContentExtractionPromptFactory.truncatedText(from: text, customPromptLength: budget + 1, budget: budget).isEmpty)
+    }
+
+    @Test("Prompt budget scales with the model's context size")
+    func promptBudgetScalesWithContextSize() {
+        #expect(ContentExtractionPromptFactory.promptBudget(contextSize: 4096) > 0)
+        #expect(ContentExtractionPromptFactory.promptBudget(contextSize: 8192)
+                > ContentExtractionPromptFactory.promptBudget(contextSize: 4096))
+        // A tiny context window must not produce a negative budget.
+        #expect(ContentExtractionPromptFactory.promptBudget(contextSize: 100) == 0)
+    }
+
+    @Test("Custom prompt is capped so it always fits the budget")
+    func customPromptIsCapped() {
+        let long = String(repeating: "y", count: 10_000)
+        #expect(ContentExtractionPromptFactory.truncatedCustomPrompt(long)?.count
+                == ContentExtractionPromptFactory.maxCustomPromptLength)
+        #expect(ContentExtractionPromptFactory.truncatedCustomPrompt("short") == "short")
+        #expect(ContentExtractionPromptFactory.truncatedCustomPrompt(nil) == nil)
     }
 
     @Test("Instruction segments embed the locale and the stats")

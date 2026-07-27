@@ -15,9 +15,17 @@ import Foundation
 
 enum ContentExtractionPromptFactory {
 
-    /// Maximum number of document-text characters (instructions excluded) sent
-    /// to the model.
-    static let maxTotalPromptLength = 3500
+    /// Maximum number of characters of the user's custom prompt. Keeps the
+    /// custom prompt small enough to always fit into the prompt budget.
+    static let maxCustomPromptLength = 500
+
+    /// Conservative characters-per-token factor so the character budget never
+    /// exceeds the model's token-based context window.
+    private static let charactersPerToken = 2
+
+    /// Tokens reserved for the instruction segments (incl. tag/description
+    /// statistics) and the structured response.
+    private static let reservedTokens = 1536
 
     /// Minimum number of occurrences for a tag to be offered to the model.
     static let minTagCount = 3
@@ -38,12 +46,9 @@ enum ContentExtractionPromptFactory {
 
     /// Aggregate the existing documents into the tag/description context blocks.
     ///
-    /// Tags are sorted by frequency (descending, then alphabetically). The
-    /// original implementation relied on `Dictionary` iteration order, which is
-    /// non-deterministic — so the "prefer frequently used tags" instruction was
-    /// not actually backed by frequency and the prompt changed run-to-run. Sorting
-    /// makes the prompt deterministic (testable, reproducible for evaluations) and
-    /// honours the instruction's intent.
+    /// Tags are sorted by frequency so the prompt is deterministic (testable,
+    /// reproducible for evaluations) and the "prefer frequently used tags"
+    /// instruction is actually backed by frequency.
     static func documentStats(from documents: [Document]) -> DocumentStats {
         let allTags: [String] = documents.flatMap(\.tags)
         let grouped: [String: [String]] = Dictionary(grouping: allTags) { $0 }
@@ -64,8 +69,8 @@ enum ContentExtractionPromptFactory {
         """
 
         let specificationsString = documents
-            // Newest first; break date ties by specification so the prompt is
-            // fully deterministic even for same-day documents.
+            // Date ties are broken by specification so the prompt stays
+            // deterministic even for same-day documents.
             .sorted { lhs, rhs in
                 lhs.date != rhs.date ? lhs.date > rhs.date : lhs.specification < rhs.specification
             }
@@ -103,10 +108,24 @@ enum ContentExtractionPromptFactory {
 
     // MARK: - User prompt
 
-    /// Truncate the document text to fit the prompt budget, leaving room for the
-    /// optional custom prompt.
-    static func truncatedText(from text: String, customPromptLength: Int) -> String {
-        let availableTextLength = maxTotalPromptLength - customPromptLength
+    /// Character budget for the user prompt (custom prompt + document text),
+    /// derived from the model's token-based context window
+    /// (`SystemLanguageModel.contextSize`).
+    static func promptBudget(contextSize: Int) -> Int {
+        max(0, (contextSize - reservedTokens) * charactersPerToken)
+    }
+
+    /// Cap the user's custom prompt at ``maxCustomPromptLength`` so it always
+    /// fits into the budget.
+    static func truncatedCustomPrompt(_ customPrompt: String?) -> String? {
+        guard let customPrompt else { return nil }
+        return String(customPrompt.prefix(maxCustomPromptLength))
+    }
+
+    /// Truncate the document text to fit the prompt budget, leaving room for
+    /// the optional custom prompt.
+    static func truncatedText(from text: String, customPromptLength: Int, budget: Int) -> String {
+        let availableTextLength = budget - customPromptLength
         return String(text.prefix(max(0, availableTextLength)))
     }
 }
