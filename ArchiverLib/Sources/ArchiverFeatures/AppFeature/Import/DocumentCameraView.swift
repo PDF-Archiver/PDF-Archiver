@@ -7,6 +7,7 @@
 //
 
 #if !os(macOS)
+import ArchiverModels
 import Shared
 import SwiftUI
 @preconcurrency import VisionKit
