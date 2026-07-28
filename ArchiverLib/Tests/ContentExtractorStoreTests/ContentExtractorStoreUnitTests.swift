@@ -44,8 +44,7 @@ struct ContentExtractionPromptFactoryTests {
 
         // Only names are embedded - counts in the prompt would leak into the
         // model's tag suggestions (e.g. "rechnung3").
-        let containsDigit = stats.tags.contains { $0.isNumber }
-        #expect(!containsDigit)
+        #expect(stats.tags.rangeOfCharacter(from: .decimalDigits) == nil)
 
         // Higher frequency listed first (fails loudly if either is missing).
         let rechnungIndex = try #require(stats.tags.range(of: "rechnung"))
