@@ -8,8 +8,7 @@
 //    • the result mapper (trim, slugify, tag cap)
 //    • the actor's cache / availability orchestration, via injected stubs.
 //
-//  These run in CI on any machine. The stochastic model behaviour is covered by
-//  the Evaluations-based suite in ContentExtractionEvaluation.swift.
+//  These run in CI on any machine.
 //
 
 import ArchiverModels
@@ -154,60 +153,6 @@ struct ContentExtractionMapperTests {
                                          tags: ["42", "  ", "co2", "!!!", "rechnung"])
         let result = ContentExtractionMapper.normalize(raw)
         #expect(result.tags == ["co2", "rechnung"])
-    }
-}
-
-// MARK: - Dataset loader & metric math (pure)
-
-@Suite("TaggedPDFCorpus")
-struct TaggedPDFCorpusTests {
-
-    @Test("Parses the archiver naming scheme")
-    func parsesValidFilename() throws {
-        let parsed = try #require(TaggedPDFCorpus.parseFilename("2024-01-05--tom-tailor-jeans__kleidung_rechnung.pdf"))
-        #expect(parsed.specification == "tom-tailor-jeans")
-        #expect(parsed.tags == ["kleidung", "rechnung"])
-    }
-
-    @Test("Rejects filenames without a usable reference")
-    func rejectsInvalidFilenames() {
-        // No date, no tags, placeholder description, placeholder tag.
-        #expect(TaggedPDFCorpus.parseFilename("not-a-document.pdf") == nil)
-        #expect(TaggedPDFCorpus.parseFilename("2024-01-05--only-spec.pdf") == nil)
-        #expect(TaggedPDFCorpus.parseFilename("2024-01-05--spec__.pdf") == nil)
-        #expect(TaggedPDFCorpus.parseFilename("2024-01-05--\(Document.descriptionPlaceholder)x__rechnung.pdf") == nil)
-        #expect(TaggedPDFCorpus.parseFilename("2024-01-05--spec__\(Document.tagPlaceholder.lowercased()).pdf") == nil)
-    }
-
-    @Test("Evenly spreads a capped sample across the corpus")
-    func evenlySpreadCoversTheRange() {
-        let items = Array(0..<100)
-        let picked = TaggedPDFCorpus.evenlySpread(items, count: 10)
-        #expect(picked.count == 10)
-        #expect(picked.first == 0)
-        // Spread, not just the first 10.
-        #expect(picked.contains { $0 >= 50 })
-        // Fewer items than the cap → all returned unchanged.
-        #expect(TaggedPDFCorpus.evenlySpread([1, 2, 3], count: 10) == [1, 2, 3])
-    }
-}
-
-@Suite("ContentExtractionMetrics")
-struct ContentExtractionMetricsTests {
-
-    @Test("Recall, precision and Jaccard ignore case, symbols and order")
-    func overlapNormalizes() {
-        // "Rechnung!" slugifies to "rechnung"; expected has it plus one missing tag.
-        #expect(ContentExtractionMetrics.recall(generated: ["Rechnung!", "auto"], expected: ["rechnung", "haus"]) == 0.5)
-        #expect(ContentExtractionMetrics.precision(generated: ["rechnung", "xyz"], expected: ["rechnung"]) == 0.5)
-        #expect(ContentExtractionMetrics.jaccard(generated: ["a", "b"], expected: ["b", "c"]) == 1.0 / 3.0)
-    }
-
-    @Test("Empty generated tags yield zero precision but full recall is guarded")
-    func overlapEdgeCases() {
-        #expect(ContentExtractionMetrics.precision(generated: [], expected: ["a"]) == 0)
-        // No reference tags → recall is defined as 1 (nothing to miss).
-        #expect(ContentExtractionMetrics.recall(generated: ["a"], expected: []) == 1)
     }
 }
 

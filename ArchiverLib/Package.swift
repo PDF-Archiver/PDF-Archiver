@@ -103,10 +103,6 @@ let package = Package(
             dependencies: [
                 "ContentExtractorStore",
                 "ArchiverModels"
-            ],
-            exclude: ["README.md"],
-            resources: [
-                .copy("Samples")
             ]
         )
     ]
