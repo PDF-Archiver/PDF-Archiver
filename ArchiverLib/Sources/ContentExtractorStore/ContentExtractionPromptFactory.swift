@@ -40,7 +40,7 @@ enum ContentExtractionPromptFactory {
     static let maxStatLength = 500
 
     struct DocumentStats: Equatable, Sendable {
-        let tagCounts: String
+        let tags: String
         let specifications: String
     }
 
@@ -48,7 +48,9 @@ enum ContentExtractionPromptFactory {
     ///
     /// Tags are sorted by frequency so the prompt is deterministic (testable,
     /// reproducible for evaluations) and the "prefer frequently used tags"
-    /// instruction is actually backed by frequency.
+    /// instruction is actually backed by frequency. Only the tag NAMES are
+    /// embedded - a `name:count` format would leak the counts into the
+    /// model's tag suggestions (e.g. "rechnung3").
     static func documentStats(from documents: [Document]) -> DocumentStats {
         let allTags: [String] = documents.flatMap(\.tags)
         let grouped: [String: [String]] = Dictionary(grouping: allTags) { $0 }
@@ -59,14 +61,10 @@ enum ContentExtractionPromptFactory {
                 lhs.count != rhs.count ? lhs.count > rhs.count : lhs.name < rhs.name
             }
 
-        let formattedTagCounts = frequent
+        let tagsString = frequent
             .prefix(maxTags)
-            .map { "\($0.name):\($0.count)" }
-            .joined(separator: "\n")
-        let tagCountsString = """
-        tagName: count
-        \(formattedTagCounts)
-        """
+            .map(\.name)
+            .joined(separator: ", ")
 
         let specificationsString = documents
             // Date ties are broken by specification so the prompt stays
@@ -78,7 +76,7 @@ enum ContentExtractionPromptFactory {
             .map(\.specification)
             .joined(separator: "\n")
 
-        return DocumentStats(tagCounts: tagCountsString, specifications: specificationsString)
+        return DocumentStats(tags: tagsString, specifications: specificationsString)
     }
 
     // MARK: - Instruction segments
@@ -91,7 +89,7 @@ enum ContentExtractionPromptFactory {
     static func tagsInstruction(stats: DocumentStats) -> String {
         """
         Tags MUST ALWAYS use existing tags from the system whenever applicable.
-        Prefer frequently used tags to maintain consistency: \(stats.tagCounts.prefix(maxStatLength))
+        Prefer the existing tags, ordered by most frequently used first: \(stats.tags.prefix(maxStatLength))
         If no suitable existing tags are found, create new appropriate tags.
         """
     }

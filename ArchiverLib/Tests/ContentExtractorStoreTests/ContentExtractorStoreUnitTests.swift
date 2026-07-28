@@ -38,13 +38,18 @@ struct ContentExtractionPromptFactoryTests {
         // rechnung: 4, auto: 3, versicherung: 2 — minTagCount is 3.
         let stats = ContentExtractionPromptFactory.documentStats(from: documents)
 
-        #expect(stats.tagCounts.contains("rechnung:4"))
-        #expect(stats.tagCounts.contains("auto:3"))
-        #expect(!stats.tagCounts.contains("versicherung"))
+        #expect(stats.tags.contains("rechnung"))
+        #expect(stats.tags.contains("auto"))
+        #expect(!stats.tags.contains("versicherung"))
+
+        // Only names are embedded - counts in the prompt would leak into the
+        // model's tag suggestions (e.g. "rechnung3").
+        let containsDigit = stats.tags.contains { $0.isNumber }
+        #expect(!containsDigit)
 
         // Higher frequency listed first (fails loudly if either is missing).
-        let rechnungIndex = try #require(stats.tagCounts.range(of: "rechnung:4"))
-        let autoIndex = try #require(stats.tagCounts.range(of: "auto:3"))
+        let rechnungIndex = try #require(stats.tags.range(of: "rechnung"))
+        let autoIndex = try #require(stats.tags.range(of: "auto"))
         #expect(rechnungIndex.lowerBound < autoIndex.lowerBound)
     }
 
@@ -132,6 +137,24 @@ struct ContentExtractionMapperTests {
         let raw = RawDocumentInformation(description: "x", tags: Array(repeating: "tag", count: 25))
         let result = ContentExtractionMapper.normalize(raw)
         #expect(result.tags.count == ContentExtractionMapper.maxTags)
+    }
+
+    @Test("Strips echoed usage counts from tags")
+    func normalizeStripsEchoedCounts() {
+        // The model may echo the usage statistics it saw in older prompts,
+        // e.g. "rechnung:3" - slugifying alone would turn that into "rechnung3".
+        let raw = RawDocumentInformation(description: "x",
+                                         tags: ["rechnung:3", "auto #12", "steuer: 4"])
+        let result = ContentExtractionMapper.normalize(raw)
+        #expect(result.tags == ["rechnung", "auto", "steuer"])
+    }
+
+    @Test("Drops purely numeric and empty tags, keeps digits inside words")
+    func normalizeDropsNumericTags() {
+        let raw = RawDocumentInformation(description: "x",
+                                         tags: ["42", "  ", "co2", "!!!", "rechnung"])
+        let result = ContentExtractionMapper.normalize(raw)
+        #expect(result.tags == ["co2", "rechnung"])
     }
 }
 

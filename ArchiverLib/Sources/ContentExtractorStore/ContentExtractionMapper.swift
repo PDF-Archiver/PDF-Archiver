@@ -28,7 +28,26 @@ enum ContentExtractionMapper {
     /// tags (remove symbols/whitespace) keeping at most `maxTags`.
     static func normalize(_ raw: RawDocumentInformation) -> (specification: String, tags: [String]) {
         let specification = raw.description.trimmingCharacters(in: .whitespacesAndNewlines)
-        let tags = raw.tags.prefix(maxTags).map { $0.slugified(withSeparator: "") }
-        return (specification, tags)
+        let tags = raw.tags
+            .map(normalizeTag)
+            .filter(isValidTag)
+        return (specification, Array(tags.prefix(maxTags)))
+    }
+
+    /// Slug-clean a single tag. A trailing `:<count>` (the model echoing usage
+    /// statistics) is stripped BEFORE slugifying - slugifying first would merge
+    /// the count into the name ("rechnung:3" -> "rechnung3").
+    private static func normalizeTag(_ tag: String) -> String {
+        var tag = tag.trimmingCharacters(in: .whitespacesAndNewlines)
+        if let match = tag.firstMatch(of: /^(.*?)[:#]\s*\d+$/) {
+            tag = String(match.1)
+        }
+        return tag.slugified(withSeparator: "")
+    }
+
+    /// Purely numeric tags carry no meaning for the archive (tags with digits
+    /// inside a word, e.g. "co2", stay valid).
+    private static func isValidTag(_ tag: String) -> Bool {
+        !tag.isEmpty && !tag.allSatisfy(\.isNumber)
     }
 }
