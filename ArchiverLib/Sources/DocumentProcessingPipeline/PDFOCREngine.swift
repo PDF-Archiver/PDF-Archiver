@@ -72,7 +72,11 @@ enum PDFOCREngine {
                 continue
             }
 
-            let results = try recognizeText(in: image)
+            guard let cgImage = image.cgImage else {
+                Logger.ocrProcessing.error("Could not read page image \(url.lastPathComponent, privacy: .public)")
+                continue
+            }
+            let results = try await recognizeText(in: cgImage, imageSize: image.size)
             let textEntries = await makeTextEntries(from: results)
             let bounds = CGRect(origin: .zero, size: image.size)
 
@@ -114,7 +118,8 @@ enum PDFOCREngine {
             let imageSize = CGSize(width: bounds.width * renderScale, height: bounds.height * renderScale)
             let pageImage = page.thumbnail(of: imageSize, for: .mediaBox)
 
-            let ocrResults = try recognizeText(in: pageImage)
+            guard let pageCgImage = pageImage.cgImage else { continue }
+            let ocrResults = try await recognizeText(in: pageCgImage, imageSize: pageImage.size)
             guard !ocrResults.isEmpty else { continue }
 
             // Scale OCR coordinates back from the rendered image to page coordinates.
@@ -149,10 +154,36 @@ enum PDFOCREngine {
 
     // MARK: - Shared core
 
+    /// Serial queue for the blocking Vision work.
+    ///
+    /// `VNImageRequestHandler.perform` blocks until recognition finished. Run
+    /// directly from an `async` function it would block a cooperative pool
+    /// thread, and the pool only has as many threads as the machine has cores -
+    /// a few concurrent OCR runs starve every other task in the process. Vision
+    /// is CPU bound anyway, so a *serial* queue is the right shape: it keeps
+    /// OCR off the cooperative pool without spawning a thread per page.
+    private static let visionQueue = DispatchQueue(label: "de.JulianKahnert.PDFArchiver.PDFOCREngine.vision",
+                                                  qos: .userInitiated)
+
     /// Run Vision OCR on a single image and return detected text with positions.
     /// Coordinates are in the image's coordinate system (origin top-left, y-down).
-    static func recognizeText(in image: PlatformImage) throws -> [TextObservationResult] {
-        guard let cgImage = image.cgImage else { return [] }
+    ///
+    /// - Parameters:
+    ///   - cgImage: The image to recognize. Passed as `CGImage` rather than
+    ///     `PlatformImage` because it has to cross onto ``visionQueue``.
+    ///   - imageSize: Size the observation coordinates are mapped into. This is
+    ///     the `PlatformImage.size` of the source image, which is not
+    ///     necessarily the pixel size of `cgImage`.
+    static func recognizeText(in cgImage: CGImage, imageSize: CGSize) async throws -> [TextObservationResult] {
+        try await withCheckedThrowingContinuation { continuation in
+            visionQueue.async {
+                continuation.resume(with: Result { try recognizeTextBlocking(in: cgImage, imageSize: imageSize) })
+            }
+        }
+    }
+
+    /// The blocking Vision core. Must only be called on ``visionQueue``.
+    private static func recognizeTextBlocking(in cgImage: CGImage, imageSize: CGSize) throws -> [TextObservationResult] {
         let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
 
         // Detect text rectangles.
@@ -171,7 +202,7 @@ enum PDFOCREngine {
         // Recognize text in each detected region.
         var results = [TextObservationResult]()
         for observation in textRectObservations {
-            let textBox = transform(observation: observation, in: image.size)
+            let textBox = transform(observation: observation, in: imageSize)
             guard let croppedImage = cgImage.cropping(to: textBox) else { continue }
 
             let recognizeRequest = VNRecognizeTextRequest { request, error in
