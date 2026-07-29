@@ -154,76 +154,38 @@ enum PDFOCREngine {
 
     // MARK: - Shared core
 
-    /// Serial queue for the blocking Vision work.
-    ///
-    /// `VNImageRequestHandler.perform` blocks until recognition finished. Run
-    /// directly from an `async` function it would block a cooperative pool
-    /// thread, and the pool only has as many threads as the machine has cores -
-    /// a few concurrent OCR runs starve every other task in the process. Vision
-    /// is CPU bound anyway, so a *serial* queue is the right shape: it keeps
-    /// OCR off the cooperative pool without spawning a thread per page.
-    private static let visionQueue = DispatchQueue(label: "de.JulianKahnert.PDFArchiver.PDFOCREngine.vision",
-                                                  qos: .userInitiated)
-
-    /// Run Vision OCR on a single image and return detected text with positions.
+    /// Run Vision OCR on a single image and return recognized text with positions.
     /// Coordinates are in the image's coordinate system (origin top-left, y-down).
     ///
+    /// Uses the Swift `RecognizeTextRequest` (iOS 18 / macOS 15), which is
+    /// genuinely `async` - no thread is blocked, so this is safe to await
+    /// directly from the cooperative pool. It also recognizes the whole page in
+    /// a single Vision call: `RecognizedTextObservation` already carries the
+    /// bounding box of each recognized line, which the old
+    /// `VNDetectTextRectanglesRequest` + per-box `VNRecognizeTextRequest`
+    /// combination needed one extra Vision call per text box to produce.
+    ///
     /// - Parameters:
-    ///   - cgImage: The image to recognize. Passed as `CGImage` rather than
-    ///     `PlatformImage` because it has to cross onto ``visionQueue``.
+    ///   - cgImage: The image to recognize.
     ///   - imageSize: Size the observation coordinates are mapped into. This is
     ///     the `PlatformImage.size` of the source image, which is not
     ///     necessarily the pixel size of `cgImage`.
     static func recognizeText(in cgImage: CGImage, imageSize: CGSize) async throws -> [TextObservationResult] {
-        try await withCheckedThrowingContinuation { continuation in
-            visionQueue.async {
-                continuation.resume(with: Result { try recognizeTextBlocking(in: cgImage, imageSize: imageSize) })
-            }
+        var request = RecognizeTextRequest()
+        request.recognitionLevel = .accurate
+        request.usesLanguageCorrection = true
+
+        let observations = try await request.perform(on: cgImage)
+
+        return observations.compactMap { observation in
+            guard observation.confidence > confidenceThreshold,
+                  let candidate = observation.topCandidates(1).first,
+                  !candidate.string.isEmpty else { return nil }
+
+            // `.upperLeft` matches the y-down coordinate space the renderer draws in.
+            let rect = observation.boundingBox.toImageCoordinates(imageSize, origin: .upperLeft)
+            return TextObservationResult(rect: rect, text: candidate.string)
         }
-    }
-
-    /// The blocking Vision core. Must only be called on ``visionQueue``.
-    private static func recognizeTextBlocking(in cgImage: CGImage, imageSize: CGSize) throws -> [TextObservationResult] {
-        let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-
-        // Detect text rectangles.
-        var textRectObservations = [VNTextObservation]()
-        let textBoxRequest = VNDetectTextRectanglesRequest { request, error in
-            if let error {
-                Logger.ocrProcessing.error("Text detection failed: \(error)")
-                return
-            }
-            for observation in (request.results as? [VNTextObservation] ?? []) where observation.confidence > confidenceThreshold {
-                textRectObservations.append(observation)
-            }
-        }
-        try requestHandler.perform([textBoxRequest])
-
-        // Recognize text in each detected region.
-        var results = [TextObservationResult]()
-        for observation in textRectObservations {
-            let textBox = transform(observation: observation, in: imageSize)
-            guard let croppedImage = cgImage.cropping(to: textBox) else { continue }
-
-            let recognizeRequest = VNRecognizeTextRequest { request, error in
-                if let error {
-                    Logger.ocrProcessing.error("Text recognition failed: \(error)")
-                    return
-                }
-                guard let textResults = request.results as? [VNRecognizedTextObservation],
-                      !textResults.isEmpty else { return }
-                let texts = textResults.compactMap { $0.topCandidates(1).first?.string }
-                    .filter { !$0.isEmpty }
-                if !texts.isEmpty {
-                    results.append(TextObservationResult(rect: textBox, text: texts.joined(separator: " ")))
-                }
-            }
-            recognizeRequest.recognitionLevel = .accurate
-            recognizeRequest.usesLanguageCorrection = true
-            try? VNImageRequestHandler(cgImage: croppedImage, options: [:]).perform([recognizeRequest])
-        }
-
-        return results
     }
 
     /// Pre-compute the invisible attributed strings on the main actor, before
@@ -278,18 +240,6 @@ enum PDFOCREngine {
         guard let document = PDFDocument(data: data as Data),
               let page = document.page(at: 0) else { return nil }
         return page
-    }
-
-    private static func transform(observation: VNTextObservation, in imageSize: CGSize) -> CGRect {
-        // Special thanks to: https://github.com/g-r-a-n-t/serial-vision/
-        var transform = CGAffineTransform.identity
-        transform = transform.scaledBy(x: imageSize.width, y: -imageSize.height)
-        transform = transform.translatedBy(x: 0, y: -1)
-
-        return CGRect(x: observation.boundingBox.applying(transform).origin.x,
-                      y: observation.boundingBox.applying(transform).origin.y,
-                      width: observation.boundingBox.applying(transform).width,
-                      height: observation.boundingBox.applying(transform).height)
     }
 }
 
