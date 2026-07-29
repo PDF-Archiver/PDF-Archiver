@@ -21,7 +21,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture",
-                 exact: "1.26.0",
+                 exact: "1.26.1",
                  traits: [
                     "ComposableArchitecture2Deprecations",
                     "ComposableArchitecture2DeprecationOverloads"
