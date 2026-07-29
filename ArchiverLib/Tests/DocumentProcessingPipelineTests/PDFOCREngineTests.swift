@@ -39,7 +39,7 @@ struct PDFOCREngineTests {
 
     // MARK: - addTextLayer
 
-    @Test
+    @Test(.tags(.ocr))
     func addTextLayerAddsTextToImageOnlyPDF() async throws {
         let url = try writeImageOnlyPDF(name: "ocr-input.pdf")
         let pdf = try #require(PDFDocument(url: url))
@@ -50,7 +50,7 @@ struct PDFOCREngineTests {
         #expect(PDFMetadata.hasTextLayer(pdf))
     }
 
-    @Test
+    @Test(.tags(.ocr))
     func addTextLayerPreservesPageCount() async throws {
         let url = try writeImageOnlyPDF(name: "ocr-pagecount.pdf")
         let pdf = try #require(PDFDocument(url: url))
@@ -95,7 +95,7 @@ struct PDFOCREngineTests {
         #expect(result == false)
     }
 
-    @Test
+    @Test(.tags(.ocr))
     func passMarksImageOnlyPDFAfterOCR() async throws {
         let url = try writeImageOnlyPDF(name: "to-process.pdf")
 

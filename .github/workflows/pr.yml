@@ -35,5 +35,9 @@ jobs:
       - name: Build ArchiverLib
         run: xcodebuild -workspace PDFArchiver.xcworkspace -scheme ArchiverLib -destination 'platform=macOS' -configuration Debug build
 
+      # The CI plan excludes the `ocr` tag: Vision text recognition never
+      # finishes on the runner VM (no GPU/Neural Engine). Use the default
+      # `ArchiverLib` plan locally to run those tests as well.
       - name: Test ArchiverLib
-        run: xcodebuild test -workspace PDFArchiver.xcworkspace -scheme ArchiverLib -testPlan ArchiverLib -destination 'platform=macOS' -configuration Debug
+        timeout-minutes: 30
+        run: xcodebuild test -workspace PDFArchiver.xcworkspace -scheme ArchiverLib -testPlan ArchiverLib-CI -destination 'platform=macOS' -configuration Debug
