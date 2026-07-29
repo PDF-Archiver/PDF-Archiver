@@ -1,5 +1,6 @@
 import ArchiverModels
 import ComposableArchitecture
+import DocumentProcessingPipeline
 import Foundation
 import Testing
 
@@ -70,6 +71,7 @@ struct AppFeatureTests {
         } withDependencies: {
             $0.widgetStore.updateWidgetWith = { _ in }
             $0.archiveStore.startDownloadOf = { _ in }
+            $0.documentProcessor.processUntaggedDocuments = { _ in UntaggedProcessingResult(ocrCount: 0, aiCacheCount: 0) }
         }
 
         await store.send(.documentsChanged([document1, document2, document3])) {
@@ -95,6 +97,7 @@ struct AppFeatureTests {
         } withDependencies: {
             $0.widgetStore.updateWidgetWith = { _ in }
             $0.archiveStore.startDownloadOf = { _ in }
+            $0.documentProcessor.processUntaggedDocuments = { _ in UntaggedProcessingResult(ocrCount: 0, aiCacheCount: 0) }
         }
 
         await store.send(.documentsChanged([doc1, doc2, doc3])) {
@@ -127,6 +130,7 @@ struct AppFeatureTests {
         } withDependencies: {
             $0.widgetStore.updateWidgetWith = { _ in }
             $0.archiveStore.startDownloadOf = { _ in }
+            $0.documentProcessor.processUntaggedDocuments = { _ in UntaggedProcessingResult(ocrCount: 0, aiCacheCount: 0) }
         }
 
         await store.send(.documentsChanged([doc1, doc2, doc3])) {
@@ -146,7 +150,7 @@ struct AppFeatureTests {
         let store = TestStore(initialState: AppFeature.State(isDocumentLoading: false)) {
             AppFeature()
         } withDependencies: {
-            $0.documentProcessor.triggerFolderObservation = { }
+            $0.documentProcessor.processStagedFiles = { }
             $0.archiveStore.reloadDocuments = { }
         }
 

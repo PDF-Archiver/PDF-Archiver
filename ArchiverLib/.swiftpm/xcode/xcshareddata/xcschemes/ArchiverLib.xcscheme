@@ -33,6 +33,9 @@
             reference = "container:../ArchiverLib.xctestplan"
             default = "YES">
          </TestPlanReference>
+         <TestPlanReference
+            reference = "container:../ArchiverLib-CI.xctestplan">
+         </TestPlanReference>
       </TestPlans>
    </TestAction>
    <LaunchAction

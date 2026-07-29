@@ -6,15 +6,17 @@
 //
 
 import ArchiverModels
-import ArchiverStore
 import Foundation
 import FoundationModels
 import OSLog
-import Shared
 
 @available(iOS 26, macOS 26, *)
-public actor ContentExtractorStore: Log {
-    private static let maxTotalPromptLength = 3500
+public actor ContentExtractorStore {
+
+    /// Test seam: turn the context documents + custom prompt + document text into
+    /// raw, un-normalized model output. The live implementation calls the
+    /// on-device model; tests inject a deterministic stub.
+    typealias Responder = @Sendable (_ documents: [Document], _ customPrompt: String?, _ text: String) async throws -> RawDocumentInformation
 
     private static var locale: Locale {
         Locale.current.region == "DE" ? Locale(identifier: "de_DE") : Locale.current
@@ -26,10 +28,26 @@ public actor ContentExtractorStore: Log {
         maximumResponseTokens: 512
     )
 
+    private let cache: ContentExtractorCache
+    private let availability: @Sendable () -> AppleIntelligenceAvailability
+    private let respond: Responder
     private var useCache = true
-    private let cache = ContentExtractorCache()
 
-    public init() {}
+    public init() {
+        self.init(cache: ContentExtractorCache(),
+                  availability: { Self.getAvailability() },
+                  respond: Self.liveResponder)
+    }
+
+    /// Designated initializer. Internal seams let tests exercise the cache and
+    /// mapping orchestration deterministically, without Apple Intelligence.
+    init(cache: ContentExtractorCache,
+         availability: @escaping @Sendable () -> AppleIntelligenceAvailability,
+         respond: @escaping Responder) {
+        self.cache = cache
+        self.availability = availability
+        self.respond = respond
+    }
 
     public static func getAvailability() -> AppleIntelligenceAvailability {
         switch SystemLanguageModel.default.availability {
@@ -52,7 +70,7 @@ public actor ContentExtractorStore: Log {
     ///   - documentId: Optional document ID for caching results
     /// - Returns: Extracted specification and tags, or nil if unavailable
     public func extract(from text: String, customPrompt: String? = nil, with documents: [Document], documentId: Document.ID? = nil) async throws -> Info? {
-        guard Self.getAvailability().isUsable else { return nil }
+        guard availability().isUsable else { return nil }
 
         // Check cache if document ID is provided
         if let documentId,
@@ -62,28 +80,9 @@ public actor ContentExtractorStore: Log {
             return Info(specification: cachedEntry.specification, tags: cachedEntry.tags)
         }
 
-        let session = Self.createSession(with: documents)
-
-        let availableTextLength = Self.maxTotalPromptLength - (customPrompt?.count ?? 0)
-        let truncatedText = String(text.prefix(max(0, availableTextLength)))
-
-        let prompt = Prompt {
-            customPrompt ?? ""
-            """
-            document content:\n\(truncatedText)
-            """
-        }
-
-        let response = try await session.respond(
-            to: prompt,
-            generating: DocumentInformation.self,
-            includeSchemaInPrompt: false,
-            options: Self.options
-        )
-
-        let info = Info(specification: response.content.description.trimmingCharacters(in: .whitespacesAndNewlines),
-                        tags: response.content.tags.prefix(10).map { $0.slugified(withSeparator: "") }
-        )
+        let raw = try await respond(documents, customPrompt, text)
+        let normalized = ContentExtractionMapper.normalize(raw)
+        let info = Info(specification: normalized.specification, tags: normalized.tags)
 
         // Save result to cache for faster subsequent access
         if let documentId {
@@ -181,71 +180,50 @@ public actor ContentExtractorStore: Log {
         return newCachesCreated
     }
 
-    // MARK: - internal helper functions
+    // MARK: - Live model call
 
-    private static func createSession(with documents: [Document]) -> LanguageModelSession {
-        let docStats = Self.getDocumentStats(minTagCount: 3, maxSpecifications: 20, with: documents)
+    /// The production responder: build a session from the prompt factory's
+    /// instruction segments and run the on-device model. This is the only place
+    /// that touches FoundationModels generation.
+    private static let liveResponder: Responder = { documents, customPrompt, text in
+        let session = makeSession(with: documents)
+
+        let customPrompt = ContentExtractionPromptFactory.truncatedCustomPrompt(customPrompt)
+        let truncatedText = ContentExtractionPromptFactory.truncatedText(
+            from: text,
+            customPromptLength: customPrompt?.count ?? 0,
+            budget: ContentExtractionPromptFactory.promptBudget(contextSize: SystemLanguageModel.default.contextSize)
+        )
+
+        let prompt = Prompt {
+            customPrompt ?? ""
+            """
+            document content:\n\(truncatedText)
+            """
+        }
+
+        let response = try await session.respond(
+            to: prompt,
+            generating: DocumentInformation.self,
+            includeSchemaInPrompt: false,
+            options: options
+        )
+
+        return RawDocumentInformation(description: response.content.description,
+                                      tags: response.content.tags)
+    }
+
+    private static func makeSession(with documents: [Document]) -> LanguageModelSession {
+        let stats = ContentExtractionPromptFactory.documentStats(from: documents)
         return LanguageModelSession(
             model: .default,
             tools: [],
             instructions: Instructions {
-
-            // Task description
-            """
-            Your task is to archive documents by analyzing their content and generating appropriate descriptions and tags.
-            If the document content does not contain enough information to create good tags/description, you MUST NOT hallucinate them - just return empty values.
-            """
-
-            // Document tags:
-            """
-            Tags MUST ALWAYS use existing tags from the system whenever applicable.
-            Prefer frequently used tags to maintain consistency: \(docStats.tagCounts.prefix(500))
-            If no suitable existing tags are found, create new appropriate tags.
-            """
-
-            // Document description:
-            """
-            The description should provide a concise summary of the document's content (5-10 words maximum).
-            You MUST ALWAYS use the user's locale: \(Self.locale.identifier).
-            You MUST ALWAYS model your new description after the examples, adapting the style and format to match the current document's content.
-            Only use the current document content. DO NOT hallucinate.
-            Example descriptions: \(docStats.specifications.prefix(500))
-            """
-            })
-    }
-
-    private struct DocStats {
-        let tagCounts: String
-        let specifications: String
-    }
-
-    private static func getDocumentStats(minTagCount: Int, maxSpecifications: Int, with documents: [Document]) -> DocStats {
-        let tagCounts = Dictionary(grouping: documents.flatMap(\.tags)) {
-            $0
-        }
-            .map { (name: $0, count: $1.count) }
-            .filter { $0.count >= minTagCount }
-
-        let formattedTagCounts = tagCounts
-            // most frequently used tags first - the prompt tells the model to prefer them
-            .sorted { $0.count > $1.count }
-            .prefix(30)
-            .map {
-                "\($0.0):\($0.1)"
+                ContentExtractionPromptFactory.taskInstruction
+                ContentExtractionPromptFactory.tagsInstruction(stats: stats)
+                ContentExtractionPromptFactory.descriptionInstruction(stats: stats, locale: Self.locale)
             }
-            .joined(separator: "\n")
-        let tagCountsString = """
-        tagName: count
-        \(formattedTagCounts)
-        """
-
-        let specificationsString = documents.sorted { $0.date > $1.date }
-            .prefix(maxSpecifications)
-            .map(\.specification)
-            .joined(separator: "\n")
-
-        return DocStats(tagCounts: tagCountsString,
-                        specifications: specificationsString)
+        )
     }
 }
 

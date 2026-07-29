@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 20.10.20.
 //
 
+import Foundation
 import OSLog
 
 public protocol Log {
@@ -32,6 +33,8 @@ nonisolated public extension Logger {
     static let backgroundTask = Logger(subsystem: subsystem, category: "background-task")
     static let contentExtractor = Logger(subsystem: subsystem, category: "content-extractor")
     static let documentProcessing = Logger(subsystem: subsystem, category: "document-processing")
+    static let documentProcessor = Logger(subsystem: subsystem, category: "document-processor")
+    static let ocrProcessing = Logger(subsystem: subsystem, category: "ocr-processing")
     static let inAppPurchase = Logger(subsystem: subsystem, category: "in-app-purchase")
     static let navigationModel = Logger(subsystem: subsystem, category: "navigation-model")
     static let newDocument = Logger(subsystem: subsystem, category: "new-document")

@@ -14,7 +14,10 @@ let package = Package(
             targets: ["ArchiverFeatures", "ArchiverIntents"]),
         .library(
             name: "Shared",
-            targets: ["Shared"])
+            targets: ["Shared"]),
+        .library(
+            name: "DocumentProcessingPipeline",
+            targets: ["DocumentProcessingPipeline"])
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture",
@@ -31,11 +34,11 @@ let package = Package(
     targets: [
         .target(name: "ArchiverFeatures",
                 dependencies: [
-                    "ArchiverDocumentProcessing",
                     "ArchiverModels",
                     "ArchiverIntents",
                     "ArchiverStore",
                     "ContentExtractorStore",
+                    "DocumentProcessingPipeline",
                     "Shared",
                     .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
                 ],
@@ -62,14 +65,14 @@ let package = Package(
                 ]),
         .target(name: "ArchiverModels",
                 dependencies: []),
-        .target(name: "ArchiverDocumentProcessing",
-                dependencies: ["Shared"]),
         .target(name: "ContentExtractorStore",
                 dependencies: [
-                    "ArchiverStore",
+                    "ArchiverModels"
+                ]),
+        .target(name: "DocumentProcessingPipeline",
+                dependencies: [
                     "ArchiverModels",
-                    .product(name: "Dependencies", package: "swift-dependencies"),
-                    .product(name: "DependenciesMacros", package: "swift-dependencies")
+                    "ContentExtractorStore"
                 ]),
         .target(name: "Shared",
                 dependencies: [
@@ -89,10 +92,17 @@ let package = Package(
             dependencies: ["ArchiverStore"]
         ),
         .testTarget(
-            name: "ArchiverDocumentProcessingTests",
-            dependencies: ["ArchiverDocumentProcessing"],
+            name: "DocumentProcessingPipelineTests",
+            dependencies: ["DocumentProcessingPipeline"],
             resources: [
                 .process("assets")
+            ]
+        ),
+        .testTarget(
+            name: "ContentExtractorStoreTests",
+            dependencies: [
+                "ContentExtractorStore",
+                "ArchiverModels"
             ]
         )
     ]

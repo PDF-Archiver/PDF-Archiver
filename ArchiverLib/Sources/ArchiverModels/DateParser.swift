@@ -8,7 +8,7 @@
 import Foundation
 
 /// Parse several kinds of dates in a String.
-nonisolated public enum DateParser: Log {
+nonisolated public enum DateParser {
 
     private struct ParserResult: Codable {
         let date: Date
@@ -46,7 +46,7 @@ nonisolated public enum DateParser: Log {
     private static func localParse(_ raw: String) async -> [ParserResult] {
         let types: NSTextCheckingResult.CheckingType = .date
         guard let detector = try? NSDataDetector(types: types.rawValue) else {
-            Self.log.criticalAndAssert("Could not create NSDataDetector")
+            assertionFailure("Could not create NSDataDetector")
             return []
         }
 

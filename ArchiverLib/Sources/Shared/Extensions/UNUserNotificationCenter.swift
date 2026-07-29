@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 01.11.25.
 //
 
+import ArchiverModels
 import OSLog
 import UserNotifications
 

@@ -5,6 +5,7 @@
 //
 // Inspired by: https://github.com/GianniCarlo/DirectoryWatcher
 
+import ArchiverModels
 import Foundation
 import OSLog
 import Shared

@@ -5,10 +5,9 @@
 //  Created by Julian Kahnert on 30.11.18.
 //
 
-import PDFKit
+import ArchiverModels
+import Foundation
 import Testing
-
-@testable import Shared
 
 @MainActor
 struct DateParserTests {

@@ -1,0 +1,53 @@
+//
+//  ContentExtractionMapper.swift
+//  ArchiverLib
+//
+//  Normalizes the raw model output into the values stored on a document.
+//
+//  Pure and free of FoundationModels so the post-processing (trimming,
+//  slugifying, tag cap) is unit-testable without Apple Intelligence.
+//
+
+import ArchiverModels
+import Foundation
+
+/// Raw fields as produced by the model, before normalization. Decouples the
+/// FoundationModels `@Generable` type from the deterministic mapping so the
+/// mapping can be tested with plain values.
+struct RawDocumentInformation: Equatable, Sendable {
+    var description: String
+    var tags: [String]
+}
+
+enum ContentExtractionMapper {
+
+    /// Maximum number of tags kept from the model output.
+    static let maxTags = 10
+
+    /// Normalize the raw model output: trim the description, and slug-clean the
+    /// tags (remove symbols/whitespace) keeping at most `maxTags`.
+    static func normalize(_ raw: RawDocumentInformation) -> (specification: String, tags: [String]) {
+        let specification = raw.description.trimmingCharacters(in: .whitespacesAndNewlines)
+        let tags = raw.tags
+            .map(normalizeTag)
+            .filter(isValidTag)
+        return (specification, Array(tags.prefix(maxTags)))
+    }
+
+    /// Slug-clean a single tag. A trailing `:<count>` (the model echoing usage
+    /// statistics) is stripped BEFORE slugifying - slugifying first would merge
+    /// the count into the name ("rechnung:3" -> "rechnung3").
+    private static func normalizeTag(_ tag: String) -> String {
+        var tag = tag.trimmingCharacters(in: .whitespacesAndNewlines)
+        if let match = tag.firstMatch(of: /^(.*?)[:#]\s*\d+$/) {
+            tag = String(match.1)
+        }
+        return tag.slugified(withSeparator: "")
+    }
+
+    /// Purely numeric tags carry no meaning for the archive (tags with digits
+    /// inside a word, e.g. "co2", stay valid).
+    private static func isValidTag(_ tag: String) -> Bool {
+        !tag.isEmpty && !tag.allSatisfy(\.isNumber)
+    }
+}

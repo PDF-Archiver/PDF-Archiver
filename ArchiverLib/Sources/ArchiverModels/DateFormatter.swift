@@ -1,6 +1,6 @@
 //
 //  DateFormatter.swift
-//  
+//
 //
 //  Created by Julian Kahnert on 09.09.20.
 //

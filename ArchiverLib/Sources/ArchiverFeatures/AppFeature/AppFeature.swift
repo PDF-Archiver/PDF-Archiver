@@ -8,7 +8,6 @@
 import ArchiverModels
 import ArchiverStore
 import ComposableArchitecture
-import ContentExtractorStore
 import OSLog
 import Shared
 import SwiftUI
@@ -31,15 +30,6 @@ struct AppFeature {
         @Shared(.documents) var documents: IdentifiedArrayOf<Document> = []
         @Shared(.tutorialShown) var tutorialShown: Bool
         @Shared(.premiumStatus) var premiumStatus: PremiumStatus = .loading
-
-        @SharedReader(.appleIntelligenceEnabled)
-        var appleIntelligenceEnabled: Bool
-
-        @SharedReader(.appleIntelligenceCacheEnabled)
-        var cacheEnabled: Bool
-
-        @SharedReader(.appleIntelligenceCustomPrompt)
-        var customPrompt: String?
 
         var scenePhase: ScenePhase?
 
@@ -76,8 +66,10 @@ struct AppFeature {
     @Dependency(\.documentProcessor) var documentProcessor
     @Dependency(\.archiveStore) var archiveStore
     @Dependency(\.widgetStore) var widgetStore
-    @Dependency(\.contentExtractorStore) var contentExtractorStore
-    @Dependency(\.textAnalyser) var textAnalyser
+
+    private enum CancelID {
+        case untaggedProcessing
+    }
 
     var body: some ReducerOf<Self> {
         BindingReducer()
@@ -215,21 +207,29 @@ struct AppFeature {
 
                 let untaggedRemoteDocuments = untaggedDocuments.filter { $0.downloadStatus == 0 }
 
-                return .run { [documents] send in
-                    await send(.prefetchDocuments(untaggedRemoteDocuments))
-                    await send(.updateWidget(documents))
-                }
+                return .merge(
+                    .run { [documents] send in
+                        await send(.prefetchDocuments(untaggedRemoteDocuments))
+                        await send(.updateWidget(documents))
+                    },
+                    // The pass restarts whenever the documents change; the OCR
+                    // marker and the AI cache make repeated runs cheap no-ops.
+                    .run { [documents] _ in
+                        _ = await documentProcessor.processUntaggedDocuments(documents)
+                    }
+                    .cancellable(id: CancelID.untaggedProcessing, cancelInFlight: true)
+                )
 
             case .isLoadingChanged(let isLoading):
                 state.isDocumentLoading = isLoading
                 return .none
 
             case .onLongBackgroundTask:
-                return .run { [appleIntelligenceEnabled = state.appleIntelligenceEnabled, cacheEnabled = state.cacheEnabled, customPrompt = state.customPrompt] send in
+                return .run { send in
                     await withTaskGroup(of: Void.self) { group in
                         group.addTask(priority: .background) {
                             // check the temp folder at startup for new documents
-                            await documentProcessor.triggerFolderObservation()
+                            await documentProcessor.processStagedFiles()
 
                             #if os(iOS)
                             if #available(iOS 26, *) {
@@ -249,24 +249,6 @@ struct AppFeature {
                                 await send(.isLoadingChanged(isLoading))
                             }
                         }
-                        // Background cache processing for untagged documents
-                        if appleIntelligenceEnabled, cacheEnabled {
-                            group.addTask(priority: .background) {
-                                // Wait a bit before starting cache processing to let the app stabilize
-                                try? await Task.sleep(for: .seconds(10))
-
-                                do {
-                                    let documents = try await archiveStore.getDocuments()
-                                    _ = await contentExtractorStore.processUntaggedDocumentsInBackground(
-                                        documents,
-                                        textAnalyser.getTextFrom,
-                                        customPrompt
-                                    )
-                                } catch {
-                                    Logger.app.error("Failed to load documents for background cache processing: \(error)")
-                                }
-                            }
-                        }
                     }
                 }
 
@@ -280,7 +262,7 @@ struct AppFeature {
                     return .run { _ in
                         await withThrowingTaskGroup(of: Void.self) { group in
                             group.addTask(priority: .background) {
-                                await documentProcessor.triggerFolderObservation()
+                                await documentProcessor.processStagedFiles()
                             }
                             group.addTask(priority: .medium) {
                                 try await archiveStore.reloadDocuments()

@@ -1,7 +1,7 @@
 {
   "configurations" : [
     {
-      "id" : "742E6D3A-0674-46FA-92BB-C5DA340685C4",
+      "id" : "9E1F4C77-3B62-4C51-9F0A-2D5E8B4A1C33",
       "name" : "Configuration 1",
       "options" : {
 
@@ -35,6 +35,11 @@
       }
     },
     {
+      "skippedTags" : {
+        "tags" : [
+          "ocr"
+        ]
+      },
       "target" : {
         "containerPath" : "container:",
         "identifier" : "DocumentProcessingPipelineTests",
