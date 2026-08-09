@@ -14,6 +14,11 @@
   },
   "testTargets" : [
     {
+      "skippedTags" : {
+        "tags" : [
+          "snapshots"
+        ]
+      },
       "target" : {
         "containerPath" : "container:",
         "identifier" : "ArchiverFeaturesTests",
