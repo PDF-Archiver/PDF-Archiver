@@ -37,12 +37,12 @@ final class UITestsmacOS: XCTestCase {
         XCTAssertTrue(document.waitForExistence(timeout: 60), "no document in the archive:\n\(app.windows.firstMatch.debugDescription)")
         try write(named: "01-archive")
 
-        document.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).click()
+        document.click()
         try write(named: "02-document")
 
         let edit = app.buttons["Bearbeiten"].firstMatch
         XCTAssertTrue(edit.waitForExistence(timeout: 30), "edit button missing:\n\(app.windows.firstMatch.debugDescription)")
-        edit.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).click()
+        edit.click()
 
         sleep(3)
         try write(named: "03-document-with-inspector")
@@ -57,31 +57,47 @@ final class UITestsmacOS: XCTestCase {
         guard next.waitForExistence(timeout: 20) else { return }
 
         for _ in 0..<8 where next.exists {
-            next.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).click()
+            next.click()
             sleep(1)
         }
 
         // The last page swaps the arrow for a confirm button.
         let done = app.buttons["checkmark.circle.fill"].firstMatch
         if done.waitForExistence(timeout: 5) {
-            done.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).click()
+            done.click()
         }
         sleep(3)
     }
 
-    /// Writes the screenshot next to the test sources on the host, so the images can be reviewed
-    /// outside of the result bundle.
+    /// Writes the screenshot to disk so the images can be reviewed outside of the result bundle.
+    ///
+    /// The runner is sandboxed and cannot write into the checkout, so it falls back to its own
+    /// temporary directory and prints where the file ended up.
     private func write(named name: String) throws {
         sleep(2)
-        let screenshot = XCUIScreen.main.screenshot()
+        // Scoped to the window on purpose: XCUIScreen captures the whole desktop, which would put
+        // whatever else is open on screen into the reference images.
+        let screenshot = app.windows.firstMatch.screenshot()
         add(XCTAttachment(screenshot: screenshot))
 
-        let directory = URL(fileURLWithPath: #filePath)
+        let filename = "macos-\(name).png"
+        let checkout = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent()
             .deletingLastPathComponent()
             .appendingPathComponent(".screenshots")
 
-        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-        try screenshot.pngRepresentation.write(to: directory.appendingPathComponent("macos-\(name).png"))
+        for directory in [checkout, FileManager.default.temporaryDirectory] {
+            do {
+                try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+                let destination = directory.appendingPathComponent(filename)
+                try screenshot.pngRepresentation.write(to: destination)
+                print("SCREENSHOT \(destination.path)")
+                return
+            } catch {
+                continue
+            }
+        }
+
+        XCTFail("could not write \(filename) anywhere")
     }
 }
