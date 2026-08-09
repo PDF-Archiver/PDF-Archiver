@@ -214,8 +214,8 @@ struct DocumentInformationFormTests {
             DocumentInformationForm()
         }
 
-        await store.send(.updateTagSuggestions(["suggestion1", "suggestion2"])) {
-            $0.suggestedTags = ["suggestion1", "suggestion2"]
+        await store.send(.updateTagSuggestions(["zebra", "apfel"])) {
+            $0.suggestedTags = ["apfel", "zebra"]
         }
     }
 
@@ -283,6 +283,67 @@ struct DocumentInformationFormTests {
             $0.document.tags = ["invoice", "tax"]
             $0.suggestedDates = [date]
             $0.suggestedTags = ["business", "finance"]
+        }
+    }
+
+    @Test
+    func aiTagSuggestionsAreSortedAlphabetically() async throws {
+        let date = try Date("2025-07-26T15:00:0Z", strategy: .iso8601)
+        let document = Document.mock()
+        let modelTags: Set<String> = ["zebra", "hoodie", "apfel"]
+
+        @Shared(.appleIntelligenceEnabled) var appleIntelligenceEnabled
+        $appleIntelligenceEnabled.withLock { $0 = true }
+
+        let store = TestStore(initialState: DocumentInformationForm.State(document: document)) {
+            DocumentInformationForm()
+        } withDependencies: {
+            $0.archiveStore.parseFilename = { _ in (date, nil, nil) }
+            $0.archiveStore.getDocuments = { [] }
+            $0.textAnalyser.getTextFrom = { _ in "document text" }
+            $0.textAnalyser.parseDateFrom = { _ in [] }
+            $0.textAnalyser.getFileTagsFrom = { _ in [] }
+            $0.contentExtractorStore.isAvailable = { .available }
+            $0.contentExtractorStore.getDocumentInformation = { _ in
+                .init(specification: "blue hoodie", tags: modelTags)
+            }
+        }
+
+        await store.send(.startUpdatingAllSuggestionsWithAI(document.url))
+
+        let expectedResult = DocumentInformationForm.DocumentParsingResult(
+            date: date,
+            specification: "blue hoodie",
+            tags: [],
+            dateSuggestions: [],
+            tagSuggestions: ["apfel", "hoodie", "zebra"])
+        await store.receive(.updateDocumentData(expectedResult)) {
+            $0.document.date = date
+            $0.document.specification = "blue hoodie"
+            $0.suggestedTags = ["apfel", "hoodie", "zebra"]
+        }
+    }
+
+    @Test
+    func updateDocumentDataDropsSuggestionsAlreadyOnDocument() async throws {
+        let store = TestStore(initialState: DocumentInformationForm.State(document: .mock())) {
+            DocumentInformationForm()
+        }
+
+        let date = Date()
+        let parsingResult = DocumentInformationForm.DocumentParsingResult(
+            date: date,
+            specification: "invoice-2024",
+            tags: ["invoice", "tax"],
+            dateSuggestions: nil,
+            tagSuggestions: ["Invoice", "business", "tax"]
+        )
+
+        await store.send(.updateDocumentData(parsingResult)) {
+            $0.document.date = date
+            $0.document.specification = "invoice-2024"
+            $0.document.tags = ["invoice", "tax"]
+            $0.suggestedTags = ["business"]
         }
     }
 

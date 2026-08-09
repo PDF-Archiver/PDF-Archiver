@@ -107,12 +107,37 @@ struct ContentExtractionPromptFactoryTests {
     @Test("Instruction segments embed the locale and the stats")
     func instructionSegmentsContainContext() {
         let stats = ContentExtractionPromptFactory.documentStats(from: [doc("eine rechnung", ["rechnung", "auto", "haus"])])
-        let tagsInstruction = ContentExtractionPromptFactory.tagsInstruction(stats: stats)
+        let tagsInstruction = ContentExtractionPromptFactory.tagsInstruction(stats: stats, locale: Locale(identifier: "de_DE"))
         let descriptionInstruction = ContentExtractionPromptFactory.descriptionInstruction(stats: stats, locale: Locale(identifier: "de_DE"))
 
         #expect(tagsInstruction.contains("existing tags"))
         #expect(descriptionInstruction.contains("de_DE"))
         #expect(descriptionInstruction.contains("DO NOT hallucinate"))
+    }
+
+    @Test("Tags instruction embeds the locale")
+    func tagsInstructionContainsLocale() {
+        let stats = ContentExtractionPromptFactory.documentStats(from: [doc("eine rechnung", ["rechnung", "auto", "haus"])])
+        let instruction = ContentExtractionPromptFactory.tagsInstruction(stats: stats, locale: Locale(identifier: "de_DE"))
+
+        #expect(instruction.contains("de_DE"))
+    }
+
+    @Test("Tags instruction without existing tags has no dangling colon but keeps the rules")
+    func tagsInstructionWithoutExistingTags() {
+        let stats = ContentExtractionPromptFactory.documentStats(from: [doc("eine rechnung", ["rechnung"])])
+        #expect(stats.tags.isEmpty)
+
+        let instruction = ContentExtractionPromptFactory.tagsInstruction(stats: stats, locale: Locale(identifier: "de_DE"))
+
+        #expect(!instruction.contains("most frequently used first"))
+        #expect(!instruction.contains(":\n"))
+        #expect(!instruction.hasSuffix(":"))
+
+        #expect(instruction.contains("create new appropriate tags"))
+        #expect(instruction.contains("de_DE"))
+        #expect(instruction.contains("single lowercase word"))
+        #expect(instruction.contains("2-4 tags"))
     }
 }
 
@@ -127,12 +152,27 @@ struct ContentExtractionMapperTests {
                                          tags: ["Tom-Tailor", "Rechnung!", "über"])
         let result = ContentExtractionMapper.normalize(raw)
         #expect(result.specification == "Tom Tailor Jeans")
-        #expect(result.tags == ["TomTailor", "Rechnung", "ueber"])
+        #expect(result.tags == ["tomtailor", "rechnung", "ueber"])
+    }
+
+    @Test("Lowercases the tags")
+    func normalizeLowercasesTags() {
+        let raw = RawDocumentInformation(description: "x", tags: ["Rechnung", "AUTO", "Über"])
+        let result = ContentExtractionMapper.normalize(raw)
+        #expect(result.tags == ["rechnung", "auto", "ueber"])
+    }
+
+    @Test("Deduplicates tags stably and keeps the model's order")
+    func normalizeDeduplicatesStably() {
+        let raw = RawDocumentInformation(description: "x",
+                                         tags: ["rechnung", "auto", "Rechnung", "Tom-Tailor", "auto", "tom tailor"])
+        let result = ContentExtractionMapper.normalize(raw)
+        #expect(result.tags == ["rechnung", "auto", "tomtailor"])
     }
 
     @Test("Caps the number of tags")
     func normalizeCapsTagCount() {
-        let raw = RawDocumentInformation(description: "x", tags: Array(repeating: "tag", count: 25))
+        let raw = RawDocumentInformation(description: "x", tags: (0..<25).map { "tag\($0)" })
         let result = ContentExtractionMapper.normalize(raw)
         #expect(result.tags.count == ContentExtractionMapper.maxTags)
     }
@@ -191,7 +231,7 @@ struct ContentExtractorStoreOrchestrationTests {
         }
         let info = try #require(try await store.extract(from: "text", with: []))
         #expect(info.specification == "Tom Tailor Jeans")
-        #expect(info.tags == ["TomTailor", "Rechnung", "kleidung"])
+        #expect(info.tags == ["tomtailor", "rechnung", "kleidung"])
     }
 
     @Test("Returns nil and does not call the model when unavailable")

@@ -167,7 +167,7 @@ struct DocumentInformationForm {
             case .onTagSuggestionTapped(var tag):
                 tag = tag.lowercased()
                 _ = state.document.tags.insert(tag)
-                state.suggestedTags.removeAll { $0 == tag }
+                state.suggestedTags.removeAll { $0.lowercased() == tag }
 
                 // remove current tagSearchteam
                 state.tagSearchterm = ""
@@ -249,13 +249,14 @@ struct DocumentInformationForm {
                     state.suggestedDates = dateSuggestions
                 }
                 if let tagSuggestions = result.tagSuggestions {
-                    state.suggestedTags = tagSuggestions
+                    let documentTags = Set(state.document.tags.map { $0.lowercased() })
+                    state.suggestedTags = tagSuggestions.filter { !documentTags.contains($0.lowercased()) }
                 }
                 return .none
 
             case .updateTagSuggestions(let suggestedTags):
                 state.isLoading = false
-                state.suggestedTags = suggestedTags
+                state.suggestedTags = suggestedTags.sorted()
                 return .none
 
             case .updateTagSelectionDelayProgress(let progress):

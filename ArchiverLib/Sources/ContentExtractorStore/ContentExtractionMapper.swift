@@ -22,15 +22,18 @@ struct RawDocumentInformation: Equatable, Sendable {
 enum ContentExtractionMapper {
 
     /// Maximum number of tags kept from the model output.
-    static let maxTags = 10
+    static let maxTags = 4
 
     /// Normalize the raw model output: trim the description, and slug-clean the
     /// tags (remove symbols/whitespace) keeping at most `maxTags`.
     static func normalize(_ raw: RawDocumentInformation) -> (specification: String, tags: [String]) {
         let specification = raw.description.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        var seen = Set<String>()
         let tags = raw.tags
             .map(normalizeTag)
             .filter(isValidTag)
+            .filter { seen.insert($0).inserted }
         return (specification, Array(tags.prefix(maxTags)))
     }
 
@@ -42,7 +45,7 @@ enum ContentExtractionMapper {
         if let match = tag.firstMatch(of: /^(.*?)[:#]\s*\d+$/) {
             tag = String(match.1)
         }
-        return tag.slugified(withSeparator: "")
+        return tag.slugified(withSeparator: "").lowercased()
     }
 
     /// Purely numeric tags carry no meaning for the archive (tags with digits

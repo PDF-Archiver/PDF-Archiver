@@ -30,6 +30,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Code Comments
 - **ALL code comments MUST be in English**
 - No exceptions for any programming language files
+- Explain **why**, not what — the code already states what it does
+- **Max 2 lines**; go longer only when the reason genuinely requires it, e.g. a
+  non-obvious failure mode or a deliberately rejected alternative
+- Delete comments that only restate the line below them
 
 ## Project Overview
 

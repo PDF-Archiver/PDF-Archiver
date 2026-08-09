@@ -205,7 +205,7 @@ public actor ContentExtractorStore {
         let response = try await session.respond(
             to: prompt,
             generating: DocumentInformation.self,
-            includeSchemaInPrompt: false,
+            includeSchemaInPrompt: true,
             options: options
         )
 
@@ -220,8 +220,8 @@ public actor ContentExtractorStore {
             tools: [],
             instructions: Instructions {
                 ContentExtractionPromptFactory.taskInstruction
-                ContentExtractionPromptFactory.tagsInstruction(stats: stats)
                 ContentExtractionPromptFactory.descriptionInstruction(stats: stats, locale: Self.locale)
+                ContentExtractionPromptFactory.tagsInstruction(stats: stats, locale: Self.locale)
             }
         )
     }
@@ -234,7 +234,7 @@ extension ContentExtractorStore {
         @Guide(description: "short document description")
         var description: String
 
-        @Guide(description: "document tags; lowercase; no symbols", .maximumCount(10))
+        @Guide(description: "document tags; lowercase; no symbols", .maximumCount(ContentExtractionMapper.maxTags))
         var tags: [String]
     }
 
