@@ -24,8 +24,8 @@ enum ContentExtractionPromptFactory {
     private static let charactersPerToken = 2
 
     /// Tokens reserved for the instruction segments (incl. tag/description
-    /// statistics) and the structured response.
-    private static let reservedTokens = 1536
+    /// statistics), the injected response schema and the structured response.
+    private static let reservedTokens = 2048
 
     /// Minimum number of occurrences for a tag to be offered to the model.
     static let minTagCount = 3
@@ -86,11 +86,17 @@ enum ContentExtractionPromptFactory {
     If the document content does not contain enough information to create good tags/description, you MUST NOT hallucinate them - just return empty values.
     """
 
-    static func tagsInstruction(stats: DocumentStats) -> String {
-        """
-        Tags MUST ALWAYS use existing tags from the system whenever applicable.
-        Prefer the existing tags, ordered by most frequently used first: \(stats.tags.prefix(maxStatLength))
+    static func tagsInstruction(stats: DocumentStats, locale: Locale) -> String {
+        let existingTags = stats.tags.isEmpty
+            ? ""
+            : "\nPrefer the existing tags, ordered by most frequently used first: \(stats.tags.prefix(maxStatLength))"
+
+        return """
+        Tags MUST ALWAYS use existing tags from the system whenever applicable.\(existingTags)
         If no suitable existing tags are found, create new appropriate tags.
+        You MUST ALWAYS use the user's locale: \(locale.identifier).
+        Every tag MUST be a single lowercase word without symbols - never a multi-word phrase.
+        Aim for 2-4 tags, but return fewer or none if the document content does not support them.
         """
     }
 
