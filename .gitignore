@@ -46,3 +46,6 @@ Shared/Resources/Assets.xcassets/.DS_Store
 
 .DS_Store
 .build
+
+# UI test screenshots, written by the UITests iOS target
+.screenshots/

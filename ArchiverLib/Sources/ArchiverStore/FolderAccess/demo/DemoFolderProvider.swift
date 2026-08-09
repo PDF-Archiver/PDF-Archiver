@@ -6,6 +6,7 @@
 //
 
 import ArchiverModels
+import CoreGraphics
 import Foundation
 import Shared
 
@@ -57,20 +58,61 @@ final class DemoFolderProvider: FolderProvider, Log {
         log.debug("rename(from: URL, to: URL) throws")
     }
 
-    private func initialize() {
-        // swiftlint:disable:next force_unwrapping
-        let url = Bundle.main.url(forResource: "example-bill", withExtension: "pdf")!
-        let destination = baseUrl.appendingPathComponent("untagged").appendingPathComponent("2021 01 08 - scan1.pdf")
-        try? FileManager.default.copyItem(at: url, to: destination)
+    /// Every demo document must exist on disk: `Document.create` derives its id from the file and
+    /// drops documents whose file is missing.
+    private static let relativePaths = [
+        "untagged/2021 01 08 - scan1.pdf",
+        "2024/2024-05-12--electricity-bill__bill_electricity.pdf",
+        "2024/2024-09-03--rental-contract__contract_flat.pdf",
+        "2025/2025-02-18--invoice-laptop__bill_hardware.pdf"
+    ]
 
-        let urls = [
-            baseUrl.appendingPathComponent(NSLocalizedString("test_file1", comment: "")),
-            baseUrl.appendingPathComponent(NSLocalizedString("test_file2", comment: "")),
-            baseUrl.appendingPathComponent(NSLocalizedString("test_file3", comment: "")),
-            destination
-        ]
+    private func initialize() {
+        // The bundled example-bill.pdf was dropped along with the old app target, so demo mode
+        // draws its own sample instead of force unwrapping a resource that no longer ships.
+        let bundledSample = Bundle.main.url(forResource: "example-bill", withExtension: "pdf")
+
+        let urls = Self.relativePaths.map { baseUrl.appendingPathComponent($0) }
+        for url in urls where !FileManager.default.fileExists(atPath: url.path()) {
+            try? FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+
+            if let bundledSample {
+                try? FileManager.default.copyItem(at: bundledSample, to: url)
+            } else {
+                Self.writeSamplePDF(to: url)
+            }
+        }
+
         currentDocumentsStreamContinuation.yield(
             urls.map { DocumentInformation(url: $0, downloadStatus: 1, sizeInBytes: 1000) })
+    }
+
+    /// Draws a one page invoice-ish document from plain rectangles - enough for the demo archive to
+    /// show something in the PDF view without shipping a binary asset.
+    private static func writeSamplePDF(to url: URL) {
+        var mediaBox = CGRect(x: 0, y: 0, width: 595, height: 842)
+        guard let consumer = CGDataConsumer(url: url as CFURL),
+              let context = CGContext(consumer: consumer, mediaBox: &mediaBox, nil) else {
+            log.errorAndAssert("Could not create PDF context for demo document")
+            return
+        }
+
+        context.beginPDFPage(nil)
+
+        context.setFillColor(gray: 1, alpha: 1)
+        context.fill(mediaBox)
+
+        context.setFillColor(gray: 0.2, alpha: 1)
+        context.fill(CGRect(x: 60, y: 720, width: 280, height: 24))
+
+        context.setFillColor(gray: 0.75, alpha: 1)
+        for index in 0..<20 {
+            let isParagraphEnd = index % 5 == 4
+            context.fill(CGRect(x: 60, y: 660 - CGFloat(index) * 30, width: isParagraphEnd ? 210 : 475, height: 11))
+        }
+
+        context.endPDFPage()
+        context.closePDF()
     }
 }
 
