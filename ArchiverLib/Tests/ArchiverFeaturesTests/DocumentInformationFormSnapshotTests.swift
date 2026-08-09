@@ -6,7 +6,6 @@
 import ArchiverModels
 import ComposableArchitecture
 import Foundation
-import SnapshotTesting
 import SwiftUI
 import Testing
 
@@ -92,57 +91,17 @@ struct DocumentInformationFormSnapshotTests {
         let store = Store(initialState: state) {
             EmptyReducer<DocumentInformationForm.State, DocumentInformationForm.Action>()
         }
-        let view = DocumentInformationFormView(store: store)
-
-        #if os(iOS)
-        assertSnapshot(
-            of: view,
-            as: .image(
-                precision: Self.precision,
-                perceptualPrecision: Self.perceptualPrecision,
-                layout: .fixed(width: Self.size.width, height: Self.size.height),
-                traits: UITraitCollection(userInterfaceStyle: .dark)
-            ),
-            named: "ios",
+        assertViewSnapshot(
+            of: DocumentInformationFormView(store: store),
+            size: Self.size,
             fileID: fileID,
             file: filePath,
             testName: testName,
             line: line,
             column: column
         )
-        #elseif os(macOS)
-        let hostingView = NSHostingView(rootView: view)
-        hostingView.frame = CGRect(origin: .zero, size: Self.size)
-
-        // Without a window the grouped form style renders its backgrounds as transparent.
-        let window = NSWindow(
-            contentRect: hostingView.frame,
-            styleMask: [.borderless],
-            backing: .buffered,
-            defer: false
-        )
-        window.contentView = hostingView
-        // Pin the appearance, otherwise the reference depends on the machine's light/dark setting.
-        window.appearance = NSAppearance(named: .darkAqua)
-        hostingView.layoutSubtreeIfNeeded()
-
-        assertSnapshot(
-            of: hostingView,
-            as: .image(precision: Self.precision, perceptualPrecision: Self.perceptualPrecision),
-            named: "macos",
-            fileID: fileID,
-            file: filePath,
-            testName: testName,
-            line: line,
-            column: column
-        )
-        #endif
     }
 
     /// Matches the inspector column width on macOS and a large sheet detent on iOS.
     private static let size = CGSize(width: 400, height: 800)
-
-    /// Antialiasing of text differs slightly between runs, so compare with human-eye tolerance.
-    private static let precision: Float = 0.99
-    private static let perceptualPrecision: Float = 0.98
 }
