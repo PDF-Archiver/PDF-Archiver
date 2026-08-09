@@ -9,6 +9,7 @@ import ArchiverModels
 import ComposableArchitecture
 import Shared
 import SwiftUI
+import TipKit
 
 @Reducer
 struct DocumentDetails {
@@ -208,8 +209,6 @@ struct DocumentDetailsView: View {
                 }
 #endif
 
-                ToolbarSpacer()
-
 #if os(macOS)
                 if ocrEnabled,
                    store.document.downloadStatus >= 1 {
@@ -244,9 +243,38 @@ struct DocumentDetailsView: View {
                     }
                     .buttonStyle(.glass(.identity))
                 }
+
+                ToolbarSpacer()
+
+                ToolbarItem(id: "save") {
+                    saveButton
+                }
             } else {
                 legacyToolbar
             }
+        }
+    }
+
+    /// Lives here and not in the inspector content: a `.toolbar` declared inside the inspector is
+    /// hoisted into this same window toolbar, and its items are dropped for good once the inspector
+    /// subtree is torn down on dismiss.
+    private var saveButton: some View {
+        HStack(spacing: 8) {
+            if store.documentInformationForm.isLoading {
+                ProgressView()
+                    .controlSize(.small)
+            }
+
+            Button(String(localized: "Save", bundle: #bundle)) {
+                store.send(.showDocumentInformationForm(.onSaveButtonTapped))
+#if os(macOS)
+                Task {
+                    await TaggingTips.KeyboardShortCut.documentSaved.donate()
+                }
+#endif
+            }
+            .buttonStyle(.borderedProminent)
+            .keyboardShortcut("s", modifiers: [.command])
         }
     }
 
@@ -303,6 +331,8 @@ struct DocumentDetailsView: View {
                 Label(String(localized: "Delete", bundle: #bundle), systemImage: "trash")
                     .foregroundColor(.red)
             }
+
+            saveButton
         }
     }
 }

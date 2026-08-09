@@ -43,7 +43,7 @@ struct DocumentInformationFormSnapshotTests {
         )
     }
 
-    /// The shortest the form ever gets - and the state in which the save button is still reachable without scrolling.
+    /// The shortest the form ever gets, while the parser is still filling in its suggestions.
     @Test
     func loadingWithoutSuggestions() {
         assertFormSnapshot(

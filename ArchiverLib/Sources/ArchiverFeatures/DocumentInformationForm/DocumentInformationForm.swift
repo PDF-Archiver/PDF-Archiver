@@ -25,7 +25,7 @@ struct DocumentInformationForm {
     @ObservableState
     struct State: Equatable {
         enum Field: Hashable {
-            case date, specification, tags, save
+            case date, specification, tags
         }
 
         @SharedReader(.notSaveDocumentTagsAsPDFMetadata)
@@ -356,58 +356,10 @@ struct DocumentInformationFormView: View {
 
     var body: some View {
         form
-            .safeAreaInset(edge: .top, spacing: 0) {
-                inspectorHeader
-            }
             .bind($store.focusedField, to: $focusedField)
             .task(id: store.document.id) {
                 await store.send(.onTask).finish()
             }
-    }
-
-    /// A hand-rolled header instead of a `NavigationStack` toolbar: on macOS the toolbar would be
-    /// hoisted out of the inspector into the document window, and on iOS the form is presented as a
-    /// sheet that brings no navigation bar of its own.
-    private var inspectorHeader: some View {
-        VStack(spacing: 0) {
-            HStack {
-                Text("Document", bundle: #bundle)
-                    .font(.headline)
-
-                Spacer()
-
-                saveButton
-            }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 10)
-
-            Divider()
-        }
-        .background(.bar)
-    }
-
-    private var saveButton: some View {
-        HStack(spacing: 8) {
-            if store.isLoading {
-                ProgressView()
-                    .controlSize(.small)
-            }
-
-            Button(String(localized: "Save", bundle: #bundle)) {
-                store.send(.onSaveButtonTapped)
-                #if os(macOS)
-                Task {
-                    await TaggingTips.KeyboardShortCut.documentSaved.donate()
-                }
-                #endif
-            }
-            .buttonStyle(.borderedProminent)
-            .focused($focusedField, equals: .save)
-            .keyboardShortcut("s", modifiers: [.command])
-            #if os(macOS)
-            .popoverTip(tips.currentTip as? TaggingTips.KeyboardShortCut)
-            #endif
-        }
     }
 
     private var form: some View {
@@ -452,6 +404,14 @@ struct DocumentInformationFormView: View {
             }
 
             documentTagsSection
+
+            #if os(macOS)
+            Section {
+                TipView(tips.currentTip as? TaggingTips.KeyboardShortCut)
+                    .tipImageSize(TaggingTips.size)
+                    .focusable(false)
+            }
+            #endif
         }
         .formStyle(.grouped)
     }
