@@ -68,9 +68,17 @@ public actor ContentExtractorStore {
     ///   - customPrompt: Optional custom prompt to guide the extraction
     ///   - documents: Existing documents for context (tags, specifications)
     ///   - documentId: Optional document ID for caching results
-    /// - Returns: Extracted specification and tags, or nil if unavailable
+    /// - Returns: Extracted specification and tags, or nil if unavailable or if
+    ///   the document text is not readable
     public func extract(from text: String, customPrompt: String? = nil, with documents: [Document], documentId: Document.ID? = nil) async throws -> Info? {
         guard availability().isUsable else { return nil }
+
+        // Asked to summarize mojibake, the model describes it ("Unlesbarer
+        // Dokumententext"). Before the cache read, so stale entries go too.
+        guard TextReadability.isReadable(text) else {
+            Logger.contentExtractor.info("Skipping extraction, document text is not readable")
+            return nil
+        }
 
         // Check cache if document ID is provided
         if let documentId,

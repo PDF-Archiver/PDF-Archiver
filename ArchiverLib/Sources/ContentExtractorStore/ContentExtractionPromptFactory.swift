@@ -84,6 +84,7 @@ enum ContentExtractionPromptFactory {
     static let taskInstruction = """
     Your task is to archive documents by analyzing their content and generating appropriate descriptions and tags.
     If the document content does not contain enough information to create good tags/description, you MUST NOT hallucinate them - just return empty values.
+    NEVER describe the document text itself or its quality (e.g. "unreadable document text", "garbled text", "no content") - return empty values instead.
     """
 
     static func tagsInstruction(stats: DocumentStats, locale: Locale) -> String {

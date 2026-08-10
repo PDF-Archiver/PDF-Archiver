@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 07.07.26.
 //
 
+import ArchiverModels
 import Foundation
 import PDFKit
 
@@ -23,7 +24,12 @@ import PDFKit
 /// which makes it unusable as a persistent flag.
 public enum PDFMetadata {
 
-    /// Returns `true` if the PDF has extractable text on any of its first pages.
+    /// Returns `true` if the PDF has *usable* extractable text on any of its
+    /// first pages.
+    ///
+    /// A layer that extracts as mojibake (see ``TextReadability``) is worthless
+    /// for search and AI suggestions, so it does not count and the document
+    /// gets OCR'd again.
     ///
     /// - Parameters:
     ///   - pdf: The PDF to inspect.
@@ -35,7 +41,7 @@ public enum PDFMetadata {
             guard let page = pdf.page(at: index),
                   let text = page.string,
                   !text.isEmpty else { return false }
-            return true
+            return TextReadability.isReadable(text)
         }
     }
 
