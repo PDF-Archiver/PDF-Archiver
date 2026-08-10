@@ -23,6 +23,21 @@ import Foundation
 /// archive documents the share never dropped below 0.73 - not for number-heavy
 /// invoices and payslips, and not where PDFKit swallowed every space - while
 /// the broken layer above scores 0.30.
+///
+/// # Known blind spot
+///
+/// A CMap that maps letters onto *letters* only produces intact-looking runs
+/// and scores like real text. Broken CMaps reinterpret glyph IDs through a
+/// standard encoding, which lands mostly in the digit and punctuation range, so
+/// this stays theoretical - but only a dictionary catches it.
+///
+/// A dictionary is not used because it needs the document's language, and the
+/// SDK cannot supply it here: measured against the same 265 documents,
+/// `NLLanguageRecognizer` rated the broken layer 0.998 (Turkish) while real
+/// German invoices scored as low as 0.096, `NLEmbedding` scored an English
+/// letter and the mojibake identically (0.000) and covers few languages, and
+/// `NSSpellChecker` separated worse than this heuristic (0.31 vs 0.50) at
+/// 71 ms per document.
 public enum TextReadability {
 
     /// Letters in an uninterrupted run of at least this length are counted as
