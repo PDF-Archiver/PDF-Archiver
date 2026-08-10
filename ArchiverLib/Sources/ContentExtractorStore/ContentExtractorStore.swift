@@ -73,9 +73,8 @@ public actor ContentExtractorStore {
     public func extract(from text: String, customPrompt: String? = nil, with documents: [Document], documentId: Document.ID? = nil) async throws -> Info? {
         guard availability().isUsable else { return nil }
 
-        // Asked to summarize mojibake, the model describes the mojibake ("Unlesbarer
-        // Dokumententext") instead of returning empty values. Checked before the
-        // cache read so entries created before this guard existed are dropped too.
+        // Asked to summarize mojibake, the model describes it ("Unlesbarer
+        // Dokumententext"). Before the cache read, so stale entries go too.
         guard TextReadability.isReadable(text) else {
             Logger.contentExtractor.info("Skipping extraction, document text is not readable")
             return nil

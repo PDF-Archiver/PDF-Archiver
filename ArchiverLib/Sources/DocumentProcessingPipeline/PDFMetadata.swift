@@ -27,10 +27,9 @@ public enum PDFMetadata {
     /// Returns `true` if the PDF has *usable* extractable text on any of its
     /// first pages.
     ///
-    /// A text layer whose `ToUnicode` CMap does not match the embedded font
-    /// subset extracts as mojibake (see ``TextReadability``). It is worthless
-    /// for search and for the AI suggestions, so it does not count as a text
-    /// layer and the document gets OCR'd again.
+    /// A layer that extracts as mojibake (see ``TextReadability``) is worthless
+    /// for search and AI suggestions, so it does not count and the document
+    /// gets OCR'd again.
     ///
     /// - Parameters:
     ///   - pdf: The PDF to inspect.

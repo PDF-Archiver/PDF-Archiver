@@ -29,8 +29,7 @@ struct PDFInfoView: View {
         }
 
         return PDFInfo(
-            // Same check the OCR pass uses, so a document the pass considers
-            // image-only is never advertised as searchable here.
+            // Same check as the OCR pass, so the badge cannot disagree with it.
             hasTextLayer: pdf.map { PDFMetadata.hasTextLayer($0) } ?? false,
             pageCount: pdf?.pageCount ?? 0,
             fileSize: fileSize,

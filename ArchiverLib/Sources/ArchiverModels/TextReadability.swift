@@ -7,55 +7,34 @@
 
 import Foundation
 
-/// Heuristic that tells apart real document text from the mojibake a broken PDF
-/// text layer produces.
+/// Tells real document text apart from the mojibake of a broken PDF text layer,
+/// where a `ToUnicode` CMap that does not match its font subset turns
+/// `Mandatsreferenz (wird von` into `I9Aü9O-P$p$P$Ax31J(Pü3VWA3`.
 ///
-/// Scanners and third-party OCR tools sometimes ship a text layer whose
-/// `ToUnicode` CMap does not match the embedded font subset. The PDF then
-/// *has* text - `PDFPage.string` returns 2000 characters - but every letter is
-/// mapped to an arbitrary other character, so the result reads like
-/// `I9Aü9O-P$p$P$Ax31J(Pü3VWA3`. Such text must neither count as a usable text
-/// layer nor be handed to the language model.
+/// Such a substitution scatters digits and symbols through every word, so the
+/// share of letters in word-like runs collapses: 0.30 for that layer, never
+/// below 0.73 across 265 real archive documents.
 ///
-/// The signal used is the share of letters that sit in word-like runs: a
-/// substitution of this kind scatters digits and symbols across every word, so
-/// long uninterrupted letter runs practically disappear. Measured over 265 real
-/// archive documents the share never dropped below 0.73 - not for number-heavy
-/// invoices and payslips, and not where PDFKit swallowed every space - while
-/// the broken layer above scores 0.30.
-///
-/// # Known blind spot
-///
-/// A CMap that maps letters onto *letters* only produces intact-looking runs
-/// and scores like real text. Broken CMaps reinterpret glyph IDs through a
-/// standard encoding, which lands mostly in the digit and punctuation range, so
-/// this stays theoretical - but only a dictionary catches it.
-///
-/// A dictionary is not used because it needs the document's language, and the
-/// SDK cannot supply it here: measured against the same 265 documents,
-/// `NLLanguageRecognizer` rated the broken layer 0.998 (Turkish) while real
-/// German invoices scored as low as 0.096, `NLEmbedding` scored an English
-/// letter and the mojibake identically (0.000) and covers few languages, and
-/// `NSSpellChecker` separated worse than this heuristic (0.31 vs 0.50) at
-/// 71 ms per document.
+/// A letter-onto-letter CMap would slip through, and only a dictionary catches
+/// that - but none is usable here: measured on the same documents,
+/// `NLLanguageRecognizer` rated the broken layer 0.998 (Turkish) against 0.096
+/// for real invoices, `NLEmbedding` scores English text and mojibake alike, and
+/// `NSSpellChecker` separates worse at 71 ms per document.
 public enum TextReadability {
 
-    /// Letters in an uninterrupted run of at least this length are counted as
-    /// belonging to a word.
+    /// Letters in a run of at least this length count as part of a word.
     static let minimumRunLength = 4
 
     /// Minimum share of letters that must sit in word-like runs.
     static let minimumWordLetterShare = 0.5
 
-    /// Below this many letters the sample is too small to judge - a short
-    /// header is not enough evidence to declare a document unreadable.
+    /// Below this many letters there is not enough evidence to judge.
     static let minimumLetterCount = 50
 
     /// Returns `true` if `text` plausibly contains real words.
     ///
-    /// Errs on the side of `true`: both call sites act destructively on a
-    /// `false` (re-rasterizing a page, dropping AI suggestions), so only a
-    /// clear verdict should trigger them.
+    /// Errs towards `true`: a `false` re-rasterizes a page or drops AI
+    /// suggestions, so only a clear verdict should trigger it.
     public static func isReadable(_ text: String) -> Bool {
         var totalLetters = 0
         var wordLetters = 0

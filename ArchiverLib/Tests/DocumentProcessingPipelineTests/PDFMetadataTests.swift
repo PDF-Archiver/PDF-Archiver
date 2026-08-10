@@ -64,8 +64,7 @@ struct PDFMetadataTests {
     @Test
     func hasTextLayerReturnsFalseForBrokenTextLayer() throws {
         // A German paragraph run through the substitution alphabet of a real
-        // broken `ToUnicode` CMap: the page carries plenty of text, but no
-        // search and no language model can use it.
+        // broken `ToUnicode` CMap.
         let mojibake = """
         Aaz6§naaz6,a§U3mar§HrK§9a66arff§3r1ai§a6z3t,ar§Aia§Kia§Fa7zrHrn§sHa6§Kia§$iasa6Hrn§dbm§ta,Z,ar\
         §pbr3,fl§4i,,a§Ha1a6laigar§Aia§Kar§4a,63n§irra6z3t1§dbr§dia6Zazr§W3nar§3Hs§K3g§Hr,ar§nar3rr,a\
@@ -77,8 +76,7 @@ struct PDFMetadataTests {
         #expect(!PDFMetadata.hasTextLayer(pdf))
     }
 
-    /// The readability check must not reject the app's own OCR output — that
-    /// would re-OCR every scanned document on every pass.
+    /// Rejecting the app's own OCR output would re-OCR every scan on every pass.
     @Test(.tags(.ocr))
     func hasTextLayerReturnsTrueAfterOwnOCR() async throws {
         let image = try #require(PlatformImage(contentsOf: Bundle.billPNGUrl))
