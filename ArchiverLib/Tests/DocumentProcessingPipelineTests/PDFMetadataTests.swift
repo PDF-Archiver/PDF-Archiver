@@ -3,6 +3,7 @@
 //  ArchiverLib
 //
 
+import ArchiverModels
 import Foundation
 import PDFKit
 import Testing
@@ -58,6 +59,35 @@ struct PDFMetadataTests {
     func hasTextLayerRespectsMaxPages() throws {
         let pdf = try #require(PDFDocument(url: Bundle.longTextPDFUrl))
         #expect(PDFMetadata.hasTextLayer(pdf, maxPages: 1))
+    }
+
+    @Test
+    func hasTextLayerReturnsFalseForBrokenTextLayer() throws {
+        // A German paragraph run through the substitution alphabet of a real
+        // broken `ToUnicode` CMap: the page carries plenty of text, but no
+        // search and no language model can use it.
+        let mojibake = """
+        Aaz6§naaz6,a§U3mar§HrK§9a66arff§3r1ai§a6z3t,ar§Aia§Kia§Fa7zrHrn§sHa6§Kia§$iasa6Hrn§dbm§ta,Z,ar\
+        §pbr3,fl§4i,,a§Ha1a6laigar§Aia§Kar§4a,63n§irra6z3t1§dbr§dia6Zazr§W3nar§3Hs§K3g§Hr,ar§nar3rr,a\
+        §übr,bfl§Piatar§U3r.§sHa6§_z6§Pa6,63Har§HrK§_z6a§4ag,attHrn§1ai§Hrga6am§Lr,a6razmarfl
+        """
+        let pdf = Self.createTextPDF(mojibake)
+
+        try #require(pdf.page(at: 0)?.string?.isEmpty == false, "the fixture must actually carry text")
+        #expect(!PDFMetadata.hasTextLayer(pdf))
+    }
+
+    /// The readability check must not reject the app's own OCR output — that
+    /// would re-OCR every scanned document on every pass.
+    @Test(.tags(.ocr))
+    func hasTextLayerReturnsTrueAfterOwnOCR() async throws {
+        let image = try #require(PlatformImage(contentsOf: Bundle.billPNGUrl))
+        let pdf = Self.createImageOnlyPDF(from: image)
+        try #require(!PDFMetadata.hasTextLayer(pdf))
+
+        try await PDFOCREngine.addTextLayer(to: pdf, quality: .lossless)
+
+        #expect(PDFMetadata.hasTextLayer(pdf))
     }
 
     // MARK: - isMarked
@@ -132,6 +162,37 @@ struct PDFMetadataTests {
     }
 
     // MARK: - Helpers
+
+    /// Create a single-page PDF containing only `text` for testing.
+    static func createTextPDF(_ text: String) -> PDFDocument {
+        let bounds = CGRect(x: 0, y: 0, width: 595, height: 842)
+        let data = NSMutableData()
+        var mediaBox = bounds
+        // swiftlint:disable force_unwrapping
+        let consumer = CGDataConsumer(data: data)!
+        let context = CGContext(consumer: consumer, mediaBox: &mediaBox, nil)!
+        // swiftlint:enable force_unwrapping
+
+        context.beginPDFPage(nil)
+        #if canImport(UIKit)
+        UIGraphicsPushContext(context)
+        defer { UIGraphicsPopContext() }
+        let font = UIFont.systemFont(ofSize: 11)
+        #else
+        let previousContext = NSGraphicsContext.current
+        NSGraphicsContext.current = NSGraphicsContext(cgContext: context, flipped: true)
+        defer { NSGraphicsContext.current = previousContext }
+        let font = NSFont.systemFont(ofSize: 11)
+        #endif
+
+        context.concatenate(CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: 0, ty: bounds.height))
+        NSAttributedString(string: text, attributes: [.font: font]).draw(in: bounds.insetBy(dx: 40, dy: 40))
+        context.endPDFPage()
+        context.closePDF()
+
+        // swiftlint:disable:next force_unwrapping
+        return PDFDocument(data: data as Data)!
+    }
 
     /// Create a PDF containing only an image (no text layer) for testing.
     static func createImageOnlyPDF(from image: PlatformImage) -> PDFDocument {

@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 22.02.26.
 //
 
+import DocumentProcessingPipeline
 import PDFKit
 import Shared
 import SwiftUI
@@ -28,9 +29,9 @@ struct PDFInfoView: View {
         }
 
         return PDFInfo(
-            hasTextLayer: (0..<min(pdf?.pageCount ?? 0, 3)).contains {
-                pdf?.page(at: $0)?.string?.isEmpty == false
-            },
+            // Same check the OCR pass uses, so a document the pass considers
+            // image-only is never advertised as searchable here.
+            hasTextLayer: pdf.map { PDFMetadata.hasTextLayer($0) } ?? false,
             pageCount: pdf?.pageCount ?? 0,
             fileSize: fileSize,
             creationDate: meta?[PDFDocumentAttribute.creationDateAttribute] as? Date,
