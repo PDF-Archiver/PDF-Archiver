@@ -26,7 +26,7 @@ let package = Package(
                     "ComposableArchitecture2Deprecations",
                     "ComposableArchitecture2DeprecationOverloads"
                  ]),
-        .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "1.14.1"),
+        .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "1.15.0"),
         .package(url: "https://github.com/pointfreeco/swift-sharing", exact: "2.9.1"),
         .package(url: "https://github.com/sideeffect-io/AsyncExtensions", exact: "0.5.5"),
         .package(url: "https://github.com/apple/swift-async-algorithms", exact: "1.1.5")
