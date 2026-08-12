@@ -70,7 +70,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-concurrency-extras</string>
 			<key>Title</key>
-			<string>swift-concurrency-extras (1.4.0)</string>
+			<string>swift-concurrency-extras (1.4.1)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -78,7 +78,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-custom-dump</string>
 			<key>Title</key>
-			<string>swift-custom-dump (1.6.1)</string>
+			<string>swift-custom-dump (1.7.0)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -86,7 +86,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-dependencies</string>
 			<key>Title</key>
-			<string>swift-dependencies (1.14.1)</string>
+			<string>swift-dependencies (1.15.0)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -102,7 +102,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-navigation</string>
 			<key>Title</key>
-			<string>swift-navigation (2.10.3)</string>
+			<string>swift-navigation (2.11.0)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
