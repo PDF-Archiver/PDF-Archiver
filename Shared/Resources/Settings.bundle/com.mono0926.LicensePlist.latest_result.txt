@@ -12,15 +12,15 @@ name: swift-collections, nameSpecified: swift-collections, owner: apple, version
 
 name: swift-composable-architecture, nameSpecified: swift-composable-architecture, owner: pointfreeco, version: 1.26.1, source: https://github.com/pointfreeco/swift-composable-architecture
 
-name: swift-concurrency-extras, nameSpecified: swift-concurrency-extras, owner: pointfreeco, version: 1.4.0, source: https://github.com/pointfreeco/swift-concurrency-extras
+name: swift-concurrency-extras, nameSpecified: swift-concurrency-extras, owner: pointfreeco, version: 1.4.1, source: https://github.com/pointfreeco/swift-concurrency-extras
 
-name: swift-custom-dump, nameSpecified: swift-custom-dump, owner: pointfreeco, version: 1.6.1, source: https://github.com/pointfreeco/swift-custom-dump
+name: swift-custom-dump, nameSpecified: swift-custom-dump, owner: pointfreeco, version: 1.7.0, source: https://github.com/pointfreeco/swift-custom-dump
 
-name: swift-dependencies, nameSpecified: swift-dependencies, owner: pointfreeco, version: 1.14.1, source: https://github.com/pointfreeco/swift-dependencies
+name: swift-dependencies, nameSpecified: swift-dependencies, owner: pointfreeco, version: 1.15.0, source: https://github.com/pointfreeco/swift-dependencies
 
 name: swift-identified-collections, nameSpecified: swift-identified-collections, owner: pointfreeco, version: 1.1.1, source: https://github.com/pointfreeco/swift-identified-collections
 
-name: swift-navigation, nameSpecified: swift-navigation, owner: pointfreeco, version: 2.10.3, source: https://github.com/pointfreeco/swift-navigation
+name: swift-navigation, nameSpecified: swift-navigation, owner: pointfreeco, version: 2.11.0, source: https://github.com/pointfreeco/swift-navigation
 
 name: swift-perception, nameSpecified: swift-perception, owner: pointfreeco, version: 2.0.11, source: https://github.com/pointfreeco/swift-perception
 
@@ -44,15 +44,15 @@ name: swift-collections, nameSpecified: swift-collections, owner: apple, version
 
 name: swift-composable-architecture, nameSpecified: swift-composable-architecture, owner: pointfreeco, version: 1.26.1, source: https://github.com/pointfreeco/swift-composable-architecture
 
-name: swift-concurrency-extras, nameSpecified: swift-concurrency-extras, owner: pointfreeco, version: 1.4.0, source: https://github.com/pointfreeco/swift-concurrency-extras
+name: swift-concurrency-extras, nameSpecified: swift-concurrency-extras, owner: pointfreeco, version: 1.4.1, source: https://github.com/pointfreeco/swift-concurrency-extras
 
-name: swift-custom-dump, nameSpecified: swift-custom-dump, owner: pointfreeco, version: 1.6.1, source: https://github.com/pointfreeco/swift-custom-dump
+name: swift-custom-dump, nameSpecified: swift-custom-dump, owner: pointfreeco, version: 1.7.0, source: https://github.com/pointfreeco/swift-custom-dump
 
-name: swift-dependencies, nameSpecified: swift-dependencies, owner: pointfreeco, version: 1.14.1, source: https://github.com/pointfreeco/swift-dependencies
+name: swift-dependencies, nameSpecified: swift-dependencies, owner: pointfreeco, version: 1.15.0, source: https://github.com/pointfreeco/swift-dependencies
 
 name: swift-identified-collections, nameSpecified: swift-identified-collections, owner: pointfreeco, version: 1.1.1, source: https://github.com/pointfreeco/swift-identified-collections
 
-name: swift-navigation, nameSpecified: swift-navigation, owner: pointfreeco, version: 2.10.3, source: https://github.com/pointfreeco/swift-navigation
+name: swift-navigation, nameSpecified: swift-navigation, owner: pointfreeco, version: 2.11.0, source: https://github.com/pointfreeco/swift-navigation
 
 name: swift-perception, nameSpecified: swift-perception, owner: pointfreeco, version: 2.0.11, source: https://github.com/pointfreeco/swift-perception
 

@@ -1,5 +1,5 @@
 {
-  "originHash" : "9718b64ceae2886b9984a076f42752664d089547709c1ef1904bb98c1df50394",
+  "originHash" : "ab3d5102b01c9a752cb698c0a18c57dce479a92a5a3fdc0ce220477fad6022bf",
   "pins" : [
     {
       "identity" : "asyncextensions",
@@ -69,8 +69,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-concurrency-extras",
       "state" : {
-        "revision" : "a90e2e40a7a840a853dd29e57cbef5dbb72c9d5b",
-        "version" : "1.4.0"
+        "revision" : "5fa253428866f2360c3754e88537f700ed2656b5",
+        "version" : "1.4.1"
       }
     },
     {
@@ -78,8 +78,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-custom-dump",
       "state" : {
-        "revision" : "a8cd6c976f335ed361dcecddb0dc39ebda51bc3e",
-        "version" : "1.6.1"
+        "revision" : "e9c34fd54ece006b491a0e6d23fe9a6024b9a828",
+        "version" : "1.7.0"
       }
     },
     {
@@ -87,8 +87,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-dependencies",
       "state" : {
-        "revision" : "8dc1fbf2f6255a73dec53b4648164884898db4c5",
-        "version" : "1.14.1"
+        "revision" : "9381ab822de01c4e9f3a7eb8eabb6ae808febed3",
+        "version" : "1.15.0"
       }
     },
     {
@@ -105,8 +105,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-navigation",
       "state" : {
-        "revision" : "fad75807c596fecd724b0fc81cd61c94008faad4",
-        "version" : "2.10.3"
+        "revision" : "418a57db2e757b02817dfd3d8a0374d5794664ab",
+        "version" : "2.11.0"
       }
     },
     {
