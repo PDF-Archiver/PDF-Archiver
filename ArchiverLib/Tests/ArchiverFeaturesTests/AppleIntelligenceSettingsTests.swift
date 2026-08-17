@@ -301,13 +301,8 @@ struct AppleIntelligenceSettingsTests {
     // MARK: - Custom Prompt Length Tests
 
     @Test
-    func maxCustomPromptLengthConstant() throws {
-        #expect(AppleIntelligenceSettings.maxCustomPromptLength == 1000)
-    }
-
-    @Test
     func customPromptWithinLimit() async throws {
-        let prompt = String(repeating: "a", count: 999)
+        let prompt = String(repeating: "a", count: ContentExtractionLimits.maxCustomPromptLength - 1)
         let store = TestStore(
             initialState: AppleIntelligenceSettings.State(availability: .available)
         ) {
@@ -321,7 +316,7 @@ struct AppleIntelligenceSettingsTests {
 
     @Test
     func customPromptAtMaxLimit() async throws {
-        let prompt = String(repeating: "a", count: 1000)
+        let prompt = String(repeating: "a", count: ContentExtractionLimits.maxCustomPromptLength)
         let store = TestStore(
             initialState: AppleIntelligenceSettings.State(availability: .available)
         ) {

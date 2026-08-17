@@ -15,9 +15,9 @@ import Foundation
 
 enum ContentExtractionPromptFactory {
 
-    /// Maximum number of characters of the user's custom prompt. Keeps the
-    /// custom prompt small enough to always fit into the prompt budget.
-    static let maxCustomPromptLength = 500
+    /// Custom-prompt cap for systems that cannot size it per model, and the
+    /// floor for the ones that can.
+    static let defaultMaxCustomPromptLength = 500
 
     /// Conservative characters-per-token factor so the character budget never
     /// exceeds the model's token-based context window.
@@ -120,11 +120,18 @@ enum ContentExtractionPromptFactory {
         max(0, (contextSize - reservedTokens) * charactersPerToken)
     }
 
-    /// Cap the user's custom prompt at ``maxCustomPromptLength`` so it always
-    /// fits into the budget.
-    static func truncatedCustomPrompt(_ customPrompt: String?) -> String? {
+    /// Maximum number of characters of the user's custom prompt, derived from
+    /// the model's context window. Never below ``defaultMaxCustomPromptLength``,
+    /// so a model reporting no usable context cannot collapse the cap to zero.
+    static func maxCustomPromptLength(contextSize: Int) -> Int {
+        // A quarter of the budget - the document text keeps the other three.
+        max(defaultMaxCustomPromptLength, promptBudget(contextSize: contextSize) / 4)
+    }
+
+    /// Cap the user's custom prompt so it always fits into the budget.
+    static func truncatedCustomPrompt(_ customPrompt: String?, maxLength: Int) -> String? {
         guard let customPrompt else { return nil }
-        return String(customPrompt.prefix(maxCustomPromptLength))
+        return String(customPrompt.prefix(maxLength))
     }
 
     /// Truncate the document text to fit the prompt budget, leaving room for

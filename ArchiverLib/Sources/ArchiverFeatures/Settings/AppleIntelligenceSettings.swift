@@ -13,7 +13,6 @@ import SwiftUI
 
 @Reducer
 struct AppleIntelligenceSettings {
-    static let maxCustomPromptLength = 1000
 
     @ObservableState
     struct State: Equatable {
@@ -131,7 +130,7 @@ struct AppleIntelligenceSettingsView: View {
                               text: Binding(
                                 get: { store.customPrompt ?? "" },
                                 set: { newValue in
-                                    let trimmed = String(newValue.prefix(AppleIntelligenceSettings.maxCustomPromptLength))
+                                    let trimmed = String(newValue.prefix(ContentExtractionLimits.maxCustomPromptLength))
                                     store.$customPrompt.withLock { $0 = trimmed.isEmpty ? nil : trimmed }
                                 }
                               ),
@@ -139,7 +138,7 @@ struct AppleIntelligenceSettingsView: View {
                               axis: .vertical)
                     .lineLimit(1...)
                 } footer: {
-                    Text("\(store.customPrompt?.count ?? 0) / \(AppleIntelligenceSettings.maxCustomPromptLength)", bundle: #bundle)
+                    Text("\(store.customPrompt?.count ?? 0) / \(ContentExtractionLimits.maxCustomPromptLength)", bundle: #bundle)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                 }

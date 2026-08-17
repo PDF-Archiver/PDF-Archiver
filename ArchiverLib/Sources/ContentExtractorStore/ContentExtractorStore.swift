@@ -93,7 +93,7 @@ public actor ContentExtractorStore {
         let info = Info(specification: normalized.specification, tags: normalized.tags)
 
         // Save result to cache for faster subsequent access
-        if let documentId {
+        if let documentId, useCache {
             let cacheEntry = ContentExtractorCache.CacheEntry(
                 documentId: documentId,
                 specification: info.specification,
@@ -196,7 +196,10 @@ public actor ContentExtractorStore {
     private static let liveResponder: Responder = { documents, customPrompt, text in
         let session = makeSession(with: documents)
 
-        let customPrompt = ContentExtractionPromptFactory.truncatedCustomPrompt(customPrompt)
+        let customPrompt = ContentExtractionPromptFactory.truncatedCustomPrompt(
+            customPrompt,
+            maxLength: ContentExtractionLimits.maxCustomPromptLength
+        )
         let truncatedText = ContentExtractionPromptFactory.truncatedText(
             from: text,
             customPromptLength: customPrompt?.count ?? 0,
