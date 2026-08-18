@@ -28,6 +28,21 @@ public actor ContentExtractorStore {
         maximumResponseTokens: 512
     )
 
+    /// Maximum number of characters of the user's custom prompt.
+    ///
+    /// The settings UI caps its input with this value and the prompt builder
+    /// truncates with it, so the character counter never promises more than what
+    /// actually reaches the model.
+    public static var maxCustomPromptLength: Int {
+        // Sizing the cap to the installed model's context window needs iOS 27;
+        // earlier systems keep the static cap.
+        guard #available(iOS 27, macOS 27, *) else {
+            return ContentExtractionPromptFactory.defaultMaxCustomPromptLength
+        }
+
+        return ContentExtractionPromptFactory.maxCustomPromptLength(contextSize: SystemLanguageModel.default.contextSize)
+    }
+
     private let cache: ContentExtractorCache
     private let availability: @Sendable () -> AppleIntelligenceAvailability
     private let respond: Responder
@@ -200,7 +215,7 @@ public actor ContentExtractorStore {
 
         let customPrompt = ContentExtractionPromptFactory.truncatedCustomPrompt(
             customPrompt,
-            maxLength: ContentExtractionLimits.maxCustomPromptLength
+            maxLength: maxCustomPromptLength
         )
         let customPromptLength = customPrompt?.count ?? 0
         var truncatedText = ContentExtractionPromptFactory.truncatedText(

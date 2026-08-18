@@ -93,6 +93,13 @@ struct AppleIntelligenceSettings {
 struct AppleIntelligenceSettingsView: View {
     @Bindable var store: StoreOf<AppleIntelligenceSettings>
 
+    /// Unreachable below iOS 26 - the custom prompt section renders only while
+    /// the model is available - so the fallback must not cap what is typed.
+    private var maxCustomPromptLength: Int {
+        guard #available(iOS 26, macOS 26, *) else { return .max }
+        return ContentExtractorStore.maxCustomPromptLength
+    }
+
     var body: some View {
         Form {
             Section {
@@ -130,7 +137,7 @@ struct AppleIntelligenceSettingsView: View {
                               text: Binding(
                                 get: { store.customPrompt ?? "" },
                                 set: { newValue in
-                                    let trimmed = String(newValue.prefix(ContentExtractionLimits.maxCustomPromptLength))
+                                    let trimmed = String(newValue.prefix(maxCustomPromptLength))
                                     store.$customPrompt.withLock { $0 = trimmed.isEmpty ? nil : trimmed }
                                 }
                               ),
@@ -138,7 +145,7 @@ struct AppleIntelligenceSettingsView: View {
                               axis: .vertical)
                     .lineLimit(1...)
                 } footer: {
-                    Text("\(store.customPrompt?.count ?? 0) / \(ContentExtractionLimits.maxCustomPromptLength)", bundle: #bundle)
+                    Text("\(store.customPrompt?.count ?? 0) / \(maxCustomPromptLength)", bundle: #bundle)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                 }

@@ -302,7 +302,8 @@ struct AppleIntelligenceSettingsTests {
 
     @Test
     func customPromptWithinLimit() async throws {
-        let prompt = String(repeating: "a", count: ContentExtractionLimits.maxCustomPromptLength - 1)
+        guard #available(iOS 26, macOS 26, *) else { return }
+        let prompt = String(repeating: "a", count: ContentExtractorStore.maxCustomPromptLength - 1)
         let store = TestStore(
             initialState: AppleIntelligenceSettings.State(availability: .available)
         ) {
@@ -316,7 +317,8 @@ struct AppleIntelligenceSettingsTests {
 
     @Test
     func customPromptAtMaxLimit() async throws {
-        let prompt = String(repeating: "a", count: ContentExtractionLimits.maxCustomPromptLength)
+        guard #available(iOS 26, macOS 26, *) else { return }
+        let prompt = String(repeating: "a", count: ContentExtractorStore.maxCustomPromptLength)
         let store = TestStore(
             initialState: AppleIntelligenceSettings.State(availability: .available)
         ) {
