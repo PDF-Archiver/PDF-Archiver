@@ -117,7 +117,24 @@ enum ContentExtractionPromptFactory {
     /// derived from the model's token-based context window
     /// (`SystemLanguageModel.contextSize`).
     static func promptBudget(contextSize: Int) -> Int {
-        max(0, (contextSize - reservedTokens) * charactersPerToken)
+        availableTokens(contextSize: contextSize) * charactersPerToken
+    }
+
+    /// The same budget, but with ``charactersPerToken`` replaced by the ratio
+    /// measured on a sample of the actual document text - German prose runs at
+    /// roughly twice the conservative estimate, which the model would otherwise
+    /// never get to see. Falls back to the estimate for an unusable sample.
+    static func calibratedBudget(contextSize: Int, sampleLength: Int, sampleTokens: Int) -> Int {
+        guard sampleLength > 0, sampleTokens > 0 else { return promptBudget(contextSize: contextSize) }
+
+        let measuredCharactersPerToken = Double(sampleLength) / Double(sampleTokens)
+        return Int(Double(availableTokens(contextSize: contextSize)) * measuredCharactersPerToken)
+    }
+
+    /// Tokens left for the user prompt once the instructions and the response
+    /// are accounted for.
+    private static func availableTokens(contextSize: Int) -> Int {
+        max(0, contextSize - reservedTokens)
     }
 
     /// Maximum number of characters of the user's custom prompt, derived from

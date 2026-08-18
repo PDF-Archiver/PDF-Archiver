@@ -195,16 +195,37 @@ public actor ContentExtractorStore {
     /// that touches FoundationModels generation.
     private static let liveResponder: Responder = { documents, customPrompt, text in
         let session = makeSession(with: documents)
+        let model = SystemLanguageModel.default
+        let contextSize = model.contextSize
 
         let customPrompt = ContentExtractionPromptFactory.truncatedCustomPrompt(
             customPrompt,
             maxLength: ContentExtractionLimits.maxCustomPromptLength
         )
-        let truncatedText = ContentExtractionPromptFactory.truncatedText(
+        let customPromptLength = customPrompt?.count ?? 0
+        var truncatedText = ContentExtractionPromptFactory.truncatedText(
             from: text,
-            customPromptLength: customPrompt?.count ?? 0,
-            budget: ContentExtractionPromptFactory.promptBudget(contextSize: SystemLanguageModel.default.contextSize)
+            customPromptLength: customPromptLength,
+            budget: ContentExtractionPromptFactory.promptBudget(contextSize: contextSize)
         )
+
+        // The estimated budget is pessimistic, so ask the tokenizer what the
+        // first cut really costs and re-cut with the measured ratio.
+        if truncatedText.count < text.count,
+           #available(iOS 26.4, macOS 26.4, *) {
+            do {
+                let sampleTokens = try await model.tokenCount(for: Prompt(truncatedText))
+                truncatedText = ContentExtractionPromptFactory.truncatedText(
+                    from: text,
+                    customPromptLength: customPromptLength,
+                    budget: ContentExtractionPromptFactory.calibratedBudget(contextSize: contextSize,
+                                                                           sampleLength: truncatedText.count,
+                                                                           sampleTokens: sampleTokens)
+                )
+            } catch {
+                Logger.contentExtractor.error("Failed to measure the token count, keeping the estimate: \(error)")
+            }
+        }
 
         let prompt = Prompt {
             customPrompt ?? ""

@@ -103,6 +103,32 @@ struct ContentExtractionPromptFactoryTests {
         #expect(ContentExtractionPromptFactory.truncatedCustomPrompt(nil, maxLength: 500) == nil)
     }
 
+    @Test("A measured sample replaces the conservative characters-per-token estimate")
+    func calibratedBudgetUsesMeasuredRatio() {
+        // 4000 characters measured as 1000 tokens -> 4 characters per token,
+        // twice the conservative estimate, so the budget doubles.
+        #expect(ContentExtractionPromptFactory.calibratedBudget(contextSize: 4096,
+                                                               sampleLength: 4000,
+                                                               sampleTokens: 1000)
+                == 2 * ContentExtractionPromptFactory.promptBudget(contextSize: 4096))
+    }
+
+    @Test("Token-dense text shrinks the budget below the estimate")
+    func calibratedBudgetShrinksForDenseText() {
+        #expect(ContentExtractionPromptFactory.calibratedBudget(contextSize: 4096,
+                                                               sampleLength: 1000,
+                                                               sampleTokens: 1000)
+                < ContentExtractionPromptFactory.promptBudget(contextSize: 4096))
+    }
+
+    @Test("An unusable sample falls back to the estimate", arguments: [(0, 0), (4000, 0), (0, 1000)])
+    func calibratedBudgetFallsBackToTheEstimate(sampleLength: Int, sampleTokens: Int) {
+        #expect(ContentExtractionPromptFactory.calibratedBudget(contextSize: 4096,
+                                                               sampleLength: sampleLength,
+                                                               sampleTokens: sampleTokens)
+                == ContentExtractionPromptFactory.promptBudget(contextSize: 4096))
+    }
+
     @Test("Custom prompt cap grows with the model's context size")
     func customPromptCapScalesWithContextSize() {
         #expect(ContentExtractionPromptFactory.maxCustomPromptLength(contextSize: 4096) == 1024)
