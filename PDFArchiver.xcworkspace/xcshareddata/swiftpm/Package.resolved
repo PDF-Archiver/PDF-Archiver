@@ -1,5 +1,5 @@
 {
-  "originHash" : "f3e8c6bd3d7f3d13f5e2b56061f83bf6fcf8f36505416dbd1b6ac8e7ede6d94f",
+  "originHash" : "43b7654f4e108d762e4c84e1a0fb12823609ddd476a9230d629fb33f7689b133",
   "pins" : [
     {
       "identity" : "asyncextensions",
@@ -33,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-case-paths",
       "state" : {
-        "revision" : "794f4b0a9cf32042592388d014f6a1ea987d323a",
-        "version" : "1.9.1"
+        "revision" : "1866d1046fd4e54d590af6be5b23de6ca3af2bf9",
+        "version" : "1.9.2"
       }
     },
     {

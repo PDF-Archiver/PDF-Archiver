@@ -38,7 +38,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-case-paths</string>
 			<key>Title</key>
-			<string>swift-case-paths (1.9.1)</string>
+			<string>swift-case-paths (1.9.2)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -86,7 +86,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-dependencies</string>
 			<key>Title</key>
-			<string>swift-dependencies (1.16.0)</string>
+			<string>swift-dependencies (1.17.0)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
