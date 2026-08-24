@@ -16,7 +16,7 @@ name: swift-concurrency-extras, nameSpecified: swift-concurrency-extras, owner: 
 
 name: swift-custom-dump, nameSpecified: swift-custom-dump, owner: pointfreeco, version: 1.7.0, source: https://github.com/pointfreeco/swift-custom-dump
 
-name: swift-dependencies, nameSpecified: swift-dependencies, owner: pointfreeco, version: 1.15.0, source: https://github.com/pointfreeco/swift-dependencies
+name: swift-dependencies, nameSpecified: swift-dependencies, owner: pointfreeco, version: 1.16.0, source: https://github.com/pointfreeco/swift-dependencies
 
 name: swift-identified-collections, nameSpecified: swift-identified-collections, owner: pointfreeco, version: 1.1.1, source: https://github.com/pointfreeco/swift-identified-collections
 
@@ -48,7 +48,7 @@ name: swift-concurrency-extras, nameSpecified: swift-concurrency-extras, owner: 
 
 name: swift-custom-dump, nameSpecified: swift-custom-dump, owner: pointfreeco, version: 1.7.0, source: https://github.com/pointfreeco/swift-custom-dump
 
-name: swift-dependencies, nameSpecified: swift-dependencies, owner: pointfreeco, version: 1.15.0, source: https://github.com/pointfreeco/swift-dependencies
+name: swift-dependencies, nameSpecified: swift-dependencies, owner: pointfreeco, version: 1.16.0, source: https://github.com/pointfreeco/swift-dependencies
 
 name: swift-identified-collections, nameSpecified: swift-identified-collections, owner: pointfreeco, version: 1.1.1, source: https://github.com/pointfreeco/swift-identified-collections
 
