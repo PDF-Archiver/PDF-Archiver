@@ -4,7 +4,7 @@ name: combine-schedulers, nameSpecified: combine-schedulers, owner: pointfreeco,
 
 name: swift-async-algorithms, nameSpecified: swift-async-algorithms, owner: apple, version: 1.1.5, source: https://github.com/apple/swift-async-algorithms
 
-name: swift-case-paths, nameSpecified: swift-case-paths, owner: pointfreeco, version: 1.9.1, source: https://github.com/pointfreeco/swift-case-paths
+name: swift-case-paths, nameSpecified: swift-case-paths, owner: pointfreeco, version: 1.9.2, source: https://github.com/pointfreeco/swift-case-paths
 
 name: swift-clocks, nameSpecified: swift-clocks, owner: pointfreeco, version: 1.1.0, source: https://github.com/pointfreeco/swift-clocks
 
@@ -16,7 +16,7 @@ name: swift-concurrency-extras, nameSpecified: swift-concurrency-extras, owner: 
 
 name: swift-custom-dump, nameSpecified: swift-custom-dump, owner: pointfreeco, version: 1.7.0, source: https://github.com/pointfreeco/swift-custom-dump
 
-name: swift-dependencies, nameSpecified: swift-dependencies, owner: pointfreeco, version: 1.16.0, source: https://github.com/pointfreeco/swift-dependencies
+name: swift-dependencies, nameSpecified: swift-dependencies, owner: pointfreeco, version: 1.17.0, source: https://github.com/pointfreeco/swift-dependencies
 
 name: swift-identified-collections, nameSpecified: swift-identified-collections, owner: pointfreeco, version: 1.1.1, source: https://github.com/pointfreeco/swift-identified-collections
 
@@ -36,7 +36,7 @@ name: combine-schedulers, nameSpecified: combine-schedulers, owner: pointfreeco,
 
 name: swift-async-algorithms, nameSpecified: swift-async-algorithms, owner: apple, version: 1.1.5, source: https://github.com/apple/swift-async-algorithms
 
-name: swift-case-paths, nameSpecified: swift-case-paths, owner: pointfreeco, version: 1.9.1, source: https://github.com/pointfreeco/swift-case-paths
+name: swift-case-paths, nameSpecified: swift-case-paths, owner: pointfreeco, version: 1.9.2, source: https://github.com/pointfreeco/swift-case-paths
 
 name: swift-clocks, nameSpecified: swift-clocks, owner: pointfreeco, version: 1.1.0, source: https://github.com/pointfreeco/swift-clocks
 
@@ -48,7 +48,7 @@ name: swift-concurrency-extras, nameSpecified: swift-concurrency-extras, owner: 
 
 name: swift-custom-dump, nameSpecified: swift-custom-dump, owner: pointfreeco, version: 1.7.0, source: https://github.com/pointfreeco/swift-custom-dump
 
-name: swift-dependencies, nameSpecified: swift-dependencies, owner: pointfreeco, version: 1.16.0, source: https://github.com/pointfreeco/swift-dependencies
+name: swift-dependencies, nameSpecified: swift-dependencies, owner: pointfreeco, version: 1.17.0, source: https://github.com/pointfreeco/swift-dependencies
 
 name: swift-identified-collections, nameSpecified: swift-identified-collections, owner: pointfreeco, version: 1.1.1, source: https://github.com/pointfreeco/swift-identified-collections
 
