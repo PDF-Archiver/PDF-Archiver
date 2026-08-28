@@ -140,6 +140,36 @@ struct DocumentDetails {
     }
 }
 
+struct SaveDocumentAction: Equatable {
+    let documentId: Document.ID
+    let perform: () -> Void
+
+    // closures are not Equatable; compare by document identity so the focused value
+    // does not invalidate dependents on every unrelated update
+    static func == (lhs: Self, rhs: Self) -> Bool { lhs.documentId == rhs.documentId }
+}
+
+extension FocusedValues {
+    @Entry var saveDocumentAction: SaveDocumentAction?
+}
+
+/// Publishes the macOS `File ▸ Save` menu command, wired to the front window's focused document.
+public struct DocumentCommands: Commands {
+    @FocusedValue(\.saveDocumentAction) private var saveDocumentAction
+
+    public init() { }
+
+    public var body: some Commands {
+        CommandGroup(replacing: .saveItem) {
+            Button(String(localized: "Save", bundle: #bundle)) {
+                saveDocumentAction?.perform()
+            }
+            .keyboardShortcut("s", modifiers: [.command])
+            .disabled(saveDocumentAction == nil)
+        }
+    }
+}
+
 struct DocumentDetailsView: View {
     @Bindable var store: StoreOf<DocumentDetails>
     @SharedReader(.ocrEnabled) private var ocrEnabled: Bool
@@ -165,6 +195,13 @@ struct DocumentDetailsView: View {
                             .inspectorColumnWidth(min: 300, ideal: 400, max: 600)
 #endif
                     }
+#if os(macOS)
+                    .focusedSceneValue(\.saveDocumentAction, store.showInspector
+                        ? SaveDocumentAction(documentId: store.document.id) {
+                            store.send(.showDocumentInformationForm(.onSaveButtonTapped))
+                        }
+                        : nil)
+#endif
             }
         }
         .alert($store.scope(\.$alert, action: \.alert))

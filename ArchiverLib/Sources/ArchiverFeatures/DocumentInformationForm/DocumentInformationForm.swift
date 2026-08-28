@@ -415,7 +415,9 @@ struct DocumentInformationFormView: View {
                     }
                     .buttonStyle(.bordered)
                     .focused($focusedField, equals: .save)
+#if os(iOS)
                     .keyboardShortcut("s", modifiers: [.command])
+#endif
                     Spacer()
                 }
             }
