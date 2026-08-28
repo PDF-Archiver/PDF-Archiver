@@ -34,7 +34,12 @@ struct DocumentDetailsTests {
             $0.documentInformationForm.document.specification = "new specification"
         }
 
+        await store.send(.showDocumentInformationForm(.updateTagSuggestions(["keep", "tag1"]))) {
+            $0.documentInformationForm.suggestedTags = ["keep", "tag1"]
+        }
+
         await store.send(.showDocumentInformationForm(.onTagSuggestionTapped("tag1"))) {
+            $0.documentInformationForm.suggestedTags = ["keep"]
             $0.documentInformationForm.document.tags = ["tag1"]
             $0.documentInformationForm.isTagSelectionDelayActive = true
             $0.documentInformationForm.tagSelectionDelayProgress = 0.0
@@ -56,7 +61,9 @@ struct DocumentDetailsTests {
         }
 
         await store.receive(.showDocumentInformationForm(.startUpdatingTagSuggestions))
-        await store.receive(.showDocumentInformationForm(.updateTagSuggestions([])))
+        await store.receive(.showDocumentInformationForm(.updateTagSuggestions([]))) {
+            $0.documentInformationForm.suggestedTags = []
+        }
 
         // close inspector without saving
         await store.send(.onEditButtonTapped) {

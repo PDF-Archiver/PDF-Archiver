@@ -115,33 +115,15 @@ struct DocumentInformationFormTests {
 
     @Test
     func addingTagUpdatesDocument() async throws {
-        let clock = TestClock()
-        let store = TestStore(initialState: DocumentInformationForm.State(document: .mock())) {
+        let store = TestStore(initialState: DocumentInformationForm.State(document: .mock(), suggestedTags: ["invoice"])) {
             DocumentInformationForm()
         } withDependencies: {
             $0.archiveStore.getTagSuggestionsSimilarTo = { _ in [] }
-            $0.continuousClock = clock
         }
 
         await store.send(.onTagSuggestionTapped("invoice")) {
+            $0.suggestedTags = []
             $0.document.tags = ["invoice"]
-            $0.isTagSelectionDelayActive = true
-            $0.tagSelectionDelayProgress = 0.0
-        }
-
-        // Advance clock through the 2-second delay timer
-        await clock.advance(by: .seconds(2))
-
-        // Receive all progress updates
-        for step in 1...20 {
-            await store.receive(.updateTagSelectionDelayProgress(Double(step) / 20.0)) {
-                $0.tagSelectionDelayProgress = Double(step) / 20.0
-            }
-        }
-
-        await store.receive(.tagSelectionDelayCompleted) {
-            $0.isTagSelectionDelayActive = false
-            $0.tagSelectionDelayProgress = 0.0
         }
 
         await store.receive(.startUpdatingTagSuggestions)
@@ -388,7 +370,7 @@ struct DocumentInformationFormTests {
     @Test
     func multiTagSelectionDelayProgressUpdates() async throws {
         let clock = TestClock()
-        let store = TestStore(initialState: DocumentInformationForm.State(document: .mock())) {
+        let store = TestStore(initialState: DocumentInformationForm.State(document: .mock(), suggestedTags: ["keep", "tag1"])) {
             DocumentInformationForm()
         } withDependencies: {
             $0.archiveStore.getTagSuggestionsSimilarTo = { _ in [] }
@@ -397,6 +379,7 @@ struct DocumentInformationFormTests {
 
         // Select first tag
         await store.send(.onTagSuggestionTapped("tag1")) {
+            $0.suggestedTags = ["keep"]
             $0.document.tags = ["tag1"]
             $0.isTagSelectionDelayActive = true
             $0.tagSelectionDelayProgress = 0.0
@@ -429,13 +412,15 @@ struct DocumentInformationFormTests {
         }
 
         await store.receive(.startUpdatingTagSuggestions)
-        await store.receive(.updateTagSuggestions([]))
+        await store.receive(.updateTagSuggestions([])) {
+            $0.suggestedTags = []
+        }
     }
 
     @Test
     func multiTagSelectionDelayCanBeCancelled() async throws {
         let clock = TestClock()
-        let store = TestStore(initialState: DocumentInformationForm.State(document: .mock())) {
+        let store = TestStore(initialState: DocumentInformationForm.State(document: .mock(), suggestedTags: ["keep", "tag1", "tag2"])) {
             DocumentInformationForm()
         } withDependencies: {
             $0.archiveStore.getTagSuggestionsSimilarTo = { _ in [] }
@@ -444,6 +429,7 @@ struct DocumentInformationFormTests {
 
         // Select first tag
         await store.send(.onTagSuggestionTapped("tag1")) {
+            $0.suggestedTags = ["keep", "tag2"]
             $0.document.tags = ["tag1"]
             $0.isTagSelectionDelayActive = true
             $0.tagSelectionDelayProgress = 0.0
@@ -461,6 +447,7 @@ struct DocumentInformationFormTests {
 
         // Select another tag, which should cancel the previous timer
         await store.send(.onTagSuggestionTapped("tag2")) {
+            $0.suggestedTags = ["keep"]
             $0.document.tags = ["tag1", "tag2"]
             $0.isTagSelectionDelayActive = true
             $0.tagSelectionDelayProgress = 0.0
@@ -482,6 +469,63 @@ struct DocumentInformationFormTests {
         }
 
         await store.receive(.startUpdatingTagSuggestions)
+        await store.receive(.updateTagSuggestions([])) {
+            $0.suggestedTags = []
+        }
+    }
+
+    @Test
+    func lastSuggestedTagSkipsSelectionDelay() async throws {
+        let clock = TestClock()
+        let store = TestStore(initialState: DocumentInformationForm.State(document: .mock(), suggestedTags: ["tag1"])) {
+            DocumentInformationForm()
+        } withDependencies: {
+            $0.archiveStore.getTagSuggestionsSimilarTo = { _ in [] }
+            $0.continuousClock = clock
+        }
+
+        await store.send(.onTagSuggestionTapped("tag1")) {
+            $0.suggestedTags = []
+            $0.document.tags = ["tag1"]
+        }
+
+        await store.receive(.startUpdatingTagSuggestions)
         await store.receive(.updateTagSuggestions([]))
+    }
+
+    @Test
+    func lastSuggestedTagCancelsRunningSelectionDelay() async throws {
+        let clock = TestClock()
+        let store = TestStore(initialState: DocumentInformationForm.State(document: .mock(), suggestedTags: ["tag1", "tag2"])) {
+            DocumentInformationForm()
+        } withDependencies: {
+            $0.archiveStore.getTagSuggestionsSimilarTo = { _ in [] }
+            $0.continuousClock = clock
+        }
+
+        await store.send(.onTagSuggestionTapped("tag1")) {
+            $0.suggestedTags = ["tag2"]
+            $0.document.tags = ["tag1"]
+            $0.isTagSelectionDelayActive = true
+            $0.tagSelectionDelayProgress = 0.0
+        }
+
+        await clock.advance(by: .seconds(0.1))
+        await store.receive(.updateTagSelectionDelayProgress(0.05)) {
+            $0.tagSelectionDelayProgress = 0.05
+        }
+
+        await store.send(.onTagSuggestionTapped("tag2")) {
+            $0.suggestedTags = []
+            $0.document.tags = ["tag1", "tag2"]
+            $0.isTagSelectionDelayActive = false
+            $0.tagSelectionDelayProgress = 0.0
+        }
+
+        await store.receive(.startUpdatingTagSuggestions)
+        await store.receive(.updateTagSuggestions([]))
+
+        // the timer of the first tag must be gone - otherwise its progress updates arrive here
+        await clock.advance(by: .seconds(2))
     }
 }
