@@ -21,13 +21,13 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture",
-                 exact: "1.26.1",
+                 exact: "1.26.2",
                  traits: [
                     "ComposableArchitecture2Deprecations",
                     "ComposableArchitecture2DeprecationOverloads"
                  ]),
-        .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "1.17.0"),
-        .package(url: "https://github.com/pointfreeco/swift-sharing", exact: "2.9.1"),
+        .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "1.17.1"),
+        .package(url: "https://github.com/pointfreeco/swift-sharing", exact: "2.10.0"),
         .package(url: "https://github.com/sideeffect-io/AsyncExtensions", exact: "0.5.5"),
         .package(url: "https://github.com/apple/swift-async-algorithms", exact: "1.1.5")
     ],
