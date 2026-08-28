@@ -22,7 +22,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/combine-schedulers</string>
 			<key>Title</key>
-			<string>combine-schedulers (1.2.0)</string>
+			<string>combine-schedulers (1.2.1)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -38,7 +38,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-case-paths</string>
 			<key>Title</key>
-			<string>swift-case-paths (1.9.2)</string>
+			<string>swift-case-paths (1.9.3)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -46,7 +46,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-clocks</string>
 			<key>Title</key>
-			<string>swift-clocks (1.1.0)</string>
+			<string>swift-clocks (1.1.1)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -62,7 +62,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-composable-architecture</string>
 			<key>Title</key>
-			<string>swift-composable-architecture (1.26.1)</string>
+			<string>swift-composable-architecture (1.26.2)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -78,7 +78,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-custom-dump</string>
 			<key>Title</key>
-			<string>swift-custom-dump (1.7.0)</string>
+			<string>swift-custom-dump (1.7.3)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -86,7 +86,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-dependencies</string>
 			<key>Title</key>
-			<string>swift-dependencies (1.17.0)</string>
+			<string>swift-dependencies (1.17.1)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -102,7 +102,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-navigation</string>
 			<key>Title</key>
-			<string>swift-navigation (2.11.0)</string>
+			<string>swift-navigation (2.11.1)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -118,7 +118,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-sharing</string>
 			<key>Title</key>
-			<string>swift-sharing (2.9.1)</string>
+			<string>swift-sharing (2.10.0)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -134,7 +134,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/xctest-dynamic-overlay</string>
 			<key>Title</key>
-			<string>xctest-dynamic-overlay (1.11.0)</string>
+			<string>xctest-dynamic-overlay (1.13.1)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
