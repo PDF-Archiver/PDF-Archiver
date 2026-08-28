@@ -140,6 +140,7 @@ struct DocumentDetails {
     }
 }
 
+#if os(macOS)
 struct SaveDocumentAction: Equatable {
     let documentId: Document.ID
     let perform: () -> Void
@@ -169,6 +170,7 @@ public struct DocumentCommands: Commands {
         }
     }
 }
+#endif
 
 struct DocumentDetailsView: View {
     @Bindable var store: StoreOf<DocumentDetails>
