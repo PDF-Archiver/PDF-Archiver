@@ -15,6 +15,9 @@ struct PDFArchiverMacApp: App {
         WindowGroup {
             RootView()
         }
+        .commands {
+            DocumentCommands()
+        }
 
         Settings {
             RootView.settings
