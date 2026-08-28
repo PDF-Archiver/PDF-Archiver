@@ -15,9 +15,9 @@ import Foundation
 
 enum ContentExtractionPromptFactory {
 
-    /// Maximum number of characters of the user's custom prompt. Keeps the
-    /// custom prompt small enough to always fit into the prompt budget.
-    static let maxCustomPromptLength = 500
+    /// Custom-prompt cap for systems that cannot size it per model, and the
+    /// floor for the ones that can.
+    static let defaultMaxCustomPromptLength = 500
 
     /// Conservative characters-per-token factor so the character budget never
     /// exceeds the model's token-based context window.
@@ -120,11 +120,29 @@ enum ContentExtractionPromptFactory {
         max(0, (contextSize - reservedTokens) * charactersPerToken)
     }
 
-    /// Cap the user's custom prompt at ``maxCustomPromptLength`` so it always
-    /// fits into the budget.
-    static func truncatedCustomPrompt(_ customPrompt: String?) -> String? {
+    /// The estimated budget, corrected by the ratio measured on a sample of the
+    /// actual document text - German prose runs at roughly twice the
+    /// conservative ``charactersPerToken``, which the model would otherwise
+    /// never get to see. Falls back to the estimate for an unusable sample.
+    static func calibratedBudget(contextSize: Int, sampleLength: Int, sampleTokens: Int) -> Int {
+        let estimate = promptBudget(contextSize: contextSize)
+        guard sampleLength > 0, sampleTokens > 0 else { return estimate }
+
+        return estimate * sampleLength / (sampleTokens * charactersPerToken)
+    }
+
+    /// Maximum number of characters of the user's custom prompt, derived from
+    /// the model's context window. Never below ``defaultMaxCustomPromptLength``,
+    /// so a model reporting no usable context cannot collapse the cap to zero.
+    static func maxCustomPromptLength(contextSize: Int) -> Int {
+        // A quarter of the budget - the document text keeps the other three.
+        max(defaultMaxCustomPromptLength, promptBudget(contextSize: contextSize) / 4)
+    }
+
+    /// Cap the user's custom prompt so it always fits into the budget.
+    static func truncatedCustomPrompt(_ customPrompt: String?, maxLength: Int) -> String? {
         guard let customPrompt else { return nil }
-        return String(customPrompt.prefix(maxCustomPromptLength))
+        return String(customPrompt.prefix(maxLength))
     }
 
     /// Truncate the document text to fit the prompt budget, leaving room for

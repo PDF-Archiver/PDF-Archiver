@@ -98,10 +98,58 @@ struct ContentExtractionPromptFactoryTests {
     @Test("Custom prompt is capped so it always fits the budget")
     func customPromptIsCapped() {
         let long = String(repeating: "y", count: 10_000)
-        #expect(ContentExtractionPromptFactory.truncatedCustomPrompt(long)?.count
-                == ContentExtractionPromptFactory.maxCustomPromptLength)
-        #expect(ContentExtractionPromptFactory.truncatedCustomPrompt("short") == "short")
-        #expect(ContentExtractionPromptFactory.truncatedCustomPrompt(nil) == nil)
+        #expect(ContentExtractionPromptFactory.truncatedCustomPrompt(long, maxLength: 500)?.count == 500)
+        #expect(ContentExtractionPromptFactory.truncatedCustomPrompt("short", maxLength: 500) == "short")
+        #expect(ContentExtractionPromptFactory.truncatedCustomPrompt(nil, maxLength: 500) == nil)
+    }
+
+    @Test("A measured sample replaces the conservative characters-per-token estimate")
+    func calibratedBudgetUsesMeasuredRatio() {
+        // 4000 characters measured as 1000 tokens -> 4 characters per token,
+        // twice the conservative estimate, so the budget doubles.
+        #expect(ContentExtractionPromptFactory.calibratedBudget(contextSize: 4096,
+                                                               sampleLength: 4000,
+                                                               sampleTokens: 1000)
+                == 2 * ContentExtractionPromptFactory.promptBudget(contextSize: 4096))
+    }
+
+    @Test("Token-dense text shrinks the budget below the estimate")
+    func calibratedBudgetShrinksForDenseText() {
+        #expect(ContentExtractionPromptFactory.calibratedBudget(contextSize: 4096,
+                                                               sampleLength: 1000,
+                                                               sampleTokens: 1000)
+                < ContentExtractionPromptFactory.promptBudget(contextSize: 4096))
+    }
+
+    @Test("An unusable sample falls back to the estimate", arguments: [(0, 0), (4000, 0), (0, 1000)])
+    func calibratedBudgetFallsBackToTheEstimate(sampleLength: Int, sampleTokens: Int) {
+        #expect(ContentExtractionPromptFactory.calibratedBudget(contextSize: 4096,
+                                                               sampleLength: sampleLength,
+                                                               sampleTokens: sampleTokens)
+                == ContentExtractionPromptFactory.promptBudget(contextSize: 4096))
+    }
+
+    @Test("Custom prompt cap grows with the model's context size")
+    func customPromptCapScalesWithContextSize() {
+        #expect(ContentExtractionPromptFactory.maxCustomPromptLength(contextSize: 4096) == 1024)
+        #expect(ContentExtractionPromptFactory.maxCustomPromptLength(contextSize: 8192) == 3072)
+    }
+
+    @Test("Custom prompt cap never falls below the static default")
+    func customPromptCapHasFloor() {
+        #expect(ContentExtractionPromptFactory.maxCustomPromptLength(contextSize: 100)
+                == ContentExtractionPromptFactory.defaultMaxCustomPromptLength)
+    }
+
+    @Test("Custom prompt never claims more than a quarter of the budget")
+    func customPromptCapLeavesRoomForText() {
+        let contextSize = 8192
+        let budget = ContentExtractionPromptFactory.promptBudget(contextSize: contextSize)
+        let cap = ContentExtractionPromptFactory.maxCustomPromptLength(contextSize: contextSize)
+        #expect(ContentExtractionPromptFactory.truncatedText(from: String(repeating: "x", count: 100_000),
+                                                            customPromptLength: cap,
+                                                            budget: budget).count == budget - cap)
+        #expect(cap * 4 <= budget)
     }
 
     @Test("Instruction segments embed the locale and the stats")
@@ -290,5 +338,18 @@ struct ContentExtractorStoreOrchestrationTests {
         _ = try await store.extract(from: "text", with: [], documentId: 7)
 
         #expect(await counter.count == 2)
+    }
+
+    @Test("Disabling the cache also stops writing new entries")
+    func disablingCacheStopsWrites() async throws {
+        guard #available(iOS 26.0, macOS 26.0, *) else { return }
+        let store = Self.store { _, _, _ in
+            RawDocumentInformation(description: "desc", tags: ["tag"])
+        }
+        await store.setCacheEnabled(false)
+
+        _ = try await store.extract(from: "text", with: [], documentId: 7)
+
+        #expect(await store.getCacheCount() == 0)
     }
 }

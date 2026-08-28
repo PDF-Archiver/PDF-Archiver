@@ -28,6 +28,21 @@ public actor ContentExtractorStore {
         maximumResponseTokens: 512
     )
 
+    /// Maximum number of characters of the user's custom prompt.
+    ///
+    /// The settings UI caps its input with this value and the prompt builder
+    /// truncates with it, so the character counter never promises more than what
+    /// actually reaches the model.
+    public static var maxCustomPromptLength: Int {
+        // Sizing the cap to the installed model's context window needs iOS 27;
+        // earlier systems keep the static cap.
+        guard #available(iOS 27, macOS 27, *) else {
+            return ContentExtractionPromptFactory.defaultMaxCustomPromptLength
+        }
+
+        return ContentExtractionPromptFactory.maxCustomPromptLength(contextSize: SystemLanguageModel.default.contextSize)
+    }
+
     private let cache: ContentExtractorCache
     private let availability: @Sendable () -> AppleIntelligenceAvailability
     private let respond: Responder
@@ -93,7 +108,7 @@ public actor ContentExtractorStore {
         let info = Info(specification: normalized.specification, tags: normalized.tags)
 
         // Save result to cache for faster subsequent access
-        if let documentId {
+        if let documentId, useCache {
             let cacheEntry = ContentExtractorCache.CacheEntry(
                 documentId: documentId,
                 specification: info.specification,
@@ -195,13 +210,37 @@ public actor ContentExtractorStore {
     /// that touches FoundationModels generation.
     private static let liveResponder: Responder = { documents, customPrompt, text in
         let session = makeSession(with: documents)
+        let model = SystemLanguageModel.default
+        let contextSize = model.contextSize
 
-        let customPrompt = ContentExtractionPromptFactory.truncatedCustomPrompt(customPrompt)
-        let truncatedText = ContentExtractionPromptFactory.truncatedText(
-            from: text,
-            customPromptLength: customPrompt?.count ?? 0,
-            budget: ContentExtractionPromptFactory.promptBudget(contextSize: SystemLanguageModel.default.contextSize)
+        let customPrompt = ContentExtractionPromptFactory.truncatedCustomPrompt(
+            customPrompt,
+            maxLength: maxCustomPromptLength
         )
+        let customPromptLength = customPrompt?.count ?? 0
+        var truncatedText = ContentExtractionPromptFactory.truncatedText(
+            from: text,
+            customPromptLength: customPromptLength,
+            budget: ContentExtractionPromptFactory.promptBudget(contextSize: contextSize)
+        )
+
+        // The estimated budget is pessimistic, so ask the tokenizer what the
+        // first cut really costs and re-cut with the measured ratio.
+        if truncatedText.count < text.count,
+           #available(iOS 26.4, macOS 26.4, *) {
+            do {
+                let sampleTokens = try await model.tokenCount(for: Prompt(truncatedText))
+                truncatedText = ContentExtractionPromptFactory.truncatedText(
+                    from: text,
+                    customPromptLength: customPromptLength,
+                    budget: ContentExtractionPromptFactory.calibratedBudget(contextSize: contextSize,
+                                                                           sampleLength: truncatedText.count,
+                                                                           sampleTokens: sampleTokens)
+                )
+            } catch {
+                Logger.contentExtractor.error("Failed to measure the token count, keeping the estimate: \(error)")
+            }
+        }
 
         let prompt = Prompt {
             customPrompt ?? ""
