@@ -172,28 +172,34 @@ struct DocumentInformationForm {
                 // remove current tagSearchteam
                 state.tagSearchterm = ""
 
-                // If multi-tag selection delay is enabled, start the timer
-                if state.multiTagSelectionDelayEnabled {
-                    state.isTagSelectionDelayActive = true
+                // The delay only buys time to pick more of the shown suggestions - with none left there is nothing to wait for
+                guard state.multiTagSelectionDelayEnabled,
+                      !state.suggestedTags.isEmpty else {
+                    state.isTagSelectionDelayActive = false
                     state.tagSelectionDelayProgress = 0.0
 
-                    return .run { send in
-                        let delayDuration: TimeInterval = 2
-                        let steps = 20
-                        let stepDuration = delayDuration / Double(steps)
-
-                        for step in 1...steps {
-                            try await clock.sleep(for: .seconds(stepDuration))
-                            await send(.updateTagSelectionDelayProgress(Double(step) / Double(steps)))
-                        }
-
-                        await send(.tagSelectionDelayCompleted)
-                    }
-                    .cancellable(id: CancelID.tagSelectionDelayTimer, cancelInFlight: true)
-                } else {
-                    // If delay is disabled, update suggestions immediately
-                    return .send(.startUpdatingTagSuggestions)
+                    return .concatenate(
+                        .cancel(id: CancelID.tagSelectionDelayTimer),
+                        .send(.startUpdatingTagSuggestions)
+                    )
                 }
+
+                state.isTagSelectionDelayActive = true
+                state.tagSelectionDelayProgress = 0.0
+
+                return .run { send in
+                    let delayDuration: TimeInterval = 2
+                    let steps = 20
+                    let stepDuration = delayDuration / Double(steps)
+
+                    for step in 1...steps {
+                        try await clock.sleep(for: .seconds(stepDuration))
+                        await send(.updateTagSelectionDelayProgress(Double(step) / Double(steps)))
+                    }
+
+                    await send(.tagSelectionDelayCompleted)
+                }
+                .cancellable(id: CancelID.tagSelectionDelayTimer, cancelInFlight: true)
 
             case .onTask:
                 state.isLoading = true
