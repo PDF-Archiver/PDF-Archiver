@@ -24,15 +24,15 @@ extension NSItemProvider {
     }
 
     func saveData(at url: URL, with validUTIs: [UTType]) async throws -> Bool {
-        var caughtError: (any Error)?
+        var error: (any Error)?
         var data: Data?
         var sourceURL: URL?
 
         for uti in validUTIs where hasItemConformingToTypeIdentifier(uti.identifier) {
             do {
                 (data, sourceURL) = try await getItem(for: uti)
-            } catch {
-                caughtError = error
+            } catch let inputError {
+                error = inputError
             }
 
             guard let data else { continue }
@@ -57,7 +57,7 @@ extension NSItemProvider {
             }
         }
 
-        if let err = caughtError {
+        if let err = error {
             throw err
         }
 
