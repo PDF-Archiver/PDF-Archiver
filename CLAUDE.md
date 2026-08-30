@@ -303,3 +303,17 @@ Enable demo mode for testing without real file system operations:
 UserDefaults.standard.set(true, forKey: "demoMode")
 ```
 This switches to `DemoFolderProvider` in DEBUG builds.
+
+### Documentation
+
+The prose documentation is a DocC catalogue at
+`ArchiverLib/Sources/ArchiverFeatures/ArchiverFeatures.docc`. Build or preview it
+with:
+
+```bash
+xcodebuild docbuild -workspace PDFArchiver.xcworkspace -scheme ArchiverLib \
+                    -destination 'platform=macOS'
+```
+
+Colours come from `theme-settings.json` and match the website's palette
+(`_sass/_variables.scss` in `pdf-archiver.github.io`).

@@ -1,0 +1,24 @@
+{
+  "meta": {
+    "title": "PDF Archiver"
+  },
+  "theme": {
+    "border-radius": "6px",
+    "color": {
+      "documentation-intro-accent": "#f95f62",
+      "documentation-intro-eyebrow": "#ffffff",
+      "documentation-intro-figure": "#ffffff",
+      "documentation-intro-fill": "#1f2d3d",
+      "documentation-intro-title": "#ffffff",
+      "link": "#ca414f",
+      "standard-blue": "#ca414f"
+    }
+  },
+  "features": {
+    "docs": {
+      "quickNavigation": {
+        "enable": true
+      }
+    }
+  }
+}
