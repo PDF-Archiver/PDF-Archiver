@@ -21,7 +21,15 @@ struct PDFArchiverIOSApp: App {
 
     var body: some Scene {
         WindowGroup {
+            #if DEBUG
+            if let screenshotScene = ScreenshotScene.requested {
+                screenshotScene.view
+            } else {
+                RootView()
+            }
+            #else
             RootView()
+            #endif
         }
     }
 }
