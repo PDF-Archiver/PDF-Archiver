@@ -26,7 +26,14 @@ enum ContentExtractionMapper {
 
     /// Normalize the raw model output: trim the description, and slug-clean the
     /// tags (remove symbols/whitespace) keeping at most `maxTags`.
-    static func normalize(_ raw: RawDocumentInformation) -> (specification: String, tags: [String]) {
+    ///
+    /// - Parameter vocabulary: Tags the archive already uses. A suggestion
+    ///   outside it is dropped: asking the prompt for existing tags only made
+    ///   the model cautious rather than accurate, and an invented tag can never
+    ///   match what the user filed, so dropping one only removes a wrong answer.
+    ///   Pass an empty set to keep every tag, for an archive with no tags yet.
+    static func normalize(_ raw: RawDocumentInformation,
+                          vocabulary: Set<String> = []) -> (specification: String, tags: [String]) {
         let specification = raw.description.trimmingCharacters(in: .whitespacesAndNewlines)
 
         var seen = Set<String>()
@@ -34,6 +41,7 @@ enum ContentExtractionMapper {
             .map(normalizeTag)
             .filter(isValidTag)
             .filter { seen.insert($0).inserted }
+            .filter { vocabulary.isEmpty || vocabulary.contains($0) }
         return (specification, Array(tags.prefix(maxTags)))
     }
 

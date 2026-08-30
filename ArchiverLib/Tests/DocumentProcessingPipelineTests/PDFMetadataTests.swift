@@ -36,15 +36,9 @@ struct PDFMetadataTests {
 
     // MARK: - hasTextLayer
 
-    @Test
-    func hasTextLayerReturnsTrueForTextPDF() throws {
-        let pdf = try #require(PDFDocument(url: Bundle.longTextPDFUrl))
-        #expect(PDFMetadata.hasTextLayer(pdf))
-    }
-
-    @Test
-    func hasTextLayerReturnsTrueForBillPDF() throws {
-        let pdf = try #require(PDFDocument(url: Bundle.billPDFUrl))
+    @Test(arguments: [Bundle.longTextPDFUrl, Bundle.billPDFUrl])
+    func hasTextLayerReturnsTrueForTextPDF(url: URL) throws {
+        let pdf = try #require(PDFDocument(url: url))
         #expect(PDFMetadata.hasTextLayer(pdf))
     }
 
@@ -90,15 +84,9 @@ struct PDFMetadataTests {
 
     // MARK: - isMarked
 
-    @Test
-    func wasProcessedReturnsFalseForExternalPDF() throws {
-        let pdf = try #require(PDFDocument(url: Bundle.longTextPDFUrl))
-        #expect(!PDFMetadata.isMarked(pdf, markerPrefix: marker))
-    }
-
-    @Test
-    func wasProcessedReturnsFalseForBillPDF() throws {
-        let pdf = try #require(PDFDocument(url: Bundle.billPDFUrl))
+    @Test(arguments: [Bundle.longTextPDFUrl, Bundle.billPDFUrl])
+    func wasProcessedReturnsFalseForExternalPDF(url: URL) throws {
+        let pdf = try #require(PDFDocument(url: url))
         #expect(!PDFMetadata.isMarked(pdf, markerPrefix: marker))
     }
 
@@ -138,12 +126,13 @@ struct PDFMetadataTests {
     func markAsProcessedOverwritesExistingCreator() throws {
         let url = try copyToTemp(Bundle.billPDFUrl, name: "overwrite-test.pdf")
         let pdf = try #require(PDFDocument(url: url))
+        pdf.documentAttributes?[PDFDocumentAttribute.creatorAttribute] = "Some Other Scanner"
 
         PDFMetadata.markAsProcessed(pdf, marker: marker, writeTo: url)
 
         let reloaded = try #require(PDFDocument(url: url))
         let creator = try #require(reloaded.documentAttributes?[PDFDocumentAttribute.creatorAttribute] as? String)
-        #expect(creator.hasPrefix(marker))
+        #expect(creator == marker)
     }
 
     @Test

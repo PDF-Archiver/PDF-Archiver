@@ -49,11 +49,6 @@ struct AppleIntelligenceSettings {
         BindingReducer()
         Reduce { state, action in
             switch action {
-            case .binding(\.$cacheEnabled):
-                return .run { [enabled = state.cacheEnabled] _ in
-                    await contentExtractorStore.setCacheEnabled(enabled)
-                }
-
             case .binding:
                 return .none
 
