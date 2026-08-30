@@ -176,6 +176,12 @@ struct DocumentDetailsView: View {
     @Bindable var store: StoreOf<DocumentDetails>
     @SharedReader(.ocrEnabled) private var ocrEnabled: Bool
 
+#if os(macOS)
+    // Archive and Inbox each keep their own pushed document detail, while the
+    // Save action is scene-wide - only the visible tab may publish it.
+    @State private var isOnScreen = false
+#endif
+
     var body: some View {
         Group {
             if store.document.downloadStatus < 1 {
@@ -198,7 +204,9 @@ struct DocumentDetailsView: View {
 #endif
                     }
 #if os(macOS)
-                    .focusedSceneValue(\.saveDocumentAction, store.showInspector
+                    .onAppear { isOnScreen = true }
+                    .onDisappear { isOnScreen = false }
+                    .focusedSceneValue(\.saveDocumentAction, isOnScreen && store.showInspector
                         ? SaveDocumentAction(documentId: store.document.id) {
                             store.send(.showDocumentInformationForm(.onSaveButtonTapped))
                         }

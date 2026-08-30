@@ -18,10 +18,8 @@ public actor ContentExtractorStore {
     /// on-device model; tests inject a deterministic stub.
     typealias Responder = @Sendable (_ documents: [Document], _ customPrompt: String?, _ text: String) async throws -> RawDocumentInformation
 
-    private static var locale: Locale {
-        Locale.current.region == "DE" ? Locale(identifier: "de_DE") : Locale.current
-    }
-
+    // `sampling:` is deprecated in the macOS 27 SDK but the only spelling the
+    // macOS 26 SDK has, and CI builds against that one - renaming breaks it.
     private static let options = GenerationOptions(
         sampling: .greedy,
         temperature: 0.0,
@@ -34,19 +32,12 @@ public actor ContentExtractorStore {
     /// truncates with it, so the character counter never promises more than what
     /// actually reaches the model.
     public static var maxCustomPromptLength: Int {
-        // Sizing the cap to the installed model's context window needs iOS 27;
-        // earlier systems keep the static cap.
-        guard #available(iOS 27, macOS 27, *) else {
-            return ContentExtractionPromptFactory.defaultMaxCustomPromptLength
-        }
-
-        return ContentExtractionPromptFactory.maxCustomPromptLength(contextSize: SystemLanguageModel.default.contextSize)
+        ContentExtractionPromptFactory.maxCustomPromptLength(contextSize: SystemLanguageModel.default.contextSize)
     }
 
     private let cache: ContentExtractorCache
     private let availability: @Sendable () -> AppleIntelligenceAvailability
     private let respond: Responder
-    private var useCache = true
 
     public init() {
         self.init(cache: ContentExtractorCache(),
@@ -97,18 +88,18 @@ public actor ContentExtractorStore {
 
         // Check cache if document ID is provided
         if let documentId,
-           useCache,
            let cachedEntry = await cache.getCachedResult(for: documentId) {
             Logger.contentExtractor.info("Using cached result for document ID: \(documentId)")
             return Info(specification: cachedEntry.specification, tags: cachedEntry.tags)
         }
 
         let raw = try await respond(documents, customPrompt, text)
-        let normalized = ContentExtractionMapper.normalize(raw)
+        let vocabulary = Set(documents.flatMap(\.tags).map { $0.lowercased() })
+        let normalized = ContentExtractionMapper.normalize(raw, vocabulary: vocabulary)
         let info = Info(specification: normalized.specification, tags: normalized.tags)
 
         // Save result to cache for faster subsequent access
-        if let documentId, useCache {
+        if let documentId {
             let cacheEntry = ContentExtractorCache.CacheEntry(
                 documentId: documentId,
                 specification: info.specification,
@@ -130,17 +121,6 @@ public actor ContentExtractorStore {
     /// Get the number of cache entries
     public func getCacheCount() async -> Int {
         await cache.getCacheCount()
-    }
-
-    /// Update cache enabled state
-    public func setCacheEnabled(_ enabled: Bool) {
-        useCache = enabled
-    }
-
-    /// Prune cache entries that don't have matching documents
-    /// - Parameter validIds: Set of valid document IDs to keep in cache
-    private func pruneCache(keepingOnly validIds: Set<Document.ID>) async {
-        await cache.pruneCache(keepingOnly: validIds)
     }
 
     /// Process untagged documents in the background to create cache entries
@@ -209,7 +189,7 @@ public actor ContentExtractorStore {
     /// instruction segments and run the on-device model. This is the only place
     /// that touches FoundationModels generation.
     private static let liveResponder: Responder = { documents, customPrompt, text in
-        let session = makeSession(with: documents)
+        let session = LanguageModelSession(model: .default, tools: [], instructions: instructions(for: documents))
         let model = SystemLanguageModel.default
         let contextSize = model.contextSize
 
@@ -225,18 +205,22 @@ public actor ContentExtractorStore {
         )
 
         // The estimated budget is pessimistic, so ask the tokenizer what the
-        // first cut really costs and re-cut with the measured ratio.
+        // first cut really costs and re-cut with the measured ratio. A dense
+        // tail can break that ratio, so the longer cut only counts if it fits.
         if truncatedText.count < text.count,
            #available(iOS 26.4, macOS 26.4, *) {
             do {
                 let sampleTokens = try await model.tokenCount(for: Prompt(truncatedText))
-                truncatedText = ContentExtractionPromptFactory.truncatedText(
+                let recut = ContentExtractionPromptFactory.truncatedText(
                     from: text,
                     customPromptLength: customPromptLength,
                     budget: ContentExtractionPromptFactory.calibratedBudget(contextSize: contextSize,
                                                                            sampleLength: truncatedText.count,
                                                                            sampleTokens: sampleTokens)
                 )
+                if try await model.tokenCount(for: Prompt(recut)) <= ContentExtractionPromptFactory.availableTokens(contextSize: contextSize) {
+                    truncatedText = recut
+                }
             } catch {
                 Logger.contentExtractor.error("Failed to measure the token count, keeping the estimate: \(error)")
             }
@@ -260,17 +244,16 @@ public actor ContentExtractorStore {
                                       tags: response.content.tags)
     }
 
-    private static func makeSession(with documents: [Document]) -> LanguageModelSession {
+    /// The instruction segments the live extraction runs with, so a capability
+    /// report or an evaluation measures the prompt the app actually sends.
+    public static func instructions(for documents: [Document]) -> Instructions {
         let stats = ContentExtractionPromptFactory.documentStats(from: documents)
-        return LanguageModelSession(
-            model: .default,
-            tools: [],
-            instructions: Instructions {
-                ContentExtractionPromptFactory.taskInstruction
-                ContentExtractionPromptFactory.descriptionInstruction(stats: stats, locale: Self.locale)
-                ContentExtractionPromptFactory.tagsInstruction(stats: stats, locale: Self.locale)
-            }
-        )
+        let locale = ContentExtractionPromptFactory.promptLocale
+        return Instructions {
+            ContentExtractionPromptFactory.taskInstruction
+            ContentExtractionPromptFactory.descriptionInstruction(stats: stats, locale: locale)
+            ContentExtractionPromptFactory.tagsInstruction(stats: stats, locale: locale)
+        }
     }
 }
 

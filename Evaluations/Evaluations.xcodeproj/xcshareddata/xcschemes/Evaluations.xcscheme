@@ -14,10 +14,24 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3489D72224A3C53E0035E64F"
-               BuildableName = "PDFArchiver.app"
-               BlueprintName = "macOS"
-               ReferencedContainer = "container:PDFArchiver.xcodeproj">
+               BlueprintIdentifier = "E5A1000000000000000000B1"
+               BuildableName = "EvaluationHost.app"
+               BlueprintName = "EvaluationHost"
+               ReferencedContainer = "container:Evaluations.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E5A1000000000000000000C1"
+               BuildableName = "ContentExtractionEvaluations.xctest"
+               BlueprintName = "ContentExtractionEvaluations"
+               ReferencedContainer = "container:Evaluations.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -26,17 +40,18 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES"
-      codeCoverageEnabled = "YES">
+      shouldUseLaunchSchemeArgsEnv = "NO"
+      language = "de"
+      region = "DE">
       <Testables>
          <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3489D73524A3C53E0035E64F"
-               BuildableName = "Tests macOS.xctest"
-               BlueprintName = "Tests macOS"
-               ReferencedContainer = "container:PDFArchiver.xcodeproj">
+               BlueprintIdentifier = "E5A1000000000000000000C1"
+               BuildableName = "ContentExtractionEvaluations.xctest"
+               BlueprintName = "ContentExtractionEvaluations"
+               ReferencedContainer = "container:Evaluations.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,25 +70,12 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3489D72224A3C53E0035E64F"
-            BuildableName = "PDFArchiver.app"
-            BlueprintName = "macOS"
-            ReferencedContainer = "container:PDFArchiver.xcodeproj">
+            BlueprintIdentifier = "E5A1000000000000000000B1"
+            BuildableName = "EvaluationHost.app"
+            BlueprintName = "EvaluationHost"
+            ReferencedContainer = "container:Evaluations.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
-      <CommandLineArguments>
-         <CommandLineArgument
-            argument = "-demoMode"
-            isEnabled = "YES">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "true"
-            isEnabled = "NO">
-         </CommandLineArgument>
-      </CommandLineArguments>
-      <StoreKitConfigurationFileReference
-         identifier = "../Shared/Resources/PDFArchiverIAP.storekit">
-      </StoreKitConfigurationFileReference>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -81,16 +83,6 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3489D72224A3C53E0035E64F"
-            BuildableName = "PDFArchiver.app"
-            BlueprintName = "macOS"
-            ReferencedContainer = "container:PDFArchiver.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

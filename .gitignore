@@ -46,3 +46,6 @@ Shared/Resources/Assets.xcassets/.DS_Store
 
 .DS_Store
 .build
+
+# Evaluation corpus - holds the text of real documents
+*corpus.json

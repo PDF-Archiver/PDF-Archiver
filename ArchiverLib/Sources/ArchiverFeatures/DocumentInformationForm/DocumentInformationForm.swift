@@ -178,10 +178,10 @@ struct DocumentInformationForm {
                     state.isTagSelectionDelayActive = false
                     state.tagSelectionDelayProgress = 0.0
 
-                    return .concatenate(
-                        .cancel(id: CancelID.tagSelectionDelayTimer),
-                        .send(.startUpdatingTagSuggestions)
-                    )
+                    return .run { send in
+                        await send(.startUpdatingTagSuggestions)
+                    }
+                    .cancellable(id: CancelID.tagSelectionDelayTimer, cancelInFlight: true)
                 }
 
                 state.isTagSelectionDelayActive = true

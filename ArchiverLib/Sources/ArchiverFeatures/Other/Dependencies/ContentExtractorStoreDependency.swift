@@ -61,10 +61,6 @@ public struct ContentExtractorStoreDependency: Sendable {
     /// - Returns: Count of cache entries
     public var getCacheCount: @Sendable () async -> Int = { 0 }
 
-    /// Enable or disable the cache
-    /// - Parameter enabled: Whether cache should be enabled
-    public var setCacheEnabled: @Sendable (Bool) async -> Void = { _ in }
-
     /// Process untagged documents in background to create cache entries
     /// - Parameters:
     ///   - documents: All documents to process
@@ -80,7 +76,6 @@ extension ContentExtractorStoreDependency: TestDependencyKey {
         getDocumentInformation: { _ in nil },
         clearCache: {},
         getCacheCount: { 0 },
-        setCacheEnabled: { _ in },
         processUntaggedDocumentsInBackground: { _, _, _ in 0 }
     )
 
@@ -98,11 +93,14 @@ extension ContentExtractorStoreDependency: DependencyKey {
         },
         getDocumentInformation: { input in
             guard #available(iOS 26.0, macOS 26.0, *) else { return nil }
+            @Shared(.appleIntelligenceCacheEnabled) var cacheEnabled: Bool
             do {
+                // Without a document id `extract` neither reads nor writes the
+                // cache, which is how the setting stays honored across launches.
                 guard let result = try await contentExtractorStore.extract(from: input.text,
                                                                            customPrompt: input.customPrompt,
                                                                            with: input.currentDocuments,
-                                                                           documentId: input.documentId) else { return nil }
+                                                                           documentId: cacheEnabled ? input.documentId : nil) else { return nil }
 
                 return DocInfo(specification: result.specification,
                                tags: Set(result.tags))
@@ -151,10 +149,6 @@ extension ContentExtractorStoreDependency: DependencyKey {
         getCacheCount: {
             guard #available(iOS 26.0, macOS 26.0, *) else { return 0 }
             return await contentExtractorStore.getCacheCount()
-        },
-        setCacheEnabled: { enabled in
-            guard #available(iOS 26.0, macOS 26.0, *) else { return }
-            await contentExtractorStore.setCacheEnabled(enabled)
         },
         processUntaggedDocumentsInBackground: { documents, textExtractor, customPrompt in
             guard #available(iOS 26.0, macOS 26.0, *) else { return 0 }
