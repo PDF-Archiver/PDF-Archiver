@@ -69,7 +69,6 @@ The core logic is organized into separate SPM targets in `ArchiverLib/`:
   - `FolderProvider` protocol with implementations:
     - `ICloudFolderProvider`: iCloud Drive integration
     - `LocalFolderProvider`: Local filesystem
-    - `DemoFolderProvider`: Demo mode (DEBUG only)
   - `DirectoryDeepWatcher`: File system observation
 
 - **ArchiverModels**: Core data models
@@ -255,7 +254,6 @@ Swift Package Manager doesn't support App Intents directly, so they must be defi
 The app automatically selects the appropriate `FolderProvider` based on the folder URL:
 - iCloud containers use `ICloudFolderProvider`
 - Local paths use `LocalFolderProvider`
-- Demo mode uses `DemoFolderProvider` (when `UserDefaults` key `demoMode` is set)
 
 ### Document Loading Flow
 1. `ArchiveStore.update()` initializes folder providers
@@ -296,10 +294,3 @@ Main dependencies (from `ArchiverLib/Package.swift`):
 - `AsyncExtensions` (v0.5.4+): Async utilities
 - `swift-async-algorithms` (v1.0.4+): Async sequence algorithms
 
-## Demo Mode
-
-Enable demo mode for testing without real file system operations:
-```swift
-UserDefaults.standard.set(true, forKey: "demoMode")
-```
-This switches to `DemoFolderProvider` in DEBUG builds.
