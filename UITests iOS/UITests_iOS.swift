@@ -53,7 +53,8 @@ final class UITestsiOS: XCTestCase {
 /// Captures the raw App Store screenshots by launching the app straight into a `ScreenshotScene`.
 ///
 /// Only runs when `SCREENSHOT_OUTPUT_DIR` names a destination folder, so a normal UI test run is
-/// unaffected. Framing and captions are added afterwards, outside the repository.
+/// unaffected. The numbers match the shot list in the marketing briefing, which is why they are
+/// not contiguous: 03, 04, 06 and 07 cannot be produced from a simulator.
 final class AppStoreScreenshotUITests: XCTestCase {
 
     override func setUpWithError() throws {
@@ -66,13 +67,26 @@ final class AppStoreScreenshotUITests: XCTestCase {
         try capture(scene: "archive", named: "01-archive")
     }
 
+    func testCaptureTagging() throws {
+        try capture(scene: "tagging", named: "02-tagging")
+    }
+
+    func testCaptureStorage() throws {
+        try capture(scene: "storage", named: "05-on-device")
+    }
+
+    func testCaptureTrial() throws {
+        try capture(scene: "trial", named: "08-trial")
+    }
+
     private func capture(scene: String, named name: String) throws {
         let app = XCUIApplication()
         app.launchArguments = ["-screenshotScene", scene]
         app.launch()
 
-        // The scene is seeded up front, so the first document proves the list finished building.
-        XCTAssertTrue(app.staticTexts["stromrechnung"].waitForExistence(timeout: 30))
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 60))
+        // Any text proves the scene finished building, whatever the language or screen.
+        XCTAssertTrue(app.staticTexts.firstMatch.waitForExistence(timeout: 60))
 
         let directory = try XCTUnwrap(Self.outputDirectory)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
