@@ -23,6 +23,7 @@ public enum ScreenshotScene: String, CaseIterable, Sendable {
     case trial
     case inbox
     case statistics
+    case mac
 
     /// The scene the app was launched for, or `nil` during a normal launch.
     public static var requested: ScreenshotScene? {
@@ -49,7 +50,20 @@ public enum ScreenshotScene: String, CaseIterable, Sendable {
 
         case .statistics:
             statisticsView
+
+        case .mac:
+            macApp
         }
+    }
+
+    /// The whole app rather than a single screen: on macOS the two-column layout is the point.
+    @MainActor
+    private var macApp: some View {
+        seed(documents: Self.archivedDocuments + Self.untaggedDocuments)
+
+        return AppView(store: Store(initialState: AppFeature.State()) {
+            AppFeature()
+        })
     }
 
     // MARK: - Scenes
