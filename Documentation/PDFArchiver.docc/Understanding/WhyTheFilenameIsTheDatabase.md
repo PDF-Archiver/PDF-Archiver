@@ -30,9 +30,9 @@ describes; a filename cannot disagree with itself.
 
 ### What it costs
 
-**The name is a schema, and schemas constrain.** Descriptions have to be
-slugified; tags have to be single lowercase words. Filesystem limits are real
-limits.
+**The name is a form, and forms constrain.** Descriptions lose their accents and
+punctuation; tags have to be single lowercase words. How long a filename may be
+is a real limit, not a soft one.
 
 **Renaming is editing.** Changing a tag means renaming the file. That is cheap,
 but it does mean the archive's history is the filesystem's history, not the

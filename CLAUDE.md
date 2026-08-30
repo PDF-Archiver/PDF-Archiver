@@ -306,14 +306,20 @@ This switches to `DemoFolderProvider` in DEBUG builds.
 
 ### Documentation
 
-The prose documentation is a DocC catalogue at
-`ArchiverLib/Sources/ArchiverFeatures/ArchiverFeatures.docc`. Build or preview it
-with:
+The user manual is a DocC catalogue at `Documentation/PDFArchiver.docc`. It is
+deliberately **not** attached to a Swift target: a manual for end users must not
+grow an auto-generated "Structures" section from a module's API. Build it with:
 
 ```bash
-xcodebuild docbuild -workspace PDFArchiver.xcworkspace -scheme ArchiverLib \
-                    -destination 'platform=macOS'
+xcrun docc convert Documentation/PDFArchiver.docc \
+     --output-path /tmp/pdf-archiver-manual.doccarchive \
+     --fallback-display-name "PDF Archiver" \
+     --fallback-bundle-identifier de.JulianKahnert.PDFArchiveViewer.manual
 ```
+
+Note that `docc process-archive transform-for-static-hosting` overwrites
+`theme-settings.json` with `{}` — copy the catalogue's version back over the
+export, or the published manual loses its colours without any warning.
 
 Colours come from `theme-settings.json` and match the website's palette
 (`_sass/_variables.scss` in `pdf-archiver.github.io`).

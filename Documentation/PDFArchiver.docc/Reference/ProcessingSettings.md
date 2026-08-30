@@ -20,9 +20,10 @@ layer into the file, in place — the filename does not change.
 This is also what makes Apple Intelligence useful for scans: the suggestion is
 built from the text layer, so a document without one has nothing to suggest from.
 
-OCR is attempted once per document. The result is recorded in the PDF's `Creator`
-attribute, so a document that failed is not retried on every pass. If it later
-gains a text layer by other means, that wins over the marker.
+OCR is attempted once per document. A document it could not read is remembered
+as attempted rather than retried endlessly — but if the document later gains a
+text layer by other means, that counts and the document is treated as readable
+again.
 
 ### PDF quality
 

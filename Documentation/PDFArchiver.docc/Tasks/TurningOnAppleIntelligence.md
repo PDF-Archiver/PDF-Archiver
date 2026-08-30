@@ -17,8 +17,8 @@ does not leave it.
 
 ### Where the suggestions come from
 
-Not from a general idea of what documents look like, but from your archive. The
-prompt is assembled from it each time:
+Not from a general idea of what documents look like, but from your archive. Each
+time the model is asked, it is shown:
 
 - the tags you use most, so suggestions stay in your vocabulary
 - example descriptions from your recent filings, so new ones read like them

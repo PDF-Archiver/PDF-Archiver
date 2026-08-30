@@ -27,10 +27,10 @@ Archive/2024/2024-03-11--stromabrechnung-eon__rechnung_strom.pdf
 
 ### Character handling
 
-Descriptions and tags are slugified: diacritics are folded (`ä` becomes `ae`),
-symbols and whitespace are removed, and everything is lowercased. This keeps
-names portable across filesystems, which matters when the same archive is opened
-on macOS, iOS and whatever syncs it in between.
+Descriptions and tags are reduced to plain letters: accents are spelled out
+(`ä` becomes `ae`), symbols and spaces are removed, and everything is
+lowercased. This keeps names readable on any system, which matters when the same
+archive is opened on a Mac, an iPhone and whatever syncs it in between.
 
 Tags are sorted so that the same set of tags always produces the same filename,
 whatever order they were typed in.
@@ -42,9 +42,8 @@ non-empty description, and at least one tag. Anything else is treated as
 untagged — including a document that carries a date and description but no tags
 yet.
 
-This is also what makes the archive usable as ground truth: a filed name is a
-decision a human made, and can be compared against
-(<doc:HowSuggestionsAreMeasured>).
+A document that is missing one of the three is shown in the untagged list,
+waiting for you to complete it.
 
 ### Year folders
 

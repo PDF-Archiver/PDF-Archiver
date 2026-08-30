@@ -13,19 +13,18 @@ Everything lands in the untagged folder, whatever route it took:
 | Share extension | The file is written to a staging folder and picked up when the app next runs |
 | Straight into the folder | A desktop scanner or Files.app writes the PDF; the folder watcher notices |
 
-Imports are serialized in a queue, so a large scan does not compete with a drop
-that arrives while it runs.
+Imports happen one at a time, so a large scan does not slow down a file you drop
+while it runs.
 
 ### Nothing is lost if the app stops
 
-An incoming document is persisted in the staging folder **before** it enters the
-queue and deleted only **after** the finished PDF has been written. If the app is
-killed halfway, the file is still in staging and is picked up on the next launch.
-The worst case is a duplicate import; the case that cannot happen is a lost
-document.
+An incoming document is written to disk before anything else happens to it, and
+removed only once the finished PDF exists. If the app is interrupted halfway, the
+document is picked up again next time you open it. The worst case is the same
+document arriving twice; the case that cannot happen is a lost document.
 
-Multi-page scans share a filename prefix, so an interrupted scan comes back as
-one document rather than a pile of loose pages.
+An interrupted multi-page scan comes back as one document rather than a pile of
+loose pages.
 
 ### PDFs are not re-encoded
 

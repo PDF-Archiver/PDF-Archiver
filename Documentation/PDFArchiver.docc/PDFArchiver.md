@@ -1,4 +1,8 @@
-# ``ArchiverFeatures``
+# PDF Archiver
+
+@Metadata {
+    @TechnologyRoot
+}
 
 A document archive whose database is the set of filenames.
 
@@ -45,4 +49,3 @@ teaches the app its own vocabulary rather than the other way round.
 - <doc:WhyTheFilenameIsTheDatabase>
 - <doc:HowADocumentMoves>
 - <doc:HowSuggestionsAreMade>
-- <doc:HowSuggestionsAreMeasured>
