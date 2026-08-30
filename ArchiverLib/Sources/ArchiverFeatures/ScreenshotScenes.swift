@@ -21,6 +21,8 @@ public enum ScreenshotScene: String, CaseIterable, Sendable {
     case tagging
     case storage
     case trial
+    case inbox
+    case statistics
 
     /// The scene the app was launched for, or `nil` during a normal launch.
     public static var requested: ScreenshotScene? {
@@ -41,6 +43,12 @@ public enum ScreenshotScene: String, CaseIterable, Sendable {
 
         case .trial:
             IAPView(onCancel: {})
+
+        case .inbox:
+            inboxList
+
+        case .statistics:
+            statisticsView
         }
     }
 
@@ -71,6 +79,43 @@ public enum ScreenshotScene: String, CaseIterable, Sendable {
             DocumentInformationFormView(store: Store(initialState: state) {
                 DocumentInformationForm()
             })
+        }
+    }
+
+    @MainActor
+    private var inboxList: some View {
+        seed(documents: Self.archivedDocuments + Self.untaggedDocuments)
+
+        return NavigationStack {
+            UntaggedDocumentListView(store: Store(initialState: UntaggedDocumentList.State()) {
+                UntaggedDocumentList()
+            })
+            .navigationTitle(Text("Inbox", bundle: #bundle))
+        }
+    }
+
+    @MainActor
+    private var statisticsView: some View {
+        seed(documents: Self.archivedDocuments + Self.untaggedDocuments)
+
+        // The reducer derives these asynchronously; a screenshot needs them present up front.
+        var state = Statistics.State()
+        state.isLoading = false
+        state.yearStats = [2024: 3, 2025: 3, 2026: 4]
+        state.untaggedDocuments = Self.untaggedDocuments.count
+        state.totalDocuments = Self.archivedDocuments.count + Self.untaggedDocuments.count
+        state.totalStorageSize = Measurement(value: 6_144_000, unit: .bytes)
+        state.topTags = Self.isGerman
+            ? [.init(tag: "rechnung", count: 3), .init(tag: "vertrag", count: 2),
+               .init(tag: "arbeit", count: 2), .init(tag: "steuer", count: 1)]
+            : [.init(tag: "bill", count: 3), .init(tag: "contract", count: 2),
+               .init(tag: "work", count: 2), .init(tag: "tax", count: 1)]
+
+        return NavigationStack {
+            StatisticsView(store: Store(initialState: state) {
+                Statistics()
+            })
+            .navigationTitle(Text("Statistics", bundle: #bundle))
         }
     }
 
@@ -140,6 +185,23 @@ public enum ScreenshotScene: String, CaseIterable, Sendable {
         document(id: 10, date: date(2024, 5, 2), specification: "bank statement", tags: ["bank", "finance"])
     ]
 
+    /// Freshly scanned, not yet filed - what the inbox is there for. The inbox shows the raw
+    /// scanner filename, so these bypass `createFilename` instead of getting an archive name.
+    private static var untaggedDocuments: [Document] {
+        [("2026-07-18 09-12", 18), ("2026-07-17 17-45", 17), ("2026-07-15 08-03", 15)]
+            .enumerated()
+            .map { index, scan in
+                Document(id: 100 + index,
+                         url: URL(filePath: "/Archive/untagged/Scan \(scan.0).pdf"),
+                         date: date(2026, 7, scan.1),
+                         specification: "Scan \(scan.0)",
+                         tags: [],
+                         isTagged: false,
+                         sizeInBytes: 512_000,
+                         downloadStatus: 1)
+            }
+    }
+
     private static func document(id: Document.ID,
                                  date: Date,
                                  specification: String,
@@ -183,5 +245,13 @@ public enum ScreenshotScene: String, CaseIterable, Sendable {
 
 #Preview("App Store: Trial") {
     ScreenshotScene.trial.view
+}
+
+#Preview("App Store: Inbox") {
+    ScreenshotScene.inbox.view
+}
+
+#Preview("App Store: Statistics") {
+    ScreenshotScene.statistics.view
 }
 #endif

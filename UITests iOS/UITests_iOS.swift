@@ -54,7 +54,8 @@ final class UITestsiOS: XCTestCase {
 ///
 /// Only runs when `SCREENSHOT_OUTPUT_DIR` names a destination folder, so a normal UI test run is
 /// unaffected. The numbers match the shot list in the marketing briefing, which is why they are
-/// not contiguous: 03, 04, 06 and 07 cannot be produced from a simulator.
+/// not contiguous: 03, 04, 06 and 07 cannot be produced from a simulator. The 2x numbers are
+/// press kit shots, which the store series does not use.
 final class AppStoreScreenshotUITests: XCTestCase {
 
     override func setUpWithError() throws {
@@ -77,6 +78,14 @@ final class AppStoreScreenshotUITests: XCTestCase {
 
     func testCaptureTrial() throws {
         try capture(scene: "trial", named: "08-trial")
+    }
+
+    func testCaptureInbox() throws {
+        try capture(scene: "inbox", named: "20-inbox")
+    }
+
+    func testCaptureStatistics() throws {
+        try capture(scene: "statistics", named: "21-statistics")
     }
 
     private func capture(scene: String, named name: String) throws {
