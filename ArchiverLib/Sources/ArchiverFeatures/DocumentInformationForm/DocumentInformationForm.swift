@@ -360,19 +360,21 @@ struct DocumentInformationForm {
     }
 }
 
-/// Gives one control ownership of Tab, so focus cycles through the form instead of escaping into the window's key-view loop.
-private struct TabCycleModifier: ViewModifier {
+/// Gives one control ownership of Tab, so focus cycles through the form instead of escaping into the surrounding focus loop.
+struct TabCycleModifier: ViewModifier {
     let store: StoreOf<DocumentInformationForm>
 
+    /// Tab, plus macOS's translation of Shift-Tab (`NSBackTabCharacter`, U+0019) - there is no `KeyEquivalent.backTab`.
+    static let interceptedKeys: Set<KeyEquivalent> = [.tab, KeyEquivalent("\u{19}")]
+
     func body(content: Content) -> some View {
-        #if os(macOS)
-        content.onKeyPress(keys: [.tab], phases: .down) { keyPress in
+        content.onKeyPress(keys: Self.interceptedKeys, phases: [.down, .repeat]) { keyPress in
+            // Consume repeats too, so a held key can't leak into the system's own focus movement;
+            // only `.down` advances, which keeps the cycle at one step per physical press.
+            guard keyPress.phase == .down else { return .handled }
             store.send(.onTabKeyPressed(forward: !keyPress.modifiers.contains(.shift)))
             return .handled
         }
-        #else
-        content
-        #endif
     }
 }
 

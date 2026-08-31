@@ -1,6 +1,7 @@
 import ArchiverModels
 import ComposableArchitecture
 import Foundation
+import SwiftUI
 import Testing
 
 @testable import ArchiverFeatures
@@ -170,6 +171,14 @@ struct DocumentInformationFormTests {
         await store.send(.onTabKeyPressed(forward: true)) {
             $0.focusedField = .date
         }
+    }
+
+    // macOS translates Shift-Tab to U+0019 (NSBackTabCharacter), never `.tab` - the intercepted
+    // key set has to include it or Shift-Tab falls through to AppKit's own key-view movement.
+    @Test
+    func tabCycleModifierInterceptsMacOSShiftTabTranslation() {
+        #expect(TabCycleModifier.interceptedKeys.contains(KeyEquivalent("\u{19}")))
+        #expect(TabCycleModifier.interceptedKeys.contains(.tab))
     }
 
     // MARK: - Tag Management Tests
