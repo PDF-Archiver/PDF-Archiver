@@ -24,8 +24,16 @@ struct DocumentInformationForm {
 
     @ObservableState
     struct State: Equatable {
-        enum Field: Hashable {
+        enum Field: Hashable, CaseIterable {
             case date, specification, tags, save
+
+            /// Wraps in both directions - this is what keeps Tab from leaving the inspector.
+            func next(forward: Bool) -> Field {
+                let all = Self.allCases
+                let index = all.firstIndex(of: self) ?? 0
+                let offset = forward ? 1 : all.count - 1
+                return all[(index + offset) % all.count]
+            }
         }
 
         @SharedReader(.notSaveDocumentTagsAsPDFMetadata)
@@ -80,6 +88,7 @@ struct DocumentInformationForm {
         case delegate(Delegate)
         case onSaveButtonTapped
         case onSuggestedDateButtonTapped(Date)
+        case onTabKeyPressed(forward: Bool)
         case onTagOnDocumentTapped(String)
         case onTagSearchtermSubmitted
         case onTagSuggestionTapped(String)
@@ -121,6 +130,7 @@ struct DocumentInformationForm {
             case .onSaveButtonTapped:
                 let nothingChanged = state.initialDocument.date == state.document.date && state.initialDocument.specification == state.document.specification && state.initialDocument.tags == state.document.tags
                 if nothingChanged, state.document.isTagged {
+                    state.focusedField = .date
                     return .none
                 }
 
@@ -148,6 +158,10 @@ struct DocumentInformationForm {
 
             case .onSuggestedDateButtonTapped(let date):
                 state.document.date = date
+                return .none
+
+            case .onTabKeyPressed(let forward):
+                state.focusedField = state.focusedField?.next(forward: forward) ?? .date
                 return .none
 
             case .onTagOnDocumentTapped(var tag):
@@ -346,6 +360,24 @@ struct DocumentInformationForm {
     }
 }
 
+/// Gives one control ownership of Tab, so focus cycles through the form instead of escaping into the surrounding focus loop.
+struct TabCycleModifier: ViewModifier {
+    let store: StoreOf<DocumentInformationForm>
+
+    /// Tab, plus macOS's translation of Shift-Tab (`NSBackTabCharacter`, U+0019) - there is no `KeyEquivalent.backTab`.
+    static let interceptedKeys: Set<KeyEquivalent> = [.tab, KeyEquivalent("\u{19}")]
+
+    func body(content: Content) -> some View {
+        content.onKeyPress(keys: Self.interceptedKeys, phases: [.down, .repeat]) { keyPress in
+            // Consume repeats too, so a held key can't leak into the system's own focus movement;
+            // only `.down` advances, which keeps the cycle at one step per physical press.
+            guard keyPress.phase == .down else { return .handled }
+            store.send(.onTabKeyPressed(forward: !keyPress.modifiers.contains(.shift)))
+            return .handled
+        }
+    }
+}
+
 struct DocumentInformationFormView: View {
     @Bindable var store: StoreOf<DocumentInformationForm>
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -368,6 +400,7 @@ struct DocumentInformationFormView: View {
                     .focusable(false)
                 DatePicker(String(localized: "Date", bundle: #bundle), selection: $store.document.date, displayedComponents: .date)
                     .focused($focusedField, equals: .date)
+                    .modifier(TabCycleModifier(store: store))
                     .listRowSeparator(.hidden)
                     .sensoryFeedback(.selection, trigger: store.document.date)
                 HStack {
@@ -380,6 +413,7 @@ struct DocumentInformationFormView: View {
                         }
                         .fixedSize()
                         .buttonStyle(.bordered)
+                        .focusable(false)
                         // The visible short digits read as an ambiguous number to VoiceOver; spell out the date and its purpose.
                         .accessibilityLabel(Text("Suggested date: \(date.formatted(date: .long, time: .omitted))", bundle: #bundle))
                         .accessibilityHint(Text("Sets the document date to this value", bundle: #bundle))
@@ -389,8 +423,8 @@ struct DocumentInformationFormView: View {
                     }
                     .labelStyle(.iconOnly)
                     .buttonStyle(.bordered)
+                    .focusable(false)
                 }
-                .focusable(false)
             }
 
             Section {
@@ -402,6 +436,7 @@ struct DocumentInformationFormView: View {
                 }
                 .lineLimit(1...5)
                 .focused($focusedField, equals: .specification)
+                .modifier(TabCycleModifier(store: store))
             }
 
             documentTagsSection
@@ -424,6 +459,7 @@ struct DocumentInformationFormView: View {
                     }
                     .buttonStyle(.bordered)
                     .focused($focusedField, equals: .save)
+                    .modifier(TabCycleModifier(store: store))
 #if os(iOS)
                     .keyboardShortcut("s", modifiers: [.command])
 #endif
@@ -464,7 +500,6 @@ struct DocumentInformationFormView: View {
                                 isSuggestion: false,
                                 isMultiLine: true,
                                 tapHandler: { store.send(.onTagOnDocumentTapped($0)) })
-                    .focusable(false)
                 }
 
                 HStack(alignment: .top) {
@@ -479,7 +514,6 @@ struct DocumentInformationFormView: View {
                             .frame(width: 20, height: 20)
                     }
                 }
-                .focusable(false)
 
                 TextField(text: $store.tagSearchterm, prompt: Text("Enter Tag", bundle: #bundle)) {
                     Text("Tag", bundle: #bundle)
@@ -488,6 +522,7 @@ struct DocumentInformationFormView: View {
                     store.send(.onTagSearchtermSubmitted)
                 }
                 .focused($focusedField, equals: .tags)
+                .modifier(TabCycleModifier(store: store))
                 #if os(iOS)
                 .keyboardType(.alphabet)
                 .autocorrectionDisabled()

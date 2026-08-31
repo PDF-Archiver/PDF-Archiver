@@ -30,6 +30,7 @@ public struct TagView: View {
                 tag
             }
             .buttonStyle(BorderlessButtonStyle())
+            .focusable(false)
             .accessibilityLabel(accessibilityLabel)
             .accessibilityHint(actionHint)
         } else {
