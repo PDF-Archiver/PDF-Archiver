@@ -195,13 +195,16 @@ enum PDFOCREngine {
 
         var stream: CGPDFStreamRef?
         withUnsafeMutablePointer(to: &stream) { pointer in
-            CGPDFDictionaryApplyFunction(xObjects, { _, object, info in
+            CGPDFDictionaryApplyFunction(
+            xObjects,
+            { _, object, info in
                 guard let info else { return }
                 var candidate: CGPDFStreamRef?
                 guard CGPDFObjectGetValue(object, .stream, &candidate),
                       let candidate else { return }
                 info.assumingMemoryBound(to: CGPDFStreamRef?.self).pointee = candidate
-            }, pointer)
+            },
+            pointer)
         }
 
         guard let stream,

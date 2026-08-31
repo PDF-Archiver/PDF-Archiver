@@ -220,5 +220,7 @@ extension PDFInfoView {
         title: "Annual Report 2024",
         author: "John Doe",
         subject: "Finance"
-    ), isRunningOcr: false, onRunOcr: { })
+    ),
+    isRunningOcr: false,
+    onRunOcr: { })
 }

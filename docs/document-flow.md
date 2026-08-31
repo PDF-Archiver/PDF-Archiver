@@ -63,7 +63,7 @@ per request:
 
 | Setting | Key | Effect |
 |---|---|---|
-| Automatic OCR for image PDFs | `ocrEnabled` (default `false`) | OCR pass of the untagged processing |
+| Automatic OCR for image PDFs | `ocrEnabled` (default `false`) | OCR pass of the untagged processing over *untagged* documents only. The OCR action in a document's info popover runs independently of the setting and works on archived documents as well. |
 | Apple Intelligence + cache | `appleIntelligenceEnabled`, `appleIntelligenceCacheEnabled` | AI pass of the untagged processing |
 | Custom prompt | `appleIntelligenceCustomPrompt` | Forwarded to the content extraction prompt |
 | PDF quality | `pdfQuality` | JPEG compression of scanned pages and re-rendered OCR pages |
@@ -83,21 +83,24 @@ document.
 
 Externally added PDFs without a text layer are OCR'd **in place** (filenames
 untouched). To avoid re-processing on every pass, the `Creator` PDF attribute
-is set to the processed marker (`"PDF Archiver"`) after every OCR attempt —
-including failed ones, which prevents retry loops:
+is set to the versioned processed marker (`"PDF Archiver v<N>"`) after every
+OCR attempt — including failed ones, which prevents retry loops. A document is
+skipped only while its stamped version is at least the current engine version,
+so raising `ProcessingConfig.ocrEngineVersion` grants every archived document
+one further attempt:
 
 ```
-Has text layer?             → skip
-Creator starts with marker? → skip (already attempted)
-otherwise                   → Vision OCR → invisible text layer → set Creator
+Has text layer?                    → skip
+Creator version >= engine version? → skip (already attempted by this engine)
+otherwise                          → Vision OCR → invisible text layer → set Creator
 ```
 
 `Creator` is used instead of `Producer` because `PDFDocument.write(to:)`
 unconditionally overwrites `Producer` with the Quartz PDFContext value. A
 cancelled OCR run (expiring background task) discards the partially modified
-document *without* marking it, so it is retried on the next pass. If a
-document later gains a text layer by other means, the text-layer check wins
-over the marker.
+document *without* marking it, so it is retried on the next pass. An
+unreadable text layer counts as no text layer (`TextReadability`), so such a
+document is re-OCR'd as soon as the engine version advances past its stamp.
 
 ## Background task
 

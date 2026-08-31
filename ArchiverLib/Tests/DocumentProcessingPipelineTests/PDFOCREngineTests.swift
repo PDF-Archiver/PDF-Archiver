@@ -112,13 +112,16 @@ struct PDFOCREngineTests {
 
         var streams: [CGPDFStreamRef] = []
         withUnsafeMutablePointer(to: &streams) { pointer in
-            CGPDFDictionaryApplyFunction(xObjects, { _, object, info in
+            CGPDFDictionaryApplyFunction(
+                xObjects,
+                { _, object, info in
                 guard let info else { return }
                 var stream: CGPDFStreamRef?
                 guard CGPDFObjectGetValue(object, .stream, &stream),
                       let stream else { return }
                 info.assumingMemoryBound(to: [CGPDFStreamRef].self).pointee.append(stream)
-            }, pointer)
+                },
+                pointer)
         }
 
         var sizes: [CGSize] = []
@@ -135,8 +138,10 @@ struct PDFOCREngineTests {
                 guard CGPDFDictionaryGetInteger(streamDictionary, "Width", &width),
                       CGPDFDictionaryGetInteger(streamDictionary, "Height", &height) else { continue }
                 sizes.append(CGSize(width: width, height: height))
+
             case "Form":
                 sizes.append(contentsOf: imageSizes(inXObjectsOf: streamDictionary))
+
             default:
                 continue
             }
