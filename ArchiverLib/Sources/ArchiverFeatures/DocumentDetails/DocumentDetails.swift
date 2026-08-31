@@ -28,7 +28,7 @@ struct DocumentDetails {
         var documentInformationForm: DocumentInformationForm.State
         // initially always false to avoid UI glitches, e.g. not showing the inspector
         var showInspector = false
-        var isRecreatingOcr = false
+        var isRunningOcr = false
 #if os(iOS)
         var shareDocument: ShareData?
 #endif
@@ -48,9 +48,9 @@ struct DocumentDetails {
         case delegate(Delegate)
         case onDeleteDocumentButtonTapped
         case onEditButtonTapped
-        case onRecreateOcrButtonTapped
+        case onRunOcrButtonTapped
         case onRemoteDocumentAppeared
-        case recreateOcrFinished(Bool)
+        case runOcrFinished(Bool)
 #if os(iOS)
         case onShareButtonTapped
 #endif
@@ -117,10 +117,10 @@ struct DocumentDetails {
                 }
                 return .none
 
-            case .onRecreateOcrButtonTapped:
-                state.isRecreatingOcr = true
+            case .onRunOcrButtonTapped:
+                state.isRunningOcr = true
                 return .run { [documentUrl = state.document.url] send in
-                    await send(.recreateOcrFinished(await documentProcessor.recreateOcr(documentUrl)))
+                    await send(.runOcrFinished(await documentProcessor.runOcr(documentUrl)))
                 }
 
             case .onRemoteDocumentAppeared:
@@ -128,8 +128,8 @@ struct DocumentDetails {
                     try await startDownloadOf(documentUrl)
                 }
 
-            case .recreateOcrFinished(let success):
-                state.isRecreatingOcr = false
+            case .runOcrFinished(let success):
+                state.isRunningOcr = false
                 guard !success else { return .none }
                 state.alert = AlertState<Action.Alert> {
                     TextState("OCR failed", bundle: #bundle)
@@ -315,8 +315,8 @@ struct DocumentDetailsView: View {
 
     private var pdfInfoView: some View {
         PDFInfoView(documentURL: store.document.url,
-                    isRecreatingOcr: store.isRecreatingOcr,
-                    onRecreateOcr: { store.send(.onRecreateOcrButtonTapped) })
+                    isRunningOcr: store.isRunningOcr,
+                    onRunOcr: { store.send(.onRunOcrButtonTapped) })
     }
 
     @ToolbarContentBuilder

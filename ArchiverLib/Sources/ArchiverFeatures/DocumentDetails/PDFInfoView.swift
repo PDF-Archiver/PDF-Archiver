@@ -12,8 +12,8 @@ import SwiftUI
 
 struct PDFInfoView: View {
     let documentURL: URL
-    let isRecreatingOcr: Bool
-    let onRecreateOcr: () -> Void
+    let isRunningOcr: Bool
+    let onRunOcr: () -> Void
 
     @State private var pdfInfo: PDFInfo?
     @State private var showPopover = false
@@ -58,7 +58,7 @@ struct PDFInfoView: View {
         .popover(isPresented: $showPopover) {
             Group {
                 if let info = pdfInfo {
-                    PopoverView(info: info, isRecreatingOcr: isRecreatingOcr, onRecreateOcr: onRecreateOcr)
+                    PopoverView(info: info, isRunningOcr: isRunningOcr, onRunOcr: onRunOcr)
                 } else {
                     ProgressView()
                         .padding()
@@ -70,10 +70,10 @@ struct PDFInfoView: View {
         .task(id: documentURL) {
             await loadInfo()
         }
-        .onChange(of: isRecreatingOcr) { _, isRecreating in
+        .onChange(of: isRunningOcr) { _, isRunning in
             // Only on the falling edge - reading the PDF while the pipeline
             // rewrites it would cache a half-written state.
-            guard !isRecreating else { return }
+            guard !isRunning else { return }
             Task { await loadInfo() }
         }
     }
@@ -99,8 +99,8 @@ extension PDFInfoView {
 
     struct PopoverView: View {
         fileprivate let info: PDFInfo
-        let isRecreatingOcr: Bool
-        let onRecreateOcr: () -> Void
+        let isRunningOcr: Bool
+        let onRunOcr: () -> Void
 
         var body: some View {
             VStack(alignment: .leading, spacing: 4) {
@@ -162,21 +162,21 @@ extension PDFInfoView {
                     )
                 }
 
-                if info.hasTextLayer {
-                    Divider()
-                    Button {
-                        onRecreateOcr()
-                    } label: {
-                        if isRecreatingOcr {
-                            ProgressView()
-                                .controlSize(.small)
-                        } else {
-                            Text(String(localized: "Recreate OCR", bundle: #bundle))
-                        }
+                Divider()
+                Button {
+                    onRunOcr()
+                } label: {
+                    if isRunningOcr {
+                        ProgressView()
+                            .controlSize(.small)
+                    } else {
+                        Text(info.hasTextLayer
+                            ? String(localized: "Recreate OCR", bundle: #bundle)
+                            : String(localized: "Add OCR", bundle: #bundle))
                     }
-                    .disabled(isRecreatingOcr)
-                    .frame(maxWidth: .infinity)
                 }
+                .disabled(isRunningOcr)
+                .frame(maxWidth: .infinity)
             }
             .frame(minWidth: 250)
             .padding(8)
@@ -203,8 +203,8 @@ extension PDFInfoView {
             .toolbar {
                 ToolbarItem {
                     PDFInfoView(documentURL: URL(fileURLWithPath: "/dev/null"),
-                                isRecreatingOcr: false,
-                                onRecreateOcr: { })
+                                isRunningOcr: false,
+                                onRunOcr: { })
                 }
             }
     }
@@ -220,5 +220,5 @@ extension PDFInfoView {
         title: "Annual Report 2024",
         author: "John Doe",
         subject: "Finance"
-    ), isRecreatingOcr: false, onRecreateOcr: { })
+    ), isRunningOcr: false, onRunOcr: { })
 }

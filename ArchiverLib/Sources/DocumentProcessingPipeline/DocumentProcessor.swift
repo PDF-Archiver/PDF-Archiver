@@ -169,14 +169,14 @@ public actor DocumentProcessor {
         return UntaggedProcessingResult(ocrCount: ocrCount, aiCacheCount: aiCacheCount)
     }
 
-    /// Re-run OCR on one document, whether or not it already has a text layer.
+    /// Run OCR on one document, whether or not it already has a text layer.
     ///
     /// Shares `untaggedInFlight` with the automatic pass, so a manual run and
     /// the background sweep can never rewrite the same file concurrently.
     ///
     /// - Returns: `false` when the sweep already holds the file, or when OCR
     ///   failed.
-    public func recreateOcrTextLayer(at url: URL, config: ProcessingConfig) async -> Bool {
+    public func runOcrTextLayer(at url: URL, config: ProcessingConfig) async -> Bool {
         let resolved = url.resolvingSymlinksInPath()
         guard !untaggedInFlight.contains(resolved) else { return false }
         untaggedInFlight.insert(resolved)

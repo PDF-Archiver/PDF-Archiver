@@ -30,7 +30,7 @@ struct DocumentProcessingDependency {
     var processUntaggedDocuments: @Sendable (_ documents: [Document]) async -> UntaggedProcessingResult = { _ in UntaggedProcessingResult(ocrCount: 0, aiCacheCount: 0) }
     /// Re-runs OCR on one document, whether or not it already has a text layer.
     /// Independent of `ocrEnabled`, which only gates the automatic sweep.
-    var recreateOcr: @Sendable (_ url: URL) async -> Bool = { _ in false }
+    var runOcr: @Sendable (_ url: URL) async -> Bool = { _ in false }
     /// Progress events of the import queue.
     var progressEvents: @Sendable () async -> AsyncStream<ProcessingEvent> = { AsyncStream { $0.finish() } }
 }
@@ -41,7 +41,7 @@ extension DocumentProcessingDependency: TestDependencyKey {
         handleImages: { _ in nil },
         handlePdf: { _, _ in },
         processUntaggedDocuments: { _ in UntaggedProcessingResult(ocrCount: 0, aiCacheCount: 0) },
-        recreateOcr: { _ in false },
+        runOcr: { _ in false },
         progressEvents: { AsyncStream { $0.finish() } }
     )
 
@@ -107,10 +107,10 @@ extension DocumentProcessingDependency: DependencyKey {
                 return UntaggedProcessingResult(ocrCount: 0, aiCacheCount: 0)
             }
         },
-        recreateOcr: { url in
+        runOcr: { url in
             do {
                 let config = try await makeConfig()
-                return await documentProcessor.recreateOcrTextLayer(at: url, config: config)
+                return await documentProcessor.runOcrTextLayer(at: url, config: config)
             } catch {
                 Logger.app.error("Manual OCR failed to resolve the untagged folder: \(error)")
                 return false
