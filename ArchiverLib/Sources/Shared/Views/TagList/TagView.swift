@@ -60,7 +60,7 @@ public struct TagView: View {
     // Suggestion state must not rely on colour alone (WCAG 1.4.1); VoiceOver needs it in words too.
     private var accessibilityLabel: Text {
         if isSuggestion {
-            return Text("Suggested tag", bundle: #bundle) + Text(" \(tagName.capitalized)")
+            return Text("Suggested tag: \(tagName.capitalized)", bundle: #bundle)
         }
         return Text(tagName.capitalized)
     }

@@ -59,6 +59,28 @@
           }
         }
       }
+    },
+    "Removes this tag from the document" : {
+      "comment" : "VoiceOver hint on an editable tag, whose only visual affordance is a small xmark icon.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entfernt dieses Tag vom Dokument"
+          }
+        }
+      }
+    },
+    "Suggested tag: %@" : {
+      "comment" : "VoiceOver label for a tag the app suggests, so the suggestion state is not carried by colour alone.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorgeschlagenes Tag: %@"
+          }
+        }
+      }
     }
   },
   "version" : "1.1"
