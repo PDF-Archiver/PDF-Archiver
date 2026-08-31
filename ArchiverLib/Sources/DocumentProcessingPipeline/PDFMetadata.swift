@@ -15,9 +15,11 @@ import PDFKit
 /// # Deduplication strategy
 ///
 /// Documents placed in the untagged folder must not be re-OCR'd on every
-/// app launch. The configured marker string is written into the `Creator`
-/// attribute after every OCR attempt — including failed ones — so the same
-/// file is never retried in a loop.
+/// app launch. The configured marker string plus the engine version is
+/// written into the `Creator` attribute after every OCR attempt — including
+/// failed ones — so the same file is never retried in a loop by the same
+/// engine. Raising the engine version grants every stamped file one more
+/// attempt, which is how an improved engine reaches an existing archive.
 ///
 /// `Creator` is used instead of `Producer` because `PDFDocument.write(to:)`
 /// unconditionally overwrites `Producer` with the Quartz PDFContext value,
@@ -45,24 +47,34 @@ public enum PDFMetadata {
         }
     }
 
-    /// Returns `true` if the PDF's `Creator` metadata starts with `markerPrefix`.
-    public static func isMarked(_ pdf: PDFDocument, markerPrefix: String) -> Bool {
-        guard let creator = pdf.documentAttributes?[PDFDocumentAttribute.creatorAttribute] as? String else {
-            return false
-        }
-        return creator.hasPrefix(markerPrefix)
+    /// Returns the OCR engine version that stamped the PDF, or `nil` if it was
+    /// never processed by this app.
+    ///
+    /// - `"PDF Archiver"` (no suffix) is a file stamped before versioning and
+    ///   counts as version `1`.
+    /// - An unparseable suffix also counts as `1`, so a malformed marker is
+    ///   retried instead of being trusted forever.
+    public static func processedEngineVersion(_ pdf: PDFDocument, markerPrefix: String) -> Int? {
+        guard let creator = pdf.documentAttributes?[PDFDocumentAttribute.creatorAttribute] as? String,
+              creator.hasPrefix(markerPrefix) else { return nil }
+
+        let suffix = creator.dropFirst(markerPrefix.count).trimmingCharacters(in: .whitespaces)
+        guard suffix.hasPrefix("v"), let version = Int(suffix.dropFirst()) else { return 1 }
+        return version
     }
 
-    /// Sets the `Creator` metadata to `marker` and writes the PDF to disk.
+    /// Sets the `Creator` metadata to `"<marker> v<version>"` and writes the
+    /// PDF to disk.
     ///
-    /// Called after every OCR attempt (including failures) so the same file
-    /// is never retried in a loop.
+    /// Called after every OCR attempt (including failures) so the same file is
+    /// never retried in a loop by the same engine version. Raising the engine
+    /// version grants the file one further attempt.
     ///
     /// - Returns: Whether the file was written successfully.
     @discardableResult
-    public static func markAsProcessed(_ pdf: PDFDocument, marker: String, writeTo url: URL) -> Bool {
+    public static func markAsProcessed(_ pdf: PDFDocument, marker: String, version: Int, writeTo url: URL) -> Bool {
         var attributes = pdf.documentAttributes ?? [:]
-        attributes[PDFDocumentAttribute.creatorAttribute] = marker
+        attributes[PDFDocumentAttribute.creatorAttribute] = "\(marker) v\(version)"
         pdf.documentAttributes = attributes
         return pdf.write(to: url)
     }
