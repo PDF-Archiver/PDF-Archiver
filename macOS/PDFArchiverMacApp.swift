@@ -35,11 +35,11 @@ struct PDFArchiverMacApp: App {
     }
 
     #if DEBUG
-    /// 1440 x 900 points is 2880 x 1800 on a Retina display - the largest size the Mac App Store
-    /// takes. Set here rather than via `defaultSize`, which a saved window frame overrides.
+    /// Small enough that a 1x capture fits a 1440 x 900 store canvas at full size, leaving room
+    /// for the caption. Set here rather than via `defaultSize`, which a saved frame overrides.
     private func sizeWindowForScreenshot() {
         guard let window = NSApplication.shared.windows.first else { return }
-        window.setContentSize(NSSize(width: 1440, height: 900))
+        window.setContentSize(NSSize(width: 1000, height: 620))
         window.center()
     }
     #endif

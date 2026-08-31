@@ -71,6 +71,7 @@ public enum ScreenshotScene: String, CaseIterable, Sendable {
 
         var state = AppFeature.State()
         Self.sidebar(for: Self.archivedDocuments + Self.untaggedDocuments, into: &state)
+        state.archiveList.searchText = Self.isGerman ? "rechnung" : "bill"
 
         return AppView(store: Store(initialState: state) { AppFeature() })
     }
@@ -219,20 +220,39 @@ public enum ScreenshotScene: String, CaseIterable, Sendable {
 
     /// The TOM TAILOR receipt checked into the test assets, passed in as `-screenshotAsset`.
     /// Nothing is bundled, so the receipt's address and VAT number stay out of the shipped app.
-    private static var receiptURL: URL? {
-        UserDefaults.standard.string(forKey: "screenshotAsset").map { URL(filePath: $0) }
+    ///
+    /// Copied to a temporary file under `filename`, because two things need it at once: `PDFView`
+    /// needs a readable file, and the archive search filters on the last path component.
+    private static func receiptURL(named filename: String) -> URL? {
+        guard let source = UserDefaults.standard.string(forKey: "screenshotAsset")
+            .map({ URL(filePath: $0) }) else { return nil }
+
+        let destination = URL.temporaryDirectory.appending(component: filename)
+        try? FileManager.default.removeItem(at: destination)
+        guard (try? FileManager.default.copyItem(at: source, to: destination)) != nil else { return nil }
+        return destination
     }
 
     /// Date and description as the app recognises them from the receipt: bought 05.01.2017.
+    /// The two tags are set either way - untagged with tags chosen is what the tagging shot shows.
     private static func receipt(isTagged: Bool) -> Document {
-        Document(id: 200,
-                 url: receiptURL ?? URL(filePath: "/Archive/2017/tom-tailor.pdf"),
-                 date: date(2017, 1, 5),
-                 specification: "tom tailor jeans",
-                 tags: isGerman ? ["kleidung", "quittung"] : ["clothing", "receipt"],
-                 isTagged: isTagged,
-                 sizeInBytes: 48_000,
-                 downloadStatus: 1)
+        let date = date(2017, 1, 5)
+        let specification = "tom-tailor-jeans"
+        let tags: Set<String> = isGerman ? ["kleidung", "quittung"] : ["clothing", "receipt"]
+
+        // Untagged documents sit in the inbox under the name the scanner gave them.
+        let filename = isTagged
+            ? Document.createFilename(date: date, specification: specification, tags: tags)
+            : "Scan 2017-01-05.pdf"
+
+        return Document(id: 200,
+                        url: receiptURL(named: filename) ?? URL(filePath: "/Archive/2017/\(filename)"),
+                        date: date,
+                        specification: specification,
+                        tags: tags,
+                        isTagged: isTagged,
+                        sizeInBytes: 48_000,
+                        downloadStatus: 1)
     }
 
     private static var receiptSuggestedTags: [String] {
