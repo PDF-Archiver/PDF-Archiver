@@ -148,6 +148,10 @@ public enum ScreenshotScene: String, CaseIterable, Sendable {
     private func seed(documents newDocuments: [Document]) {
         @Shared(.documents) var documents: IdentifiedArrayOf<Document> = []
         $documents.withLock { $0 = IdentifiedArray(uniqueElements: newDocuments) }
+
+        // A launch argument cannot do this: it arrives as a string, and the shared key reads a Bool.
+        @Shared(.tutorialShown) var tutorialShown: Bool = false
+        $tutorialShown.withLock { $0 = true }
     }
 
     /// Filenames are shown verbatim, so a German archive in the English store would read wrong.
