@@ -22,7 +22,5 @@ struct CircularProgressView: View {
                 .animation(.linear(duration: 0.1), value: progress)
         }
         .frame(width: 16, height: 16)
-        // Two unlabeled shapes would otherwise strand VoiceOver on a silent countdown.
-        .accessibilityHidden(true)
     }
 }

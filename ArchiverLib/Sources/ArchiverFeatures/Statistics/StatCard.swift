@@ -26,6 +26,16 @@ struct StatCard<Value: View>: View {
         self.value = value
     }
 
+    // macOS .title is 22pt where iOS's is 28pt, so the Mac card would have shrunk against the
+    // fixed 28pt it replaced; .largeTitle (26pt) keeps it in place and still scales.
+    private var valueFont: Font {
+        #if os(macOS)
+        .largeTitle.bold()
+        #else
+        .title.bold()
+        #endif
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
@@ -36,10 +46,11 @@ struct StatCard<Value: View>: View {
             }
 
             value()
-                .font(.title.bold())
+                .font(valueFont)
                 .foregroundStyle(.primary)
                 .lineLimit(1)
-                .minimumScaleFactor(0.9)
+                // The style grows past 50pt at AX5; a tighter floor truncates "45,3 MB" to "45,3…".
+                .minimumScaleFactor(0.7)
 
             Text(title)
                 .font(.caption)

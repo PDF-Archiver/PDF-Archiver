@@ -30,8 +30,11 @@ public struct TagView: View {
                 tag
             }
             .buttonStyle(BorderlessButtonStyle())
+            .accessibilityLabel(accessibilityLabel)
+            .accessibilityHint(actionHint)
         } else {
             self.tag
+                .accessibilityLabel(accessibilityLabel)
         }
     }
 
@@ -46,23 +49,25 @@ public struct TagView: View {
                     .accessibilityHidden(true)
             }
             .fixedSize()
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel(accessibilityLabel)
-            .accessibilityHint(Text("Removes this tag from the document", bundle: #bundle))
-        } else if isSuggestion {
-            Text(tagName.capitalized)
-                .accessibilityLabel(accessibilityLabel)
         } else {
             Text(tagName.capitalized)
         }
     }
 
-    // Suggestion state must not rely on colour alone (WCAG 1.4.1); VoiceOver needs it in words too.
+    // VoiceOver never sees the fill colour, so the suggestion state has to be in the words.
     private var accessibilityLabel: Text {
         if isSuggestion {
             return Text("Suggested tag: \(tagName.capitalized)", bundle: #bundle)
         }
         return Text(tagName.capitalized)
+    }
+
+    // The chip looks identical whether a tap adds or removes the tag; only the hint says which.
+    private var actionHint: Text {
+        if isSuggestion {
+            return Text("Adds this tag to the document", bundle: #bundle)
+        }
+        return Text("Removes this tag from the document", bundle: #bundle)
     }
 
     private var tag: some View {
@@ -79,7 +84,7 @@ public struct TagView: View {
             .id(tagName)
     }
 
-    // Non-colour marker so a suggestion is distinguishable without relying on the gray/red fill.
+    // Colour alone must not carry the suggestion state (WCAG 1.4.1).
     @ViewBuilder
     private var suggestionMarker: some View {
         if isSuggestion {
