@@ -414,6 +414,8 @@ struct DocumentInformationFormView: View {
                         .fixedSize()
                         .buttonStyle(.bordered)
                         .focusable(false)
+                        .accessibilityLabel(Text("Suggested date: \(date.formatted(date: .long, time: .omitted))", bundle: #bundle))
+                        .accessibilityHint(Text("Sets the document date to this value", bundle: #bundle))
                     }
                     Button(String(localized: "Today", bundle: #bundle), systemImage: "calendar") {
                         store.send(.onTodayButtonTapped)
