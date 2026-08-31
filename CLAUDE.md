@@ -303,3 +303,30 @@ Enable demo mode for testing without real file system operations:
 UserDefaults.standard.set(true, forKey: "demoMode")
 ```
 This switches to `DemoFolderProvider` in DEBUG builds.
+
+### Documentation
+
+The user manual is a DocC catalogue at `Documentation/PDFArchiver.docc`. It is
+deliberately **not** attached to a Swift target: a manual for end users must not
+grow an auto-generated "Structures" section from a module's API. Build it with:
+
+```bash
+xcrun docc convert Documentation/PDFArchiver.docc \
+     --output-path /tmp/pdf-archiver-manual.doccarchive \
+     --fallback-display-name "PDF Archiver" \
+     --fallback-bundle-identifier de.JulianKahnert.PDFArchiveViewer.manual \
+     --experimental-enable-custom-templates
+```
+
+Without `--experimental-enable-custom-templates` the catalogue's `header.html` is
+dropped without a warning and the manual loses the site header.
+
+The look matches the website (`Resources/css/styles.css` in
+`pdf-archiver.github.io`) through two files in the catalogue:
+
+- `theme-settings.json` — the site's palette, type stacks and radii, mapped onto
+  DocC's own tokens. Every key must be one the shipped renderer actually reads;
+  an unknown one is ignored silently.
+- `header.html` — the site header, injected into a shadow root. It takes its
+  colours from the tokens `theme-settings.json` sets on `<body>`, which inherit
+  across the shadow boundary, so dark mode needs no rules of its own.
