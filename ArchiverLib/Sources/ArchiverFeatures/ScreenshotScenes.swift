@@ -24,6 +24,8 @@ public enum ScreenshotScene: String, CaseIterable, Sendable {
     case inbox
     case statistics
     case mac
+    case macTagging
+    case macDocument
 
     /// The scene the app was launched for, or `nil` during a normal launch.
     public static var requested: ScreenshotScene? {
@@ -53,6 +55,12 @@ public enum ScreenshotScene: String, CaseIterable, Sendable {
 
         case .mac:
             macApp
+
+        case .macTagging:
+            macTagging
+
+        case .macDocument:
+            macDocument
         }
     }
 
@@ -64,6 +72,45 @@ public enum ScreenshotScene: String, CaseIterable, Sendable {
         return AppView(store: Store(initialState: AppFeature.State()) {
             AppFeature()
         })
+    }
+
+    /// Tagging a real receipt: the PDF on the left, date, description and tags on the right.
+    @MainActor
+    private var macTagging: some View {
+        let document = Self.receipt(isTagged: false)
+        seed(documents: [document] + Self.archivedDocuments)
+
+        var state = AppFeature.State()
+        state.selectedTab = .inbox
+        state.isDocumentLoading = false
+
+        var details = DocumentDetails.State(document: Shared(value: document))
+        details.showInspector = true
+        details.documentInformationForm = DocumentInformationForm.State(document: document,
+                                                                       suggestedTags: Self.receiptSuggestedTags)
+        state.untaggedDocumentList.documentDetails = details
+
+        return AppView(store: Store(initialState: state) { AppFeature() })
+    }
+
+    /// The same receipt afterwards: filtered for in the archive, selected, and shown as filed.
+    @MainActor
+    private var macDocument: some View {
+        let document = Self.receipt(isTagged: true)
+        seed(documents: [document] + Self.archivedDocuments)
+
+        var state = AppFeature.State()
+        state.selectedTab = .search
+        state.isDocumentLoading = false
+        state.archiveList.searchText = "tom tailor"
+
+        @Shared(.selectedDocumentId) var selectedDocumentId: Int?
+        $selectedDocumentId.withLock { $0 = document.id }
+
+        // No inspector here: the point of the shot is the filed document itself.
+        state.archiveList.documentDetails = DocumentDetails.State(document: Shared(value: document))
+
+        return AppView(store: Store(initialState: state) { AppFeature() })
     }
 
     // MARK: - Scenes
@@ -152,6 +199,28 @@ public enum ScreenshotScene: String, CaseIterable, Sendable {
         // A launch argument cannot do this: it arrives as a string, and the shared key reads a Bool.
         @Shared(.tutorialShown) var tutorialShown: Bool = false
         $tutorialShown.withLock { $0 = true }
+    }
+
+    /// The TOM TAILOR receipt checked into the test assets, passed in as `-screenshotAsset`.
+    /// Nothing is bundled, so the receipt's address and VAT number stay out of the shipped app.
+    private static var receiptURL: URL? {
+        UserDefaults.standard.string(forKey: "screenshotAsset").map { URL(filePath: $0) }
+    }
+
+    /// Date and description as the app recognises them from the receipt: bought 05.01.2017.
+    private static func receipt(isTagged: Bool) -> Document {
+        Document(id: 200,
+                 url: receiptURL ?? URL(filePath: "/Archive/2017/tom-tailor.pdf"),
+                 date: date(2017, 1, 5),
+                 specification: "tom tailor jeans",
+                 tags: isGerman ? ["kleidung", "quittung"] : ["clothing", "receipt"],
+                 isTagged: isTagged,
+                 sizeInBytes: 48_000,
+                 downloadStatus: 1)
+    }
+
+    private static var receiptSuggestedTags: [String] {
+        isGerman ? ["tomtailor", "jeans", "bekleidung"] : ["tomtailor", "jeans", "apparel"]
     }
 
     /// Filenames are shown verbatim, so a German archive in the English store would read wrong.
@@ -271,5 +340,13 @@ public enum ScreenshotScene: String, CaseIterable, Sendable {
 
 #Preview("App Store: Statistics") {
     ScreenshotScene.statistics.view
+}
+
+#Preview("App Store: Mac tagging") {
+    ScreenshotScene.macTagging.view
+}
+
+#Preview("App Store: Mac document") {
+    ScreenshotScene.macDocument.view
 }
 #endif
