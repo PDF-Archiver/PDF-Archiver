@@ -28,10 +28,19 @@ public struct ProcessingConfig: Sendable {
     /// Quartz PDFContext value, which makes it unusable as a persistent flag.
     public var processedMarker: String
 
-    public init(destinationFolder: URL, pdfQuality: PDFQuality, processedMarker: String) {
+    /// Version of the OCR engine, appended to ``processedMarker`` when a
+    /// document is stamped.
+    ///
+    /// Bump it to grant every already-processed document one more OCR attempt:
+    /// the pass skips a document only while its stamped version is at least
+    /// this value.
+    public var ocrEngineVersion: Int
+
+    public init(destinationFolder: URL, pdfQuality: PDFQuality, processedMarker: String, ocrEngineVersion: Int = 2) {
         self.destinationFolder = destinationFolder
         self.pdfQuality = pdfQuality
         self.processedMarker = processedMarker
+        self.ocrEngineVersion = ocrEngineVersion
     }
 }
 

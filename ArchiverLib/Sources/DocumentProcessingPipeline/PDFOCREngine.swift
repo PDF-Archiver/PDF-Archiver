@@ -31,7 +31,7 @@ extension NSAttributedString: @unchecked @retroactive Sendable {}
 /// Vision OCR plus PDF page rendering with an invisible text layer.
 ///
 /// One shared core (`recognizeText` + `renderPage`) drives both entry points:
-/// - ``createSearchablePDF(fromImagesAt:marker:)`` — the scan path: staged
+/// - ``createSearchablePDF(fromImagesAt:marker:version:)`` — the scan path: staged
 ///   page images become a brand-new searchable PDF.
 /// - ``addTextLayer(to:quality:maxPages:)`` — the in-place path: image-only
 ///   pages of an existing PDF are replaced by pages that additionally carry
@@ -61,7 +61,9 @@ enum PDFOCREngine {
     /// - Parameters:
     ///   - urls: JPEG page images, in page order.
     ///   - marker: Written to the PDF `Creator` attribute.
-    static func createSearchablePDF(fromImagesAt urls: [URL], marker: String) async throws -> PDFDocument {
+    ///   - version: OCR engine version stamped alongside `marker`, so the sweep
+    ///     does not immediately re-OCR a document this very engine produced.
+    static func createSearchablePDF(fromImagesAt urls: [URL], marker: String, version: Int) async throws -> PDFDocument {
         let document = PDFDocument()
 
         for url in urls {
@@ -88,7 +90,7 @@ enum PDFOCREngine {
         }
 
         var attributes = document.documentAttributes ?? [:]
-        attributes[PDFDocumentAttribute.creatorAttribute] = marker
+        attributes[PDFDocumentAttribute.creatorAttribute] = PDFMetadata.markerValue(marker: marker, version: version)
         document.documentAttributes = attributes
         return document
     }
@@ -115,16 +117,30 @@ enum PDFOCREngine {
             guard let page = pdf.page(at: pageIndex) else { continue }
             let bounds = page.bounds(for: .mediaBox)
 
-            let imageSize = CGSize(width: bounds.width * renderScale, height: bounds.height * renderScale)
-            let pageImage = page.thumbnail(of: imageSize, for: .mediaBox)
+            // Rendering the page is what preserves its full content: every page
+            // is replaced by the rasterized image, so anything not drawn into
+            // that raster would be lost.
+            let renderSize = CGSize(width: bounds.width * renderScale, height: bounds.height * renderScale)
+            let ocrImage = page.thumbnail(of: renderSize, for: .mediaBox)
 
-            guard let pageCgImage = pageImage.cgImage else { continue }
-            let ocrResults = try await recognizeText(in: pageCgImage, imageSize: pageImage.size)
+            // Re-encode the high-resolution page image as JPEG so the new page
+            // does not blow up the file size with a raw bitmap.
+            let drawImage: PlatformImage
+            if let jpegData = ocrImage.jpg(quality: CGFloat(quality.rawValue)),
+               let jpegImage = PlatformImage(data: jpegData) {
+                drawImage = jpegImage
+            } else {
+                drawImage = ocrImage
+            }
+
+            guard let pageCgImage = ocrImage.cgImage else { continue }
+            let ocrResults = try await recognizeText(in: pageCgImage, imageSize: ocrImage.size)
             guard !ocrResults.isEmpty else { continue }
 
-            // Scale OCR coordinates back from the rendered image to page coordinates.
-            let scaleX = bounds.width / imageSize.width
-            let scaleY = bounds.height / imageSize.height
+            // Scale OCR coordinates from the rasterized image back to page
+            // coordinates.
+            let scaleX = bounds.width / ocrImage.size.width
+            let scaleY = bounds.height / ocrImage.size.height
             let scaledResults = ocrResults.map { result in
                 TextObservationResult(
                     rect: CGRect(x: result.rect.origin.x * scaleX,
@@ -135,17 +151,7 @@ enum PDFOCREngine {
             }
             let textEntries = await makeTextEntries(from: scaledResults)
 
-            // Re-encode the high-resolution page image as JPEG so the new page
-            // does not blow up the file size with a losslessly stored bitmap.
-            // It is drawn into the original media box, keeping the page size.
-            let drawImage: PlatformImage
-            if let jpegData = pageImage.jpg(quality: CGFloat(quality.rawValue)),
-               let jpegImage = PlatformImage(data: jpegData) {
-                drawImage = jpegImage
-            } else {
-                drawImage = pageImage
-            }
-
+            // Always drawn into the original media box, keeping the page size.
             guard let newPage = renderPage(image: drawImage, bounds: bounds, texts: textEntries) else { continue }
             pdf.removePage(at: pageIndex)
             pdf.insert(newPage, at: pageIndex)
