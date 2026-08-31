@@ -181,7 +181,14 @@ extension PDFInfoView {
                     .frame(maxWidth: .infinity, alignment: .center)
                 }
                 .disabled(isRunningOcr)
-                .focusable(false)
+                // The spinner replaces the title, so VoiceOver needs a label
+                // that survives the swap.
+                .accessibilityLabel(isRunningOcr
+                    ? String(localized: "Running OCR", bundle: #bundle)
+                    : (info.hasTextLayer
+                        ? String(localized: "Recreate OCR", bundle: #bundle)
+                        : String(localized: "Add OCR", bundle: #bundle)))
+                .accessibilityHint(Text("Creates a searchable text layer for this document", bundle: #bundle))
             }
             .frame(minWidth: 250)
             .padding(8)
@@ -198,6 +205,10 @@ extension PDFInfoView {
                     .lineLimit(1)
                     .multilineTextAlignment(.trailing)
             }
+            // One element per row: the icon only repeats the value in colour
+            // (WCAG 1.4.1), and label and value belong together when read out.
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("\(label): \(value)")
         }
     }
 }
