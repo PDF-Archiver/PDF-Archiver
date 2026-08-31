@@ -314,12 +314,19 @@ grow an auto-generated "Structures" section from a module's API. Build it with:
 xcrun docc convert Documentation/PDFArchiver.docc \
      --output-path /tmp/pdf-archiver-manual.doccarchive \
      --fallback-display-name "PDF Archiver" \
-     --fallback-bundle-identifier de.JulianKahnert.PDFArchiveViewer.manual
+     --fallback-bundle-identifier de.JulianKahnert.PDFArchiveViewer.manual \
+     --experimental-enable-custom-templates
 ```
 
-Note that `docc process-archive transform-for-static-hosting` overwrites
-`theme-settings.json` with `{}` — copy the catalogue's version back over the
-export, or the published manual loses its colours without any warning.
+Without `--experimental-enable-custom-templates` the catalogue's `header.html` is
+dropped without a warning and the manual loses the site header.
 
-Colours come from `theme-settings.json` and match the website's palette
-(`_sass/_variables.scss` in `pdf-archiver.github.io`).
+The look matches the website (`Resources/css/styles.css` in
+`pdf-archiver.github.io`) through two files in the catalogue:
+
+- `theme-settings.json` — the site's palette, type stacks and radii, mapped onto
+  DocC's own tokens. Every key must be one the shipped renderer actually reads;
+  an unknown one is ignored silently.
+- `header.html` — the site header, injected into a shadow root. It takes its
+  colours from the tokens `theme-settings.json` sets on `<body>`, which inherit
+  across the shadow boundary, so dark mode needs no rules of its own.

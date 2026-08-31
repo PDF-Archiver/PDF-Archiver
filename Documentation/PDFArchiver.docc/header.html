@@ -1,0 +1,147 @@
+<style>
+  /* Every colour is read from the tokens `theme-settings.json` puts on `<body>`, which
+     inherit through the shadow boundary — so light/dark needs no rules of its own here. */
+  :host {
+    display: block;
+    font-family: var(--typography-html-font, system-ui, sans-serif);
+  }
+
+  .bar {
+    max-width: 72rem;
+    margin-inline: auto;
+    padding: 1.1rem clamp(1.25rem, 5vw, 3rem);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-bottom: 1px solid var(--color-fill-gray, #e6dbd8);
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-figure-blue, #ca414f);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* The domain, not the app name: DocC prints "PDF Archiver" in its own navigation
+     directly below, and this row's job is to say which site the manual belongs to. */
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 1.05rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--color-figure-gray, #23282f);
+  }
+
+  .brand svg {
+    width: 28px;
+    height: 28px;
+    flex: none;
+  }
+
+  /* The filename's tag separator, reused as the breadcrumb: this manual is a section of
+     pdf-archiver.io, written in the naming scheme the whole app is built on. */
+  .crumb,
+  .section {
+    font-family: var(--typography-html-font-mono, ui-monospace, monospace);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-figure-gray-secondary, #5c626b);
+  }
+
+  .crumb {
+    opacity: 0.6;
+  }
+
+  .links {
+    margin-inline-start: auto;
+    display: flex;
+    align-items: center;
+    gap: clamp(0.75rem, 3vw, 1.75rem);
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  .links a {
+    color: var(--color-figure-gray-secondary, #5c626b);
+  }
+
+  .links a:hover {
+    color: var(--color-figure-blue, #ca414f);
+  }
+
+  .links .cta,
+  .links .cta:hover {
+    color: #fff;
+  }
+
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+    padding: 0.55rem 1.2rem;
+    border-radius: 999px;
+    background: var(--color-figure-blue, #ca414f);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 22px -12px var(--color-figure-blue, #ca414f);
+  }
+
+  @media (max-width: 700px) {
+    .links a:not(.cta) {
+      display: none;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .crumb,
+    .section {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cta {
+      transition: none;
+    }
+
+    .cta:hover {
+      transform: none;
+    }
+  }
+</style>
+
+<header class="bar">
+  <a class="brand" href="https://pdf-archiver.io/">
+    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+      <circle r="32" cy="32" cx="32" fill="#ca414f"/>
+      <path opacity="0.25" fill="#222d3c" d="m36,23l0,-9l-17,0c-1.657,0 -3,1.343 -3,3l0,34c0,1.657001 1.343,3 3,3l26,0c1.657001,0 3,-1.342999 3,-3l0,-25l-9,0c-1.657001,0 -3,-1.343 -3,-3z"/>
+      <path fill="#ffffff" d="m36,21l0,-9l-17,0c-1.657,0 -3,1.343 -3,3l0,34c0,1.657001 1.343,3 3,3l26,0c1.657001,0 3,-1.342999 3,-3l0,-25l-9,0c-1.657001,0 -3,-1.343 -3,-3z"/>
+      <polygon opacity="0.2" fill="#231f20" points="37.016 23.294 48 33 48 24"/>
+      <path fill="#353e49" d="m36,12l0,9c0,1.657 1.342999,3 3,3l9,0l-12,-12z"/>
+      <rect opacity="0.5" fill="#222d3c" y="22" x="22" width="9.625" height="2"/>
+      <rect opacity="0.5" fill="#222d3c" y="27" x="22" width="20" height="2"/>
+      <rect opacity="0.5" fill="#222d3c" y="32" x="22" width="20" height="2"/>
+      <rect opacity="0.5" fill="#222d3c" y="37" x="22" width="20" height="2"/>
+      <rect opacity="0.5" fill="#222d3c" y="42" x="22" width="20" height="2"/>
+    </svg>
+    <span>pdf-archiver.io</span>
+  </a>
+  <span class="crumb" aria-hidden="true">__</span>
+  <span class="section">Manual</span>
+
+  <nav class="links" aria-label="Website">
+    <a href="https://pdf-archiver.io/#features">Features</a>
+    <a href="https://pdf-archiver.io/faq/">FAQ</a>
+    <a class="cta" href="https://apps.apple.com/app/pdf-archiver/id1433801905">Download</a>
+  </nav>
+</header>
