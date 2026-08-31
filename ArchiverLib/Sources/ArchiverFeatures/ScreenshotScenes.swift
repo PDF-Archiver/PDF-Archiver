@@ -69,9 +69,25 @@ public enum ScreenshotScene: String, CaseIterable, Sendable {
     private var macApp: some View {
         seed(documents: Self.archivedDocuments + Self.untaggedDocuments)
 
-        return AppView(store: Store(initialState: AppFeature.State()) {
-            AppFeature()
-        })
+        var state = AppFeature.State()
+        Self.sidebar(for: Self.archivedDocuments + Self.untaggedDocuments, into: &state)
+
+        return AppView(store: Store(initialState: state) { AppFeature() })
+    }
+
+    /// The reducer derives these from the documents asynchronously; a screenshot needs them up front.
+    @MainActor
+    private static func sidebar(for documents: [Document], into state: inout AppFeature.State) {
+        state.isDocumentLoading = false
+        state.untaggedDocumentsCount = documents.count(where: { !$0.isTagged })
+
+        let counts = Dictionary(grouping: documents.flatMap(\.tags), by: { $0 }).mapValues(\.count)
+        state.tabTagSuggestions = counts
+            .sorted { ($0.value, $1.key) > ($1.value, $0.key) }
+            .prefix(5)
+            .map(\.key)
+        state.tabYearSuggestions = Set(documents.map { Calendar.current.component(.year, from: $0.date) })
+            .sorted(by: >)
     }
 
     /// Tagging a real receipt: the PDF on the left, date, description and tags on the right.
@@ -82,7 +98,7 @@ public enum ScreenshotScene: String, CaseIterable, Sendable {
 
         var state = AppFeature.State()
         state.selectedTab = .inbox
-        state.isDocumentLoading = false
+        Self.sidebar(for: [document] + Self.archivedDocuments, into: &state)
 
         var details = DocumentDetails.State(document: Shared(value: document))
         details.showInspector = true
@@ -101,7 +117,7 @@ public enum ScreenshotScene: String, CaseIterable, Sendable {
 
         var state = AppFeature.State()
         state.selectedTab = .search
-        state.isDocumentLoading = false
+        Self.sidebar(for: [document] + Self.archivedDocuments, into: &state)
         state.archiveList.searchText = "tom tailor"
 
         @Shared(.selectedDocumentId) var selectedDocumentId: Int?

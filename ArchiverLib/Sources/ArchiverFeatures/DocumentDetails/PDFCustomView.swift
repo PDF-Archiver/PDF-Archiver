@@ -145,12 +145,33 @@ struct PDFCustomView: NSViewRepresentable {
         view.maxScaleFactor = 4.0
         view.autoScales = true
 
+        #if DEBUG
+        fitPageHeightForScreenshot(view, document: pdfDocument)
+        #endif
+
         // 2. show the first page of the document
         view.goToFirstPage(self)
 
         // 3. highlight detected date if enabled
         addDateHighlightAnnotations(to: view, date: highlightDate)
     }
+
+    #if DEBUG
+    /// `autoScales` fits the width, which blows a receipt-shaped page up until only its head is
+    /// visible. A screenshot fits the height instead, so the page keeps margins beside it.
+    private func fitPageHeightForScreenshot(_ view: PDFView, document: PDFDocument) {
+        guard ScreenshotScene.requested != nil,
+              let page = document.page(at: 0) else { return }
+
+        let pageHeight = page.bounds(for: .mediaBox).height
+        // Deferred: the view has no bounds yet while SwiftUI is still updating it.
+        DispatchQueue.main.async {
+            guard view.bounds.height > 0 else { return }
+            view.autoScales = false
+            view.scaleFactor = view.bounds.height / pageHeight
+        }
+    }
+    #endif
 }
 #else
 struct PDFCustomView: UIViewRepresentable {
@@ -190,6 +211,10 @@ struct PDFCustomView: UIViewRepresentable {
         view.minScaleFactor = 0.1
         view.maxScaleFactor = 4.0
         view.autoScales = true
+
+        #if DEBUG
+        fitPageHeightForScreenshot(view, document: pdfDocument)
+        #endif
 
         // 2. show the first page of the document
         view.goToFirstPage(self)
