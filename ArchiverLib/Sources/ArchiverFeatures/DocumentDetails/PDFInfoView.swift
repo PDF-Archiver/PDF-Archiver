@@ -64,15 +64,12 @@ struct PDFInfoView: View {
                         .padding()
                 }
             }
-            // Without this the popover becomes a full-screen sheet on iPhone.
             .presentationCompactAdaptation(.popover)
         }
         .task(id: documentURL) {
             await loadInfo()
         }
         .onChange(of: isRunningOcr) { _, isRunning in
-            // Only on the falling edge - reading the PDF while the pipeline
-            // rewrites it would cache a half-written state.
             guard !isRunning else { return }
             Task { await loadInfo() }
         }
@@ -175,14 +172,10 @@ extension PDFInfoView {
                                 : String(localized: "Add OCR", bundle: #bundle))
                         }
                     }
-                    // On the label, not the Button: the label would otherwise
-                    // inherit the VStack's leading alignment and the spinner
-                    // would hug the edge instead of centering.
                     .frame(maxWidth: .infinity, alignment: .center)
                 }
                 .disabled(isRunningOcr)
-                // The spinner replaces the title, so VoiceOver needs a label
-                // that survives the swap.
+                .focusable(false)
                 .accessibilityLabel(isRunningOcr
                     ? String(localized: "Running OCR", bundle: #bundle)
                     : (info.hasTextLayer
@@ -205,8 +198,6 @@ extension PDFInfoView {
                     .lineLimit(1)
                     .multilineTextAlignment(.trailing)
             }
-            // One element per row: the icon only repeats the value in colour
-            // (WCAG 1.4.1), and label and value belong together when read out.
             .accessibilityElement(children: .ignore)
             .accessibilityLabel("\(label): \(value)")
         }
