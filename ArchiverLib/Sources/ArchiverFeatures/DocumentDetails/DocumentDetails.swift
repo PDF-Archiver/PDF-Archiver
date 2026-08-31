@@ -28,6 +28,7 @@ struct DocumentDetails {
         var documentInformationForm: DocumentInformationForm.State
         // initially always false to avoid UI glitches, e.g. not showing the inspector
         var showInspector = false
+        var isRecreatingOcr = false
 #if os(iOS)
         var shareDocument: ShareData?
 #endif
@@ -47,7 +48,9 @@ struct DocumentDetails {
         case delegate(Delegate)
         case onDeleteDocumentButtonTapped
         case onEditButtonTapped
+        case onRecreateOcrButtonTapped
         case onRemoteDocumentAppeared
+        case recreateOcrFinished(Bool)
 #if os(iOS)
         case onShareButtonTapped
 #endif
@@ -64,6 +67,7 @@ struct DocumentDetails {
     }
 
     @Dependency(\.archiveStore.startDownloadOf) var startDownloadOf
+    @Dependency(\.documentProcessor) var documentProcessor
     var body: some ReducerOf<Self> {
         Scope(\.documentInformationForm, action: \.showDocumentInformationForm) {
             DocumentInformationForm()
@@ -113,10 +117,26 @@ struct DocumentDetails {
                 }
                 return .none
 
+            case .onRecreateOcrButtonTapped:
+                state.isRecreatingOcr = true
+                return .run { [documentUrl = state.document.url] send in
+                    await send(.recreateOcrFinished(await documentProcessor.recreateOcr(documentUrl)))
+                }
+
             case .onRemoteDocumentAppeared:
                 return .run { [documentUrl = state.document.url] _ in
                     try await startDownloadOf(documentUrl)
                 }
+
+            case .recreateOcrFinished(let success):
+                state.isRecreatingOcr = false
+                guard !success else { return .none }
+                state.alert = AlertState<Action.Alert> {
+                    TextState("OCR failed", bundle: #bundle)
+                } message: {
+                    TextState("The text layer of this document could not be created. Please try again.", bundle: #bundle)
+                }
+                return .none
 
 #if os(iOS)
             case .onShareButtonTapped:
@@ -174,7 +194,6 @@ public struct DocumentCommands: Commands {
 
 struct DocumentDetailsView: View {
     @Bindable var store: StoreOf<DocumentDetails>
-    @SharedReader(.ocrEnabled) private var ocrEnabled: Bool
 
 #if os(macOS)
     // Archive and Inbox each keep their own pushed document detail, while the
@@ -257,14 +276,11 @@ struct DocumentDetailsView: View {
 
                 ToolbarSpacer()
 
-#if os(macOS)
-                if ocrEnabled,
-                   store.document.downloadStatus >= 1 {
+                if store.document.downloadStatus >= 1 {
                     ToolbarItem(id: "pdfInfo") {
-                        PDFInfoView(documentURL: store.document.url)
+                        pdfInfoView
                     }
                 }
-#endif
 
                 ToolbarItem(id: "share") {
 #if os(iOS)
@@ -297,6 +313,12 @@ struct DocumentDetailsView: View {
         }
     }
 
+    private var pdfInfoView: some View {
+        PDFInfoView(documentURL: store.document.url,
+                    isRecreatingOcr: store.isRecreatingOcr,
+                    onRecreateOcr: { store.send(.onRecreateOcrButtonTapped) })
+    }
+
     @ToolbarContentBuilder
     private var legacyToolbar: some ToolbarContent {
 #if os(macOS)
@@ -320,6 +342,10 @@ struct DocumentDetailsView: View {
                 store.send(.onEditButtonTapped)
             } label: {
                 Label(String(localized: "Edit", bundle: #bundle), systemImage: "pencil")
+            }
+
+            if store.document.downloadStatus >= 1 {
+                pdfInfoView
             }
 
 #if os(macOS)

@@ -73,4 +73,71 @@ struct DocumentDetailsTests {
             $0.documentInformationForm.document = sharedDocument.wrappedValue
         }
     }
+
+    @Test
+    func recreateOcrSucceeds() async throws {
+        let documentUrl = URL(fileURLWithPath: "/tmp/2024-01-01--scan__inbox.pdf")
+        let requestedUrls = LockIsolated<[URL]>([])
+        let store = TestStore(initialState: DocumentDetails.State(document: Shared(value: .mock(url: documentUrl, downloadStatus: 1)))) {
+            DocumentDetails()
+        } withDependencies: {
+            $0.documentProcessor.recreateOcr = { url in
+                requestedUrls.withValue { $0.append(url) }
+                return true
+            }
+        }
+
+        await store.send(.onRecreateOcrButtonTapped) {
+            $0.isRecreatingOcr = true
+        }
+        await store.receive(.recreateOcrFinished(true)) {
+            $0.isRecreatingOcr = false
+        }
+
+        #expect(requestedUrls.value == [documentUrl])
+    }
+
+    /// A tagged document is never touched by the automatic sweep, so the manual
+    /// action is the only way it can ever be OCR'd.
+    @Test
+    func recreateOcrIsAvailableForTaggedDocuments() async throws {
+        let documentUrl = URL(fileURLWithPath: "/tmp/2024-01-01--scan__bill.pdf")
+        let requestedUrls = LockIsolated<[URL]>([])
+        let store = TestStore(initialState: DocumentDetails.State(document: Shared(value: .mock(url: documentUrl, isTagged: true, downloadStatus: 1)))) {
+            DocumentDetails()
+        } withDependencies: {
+            $0.documentProcessor.recreateOcr = { url in
+                requestedUrls.withValue { $0.append(url) }
+                return true
+            }
+        }
+
+        await store.send(.onRecreateOcrButtonTapped) {
+            $0.isRecreatingOcr = true
+        }
+        await store.receive(.recreateOcrFinished(true)) {
+            $0.isRecreatingOcr = false
+        }
+
+        #expect(requestedUrls.value == [documentUrl])
+    }
+
+    @Test
+    func recreateOcrFailurePresentsAlert() async throws {
+        let store = TestStore(initialState: DocumentDetails.State(document: Shared(value: .mock(downloadStatus: 1)))) {
+            DocumentDetails()
+        } withDependencies: {
+            $0.documentProcessor.recreateOcr = { _ in false }
+        }
+
+        // The alert's TextState carries the feature bundle, which a test target
+        // cannot construct - assert its presence instead.
+        store.exhaustivity = .off
+
+        await store.send(.onRecreateOcrButtonTapped)
+        await store.receive(.recreateOcrFinished(false))
+
+        #expect(store.state.isRecreatingOcr == false)
+        #expect(store.state.alert != nil)
+    }
 }
