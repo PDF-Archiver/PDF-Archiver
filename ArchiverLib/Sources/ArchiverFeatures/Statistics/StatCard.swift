@@ -36,10 +36,10 @@ struct StatCard<Value: View>: View {
             }
 
             value()
-                .font(.system(size: 28, weight: .bold))
+                .font(.title.bold())
                 .foregroundStyle(.primary)
                 .lineLimit(1)
-                .minimumScaleFactor(0.7)
+                .minimumScaleFactor(0.9)
 
             Text(title)
                 .font(.caption)

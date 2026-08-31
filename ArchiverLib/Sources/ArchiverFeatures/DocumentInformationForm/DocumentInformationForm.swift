@@ -380,6 +380,9 @@ struct DocumentInformationFormView: View {
                         }
                         .fixedSize()
                         .buttonStyle(.bordered)
+                        // The visible short digits read as an ambiguous number to VoiceOver; spell out the date and its purpose.
+                        .accessibilityLabel(Text("Suggested date", bundle: #bundle) + Text(" \(date.formatted(date: .long, time: .omitted))"))
+                        .accessibilityHint(Text("Sets the document date to this value", bundle: #bundle))
                     }
                     Button(String(localized: "Today", bundle: #bundle), systemImage: "calendar") {
                         store.send(.onTodayButtonTapped)
