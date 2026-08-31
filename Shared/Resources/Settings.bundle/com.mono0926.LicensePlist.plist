@@ -38,7 +38,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-case-paths</string>
 			<key>Title</key>
-			<string>swift-case-paths (1.9.3)</string>
+			<string>swift-case-paths (1.10.0)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -102,7 +102,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-navigation</string>
 			<key>Title</key>
-			<string>swift-navigation (2.11.1)</string>
+			<string>swift-navigation (2.11.2)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -110,7 +110,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-perception</string>
 			<key>Title</key>
-			<string>swift-perception (2.0.11)</string>
+			<string>swift-perception (2.0.12)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -118,7 +118,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-sharing</string>
 			<key>Title</key>
-			<string>swift-sharing (2.10.0)</string>
+			<string>swift-sharing (2.10.1)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>

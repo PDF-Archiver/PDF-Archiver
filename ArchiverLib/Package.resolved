@@ -1,5 +1,5 @@
 {
-  "originHash" : "a38eef5583d591f6586ca3f5b8056092a082fbc14715bd84b5d75d39b1cbab1e",
+  "originHash" : "22833fbffc420ad2171953b5c9d1563a2d6a6db019d9509038b0106a80a54182",
   "pins" : [
     {
       "identity" : "asyncextensions",
@@ -33,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-case-paths",
       "state" : {
-        "revision" : "b0ba915b110f09bf39baafe75b59dfdb1846bbff",
-        "version" : "1.9.3"
+        "revision" : "cb4cba6a8a46a86db0d37dbe09935ead6b24c91a",
+        "version" : "1.10.0"
       }
     },
     {
@@ -105,8 +105,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-navigation",
       "state" : {
-        "revision" : "6398af3c435fc6e24e9e791ff4ab32b21b25acce",
-        "version" : "2.11.1"
+        "revision" : "7e95e5e9ff0a64f6ad8bca59083f8d6ba381b6ff",
+        "version" : "2.11.2"
       }
     },
     {
@@ -114,8 +114,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-perception",
       "state" : {
-        "revision" : "de219a1cf34e958134e75a9ebb134cf09bf52fc6",
-        "version" : "2.0.11"
+        "revision" : "597afd46249f4a71885b95d26b26cc5b893daf32",
+        "version" : "2.0.12"
       }
     },
     {

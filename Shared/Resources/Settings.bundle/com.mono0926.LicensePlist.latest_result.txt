@@ -4,7 +4,7 @@ name: combine-schedulers, nameSpecified: combine-schedulers, owner: pointfreeco,
 
 name: swift-async-algorithms, nameSpecified: swift-async-algorithms, owner: apple, version: 1.1.5, source: https://github.com/apple/swift-async-algorithms
 
-name: swift-case-paths, nameSpecified: swift-case-paths, owner: pointfreeco, version: 1.9.3, source: https://github.com/pointfreeco/swift-case-paths
+name: swift-case-paths, nameSpecified: swift-case-paths, owner: pointfreeco, version: 1.10.0, source: https://github.com/pointfreeco/swift-case-paths
 
 name: swift-clocks, nameSpecified: swift-clocks, owner: pointfreeco, version: 1.1.1, source: https://github.com/pointfreeco/swift-clocks
 
@@ -20,11 +20,11 @@ name: swift-dependencies, nameSpecified: swift-dependencies, owner: pointfreeco,
 
 name: swift-identified-collections, nameSpecified: swift-identified-collections, owner: pointfreeco, version: 1.1.1, source: https://github.com/pointfreeco/swift-identified-collections
 
-name: swift-navigation, nameSpecified: swift-navigation, owner: pointfreeco, version: 2.11.1, source: https://github.com/pointfreeco/swift-navigation
+name: swift-navigation, nameSpecified: swift-navigation, owner: pointfreeco, version: 2.11.2, source: https://github.com/pointfreeco/swift-navigation
 
-name: swift-perception, nameSpecified: swift-perception, owner: pointfreeco, version: 2.0.11, source: https://github.com/pointfreeco/swift-perception
+name: swift-perception, nameSpecified: swift-perception, owner: pointfreeco, version: 2.0.12, source: https://github.com/pointfreeco/swift-perception
 
-name: swift-sharing, nameSpecified: swift-sharing, owner: pointfreeco, version: 2.10.0, source: https://github.com/pointfreeco/swift-sharing
+name: swift-sharing, nameSpecified: swift-sharing, owner: pointfreeco, version: 2.10.1, source: https://github.com/pointfreeco/swift-sharing
 
 name: swift-syntax, nameSpecified: swift-syntax, owner: swiftlang, version: 603.0.2, source: https://github.com/swiftlang/swift-syntax
 
@@ -36,7 +36,7 @@ name: combine-schedulers, nameSpecified: combine-schedulers, owner: pointfreeco,
 
 name: swift-async-algorithms, nameSpecified: swift-async-algorithms, owner: apple, version: 1.1.5, source: https://github.com/apple/swift-async-algorithms
 
-name: swift-case-paths, nameSpecified: swift-case-paths, owner: pointfreeco, version: 1.9.3, source: https://github.com/pointfreeco/swift-case-paths
+name: swift-case-paths, nameSpecified: swift-case-paths, owner: pointfreeco, version: 1.10.0, source: https://github.com/pointfreeco/swift-case-paths
 
 name: swift-clocks, nameSpecified: swift-clocks, owner: pointfreeco, version: 1.1.1, source: https://github.com/pointfreeco/swift-clocks
 
@@ -52,11 +52,11 @@ name: swift-dependencies, nameSpecified: swift-dependencies, owner: pointfreeco,
 
 name: swift-identified-collections, nameSpecified: swift-identified-collections, owner: pointfreeco, version: 1.1.1, source: https://github.com/pointfreeco/swift-identified-collections
 
-name: swift-navigation, nameSpecified: swift-navigation, owner: pointfreeco, version: 2.11.1, source: https://github.com/pointfreeco/swift-navigation
+name: swift-navigation, nameSpecified: swift-navigation, owner: pointfreeco, version: 2.11.2, source: https://github.com/pointfreeco/swift-navigation
 
-name: swift-perception, nameSpecified: swift-perception, owner: pointfreeco, version: 2.0.11, source: https://github.com/pointfreeco/swift-perception
+name: swift-perception, nameSpecified: swift-perception, owner: pointfreeco, version: 2.0.12, source: https://github.com/pointfreeco/swift-perception
 
-name: swift-sharing, nameSpecified: swift-sharing, owner: pointfreeco, version: 2.10.0, source: https://github.com/pointfreeco/swift-sharing
+name: swift-sharing, nameSpecified: swift-sharing, owner: pointfreeco, version: 2.10.1, source: https://github.com/pointfreeco/swift-sharing
 
 name: swift-syntax, nameSpecified: swift-syntax, owner: swiftlang, version: 603.0.2, source: https://github.com/swiftlang/swift-syntax
 
