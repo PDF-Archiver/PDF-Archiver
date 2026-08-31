@@ -90,7 +90,7 @@ public struct TagView: View {
     private var suggestionMarker: some View {
         if isSuggestion {
             RoundedRectangle(cornerRadius: 8.0)
-                .strokeBorder(Color.white.opacity(0.8), style: StrokeStyle(lineWidth: 1, dash: [3, 2]))
+                .strokeBorder(Color.white.opacity(0.8), lineWidth: 1)
         }
     }
 }

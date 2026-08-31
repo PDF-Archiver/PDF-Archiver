@@ -414,7 +414,6 @@ struct DocumentInformationFormView: View {
                         .fixedSize()
                         .buttonStyle(.bordered)
                         .focusable(false)
-                        // The visible short digits read as an ambiguous number to VoiceOver; spell out the date and its purpose.
                         .accessibilityLabel(Text("Suggested date: \(date.formatted(date: .long, time: .omitted))", bundle: #bundle))
                         .accessibilityHint(Text("Sets the document date to this value", bundle: #bundle))
                     }
