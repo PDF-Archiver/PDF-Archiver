@@ -111,6 +111,67 @@ struct DocumentInformationFormTests {
         await store.receive(.delegate(.saveDocument(document, shouldUpdatePdfMetadata: false)))
     }
 
+    @Test
+    func saveWithoutChangesReturnsFocusToDate() async throws {
+        var state = DocumentInformationForm.State(document: .mock())
+        state.focusedField = .specification
+        let store = TestStore(initialState: state) {
+            DocumentInformationForm()
+        }
+
+        await store.send(.onSaveButtonTapped) {
+            $0.focusedField = .date
+        }
+    }
+
+    // MARK: - Tab Focus Cycle Tests
+
+    @Test
+    func tabCyclesForwardAndWrapsToDate() async throws {
+        var state = DocumentInformationForm.State(document: .mock())
+        state.focusedField = .date
+        let store = TestStore(initialState: state) {
+            DocumentInformationForm()
+        }
+
+        await store.send(.onTabKeyPressed(forward: true)) {
+            $0.focusedField = .specification
+        }
+        await store.send(.onTabKeyPressed(forward: true)) {
+            $0.focusedField = .tags
+        }
+        await store.send(.onTabKeyPressed(forward: true)) {
+            $0.focusedField = .save
+        }
+        await store.send(.onTabKeyPressed(forward: true)) {
+            $0.focusedField = .date
+        }
+    }
+
+    @Test
+    func tabCyclesBackwardsAndWrapsToSave() async throws {
+        var state = DocumentInformationForm.State(document: .mock())
+        state.focusedField = .date
+        let store = TestStore(initialState: state) {
+            DocumentInformationForm()
+        }
+
+        await store.send(.onTabKeyPressed(forward: false)) {
+            $0.focusedField = .save
+        }
+    }
+
+    @Test
+    func tabWithoutFocusStartsAtDate() async throws {
+        let store = TestStore(initialState: DocumentInformationForm.State(document: .mock())) {
+            DocumentInformationForm()
+        }
+
+        await store.send(.onTabKeyPressed(forward: true)) {
+            $0.focusedField = .date
+        }
+    }
+
     // MARK: - Tag Management Tests
 
     @Test
