@@ -31,7 +31,7 @@ extension NSAttributedString: @unchecked @retroactive Sendable {}
 /// Vision OCR plus PDF page rendering with an invisible text layer.
 ///
 /// One shared core (`recognizeText` + `renderPage`) drives both entry points:
-/// - ``createSearchablePDF(fromImagesAt:marker:)`` — the scan path: staged
+/// - ``createSearchablePDF(fromImagesAt:marker:version:)`` — the scan path: staged
 ///   page images become a brand-new searchable PDF.
 /// - ``addTextLayer(to:quality:maxPages:)`` — the in-place path: image-only
 ///   pages of an existing PDF are replaced by pages that additionally carry
@@ -61,7 +61,9 @@ enum PDFOCREngine {
     /// - Parameters:
     ///   - urls: JPEG page images, in page order.
     ///   - marker: Written to the PDF `Creator` attribute.
-    static func createSearchablePDF(fromImagesAt urls: [URL], marker: String) async throws -> PDFDocument {
+    ///   - version: OCR engine version stamped alongside `marker`, so the sweep
+    ///     does not immediately re-OCR a document this very engine produced.
+    static func createSearchablePDF(fromImagesAt urls: [URL], marker: String, version: Int) async throws -> PDFDocument {
         let document = PDFDocument()
 
         for url in urls {
@@ -88,7 +90,7 @@ enum PDFOCREngine {
         }
 
         var attributes = document.documentAttributes ?? [:]
-        attributes[PDFDocumentAttribute.creatorAttribute] = marker
+        attributes[PDFDocumentAttribute.creatorAttribute] = PDFMetadata.markerValue(marker: marker, version: version)
         document.documentAttributes = attributes
         return document
     }
@@ -115,34 +117,28 @@ enum PDFOCREngine {
             guard let page = pdf.page(at: pageIndex) else { continue }
             let bounds = page.bounds(for: .mediaBox)
 
-            // Rasterizing an already-rasterized scan would degrade it a second
-            // time, so an image-only page keeps its original bitmap.
-            let ocrImage: PlatformImage
-            let drawImage: PlatformImage
-            if let reusedImage = imageOnlyPage(page) {
-                ocrImage = reusedImage
-                drawImage = reusedImage
-            } else {
-                let renderSize = CGSize(width: bounds.width * renderScale, height: bounds.height * renderScale)
-                let pageImage = page.thumbnail(of: renderSize, for: .mediaBox)
-                ocrImage = pageImage
+            // Rendering the page is what preserves its full content: every page
+            // is replaced by the rasterized image, so anything not drawn into
+            // that raster would be lost.
+            let renderSize = CGSize(width: bounds.width * renderScale, height: bounds.height * renderScale)
+            let ocrImage = page.thumbnail(of: renderSize, for: .mediaBox)
 
-                // Re-encode the high-resolution page image as JPEG so the new
-                // page does not blow up the file size with a raw bitmap.
-                if let jpegData = pageImage.jpg(quality: CGFloat(quality.rawValue)),
-                   let jpegImage = PlatformImage(data: jpegData) {
-                    drawImage = jpegImage
-                } else {
-                    drawImage = pageImage
-                }
+            // Re-encode the high-resolution page image as JPEG so the new page
+            // does not blow up the file size with a raw bitmap.
+            let drawImage: PlatformImage
+            if let jpegData = ocrImage.jpg(quality: CGFloat(quality.rawValue)),
+               let jpegImage = PlatformImage(data: jpegData) {
+                drawImage = jpegImage
+            } else {
+                drawImage = ocrImage
             }
 
             guard let pageCgImage = ocrImage.cgImage else { continue }
             let ocrResults = try await recognizeText(in: pageCgImage, imageSize: ocrImage.size)
             guard !ocrResults.isEmpty else { continue }
 
-            // Scale OCR coordinates back from the OCR'd image to page
-            // coordinates - a reused image has its own, unassumable size.
+            // Scale OCR coordinates from the rasterized image back to page
+            // coordinates.
             let scaleX = bounds.width / ocrImage.size.width
             let scaleY = bounds.height / ocrImage.size.height
             let scaledResults = ocrResults.map { result in
@@ -160,77 +156,6 @@ enum PDFOCREngine {
             pdf.removePage(at: pageIndex)
             pdf.insert(newPage, at: pageIndex)
         }
-    }
-
-    /// `/Resources` may be inherited from the page tree instead of sitting on
-    /// the page itself.
-    private static func resolvedResources(of dictionary: CGPDFDictionaryRef) -> CGPDFDictionaryRef? {
-        var resources: CGPDFDictionaryRef?
-        if CGPDFDictionaryGetDictionary(dictionary, "Resources", &resources), let resources { return resources }
-
-        var parent: CGPDFDictionaryRef?
-        guard CGPDFDictionaryGetDictionary(dictionary, "Parent", &parent),
-              let parent else { return nil }
-        return resolvedResources(of: parent)
-    }
-
-    /// The page's own bitmap, if the page is nothing but one full-page JPEG.
-    ///
-    /// Returns `nil` for every other page shape (several XObjects, a vector or
-    /// text page, a non-JPEG encoding, a rotated page, an image that does not
-    /// span the page) so the caller falls back to rasterizing the page.
-    private static func imageOnlyPage(_ page: PDFPage) -> PlatformImage? {
-        guard let dictionary = page.pageRef?.dictionary else { return nil }
-
-        // A rotated page needs the rotation the rasterizer applies; reusing the
-        // bitmap unrotated would transpose the whole text layer.
-        var rotation: CGPDFInteger = 0
-        if CGPDFDictionaryGetInteger(dictionary, "Rotate", &rotation), rotation != 0 { return nil }
-
-        var xObjects: CGPDFDictionaryRef?
-        guard let resources = resolvedResources(of: dictionary),
-              CGPDFDictionaryGetDictionary(resources, "XObject", &xObjects),
-              let xObjects,
-              CGPDFDictionaryGetCount(xObjects) == 1 else { return nil }
-
-        var stream: CGPDFStreamRef?
-        withUnsafeMutablePointer(to: &stream) { pointer in
-            CGPDFDictionaryApplyFunction(
-            xObjects,
-            { _, object, info in
-                guard let info else { return }
-                var candidate: CGPDFStreamRef?
-                guard CGPDFObjectGetValue(object, .stream, &candidate),
-                      let candidate else { return }
-                info.assumingMemoryBound(to: CGPDFStreamRef?.self).pointee = candidate
-            },
-            pointer)
-        }
-
-        guard let stream,
-              let streamDictionary = CGPDFStreamGetDictionary(stream) else { return nil }
-
-        var subtype: UnsafePointer<CChar>?
-        guard CGPDFDictionaryGetName(streamDictionary, "Subtype", &subtype),
-              let subtype,
-              String(cString: subtype) == "Image" else { return nil }
-
-        // Only an encoding the stream carries verbatim can be reused; a `.raw`
-        // stream is undecodable sample data without its colour space.
-        var format = CGPDFDataFormat.raw
-        guard let data = CGPDFStreamCopyData(stream, &format) as Data?,
-              format == .jpegEncoded || format == .JPEG2000,
-              let image = PlatformImage(data: data),
-              image.size.width > 0, image.size.height > 0 else { return nil }
-
-        // An image that is not the whole page would be stretched over the media
-        // box by the renderer.
-        let pageBounds = page.bounds(for: .mediaBox)
-        let aspectRatio = image.size.width / image.size.height
-        let pageAspectRatio = pageBounds.width / pageBounds.height
-        guard abs(aspectRatio - pageAspectRatio) < 0.02 * pageAspectRatio else { return nil }
-
-        return image
     }
 
     // MARK: - Shared core

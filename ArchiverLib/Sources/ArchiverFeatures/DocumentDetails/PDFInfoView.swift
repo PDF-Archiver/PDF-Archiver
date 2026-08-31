@@ -162,21 +162,26 @@ extension PDFInfoView {
                     )
                 }
 
-                Divider()
                 Button {
                     onRunOcr()
                 } label: {
-                    if isRunningOcr {
-                        ProgressView()
-                            .controlSize(.small)
-                    } else {
-                        Text(info.hasTextLayer
-                            ? String(localized: "Recreate OCR", bundle: #bundle)
-                            : String(localized: "Add OCR", bundle: #bundle))
+                    Group {
+                        if isRunningOcr {
+                            ProgressView()
+                                .controlSize(.small)
+                        } else {
+                            Text(info.hasTextLayer
+                                ? String(localized: "Recreate OCR", bundle: #bundle)
+                                : String(localized: "Add OCR", bundle: #bundle))
+                        }
                     }
+                    // On the label, not the Button: the label would otherwise
+                    // inherit the VStack's leading alignment and the spinner
+                    // would hug the edge instead of centering.
+                    .frame(maxWidth: .infinity, alignment: .center)
                 }
                 .disabled(isRunningOcr)
-                .frame(maxWidth: .infinity)
+                .focusable(false)
             }
             .frame(minWidth: 250)
             .padding(8)

@@ -37,33 +37,37 @@ struct PDFOCREngineTests {
         return dest
     }
 
-    /// A page whose only content is one full-page JPEG XObject — the shape a
-    /// scanner or an import of a photographed document produces.
+    /// A page that mixes a small corner image with real page text — the shape
+    /// that must never be replaced by the image alone.
     ///
     /// Assembled byte by byte because a `CGPDFContext` re-encodes what is drawn
-    /// into it and would not necessarily produce a `DCTDecode` stream.
-    private func writeJpegImageOnlyPDF(name: String) throws -> (url: URL, pixelSize: CGSize) {
+    /// into it, which would not reproduce a plain `DCTDecode` XObject placed by
+    /// a `cm` matrix that is not the media box.
+    private func writeMixedImageAndTextPDF(name: String, text: String) throws -> URL {
         let image = try #require(PlatformImage(contentsOf: Bundle.billPNGUrl))
         let jpeg = try #require(image.jpg(quality: 0.8))
         let jpegImage = try #require(PlatformImage(data: jpeg))
         let cgImage = try #require(jpegImage.cgImage)
-        let pixelSize = CGSize(width: cgImage.width, height: cgImage.height)
-        // The image spans the whole page, which is what the reuse path requires.
-        let pageSize = CGSize(width: 595, height: (595 * pixelSize.height / pixelSize.width).rounded())
+        let pageSize = CGSize(width: 595, height: 842)
 
-        let content = Data("q \(pageSize.width) 0 0 \(pageSize.height) 0 0 cm /Im0 Do Q\n".utf8)
+        // A 100x141pt logo in the bottom-left corner plus a line of 24pt text.
+        let content = Data("""
+        q 100 0 0 141 40 40 cm /Im0 Do Q
+        BT /F1 24 Tf 40 700 Td (\(text)) Tj ET
+        """.utf8)
         let objects: [Data] = [
             Data("<< /Type /Catalog /Pages 2 0 R >>".utf8),
             Data("<< /Type /Pages /Kids [3 0 R] /Count 1 >>".utf8),
             Data("""
             << /Type /Page /Parent 2 0 R /MediaBox [0 0 \(pageSize.width) \(pageSize.height)] \
-            /Resources << /XObject << /Im0 5 0 R >> >> /Contents 4 0 R >>
+            /Resources << /XObject << /Im0 5 0 R >> /Font << /F1 6 0 R >> >> /Contents 4 0 R >>
             """.utf8),
             Data("<< /Length \(content.count) >>\nstream\n".utf8) + content + Data("\nendstream".utf8),
             Data("""
             << /Type /XObject /Subtype /Image /Width \(cgImage.width) /Height \(cgImage.height) \
             /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length \(jpeg.count) >>\nstream\n
-            """.utf8) + jpeg + Data("\nendstream".utf8)
+            """.utf8) + jpeg + Data("\nendstream".utf8),
+            Data("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>".utf8)
         ]
 
         var pdf = Data("%PDF-1.4\n".utf8)
@@ -84,7 +88,7 @@ struct PDFOCREngineTests {
 
         let dest = tempFolder.appendingPathComponent(name)
         try pdf.write(to: dest)
-        return (dest, pixelSize)
+        return dest
     }
 
     /// Pixel sizes of every image XObject reachable from `page`, including
@@ -209,27 +213,37 @@ struct PDFOCREngineTests {
         return PDFDocument(data: data as Data)!
     }
 
-    // MARK: - Image reuse
+    // MARK: - Page content preservation
 
-    /// Re-rasterizing an already-rasterized scan degrades it a second time, so
-    /// an image-only page must keep its own bitmap.
+    /// OCR replaces every page with its rendered image, so a page that is more
+    /// than one full-page bitmap must be rasterized whole. Reusing the embedded
+    /// image instead would silently discard the rest of the page — unrecoverable,
+    /// because OCR rewrites the user's document in place with no backup.
     @Test(.tags(.ocr))
-    func addTextLayerReusesTheImageOfAnImageOnlyPage() async throws {
-        let fixture = try writeJpegImageOnlyPDF(name: "image-reuse.pdf")
-        let pdf = try #require(PDFDocument(url: fixture.url))
-        let boundsBefore = try #require(pdf.page(at: 0)?.bounds(for: .mediaBox))
+    func addTextLayerKeepsTheTextOfAMixedImageAndTextPage() async throws {
+        let url = try writeMixedImageAndTextPDF(name: "mixed-page.pdf", text: "Wichtige Rechnung 4711")
+        let pdf = try #require(PDFDocument(url: url))
+        let bounds = try #require(pdf.page(at: 0)?.bounds(for: .mediaBox))
+        // Guards the fixture: the page really does carry extractable text.
+        #expect(pdf.page(at: 0)?.string?.contains("Rechnung") == true)
 
         try await PDFOCREngine.addTextLayer(to: pdf, quality: .lossless)
 
         let page = try #require(pdf.page(at: 0))
-        #expect(page.bounds(for: .mediaBox) == boundsBefore)
-        #expect(embeddedImageSizes(of: page) == [fixture.pixelSize])
+        #expect(page.bounds(for: .mediaBox) == bounds)
+
+        // The whole page was rendered, not the 100x141pt corner logo.
+        let renderedSize = try #require(embeddedImageSizes(of: page).first)
+        #expect(renderedSize.width == (bounds.width * 3).rounded())
+
+        let text = try #require(page.string)
+        #expect(text.contains("Rechnung"))
     }
 
-    /// A page CoreGraphics cannot hand back verbatim still takes the
-    /// rasterization path, which renders at 3x the page size.
+    /// Pages are rendered at 3x their point size (~216 DPI); rendering at 1x
+    /// would irreversibly degrade the user's scan.
     @Test(.tags(.ocr))
-    func addTextLayerRasterizesAPageItCannotReuse() async throws {
+    func addTextLayerRasterizesPagesAtThreeTimesTheirSize() async throws {
         let url = try writeImageOnlyPDF(name: "rasterized.pdf")
         let pdf = try #require(PDFDocument(url: url))
         let bounds = try #require(pdf.page(at: 0)?.bounds(for: .mediaBox))
@@ -239,6 +253,36 @@ struct PDFOCREngineTests {
         let page = try #require(pdf.page(at: 0))
         let renderedSize = try #require(embeddedImageSizes(of: page).first)
         #expect(renderedSize.width == (bounds.width * 3).rounded())
+    }
+
+    // MARK: - Scan path
+
+    /// A freshly scanned document is stamped at the current engine version, so
+    /// the automatic sweep does not immediately re-OCR what it just produced.
+    @Test(.tags(.ocr))
+    func createSearchablePDFStampsTheCurrentEngineVersion() async throws {
+        let document = try await PDFOCREngine.createSearchablePDF(fromImagesAt: [Bundle.billPNGUrl],
+                                                                  marker: config.processedMarker,
+                                                                  version: config.ocrEngineVersion)
+
+        #expect(PDFMetadata.processedEngineVersion(document, markerPrefix: config.processedMarker) == config.ocrEngineVersion)
+    }
+
+    // MARK: - Manual run failures
+
+    /// #300 requires a failed manual run to leave the document byte-identical:
+    /// the automatic sweep's retry-loop stamp must not be applied, because the
+    /// in-memory document may already hold partially replaced pages.
+    @Test(.tags(.ocr))
+    func cancelledForcedRunLeavesTheFileByteIdentical() async throws {
+        let url = try writeImageOnlyPDF(name: "cancelled-forced.pdf")
+        let before = try Data(contentsOf: url)
+
+        let task = Task { await DocumentProcessor.addOcrTextLayer(at: url, config: config, force: true) }
+        task.cancel()
+
+        #expect(await task.value == false)
+        #expect(try Data(contentsOf: url) == before)
     }
 
     // MARK: - addTextLayer

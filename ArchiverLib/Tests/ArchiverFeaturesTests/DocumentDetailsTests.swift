@@ -130,14 +130,18 @@ struct DocumentDetailsTests {
             $0.documentProcessor.runOcr = { _ in false }
         }
 
-        // The alert's TextState carries the feature bundle, which a test target
-        // cannot construct - assert its presence instead.
-        store.exhaustivity = .off
-
-        await store.send(.onRunOcrButtonTapped)
-        await store.receive(.runOcrFinished(false))
-
-        #expect(store.state.isRunningOcr == false)
-        #expect(store.state.alert != nil)
+        await store.send(.onRunOcrButtonTapped) {
+            $0.isRunningOcr = true
+        }
+        await store.receive(.runOcrFinished(false)) {
+            $0.isRunningOcr = false
+            // #bundle does not expand in a test target; the feature's own
+            // resource bundle is reachable through @testable import.
+            $0.alert = AlertState {
+                TextState("OCR failed", bundle: .module)
+            } message: {
+                TextState("The text layer of this document could not be created. Please try again.", bundle: .module)
+            }
+        }
     }
 }

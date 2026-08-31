@@ -282,7 +282,9 @@ public actor DocumentProcessor {
 
     @concurrent
     private static func processImages(at urls: [URL], config: ProcessingConfig) async throws -> URL {
-        let document = try await PDFOCREngine.createSearchablePDF(fromImagesAt: urls, marker: config.processedMarker)
+        let document = try await PDFOCREngine.createSearchablePDF(fromImagesAt: urls,
+                                                                       marker: config.processedMarker,
+                                                                       version: config.ocrEngineVersion)
         guard document.pageCount > 0 else { throw ProcessingError.noPagesRendered }
 
         let filename = await FilenameGenerator.filename(reusing: nil)
@@ -347,7 +349,10 @@ public actor DocumentProcessor {
             return false
         } catch {
             Logger.ocrProcessing.error("OCR failed for \(url.lastPathComponent, privacy: .public): \(error)")
-            // Mark as processed even on failure to prevent infinite retries.
+            // The failure stamp exists to stop the automatic sweep from looping.
+            // A manual run must leave the file byte-identical instead, because
+            // `pdf` may already hold partially replaced pages at this point.
+            guard !force else { return false }
             _ = PDFMetadata.markAsProcessed(pdf, marker: config.processedMarker, version: config.ocrEngineVersion, writeTo: url)
             return false
         }

@@ -63,6 +63,14 @@ public enum PDFMetadata {
         return version
     }
 
+    /// The `Creator` value written for `marker` at `version`.
+    ///
+    /// Shared by both OCR entry points so a scanned document is born at the
+    /// current engine version instead of being re-OCR'd by the same engine.
+    public static func markerValue(marker: String, version: Int) -> String {
+        "\(marker) v\(version)"
+    }
+
     /// Sets the `Creator` metadata to `"<marker> v<version>"` and writes the
     /// PDF to disk.
     ///
@@ -74,7 +82,7 @@ public enum PDFMetadata {
     @discardableResult
     public static func markAsProcessed(_ pdf: PDFDocument, marker: String, version: Int, writeTo url: URL) -> Bool {
         var attributes = pdf.documentAttributes ?? [:]
-        attributes[PDFDocumentAttribute.creatorAttribute] = "\(marker) v\(version)"
+        attributes[PDFDocumentAttribute.creatorAttribute] = markerValue(marker: marker, version: version)
         pdf.documentAttributes = attributes
         return pdf.write(to: url)
     }
