@@ -29,7 +29,8 @@ let package = Package(
         .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "1.17.1"),
         .package(url: "https://github.com/pointfreeco/swift-sharing", exact: "2.10.0"),
         .package(url: "https://github.com/sideeffect-io/AsyncExtensions", exact: "0.5.5"),
-        .package(url: "https://github.com/apple/swift-async-algorithms", exact: "1.1.5")
+        .package(url: "https://github.com/apple/swift-async-algorithms", exact: "1.1.5"),
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", exact: "1.19.4")
     ],
     targets: [
         .target(name: "ArchiverFeatures",
@@ -85,7 +86,10 @@ let package = Package(
                 ]),
         .testTarget(
             name: "ArchiverFeaturesTests",
-            dependencies: ["ArchiverFeatures"]
+            dependencies: [
+                "ArchiverFeatures",
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
+            ]
         ),
         .testTarget(
             name: "ArchiverStoreTests",
