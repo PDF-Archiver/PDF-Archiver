@@ -13,9 +13,6 @@ import Testing
 
 #if os(iOS)
 import UIKit
-#elseif os(macOS)
-import AppKit
-import SwiftUI
 #endif
 
 /// The pixel targets Apple requires, expressed as the point size and scale that produce them.
@@ -27,8 +24,6 @@ enum StoreSize {
     static let iPhone69 = CGSize(width: 440, height: 956)
     /// iPad 13": 2064x2752 px = 1032x1376 pt @2x.
     static let iPad13 = CGSize(width: 1032, height: 1376)
-    /// Mac: 2880x1800 px = 1440x900 pt @2x.
-    static let mac = CGSize(width: 1440, height: 900)
 }
 
 #if os(iOS)
@@ -37,36 +32,6 @@ enum StoreSize {
 @MainActor
 func storeTraits(displayScale: CGFloat) -> UITraitCollection {
     UITraitCollection { $0.displayScale = displayScale }
-}
-#endif
-
-#if os(macOS)
-/// `NSView.cacheDisplay` takes its pixel count from the *window's* backing scale, so a hosted
-/// view needs a window with a pinned one. Without it the render follows whatever display the
-/// machine has — 2880x1800 on a Retina Mac, 1440x900 elsewhere, both valid upload sizes, which
-/// is exactly why the drift goes unnoticed.
-private final class ScaledWindow: NSWindow {
-    private let pinnedScale: CGFloat
-
-    init(scale: CGFloat, contentRect: CGRect) {
-        pinnedScale = scale
-        super.init(contentRect: contentRect, styleMask: [.borderless], backing: .buffered, defer: false)
-    }
-
-    override var backingScaleFactor: CGFloat { pinnedScale }
-}
-
-/// Hosts a SwiftUI view for capture. There is no `Snapshotting` for `SwiftUI.View` on macOS —
-/// the library's file is `#if os(iOS) || os(tvOS)` — so the view goes through `NSHostingView`.
-@MainActor
-func macHostingView(_ view: some View, pointSize: CGSize = StoreSize.mac, scale: CGFloat = 2) -> NSView {
-    let hosting = NSHostingView(rootView: view)
-    hosting.frame = CGRect(origin: .zero, size: pointSize)
-    let window = ScaledWindow(scale: scale, contentRect: hosting.frame)
-    window.contentView = NSView(frame: hosting.frame)
-    window.contentView?.addSubview(hosting)
-    hosting.layoutSubtreeIfNeeded()
-    return hosting
 }
 #endif
 

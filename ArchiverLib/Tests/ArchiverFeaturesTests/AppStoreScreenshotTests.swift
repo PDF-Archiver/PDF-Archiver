@@ -18,6 +18,10 @@ import Testing
 /// Runs only when an output directory is configured, so a normal test run is unaffected. Drop
 /// the `.enabled(if:)` traits to turn these into a layout guard as well — that means committing
 /// a reference PNG per screen, which then has to be re-recorded on every OS update.
+///
+/// iOS only. An offscreen render cannot reproduce the macOS 26 glass sidebar — `cacheDisplay`
+/// does not traverse it and leaves a blank white block — so the Mac shots come from the running
+/// app instead, via `scripts/capture-mac-screenshots.sh`.
 @MainActor
 struct AppStoreScreenshotTests {
     /// Shot numbers follow the marketing shot list, which is why they skip: 03, 04, 06 and 07
@@ -30,12 +34,6 @@ struct AppStoreScreenshotTests {
         (.trial, "08-trial"),
         (.inbox, "20-inbox"),
         (.statistics, "21-statistics")
-    ]
-
-    nonisolated static let macScenes: [(ScreenshotScene, String)] = [
-        (.mac, "01-archive"),
-        (.macTagging, "02-tagging"),
-        (.macDocument, "03-document")
     ]
 
     init() {
@@ -81,21 +79,6 @@ struct AppStoreScreenshotTests {
         } operation: {
             capture(AnyView(storeStyled(scene)), as: snapshotting, device: device, screen: name)
         }
-    }
-    #endif
-
-    #if os(macOS)
-    @Test(.enabled(if: screenshotOutputDirectory() != nil), arguments: macScenes)
-    func mac(scene: ScreenshotScene, named name: String) throws {
-        let file = withDependencies {
-            $0.context = .preview
-        } operation: {
-            capture(macHostingView(storeStyled(scene)),
-                    as: Snapshotting<NSView, NSImage>.image,
-                    device: "mac",
-                    screen: name)
-        }
-        #expect(try pixelSize(of: file) == CGSize(width: 2880, height: 1800))
     }
     #endif
 
