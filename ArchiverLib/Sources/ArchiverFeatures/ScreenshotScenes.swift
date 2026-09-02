@@ -71,7 +71,7 @@ public enum ScreenshotScene: String, CaseIterable, Sendable {
 
         var state = AppFeature.State()
         Self.sidebar(for: Self.archivedDocuments + Self.untaggedDocuments, into: &state)
-        state.archiveList.searchText = Self.isGerman ? "rechnung" : "bill"
+        state.archiveList.searchText = Self.searchTerm
 
         return AppView(store: Store(initialState: state) { AppFeature() })
     }
@@ -136,8 +136,13 @@ public enum ScreenshotScene: String, CaseIterable, Sendable {
     private var archiveList: some View {
         seed(documents: Self.archivedDocuments)
 
+        // Hits, not the plain list: the briefing asks shot 01 to show the search across years,
+        // and a short result list keeps the glass search field off the tag pills.
+        var state = ArchiveList.State()
+        state.searchText = Self.searchTerm
+
         return NavigationStack {
-            ArchiveListView(store: Store(initialState: ArchiveList.State()) {
+            ArchiveListView(store: Store(initialState: state) {
                 ArchiveList()
             })
             .navigationTitle(Text("Archive", bundle: #bundle))
@@ -257,6 +262,11 @@ public enum ScreenshotScene: String, CaseIterable, Sendable {
 
     private static var receiptSuggestedTags: [String] {
         isGerman ? ["tomtailor", "jeans", "bekleidung"] : ["tomtailor", "jeans", "apparel"]
+    }
+
+    /// The query the archive shots search for, shared by iPhone and Mac so both tell one story.
+    private static var searchTerm: String {
+        isGerman ? "rechnung" : "bill"
     }
 
     /// Filenames are shown verbatim, so a German archive in the English store would read wrong.
