@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 08.01.21.
 //
 
+import ImageIO
 import XCTest
 
 #warning("TODO: add these tests again")
@@ -52,10 +53,13 @@ final class UITestsiOS: XCTestCase {
 
 /// Captures the raw App Store screenshots by launching the app straight into a `ScreenshotScene`.
 ///
-/// Only runs when `SCREENSHOT_OUTPUT_DIR` names a destination folder, so a normal UI test run is
-/// unaffected. The numbers match the shot list in the marketing briefing, which is why they are
-/// not contiguous: 03, 04, 06 and 07 cannot be produced from a simulator. The 2x numbers are
-/// press kit shots, which the store series does not use.
+/// The destination comes from `SCREENSHOT_OUTPUT_DIR` or a `.screenshot-output-dir` sidecar, and
+/// holds one device family — point it at `iphone/` for an iPhone 6.9" destination and `ipad/` for
+/// an iPad 13" one, because the size follows the simulator rather than a layout argument.
+///
+/// The numbers match the shot list in the marketing briefing, which is why they are not
+/// contiguous: 03, 04, 06 and 07 cannot be produced from a simulator. The 2x numbers are press
+/// kit shots, which the store series does not use.
 final class AppStoreScreenshotUITests: XCTestCase {
 
     override func setUpWithError() throws {
@@ -91,6 +95,9 @@ final class AppStoreScreenshotUITests: XCTestCase {
     private func capture(scene: String, named name: String) throws {
         let app = XCUIApplication()
         app.launchArguments = ["-screenshotScene", scene]
+        if let asset = ProcessInfo.processInfo.environment["SCREENSHOT_ASSET"] {
+            app.launchArguments += ["-screenshotAsset", asset]
+        }
         app.launch()
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 60))
@@ -99,12 +106,34 @@ final class AppStoreScreenshotUITests: XCTestCase {
 
         let directory = try XCTUnwrap(Self.outputDirectory)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-        try XCUIScreen.main.screenshot()
-            .pngRepresentation
-            .write(to: directory.appendingPathComponent("\(name).png"))
+        let file = directory.appendingPathComponent("\(name).png")
+        try XCUIScreen.main.screenshot().pngRepresentation.write(to: file)
+
+        // A capture run that writes nothing still reports green otherwise, and the empty set is
+        // only noticed at the upload.
+        let size = try pixelSize(of: file)
+        XCTAssertGreaterThan(size.width, 0)
+        XCTAssertGreaterThan(size.height, 0)
     }
 
+    private func pixelSize(of url: URL) throws -> (width: Int, height: Int) {
+        let source = try XCTUnwrap(CGImageSourceCreateWithURL(url as CFURL, nil))
+        let properties = try XCTUnwrap(CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any])
+        return (try XCTUnwrap(properties[kCGImagePropertyPixelWidth] as? Int),
+                try XCTUnwrap(properties[kCGImagePropertyPixelHeight] as? Int))
+    }
+
+    /// The sidecar file is the fallback because a run from Xcode has no environment set, and
+    /// measured, `xcodebuild` does not forward one into a simulator test runner either.
     private static var outputDirectory: URL? {
-        ProcessInfo.processInfo.environment["SCREENSHOT_OUTPUT_DIR"].map { URL(fileURLWithPath: $0) }
+        if let value = ProcessInfo.processInfo.environment["SCREENSHOT_OUTPUT_DIR"] {
+            return URL(fileURLWithPath: value)
+        }
+        let sidecar = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()   // UITests iOS
+            .deletingLastPathComponent()   // the repository root
+            .appendingPathComponent(".screenshot-output-dir")
+        guard let value = try? String(contentsOf: sidecar, encoding: .utf8) else { return nil }
+        return URL(fileURLWithPath: value.trimmingCharacters(in: .whitespacesAndNewlines))
     }
 }
