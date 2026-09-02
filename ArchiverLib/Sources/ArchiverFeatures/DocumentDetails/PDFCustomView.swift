@@ -106,6 +106,24 @@ private func dateSearchStrings(for date: Date) -> [String] {
     return results.filter { seen.insert($0).inserted }
 }
 
+#if DEBUG
+/// `autoScales` fits the width, which blows a receipt-shaped page up until only its head is
+/// visible. A screenshot fits the height instead, so the page keeps margins beside it.
+@MainActor
+private func fitPageHeightForScreenshot(_ view: PDFView, document: PDFDocument) {
+    guard ScreenshotScene.requested != nil,
+          let page = document.page(at: 0) else { return }
+
+    let pageHeight = page.bounds(for: .mediaBox).height
+    // Deferred: the view has no bounds yet while SwiftUI is still updating it.
+    DispatchQueue.main.async {
+        guard view.bounds.height > 0 else { return }
+        view.autoScales = false
+        view.scaleFactor = view.bounds.height / pageHeight
+    }
+}
+#endif
+
 #if os(macOS)
 struct PDFCustomView: NSViewRepresentable {
     typealias NSViewType = PDFView
@@ -155,23 +173,6 @@ struct PDFCustomView: NSViewRepresentable {
         // 3. highlight detected date if enabled
         addDateHighlightAnnotations(to: view, date: highlightDate)
     }
-
-    #if DEBUG
-    /// `autoScales` fits the width, which blows a receipt-shaped page up until only its head is
-    /// visible. A screenshot fits the height instead, so the page keeps margins beside it.
-    private func fitPageHeightForScreenshot(_ view: PDFView, document: PDFDocument) {
-        guard ScreenshotScene.requested != nil,
-              let page = document.page(at: 0) else { return }
-
-        let pageHeight = page.bounds(for: .mediaBox).height
-        // Deferred: the view has no bounds yet while SwiftUI is still updating it.
-        DispatchQueue.main.async {
-            guard view.bounds.height > 0 else { return }
-            view.autoScales = false
-            view.scaleFactor = view.bounds.height / pageHeight
-        }
-    }
-    #endif
 }
 #else
 struct PDFCustomView: UIViewRepresentable {
