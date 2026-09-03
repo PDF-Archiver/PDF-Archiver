@@ -1,0 +1,34 @@
+{
+  "sets": [
+    {
+      "dir": "de-DE/iphone-6.9",
+      "size": "1320x2868",
+      "frames": 5
+    },
+    {
+      "dir": "en-US/iphone-6.9",
+      "size": "1320x2868",
+      "frames": 5
+    },
+    {
+      "dir": "de-DE/ipad-13",
+      "size": "2752x2064",
+      "frames": 5
+    },
+    {
+      "dir": "en-US/ipad-13",
+      "size": "2752x2064",
+      "frames": 5
+    },
+    {
+      "dir": "de-DE/mac",
+      "size": "2880x1800",
+      "frames": 5
+    },
+    {
+      "dir": "en-US/mac",
+      "size": "2880x1800",
+      "frames": 5
+    }
+  ]
+}

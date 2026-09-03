@@ -20,17 +20,7 @@ public actor ArchiveStore: Log {
     @Shared(.observedFolder) var observedFolderURL: URL?
     #endif
 
-    #if DEBUG
-    private static let availableProvider: [any FolderProvider.Type] = {
-        if UserDefaults.standard.bool(forKey: "demoMode") {
-            return [DemoFolderProvider.self]
-        } else {
-            return [ICloudFolderProvider.self, LocalFolderProvider.self]
-        }
-    }()
-    #else
     private static let availableProvider: [any FolderProvider.Type] = [ICloudFolderProvider.self, LocalFolderProvider.self]
-    #endif
 
     public let isLoadingStream = AsyncCurrentValueSubject(true)
     public let documentsStream: AsyncStream<[Document]>

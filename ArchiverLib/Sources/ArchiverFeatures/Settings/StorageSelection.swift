@@ -117,11 +117,6 @@ struct StorageSelectionView: View {
             }
             HStack(spacing: 16) {
                 Image(systemName: "exclamationmark.triangle")
-                    .resizable()
-                    .scaledToFit()
-                    .containerRelativeFrame(.horizontal) { size, _ in
-                        size * 1 / 10
-                    }
                     .foregroundStyle(Color.tertiaryLabelAsset)
 
                 Text("PDF Archiver is not a backup solution. Please make backups of the archived PDFs regularly.", bundle: #bundle)
@@ -241,6 +236,8 @@ enum StorageSelectionType: String, CaseIterable {
                 Text("Not synchronized - your documents are only stored locally in this app. They can be transferred via the Finder on a Mac, for example.", bundle: #bundle)
                 Link("https://support.apple.com/en-us/HT210598", destination: Self.appleDocumentationURL)
             }
+            // A `Link` ignores the footer's implicit text style and would render at body size.
+            .font(.footnote)
         #endif
 
         case .local:

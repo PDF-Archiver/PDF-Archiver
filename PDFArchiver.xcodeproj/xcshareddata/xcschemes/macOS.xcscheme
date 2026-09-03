@@ -61,16 +61,6 @@
             ReferencedContainer = "container:PDFArchiver.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
-      <CommandLineArguments>
-         <CommandLineArgument
-            argument = "-demoMode"
-            isEnabled = "YES">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "true"
-            isEnabled = "NO">
-         </CommandLineArgument>
-      </CommandLineArguments>
       <StoreKitConfigurationFileReference
          identifier = "../Shared/Resources/PDFArchiverIAP.storekit">
       </StoreKitConfigurationFileReference>

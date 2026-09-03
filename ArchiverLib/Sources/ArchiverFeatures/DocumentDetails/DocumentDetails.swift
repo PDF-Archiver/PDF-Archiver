@@ -201,6 +201,19 @@ struct DocumentDetailsView: View {
     @State private var isOnScreen = false
 #endif
 
+    #if os(macOS)
+    /// The screenshot window is deliberately small, so the form takes just over the minimum and
+    /// leaves the rest of the width to the document.
+    private static var inspectorIdealWidth: CGFloat {
+        #if DEBUG
+        if ScreenshotCase.requested != nil {
+            return 251
+        }
+        #endif
+        return 400
+    }
+    #endif
+
     var body: some View {
         Group {
             if store.document.downloadStatus < 1 {
@@ -219,7 +232,7 @@ struct DocumentDetailsView: View {
                             // hacky workaround to remove the transparency in the inspector
                             .presentationBackground(Color.paBackgroundAsset)
 #else
-                            .inspectorColumnWidth(min: 300, ideal: 400, max: 600)
+                            .inspectorColumnWidth(min: 250, ideal: Self.inspectorIdealWidth, max: 600)
 #endif
                     }
 #if os(macOS)
