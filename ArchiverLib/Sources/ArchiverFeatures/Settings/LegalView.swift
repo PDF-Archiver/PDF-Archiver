@@ -45,6 +45,7 @@ struct LegalView: View {
                         Image(systemName: "chevron.right")
                             .font(.system(size: 14, weight: .semibold))
                             .foregroundStyle(.tertiary)
+                            .accessibilityHidden(true)
                         #endif
                     }
                 }

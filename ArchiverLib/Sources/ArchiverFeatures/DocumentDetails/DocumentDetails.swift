@@ -28,6 +28,7 @@ struct DocumentDetails {
         var documentInformationForm: DocumentInformationForm.State
         // initially always false to avoid UI glitches, e.g. not showing the inspector
         var showInspector = false
+        var isRunningOcr = false
 #if os(iOS)
         var shareDocument: ShareData?
 #endif
@@ -47,7 +48,9 @@ struct DocumentDetails {
         case delegate(Delegate)
         case onDeleteDocumentButtonTapped
         case onEditButtonTapped
+        case onRunOcrButtonTapped
         case onRemoteDocumentAppeared
+        case runOcrFinished(Bool)
 #if os(iOS)
         case onShareButtonTapped
 #endif
@@ -64,6 +67,7 @@ struct DocumentDetails {
     }
 
     @Dependency(\.archiveStore.startDownloadOf) var startDownloadOf
+    @Dependency(\.documentProcessor) var documentProcessor
     var body: some ReducerOf<Self> {
         Scope(\.documentInformationForm, action: \.showDocumentInformationForm) {
             DocumentInformationForm()
@@ -113,10 +117,26 @@ struct DocumentDetails {
                 }
                 return .none
 
+            case .onRunOcrButtonTapped:
+                state.isRunningOcr = true
+                return .run { [documentUrl = state.document.url] send in
+                    await send(.runOcrFinished(await documentProcessor.runOcr(documentUrl)))
+                }
+
             case .onRemoteDocumentAppeared:
                 return .run { [documentUrl = state.document.url] _ in
                     try await startDownloadOf(documentUrl)
                 }
+
+            case .runOcrFinished(let success):
+                state.isRunningOcr = false
+                guard !success else { return .none }
+                state.alert = AlertState<Action.Alert> {
+                    TextState("OCR failed", bundle: #bundle)
+                } message: {
+                    TextState("The text layer of this document could not be created. Please try again.", bundle: #bundle)
+                }
+                return .none
 
 #if os(iOS)
             case .onShareButtonTapped:
@@ -174,7 +194,12 @@ public struct DocumentCommands: Commands {
 
 struct DocumentDetailsView: View {
     @Bindable var store: StoreOf<DocumentDetails>
-    @SharedReader(.ocrEnabled) private var ocrEnabled: Bool
+
+#if os(macOS)
+    // Archive and Inbox each keep their own pushed document detail, while the
+    // Save action is scene-wide - only the visible tab may publish it.
+    @State private var isOnScreen = false
+#endif
 
     #if os(macOS)
     /// The screenshot window is deliberately small, so the form takes just over the minimum and
@@ -211,7 +236,9 @@ struct DocumentDetailsView: View {
 #endif
                     }
 #if os(macOS)
-                    .focusedSceneValue(\.saveDocumentAction, store.showInspector
+                    .onAppear { isOnScreen = true }
+                    .onDisappear { isOnScreen = false }
+                    .focusedSceneValue(\.saveDocumentAction, isOnScreen && store.showInspector
                         ? SaveDocumentAction(documentId: store.document.id) {
                             store.send(.showDocumentInformationForm(.onSaveButtonTapped))
                         }
@@ -262,14 +289,11 @@ struct DocumentDetailsView: View {
 
                 ToolbarSpacer()
 
-#if os(macOS)
-                if ocrEnabled,
-                   store.document.downloadStatus >= 1 {
+                if store.document.downloadStatus >= 1 {
                     ToolbarItem(id: "pdfInfo") {
-                        PDFInfoView(documentURL: store.document.url)
+                        pdfInfoView
                     }
                 }
-#endif
 
                 ToolbarItem(id: "share") {
 #if os(iOS)
@@ -302,6 +326,12 @@ struct DocumentDetailsView: View {
         }
     }
 
+    private var pdfInfoView: some View {
+        PDFInfoView(documentURL: store.document.url,
+                    isRunningOcr: store.isRunningOcr,
+                    onRunOcr: { store.send(.onRunOcrButtonTapped) })
+    }
+
     @ToolbarContentBuilder
     private var legacyToolbar: some ToolbarContent {
 #if os(macOS)
@@ -325,6 +355,10 @@ struct DocumentDetailsView: View {
                 store.send(.onEditButtonTapped)
             } label: {
                 Label(String(localized: "Edit", bundle: #bundle), systemImage: "pencil")
+            }
+
+            if store.document.downloadStatus >= 1 {
+                pdfInfoView
             }
 
 #if os(macOS)

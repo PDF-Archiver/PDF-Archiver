@@ -1,51 +1,56 @@
 {
-  "configurations" : [
+  "configurations": [
     {
-      "id" : "9E1F4C77-3B62-4C51-9F0A-2D5E8B4A1C33",
-      "name" : "Configuration 1",
-      "options" : {
-
-      }
+      "id": "9E1F4C77-3B62-4C51-9F0A-2D5E8B4A1C33",
+      "name": "Configuration 1",
+      "options": {}
     }
   ],
-  "defaultOptions" : {
-    "language" : "de",
-    "region" : "DE"
+  "defaultOptions": {
+    "language": "de",
+    "region": "DE"
   },
-  "testTargets" : [
+  "testTargets": [
     {
-      "target" : {
-        "containerPath" : "container:",
-        "identifier" : "ArchiverFeaturesTests",
-        "name" : "ArchiverFeaturesTests"
+      "target": {
+        "containerPath": "container:",
+        "identifier": "ArchiverFeaturesTests",
+        "name": "ArchiverFeaturesTests"
       }
     },
     {
-      "target" : {
-        "containerPath" : "container:",
-        "identifier" : "ArchiverStoreTests",
-        "name" : "ArchiverStoreTests"
+      "target": {
+        "containerPath": "container:",
+        "identifier": "ArchiverStoreTests",
+        "name": "ArchiverStoreTests"
       }
     },
     {
-      "target" : {
-        "containerPath" : "container:",
-        "identifier" : "ContentExtractorStoreTests",
-        "name" : "ContentExtractorStoreTests"
+      "target": {
+        "containerPath": "container:",
+        "identifier": "ContentExtractorStoreTests",
+        "name": "ContentExtractorStoreTests"
       }
     },
     {
-      "skippedTags" : {
-        "tags" : [
+      "skippedTags": {
+        "tags": [
           "ocr"
         ]
       },
-      "target" : {
-        "containerPath" : "container:",
-        "identifier" : "DocumentProcessingPipelineTests",
-        "name" : "DocumentProcessingPipelineTests"
+      "target": {
+        "containerPath": "container:",
+        "identifier": "DocumentProcessingPipelineTests",
+        "name": "DocumentProcessingPipelineTests"
+      }
+    },
+    {
+      "target": {
+        "containerPath": "container:",
+        "identifier": "EvaluationCorpusTests",
+        "name": "EvaluationCorpusTests"
       }
     }
   ],
-  "version" : 1
+  "version": 1
 }

@@ -73,4 +73,75 @@ struct DocumentDetailsTests {
             $0.documentInformationForm.document = sharedDocument.wrappedValue
         }
     }
+
+    @Test
+    func runOcrSucceeds() async throws {
+        let documentUrl = URL(fileURLWithPath: "/tmp/2024-01-01--scan__inbox.pdf")
+        let requestedUrls = LockIsolated<[URL]>([])
+        let store = TestStore(initialState: DocumentDetails.State(document: Shared(value: .mock(url: documentUrl, downloadStatus: 1)))) {
+            DocumentDetails()
+        } withDependencies: {
+            $0.documentProcessor.runOcr = { url in
+                requestedUrls.withValue { $0.append(url) }
+                return true
+            }
+        }
+
+        await store.send(.onRunOcrButtonTapped) {
+            $0.isRunningOcr = true
+        }
+        await store.receive(.runOcrFinished(true)) {
+            $0.isRunningOcr = false
+        }
+
+        #expect(requestedUrls.value == [documentUrl])
+    }
+
+    /// A tagged document is never touched by the automatic sweep, so the manual
+    /// action is the only way it can ever be OCR'd.
+    @Test
+    func runOcrIsAvailableForTaggedDocuments() async throws {
+        let documentUrl = URL(fileURLWithPath: "/tmp/2024-01-01--scan__bill.pdf")
+        let requestedUrls = LockIsolated<[URL]>([])
+        let store = TestStore(initialState: DocumentDetails.State(document: Shared(value: .mock(url: documentUrl, isTagged: true, downloadStatus: 1)))) {
+            DocumentDetails()
+        } withDependencies: {
+            $0.documentProcessor.runOcr = { url in
+                requestedUrls.withValue { $0.append(url) }
+                return true
+            }
+        }
+
+        await store.send(.onRunOcrButtonTapped) {
+            $0.isRunningOcr = true
+        }
+        await store.receive(.runOcrFinished(true)) {
+            $0.isRunningOcr = false
+        }
+
+        #expect(requestedUrls.value == [documentUrl])
+    }
+
+    @Test
+    func runOcrFailurePresentsAlert() async throws {
+        let store = TestStore(initialState: DocumentDetails.State(document: Shared(value: .mock(downloadStatus: 1)))) {
+            DocumentDetails()
+        } withDependencies: {
+            $0.documentProcessor.runOcr = { _ in false }
+        }
+
+        await store.send(.onRunOcrButtonTapped) {
+            $0.isRunningOcr = true
+        }
+        await store.receive(.runOcrFinished(false)) {
+            $0.isRunningOcr = false
+            // #bundle does not expand in a test target; the feature's own
+            // resource bundle is reachable through @testable import.
+            $0.alert = AlertState {
+                TextState("OCR failed", bundle: .module)
+            } message: {
+                TextState("The text layer of this document could not be created. Please try again.", bundle: .module)
+            }
+        }
+    }
 }

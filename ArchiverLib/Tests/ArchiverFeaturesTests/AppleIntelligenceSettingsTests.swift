@@ -1,6 +1,5 @@
 import ArchiverModels
 import ComposableArchitecture
-import ContentExtractorStore
 import Foundation
 import Testing
 
@@ -231,8 +230,6 @@ struct AppleIntelligenceSettingsTests {
             initialState: AppleIntelligenceSettings.State(availability: .available)
         ) {
             AppleIntelligenceSettings()
-        } withDependencies: {
-            $0.contentExtractorStore.setCacheEnabled = { _ in }
         }
 
         await store.send(.binding(.set(\.cacheEnabled, true))) {
@@ -246,8 +243,6 @@ struct AppleIntelligenceSettingsTests {
             initialState: AppleIntelligenceSettings.State(availability: .available)
         ) {
             AppleIntelligenceSettings()
-        } withDependencies: {
-            $0.contentExtractorStore.setCacheEnabled = { _ in }
         }
 
         await store.send(.binding(.set(\.cacheEnabled, false))) {
@@ -295,38 +290,6 @@ struct AppleIntelligenceSettingsTests {
 
         await store.send(.binding(.set(\.customPrompt, nil))) {
             $0.$customPrompt.withLock { $0 = nil }
-        }
-    }
-
-    // MARK: - Custom Prompt Length Tests
-
-    @Test
-    func customPromptWithinLimit() async throws {
-        guard #available(iOS 26, macOS 26, *) else { return }
-        let prompt = String(repeating: "a", count: ContentExtractorStore.maxCustomPromptLength - 1)
-        let store = TestStore(
-            initialState: AppleIntelligenceSettings.State(availability: .available)
-        ) {
-            AppleIntelligenceSettings()
-        }
-
-        await store.send(.binding(.set(\.customPrompt, prompt))) {
-            $0.$customPrompt.withLock { $0 = prompt }
-        }
-    }
-
-    @Test
-    func customPromptAtMaxLimit() async throws {
-        guard #available(iOS 26, macOS 26, *) else { return }
-        let prompt = String(repeating: "a", count: ContentExtractorStore.maxCustomPromptLength)
-        let store = TestStore(
-            initialState: AppleIntelligenceSettings.State(availability: .available)
-        ) {
-            AppleIntelligenceSettings()
-        }
-
-        await store.send(.binding(.set(\.customPrompt, prompt))) {
-            $0.$customPrompt.withLock { $0 = prompt }
         }
     }
 
@@ -426,7 +389,6 @@ struct AppleIntelligenceSettingsTests {
         ) {
             AppleIntelligenceSettings()
         } withDependencies: {
-            $0.contentExtractorStore.setCacheEnabled = { _ in }
             $0.contentExtractorStore.clearCache = {}
         }
 

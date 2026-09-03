@@ -150,7 +150,7 @@ public actor DocumentProcessor {
                 untaggedInFlight.insert(url)
                 defer { untaggedInFlight.remove(url) }
 
-                if await Self.addOcrTextLayerIfNeeded(at: document.url, config: config) {
+                if await Self.addOcrTextLayer(at: document.url, config: config) {
                     ocrCount += 1
                 }
             }
@@ -167,6 +167,22 @@ public actor DocumentProcessor {
         }
 
         return UntaggedProcessingResult(ocrCount: ocrCount, aiCacheCount: aiCacheCount)
+    }
+
+    /// Run OCR on one document, whether or not it already has a text layer.
+    ///
+    /// Shares `untaggedInFlight` with the automatic pass, so a manual run and
+    /// the background sweep can never rewrite the same file concurrently.
+    ///
+    /// - Returns: `false` when the sweep already holds the file, or when OCR
+    ///   failed.
+    public func runOcrTextLayer(at url: URL, config: ProcessingConfig) async -> Bool {
+        let resolved = url.resolvingSymlinksInPath()
+        guard !untaggedInFlight.contains(resolved) else { return false }
+        untaggedInFlight.insert(resolved)
+        defer { untaggedInFlight.remove(resolved) }
+
+        return await Self.addOcrTextLayer(at: url, config: config, force: true)
     }
 
     // MARK: - Progress
@@ -266,7 +282,9 @@ public actor DocumentProcessor {
 
     @concurrent
     private static func processImages(at urls: [URL], config: ProcessingConfig) async throws -> URL {
-        let document = try await PDFOCREngine.createSearchablePDF(fromImagesAt: urls, marker: config.processedMarker)
+        let document = try await PDFOCREngine.createSearchablePDF(fromImagesAt: urls,
+                                                                       marker: config.processedMarker,
+                                                                       version: config.ocrEngineVersion)
         guard document.pageCount > 0 else { throw ProcessingError.noPagesRendered }
 
         let filename = await FilenameGenerator.filename(reusing: nil)
@@ -288,20 +306,28 @@ public actor DocumentProcessor {
         return documentUrl
     }
 
-    /// Add an OCR text layer to the PDF at `url` if it has none yet.
+    /// Add an OCR text layer to the PDF at `url`.
     ///
+    /// - Parameter force: Skips both guards and OCRs the document even if it
+    ///   already carries a readable text layer (the manual action).
     /// - Returns: `true` if OCR ran successfully and the file was updated.
-    ///   `false` if the file was skipped (already had text, already marked, or
-    ///   could not be opened), if OCR was cancelled, or if OCR failed.
+    ///   `false` if the file was skipped (already had text, already stamped by
+    ///   this engine version, or could not be opened), if OCR was cancelled, or
+    ///   if OCR failed.
     @concurrent
-    static func addOcrTextLayerIfNeeded(at url: URL, config: ProcessingConfig) async -> Bool {
+    static func addOcrTextLayer(at url: URL, config: ProcessingConfig, force: Bool = false) async -> Bool {
         guard let pdf = PDFDocument(url: url) else {
             Logger.ocrProcessing.debug("Could not open PDF at \(url.lastPathComponent, privacy: .public)")
             return false
         }
 
-        guard !PDFMetadata.hasTextLayer(pdf) else { return false }
-        guard !PDFMetadata.isMarked(pdf, markerPrefix: config.processedMarker) else { return false }
+        if !force {
+            guard !PDFMetadata.hasTextLayer(pdf) else { return false }
+            // A file stamped by this engine version or newer was already given
+            // its chance; an older stamp (or none) earns one more attempt.
+            if let version = PDFMetadata.processedEngineVersion(pdf, markerPrefix: config.processedMarker),
+               version >= config.ocrEngineVersion { return false }
+        }
 
         Logger.ocrProcessing.info("OCR processing \(url.lastPathComponent, privacy: .public)")
 
@@ -310,7 +336,7 @@ public actor DocumentProcessor {
             // A pass cancelled during OCR must not write the modified pdf -
             // a successor pass may already be reading the file.
             try Task.checkCancellation()
-            if !PDFMetadata.markAsProcessed(pdf, marker: config.processedMarker, writeTo: url) {
+            if !PDFMetadata.markAsProcessed(pdf, marker: config.processedMarker, version: config.ocrEngineVersion, writeTo: url) {
                 Logger.ocrProcessing.error("Failed to write OCR result for \(url.lastPathComponent, privacy: .public)")
                 return false
             }
@@ -323,8 +349,11 @@ public actor DocumentProcessor {
             return false
         } catch {
             Logger.ocrProcessing.error("OCR failed for \(url.lastPathComponent, privacy: .public): \(error)")
-            // Mark as processed even on failure to prevent infinite retries.
-            _ = PDFMetadata.markAsProcessed(pdf, marker: config.processedMarker, writeTo: url)
+            // The failure stamp exists to stop the automatic sweep from looping.
+            // A manual run must leave the file byte-identical instead, because
+            // `pdf` may already hold partially replaced pages at this point.
+            guard !force else { return false }
+            _ = PDFMetadata.markAsProcessed(pdf, marker: config.processedMarker, version: config.ocrEngineVersion, writeTo: url)
             return false
         }
     }

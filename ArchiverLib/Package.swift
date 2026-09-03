@@ -17,7 +17,10 @@ let package = Package(
             targets: ["Shared"]),
         .library(
             name: "DocumentProcessingPipeline",
-            targets: ["DocumentProcessingPipeline"])
+            targets: ["DocumentProcessingPipeline"]),
+        .library(
+            name: "EvaluationSupport",
+            targets: ["ArchiverModels", "ContentExtractorStore", "EvaluationCorpus"])
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture",
@@ -27,7 +30,7 @@ let package = Package(
                     "ComposableArchitecture2DeprecationOverloads"
                  ]),
         .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "1.17.1"),
-        .package(url: "https://github.com/pointfreeco/swift-sharing", exact: "2.10.0"),
+        .package(url: "https://github.com/pointfreeco/swift-sharing", exact: "2.10.1"),
         .package(url: "https://github.com/sideeffect-io/AsyncExtensions", exact: "0.5.5"),
         .package(url: "https://github.com/apple/swift-async-algorithms", exact: "1.1.5")
     ],
@@ -74,6 +77,15 @@ let package = Package(
                     "ArchiverModels",
                     "ContentExtractorStore"
                 ]),
+        .target(name: "EvaluationCorpus",
+                dependencies: [
+                    "ArchiverModels",
+                    "ContentExtractorStore"
+                ]),
+        .executableTarget(name: "EvalCorpusBuilder",
+                          dependencies: [
+                            "EvaluationCorpus"
+                          ]),
         .target(name: "Shared",
                 dependencies: [
                     "ArchiverModels",
@@ -102,7 +114,15 @@ let package = Package(
             name: "ContentExtractorStoreTests",
             dependencies: [
                 "ContentExtractorStore",
-                "ArchiverModels"
+                "ArchiverModels",
+                "EvaluationCorpus"
+            ]
+        ),
+        .testTarget(
+            name: "EvaluationCorpusTests",
+            dependencies: [
+                "ArchiverModels",
+                "EvaluationCorpus"
             ]
         )
     ]

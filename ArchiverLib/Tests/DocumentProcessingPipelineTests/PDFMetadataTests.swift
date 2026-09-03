@@ -36,15 +36,9 @@ struct PDFMetadataTests {
 
     // MARK: - hasTextLayer
 
-    @Test
-    func hasTextLayerReturnsTrueForTextPDF() throws {
-        let pdf = try #require(PDFDocument(url: Bundle.longTextPDFUrl))
-        #expect(PDFMetadata.hasTextLayer(pdf))
-    }
-
-    @Test
-    func hasTextLayerReturnsTrueForBillPDF() throws {
-        let pdf = try #require(PDFDocument(url: Bundle.billPDFUrl))
+    @Test(arguments: [Bundle.longTextPDFUrl, Bundle.billPDFUrl])
+    func hasTextLayerReturnsTrueForTextPDF(url: URL) throws {
+        let pdf = try #require(PDFDocument(url: url))
         #expect(PDFMetadata.hasTextLayer(pdf))
     }
 
@@ -88,36 +82,60 @@ struct PDFMetadataTests {
         #expect(PDFMetadata.hasTextLayer(pdf))
     }
 
-    // MARK: - isMarked
+    // MARK: - processedEngineVersion
 
-    @Test
-    func wasProcessedReturnsFalseForExternalPDF() throws {
-        let pdf = try #require(PDFDocument(url: Bundle.longTextPDFUrl))
-        #expect(!PDFMetadata.isMarked(pdf, markerPrefix: marker))
+    @Test(arguments: [Bundle.longTextPDFUrl, Bundle.billPDFUrl])
+    func processedEngineVersionIsNilForExternalPDF(url: URL) throws {
+        let pdf = try #require(PDFDocument(url: url))
+        #expect(PDFMetadata.processedEngineVersion(pdf, markerPrefix: marker) == nil)
     }
 
     @Test
-    func wasProcessedReturnsFalseForBillPDF() throws {
-        let pdf = try #require(PDFDocument(url: Bundle.billPDFUrl))
-        #expect(!PDFMetadata.isMarked(pdf, markerPrefix: marker))
+    func processedEngineVersionIsNilWithoutCreator() {
+        let pdf = PDFDocument()
+        pdf.documentAttributes = [:]
+        #expect(PDFMetadata.processedEngineVersion(pdf, markerPrefix: marker) == nil)
     }
 
     @Test
-    func wasProcessedReturnsTrueAfterMarking() throws {
+    func processedEngineVersionIsNilForForeignCreator() {
+        let pdf = PDFDocument()
+        pdf.documentAttributes = [PDFDocumentAttribute.creatorAttribute: "Some Other Scanner"]
+        #expect(PDFMetadata.processedEngineVersion(pdf, markerPrefix: marker) == nil)
+    }
+
+    /// Files written before the marker was versioned must be retried once.
+    @Test
+    func processedEngineVersionTreatsBareMarkerAsVersionOne() {
+        let pdf = PDFDocument()
+        pdf.documentAttributes = [PDFDocumentAttribute.creatorAttribute: marker]
+        #expect(PDFMetadata.processedEngineVersion(pdf, markerPrefix: marker) == 1)
+    }
+
+    @Test
+    func processedEngineVersionParsesVersionSuffix() {
+        let pdf = PDFDocument()
+        pdf.documentAttributes = [PDFDocumentAttribute.creatorAttribute: "\(marker) v2"]
+        #expect(PDFMetadata.processedEngineVersion(pdf, markerPrefix: marker) == 2)
+    }
+
+    /// A malformed marker is retried rather than trusted forever.
+    @Test
+    func processedEngineVersionTreatsUnparseableSuffixAsVersionOne() {
+        let pdf = PDFDocument()
+        pdf.documentAttributes = [PDFDocumentAttribute.creatorAttribute: "\(marker) vX"]
+        #expect(PDFMetadata.processedEngineVersion(pdf, markerPrefix: marker) == 1)
+    }
+
+    @Test
+    func processedEngineVersionRoundTripsMarkAsProcessed() throws {
         let url = try copyToTemp(Bundle.billPDFUrl, name: "marked.pdf")
         let pdf = try #require(PDFDocument(url: url))
 
-        PDFMetadata.markAsProcessed(pdf, marker: marker, writeTo: url)
+        PDFMetadata.markAsProcessed(pdf, marker: marker, version: 7, writeTo: url)
 
         let reloaded = try #require(PDFDocument(url: url))
-        #expect(PDFMetadata.isMarked(reloaded, markerPrefix: marker))
-    }
-
-    @Test
-    func wasProcessedReturnsFalseWithoutCreator() {
-        let pdf = PDFDocument()
-        pdf.documentAttributes = [:]
-        #expect(!PDFMetadata.isMarked(pdf, markerPrefix: marker))
+        #expect(PDFMetadata.processedEngineVersion(reloaded, markerPrefix: marker) == 7)
     }
 
     // MARK: - markAsProcessed
@@ -127,7 +145,7 @@ struct PDFMetadataTests {
         let url = try copyToTemp(Bundle.billPDFUrl, name: "creator-test.pdf")
         let pdf = try #require(PDFDocument(url: url))
 
-        PDFMetadata.markAsProcessed(pdf, marker: marker, writeTo: url)
+        PDFMetadata.markAsProcessed(pdf, marker: marker, version: 2, writeTo: url)
 
         let reloaded = try #require(PDFDocument(url: url))
         let creator = try #require(reloaded.documentAttributes?[PDFDocumentAttribute.creatorAttribute] as? String)
@@ -138,12 +156,13 @@ struct PDFMetadataTests {
     func markAsProcessedOverwritesExistingCreator() throws {
         let url = try copyToTemp(Bundle.billPDFUrl, name: "overwrite-test.pdf")
         let pdf = try #require(PDFDocument(url: url))
+        pdf.documentAttributes?[PDFDocumentAttribute.creatorAttribute] = "Some Other Scanner"
 
-        PDFMetadata.markAsProcessed(pdf, marker: marker, writeTo: url)
+        PDFMetadata.markAsProcessed(pdf, marker: marker, version: 2, writeTo: url)
 
         let reloaded = try #require(PDFDocument(url: url))
         let creator = try #require(reloaded.documentAttributes?[PDFDocumentAttribute.creatorAttribute] as? String)
-        #expect(creator.hasPrefix(marker))
+        #expect(creator == "\(marker) v2")
     }
 
     @Test
@@ -152,7 +171,7 @@ struct PDFMetadataTests {
         let pdf = try #require(PDFDocument(url: url))
         let originalPageCount = pdf.pageCount
 
-        PDFMetadata.markAsProcessed(pdf, marker: marker, writeTo: url)
+        PDFMetadata.markAsProcessed(pdf, marker: marker, version: 2, writeTo: url)
 
         #expect(FileManager.default.fileExists(atPath: url.path))
         let reloaded = try #require(PDFDocument(url: url))

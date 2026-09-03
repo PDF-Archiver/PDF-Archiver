@@ -14,6 +14,8 @@ import SwiftUI
 struct IAPView: View {
     let onCancel: () -> Void
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     var body: some View {
         ScrollView {
             VStack(spacing: 30) {
@@ -101,7 +103,7 @@ struct IAPView: View {
                         .foregroundColor(Color.paWhiteAsset)
                         .background(Color.paRedAsset)
                         .cornerRadius(8)
-                        .transition(.scale)
+                        .transition(reduceMotion ? .opacity : .scale)
                         .offset(x: -16, y: -12)
                 }
             }
