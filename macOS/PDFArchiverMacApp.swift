@@ -5,7 +5,9 @@
 //  Created by Julian Kahnert on 26.03.24.
 //
 
+#if DEBUG
 import AppKit
+#endif
 import ArchiverFeatures
 import Foundation
 import SwiftUI
