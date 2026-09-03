@@ -2,12 +2,20 @@ import ComposableArchitecture
 import SwiftUI
 
 public struct RootView: View {
-    static let store = Store(initialState: AppFeature.State()) {
-        AppFeature()
+    @MainActor
+    static let store: StoreOf<AppFeature> = {
         #if DEBUG
-//            ._printChanges()
+        if let screenshotCase = ScreenshotCase.requested {
+            return Store(initialState: screenshotCase.initialState) { AppFeature() }
+        }
         #endif
-    }
+        return Store(initialState: AppFeature.State()) {
+            AppFeature()
+            #if DEBUG
+//                ._printChanges()
+            #endif
+        }
+    }()
 
     public init() { }
 

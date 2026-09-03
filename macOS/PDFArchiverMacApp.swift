@@ -12,17 +12,17 @@ import SwiftUI
 
 @main
 struct PDFArchiverMacApp: App {
+    init() {
+        #if DEBUG
+        ScreenshotCase.prepareIfRequested()
+        #endif
+    }
+
     var body: some Scene {
         WindowGroup {
-            #if DEBUG
-            if let screenshotScene = ScreenshotScene.requested {
-                screenshotScene.view
-                    .onAppear(perform: sizeWindowForScreenshot)
-            } else {
-                RootView()
-            }
-            #else
             RootView()
+            #if DEBUG
+                .onAppear(perform: sizeWindowForScreenshot)
             #endif
         }
         .commands {
@@ -38,7 +38,8 @@ struct PDFArchiverMacApp: App {
     /// Small enough that a 1x capture fits a 1440 x 900 store canvas at full size, leaving room
     /// for the caption. Set here rather than via `defaultSize`, which a saved frame overrides.
     private func sizeWindowForScreenshot() {
-        guard let window = NSApplication.shared.windows.first else { return }
+        guard ScreenshotCase.requested != nil,
+              let window = NSApplication.shared.windows.first else { return }
         window.setContentSize(NSSize(width: 1000, height: 620))
         window.center()
     }

@@ -17,6 +17,8 @@
 		34A53FA824AA65CB008A3377 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 34A53FA624AA65CB008A3377 /* MainInterface.storyboard */; };
 		34A5CF8224A93A3C002409EF /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34A5CF8124A93A3C002409EF /* StoreKit.framework */; };
 		AA0100000000000000000006 /* UITests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000004 /* UITests_macOS.swift */; };
+		AA0100000000000000000012 /* ScreenshotOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000010 /* ScreenshotOutput.swift */; };
+		AA0100000000000000000013 /* ScreenshotOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0100000000000000000010 /* ScreenshotOutput.swift */; };
 		34B1BAB325A8EB440014FF77 /* UITests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B1BAB225A8EB440014FF77 /* UITests_iOS.swift */; };
 		34B1BAF925A8EF7F0014FF77 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B1BAF825A8EF7F0014FF77 /* SnapshotHelper.swift */; };
 		34D470BB255B249B000302A8 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34D470BA255B249B000302A8 /* StoreKit.framework */; };
@@ -153,6 +155,7 @@
 		34A5CF8124A93A3C002409EF /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
 		AA0100000000000000000002 /* UITests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "UITests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA0100000000000000000004 /* UITests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITests_macOS.swift; sourceTree = "<group>"; };
+		AA0100000000000000000010 /* ScreenshotOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotOutput.swift; sourceTree = "<group>"; };
 		AA0100000000000000000005 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		34B1BAB025A8EB440014FF77 /* UITests iOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "UITests iOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		34B1BAB225A8EB440014FF77 /* UITests_iOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITests_iOS.swift; sourceTree = "<group>"; };
@@ -276,6 +279,7 @@
 				34A53F9824AA656B008A3377 /* ShareExtension */,
 				34B1BAB125A8EB440014FF77 /* UITests iOS */,
 				AA0100000000000000000003 /* UITests macOS */,
+				AA0100000000000000000011 /* UITests Shared */,
 				A372F42C2DE8484800D6E9AA /* Widget */,
 				3489D71C24A3C53E0035E64F /* Products */,
 				34A5CF8024A93A3C002409EF /* Frameworks */,
@@ -350,6 +354,14 @@
 				A372F42A2DE8484800D6E9AA /* SwiftUI.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		AA0100000000000000000011 /* UITests Shared */ = {
+			isa = PBXGroup;
+			children = (
+				AA0100000000000000000010 /* ScreenshotOutput.swift */,
+			);
+			path = "UITests Shared";
 			sourceTree = "<group>";
 		};
 		AA0100000000000000000003 /* UITests macOS */ = {
@@ -706,6 +718,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA0100000000000000000006 /* UITests_macOS.swift in Sources */,
+				AA0100000000000000000012 /* ScreenshotOutput.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -714,6 +727,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				34B1BAB325A8EB440014FF77 /* UITests_iOS.swift in Sources */,
+				AA0100000000000000000013 /* ScreenshotOutput.swift in Sources */,
 				34B1BAF925A8EF7F0014FF77 /* SnapshotHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

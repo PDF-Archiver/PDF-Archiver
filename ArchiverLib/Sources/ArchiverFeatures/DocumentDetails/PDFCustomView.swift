@@ -111,7 +111,7 @@ private func dateSearchStrings(for date: Date) -> [String] {
 /// visible. A screenshot fits the height instead, so the page keeps margins beside it.
 @MainActor
 private func fitPageHeightForScreenshot(_ view: PDFView, document: PDFDocument) {
-    guard ScreenshotScene.requested != nil,
+    guard ScreenshotCase.requested != nil,
           let page = document.page(at: 0) else { return }
 
     let pageHeight = page.bounds(for: .mediaBox).height

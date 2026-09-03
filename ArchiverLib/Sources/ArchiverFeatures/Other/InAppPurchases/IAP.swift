@@ -22,7 +22,22 @@ struct IAP: ViewModifier {
     @State private var subscriptionStatus: Status = .loading
     @State private var lifetimePurchaseStatus: Status = .loading
 
+    @ViewBuilder
     func body(content: Content) -> some View {
+        #if DEBUG
+        // A screenshot run has no StoreKit configuration, so the entitlement checks below would
+        // settle on `.inactive` and paywall every shot after three seconds.
+        if ScreenshotCase.requested != nil {
+            content
+        } else {
+            storeKitObservingBody(content)
+        }
+        #else
+        storeKitObservingBody(content)
+        #endif
+    }
+
+    private func storeKitObservingBody(_ content: Content) -> some View {
         content
             .onChange(of: subscriptionStatus.rawValue) { oldValue, newValue in
                 Logger.inAppPurchase.debug("subscriptionStatus changed: \(oldValue) -> \(newValue)")
