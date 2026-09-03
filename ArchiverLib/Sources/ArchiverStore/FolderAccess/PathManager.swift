@@ -45,12 +45,7 @@ final class PathManager: Log {
     private init() {}
 
     func getArchiveUrl() throws -> URL {
-        let archiveURL: URL
-        if UserDefaults.standard.bool(forKey: "demoMode") {
-            archiveURL = fileManager.temporaryDirectory
-        } else {
-            archiveURL = try archivePathType.getPath().getArchiveUrl()
-        }
+        let archiveURL = try archivePathType.getPath().getArchiveUrl()
         try FileManager.default.createFolderIfNotExists(archiveURL)
         return archiveURL
     }

@@ -46,6 +46,49 @@ struct AppFeature {
         var untaggedDocumentList = UntaggedDocumentList.State()
         var statistics = Statistics.State()
         var settings = Settings.State()
+
+        /// Derives everything the tabs show from the archive, newest document first.
+        mutating func apply(documents: [Document]) {
+            let sortedDocuments = documents.sorted { $0.date > $1.date }
+            $documents.withLock { $0 = IdentifiedArrayOf(uniqueElements: sortedDocuments) }
+
+            let taggedDocuments = sortedDocuments.filter(\.isTagged)
+
+            // create year suggestions
+            let years = taggedDocuments
+                .reduce(into: Set<Int>()) { result, document in
+                    result.insert(Calendar.current.component(.year, from: document.date))
+                }
+                .sorted()
+                .reversed()
+                .prefix(5)
+            tabYearSuggestions = Array(years)
+
+            // create tag suggestions
+            var tagCountMap: [String: Int] = [:]
+            for tag in taggedDocuments.flatMap(\.tags) {
+                tagCountMap[tag, default: 0] += 1
+            }
+            let top5Tags = tagCountMap
+                .sorted { lhs, rhs in
+                    if lhs.value == rhs.value {
+                        lhs.key < rhs.key
+                    } else {
+                        lhs.value > rhs.value
+                    }
+                }
+                .prefix(5)
+                .map(\.key)
+            tabTagSuggestions = Array(top5Tags)
+
+            // also update suggestions in archive list
+            archiveList.searchSuggestedTokens = [
+                top5Tags.prefix(3).map { ArchiveList.State.SearchToken.tag($0) },
+                years.prefix(3).map { ArchiveList.State.SearchToken.year($0) }
+            ].flatMap(\.self)
+
+            untaggedDocumentsCount = sortedDocuments.count(where: { !$0.isTagged })
+        }
     }
 
     enum Action: BindableAction {
@@ -158,54 +201,11 @@ struct AppFeature {
             case .binding:
                 return .none
 
-            case .documentsChanged(var documents):
-                documents = documents
-                    .sorted { $0.date < $1.date }
-                    .reversed()
-                state.$documents.withLock { $0 = IdentifiedArrayOf(uniqueElements: documents) }
+            case .documentsChanged(let changedDocuments):
+                state.apply(documents: changedDocuments)
 
-                let taggedDocuments = documents
-                    .filter(\.isTagged)
-
-                // create year suggestions
-                let years = taggedDocuments
-                    .reduce(into: Set<Int>()) { result, document in
-                        result.insert(Calendar.current.component(.year, from: document.date))
-                    }
-                    .sorted()
-                    .reversed()
-                    .prefix(5)
-                state.tabYearSuggestions = Array(years)
-
-                // create tag suggestions
-                var tagCountMap: [String: Int] = [:]
-                for tag in taggedDocuments.flatMap(\.tags) {
-                    tagCountMap[tag, default: 0] += 1
-                }
-                let top5Tags = tagCountMap
-                    .sorted { lhs, rhs in
-                        if lhs.value == rhs.value {
-                            lhs.key < rhs.key
-                        } else {
-                            lhs.value > rhs.value
-                        }
-                    }
-                    .prefix(5)
-                    .map(\.key)
-                state.tabTagSuggestions = Array(top5Tags)
-
-                // also update suggestions in archive list
-                let searchSuggestedTokens = [
-                    top5Tags.prefix(3).map { ArchiveList.State.SearchToken.tag($0) },
-                    years.prefix(3).map { ArchiveList.State.SearchToken.year($0) }
-                ].flatMap(\.self)
-                state.archiveList.searchSuggestedTokens = searchSuggestedTokens
-
-                // update the untagged documents
-                let untaggedDocuments = documents.filter(\Document.isTagged.flipped)
-                state.untaggedDocumentsCount = untaggedDocuments.count
-
-                let untaggedRemoteDocuments = untaggedDocuments.filter { $0.downloadStatus == 0 }
+                let documents = Array(state.documents)
+                let untaggedRemoteDocuments = documents.filter { !$0.isTagged && $0.downloadStatus == 0 }
 
                 return .merge(
                     .run { [documents] send in

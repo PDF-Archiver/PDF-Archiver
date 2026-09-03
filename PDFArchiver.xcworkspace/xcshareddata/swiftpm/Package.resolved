@@ -1,5 +1,5 @@
 {
-  "originHash" : "a38eef5583d591f6586ca3f5b8056092a082fbc14715bd84b5d75d39b1cbab1e",
+  "originHash" : "89d47410179f2bf4891d6ec6db379030a572918959e754671996fe256b2ce490",
   "pins" : [
     {
       "identity" : "asyncextensions",
@@ -98,6 +98,15 @@
       "state" : {
         "revision" : "322d9ffeeba85c9f7c4984b39422ec7cc3c56597",
         "version" : "1.1.1"
+      }
+    },
+    {
+      "identity" : "swift-issue-reporting",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/swift-issue-reporting",
+      "state" : {
+        "revision" : "71c7c9a761d1ca6ed4ccb6ced040fe1c1a39e8e7",
+        "version" : "2.1.0"
       }
     },
     {

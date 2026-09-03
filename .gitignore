@@ -46,3 +46,5 @@ Shared/Resources/Assets.xcassets/.DS_Store
 
 .DS_Store
 .build
+
+# App Store screenshot capture: local paths, not shared
