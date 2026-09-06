@@ -18,9 +18,9 @@ enum PremiumProduct {
     /// The lifetime purchase or any subscription of the group grants premium. Matching the group
     /// instead of the product IDs keeps subscribers of products no longer on sale entitled.
     static func grantsPremium(productType: Product.ProductType,
-                             productID: String,
-                             subscriptionGroupID: String?,
-                             revocationDate: Date?) -> Bool {
+                              productID: String,
+                              subscriptionGroupID: String?,
+                              revocationDate: Date?) -> Bool {
         guard revocationDate == nil else { return false }
         switch productType {
         case .nonConsumable: return productID == lifetime
