@@ -24,6 +24,10 @@ public actor ArchiveIndexer {
     /// Whether rows of roots this generation no longer observes still have to go.
     private var needsPrune = false
 
+    /// Rows per write transaction. Small enough that the newest documents are on screen within a
+    /// fraction of a second, large enough not to pay a transaction per document.
+    static let chunkSize = 250
+
     public init() {}
 
     /// Announces which roots are observed from now on and returns the generation snapshots must
@@ -39,12 +43,15 @@ public actor ArchiveIndexer {
         rootsAwaitingFirstSnapshot = observedRoots
         needsPrune = !observedRoots.isEmpty
 
-        let isReconciling = !observedRoots.isEmpty
+        let observedRoots = self.observedRoots
         withErrorReporting {
             try database.write { db in
+                // The indicator means "nothing to show yet", so a warm launch and every rescan
+                // after it render the stored rows instead of a spinner.
+                let storedCount = try Document.where { $0.rootKey.in(observedRoots) }.fetchCount(db)
                 try IndexerState
                     .find(IndexerState.singletonID)
-                    .update { $0.isReconciling = isReconciling }
+                    .update { $0.isReconciling = storedCount == 0 && !observedRoots.isEmpty }
                     .execute(db)
             }
         }
@@ -70,11 +77,7 @@ public actor ArchiveIndexer {
         }
 
         let items = Self.deduplicated(items, root: root)
-
-        var documents: [Document.ID: Document] = [:]
-        for item in items {
-            documents[item.id] = await Document.make(from: item, rootKey: root)
-        }
+        let documents = await Self.makeDocuments(from: items, root: root)
         let plan = Self.plan(items: items, existing: existing, root: root, documents: documents)
 
         // Re-checked here, not only at entry: the actor is reentrant, and `setObservedRoots` runs
@@ -82,7 +85,15 @@ public actor ArchiveIndexer {
         guard isCurrent(root: root, generation: generation) else { return }
 
         do {
-            try await write(changed: plan.changed, tagsToRewrite: plan.tagsToRewrite, absentIDs: plan.absentIDs)
+            try await removeAndPrune(absentIDs: plan.absentIDs)
+            for start in stride(from: 0, to: plan.changed.count, by: Self.chunkSize) {
+                guard isCurrent(root: root, generation: generation) else { return }
+                let end = min(start + Self.chunkSize, plan.changed.count)
+                try await write(Array(plan.changed[start..<end]), tagsToRewrite: plan.tagsToRewrite)
+                // The rows written so far are already on screen; let anything else in before the
+                // next chunk takes the writer connection again.
+                await Task.yield()
+            }
         } catch {
             reportIssue(error)
             // A cancelled write is not a failed one: rewriting the root from a snapshot the app has
@@ -111,6 +122,21 @@ public actor ArchiveIndexer {
         var changed: [Document] = []
         var tagsToRewrite: Set<Document.ID> = []
         var absentIDs: Set<Document.ID> = []
+    }
+
+    /// Parses every snapshot item into the row it becomes.
+    ///
+    /// `@concurrent` for the same reason as `extractText`: under `NonisolatedNonsendingByDefault`
+    /// thousands of filename parses would run on the indexer's executor and stall every other job.
+    @concurrent
+    nonisolated static func makeDocuments(from items: [DocumentSnapshotItem],
+                                          root: String) async -> [Document.ID: Document] {
+        var documents: [Document.ID: Document] = [:]
+        documents.reserveCapacity(items.count)
+        for item in items {
+            documents[item.id] = await Document.make(from: item, rootKey: root)
+        }
+        return documents
     }
 
     /// One row per id within a snapshot, last one wins: a duplicate would otherwise abort the
@@ -167,24 +193,30 @@ public actor ArchiveIndexer {
 
     // MARK: - Writing
 
-    private func write(changed: [Document], tagsToRewrite: Set<Document.ID>, absentIDs: Set<Document.ID>) async throws {
+    /// Everything this snapshot removes, in one transaction ahead of the chunks: an insert or a URL
+    /// update would otherwise collide with a row that this very snapshot removes (a rename chain,
+    /// an A<->B swap, a replaced file). Deletions are cheap, so they are never split.
+    private func removeAndPrune(absentIDs: Set<Document.ID>) async throws {
         let rootsToKeep = needsPrune ? observedRoots : nil
-        guard rootsToKeep != nil || !changed.isEmpty || !absentIDs.isEmpty else { return }
+        guard rootsToKeep != nil || !absentIDs.isEmpty else { return }
 
         try await database.write { db in
             if let rootsToKeep {
                 try Self.pruneRoots(keeping: rootsToKeep, in: db)
             }
+            guard !absentIDs.isEmpty else { return }
+            // `documentTags` and `documentIndexStates` cascade; a virtual table cannot carry
+            // a foreign key, so the FTS row goes explicitly.
+            try DocumentText.where { $0.rowid.in(absentIDs) }.delete().execute(db)
+            try Document.where { $0.id.in(absentIDs) }.delete().execute(db)
+        }
+        needsPrune = false
+    }
 
-            // Deletes run first: an insert or a URL update would otherwise collide with a row that
-            // this very snapshot removes (a rename chain, an A<->B swap, a replaced file).
-            if !absentIDs.isEmpty {
-                // `documentTags` and `documentIndexStates` cascade; a virtual table cannot carry
-                // a foreign key, so the FTS row goes explicitly.
-                try DocumentText.where { $0.rowid.in(absentIDs) }.delete().execute(db)
-                try Document.where { $0.id.in(absentIDs) }.delete().execute(db)
-            }
+    private func write(_ changed: [Document], tagsToRewrite: Set<Document.ID>) async throws {
+        guard !changed.isEmpty else { return }
 
+        try await database.write { db in
             let storedIDs = try Set(
                 Document.where { $0.id.in(changed.map(\.id)) }.select(\.id).fetchAll(db)
             )
@@ -215,7 +247,6 @@ public actor ArchiveIndexer {
             let documentsWithNewTags = changed.filter { tagsToRewrite.contains($0.id) }
             try Self.rewriteTags(of: documentsWithNewTags, in: db)
         }
-        needsPrune = false
     }
 
     /// Drops the rows of every root outside `roots`.

@@ -9,7 +9,9 @@ import ArchiverModels
 import Dependencies
 import DependenciesTestSupport
 import Foundation
+import GRDB
 import SQLiteData
+import Synchronization
 import Testing
 
 @testable import ArchiverDatabase
@@ -367,6 +369,61 @@ struct ReconcilerTests {
         #expect(usage.map(\.tag) == ["bill", "energy"])
     }
 
+    // MARK: - Chunking
+
+    @Test
+    func aLargeSnapshotIsWrittenInChunks() async throws {
+        @Dependency(\.defaultDatabase) var database
+        let items = (1...600).map {
+            Self.item(id: $0, path: "/Archive/2024/2024-01-02--doc-\($0)__x.pdf", isTagged: true)
+        }
+        let indexer = ArchiveIndexer()
+        let generation = await indexer.setObservedRoots([archiveRoot])
+        let counter = DocumentWriteCounter()
+        database.add(transactionObserver: counter, extent: .observerLifetime)
+
+        await indexer.reconcile(items, root: archiveRoot, generation: generation)
+
+        #expect(counter.transactions == 3)
+        #expect(try await Self.allDocuments().count == 600)
+    }
+
+    @Test
+    func aStaleGenerationStopsTheChunkLoopAndKeepsWhatLanded() async throws {
+        let items = (1...2000).map {
+            Self.item(id: $0, path: "/Archive/2024/2024-01-02--doc-\($0)__x.pdf", isTagged: true)
+        }
+        let indexer = ArchiveIndexer()
+        let generation = await indexer.setObservedRoots([archiveRoot])
+
+        // The loop yields between chunks, so the bump below is picked up at the next boundary.
+        async let reconcile: Void = indexer.reconcile(items, root: archiveRoot, generation: generation)
+        while try await Self.allDocuments().count < ArchiveIndexer.chunkSize {
+            await Task.yield()
+        }
+        _ = await indexer.setObservedRoots([archiveRoot])
+        await reconcile
+
+        let stored = try await Self.allDocuments()
+        #expect(stored.count >= ArchiveIndexer.chunkSize)
+        #expect(stored.count < items.count)
+    }
+
+    @Test
+    func aWarmStartShowsTheStoredRowsWithoutTheSpinner() async throws {
+        let indexer = ArchiveIndexer()
+        let generation = await indexer.setObservedRoots([archiveRoot])
+        #expect(try await Self.isReconciling())
+        await indexer.reconcile([Self.item(id: 1, path: "/Archive/2024/2024-01-02--x__y.pdf", isTagged: true)],
+                                root: archiveRoot,
+                                generation: generation)
+
+        _ = await indexer.setObservedRoots([archiveRoot])
+
+        #expect(try await Self.isReconciling() == false)
+        #expect(try await Self.allDocuments().count == 1)
+    }
+
     // MARK: - Planning
 
     @Test
@@ -504,5 +561,40 @@ struct ReconcilerTests {
         return try await database.read { db in
             try IndexerState.find(IndexerState.singletonID).select(\.isReconciling).fetchOne(db) ?? false
         }
+    }
+}
+
+/// Counts the transactions that changed `documents`, so "the snapshot lands in chunks" is a plain
+/// number instead of a race with the observation.
+private final class DocumentWriteCounter: TransactionObserver, Sendable {
+    private struct Counts {
+        var transactions = 0
+        var touchedDocuments = false
+    }
+
+    private let counts = Mutex(Counts())
+
+    var transactions: Int {
+        counts.withLock { $0.transactions }
+    }
+
+    func observes(eventsOfKind kind: DatabaseEventKind) -> Bool {
+        kind.tableName == Document.tableName
+    }
+
+    func databaseDidChange(with event: DatabaseEvent) {
+        counts.withLock { $0.touchedDocuments = true }
+    }
+
+    func databaseDidCommit(_ db: Database) {
+        counts.withLock {
+            guard $0.touchedDocuments else { return }
+            $0.transactions += 1
+            $0.touchedDocuments = false
+        }
+    }
+
+    func databaseDidRollback(_ db: Database) {
+        counts.withLock { $0.touchedDocuments = false }
     }
 }
