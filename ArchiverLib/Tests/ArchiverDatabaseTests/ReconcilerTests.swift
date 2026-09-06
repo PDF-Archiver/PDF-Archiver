@@ -182,7 +182,43 @@ struct ReconcilerTests {
     }
 
     @Test
-    func removesRowsOfARootThatIsNoLongerObserved() async throws {
+    func removesRowsOfARootThatIsNoLongerObservedOnceALiveRootReports() async throws {
+        let indexer = ArchiveIndexer()
+        let generation = await indexer.setObservedRoots([archiveRoot, "local"])
+        await indexer.reconcile([Self.item(id: 1, path: "/Archive/2024/2024-01-02--x__y.pdf", isTagged: true)],
+                                root: archiveRoot,
+                                generation: generation)
+        await indexer.reconcile([Self.item(id: 2, path: "/Local/2024/2024-01-03--z__y.pdf", isTagged: true)],
+                                root: "local",
+                                generation: generation)
+        try await Self.indexText("gone soon", for: 2)
+
+        let next = await indexer.setObservedRoots([archiveRoot])
+        #expect(try await Self.allDocuments().count == 2)
+
+        await indexer.reconcile([Self.item(id: 1, path: "/Archive/2024/2024-01-02--x__y.pdf", isTagged: true)],
+                                root: archiveRoot,
+                                generation: next)
+
+        #expect(try await Self.allDocuments().map(\.id) == [1])
+        #expect(try await Self.hasText(2) == false)
+    }
+
+    @Test
+    func keepsEveryDocumentWhenNoRootIsObserved() async throws {
+        let indexer = ArchiveIndexer()
+        let generation = await indexer.setObservedRoots([archiveRoot])
+        await indexer.reconcile([Self.item(id: 1, path: "/Archive/2024/2024-01-02--x__y.pdf", isTagged: true)],
+                                root: archiveRoot,
+                                generation: generation)
+
+        _ = await indexer.setObservedRoots([])
+
+        #expect(try await Self.allDocuments().count == 1)
+    }
+
+    @Test
+    func keepsEveryDocumentWhileANewGenerationHasNotReported() async throws {
         let indexer = ArchiveIndexer()
         let generation = await indexer.setObservedRoots([archiveRoot])
         await indexer.reconcile([Self.item(id: 1, path: "/Archive/2024/2024-01-02--x__y.pdf", isTagged: true)],
@@ -191,7 +227,7 @@ struct ReconcilerTests {
 
         _ = await indexer.setObservedRoots(["anotherRoot"])
 
-        #expect(try await Self.allDocuments().isEmpty)
+        #expect(try await Self.allDocuments().count == 1)
     }
 
     @Test
@@ -371,6 +407,20 @@ struct ReconcilerTests {
         @Dependency(\.defaultDatabase) var database
         return try await database.read { db in
             try DocumentTag.where { $0.documentID.eq(id) }.order(by: \.tag).select(\.tag).fetchAll(db)
+        }
+    }
+
+    private static func indexText(_ body: String, for id: Document.ID) async throws {
+        @Dependency(\.defaultDatabase) var database
+        try await database.write { db in
+            try DocumentText.insert { DocumentText(rowid: id, body: body) }.execute(db)
+        }
+    }
+
+    private static func hasText(_ id: Document.ID) async throws -> Bool {
+        @Dependency(\.defaultDatabase) var database
+        return try await database.read { db in
+            try DocumentText.where { $0.rowid.eq(id) }.fetchCount(db) > 0
         }
     }
 

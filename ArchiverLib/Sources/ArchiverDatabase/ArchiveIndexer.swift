@@ -21,29 +21,30 @@ public actor ArchiveIndexer {
     private var observedRoots: Set<String> = []
     private var currentGeneration = 0
     private var rootsAwaitingFirstSnapshot: Set<String> = []
+    /// Whether rows of roots this generation no longer observes still have to go.
+    private var needsPrune = false
 
     public init() {}
 
     /// Announces which roots are observed from now on and returns the generation snapshots must
     /// carry to be accepted.
     ///
-    /// Rows of roots that are gone are deleted here, so a provider that fails to start cannot
-    /// leave ghost documents behind.
+    /// Rows of roots that are gone are dropped in the first write of the new generation, never
+    /// here: a provider that fails to start at launch is a transient condition, and the archive
+    /// must stay visible until a live provider has reported what really exists.
     @discardableResult
     public func setObservedRoots(_ roots: [String]) -> Int {
         observedRoots = Set(roots)
         currentGeneration += 1
         rootsAwaitingFirstSnapshot = observedRoots
+        needsPrune = !observedRoots.isEmpty
 
-        let observedRoots = self.observedRoots
+        let isReconciling = !observedRoots.isEmpty
         withErrorReporting {
             try database.write { db in
-                let staleIDs = try Document.where { $0.rootKey.notIn(observedRoots) }.select(\.id).fetchAll(db)
-                try DocumentText.where { $0.rowid.in(staleIDs) }.delete().execute(db)
-                try Document.where { $0.rootKey.notIn(observedRoots) }.delete().execute(db)
                 try IndexerState
                     .find(IndexerState.singletonID)
-                    .update { $0.isReconciling = !observedRoots.isEmpty }
+                    .update { $0.isReconciling = isReconciling }
                     .execute(db)
             }
         }
@@ -121,6 +122,9 @@ public actor ArchiveIndexer {
             try await write(changed: changed, tagsToRewrite: tagsToRewrite, absentIDs: absentIDs)
         } catch {
             reportIssue(error)
+            // A cancelled write is not a failed one: rewriting the root from a snapshot the app has
+            // stopped observing would undo what the next generation is about to write.
+            guard !Task.isCancelled else { return }
             await replaceRoot(root, with: items, generation: generation)
         }
 
@@ -139,9 +143,14 @@ public actor ArchiveIndexer {
     // MARK: - Writing
 
     private func write(changed: [Document], tagsToRewrite: Set<Document.ID>, absentIDs: Set<Document.ID>) async throws {
-        guard !changed.isEmpty || !absentIDs.isEmpty else { return }
+        let rootsToKeep = needsPrune ? observedRoots : nil
+        guard rootsToKeep != nil || !changed.isEmpty || !absentIDs.isEmpty else { return }
 
         try await database.write { db in
+            if let rootsToKeep {
+                try Self.pruneRoots(keeping: rootsToKeep, in: db)
+            }
+
             // Deletes run first: an insert or a URL update would otherwise collide with a row that
             // this very snapshot removes (a rename chain, an A<->B swap, a replaced file).
             if !absentIDs.isEmpty {
@@ -181,6 +190,20 @@ public actor ArchiveIndexer {
             let documentsWithNewTags = changed.filter { tagsToRewrite.contains($0.id) }
             try Self.rewriteTags(of: documentsWithNewTags, in: db)
         }
+        needsPrune = false
+    }
+
+    /// Drops the rows of every root outside `roots`.
+    ///
+    /// `roots` is never empty here: SQLite evaluates `x NOT IN ()` as true, so an empty set would
+    /// delete the whole archive.
+    private static func pruneRoots(keeping roots: Set<String>, in db: Database) throws {
+        let staleIDs = try Document.where { $0.rootKey.notIn(roots) }.select(\.id).fetchAll(db)
+        guard !staleIDs.isEmpty else { return }
+        // `documentTags` and `documentIndexStates` cascade; a virtual table cannot carry a foreign
+        // key, so the FTS row goes explicitly.
+        try DocumentText.where { $0.rowid.in(staleIDs) }.delete().execute(db)
+        try Document.where { $0.id.in(staleIDs) }.delete().execute(db)
     }
 
     /// Whether a snapshot still describes the world the app is observing.
