@@ -4,6 +4,7 @@ import ComposableArchitecture
 import Dependencies
 import DependenciesTestSupport
 import Foundation
+import SQLiteData
 import Testing
 
 @testable import ArchiverFeatures
@@ -297,5 +298,39 @@ struct SettingsTests {
         await store.send(.onAppleIntelligenceSettingsTapped) {
             $0.destination = .appleIntelligenceSettings(.init())
         }
+    }
+
+    // MARK: - Search Index Tests
+
+    @Test
+    func rebuildingTheSearchIndexAsksForAConfirmationFirst() async throws {
+        let rebuilt = LockIsolated(false)
+        let rescanned = LockIsolated(false)
+        let store = TestStore(initialState: ExpertSettings.State()) {
+            ExpertSettings()
+        } withDependencies: {
+            $0.archiveIndexer.requestRebuild = { rebuilt.setValue(true) }
+            $0.archiveStore.reloadDocuments = { rescanned.setValue(true) }
+        }
+        store.exhaustivity = .off(showSkippedAssertions: false)
+
+        await store.send(.onRebuildSearchIndexTapped)
+        #expect(store.state.alert != nil)
+        #expect(!rebuilt.value)
+
+        await store.send(.alert(.presented(.confirmRebuildSearchIndex)))
+        await store.finish()
+
+        #expect(rebuilt.value)
+        #expect(rescanned.value)
+    }
+
+    @Test
+    func theSearchIndexStatusStartsEmpty() async throws {
+        let state = ExpertSettings.State()
+        try await state.$searchIndexStatus.load()
+
+        #expect(state.searchIndexStatus.indexed == 0)
+        #expect(state.searchIndexStatus.lastRun == nil)
     }
 }

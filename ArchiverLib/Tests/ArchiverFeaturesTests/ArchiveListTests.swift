@@ -189,6 +189,32 @@ struct ArchiveListTests {
         }
     }
 
+    @Test
+    func contentHitsAppearWhenPremiumResolvesWithoutRetyping() async throws {
+        @Dependency(\.defaultDatabase) var database
+        try await database.write { db in
+            try DocumentText.insert { DocumentText(rowid: -2, body: "Diese Quittung gehört zu einer Bestellung.") }.execute(db)
+        }
+
+        let store = Self.searchStore()
+        await store.send(.onTask)
+        await store.send(.binding(.set(\.searchText, "quittung")))
+        #expect(store.state.rows.isEmpty)
+
+        // The IAP view modifier writes the shared value once StoreKit answers.
+        @Shared(.premiumStatus) var premiumStatus: PremiumStatus = .loading
+        $premiumStatus.withLock { $0 = .active }
+        await store.receive(\.premiumStatusChanged)
+        // The reload is an async database read; poll rather than guess a sleep length.
+        for _ in 0..<100 where store.state.rows.isEmpty {
+            try await Task.sleep(for: .milliseconds(10))
+        }
+
+        #expect(store.state.premiumStatus == .active)
+        #expect(store.state.rows.map(\.id) == [-2])
+        await store.send(.searchStateChanged(false))
+    }
+
     // MARK: - Helpers
 
     private static func searchStore() -> TestStoreOf<ArchiveList> {

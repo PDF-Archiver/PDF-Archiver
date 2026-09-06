@@ -35,7 +35,7 @@ struct ArchiveList {
     enum Action: BindableAction {
         case binding(BindingAction<State>)
         case onTask
-        case premiumStatusChanged
+        case premiumStatusChanged(PremiumStatus)
         case selectionChanged(Int?)
         case documentDetails(PresentationAction<DocumentDetails.Action>)
         case searchStateChanged(Bool)
@@ -61,11 +61,13 @@ struct ArchiveList {
                 return .publisher {
                     state.$premiumStatus.publisher
                         .removeDuplicates()
-                        .map { _ in Action.premiumStatusChanged }
+                        .map(Action.premiumStatusChanged)
                 }
 
-            case .premiumStatusChanged:
-                return reloadRows(state)
+            case .premiumStatusChanged(let premiumStatus):
+                // The publisher fires while `state.premiumStatus` still holds the old value, so
+                // the query has to be built from the payload.
+                return reloadRows(state, premiumStatus: premiumStatus)
 
             case .searchStateChanged(let isSearching):
                 state.isSearching = isSearching
@@ -90,10 +92,10 @@ struct ArchiveList {
                     }
                     state.searchText = ""
                 }
-                return reloadRows(state)
+                return reloadRows(state, premiumStatus: state.premiumStatus)
 
             case .binding(\.searchTokens):
-                return reloadRows(state)
+                return reloadRows(state, premiumStatus: state.premiumStatus)
 
             case .binding:
                 return .none
@@ -106,10 +108,10 @@ struct ArchiveList {
 
     /// Shared by every trigger; a private helper rather than an `Effect.send`, which TCA reserves
     /// for child-to-parent messages.
-    private func reloadRows(_ state: State) -> Effect<Action> {
+    private func reloadRows(_ state: State, premiumStatus: PremiumStatus) -> Effect<Action> {
         let query = ArchiveSearchQuery(text: state.searchText,
                                        tokens: state.searchTokens,
-                                       includesContent: state.premiumStatus == .active)
+                                       includesContent: premiumStatus == .active)
 
         return .run { [rows = state.$rows] _ in
             guard query.hasFreeText else {
