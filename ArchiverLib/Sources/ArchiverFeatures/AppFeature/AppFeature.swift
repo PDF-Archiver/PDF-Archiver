@@ -62,6 +62,7 @@ struct AppFeature {
 
     @Dependency(\.defaultDatabase) var database
     @Dependency(\.documentProcessor) var documentProcessor
+    @Dependency(\.indexScheduler) var indexScheduler
     @Dependency(\.archiveStore) var archiveStore
     @Dependency(\.widgetStore) var widgetStore
 
@@ -170,7 +171,12 @@ struct AppFeature {
                                 try Document.aiContext().fetchAll(db)
                             }
                         }
-                        _ = await documentProcessor.processUntaggedDocuments(inbox + (context ?? []))
+                        let result = await documentProcessor.processUntaggedDocuments(inbox + (context ?? []))
+
+                        // An OCR run rewrites the PDF in place. Whether `NSMetadataQuery` reports
+                        // that for its own process is undocumented, so the rescan is explicit.
+                        guard result.ocrCount > 0 else { return }
+                        try? await archiveStore.reloadDocuments()
                     }
                     .cancellable(id: CancelID.untaggedProcessing, cancelInFlight: true)
                 )
@@ -193,13 +199,9 @@ struct AppFeature {
                         // check the temp folder at startup for new documents
                         await documentProcessor.processStagedFiles()
 
-                        #if os(iOS)
-                        if #available(iOS 26, *) {
-                            // trigger task scheduling - the handler itself is registered
-                            // in the app initializer, as required by BGTaskScheduler
-                            BackgroundTaskManager.scheduleCacheProcessing()
-                        }
-                        #endif
+                        // trigger task scheduling - the handler itself is registered
+                        // in the app initializer, as required by BGTaskScheduler
+                        await indexScheduler.schedule()
                     }
                 )
 

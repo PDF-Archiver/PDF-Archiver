@@ -1812,6 +1812,106 @@
           }
         }
       }
+    },
+    "Download All Documents for Search": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle Dokumente für die Suche laden"
+          }
+        }
+      }
+    },
+    "Indexed": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indiziert"
+          }
+        }
+      }
+    },
+    "Last Run": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Letzter Durchlauf"
+          }
+        }
+      }
+    },
+    "Not Downloaded": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicht geladen"
+          }
+        }
+      }
+    },
+    "Pending": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ausstehend"
+          }
+        }
+      }
+    },
+    "Rebuild": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neu aufbauen"
+          }
+        }
+      }
+    },
+    "Rebuild Search Index": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suchindex neu aufbauen"
+          }
+        }
+      }
+    },
+    "Search Index": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suchindex"
+          }
+        }
+      }
+    },
+    "Searching inside documents requires Premium.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Suche in Dokumenten erfordert Premium."
+          }
+        }
+      }
+    },
+    "Your document list comes back within seconds. Searching inside documents is rebuilt in the background while your device is charging.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deine Dokumentliste ist innerhalb von Sekunden wieder da. Die Suche in Dokumenten wird im Hintergrund neu aufgebaut, während dein Gerät lädt."
+          }
+        }
+      }
     }
   },
   "version": "1.1"

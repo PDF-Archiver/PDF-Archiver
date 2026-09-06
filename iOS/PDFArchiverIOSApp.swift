@@ -30,9 +30,7 @@ struct PDFArchiverIOSApp: App {
 
         // BGTaskScheduler requires all launch handlers to be registered
         // before the end of the app launch sequence
-        if #available(iOS 26, *) {
-            BackgroundTaskManager.registerTaskHandlers()
-        }
+        BackgroundTaskManager.registerTaskHandlers()
     }
 
     var body: some Scene {

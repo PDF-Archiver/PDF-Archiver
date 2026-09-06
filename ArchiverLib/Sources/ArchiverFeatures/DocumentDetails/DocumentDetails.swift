@@ -70,6 +70,7 @@ struct DocumentDetails {
         }
     }
 
+    @Dependency(\.archiveStore.reloadDocuments) var reloadDocuments
     @Dependency(\.archiveStore.startDownloadOf) var startDownloadOf
     @Dependency(\.documentProcessor) var documentProcessor
     var body: some ReducerOf<Self> {
@@ -134,7 +135,13 @@ struct DocumentDetails {
 
             case .runOcrFinished(let success):
                 state.isRunningOcr = false
-                guard !success else { return .none }
+                guard !success else {
+                    // The rewritten file has a new size and date; the rescan is what gets its
+                    // fresh text layer indexed.
+                    return .run { _ in
+                        try await reloadDocuments()
+                    }
+                }
                 state.alert = AlertState<Action.Alert> {
                     TextState("OCR failed", bundle: #bundle)
                 } message: {

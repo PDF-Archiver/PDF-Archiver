@@ -53,6 +53,61 @@ nonisolated public struct IndexerState: Equatable, Sendable, Identifiable {
     public static let singletonID = 1
 }
 
+/// The extracted text of one document. The FTS5 table is the text store itself: with a single
+/// writer there is nothing to mirror, so no `content=` option and no triggers.
+@Table
+nonisolated public struct DocumentText: FTS5, Identifiable, Equatable, Sendable {
+    @Column(primaryKey: true) public let rowid: Document.ID
+    public var id: Document.ID { rowid }
+    public let body: String
+
+    public init(rowid: Document.ID, body: String) {
+        self.rowid = rowid
+        self.body = body
+    }
+}
+
+/// Text-extraction bookkeeping, one row per document that a run has looked at.
+@Table
+nonisolated public struct DocumentIndexState: Identifiable, Equatable, Sendable {
+    public enum Outcome: String, QueryBindable, Sendable {
+        case indexed
+        case noText
+        case unreadable
+        case failed
+    }
+
+    @Column(primaryKey: true) public let documentID: Document.ID
+    public var id: Document.ID { documentID }
+    /// The size and date the extracted text was read from, never the row's current ones - an
+    /// in-place rewrite during extraction must leave a mismatch the next run detects.
+    public var sourceSize: Double
+    public var sourceModificationDate: Date?
+    public var indexedAt: Date
+    public var outcome: Outcome?
+    public var characterCount: Int
+    public var extractorVersion: Int
+
+    public init(documentID: Document.ID,
+                sourceSize: Double,
+                sourceModificationDate: Date?,
+                indexedAt: Date,
+                outcome: Outcome?,
+                characterCount: Int,
+                extractorVersion: Int) {
+        self.documentID = documentID
+        self.sourceSize = sourceSize
+        self.sourceModificationDate = sourceModificationDate
+        self.indexedAt = indexedAt
+        self.outcome = outcome
+        self.characterCount = characterCount
+        self.extractorVersion = extractorVersion
+    }
+
+    /// Raising this re-extracts every document, for a fix that changes what the text looks like.
+    public static let currentExtractorVersion = 1
+}
+
 extension DependencyValues {
     /// Opens the read model and brings its schema up to date.
     ///
@@ -109,6 +164,29 @@ extension DependencyValues {
                 """)
                 .execute(db)
             try #sql(#"INSERT INTO "indexerStates" ("id") VALUES (1)"#).execute(db)
+        }
+        migrator.registerMigration("Create 'documentTexts' full-text index and 'documentIndexStates' table") { db in
+            try #sql("""
+                CREATE VIRTUAL TABLE "documentTexts" USING fts5(
+                  "body",
+                  tokenize = 'unicode61 remove_diacritics 2',
+                  prefix = '2 3'
+                )
+                """)
+                .execute(db)
+
+            try #sql("""
+                CREATE TABLE "documentIndexStates" (
+                  "documentID" INTEGER PRIMARY KEY NOT NULL REFERENCES "documents"("id") ON DELETE CASCADE,
+                  "sourceSize" REAL NOT NULL,
+                  "sourceModificationDate" TEXT,
+                  "indexedAt" TEXT NOT NULL,
+                  "outcome" TEXT NOT NULL,
+                  "characterCount" INTEGER NOT NULL DEFAULT 0,
+                  "extractorVersion" INTEGER NOT NULL DEFAULT 1
+                ) STRICT
+                """)
+                .execute(db)
         }
         try migrator.migrate(database)
 

@@ -85,6 +85,7 @@ struct DocumentDetailsTests {
         let store = TestStore(initialState: DocumentDetails.State(document: .mock(url: documentUrl, downloadStatus: 1))) {
             DocumentDetails()
         } withDependencies: {
+            $0.archiveStore.reloadDocuments = { }
             $0.documentProcessor.runOcr = { url in
                 requestedUrls.withValue { $0.append(url) }
                 return true
@@ -110,6 +111,7 @@ struct DocumentDetailsTests {
         let store = TestStore(initialState: DocumentDetails.State(document: .mock(url: documentUrl, isTagged: true, downloadStatus: 1))) {
             DocumentDetails()
         } withDependencies: {
+            $0.archiveStore.reloadDocuments = { }
             $0.documentProcessor.runOcr = { url in
                 requestedUrls.withValue { $0.append(url) }
                 return true

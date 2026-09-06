@@ -22,6 +22,7 @@ enum Names: String {
     case multiTagSelectionDelayEnabled = "multi-tag-selection-delay-enabled"
     case ocrEnabled = "ocr-enabled"
     case highlightDetectedDateEnabled = "highlight-detected-date-enabled"
+    case downloadAllForSearch = "download-all-for-search"
 
     var id: String { "shared-\(rawValue)" }
 }
@@ -176,6 +177,18 @@ public extension SharedKey where Self == AppStorageKey<Bool> {
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var highlightDetectedDateEnabled: Self {
       return Self[.appStorage(Names.highlightDetectedDateEnabled.id), default: true]
+  }
+}
+
+/// `true` if the background index may download documents that are not on this device yet
+public extension SharedKey where Self == AppStorageKey<Bool> {
+    static var downloadAllForSearch: Self {
+        appStorage(Names.downloadAllForSearch.id)
+    }
+}
+public extension SharedKey where Self == AppStorageKey<Bool>.Default {
+  static var downloadAllForSearch: Self {
+      return Self[.appStorage(Names.downloadAllForSearch.id), default: false]
   }
 }
 

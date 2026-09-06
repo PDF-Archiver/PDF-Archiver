@@ -14,12 +14,16 @@ import Foundation
 public struct ArchiveIndexerDependency: Sendable {
     public var setObservedRoots: @Sendable ([String]) async -> Int = { _ in 0 }
     public var reconcile: @Sendable ([DocumentSnapshotItem], String, Int) async -> Void
+    public var indexPendingTexts: @Sendable (_ budget: Int) async -> Void
+    public var requestRebuild: @Sendable () async -> Void
 }
 
 extension ArchiveIndexerDependency: TestDependencyKey {
     public static let previewValue = Self(
         setObservedRoots: { _ in 0 },
-        reconcile: { _, _, _ in }
+        reconcile: { _, _, _ in },
+        indexPendingTexts: { _ in },
+        requestRebuild: { }
     )
 
     public static let testValue = Self()
@@ -34,6 +38,12 @@ extension ArchiveIndexerDependency: DependencyKey {
             },
             reconcile: { items, root, generation in
                 await indexer.reconcile(items, root: root, generation: generation)
+            },
+            indexPendingTexts: { budget in
+                await indexer.indexPendingTexts(budget: budget)
+            },
+            requestRebuild: {
+                await indexer.requestRebuild()
             }
         )
     }()

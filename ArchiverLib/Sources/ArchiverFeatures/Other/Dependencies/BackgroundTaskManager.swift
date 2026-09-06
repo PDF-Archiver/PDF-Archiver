@@ -20,13 +20,17 @@ extension BGProcessingTask: @unchecked @retroactive Sendable {}
 extension BGTaskScheduler: @unchecked @retroactive Sendable {}
 
 /// Manages background tasks for cache processing on iOS
-@available(iOS 26, *)
 public actor BackgroundTaskManager: Log {
     /// Background task identifier for cache processing
     public static let cacheProcessingTaskIdentifier = "de.JulianKahnert.PDFArchiveViewer.pdf-processing"
 
     private static let scheduler = BGTaskScheduler.shared
 
+    /// Documents per run. The system grants "several minutes" while idle and charging, so a large
+    /// archive takes several nights - accepted, the settings screen shows the progress.
+    private static let indexBudget = 50
+
+    @Dependency(\.archiveIndexer) var archiveIndexer
     @Dependency(\.defaultDatabase) var database
     @Dependency(\.documentProcessor) var documentProcessor
     @Dependency(\.archiveStore) var archiveStore
@@ -55,15 +59,22 @@ public actor BackgroundTaskManager: Log {
 
     /// Schedule the cache processing background task
     public static func scheduleCacheProcessing() {
+        @Shared(.downloadAllForSearch) var downloadAllForSearch: Bool
+
         let request = BGProcessingTaskRequest(identifier: cacheProcessingTaskIdentifier)
-        request.requiresNetworkConnectivity = false
-        request.requiresExternalPower = true // Only run when connected to power
+        // Only the opt-in download needs the network; extraction reads local files.
+        request.requiresNetworkConnectivity = downloadAllForSearch
+        request.requiresExternalPower = true
         do {
             try scheduler.submit(request)
             Logger.backgroundTask.info("Cache processing task scheduled")
         } catch {
             Logger.backgroundTask.error("Failed to schedule cache processing task: \(error)")
         }
+    }
+
+    public static func cancelCacheProcessing() {
+        scheduler.cancel(taskRequestWithIdentifier: cacheProcessingTaskIdentifier)
     }
 
     /// Handle cache processing background task
@@ -83,13 +94,34 @@ public actor BackgroundTaskManager: Log {
             }
             // Runs OCR (if enabled) before the AI cache pass, so the text
             // layers exist when the cache entries are computed.
-            return await documentProcessor.processUntaggedDocuments(documents)
+            let result = await documentProcessor.processUntaggedDocuments(documents)
+
+            // An OCR run rewrites the PDF in place. Whether `NSMetadataQuery` reports that for its
+            // own process is undocumented, so the rescan is explicit - and it has to land before
+            // the text pass, which reads the size and date the reconcile writes.
+            if result.ocrCount > 0 {
+                try await archiveStore.reloadDocuments()
+                await waitForInitialDocumentLoad()
+            }
+
+            if await PremiumEntitlement.isActive() {
+                await archiveIndexer.indexPendingTexts(Self.indexBudget)
+            }
+            return result
         }
 
         // Set expiration handler to cancel the work instead of completing the task directly
         task.expirationHandler = {
             Logger.backgroundTask.warning("Background cache processing expired")
             processingTask.cancel()
+
+            // Extraction observes cancellation per page, so the task returns within a page's
+            // parse time; this guards against a pathological one.
+            Task {
+                try? await Task.sleep(for: .seconds(5))
+                guard !processingTask.isCancelled else { return }
+                task.setTaskCompleted(success: false)
+            }
         }
 
         do {

@@ -15,7 +15,7 @@ import SQLiteData
 /// Folder providers deliver full snapshots per observed root; this actor diffs them against the
 /// stored rows and writes the difference. Features only ever read.
 public actor ArchiveIndexer {
-    @Dependency(\.defaultDatabase) private var database
+    @Dependency(\.defaultDatabase) var database
 
     /// Roots whose provider was created, keyed logically - never by URL prefix.
     private var observedRoots: Set<String> = []
@@ -38,6 +38,8 @@ public actor ArchiveIndexer {
         let observedRoots = self.observedRoots
         withErrorReporting {
             try database.write { db in
+                let staleIDs = try Document.where { $0.rootKey.notIn(observedRoots) }.select(\.id).fetchAll(db)
+                try DocumentText.where { $0.rowid.in(staleIDs) }.delete().execute(db)
                 try Document.where { $0.rootKey.notIn(observedRoots) }.delete().execute(db)
                 try IndexerState
                     .find(IndexerState.singletonID)
@@ -134,6 +136,9 @@ public actor ArchiveIndexer {
             // Deletes run first: an insert or a URL update would otherwise collide with a row that
             // this very snapshot removes (a rename chain, an A<->B swap, a replaced file).
             if !absentIDs.isEmpty {
+                // `documentTags` and `documentIndexStates` cascade; a virtual table cannot carry
+                // a foreign key, so the FTS row goes explicitly.
+                try DocumentText.where { $0.rowid.in(absentIDs) }.delete().execute(db)
                 try Document.where { $0.id.in(absentIDs) }.delete().execute(db)
             }
 
@@ -184,6 +189,8 @@ public actor ArchiveIndexer {
         let replacement = documents
         await withErrorReporting {
             try await database.write { db in
+                let staleIDs = try Document.where { $0.rootKey.eq(root) }.select(\.id).fetchAll(db)
+                try DocumentText.where { $0.rowid.in(staleIDs) }.delete().execute(db)
                 try Document.where { $0.rootKey.eq(root) }.delete().execute(db)
                 guard !replacement.isEmpty else { return }
                 try Document.insert { replacement }.execute(db)
