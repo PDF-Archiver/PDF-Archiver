@@ -281,12 +281,13 @@ later is one migration plus a rebuild.
 
 ### 6.1 Schema
 
-Written as `#sql` in `DatabaseMigrator` migrations, `STRICT` tables, human-readable migration names,
-as the SQLiteData guidance requires. Shipped migrations are never edited, so the split below is also
-the delivery split: migration 1 ships with PR 1, migration 2 with PR 3a, migration 3 with PR 4.
+Written as `#sql` in one `DatabaseMigrator` migration ("Create the read model"), `STRICT` tables, as
+the SQLiteData guidance requires. Nothing has shipped from this branch, so the schema is created in
+its final shape rather than through a chain of migrations, and `eraseDatabaseOnSchemaChange` is set
+in `DEBUG` so a stale local database is rebuilt from the file system instead of migrated.
 
 ```sql
--- Migration 1 (PR 1): "Create 'documents', 'documentTags' and 'indexerStates' tables"
+-- "Create the read model"
 CREATE TABLE "documents" (
   "id" INTEGER PRIMARY KEY NOT NULL,          -- documentIdentifier, see 6.3 (no AUTOINCREMENT)
   "rootKey" TEXT NOT NULL,                    -- logical observed root, see 7.1 (not the root path)
@@ -315,6 +316,7 @@ CREATE INDEX "index_documentTags_on_tag" ON "documentTags"("tag");
 
 CREATE TABLE "indexerStates" (                -- exactly one row, id = 1
   "id" INTEGER PRIMARY KEY NOT NULL CHECK ("id" = 1),
+  -- a metadata reconcile is running and nothing is stored yet for the observed roots
   "isReconciling" INTEGER NOT NULL DEFAULT 0,
   "lastReconciledAt" TEXT,
   "lastTextRunStartedAt" TEXT,
@@ -323,7 +325,6 @@ CREATE TABLE "indexerStates" (                -- exactly one row, id = 1
 ) STRICT;
 INSERT INTO "indexerStates" ("id") VALUES (1);
 
--- Migration 2 (PR 3a): "Create 'documentTexts' full-text index and 'documentIndexStates' table"
 CREATE VIRTUAL TABLE "documentTexts" USING fts5(
   "body",
   tokenize = 'unicode61 remove_diacritics 2',
@@ -342,7 +343,6 @@ CREATE TABLE "documentIndexStates" (          -- text-extraction bookkeeping, on
   "extractorVersion" INTEGER NOT NULL DEFAULT 1
 ) STRICT;
 
--- Migration 3 (PR 4): "Create 'documentSuggestions' table"
 CREATE TABLE "documentSuggestions" (          -- replaces the ContentExtractorCache JSON files
   "documentID" INTEGER PRIMARY KEY NOT NULL REFERENCES "documents"("id") ON DELETE CASCADE,
   "specification" TEXT NOT NULL DEFAULT '',
@@ -578,18 +578,25 @@ for await snapshot in provider.currentDocumentsStream {
 }
 ```
 
-`setObservedRoots` stores the set and a new generation on the actor, deletes rows whose `rootKey` is
-not in the set, and sets `indexerStates.isReconciling = 1`. `reconcile` runs on the actor and:
+`setObservedRoots` stores the set and a new generation on the actor and raises
+`indexerStates.isReconciling` only when nothing is stored yet for those roots, so a warm launch and
+every rescan after it show the stored rows instead of a spinner. Rows of roots that are no longer
+observed are *not* deleted here: a provider that fails to start is a transient condition, and
+`rootKey NOT IN ()` is true in SQLite, so an empty set would delete the whole archive. They are
+dropped in the first write of the new generation instead. `reconcile` runs on the actor and:
 
 0. Drops the snapshot without touching the database if `root` is not in the observed set or
    `generation` is stale. Cancelled provider tasks can still deliver buffered snapshots, and actor
    jobs are not strictly FIFO, so this check is what prevents ghost rows after a storage switch.
 1. Computes the diff against the rows with this `rootKey` **before** writing anything: matches
    snapshot items to rows by `id`, then by `url`.
-2. In one `database.write` transaction, in this order:
-   - delete rows of this root that are absent from the snapshot (cascades remove
-     `documentTags`, `documentIndexStates`, `documentSuggestions`; the `documentTexts` row is
-     deleted explicitly);
+2. In one deletion transaction, then in write transactions of 250 rows each, ordered `date`
+   descending so the top of the archive list is right as soon as the first chunk commits:
+   - the deletion transaction first: rows of this root that are absent from the snapshot (cascades
+     remove `documentTags`, `documentIndexStates`, `documentSuggestions`; the `documentTexts` row
+     is deleted explicitly), plus the rows of roots this generation no longer observes. Deletions
+     are never chunked, so a rename chain or an A<->B swap can never collide with a row this very
+     snapshot removes;
    - for "same `url`, different `id`" (a file replaced at its path, an evicted placeholder that
      gained a real id): delete the old row and insert the new one; the text is re-extracted because
      the new id has no `documentIndexStates` row. Primary keys are never updated;
@@ -597,27 +604,35 @@ not in the set, and sets `indexerStates.isReconciling = 1`. `reconcile` runs on 
      `date`, `year`, `specification` and `tags`; the id and the indexed text survive. Swaps inside
      one snapshot are fine because `url` is not unique;
    - unchanged rows (same `url`, `isTagged`, `sizeInBytes`, `downloadStatus`,
-     `contentModificationDate`, compared as Swift values) are skipped;
+     `contentModificationDate`, compared as Swift values) are skipped. Dates are truncated to the
+     millisecond the `TEXT` columns keep, at the `DocumentSnapshotItem` boundary, so a stored date
+     equals the one the file system reports and an unchanged snapshot writes nothing at all;
    - new items are inserted with `Document.create` semantics: filename parsing, the delivered
-     `creationDate` as date fallback, `year` from `Calendar.current`;
+     `creationDate` as date fallback, `year` from `Calendar.current`. The parse of a whole snapshot
+     runs off the actor in one `@concurrent` batch;
    - `documentTags` is rewritten for every inserted or renamed document;
-   - `indexerStates.lastReconciledAt` is set; once every observed root has delivered its first
-     snapshot of the current generation, `isReconciling` is cleared.
+   - once every observed root has delivered its first snapshot of the current generation,
+     `isReconciling` is cleared.
+
+   A partially applied snapshot is therefore observable, by design: the file system is the source of
+   truth (`docs/adr/0003-database-is-a-derived-read-model.md`), and a generation that goes stale
+   mid-way stops at the next chunk boundary and leaves valid rows behind.
 3. If the write throws, the error is reported through `withErrorReporting` and the root is retried
    once with a "replace root" strategy (delete all rows of the root, insert the snapshot). A failed
    reconcile never poisons later snapshots.
 
 `bootstrapDatabase()` resets `isReconciling` to `0` so a crash mid-scan cannot leave it stuck; roots
-whose provider failed to start are not in the observed set, so they cannot keep the flag up.
+whose provider failed to start are not in the observed set, so they cannot keep the flag up. With
+chunking, whatever committed before the crash is valid and the next snapshot reconciles the rest.
 
 Because both providers deliver full snapshots this is a diff, not an event replay. An empty first
 snapshot from a provider whose root exists is a legitimate "folder is empty" and deletes that root's
-rows; a provider that fails to start yields nothing and its rows are removed by `setObservedRoots`.
+rows; a provider that fails to start yields nothing and its rows stay until a live root reports.
 The `ICloudFolderProvider` internally knows added/changed/removed items but discards that before
 yielding; exposing deltas is a possible later optimisation, not a requirement.
 
 `downloadStatus` changes arrive frequently while a file downloads. They are written in the same
-batch as everything else, one transaction per snapshot; `ValueObservation` coalesces the UI updates.
+chunks as everything else; `ValueObservation` coalesces the UI updates.
 A reconcile may run between two extraction commits (4.1 principle 7); section 7.2 says why that is
 safe.
 
@@ -625,6 +640,11 @@ safe.
 
 `ArchiveIndexer.indexPendingTexts(budget:)` is only ever called by the platform scheduler live
 values (section 7.3), never from a user action. A rebuild request (7.6) only *schedules* such a run.
+
+Metadata first, enforced in code: the run returns immediately while `indexerStates.isReconciling` is
+true, before any bookkeeping, so the next scheduled run simply repeats the attempt. The list is what
+the user is waiting for, and a text commit would otherwise queue ahead of a reconcile chunk on the
+single writer connection.
 
 ```
 pending = documents d
@@ -742,6 +762,8 @@ macOS (`MacBackgroundActivity`, new):
 - The scheduler runs only while the app process is alive; there is no launch-on-schedule on
   macOS. Macs are typically plugged in and the app is typically open in the background, so the
   realistic case is covered.
+- There is no equivalent of the iOS wait for `isReconciling`, and none is needed: `indexPendingTexts`
+  returns immediately while a metadata reconcile is running (7.2).
 
 ### 7.4 Opt-in: download everything for a complete index
 
@@ -1070,13 +1092,18 @@ does not bypass the write path.
 
 ## 10. Settings
 
-New section "Search index" in `ExpertSettings` (same reducer pattern, `AlertState` confirmation):
+"Search Index" / "Suchindex" is its own screen (`SearchIndexSettings`), reached from Preferences on
+both platforms - a `Settings.Destination` case like `expertSettings`, pushed on iOS and presented as
+a sheet on macOS. It is the only entry point; `ExpertSettings` carries nothing about the index.
 
-- Status line from `DocumentIndexState.StatusRequest`: indexed / pending / not downloaded, last run.
-  Reads with `@Fetch`, so it updates live while a background run commits. Without Premium the line
-  reads "Content index requires Premium"; with Premium lapsed and text present it reads "paused
-  (Premium inactive)".
-- Toggle "Download all documents for search" → new Bool key following the `SharedKeys.swift` pattern
+- Headline "N of M documents indexed" plus a progress bar, from `DocumentIndexState.StatusRequest`.
+  Reads with `@Fetch`, so it updates live while a background run commits. Without Premium the screen
+  shows "Searching inside documents requires Premium." instead of the counts.
+- The breakdown below it, each row only when it is greater than zero: without text, pending, not
+  downloaded, failed, last run. "Without text" is a first-class number, so the figure does not look
+  stuck below 100% when the remainder genuinely has no text layer; a footer says that those
+  documents are skipped and not scanned again.
+- Toggle "Download all documents for search" → Bool key following the `SharedKeys.swift` pattern
   (`Names` case plus the two `SharedKey` extensions), default off, disabled without Premium.
 - Button "Rebuild search index" → confirmation → `archiveIndexer.requestRebuild()` (7.6). Available
   to everyone; the confirmation text says that the document list rebuilds within seconds and the
@@ -1148,12 +1175,12 @@ prefix.
 | PR | Scope | Removes |
 |---|---|---|
 | 0 Spike (throwaway branch) | `@FetchAll` / `@FetchOne` / `@Fetch` inside `@ObservableState` with `TestStore`, including whether the initial value is available synchronously in a state initializer; `Package.resolved` with sqlite-data against the exact pins TCA 1.26.2 / swift-dependencies 1.17.1 / swift-sharing 2.10.1 (`-disableAutomaticPackageResolution`), plus running `ci_scripts/ci_post_clone.sh` against it and asserting the two StructuredQueries macro entries get fingerprints; `PDFDocument(url:)` on an iCloud placeholder; the `#sql` ranked search decoding into a `@Selection` that nests `Document`; `@Table` on `Document` and the binary-size delta of Widget and Share Extension (decides `Document` vs `DocumentRecord` before PR 1); `NSMetadataQuery` reporting a same-process in-place rewrite; the macOS input-idle probe by hand | – |
-| 1 Foundation | `ArchiverDatabase` target, migration 1, `bootstrapDatabase`, `@Table Document` with `filename`, `year`, `rootKey`, `contentModificationDate`, `SortedTagsRepresentation`, deterministic id fallback, `DocumentSnapshotItem`, providers deliver id, dates and normalised URLs, `ArchiveStore` stamps `isTagged` and calls `setObservedRoots` / `reconcile` through `ArchiveIndexerDependency`, `getUniqueParents` separator fix, the single ordered `prepareDependencies` block in both apps, `ArchiverDatabaseTests` in Package.swift and both test plans, `ci_post_clone.sh` macro entries. `ArchiveStore` writes to the database **and** still yields the array (dual write) | – |
+| 1 Foundation | `ArchiverDatabase` target, the schema migration, `bootstrapDatabase`, `@Table Document` with `filename`, `year`, `rootKey`, `contentModificationDate`, `SortedTagsRepresentation`, deterministic id fallback, `DocumentSnapshotItem`, providers deliver id, dates and normalised URLs, `ArchiveStore` stamps `isTagged` and calls `setObservedRoots` / `reconcile` through `ArchiveIndexerDependency`, `getUniqueParents` separator fix, the single ordered `prepareDependencies` block in both apps, `ArchiverDatabaseTests` in Package.swift and both test plans, `ci_post_clone.sh` macro entries. `ArchiveStore` writes to the database **and** still yields the array (dual write) | – |
 | 2a Lists and details | `ArchiveList`, `UntaggedDocumentList`, `DocumentDetails` on fetch wrappers; `Document.list(tokens:)`; selection by row; every `DocumentDetails.State(document:)` call site (`selectNextDocument`, previews, tests) adopts the value initializer; `ScreenshotCase` seeds the database | `Shared(state.$documents[id:])` selection |
 | 2b Aggregates and cleanup | `Statistics`, `AppFeature` projection (incl. `isReconciling` wiring for the progress indicator and scene-phase guard) and inbox observation, widget projection signature, `DocumentInformationForm` tag suggestions and AI context, `selectNextDocument` from rows, `BackgroundTaskManager` triggers the scan and waits on `indexerStates` | `@Shared(.documents)`, `documents.json` key, `currentDocuments`, `documentsStream`, `isLoadingStream`, `documentChanges`, `getDocuments`, `isLoading`, `isLoadingChanged`, `getTagSuggestions*`, `AppFeature.apply`, `Statistics.isLoading`, optimistic edits |
-| 3a Text index | Migration 2 (`documentTexts` with prefix indexes, `documentIndexStates`), `indexPendingTexts` with `@concurrent` extraction, `IndexSchedulerDependency` with the iOS live value (gate lowered to 18) and the macOS live value, Premium gates (foreground trigger and cold-launch check), Expert settings section with status and rebuild | – |
+| 3a Text index | `documentTexts` with prefix indexes and `documentIndexStates`, `indexPendingTexts` with `@concurrent` extraction, `IndexSchedulerDependency` with the iOS live value (gate lowered to 18) and the macOS live value, Premium gates (foreground trigger and cold-launch check), Expert settings section with status and rebuild | – |
 | 3b Search UI | `Document.rankedSearch`, sanitiser with the two-character rule, snippet rows, Premium empty state, screenshot with content hit | – |
-| 4 Consolidation | Opt-in download, bounded `documentTexts` prefix as text source for the tagging form with the shared 5,000-character constant, migration 3 (`documentSuggestions`) replacing `ContentExtractorCache`, `docs/document-flow.md` update | `ContentExtractorCache`, `TextAnalyserDependency` PDF read at open |
+| 4 Consolidation | Opt-in download, bounded `documentTexts` prefix as text source for the tagging form with the shared 5,000-character constant, `documentSuggestions` replacing `ContentExtractorCache`, `docs/document-flow.md` update | `ContentExtractorCache`, `TextAnalyserDependency` PDF read at open |
 
 Dual write exists only between PR 1 and PR 2b, within one release cycle. `docs/document-flow.md` is
 updated in PR 2b (document loading) and PR 4 (caches).

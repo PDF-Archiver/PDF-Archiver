@@ -28,7 +28,7 @@ flowchart TD
     P1 & P2 -->|"placeholder filename<br/>with import date"| UNT[("Untagged folder")]
     E4 --> UNT
 
-    UNT -.->|file watcher| IDX["ArchiveIndexer<br/>reconciles snapshots into the read model"]
+    UNT -.->|file watcher| IDX["ArchiveIndexer<br/>applies snapshots in chunks of 250, newest first"]
     IDX --> DB[("SQLite read model")]
     DB --> UI["Inbox badge / lists / widget"]
     DB -->|"restartable effect"| SWEEP["Untagged processing<br/>1. OCR text layer in place (ocrEnabled)<br/>2. AI suggestion cache (Apple Intelligence)"]
@@ -50,8 +50,8 @@ flowchart TD
 | `ContentExtractorStore` (actor) | `ContentExtractorStore` | Apple Intelligence: document text in → description + tags out, cached in the `documentSuggestions` table |
 | `DocumentProcessingDependency` | `ArchiverFeatures` | TCA seam: resolves user settings + untagged folder into a `ProcessingConfig` per request |
 | `BackgroundTaskManager` | `ArchiverFeatures` | iOS 18+ `BGProcessingTask` that runs the untagged processing on external power |
-| `ArchiveStore` / `FolderProvider` | `ArchiverStore` | Watches archive + untagged folders and hands snapshots to the indexer, which maintains the read model the UI observes |
-| `ArchiveIndexer` | `ArchiverDatabase` | The single writer of the read model: reconciles snapshots and extracts document text |
+| `ArchiveStore` / `FolderProvider` | `ArchiverStore` | Watches archive + untagged folders and hands full snapshots to the indexer, which maintains the read model the UI observes |
+| `ArchiveIndexer` | `ArchiverDatabase` | The single writer of the read model: applies snapshots progressively in chunks of 250 rows ordered newest first, and extracts document text. The loading indicator only covers a cold start, when nothing is stored for the observed roots yet |
 
 The pipeline target depends only on `ArchiverModels` and `ContentExtractorStore`
 (which itself depends only on `ArchiverModels`), so it can be reused outside the

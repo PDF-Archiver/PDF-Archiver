@@ -262,8 +262,8 @@ The app automatically selects the appropriate `FolderProvider` based on the fold
 
 ### Document Loading Flow
 1. `ArchiveStore.update()` initializes folder providers
-2. Providers watch for file system changes via `DirectoryDeepWatcher`
-3. The providers hand their snapshots to `ArchiveIndexer`, which writes the SQLite read model
+2. Providers watch for file system changes via `DirectoryDeepWatcher` and hand full folder snapshots to `ArchiveIndexer`
+3. `ArchiveIndexer` applies a snapshot in chunks of 250 rows, newest first, so the list renders from the first chunk onward
 4. Features observe that database through `@FetchAll`/`@FetchOne`/`@Fetch`
 
 ### Platform-Specific Code
