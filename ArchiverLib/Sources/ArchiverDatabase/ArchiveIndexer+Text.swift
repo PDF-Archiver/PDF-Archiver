@@ -20,6 +20,15 @@ extension ArchiveIndexer {
     /// Only ever called by the platform schedulers, never by a user action: this is the expensive
     /// half of indexing and runs on external power at background quality of service.
     public func indexPendingTexts(budget: Int) async {
+        // Metadata first: the list is what the user is waiting for, and a text commit would queue
+        // ahead of a reconcile chunk on the single writer connection.
+        let isReconciling = await withErrorReporting {
+            try await database.read { db in
+                try IndexerState.find(IndexerState.singletonID).select(\.isReconciling).fetchOne(db) ?? false
+            }
+        }
+        guard isReconciling == false else { return }
+
         let pending = await withErrorReporting {
             try await database.read { db in
                 try Self.pendingDocuments(limit: budget).fetchAll(db)
@@ -42,6 +51,8 @@ extension ArchiveIndexer {
 
             await commit(text: text, for: document)
             indexedAnything = true
+            // A reconcile chunk arriving mid-run must not wait out the whole budget.
+            await Task.yield()
         }
 
         await finishTextRun(indexedAnything: indexedAnything)
@@ -232,16 +243,39 @@ extension ArchiveIndexer {
     }
 }
 
+/// How many documents a text run recorded under one outcome.
+@Selection
+nonisolated struct OutcomeCount: Equatable, Sendable {
+    let outcome: DocumentIndexState.Outcome?
+    let count: Int
+}
+
 extension DocumentIndexState {
     /// What the settings screen shows about the content index.
+    ///
+    /// `indexed + withoutText + failed` is what a run has already looked at, `pending` is what it
+    /// looks at next and `notDownloaded` what it cannot look at yet. They do not sum to `total`,
+    /// because a document that is not downloaded may still carry a state row from before.
     public struct Status: Equatable, Sendable {
+        public var total = 0
         public var indexed = 0
+        public var withoutText = 0
+        public var failed = 0
         public var pending = 0
         public var notDownloaded = 0
         public var lastRun: Date?
 
-        public init(indexed: Int = 0, pending: Int = 0, notDownloaded: Int = 0, lastRun: Date? = nil) {
+        public init(total: Int = 0,
+                    indexed: Int = 0,
+                    withoutText: Int = 0,
+                    failed: Int = 0,
+                    pending: Int = 0,
+                    notDownloaded: Int = 0,
+                    lastRun: Date? = nil) {
+            self.total = total
             self.indexed = indexed
+            self.withoutText = withoutText
+            self.failed = failed
             self.pending = pending
             self.notDownloaded = notDownloaded
             self.lastRun = lastRun
@@ -251,9 +285,10 @@ extension DocumentIndexState {
     public struct StatusRequest: FetchKeyRequest {
         public init() {}
 
+        /// Counts only - this backs a live `@Fetch` and must never decode a document row.
         public func fetch(_ db: Database) throws -> Status {
-            Status(
-                indexed: try DocumentIndexState.where { $0.outcome.eq(Outcome.indexed) }.fetchCount(db),
+            var status = Status(
+                total: try Document.all.fetchCount(db),
                 pending: try ArchiveIndexer.pendingCount().fetchOne(db) ?? 0,
                 notDownloaded: try Document.where { $0.downloadStatus.lt(1) }.fetchCount(db),
                 lastRun: try IndexerState
@@ -262,6 +297,27 @@ extension DocumentIndexState {
                     .fetchOne(db)
                     .flatMap(\.self)
             )
+
+            let outcomes = try DocumentIndexState
+                .group(by: \.outcome)
+                .select { OutcomeCount.Columns(outcome: $0.outcome, count: $0.count()) }
+                .fetchAll(db)
+            for row in outcomes {
+                switch row.outcome {
+                case .indexed:
+                    status.indexed = row.count
+
+                case .noText, .unreadable:
+                    status.withoutText += row.count
+
+                case .failed:
+                    status.failed = row.count
+
+                case nil:
+                    break
+                }
+            }
+            return status
         }
     }
 }

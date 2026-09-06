@@ -100,7 +100,8 @@ nonisolated public struct DocumentIndexState: Identifiable, Equatable, Sendable 
         self.extractorVersion = extractorVersion
     }
 
-    /// Raising this re-extracts every document, for a fix that changes what the text looks like.
+    /// Raising this re-extracts every document, for a fix that changes what the text looks like -
+    /// the only path that re-reads a document without a text layer, apart from the file changing.
     public static let currentExtractorVersion = 1
 }
 

@@ -40,6 +40,22 @@ struct TextIndexTests {
     }
 
     @Test
+    func doesNotIndexWhileAReconcileIsRunning() async throws {
+        try await Self.seed(id: -1, fixture: "text-layer")
+        @Dependency(\.defaultDatabase) var database
+        try await database.write { db in
+            try IndexerState.find(IndexerState.singletonID).update { $0.isReconciling = true }.execute(db)
+        }
+
+        await ArchiveIndexer().indexPendingTexts(budget: 10)
+
+        #expect(try await Self.outcome(of: -1) == nil)
+        #expect(try await Self.body(of: -1) == nil)
+        // No bookkeeping either, so the next scheduled run repeats the attempt.
+        #expect(try await Self.lastRun() == nil)
+    }
+
+    @Test
     func doesNotIndexMojibake() async throws {
         try await Self.seed(id: -1, fixture: "mojibake")
 
@@ -229,10 +245,49 @@ struct TextIndexTests {
             try DocumentIndexState.StatusRequest().fetch(db)
         }
 
+        #expect(status.total == 3)
         #expect(status.indexed == 1)
         #expect(status.pending == 1)
         #expect(status.notDownloaded == 1)
         #expect(status.lastRun != nil)
+    }
+
+    @Test
+    func theStatusSeparatesDocumentsWithoutTextFromFailures() async throws {
+        try await Self.seed(id: -1, fixture: "text-layer")
+        try await Self.seed(id: -2, fixture: "image-only")
+        try await Self.seed(id: -3, fixture: "mojibake")
+        @Dependency(\.defaultDatabase) var database
+        try await database.write { db in
+            try db.seed {
+                Document(id: -4, rootKey: "test", url: URL(filePath: "/does/not/exist.pdf"), date: Date(timeIntervalSince1970: 0), specification: "gone", tags: [], isTagged: false, sizeInBytes: 10, downloadStatus: 1)
+            }
+        }
+        await ArchiveIndexer().indexPendingTexts(budget: 10)
+
+        let status = try await database.read { db in
+            try DocumentIndexState.StatusRequest().fetch(db)
+        }
+
+        #expect(status.total == 4)
+        #expect(status.indexed == 1)
+        // A PDF without a text layer and an unreadable one are both "without text", not failures.
+        #expect(status.withoutText == 2)
+        #expect(status.failed == 1)
+        #expect(status.pending == 0)
+    }
+
+    @Test
+    func aDocumentWithoutATextLayerIsNotOfferedAgain() async throws {
+        try await Self.seed(id: -1, fixture: "image-only")
+        let indexer = ArchiveIndexer()
+        await indexer.indexPendingTexts(budget: 10)
+        #expect(try await Self.pendingCount() == 0)
+
+        await indexer.indexPendingTexts(budget: 10)
+
+        #expect(try await Self.outcome(of: -1) == .noText)
+        #expect(try await Self.pendingCount() == 0)
     }
 
     // MARK: - Helpers
@@ -263,6 +318,13 @@ struct TextIndexTests {
         @Dependency(\.defaultDatabase) var database
         return try await database.read { db in
             try ArchiveIndexer.pendingCount().fetchOne(db) ?? 0
+        }
+    }
+
+    private static func lastRun() async throws -> Date? {
+        @Dependency(\.defaultDatabase) var database
+        return try await database.read { db in
+            try IndexerState.find(IndexerState.singletonID).select(\.lastTextRunFinishedAt).fetchOne(db).flatMap(\.self)
         }
     }
 
