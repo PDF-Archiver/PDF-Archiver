@@ -5,7 +5,8 @@ membership plus the filename pattern decide tagged vs. untagged. The database mi
 queryable tables so lists, statistics, tag suggestions and full-text search share one read path, but
 nothing the user decides is stored only there. Exactly one component writes to it — the
 `ArchiveIndexer` actor, fed by the folder providers — and every table can be dropped and rebuilt
-from the files.
+from the files. The one write that does not come from the indexer is the `#if DEBUG` screenshot
+fixture seed, which replaces the archive rather than reflecting one.
 
 **Considered:** keeping `@Shared(.documents)` and adding a database that holds only extracted text.
 Rejected: it still needs path, size and modification-date bookkeeping to detect staleness, which is
