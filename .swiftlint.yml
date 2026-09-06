@@ -86,6 +86,7 @@ identifier_name:
     - at
     - of
     - to
+    - db
 
 type_name:
   excluded:

@@ -6,15 +6,29 @@
 //
 
 import Foundation
+import StructuredQueries
 
+/// One PDF in the archive, as the SQLite read model stores it.
+///
+/// The file system stays the source of truth: every column is derived from a file's name, folder
+/// and resource values, and the whole table can be dropped and rebuilt from the files.
+@Table
 nonisolated public struct Document: Equatable, Hashable, Sendable, Codable, Identifiable {
     /// Type alias for document identifier
     public typealias ID = Int
 
     public var id: ID
+    /// Logical key of the observed root, never derived from the URL text - the same file appears
+    /// as `/private/var/…` and `/var/…`, and the iOS container path changes with app updates.
+    public var rootKey: String
     public var url: URL
+    public var filename: String
     public var date: Date
+    /// `Calendar.current` year of `date`. `date` is stored in UTC, so year buckets must not
+    /// derive the year from it.
+    public var year: Int
     public var specification: String
+    @Column(as: SortedTagsRepresentation.self)
     public var tags: Set<String>
 
     public var isTagged: Bool
@@ -23,19 +37,32 @@ nonisolated public struct Document: Equatable, Hashable, Sendable, Codable, Iden
     // 0: remote - 1: local
     public var downloadStatus: Double
 
-    public var filename: String {
-        url.lastPathComponent
-    }
+    public var contentModificationDate: Date?
 
-    public init(id: ID, url: URL, date: Date, specification: String, tags: Set<String>, isTagged: Bool, sizeInBytes: Double, downloadStatus: Double) {
+    public init(id: ID,
+                rootKey: String,
+                url: URL,
+                filename: String? = nil,
+                date: Date,
+                year: Int? = nil,
+                specification: String,
+                tags: Set<String>,
+                isTagged: Bool,
+                sizeInBytes: Double,
+                downloadStatus: Double,
+                contentModificationDate: Date? = nil) {
         self.id = id
+        self.rootKey = rootKey
         self.url = url
+        self.filename = filename ?? url.lastPathComponent
         self.date = date
+        self.year = year ?? Calendar.current.component(.year, from: date)
         self.specification = specification
         self.tags = tags
         self.isTagged = isTagged
         self.sizeInBytes = sizeInBytes
         self.downloadStatus = downloadStatus
+        self.contentModificationDate = contentModificationDate
     }
 }
 
@@ -126,7 +153,8 @@ extension Document {
 
     public static func mock(url: URL = URL(string: "https://example.com")!, date: Date = Date(), specification: String = "", tags: Set<String> = [], isTagged: Bool = true, sizeInBytes: Double = 1000, downloadStatus: Double = 0) -> Self {
         .init(
-            id: url.hashValue,
+            id: url.absoluteString.stableHashValue,
+            rootKey: "mock",
             url: url,
             date: date,
             specification: specification,

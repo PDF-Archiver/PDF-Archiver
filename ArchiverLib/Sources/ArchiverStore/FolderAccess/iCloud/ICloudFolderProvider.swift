@@ -112,11 +112,7 @@ final class ICloudFolderProvider: FolderProvider {
 
     private func sendDocuments(added: [DocumentInformation], updated: [DocumentInformation], removed: [DocumentInformation]) {
         for change in added + updated {
-            guard let id = change.url.uniqueId() else {
-                assertionFailure("Failed to get uniqueId for \(change.url)")
-                continue
-            }
-            currentDocuments[id] = change
+            currentDocuments[change.id] = change
         }
         for change in removed {
             // match removed files by URL - reading the uniqueId (a resource value)
@@ -236,7 +232,20 @@ extension NSMetadataItem: nonisolated Log {
             return nil
         }
 
-        return DocumentInformation(url: documentUrl, downloadStatus: documentStatus, sizeInBytes: Double(size))
+        // The metadata attributes answer before a download; the URL resource values of an
+        // undownloaded item return stub data.
+        let normalizedUrl = documentUrl.normalized()
+        guard let id = normalizedUrl.uniqueId() else {
+            log.errorAndAssert("Could not fetch unique id from url.")
+            return nil
+        }
+
+        return DocumentInformation(id: id,
+                                   url: normalizedUrl,
+                                   downloadStatus: documentStatus,
+                                   sizeInBytes: Double(size),
+                                   creationDate: value(forAttribute: NSMetadataItemFSCreationDateKey) as? Date,
+                                   contentModificationDate: value(forAttribute: NSMetadataItemFSContentChangeDateKey) as? Date)
     }
 }
 

@@ -5,8 +5,10 @@
 //  Created by Julian Kahnert on 14.03.24.
 //
 
+import ArchiverDatabase
 import ArchiverModels
 import AsyncExtensions
+import Dependencies
 import Foundation
 import OSLog
 import PDFKit.PDFDocument
@@ -15,6 +17,8 @@ import Sharing
 
 public actor ArchiveStore: Log {
     public static let shared = ArchiveStore()
+
+    @Dependency(\.archiveIndexer) private var archiveIndexer
 
     #if os(macOS)
     @Shared(.observedFolder) var observedFolderURL: URL?
@@ -83,20 +87,38 @@ public actor ArchiveStore: Log {
             foundProviders.append(provider)
         }
         providers = foundProviders.compactMap(\.self)
+
+        var rootKeys: [URL: String] = [:]
+        for provider in providers {
+            await rootKeys[provider.baseUrl] = RootKey.of(provider.baseUrl)
+        }
+        let generation = await archiveIndexer.setObservedRoots(Array(rootKeys.values))
+
         var documentsMap: [URL: [Document]] = [:]
         for provider in providers {
+            let baseUrl = await provider.baseUrl
+            guard let rootKey = rootKeys[baseUrl] else { continue }
             let task = Task {
                 let folderChangeStream = await provider.currentDocumentsStream
                 for await changes in folderChangeStream {
+                    guard !Task.isCancelled else { break }
                     Self.log.debug("Found documents count: \(changes.count)")
 
-                    await documentsMap[provider.baseUrl] = changes.asyncMap { change in
-                        await Document.create(url: change.url,
-                                        isTagged: isTagged(change.url),
-                                        downloadStatus: change.downloadStatus,
-                                        sizeInBytes: change.sizeInBytes)
+                    // Only `ArchiveStore` knows `untaggedFolders`, so it stamps `isTagged` per item.
+                    let items = changes.map { change in
+                        DocumentSnapshotItem(id: change.id,
+                                             url: change.url,
+                                             isTagged: isTagged(change.url),
+                                             sizeInBytes: change.sizeInBytes,
+                                             downloadStatus: change.downloadStatus,
+                                             creationDate: change.creationDate,
+                                             contentModificationDate: change.contentModificationDate)
                     }
-                    .compactMap(\.self)
+                    await archiveIndexer.reconcile(items, rootKey, generation)
+
+                    documentsMap[baseUrl] = await items.asyncMap { item in
+                        await Document.make(from: item, rootKey: rootKey)
+                    }
 
                     let documents = documentsMap.values.flatMap(\.self)
                     documentsStreamContinuation.yield(documents)

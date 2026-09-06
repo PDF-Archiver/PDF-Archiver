@@ -11,7 +11,7 @@ let package = Package(
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "ArchiverLib",
-            targets: ["ArchiverFeatures", "ArchiverIntents"]),
+            targets: ["ArchiverDatabase", "ArchiverFeatures", "ArchiverIntents"]),
         .library(
             name: "Shared",
             targets: ["Shared"]),
@@ -31,12 +31,24 @@ let package = Package(
                  ]),
         .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "1.17.1"),
         .package(url: "https://github.com/pointfreeco/swift-sharing", exact: "2.10.1"),
+        .package(url: "https://github.com/pointfreeco/sqlite-data", from: "1.0.0"),
+        // Linked directly by ArchiverModels for `@Table`: pulling SQLiteData in instead would
+        // put GRDB into the Share Extension, which only needs the model types.
+        .package(url: "https://github.com/pointfreeco/swift-structured-queries", from: "0.39.2"),
         .package(url: "https://github.com/sideeffect-io/AsyncExtensions", exact: "0.5.5"),
         .package(url: "https://github.com/apple/swift-async-algorithms", exact: "1.1.5")
     ],
     targets: [
+        .target(name: "ArchiverDatabase",
+                dependencies: [
+                    "ArchiverModels",
+                    .product(name: "SQLiteData", package: "sqlite-data"),
+                    .product(name: "Dependencies", package: "swift-dependencies"),
+                    .product(name: "DependenciesMacros", package: "swift-dependencies")
+                ]),
         .target(name: "ArchiverFeatures",
                 dependencies: [
+                    "ArchiverDatabase",
                     "ArchiverModels",
                     "ArchiverIntents",
                     "ArchiverStore",
@@ -50,6 +62,7 @@ let package = Package(
                 ]),
         .target(name: "ArchiverStore",
                 dependencies: [
+                    "ArchiverDatabase",
                     "ArchiverModels",
                     "Shared",
                     .product(name: "Dependencies", package: "swift-dependencies"),
@@ -67,7 +80,9 @@ let package = Package(
                     .process("Localizable.xcstrings")
                 ]),
         .target(name: "ArchiverModels",
-                dependencies: []),
+                dependencies: [
+                    .product(name: "StructuredQueries", package: "swift-structured-queries")
+                ]),
         .target(name: "ContentExtractorStore",
                 dependencies: [
                     "ArchiverModels"
@@ -96,8 +111,21 @@ let package = Package(
                     .process("Resources/Assets.xcassets")
                 ]),
         .testTarget(
+            name: "ArchiverDatabaseTests",
+            dependencies: [
+                "ArchiverDatabase",
+                .product(name: "DependenciesTestSupport", package: "swift-dependencies")
+            ],
+            resources: [
+                .process("assets")
+            ]
+        ),
+        .testTarget(
             name: "ArchiverFeaturesTests",
-            dependencies: ["ArchiverFeatures"]
+            dependencies: [
+                "ArchiverFeatures",
+                .product(name: "DependenciesTestSupport", package: "swift-dependencies")
+            ]
         ),
         .testTarget(
             name: "ArchiverStoreTests",

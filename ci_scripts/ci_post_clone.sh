@@ -13,6 +13,8 @@ swift-composable-architecture ComposableArchitectureMacros
 swift-case-paths CasePathsMacros
 swift-perception PerceptionMacros
 swift-navigation SwiftNavigationMacros
+swift-structured-queries StructuredQueriesMacros
+swift-structured-queries StructuredQueriesSQLiteMacros
 "
 
 entries=""

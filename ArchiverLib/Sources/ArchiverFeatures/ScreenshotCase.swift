@@ -6,6 +6,7 @@
 //
 
 #if DEBUG
+import ArchiverDatabase
 import ArchiverModels
 import ArchiverStore
 import ComposableArchitecture
@@ -40,15 +41,29 @@ public enum ScreenshotCase: String, CaseIterable, Sendable {
 
     /// Replaces the live archive with the case's fixtures.
     ///
-    /// Called from the app initializer: `prepareDependencies` has to run before the first
-    /// dependency is accessed, which the root store does as soon as it is built.
-    public static func prepareIfRequested() {
+    /// Runs *before* `bootstrapDatabase()` in the entry point's single `prepareDependencies`
+    /// block: the preview context is what makes the database in-memory instead of the
+    /// developer's real one.
+    public static func prepareOverrides(_ values: inout DependencyValues) {
         guard let screenshotCase = requested else { return }
 
-        prepareDependencies {
-            $0.context = .preview
-            $0.archiveStore = screenshotCase.archiveStore
-            $0.textAnalyser = screenshotCase.textAnalyser
+        values.context = .preview
+        values.archiveStore = screenshotCase.archiveStore
+        values.textAnalyser = screenshotCase.textAnalyser
+    }
+
+    /// Fills the read model the screens observe. Runs *after* `bootstrapDatabase()`.
+    public static func seedDatabase(_ values: DependencyValues) throws {
+        guard let screenshotCase = requested else { return }
+
+        let documents = screenshotCase.documents
+        try values.defaultDatabase.write { db in
+            try Document.insert { documents }.execute(db)
+            let tags = documents.flatMap { document in
+                document.tags.sorted().map { DocumentTag(documentID: document.id, tag: $0) }
+            }
+            guard !tags.isEmpty else { return }
+            try DocumentTag.insert { tags }.execute(db)
         }
     }
 
@@ -185,6 +200,7 @@ public enum ScreenshotCase: String, CaseIterable, Sendable {
             : "\(scanName).pdf"
 
         return Document(id: receiptId,
+                        rootKey: Self.rootKey,
                         url: receiptURL(named: filename) ?? URL(filePath: "/Archive/2017/\(filename)"),
                         date: receiptDate,
                         // Untagged documents show up under the name the scanner gave them.
@@ -210,6 +226,8 @@ public enum ScreenshotCase: String, CaseIterable, Sendable {
             getFileTagsFrom: { _ in pickedTags }
         )
     }
+
+    private static let rootKey = "screenshot"
 
     private static let receiptId = 200
 
@@ -286,6 +304,7 @@ public enum ScreenshotCase: String, CaseIterable, Sendable {
             .enumerated()
             .map { index, scan in
                 Document(id: 100 + index,
+                         rootKey: Self.rootKey,
                          url: URL(filePath: "/Archive/untagged/Scan \(scan.0).pdf"),
                          date: date(2026, 7, scan.1),
                          specification: "Scan \(scan.0)",
@@ -304,6 +323,7 @@ public enum ScreenshotCase: String, CaseIterable, Sendable {
         let year = Self.calendar.component(.year, from: date)
         let filename = Document.createFilename(date: date, specification: specification, tags: tags)
         return Document(id: id,
+                        rootKey: Self.rootKey,
                         url: URL(filePath: "/Archive/\(year)/\(filename)"),
                         date: date,
                         specification: specification,
