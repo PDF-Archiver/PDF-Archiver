@@ -360,7 +360,7 @@ struct DocumentInformationFormTests {
             }
         }
 
-        await store.send(.startUpdatingAllSuggestionsWithAI(document.url))
+        await store.send(.startUpdatingAllSuggestionsWithAI(document))
 
         let expectedResult = DocumentInformationForm.DocumentParsingResult(
             date: date,

@@ -67,6 +67,13 @@ nonisolated public struct Document: Equatable, Hashable, Sendable, Codable, Iden
 }
 
 extension Document {
+    /// How much of a document's text the date and tag parsers see.
+    ///
+    /// Both run over it on every document open, so handing them a megabyte would turn a cheap
+    /// open into seconds of work. The stored body keeps no page boundaries, so "the first three
+    /// pages" became "the first 5,000 characters".
+    public static let analysedTextLength = 5_000
+
     /// Placeholders used in filenames of documents that were imported but not tagged yet.
     public static let datePlaceholder = "PDFARCHIVER-TEMP-DATE"
     public static let descriptionPlaceholder = "PDF-ARCHIVER-TEMP-DESCRIPTION-"

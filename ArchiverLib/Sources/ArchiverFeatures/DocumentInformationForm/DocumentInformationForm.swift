@@ -96,7 +96,7 @@ struct DocumentInformationForm {
         case onTagSuggestionTapped(String)
         case onTask
         case onTodayButtonTapped
-        case startUpdatingAllSuggestionsWithAI(URL)
+        case startUpdatingAllSuggestionsWithAI(Document)
         case startUpdatingTagSuggestions
         case updateDocumentData(DocumentParsingResult)
         case updateTagSuggestions([String])
@@ -221,11 +221,11 @@ struct DocumentInformationForm {
             case .onTask:
                 state.isLoading = true
                 state.focusedField = .date
-                return .run { [documentUrl = state.document.url, isTagged = state.document.isTagged] send in
-                    if isTagged {
+                return .run { [document = state.document] send in
+                    if document.isTagged {
                         await send(.startUpdatingTagSuggestions)
                     } else {
-                        await send(.startUpdatingAllSuggestionsWithAI(documentUrl))
+                        await send(.startUpdatingAllSuggestionsWithAI(document))
                     }
                 }
 
@@ -233,9 +233,9 @@ struct DocumentInformationForm {
                 state.document.date = Date()
                 return .none
 
-            case .startUpdatingAllSuggestionsWithAI(let documentUrl):
-                return .run { [appleIntelligenceEnabled = state.appleIntelligenceEnabled, customPrompt = state.customPrompt, documentId = state.document.id] send in
-                    let result = await startUpdatingAllSuggestionsWithAI(url: documentUrl, appleIntelligenceEnabled: appleIntelligenceEnabled, customPrompt: customPrompt, documentId: documentId)
+            case .startUpdatingAllSuggestionsWithAI(let document):
+                return .run { [appleIntelligenceEnabled = state.appleIntelligenceEnabled, customPrompt = state.customPrompt] send in
+                    let result = await startUpdatingAllSuggestionsWithAI(document: document, appleIntelligenceEnabled: appleIntelligenceEnabled, customPrompt: customPrompt)
                     await send(.updateDocumentData(result))
                 }
                 // we try to abort the foundation model response after content generation
@@ -326,10 +326,10 @@ struct DocumentInformationForm {
         return documents ?? []
     }
 
-    private func startUpdatingAllSuggestionsWithAI(url: URL, appleIntelligenceEnabled: Bool, customPrompt: String?, documentId: Document.ID) async -> DocumentParsingResult {
+    private func startUpdatingAllSuggestionsWithAI(document: Document, appleIntelligenceEnabled: Bool, customPrompt: String?) async -> DocumentParsingResult {
 
         // analyse document content and fill suggestions
-        let parserOutput = await archiveStore.parseFilename(url.lastPathComponent)
+        let parserOutput = await archiveStore.parseFilename(document.filename)
         var tagNames = Set(parserOutput.tagNames ?? [])
 
         var foundDate = parserOutput.date
@@ -337,7 +337,7 @@ struct DocumentInformationForm {
         var dateSuggestions: [Date]?
         var tagSuggestions: [String]?
 
-        if let text = await textAnalyser.getTextFrom(url) {
+        if let text = await textAnalyser.getTextFrom(document) {
 
             // STEP 1 - try to find date
             var results = await textAnalyser.parseDateFrom(text)
@@ -364,7 +364,7 @@ struct DocumentInformationForm {
                let content = await contentExtractorStore.getDocumentInformation(.init(currentDocuments: await archiveContext(),
                                                                                       text: text,
                                                                                       customPrompt: customPrompt,
-                                                                                      documentId: documentId)) {
+                                                                                      documentId: document.id)) {
                 foundSpecification = content.specification
                 tagSuggestions = Array(content.tags).sorted()
             } else {
@@ -377,7 +377,7 @@ struct DocumentInformationForm {
         }
 
         // add tags from Finder tags
-        tagNames.formUnion((try? await textAnalyser.getFileTagsFrom(url)) ?? [])
+        tagNames.formUnion((try? await textAnalyser.getFileTagsFrom(document.url)) ?? [])
 
         let date = foundDate ?? Date()
         let tags = tagNames

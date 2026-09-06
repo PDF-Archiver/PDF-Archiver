@@ -108,6 +108,29 @@ nonisolated public struct DocumentIndexState: Identifiable, Equatable, Sendable 
     public static let currentExtractorVersion = 1
 }
 
+/// What Apple Intelligence suggested for one document, remembered between launches.
+@Table
+nonisolated public struct DocumentSuggestion: Identifiable, Equatable, Sendable {
+    @Column(primaryKey: true) public let documentID: Document.ID
+    public var id: Document.ID { documentID }
+    public var specification: String
+    @Column(as: [String].JSONRepresentation.self) public var tags: [String]
+    public var createdAt: Date
+    public var modelVersion: Int
+
+    public init(documentID: Document.ID,
+                specification: String,
+                tags: [String],
+                createdAt: Date,
+                modelVersion: Int = 1) {
+        self.documentID = documentID
+        self.specification = specification
+        self.tags = tags
+        self.createdAt = createdAt
+        self.modelVersion = modelVersion
+    }
+}
+
 extension DependencyValues {
     /// Opens the read model and brings its schema up to date.
     ///
@@ -184,6 +207,18 @@ extension DependencyValues {
                   "outcome" TEXT NOT NULL,
                   "characterCount" INTEGER NOT NULL DEFAULT 0,
                   "extractorVersion" INTEGER NOT NULL DEFAULT 1
+                ) STRICT
+                """)
+                .execute(db)
+        }
+        migrator.registerMigration("Create 'documentSuggestions' table") { db in
+            try #sql("""
+                CREATE TABLE "documentSuggestions" (
+                  "documentID" INTEGER PRIMARY KEY NOT NULL REFERENCES "documents"("id") ON DELETE CASCADE,
+                  "specification" TEXT NOT NULL DEFAULT '',
+                  "tags" TEXT NOT NULL DEFAULT '[]',
+                  "createdAt" TEXT NOT NULL,
+                  "modelVersion" INTEGER NOT NULL DEFAULT 1
                 ) STRICT
                 """)
                 .execute(db)

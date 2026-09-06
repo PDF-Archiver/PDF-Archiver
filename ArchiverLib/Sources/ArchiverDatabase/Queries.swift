@@ -192,12 +192,33 @@ extension Document {
         }
     }
 
+    /// Documents that are not on this device yet, inbox first, newest first.
+    public static func notDownloaded(limit: Int) -> some SelectStatementOf<Document> {
+        Self.where { $0.downloadStatus.lt(1) }
+            .order { ($0.isTagged, $0.date.desc()) }
+            .limit(limit)
+    }
+
     /// Escapes the three characters SQLite's `LIKE` gives a meaning to, for use with `ESCAPE '\'`.
     public static func escapedForLike(_ text: String) -> String {
         text
             .replacingOccurrences(of: "\\", with: "\\\\")
             .replacingOccurrences(of: "%", with: "\\%")
             .replacingOccurrences(of: "_", with: "\\_")
+    }
+}
+
+extension DocumentText {
+    /// As much of the indexed body as the date and tag parsers are handed.
+    public static func prefix(of id: Document.ID) -> some Statement<String> {
+        #sql(
+            """
+            SELECT substr("body", 1, \(bind: Document.analysedTextLength))
+            FROM \(DocumentText.self)
+            WHERE "rowid" = \(bind: id)
+            """,
+            as: String.self
+        )
     }
 }
 

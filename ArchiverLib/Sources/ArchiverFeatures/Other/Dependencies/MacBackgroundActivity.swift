@@ -64,6 +64,7 @@ actor MacBackgroundActivity {
                     completion(.deferred)
                     return
                 }
+                await SearchIndexDownloads.requestNextBatch()
                 await archiveIndexer.indexPendingTexts(Self.budget)
                 completion(.finished)
             }

@@ -35,19 +35,19 @@ public actor ContentExtractorStore {
         ContentExtractionPromptFactory.maxCustomPromptLength(contextSize: SystemLanguageModel.default.contextSize)
     }
 
-    private let cache: ContentExtractorCache
+    private let cache: SuggestionCache
     private let availability: @Sendable () -> AppleIntelligenceAvailability
     private let respond: Responder
 
-    public init() {
-        self.init(cache: ContentExtractorCache(),
+    public init(cache: SuggestionCache = .unavailable) {
+        self.init(cache: cache,
                   availability: { Self.getAvailability() },
                   respond: Self.liveResponder)
     }
 
     /// Designated initializer. Internal seams let tests exercise the cache and
     /// mapping orchestration deterministically, without Apple Intelligence.
-    init(cache: ContentExtractorCache,
+    init(cache: SuggestionCache,
          availability: @escaping @Sendable () -> AppleIntelligenceAvailability,
          respond: @escaping Responder) {
         self.cache = cache
@@ -88,7 +88,7 @@ public actor ContentExtractorStore {
 
         // Check cache if document ID is provided
         if let documentId,
-           let cachedEntry = await cache.getCachedResult(for: documentId) {
+           let cachedEntry = await cache.load(documentId) {
             Logger.contentExtractor.info("Using cached result for document ID: \(documentId)")
             return Info(specification: cachedEntry.specification, tags: cachedEntry.tags)
         }
@@ -100,12 +100,12 @@ public actor ContentExtractorStore {
 
         // Save result to cache for faster subsequent access
         if let documentId {
-            let cacheEntry = ContentExtractorCache.CacheEntry(
-                documentId: documentId,
+            let cacheEntry = SuggestionCache.Entry(
+                documentID: documentId,
                 specification: info.specification,
                 tags: info.tags
             )
-            await cache.saveCacheEntry(cacheEntry)
+            await cache.save(cacheEntry)
         }
 
         return info
@@ -115,12 +115,12 @@ public actor ContentExtractorStore {
 
     /// Clear all cache entries
     public func clearCache() async {
-        await cache.clearCache()
+        await cache.clear()
     }
 
     /// Get the number of cache entries
     public func getCacheCount() async -> Int {
-        await cache.getCacheCount()
+        await cache.count()
     }
 
     /// Process untagged documents in the background to create cache entries
@@ -143,7 +143,7 @@ public actor ContentExtractorStore {
             let documentId = document.id
 
             // Skip if already cached
-            if await cache.getCachedResult(for: documentId) != nil {
+            if await cache.load(documentId) != nil {
                 continue
             }
 
@@ -168,14 +168,6 @@ public actor ContentExtractorStore {
             } catch {
                 Logger.contentExtractor.error("Failed to create cache entry in background for document ID \(documentId): \(error)")
             }
-        }
-
-        // Prune cache entries for documents that no longer exist in untagged folder.
-        // Never prune while the document list is empty (e.g. the store has not finished
-        // loading) - that would wipe all valid cache entries.
-        if !documents.isEmpty {
-            let untaggedIds = Set(untaggedDocuments.map(\.id))
-            await cache.pruneCache(keepingOnly: untaggedIds)
         }
 
         Logger.contentExtractor.info("Background cache processing completed: \(newCachesCreated) new caches created")
