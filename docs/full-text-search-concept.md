@@ -318,8 +318,6 @@ CREATE TABLE "indexerStates" (                -- exactly one row, id = 1
   "id" INTEGER PRIMARY KEY NOT NULL CHECK ("id" = 1),
   -- a metadata reconcile is running and nothing is stored yet for the observed roots
   "isReconciling" INTEGER NOT NULL DEFAULT 0,
-  "lastReconciledAt" TEXT,
-  "lastTextRunStartedAt" TEXT,
   "lastTextRunFinishedAt" TEXT,
   "rebuildRequested" INTEGER NOT NULL DEFAULT 0
 ) STRICT;
@@ -461,8 +459,6 @@ public struct DocumentSnapshotItem: Equatable, Sendable {
 @Table struct IndexerState: Identifiable {                 // single row, id == 1
     let id: Int
     var isReconciling: Bool
-    var lastReconciledAt: Date?
-    var lastTextRunStartedAt: Date?
     var lastTextRunFinishedAt: Date?
     var rebuildRequested: Bool
 }
