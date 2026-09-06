@@ -426,9 +426,12 @@ struct ReconcilerTests {
 
     // MARK: - Planning
 
-    @Test
-    func planLeavesAnUnchangedSnapshotAlone() async throws {
-        let items = [Self.item(id: 1, path: "/Archive/2024/2024-01-02--rechnung__bill.pdf", isTagged: true)]
+    @Test(arguments: Self.fileSystemDates)
+    func planLeavesAnUnchangedSnapshotAlone(modified: Date) async throws {
+        let items = [Self.item(id: 1,
+                               path: "/Archive/2024/2024-01-02--rechnung__bill.pdf",
+                               isTagged: true,
+                               contentModificationDate: modified)]
         let indexer = ArchiveIndexer()
         let generation = await indexer.setObservedRoots([archiveRoot])
         await indexer.reconcile(items, root: archiveRoot, generation: generation)
@@ -460,10 +463,16 @@ struct ReconcilerTests {
         let before = try await Self.allDocuments()
 
         // Any row the second snapshot rewrites aborts its transaction, and the reported error
-        // fails this test - a silent full rewrite cannot pass.
+        // fails this test - a silent full rewrite cannot pass. `indexerStates` counts too: the
+        // flag is already false, and rewriting it invalidates every observation of that table.
         try await database.write { db in
             try #sql("""
                 CREATE TRIGGER "reject_updates" BEFORE UPDATE ON "documents"
+                BEGIN SELECT RAISE(ABORT, 'no updates'); END
+                """)
+                .execute(db)
+            try #sql("""
+                CREATE TRIGGER "reject_state_updates" BEFORE UPDATE ON "indexerStates"
                 BEGIN SELECT RAISE(ABORT, 'no updates'); END
                 """)
                 .execute(db)
@@ -471,6 +480,7 @@ struct ReconcilerTests {
         defer {
             try? database.write { db in
                 try #sql(#"DROP TRIGGER "reject_updates""#).execute(db)
+                try #sql(#"DROP TRIGGER "reject_state_updates""#).execute(db)
             }
         }
 
@@ -500,6 +510,18 @@ struct ReconcilerTests {
 
     /// Sub-millisecond, like the dates the file system reports.
     private static let fileSystemDate = Date(timeIntervalSince1970: 1_759_576_537.427_740_3)
+
+    /// Only some milliseconds are exactly representable, so one sample proves nothing: every one of
+    /// these has to survive the write and the read unchanged, or the guard never fires for it.
+    private static let fileSystemDates = [
+        fileSystemDate,
+        Date(timeIntervalSince1970: 1_319_726_468.037_133_2),
+        Date(timeIntervalSince1970: 1_191_032_025.027_238_8),
+        Date(timeIntervalSince1970: 1_493_337_490.719_618_8),
+        Date(timeIntervalSince1970: 1_700_000_000.123_456_7),
+        Date(timeIntervalSince1970: -1_000_000.500_1),
+        Date(timeIntervalSince1970: 0)
+    ]
 
     private static func item(id: Document.ID,
                              path: String,

@@ -42,10 +42,14 @@ nonisolated public struct DocumentSnapshotItem: Equatable, Sendable {
 }
 
 extension Date {
-    /// The precision the `TEXT` date columns keep. The file system supplies sub-millisecond dates,
-    /// so an untruncated one never equals the value read back and every snapshot would look changed.
+    /// The value the `TEXT` date columns round-trip: whole seconds plus milliseconds, built in the
+    /// reference-date domain `Date` itself stores. Scaling `timeIntervalSince1970` instead lands
+    /// just under the millisecond, the ISO-8601 encoder then writes the previous one, and the
+    /// snapshot never equals the row again - which is what made every snapshot rewrite every row.
     nonisolated func truncatedToStoredPrecision() -> Date {
-        Date(timeIntervalSince1970: (timeIntervalSince1970 * 1000).rounded(.down) / 1000)
+        let seconds = timeIntervalSinceReferenceDate.rounded(.down)
+        let milliseconds = ((timeIntervalSinceReferenceDate - seconds) * 1000).rounded(.down)
+        return Date(timeIntervalSinceReferenceDate: seconds + milliseconds / 1000)
     }
 }
 

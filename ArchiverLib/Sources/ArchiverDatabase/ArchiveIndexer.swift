@@ -49,10 +49,7 @@ public actor ArchiveIndexer {
                 // The indicator means "nothing to show yet", so a warm launch and every rescan
                 // after it render the stored rows instead of a spinner.
                 let storedCount = try Document.where { $0.rootKey.in(observedRoots) }.fetchCount(db)
-                try IndexerState
-                    .find(IndexerState.singletonID)
-                    .update { $0.isReconciling = storedCount == 0 && !observedRoots.isEmpty }
-                    .execute(db)
+                try Self.setReconciling(storedCount == 0 && !observedRoots.isEmpty, in: db)
             }
         }
         return currentGeneration
@@ -106,12 +103,23 @@ public actor ArchiveIndexer {
         guard rootsAwaitingFirstSnapshot.isEmpty else { return }
         withErrorReporting {
             try database.write { db in
-                try IndexerState
-                    .find(IndexerState.singletonID)
-                    .update { $0.isReconciling = false }
-                    .execute(db)
+                try Self.setReconciling(false, in: db)
             }
         }
+    }
+
+    /// Writes the flag only when it changes: every snapshot passes through here, and an `UPDATE`
+    /// that stores the value already there still invalidates every observation of `indexerStates`.
+    private static func setReconciling(_ isReconciling: Bool, in db: Database) throws {
+        let stored = try IndexerState
+            .find(IndexerState.singletonID)
+            .select(\.isReconciling)
+            .fetchOne(db) ?? false
+        guard stored != isReconciling else { return }
+        try IndexerState
+            .find(IndexerState.singletonID)
+            .update { $0.isReconciling = isReconciling }
+            .execute(db)
     }
 
     // MARK: - Planning
@@ -199,6 +207,7 @@ public actor ArchiveIndexer {
     private func removeAndPrune(absentIDs: Set<Document.ID>) async throws {
         let rootsToKeep = needsPrune ? observedRoots : nil
         guard rootsToKeep != nil || !absentIDs.isEmpty else { return }
+        let generation = currentGeneration
 
         try await database.write { db in
             if let rootsToKeep {
@@ -210,6 +219,10 @@ public actor ArchiveIndexer {
             try DocumentText.where { $0.rowid.in(absentIDs) }.delete().execute(db)
             try Document.where { $0.id.in(absentIDs) }.delete().execute(db)
         }
+
+        // `setObservedRoots` may have asked for a prune of its own across the write; clearing the
+        // request here would drop it, and the vanished root's rows would stay until the next rescan.
+        guard generation == currentGeneration else { return }
         needsPrune = false
     }
 
