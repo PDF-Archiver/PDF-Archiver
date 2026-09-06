@@ -5,52 +5,22 @@
 //  Created by Julian Kahnert on 03.07.25.
 //
 
+import ArchiverDatabase
 import ArchiverModels
 import ComposableArchitecture
 import Shared
+import SQLiteData
 import SwiftUI
 
 @Reducer
 struct ArchiveList {
     @ObservableState
     struct State: Equatable {
-        enum SearchToken: Hashable, Identifiable, Sendable {
-            case tag(String)
-            case year(Int)
-            case text(String)
+        typealias SearchToken = ArchiverDatabase.SearchToken
 
-            var id: String { description }
-
-            var description: String {
-                switch self {
-                case .tag(let tag):
-                    "tag: \(tag)"
-
-                case .year(let year):
-                    "year: \(year)"
-
-                case .text(let text):
-                    "text: \(text)"
-                }
-            }
-
-            var value: String {
-                switch self {
-                case .tag(let tag):
-                    return tag
-
-                case .year(let year):
-                    return "\(year)"
-
-                case .text(let text):
-                    return text
-                }
-            }
-        }
-
-        @Shared(.documents) var documents: IdentifiedArrayOf<Document> = []
+        @FetchAll(Document.list(tokens: [])) var rows: [ArchiveSearchRow]
         @Shared(.selectedDocumentId) var selectedDocumentId: Int?
-        var filteredDocuments: IdentifiedArrayOf<Document> { getFilteredDocument() }
+        @SharedReader(.premiumStatus) var premiumStatus: PremiumStatus = .loading
         var isSearching = false
         var searchText = ""
         var searchTokens: [SearchToken] = []
@@ -60,33 +30,6 @@ struct ArchiveList {
             return [.year(currentYear), .year(currentYear - 1)]
         }()
         @Presents var documentDetails: DocumentDetails.State?
-
-        private func getFilteredDocument() -> IdentifiedArrayOf<Document> {
-            // Pre-compute slugified search text once instead of per document
-            let normalizedSearchText = searchText.isEmpty ? nil : searchText.slugified(withSeparator: "-")
-            return documents
-                .filter { document in
-                    guard document.isTagged else { return false }
-
-                    for searchToken in searchTokens {
-                        switch searchToken {
-                        case .tag(let tag):
-                            guard document.tags.contains(tag) else { return false }
-
-                        case .year(let int):
-                            guard document.url.lastPathComponent.hasPrefix("\(int)") else { return false }
-
-                        case .text(let text):
-                            guard document.url.lastPathComponent.localizedCaseInsensitiveContains(text) else { return false }
-                        }
-                    }
-
-                    if let normalizedSearchText {
-                        return document.url.lastPathComponent.localizedCaseInsensitiveContains(normalizedSearchText)
-                    }
-                    return true
-                }
-        }
     }
 
     enum Action: BindableAction {
@@ -94,6 +37,12 @@ struct ArchiveList {
         case selectionChanged(Int?)
         case documentDetails(PresentationAction<DocumentDetails.Action>)
         case searchStateChanged(Bool)
+    }
+
+    @Dependency(\.mainQueue) var mainQueue
+
+    private enum CancelID {
+        case search
     }
 
     var body: some ReducerOf<Self> {
@@ -110,12 +59,10 @@ struct ArchiveList {
 
             case .selectionChanged(let documentId):
                 state.$selectedDocumentId.withLock { $0 = documentId }
-                if let documentId,
-                   let document = Shared(state.$documents[id: documentId]) {
-                    state.documentDetails = .init(document: document)
-                } else {
-                    state.documentDetails = nil
-                }
+                // A fetch wrapper yields a plain array; ranked results are capped, the list is a few thousand.
+                state.documentDetails = documentId
+                    .flatMap { id in state.rows.first { $0.id == id } }
+                    .map { DocumentDetails.State(document: $0.document) }
                 return .none
 
             case .binding(\.searchText):
@@ -129,7 +76,10 @@ struct ArchiveList {
                     }
                     state.searchText = ""
                 }
-                return .none
+                return reloadRows(state)
+
+            case .binding(\.searchTokens):
+                return reloadRows(state)
 
             case .binding:
                 return .none
@@ -139,16 +89,32 @@ struct ArchiveList {
             DocumentDetails()
         }
     }
+
+    /// Shared by every trigger; a private helper rather than an `Effect.send`, which TCA reserves
+    /// for child-to-parent messages.
+    private func reloadRows(_ state: State) -> Effect<Action> {
+        var tokens = state.searchTokens
+        let freeText = state.searchText.slugified(withSeparator: "-")
+        if !freeText.isEmpty {
+            tokens.append(.text(freeText))
+        }
+
+        return .run { [rows = state.$rows, tokens] _ in
+            await withErrorReporting {
+                try await rows.load(Document.list(tokens: tokens))
+            }
+        }
+        .debounce(id: CancelID.search, for: .milliseconds(150), scheduler: mainQueue)
+    }
 }
 
 struct ArchiveListView: View {
     @Bindable var store: StoreOf<ArchiveList>
 
     var body: some View {
-        // request filtered documents only once in this render cylce
-        let filteredDocuments = store.filteredDocuments
+        let rows = store.rows
         Group {
-            if filteredDocuments.isEmpty {
+            if rows.isEmpty {
                 if store.searchText.isEmpty {
                     ContentUnavailableView(String(localized: "Empty Archive", bundle: #bundle),
                                            systemImage: "archivebox",
@@ -162,11 +128,11 @@ struct ArchiveListView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
             } else {
-                List(filteredDocuments, selection: Binding(get: { store.selectedDocumentId }, set: { store.send(.selectionChanged($0)) })) { document in
-                    ArchiveListItemView(documentSpecification: document.specification,
-                                        documentDate: document.date,
-                                        documentTags: document.tags.sorted())
-                    .tag(document.id)
+                List(rows, selection: Binding(get: { store.selectedDocumentId }, set: { store.send(.selectionChanged($0)) })) { row in
+                    ArchiveListItemView(documentSpecification: row.document.specification,
+                                        documentDate: row.document.date,
+                                        documentTags: row.document.tags.sorted())
+                    .tag(row.id)
                 }
             }
         }

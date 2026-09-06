@@ -1,12 +1,17 @@
+import ArchiverDatabase
 import ArchiverModels
 import ComposableArchitecture
+import Dependencies
+import DependenciesTestSupport
 import DocumentProcessingPipeline
 import Foundation
+import SQLiteData
 import Testing
 
 @testable import ArchiverFeatures
 
 @MainActor
+@Suite(.dependencies { try $0.bootstrapDatabase() })
 struct AppFeatureTests {
     // MARK: - Tab Selection Tests
 
@@ -44,7 +49,6 @@ struct AppFeatureTests {
 
         let store = TestStore(initialState: AppFeature.State(
             archiveList: ArchiveList.State(
-                documents: [document],
                 selectedDocumentId: Shared(value: document.id)
             )
         )) {
@@ -210,9 +214,8 @@ struct AppFeatureTests {
         let documents = IdentifiedArrayOf(uniqueElements: [document1, document2, document3, document4, document5, document6])
 
         let store = TestStore(initialState: AppFeature.State(documents: documents,
-                                                             untaggedDocumentList: UntaggedDocumentList.State(documents: documents,
-                                                                                                              selectedDocumentId: Shared(value: document6.id),
-                                                                                                              documentDetails: .init(document: Shared(value: document6))))) {
+                                                             untaggedDocumentList: UntaggedDocumentList.State(selectedDocumentId: Shared(value: document6.id),
+                                                                                                              documentDetails: .init(document: document6)))) {
             AppFeature()
         } withDependencies: {
             $0.archiveStore.deleteDocumentAt = { _ in }
@@ -230,13 +233,11 @@ struct AppFeatureTests {
         }
 
         await store.send(.untaggedDocumentList(.documentDetails(.presented(.delegate(.deleteDocument(document5)))))) {
-            $0.untaggedDocumentList.$documents.withLock { $0 = [document6, document4, document3, document2, document1] }
-
             // select the next document
             $0.untaggedDocumentList.$selectedDocumentId.withLock { $0 = document6.id }
 
             // show the next document in the details
-            $0.untaggedDocumentList.documentDetails = .init(document: Shared(value: document6))
+            $0.untaggedDocumentList.documentDetails = .init(document: document6)
         }
     }
 
@@ -252,9 +253,8 @@ struct AppFeatureTests {
         let documents = IdentifiedArrayOf(uniqueElements: [document1, document2, document3, document4, document5, document6])
 
         let store = TestStore(initialState: AppFeature.State(documents: documents,
-                                                             archiveList: ArchiveList.State(documents: documents,
-                                                                                            selectedDocumentId: Shared(value: document6.id),
-                                                                                            documentDetails: .init(document: Shared(value: document6))))) {
+                                                             archiveList: ArchiveList.State(selectedDocumentId: Shared(value: document6.id),
+                                                                                            documentDetails: .init(document: document6)))) {
             AppFeature()
         } withDependencies: {
             $0.archiveStore.deleteDocumentAt = { _ in }
@@ -270,13 +270,11 @@ struct AppFeatureTests {
         await store.send(.binding(.set(\.selectedTab, .search)))
 
         await store.send(.archiveList(.documentDetails(.presented(.delegate(.deleteDocument(document2)))))) {
-            $0.archiveList.$documents.withLock { $0 = [document6, document5, document4, document3, document1] }
-
             // select the next document
             $0.archiveList.$selectedDocumentId.withLock { $0 = document3.id }
 
             // show the next document in the details
-            $0.archiveList.documentDetails = .init(document: Shared(value: document3))
+            $0.archiveList.documentDetails = .init(document: document3)
         }
     }
 }

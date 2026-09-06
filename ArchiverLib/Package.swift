@@ -55,7 +55,8 @@ let package = Package(
                     "ContentExtractorStore",
                     "DocumentProcessingPipeline",
                     "Shared",
-                    .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+                    .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+                    .product(name: "SQLiteData", package: "sqlite-data")
                 ],
                 resources: [
                     .process("Localizable.xcstrings")

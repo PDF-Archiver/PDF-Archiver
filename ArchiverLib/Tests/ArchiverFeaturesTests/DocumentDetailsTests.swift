@@ -1,18 +1,23 @@
+import ArchiverDatabase
 import ArchiverModels
 import ComposableArchitecture
+import Dependencies
+import DependenciesTestSupport
 import Foundation
+import SQLiteData
 import Testing
 
 @testable import ArchiverFeatures
 
 @MainActor
+@Suite(.dependencies { try $0.bootstrapDatabase() })
 struct DocumentDetailsTests {
     @Test
     func editWithoutSaving() async throws {
         // create tagged document
-        let sharedDocument = Shared(value: Document.mock(isTagged: true))
+        let document = Document.mock(isTagged: true)
         let clock = TestClock()
-        let store = TestStore(initialState: DocumentDetails.State(document: sharedDocument)) {
+        let store = TestStore(initialState: DocumentDetails.State(document: document)) {
             DocumentDetails()
         } withDependencies: {
             $0.archiveStore.getTagSuggestionsSimilarTo = { _ in [] }
@@ -70,7 +75,7 @@ struct DocumentDetailsTests {
             $0.showInspector = false
 
             // reset all document properties to initial values
-            $0.documentInformationForm.document = sharedDocument.wrappedValue
+            $0.documentInformationForm.document = document
         }
     }
 
@@ -78,7 +83,7 @@ struct DocumentDetailsTests {
     func runOcrSucceeds() async throws {
         let documentUrl = URL(fileURLWithPath: "/tmp/2024-01-01--scan__inbox.pdf")
         let requestedUrls = LockIsolated<[URL]>([])
-        let store = TestStore(initialState: DocumentDetails.State(document: Shared(value: .mock(url: documentUrl, downloadStatus: 1)))) {
+        let store = TestStore(initialState: DocumentDetails.State(document: .mock(url: documentUrl, downloadStatus: 1))) {
             DocumentDetails()
         } withDependencies: {
             $0.documentProcessor.runOcr = { url in
@@ -103,7 +108,7 @@ struct DocumentDetailsTests {
     func runOcrIsAvailableForTaggedDocuments() async throws {
         let documentUrl = URL(fileURLWithPath: "/tmp/2024-01-01--scan__bill.pdf")
         let requestedUrls = LockIsolated<[URL]>([])
-        let store = TestStore(initialState: DocumentDetails.State(document: Shared(value: .mock(url: documentUrl, isTagged: true, downloadStatus: 1)))) {
+        let store = TestStore(initialState: DocumentDetails.State(document: .mock(url: documentUrl, isTagged: true, downloadStatus: 1))) {
             DocumentDetails()
         } withDependencies: {
             $0.documentProcessor.runOcr = { url in
@@ -124,7 +129,7 @@ struct DocumentDetailsTests {
 
     @Test
     func runOcrFailurePresentsAlert() async throws {
-        let store = TestStore(initialState: DocumentDetails.State(document: Shared(value: .mock(downloadStatus: 1)))) {
+        let store = TestStore(initialState: DocumentDetails.State(document: .mock(downloadStatus: 1))) {
             DocumentDetails()
         } withDependencies: {
             $0.documentProcessor.runOcr = { _ in false }

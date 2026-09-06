@@ -5,19 +5,20 @@
 //  Created by Julian Kahnert on 13.07.25.
 //
 
+import ArchiverDatabase
 import ArchiverModels
 import ComposableArchitecture
 import Shared
+import SQLiteData
 import SwiftUI
 
 @Reducer
 struct UntaggedDocumentList {
     @ObservableState
     struct State: Equatable {
-        @Shared(.documents) var documents: IdentifiedArrayOf<Document> = []
+        @FetchAll(Document.inbox) var documents: [Document]
         @Shared(.selectedDocumentId) var selectedDocumentId: Int?
         @Shared(.premiumStatus) var premiumStatus: PremiumStatus = .loading
-        var untaggedDocuments: IdentifiedArrayOf<Document> { documents.filter(\.isTagged.flipped) }
         @Presents var documentDetails: DocumentDetails.State?
     }
 
@@ -39,15 +40,14 @@ struct UntaggedDocumentList {
 
             case .selectionChanged(let documentId):
                 state.$selectedDocumentId.withLock { $0 = documentId }
-                if let documentId,
-                   let document = Shared(state.$documents[id: documentId]) {
-                    state.documentDetails = .init(document: document)
-                    return .run { send in
-                        await send(.documentDetails(.presented(.updateShowInspector(true))))
-                    }
-                } else {
+                guard let documentId,
+                      let document = state.documents.first(where: { $0.id == documentId }) else {
                     state.documentDetails = nil
                     return .none
+                }
+                state.documentDetails = .init(document: document)
+                return .run { send in
+                    await send(.documentDetails(.presented(.updateShowInspector(true))))
                 }
 
             case .delegate:
@@ -66,12 +66,12 @@ struct UntaggedDocumentListView: View {
     var body: some View {
         Group {
             #if os(macOS)
-            if store.untaggedDocuments.isEmpty {
+            if store.documents.isEmpty {
                 ContentUnavailableView(String(localized: "No document", bundle: #bundle),
                                        systemImage: "checkmark.seal",
                                        description: Text("Congratulations! All documents are tagged. 🎉", bundle: #bundle))
             } else {
-                List(store.untaggedDocuments, selection: Binding(get: { store.selectedDocumentId }, set: { store.send(.selectionChanged($0)) })) { document in
+                List(store.documents, selection: Binding(get: { store.selectedDocumentId }, set: { store.send(.selectionChanged($0)) })) { document in
                     Text(document.url.lastPathComponent)
                         .tag(document.id)
                 }
@@ -82,12 +82,12 @@ struct UntaggedDocumentListView: View {
                 IAPView {
                     store.send(.delegate(.onCancelIapButtonTapped))
                 }
-            } else if store.untaggedDocuments.isEmpty {
+            } else if store.documents.isEmpty {
                 ContentUnavailableView(String(localized: "No document", bundle: #bundle),
                                        systemImage: "checkmark.seal",
                                        description: Text("Congratulations! All documents are tagged. 🎉", bundle: #bundle))
             } else {
-                List(store.untaggedDocuments, selection: Binding(get: { store.selectedDocumentId }, set: { store.send(.selectionChanged($0)) })) { document in
+                List(store.documents, selection: Binding(get: { store.selectedDocumentId }, set: { store.send(.selectionChanged($0)) })) { document in
                     Text(document.url.lastPathComponent)
                         .tag(document.id)
                 }

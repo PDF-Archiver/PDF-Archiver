@@ -323,14 +323,14 @@ struct AppFeature {
         let nextDocument = state.documents.elements.first { $0.id != document.id && $0.isTagged == document.isTagged }
         if document.isTagged {
             if let nextDocument {
-                state.archiveList.documentDetails = .init(document: Shared(value: nextDocument))
+                state.archiveList.documentDetails = .init(document: nextDocument)
             } else {
                 state.archiveList.documentDetails = nil
             }
             state.archiveList.$selectedDocumentId.withLock { $0 = nextDocument?.id }
         } else {
             if let nextDocument {
-                state.untaggedDocumentList.documentDetails = .init(document: Shared(value: nextDocument))
+                state.untaggedDocumentList.documentDetails = .init(document: nextDocument)
                 // always show the inspector when the document is not tagged
                 state.untaggedDocumentList.documentDetails?.showInspector = true
             } else {
