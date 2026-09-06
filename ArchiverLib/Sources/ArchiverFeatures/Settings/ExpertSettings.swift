@@ -5,11 +5,8 @@
 //  Created by Julian Kahnert on 30.06.25.
 //
 
-import ArchiverDatabase
-import ArchiverModels
 import ComposableArchitecture
 import Shared
-import SQLiteData
 import SwiftUI
 
 @Reducer
@@ -36,14 +33,6 @@ struct ExpertSettings {
 
         @Shared(.highlightDetectedDateEnabled)
         var highlightDetectedDateEnabled: Bool
-
-        @Shared(.downloadAllForSearch)
-        var downloadAllForSearch: Bool
-
-        @SharedReader(.premiumStatus)
-        var premiumStatus: PremiumStatus = .loading
-
-        @Fetch(DocumentIndexState.StatusRequest()) var searchIndexStatus = DocumentIndexState.Status()
     }
 
     enum Action: BindableAction, Equatable {
@@ -54,17 +43,13 @@ struct ExpertSettings {
         case onShowPermissionsTapped
         #endif
         case onResetAppTapped
-        case onRebuildSearchIndexTapped
 
         enum Alert: Equatable {
             case confirmClearTempFolder
-            case confirmRebuildSearchIndex
             case resetCompleted
         }
     }
 
-    @Dependency(\.archiveIndexer) var archiveIndexer
-    @Dependency(\.archiveStore) var archiveStore
     @Dependency(\.openURL) var openURL
     @Dependency(\.fileManager) var fileManager
     @Dependency(\.userDefaultsManager) var userDefaultsManager
@@ -77,14 +62,6 @@ struct ExpertSettings {
             case .alert(.presented(.confirmClearTempFolder)):
                 try? fileManager.removeItemAt(Constants.tempDocumentURL)
                 return .none
-
-            case .alert(.presented(.confirmRebuildSearchIndex)):
-                return .run { _ in
-                    await archiveIndexer.requestRebuild()
-                    // The providers deliver a full snapshot within seconds, so the list is back
-                    // almost immediately; the text index follows in the background.
-                    try await archiveStore.reloadDocuments()
-                }
 
             case .alert:
                 return .none
@@ -114,21 +91,6 @@ struct ExpertSettings {
                     await openURL(settingsAppURL)
                 }
             #endif
-
-            case .onRebuildSearchIndexTapped:
-                state.alert = AlertState {
-                    TextState("Rebuild Search Index", bundle: #bundle)
-                } actions: {
-                    ButtonState(action: .confirmRebuildSearchIndex) {
-                        TextState("Rebuild", bundle: #bundle)
-                    }
-                    ButtonState(role: .cancel) {
-                        TextState("Cancel", bundle: #bundle)
-                    }
-                } message: {
-                    TextState("Your document list comes back within seconds. Searching inside documents is rebuilt in the background while your device is charging.", bundle: #bundle)
-                }
-                return .none
 
             case .onResetAppTapped:
                 // remove all temporary files
@@ -166,32 +128,6 @@ struct ExpertSettingsView: View {
             Toggle(String(localized: "Automatic OCR for Image PDFs", bundle: #bundle), isOn: Binding(store.$ocrEnabled))
             Toggle(String(localized: "Highlight Detected Date", bundle: #bundle), isOn: Binding(store.$highlightDetectedDateEnabled))
 
-            Section {
-                if store.premiumStatus == .active {
-                    LabeledContent(String(localized: "Indexed", bundle: #bundle), value: "\(store.searchIndexStatus.indexed)")
-                    LabeledContent(String(localized: "Pending", bundle: #bundle), value: "\(store.searchIndexStatus.pending)")
-                    LabeledContent(String(localized: "Not Downloaded", bundle: #bundle), value: "\(store.searchIndexStatus.notDownloaded)")
-                    if let lastRun = store.searchIndexStatus.lastRun {
-                        LabeledContent(String(localized: "Last Run", bundle: #bundle)) {
-                            Text(lastRun, format: .relative(presentation: .named))
-                        }
-                    }
-                } else {
-                    Text("Searching inside documents requires Premium.", bundle: #bundle)
-                        .foregroundStyle(.secondary)
-                }
-
-                Toggle(String(localized: "Download All Documents for Search", bundle: #bundle), isOn: Binding(store.$downloadAllForSearch))
-                    .disabled(store.premiumStatus != .active)
-
-                Button {
-                    store.send(.onRebuildSearchIndexTapped)
-                } label: {
-                    Text("Rebuild Search Index", bundle: #bundle)
-                }
-            } header: {
-                Text("Search Index", bundle: #bundle)
-            }
             #if !os(macOS)
             Button {
                 store.send(.onShowPermissionsTapped)
