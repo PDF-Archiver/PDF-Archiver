@@ -20,7 +20,6 @@ struct DocumentDetailsTests {
         let store = TestStore(initialState: DocumentDetails.State(document: document)) {
             DocumentDetails()
         } withDependencies: {
-            $0.archiveStore.getTagSuggestionsSimilarTo = { _ in [] }
             $0.continuousClock = clock
         }
 

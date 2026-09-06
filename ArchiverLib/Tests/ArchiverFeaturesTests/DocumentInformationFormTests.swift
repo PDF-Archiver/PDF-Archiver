@@ -1,12 +1,17 @@
+import ArchiverDatabase
 import ArchiverModels
 import ComposableArchitecture
+import Dependencies
+import DependenciesTestSupport
 import Foundation
+import SQLiteData
 import SwiftUI
 import Testing
 
 @testable import ArchiverFeatures
 
 @MainActor
+@Suite(.dependencies { try $0.bootstrapDatabase() })
 struct DocumentInformationFormTests {
     @Test
     func selectDate() async throws {
@@ -26,7 +31,6 @@ struct DocumentInformationFormTests {
         let store = TestStore(initialState: DocumentInformationForm.State(document: .mock())) {
             DocumentInformationForm()
         } withDependencies: {
-            $0.archiveStore.getTagSuggestionsSimilarTo = { _ in [] }
             $0.continuousClock = clock
         }
 
@@ -66,9 +70,8 @@ struct DocumentInformationFormTests {
     func submitTagSearchteam() async throws {
         let store = TestStore(initialState: DocumentInformationForm.State(document: .mock(), suggestedTags: ["first", "second"])) {
             DocumentInformationForm()
-        } withDependencies: {
-            $0.archiveStore.getTagSuggestionsSimilarTo = { _ in ["fitsfirst"] }
         }
+        try await Self.seedTagCompanion()
 
         await store.send(.onTagSearchtermSubmitted) {
             $0.document.tags = ["first"]
@@ -187,8 +190,6 @@ struct DocumentInformationFormTests {
     func addingTagUpdatesDocument() async throws {
         let store = TestStore(initialState: DocumentInformationForm.State(document: .mock(), suggestedTags: ["invoice"])) {
             DocumentInformationForm()
-        } withDependencies: {
-            $0.archiveStore.getTagSuggestionsSimilarTo = { _ in [] }
         }
 
         await store.send(.onTagSuggestionTapped("invoice")) {
@@ -280,7 +281,6 @@ struct DocumentInformationFormTests {
         )) {
             DocumentInformationForm()
         } withDependencies: {
-            $0.archiveStore.getTagSuggestionsSimilarTo = { _ in [] }
             $0.continuousClock = clock
         }
 
@@ -351,7 +351,6 @@ struct DocumentInformationFormTests {
             DocumentInformationForm()
         } withDependencies: {
             $0.archiveStore.parseFilename = { _ in (date, nil, nil) }
-            $0.archiveStore.getDocuments = { [] }
             $0.textAnalyser.getTextFrom = { _ in "document text" }
             $0.textAnalyser.parseDateFrom = { _ in [] }
             $0.textAnalyser.getFileTagsFrom = { _ in [] }
@@ -443,7 +442,6 @@ struct DocumentInformationFormTests {
         let store = TestStore(initialState: DocumentInformationForm.State(document: .mock(), suggestedTags: ["keep", "tag1"])) {
             DocumentInformationForm()
         } withDependencies: {
-            $0.archiveStore.getTagSuggestionsSimilarTo = { _ in [] }
             $0.continuousClock = clock
         }
 
@@ -493,7 +491,6 @@ struct DocumentInformationFormTests {
         let store = TestStore(initialState: DocumentInformationForm.State(document: .mock(), suggestedTags: ["keep", "tag1", "tag2"])) {
             DocumentInformationForm()
         } withDependencies: {
-            $0.archiveStore.getTagSuggestionsSimilarTo = { _ in [] }
             $0.continuousClock = clock
         }
 
@@ -550,7 +547,6 @@ struct DocumentInformationFormTests {
         let store = TestStore(initialState: DocumentInformationForm.State(document: .mock(), suggestedTags: ["tag1"])) {
             DocumentInformationForm()
         } withDependencies: {
-            $0.archiveStore.getTagSuggestionsSimilarTo = { _ in [] }
             $0.continuousClock = clock
         }
 
@@ -569,7 +565,6 @@ struct DocumentInformationFormTests {
         let store = TestStore(initialState: DocumentInformationForm.State(document: .mock(), suggestedTags: ["tag1", "tag2"])) {
             DocumentInformationForm()
         } withDependencies: {
-            $0.archiveStore.getTagSuggestionsSimilarTo = { _ in [] }
             $0.continuousClock = clock
         }
 
@@ -597,5 +592,17 @@ struct DocumentInformationFormTests {
 
         // the timer of the first tag must be gone - otherwise its progress updates arrive here
         await clock.advance(by: .seconds(2))
+    }
+
+    /// One archived document carrying both tags, so `first` suggests `fitsfirst` next to it.
+    private static func seedTagCompanion() async throws {
+        @Dependency(\.defaultDatabase) var database
+        try await database.write { db in
+            try db.seed {
+                Document(id: -1, rootKey: "test", url: URL(filePath: "/Archive/2024/2024-01-01--doc__first_fitsfirst.pdf"), date: Date(timeIntervalSince1970: 0), specification: "doc", tags: ["first", "fitsfirst"], isTagged: true, sizeInBytes: 10, downloadStatus: 1)
+                DocumentTag(documentID: -1, tag: "first")
+                DocumentTag(documentID: -1, tag: "fitsfirst")
+            }
+        }
     }
 }

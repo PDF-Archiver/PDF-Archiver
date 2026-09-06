@@ -7,7 +7,6 @@
 
 import ArchiverDatabase
 import ArchiverModels
-import AsyncExtensions
 import Dependencies
 import Foundation
 import OSLog
@@ -26,21 +25,12 @@ public actor ArchiveStore: Log {
 
     private static let availableProvider: [any FolderProvider.Type] = [ICloudFolderProvider.self, LocalFolderProvider.self]
 
-    public let isLoadingStream = AsyncCurrentValueSubject(true)
-    public let documentsStream: AsyncStream<[Document]>
-    private let documentsStreamContinuation: AsyncStream<[Document]>.Continuation
-    public private(set) var currentDocuments: [Document] = []
-
     private var archiveFolder: URL!
     private var untaggedFolders: [URL] = []
     private var providers: [any FolderProvider] = []
     private var folderObservationTasks: [Task<Void, Never>] = []
 
     private init() {
-        let (stream, continuation) = AsyncStream<[Document]>.makeStream()
-        self.documentsStream = stream
-        self.documentsStreamContinuation = continuation
-
         Logger.archiveStore.trace("[ArchiveStore] init called")
 
         Task(priority: .medium) {
@@ -66,8 +56,6 @@ public actor ArchiveStore: Log {
     }
 
     func update(archiveFolder: URL, untaggedFolders: [URL]) async {
-        isLoadingStream.send(true)
-
         // stop all current file providers to prevent watching changes while moving folders
         for provider in providers {
             await provider.stop()
@@ -94,7 +82,6 @@ public actor ArchiveStore: Log {
         }
         let generation = await archiveIndexer.setObservedRoots(Array(rootKeys.values))
 
-        var documentsMap: [URL: [Document]] = [:]
         for provider in providers {
             let baseUrl = await provider.baseUrl
             guard let rootKey = rootKeys[baseUrl] else { continue }
@@ -115,15 +102,6 @@ public actor ArchiveStore: Log {
                                              contentModificationDate: change.contentModificationDate)
                     }
                     await archiveIndexer.reconcile(items, rootKey, generation)
-
-                    documentsMap[baseUrl] = await items.asyncMap { item in
-                        await Document.make(from: item, rootKey: rootKey)
-                    }
-
-                    let documents = documentsMap.values.flatMap(\.self)
-                    documentsStreamContinuation.yield(documents)
-                    currentDocuments = documents
-                    isLoadingStream.send(false)
                 }
             }
             folderObservationTasks.append(task)
@@ -217,54 +195,6 @@ public actor ArchiveStore: Log {
     public func delete(url: URL) async throws {
         let provider = try await getProvider(for: url)
         try await provider.delete(url: url)
-    }
-
-    /// Returns tags that where used similarly on tagged documents
-    public func getTagSuggestionsSimilar(to tags: Set<String>) -> [String] {
-        guard !tags.isEmpty else { return [] }
-        let filteredTagCombinations = currentDocuments
-            .map(\.tags)
-            .filter { $0.isSuperset(of: tags) }
-
-        var tagCountMap: [String: Int] = [:]
-        for tag in filteredTagCombinations.flatMap(\.self) {
-            guard !tags.contains(tag) else { continue }
-            tagCountMap[tag, default: 0] += 1
-        }
-
-        return tagCountMap
-            .sorted { lhs, rhs in
-                if lhs.value == rhs.value {
-                    lhs.key < rhs.key
-                } else {
-                    lhs.value > rhs.value
-                }
-            }
-            .prefix(5)
-            .map(\.key)
-    }
-
-    /// Returns tags that start with the searchteerm like autocomplete
-    ///
-    /// The returned tag will be sorted according to their usage count.
-    ///
-    /// - `bi` -> `[bill]`
-    public func getTagSuggestions(for searchTerm: String) -> [String] {
-        var tagCountMap: [String: Int] = [:]
-        for tag in currentDocuments.flatMap(\.tags) {
-            tagCountMap[tag, default: 0] += 1
-        }
-        return tagCountMap
-            .filter { $0.key.hasPrefix(searchTerm) }
-            .sorted { lhs, rhs in
-                if lhs.value == rhs.value {
-                    lhs.key < rhs.key
-                } else {
-                    lhs.value > rhs.value
-                }
-            }
-            .prefix(5)
-            .map(\.key)
     }
 
     public func reloadArchiveDocuments() async throws {

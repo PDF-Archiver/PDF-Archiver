@@ -13,12 +13,12 @@ import WidgetKit
 
 @DependencyClient
 struct WidgetStoreDependency {
-    var updateWidgetWith: @Sendable ([Document]) async -> Void
+    var updateWidget: @Sendable (_ yearCounts: [Int: Int], _ untaggedCount: Int) async -> Void
 }
 
 extension WidgetStoreDependency: TestDependencyKey {
     static let previewValue = Self(
-        updateWidgetWith: { _ in },
+        updateWidget: { _, _ in },
     )
 
     static let testValue = Self()
@@ -26,23 +26,13 @@ extension WidgetStoreDependency: TestDependencyKey {
 
 extension WidgetStoreDependency: DependencyKey {
     static let liveValue = WidgetStoreDependency(
-        updateWidgetWith: { documents in
+        updateWidget: { yearCounts, untaggedCount in
             defer {
                 WidgetCenter.shared.reloadAllTimelines()
             }
 
-            // Stats widget
-            var statistics: [Int: Int] = [:]
-            for document in documents {
-                let year = Calendar.current.component(.year, from: document.date)
-                statistics[year, default: 0] += 1
-            }
-
-            await SharedDefaults.set(statistics: statistics)
-
-            // Untagged documents widget
-            let count = documents.filter(\.isTagged.flipped).count
-            await SharedDefaults.set(untaggedDocumentsCount: count)
+            await SharedDefaults.set(statistics: yearCounts)
+            await SharedDefaults.set(untaggedDocumentsCount: untaggedCount)
         }
     )
 }

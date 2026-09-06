@@ -81,8 +81,6 @@ public enum ScreenshotCase: String, CaseIterable, Sendable {
         $premiumStatus.withLock { $0 = self.premiumStatus }
 
         var state = AppFeature.State()
-        state.apply(documents: documents)
-        state.isDocumentLoading = false
 
         switch self {
         case .archive:
@@ -96,7 +94,6 @@ public enum ScreenshotCase: String, CaseIterable, Sendable {
 
         case .statistics:
             state.selectedTab = .statistics
-            state.statistics.apply(documents: state.documents)
         }
 
         return state
@@ -133,20 +130,13 @@ public enum ScreenshotCase: String, CaseIterable, Sendable {
         }
     }
 
-    /// Yields the fixtures once, so the reducer derives its state from them exactly as it would
-    /// from a real archive. Without the override the live store would load in and wipe them.
+    /// Keeps the live archive out of the shot: the fixtures come from the seeded database, and
+    /// without this override the real folder scan would overwrite them.
     private var archiveStore: ArchiveStoreDependency {
-        let documents = documents
-        let suggestedTags = Self.receiptSuggestedTags
-        return ArchiveStoreDependency(
-            documentChanges: { AsyncStream { $0.yield(documents) } },
+        ArchiveStoreDependency(
             reloadDocuments: { },
-            getDocuments: { documents },
-            isLoading: { AsyncStream { $0.yield(false) } },
             startDownloadOf: { _ in },
             deleteDocumentAt: { _ in },
-            getTagSuggestionsFor: { _ in suggestedTags },
-            getTagSuggestionsSimilarTo: { tags in suggestedTags.filter { !tags.contains($0) } },
             // What the app recognises from the scan: its date and description, but no tag yet.
             parseFilename: { _ in (Self.receiptDate, Self.receiptSpecification, nil) },
             saveDocument: { _, _ in },

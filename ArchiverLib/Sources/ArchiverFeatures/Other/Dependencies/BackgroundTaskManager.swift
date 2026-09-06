@@ -6,12 +6,14 @@
 //
 
 #if os(iOS)
+import ArchiverDatabase
 import ArchiverModels
 import BackgroundTasks
 import ComposableArchitecture
 import Foundation
 import OSLog
 import Shared
+import SQLiteData
 import UserNotifications
 
 extension BGProcessingTask: @unchecked @retroactive Sendable {}
@@ -25,6 +27,7 @@ public actor BackgroundTaskManager: Log {
 
     private static let scheduler = BGTaskScheduler.shared
 
+    @Dependency(\.defaultDatabase) var database
     @Dependency(\.documentProcessor) var documentProcessor
     @Dependency(\.archiveStore) var archiveStore
     @SharedReader(.backgroundCacheNotificationsEnabled) var shouldNotify: Bool
@@ -70,12 +73,14 @@ public actor BackgroundTaskManager: Log {
 
         // Use a cancellable task so the expiration handler can stop work
         let processingTask = Task {
-            // The background task may have launched the app in the background - in that case
-            // ArchiveStore has only just started its asynchronous folder scan and
-            // getDocuments() would return an empty snapshot.
+            // A cold background launch has no scene, so nothing else starts the folder scan;
+            // `reloadDocuments` raises `isReconciling` before it returns.
+            try await archiveStore.reloadDocuments()
             await waitForInitialDocumentLoad()
 
-            let documents = try await archiveStore.getDocuments()
+            let documents = try await database.read { db in
+                try Document.inbox.fetchAll(db) + Document.aiContext().fetchAll(db)
+            }
             // Runs OCR (if enabled) before the AI cache pass, so the text
             // layers exist when the cache entries are computed.
             return await documentProcessor.processUntaggedDocuments(documents)
@@ -121,13 +126,15 @@ public actor BackgroundTaskManager: Log {
         Self.scheduleCacheProcessing()
     }
 
-    /// Wait until the initial document load has finished, but no longer than a fixed
+    /// Wait until the initial reconcile has finished, but no longer than a fixed
     /// timeout - the background execution window is limited.
     private func waitForInitialDocumentLoad() async {
         await withTaskGroup(of: Void.self) { group in
-            group.addTask {
-                for await isLoading in await self.archiveStore.isLoading() {
-                    guard isLoading else { return }
+            group.addTask { [database] in
+                @FetchOne(IndexerState.find(IndexerState.singletonID).select(\.isReconciling), database: database)
+                var isReconciling = true
+                for await value in $isReconciling.publisher.values where !value {
+                    return
                 }
             }
             group.addTask {

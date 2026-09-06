@@ -195,12 +195,6 @@ public extension SharedKey where Self == InMemoryKey<Int?> {
 
 // MARK: file storage
 
-public extension SharedKey where Self == FileStorageKey<IdentifiedArrayOf<Document>> {
-  static var documents: Self {
-      fileStorage(.temporaryDirectory.appending(component: "documents.json"))
-  }
-}
-
 public extension SharedKey where Self == ArchivePathTypeCustomSharedKey {
   static var archivePathType: Self {
       @Dependency(\.defaultAppStorage) var store

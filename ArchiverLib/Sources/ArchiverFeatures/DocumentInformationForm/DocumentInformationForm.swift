@@ -5,11 +5,13 @@
 //  Created by Julian Kahnert on 26.06.25.
 //
 
+import ArchiverDatabase
 import ArchiverModels
 import ArchiverStore
 import ComposableArchitecture
 import ContentExtractorStore
 import Shared
+import SQLiteData
 import SwiftUI
 import TipKit
 
@@ -107,6 +109,7 @@ struct DocumentInformationForm {
     }
 
     @Dependency(\.archiveStore) var archiveStore
+    @Dependency(\.defaultDatabase) var database
     @Dependency(\.textAnalyser) var textAnalyser
     @Dependency(\.contentExtractorStore) var contentExtractorStore
     @Dependency(\.calendar) var calendar
@@ -240,13 +243,24 @@ struct DocumentInformationForm {
 
             case .startUpdatingTagSuggestions:
                 return .run { [tagSearchterm = state.tagSearchterm, documentTags = state.document.tags] send in
-                    let tags: [String]
-                    if tagSearchterm.isEmpty {
-                        guard !documentTags.isEmpty else { return }
-                        tags = await archiveStore.getTagSuggestionsSimilarTo(documentTags)
-                    } else {
-                        tags = await archiveStore.getTagSuggestionsFor(tagSearchterm.lowercased())
+                    // Without a search term the suggestions come from the tags already picked.
+                    guard !tagSearchterm.isEmpty || !documentTags.isEmpty else { return }
+
+                    let tags = await withErrorReporting {
+                        try await database.read { db in
+                            if tagSearchterm.isEmpty {
+                                return try DocumentTag
+                                    .cooccurring(with: documentTags, limit: Self.tagSuggestionLimit)
+                                    .fetchAll(db)
+                                    .map(\.tag)
+                            }
+                            return try DocumentTag
+                                .counts(prefix: tagSearchterm.lowercased(), limit: Self.tagSuggestionLimit)
+                                .fetchAll(db)
+                                .map(\.tag)
+                        }
                     }
+                    guard let tags else { return }
 
                     await send(.updateTagSuggestions(tags))
                 }
@@ -291,12 +305,25 @@ struct DocumentInformationForm {
         }
     }
 
+    /// How many tag suggestions the form offers, as the archive store used to return.
+    private static let tagSuggestionLimit = 5
+
     struct DocumentParsingResult: Equatable {
         let date: Date?
         let specification: String?
         let tags: Set<String>?
         let dateSuggestions: [Date]?
         let tagSuggestions: [String]?
+    }
+
+    /// Tagged documents are the model's tag vocabulary and description examples.
+    private func archiveContext() async -> [Document] {
+        let documents = await withErrorReporting {
+            try await database.read { db in
+                try Document.aiContext().fetchAll(db)
+            }
+        }
+        return documents ?? []
     }
 
     private func startUpdatingAllSuggestionsWithAI(url: URL, appleIntelligenceEnabled: Bool, customPrompt: String?, documentId: Document.ID) async -> DocumentParsingResult {
@@ -334,7 +361,7 @@ struct DocumentInformationForm {
             // Try Apple Intelligence first if enabled and available
             if appleIntelligenceEnabled,
                await contentExtractorStore.isAvailable() == .available,
-               let content = await contentExtractorStore.getDocumentInformation(.init(currentDocuments: (try? await archiveStore.getDocuments()) ?? [],
+               let content = await contentExtractorStore.getDocumentInformation(.init(currentDocuments: await archiveContext(),
                                                                                       text: text,
                                                                                       customPrompt: customPrompt,
                                                                                       documentId: documentId)) {

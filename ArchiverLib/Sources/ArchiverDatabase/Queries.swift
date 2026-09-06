@@ -101,6 +101,14 @@ extension Document {
         }
     }
 
+    /// The archive slice handed to the model as tag vocabulary and description examples.
+    ///
+    /// Capped so a huge archive cannot be materialised in one array; the prompt only keeps the 30
+    /// most frequent tags and 40 newest descriptions anyway.
+    public static func aiContext(limit: Int = 2_000) -> some SelectStatementOf<Document> {
+        Self.tagged.limit(limit)
+    }
+
     public static func yearCounts(taggedOnly: Bool) -> Select<YearCount, Document, ()> {
         Self.where { documents in
             if taggedOnly {
