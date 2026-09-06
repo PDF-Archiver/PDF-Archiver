@@ -101,6 +101,76 @@ extension Document {
         }
     }
 
+    /// Tagged documents matching free text in the filename or the content, ranked and capped.
+    ///
+    /// Raw SQL for two reasons the DSL cannot express: `leftJoin(statement)` merges the joined
+    /// statement's `WHERE` into the main query, so a DSL left join against a `MATCH` subselect
+    /// silently becomes an inner filter and drops every filename-only hit; and `snippet()`
+    /// tokenises the stored body of every row it is evaluated for, so it has to run after the cap.
+    public static func rankedSearch(_ query: ArchiveSearchQuery) -> some Statement<ArchiveSearchRow> {
+        let likePattern = query.likePattern
+        // FTS5 rejects an empty MATCH even behind a false condition, so the content half is
+        // omitted from the statement rather than disabled inside it.
+        let content = query.ftsQuery.map { Self.contentFragments(matching: $0) } ?? Self.emptyContentFragments
+
+        return #sql(
+            """
+            WITH "ranked" AS (
+              SELECT d."id" AS "id",
+                     (d."filename" LIKE \(bind: likePattern) ESCAPE '\\') AS "isFilenameHit",
+                     \(content.rank) AS "rank",
+                     d."date" AS "date"
+              FROM \(Document.self) AS d
+              \(content.join)
+              WHERE d."isTagged" = 1
+                \(query.tokenPredicates)
+                AND (d."filename" LIKE \(bind: likePattern) ESCAPE '\\'\(content.orClause))
+              ORDER BY "isFilenameHit" DESC, COALESCE("rank", 0) ASC, d."date" DESC
+              LIMIT \(bind: resultLimit)
+            )
+            SELECT \(Document.columns), r."isFilenameHit", \(content.snippet) AS "snippet"
+            FROM "ranked" AS r
+            JOIN \(Document.self) ON \(Document.id) = r."id"
+            ORDER BY r."isFilenameHit" DESC, COALESCE(r."rank", 0) ASC, \(Document.date) DESC
+            """,
+            as: ArchiveSearchRow.self
+        )
+    }
+
+    private struct ContentFragments {
+        let rank: QueryFragment
+        let join: QueryFragment
+        let orClause: QueryFragment
+        let snippet: QueryFragment
+    }
+
+    private static let emptyContentFragments = ContentFragments(rank: "NULL", join: "", orClause: "", snippet: "NULL")
+
+    private static func contentFragments(matching ftsQuery: String) -> ContentFragments {
+        ContentFragments(
+            rank: #"t."rank""#,
+            join: """
+                LEFT JOIN (
+                  SELECT "rowid", "rank" FROM \(DocumentText.self) WHERE \(DocumentText.self) MATCH \(bind: ftsQuery)
+                ) AS t ON t."rowid" = d."id"
+                """,
+            orClause: #" OR t."rowid" IS NOT NULL"#,
+            snippet: """
+                (SELECT snippet(\(DocumentText.self), 0, '\(raw: snippetOpenMarker)', '\(raw: snippetCloseMarker)', '…', 12)
+                   FROM \(DocumentText.self)
+                  WHERE "rowid" = r."id" AND \(DocumentText.self) MATCH \(bind: ftsQuery))
+                """
+        )
+    }
+
+    /// A ranked search is capped; the token-filtered list is not.
+    public static let resultLimit = 200
+
+    /// The snippet markers the view turns into styling. Chosen so real document text cannot
+    /// contain them by accident.
+    public static let snippetOpenMarker = "\u{2}"
+    public static let snippetCloseMarker = "\u{3}"
+
     /// The archive slice handed to the model as tag vocabulary and description examples.
     ///
     /// Capped so a huge archive cannot be materialised in one array; the prompt only keeps the 30

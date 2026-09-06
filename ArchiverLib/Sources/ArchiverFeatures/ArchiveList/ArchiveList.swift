@@ -34,6 +34,8 @@ struct ArchiveList {
 
     enum Action: BindableAction {
         case binding(BindingAction<State>)
+        case onTask
+        case premiumStatusChanged
         case selectionChanged(Int?)
         case documentDetails(PresentationAction<DocumentDetails.Action>)
         case searchStateChanged(Bool)
@@ -52,6 +54,18 @@ struct ArchiveList {
             switch action {
             case .documentDetails:
                 return .none
+
+            case .onTask:
+                // A search typed before StoreKit answered has to gain its content hits, and a
+                // lapse has to remove them again.
+                return .publisher {
+                    state.$premiumStatus.publisher
+                        .removeDuplicates()
+                        .map { _ in Action.premiumStatusChanged }
+                }
+
+            case .premiumStatusChanged:
+                return reloadRows(state)
 
             case .searchStateChanged(let isSearching):
                 state.isSearching = isSearching
@@ -93,15 +107,26 @@ struct ArchiveList {
     /// Shared by every trigger; a private helper rather than an `Effect.send`, which TCA reserves
     /// for child-to-parent messages.
     private func reloadRows(_ state: State) -> Effect<Action> {
-        var tokens = state.searchTokens
-        let freeText = state.searchText.slugified(withSeparator: "-")
-        if !freeText.isEmpty {
-            tokens.append(.text(freeText))
-        }
+        let query = ArchiveSearchQuery(text: state.searchText,
+                                       tokens: state.searchTokens,
+                                       includesContent: state.premiumStatus == .active)
 
-        return .run { [rows = state.$rows, tokens] _ in
-            await withErrorReporting {
-                try await rows.load(Document.list(tokens: tokens))
+        return .run { [rows = state.$rows] _ in
+            guard query.hasFreeText else {
+                await withErrorReporting {
+                    try await rows.load(Document.list(tokens: query.tokens))
+                }
+                return
+            }
+
+            do {
+                try await rows.load(Document.rankedSearch(query))
+            } catch {
+                // FTS5 should not reject a sanitised query, but search must never go blank.
+                reportIssue(error)
+                await withErrorReporting {
+                    try await rows.load(Document.list(tokens: query.tokens))
+                }
             }
         }
         .debounce(id: CancelID.search, for: .milliseconds(150), scheduler: mainQueue)
@@ -112,29 +137,9 @@ struct ArchiveListView: View {
     @Bindable var store: StoreOf<ArchiveList>
 
     var body: some View {
-        let rows = store.rows
-        Group {
-            if rows.isEmpty {
-                if store.searchText.isEmpty {
-                    ContentUnavailableView(String(localized: "Empty Archive", bundle: #bundle),
-                                           systemImage: "archivebox",
-                                           description: Text("Start scanning and tagging your first document.", bundle: #bundle))
-                    // fix the alignment of the ScanButton
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                } else {
-                    let text = store.searchTokens.map({ "'\($0.value)' " }).joined() + store.searchText
-                    ContentUnavailableView.search(text: text)
-                        // fix the alignment of the ScanButton
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                }
-            } else {
-                List(rows, selection: Binding(get: { store.selectedDocumentId }, set: { store.send(.selectionChanged($0)) })) { row in
-                    ArchiveListItemView(documentSpecification: row.document.specification,
-                                        documentDate: row.document.date,
-                                        documentTags: row.document.tags.sorted())
-                    .tag(row.id)
-                }
-            }
+        content
+        .task {
+            await store.send(.onTask).finish()
         }
         .modifier(SearchStateMonitor { _, newValue in
             store.send(.searchStateChanged(newValue))
@@ -164,6 +169,56 @@ struct ArchiveListView: View {
 #else
                 .navigationBarTitleDisplayMode(.inline)
 #endif
+        }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        if store.rows.isEmpty {
+            emptyState
+        } else {
+            documentList
+        }
+    }
+
+    @ViewBuilder
+    private var emptyState: some View {
+        if store.searchText.isEmpty {
+            ContentUnavailableView(String(localized: "Empty Archive", bundle: #bundle),
+                                   systemImage: "archivebox",
+                                   description: Text("Start scanning and tagging your first document.", bundle: #bundle))
+            // fix the alignment of the ScanButton
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else {
+            let text = store.searchTokens.map({ "'\($0.value)' " }).joined() + store.searchText
+            ContentUnavailableView.search(text: text)
+                // fix the alignment of the ScanButton
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .overlay(alignment: .bottom) {
+                    premiumSearchHint
+                }
+        }
+    }
+
+    @ViewBuilder
+    private var premiumSearchHint: some View {
+        if store.premiumStatus != .active {
+            Text("Search inside documents with Premium.", bundle: #bundle)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .padding()
+        }
+    }
+
+    private var documentList: some View {
+        let selection = Binding(get: { store.selectedDocumentId },
+                                set: { store.send(.selectionChanged($0)) })
+        return List(store.rows, selection: selection) { row in
+            ArchiveListItemView(documentSpecification: row.document.specification,
+                                documentDate: row.document.date,
+                                documentTags: row.document.tags.sorted(),
+                                snippet: row.isFilenameHit ? nil : row.snippet)
+            .tag(row.id)
         }
     }
 }

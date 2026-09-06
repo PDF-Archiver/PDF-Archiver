@@ -62,9 +62,20 @@ public enum ScreenshotCase: String, CaseIterable, Sendable {
             let tags = documents.flatMap { document in
                 document.tags.sorted().map { DocumentTag(documentID: document.id, tag: $0) }
             }
-            guard !tags.isEmpty else { return }
-            try DocumentTag.insert { tags }.execute(db)
+            if !tags.isEmpty {
+                try DocumentTag.insert { tags }.execute(db)
+            }
+            try DocumentText.insert { Self.contentHitText }.execute(db)
         }
+    }
+
+    /// The archive shot searches for a term the rental agreement only carries *inside* it, so one
+    /// row shows what a content hit looks like next to the filename hits.
+    private static var contentHitText: DocumentText {
+        let body = isGerman
+            ? "Anlage zum Mietvertrag: die Rechnung der Hausverwaltung über die Nebenkosten."
+            : "Attached to the rental agreement: the invoice from the property manager."
+        return DocumentText(rowid: 2, body: body)
     }
 
     /// The state the app starts in, already settled - a screenshot must not wait for a load.
