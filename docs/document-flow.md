@@ -107,7 +107,12 @@ document is re-OCR'd as soon as the engine version advances past its stamp.
 ## Background task
 
 One `BGProcessingTask` (`de.JulianKahnert.PDFArchiveViewer.pdf-processing`,
-iOS 18+, `requiresExternalPower`) waits for the initial reconcile and runs the
-same untagged processing the inbox triggers in the foreground: OCR first, then
-the AI cache pass, so text layers exist when cache entries are computed. The
-Apple Intelligence pass inside it stays gated to iOS 26.
+iOS 18+, `requiresExternalPower`) waits for the initial reconcile and then runs,
+in this order: OCR, the Apple Intelligence cache pass (still gated to iOS 26),
+and — with Premium — the opt-in downloads plus the text extraction that fills
+the search index. `requiresNetworkConnectivity` follows the "Download all
+documents for search" setting, because only those downloads need the network.
+
+On macOS `BackgroundTasks` is unavailable, so `MacBackgroundActivity` runs the
+text extraction from an `NSBackgroundActivityScheduler` and adds the two
+conditions that scheduler has no flag for: external power and an idle user.

@@ -293,7 +293,8 @@ GitHub Actions workflow (`.github/workflows/pr.yml`):
 ## Dependencies
 
 Main dependencies (from `ArchiverLib/Package.swift`):
-- `sqlite-data` (v1.0.0+): Persistence and query layer for the document read model
+- `sqlite-data` (v1.12.0): Persistence and query layer for the document read model
+- `swift-structured-queries` (v0.39.2): `@Table`/`@Selection` and the query builders, linked directly by `ArchiverModels`
 - `swift-composable-architecture` (v1.22.3+): State management
 - `swift-dependencies` (v1.10.0+): Dependency injection
 - `swift-sharing` (v2.7.4+): Shared state persistence

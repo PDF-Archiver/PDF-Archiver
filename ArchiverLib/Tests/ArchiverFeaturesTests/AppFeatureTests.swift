@@ -73,6 +73,31 @@ struct AppFeatureTests {
         #expect(widgetUpdates.value.first?.1 == 1)
     }
 
+    /// The tab suggestions and the widget at launch depend on the bridge itself delivering, not
+    /// on anyone sending `projectionChanged` by hand.
+    @Test
+    func theLongBackgroundTaskBridgesTheProjectionAndTheInbox() async throws {
+        try await Self.seedArchive()
+        let store = TestStore(initialState: AppFeature.State()) {
+            AppFeature()
+        } withDependencies: {
+            $0.documentProcessor.processStagedFiles = { }
+            $0.documentProcessor.processUntaggedDocuments = { _ in UntaggedProcessingResult(ocrCount: 0, aiCacheCount: 0) }
+            $0.indexScheduler.schedule = { }
+            $0.widgetStore.updateWidget = { _, _ in }
+            $0.archiveStore.startDownloadOf = { _ in }
+        }
+        store.exhaustivity = .off(showSkippedAssertions: false)
+
+        let task = await store.send(.onLongBackgroundTask)
+
+        await store.receive(\.projectionChanged)
+        #expect(store.state.archiveList.searchSuggestedTokens.contains(.tag("bill")))
+
+        await store.receive(\.inboxChanged)
+        await task.cancel()
+    }
+
     /// A fresh scan falls back to its creation-date year - today's - which must not reach the tab bar.
     @Test
     func anUntaggedDocumentDoesNotAppearInTheYearSuggestions() async throws {

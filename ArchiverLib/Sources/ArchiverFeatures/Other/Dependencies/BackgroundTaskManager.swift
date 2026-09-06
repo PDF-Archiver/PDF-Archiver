@@ -96,9 +96,8 @@ public actor BackgroundTaskManager: Log {
             // layers exist when the cache entries are computed.
             let result = await documentProcessor.processUntaggedDocuments(documents)
 
-            // An OCR run rewrites the PDF in place. Whether `NSMetadataQuery` reports that for its
-            // own process is undocumented, so the rescan is explicit - and it has to land before
-            // the text pass, which reads the size and date the reconcile writes.
+            // Whether `NSMetadataQuery` reports an in-place rewrite by its own process is
+            // undocumented, so the rescan is explicit - and it precedes the text pass.
             if result.ocrCount > 0 {
                 try await archiveStore.reloadDocuments()
                 await waitForInitialDocumentLoad()

@@ -176,7 +176,9 @@ struct AppFeature {
                         // An OCR run rewrites the PDF in place. Whether `NSMetadataQuery` reports
                         // that for its own process is undocumented, so the rescan is explicit.
                         guard result.ocrCount > 0 else { return }
-                        try? await archiveStore.reloadDocuments()
+                        await withErrorReporting {
+                            try await archiveStore.reloadDocuments()
+                        }
                     }
                     .cancellable(id: CancelID.untaggedProcessing, cancelInFlight: true)
                 )

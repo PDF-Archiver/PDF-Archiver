@@ -109,8 +109,8 @@ extension Document {
     /// tokenises the stored body of every row it is evaluated for, so it has to run after the cap.
     public static func rankedSearch(_ query: ArchiveSearchQuery) -> some Statement<ArchiveSearchRow> {
         let likePattern = query.likePattern
-        // FTS5 rejects an empty MATCH even behind a false condition, so the content half is
-        // omitted from the statement rather than disabled inside it.
+        // A bound `false` guard is not constant-folded, so FTS5 still parses the empty MATCH next
+        // to it and throws. The content half is omitted from the statement, not disabled in it.
         let content = query.ftsQuery.map { Self.contentFragments(matching: $0) } ?? Self.emptyContentFragments
 
         return #sql(

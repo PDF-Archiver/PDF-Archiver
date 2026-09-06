@@ -140,6 +140,48 @@ struct TextIndexTests {
         #expect(try await Self.outcome(of: -1) == nil)
     }
 
+    /// A cancelled run must leave the document pending, not record a permanent failure for the
+    /// size and date it never finished reading.
+    @Test
+    func aCancelledRunLeavesTheDocumentPending() async throws {
+        try await Self.seed(id: -1, fixture: "text-layer")
+        let indexer = ArchiveIndexer()
+
+        let run = Task { await indexer.indexPendingTexts(budget: 10) }
+        run.cancel()
+        await run.value
+
+        #expect(try await Self.outcome(of: -1) == nil)
+        #expect(try await Self.body(of: -1) == nil)
+        #expect(try await Self.pendingCount() == 1)
+
+        // The next run still picks it up.
+        await indexer.indexPendingTexts(budget: 10)
+        #expect(try await Self.outcome(of: -1) == .indexed)
+    }
+
+    @Test
+    func aFullOptimizeOnlyFollowsACompletedRebuild() async throws {
+        try await Self.seed(id: -1, fixture: "text-layer")
+        let indexer = ArchiveIndexer()
+        await indexer.indexPendingTexts(budget: 10)
+        #expect(try await Self.rebuildRequested() == false)
+
+        try await Self.seed(id: -2, fixture: "text-layer")
+        try await Self.seed(id: -3, fixture: "text-layer")
+        @Dependency(\.defaultDatabase) var database
+        try await database.write { db in
+            try IndexerState.find(IndexerState.singletonID).update { $0.rebuildRequested = true }.execute(db)
+        }
+
+        // Budget too small to catch up: the flag stays, so no optimize yet.
+        await indexer.indexPendingTexts(budget: 1)
+        #expect(try await Self.rebuildRequested() == true)
+
+        await indexer.indexPendingTexts(budget: 10)
+        #expect(try await Self.rebuildRequested() == false)
+    }
+
     @Test
     func rebuildTruncatesTheReadModel() async throws {
         try await Self.seed(id: -1, fixture: "text-layer")
@@ -214,6 +256,20 @@ struct TextIndexTests {
         @Dependency(\.defaultDatabase) var database
         return try await database.read { db in
             try DocumentIndexState.find(id).select(\.outcome).fetchOne(db).flatMap(\.self)
+        }
+    }
+
+    private static func pendingCount() async throws -> Int {
+        @Dependency(\.defaultDatabase) var database
+        return try await database.read { db in
+            try ArchiveIndexer.pendingCount().fetchOne(db) ?? 0
+        }
+    }
+
+    private static func rebuildRequested() async throws -> Bool {
+        @Dependency(\.defaultDatabase) var database
+        return try await database.read { db in
+            try IndexerState.find(IndexerState.singletonID).select(\.rebuildRequested).fetchOne(db) ?? false
         }
     }
 

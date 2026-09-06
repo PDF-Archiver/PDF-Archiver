@@ -189,6 +189,21 @@ struct ArchiveListTests {
         }
     }
 
+    /// The publisher fires while `state.premiumStatus` still holds the old value, so the action
+    /// has to carry the new one.
+    @Test
+    func thePremiumBridgeDeliversTheNewStatus() async throws {
+        let store = Self.searchStore()
+        let task = await store.send(.onTask)
+
+        // The IAP view modifier writes the shared value once StoreKit answers.
+        @Shared(.premiumStatus) var premiumStatus: PremiumStatus = .loading
+        $premiumStatus.withLock { $0 = .active }
+
+        await store.receive(\.premiumStatusChanged, .active)
+        await task.cancel()
+    }
+
     @Test
     func contentHitsAppearWhenPremiumResolvesWithoutRetyping() async throws {
         @Dependency(\.defaultDatabase) var database
@@ -197,22 +212,13 @@ struct ArchiveListTests {
         }
 
         let store = Self.searchStore()
-        await store.send(.onTask)
-        await store.send(.binding(.set(\.searchText, "quittung")))
+        await store.send(.binding(.set(\.searchText, "quittung"))).finish()
         #expect(store.state.rows.isEmpty)
 
-        // The IAP view modifier writes the shared value once StoreKit answers.
-        @Shared(.premiumStatus) var premiumStatus: PremiumStatus = .loading
-        $premiumStatus.withLock { $0 = .active }
-        await store.receive(\.premiumStatusChanged)
-        // The reload is an async database read; poll rather than guess a sleep length.
-        for _ in 0..<100 where store.state.rows.isEmpty {
-            try await Task.sleep(for: .milliseconds(10))
-        }
+        // Nothing is retyped: only the status the bridge delivered changes.
+        await store.send(.premiumStatusChanged(.active)).finish()
 
-        #expect(store.state.premiumStatus == .active)
         #expect(store.state.rows.map(\.id) == [-2])
-        await store.send(.searchStateChanged(false))
     }
 
     // MARK: - Helpers

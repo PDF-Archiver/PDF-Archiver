@@ -26,6 +26,8 @@ actor MacBackgroundActivity {
     private static let idleThreshold: TimeInterval = 120
     /// Documents per run, so a run ends soon after the user comes back.
     private static let budget = 25
+    /// How often a running pass asks whether it should still be running.
+    private static let deferPollInterval = 5.0
 
     private let scheduler = NSBackgroundActivityScheduler(identifier: "de.JulianKahnert.PDFArchiveViewer.index")
     private var observationTask: Task<Void, Never>?
@@ -64,9 +66,26 @@ actor MacBackgroundActivity {
                     completion(.deferred)
                     return
                 }
-                await SearchIndexDownloads.requestNextBatch()
-                await archiveIndexer.indexPendingTexts(Self.budget)
-                completion(.finished)
+
+                let pass = Task {
+                    await SearchIndexDownloads.requestNextBatch()
+                    await self.archiveIndexer.indexPendingTexts(Self.budget)
+                }
+                // The system may ask us to stop, and the user may come back, long after the run
+                // started; extraction observes the cancellation between pages.
+                let watchdog = Task { [weak self] in
+                    while !Task.isCancelled {
+                        try? await Task.sleep(for: .seconds(Self.deferPollInterval))
+                        guard let self else { return }
+                        guard await shouldStop() else { continue }
+                        pass.cancel()
+                        return
+                    }
+                }
+                await pass.value
+                watchdog.cancel()
+
+                completion(await shouldStop() ? .deferred : .finished)
             }
         }
     }
@@ -84,6 +103,11 @@ actor MacBackgroundActivity {
             && Self.isOnACPower()
             && Self.isCalm()
             && Self.idleSeconds() > Self.idleThreshold
+    }
+
+    /// Polled while a pass runs: the scheduler's own request, plus the user coming back.
+    private func shouldStop() -> Bool {
+        scheduler.shouldDefer || !mayRunBackgroundWork()
     }
 
     private func setAppActive(_ isActive: Bool) {

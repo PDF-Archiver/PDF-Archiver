@@ -12,11 +12,13 @@ import Foundation
 import SQLiteData
 
 extension SuggestionCache {
-    /// The `documentSuggestions` table. A deleted document takes its suggestion with it through
-    /// the foreign key, so nothing has to prune stale entries any more.
+    /// The `documentSuggestions` table. Reads go straight to the database; writes go through the
+    /// indexer, which stays the read model's only writer
+    /// (`docs/adr/0003-database-is-a-derived-read-model.md`). A deleted document takes its
+    /// suggestion with it through the foreign key, so nothing has to prune stale entries.
     static var documentSuggestions: SuggestionCache {
+        @Dependency(\.archiveIndexer) var archiveIndexer
         @Dependency(\.defaultDatabase) var database
-        @Dependency(\.date.now) var now
 
         return SuggestionCache(
             load: { id in
@@ -29,25 +31,10 @@ extension SuggestionCache {
                 .map { Entry(documentID: $0.documentID, specification: $0.specification, tags: $0.tags) }
             },
             save: { entry in
-                await withErrorReporting {
-                    try await database.write { db in
-                        try DocumentSuggestion
-                            .upsert {
-                                DocumentSuggestion(documentID: entry.documentID,
-                                                   specification: entry.specification,
-                                                   tags: entry.tags,
-                                                   createdAt: now)
-                            }
-                            .execute(db)
-                    }
-                }
+                await archiveIndexer.saveSuggestion(entry.documentID, entry.specification, entry.tags)
             },
             clear: {
-                await withErrorReporting {
-                    try await database.write { db in
-                        try DocumentSuggestion.delete().execute(db)
-                    }
-                }
+                await archiveIndexer.clearSuggestions()
             },
             count: {
                 let count = await withErrorReporting {

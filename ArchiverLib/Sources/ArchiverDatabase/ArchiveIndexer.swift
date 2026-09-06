@@ -55,8 +55,7 @@ public actor ArchiveIndexer {
     /// Cancelled provider tasks still deliver buffered snapshots and actor jobs are not strictly
     /// FIFO, so a stale generation or an unobserved root is dropped before anything is written.
     public func reconcile(_ items: [DocumentSnapshotItem], root: String, generation: Int) async {
-        guard generation == currentGeneration,
-              observedRoots.contains(root) else { return }
+        guard isCurrent(root: root, generation: generation) else { return }
 
         var existing: [Document.ID: Document] = [:]
         let read = await withErrorReporting {
@@ -69,11 +68,18 @@ public actor ArchiveIndexer {
             existing[row.id] = row
         }
 
-        // `documentIdentifier` is unique per volume, so two observed folders on different volumes
-        // can collide - one row per id, last one wins, rather than a failing transaction.
+        // One row per id within this snapshot, last one wins: a duplicate would otherwise abort
+        // the whole transaction. Duplicates across roots are not covered - see `isCurrent`.
         var items = items
         var seenIDs: Set<Document.ID> = []
-        items = items.reversed().filter { seenIDs.insert($0.id).inserted }.reversed()
+        items = items.reversed().filter { item in
+            guard seenIDs.insert(item.id).inserted else {
+                reportIssue("Two files of root \(root) share document id \(item.id): \(item.url.path())")
+                return false
+            }
+            return true
+        }
+        .reversed()
 
         var changed: [Document] = []
         var tagsToRewrite: Set<Document.ID> = []
@@ -107,11 +113,15 @@ public actor ArchiveIndexer {
 
         let absentIDs = Set(existing.keys).subtracting(items.map(\.id))
 
+        // Re-checked here, not only at entry: the actor is reentrant, and `setObservedRoots` runs
+        // after every rescan, so the diff above may describe a generation that is already gone.
+        guard isCurrent(root: root, generation: generation) else { return }
+
         do {
             try await write(changed: changed, tagsToRewrite: tagsToRewrite, absentIDs: absentIDs)
         } catch {
             reportIssue(error)
-            await replaceRoot(root, with: items)
+            await replaceRoot(root, with: items, generation: generation)
         }
 
         rootsAwaitingFirstSnapshot.remove(root)
@@ -131,7 +141,6 @@ public actor ArchiveIndexer {
     private func write(changed: [Document], tagsToRewrite: Set<Document.ID>, absentIDs: Set<Document.ID>) async throws {
         guard !changed.isEmpty || !absentIDs.isEmpty else { return }
 
-        @Dependency(\.date.now) var now
         try await database.write { db in
             // Deletes run first: an insert or a URL update would otherwise collide with a row that
             // this very snapshot removes (a rename chain, an A<->B swap, a replaced file).
@@ -171,22 +180,28 @@ public actor ArchiveIndexer {
 
             let documentsWithNewTags = changed.filter { tagsToRewrite.contains($0.id) }
             try Self.rewriteTags(of: documentsWithNewTags, in: db)
-
-            try IndexerState
-                .find(IndexerState.singletonID)
-                .update { $0.lastReconciledAt = #bind(now) }
-                .execute(db)
         }
+    }
+
+    /// Whether a snapshot still describes the world the app is observing.
+    ///
+    /// `documentIdentifier` is unique per volume only, so two roots on different volumes can hand
+    /// in the same id for different files. That is a known limitation of the identity itself
+    /// (`docs/full-text-search-concept.md`, 6.3) and is not what this guard is about.
+    private func isCurrent(root: String, generation: Int) -> Bool {
+        generation == currentGeneration && observedRoots.contains(root)
     }
 
     /// Last resort after a failed write: the snapshot is authoritative, so the root is replaced
     /// wholesale rather than left in a half-applied state that every later snapshot inherits.
-    func replaceRoot(_ root: String, with items: [DocumentSnapshotItem]) async {
+    func replaceRoot(_ root: String, with items: [DocumentSnapshotItem], generation: Int) async {
         var documents: [Document] = []
         for item in items {
             documents.append(await Document.make(from: item, rootKey: root))
         }
         let replacement = documents
+        guard isCurrent(root: root, generation: generation) else { return }
+
         await withErrorReporting {
             try await database.write { db in
                 let staleIDs = try Document.where { $0.rootKey.eq(root) }.select(\.id).fetchAll(db)

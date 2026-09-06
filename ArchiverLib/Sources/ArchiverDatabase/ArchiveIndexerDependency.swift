@@ -16,6 +16,8 @@ public struct ArchiveIndexerDependency: Sendable {
     public var reconcile: @Sendable ([DocumentSnapshotItem], String, Int) async -> Void
     public var indexPendingTexts: @Sendable (_ budget: Int) async -> Void
     public var requestRebuild: @Sendable () async -> Void
+    public var saveSuggestion: @Sendable (_ documentID: Document.ID, _ specification: String, _ tags: [String]) async -> Void
+    public var clearSuggestions: @Sendable () async -> Void
 }
 
 extension ArchiveIndexerDependency: TestDependencyKey {
@@ -23,7 +25,9 @@ extension ArchiveIndexerDependency: TestDependencyKey {
         setObservedRoots: { _ in 0 },
         reconcile: { _, _, _ in },
         indexPendingTexts: { _ in },
-        requestRebuild: { }
+        requestRebuild: { },
+        saveSuggestion: { _, _, _ in },
+        clearSuggestions: { }
     )
 
     public static let testValue = Self()
@@ -44,6 +48,12 @@ extension ArchiveIndexerDependency: DependencyKey {
             },
             requestRebuild: {
                 await indexer.requestRebuild()
+            },
+            saveSuggestion: { documentID, specification, tags in
+                await indexer.saveSuggestion(documentID: documentID, specification: specification, tags: tags)
+            },
+            clearSuggestions: {
+                await indexer.clearSuggestions()
             }
         )
     }()

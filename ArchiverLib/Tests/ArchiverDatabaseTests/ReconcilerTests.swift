@@ -198,14 +198,16 @@ struct ReconcilerTests {
     func aDuplicatedIdentifierDoesNotWedgeTheRoot() async throws {
         let indexer = ArchiveIndexer()
         let generation = await indexer.setObservedRoots([archiveRoot])
-        await indexer.reconcile(
-            [
-                Self.item(id: 1, path: "/Archive/2024/2024-01-01--a__x.pdf", isTagged: true),
-                Self.item(id: 1, path: "/Archive/2024/2024-01-02--b__x.pdf", isTagged: true)
-            ],
-            root: archiveRoot,
-            generation: generation
-        )
+        await withKnownIssue("the collision is reported, not swallowed") {
+            await indexer.reconcile(
+                [
+                    Self.item(id: 1, path: "/Archive/2024/2024-01-01--a__x.pdf", isTagged: true),
+                    Self.item(id: 1, path: "/Archive/2024/2024-01-02--b__x.pdf", isTagged: true)
+                ],
+                root: archiveRoot,
+                generation: generation
+            )
+        }
 
         #expect(try await Self.allDocuments().count == 1)
     }
@@ -228,19 +230,61 @@ struct ReconcilerTests {
     }
 
     @Test
-    func replacingARootRecoversFromAFailedWrite() async throws {
+    func aFailedWriteFallsBackToReplacingTheRoot() async throws {
+        @Dependency(\.defaultDatabase) var database
         let indexer = ArchiveIndexer()
         let generation = await indexer.setObservedRoots([archiveRoot])
         await indexer.reconcile([Self.item(id: 1, path: "/Archive/2024/2024-01-01--a__x.pdf", isTagged: true)],
                                 root: archiveRoot,
                                 generation: generation)
 
-        let replacement = Self.item(id: 2, path: "/Archive/2024/2024-01-02--b__y.pdf", isTagged: true)
-        await indexer.replaceRoot(archiveRoot, with: [replacement])
+        // The diff wants to UPDATE row 1 and INSERT row 2; this makes only the update fail, so the
+        // first write throws and the "replace root" retry has to put both rows back.
+        try await database.write { db in
+            try #sql("""
+                CREATE TRIGGER "reject_updates" BEFORE UPDATE ON "documents"
+                BEGIN SELECT RAISE(ABORT, 'no updates'); END
+                """)
+                .execute(db)
+        }
+        defer {
+            try? database.write { db in
+                try #sql(#"DROP TRIGGER "reject_updates""#).execute(db)
+            }
+        }
 
-        #expect(try await Self.document(1) == nil)
-        #expect(try await Self.document(2)?.filename == "2024-01-02--b__y.pdf")
+        await withKnownIssue("the failing write is reported before the retry") {
+            await indexer.reconcile(
+                [
+                    Self.item(id: 1, path: "/Archive/2024/2024-01-02--b__x.pdf", isTagged: true),
+                    Self.item(id: 2, path: "/Archive/2024/2024-01-03--c__y.pdf", isTagged: true)
+                ],
+                root: archiveRoot,
+                generation: generation
+            )
+        }
+
+        #expect(try await Self.document(1)?.filename == "2024-01-02--b__x.pdf")
+        #expect(try await Self.document(2)?.filename == "2024-01-03--c__y.pdf")
         #expect(try await Self.tags(of: 2) == ["y"])
+    }
+
+    /// The guard is re-checked before the write, because the actor is reentrant and every rescan
+    /// bumps the generation.
+    @Test
+    func aSnapshotWhoseGenerationExpiresWhileItIsDiffedIsDropped() async throws {
+        let indexer = ArchiveIndexer()
+        let stale = await indexer.setObservedRoots([archiveRoot])
+
+        async let reconcile: Void = indexer.reconcile(
+            [Self.item(id: 1, path: "/Archive/2024/2024-01-01--a__x.pdf", isTagged: true)],
+            root: archiveRoot,
+            generation: stale
+        )
+        _ = await indexer.setObservedRoots(["anotherRoot"])
+        await reconcile
+
+        #expect(try await Self.allDocuments().isEmpty)
     }
 
     @Test

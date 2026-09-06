@@ -30,21 +30,17 @@ nonisolated public struct DocumentTag: Equatable, Sendable {
 nonisolated public struct IndexerState: Equatable, Sendable, Identifiable {
     public let id: Int
     public var isReconciling: Bool
-    public var lastReconciledAt: Date?
-    public var lastTextRunStartedAt: Date?
     public var lastTextRunFinishedAt: Date?
+    /// Set by "Rebuild search index", cleared once a text run has caught up - it is what lets that
+    /// one run afford a full `optimize`.
     public var rebuildRequested: Bool
 
     public init(id: Int = 1,
                 isReconciling: Bool = false,
-                lastReconciledAt: Date? = nil,
-                lastTextRunStartedAt: Date? = nil,
                 lastTextRunFinishedAt: Date? = nil,
                 rebuildRequested: Bool = false) {
         self.id = id
         self.isReconciling = isReconciling
-        self.lastReconciledAt = lastReconciledAt
-        self.lastTextRunStartedAt = lastTextRunStartedAt
         self.lastTextRunFinishedAt = lastTextRunFinishedAt
         self.rebuildRequested = rebuildRequested
     }
@@ -179,8 +175,6 @@ extension DependencyValues {
                 CREATE TABLE "indexerStates" (
                   "id" INTEGER PRIMARY KEY NOT NULL CHECK ("id" = 1),
                   "isReconciling" INTEGER NOT NULL DEFAULT 0,
-                  "lastReconciledAt" TEXT,
-                  "lastTextRunStartedAt" TEXT,
                   "lastTextRunFinishedAt" TEXT,
                   "rebuildRequested" INTEGER NOT NULL DEFAULT 0
                 ) STRICT

@@ -20,16 +20,6 @@ extension ArchiveIndexer {
     /// Only ever called by the platform schedulers, never by a user action: this is the expensive
     /// half of indexing and runs on external power at background quality of service.
     public func indexPendingTexts(budget: Int) async {
-        @Dependency(\.date.now) var now
-        await withErrorReporting {
-            try await database.write { db in
-                try IndexerState
-                    .find(IndexerState.singletonID)
-                    .update { $0.lastTextRunStartedAt = #bind(now) }
-                    .execute(db)
-            }
-        }
-
         let pending = await withErrorReporting {
             try await database.read { db in
                 try Self.pendingDocuments(limit: budget).fetchAll(db)
@@ -44,6 +34,12 @@ extension ArchiveIndexer {
         for document in pending {
             guard !Task.isCancelled else { break }
             let text = await Self.extractText(from: document.url)
+
+            // A cancelled parse returns partial or no text. Committing it would record an
+            // outcome for the current size and date, and `pendingDocuments` would never offer
+            // the document again until the file itself changes.
+            guard !Task.isCancelled else { break }
+
             await commit(text: text, for: document)
             indexedAnything = true
         }
@@ -62,6 +58,37 @@ extension ArchiveIndexer {
                     .find(IndexerState.singletonID)
                     .update { $0.rebuildRequested = true }
                     .execute(db)
+            }
+        }
+    }
+
+    // MARK: - Suggestions
+
+    /// Remembers what the model suggested for one document.
+    ///
+    /// Routed through the indexer so it stays the read model's only writer
+    /// (`docs/adr/0003-database-is-a-derived-read-model.md`); the suggestion is derived data like
+    /// everything else and a rebuild drops it.
+    public func saveSuggestion(documentID: Document.ID, specification: String, tags: [String]) async {
+        @Dependency(\.date.now) var now
+        await withErrorReporting {
+            try await database.write { db in
+                try DocumentSuggestion
+                    .upsert {
+                        DocumentSuggestion(documentID: documentID,
+                                           specification: specification,
+                                           tags: tags,
+                                           createdAt: now)
+                    }
+                    .execute(db)
+            }
+        }
+    }
+
+    public func clearSuggestions() async {
+        await withErrorReporting {
+            try await database.write { db in
+                try DocumentSuggestion.delete().execute(db)
             }
         }
     }
@@ -142,15 +169,40 @@ extension ArchiveIndexer {
                     // fit an expirable background budget.
                     try #sql(#"INSERT INTO "documentTexts"("documentTexts", "rank") VALUES ('merge', 16)"#).execute(db)
                 }
+
+                let isRebuilding = try IndexerState
+                    .find(IndexerState.singletonID)
+                    .select(\.rebuildRequested)
+                    .fetchOne(db) ?? false
+                let hasPendingWork = try Self.pendingCount().fetchOne(db) ?? 0 > 0
+
+                // The one moment a full `optimize` is affordable: a rebuild has just written every
+                // segment from scratch and there is nothing left to index.
+                if isRebuilding, !hasPendingWork, !Task.isCancelled {
+                    try #sql(#"INSERT INTO "documentTexts"("documentTexts", "rank") VALUES ('optimize', -1)"#).execute(db)
+                }
+
                 try IndexerState
                     .find(IndexerState.singletonID)
                     .update {
                         $0.lastTextRunFinishedAt = #bind(now)
-                        $0.rebuildRequested = false
+                        $0.rebuildRequested = #bind(hasPendingWork && isRebuilding)
                     }
                     .execute(db)
             }
         }
+    }
+
+    /// How many documents are waiting. Backs a live `@Fetch`, so it must not decode the rows.
+    static func pendingCount() -> some Statement<Int> {
+        #sql(
+            """
+            SELECT count(*)
+            FROM \(Document.self)
+            \(pendingJoinAndFilter)
+            """,
+            as: Int.self
+        )
     }
 
     /// Documents with no index state, a changed size or modification date, or an older extractor.
@@ -160,17 +212,23 @@ extension ArchiveIndexer {
             """
             SELECT \(Document.columns)
             FROM \(Document.self)
-            LEFT JOIN \(DocumentIndexState.self) ON \(DocumentIndexState.documentID) = \(Document.id)
-            WHERE \(Document.downloadStatus) >= 1
-              AND (\(DocumentIndexState.documentID) IS NULL
-                   OR \(DocumentIndexState.sourceSize) != \(Document.sizeInBytes)
-                   OR \(DocumentIndexState.sourceModificationDate) IS NOT \(Document.contentModificationDate)
-                   OR \(DocumentIndexState.extractorVersion) < \(bind: DocumentIndexState.currentExtractorVersion))
+            \(pendingJoinAndFilter)
             ORDER BY \(Document.isTagged) ASC, \(Document.date) DESC
             LIMIT \(bind: limit)
             """,
             as: Document.self
         )
+    }
+
+    private static var pendingJoinAndFilter: QueryFragment {
+        """
+        LEFT JOIN \(DocumentIndexState.self) ON \(DocumentIndexState.documentID) = \(Document.id)
+        WHERE \(Document.downloadStatus) >= 1
+          AND (\(DocumentIndexState.documentID) IS NULL
+               OR \(DocumentIndexState.sourceSize) != \(Document.sizeInBytes)
+               OR \(DocumentIndexState.sourceModificationDate) IS NOT \(Document.contentModificationDate)
+               OR \(DocumentIndexState.extractorVersion) < \(bind: DocumentIndexState.currentExtractorVersion))
+        """
     }
 }
 
@@ -196,7 +254,7 @@ extension DocumentIndexState {
         public func fetch(_ db: Database) throws -> Status {
             Status(
                 indexed: try DocumentIndexState.where { $0.outcome.eq(Outcome.indexed) }.fetchCount(db),
-                pending: try ArchiveIndexer.pendingDocuments(limit: Int.max).fetchAll(db).count,
+                pending: try ArchiveIndexer.pendingCount().fetchOne(db) ?? 0,
                 notDownloaded: try Document.where { $0.downloadStatus.lt(1) }.fetchCount(db),
                 lastRun: try IndexerState
                     .find(IndexerState.singletonID)
