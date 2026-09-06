@@ -152,18 +152,100 @@ struct AppFeatureTests {
         } withDependencies: {
             $0.documentProcessor.processStagedFiles = { }
             $0.archiveStore.reloadDocuments = { }
+            $0.premium.currentStatus = { .active }
         }
 
         await store.send(.onScenePhaseChanged(old: .background, new: .active))
+
+        await store.receive(\.premiumStatusChanged, .active) {
+            $0.$premiumStatus.withLock { $0 = .active }
+        }
     }
 
+    // Not gated on `isDocumentLoading`: a subscription can lapse in the background, and this
+    // is the only place that notices it once the scene becomes active again.
     @Test
     func scenePhaseDoesNotReloadWhileLoading() async throws {
         let store = TestStore(initialState: AppFeature.State(isDocumentLoading: true)) {
             AppFeature()
+        } withDependencies: {
+            $0.premium.currentStatus = { .inactive }
         }
 
         await store.send(.onScenePhaseChanged(old: .background, new: .active))
+
+        await store.receive(\.premiumStatusChanged, .inactive) {
+            $0.$premiumStatus.withLock { $0 = .inactive }
+        }
+    }
+
+    @Test
+    func becomingActiveReEvaluatesThePremiumStatus() async throws {
+        let store = TestStore(initialState: AppFeature.State(isDocumentLoading: false)) {
+            AppFeature()
+        } withDependencies: {
+            $0.documentProcessor.processStagedFiles = { }
+            $0.archiveStore.reloadDocuments = { }
+            $0.premium.currentStatus = { .inactive }
+        }
+
+        await store.send(.onScenePhaseChanged(old: .background, new: .active))
+
+        await store.receive(\.premiumStatusChanged, .inactive) {
+            $0.$premiumStatus.withLock { $0 = .inactive }
+        }
+    }
+
+    // MARK: - Premium Status Tests
+
+    @Test
+    func theLongBackgroundTaskPublishesThePremiumStatus() async throws {
+        let store = TestStore(initialState: AppFeature.State()) {
+            AppFeature()
+        } withDependencies: {
+            $0.documentProcessor.processStagedFiles = { }
+            $0.archiveStore.documentChanges = { AsyncStream { $0.finish() } }
+            $0.archiveStore.isLoading = { AsyncStream { $0.finish() } }
+            $0.premium.currentStatus = { .active }
+            $0.premium.transactionUpdates = { AsyncStream { $0.finish() } }
+        }
+        store.exhaustivity = .off
+
+        await store.send(.onLongBackgroundTask)
+
+        await store.receive(\.premiumStatusChanged, .active) {
+            $0.$premiumStatus.withLock { $0 = .active }
+        }
+    }
+
+    @Test
+    func aTransactionUpdateReEvaluatesThePremiumStatus() async throws {
+        let statuses = LockIsolated<[PremiumStatus]>([.inactive, .active])
+        // The continuation is driven by the test, not pre-buffered, so the effect genuinely
+        // suspends until the assertion below has observed the first status.
+        let (updates, updatesContinuation) = AsyncStream<Void>.makeStream()
+        let store = TestStore(initialState: AppFeature.State()) {
+            AppFeature()
+        } withDependencies: {
+            $0.documentProcessor.processStagedFiles = { }
+            $0.archiveStore.documentChanges = { AsyncStream { $0.finish() } }
+            $0.archiveStore.isLoading = { AsyncStream { $0.finish() } }
+            $0.premium.currentStatus = { statuses.withValue { $0.removeFirst() } }
+            $0.premium.transactionUpdates = { updates }
+        }
+
+        await store.send(.onLongBackgroundTask)
+
+        await store.receive(\.premiumStatusChanged, .inactive) {
+            $0.$premiumStatus.withLock { $0 = .inactive }
+        }
+
+        updatesContinuation.yield()
+        updatesContinuation.finish()
+
+        await store.receive(\.premiumStatusChanged, .active) {
+            $0.$premiumStatus.withLock { $0 = .active }
+        }
     }
 
     // MARK: - Widget Tests

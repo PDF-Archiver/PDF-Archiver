@@ -26,7 +26,7 @@ struct IAPView: View {
                 }
 
                 features
-                ProductView(id: "LIFETIME")
+                ProductView(id: PremiumProduct.lifetime)
                     .productViewStyle(.large)
                     .padding()
                     .overlay(
@@ -35,7 +35,7 @@ struct IAPView: View {
                     )
 
                 VStack(alignment: .leading, spacing: 16) {
-                    ForEach(["SUBSCRIPTION_YEARLY_IOS_NEW", "SUBSCRIPTION_MONTHLY_IOS"], id: \.self) { id in
+                    ForEach(PremiumProduct.subscriptions, id: \.self) { id in
                         ProductView(id: id)
                             .productViewStyle(.compact)
                     }
@@ -126,8 +126,11 @@ struct IAPView: View {
             Task {
                 do {
                     try await AppStore.sync()
+                } catch StoreKitError.userCancelled {
+                    // Dismissing the App Store sign-in is a normal outcome, not an error.
                 } catch {
-                    Logger.inAppPurchase.errorAndAssert("AppStore sync failed: \(error)")
+                    Logger.inAppPurchase.error("AppStore sync failed: \(error)")
+                    NotificationCenter.default.postAlert(error)
                 }
             }
         } label: {

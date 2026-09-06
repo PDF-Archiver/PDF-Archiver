@@ -49,6 +49,10 @@ public enum ScreenshotCase: String, CaseIterable, Sendable {
             $0.context = .preview
             $0.archiveStore = screenshotCase.archiveStore
             $0.textAnalyser = screenshotCase.textAnalyser
+            // The `.preview` context alone would select `previewValue` (`.active`), which is
+            // wrong for the `.trial` shot.
+            $0.premium = PremiumDependency(currentStatus: { screenshotCase.premiumStatus },
+                                          transactionUpdates: { AsyncStream { _ in } })
         }
     }
 
