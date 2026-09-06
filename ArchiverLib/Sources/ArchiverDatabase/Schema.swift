@@ -136,9 +136,11 @@ extension DependencyValues {
         let database = try SQLiteData.defaultDatabase()
         var migrator = DatabaseMigrator()
         #if DEBUG
+        // The read model is derived (`docs/adr/0003-database-is-a-derived-read-model.md`), so a
+        // schema change rebuilds it from the file system instead of carrying migration code.
         migrator.eraseDatabaseOnSchemaChange = true
         #endif
-        migrator.registerMigration("Create 'documents', 'documentTags' and 'indexerStates' tables") { db in
+        migrator.registerMigration("Create the read model") { db in
             try #sql("""
                 CREATE TABLE "documents" (
                   "id" INTEGER PRIMARY KEY NOT NULL,
@@ -181,8 +183,7 @@ extension DependencyValues {
                 """)
                 .execute(db)
             try #sql(#"INSERT INTO "indexerStates" ("id") VALUES (1)"#).execute(db)
-        }
-        migrator.registerMigration("Create 'documentTexts' full-text index and 'documentIndexStates' table") { db in
+
             try #sql("""
                 CREATE VIRTUAL TABLE "documentTexts" USING fts5(
                   "body",
@@ -204,8 +205,7 @@ extension DependencyValues {
                 ) STRICT
                 """)
                 .execute(db)
-        }
-        migrator.registerMigration("Create 'documentSuggestions' table") { db in
+
             try #sql("""
                 CREATE TABLE "documentSuggestions" (
                   "documentID" INTEGER PRIMARY KEY NOT NULL REFERENCES "documents"("id") ON DELETE CASCADE,

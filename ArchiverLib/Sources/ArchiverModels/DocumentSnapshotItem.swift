@@ -36,8 +36,16 @@ nonisolated public struct DocumentSnapshotItem: Equatable, Sendable {
         self.isTagged = isTagged
         self.sizeInBytes = sizeInBytes
         self.downloadStatus = downloadStatus
-        self.creationDate = creationDate
-        self.contentModificationDate = contentModificationDate
+        self.creationDate = creationDate?.truncatedToStoredPrecision()
+        self.contentModificationDate = contentModificationDate?.truncatedToStoredPrecision()
+    }
+}
+
+extension Date {
+    /// The precision the `TEXT` date columns keep. The file system supplies sub-millisecond dates,
+    /// so an untruncated one never equals the value read back and every snapshot would look changed.
+    nonisolated func truncatedToStoredPrecision() -> Date {
+        Date(timeIntervalSince1970: (timeIntervalSince1970 * 1000).rounded(.down) / 1000)
     }
 }
 

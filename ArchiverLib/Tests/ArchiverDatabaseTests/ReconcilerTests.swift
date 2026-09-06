@@ -367,7 +367,82 @@ struct ReconcilerTests {
         #expect(usage.map(\.tag) == ["bill", "energy"])
     }
 
+    // MARK: - Planning
+
+    @Test
+    func planLeavesAnUnchangedSnapshotAlone() async throws {
+        let items = [Self.item(id: 1, path: "/Archive/2024/2024-01-02--rechnung__bill.pdf", isTagged: true)]
+        let indexer = ArchiveIndexer()
+        let generation = await indexer.setObservedRoots([archiveRoot])
+        await indexer.reconcile(items, root: archiveRoot, generation: generation)
+
+        var existing: [Document.ID: Document] = [:]
+        for row in try await Self.allDocuments() {
+            existing[row.id] = row
+        }
+        var documents: [Document.ID: Document] = [:]
+        for item in items {
+            documents[item.id] = await Document.make(from: item, rootKey: archiveRoot)
+        }
+
+        let plan = ArchiveIndexer.plan(items: items, existing: existing, root: archiveRoot, documents: documents)
+
+        #expect(plan == ArchiveIndexer.ReconcilePlan())
+    }
+
+    @Test
+    func reconcilingTheIdenticalSnapshotTwiceWritesNothing() async throws {
+        @Dependency(\.defaultDatabase) var database
+        let items = [
+            Self.item(id: 1, path: "/Archive/2024/2024-01-02--rechnung__bill.pdf", isTagged: true),
+            Self.item(id: 2, path: "/Archive/untagged/scan.pdf", isTagged: false, creationDate: Self.fileSystemDate)
+        ]
+        let indexer = ArchiveIndexer()
+        let generation = await indexer.setObservedRoots([archiveRoot])
+        await indexer.reconcile(items, root: archiveRoot, generation: generation)
+        let before = try await Self.allDocuments()
+
+        // Any row the second snapshot rewrites aborts its transaction, and the reported error
+        // fails this test - a silent full rewrite cannot pass.
+        try await database.write { db in
+            try #sql("""
+                CREATE TRIGGER "reject_updates" BEFORE UPDATE ON "documents"
+                BEGIN SELECT RAISE(ABORT, 'no updates'); END
+                """)
+                .execute(db)
+        }
+        defer {
+            try? database.write { db in
+                try #sql(#"DROP TRIGGER "reject_updates""#).execute(db)
+            }
+        }
+
+        await indexer.reconcile(items, root: archiveRoot, generation: generation)
+
+        #expect(try await Self.allDocuments() == before)
+    }
+
+    @Test
+    func planOrdersTheChangedRowsNewestFirst() async throws {
+        let items = [
+            Self.item(id: 1, path: "/Archive/2024/2024-01-02--a__x.pdf", isTagged: true),
+            Self.item(id: 2, path: "/Archive/2024/2024-03-04--b__x.pdf", isTagged: true),
+            Self.item(id: 3, path: "/Archive/2024/2024-02-03--c__x.pdf", isTagged: true)
+        ]
+        var documents: [Document.ID: Document] = [:]
+        for item in items {
+            documents[item.id] = await Document.make(from: item, rootKey: archiveRoot)
+        }
+
+        let plan = ArchiveIndexer.plan(items: items, existing: [:], root: archiveRoot, documents: documents)
+
+        #expect(plan.changed.map(\.id) == [2, 3, 1])
+    }
+
     // MARK: - Helpers
+
+    /// Sub-millisecond, like the dates the file system reports.
+    private static let fileSystemDate = Date(timeIntervalSince1970: 1_759_576_537.427_740_3)
 
     private static func item(id: Document.ID,
                              path: String,
@@ -375,7 +450,7 @@ struct ReconcilerTests {
                              size: Double = 100,
                              downloadStatus: Double = 1,
                              creationDate: Date? = nil,
-                             contentModificationDate: Date? = nil) -> DocumentSnapshotItem {
+                             contentModificationDate: Date? = fileSystemDate) -> DocumentSnapshotItem {
         DocumentSnapshotItem(id: id,
                              url: URL(filePath: path),
                              isTagged: isTagged,

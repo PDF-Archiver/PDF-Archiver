@@ -69,57 +69,20 @@ public actor ArchiveIndexer {
             existing[row.id] = row
         }
 
-        // One row per id within this snapshot, last one wins: a duplicate would otherwise abort
-        // the whole transaction. Duplicates across roots are not covered - see `isCurrent`.
-        var items = items
-        var seenIDs: Set<Document.ID> = []
-        items = items.reversed().filter { item in
-            guard seenIDs.insert(item.id).inserted else {
-                reportIssue("Two files of root \(root) share document id \(item.id): \(item.url.path())")
-                return false
-            }
-            return true
-        }
-        .reversed()
+        let items = Self.deduplicated(items, root: root)
 
-        var changed: [Document] = []
-        var tagsToRewrite: Set<Document.ID> = []
+        var documents: [Document.ID: Document] = [:]
         for item in items {
-            guard let row = existing[item.id] else {
-                changed.append(await Document.make(from: item, rootKey: root))
-                tagsToRewrite.insert(item.id)
-                continue
-            }
-
-            let sameFile = row.rootKey == root && row.url == item.url && row.isTagged == item.isTagged
-            guard !(sameFile
-                    && row.sizeInBytes == item.sizeInBytes
-                    && row.downloadStatus == item.downloadStatus
-                    && row.contentModificationDate == item.contentModificationDate) else { continue }
-
-            guard sameFile else {
-                // The name decides date, specification and tags, so a move re-parses; the id and
-                // the indexed text survive.
-                changed.append(await Document.make(from: item, rootKey: root))
-                tagsToRewrite.insert(item.id)
-                continue
-            }
-
-            var updated = row
-            updated.sizeInBytes = item.sizeInBytes
-            updated.downloadStatus = item.downloadStatus
-            updated.contentModificationDate = item.contentModificationDate
-            changed.append(updated)
+            documents[item.id] = await Document.make(from: item, rootKey: root)
         }
-
-        let absentIDs = Set(existing.keys).subtracting(items.map(\.id))
+        let plan = Self.plan(items: items, existing: existing, root: root, documents: documents)
 
         // Re-checked here, not only at entry: the actor is reentrant, and `setObservedRoots` runs
         // after every rescan, so the diff above may describe a generation that is already gone.
         guard isCurrent(root: root, generation: generation) else { return }
 
         do {
-            try await write(changed: changed, tagsToRewrite: tagsToRewrite, absentIDs: absentIDs)
+            try await write(changed: plan.changed, tagsToRewrite: plan.tagsToRewrite, absentIDs: plan.absentIDs)
         } catch {
             reportIssue(error)
             // A cancelled write is not a failed one: rewriting the root from a snapshot the app has
@@ -138,6 +101,68 @@ public actor ArchiveIndexer {
                     .execute(db)
             }
         }
+    }
+
+    // MARK: - Planning
+
+    /// What one snapshot changes about the stored rows of its root.
+    struct ReconcilePlan: Equatable, Sendable {
+        /// Newest first, so the top of the archive list is right as soon as the first rows land.
+        var changed: [Document] = []
+        var tagsToRewrite: Set<Document.ID> = []
+        var absentIDs: Set<Document.ID> = []
+    }
+
+    /// One row per id within a snapshot, last one wins: a duplicate would otherwise abort the
+    /// whole transaction. Duplicates across roots are not covered - see `isCurrent`.
+    static func deduplicated(_ items: [DocumentSnapshotItem], root: String) -> [DocumentSnapshotItem] {
+        var seenIDs: Set<Document.ID> = []
+        return items.reversed().filter { item in
+            guard seenIDs.insert(item.id).inserted else {
+                reportIssue("Two files of root \(root) share document id \(item.id): \(item.url.path())")
+                return false
+            }
+            return true
+        }
+        .reversed()
+    }
+
+    /// Diffs one snapshot against the stored rows.
+    ///
+    /// Pure, so "an unchanged snapshot changes nothing" is one assertion instead of an observation
+    /// dance. `documents` carries the row each item's filename parses into.
+    static func plan(items: [DocumentSnapshotItem],
+                     existing: [Document.ID: Document],
+                     root: String,
+                     documents: [Document.ID: Document]) -> ReconcilePlan {
+        var plan = ReconcilePlan()
+        for item in items {
+            if let row = existing[item.id], row.rootKey == root, row.url == item.url, row.isTagged == item.isTagged {
+                guard !(row.sizeInBytes == item.sizeInBytes
+                        && row.downloadStatus == item.downloadStatus
+                        && row.contentModificationDate == item.contentModificationDate) else { continue }
+
+                var updated = row
+                updated.sizeInBytes = item.sizeInBytes
+                updated.downloadStatus = item.downloadStatus
+                updated.contentModificationDate = item.contentModificationDate
+                plan.changed.append(updated)
+                continue
+            }
+
+            // New, or moved: the name decides date, specification and tags, so it is re-parsed.
+            // The id and the indexed text survive a move.
+            guard let document = documents[item.id] else {
+                reportIssue("No parsed row for document id \(item.id) of root \(root)")
+                continue
+            }
+            plan.changed.append(document)
+            plan.tagsToRewrite.insert(item.id)
+        }
+
+        plan.absentIDs = Set(existing.keys).subtracting(items.map(\.id))
+        plan.changed.sort { $0.date > $1.date }
+        return plan
     }
 
     // MARK: - Writing
