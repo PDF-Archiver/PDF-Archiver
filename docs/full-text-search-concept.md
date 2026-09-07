@@ -642,6 +642,11 @@ true, before any bookkeeping, so the next scheduled run simply repeats the attem
 the user is waiting for, and a text commit would otherwise queue ahead of a reconcile chunk on the
 single writer connection.
 
+The gate has a deadline (`ArchiveIndexer.reconcileDeadline`, 15 minutes from the first deferred run
+of the process): an observed root whose provider never yields leaves `rootsAwaitingFirstSnapshot`
+non-empty, and without the deadline the text index would never grow again in that process. A
+reconcile that cannot even read its stored rows lowers the flag itself rather than leaving it up.
+
 ```
 pending = documents d
           LEFT JOIN documentIndexStates s ON s.documentID = d.id
@@ -706,7 +711,9 @@ iOS (`BackgroundTaskManager`):
 - A cold background launch has no scene, so nothing else starts the folder scan. The handler
   therefore first calls `try await archiveStore.reloadDocuments()` (which runs `update`, hence
   `setObservedRoots`, which raises `isReconciling` before the call returns), then waits for
-  `indexerStates.isReconciling == false` with the existing 30-second cap, runs OCR (existing), then
+  `indexerStates.isReconciling == false` through `archiveIndexer.waitWhileReconciling(_:)` with a
+  five-minute cap - the metadata gather of a 3.000-document iCloud archive alone takes about half a
+  minute, and a run that stops waiting before it lands indexes nothing - runs OCR (existing), then
   `indexPendingTexts`, then the AI cache pass, then reschedules. `bootstrapDatabase()` runs in
   `@main.init` before any handler can fire, so its flag reset cannot race the wait.
 - The expiration handler cancels the indexer task; extraction observes cancellation per page, so the
@@ -1055,7 +1062,7 @@ extension ArchiverFeaturesBaseSuite {
 | `Statistics` | `apply(documents:)`, `isLoading` overlay | `@Fetch(StatisticsRequest()) var stats = Statistics.Values()`: total, untagged, bytes, `yearCounts(taggedOnly: false)`, top-10 tags; bridged into the reducer with `.publisher { state.$stats.publisher }` exactly as `$documents.publisher` is today; `isLoading` is dropped |
 | `AppFeature` | `apply(documents:)`, `isDocumentLoading`, widget update, untagged processing trigger | `@Fetch(AppProjectionRequest()) var projection = AppProjection()` (`isReconciling`, `untaggedCount`, `yearCounts(taggedOnly: false)` for the widget, tagged-only years and top tags for the tab and search suggestions, one `FetchKeyRequest` because they change together) and `@FetchAll(Document.inbox) var inbox`. `isDocumentLoading` becomes `projection.isReconciling` (toolbar progress indicator, scene-phase reload guard); `.isLoadingChanged` goes. On `onLongBackgroundTask`: `.merge(.publisher { state.$projection.publisher.map(Action.projectionChanged) }, .publisher { state.$inbox.publisher.map(Action.inboxChanged) })`. `projectionChanged` updates tab suggestions and calls `widgetStore.updateWidget(yearCounts:untaggedCount:)`; `inboxChanged` drives prefetch and the cancellable `processUntaggedDocuments` |
 | `selectNextDocument` | Walks the in-memory array | Synchronous, from rows already in state: the row after the current one in `state.untaggedDocumentList.documents` (inbox flow) or `state.archiveList.rows` (archive flow); then `documentDetails = .init(document:)`. No query, no async hop |
-| `BackgroundTaskManager` | `archiveStore.getDocuments()` after `isLoading` | `archiveStore.reloadDocuments()` first (starts the scan on a cold launch), waits for `isReconciling == false` (30-second cap), reads `Document.inbox` once with `database.read` for the OCR pass, then `indexPendingTexts`; keeps `@Dependency(\.archiveStore)` for the opt-in downloads |
+| `BackgroundTaskManager` | `archiveStore.getDocuments()` after `isLoading` | `archiveStore.reloadDocuments()` first (starts the scan on a cold launch), waits for `isReconciling == false` (`waitWhileReconciling`, five-minute cap), reads `Document.inbox` once with `database.read` for the OCR pass, then `indexPendingTexts`; keeps `@Dependency(\.archiveStore)` for the opt-in downloads |
 | `ExpertSettings` | – | `@Fetch(DocumentIndexState.StatusRequest()) var status = DocumentIndexState.Status()`, `@Dependency(\.archiveIndexer)` for `requestRebuild` |
 | `ScreenshotCase` | `state.apply(documents:)`, `isDocumentLoading = false`, stubbed store | Seeds the database inside the single `prepareDependencies` block (section 11); `isReconciling` is `0` by default |
 | Widget | `SharedDefaults` | Unchanged; the projection is written from `projectionChanged` |
@@ -1119,6 +1126,13 @@ commit, per the repository's localization workflow.
   `ScreenshotCase.prepareIfRequested()` becomes `ScreenshotCase.prepare(_ values: inout DependencyValues)`
   with those two hooks. Today's order (screenshot block first, its own `prepareDependencies`) would
   either seed the developer's real database or prepare the database twice.
+- **A database that cannot be migrated is recreated.** `bootstrapDatabase()` reports the failed
+  migration, deletes the file plus its `-wal` and `-shm` siblings and opens a fresh one - safe
+  because the read model is derived (ADR 0003), and the only alternative is SQLiteData's blank
+  in-memory fallback, which rebuilds the archive on every launch and never persists a text index.
+  If the second attempt fails too, `@Shared(.searchIndexUnavailable)` records it and the search
+  index settings screen says so; `eraseDatabaseOnSchemaChange` stays `#if DEBUG`, because it would
+  throw away every extracted text body on any future schema change.
 - **Database kinds.** Previews and screenshot runs (`context = .preview`) get an in-memory database;
   the test context gets a `DatabasePool` at a temporary file, fresh per `.dependencies` trait
   invocation. Both are isolated and disposable; only tests that reason about WAL or concurrent

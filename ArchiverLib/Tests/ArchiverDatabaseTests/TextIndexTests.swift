@@ -55,6 +55,58 @@ struct TextIndexTests {
         #expect(try await Self.lastRun() == nil)
     }
 
+    /// The cold-start sequence a background run follows: wait out the reconcile, then index. It
+    /// used to give up after 30 seconds and index nothing at all.
+    @Test
+    func theTextPassStartsOnceTheReconcileFinishes() async throws {
+        try await Self.seed(id: -1, fixture: "text-layer")
+        @Dependency(\.defaultDatabase) var database
+        try await database.write { db in
+            try IndexerState.find(IndexerState.singletonID).update { $0.isReconciling = true }.execute(db)
+        }
+        let indexer = ArchiveIndexer()
+
+        let run = Task {
+            let reconciled = await indexer.waitWhileReconciling(timeout: .seconds(30))
+            await indexer.indexPendingTexts(budget: 10)
+            return reconciled
+        }
+        // Long enough for the observation to be live; the flag is what holds the run, not the sleep.
+        try await Task.sleep(for: .milliseconds(200))
+        #expect(try await Self.outcome(of: -1) == nil)
+
+        try await database.write { db in
+            try IndexerState.find(IndexerState.singletonID).update { $0.isReconciling = false }.execute(db)
+        }
+
+        let reconciled = await run.value
+        #expect(reconciled)
+        #expect(try await Self.outcome(of: -1) == .indexed)
+    }
+
+    /// The provider of an observed root never yields, so nothing ever lowers the flag.
+    @Test
+    func aReconcileFlagThatNeverClearsStopsBlockingTheTextPass() async throws {
+        try await Self.seed(id: -1, fixture: "text-layer")
+        @Dependency(\.defaultDatabase) var database
+        try await database.write { db in
+            try IndexerState.find(IndexerState.singletonID).update { $0.isReconciling = true }.execute(db)
+        }
+        let indexer = ArchiveIndexer()
+
+        await indexer.indexPendingTexts(budget: 10)
+        #expect(try await Self.outcome(of: -1) == nil)
+
+        @Dependency(\.date.now) var now
+        await withDependencies {
+            $0.date = .constant(now.addingTimeInterval(ArchiveIndexer.reconcileDeadline))
+        } operation: {
+            await indexer.indexPendingTexts(budget: 10)
+        }
+
+        #expect(try await Self.outcome(of: -1) == .indexed)
+    }
+
     @Test
     func doesNotIndexMojibake() async throws {
         try await Self.seed(id: -1, fixture: "mojibake")

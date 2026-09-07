@@ -30,6 +30,10 @@ public actor BackgroundTaskManager: Log {
     /// archive takes several nights - accepted, the settings screen shows the progress.
     private static let indexBudget = 50
 
+    /// How long a cold start may take before the run gives up on the metadata. The iCloud metadata
+    /// gather of a 3.000-document archive needs about half a minute, a first download far longer.
+    private static let initialLoadTimeout = Duration.seconds(5 * 60)
+
     @Dependency(\.archiveIndexer) var archiveIndexer
     @Dependency(\.defaultDatabase) var database
     @Dependency(\.documentProcessor) var documentProcessor
@@ -158,25 +162,13 @@ public actor BackgroundTaskManager: Log {
         Self.scheduleCacheProcessing()
     }
 
-    /// Wait until the initial reconcile has finished, but no longer than a fixed
-    /// timeout - the background execution window is limited.
+    /// Waits for the metadata reconcile, which the text pass is gated on.
+    ///
+    /// The wait ends early when the task expires: the cancellation stops the sleep as well.
     private func waitForInitialDocumentLoad() async {
-        await withTaskGroup(of: Void.self) { group in
-            group.addTask { [database] in
-                @FetchOne(IndexerState.find(IndexerState.singletonID).select(\.isReconciling), database: database)
-                var isReconciling = true
-                for await value in $isReconciling.publisher.values where !value {
-                    return
-                }
-            }
-            group.addTask {
-                try? await Task.sleep(for: .seconds(30))
-                guard !Task.isCancelled else { return }
-                Logger.backgroundTask.warning("Timed out waiting for the initial document load")
-            }
-            await group.next()
-            group.cancelAll()
-        }
+        let reconciled = await archiveIndexer.waitWhileReconciling(Self.initialLoadTimeout)
+        guard !reconciled else { return }
+        Logger.backgroundTask.warning("Timed out waiting for the initial document load")
     }
 }
 #endif

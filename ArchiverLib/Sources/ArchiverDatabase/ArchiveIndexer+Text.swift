@@ -20,14 +20,8 @@ extension ArchiveIndexer {
     /// Only ever called by the platform schedulers, never by a user action: this is the expensive
     /// half of indexing and runs on external power at background quality of service.
     public func indexPendingTexts(budget: Int) async {
-        // Metadata first: the list is what the user is waiting for, and a text commit would queue
-        // ahead of a reconcile chunk on the single writer connection.
-        let isReconciling = await withErrorReporting {
-            try await database.read { db in
-                try IndexerState.find(IndexerState.singletonID).select(\.isReconciling).fetchOne(db) ?? false
-            }
-        }
-        guard isReconciling == false else { return }
+        // Returns before any bookkeeping, so the next scheduled run repeats the attempt.
+        guard await mayStartTextPass() else { return }
 
         let pending = await withErrorReporting {
             try await database.read { db in

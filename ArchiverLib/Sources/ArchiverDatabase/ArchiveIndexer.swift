@@ -23,10 +23,18 @@ public actor ArchiveIndexer {
     private var rootsAwaitingFirstSnapshot: Set<String> = []
     /// Whether rows of roots this generation no longer observes still have to go.
     private var needsPrune = false
+    /// When this process first held a text pass back for a running reconcile.
+    private var textPassDeferredSince: Date?
 
     /// Rows per write transaction. Small enough that the newest documents are on screen within a
     /// fraction of a second, large enough not to pay a transaction per document.
     static let chunkSize = 250
+
+    /// How long the text pass defers to a reconcile before it starts anyway.
+    ///
+    /// `rootsAwaitingFirstSnapshot` never empties when an observed root's provider stops yielding,
+    /// and the text index would then not grow again for the rest of the process.
+    static let reconcileDeadline: TimeInterval = 15 * 60
 
     public init() {}
 
@@ -68,7 +76,12 @@ public actor ArchiveIndexer {
                 try Document.where { $0.rootKey.eq(root) }.fetchAll(db)
             }
         }
-        guard let read else { return }
+        guard let read else {
+            // Nothing more arrives for this root now, and the raised flag would leave both the
+            // progress indicator and the gated text pass waiting for a snapshot that never lands.
+            clearReconciling()
+            return
+        }
         for row in read {
             existing[row.id] = row
         }
@@ -101,6 +114,60 @@ public actor ArchiveIndexer {
 
         rootsAwaitingFirstSnapshot.remove(root)
         guard rootsAwaitingFirstSnapshot.isEmpty else { return }
+        clearReconciling()
+    }
+
+    /// Waits out a running reconcile, at most `timeout`; `false` means it is still running.
+    ///
+    /// A cold background launch enumerates the whole archive first, which takes minutes on a large
+    /// iCloud archive - a caller that gives up earlier finds the text pass gated and indexes
+    /// nothing.
+    public func waitWhileReconciling(timeout: Duration) async -> Bool {
+        await withTaskGroup(of: Bool.self) { group in
+            group.addTask { [database] in
+                @FetchOne(IndexerState.find(IndexerState.singletonID).select(\.isReconciling), database: database)
+                var isReconciling = true
+                for await value in $isReconciling.publisher.values where !value {
+                    return true
+                }
+                return false
+            }
+            group.addTask {
+                try? await Task.sleep(for: timeout)
+                return false
+            }
+            let reconciled = await group.next() ?? false
+            group.cancelAll()
+            return reconciled
+        }
+    }
+
+    /// Whether a text pass may take the writer connection now.
+    ///
+    /// Metadata first: the list is what the user is waiting for, and a text commit would queue
+    /// ahead of a reconcile chunk on the single writer connection.
+    func mayStartTextPass() async -> Bool {
+        @Dependency(\.date.now) var now
+        let isReconciling = await withErrorReporting {
+            try await database.read { db in
+                try IndexerState.find(IndexerState.singletonID).select(\.isReconciling).fetchOne(db) ?? false
+            }
+        }
+        // A read that fails means writing would fail too, so the next scheduled run tries again.
+        guard let isReconciling else { return false }
+        guard isReconciling else {
+            textPassDeferredSince = nil
+            return true
+        }
+        guard let deferredSince = textPassDeferredSince else {
+            textPassDeferredSince = now
+            return false
+        }
+        return now.timeIntervalSince(deferredSince) >= Self.reconcileDeadline
+    }
+
+    /// Lowers the flag - what every path that stops reconciling still owes the UI.
+    private func clearReconciling() {
         withErrorReporting {
             try database.write { db in
                 try Self.setReconciling(false, in: db)

@@ -348,6 +348,28 @@ struct ReconcilerTests {
         #expect(try await Self.isReconciling() == false)
     }
 
+    /// A reconcile that cannot even read the stored rows still has to lower the flag: it gates the
+    /// progress indicator and the text pass.
+    @Test
+    func aFailedReadClearsTheReconcilingFlag() async throws {
+        let indexer = ArchiveIndexer()
+        let generation = await indexer.setObservedRoots([archiveRoot])
+        #expect(try await Self.isReconciling())
+
+        @Dependency(\.defaultDatabase) var database
+        try await database.write { db in
+            try #sql(#"DROP TABLE "documents""#).execute(db)
+        }
+
+        await withKnownIssue("the failed read is reported") {
+            await indexer.reconcile([Self.item(id: 1, path: "/Archive/2024/2024-01-02--a__x.pdf", isTagged: true)],
+                                    root: archiveRoot,
+                                    generation: generation)
+        }
+
+        #expect(try await Self.isReconciling() == false)
+    }
+
     @Test
     func tagCountObservationRefreshesAfterAReconcile() async throws {
         let indexer = ArchiveIndexer()
