@@ -62,9 +62,11 @@ struct AppFeatureTests {
     @Test
     func documentsChangedSortsAndUpdates() async throws {
         let currentYear = Calendar.current.component(.year, from: Date())
-        let document1 = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: true)
-        let document2 = Document.mock(url: URL(string: "https://example.com/2")!, isTagged: true)
-        let document3 = Document.mock(url: URL(string: "https://example.com/3")!, isTagged: false)
+        // Distinct dates make the descending sort below deterministic - colliding `Date()`
+        // defaults left the order of same-instant documents unspecified.
+        let document1 = Document.mock(url: URL(string: "https://example.com/1")!, date: Date().addingTimeInterval(-120), isTagged: true)
+        let document2 = Document.mock(url: URL(string: "https://example.com/2")!, date: Date().addingTimeInterval(-60), isTagged: true)
+        let document3 = Document.mock(url: URL(string: "https://example.com/3")!, date: Date(), isTagged: false)
 
         let store = TestStore(initialState: AppFeature.State()) {
             AppFeature()
