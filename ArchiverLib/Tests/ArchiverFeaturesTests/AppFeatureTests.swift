@@ -90,9 +90,11 @@ struct AppFeatureTests {
     @Test
     func documentsChangedCreatesTagSuggestions() async throws {
         let currentYear = Calendar.current.component(.year, from: Date())
-        let doc1 = Document.mock(url: URL(string: "https://example.com/1")!, tags: ["invoice", "work"], isTagged: true)
-        let doc2 = Document.mock(url: URL(string: "https://example.com/2")!, tags: ["invoice", "personal"], isTagged: true)
-        let doc3 = Document.mock(url: URL(string: "https://example.com/3")!, tags: ["invoice"], isTagged: true)
+        // Distinct dates make the descending sort below deterministic - colliding `Date()`
+        // defaults left the order of same-instant documents unspecified.
+        let doc1 = Document.mock(url: URL(string: "https://example.com/1")!, date: Date().addingTimeInterval(-120), tags: ["invoice", "work"], isTagged: true)
+        let doc2 = Document.mock(url: URL(string: "https://example.com/2")!, date: Date().addingTimeInterval(-60), tags: ["invoice", "personal"], isTagged: true)
+        let doc3 = Document.mock(url: URL(string: "https://example.com/3")!, date: Date(), tags: ["invoice"], isTagged: true)
 
         let store = TestStore(initialState: AppFeature.State()) {
             AppFeature()
