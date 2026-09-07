@@ -44,7 +44,10 @@ let package = Package(
                     "ArchiverModels",
                     .product(name: "SQLiteData", package: "sqlite-data"),
                     .product(name: "Dependencies", package: "swift-dependencies"),
-                    .product(name: "DependenciesMacros", package: "swift-dependencies")
+                    .product(name: "DependenciesMacros", package: "swift-dependencies"),
+                    // For the one shared key `bootstrapDatabase` writes: the `Shared` target would
+                    // pull all of the Composable Architecture in here for it.
+                    .product(name: "Sharing", package: "swift-sharing")
                 ]),
         .target(name: "ArchiverFeatures",
                 dependencies: [

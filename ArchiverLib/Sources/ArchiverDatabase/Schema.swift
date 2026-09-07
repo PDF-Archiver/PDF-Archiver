@@ -8,6 +8,7 @@
 import ArchiverModels
 import Dependencies
 import Foundation
+import Sharing
 import SQLiteData
 
 /// One tag of one document, derived from `Document.tags`.
@@ -128,13 +129,97 @@ nonisolated public struct DocumentSuggestion: Identifiable, Equatable, Sendable 
     }
 }
 
+extension SharedKey where Self == AppStorageKey<Bool>.Default {
+    /// `true` while the read model could not be opened at all.
+    ///
+    /// Stored rather than posted as an alert: `bootstrapDatabase()` runs in `App.init()`, where no
+    /// view is listening yet - the search index settings screen reads it when it is shown.
+    public static var searchIndexUnavailable: Self {
+        Self[.appStorage("shared-search-index-unavailable"), default: false]
+    }
+}
+
 extension DependencyValues {
     /// Opens the read model and brings its schema up to date.
     ///
     /// Must run before the first dependency access - `defaultDatabase` may be prepared only once
     /// per process.
     public mutating func bootstrapDatabase() throws {
-        let database = try SQLiteData.defaultDatabase()
+        try bootstrapDatabase(path: nil)
+    }
+
+    /// `path` is the seam the recreate-on-failure test needs: SQLiteData derives the app's own
+    /// location, which a test must not touch.
+    mutating func bootstrapDatabase(path: String?) throws {
+        @Shared(.searchIndexUnavailable) var searchIndexUnavailable
+
+        do {
+            let database = try ReadModel.open(at: path)
+
+            // A crash mid-scan would otherwise leave the progress indicator up forever.
+            try database.write { db in
+                try IndexerState
+                    .find(IndexerState.singletonID)
+                    .update { $0.isReconciling = false }
+                    .execute(db)
+            }
+
+            // Only on a change: every launch passes here, and a write wakes every observer.
+            if searchIndexUnavailable {
+                $searchIndexUnavailable.withLock { $0 = false }
+            }
+            defaultDatabase = database
+        } catch {
+            // `defaultDatabase` stays unset, so SQLiteData answers every query from a blank
+            // in-memory database - without this flag the app would only look empty.
+            $searchIndexUnavailable.withLock { $0 = true }
+            throw error
+        }
+    }
+}
+
+/// Opening the read model file, separate from the dependency that stores the connection.
+private enum ReadModel {
+    /// Opens the database and migrates it, recreating the file if that migration fails.
+    static func open(at path: String?) throws -> any DatabaseWriter {
+        let migrator = makeMigrator()
+        let database = try SQLiteData.defaultDatabase(path: path)
+        do {
+            try migrator.migrate(database)
+            return database
+        } catch {
+            reportIssue(error)
+
+            // Recreating is safe because every table is derived from the file system
+            // (`docs/adr/0003-database-is-a-derived-read-model.md`): it costs one rescan, where a
+            // database that cannot be migrated costs the index for good.
+            try? database.close()  // best effort: the file is unlinked either way
+            try removeFiles(of: database)
+            let recreated = try SQLiteData.defaultDatabase(path: path)
+            try migrator.migrate(recreated)
+            return recreated
+        }
+    }
+
+    /// Removes the database file and the `-wal` / `-shm` siblings SQLite keeps beside it.
+    ///
+    /// A `-wal` a crash left behind is exactly the state the fresh file must not inherit.
+    private static func removeFiles(of database: any DatabaseWriter) throws {
+        let path = fileURL(ofDatabaseAt: database.path).path(percentEncoded: false)
+        let manager = FileManager.default
+        for file in [path, path + "-wal", path + "-shm"] where manager.fileExists(atPath: file) {
+            try manager.removeItem(atPath: file)
+        }
+    }
+
+    /// GRDB reports the string the connection was opened with: `SQLiteData.defaultDatabase` builds
+    /// that from `applicationSupportDirectory` as a `file://` URI, a test passes a plain path.
+    private static func fileURL(ofDatabaseAt path: String) -> URL {
+        guard let uri = URL(string: path), uri.isFileURL else { return URL(filePath: path) }
+        return uri
+    }
+
+    private static func makeMigrator() -> DatabaseMigrator {
         var migrator = DatabaseMigrator()
         #if DEBUG
         // The read model is derived (`docs/adr/0003-database-is-a-derived-read-model.md`), so a
@@ -218,16 +303,6 @@ extension DependencyValues {
                 """)
                 .execute(db)
         }
-        try migrator.migrate(database)
-
-        // A crash mid-scan would otherwise leave the progress indicator up forever.
-        try database.write { db in
-            try IndexerState
-                .find(IndexerState.singletonID)
-                .update { $0.isReconciling = false }
-                .execute(db)
-        }
-
-        defaultDatabase = database
+        return migrator
     }
 }

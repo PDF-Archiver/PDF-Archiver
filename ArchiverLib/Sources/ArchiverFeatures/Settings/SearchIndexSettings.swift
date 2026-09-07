@@ -25,6 +25,9 @@ struct SearchIndexSettings {
         @SharedReader(.premiumStatus)
         var premiumStatus: PremiumStatus = .loading
 
+        @SharedReader(.searchIndexUnavailable)
+        var searchIndexUnavailable: Bool
+
         @Fetch(DocumentIndexState.StatusRequest()) var status = DocumentIndexState.Status()
     }
 
@@ -84,6 +87,19 @@ struct SearchIndexSettingsView: View {
 
     var body: some View {
         Form {
+            // The only place a failed `bootstrapDatabase()` can reach the user: it runs in
+            // `App.init()`, where no view is around to present an alert.
+            if store.searchIndexUnavailable {
+                Section {
+                    Label {
+                        Text("The search index could not be created. Rebuilding it may help.", bundle: #bundle)
+                    } icon: {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundStyle(.orange)
+                    }
+                }
+            }
+
             Section {
                 if store.premiumStatus == .active {
                     progress

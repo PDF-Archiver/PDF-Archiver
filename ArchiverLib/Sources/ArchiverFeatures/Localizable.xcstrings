@@ -1672,6 +1672,16 @@
         }
       }
     },
+    "The search index could not be created. Rebuilding it may help.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Suchindex konnte nicht erstellt werden. Ein Neuaufbau kann helfen."
+          }
+        }
+      }
+    },
     "The text layer of this document could not be created. Please try again.": {
       "localizations": {
         "de": {
