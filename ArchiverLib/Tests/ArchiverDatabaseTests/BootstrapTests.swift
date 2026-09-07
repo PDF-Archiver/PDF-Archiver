@@ -20,14 +20,19 @@ import Testing
 struct BootstrapTests {
     /// A database an older build wrote: the migration hits `CREATE TABLE "documents"` on a table
     /// that is already there, and the app used to end up on a blank in-memory database instead.
-    @Test
-    func recreatesADatabaseThatCannotBeMigrated() async throws {
-        let directory = URL.temporaryDirectory.appending(component: UUID().uuidString)
+    ///
+    /// Both forms of the location, because `SQLiteData.defaultDatabase` opens the app's database by
+    /// `file://` URI and the deletion has to lead back to the same three files.
+    @Test(arguments: [false, true])
+    func recreatesADatabaseThatCannotBeMigrated(openedByURI: Bool) async throws {
+        // A space in the name, so the URI really percent-encodes - "Application Support" has one.
+        let directory = URL.temporaryDirectory.appending(component: "\(UUID().uuidString) Support")
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: directory) }
         let path = directory.appending(component: "SQLiteData.db").path(percentEncoded: false)
+        let openPath = openedByURI ? URL(filePath: path).absoluteString : path
 
-        let stale = try DatabaseQueue(path: path)
+        let stale = try DatabaseQueue(path: openPath)
         try await stale.write { db in
             try db.execute(sql: #"CREATE TABLE "documents" ("nonsense" TEXT)"#)
         }
@@ -48,7 +53,7 @@ struct BootstrapTests {
                 $0.context = .live
             } operation: {
                 try withDependencies { values in
-                    try values.bootstrapDatabase(path: path)
+                    try values.bootstrapDatabase(path: openPath)
                 } operation: {
                     @Dependency(\.defaultDatabase) var database
                     opened = database
@@ -57,7 +62,7 @@ struct BootstrapTests {
         }
 
         let database = try #require(opened, "the app must not fall back to an in-memory database")
-        #expect(database.path == path)
+        #expect(database.path == openPath)
         #expect(try Self.fileIdentifier(of: path) != staleFileID)
         #expect((try? Self.fileIdentifier(of: path + "-wal")) != staleWalID)
 
