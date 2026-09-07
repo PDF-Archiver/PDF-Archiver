@@ -28,6 +28,7 @@ struct UntaggedDocumentList {
 
         enum Delegate {
             case onCancelIapButtonTapped
+            case onIapPurchaseCompleted
         }
     }
 
@@ -79,9 +80,11 @@ struct UntaggedDocumentListView: View {
             }
             #else
             if store.premiumStatus == .inactive {
-                IAPView {
+                IAPView(onCancel: {
                     store.send(.delegate(.onCancelIapButtonTapped))
-                }
+                }, onPurchaseCompleted: {
+                    store.send(.delegate(.onIapPurchaseCompleted))
+                })
             } else if store.untaggedDocuments.isEmpty {
                 ContentUnavailableView(String(localized: "No document", bundle: #bundle),
                                        systemImage: "checkmark.seal",
@@ -96,9 +99,11 @@ struct UntaggedDocumentListView: View {
         }
         #if os(macOS)
         .sheet(isPresented: .init(get: { store.premiumStatus == .inactive }, set: { _ in }), content: {
-            IAPView {
+            IAPView(onCancel: {
                 store.send(.delegate(.onCancelIapButtonTapped))
-            }
+            }, onPurchaseCompleted: {
+                store.send(.delegate(.onIapPurchaseCompleted))
+            })
         })
         #endif
         .sensoryFeedback(.selection, trigger: store.selectedDocumentId)

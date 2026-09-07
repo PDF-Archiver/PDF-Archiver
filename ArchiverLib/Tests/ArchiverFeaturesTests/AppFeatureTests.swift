@@ -221,8 +221,8 @@ struct AppFeatureTests {
     @Test
     func aTransactionUpdateReEvaluatesThePremiumStatus() async throws {
         let statuses = LockIsolated<[PremiumStatus]>([.inactive, .active])
-        // The continuation is driven by the test, not pre-buffered, so the effect genuinely
-        // suspends until the assertion below has observed the first status.
+        // The continuation is driven by the test rather than yielded up front, so the second
+        // value is only produced after the assertion below has consumed the first one.
         let (updates, updatesContinuation) = AsyncStream<Void>.makeStream()
         let store = TestStore(initialState: AppFeature.State()) {
             AppFeature()
@@ -242,6 +242,23 @@ struct AppFeatureTests {
 
         updatesContinuation.yield()
         updatesContinuation.finish()
+
+        await store.receive(\.premiumStatusChanged, .active) {
+            $0.$premiumStatus.withLock { $0 = .active }
+        }
+    }
+
+    /// A same-device purchase completes through `Product.PurchaseResult`, not `Transaction.updates`
+    /// - `IAPView`'s `onInAppPurchaseCompletion` is the only place that notices it.
+    @Test
+    func aSameDeviceIAPPurchaseReEvaluatesThePremiumStatus() async throws {
+        let store = TestStore(initialState: AppFeature.State()) {
+            AppFeature()
+        } withDependencies: {
+            $0.premium.currentStatus = { .active }
+        }
+
+        await store.send(.untaggedDocumentList(.delegate(.onIapPurchaseCompleted)))
 
         await store.receive(\.premiumStatusChanged, .active) {
             $0.$premiumStatus.withLock { $0 = .active }

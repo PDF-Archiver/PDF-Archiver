@@ -299,6 +299,13 @@ struct AppFeature {
                 case .onCancelIapButtonTapped:
                     state.selectedTab = .search
                     return .none
+
+                case .onIapPurchaseCompleted:
+                    // A same-device purchase completes through `Product.PurchaseResult`, not
+                    // `Transaction.updates`, so this is the only trigger for it.
+                    return .run { send in
+                        await send(.premiumStatusChanged(premium.currentStatus()))
+                    }
                 }
 
             case .untaggedDocumentList:

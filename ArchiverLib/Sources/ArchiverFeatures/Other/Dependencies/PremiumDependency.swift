@@ -44,11 +44,11 @@ extension PremiumDependency: DependencyKey {
                                                        productID: transaction.productID,
                                                        subscriptionGroupID: transaction.subscriptionGroupID,
                                                        revocationDate: transaction.revocationDate) else { continue }
-                    Logger.inAppPurchase.info("currentStatus: .active")
+                    Logger.inAppPurchase.debug("currentStatus: .active")
                     return .active
                 }
             }
-            Logger.inAppPurchase.info("currentStatus: .inactive")
+            Logger.inAppPurchase.debug("currentStatus: .inactive")
             return .inactive
         },
         transactionUpdates: {

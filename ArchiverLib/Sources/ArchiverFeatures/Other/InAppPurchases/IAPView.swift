@@ -13,6 +13,10 @@ import SwiftUI
 
 struct IAPView: View {
     let onCancel: () -> Void
+    /// Called after a purchase made through one of this view's `ProductView`s is verified and
+    /// finished, so the caller can re-evaluate `premiumStatus` - a same-device purchase completes
+    /// through `Product.PurchaseResult`, not `Transaction.updates`, so nothing else observes it.
+    let onPurchaseCompleted: () -> Void
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -72,6 +76,21 @@ struct IAPView: View {
         .listSectionSeparator(.hidden)
         .foregroundStyle(Color.paDarkGrayAsset)
         .background(Color.paBackgroundAsset)
+        .onInAppPurchaseCompletion { _, result in
+            guard case .success(let purchaseResult) = result,
+                  case .success(let verificationResult) = purchaseResult else { return }
+
+            switch verificationResult {
+            case .verified(let transaction):
+                await transaction.finish()
+                onPurchaseCompleted()
+
+            case .unverified(let transaction, let error):
+                Logger.inAppPurchase.error("""
+                    Transaction ID \(transaction.id) for \(transaction.productID) is unverified: \(error)
+                    """)
+            }
+        }
     }
 
     private var features: some View {
@@ -151,12 +170,12 @@ struct IAPView: View {
 
 #if DEBUG
 #Preview("IAP light", traits: .fixedLayout(width: 400, height: 500)) {
-    IAPView(onCancel: { print("Cancel pressed") })
+    IAPView(onCancel: { print("Cancel pressed") }, onPurchaseCompleted: {})
         .preferredColorScheme(.light)
 }
 
 #Preview("IAP dark", traits: .fixedLayout(width: 400, height: 500)) {
-    IAPView(onCancel: { print("Cancel pressed") })
+    IAPView(onCancel: { print("Cancel pressed") }, onPurchaseCompleted: {})
         .preferredColorScheme(.dark)
 }
 #endif
