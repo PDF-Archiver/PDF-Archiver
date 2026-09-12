@@ -1,12 +1,17 @@
+import ArchiverDatabase
 import ArchiverModels
 import ComposableArchitecture
+import Dependencies
+import DependenciesTestSupport
 import DocumentProcessingPipeline
 import Foundation
+import SQLiteData
 import Testing
 
 @testable import ArchiverFeatures
 
 @MainActor
+@Suite(.dependencies { try $0.bootstrapDatabase() })
 struct AppFeatureTests {
     // MARK: - Tab Selection Tests
 
@@ -14,41 +19,29 @@ struct AppFeatureTests {
     func tabSelectionUpdatesSearchTokens() async throws {
         let store = TestStore(initialState: AppFeature.State()) {
             AppFeature()
+        } withDependencies: {
+            $0.mainQueue = .immediate
         }
+        store.exhaustivity = .off(showSkippedAssertions: false)
 
-        // Switch to tags tab
-        await store.send(.binding(.set(\.selectedTab, .sectionTags("invoice")))) {
-            $0.selectedTab = .sectionTags("invoice")
-            $0.archiveList.searchTokens = [.tag("invoice")]
-            $0.archiveList.$selectedDocumentId.withLock { $0 = nil }
-        }
+        await store.send(.binding(.set(\.selectedTab, .sectionTags("invoice"))))
+        #expect(store.state.archiveList.searchTokens == [.tag("invoice")])
 
-        // Switch to years tab
-        await store.send(.binding(.set(\.selectedTab, .sectionYears(2024)))) {
-            $0.selectedTab = .sectionYears(2024)
-            $0.archiveList.searchTokens = [.year(2024)]
-            $0.archiveList.$selectedDocumentId.withLock { $0 = nil }
-        }
+        await store.send(.binding(.set(\.selectedTab, .sectionYears(2024))))
+        #expect(store.state.archiveList.searchTokens == [.year(2024)])
 
-        // Switch back to search clears tokens
-        await store.send(.binding(.set(\.selectedTab, .search))) {
-            $0.selectedTab = .search
-            $0.archiveList.searchTokens = []
-            $0.archiveList.$selectedDocumentId.withLock { $0 = nil }
-        }
+        await store.send(.binding(.set(\.selectedTab, .search)))
+        #expect(store.state.archiveList.searchTokens.isEmpty)
     }
 
     @Test
     func tabSelectionClearsSelectedDocument() async throws {
-        let document = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: true)
-
         let store = TestStore(initialState: AppFeature.State(
-            archiveList: ArchiveList.State(
-                documents: [document],
-                selectedDocumentId: Shared(value: document.id)
-            )
+            archiveList: ArchiveList.State(selectedDocumentId: Shared(value: 42))
         )) {
             AppFeature()
+        } withDependencies: {
+            $0.mainQueue = .immediate
         }
 
         await store.send(.binding(.set(\.selectedTab, .inbox))) {
@@ -57,97 +50,107 @@ struct AppFeatureTests {
         }
     }
 
-    // MARK: - Documents Changed Tests
+    // MARK: - Projection Tests
 
     @Test
-    func documentsChangedSortsAndUpdates() async throws {
-        let currentYear = Calendar.current.component(.year, from: Date())
-        let document1 = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: true)
-        let document2 = Document.mock(url: URL(string: "https://example.com/2")!, isTagged: true)
-        let document3 = Document.mock(url: URL(string: "https://example.com/3")!, isTagged: false)
-
+    func theProjectionFeedsTheTabSuggestionsAndTheWidget() async throws {
+        try await Self.seedArchive()
+        let widgetUpdates = LockIsolated<[([Int: Int], Int)]>([])
         let store = TestStore(initialState: AppFeature.State()) {
             AppFeature()
         } withDependencies: {
-            $0.widgetStore.updateWidgetWith = { _ in }
-            $0.archiveStore.startDownloadOf = { _ in }
-            $0.documentProcessor.processUntaggedDocuments = { _ in UntaggedProcessingResult(ocrCount: 0, aiCacheCount: 0) }
+            $0.widgetStore.updateWidget = { yearCounts, untaggedCount in
+                widgetUpdates.withValue { $0.append((yearCounts, untaggedCount)) }
+            }
+        }
+        try await store.state.$projection.load()
+
+        await store.send(.projectionChanged(store.state.projection)) {
+            $0.archiveList.searchSuggestedTokens = [.tag("bill"), .tag("work"), .year(2024), .year(2023)]
         }
 
-        await store.send(.documentsChanged([document1, document2, document3])) {
-            $0.$documents.withLock { $0 = [document3, document2, document1] }
-            $0.untaggedDocumentsCount = 1
-            $0.tabYearSuggestions = [currentYear]
-            $0.archiveList.searchSuggestedTokens = [.year(currentYear)]
-        }
-
-        await store.receive(\.prefetchDocuments)
-        await store.receive(\.updateWidget)
+        #expect(widgetUpdates.value.first?.0 == [2024: 3, 2023: 1])
+        #expect(widgetUpdates.value.first?.1 == 1)
     }
 
+    /// The tab suggestions and the widget at launch depend on the bridge itself delivering, not
+    /// on anyone sending `projectionChanged` by hand.
     @Test
-    func documentsChangedCreatesTagSuggestions() async throws {
-        let currentYear = Calendar.current.component(.year, from: Date())
-        let doc1 = Document.mock(url: URL(string: "https://example.com/1")!, tags: ["invoice", "work"], isTagged: true)
-        let doc2 = Document.mock(url: URL(string: "https://example.com/2")!, tags: ["invoice", "personal"], isTagged: true)
-        let doc3 = Document.mock(url: URL(string: "https://example.com/3")!, tags: ["invoice"], isTagged: true)
-
+    func theLongBackgroundTaskBridgesTheProjectionAndTheInbox() async throws {
+        try await Self.seedArchive()
         let store = TestStore(initialState: AppFeature.State()) {
             AppFeature()
         } withDependencies: {
-            $0.widgetStore.updateWidgetWith = { _ in }
-            $0.archiveStore.startDownloadOf = { _ in }
+            $0.documentProcessor.processStagedFiles = { }
             $0.documentProcessor.processUntaggedDocuments = { _ in UntaggedProcessingResult(ocrCount: 0, aiCacheCount: 0) }
+            $0.indexScheduler.schedule = { }
+            $0.widgetStore.updateWidget = { _, _ in }
+            $0.archiveStore.startDownloadOf = { _ in }
         }
+        store.exhaustivity = .off(showSkippedAssertions: false)
 
-        await store.send(.documentsChanged([doc1, doc2, doc3])) {
-            $0.$documents.withLock { $0 = [doc3, doc2, doc1] }
-            $0.untaggedDocumentsCount = 0
-            $0.tabTagSuggestions = ["invoice", "personal", "work"]
-            $0.tabYearSuggestions = [currentYear]
-            $0.archiveList.searchSuggestedTokens = [.tag("invoice"), .tag("personal"), .tag("work"), .year(currentYear)]
-        }
+        let task = await store.send(.onLongBackgroundTask)
 
-        await store.receive(\.prefetchDocuments)
-        await store.receive(\.updateWidget)
+        await store.receive(\.projectionChanged)
+        #expect(store.state.archiveList.searchSuggestedTokens.contains(.tag("bill")))
+
+        await store.receive(\.inboxChanged)
+        await task.cancel()
     }
 
+    /// A fresh scan falls back to its creation-date year - today's - which must not reach the tab bar.
     @Test
-    func documentsChangedCreatesYearSuggestions() async throws {
-        let calendar = Calendar.current
-        // swiftlint:disable force_unwrapping
-        let date2024 = calendar.date(from: DateComponents(year: 2024, month: 1, day: 1))!
-        let date2023 = calendar.date(from: DateComponents(year: 2023, month: 1, day: 1))!
-        let date2022 = calendar.date(from: DateComponents(year: 2022, month: 1, day: 1))!
+    func anUntaggedDocumentDoesNotAppearInTheYearSuggestions() async throws {
+        let currentYear = Calendar.current.component(.year, from: Date())
+        @Dependency(\.defaultDatabase) var database
+        try await database.write { db in
+            try db.seed {
+                Document(id: -10, rootKey: "test", url: URL(filePath: "/Archive/2020/2020-01-01--filed__bill.pdf"), date: appFeatureDate(2020), specification: "filed", tags: ["bill"], isTagged: true, sizeInBytes: 10, downloadStatus: 1)
+                Document(id: -11, rootKey: "test", url: URL(filePath: "/Archive/untagged/scan.pdf"), date: Date(), specification: "scan", tags: [], isTagged: false, sizeInBytes: 10, downloadStatus: 1)
+                DocumentTag(documentID: -10, tag: "bill")
+            }
+        }
 
-        let doc1 = Document.mock(url: URL(string: "https://example.com/1")!, date: date2024, isTagged: true)
-        let doc2 = Document.mock(url: URL(string: "https://example.com/2")!, date: date2023, isTagged: true)
-        let doc3 = Document.mock(url: URL(string: "https://example.com/3")!, date: date2022, isTagged: true)
-        // swiftlint:enable force_unwrapping
+        let state = AppFeature.State()
+        try await state.$projection.load()
+
+        #expect(state.projection.taggedYears == [2020])
+        #expect(!state.projection.taggedYears.contains(currentYear))
+        // The widget and the statistics still count it.
+        #expect(state.projection.yearCounts == [2020: 1, currentYear: 1])
+    }
+
+    // MARK: - Inbox Tests
+
+    @Test
+    func theInboxDrivesThePrefetchAndTheUntaggedProcessing() async throws {
+        let downloaded = LockIsolated<[URL]>([])
+        let processed = LockIsolated<[Document]>([])
+        let remote = Document.mock(url: URL(filePath: "/Archive/untagged/remote.pdf"), isTagged: false, downloadStatus: 0)
+        let local = Document.mock(url: URL(filePath: "/Archive/untagged/local.pdf"), isTagged: false, downloadStatus: 1)
 
         let store = TestStore(initialState: AppFeature.State()) {
             AppFeature()
         } withDependencies: {
-            $0.widgetStore.updateWidgetWith = { _ in }
-            $0.archiveStore.startDownloadOf = { _ in }
-            $0.documentProcessor.processUntaggedDocuments = { _ in UntaggedProcessingResult(ocrCount: 0, aiCacheCount: 0) }
+            $0.archiveStore.startDownloadOf = { url in downloaded.withValue { $0.append(url) } }
+            $0.documentProcessor.processUntaggedDocuments = { documents in
+                processed.withValue { $0 = documents }
+                return UntaggedProcessingResult(ocrCount: 0, aiCacheCount: 0)
+            }
         }
 
-        await store.send(.documentsChanged([doc1, doc2, doc3])) {
-            $0.$documents.withLock { $0 = [doc1, doc2, doc3] }
-            $0.tabYearSuggestions = [2024, 2023, 2022]
-            $0.archiveList.searchSuggestedTokens = [.year(2024), .year(2023), .year(2022)]
-        }
+        await store.send(.inboxChanged([remote, local]))
+        await store.finish()
 
-        await store.receive(\.prefetchDocuments)
-        await store.receive(\.updateWidget)
+        #expect(downloaded.value == [remote.url])
+        #expect(processed.value.map(\.id) == [remote.id, local.id])
     }
 
     // MARK: - Scene Phase Tests
 
     @Test
     func scenePhaseActiveReloadsDocuments() async throws {
-        let store = TestStore(initialState: AppFeature.State(isDocumentLoading: false)) {
+        let store = TestStore(initialState: AppFeature.State()) {
             AppFeature()
         } withDependencies: {
             $0.documentProcessor.processStagedFiles = { }
@@ -158,8 +161,15 @@ struct AppFeatureTests {
     }
 
     @Test
-    func scenePhaseDoesNotReloadWhileLoading() async throws {
-        let store = TestStore(initialState: AppFeature.State(isDocumentLoading: true)) {
+    func scenePhaseDoesNotReloadWhileReconciling() async throws {
+        @Dependency(\.defaultDatabase) var database
+        try await database.write { db in
+            try IndexerState.find(IndexerState.singletonID).update { $0.isReconciling = true }.execute(db)
+        }
+
+        let state = AppFeature.State()
+        try await state.$projection.load()
+        let store = TestStore(initialState: state) {
             AppFeature()
         }
 
@@ -179,104 +189,92 @@ struct AppFeatureTests {
         }
     }
 
-    // MARK: - Loading State Tests
-
-    @Test
-    func isLoadingChangedUpdatesState() async throws {
-        let store = TestStore(initialState: AppFeature.State(isDocumentLoading: false)) {
-            AppFeature()
-        }
-
-        await store.send(.isLoadingChanged(true)) {
-            $0.isDocumentLoading = true
-        }
-
-        await store.send(.isLoadingChanged(false)) {
-            $0.isDocumentLoading = false
-        }
-    }
-
     // MARK: - Delete Document Tests
 
-    @Test(.disabled("Currently not working"))
-    func deleteUntaggedDocument() async throws {
-        let currentYear = Calendar.current.component(.year, from: Date())
-        let document1 = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: true)
-        let document2 = Document.mock(url: URL(string: "https://example.com/2")!, isTagged: true)
-        let document3 = Document.mock(url: URL(string: "https://example.com/3")!, isTagged: true)
-        let document4 = Document.mock(url: URL(string: "https://example.com/4")!, isTagged: false)
-        let document5 = Document.mock(url: URL(string: "https://example.com/5")!, isTagged: false)
-        let document6 = Document.mock(url: URL(string: "https://example.com/6")!, isTagged: false)
-        let documents = IdentifiedArrayOf(uniqueElements: [document1, document2, document3, document4, document5, document6])
+    @Test
+    func deletingAnInboxDocumentSelectsTheNextOne() async throws {
+        try await Self.seedInbox()
+        var state = AppFeature.State()
+        state.selectedTab = .inbox
+        try await state.untaggedDocumentList.$documents.load()
+        let current = try #require(state.untaggedDocumentList.documents.first { $0.id == -21 })
+        let next = try #require(state.untaggedDocumentList.documents.first { $0.id == -22 })
+        state.untaggedDocumentList.documentDetails = .init(document: current)
+        state.untaggedDocumentList.$selectedDocumentId.withLock { $0 = current.id }
 
-        let store = TestStore(initialState: AppFeature.State(documents: documents,
-                                                             untaggedDocumentList: UntaggedDocumentList.State(documents: documents,
-                                                                                                              selectedDocumentId: Shared(value: document6.id),
-                                                                                                              documentDetails: .init(document: Shared(value: document6))))) {
+        let deleted = LockIsolated<[URL]>([])
+        let store = TestStore(initialState: state) {
+            AppFeature()
+        } withDependencies: {
+            $0.archiveStore.deleteDocumentAt = { url in deleted.withValue { $0.append(url) } }
+        }
+        store.exhaustivity = .off(showSkippedAssertions: false)
+
+        await store.send(.untaggedDocumentList(.documentDetails(.presented(.delegate(.deleteDocument(current))))))
+        await store.finish()
+
+        #expect(store.state.untaggedDocumentList.documentDetails?.document.id == next.id)
+        #expect(store.state.untaggedDocumentList.selectedDocumentId == next.id)
+        #expect(deleted.value == [current.url])
+    }
+
+    @Test
+    func deletingTheLastInboxDocumentClosesTheDetails() async throws {
+        try await Self.seedInbox()
+        var state = AppFeature.State()
+        try await state.untaggedDocumentList.$documents.load()
+        let onlyRemaining = try #require(state.untaggedDocumentList.documents.first { $0.id == -21 })
+        @Dependency(\.defaultDatabase) var database
+        try await database.write { db in
+            try Document.find(-22).delete().execute(db)
+        }
+        try await state.untaggedDocumentList.$documents.load()
+        state.untaggedDocumentList.documentDetails = .init(document: onlyRemaining)
+
+        let store = TestStore(initialState: state) {
             AppFeature()
         } withDependencies: {
             $0.archiveStore.deleteDocumentAt = { _ in }
         }
+        store.exhaustivity = .off(showSkippedAssertions: false)
 
-        await store.send(.documentsChanged([document1, document2, document3, document4, document5, document6])) {
-            $0.$documents.withLock { $0 = [document6, document5, document4, document3, document2, document1] }
-            $0.untaggedDocumentsCount = 3
-            $0.tabYearSuggestions = [currentYear]
-            $0.archiveList.searchSuggestedTokens = [.year(currentYear)]
-        }
+        await store.send(.untaggedDocumentList(.documentDetails(.presented(.delegate(.deleteDocument(onlyRemaining))))))
+        await store.finish()
 
-        await store.send(.binding(.set(\.selectedTab, .inbox))) {
-            $0.selectedTab = .inbox
-        }
+        #expect(store.state.untaggedDocumentList.documentDetails == nil)
+    }
 
-        await store.send(.untaggedDocumentList(.documentDetails(.presented(.delegate(.deleteDocument(document5)))))) {
-            $0.untaggedDocumentList.$documents.withLock { $0 = [document6, document4, document3, document2, document1] }
+    // MARK: - Helpers
 
-            // select the next document
-            $0.untaggedDocumentList.$selectedDocumentId.withLock { $0 = document6.id }
-
-            // show the next document in the details
-            $0.untaggedDocumentList.documentDetails = .init(document: Shared(value: document6))
+    private static func seedArchive() async throws {
+        @Dependency(\.defaultDatabase) var database
+        try await database.write { db in
+            try db.seed {
+                Document(id: -1, rootKey: "test", url: URL(filePath: "/Archive/2024/2024-01-01--a__bill_work.pdf"), date: appFeatureDate(2024), specification: "a", tags: ["bill", "work"], isTagged: true, sizeInBytes: 10, downloadStatus: 1)
+                Document(id: -2, rootKey: "test", url: URL(filePath: "/Archive/2024/2024-02-01--b__bill.pdf"), date: appFeatureDate(2024), specification: "b", tags: ["bill"], isTagged: true, sizeInBytes: 10, downloadStatus: 1)
+                Document(id: -3, rootKey: "test", url: URL(filePath: "/Archive/2023/2023-01-01--c__work.pdf"), date: appFeatureDate(2023), specification: "c", tags: ["work"], isTagged: true, sizeInBytes: 10, downloadStatus: 1)
+                Document(id: -4, rootKey: "test", url: URL(filePath: "/Archive/untagged/scan.pdf"), date: appFeatureDate(2024), specification: "scan", tags: [], isTagged: false, sizeInBytes: 10, downloadStatus: 1)
+                DocumentTag(documentID: -1, tag: "bill")
+                DocumentTag(documentID: -1, tag: "work")
+                DocumentTag(documentID: -2, tag: "bill")
+                DocumentTag(documentID: -3, tag: "work")
+            }
         }
     }
 
-    @Test(.disabled("Currently not working"))
-    func deleteTaggedDocument() async throws {
-        let currentYear = Calendar.current.component(.year, from: Date())
-        let document1 = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: true)
-        let document2 = Document.mock(url: URL(string: "https://example.com/2")!, isTagged: true)
-        let document3 = Document.mock(url: URL(string: "https://example.com/3")!, isTagged: true)
-        let document4 = Document.mock(url: URL(string: "https://example.com/4")!, isTagged: false)
-        let document5 = Document.mock(url: URL(string: "https://example.com/5")!, isTagged: false)
-        let document6 = Document.mock(url: URL(string: "https://example.com/6")!, isTagged: false)
-        let documents = IdentifiedArrayOf(uniqueElements: [document1, document2, document3, document4, document5, document6])
-
-        let store = TestStore(initialState: AppFeature.State(documents: documents,
-                                                             archiveList: ArchiveList.State(documents: documents,
-                                                                                            selectedDocumentId: Shared(value: document6.id),
-                                                                                            documentDetails: .init(document: Shared(value: document6))))) {
-            AppFeature()
-        } withDependencies: {
-            $0.archiveStore.deleteDocumentAt = { _ in }
-        }
-
-        await store.send(.documentsChanged([document1, document2, document3, document4, document5, document6])) {
-            $0.$documents.withLock { $0 = [document6, document5, document4, document3, document2, document1] }
-            $0.untaggedDocumentsCount = 3
-            $0.tabYearSuggestions = [currentYear]
-            $0.archiveList.searchSuggestedTokens = [.year(currentYear)]
-        }
-
-        await store.send(.binding(.set(\.selectedTab, .search)))
-
-        await store.send(.archiveList(.documentDetails(.presented(.delegate(.deleteDocument(document2)))))) {
-            $0.archiveList.$documents.withLock { $0 = [document6, document5, document4, document3, document1] }
-
-            // select the next document
-            $0.archiveList.$selectedDocumentId.withLock { $0 = document3.id }
-
-            // show the next document in the details
-            $0.archiveList.documentDetails = .init(document: Shared(value: document3))
+    private static func seedInbox() async throws {
+        @Dependency(\.defaultDatabase) var database
+        try await database.write { db in
+            try db.seed {
+                Document(id: -21, rootKey: "test", url: URL(filePath: "/Archive/untagged/scan1.pdf"), date: appFeatureDate(2024), specification: "scan1", tags: [], isTagged: false, sizeInBytes: 10, downloadStatus: 1)
+                Document(id: -22, rootKey: "test", url: URL(filePath: "/Archive/untagged/scan2.pdf"), date: appFeatureDate(2023), specification: "scan2", tags: [], isTagged: false, sizeInBytes: 10, downloadStatus: 1)
+            }
         }
     }
+}
+
+private func appFeatureDate(_ year: Int) -> Date {
+    var calendar = Calendar(identifier: .gregorian)
+    calendar.timeZone = .gmt
+    return calendar.date(from: DateComponents(year: year, month: 6, day: 1)) ?? .distantPast
 }

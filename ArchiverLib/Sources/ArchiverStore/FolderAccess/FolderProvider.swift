@@ -18,9 +18,14 @@ struct DocumentInformation: Equatable, Comparable, Sendable {
         lhs.url.path < rhs.url.path
     }
 
+    let id: Document.ID
+    /// Normalised: `standardizedFileURL.resolvingSymlinksInPath()`, so the same file cannot arrive
+    /// once as `/private/var/…` and once as `/var/…`.
     let url: URL
     let downloadStatus: Double
     let sizeInBytes: Double
+    let creationDate: Date?
+    let contentModificationDate: Date?
 }
 
 @FolderProviderActor

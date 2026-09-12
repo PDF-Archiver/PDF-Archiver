@@ -22,6 +22,9 @@ final class ICloudFolderProvider: FolderProvider {
     private var currentDocuments: [Int: DocumentInformation] = [:]
     private var lastDocuments: [DocumentInformation]?
     private var observationTask: Task<Void, Never>?
+    /// `nonisolated(unsafe)` so `deinit` can still hand them back: they are written in `init` and
+    /// `stop()` under the actor, and `deinit` by definition holds the last reference.
+    nonisolated(unsafe) private var notificationTokens: [any NSObjectProtocol] = []
 
     init(baseUrl: URL) throws {
         self.baseUrl = baseUrl
@@ -54,6 +57,23 @@ final class ICloudFolderProvider: FolderProvider {
         // the operationQueue of the `NSMetadataQuery` must be serial - we use the main queue
         metadataQuery.operationQueue = .main
 
+        // Registered here, synchronously and before the query starts: `DidFinishGathering` is posted
+        // exactly once, and a query that finished before an `await`ed loop began iterating would
+        // post it into the void - this provider would then never yield a single snapshot.
+        let (gathered, gatheredContinuation) = AsyncStream.makeStream(of: Void.self)
+        let (updates, updatesContinuation) = AsyncStream.makeStream(of: MetadataUpdate.self)
+        let center = NotificationCenter.default
+        notificationTokens = [
+            // Scoped to `metadataQuery`: macOS runs a second provider for the observed folder, and
+            // an unscoped observer would merge that folder's items into this one's snapshot.
+            center.addObserver(forName: .NSMetadataQueryDidFinishGathering, object: metadataQuery, queue: nil) { _ in
+                gatheredContinuation.yield()
+            },
+            center.addObserver(forName: .NSMetadataQueryDidUpdate, object: metadataQuery, queue: nil) { notification in
+                updatesContinuation.yield(MetadataUpdate(notification))
+            }
+        ]
+
         observationTask = Task(priority: .utility) { [weak self] in
             guard let self else { return }
 
@@ -62,7 +82,7 @@ final class ICloudFolderProvider: FolderProvider {
 
             await withTaskGroup(of: Void.self) { group in
                 group.addTask { [weak self] in
-                    for await _ in NotificationCenter.default.notifications(named: .NSMetadataQueryDidFinishGathering) {
+                    for await _ in gathered {
                         guard let self else { return }
                         Self.log.debug("Documents query finished initial fetch.")
 
@@ -77,21 +97,9 @@ final class ICloudFolderProvider: FolderProvider {
                 }
 
                 group.addTask { [weak self] in
-                    for await notification in NotificationCenter.default.notifications(named: .NSMetadataQueryDidUpdate) {
+                    for await update in updates {
                         guard let self else { return }
-                        let addedMetadataItems = (notification.userInfo?[NSMetadataQueryUpdateAddedItemsKey] as? [NSMetadataItem]) ?? []
-                        let updatedMetadataItems = (notification.userInfo?[NSMetadataQueryUpdateChangedItemsKey] as? [NSMetadataItem]) ?? []
-                        let removedMetadataItems = (notification.userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem]) ?? []
-
-                        // update the archive
-                        let added = addedMetadataItems
-                            .compactMap { $0.createDetails() }
-                        let updated = updatedMetadataItems
-                            .compactMap { $0.createDetails() }
-                        let removed = removedMetadataItems
-                            .compactMap { $0.createDetails() }
-
-                        await sendDocuments(added: added, updated: updated, removed: removed)
+                        await sendDocuments(added: update.added, updated: update.updated, removed: update.removed)
                     }
                 }
             }
@@ -101,22 +109,38 @@ final class ICloudFolderProvider: FolderProvider {
     deinit {
         Self.log.debug("deinit ICloudFolderProvider")
         observationTask?.cancel()
+        notificationTokens.forEach(NotificationCenter.default.removeObserver)
         metadataQuery.stop()
     }
 
     func stop() {
         observationTask?.cancel()
         observationTask = nil
+        notificationTokens.forEach(NotificationCenter.default.removeObserver)
+        notificationTokens = []
         metadataQuery.stop()
+    }
+
+    /// One `DidUpdate`, read on the posting thread: `NSMetadataItem` is not `Sendable` and must not
+    /// travel to the observation task.
+    private struct MetadataUpdate: Sendable {
+        let added: [DocumentInformation]
+        let updated: [DocumentInformation]
+        let removed: [DocumentInformation]
+
+        init(_ notification: Notification) {
+            func details(_ key: String) -> [DocumentInformation] {
+                (notification.userInfo?[key] as? [NSMetadataItem] ?? []).compactMap { $0.createDetails() }
+            }
+            added = details(NSMetadataQueryUpdateAddedItemsKey)
+            updated = details(NSMetadataQueryUpdateChangedItemsKey)
+            removed = details(NSMetadataQueryUpdateRemovedItemsKey)
+        }
     }
 
     private func sendDocuments(added: [DocumentInformation], updated: [DocumentInformation], removed: [DocumentInformation]) {
         for change in added + updated {
-            guard let id = change.url.uniqueId() else {
-                assertionFailure("Failed to get uniqueId for \(change.url)")
-                continue
-            }
-            currentDocuments[id] = change
+            currentDocuments[change.id] = change
         }
         for change in removed {
             // match removed files by URL - reading the uniqueId (a resource value)
@@ -236,7 +260,20 @@ extension NSMetadataItem: nonisolated Log {
             return nil
         }
 
-        return DocumentInformation(url: documentUrl, downloadStatus: documentStatus, sizeInBytes: Double(size))
+        // The metadata attributes answer before a download; the URL resource values of an
+        // undownloaded item return stub data.
+        let normalizedUrl = documentUrl.normalized()
+        guard let id = normalizedUrl.uniqueId() else {
+            log.errorAndAssert("Could not fetch unique id from url.")
+            return nil
+        }
+
+        return DocumentInformation(id: id,
+                                   url: normalizedUrl,
+                                   downloadStatus: documentStatus,
+                                   sizeInBytes: Double(size),
+                                   creationDate: value(forAttribute: NSMetadataItemFSCreationDateKey) as? Date,
+                                   contentModificationDate: value(forAttribute: NSMetadataItemFSContentChangeDateKey) as? Date)
     }
 }
 

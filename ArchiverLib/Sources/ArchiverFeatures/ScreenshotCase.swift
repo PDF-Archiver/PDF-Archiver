@@ -6,6 +6,7 @@
 //
 
 #if DEBUG
+import ArchiverDatabase
 import ArchiverModels
 import ArchiverStore
 import ComposableArchitecture
@@ -40,16 +41,41 @@ public enum ScreenshotCase: String, CaseIterable, Sendable {
 
     /// Replaces the live archive with the case's fixtures.
     ///
-    /// Called from the app initializer: `prepareDependencies` has to run before the first
-    /// dependency is accessed, which the root store does as soon as it is built.
-    public static func prepareIfRequested() {
+    /// Runs *before* `bootstrapDatabase()` in the entry point's single `prepareDependencies`
+    /// block: the preview context is what makes the database in-memory instead of the
+    /// developer's real one.
+    public static func prepareOverrides(_ values: inout DependencyValues) {
         guard let screenshotCase = requested else { return }
 
-        prepareDependencies {
-            $0.context = .preview
-            $0.archiveStore = screenshotCase.archiveStore
-            $0.textAnalyser = screenshotCase.textAnalyser
+        values.context = .preview
+        values.archiveStore = screenshotCase.archiveStore
+        values.textAnalyser = screenshotCase.textAnalyser
+    }
+
+    /// Fills the read model the screens observe. Runs *after* `bootstrapDatabase()`.
+    public static func seedDatabase(_ values: DependencyValues) throws {
+        guard let screenshotCase = requested else { return }
+
+        let documents = screenshotCase.documents
+        try values.defaultDatabase.write { db in
+            try Document.insert { documents }.execute(db)
+            let tags = documents.flatMap { document in
+                document.tags.sorted().map { DocumentTag(documentID: document.id, tag: $0) }
+            }
+            if !tags.isEmpty {
+                try DocumentTag.insert { tags }.execute(db)
+            }
+            try DocumentText.insert { Self.contentHitText }.execute(db)
         }
+    }
+
+    /// The archive shot searches for a term the rental agreement only carries *inside* it, so one
+    /// row shows what a content hit looks like next to the filename hits.
+    private static var contentHitText: DocumentText {
+        let body = isGerman
+            ? "Anlage zum Mietvertrag: die Rechnung der Hausverwaltung über die Nebenkosten."
+            : "Attached to the rental agreement: the invoice from the property manager."
+        return DocumentText(rowid: 2, body: body)
     }
 
     /// The state the app starts in, already settled - a screenshot must not wait for a load.
@@ -66,8 +92,6 @@ public enum ScreenshotCase: String, CaseIterable, Sendable {
         $premiumStatus.withLock { $0 = self.premiumStatus }
 
         var state = AppFeature.State()
-        state.apply(documents: documents)
-        state.isDocumentLoading = false
 
         switch self {
         case .archive:
@@ -81,7 +105,6 @@ public enum ScreenshotCase: String, CaseIterable, Sendable {
 
         case .statistics:
             state.selectedTab = .statistics
-            state.statistics.apply(documents: state.documents)
         }
 
         return state
@@ -118,20 +141,13 @@ public enum ScreenshotCase: String, CaseIterable, Sendable {
         }
     }
 
-    /// Yields the fixtures once, so the reducer derives its state from them exactly as it would
-    /// from a real archive. Without the override the live store would load in and wipe them.
+    /// Keeps the live archive out of the shot: the fixtures come from the seeded database, and
+    /// without this override the real folder scan would overwrite them.
     private var archiveStore: ArchiveStoreDependency {
-        let documents = documents
-        let suggestedTags = Self.receiptSuggestedTags
-        return ArchiveStoreDependency(
-            documentChanges: { AsyncStream { $0.yield(documents) } },
+        ArchiveStoreDependency(
             reloadDocuments: { },
-            getDocuments: { documents },
-            isLoading: { AsyncStream { $0.yield(false) } },
             startDownloadOf: { _ in },
             deleteDocumentAt: { _ in },
-            getTagSuggestionsFor: { _ in suggestedTags },
-            getTagSuggestionsSimilarTo: { tags in suggestedTags.filter { !tags.contains($0) } },
             // What the app recognises from the scan: its date and description, but no tag yet.
             parseFilename: { _ in (Self.receiptDate, Self.receiptSpecification, nil) },
             saveDocument: { _, _ in },
@@ -185,6 +201,7 @@ public enum ScreenshotCase: String, CaseIterable, Sendable {
             : "\(scanName).pdf"
 
         return Document(id: receiptId,
+                        rootKey: Self.rootKey,
                         url: receiptURL(named: filename) ?? URL(filePath: "/Archive/2017/\(filename)"),
                         date: receiptDate,
                         // Untagged documents show up under the name the scanner gave them.
@@ -210,6 +227,8 @@ public enum ScreenshotCase: String, CaseIterable, Sendable {
             getFileTagsFrom: { _ in pickedTags }
         )
     }
+
+    private static let rootKey = "screenshot"
 
     private static let receiptId = 200
 
@@ -286,6 +305,7 @@ public enum ScreenshotCase: String, CaseIterable, Sendable {
             .enumerated()
             .map { index, scan in
                 Document(id: 100 + index,
+                         rootKey: Self.rootKey,
                          url: URL(filePath: "/Archive/untagged/Scan \(scan.0).pdf"),
                          date: date(2026, 7, scan.1),
                          specification: "Scan \(scan.0)",
@@ -304,6 +324,7 @@ public enum ScreenshotCase: String, CaseIterable, Sendable {
         let year = Self.calendar.component(.year, from: date)
         let filename = Document.createFilename(date: date, specification: specification, tags: tags)
         return Document(id: id,
+                        rootKey: Self.rootKey,
                         url: URL(filePath: "/Archive/\(year)/\(filename)"),
                         date: date,
                         specification: specification,

@@ -64,12 +64,17 @@ The core logic is organized into separate SPM targets in `ArchiverLib/`:
   - `Settings`: App settings and premium management
   - `Statistics`: Usage statistics
 
-- **ArchiverStore**: Document storage and folder management
-  - `ArchiveStore`: Main actor-based document repository
+- **ArchiverStore**: The file-system gateway - watching folders, saving, renaming, deleting and downloading. It holds no document state.
+  - `ArchiveStore`: Actor that creates the providers and forwards their snapshots
   - `FolderProvider` protocol with implementations:
     - `ICloudFolderProvider`: iCloud Drive integration
     - `LocalFolderProvider`: Local filesystem
   - `DirectoryDeepWatcher`: File system observation
+
+- **ArchiverDatabase**: The SQLite read model every screen reads from
+  - Schema and migrations: `documents`, `documentTags`, `indexerStates`, the `documentTexts` FTS5 index, `documentIndexStates` and `documentSuggestions`
+  - `ArchiveIndexer`: the single writer - reconciles folder snapshots and extracts document text
+  - Query builders: `Document.list(tokens:)`, `Document.rankedSearch(_:)`, `DocumentTag.counts(prefix:)`, `DocumentTag.cooccurring(with:)`
 
 - **ArchiverModels**: Core data models
   - `Document`: Main document model with URL, date, specification, tags
@@ -257,9 +262,9 @@ The app automatically selects the appropriate `FolderProvider` based on the fold
 
 ### Document Loading Flow
 1. `ArchiveStore.update()` initializes folder providers
-2. Providers watch for file system changes via `DirectoryDeepWatcher`
-3. Changes stream through `documentsStream` → `AppFeature` → UI updates
-4. TCA's `@Shared(.documents)` propagates state to all features
+2. Providers watch for file system changes via `DirectoryDeepWatcher` and hand full folder snapshots to `ArchiveIndexer`
+3. `ArchiveIndexer` applies a snapshot in chunks of 250 rows, newest first, so the list renders from the first chunk onward
+4. Features observe that database through `@FetchAll`/`@FetchOne`/`@Fetch`
 
 ### Platform-Specific Code
 Use conditional compilation for platform differences:
@@ -288,6 +293,8 @@ GitHub Actions workflow (`.github/workflows/pr.yml`):
 ## Dependencies
 
 Main dependencies (from `ArchiverLib/Package.swift`):
+- `sqlite-data` (v1.12.0): Persistence and query layer for the document read model
+- `swift-structured-queries` (v0.39.2): `@Table`/`@Selection` and the query builders, linked directly by `ArchiverModels`
 - `swift-composable-architecture` (v1.22.3+): State management
 - `swift-dependencies` (v1.10.0+): Dependency injection
 - `swift-sharing` (v2.7.4+): Shared state persistence

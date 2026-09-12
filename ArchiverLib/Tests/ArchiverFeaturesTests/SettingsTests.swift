@@ -1,11 +1,16 @@
+import ArchiverDatabase
 import ArchiverModels
 import ComposableArchitecture
+import Dependencies
+import DependenciesTestSupport
 import Foundation
+import SQLiteData
 import Testing
 
 @testable import ArchiverFeatures
 
 @MainActor
+@Suite(.dependencies { try $0.bootstrapDatabase() })
 struct SettingsTests {
     // MARK: - PDF Quality Tests
 
@@ -292,6 +297,17 @@ struct SettingsTests {
 
         await store.send(.onAppleIntelligenceSettingsTapped) {
             $0.destination = .appleIntelligenceSettings(.init())
+        }
+    }
+
+    @Test
+    func navigateToSearchIndex() async throws {
+        let store = TestStore(initialState: Settings.State()) {
+            Settings()
+        }
+
+        await store.send(.onSearchIndexTapped) {
+            $0.destination = .searchIndex(SearchIndexSettings.State())
         }
     }
 }

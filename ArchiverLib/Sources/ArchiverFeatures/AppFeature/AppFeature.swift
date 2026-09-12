@@ -5,11 +5,13 @@
 //  Created by Julian Kahnert on 05.07.25.
 //
 
+import ArchiverDatabase
 import ArchiverModels
 import ArchiverStore
 import ComposableArchitecture
 import OSLog
 import Shared
+import SQLiteData
 import SwiftUI
 import TipKit
 
@@ -27,17 +29,14 @@ struct AppFeature {
             case sectionTags(String)
             case sectionYears(Int)
         }
-        @Shared(.documents) var documents: IdentifiedArrayOf<Document> = []
+        @Fetch(AppProjectionRequest()) var projection = AppProjection()
+        @FetchAll(Document.inbox) var inbox: [Document]
         @Shared(.tutorialShown) var tutorialShown: Bool
         @Shared(.premiumStatus) var premiumStatus: PremiumStatus = .loading
 
         var scenePhase: ScenePhase?
 
         var selectedTab = Tab.search
-        var tabTagSuggestions: [String] = []
-        var tabYearSuggestions: [Int] = []
-        var untaggedDocumentsCount: Int = 0
-        var isDocumentLoading = true
         var showScanButton: Bool {
             selectedTab == .search && archiveList.documentDetails == nil && !archiveList.isSearching
         }
@@ -46,67 +45,24 @@ struct AppFeature {
         var untaggedDocumentList = UntaggedDocumentList.State()
         var statistics = Statistics.State()
         var settings = Settings.State()
-
-        /// Derives everything the tabs show from the archive, newest document first.
-        mutating func apply(documents: [Document]) {
-            let sortedDocuments = documents.sorted { $0.date > $1.date }
-            $documents.withLock { $0 = IdentifiedArrayOf(uniqueElements: sortedDocuments) }
-
-            let taggedDocuments = sortedDocuments.filter(\.isTagged)
-
-            // create year suggestions
-            let years = taggedDocuments
-                .reduce(into: Set<Int>()) { result, document in
-                    result.insert(Calendar.current.component(.year, from: document.date))
-                }
-                .sorted()
-                .reversed()
-                .prefix(5)
-            tabYearSuggestions = Array(years)
-
-            // create tag suggestions
-            var tagCountMap: [String: Int] = [:]
-            for tag in taggedDocuments.flatMap(\.tags) {
-                tagCountMap[tag, default: 0] += 1
-            }
-            let top5Tags = tagCountMap
-                .sorted { lhs, rhs in
-                    if lhs.value == rhs.value {
-                        lhs.key < rhs.key
-                    } else {
-                        lhs.value > rhs.value
-                    }
-                }
-                .prefix(5)
-                .map(\.key)
-            tabTagSuggestions = Array(top5Tags)
-
-            // also update suggestions in archive list
-            archiveList.searchSuggestedTokens = [
-                top5Tags.prefix(3).map { ArchiveList.State.SearchToken.tag($0) },
-                years.prefix(3).map { ArchiveList.State.SearchToken.year($0) }
-            ].flatMap(\.self)
-
-            untaggedDocumentsCount = sortedDocuments.count(where: { !$0.isTagged })
-        }
     }
 
     enum Action: BindableAction {
         case binding(BindingAction<State>)
         case archiveList(ArchiveList.Action)
-        case documentsChanged([Document])
-        case isLoadingChanged(Bool)
+        case inboxChanged([Document])
         case onLongBackgroundTask
         case onScenePhaseChanged(old: ScenePhase, new: ScenePhase)
         case onWidgetTagTapped
+        case projectionChanged(AppProjection)
         case untaggedDocumentList(UntaggedDocumentList.Action)
-        case updateWidget([Document])
-        case prefetchDocuments([Document])
         case statistics(Statistics.Action)
         case settings(Settings.Action)
     }
 
+    @Dependency(\.defaultDatabase) var database
     @Dependency(\.documentProcessor) var documentProcessor
+    @Dependency(\.indexScheduler) var indexScheduler
     @Dependency(\.archiveStore) var archiveStore
     @Dependency(\.widgetStore) var widgetStore
 
@@ -138,8 +94,7 @@ struct AppFeature {
                     .untaggedDocumentList(.documentDetails(.presented(.delegate(let delegateAction)))):
                 switch delegateAction {
                 case .deleteDocument(let document):
-                    _ = state.$documents.withLock { $0.remove(document) }
-
+                    // No optimistic removal: the row leaves the list when the provider event arrives.
                     selectNextDocument(current: document, &state)
 
                     return .run { _ in
@@ -151,13 +106,6 @@ struct AppFeature {
                     .untaggedDocumentList(.documentDetails(.presented(.showDocumentInformationForm(.delegate(let delegateAction))))):
                 switch delegateAction {
                 case .saveDocument(let document, let shouldUpdatePdfMetadata):
-                    state.$documents.withLock { documents in
-                        let alreadyExistingElement = documents.updateOrAppend(document)
-                        if alreadyExistingElement == nil {
-                            reportIssue("Document that was saved not found in array - this should not happen")
-                            documents.sort { $0.date < $1.date }
-                        }
-                    }
                     state.archiveList.documentDetails = nil
                     state.archiveList.$selectedDocumentId.withLock { $0 = nil }
 
@@ -201,56 +149,63 @@ struct AppFeature {
             case .binding:
                 return .none
 
-            case .documentsChanged(let changedDocuments):
-                state.apply(documents: changedDocuments)
-
-                let documents = Array(state.documents)
-                let untaggedRemoteDocuments = documents.filter { !$0.isTagged && $0.downloadStatus == 0 }
+            case .inboxChanged(let inbox):
+                let remoteDocuments = inbox.filter { $0.downloadStatus == 0 }
 
                 return .merge(
-                    .run { [documents] send in
-                        await send(.prefetchDocuments(untaggedRemoteDocuments))
-                        await send(.updateWidget(documents))
+                    .run { _ in
+                        await withTaskGroup(of: Void.self) { group in
+                            for document in remoteDocuments {
+                                group.addTask {
+                                    try? await archiveStore.startDownloadOf(document.url)
+                                }
+                            }
+                        }
                     },
-                    // The pass restarts whenever the documents change; the OCR
-                    // marker and the AI cache make repeated runs cheap no-ops.
-                    .run { [documents] _ in
-                        _ = await documentProcessor.processUntaggedDocuments(documents)
+                    // The pass restarts whenever the inbox changes; the OCR marker and the AI
+                    // cache make repeated runs cheap no-ops.
+                    .run { _ in
+                        // Tagged documents are the model's tag vocabulary and description examples.
+                        let context = await withErrorReporting {
+                            try await database.read { db in
+                                try Document.aiContext().fetchAll(db)
+                            }
+                        }
+                        let result = await documentProcessor.processUntaggedDocuments(inbox + (context ?? []))
+
+                        // An OCR run rewrites the PDF in place. Whether `NSMetadataQuery` reports
+                        // that for its own process is undocumented, so the rescan is explicit.
+                        guard result.ocrCount > 0 else { return }
+                        await withErrorReporting {
+                            try await archiveStore.reloadDocuments()
+                        }
                     }
                     .cancellable(id: CancelID.untaggedProcessing, cancelInFlight: true)
                 )
 
-            case .isLoadingChanged(let isLoading):
-                state.isDocumentLoading = isLoading
-                return .none
+            case .projectionChanged(let projection):
+                state.archiveList.searchSuggestedTokens = [
+                    projection.topTags.prefix(3).map { ArchiveList.State.SearchToken.tag($0) },
+                    projection.taggedYears.prefix(3).map { ArchiveList.State.SearchToken.year($0) }
+                ].flatMap(\.self)
+
+                return .run { [yearCounts = projection.yearCounts, untaggedCount = projection.untaggedCount] _ in
+                    await widgetStore.updateWidget(yearCounts, untaggedCount)
+                }
 
             case .onLongBackgroundTask:
-                return .run { send in
-                    await withTaskGroup(of: Void.self) { group in
-                        group.addTask(priority: .background) {
-                            // check the temp folder at startup for new documents
-                            await documentProcessor.processStagedFiles()
+                return .merge(
+                    .publisher { state.$projection.publisher.map(Action.projectionChanged) },
+                    .publisher { state.$inbox.publisher.map(Action.inboxChanged) },
+                    .run(priority: .background) { _ in
+                        // check the temp folder at startup for new documents
+                        await documentProcessor.processStagedFiles()
 
-                            #if os(iOS)
-                            if #available(iOS 26, *) {
-                                // trigger task scheduling - the handler itself is registered
-                                // in the app initializer, as required by BGTaskScheduler
-                                BackgroundTaskManager.scheduleCacheProcessing()
-                            }
-                            #endif
-                        }
-                        group.addTask(priority: .medium) {
-                            for await documents in await archiveStore.documentChanges() {
-                                await send(.documentsChanged(documents))
-                            }
-                        }
-                        group.addTask(priority: .medium) {
-                            for await isLoading in await archiveStore.isLoading() {
-                                await send(.isLoadingChanged(isLoading))
-                            }
-                        }
+                        // trigger task scheduling - the handler itself is registered
+                        // in the app initializer, as required by BGTaskScheduler
+                        await indexScheduler.schedule()
                     }
-                }
+                )
 
             case .onScenePhaseChanged(old: let old, new: let new):
                 // there might be situations where a user has made some document modifications while the app is in background
@@ -258,7 +213,7 @@ struct AppFeature {
                 // since this will already be done initially, we don't want to do it while the app is loading
                 if old != new,
                    new == .active,
-                   !state.isDocumentLoading {
+                   !state.projection.isReconciling {
                     return .run { _ in
                         await withThrowingTaskGroup(of: Void.self) { group in
                             group.addTask(priority: .background) {
@@ -287,22 +242,6 @@ struct AppFeature {
             case .untaggedDocumentList:
                 return .none
 
-            case .updateWidget(let documents):
-                return .run { _ in
-                    await widgetStore.updateWidgetWith(documents)
-                }
-
-            case .prefetchDocuments(let documents):
-                return .run { _ in
-                    await withTaskGroup(of: Void.self) { group in
-                        for document in documents {
-                            group.addTask {
-                                try? await archiveStore.startDownloadOf(document.url)
-                            }
-                        }
-                    }
-                }
-
             case .settings(.premiumSection(.delegate(let delegateAction))):
                 switch delegateAction {
                 case .switchToInboxTab:
@@ -319,18 +258,21 @@ struct AppFeature {
         }
     }
 
+    /// Synchronous on purpose: a database read would add an async hop to the save flow and break
+    /// the immediate navigation transition.
     private func selectNextDocument(current document: Document, _ state: inout State) {
-        let nextDocument = state.documents.elements.first { $0.id != document.id && $0.isTagged == document.isTagged }
         if document.isTagged {
+            let nextDocument = state.archiveList.rows.first { $0.id != document.id }?.document
             if let nextDocument {
-                state.archiveList.documentDetails = .init(document: Shared(value: nextDocument))
+                state.archiveList.documentDetails = .init(document: nextDocument)
             } else {
                 state.archiveList.documentDetails = nil
             }
             state.archiveList.$selectedDocumentId.withLock { $0 = nextDocument?.id }
         } else {
+            let nextDocument = state.untaggedDocumentList.documents.first { $0.id != document.id }
             if let nextDocument {
-                state.untaggedDocumentList.documentDetails = .init(document: Shared(value: nextDocument))
+                state.untaggedDocumentList.documentDetails = .init(document: nextDocument)
                 // always show the inspector when the document is not tagged
                 state.untaggedDocumentList.documentDetails?.showInspector = true
             } else {
@@ -379,7 +321,7 @@ struct AppView: View {
             Tab(String(localized: "Inbox", bundle: #bundle), systemImage: "tray", value: AppFeature.State.Tab.inbox) {
                 untaggedDocumentList
             }
-            .badge(store.untaggedDocumentsCount)
+            .badge(store.projection.untaggedCount)
 
             Tab(String(localized: "Statistics", bundle: #bundle), systemImage: "chart.bar.xaxis", value: AppFeature.State.Tab.statistics) {
                 StatisticsView(store: store.scope(\.statistics, action: \.statistics))
@@ -392,7 +334,7 @@ struct AppView: View {
             #endif
 
             TabSection(String(localized: "Tags", bundle: #bundle)) {
-                ForEach(store.tabTagSuggestions, id: \.self) { tag in
+                ForEach(store.projection.topTags, id: \.self) { tag in
                     Tab(tag, systemImage: "tag", value: AppFeature.State.Tab.sectionTags(tag)) {
                         archiveList
                     }
@@ -402,7 +344,7 @@ struct AppView: View {
             .hidden(horizontalSizeClass == .compact)
 
             TabSection("\(String(localized: "Years", bundle: #bundle))") {
-                ForEach(store.tabYearSuggestions, id: \.self) { year in
+                ForEach(store.projection.taggedYears, id: \.self) { year in
                     Tab("\(year, format: .number.grouping(.never))", systemImage: "calendar", value: AppFeature.State.Tab.sectionYears(year)) {
                         archiveList
                     }
@@ -470,7 +412,7 @@ struct AppView: View {
 
     @ToolbarContentBuilder
     private var loadingIndicator: some ToolbarContent {
-        if store.isDocumentLoading {
+        if store.projection.isReconciling {
             #if os(macOS)
             ToolbarItem(placement: .status) {
                 ProgressView()
@@ -487,7 +429,7 @@ struct AppView: View {
 }
 
 #Preview {
-    AppView(store: Store(initialState: AppFeature.State(isDocumentLoading: true)) {
+    AppView(store: Store(initialState: AppFeature.State()) {
         AppFeature()
             ._printChanges()
     })

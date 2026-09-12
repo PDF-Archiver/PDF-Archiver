@@ -87,6 +87,7 @@ struct Settings {
         case imprint
         case legal
         case privacy
+        case searchIndex(SearchIndexSettings)
         case termsOfUse
     }
 
@@ -130,6 +131,7 @@ struct Settings {
         case onOpenPdfArchiverWebsiteTapped
         case onShowArchiveTypeSelectionTapped
         case onPrivacyTapped
+        case onSearchIndexTapped
         case onTermsOfUseTapped
         case premiumSection(PremiumSection.Action)
         #if os(macOS)
@@ -160,6 +162,10 @@ struct Settings {
 
             case .onAppleIntelligenceSettingsTapped:
                 state.destination = .appleIntelligenceSettings(AppleIntelligenceSettings.State())
+                return .none
+
+            case .onSearchIndexTapped:
+                state.destination = .searchIndex(SearchIndexSettings.State())
                 return .none
 
             case .onContactSupportTapped:
@@ -302,6 +308,14 @@ struct SettingsView: View {
                         preconditionFailure("Failed to load export nothing found")
                     }
 
+                case .searchIndex:
+                    if let searchIndexStore = store.scope(\.destination?.searchIndex, action: \.destination.searchIndex) {
+                        SearchIndexSettingsView(store: searchIndexStore)
+                            .navigationTitle(Text("Search Index", bundle: #bundle))
+                    } else {
+                        preconditionFailure("Failed to load the search index settings")
+                    }
+
                 case .aboutMe:
                     AboutMeView()
 
@@ -356,6 +370,12 @@ struct SettingsView: View {
                 store.send(.onAppleIntelligenceSettingsTapped)
             } label: {
                 Label(String(localized: "Apple Intelligence", bundle: #bundle), systemImage: "apple.intelligence")
+            }
+
+            Button {
+                store.send(.onSearchIndexTapped)
+            } label: {
+                Label(String(localized: "Search Index", bundle: #bundle), systemImage: "magnifyingglass.circle")
             }
 
             Button {
@@ -451,6 +471,12 @@ struct SettingsMacView: View {
                             if let expertSettingsStore = store.scope(\.destination?.expertSettings, action: \.destination.expertSettings) {
                                 ExpertSettingsView(store: expertSettingsStore)
                                     .navigationTitle(Text("Advanced", bundle: #bundle))
+                            }
+
+                        case .searchIndex:
+                            if let searchIndexStore = store.scope(\.destination?.searchIndex, action: \.destination.searchIndex) {
+                                SearchIndexSettingsView(store: searchIndexStore)
+                                    .navigationTitle(Text("Search Index", bundle: #bundle))
                             }
 
                         case .aboutMe:
@@ -559,6 +585,14 @@ struct SettingsMacView: View {
                     }
                 } label: {
                     Label(String(localized: "Apple Intelligence", bundle: #bundle), systemImage: "apple.intelligence")
+                }
+
+                LabeledContent {
+                    Button(String(localized: "Configure…", bundle: #bundle)) {
+                        store.send(.onSearchIndexTapped)
+                    }
+                } label: {
+                    Label(String(localized: "Search Index", bundle: #bundle), systemImage: "magnifyingglass.circle")
                 }
 
                 LabeledContent {

@@ -193,7 +193,7 @@ public actor DocumentProcessor {
         let id = UUID()
         let (stream, continuation) = AsyncStream<ProcessingEvent>.makeStream()
         continuation.onTermination = { _ in
-            Task { [weak self] in
+            Task { [weak self = self] in
                 await self?.removeEventContinuation(id)
             }
         }
@@ -365,7 +365,7 @@ public actor DocumentProcessor {
         guard let document = PDFDocument(url: url) else { return nil }
         var content = ""
         for pageIndex in 0..<min(document.pageCount, 3) {
-            guard content.count < 5000 else { break }
+            guard content.count < Document.analysedTextLength else { break }
             content += document.page(at: pageIndex)?.string ?? ""
         }
         return content.isEmpty ? nil : content

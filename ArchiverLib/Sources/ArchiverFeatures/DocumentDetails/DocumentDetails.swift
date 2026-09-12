@@ -5,9 +5,11 @@
 //  Created by Julian Kahnert on 30.06.25.
 //
 
+import ArchiverDatabase
 import ArchiverModels
 import ComposableArchitecture
 import Shared
+import SQLiteData
 import SwiftUI
 
 @Reducer
@@ -24,7 +26,9 @@ struct DocumentDetails {
     @ObservableState
     struct State: Equatable {
         @Presents var alert: AlertState<Action.Alert>?
-        @Shared var document: Document
+        /// Kept live so download progress and renames arrive; the parent clears the presentation
+        /// when the id leaves its rows, so this never has to model "no document".
+        @FetchOne var document: Document
         var documentInformationForm: DocumentInformationForm.State
         // initially always false to avoid UI glitches, e.g. not showing the inspector
         var showInspector = false
@@ -36,9 +40,9 @@ struct DocumentDetails {
         @SharedReader(.highlightDetectedDateEnabled)
         var highlightDetectedDateEnabled: Bool
 
-        init(document: Shared<Document>) {
-            self._document = document
-            self.documentInformationForm = DocumentInformationForm.State(document: document.wrappedValue)
+        init(document: Document) {
+            self._document = FetchOne(wrappedValue: document, Document.find(document.id))
+            self.documentInformationForm = DocumentInformationForm.State(document: document)
         }
     }
 
@@ -66,6 +70,7 @@ struct DocumentDetails {
         }
     }
 
+    @Dependency(\.archiveStore.reloadDocuments) var reloadDocuments
     @Dependency(\.archiveStore.startDownloadOf) var startDownloadOf
     @Dependency(\.documentProcessor) var documentProcessor
     var body: some ReducerOf<Self> {
@@ -130,7 +135,13 @@ struct DocumentDetails {
 
             case .runOcrFinished(let success):
                 state.isRunningOcr = false
-                guard !success else { return .none }
+                guard !success else {
+                    // The rewritten file has a new size and date; the rescan is what gets its
+                    // fresh text layer indexed.
+                    return .run { _ in
+                        try await reloadDocuments()
+                    }
+                }
                 state.alert = AlertState<Action.Alert> {
                     TextState("OCR failed", bundle: #bundle)
                 } message: {
@@ -396,7 +407,7 @@ struct DocumentDetailsView: View {
 #Preview("Document", traits: .fixedLayout(width: 800, height: 600)) {
     NavigationStack {
         DocumentDetailsView(
-            store: Store(initialState: DocumentDetails.State(document: Shared(value: .mock(downloadStatus: 1)))) {
+            store: Store(initialState: DocumentDetails.State(document: .mock(downloadStatus: 1))) {
                 DocumentDetails()
                     ._printChanges()
             }
@@ -407,7 +418,7 @@ struct DocumentDetailsView: View {
 #Preview("Loading", traits: .fixedLayout(width: 800, height: 600)) {
     NavigationStack {
         DocumentDetailsView(
-            store: Store(initialState: DocumentDetails.State(document: Shared(value: .mock(downloadStatus: 0.33)))) {
+            store: Store(initialState: DocumentDetails.State(document: .mock(downloadStatus: 0.33))) {
                 DocumentDetails()
                     ._printChanges()
             }

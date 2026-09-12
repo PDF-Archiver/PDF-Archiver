@@ -28,11 +28,12 @@ flowchart TD
     P1 & P2 -->|"placeholder filename<br/>with import date"| UNT[("Untagged folder")]
     E4 --> UNT
 
-    UNT -.->|file watcher| DC["AppFeature.documentsChanged"]
-    DC --> UI["Inbox badge / lists / widget"]
-    DC -->|"restartable effect"| SWEEP["Untagged processing<br/>1. OCR text layer in place (ocrEnabled)<br/>2. AI suggestion cache (Apple Intelligence)"]
-    BG["BGProcessingTask (iOS 26+)<br/>runs on external power"] --> SWEEP
-    SWEEP -->|"ContentExtractorStore"| CACHE[("AI suggestion cache")]
+    UNT -.->|file watcher| IDX["ArchiveIndexer<br/>applies snapshots in chunks of 250, newest first"]
+    IDX --> DB[("SQLite read model")]
+    DB --> UI["Inbox badge / lists / widget"]
+    DB -->|"restartable effect"| SWEEP["Untagged processing<br/>1. OCR text layer in place (ocrEnabled)<br/>2. AI suggestion cache (Apple Intelligence)"]
+    BG["BGProcessingTask (iOS 18+)<br/>runs on external power"] --> SWEEP
+    SWEEP -->|"ContentExtractorStore"| CACHE[("documentSuggestions table")]
 
     UI -->|"user opens document"| FORM["DocumentInformationForm<br/>date/tag/description suggestions<br/>(reads text layer + cache)"]
     FORM -->|save| ARCH[("Archive/yyyy/<br/>yyyy-mm-dd--description__tags.pdf")]
@@ -46,10 +47,11 @@ flowchart TD
 | `PDFOCREngine` | `DocumentProcessingPipeline` | Vision OCR + invisible-text page rendering (scan → PDF and in-place OCR share one core) |
 | `PDFMetadata` | `DocumentProcessingPipeline` | Text-layer probe and `Creator`-marker deduplication |
 | `Staging` | `DocumentProcessingPipeline` | Crash-safe inbox handling (persist, group, delete after success) |
-| `ContentExtractorStore` (actor) | `ContentExtractorStore` | Apple Intelligence: document text in → description + tags out, with file-based cache |
+| `ContentExtractorStore` (actor) | `ContentExtractorStore` | Apple Intelligence: document text in → description + tags out, cached in the `documentSuggestions` table |
 | `DocumentProcessingDependency` | `ArchiverFeatures` | TCA seam: resolves user settings + untagged folder into a `ProcessingConfig` per request |
-| `BackgroundTaskManager` | `ArchiverFeatures` | iOS 26+ `BGProcessingTask` that runs the untagged processing on external power |
-| `ArchiveStore` / `FolderProvider` | `ArchiverStore` | Watches archive + untagged folders and streams document changes to the UI |
+| `BackgroundTaskManager` | `ArchiverFeatures` | iOS 18+ `BGProcessingTask` that runs the untagged processing on external power |
+| `ArchiveStore` / `FolderProvider` | `ArchiverStore` | Watches archive + untagged folders and hands full snapshots to the indexer, which maintains the read model the UI observes |
+| `ArchiveIndexer` | `ArchiverDatabase` | The single writer of the read model: applies snapshots progressively in chunks of 250 rows ordered newest first, and extracts document text. The loading indicator only covers a cold start, when nothing is stored for the observed roots yet |
 
 The pipeline target depends only on `ArchiverModels` and `ContentExtractorStore`
 (which itself depends only on `ArchiverModels`), so it can be reused outside the
@@ -105,6 +107,12 @@ document is re-OCR'd as soon as the engine version advances past its stamp.
 ## Background task
 
 One `BGProcessingTask` (`de.JulianKahnert.PDFArchiveViewer.pdf-processing`,
-iOS 26+, `requiresExternalPower`) waits for the initial document load and runs
-the same untagged processing as `documentsChanged`: OCR first, then the AI cache
-pass, so text layers exist when cache entries are computed.
+iOS 18+, `requiresExternalPower`) waits for the initial reconcile and then runs,
+in this order: OCR, the Apple Intelligence cache pass (still gated to iOS 26),
+and — with Premium — the opt-in downloads plus the text extraction that fills
+the search index. `requiresNetworkConnectivity` follows the "Download all
+documents for search" setting, because only those downloads need the network.
+
+On macOS `BackgroundTasks` is unavailable, so `MacBackgroundActivity` runs the
+text extraction from an `NSBackgroundActivityScheduler` and adds the two
+conditions that scheduler has no flag for: external power and an idle user.
