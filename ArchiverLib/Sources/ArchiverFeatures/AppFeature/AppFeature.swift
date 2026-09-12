@@ -99,6 +99,7 @@ struct AppFeature {
         case onLongBackgroundTask
         case onScenePhaseChanged(old: ScenePhase, new: ScenePhase)
         case onWidgetTagTapped
+        case premiumStatusChanged(PremiumStatus)
         case untaggedDocumentList(UntaggedDocumentList.Action)
         case updateWidget([Document])
         case prefetchDocuments([Document])
@@ -109,6 +110,7 @@ struct AppFeature {
     @Dependency(\.documentProcessor) var documentProcessor
     @Dependency(\.archiveStore) var archiveStore
     @Dependency(\.widgetStore) var widgetStore
+    @Dependency(\.premium) var premium
 
     private enum CancelID {
         case untaggedProcessing
@@ -249,17 +251,34 @@ struct AppFeature {
                                 await send(.isLoadingChanged(isLoading))
                             }
                         }
+                        // A separate task so the premium status, which gates the UI, never queues
+                        // behind processStagedFiles().
+                        group.addTask(priority: .medium) {
+                            await send(.premiumStatusChanged(premium.currentStatus()))
+                            for await _ in premium.transactionUpdates() {
+                                await send(.premiumStatusChanged(premium.currentStatus()))
+                            }
+                        }
                     }
                 }
 
             case .onScenePhaseChanged(old: let old, new: let new):
+                guard old != new, new == .active else { return .none }
+
+                // A subscription that expired in the background produces no transaction, so this
+                // is the only place that notices it - independent of the document reload below.
+                let premiumEffect = Effect<Action>.run { send in
+                    await send(.premiumStatusChanged(premium.currentStatus()))
+                }
+
                 // there might be situations where a user has made some document modifications while the app is in background
                 // we prevent an inconsistency by triggering a document reload when the app enters forground
                 // since this will already be done initially, we don't want to do it while the app is loading
-                if old != new,
-                   new == .active,
-                   !state.isDocumentLoading {
-                    return .run { _ in
+                guard !state.isDocumentLoading else { return premiumEffect }
+
+                return .merge(
+                    premiumEffect,
+                    .run { _ in
                         await withThrowingTaskGroup(of: Void.self) { group in
                             group.addTask(priority: .background) {
                                 await documentProcessor.processStagedFiles()
@@ -269,9 +288,7 @@ struct AppFeature {
                             }
                         }
                     }
-                }
-
-                return .none
+                )
 
             case .onWidgetTagTapped:
                 state.selectedTab = .inbox
@@ -282,6 +299,13 @@ struct AppFeature {
                 case .onCancelIapButtonTapped:
                     state.selectedTab = .search
                     return .none
+
+                case .onIapPurchaseCompleted:
+                    // A same-device purchase completes through `Product.PurchaseResult`, not
+                    // `Transaction.updates`, so this is the only trigger for it.
+                    return .run { send in
+                        await send(.premiumStatusChanged(premium.currentStatus()))
+                    }
                 }
 
             case .untaggedDocumentList:
@@ -302,6 +326,10 @@ struct AppFeature {
                         }
                     }
                 }
+
+            case .premiumStatusChanged(let status):
+                state.$premiumStatus.withLock { $0 = status }
+                return .none
 
             case .settings(.premiumSection(.delegate(let delegateAction))):
                 switch delegateAction {
@@ -427,7 +455,6 @@ struct AppView: View {
             #endif
         }
         .modifier(AlertDataModelProvider())
-        .modifier(IAP(premiumStatus: Binding(store.$premiumStatus)))
         .sheet(isPresented: Binding(store.$tutorialShown).flipped) {
             OnboardingView(isPresented: Binding(store.$tutorialShown).flipped)
                 #if os(macOS)

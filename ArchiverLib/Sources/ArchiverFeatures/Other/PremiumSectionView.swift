@@ -14,7 +14,7 @@ struct PremiumSection {
 
     @ObservableState
     struct State: Equatable {
-        @Shared(.premiumStatus) var premiumStatus: PremiumStatus = .inactive
+        @Shared(.premiumStatus) var premiumStatus: PremiumStatus = .loading
         var showIapView = false
     }
 

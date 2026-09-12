@@ -62,9 +62,11 @@ struct AppFeatureTests {
     @Test
     func documentsChangedSortsAndUpdates() async throws {
         let currentYear = Calendar.current.component(.year, from: Date())
-        let document1 = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: true)
-        let document2 = Document.mock(url: URL(string: "https://example.com/2")!, isTagged: true)
-        let document3 = Document.mock(url: URL(string: "https://example.com/3")!, isTagged: false)
+        // Distinct dates make the descending sort below deterministic - colliding `Date()`
+        // defaults left the order of same-instant documents unspecified.
+        let document1 = Document.mock(url: URL(string: "https://example.com/1")!, date: Date().addingTimeInterval(-120), isTagged: true)
+        let document2 = Document.mock(url: URL(string: "https://example.com/2")!, date: Date().addingTimeInterval(-60), isTagged: true)
+        let document3 = Document.mock(url: URL(string: "https://example.com/3")!, date: Date(), isTagged: false)
 
         let store = TestStore(initialState: AppFeature.State()) {
             AppFeature()
@@ -88,9 +90,11 @@ struct AppFeatureTests {
     @Test
     func documentsChangedCreatesTagSuggestions() async throws {
         let currentYear = Calendar.current.component(.year, from: Date())
-        let doc1 = Document.mock(url: URL(string: "https://example.com/1")!, tags: ["invoice", "work"], isTagged: true)
-        let doc2 = Document.mock(url: URL(string: "https://example.com/2")!, tags: ["invoice", "personal"], isTagged: true)
-        let doc3 = Document.mock(url: URL(string: "https://example.com/3")!, tags: ["invoice"], isTagged: true)
+        // Distinct dates make the descending sort below deterministic - colliding `Date()`
+        // defaults left the order of same-instant documents unspecified.
+        let doc1 = Document.mock(url: URL(string: "https://example.com/1")!, date: Date().addingTimeInterval(-120), tags: ["invoice", "work"], isTagged: true)
+        let doc2 = Document.mock(url: URL(string: "https://example.com/2")!, date: Date().addingTimeInterval(-60), tags: ["invoice", "personal"], isTagged: true)
+        let doc3 = Document.mock(url: URL(string: "https://example.com/3")!, date: Date(), tags: ["invoice"], isTagged: true)
 
         let store = TestStore(initialState: AppFeature.State()) {
             AppFeature()
@@ -152,18 +156,117 @@ struct AppFeatureTests {
         } withDependencies: {
             $0.documentProcessor.processStagedFiles = { }
             $0.archiveStore.reloadDocuments = { }
+            $0.premium.currentStatus = { .active }
         }
 
         await store.send(.onScenePhaseChanged(old: .background, new: .active))
+
+        await store.receive(\.premiumStatusChanged, .active) {
+            $0.$premiumStatus.withLock { $0 = .active }
+        }
     }
 
+    // Not gated on `isDocumentLoading`: a subscription can lapse in the background, and this
+    // is the only place that notices it once the scene becomes active again.
     @Test
     func scenePhaseDoesNotReloadWhileLoading() async throws {
         let store = TestStore(initialState: AppFeature.State(isDocumentLoading: true)) {
             AppFeature()
+        } withDependencies: {
+            $0.premium.currentStatus = { .inactive }
         }
 
         await store.send(.onScenePhaseChanged(old: .background, new: .active))
+
+        await store.receive(\.premiumStatusChanged, .inactive) {
+            $0.$premiumStatus.withLock { $0 = .inactive }
+        }
+    }
+
+    @Test
+    func becomingActiveReEvaluatesThePremiumStatus() async throws {
+        let store = TestStore(initialState: AppFeature.State(isDocumentLoading: false)) {
+            AppFeature()
+        } withDependencies: {
+            $0.documentProcessor.processStagedFiles = { }
+            $0.archiveStore.reloadDocuments = { }
+            $0.premium.currentStatus = { .inactive }
+        }
+
+        await store.send(.onScenePhaseChanged(old: .background, new: .active))
+
+        await store.receive(\.premiumStatusChanged, .inactive) {
+            $0.$premiumStatus.withLock { $0 = .inactive }
+        }
+    }
+
+    // MARK: - Premium Status Tests
+
+    @Test
+    func theLongBackgroundTaskPublishesThePremiumStatus() async throws {
+        let store = TestStore(initialState: AppFeature.State()) {
+            AppFeature()
+        } withDependencies: {
+            $0.documentProcessor.processStagedFiles = { }
+            $0.archiveStore.documentChanges = { AsyncStream { $0.finish() } }
+            $0.archiveStore.isLoading = { AsyncStream { $0.finish() } }
+            $0.premium.currentStatus = { .active }
+            $0.premium.transactionUpdates = { AsyncStream { $0.finish() } }
+        }
+        store.exhaustivity = .off
+
+        await store.send(.onLongBackgroundTask)
+
+        await store.receive(\.premiumStatusChanged, .active) {
+            $0.$premiumStatus.withLock { $0 = .active }
+        }
+    }
+
+    @Test
+    func aTransactionUpdateReEvaluatesThePremiumStatus() async throws {
+        let statuses = LockIsolated<[PremiumStatus]>([.inactive, .active])
+        // The continuation is driven by the test rather than yielded up front, so the second
+        // value is only produced after the assertion below has consumed the first one.
+        let (updates, updatesContinuation) = AsyncStream<Void>.makeStream()
+        let store = TestStore(initialState: AppFeature.State()) {
+            AppFeature()
+        } withDependencies: {
+            $0.documentProcessor.processStagedFiles = { }
+            $0.archiveStore.documentChanges = { AsyncStream { $0.finish() } }
+            $0.archiveStore.isLoading = { AsyncStream { $0.finish() } }
+            $0.premium.currentStatus = { statuses.withValue { $0.removeFirst() } }
+            $0.premium.transactionUpdates = { updates }
+        }
+
+        await store.send(.onLongBackgroundTask)
+
+        await store.receive(\.premiumStatusChanged, .inactive) {
+            $0.$premiumStatus.withLock { $0 = .inactive }
+        }
+
+        updatesContinuation.yield()
+        updatesContinuation.finish()
+
+        await store.receive(\.premiumStatusChanged, .active) {
+            $0.$premiumStatus.withLock { $0 = .active }
+        }
+    }
+
+    /// A same-device purchase completes through `Product.PurchaseResult`, not `Transaction.updates`
+    /// - `IAPView`'s `onInAppPurchaseCompletion` is the only place that notices it.
+    @Test
+    func aSameDeviceIAPPurchaseReEvaluatesThePremiumStatus() async throws {
+        let store = TestStore(initialState: AppFeature.State()) {
+            AppFeature()
+        } withDependencies: {
+            $0.premium.currentStatus = { .active }
+        }
+
+        await store.send(.untaggedDocumentList(.delegate(.onIapPurchaseCompleted)))
+
+        await store.receive(\.premiumStatusChanged, .active) {
+            $0.$premiumStatus.withLock { $0 = .active }
+        }
     }
 
     // MARK: - Widget Tests

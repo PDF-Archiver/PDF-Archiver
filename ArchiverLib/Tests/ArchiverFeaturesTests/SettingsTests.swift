@@ -133,7 +133,7 @@ struct SettingsTests {
     func premiumSectionInitialized() throws {
         let state = Settings.State()
 
-        #expect(state.premiumSection.premiumStatus == .inactive)
+        #expect(state.premiumSection.premiumStatus == .loading)
     }
 
     @Test
