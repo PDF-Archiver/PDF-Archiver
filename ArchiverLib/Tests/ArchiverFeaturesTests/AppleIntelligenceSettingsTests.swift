@@ -1,6 +1,5 @@
 import ArchiverModels
 import ComposableArchitecture
-import ContentExtractorStore
 import Foundation
 import Testing
 
@@ -11,7 +10,7 @@ struct AppleIntelligenceSettingsTests {
     // MARK: - State Initialization Tests
 
     @Test
-    func defaultStateInitialization() async throws {
+    func defaultStateInitialization() throws {
         let state = AppleIntelligenceSettings.State()
 
         #expect(state.availability == .operatingSystemNotCompatible)
@@ -20,7 +19,7 @@ struct AppleIntelligenceSettingsTests {
     }
 
     @Test
-    func stateInitializationWithAvailability() async throws {
+    func stateInitializationWithAvailability() throws {
         let state = AppleIntelligenceSettings.State(availability: .available)
 
         #expect(state.availability == .available)
@@ -31,7 +30,7 @@ struct AppleIntelligenceSettingsTests {
     // MARK: - Availability Tests
 
     @Test
-    func availabilityStates() async throws {
+    func availabilityStates() throws {
         #expect(AppleIntelligenceAvailability.available.isUsable == true)
         #expect(AppleIntelligenceAvailability.unavailable.isUsable == false)
         #expect(AppleIntelligenceAvailability.deviceNotCompatible.isUsable == false)
@@ -231,8 +230,6 @@ struct AppleIntelligenceSettingsTests {
             initialState: AppleIntelligenceSettings.State(availability: .available)
         ) {
             AppleIntelligenceSettings()
-        } withDependencies: {
-            $0.contentExtractorStore.setCacheEnabled = { _ in }
         }
 
         await store.send(.binding(.set(\.cacheEnabled, true))) {
@@ -246,8 +243,6 @@ struct AppleIntelligenceSettingsTests {
             initialState: AppleIntelligenceSettings.State(availability: .available)
         ) {
             AppleIntelligenceSettings()
-        } withDependencies: {
-            $0.contentExtractorStore.setCacheEnabled = { _ in }
         }
 
         await store.send(.binding(.set(\.cacheEnabled, false))) {
@@ -298,45 +293,10 @@ struct AppleIntelligenceSettingsTests {
         }
     }
 
-    // MARK: - Custom Prompt Length Tests
-
-    @Test
-    func maxCustomPromptLengthConstant() async throws {
-        #expect(AppleIntelligenceSettings.maxCustomPromptLength == 1000)
-    }
-
-    @Test
-    func customPromptWithinLimit() async throws {
-        let prompt = String(repeating: "a", count: 999)
-        let store = TestStore(
-            initialState: AppleIntelligenceSettings.State(availability: .available)
-        ) {
-            AppleIntelligenceSettings()
-        }
-
-        await store.send(.binding(.set(\.customPrompt, prompt))) {
-            $0.$customPrompt.withLock { $0 = prompt }
-        }
-    }
-
-    @Test
-    func customPromptAtMaxLimit() async throws {
-        let prompt = String(repeating: "a", count: 1000)
-        let store = TestStore(
-            initialState: AppleIntelligenceSettings.State(availability: .available)
-        ) {
-            AppleIntelligenceSettings()
-        }
-
-        await store.send(.binding(.set(\.customPrompt, prompt))) {
-            $0.$customPrompt.withLock { $0 = prompt }
-        }
-    }
-
     // MARK: - State Equality Tests
 
     @Test
-    func stateEquality() async throws {
+    func stateEquality() throws {
         let state1 = AppleIntelligenceSettings.State(
             availability: .available,
             cacheEntryCount: 10
@@ -352,7 +312,7 @@ struct AppleIntelligenceSettingsTests {
     }
 
     @Test
-    func stateInequality() async throws {
+    func stateInequality() throws {
         let state1 = AppleIntelligenceSettings.State(
             availability: .available,
             cacheEntryCount: 10
@@ -429,7 +389,6 @@ struct AppleIntelligenceSettingsTests {
         ) {
             AppleIntelligenceSettings()
         } withDependencies: {
-            $0.contentExtractorStore.setCacheEnabled = { _ in }
             $0.contentExtractorStore.clearCache = {}
         }
 

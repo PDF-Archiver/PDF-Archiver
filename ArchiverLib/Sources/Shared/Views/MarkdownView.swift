@@ -41,12 +41,16 @@ private struct BlockRenderer: View {
         switch block.kind {
         case .heading(let level):
             HeadingView(level: level, content: block.items.first ?? AttributedString(""))
+
         case .blockquote:
             BlockquoteView(content: block.items.first ?? AttributedString(""))
+
         case .orderedList(let start):
             OrderedListView(start: start, items: block.items)
+
         case .unorderedList:
             UnorderedListView(items: block.items)
+
         case .paragraph:
             Text(block.items.first ?? AttributedString(""))
                 .frame(maxWidth: .infinity, alignment: .leading)

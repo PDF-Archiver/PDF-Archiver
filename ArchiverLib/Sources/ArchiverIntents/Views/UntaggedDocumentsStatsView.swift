@@ -35,7 +35,6 @@ public struct UntaggedDocumentsStatsView: View {
                     Capsule().fill(Color.paRedAsset)
                 )
                 .foregroundColor(.white)
-
             } else {
                 Link(destination: DeepLink.scan.url) {
                     Image(systemName: "doc.viewfinder")
@@ -51,7 +50,6 @@ public struct UntaggedDocumentsStatsView: View {
                 .padding(10)
                 .background(Capsule().fill(Color.paRedAsset))
                 .foregroundColor(.white)
-
             }
          }
         .padding(.top, 8)
@@ -121,6 +119,7 @@ public struct UntaggedDocumentsStatsView: View {
                     actionButtons
                 }
             }
+
         case .large:
             VStack(alignment: .leading) {
                 if untaggedDocuments > 0 {
@@ -165,7 +164,6 @@ public struct UntaggedDocumentsStatsView: View {
                     .foregroundStyle(Color.paRedAsset.opacity(0.4))
                     .frame(width: 80, height: 80)
                     .offset(x: 30, y: -30)
-
             }
     }
 }

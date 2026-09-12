@@ -6,6 +6,7 @@
 //
 
 import ArchiverModels
+import ArchiverStore
 import ComposableArchitecture
 import OSLog
 import Shared
@@ -93,7 +94,6 @@ struct StorageSelectionView: View {
                 Section(footer: storageType.descriptionView) {
                     Button {
                         store.send(.onStorageTypeTapped(storageType))
-
                     } label: {
                         HStack {
                             Label {
@@ -117,11 +117,6 @@ struct StorageSelectionView: View {
             }
             HStack(spacing: 16) {
                 Image(systemName: "exclamationmark.triangle")
-                    .resizable()
-                    .scaledToFit()
-                    .containerRelativeFrame(.horizontal) { size, _ in
-                        size * 1 / 10
-                    }
                     .foregroundStyle(Color.tertiaryLabelAsset)
 
                 Text("PDF Archiver is not a backup solution. Please make backups of the archived PDFs regularly.", bundle: #bundle)
@@ -174,7 +169,6 @@ enum StorageSelectionType: String, CaseIterable {
     #endif
     case local
 
-    // swiftlint:disable:next force_unwrapping
     private static let appleDocumentationURL = URL(string: "https://support.apple.com/en-us/HT210598")!
 
     func equals(_ type: StorageType) -> Bool {
@@ -196,10 +190,12 @@ enum StorageSelectionType: String, CaseIterable {
         switch self {
         case .iCloudDrive:
             return "iCloud Drive"
+
         #if !os(macOS)
         case .appContainer:
             return "Local"
         #endif
+
         case .local:
             #if os(macOS)
             return "Drive"
@@ -213,10 +209,12 @@ enum StorageSelectionType: String, CaseIterable {
         switch self {
         case .iCloudDrive:
             return "icloud"
+
         #if !os(macOS)
         case .appContainer:
             return "iphone"
         #endif
+
         case .local:
             #if os(macOS)
             return "externaldrive"
@@ -231,13 +229,17 @@ enum StorageSelectionType: String, CaseIterable {
         switch self {
         case .iCloudDrive:
             Text("Synchronized - Your documents are stored in iCloud Drive. They are available to you on all devices with the same iCloud account, e.g. iPhone, iPad and Mac.", bundle: #bundle)
+
         #if !os(macOS)
         case .appContainer:
             VStack(alignment: .leading) {
                 Text("Not synchronized - your documents are only stored locally in this app. They can be transferred via the Finder on a Mac, for example.", bundle: #bundle)
                 Link("https://support.apple.com/en-us/HT210598", destination: Self.appleDocumentationURL)
             }
+            // A `Link` ignores the footer's implicit text style and would render at body size.
+            .font(.footnote)
         #endif
+
         case .local:
             Text("Not synchronized - Your documents are stored in a folder you choose on your computer. PDF Archiver does not initiate synchronization.", bundle: #bundle)
         }

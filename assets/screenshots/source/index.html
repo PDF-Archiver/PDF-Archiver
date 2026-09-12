@@ -1,0 +1,153 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>App Store screenshots</title>
+<style>
+  :root { color-scheme: dark }
+  body { margin: 0; padding: 32px; background: #14171c; color: #e8ebef;
+         font: 14px/1.5 -apple-system, "Helvetica Neue", sans-serif }
+  h1 { font-size: 20px; margin: 0 0 4px }
+  .meta { color: #9aa4b1; margin-bottom: 28px }
+  section { margin-bottom: 36px }
+  h2 { font-size: 15px; margin: 0 0 2px; font-family: ui-monospace, "SF Mono", monospace }
+  .count { color: #9aa4b1; font-weight: 400 }
+  .row { display: flex; gap: 18px; overflow-x: auto; padding: 14px 0 6px }
+  figure { margin: 0; flex: 0 0 auto; text-align: center }
+  /* Centred: a placeholder's caption is wider than its slot, so an uncentred box hangs off
+     to the left of the name under it. Width and iframe scale are per set, written inline. */
+  .thumb { overflow: hidden; border-radius: 6px; background: #000; margin: 0 auto;
+           box-shadow: 0 6px 18px rgba(0,0,0,.5) }
+  /* The iframe is the real target size, scaled down for the eye only — so what is on screen
+     is the layout that renders, not a resampled picture of an older one. */
+  iframe { border: 0; display: block; transform-origin: top left }
+  img { display: block; height: 340px; width: auto; border-radius: 6px }
+  /* The PNG sits in the same slot as the iframe, so switching between them cannot shift
+     the layout — which is the whole point of comparing a page against its render. */
+  .thumb img.render { display: none; width: 100%; height: 100%; object-fit: contain }
+  body.render iframe { display: none }
+  body.render .thumb img.render { display: block }
+  .missing { display: grid; place-items: center; width: 100%; height: 100%;
+             color: #6c7684; font-family: ui-monospace, "SF Mono", monospace; font-size: 12px }
+  figcaption { padding-top: 7px; color: #9aa4b1;
+               font-family: ui-monospace, "SF Mono", monospace; font-size: 12px }
+  .name { display: block; color: #e8ebef; font-family: inherit; font-size: 13px }
+  /* A set whose files disagree on size, or disagree with the plan, is almost always a stray
+     file — and it is the one defect that survives all the way to a rejected upload. */
+  .mixed { color: #ff8a80 }
+  .warn { color: #ffcc80 }
+  .unrendered { color: #6c7684; font-style: italic }
+  .done { color: #8ed99a }
+  .todo { color: #ffcc80 }
+  .draft { color: #6c7684 }
+  /* A slot, not a screenshot: no ground, no shadow, a dashed edge at the planned aspect. */
+  .pending .thumb { background: none; box-shadow: none; border: 1px dashed #46505e;
+                    display: flex; align-items: center; justify-content: center;
+                    color: #6c7684; font-family: ui-monospace, "SF Mono", monospace }
+  a { color: inherit; text-decoration: none }
+  a:hover .name { text-decoration: underline }
+  /* Locale switch. Filtering is CSS: the body carries the choice, each section its locale. */
+  .locales { display: inline-flex; margin: 0 0 22px; border: 1px solid #2b3442;
+             border-radius: 8px; overflow: hidden;
+             font-family: ui-monospace, "SF Mono", monospace; font-size: 13px }
+  .locales button { appearance: none; border: 0; background: none; color: #9aa4b1;
+                    padding: 7px 15px; cursor: pointer; font: inherit }
+  .locales button + button { border-left: 1px solid #2b3442 }
+  .locales button[aria-pressed="true"] { background: #2b3442; color: #e8ebef }
+  /* Two switches side by side read as one group of five buttons without this. */
+  #view { margin-right: 14px }
+</style>
+<h1>App Store screenshots</h1>
+<p class="meta">2026-09-03 22:39 &middot; 6 set(s) &middot; frames are the live pages, sizes measured from the rendered PNGs</p>
+<div class="locales" id="view">
+  <button type="button" data-view="html" aria-pressed="true">HTML</button>
+  <button type="button" data-view="png" aria-pressed="false">Bild</button>
+</div>
+<div class="locales">
+  <button type="button" data-pick="all" aria-pressed="true">alle</button>
+  <button type="button" data-pick="de" aria-pressed="false">de</button>
+  <button type="button" data-pick="en" aria-pressed="false">en</button>
+</div>
+<section data-locale="de">
+  <h2>de-DE/iphone-6.9 <span class="count">&mdash; 5 image(s), 1320x2868 &middot; <span class="done">complete</span></span></h2>
+  <div class="row">
+    <figure><div class="thumb" style="width:156.5px;height:340px"><iframe src="../source/pages/de-DE-iphone-6.9/1-archive.html" title="1-archive" style="width:1320px;height:2868px;transform:scale(0.11855)"></iframe><img class="render" src="../appstore/de-DE/iphone-6.9/1-archive.png" alt="1-archive"></div><a href="../source/pages/de-DE-iphone-6.9/1-archive.html"><figcaption><span class="name">1-archive</span>1320x2868</figcaption></a></figure>
+    <figure><div class="thumb" style="width:156.5px;height:340px"><iframe src="../source/pages/de-DE-iphone-6.9/2-scan.html" title="2-scan" style="width:1320px;height:2868px;transform:scale(0.11855)"></iframe><img class="render" src="../appstore/de-DE/iphone-6.9/2-scan.png" alt="2-scan"></div><a href="../source/pages/de-DE-iphone-6.9/2-scan.html"><figcaption><span class="name">2-scan</span>1320x2868</figcaption></a></figure>
+    <figure><div class="thumb" style="width:156.5px;height:340px"><iframe src="../source/pages/de-DE-iphone-6.9/3-tag.html" title="3-tag" style="width:1320px;height:2868px;transform:scale(0.11855)"></iframe><img class="render" src="../appstore/de-DE/iphone-6.9/3-tag.png" alt="3-tag"></div><a href="../source/pages/de-DE-iphone-6.9/3-tag.html"><figcaption><span class="name">3-tag</span>1320x2868</figcaption></a></figure>
+    <figure><div class="thumb" style="width:156.5px;height:340px"><iframe src="../source/pages/de-DE-iphone-6.9/4-keep.html" title="4-keep" style="width:1320px;height:2868px;transform:scale(0.11855)"></iframe><img class="render" src="../appstore/de-DE/iphone-6.9/4-keep.png" alt="4-keep"></div><a href="../source/pages/de-DE-iphone-6.9/4-keep.html"><figcaption><span class="name">4-keep</span>1320x2868</figcaption></a></figure>
+    <figure><div class="thumb" style="width:156.5px;height:340px"><iframe src="../source/pages/de-DE-iphone-6.9/5-find.html" title="5-find" style="width:1320px;height:2868px;transform:scale(0.11855)"></iframe><img class="render" src="../appstore/de-DE/iphone-6.9/5-find.png" alt="5-find"></div><a href="../source/pages/de-DE-iphone-6.9/5-find.html"><figcaption><span class="name">5-find</span>1320x2868</figcaption></a></figure>
+  </div>
+</section>
+<section data-locale="en">
+  <h2>en-US/iphone-6.9 <span class="count">&mdash; 5 image(s), 1320x2868 &middot; <span class="done">complete</span></span></h2>
+  <div class="row">
+    <figure><div class="thumb" style="width:156.5px;height:340px"><iframe src="../source/pages/en-US-iphone-6.9/1-archive.html" title="1-archive" style="width:1320px;height:2868px;transform:scale(0.11855)"></iframe><img class="render" src="../appstore/en-US/iphone-6.9/1-archive.png" alt="1-archive"></div><a href="../source/pages/en-US-iphone-6.9/1-archive.html"><figcaption><span class="name">1-archive</span>1320x2868</figcaption></a></figure>
+    <figure><div class="thumb" style="width:156.5px;height:340px"><iframe src="../source/pages/en-US-iphone-6.9/2-scan.html" title="2-scan" style="width:1320px;height:2868px;transform:scale(0.11855)"></iframe><img class="render" src="../appstore/en-US/iphone-6.9/2-scan.png" alt="2-scan"></div><a href="../source/pages/en-US-iphone-6.9/2-scan.html"><figcaption><span class="name">2-scan</span>1320x2868</figcaption></a></figure>
+    <figure><div class="thumb" style="width:156.5px;height:340px"><iframe src="../source/pages/en-US-iphone-6.9/3-tag.html" title="3-tag" style="width:1320px;height:2868px;transform:scale(0.11855)"></iframe><img class="render" src="../appstore/en-US/iphone-6.9/3-tag.png" alt="3-tag"></div><a href="../source/pages/en-US-iphone-6.9/3-tag.html"><figcaption><span class="name">3-tag</span>1320x2868</figcaption></a></figure>
+    <figure><div class="thumb" style="width:156.5px;height:340px"><iframe src="../source/pages/en-US-iphone-6.9/4-keep.html" title="4-keep" style="width:1320px;height:2868px;transform:scale(0.11855)"></iframe><img class="render" src="../appstore/en-US/iphone-6.9/4-keep.png" alt="4-keep"></div><a href="../source/pages/en-US-iphone-6.9/4-keep.html"><figcaption><span class="name">4-keep</span>1320x2868</figcaption></a></figure>
+    <figure><div class="thumb" style="width:156.5px;height:340px"><iframe src="../source/pages/en-US-iphone-6.9/5-find.html" title="5-find" style="width:1320px;height:2868px;transform:scale(0.11855)"></iframe><img class="render" src="../appstore/en-US/iphone-6.9/5-find.png" alt="5-find"></div><a href="../source/pages/en-US-iphone-6.9/5-find.html"><figcaption><span class="name">5-find</span>1320x2868</figcaption></a></figure>
+  </div>
+</section>
+<section data-locale="de">
+  <h2>de-DE/ipad-13 <span class="count">&mdash; 5 image(s), 2752x2064 &middot; <span class="done">complete</span></span></h2>
+  <div class="row">
+    <figure><div class="thumb" style="width:453.3px;height:340px"><iframe src="../source/pages/de-DE-ipad-13/1-archive.html" title="1-archive" style="width:2752px;height:2064px;transform:scale(0.16473)"></iframe><img class="render" src="../appstore/de-DE/ipad-13/1-archive.png" alt="1-archive"></div><a href="../source/pages/de-DE-ipad-13/1-archive.html"><figcaption><span class="name">1-archive</span>2752x2064</figcaption></a></figure>
+    <figure><div class="thumb" style="width:453.3px;height:340px"><iframe src="../source/pages/de-DE-ipad-13/2-scan.html" title="2-scan" style="width:2752px;height:2064px;transform:scale(0.16473)"></iframe><img class="render" src="../appstore/de-DE/ipad-13/2-scan.png" alt="2-scan"></div><a href="../source/pages/de-DE-ipad-13/2-scan.html"><figcaption><span class="name">2-scan</span>2752x2064</figcaption></a></figure>
+    <figure><div class="thumb" style="width:453.3px;height:340px"><iframe src="../source/pages/de-DE-ipad-13/3-tag.html" title="3-tag" style="width:2752px;height:2064px;transform:scale(0.16473)"></iframe><img class="render" src="../appstore/de-DE/ipad-13/3-tag.png" alt="3-tag"></div><a href="../source/pages/de-DE-ipad-13/3-tag.html"><figcaption><span class="name">3-tag</span>2752x2064</figcaption></a></figure>
+    <figure><div class="thumb" style="width:453.3px;height:340px"><iframe src="../source/pages/de-DE-ipad-13/4-keep.html" title="4-keep" style="width:2752px;height:2064px;transform:scale(0.16473)"></iframe><img class="render" src="../appstore/de-DE/ipad-13/4-keep.png" alt="4-keep"></div><a href="../source/pages/de-DE-ipad-13/4-keep.html"><figcaption><span class="name">4-keep</span>2752x2064</figcaption></a></figure>
+    <figure><div class="thumb" style="width:453.3px;height:340px"><iframe src="../source/pages/de-DE-ipad-13/5-find.html" title="5-find" style="width:2752px;height:2064px;transform:scale(0.16473)"></iframe><img class="render" src="../appstore/de-DE/ipad-13/5-find.png" alt="5-find"></div><a href="../source/pages/de-DE-ipad-13/5-find.html"><figcaption><span class="name">5-find</span>2752x2064</figcaption></a></figure>
+  </div>
+</section>
+<section data-locale="en">
+  <h2>en-US/ipad-13 <span class="count">&mdash; 5 image(s), 2752x2064 &middot; <span class="done">complete</span></span></h2>
+  <div class="row">
+    <figure><div class="thumb" style="width:453.3px;height:340px"><iframe src="../source/pages/en-US-ipad-13/1-archive.html" title="1-archive" style="width:2752px;height:2064px;transform:scale(0.16473)"></iframe><img class="render" src="../appstore/en-US/ipad-13/1-archive.png" alt="1-archive"></div><a href="../source/pages/en-US-ipad-13/1-archive.html"><figcaption><span class="name">1-archive</span>2752x2064</figcaption></a></figure>
+    <figure><div class="thumb" style="width:453.3px;height:340px"><iframe src="../source/pages/en-US-ipad-13/2-scan.html" title="2-scan" style="width:2752px;height:2064px;transform:scale(0.16473)"></iframe><img class="render" src="../appstore/en-US/ipad-13/2-scan.png" alt="2-scan"></div><a href="../source/pages/en-US-ipad-13/2-scan.html"><figcaption><span class="name">2-scan</span>2752x2064</figcaption></a></figure>
+    <figure><div class="thumb" style="width:453.3px;height:340px"><iframe src="../source/pages/en-US-ipad-13/3-tag.html" title="3-tag" style="width:2752px;height:2064px;transform:scale(0.16473)"></iframe><img class="render" src="../appstore/en-US/ipad-13/3-tag.png" alt="3-tag"></div><a href="../source/pages/en-US-ipad-13/3-tag.html"><figcaption><span class="name">3-tag</span>2752x2064</figcaption></a></figure>
+    <figure><div class="thumb" style="width:453.3px;height:340px"><iframe src="../source/pages/en-US-ipad-13/4-keep.html" title="4-keep" style="width:2752px;height:2064px;transform:scale(0.16473)"></iframe><img class="render" src="../appstore/en-US/ipad-13/4-keep.png" alt="4-keep"></div><a href="../source/pages/en-US-ipad-13/4-keep.html"><figcaption><span class="name">4-keep</span>2752x2064</figcaption></a></figure>
+    <figure><div class="thumb" style="width:453.3px;height:340px"><iframe src="../source/pages/en-US-ipad-13/5-find.html" title="5-find" style="width:2752px;height:2064px;transform:scale(0.16473)"></iframe><img class="render" src="../appstore/en-US/ipad-13/5-find.png" alt="5-find"></div><a href="../source/pages/en-US-ipad-13/5-find.html"><figcaption><span class="name">5-find</span>2752x2064</figcaption></a></figure>
+  </div>
+</section>
+<section data-locale="de">
+  <h2>de-DE/mac <span class="count">&mdash; 5 image(s), 2880x1800 &middot; <span class="done">complete</span></span></h2>
+  <div class="row">
+    <figure><div class="thumb" style="width:544.0px;height:340px"><iframe src="../source/pages/de-DE-mac/1-archive.html" title="1-archive" style="width:2880px;height:1800px;transform:scale(0.18889)"></iframe><img class="render" src="../appstore/de-DE/mac/1-archive.png" alt="1-archive"></div><a href="../source/pages/de-DE-mac/1-archive.html"><figcaption><span class="name">1-archive</span>2880x1800</figcaption></a></figure>
+    <figure><div class="thumb" style="width:544.0px;height:340px"><iframe src="../source/pages/de-DE-mac/2-tag.html" title="2-tag" style="width:2880px;height:1800px;transform:scale(0.18889)"></iframe><img class="render" src="../appstore/de-DE/mac/2-tag.png" alt="2-tag"></div><a href="../source/pages/de-DE-mac/2-tag.html"><figcaption><span class="name">2-tag</span>2880x1800</figcaption></a></figure>
+    <figure><div class="thumb" style="width:544.0px;height:340px"><iframe src="../source/pages/de-DE-mac/3-document.html" title="3-document" style="width:2880px;height:1800px;transform:scale(0.18889)"></iframe><img class="render" src="../appstore/de-DE/mac/3-document.png" alt="3-document"></div><a href="../source/pages/de-DE-mac/3-document.html"><figcaption><span class="name">3-document</span>2880x1800</figcaption></a></figure>
+    <figure><div class="thumb" style="width:544.0px;height:340px"><iframe src="../source/pages/de-DE-mac/4-keep.html" title="4-keep" style="width:2880px;height:1800px;transform:scale(0.18889)"></iframe><img class="render" src="../appstore/de-DE/mac/4-keep.png" alt="4-keep"></div><a href="../source/pages/de-DE-mac/4-keep.html"><figcaption><span class="name">4-keep</span>2880x1800</figcaption></a></figure>
+    <figure><div class="thumb" style="width:544.0px;height:340px"><iframe src="../source/pages/de-DE-mac/5-privacy.html" title="5-privacy" style="width:2880px;height:1800px;transform:scale(0.18889)"></iframe><img class="render" src="../appstore/de-DE/mac/5-privacy.png" alt="5-privacy"></div><a href="../source/pages/de-DE-mac/5-privacy.html"><figcaption><span class="name">5-privacy</span>2880x1800</figcaption></a></figure>
+  </div>
+</section>
+<section data-locale="en">
+  <h2>en-US/mac <span class="count">&mdash; 5 image(s), 2880x1800 &middot; <span class="done">complete</span></span></h2>
+  <div class="row">
+    <figure><div class="thumb" style="width:544.0px;height:340px"><iframe src="../source/pages/en-US-mac/1-archive.html" title="1-archive" style="width:2880px;height:1800px;transform:scale(0.18889)"></iframe><img class="render" src="../appstore/en-US/mac/1-archive.png" alt="1-archive"></div><a href="../source/pages/en-US-mac/1-archive.html"><figcaption><span class="name">1-archive</span>2880x1800</figcaption></a></figure>
+    <figure><div class="thumb" style="width:544.0px;height:340px"><iframe src="../source/pages/en-US-mac/2-tag.html" title="2-tag" style="width:2880px;height:1800px;transform:scale(0.18889)"></iframe><img class="render" src="../appstore/en-US/mac/2-tag.png" alt="2-tag"></div><a href="../source/pages/en-US-mac/2-tag.html"><figcaption><span class="name">2-tag</span>2880x1800</figcaption></a></figure>
+    <figure><div class="thumb" style="width:544.0px;height:340px"><iframe src="../source/pages/en-US-mac/3-document.html" title="3-document" style="width:2880px;height:1800px;transform:scale(0.18889)"></iframe><img class="render" src="../appstore/en-US/mac/3-document.png" alt="3-document"></div><a href="../source/pages/en-US-mac/3-document.html"><figcaption><span class="name">3-document</span>2880x1800</figcaption></a></figure>
+    <figure><div class="thumb" style="width:544.0px;height:340px"><iframe src="../source/pages/en-US-mac/4-keep.html" title="4-keep" style="width:2880px;height:1800px;transform:scale(0.18889)"></iframe><img class="render" src="../appstore/en-US/mac/4-keep.png" alt="4-keep"></div><a href="../source/pages/en-US-mac/4-keep.html"><figcaption><span class="name">4-keep</span>2880x1800</figcaption></a></figure>
+    <figure><div class="thumb" style="width:544.0px;height:340px"><iframe src="../source/pages/en-US-mac/5-privacy.html" title="5-privacy" style="width:2880px;height:1800px;transform:scale(0.18889)"></iframe><img class="render" src="../appstore/en-US/mac/5-privacy.png" alt="5-privacy"></div><a href="../source/pages/en-US-mac/5-privacy.html"><figcaption><span class="name">5-privacy</span>2880x1800</figcaption></a></figure>
+  </div>
+</section>
+<script>
+const viewButtons = [...document.querySelectorAll('#view button')];
+for (const button of viewButtons) {
+    button.addEventListener('click', () => {
+        document.body.classList.toggle('render', button.dataset.view === 'png');
+        for (const other of viewButtons) {
+            other.setAttribute('aria-pressed', String(other === button));
+        }
+    });
+}
+</script>
+<script>
+const buttons = [...document.querySelectorAll('.locales button')];
+const sections = [...document.querySelectorAll('section[data-locale]')];
+function pick(choice) {
+    for (const button of buttons) {
+        button.setAttribute('aria-pressed', String(button.dataset.pick === choice));
+    }
+    for (const section of sections) {
+        const locale = section.dataset.locale;
+        section.hidden = choice !== 'all' && locale !== '' && locale !== choice;
+    }
+}
+for (const button of buttons) button.addEventListener('click', () => pick(button.dataset.pick));
+</script>

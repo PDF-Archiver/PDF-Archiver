@@ -6,6 +6,7 @@
 //
 
 import ArchiverModels
+import ArchiverStore
 import ComposableArchitecture
 import Shared
 import StoreKit
@@ -21,10 +22,13 @@ extension PDFQuality {
         switch self {
         case .lossless:
             return "100% - Lossless"
+
         case .good:
             return "75% - Good (Default)"
+
         case .normal:
             return "50% - Normal"
+
         case .small:
             return "25% - Small"
         }
@@ -36,10 +40,12 @@ extension StorageType {
         switch self {
         case .iCloudDrive:
             return "iCloud Drive"
+
         #if !os(macOS)
         case .appContainer:
             return "Local"
         #endif
+
         case .local:
             #if os(macOS)
             return "Drive"
@@ -54,6 +60,7 @@ extension StorageType {
         switch self {
         case .iCloudDrive:
             Text("Synchronized - Your documents are stored in iCloud Drive. They are available to you on all devices with the same iCloud account, e.g. iPhone, iPad and Mac.", bundle: #bundle)
+
         #if !os(macOS)
         case .appContainer:
             VStack(alignment: .leading) {
@@ -62,6 +69,7 @@ extension StorageType {
                 Link("https://support.apple.com/en-us/HT210598", destination: URL(string: NSLocalizedString("https://support.apple.com/en-us/HT210598", comment: ""))!)
             }
         #endif
+
         case .local:
             Text("Not synchronized - Your documents are stored in a folder you choose on your computer. PDF Archiver does not initiate synchronization.", bundle: #bundle)
         }
@@ -98,11 +106,8 @@ struct Settings {
         var showObservedFolderPicker = false
         #endif
 
-        // swiftlint:disable:next force_unwrapping
         let appStoreUrl = URL(string: "https://apps.apple.com/app/pdf-archiver/id1433801905")!
-        // swiftlint:disable:next force_unwrapping
         let pdfArchiverWebsiteUrl = URL(string: "https://pdf-archiver.io")!
-        // swiftlint:disable:next force_unwrapping
         let termsOfUseUrl = URL(string: "https://pdf-archiver.io/terms")!
     }
 
@@ -134,7 +139,7 @@ struct Settings {
 
     var body: some ReducerOf<Self> {
         BindingReducer()
-        Scope(state: \.premiumSection, action: \.premiumSection) {
+        Scope(\.premiumSection, action: \.premiumSection) {
             PremiumSection()
         }
         Reduce { state, action in
@@ -162,18 +167,18 @@ struct Settings {
                 state.isShowingMailSheet = true
                 return .none
                 #else
-                // swiftlint:disable:next force_unwrapping
-                let url = URL(string: "mailto:\(Constants.mailRecipient)?subject=\(Constants.mailSubject)")!
-
-                #if DEBUG
-                assertionFailure("TODO: this is currently not working on macOS")
-                return .run { [url] _ in
-                    await openURL(url)
+                // build the mailto URL via URLComponents to get proper percent encoding
+                var components = URLComponents()
+                components.scheme = "mailto"
+                components.path = Constants.mailRecipient
+                components.queryItems = [URLQueryItem(name: "subject", value: Constants.mailSubject)]
+                guard let url = components.url else {
+                    Logger.settings.errorAndAssert("Failed to create mailto url")
+                    return .none
                 }
-                #else
+
                 NSWorkspace.shared.open(url)
                 return .none
-                #endif
                 #endif
 
             case .onImprintTapped:
@@ -241,7 +246,6 @@ extension Settings.Destination.State: Sendable, Equatable {}
 
 struct SettingsView: View {
     @Bindable var store: StoreOf<Settings>
-    private static let appId = 1433801905
 
     @Environment(\.requestReview) private var requestReview
     @Environment(\.dismiss) private var dismiss
@@ -250,7 +254,7 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 preferences
-                PremiumSectionView(store: store.scope(state: \.premiumSection, action: \.premiumSection))
+                PremiumSectionView(store: store.scope(\.premiumSection, action: \.premiumSection))
                 aboutSection
             }
             // since we have buttons, we have to "fake" the foreground color - it would be the accent color otherwise
@@ -275,28 +279,32 @@ struct SettingsView: View {
             .navigationDestination(item: $store.destination) { destination in
                 switch destination {
                 case .appleIntelligenceSettings:
-                    if let appleIntelligenceSettingsStore = store.scope(state: \.destination?.appleIntelligenceSettings, action: \.destination.appleIntelligenceSettings) {
+                    if let appleIntelligenceSettingsStore = store.scope(\.destination?.appleIntelligenceSettings, action: \.destination.appleIntelligenceSettings) {
                         AppleIntelligenceSettingsView(store: appleIntelligenceSettingsStore)
                             .navigationTitle(Text("Apple Intelligence", bundle: #bundle))
                     } else {
                         preconditionFailure("Failed to load Apple Intelligence settings")
                     }
+
                 case .archiveStorage:
-                    if let storageSelectionStore = store.scope(state: \.destination?.archiveStorage, action: \.destination.archiveStorage) {
+                    if let storageSelectionStore = store.scope(\.destination?.archiveStorage, action: \.destination.archiveStorage) {
                         StorageSelectionView(store: storageSelectionStore)
                             .navigationTitle(Text("Storage", bundle: #bundle))
                     } else {
                         preconditionFailure("Failed to load export nothing found")
                     }
+
                 case .expertSettings:
-                    if let expertSettingsStore = store.scope(state: \.destination?.expertSettings, action: \.destination.expertSettings) {
+                    if let expertSettingsStore = store.scope(\.destination?.expertSettings, action: \.destination.expertSettings) {
                         ExpertSettingsView(store: expertSettingsStore)
                             .navigationTitle(Text("Advanced", bundle: #bundle))
                     } else {
                         preconditionFailure("Failed to load export nothing found")
                     }
+
                 case .aboutMe:
                     AboutMeView()
+
                 case .legal:
                     Form {
                         Section {
@@ -304,14 +312,17 @@ struct SettingsView: View {
                         }
                     }
                         .navigationTitle(Text("Legal", bundle: #bundle))
+
                 case .termsOfUse:
                     let content = String(localized: "TERMS_OF_USE", bundle: #bundle)
                     MarkdownView(markdown: content)
                         .navigationTitle(String(localized: "Terms of Use", bundle: #bundle))
+
                 case .privacy:
                     let content = String(localized: "PRIVACY", bundle: #bundle)
                     MarkdownView(markdown: content)
                         .navigationTitle(String(localized: "Privacy", bundle: #bundle))
+
                 case .imprint:
                     let content = String(localized: "IMPRINT", bundle: #bundle)
                     MarkdownView(markdown: content)
@@ -391,7 +402,6 @@ struct SettingsView: View {
 #if os(macOS)
 struct SettingsMacView: View {
     @Bindable var store: StoreOf<Settings>
-    private static let appId = 1433801905
 
     @Environment(\.requestReview) private var requestReview
 
@@ -404,7 +414,7 @@ struct SettingsMacView: View {
                 }
 
                 Tab(String(localized: "Premium", bundle: #bundle), systemImage: "star.hexagon") {
-                    PremiumSectionView(store: store.scope(state: \.premiumSection, action: \.premiumSection))
+                    PremiumSectionView(store: store.scope(\.premiumSection, action: \.premiumSection))
                         .padding(.horizontal)
                         .focusable(false)
                 }
@@ -426,33 +436,40 @@ struct SettingsMacView: View {
                     Group {
                         switch destination {
                         case .appleIntelligenceSettings:
-                            if let appleIntelligenceSettingsStore = store.scope(state: \.destination?.appleIntelligenceSettings, action: \.destination.appleIntelligenceSettings) {
+                            if let appleIntelligenceSettingsStore = store.scope(\.destination?.appleIntelligenceSettings, action: \.destination.appleIntelligenceSettings) {
                                 AppleIntelligenceSettingsView(store: appleIntelligenceSettingsStore)
                                     .navigationTitle(Text("Apple Intelligence", bundle: #bundle))
                             }
+
                         case .archiveStorage:
-                            if let storageSelectionStore = store.scope(state: \.destination?.archiveStorage, action: \.destination.archiveStorage) {
+                            if let storageSelectionStore = store.scope(\.destination?.archiveStorage, action: \.destination.archiveStorage) {
                                 StorageSelectionView(store: storageSelectionStore)
                                     .navigationTitle(Text("Storage", bundle: #bundle))
                             }
+
                         case .expertSettings:
-                            if let expertSettingsStore = store.scope(state: \.destination?.expertSettings, action: \.destination.expertSettings) {
+                            if let expertSettingsStore = store.scope(\.destination?.expertSettings, action: \.destination.expertSettings) {
                                 ExpertSettingsView(store: expertSettingsStore)
                                     .navigationTitle(Text("Advanced", bundle: #bundle))
                             }
+
                         case .aboutMe:
                             AboutMeView()
+
                         case .legal:
                             LegalView(store: store)
                                 .navigationTitle(Text("Legal", bundle: #bundle))
+
                         case .termsOfUse:
                             let content = String(localized: "TERMS_OF_USE", bundle: #bundle)
                             MarkdownView(markdown: content)
                                 .navigationTitle(String(localized: "Terms of Use", bundle: #bundle))
+
                         case .privacy:
                             let content = String(localized: "PRIVACY", bundle: #bundle)
                             MarkdownView(markdown: content)
                                 .navigationTitle(String(localized: "Privacy", bundle: #bundle))
+
                         case .imprint:
                             let content = String(localized: "IMPRINT", bundle: #bundle)
                             MarkdownView(markdown: content)
@@ -592,7 +609,6 @@ struct SettingsMacView: View {
                     }
                 }
                 .buttonStyle(.plain)
-
             } header: {
                 Text("About", bundle: #bundle)
                     .foregroundStyle(Color.secondary)

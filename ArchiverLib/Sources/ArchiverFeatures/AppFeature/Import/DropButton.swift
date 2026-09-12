@@ -17,6 +17,8 @@ struct DropButton: View {
     let state: ButtonState
     let action: (_ isLongPress: Bool) -> Void
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     @State private var sensoryTrigger = false
     // chandes of this value wiggles the Image
     @State private var shouldWiggle = 0
@@ -138,7 +140,7 @@ struct DropButton: View {
             shouldWiggle += 1
         }
         .sensoryFeedback(.success, trigger: sensoryTrigger)
-        .scaleEffect(state == .targeted ? 1.1 : 1)
+        .scaleEffect(state == .targeted && !reduceMotion ? 1.1 : 1)
         .animation(.snappy, value: state)
     }
 }

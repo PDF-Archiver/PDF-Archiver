@@ -38,14 +38,14 @@ final class LocalFolderProvider: FolderProvider {
             guard let self else { return }
 
             // build initial changes
-            let documents = await self.createDocuments()
-            self.currentDocumentsStreamContinuation.yield(documents)
+            let documents = createDocuments()
+            currentDocumentsStreamContinuation.yield(documents)
 
             // listen to changes in folder
             // we debounce this because the `DirectoryDeepWatcher` currently triggers too often
-            for await _ in self.watcher.changedUrlStream.debounce(for: .milliseconds(500)) {
-                let documents = await self.createDocuments()
-                self.currentDocumentsStreamContinuation.yield(documents)
+            for await _ in watcher.changedUrlStream.debounce(for: .milliseconds(500)) {
+                let documents = createDocuments()
+                currentDocumentsStreamContinuation.yield(documents)
             }
         }
     }
@@ -115,7 +115,7 @@ final class LocalFolderProvider: FolderProvider {
 
     // MARK: - Helper Functions
 
-    private func createDocuments() async -> [DocumentInformation] {
+    private func createDocuments() -> [DocumentInformation] {
         return fileManager.getFilesRecursive(at: baseUrl, with: fileProperties)
             .filter { $0.pathExtension.lowercased() == "pdf" }
             .compactMap { url -> DocumentInformation? in

@@ -27,7 +27,7 @@ extension NotificationCenter {
             let message = [
                 error.failureReason,
                 error.recoverySuggestion]
-                .compactMap { $0 }
+                .compactMap(\.self)
                 .joined(separator: "\n\n")
 
             alertDataModel = AlertDataModel(title: title,
@@ -66,7 +66,7 @@ extension NotificationCenter {
     }
 
     func alertStream() -> any AsyncSequence<AlertDataModel, Never> {
-        NotificationCenter.default.notifications(named: .alertMessage)
+        Self.default.notifications(named: .alertMessage)
             .compactMap { $0.object as? AlertDataModel }
     }
 }

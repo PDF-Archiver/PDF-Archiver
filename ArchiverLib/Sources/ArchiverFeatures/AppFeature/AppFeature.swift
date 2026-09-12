@@ -6,6 +6,7 @@
 //
 
 import ArchiverModels
+import ArchiverStore
 import ComposableArchitecture
 import OSLog
 import Shared
@@ -30,15 +31,6 @@ struct AppFeature {
         @Shared(.tutorialShown) var tutorialShown: Bool
         @Shared(.premiumStatus) var premiumStatus: PremiumStatus = .loading
 
-        @SharedReader(.appleIntelligenceEnabled)
-        var appleIntelligenceEnabled: Bool
-
-        @SharedReader(.appleIntelligenceCacheEnabled)
-        var cacheEnabled: Bool
-
-        @SharedReader(.appleIntelligenceCustomPrompt)
-        var customPrompt: String?
-
         var scenePhase: ScenePhase?
 
         var selectedTab = Tab.search
@@ -54,6 +46,49 @@ struct AppFeature {
         var untaggedDocumentList = UntaggedDocumentList.State()
         var statistics = Statistics.State()
         var settings = Settings.State()
+
+        /// Derives everything the tabs show from the archive, newest document first.
+        mutating func apply(documents: [Document]) {
+            let sortedDocuments = documents.sorted { $0.date > $1.date }
+            $documents.withLock { $0 = IdentifiedArrayOf(uniqueElements: sortedDocuments) }
+
+            let taggedDocuments = sortedDocuments.filter(\.isTagged)
+
+            // create year suggestions
+            let years = taggedDocuments
+                .reduce(into: Set<Int>()) { result, document in
+                    result.insert(Calendar.current.component(.year, from: document.date))
+                }
+                .sorted()
+                .reversed()
+                .prefix(5)
+            tabYearSuggestions = Array(years)
+
+            // create tag suggestions
+            var tagCountMap: [String: Int] = [:]
+            for tag in taggedDocuments.flatMap(\.tags) {
+                tagCountMap[tag, default: 0] += 1
+            }
+            let top5Tags = tagCountMap
+                .sorted { lhs, rhs in
+                    if lhs.value == rhs.value {
+                        lhs.key < rhs.key
+                    } else {
+                        lhs.value > rhs.value
+                    }
+                }
+                .prefix(5)
+                .map(\.key)
+            tabTagSuggestions = Array(top5Tags)
+
+            // also update suggestions in archive list
+            archiveList.searchSuggestedTokens = [
+                top5Tags.prefix(3).map { ArchiveList.State.SearchToken.tag($0) },
+                years.prefix(3).map { ArchiveList.State.SearchToken.year($0) }
+            ].flatMap(\.self)
+
+            untaggedDocumentsCount = sortedDocuments.count(where: { !$0.isTagged })
+        }
     }
 
     enum Action: BindableAction {
@@ -74,23 +109,25 @@ struct AppFeature {
     @Dependency(\.documentProcessor) var documentProcessor
     @Dependency(\.archiveStore) var archiveStore
     @Dependency(\.widgetStore) var widgetStore
-    @Dependency(\.contentExtractorStore) var contentExtractorStore
-    @Dependency(\.textAnalyser) var textAnalyser
+
+    private enum CancelID {
+        case untaggedProcessing
+    }
 
     var body: some ReducerOf<Self> {
         BindingReducer()
 
         // frist, run the ArchiveList reducer ...
-        Scope(state: \.archiveList, action: \.archiveList) {
+        Scope(\.archiveList, action: \.archiveList) {
             ArchiveList()
         }
-        Scope(state: \.untaggedDocumentList, action: \.untaggedDocumentList) {
+        Scope(\.untaggedDocumentList, action: \.untaggedDocumentList) {
             UntaggedDocumentList()
         }
-        Scope(state: \.statistics, action: \.statistics) {
+        Scope(\.statistics, action: \.statistics) {
             Statistics()
         }
-        Scope(state: \.settings, action: \.settings) {
+        Scope(\.settings, action: \.settings) {
             Settings()
         }
 
@@ -117,7 +154,7 @@ struct AppFeature {
                     state.$documents.withLock { documents in
                         let alreadyExistingElement = documents.updateOrAppend(document)
                         if alreadyExistingElement == nil {
-                            XCTFail("Document that was saved not found in array - this should not happen")
+                            reportIssue("Document that was saved not found in array - this should not happen")
                             documents.sort { $0.date < $1.date }
                         }
                     }
@@ -144,12 +181,16 @@ struct AppFeature {
                 switch state.selectedTab {
                 case .search:
                     state.archiveList.searchTokens = []
+
                 case .sectionTags(let tag):
                     state.archiveList.searchTokens = [.tag(tag)]
+
                 case .sectionYears(let year):
                     state.archiveList.searchTokens = [.year(year)]
+
                 case .inbox, .statistics:
                     break
+
                 #if os(iOS)
                 case .settings:
                     break
@@ -160,58 +201,23 @@ struct AppFeature {
             case .binding:
                 return .none
 
-            case .documentsChanged(var documents):
-                documents = documents
-                    .sorted { $0.date < $1.date }
-                    .reversed()
-                state.$documents.withLock { $0 = IdentifiedArrayOf(uniqueElements: documents) }
+            case .documentsChanged(let changedDocuments):
+                state.apply(documents: changedDocuments)
 
-                let taggedDocuments = documents
-                    .filter { $0.isTagged }
+                let documents = Array(state.documents)
+                let untaggedRemoteDocuments = documents.filter { !$0.isTagged && $0.downloadStatus == 0 }
 
-                // create year suggestions
-                let years = taggedDocuments
-                    .reduce(into: Set<Int>()) { (result, document) in
-                        result.insert(Calendar.current.component(.year, from: document.date))
+                return .merge(
+                    .run { [documents] send in
+                        await send(.prefetchDocuments(untaggedRemoteDocuments))
+                        await send(.updateWidget(documents))
+                    },
+                    // The pass restarts whenever the documents change; the OCR
+                    // marker and the AI cache make repeated runs cheap no-ops.
+                    .run { [documents] _ in
+                        _ = await documentProcessor.processUntaggedDocuments(documents)
                     }
-                    .sorted()
-                    .reversed()
-                    .prefix(5)
-                state.tabYearSuggestions = Array(years)
-
-                // create tag suggestions
-                var tagCountMap: [String: Int] = [:]
-                for tag in taggedDocuments.flatMap(\.tags) {
-                    tagCountMap[tag, default: 0] += 1
-                }
-                let top5Tags = tagCountMap
-                    .sorted { lhs, rhs in
-                        if lhs.value == rhs.value {
-                            lhs.key < rhs.key
-                        } else {
-                            lhs.value > rhs.value
-                        }
-                    }
-                    .prefix(5)
-                    .map(\.key)
-                state.tabTagSuggestions = Array(top5Tags)
-
-                // also update suggestions in archive list
-                let searchSuggestedTokens = [
-                    top5Tags.prefix(3).map { ArchiveList.State.SearchToken.tag($0) },
-                    years.prefix(3).map { ArchiveList.State.SearchToken.year($0) }
-                ].flatMap(\.self)
-                state.archiveList.searchSuggestedTokens = searchSuggestedTokens
-
-                // update the untagged documents
-                let untaggedDocuments = documents.filter(\Document.isTagged.flipped)
-                state.untaggedDocumentsCount = untaggedDocuments.count
-
-                let untaggedRemoteDocuments = untaggedDocuments.filter { !$0.isTagged && $0.downloadStatus == 0 }
-
-                return .concatenate(
-                    .send(.prefetchDocuments(untaggedRemoteDocuments)),
-                    .send(.updateWidget(documents))
+                    .cancellable(id: CancelID.untaggedProcessing, cancelInFlight: true)
                 )
 
             case .isLoadingChanged(let isLoading):
@@ -219,16 +225,16 @@ struct AppFeature {
                 return .none
 
             case .onLongBackgroundTask:
-                return .run { [appleIntelligenceEnabled = state.appleIntelligenceEnabled, cacheEnabled = state.cacheEnabled, customPrompt = state.customPrompt] send in
+                return .run { send in
                     await withTaskGroup(of: Void.self) { group in
                         group.addTask(priority: .background) {
                             // check the temp folder at startup for new documents
-                            await documentProcessor.triggerFolderObservation()
+                            await documentProcessor.processStagedFiles()
 
                             #if os(iOS)
                             if #available(iOS 26, *) {
-                                // trigger task scheduling
-                                BackgroundTaskManager.registerTaskHandlers()
+                                // trigger task scheduling - the handler itself is registered
+                                // in the app initializer, as required by BGTaskScheduler
                                 BackgroundTaskManager.scheduleCacheProcessing()
                             }
                             #endif
@@ -241,24 +247,6 @@ struct AppFeature {
                         group.addTask(priority: .medium) {
                             for await isLoading in await archiveStore.isLoading() {
                                 await send(.isLoadingChanged(isLoading))
-                            }
-                        }
-                        // Background cache processing for untagged documents
-                        if appleIntelligenceEnabled && cacheEnabled {
-                            group.addTask(priority: .background) {
-                                // Wait a bit before starting cache processing to let the app stabilize
-                                try? await Task.sleep(for: .seconds(10))
-
-                                do {
-                                    let documents = try await archiveStore.getDocuments()
-                                    _ = await contentExtractorStore.processUntaggedDocumentsInBackground(
-                                        documents,
-                                        textAnalyser.getTextFrom,
-                                        customPrompt
-                                    )
-                                } catch {
-                                    Logger.app.error("Failed to load documents for background cache processing: \(error)")
-                                }
                             }
                         }
                     }
@@ -274,7 +262,7 @@ struct AppFeature {
                     return .run { _ in
                         await withThrowingTaskGroup(of: Void.self) { group in
                             group.addTask(priority: .background) {
-                                await documentProcessor.triggerFolderObservation()
+                                await documentProcessor.processStagedFiles()
                             }
                             group.addTask(priority: .medium) {
                                 try await archiveStore.reloadDocuments()
@@ -327,7 +315,6 @@ struct AppFeature {
 
             case .statistics:
                 return .none
-
             }
         }
     }
@@ -395,7 +382,7 @@ struct AppView: View {
             .badge(store.untaggedDocumentsCount)
 
             Tab(String(localized: "Statistics", bundle: #bundle), systemImage: "chart.bar.xaxis", value: AppFeature.State.Tab.statistics) {
-                StatisticsView(store: store.scope(state: \.statistics, action: \.statistics))
+                StatisticsView(store: store.scope(\.statistics, action: \.statistics))
             }
 
             #if !os(macOS)
@@ -463,7 +450,7 @@ struct AppView: View {
 
     private var archiveList: some View {
         NavigationStack {
-            ArchiveListView(store: store.scope(state: \.archiveList, action: \.archiveList))
+            ArchiveListView(store: store.scope(\.archiveList, action: \.archiveList))
                 .navigationTitle(Text("Archive", bundle: #bundle))
                 .toolbar {
                     loadingIndicator
@@ -473,7 +460,7 @@ struct AppView: View {
 
     private var untaggedDocumentList: some View {
         NavigationStack {
-            UntaggedDocumentListView(store: store.scope(state: \.untaggedDocumentList, action: \.untaggedDocumentList))
+            UntaggedDocumentListView(store: store.scope(\.untaggedDocumentList, action: \.untaggedDocumentList))
                 .navigationTitle(Text("Inbox", bundle: #bundle))
                 .toolbar {
                     loadingIndicator

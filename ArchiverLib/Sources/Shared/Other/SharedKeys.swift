@@ -31,29 +31,31 @@ enum Names: String {
 /// `true` if the tutorial was already shown
 public extension SharedKey where Self == AppStorageKey<Bool> {
   static var tutorialShown: Self {
-      appStorage(Names.tutorialShown.id, store: .standard)
+      appStorage(Names.tutorialShown.id)
   }
 }
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var tutorialShown: Self {
+      @Dependency(\.defaultAppStorage) var store
       // try to fetch the value from a previous version
-      let defaultValue = (UserDefaults.standard.value(forKey: "tutorial-v1") as? Bool) ?? false
-      return Self[.appStorage(Names.tutorialShown.id, store: .standard), default: defaultValue]
+      let defaultValue = (store.value(forKey: "tutorial-v1") as? Bool) ?? false
+      return Self[.appStorage(Names.tutorialShown.id), default: defaultValue]
   }
 }
 
 /// Default quality of a the images that will be processed to a PDF document
 public extension SharedKey where Self == AppStorageKey<Float> {
     static var pdfQuality: Self {
-        appStorage(Names.pdfQuality.id, store: .standard)
+        appStorage(Names.pdfQuality.id)
     }
 }
 public extension SharedKey where Self == AppStorageKey<PDFQuality>.Default {
   static var pdfQuality: Self {
+      @Dependency(\.defaultAppStorage) var store
       let defaultValue: PDFQuality
 
       // try to fetch the value from a previous version
-      if let oldValue = UserDefaults.standard.value(forKey: "pdfQuality") as? Float,
+      if let oldValue = store.value(forKey: "pdfQuality") as? Float,
          oldValue != 0,
         let oldPdfQuality = PDFQuality(rawValue: oldValue) {
           defaultValue = oldPdfQuality
@@ -61,116 +63,119 @@ public extension SharedKey where Self == AppStorageKey<PDFQuality>.Default {
           defaultValue = .lossless
       }
 
-      return Self[.appStorage(Names.pdfQuality.id, store: .standard), default: defaultValue]
+      return Self[.appStorage(Names.pdfQuality.id), default: defaultValue]
   }
 }
 
 public extension SharedKey where Self == AppStorageKey<Bool> {
     static var notSaveDocumentTagsAsPDFMetadata: Self {
-        appStorage(Names.notSaveDocumentTagsAsPDFMetadata.id, store: .standard)
+        appStorage(Names.notSaveDocumentTagsAsPDFMetadata.id)
     }
 }
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var notSaveDocumentTagsAsPDFMetadata: Self {
+      @Dependency(\.defaultAppStorage) var store
       // try to fetch the value from a previous version
-      let defaultValue = UserDefaults.standard.bool(forKey: "notSaveDocumentTagsAsPDFMetadata")
-      return Self[.appStorage(Names.notSaveDocumentTagsAsPDFMetadata.id, store: .standard), default: defaultValue]
+      let defaultValue = store.bool(forKey: "notSaveDocumentTagsAsPDFMetadata")
+      return Self[.appStorage(Names.notSaveDocumentTagsAsPDFMetadata.id), default: defaultValue]
   }
 }
 
 public extension SharedKey where Self == AppStorageKey<Bool> {
     static var documentTagsNotRequired: Self {
-        appStorage(Names.documentTagsNotRequired.id, store: .standard)
+        appStorage(Names.documentTagsNotRequired.id)
     }
 }
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var documentTagsNotRequired: Self {
+      @Dependency(\.defaultAppStorage) var store
       // try to fetch the value from a previous version
-      let defaultValue = UserDefaults.standard.bool(forKey: "documentTagsNotRequired")
-      return Self[.appStorage(Names.documentTagsNotRequired.id, store: .standard), default: defaultValue]
+      let defaultValue = store.bool(forKey: "documentTagsNotRequired")
+      return Self[.appStorage(Names.documentTagsNotRequired.id), default: defaultValue]
   }
 }
 
 public extension SharedKey where Self == AppStorageKey<Bool> {
     static var documentSpecificationNotRequired: Self {
-        appStorage(Names.documentSpecificationNotRequired.id, store: .standard)
+        appStorage(Names.documentSpecificationNotRequired.id)
     }
 }
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var documentSpecificationNotRequired: Self {
+      @Dependency(\.defaultAppStorage) var store
       // try to fetch the value from a previous version
-      let defaultValue = UserDefaults.standard.bool(forKey: "documentSpecificationNotRequired")
-      return Self[.appStorage(Names.documentSpecificationNotRequired.id, store: .standard), default: defaultValue]
+      let defaultValue = store.bool(forKey: "documentSpecificationNotRequired")
+      return Self[.appStorage(Names.documentSpecificationNotRequired.id), default: defaultValue]
   }
 }
 
 public extension SharedKey where Self == AppStorageKey<Bool> {
     static var appleIntelligenceEnabled: Self {
-        appStorage(Names.appleIntelligenceEnabled.id, store: .standard)
+        appStorage(Names.appleIntelligenceEnabled.id)
     }
 }
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var appleIntelligenceEnabled: Self {
-      return Self[.appStorage(Names.appleIntelligenceEnabled.id, store: .standard), default: true]
+      return Self[.appStorage(Names.appleIntelligenceEnabled.id), default: true]
   }
 }
 
 public extension SharedKey where Self == AppStorageKey<String?> {
     static var appleIntelligenceCustomPrompt: Self {
-        appStorage(Names.appleIntelligenceCustomPrompt.id, store: .standard)
+        appStorage(Names.appleIntelligenceCustomPrompt.id)
     }
 }
 public extension SharedKey where Self == AppStorageKey<String?>.Default {
   static var appleIntelligenceCustomPrompt: Self {
-      return Self[.appStorage(Names.appleIntelligenceCustomPrompt.id, store: .standard), default: nil]
+      return Self[.appStorage(Names.appleIntelligenceCustomPrompt.id), default: nil]
   }
 }
 
 public extension SharedKey where Self == AppStorageKey<Bool> {
     static var appleIntelligenceCacheEnabled: Self {
-        appStorage(Names.appleIntelligenceCacheEnabled.id, store: .standard)
+        appStorage(Names.appleIntelligenceCacheEnabled.id)
     }
 }
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var appleIntelligenceCacheEnabled: Self {
-      return Self[.appStorage(Names.appleIntelligenceCacheEnabled.id, store: .standard), default: true]
+      return Self[.appStorage(Names.appleIntelligenceCacheEnabled.id), default: true]
   }
 }
 
 public extension SharedKey where Self == AppStorageKey<Bool> {
     static var backgroundCacheNotificationsEnabled: Self {
-        appStorage(Names.backgroundCacheNotificationsEnabled.id, store: .standard)
+        appStorage(Names.backgroundCacheNotificationsEnabled.id)
     }
 }
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var backgroundCacheNotificationsEnabled: Self {
-      return Self[.appStorage(Names.backgroundCacheNotificationsEnabled.id, store: .standard), default: false]
+      return Self[.appStorage(Names.backgroundCacheNotificationsEnabled.id), default: false]
   }
 }
 
 public extension SharedKey where Self == AppStorageKey<Bool> {
     static var multiTagSelectionDelayEnabled: Self {
-        appStorage(Names.multiTagSelectionDelayEnabled.id, store: .standard)
+        appStorage(Names.multiTagSelectionDelayEnabled.id)
     }
 }
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var multiTagSelectionDelayEnabled: Self {
-      return Self[.appStorage(Names.multiTagSelectionDelayEnabled.id, store: .standard), default: true]
+      return Self[.appStorage(Names.multiTagSelectionDelayEnabled.id), default: true]
   }
 
   static var ocrEnabled: Self {
-      return Self[.appStorage(Names.ocrEnabled.id, store: .standard), default: false]
+      return Self[.appStorage(Names.ocrEnabled.id), default: false]
   }
 }
 
 public extension SharedKey where Self == AppStorageKey<Bool> {
     static var highlightDetectedDateEnabled: Self {
-        appStorage(Names.highlightDetectedDateEnabled.id, store: .standard)
+        appStorage(Names.highlightDetectedDateEnabled.id)
     }
 }
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var highlightDetectedDateEnabled: Self {
-      return Self[.appStorage(Names.highlightDetectedDateEnabled.id, store: .standard), default: true]
+      return Self[.appStorage(Names.highlightDetectedDateEnabled.id), default: true]
   }
 }
 
@@ -198,14 +203,16 @@ public extension SharedKey where Self == FileStorageKey<IdentifiedArrayOf<Docume
 
 public extension SharedKey where Self == ArchivePathTypeCustomSharedKey {
   static var archivePathType: Self {
-      ArchivePathTypeCustomSharedKey(key: "archivePathType", store: .standard)
+      @Dependency(\.defaultAppStorage) var store
+      return ArchivePathTypeCustomSharedKey(key: "archivePathType", store: store)
   }
 }
 
 #if os(macOS)
 public extension SharedKey where Self == ObservedFolderCustomSharedKey {
   static var observedFolder: Self {
-      ObservedFolderCustomSharedKey(key: "observedFolderURL", store: .standard)
+      @Dependency(\.defaultAppStorage) var store
+      return ObservedFolderCustomSharedKey(key: "observedFolderURL", store: store)
   }
 }
 #endif

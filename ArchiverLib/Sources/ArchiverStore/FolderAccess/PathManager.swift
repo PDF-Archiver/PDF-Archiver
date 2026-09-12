@@ -45,12 +45,7 @@ final class PathManager: Log {
     private init() {}
 
     func getArchiveUrl() throws -> URL {
-        let archiveURL: URL
-        if UserDefaults.standard.bool(forKey: "demoMode") {
-            archiveURL = fileManager.temporaryDirectory
-        } else {
-            archiveURL = try archivePathType.getPath().getArchiveUrl()
-        }
+        let archiveURL = try archivePathType.getPath().getArchiveUrl()
         try FileManager.default.createFolderIfNotExists(archiveURL)
         return archiveURL
     }
@@ -98,9 +93,12 @@ final class PathManager: Log {
             }
         }
 
+        // Save the new path even if some folders could not be moved: the user chose the
+        // new location and should continue working there - the error below only informs
+        // about the documents that were left behind at the old location.
         self.$archivePathType.withLock { $0 = type }
 
-        if let moveError = moveError {
+        if let moveError {
             throw moveError
         }
     }
@@ -114,10 +112,12 @@ extension StorageType {
                 throw PathError.iCloudDriveNotFound
             }
             return url
+
 #if os(iOS)
         case .appContainer:
             return FileManager.default.appContainerURL
 #endif
+
         case .local(let url):
             return url
         }

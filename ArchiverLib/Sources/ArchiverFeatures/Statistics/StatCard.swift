@@ -26,6 +26,14 @@ struct StatCard<Value: View>: View {
         self.value = value
     }
 
+    private var valueFont: Font {
+        #if os(macOS)
+        .largeTitle.bold()
+        #else
+        .title.bold()
+        #endif
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
@@ -36,7 +44,7 @@ struct StatCard<Value: View>: View {
             }
 
             value()
-                .font(.system(size: 28, weight: .bold))
+                .font(valueFont)
                 .foregroundStyle(.primary)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)

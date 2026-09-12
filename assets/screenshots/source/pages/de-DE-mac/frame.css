@@ -1,0 +1,537 @@
+/* B5 · Webseite, in Linien — B4 with the filled panel replaced by rules.
+ *
+ * Same tokens and type stack as B4, lifted from pdf-archiver.io. What changed:
+ *
+ * - The filename is no longer a dark block. Each part sits on the paper with a rule under it
+ *   in that part's own colour — which is also the site's own separator idiom
+ *   (`border-top: 1px solid var(--rule)`), so it is still the site's design, just quieter.
+ * - The filename appears on the FIRST frame only. The other frames carry a different
+ *   component from the site, so the set varies without changing its vocabulary.
+ * - Frame 4 picks the three part colours up again and names what each part is for. It is the
+ *   legend for frame 1, which is what ties the set together.
+ *
+ * The three roles, translated for a light ground. On the site they live in a navy panel as
+ * #a2aebd / #fff / coral; #fff is invisible on paper, so the description takes --ink.
+ */
+
+:root {
+    --ink: #141c27;
+    --paper: #fbf7f6;
+    --paper-sunk: #f3eae8;
+    --coral: #ca414f;
+    --text: #23282f;
+    --text-soft: #5c626b;
+    --rule: #e6dbd8;
+
+    /* The three parts of a filename, and the frame's whole colour logic. */
+    --part-date: #7d8894;
+    --part-desc: #141c27;
+    --part-tags: #ca414f;
+
+    --font-body: Charter, Georgia, "Times New Roman", serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+    /* Geometry, so one stylesheet serves a portrait phone, a landscape tablet and a Mac
+       window. The defaults are the iPhone 6.9" frame; a manifest's `style` overrides them. */
+    --frame-pad: 7vw;
+    --device-aspect: 1320 / 2868;
+    --device-width: 70vw;
+    --bezel: 0.75vh;
+    --corner: 6vh;
+    --screen-corner: 5.4vh;
+
+    /* Landscape only: the copy's column and its gap to the device. */
+    --text-column: 40%;
+    --column-gap: 3vw;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(180deg, var(--paper) 0%, var(--paper-sunk) 100%);
+    color: var(--text);
+    font-family: var(--font-body);
+    display: flex;
+    flex-direction: column;
+}
+
+.headline {
+    margin: var(--frame-pad) 0 0;
+    padding: 0 var(--frame-pad);
+    box-sizing: border-box;
+    font-size: 6.0vh;
+    line-height: 1.1;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    text-wrap: balance;
+}
+
+/* The slot every frame's component drops into. */
+.figure {
+    margin: 3.2vh 0 0;
+    padding: 0 var(--frame-pad);
+    box-sizing: border-box;
+}
+
+.figure:empty {
+    display: none;
+}
+
+/* ── The filename, as the live site builds it (.sig-card) ─────────────────────────────────
+   Corrected: the hero component is a WHITE card with a 1px rule, and each part's label
+   carries a `border-top` in that part's own colour. The dark panel used earlier came from
+   older `.filename` rules that are still in the stylesheet but no longer used. */
+
+.fn-card {
+    max-width: 93vw;
+    /* The site's own fix for this exact overflow: size the name from the CARD's width, not
+       the viewport's, so a long German filename shrinks to fit instead of running off the
+       frame. `--fn-chars` is the name's length, set per shot in the markup. */
+    container-type: inline-size;
+    background: #fff;
+    border: 0.18vh solid var(--rule);
+    border-radius: 2vh;
+    padding: 1.9vh 2.4vw;
+    box-shadow: 0 2.4vh 5vh -3.2vh rgba(20, 28, 39, 0.22);
+}
+
+.fn {
+    display: flex;
+    align-items: flex-start;
+    font-family: var(--font-mono);
+    font-size: clamp(1.1vh, calc(142cqw / var(--fn-chars, 52)), 2.45vh);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.fn-part {
+    display: flex;
+    flex-direction: column;
+}
+
+.fn-label {
+    margin-top: 1vh;
+    padding-top: 0.7vh;
+    border-top: 0.22vh solid currentcolor;
+    font-family: var(--font-body);
+    /* From the card's width like `.fn` above, not from the canvas height: a label wider than
+       the value it sits under sets the row's width, and the filename then runs off the card.
+       0.70 of the value's size is the ratio at which "BESCHREIBUNG" stays inside "stadtwerke". */
+    font-size: calc(100cqw / var(--fn-chars, 52));
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.75;
+}
+
+.fn-sep,
+.fn-ext {
+    color: #b9c2cc;
+    align-self: flex-start;
+}
+
+.fn .date {
+    color: var(--text-soft);
+}
+
+.fn .desc {
+    color: var(--text);
+}
+
+.fn .tags {
+    color: var(--coral);
+}
+
+/* ── The lead line under a headline (the site's .feature-lead) ────────────────────────── */
+
+.lead {
+    font-size: 2.65vh;
+    line-height: 1.4;
+    color: var(--text-soft);
+    max-width: 76vw;
+}
+
+/* ── The site's tag chips (frame 3) ────────────────────────────────────────────────────── */
+
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.1vh;
+    margin-top: 2vh;
+}
+
+.chips code {
+    display: inline-block;
+    padding: 0.9vh 1.8vh;
+    border-radius: 999px;
+    background: var(--paper-sunk);
+    box-shadow: inset 0 0 0 0.18vh var(--rule);
+    font-family: var(--font-mono);
+    font-size: 1.95vh;
+    color: var(--coral);
+}
+
+/* ── The site's checked promises (frame 5) ─────────────────────────────────────────────── */
+
+.promises {
+    display: flex;
+    flex-direction: column;
+    gap: 2.2vh;
+    --promise-text: 2.85vh;
+    --promise-leading: 1.35;
+    --promise-box: 2.55vh;
+}
+
+.promises div {
+    display: flex;
+    /* Baseline, not centre and not a computed offset: the mark's own baseline lands on the
+       first line's baseline, which is what "on the line" means typographically and needs no
+       arithmetic that breaks when a size changes. A wrapping promise keeps its mark on the
+       FIRST line, where it belongs. */
+    align-items: baseline;
+    gap: 1.6vw;
+    font-size: var(--promise-text);
+    line-height: var(--promise-leading);
+    color: var(--text-soft);
+}
+
+.promises i {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--promise-box);
+    height: var(--promise-box);
+    border-radius: 0.7vh;
+    background: var(--paper-sunk);
+    box-shadow: inset 0 0 0 0.18vh var(--rule);
+    font-family: var(--font-body);
+    font-style: normal;
+    font-weight: 700;
+    font-size: 1.9vh;
+    /* Without this the glyph inherits the row's leading and sits low in its own box —
+       flex centring then centres a tall line box, not the mark. */
+    line-height: 1;
+    color: var(--coral);
+}
+
+/* ── The legend (frame 4): the three parts, grouped in the site's own card ────────────── */
+
+.legend-card {
+    background: #fff;
+    border: 0.18vh solid var(--rule);
+    border-radius: 2.2vh;
+    padding: 1.4vh 3.4vw 3vh;
+    box-shadow: 0 2.4vh 5vh -3.2vh rgba(20, 28, 39, 0.22);
+}
+
+.legend-card > div {
+    /* A hairline between rows, none above the first — the site's own `.faq-entry` idiom for
+       separating items inside a block. */
+    padding: 2.8vh 0 0;
+    margin-top: 2.8vh;
+    border-top: 0.14vh solid var(--rule);
+}
+
+.legend-card > div:first-child {
+    border-top: none;
+    margin-top: 0;
+}
+
+/* The value keeps its part's colour and its own rule, so a reader who saw frame 1 recognises
+   the same three marks here. */
+.legend-card b {
+    display: inline-block;
+    padding-bottom: 0.7vh;
+    border-bottom: 0.22vh solid currentcolor;
+    font-family: var(--font-mono);
+    font-size: 2.5vh;
+    font-weight: 600;
+}
+
+.legend-card .date b {
+    color: var(--text-soft);
+}
+
+.legend-card .desc b {
+    color: var(--text);
+}
+
+.legend-card .tags b {
+    color: var(--coral);
+}
+
+.legend-card span {
+    display: block;
+    margin-top: 1.4vh;
+    font-size: 2.35vh;
+    line-height: 1.4;
+    color: var(--text-soft);
+}
+
+/* ── Device ────────────────────────────────────────────────────────────────────────────── */
+
+.stage {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.device {
+    position: relative;
+    width: var(--device-width);
+    aspect-ratio: var(--device-aspect);
+    max-height: 100%;
+    margin-bottom: -7vh;
+    padding: var(--bezel);
+    box-sizing: border-box;
+    border-radius: var(--corner);
+    background: linear-gradient(160deg, #e4dbd8, #fffdfc 45%, #d6cbc8);
+    /* A rule around the device as well as a shadow: on a light ground the shadow alone left
+       the frame's edge undefined. */
+    box-shadow: inset 0 0 0 0.18vh var(--rule), 0 2.4vh 5vh rgba(20, 28, 39, 0.2);
+}
+
+.screen {
+    width: 100%;
+    height: 100%;
+    border-radius: var(--screen-corner);
+    overflow: hidden;
+    background: #fff;
+}
+
+.screen img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.screen .placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Both stops used to come from the ground tokens, which on a light design are near-white
+       — the placeholder was then invisible, and a frame with no capture yet looked like a
+       frame with an empty screen. It has to be unmistakably a placeholder. */
+    background: repeating-linear-gradient(45deg,
+        var(--rule) 0 2vh, color-mix(in srgb, var(--rule) 55%, var(--ink)) 2vh 4vh);
+    font-family: var(--font-mono);
+    font-size: 2.2vh;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.status-bar {
+    position: absolute;
+    top: var(--bezel);
+    left: var(--bezel);
+    right: var(--bezel);
+    height: 5.5%;
+    padding: 0 7%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 1.4vh;
+    color: var(--text);
+}
+
+.status-bar.hidden {
+    display: none;
+}
+
+.layout-close .device {
+    aspect-ratio: 1320 / 1420;
+    width: 74vw;
+    padding: 0;
+    background: none;
+    border-radius: 3.5vh;
+    margin-bottom: 7vh;
+    box-shadow: inset 0 0 0 0.18vh var(--rule), 0 2vh 4vh rgba(20, 28, 39, 0.18);
+}
+
+.layout-close .screen {
+    border-radius: 3.5vh;
+}
+
+.layout-close .screen img {
+    object-position: top;
+}
+
+.layout-close .stage {
+    align-items: center;
+}
+
+.layout-close .status-bar {
+    display: none;
+}
+
+/* `statement` — frame 4 has no device, so the legend is the frame. */
+
+.layout-statement .stage {
+    display: none;
+}
+
+/* The card centres in the space the device would have used. Scoped to this layout, which
+   is where it was working before a wider attempt broke frames 2, 3 and 5. */
+.layout-statement .figure {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 0;
+}
+
+/* On this frame the lead is the argument, not a caption under a headline. */
+.layout-statement .lead {
+    font-size: 2.55vh;
+    line-height: 1.45;
+    max-width: 84vw;
+    margin: 0 0 4vh;
+}
+
+/* `symbols` — no device. For a step that is an action rather than a screen: the scan happens
+   at the paper, not in the app, so a screenshot of the app would be the wrong picture here.
+   Three tiles, because the three steps inside this one frame really are a sequence — which is
+   the test worth applying before showing anything in order. */
+/* The tiles live in the content slot, not the stage, so the stage has nothing to show. */
+.layout-symbols .stage {
+    display: none;
+}
+
+/* `margin-top: auto` rather than a measured offset: the slot grows to the space the device
+   would have used, and the tiles sit at its end — the same centre of gravity as the other
+   frames, and it stays right when the copy above them changes length. */
+.layout-symbols .figure {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.layout-symbols .symbols {
+    margin-top: auto;
+    margin-bottom: 13vh;
+}
+
+.symbols {
+    display: flex;
+    gap: 4vw;
+    justify-content: center;
+    width: 100%;
+}
+
+.symbols figure {
+    margin: 0;
+    flex: 0 0 auto;
+    width: 26vw;
+    text-align: center;
+}
+
+/* The site's own icon holder (.promise-icon: rounded square, sunk paper, accent mark),
+   scaled up to carry a drawing rather than a single glyph. */
+.symbols i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22vw;
+    height: 22vw;
+    margin: 0 auto;
+    border-radius: 4.4vh;
+    background: var(--paper-sunk);
+    box-shadow: inset 0 0 0 0.18vh var(--rule);
+    color: var(--coral);
+}
+
+.symbols svg {
+    width: 54%;
+    height: 54%;
+    /* Strokes and `currentColor`, so one drawing works at any size and follows the token
+       instead of carrying a colour of its own. */
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.symbols figcaption {
+    margin-top: 2.2vh;
+    font-size: 2.35vh;
+    line-height: 1.3;
+    color: var(--text-soft);
+}
+
+/* ── Landscape targets: the iPad in landscape and the Mac ─────────────────────────────────
+   The renderer pins the viewport to the target pixel size, so the canvas aspect is what a
+   media query sees — one stylesheet, no per-platform copy of the composition. Stacking the
+   headline over the device wastes a wide canvas, so the copy gets a column beside it. */
+
+@media (min-aspect-ratio: 1 / 1) {
+    body {
+        display: grid;
+        grid-template-columns: var(--text-column) 1fr;
+        grid-template-rows: auto 1fr;
+        column-gap: var(--column-gap);
+        padding: var(--frame-pad) var(--frame-pad) 0;
+        box-sizing: border-box;
+    }
+
+    .headline {
+        grid-area: 1 / 1;
+        margin: 0;
+        padding: 0;
+    }
+
+    .figure {
+        grid-area: 2 / 1;
+        padding: 0;
+        align-self: start;
+    }
+
+    /* `flex-start`, so a device wider than its column runs off the right edge instead of being
+       shrunk to fit — the same bleed the portrait frames give the phone at the bottom. */
+    .stage {
+        grid-row: 1 / -1;
+        grid-column: 2;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    .device {
+        margin: 0;
+    }
+
+    /* The column is the measure now — the portrait caps are viewport-relative and would run
+       the copy underneath the device. */
+    .lead,
+    .fn-card,
+    .legend-card {
+        max-width: 100%;
+    }
+
+    /* No device on these two, so the headline and its component take the whole width. */
+    .layout-statement,
+    .layout-symbols {
+        grid-template-columns: 1fr;
+    }
+
+    .layout-symbols .symbols {
+        margin: 3vh 0 0;
+    }
+}

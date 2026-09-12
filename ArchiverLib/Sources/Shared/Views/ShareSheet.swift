@@ -19,10 +19,10 @@ public struct ShareSheet: UIViewControllerRepresentable {
         self.url = url
     }
 
-    public func makeUIViewController(context: UIViewControllerRepresentableContext<ShareSheet>) -> UIActivityViewController {
+    public func makeUIViewController(context: UIViewControllerRepresentableContext<Self>) -> UIActivityViewController {
         return UIActivityViewController(activityItems: [title, url], applicationActivities: nil)
     }
 
-    public func updateUIViewController(_ uiViewController: UIActivityViewController, context: UIViewControllerRepresentableContext<ShareSheet>) {}
+    public func updateUIViewController(_ uiViewController: UIActivityViewController, context: UIViewControllerRepresentableContext<Self>) {}
 }
 #endif

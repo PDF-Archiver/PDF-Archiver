@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "2600"
+   LastUpgradeVersion = "2700"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -32,6 +32,9 @@
          <TestPlanReference
             reference = "container:ArchiverLib/iOS.xctestplan"
             default = "YES">
+         </TestPlanReference>
+         <TestPlanReference
+            reference = "container:ArchiverLib.xctestplan">
          </TestPlanReference>
       </TestPlans>
       <Testables>
@@ -115,16 +118,6 @@
             ReferencedContainer = "container:PDFArchiver.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
-      <CommandLineArguments>
-         <CommandLineArgument
-            argument = "-demoMode"
-            isEnabled = "YES">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "true"
-            isEnabled = "NO">
-         </CommandLineArgument>
-      </CommandLineArguments>
       <StoreKitConfigurationFileReference
          identifier = "../Shared/Resources/PDFArchiverIAP.storekit">
       </StoreKitConfigurationFileReference>

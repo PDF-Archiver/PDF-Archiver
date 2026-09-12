@@ -89,7 +89,7 @@ struct DocumentTests {
     // MARK: - Test Document.getRenamingPath
 
     @Test
-    func documentRenaming() async throws {
+    func documentRenaming() throws {
 
         // setup
         let date = try #require(dateFormatter.date(from: "2010-05-12"))
@@ -102,7 +102,7 @@ struct DocumentTests {
     }
 
     @Test
-    func documentRenamingWithSpaceInDescriptionSlugify() async throws {
+    func documentRenamingWithSpaceInDescriptionSlugify() throws {
 
         // setup
         let date = try #require(dateFormatter.date(from: "2010-05-12"))
@@ -114,7 +114,7 @@ struct DocumentTests {
     }
 
     @Test
-    func documentRenamingWithFullFilename() async throws {
+    func documentRenamingWithFullFilename() throws {
 
         // setup
         let date = try #require(dateFormatter.date(from: "2010-05-12"))
@@ -280,12 +280,12 @@ struct DocumentTests {
     }
 
     @Test
-    func placeholder() async throws {
+    func placeholder() throws {
 
         // setup
         let date = try #require(dateFormatter.date(from: "2018-05-12"))
         let document = Document(id: 1,
-                                url: URL(fileURLWithPath: "~/Downloads/2018-05-12--\(Constants.documentDescriptionPlaceholder)__\(Constants.documentTagPlaceholder).pdf"),
+                                url: URL(fileURLWithPath: "~/Downloads/2018-05-12--\(Document.descriptionPlaceholder)__\(Document.tagPlaceholder).pdf"),
                                 date: date,
                                 specification: "",
                                 tags: [],
@@ -299,7 +299,7 @@ struct DocumentTests {
     }
 
     @Test
-    func documentRenamingPath() async throws {
+    func documentRenamingPath() throws {
 
         // setup
         let date = try #require(dateFormatter.date(from: "2010-05-12"))

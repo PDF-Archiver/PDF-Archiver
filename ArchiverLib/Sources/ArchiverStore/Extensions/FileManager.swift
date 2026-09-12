@@ -27,7 +27,7 @@ extension FileManager {
         //        "iCloud~de~JulianKahnert~PDFArchiver".
         //        {Error Domain=NSPOSIXErrorDomain
         //        Code=13 "Permission denied"}}
-        guard FileManager.default.fileExists(at: foundUrl.deletingLastPathComponent()) else {
+        guard Self.default.fileExists(at: foundUrl.deletingLastPathComponent()) else {
             log.debug("Folder did not exist")
             return nil
         }

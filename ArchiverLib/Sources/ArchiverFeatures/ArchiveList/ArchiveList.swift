@@ -25,8 +25,10 @@ struct ArchiveList {
                 switch self {
                 case .tag(let tag):
                     "tag: \(tag)"
+
                 case .year(let year):
                     "year: \(year)"
+
                 case .text(let text):
                     "text: \(text)"
                 }
@@ -36,8 +38,10 @@ struct ArchiveList {
                 switch self {
                 case .tag(let tag):
                     return tag
+
                 case .year(let year):
                     return "\(year)"
+
                 case .text(let text):
                     return text
                 }
@@ -50,7 +54,11 @@ struct ArchiveList {
         var isSearching = false
         var searchText = ""
         var searchTokens: [SearchToken] = []
-        var searchSuggestedTokens: [SearchToken] = [.year(2025), .year(2024)]
+        // fallback until real suggestions are derived from the documents in AppFeature
+        var searchSuggestedTokens: [SearchToken] = {
+            let currentYear = Calendar.current.component(.year, from: Date())
+            return [.year(currentYear), .year(currentYear - 1)]
+        }()
         @Presents var documentDetails: DocumentDetails.State?
 
         private func getFilteredDocument() -> IdentifiedArrayOf<Document> {
@@ -64,8 +72,10 @@ struct ArchiveList {
                         switch searchToken {
                         case .tag(let tag):
                             guard document.tags.contains(tag) else { return false }
+
                         case .year(let int):
                             guard document.url.lastPathComponent.hasPrefix("\(int)") else { return false }
+
                         case .text(let text):
                             guard document.url.lastPathComponent.localizedCaseInsensitiveContains(text) else { return false }
                         }
@@ -107,14 +117,20 @@ struct ArchiveList {
                     state.documentDetails = nil
                 }
                 return .none
+
             case .binding(\.searchText):
                 var searchText = state.searchText
                 if searchText.popLast() == " " {
                     let newSearchText = searchText.slugified(withSeparator: "").lowercased()
-                    state.searchTokens.append(.text(newSearchText))
+
+                    // an empty token would filter out all documents
+                    if !newSearchText.isEmpty {
+                        state.searchTokens.append(.text(newSearchText))
+                    }
                     state.searchText = ""
                 }
                 return .none
+
             case .binding:
                 return .none
             }
@@ -165,14 +181,16 @@ struct ArchiveListView: View {
             switch token {
             case .tag(let tag):
                 Label(tag, systemImage: "tag")
+
             case .year(let year):
                 Label("\(year, format: .number.grouping(.never))", systemImage: "calendar")
+
             case .text(let text):
                 Label(text, systemImage: "text.viewfinder")
             }
         }
         .sensoryFeedback(.selection, trigger: store.selectedDocumentId)
-        .navigationDestination(item: $store.scope(state: \.documentDetails, action: \.documentDetails)) { documentStore in
+        .navigationDestination(item: $store.scope(\.$documentDetails, action: \.documentDetails)) { documentStore in
             DocumentDetailsView(store: documentStore)
                 .navigationTitle(documentStore.document.specification)
 #if os(macOS)

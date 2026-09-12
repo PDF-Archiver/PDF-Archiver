@@ -1,5 +1,6 @@
 import ArchiverModels
 import ComposableArchitecture
+import DocumentProcessingPipeline
 import Foundation
 import Testing
 
@@ -39,9 +40,7 @@ struct AppFeatureTests {
 
     @Test
     func tabSelectionClearsSelectedDocument() async throws {
-        // swiftlint:disable force_unwrapping
         let document = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: true)
-        // swiftlint:enable force_unwrapping
 
         let store = TestStore(initialState: AppFeature.State(
             archiveList: ArchiveList.State(
@@ -63,17 +62,16 @@ struct AppFeatureTests {
     @Test
     func documentsChangedSortsAndUpdates() async throws {
         let currentYear = Calendar.current.component(.year, from: Date())
-        // swiftlint:disable force_unwrapping
         let document1 = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: true)
         let document2 = Document.mock(url: URL(string: "https://example.com/2")!, isTagged: true)
         let document3 = Document.mock(url: URL(string: "https://example.com/3")!, isTagged: false)
-        // swiftlint:enable force_unwrapping
 
         let store = TestStore(initialState: AppFeature.State()) {
             AppFeature()
         } withDependencies: {
             $0.widgetStore.updateWidgetWith = { _ in }
             $0.archiveStore.startDownloadOf = { _ in }
+            $0.documentProcessor.processUntaggedDocuments = { _ in UntaggedProcessingResult(ocrCount: 0, aiCacheCount: 0) }
         }
 
         await store.send(.documentsChanged([document1, document2, document3])) {
@@ -90,17 +88,16 @@ struct AppFeatureTests {
     @Test
     func documentsChangedCreatesTagSuggestions() async throws {
         let currentYear = Calendar.current.component(.year, from: Date())
-        // swiftlint:disable force_unwrapping
         let doc1 = Document.mock(url: URL(string: "https://example.com/1")!, tags: ["invoice", "work"], isTagged: true)
         let doc2 = Document.mock(url: URL(string: "https://example.com/2")!, tags: ["invoice", "personal"], isTagged: true)
         let doc3 = Document.mock(url: URL(string: "https://example.com/3")!, tags: ["invoice"], isTagged: true)
-        // swiftlint:enable force_unwrapping
 
         let store = TestStore(initialState: AppFeature.State()) {
             AppFeature()
         } withDependencies: {
             $0.widgetStore.updateWidgetWith = { _ in }
             $0.archiveStore.startDownloadOf = { _ in }
+            $0.documentProcessor.processUntaggedDocuments = { _ in UntaggedProcessingResult(ocrCount: 0, aiCacheCount: 0) }
         }
 
         await store.send(.documentsChanged([doc1, doc2, doc3])) {
@@ -133,6 +130,7 @@ struct AppFeatureTests {
         } withDependencies: {
             $0.widgetStore.updateWidgetWith = { _ in }
             $0.archiveStore.startDownloadOf = { _ in }
+            $0.documentProcessor.processUntaggedDocuments = { _ in UntaggedProcessingResult(ocrCount: 0, aiCacheCount: 0) }
         }
 
         await store.send(.documentsChanged([doc1, doc2, doc3])) {
@@ -152,7 +150,7 @@ struct AppFeatureTests {
         let store = TestStore(initialState: AppFeature.State(isDocumentLoading: false)) {
             AppFeature()
         } withDependencies: {
-            $0.documentProcessor.triggerFolderObservation = { }
+            $0.documentProcessor.processStagedFiles = { }
             $0.archiveStore.reloadDocuments = { }
         }
 
@@ -203,14 +201,12 @@ struct AppFeatureTests {
     @Test(.disabled("Currently not working"))
     func deleteUntaggedDocument() async throws {
         let currentYear = Calendar.current.component(.year, from: Date())
-        // swiftlint:disable force_unwrapping
         let document1 = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: true)
         let document2 = Document.mock(url: URL(string: "https://example.com/2")!, isTagged: true)
         let document3 = Document.mock(url: URL(string: "https://example.com/3")!, isTagged: true)
         let document4 = Document.mock(url: URL(string: "https://example.com/4")!, isTagged: false)
         let document5 = Document.mock(url: URL(string: "https://example.com/5")!, isTagged: false)
         let document6 = Document.mock(url: URL(string: "https://example.com/6")!, isTagged: false)
-        // swiftlint:enable force_unwrapping
         let documents = IdentifiedArrayOf(uniqueElements: [document1, document2, document3, document4, document5, document6])
 
         let store = TestStore(initialState: AppFeature.State(documents: documents,
@@ -247,14 +243,12 @@ struct AppFeatureTests {
     @Test(.disabled("Currently not working"))
     func deleteTaggedDocument() async throws {
         let currentYear = Calendar.current.component(.year, from: Date())
-        // swiftlint:disable force_unwrapping
         let document1 = Document.mock(url: URL(string: "https://example.com/1")!, isTagged: true)
         let document2 = Document.mock(url: URL(string: "https://example.com/2")!, isTagged: true)
         let document3 = Document.mock(url: URL(string: "https://example.com/3")!, isTagged: true)
         let document4 = Document.mock(url: URL(string: "https://example.com/4")!, isTagged: false)
         let document5 = Document.mock(url: URL(string: "https://example.com/5")!, isTagged: false)
         let document6 = Document.mock(url: URL(string: "https://example.com/6")!, isTagged: false)
-        // swiftlint:enable force_unwrapping
         let documents = IdentifiedArrayOf(uniqueElements: [document1, document2, document3, document4, document5, document6])
 
         let store = TestStore(initialState: AppFeature.State(documents: documents,

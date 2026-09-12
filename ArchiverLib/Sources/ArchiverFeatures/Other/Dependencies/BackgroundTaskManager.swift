@@ -6,6 +6,7 @@
 //
 
 #if os(iOS)
+import ArchiverModels
 import BackgroundTasks
 import ComposableArchitecture
 import Foundation
@@ -24,10 +25,8 @@ public actor BackgroundTaskManager: Log {
 
     private static let scheduler = BGTaskScheduler.shared
 
-    @Dependency(\.contentExtractorStore) var contentExtractorStore
+    @Dependency(\.documentProcessor) var documentProcessor
     @Dependency(\.archiveStore) var archiveStore
-    @Dependency(\.textAnalyser) var textAnalyser
-    @SharedReader(.appleIntelligenceCustomPrompt) var customPrompt: String?
     @SharedReader(.backgroundCacheNotificationsEnabled) var shouldNotify: Bool
 
     private init() {}
@@ -71,12 +70,15 @@ public actor BackgroundTaskManager: Log {
 
         // Use a cancellable task so the expiration handler can stop work
         let processingTask = Task {
+            // The background task may have launched the app in the background - in that case
+            // ArchiveStore has only just started its asynchronous folder scan and
+            // getDocuments() would return an empty snapshot.
+            await waitForInitialDocumentLoad()
+
             let documents = try await archiveStore.getDocuments()
-            return await contentExtractorStore.processUntaggedDocumentsInBackground(
-                documents,
-                textAnalyser.getTextFrom,
-                customPrompt
-            )
+            // Runs OCR (if enabled) before the AI cache pass, so the text
+            // layers exist when the cache entries are computed.
+            return await documentProcessor.processUntaggedDocuments(documents)
         }
 
         // Set expiration handler to cancel the work instead of completing the task directly
@@ -86,14 +88,14 @@ public actor BackgroundTaskManager: Log {
         }
 
         do {
-            let newCachesCreated = try await processingTask.value
+            let result = try await processingTask.value
             let processingDuration = Date().timeIntervalSince(startTime)
 
             if shouldNotify {
                 // Show local notification on success
                 let duration = Duration.seconds(processingDuration)
                 let durationText = duration.formatted(.units(width: .wide))
-                let body = "Created \(newCachesCreated) new cache\(newCachesCreated == 1 ? "" : "s") in \(durationText)."
+                let body = "Added a text layer to \(result.ocrCount) document\(result.ocrCount == 1 ? "" : "s") and created \(result.aiCacheCount) new cache\(result.aiCacheCount == 1 ? "" : "s") in \(durationText)."
                 await UNUserNotificationCenter.current().showLocalNotification(
                     title: "Processing Completed",
                     body: body
@@ -101,11 +103,11 @@ public actor BackgroundTaskManager: Log {
             }
 
             task.setTaskCompleted(success: true)
-            Logger.backgroundTask.info("Background cache processing completed: \(newCachesCreated) caches in \(processingDuration)s")
+            Logger.backgroundTask.info("Background processing completed: \(result.ocrCount) OCR, \(result.aiCacheCount) caches in \(processingDuration)s")
         } catch {
             Logger.backgroundTask.error("Background cache processing failed: \(error)")
 
-            if shouldNotify && !Task.isCancelled {
+            if shouldNotify, !processingTask.isCancelled {
                 await UNUserNotificationCenter.current().showLocalNotification(
                     title: "Processing Failed",
                     body: "Apple Intelligence cache processing failed: \(error.localizedDescription)"
@@ -117,6 +119,25 @@ public actor BackgroundTaskManager: Log {
 
         // Reschedule for next time
         Self.scheduleCacheProcessing()
+    }
+
+    /// Wait until the initial document load has finished, but no longer than a fixed
+    /// timeout - the background execution window is limited.
+    private func waitForInitialDocumentLoad() async {
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask {
+                for await isLoading in await self.archiveStore.isLoading() {
+                    guard isLoading else { return }
+                }
+            }
+            group.addTask {
+                try? await Task.sleep(for: .seconds(30))
+                guard !Task.isCancelled else { return }
+                Logger.backgroundTask.warning("Timed out waiting for the initial document load")
+            }
+            await group.next()
+            group.cancelAll()
+        }
     }
 }
 #endif

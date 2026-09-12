@@ -11,6 +11,18 @@ import SwiftUI
 
 @main
 struct PDFArchiverIOSApp: App {
+    init() {
+        #if DEBUG
+        ScreenshotCase.prepareIfRequested()
+        #endif
+
+        // BGTaskScheduler requires all launch handlers to be registered
+        // before the end of the app launch sequence
+        if #available(iOS 26, *) {
+            BackgroundTaskManager.registerTaskHandlers()
+        }
+    }
+
     var body: some Scene {
         WindowGroup {
             RootView()

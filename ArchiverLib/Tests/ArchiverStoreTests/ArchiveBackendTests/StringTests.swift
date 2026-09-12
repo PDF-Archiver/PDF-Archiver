@@ -5,7 +5,7 @@
 //  Created by Julian Kahnert on 29.11.20.
 //
 
-import Shared
+import ArchiverModels
 import Testing
 
 @MainActor

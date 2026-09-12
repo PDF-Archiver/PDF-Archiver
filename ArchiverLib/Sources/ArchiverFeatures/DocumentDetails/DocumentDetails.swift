@@ -28,6 +28,7 @@ struct DocumentDetails {
         var documentInformationForm: DocumentInformationForm.State
         // initially always false to avoid UI glitches, e.g. not showing the inspector
         var showInspector = false
+        var isRunningOcr = false
 #if os(iOS)
         var shareDocument: ShareData?
 #endif
@@ -47,7 +48,9 @@ struct DocumentDetails {
         case delegate(Delegate)
         case onDeleteDocumentButtonTapped
         case onEditButtonTapped
+        case onRunOcrButtonTapped
         case onRemoteDocumentAppeared
+        case runOcrFinished(Bool)
 #if os(iOS)
         case onShareButtonTapped
 #endif
@@ -64,8 +67,9 @@ struct DocumentDetails {
     }
 
     @Dependency(\.archiveStore.startDownloadOf) var startDownloadOf
+    @Dependency(\.documentProcessor) var documentProcessor
     var body: some ReducerOf<Self> {
-        Scope(state: \.documentInformationForm, action: \.showDocumentInformationForm) {
+        Scope(\.documentInformationForm, action: \.showDocumentInformationForm) {
             DocumentInformationForm()
         }
 
@@ -113,10 +117,26 @@ struct DocumentDetails {
                 }
                 return .none
 
+            case .onRunOcrButtonTapped:
+                state.isRunningOcr = true
+                return .run { [documentUrl = state.document.url] send in
+                    await send(.runOcrFinished(await documentProcessor.runOcr(documentUrl)))
+                }
+
             case .onRemoteDocumentAppeared:
                 return .run { [documentUrl = state.document.url] _ in
                     try await startDownloadOf(documentUrl)
                 }
+
+            case .runOcrFinished(let success):
+                state.isRunningOcr = false
+                guard !success else { return .none }
+                state.alert = AlertState<Action.Alert> {
+                    TextState("OCR failed", bundle: #bundle)
+                } message: {
+                    TextState("The text layer of this document could not be created. Please try again.", bundle: #bundle)
+                }
+                return .none
 
 #if os(iOS)
             case .onShareButtonTapped:
@@ -140,9 +160,59 @@ struct DocumentDetails {
     }
 }
 
+#if os(macOS)
+struct SaveDocumentAction: Equatable {
+    let documentId: Document.ID
+    let perform: () -> Void
+
+    // closures are not Equatable; compare by document identity so the focused value
+    // does not invalidate dependents on every unrelated update
+    static func == (lhs: Self, rhs: Self) -> Bool { lhs.documentId == rhs.documentId }
+}
+
+extension FocusedValues {
+    @Entry var saveDocumentAction: SaveDocumentAction?
+}
+
+/// Publishes the macOS `File ▸ Save` menu command, wired to the front window's focused document.
+public struct DocumentCommands: Commands {
+    @FocusedValue(\.saveDocumentAction) private var saveDocumentAction
+
+    public init() { }
+
+    public var body: some Commands {
+        CommandGroup(replacing: .saveItem) {
+            Button(String(localized: "Save", bundle: #bundle)) {
+                saveDocumentAction?.perform()
+            }
+            .keyboardShortcut("s", modifiers: [.command])
+            .disabled(saveDocumentAction == nil)
+        }
+    }
+}
+#endif
+
 struct DocumentDetailsView: View {
     @Bindable var store: StoreOf<DocumentDetails>
-    @SharedReader(.ocrEnabled) private var ocrEnabled: Bool
+
+#if os(macOS)
+    // Archive and Inbox each keep their own pushed document detail, while the
+    // Save action is scene-wide - only the visible tab may publish it.
+    @State private var isOnScreen = false
+#endif
+
+    #if os(macOS)
+    /// The screenshot window is deliberately small, so the form takes just over the minimum and
+    /// leaves the rest of the width to the document.
+    private static var inspectorIdealWidth: CGFloat {
+        #if DEBUG
+        if ScreenshotCase.requested != nil {
+            return 251
+        }
+        #endif
+        return 400
+    }
+    #endif
 
     var body: some View {
         Group {
@@ -151,24 +221,32 @@ struct DocumentDetailsView: View {
                     .task {
                         store.send(.onRemoteDocumentAppeared)
                     }
-
             } else {
                 PDFCustomView(store.document.url, highlightDate: store.highlightDetectedDateEnabled ? store.documentInformationForm.document.date : nil)
                     .ignoresSafeArea(edges: [.bottom, .top])
                     .inspector(isPresented: $store.showInspector) {
-                        DocumentInformationFormView(store: store.scope(state: \.documentInformationForm, action: \.showDocumentInformationForm))
+                        DocumentInformationFormView(store: store.scope(\.documentInformationForm, action: \.showDocumentInformationForm))
 #if os(iOS)
                             .presentationDetents([.medium, .large])
                             .presentationBackgroundInteraction(.enabled)
                             // hacky workaround to remove the transparency in the inspector
                             .presentationBackground(Color.paBackgroundAsset)
 #else
-                            .inspectorColumnWidth(min: 300, ideal: 400, max: 600)
+                            .inspectorColumnWidth(min: 250, ideal: Self.inspectorIdealWidth, max: 600)
 #endif
                     }
+#if os(macOS)
+                    .onAppear { isOnScreen = true }
+                    .onDisappear { isOnScreen = false }
+                    .focusedSceneValue(\.saveDocumentAction, isOnScreen && store.showInspector
+                        ? SaveDocumentAction(documentId: store.document.id) {
+                            store.send(.showDocumentInformationForm(.onSaveButtonTapped))
+                        }
+                        : nil)
+#endif
             }
         }
-        .alert($store.scope(state: \.alert, action: \.alert))
+        .alert($store.scope(\.$alert, action: \.alert))
 #if os(iOS)
         .sheet(item: $store.shareDocument) { shareDocument in
             ShareSheet(title: shareDocument.title, url: shareDocument.url)
@@ -211,14 +289,11 @@ struct DocumentDetailsView: View {
 
                 ToolbarSpacer()
 
-#if os(macOS)
-                if ocrEnabled,
-                   store.document.downloadStatus >= 1 {
+                if store.document.downloadStatus >= 1 {
                     ToolbarItem(id: "pdfInfo") {
-                        PDFInfoView(documentURL: store.document.url)
+                        pdfInfoView
                     }
                 }
-#endif
 
                 ToolbarItem(id: "share") {
 #if os(iOS)
@@ -251,6 +326,12 @@ struct DocumentDetailsView: View {
         }
     }
 
+    private var pdfInfoView: some View {
+        PDFInfoView(documentURL: store.document.url,
+                    isRunningOcr: store.isRunningOcr,
+                    onRunOcr: { store.send(.onRunOcrButtonTapped) })
+    }
+
     @ToolbarContentBuilder
     private var legacyToolbar: some ToolbarContent {
 #if os(macOS)
@@ -274,6 +355,10 @@ struct DocumentDetailsView: View {
                 store.send(.onEditButtonTapped)
             } label: {
                 Label(String(localized: "Edit", bundle: #bundle), systemImage: "pencil")
+            }
+
+            if store.document.downloadStatus >= 1 {
+                pdfInfoView
             }
 
 #if os(macOS)

@@ -48,10 +48,13 @@ extension UntaggedDocumentsStatsView.Size {
         switch size {
         case .systemSmall:
             return .small
+
         case .systemMedium:
             return .medium
+
         case .systemLarge, .systemExtraLarge:
             return .large
+
         default:
             return .small
         }

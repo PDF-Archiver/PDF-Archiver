@@ -11,7 +11,7 @@ jobs:
   SwiftLint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: GitHub Action for SwiftLint (Only files changed in the PR)
         uses: stanfordbdhg/action-swiftlint@v4
         env:
@@ -24,7 +24,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
@@ -35,5 +35,9 @@ jobs:
       - name: Build ArchiverLib
         run: xcodebuild -workspace PDFArchiver.xcworkspace -scheme ArchiverLib -destination 'platform=macOS' -configuration Debug build
 
+      # The CI plan excludes the `ocr` tag: Vision text recognition never
+      # finishes on the runner VM (no GPU/Neural Engine). Use the default
+      # `ArchiverLib` plan locally to run those tests as well.
       - name: Test ArchiverLib
-        run: xcodebuild test -workspace PDFArchiver.xcworkspace -scheme ArchiverLib -destination 'platform=macOS' -configuration Debug
+        timeout-minutes: 30
+        run: xcodebuild test -workspace PDFArchiver.xcworkspace -scheme ArchiverLib -testPlan ArchiverLib-CI -destination 'platform=macOS' -configuration Debug

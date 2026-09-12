@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 09.08.25.
 //
 
+import ArchiverModels
 import Dependencies
 import OSLog
 import Shared
@@ -94,6 +95,9 @@ struct ScanButtonModifier: ViewModifier {
             #endif
             .onDrop(of: [.image, .pdf, .fileURL],
                     delegate: dropHandler)
+            .task {
+                await dropHandler.observeProcessingEvents()
+            }
             .fileImporter(isPresented: $dropHandler.isImporting, allowedContentTypes: [.pdf, .image]) { result in
                 Task {
                     do {

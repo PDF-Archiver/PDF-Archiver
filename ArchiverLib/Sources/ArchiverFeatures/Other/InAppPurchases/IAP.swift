@@ -22,7 +22,22 @@ struct IAP: ViewModifier {
     @State private var subscriptionStatus: Status = .loading
     @State private var lifetimePurchaseStatus: Status = .loading
 
+    @ViewBuilder
     func body(content: Content) -> some View {
+        #if DEBUG
+        // A screenshot run has no StoreKit configuration, so the entitlement checks below would
+        // settle on `.inactive` and paywall every shot after three seconds.
+        if ScreenshotCase.requested != nil {
+            content
+        } else {
+            storeKitObservingBody(content)
+        }
+        #else
+        storeKitObservingBody(content)
+        #endif
+    }
+
+    private func storeKitObservingBody(_ content: Content) -> some View {
         content
             .onChange(of: subscriptionStatus.rawValue) { oldValue, newValue in
                 Logger.inAppPurchase.debug("subscriptionStatus changed: \(oldValue) -> \(newValue)")
@@ -39,14 +54,17 @@ struct IAP: ViewModifier {
                 case .failure(let error):
                     Logger.inAppPurchase.error("Failed to check subscription status: \(error)")
                     subscriptionStatus = .inactive
+
                 case .success(let status):
                     let hasSubscription = !status
                         .filter { [.subscribed, .inBillingRetryPeriod, .inGracePeriod].contains($0.state) }
                         .isEmpty
                     Logger.inAppPurchase.info("Successfully received statusTask - hasSubscription: \(hasSubscription)")
                     subscriptionStatus = hasSubscription ? .active : .inactive
+
                 case .loading:
                     Logger.inAppPurchase.debug("Got loading status task")
+
                 @unknown default:
                     Logger.inAppPurchase.errorAndAssert("Got unkown status in subscriptionStatusTask")
                 }
@@ -89,7 +107,7 @@ struct IAP: ViewModifier {
 
     private func updatePremiumStatus() {
         // if either the subscription or lifetime purchase is loading, we still want to stay in the loading state
-        guard subscriptionStatus != .loading && lifetimePurchaseStatus != .loading else {
+        guard subscriptionStatus != .loading, lifetimePurchaseStatus != .loading else {
             premiumStatus = .loading
             return
         }
@@ -115,6 +133,7 @@ struct IAP: ViewModifier {
                 Transaction ID \(t.id) for \(t.productID) is verified
                 """)
             transaction = t
+
         case .unverified(let t, let error):
             // Log failure and ignore unverified transactions
             Logger.inAppPurchase.error("""

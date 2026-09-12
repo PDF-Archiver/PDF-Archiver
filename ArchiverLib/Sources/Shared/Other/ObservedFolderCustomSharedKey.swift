@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 11.09.25.
 //
 
+import ArchiverModels
 import ComposableArchitecture
 import Foundation
 
@@ -113,7 +114,7 @@ extension ObservedFolderCustomSharedKey {
 
 fileprivate extension UserDefaults {
     func setObject<T: Encodable>(_ object: T?, forKey key: String) throws {
-        guard let object = object else {
+        guard let object else {
             set(nil, forKey: key)
             return
         }

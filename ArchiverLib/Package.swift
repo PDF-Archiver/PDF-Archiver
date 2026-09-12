@@ -14,23 +14,34 @@ let package = Package(
             targets: ["ArchiverFeatures", "ArchiverIntents"]),
         .library(
             name: "Shared",
-            targets: ["Shared"])
+            targets: ["Shared"]),
+        .library(
+            name: "DocumentProcessingPipeline",
+            targets: ["DocumentProcessingPipeline"]),
+        .library(
+            name: "EvaluationSupport",
+            targets: ["ArchiverModels", "ContentExtractorStore", "EvaluationCorpus"])
     ],
     dependencies: [
-        .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.25.3"),
-        .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.12.0"),
-        .package(url: "https://github.com/pointfreeco/swift-sharing", from: "2.8.0"),
-        .package(url: "https://github.com/sideeffect-io/AsyncExtensions", from: "0.5.5"),
-        .package(url: "https://github.com/apple/swift-async-algorithms", from: "1.1.3")
+        .package(url: "https://github.com/pointfreeco/swift-composable-architecture",
+                 exact: "1.26.2",
+                 traits: [
+                    "ComposableArchitecture2Deprecations",
+                    "ComposableArchitecture2DeprecationOverloads"
+                 ]),
+        .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "1.17.1"),
+        .package(url: "https://github.com/pointfreeco/swift-sharing", exact: "2.10.1"),
+        .package(url: "https://github.com/sideeffect-io/AsyncExtensions", exact: "0.5.5"),
+        .package(url: "https://github.com/apple/swift-async-algorithms", exact: "1.1.5")
     ],
     targets: [
         .target(name: "ArchiverFeatures",
                 dependencies: [
-                    "ArchiverDocumentProcessing",
                     "ArchiverModels",
                     "ArchiverIntents",
                     "ArchiverStore",
                     "ContentExtractorStore",
+                    "DocumentProcessingPipeline",
                     "Shared",
                     .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
                 ],
@@ -57,15 +68,24 @@ let package = Package(
                 ]),
         .target(name: "ArchiverModels",
                 dependencies: []),
-        .target(name: "ArchiverDocumentProcessing",
-                dependencies: ["Shared"]),
         .target(name: "ContentExtractorStore",
                 dependencies: [
-                    "ArchiverStore",
-                    "ArchiverModels",
-                    .product(name: "Dependencies", package: "swift-dependencies"),
-                    .product(name: "DependenciesMacros", package: "swift-dependencies")
+                    "ArchiverModels"
                 ]),
+        .target(name: "DocumentProcessingPipeline",
+                dependencies: [
+                    "ArchiverModels",
+                    "ContentExtractorStore"
+                ]),
+        .target(name: "EvaluationCorpus",
+                dependencies: [
+                    "ArchiverModels",
+                    "ContentExtractorStore"
+                ]),
+        .executableTarget(name: "EvalCorpusBuilder",
+                          dependencies: [
+                            "EvaluationCorpus"
+                          ]),
         .target(name: "Shared",
                 dependencies: [
                     "ArchiverModels",
@@ -84,10 +104,25 @@ let package = Package(
             dependencies: ["ArchiverStore"]
         ),
         .testTarget(
-            name: "ArchiverDocumentProcessingTests",
-            dependencies: ["ArchiverDocumentProcessing"],
+            name: "DocumentProcessingPipelineTests",
+            dependencies: ["DocumentProcessingPipeline"],
             resources: [
                 .process("assets")
+            ]
+        ),
+        .testTarget(
+            name: "ContentExtractorStoreTests",
+            dependencies: [
+                "ContentExtractorStore",
+                "ArchiverModels",
+                "EvaluationCorpus"
+            ]
+        ),
+        .testTarget(
+            name: "EvaluationCorpusTests",
+            dependencies: [
+                "ArchiverModels",
+                "EvaluationCorpus"
             ]
         )
     ]

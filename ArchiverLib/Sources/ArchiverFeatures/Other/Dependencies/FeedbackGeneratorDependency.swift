@@ -42,8 +42,10 @@ extension FeedbackGeneratorDependency: DependencyKey {
                 switch feedbackType {
                 case .success:
                     generator.notificationOccurred(.success)
+
                 case .warning:
                     generator.notificationOccurred(.warning)
+
                 case .error:
                     generator.notificationOccurred(.error)
                 }

@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 22.08.20.
 //
 
+import ArchiverModels
 import Foundation
 
 extension FileManager: Log {
@@ -45,7 +46,7 @@ extension FileManager: Log {
     }
 
     public func getFilesRecursive(at url: URL, with properties: [URLResourceKey]? = nil) -> [URL] {
-        guard let enumerator = FileManager.default.enumerator(at: url, includingPropertiesForKeys: properties) else { return [] }
+        guard let enumerator = Self.default.enumerator(at: url, includingPropertiesForKeys: properties) else { return [] }
 
         var files = [URL]()
         for case let file as URL in enumerator {

@@ -20,7 +20,7 @@ extension Document {
             return nil
         }
 
-        let data = await Document.parseFilename(filename)
+        let data = await Self.parseFilename(filename)
         let tags = Set(data.tagNames ?? [])
 
         let date = data.date ?? url.fileCreationDate() ?? Date()

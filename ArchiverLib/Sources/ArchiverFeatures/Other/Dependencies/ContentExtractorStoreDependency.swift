@@ -1,0 +1,167 @@
+//
+//  ContentExtractorStoreDependency.swift
+//  ArchiverLib
+//
+//  Created by Julian Kahnert on 07.07.25.
+//
+
+import ArchiverModels
+import ComposableArchitecture
+import ContentExtractorStore
+import Foundation
+import FoundationModels
+import OSLog
+import Shared
+
+@DependencyClient
+public struct ContentExtractorStoreDependency: Sendable {
+    /// Input for document information extraction
+    public struct DocInfoInput: Sendable {
+        /// Existing documents for context (tags, specifications)
+        public let currentDocuments: [Document]
+        /// The document text content to analyze
+        public let text: String
+        /// Optional custom prompt to guide the extraction
+        public let customPrompt: String?
+        /// Optional document ID for caching results
+        public let documentId: Document.ID?
+
+        public init(currentDocuments: [Document], text: String, customPrompt: String?, documentId: Document.ID? = nil) {
+            self.currentDocuments = currentDocuments
+            self.text = text
+            self.customPrompt = customPrompt
+            self.documentId = documentId
+        }
+    }
+
+    /// Output from document information extraction
+    public struct DocInfo: Sendable {
+        /// Extracted document specification/description
+        public let specification: String
+        /// Extracted document tags
+        public let tags: Set<String>
+    }
+
+    @available(iOS 26, macOS 26, *)
+    private static let contentExtractorStore = ContentExtractorStore()
+
+    /// Check if Apple Intelligence is available on this device
+    /// - Returns: Availability status for Apple Intelligence
+    public var isAvailable: @Sendable () async -> AppleIntelligenceAvailability = { .operatingSystemNotCompatible }
+
+    /// Extract document information using Apple Intelligence
+    /// - Parameter input: Input containing text, documents context, and optional custom prompt
+    /// - Returns: Extracted specification and tags, or nil if unavailable
+    public var getDocumentInformation: @Sendable (DocInfoInput) async -> DocInfo?
+
+    /// Clear all cache entries
+    public var clearCache: @Sendable () async -> Void = {}
+
+    /// Get the number of cached entries
+    /// - Returns: Count of cache entries
+    public var getCacheCount: @Sendable () async -> Int = { 0 }
+
+    /// Process untagged documents in background to create cache entries
+    /// - Parameters:
+    ///   - documents: All documents to process
+    ///   - textExtractor: Closure to extract text from document URL
+    ///   - customPrompt: Optional custom prompt for extraction
+    /// - Returns: Number of new cache entries created
+    public var processUntaggedDocumentsInBackground: @Sendable ([Document], @Sendable (URL) async -> String?, String?) async -> Int = { _, _, _ in 0 }
+}
+
+extension ContentExtractorStoreDependency: TestDependencyKey {
+    public static let previewValue = Self(
+        isAvailable: { .available },
+        getDocumentInformation: { _ in nil },
+        clearCache: {},
+        getCacheCount: { 0 },
+        processUntaggedDocumentsInBackground: { _, _, _ in 0 }
+    )
+
+    public static let testValue = Self()
+}
+
+extension ContentExtractorStoreDependency: DependencyKey {
+    public static let liveValue = ContentExtractorStoreDependency(
+        isAvailable: {
+            guard #available(iOS 26.0, macOS 26.0, *) else {
+                return .operatingSystemNotCompatible
+            }
+
+            return ContentExtractorStore.getAvailability()
+        },
+        getDocumentInformation: { input in
+            guard #available(iOS 26.0, macOS 26.0, *) else { return nil }
+            @Shared(.appleIntelligenceCacheEnabled) var cacheEnabled: Bool
+            do {
+                // Without a document id `extract` neither reads nor writes the
+                // cache, which is how the setting stays honored across launches.
+                guard let result = try await contentExtractorStore.extract(from: input.text,
+                                                                           customPrompt: input.customPrompt,
+                                                                           with: input.currentDocuments,
+                                                                           documentId: cacheEnabled ? input.documentId : nil) else { return nil }
+
+                return DocInfo(specification: result.specification,
+                               tags: Set(result.tags))
+            } catch let error as LanguageModelSession.GenerationError {
+                switch error {
+                case .unsupportedLanguageOrLocale:
+                    Logger.contentExtractor.warning("Unsupported language or locale for content extraction")
+
+                case .guardrailViolation:
+                    Logger.contentExtractor.warning("Content extraction blocked by safety guardrails")
+
+                case .refusal:
+                    Logger.contentExtractor.warning("Model refused to extract content")
+
+                case .rateLimited:
+                    Logger.contentExtractor.warning("Content extraction rate limited")
+
+                case .exceededContextWindowSize:
+                    Logger.contentExtractor.warning("Document too large for content extraction context window")
+
+                case .decodingFailure:
+                    Logger.contentExtractor.warning("Failed to decode content extraction response")
+
+                case .assetsUnavailable:
+                    Logger.contentExtractor.warning("Model assets unavailable for content extraction")
+
+                case .concurrentRequests:
+                    Logger.contentExtractor.warning("Concurrent content extraction request rejected")
+
+                case .unsupportedGuide:
+                    Logger.contentExtractor.warning("Unsupported generation guide for content extraction")
+
+                @unknown default:
+                    Logger.contentExtractor.errorAndAssert("An unknown generation error occurred", metadata: ["error": "\(error)"])
+                }
+                return nil
+            } catch {
+                Logger.contentExtractor.errorAndAssert("An error occurred while extracting document content", metadata: ["error": "\(error)"])
+                return nil
+            }
+        },
+        clearCache: {
+            guard #available(iOS 26.0, macOS 26.0, *) else { return }
+            await contentExtractorStore.clearCache()
+        },
+        getCacheCount: {
+            guard #available(iOS 26.0, macOS 26.0, *) else { return 0 }
+            return await contentExtractorStore.getCacheCount()
+        },
+        processUntaggedDocumentsInBackground: { documents, textExtractor, customPrompt in
+            guard #available(iOS 26.0, macOS 26.0, *) else { return 0 }
+            return await contentExtractorStore.processUntaggedDocumentsInBackground(documents: documents,
+                                                                                    textExtractor: textExtractor,
+                                                                                    customPrompt: customPrompt)
+        }
+    )
+}
+
+public extension DependencyValues {
+    var contentExtractorStore: ContentExtractorStoreDependency {
+        get { self[ContentExtractorStoreDependency.self] }
+        set { self[ContentExtractorStoreDependency.self] = newValue }
+    }
+}

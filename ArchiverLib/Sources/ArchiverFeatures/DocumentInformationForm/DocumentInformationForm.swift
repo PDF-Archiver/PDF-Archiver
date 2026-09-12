@@ -6,6 +6,7 @@
 //
 
 import ArchiverModels
+import ArchiverStore
 import ComposableArchitecture
 import ContentExtractorStore
 import Shared
@@ -23,8 +24,16 @@ struct DocumentInformationForm {
 
     @ObservableState
     struct State: Equatable {
-        enum Field: Hashable {
+        enum Field: Hashable, CaseIterable {
             case date, specification, tags, save
+
+            /// Wraps in both directions - this is what keeps Tab from leaving the inspector.
+            func next(forward: Bool) -> Field {
+                let all = Self.allCases
+                let index = all.firstIndex(of: self) ?? 0
+                let offset = forward ? 1 : all.count - 1
+                return all[(index + offset) % all.count]
+            }
         }
 
         @SharedReader(.notSaveDocumentTagsAsPDFMetadata)
@@ -79,6 +88,7 @@ struct DocumentInformationForm {
         case delegate(Delegate)
         case onSaveButtonTapped
         case onSuggestedDateButtonTapped(Date)
+        case onTabKeyPressed(forward: Bool)
         case onTagOnDocumentTapped(String)
         case onTagSearchtermSubmitted
         case onTagSuggestionTapped(String)
@@ -106,9 +116,7 @@ struct DocumentInformationForm {
     var body: some ReducerOf<Self> {
         BindingReducer()
             .onChange(of: \.tagSearchterm) { _, _ in
-                Reduce { _, _ in
-                    return .send(.startUpdatingTagSuggestions)
-                }
+                .send(.startUpdatingTagSuggestions)
             }
 
         Reduce { state, action in
@@ -121,12 +129,13 @@ struct DocumentInformationForm {
 
             case .onSaveButtonTapped:
                 let nothingChanged = state.initialDocument.date == state.document.date && state.initialDocument.specification == state.document.specification && state.initialDocument.tags == state.document.tags
-                if nothingChanged && state.document.isTagged {
+                if nothingChanged, state.document.isTagged {
+                    state.focusedField = .date
                     return .none
                 }
 
                 // check tags
-                if !state.documentTagsNotRequired && state.document.tags.isEmpty {
+                if !state.documentTagsNotRequired, state.document.tags.isEmpty {
                     return .run { _ in
                         await notificationCenter.createAndPost(.init(title: LocalizedStringResource("Missing tags", bundle: #bundle),
                                                                      message: LocalizedStringResource("Please add at least one tag to your document or change your advanced settings.", bundle: #bundle),
@@ -136,7 +145,7 @@ struct DocumentInformationForm {
 
                 // check specification
                 state.document.specification = state.document.specification.slugified(withSeparator: "-")
-                if !state.documentSpecificationNotRequired && state.document.specification.isEmpty {
+                if !state.documentSpecificationNotRequired, state.document.specification.isEmpty {
                     return .run { _ in
                         await notificationCenter.createAndPost(.init(title: LocalizedStringResource("No specification", bundle: #bundle),
                                                                      message: LocalizedStringResource("Please add the document specification or change your advanced settings.", bundle: #bundle),
@@ -149,6 +158,10 @@ struct DocumentInformationForm {
 
             case .onSuggestedDateButtonTapped(let date):
                 state.document.date = date
+                return .none
+
+            case .onTabKeyPressed(let forward):
+                state.focusedField = state.focusedField?.next(forward: forward) ?? .date
                 return .none
 
             case .onTagOnDocumentTapped(var tag):
@@ -168,33 +181,39 @@ struct DocumentInformationForm {
             case .onTagSuggestionTapped(var tag):
                 tag = tag.lowercased()
                 _ = state.document.tags.insert(tag)
-                state.suggestedTags.removeAll { $0 == tag }
+                state.suggestedTags.removeAll { $0.lowercased() == tag }
 
                 // remove current tagSearchteam
                 state.tagSearchterm = ""
 
-                // If multi-tag selection delay is enabled, start the timer
-                if state.multiTagSelectionDelayEnabled {
-                    state.isTagSelectionDelayActive = true
+                // The delay only buys time to pick more of the shown suggestions - with none left there is nothing to wait for
+                guard state.multiTagSelectionDelayEnabled,
+                      !state.suggestedTags.isEmpty else {
+                    state.isTagSelectionDelayActive = false
                     state.tagSelectionDelayProgress = 0.0
 
                     return .run { send in
-                        let delayDuration: TimeInterval = 2
-                        let steps = 20
-                        let stepDuration = delayDuration / Double(steps)
-
-                        for step in 1...steps {
-                            try await clock.sleep(for: .seconds(stepDuration))
-                            await send(.updateTagSelectionDelayProgress(Double(step) / Double(steps)))
-                        }
-
-                        await send(.tagSelectionDelayCompleted)
+                        await send(.startUpdatingTagSuggestions)
                     }
                     .cancellable(id: CancelID.tagSelectionDelayTimer, cancelInFlight: true)
-                } else {
-                    // If delay is disabled, update suggestions immediately
-                    return .send(.startUpdatingTagSuggestions)
                 }
+
+                state.isTagSelectionDelayActive = true
+                state.tagSelectionDelayProgress = 0.0
+
+                return .run { send in
+                    let delayDuration: TimeInterval = 2
+                    let steps = 20
+                    let stepDuration = delayDuration / Double(steps)
+
+                    for step in 1...steps {
+                        try await clock.sleep(for: .seconds(stepDuration))
+                        await send(.updateTagSelectionDelayProgress(Double(step) / Double(steps)))
+                    }
+
+                    await send(.tagSelectionDelayCompleted)
+                }
+                .cancellable(id: CancelID.tagSelectionDelayTimer, cancelInFlight: true)
 
             case .onTask:
                 state.isLoading = true
@@ -250,13 +269,14 @@ struct DocumentInformationForm {
                     state.suggestedDates = dateSuggestions
                 }
                 if let tagSuggestions = result.tagSuggestions {
-                    state.suggestedTags = tagSuggestions
+                    let documentTags = Set(state.document.tags.map { $0.lowercased() })
+                    state.suggestedTags = tagSuggestions.filter { !documentTags.contains($0.lowercased()) }
                 }
                 return .none
 
             case .updateTagSuggestions(let suggestedTags):
                 state.isLoading = false
-                state.suggestedTags = suggestedTags
+                state.suggestedTags = suggestedTags.sorted()
                 return .none
 
             case .updateTagSelectionDelayProgress(let progress):
@@ -303,8 +323,6 @@ struct DocumentInformationForm {
             let newResults = results
                 .dropFirst(foundDate == nil ? 1 : 0)    // skip first because it is set to foundDate
                 .filter { !calendar.isDate($0, inSameDayAs: Date()) }   // skip found "today" dates, because a today button will always be shown
-//                .sorted().reversed().prefix(3)  // get the most recent 3 dates
-//                .sorted()
                 .prefix(3)
             dateSuggestions = Array(newResults)
 
@@ -322,7 +340,6 @@ struct DocumentInformationForm {
                                                                                       documentId: documentId)) {
                 foundSpecification = content.specification
                 tagSuggestions = Array(content.tags).sorted()
-
             } else {
                 // Fall back to traditional text analysis
 
@@ -340,6 +357,24 @@ struct DocumentInformationForm {
         let specification = foundSpecification ?? ""
 
         return DocumentParsingResult(date: date, specification: specification, tags: tags, dateSuggestions: dateSuggestions, tagSuggestions: tagSuggestions)
+    }
+}
+
+/// Gives one control ownership of Tab, so focus cycles through the form instead of escaping into the surrounding focus loop.
+struct TabCycleModifier: ViewModifier {
+    let store: StoreOf<DocumentInformationForm>
+
+    /// Tab, plus macOS's translation of Shift-Tab (`NSBackTabCharacter`, U+0019) - there is no `KeyEquivalent.backTab`.
+    static let interceptedKeys: Set<KeyEquivalent> = [.tab, KeyEquivalent("\u{19}")]
+
+    func body(content: Content) -> some View {
+        content.onKeyPress(keys: Self.interceptedKeys, phases: [.down, .repeat]) { keyPress in
+            // Consume repeats too, so a held key can't leak into the system's own focus movement;
+            // only `.down` advances, which keeps the cycle at one step per physical press.
+            guard keyPress.phase == .down else { return .handled }
+            store.send(.onTabKeyPressed(forward: !keyPress.modifiers.contains(.shift)))
+            return .handled
+        }
     }
 }
 
@@ -365,6 +400,7 @@ struct DocumentInformationFormView: View {
                     .focusable(false)
                 DatePicker(String(localized: "Date", bundle: #bundle), selection: $store.document.date, displayedComponents: .date)
                     .focused($focusedField, equals: .date)
+                    .modifier(TabCycleModifier(store: store))
                     .listRowSeparator(.hidden)
                     .sensoryFeedback(.selection, trigger: store.document.date)
                 HStack {
@@ -377,14 +413,17 @@ struct DocumentInformationFormView: View {
                         }
                         .fixedSize()
                         .buttonStyle(.bordered)
+                        .focusable(false)
+                        .accessibilityLabel(Text("Suggested date: \(date.formatted(date: .long, time: .omitted))", bundle: #bundle))
+                        .accessibilityHint(Text("Sets the document date to this value", bundle: #bundle))
                     }
                     Button(String(localized: "Today", bundle: #bundle), systemImage: "calendar") {
                         store.send(.onTodayButtonTapped)
                     }
                     .labelStyle(.iconOnly)
                     .buttonStyle(.bordered)
+                    .focusable(false)
                 }
-                .focusable(false)
             }
 
             Section {
@@ -396,6 +435,7 @@ struct DocumentInformationFormView: View {
                 }
                 .lineLimit(1...5)
                 .focused($focusedField, equals: .specification)
+                .modifier(TabCycleModifier(store: store))
             }
 
             documentTagsSection
@@ -418,7 +458,10 @@ struct DocumentInformationFormView: View {
                     }
                     .buttonStyle(.bordered)
                     .focused($focusedField, equals: .save)
+                    .modifier(TabCycleModifier(store: store))
+#if os(iOS)
                     .keyboardShortcut("s", modifiers: [.command])
+#endif
                     Spacer()
                 }
             }
@@ -456,7 +499,6 @@ struct DocumentInformationFormView: View {
                                 isSuggestion: false,
                                 isMultiLine: true,
                                 tapHandler: { store.send(.onTagOnDocumentTapped($0)) })
-                    .focusable(false)
                 }
 
                 HStack(alignment: .top) {
@@ -471,7 +513,6 @@ struct DocumentInformationFormView: View {
                             .frame(width: 20, height: 20)
                     }
                 }
-                .focusable(false)
 
                 TextField(text: $store.tagSearchterm, prompt: Text("Enter Tag", bundle: #bundle)) {
                     Text("Tag", bundle: #bundle)
@@ -480,6 +521,7 @@ struct DocumentInformationFormView: View {
                     store.send(.onTagSearchtermSubmitted)
                 }
                 .focused($focusedField, equals: .tags)
+                .modifier(TabCycleModifier(store: store))
                 #if os(iOS)
                 .keyboardType(.alphabet)
                 .autocorrectionDisabled()

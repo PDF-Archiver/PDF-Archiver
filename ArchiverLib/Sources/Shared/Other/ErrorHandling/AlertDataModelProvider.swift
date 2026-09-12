@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 16.12.20.
 //
 
+import ArchiverModels
 import SwiftUI
 
 public struct AlertDataModelProvider: ViewModifier, Log {
@@ -43,6 +44,5 @@ public struct AlertDataModelProvider: ViewModifier, Log {
             } message: { viewModel in
                 Text(viewModel.message)
             }
-
     }
 }

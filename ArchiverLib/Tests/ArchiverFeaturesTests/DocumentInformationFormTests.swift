@@ -1,6 +1,7 @@
 import ArchiverModels
 import ComposableArchitecture
 import Foundation
+import SwiftUI
 import Testing
 
 @testable import ArchiverFeatures
@@ -111,37 +112,88 @@ struct DocumentInformationFormTests {
         await store.receive(.delegate(.saveDocument(document, shouldUpdatePdfMetadata: false)))
     }
 
+    @Test
+    func saveWithoutChangesReturnsFocusToDate() async throws {
+        var state = DocumentInformationForm.State(document: .mock())
+        state.focusedField = .specification
+        let store = TestStore(initialState: state) {
+            DocumentInformationForm()
+        }
+
+        await store.send(.onSaveButtonTapped) {
+            $0.focusedField = .date
+        }
+    }
+
+    // MARK: - Tab Focus Cycle Tests
+
+    @Test
+    func tabCyclesForwardAndWrapsToDate() async throws {
+        var state = DocumentInformationForm.State(document: .mock())
+        state.focusedField = .date
+        let store = TestStore(initialState: state) {
+            DocumentInformationForm()
+        }
+
+        await store.send(.onTabKeyPressed(forward: true)) {
+            $0.focusedField = .specification
+        }
+        await store.send(.onTabKeyPressed(forward: true)) {
+            $0.focusedField = .tags
+        }
+        await store.send(.onTabKeyPressed(forward: true)) {
+            $0.focusedField = .save
+        }
+        await store.send(.onTabKeyPressed(forward: true)) {
+            $0.focusedField = .date
+        }
+    }
+
+    @Test
+    func tabCyclesBackwardsAndWrapsToSave() async throws {
+        var state = DocumentInformationForm.State(document: .mock())
+        state.focusedField = .date
+        let store = TestStore(initialState: state) {
+            DocumentInformationForm()
+        }
+
+        await store.send(.onTabKeyPressed(forward: false)) {
+            $0.focusedField = .save
+        }
+    }
+
+    @Test
+    func tabWithoutFocusStartsAtDate() async throws {
+        let store = TestStore(initialState: DocumentInformationForm.State(document: .mock())) {
+            DocumentInformationForm()
+        }
+
+        await store.send(.onTabKeyPressed(forward: true)) {
+            $0.focusedField = .date
+        }
+    }
+
+    // macOS translates Shift-Tab to U+0019 (NSBackTabCharacter), never `.tab` - the intercepted
+    // key set has to include it or Shift-Tab falls through to AppKit's own key-view movement.
+    @Test
+    func tabCycleModifierInterceptsMacOSShiftTabTranslation() {
+        #expect(TabCycleModifier.interceptedKeys.contains(KeyEquivalent("\u{19}")))
+        #expect(TabCycleModifier.interceptedKeys.contains(.tab))
+    }
+
     // MARK: - Tag Management Tests
 
     @Test
     func addingTagUpdatesDocument() async throws {
-        let clock = TestClock()
-        let store = TestStore(initialState: DocumentInformationForm.State(document: .mock())) {
+        let store = TestStore(initialState: DocumentInformationForm.State(document: .mock(), suggestedTags: ["invoice"])) {
             DocumentInformationForm()
         } withDependencies: {
             $0.archiveStore.getTagSuggestionsSimilarTo = { _ in [] }
-            $0.continuousClock = clock
         }
 
         await store.send(.onTagSuggestionTapped("invoice")) {
+            $0.suggestedTags = []
             $0.document.tags = ["invoice"]
-            $0.isTagSelectionDelayActive = true
-            $0.tagSelectionDelayProgress = 0.0
-        }
-
-        // Advance clock through the 2-second delay timer
-        await clock.advance(by: .seconds(2))
-
-        // Receive all progress updates
-        for step in 1...20 {
-            await store.receive(.updateTagSelectionDelayProgress(Double(step) / 20.0)) {
-                $0.tagSelectionDelayProgress = Double(step) / 20.0
-            }
-        }
-
-        await store.receive(.tagSelectionDelayCompleted) {
-            $0.isTagSelectionDelayActive = false
-            $0.tagSelectionDelayProgress = 0.0
         }
 
         await store.receive(.startUpdatingTagSuggestions)
@@ -162,7 +214,7 @@ struct DocumentInformationFormTests {
     }
 
     @Test
-    func specificationIsLowercase() async throws {
+    func specificationIsLowercase() throws {
         let document = Document.mock(specification: "Test Specification")
         let state = DocumentInformationForm.State(document: document)
 
@@ -214,8 +266,8 @@ struct DocumentInformationFormTests {
             DocumentInformationForm()
         }
 
-        await store.send(.updateTagSuggestions(["suggestion1", "suggestion2"])) {
-            $0.suggestedTags = ["suggestion1", "suggestion2"]
+        await store.send(.updateTagSuggestions(["zebra", "apfel"])) {
+            $0.suggestedTags = ["apfel", "zebra"]
         }
     }
 
@@ -287,6 +339,67 @@ struct DocumentInformationFormTests {
     }
 
     @Test
+    func aiTagSuggestionsAreSortedAlphabetically() async throws {
+        let date = try Date("2025-07-26T15:00:0Z", strategy: .iso8601)
+        let document = Document.mock()
+        let modelTags: Set<String> = ["zebra", "hoodie", "apfel"]
+
+        @Shared(.appleIntelligenceEnabled) var appleIntelligenceEnabled
+        $appleIntelligenceEnabled.withLock { $0 = true }
+
+        let store = TestStore(initialState: DocumentInformationForm.State(document: document)) {
+            DocumentInformationForm()
+        } withDependencies: {
+            $0.archiveStore.parseFilename = { _ in (date, nil, nil) }
+            $0.archiveStore.getDocuments = { [] }
+            $0.textAnalyser.getTextFrom = { _ in "document text" }
+            $0.textAnalyser.parseDateFrom = { _ in [] }
+            $0.textAnalyser.getFileTagsFrom = { _ in [] }
+            $0.contentExtractorStore.isAvailable = { .available }
+            $0.contentExtractorStore.getDocumentInformation = { _ in
+                .init(specification: "blue hoodie", tags: modelTags)
+            }
+        }
+
+        await store.send(.startUpdatingAllSuggestionsWithAI(document.url))
+
+        let expectedResult = DocumentInformationForm.DocumentParsingResult(
+            date: date,
+            specification: "blue hoodie",
+            tags: [],
+            dateSuggestions: [],
+            tagSuggestions: ["apfel", "hoodie", "zebra"])
+        await store.receive(.updateDocumentData(expectedResult)) {
+            $0.document.date = date
+            $0.document.specification = "blue hoodie"
+            $0.suggestedTags = ["apfel", "hoodie", "zebra"]
+        }
+    }
+
+    @Test
+    func updateDocumentDataDropsSuggestionsAlreadyOnDocument() async throws {
+        let store = TestStore(initialState: DocumentInformationForm.State(document: .mock())) {
+            DocumentInformationForm()
+        }
+
+        let date = Date()
+        let parsingResult = DocumentInformationForm.DocumentParsingResult(
+            date: date,
+            specification: "invoice-2024",
+            tags: ["invoice", "tax"],
+            dateSuggestions: nil,
+            tagSuggestions: ["Invoice", "business", "tax"]
+        )
+
+        await store.send(.updateDocumentData(parsingResult)) {
+            $0.document.date = date
+            $0.document.specification = "invoice-2024"
+            $0.document.tags = ["invoice", "tax"]
+            $0.suggestedTags = ["business"]
+        }
+    }
+
+    @Test
     func updateDocumentDataWithNilSuggestions() async throws {
         let store = TestStore(initialState: DocumentInformationForm.State(document: .mock())) {
             DocumentInformationForm()
@@ -327,7 +440,7 @@ struct DocumentInformationFormTests {
     @Test
     func multiTagSelectionDelayProgressUpdates() async throws {
         let clock = TestClock()
-        let store = TestStore(initialState: DocumentInformationForm.State(document: .mock())) {
+        let store = TestStore(initialState: DocumentInformationForm.State(document: .mock(), suggestedTags: ["keep", "tag1"])) {
             DocumentInformationForm()
         } withDependencies: {
             $0.archiveStore.getTagSuggestionsSimilarTo = { _ in [] }
@@ -336,6 +449,7 @@ struct DocumentInformationFormTests {
 
         // Select first tag
         await store.send(.onTagSuggestionTapped("tag1")) {
+            $0.suggestedTags = ["keep"]
             $0.document.tags = ["tag1"]
             $0.isTagSelectionDelayActive = true
             $0.tagSelectionDelayProgress = 0.0
@@ -368,13 +482,15 @@ struct DocumentInformationFormTests {
         }
 
         await store.receive(.startUpdatingTagSuggestions)
-        await store.receive(.updateTagSuggestions([]))
+        await store.receive(.updateTagSuggestions([])) {
+            $0.suggestedTags = []
+        }
     }
 
     @Test
     func multiTagSelectionDelayCanBeCancelled() async throws {
         let clock = TestClock()
-        let store = TestStore(initialState: DocumentInformationForm.State(document: .mock())) {
+        let store = TestStore(initialState: DocumentInformationForm.State(document: .mock(), suggestedTags: ["keep", "tag1", "tag2"])) {
             DocumentInformationForm()
         } withDependencies: {
             $0.archiveStore.getTagSuggestionsSimilarTo = { _ in [] }
@@ -383,6 +499,7 @@ struct DocumentInformationFormTests {
 
         // Select first tag
         await store.send(.onTagSuggestionTapped("tag1")) {
+            $0.suggestedTags = ["keep", "tag2"]
             $0.document.tags = ["tag1"]
             $0.isTagSelectionDelayActive = true
             $0.tagSelectionDelayProgress = 0.0
@@ -400,6 +517,7 @@ struct DocumentInformationFormTests {
 
         // Select another tag, which should cancel the previous timer
         await store.send(.onTagSuggestionTapped("tag2")) {
+            $0.suggestedTags = ["keep"]
             $0.document.tags = ["tag1", "tag2"]
             $0.isTagSelectionDelayActive = true
             $0.tagSelectionDelayProgress = 0.0
@@ -421,6 +539,63 @@ struct DocumentInformationFormTests {
         }
 
         await store.receive(.startUpdatingTagSuggestions)
+        await store.receive(.updateTagSuggestions([])) {
+            $0.suggestedTags = []
+        }
+    }
+
+    @Test
+    func lastSuggestedTagSkipsSelectionDelay() async throws {
+        let clock = TestClock()
+        let store = TestStore(initialState: DocumentInformationForm.State(document: .mock(), suggestedTags: ["tag1"])) {
+            DocumentInformationForm()
+        } withDependencies: {
+            $0.archiveStore.getTagSuggestionsSimilarTo = { _ in [] }
+            $0.continuousClock = clock
+        }
+
+        await store.send(.onTagSuggestionTapped("tag1")) {
+            $0.suggestedTags = []
+            $0.document.tags = ["tag1"]
+        }
+
+        await store.receive(.startUpdatingTagSuggestions)
         await store.receive(.updateTagSuggestions([]))
+    }
+
+    @Test
+    func lastSuggestedTagCancelsRunningSelectionDelay() async throws {
+        let clock = TestClock()
+        let store = TestStore(initialState: DocumentInformationForm.State(document: .mock(), suggestedTags: ["tag1", "tag2"])) {
+            DocumentInformationForm()
+        } withDependencies: {
+            $0.archiveStore.getTagSuggestionsSimilarTo = { _ in [] }
+            $0.continuousClock = clock
+        }
+
+        await store.send(.onTagSuggestionTapped("tag1")) {
+            $0.suggestedTags = ["tag2"]
+            $0.document.tags = ["tag1"]
+            $0.isTagSelectionDelayActive = true
+            $0.tagSelectionDelayProgress = 0.0
+        }
+
+        await clock.advance(by: .seconds(0.1))
+        await store.receive(.updateTagSelectionDelayProgress(0.05)) {
+            $0.tagSelectionDelayProgress = 0.05
+        }
+
+        await store.send(.onTagSuggestionTapped("tag2")) {
+            $0.suggestedTags = []
+            $0.document.tags = ["tag1", "tag2"]
+            $0.isTagSelectionDelayActive = false
+            $0.tagSelectionDelayProgress = 0.0
+        }
+
+        await store.receive(.startUpdatingTagSuggestions)
+        await store.receive(.updateTagSuggestions([]))
+
+        // the timer of the first tag must be gone - otherwise its progress updates arrive here
+        await clock.advance(by: .seconds(2))
     }
 }

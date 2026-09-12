@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 19.08.20.
 //
 
+import ArchiverModels
 import Foundation
 import Shared
 
@@ -31,13 +32,10 @@ final class ICloudFolderProvider: FolderProvider {
 
         self.metadataQuery = NSMetadataQuery()
 
-        // Filter only documents from the current year and the year before
-//        let year = Calendar.current.component(.year, from: Date())
-//        let predicate = NSPredicate(format: "(%K LIKE[c] '\(year)-*.pdf') OR (%K LIKE[c] '\(year - 1)-*.pdf')", NSMetadataItemFSNameKey, NSMetadataItemFSNameKey)
         // get all pdf documents
         let predicate = NSPredicate(format: "%K ENDSWITH[c] '.pdf'", NSMetadataItemFSNameKey)
 
-        let notContainsTempPath = NSPredicate(format: "(NOT (%K CONTAINS[c] %@)) AND (NOT (%K CONTAINS[c] %@))", NSMetadataItemPathKey, "/\(ICloudFolderProvider.tempFolderName)/", NSMetadataItemPathKey, "/.Trash/")
+        let notContainsTempPath = NSPredicate(format: "(NOT (%K CONTAINS[c] %@)) AND (NOT (%K CONTAINS[c] %@))", NSMetadataItemPathKey, "/\(Self.tempFolderName)/", NSMetadataItemPathKey, "/.Trash/")
         metadataQuery.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, notContainsTempPath] )
 
         // update the file status 3 times per second, while downloading
@@ -53,18 +51,14 @@ final class ICloudFolderProvider: FolderProvider {
             NSMetadataQueryUbiquitousDocumentsScope
         ]
 
-        /*
-         We supply our own serializing queue to the `NSMetadataQuery` so that we
-         can perform our own background work in sync with item discovery.
-         Note that the operationQueue of the `NSMetadataQuery` must be serial.
-         */
+        // the operationQueue of the `NSMetadataQuery` must be serial - we use the main queue
         metadataQuery.operationQueue = .main
 
         observationTask = Task(priority: .utility) { [weak self] in
             guard let self else { return }
 
-            self.metadataQuery.start()
-            self.log.debug("Starting the documents query.")
+            metadataQuery.start()
+            log.debug("Starting the documents query.")
 
             await withTaskGroup(of: Void.self) { group in
                 group.addTask { [weak self] in
@@ -72,13 +66,13 @@ final class ICloudFolderProvider: FolderProvider {
                         guard let self else { return }
                         Self.log.debug("Documents query finished initial fetch.")
 
-                        let details = await self.getFileChangeDetails()
+                        let details = await getFileChangeDetails()
 
                         // update the archive
                         let changes = details
                             .compactMap(\.self)
 
-                        await self.sendDocuments(added: changes, updated: [], removed: [])
+                        await sendDocuments(added: changes, updated: [], removed: [])
                     }
                 }
 
@@ -97,7 +91,7 @@ final class ICloudFolderProvider: FolderProvider {
                         let removed = removedMetadataItems
                             .compactMap { $0.createDetails() }
 
-                        await self.sendDocuments(added: added, updated: updated, removed: removed)
+                        await sendDocuments(added: added, updated: updated, removed: removed)
                     }
                 }
             }
@@ -116,7 +110,7 @@ final class ICloudFolderProvider: FolderProvider {
         metadataQuery.stop()
     }
 
-    private func sendDocuments(added: [DocumentInformation], updated: [DocumentInformation], removed: [DocumentInformation]) async {
+    private func sendDocuments(added: [DocumentInformation], updated: [DocumentInformation], removed: [DocumentInformation]) {
         for change in added + updated {
             guard let id = change.url.uniqueId() else {
                 assertionFailure("Failed to get uniqueId for \(change.url)")
@@ -125,12 +119,9 @@ final class ICloudFolderProvider: FolderProvider {
             currentDocuments[id] = change
         }
         for change in removed {
-            guard let id = change.url.uniqueId() else {
-                assertionFailure("Failed to get uniqueId for \(change.url)")
-                currentDocuments = currentDocuments.filter { $0.value.url != change.url }
-                continue
-            }
-            currentDocuments[id] = nil
+            // match removed files by URL - reading the uniqueId (a resource value)
+            // of an already deleted file would fail
+            currentDocuments = currentDocuments.filter { $0.value.url != change.url }
         }
         let documents = Array(currentDocuments.values)
         guard lastDocuments?.sorted() != documents.sorted() else { return }
@@ -174,11 +165,6 @@ final class ICloudFolderProvider: FolderProvider {
     }
 
     func startDownload(of url: URL) throws {
-//        guard FileManager.default.fileExists(atPath: url.path) else {
-//            log.assertOrCritical("Could not find file at path: \(url.path)")
-//            return
-//        }
-
         try FileManager.default.startDownloadingUbiquitousItem(at: url)
     }
 
@@ -231,6 +217,7 @@ extension NSMetadataItem: nonisolated Log {
         case NSMetadataUbiquitousItemDownloadingStatusCurrent, NSMetadataUbiquitousItemDownloadingStatusDownloaded:
             // local
             documentStatus = 1
+
         case NSMetadataUbiquitousItemDownloadingStatusNotDownloaded:
 
             let minValue = 0.0
@@ -242,9 +229,11 @@ extension NSMetadataItem: nonisolated Log {
                 // remote
                 documentStatus = minValue
             }
+
         default:
+            // do not crash on future/unknown status values - just skip this item
             log.criticalAndAssert("Unkown download status.", metadata: ["status": "\(downloadingStatus)"])
-            preconditionFailure("The downloading status '\(downloadingStatus)' was not handled correctly!")
+            return nil
         }
 
         return DocumentInformation(url: documentUrl, downloadStatus: documentStatus, sizeInBytes: Double(size))

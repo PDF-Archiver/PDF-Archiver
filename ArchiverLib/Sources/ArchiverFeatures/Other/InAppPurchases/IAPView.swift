@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 23.05.24.
 //
 
+import ArchiverModels
 import OSLog
 import Shared
 import StoreKit
@@ -12,6 +13,8 @@ import SwiftUI
 
 struct IAPView: View {
     let onCancel: () -> Void
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         ScrollView {
@@ -100,7 +103,7 @@ struct IAPView: View {
                         .foregroundColor(Color.paWhiteAsset)
                         .background(Color.paRedAsset)
                         .cornerRadius(8)
-                        .transition(.scale)
+                        .transition(reduceMotion ? .opacity : .scale)
                         .offset(x: -16, y: -12)
                 }
             }

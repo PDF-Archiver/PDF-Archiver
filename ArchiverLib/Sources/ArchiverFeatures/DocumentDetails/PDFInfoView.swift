@@ -5,17 +5,20 @@
 //  Created by Julian Kahnert on 22.02.26.
 //
 
+import DocumentProcessingPipeline
 import PDFKit
 import Shared
 import SwiftUI
 
 struct PDFInfoView: View {
     let documentURL: URL
+    let isRunningOcr: Bool
+    let onRunOcr: () -> Void
 
     @State private var pdfInfo: PDFInfo?
     @State private var showPopover = false
 
-    private static func createPdfInfo(from url: URL) async -> PDFInfo {
+    private static func createPdfInfo(from url: URL) -> PDFInfo {
         let pdf = PDFDocument(url: url)
         let meta = pdf?.documentAttributes
 
@@ -28,9 +31,8 @@ struct PDFInfoView: View {
         }
 
         return PDFInfo(
-            hasTextLayer: (0..<min(pdf?.pageCount ?? 0, 3)).contains {
-                pdf?.page(at: $0)?.string?.isEmpty == false
-            },
+            // Same check as the OCR pass, so the badge cannot disagree with it.
+            hasTextLayer: pdf.map { PDFMetadata.hasTextLayer($0) } ?? false,
             pageCount: pdf?.pageCount ?? 0,
             fileSize: fileSize,
             creationDate: meta?[PDFDocumentAttribute.creationDateAttribute] as? Date,
@@ -54,18 +56,29 @@ struct PDFInfoView: View {
             .foregroundStyle(pdfInfo?.hasTextLayer ?? true ? Color.primary : Color.red)
         }
         .popover(isPresented: $showPopover) {
-            if let info = pdfInfo {
-                PopoverView(info: info)
-            } else {
-                ProgressView()
-                    .padding()
+            Group {
+                if let info = pdfInfo {
+                    PopoverView(info: info, isRunningOcr: isRunningOcr, onRunOcr: onRunOcr)
+                } else {
+                    ProgressView()
+                        .padding()
+                }
             }
+            .presentationCompactAdaptation(.popover)
         }
         .task(id: documentURL) {
-            pdfInfo = await Task.detached(priority: .userInitiated) {
-                await Self.createPdfInfo(from: documentURL)
-            }.value
+            await loadInfo()
         }
+        .onChange(of: isRunningOcr) { _, isRunning in
+            guard !isRunning else { return }
+            Task { await loadInfo() }
+        }
+    }
+
+    private func loadInfo() async {
+        pdfInfo = await Task.detached(priority: .userInitiated) {
+            await Self.createPdfInfo(from: documentURL)
+        }.value
     }
 }
 
@@ -83,6 +96,8 @@ extension PDFInfoView {
 
     struct PopoverView: View {
         fileprivate let info: PDFInfo
+        let isRunningOcr: Bool
+        let onRunOcr: () -> Void
 
         var body: some View {
             VStack(alignment: .leading, spacing: 4) {
@@ -144,8 +159,31 @@ extension PDFInfoView {
                     )
                 }
 
+                Button {
+                    onRunOcr()
+                } label: {
+                    Group {
+                        if isRunningOcr {
+                            ProgressView()
+                                .controlSize(.small)
+                        } else {
+                            Text(info.hasTextLayer
+                                ? String(localized: "Recreate OCR", bundle: #bundle)
+                                : String(localized: "Add OCR", bundle: #bundle))
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .center)
+                }
+                .disabled(isRunningOcr)
+                .focusable(false)
+                .accessibilityLabel(isRunningOcr
+                    ? String(localized: "Running OCR", bundle: #bundle)
+                    : (info.hasTextLayer
+                        ? String(localized: "Recreate OCR", bundle: #bundle)
+                        : String(localized: "Add OCR", bundle: #bundle)))
+                .accessibilityHint(Text("Creates a searchable text layer for this document", bundle: #bundle))
             }
-            .frame(width: 250)
+            .frame(minWidth: 250)
             .padding(8)
         }
 
@@ -160,6 +198,8 @@ extension PDFInfoView {
                     .lineLimit(1)
                     .multilineTextAlignment(.trailing)
             }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("\(label): \(value)")
         }
     }
 }
@@ -169,7 +209,9 @@ extension PDFInfoView {
         Text("Document")
             .toolbar {
                 ToolbarItem {
-                    PDFInfoView(documentURL: URL(fileURLWithPath: "/dev/null"))
+                    PDFInfoView(documentURL: URL(fileURLWithPath: "/dev/null"),
+                                isRunningOcr: false,
+                                onRunOcr: { })
                 }
             }
     }
@@ -185,5 +227,7 @@ extension PDFInfoView {
         title: "Annual Report 2024",
         author: "John Doe",
         subject: "Finance"
-    ))
+    ),
+    isRunningOcr: false,
+    onRunOcr: { })
 }

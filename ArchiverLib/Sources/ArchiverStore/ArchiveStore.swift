@@ -20,17 +20,7 @@ public actor ArchiveStore: Log {
     @Shared(.observedFolder) var observedFolderURL: URL?
     #endif
 
-    #if DEBUG
-    private static let availableProvider: [any FolderProvider.Type] = {
-        if UserDefaults.standard.bool(forKey: "demoMode") {
-            return [DemoFolderProvider.self]
-        } else {
-            return [ICloudFolderProvider.self, LocalFolderProvider.self]
-        }
-    }()
-    #else
     private static let availableProvider: [any FolderProvider.Type] = [ICloudFolderProvider.self, LocalFolderProvider.self]
-    #endif
 
     public let isLoadingStream = AsyncCurrentValueSubject(true)
     public let documentsStream: AsyncStream<[Document]>
@@ -41,8 +31,6 @@ public actor ArchiveStore: Log {
     private var untaggedFolders: [URL] = []
     private var providers: [any FolderProvider] = []
     private var folderObservationTasks: [Task<Void, Never>] = []
-    // Since we run a full sync at startup, we have to remove all old documents initially.
-    private var removeOldDocumentsInNextSync = true
 
     private init() {
         let (stream, continuation) = AsyncStream<[Document]>.makeStream()
@@ -52,7 +40,11 @@ public actor ArchiveStore: Log {
         Logger.archiveStore.trace("[ArchiveStore] init called")
 
         Task(priority: .medium) {
-            try await reloadArchiveDocuments()
+            do {
+                try await reloadArchiveDocuments()
+            } catch {
+                Logger.archiveStore.error("Failed to reload archive documents: \(error.localizedDescription)")
+            }
         }
     }
 
@@ -62,11 +54,11 @@ public actor ArchiveStore: Log {
         let archiveUrl = try await PathManager.shared.getArchiveUrl()
         let untaggedUrl = try await PathManager.shared.getUntaggedUrl()
 
-        await ArchiveStore.shared.update(archiveFolder: archiveUrl, untaggedFolders: [untaggedUrl])
+        await update(archiveFolder: archiveUrl, untaggedFolders: [untaggedUrl])
     }
 
     public func getUntaggedUrl() async throws -> URL {
-        try await PathManager.shared.getArchiveUrl().appending(component: "untagged")
+        try await PathManager.shared.getUntaggedUrl()
     }
 
     func update(archiveFolder: URL, untaggedFolders: [URL]) async {
@@ -83,14 +75,14 @@ public actor ArchiveStore: Log {
         self.archiveFolder = archiveFolder
         self.untaggedFolders = untaggedFolders
         let observedFolders = [[archiveFolder], untaggedFolders]
-            .flatMap { $0 }
+            .flatMap(\.self)
             .getUniqueParents()
         var foundProviders: [(any FolderProvider)?] = []
         for observedFolder in observedFolders {
             let provider = await initProvider(for: observedFolder)
             foundProviders.append(provider)
         }
-        providers = foundProviders.compactMap { $0 }
+        providers = foundProviders.compactMap(\.self)
         var documentsMap: [URL: [Document]] = [:]
         for provider in providers {
             let task = Task {
@@ -104,7 +96,7 @@ public actor ArchiveStore: Log {
                                         downloadStatus: change.downloadStatus,
                                         sizeInBytes: change.sizeInBytes)
                     }
-                    .compactMap { $0 }
+                    .compactMap(\.self)
 
                     let documents = documentsMap.values.flatMap(\.self)
                     documentsStreamContinuation.yield(documents)
@@ -218,7 +210,7 @@ public actor ArchiveStore: Log {
             tagCountMap[tag, default: 0] += 1
         }
 
-        let top5Tags = tagCountMap
+        return tagCountMap
             .sorted { lhs, rhs in
                 if lhs.value == rhs.value {
                     lhs.key < rhs.key
@@ -228,8 +220,6 @@ public actor ArchiveStore: Log {
             }
             .prefix(5)
             .map(\.key)
-
-        return top5Tags
     }
 
     /// Returns tags that start with the searchteerm like autocomplete
@@ -242,7 +232,7 @@ public actor ArchiveStore: Log {
         for tag in currentDocuments.flatMap(\.tags) {
             tagCountMap[tag, default: 0] += 1
         }
-        let top5Tags = tagCountMap
+        return tagCountMap
             .filter { $0.key.hasPrefix(searchTerm) }
             .sorted { lhs, rhs in
                 if lhs.value == rhs.value {
@@ -253,7 +243,6 @@ public actor ArchiveStore: Log {
             }
             .prefix(5)
             .map(\.key)
-        return top5Tags
     }
 
     public func reloadArchiveDocuments() async throws {
@@ -264,12 +253,11 @@ public actor ArchiveStore: Log {
         let untaggedUrl = try await PathManager.shared.getUntaggedUrl()
 
         #if os(macOS)
-        let untaggedFolders = [untaggedUrl, observedFolderURL].compactMap { $0 }
+        let untaggedFolders = [untaggedUrl, observedFolderURL].compactMap(\.self)
         #else
         let untaggedFolders = [untaggedUrl]
         #endif
 
-        removeOldDocumentsInNextSync = true
         await update(archiveFolder: archiveUrl, untaggedFolders: untaggedFolders)
     }
 
@@ -281,9 +269,9 @@ public actor ArchiveStore: Log {
         // Do "--" and "__" exist in filename?
         guard url.lastPathComponent.contains("--"),
             url.lastPathComponent.contains("__"),
-            !url.lastPathComponent.lowercased().contains(Constants.documentDatePlaceholder.lowercased()),
-            !url.lastPathComponent.lowercased().contains(Constants.documentDescriptionPlaceholder.lowercased()),
-            !url.lastPathComponent.lowercased().contains(Constants.documentTagPlaceholder.lowercased()) else { return false }
+            !url.lastPathComponent.lowercased().contains(Document.datePlaceholder.lowercased()),
+            !url.lastPathComponent.lowercased().contains(Document.descriptionPlaceholder.lowercased()),
+            !url.lastPathComponent.lowercased().contains(Document.tagPlaceholder.lowercased()) else { return false }
 
         return true
     }
