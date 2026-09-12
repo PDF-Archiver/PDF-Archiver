@@ -575,8 +575,8 @@ for await snapshot in provider.currentDocumentsStream {
 ```
 
 `setObservedRoots` stores the set and a new generation on the actor and raises
-`indexerStates.isReconciling` only when nothing is stored yet for those roots, so a warm launch and
-every rescan after it show the stored rows instead of a spinner. Rows of roots that are no longer
+`indexerStates.isReconciling` for as long as a scan is running, so a warm launch and every rescan
+after it show the stored rows *and* the progress indicator until the first snapshot lands. Rows of roots that are no longer
 observed are *not* deleted here: a provider that fails to start is a transient condition, and
 `rootKey NOT IN ()` is true in SQLite, so an empty set would delete the whole archive. They are
 dropped in the first write of the new generation instead. `reconcile` runs on the actor and:
@@ -607,8 +607,9 @@ dropped in the first write of the new generation instead. `reconcile` runs on th
      `creationDate` as date fallback, `year` from `Calendar.current`. The parse of a whole snapshot
      runs off the actor in one `@concurrent` batch;
    - `documentTags` is rewritten for every inserted or renamed document;
-   - once every observed root has delivered its first snapshot of the current generation,
-     `isReconciling` is cleared.
+   - `isReconciling` is cleared as soon as *one* root has applied a snapshot of the current
+     generation, never once every root has: a provider that stops yielding would otherwise leave
+     the indicator spinning for the rest of the process.
 
    A partially applied snapshot is therefore observable, by design: the file system is the source of
    truth (`docs/adr/0003-database-is-a-derived-read-model.md`), and a generation that goes stale
@@ -668,10 +669,10 @@ Per pending row, until the budget is exhausted or the task is cancelled:
 2. The helper opens `PDFDocument(url:)`: one document per call, never shared (PDFKit is not
    documented thread-safe), never through a coordinated read (it blocks until an iCloud file is
    downloaded). Only `downloadStatus == 1` rows are opened; how `PDFDocument(url:)` behaves on a
-   placeholder is undocumented and stays a spike. It appends `page.string` page by page, each page
-   inside `autoreleasepool` (a synchronous closure, so it wraps the PDFKit calls, not the async
-   flow), checks `Task.isCancelled` after every page, and stops at a per-document cap (proposal:
-   1,000,000 characters) so one pathological file cannot dominate the index.
+   placeholder is undocumented and stays a spike. It reads `PDFDocument.string`, which is the whole
+   text layer in one call; `nil` from that property becomes `""`, so only a document that would not
+   open at all counts as a failure. The per-document cap (1,000,000 characters) is applied when the
+   result is classified, so one pathological file cannot dominate the index.
 3. Back on the actor, one `database.write`: re-read the `documents` row; if it is gone, or its
    `sizeInBytes` / `contentModificationDate` differ from the values captured in step 1, skip (the
    next run picks the new version up). Otherwise `DocumentText.find(id).delete()` then

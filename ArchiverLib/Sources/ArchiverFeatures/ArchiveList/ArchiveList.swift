@@ -115,7 +115,7 @@ struct ArchiveList {
 
         return .run { [rows = state.$rows] _ in
             guard query.hasFreeText else {
-                await withErrorReporting {
+                _ = await withErrorReporting {
                     try await rows.load(Document.list(tokens: query.tokens))
                 }
                 return
@@ -126,7 +126,7 @@ struct ArchiveList {
             } catch {
                 // FTS5 should not reject a sanitised query, but search must never go blank.
                 reportIssue(error)
-                await withErrorReporting {
+                _ = await withErrorReporting {
                     try await rows.load(Document.list(tokens: query.tokens))
                 }
             }

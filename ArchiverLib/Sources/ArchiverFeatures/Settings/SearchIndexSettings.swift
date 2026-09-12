@@ -108,14 +108,26 @@ struct SearchIndexSettingsView: View {
                     Text("Searching inside documents requires Premium.", bundle: #bundle)
                         .foregroundStyle(.secondary)
                 }
+            } header: {
+                Text("Progress", bundle: #bundle)
             } footer: {
                 Text("Documents without a text layer are skipped and are not scanned again.", bundle: #bundle)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             }
 
             Section {
                 Toggle(String(localized: "Download All Documents for Search", bundle: #bundle), isOn: Binding(store.$downloadAllForSearch))
                     .disabled(store.premiumStatus != .active)
+            } header: {
+                Text("Downloads", bundle: #bundle)
+            } footer: {
+                Text("Only documents on this device can be scanned. The rest are downloaded in small batches while your device is charging.", bundle: #bundle)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
 
+            Section {
                 Button {
                     store.send(.onRebuildTapped)
                 } label: {
@@ -123,14 +135,14 @@ struct SearchIndexSettingsView: View {
                 }
             }
         }
+        .formStyle(.grouped)
         .foregroundStyle(.primary)
         .alert($store.scope(\.$alert, action: \.alert))
     }
 
     private var progress: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        ProgressView(value: Double(store.status.indexed), total: Double(max(store.status.total, 1))) {
             Text("\(store.status.indexed) of \(store.status.total) documents indexed", bundle: #bundle)
-            ProgressView(value: Double(store.status.indexed), total: Double(max(store.status.total, 1)))
         }
     }
 

@@ -106,7 +106,7 @@ struct DocumentInformationFormTests {
 
     @Test(.disabled("Currently not working"))
     func save() async throws {
-        let document: Document = .mock()
+        let document = ArchiverModels.Document.mock()
         let store = TestStore(initialState: DocumentInformationForm.State(document: document)) {
             DocumentInformationForm()
         }

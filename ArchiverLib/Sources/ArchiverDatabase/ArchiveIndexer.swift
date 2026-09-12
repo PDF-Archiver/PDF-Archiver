@@ -20,7 +20,6 @@ public actor ArchiveIndexer {
     /// Roots whose provider was created, keyed logically - never by URL prefix.
     private var observedRoots: Set<String> = []
     private var currentGeneration = 0
-    private var rootsAwaitingFirstSnapshot: Set<String> = []
     /// Whether rows of roots this generation no longer observes still have to go.
     private var needsPrune = false
     /// When this process first held a text pass back for a running reconcile.
@@ -32,8 +31,8 @@ public actor ArchiveIndexer {
 
     /// How long the text pass defers to a reconcile before it starts anyway.
     ///
-    /// `rootsAwaitingFirstSnapshot` never empties when an observed root's provider stops yielding,
-    /// and the text index would then not grow again for the rest of the process.
+    /// A provider that never delivers a first snapshot leaves the flag raised, and the text index
+    /// would then not grow again for the rest of the process.
     static let reconcileDeadline: TimeInterval = 15 * 60
 
     public init() {}
@@ -48,16 +47,14 @@ public actor ArchiveIndexer {
     public func setObservedRoots(_ roots: [String]) -> Int {
         observedRoots = Set(roots)
         currentGeneration += 1
-        rootsAwaitingFirstSnapshot = observedRoots
         needsPrune = !observedRoots.isEmpty
 
-        let observedRoots = self.observedRoots
+        let isScanning = !observedRoots.isEmpty
         withErrorReporting {
             try database.write { db in
-                // The indicator means "nothing to show yet", so a warm launch and every rescan
-                // after it render the stored rows instead of a spinner.
-                let storedCount = try Document.where { $0.rootKey.in(observedRoots) }.fetchCount(db)
-                try Self.setReconciling(storedCount == 0 && !observedRoots.isEmpty, in: db)
+                // The indicator means "a scan is running", not "nothing to show yet": a warm launch
+                // shows the stored rows *and* the spinner until the first snapshot lands.
+                try Self.setReconciling(isScanning, in: db)
             }
         }
         return currentGeneration
@@ -112,8 +109,8 @@ public actor ArchiveIndexer {
             await replaceRoot(root, with: items, generation: generation)
         }
 
-        rootsAwaitingFirstSnapshot.remove(root)
-        guard rootsAwaitingFirstSnapshot.isEmpty else { return }
+        // Lowered per root, never once every root has reported: a single provider that stops
+        // yielding would otherwise leave the indicator spinning for the rest of the process.
         clearReconciling()
     }
 

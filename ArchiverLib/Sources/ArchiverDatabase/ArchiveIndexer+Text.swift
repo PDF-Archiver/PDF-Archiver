@@ -38,9 +38,8 @@ extension ArchiveIndexer {
             guard !Task.isCancelled else { break }
             let text = await Self.extractText(from: document.url)
 
-            // A cancelled parse returns partial or no text. Committing it would record an
-            // outcome for the current size and date, and `pendingDocuments` would never offer
-            // the document again until the file itself changes.
+            // The parse itself runs to completion; the check is about the write that follows,
+            // which an expiring background task would only cancel and report as a failure.
             guard !Task.isCancelled else { break }
 
             await commit(text: text, for: document)
@@ -100,7 +99,7 @@ extension ArchiveIndexer {
 
     // MARK: - Extraction
 
-    /// Reads the text layer page by page.
+    /// Reads the document's text layer.
     ///
     /// `@concurrent` is the point: under `NonisolatedNonsendingByDefault` an ordinary `async`
     /// helper would run on the indexer's executor and stall every reconcile behind a PDF parse.
@@ -108,17 +107,9 @@ extension ArchiveIndexer {
     nonisolated static func extractText(from url: URL) async -> String? {
         // Never through `NSFileCoordinator`: it blocks until an iCloud file is downloaded.
         guard let document = PDFDocument(url: url) else { return nil }
-
-        var text = ""
-        for index in 0..<document.pageCount {
-            guard !Task.isCancelled else { return nil }
-            // A synchronous closure, so it wraps the PDFKit calls rather than the async flow.
-            autoreleasepool {
-                text += document.page(at: index)?.string ?? ""
-            }
-            guard text.count < maximumCharacterCount else { break }
-        }
-        return text
+        // `nil` is reserved for a document that would not open - `classify` reads it as a failure,
+        // while an image-only PDF has to come back empty so it counts as "no text".
+        return document.string ?? ""
     }
 
     // MARK: - Bookkeeping

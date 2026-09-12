@@ -337,14 +337,16 @@ struct ReconcilerTests {
         #expect(try await Self.document(1)?.year == 2019)
     }
 
+    /// One root is enough: waiting for every root leaves the indicator spinning for the rest of the
+    /// process as soon as one provider never delivers a snapshot.
     @Test
-    func clearsTheReconcilingFlagOnceEveryRootDelivered() async throws {
+    func clearsTheReconcilingFlagAsSoonAsOneRootDelivers() async throws {
         let indexer = ArchiveIndexer()
         let generation = await indexer.setObservedRoots([archiveRoot, "local"])
-        await indexer.reconcile([], root: archiveRoot, generation: generation)
         #expect(try await Self.isReconciling())
 
-        await indexer.reconcile([], root: "local", generation: generation)
+        await indexer.reconcile([], root: archiveRoot, generation: generation)
+
         #expect(try await Self.isReconciling() == false)
     }
 
@@ -431,19 +433,28 @@ struct ReconcilerTests {
         #expect(stored.count < items.count)
     }
 
+    /// The flag means "a scan is running", not "nothing to show yet": a warm launch shows the
+    /// stored rows *and* the spinner until its snapshot lands.
     @Test
-    func aWarmStartShowsTheStoredRowsWithoutTheSpinner() async throws {
+    func aWarmStartShowsTheSpinnerOverTheStoredRows() async throws {
         let indexer = ArchiveIndexer()
         let generation = await indexer.setObservedRoots([archiveRoot])
         #expect(try await Self.isReconciling())
         await indexer.reconcile([Self.item(id: 1, path: "/Archive/2024/2024-01-02--x__y.pdf", isTagged: true)],
                                 root: archiveRoot,
                                 generation: generation)
+        #expect(try await Self.isReconciling() == false)
 
-        _ = await indexer.setObservedRoots([archiveRoot])
+        let rescan = await indexer.setObservedRoots([archiveRoot])
+
+        #expect(try await Self.isReconciling())
+        #expect(try await Self.allDocuments().count == 1)
+
+        await indexer.reconcile([Self.item(id: 1, path: "/Archive/2024/2024-01-02--x__y.pdf", isTagged: true)],
+                                root: archiveRoot,
+                                generation: rescan)
 
         #expect(try await Self.isReconciling() == false)
-        #expect(try await Self.allDocuments().count == 1)
     }
 
     // MARK: - Planning

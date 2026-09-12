@@ -88,8 +88,8 @@ public actor BackgroundTaskManager: Log {
 
         // Use a cancellable task so the expiration handler can stop work
         let processingTask = Task {
-            // A cold background launch has no scene, so nothing else starts the folder scan. The
-            // wait returns at once on a warm start, where `isReconciling` is never raised.
+            // A cold background launch has no scene, so nothing else starts the folder scan, and
+            // the wait below gives that scan the writer connection before the text pass takes it.
             try await archiveStore.reloadDocuments()
             await waitForInitialDocumentLoad()
 

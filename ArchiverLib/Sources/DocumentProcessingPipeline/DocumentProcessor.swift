@@ -193,7 +193,7 @@ public actor DocumentProcessor {
         let id = UUID()
         let (stream, continuation) = AsyncStream<ProcessingEvent>.makeStream()
         continuation.onTermination = { _ in
-            Task { [weak self] in
+            Task { [weak self = self] in
                 await self?.removeEventContinuation(id)
             }
         }

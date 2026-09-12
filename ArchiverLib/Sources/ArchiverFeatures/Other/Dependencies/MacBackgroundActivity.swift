@@ -58,8 +58,10 @@ actor MacBackgroundActivity {
             }
         }
 
+        // Nothing inside may read `scheduler.shouldDefer`: the block returns the moment the pass is
+        // spawned, and reading it afterwards raises `NSRangeException` and terminates the app.
         scheduler.schedule { completion in
-            Task { [weak self] in
+            Task { [weak self = self] in
                 guard let self,
                       await mayRunBackgroundWork(),
                       await PremiumEntitlement.isActive() else {
@@ -71,21 +73,22 @@ actor MacBackgroundActivity {
                     await SearchIndexDownloads.requestNextBatch()
                     await self.archiveIndexer.indexPendingTexts(Self.budget)
                 }
-                // The system may ask us to stop, and the user may come back, long after the run
-                // started; extraction observes the cancellation between pages.
+                // The user may come back long after the run started; the pass observes the
+                // cancellation between documents.
                 let watchdog = Task { [weak self] in
                     while !Task.isCancelled {
                         try? await Task.sleep(for: .seconds(Self.deferPollInterval))
                         guard let self else { return }
-                        guard await shouldStop() else { continue }
-                        pass.cancel()
-                        return
+                        guard await mayRunBackgroundWork() else {
+                            pass.cancel()
+                            return
+                        }
                     }
                 }
                 await pass.value
                 watchdog.cancel()
 
-                completion(await shouldStop() ? .deferred : .finished)
+                completion(await mayRunBackgroundWork() ? .finished : .deferred)
             }
         }
     }
@@ -103,11 +106,6 @@ actor MacBackgroundActivity {
             && Self.isOnACPower()
             && Self.isCalm()
             && Self.idleSeconds() > Self.idleThreshold
-    }
-
-    /// Polled while a pass runs: the scheduler's own request, plus the user coming back.
-    private func shouldStop() -> Bool {
-        scheduler.shouldDefer || !mayRunBackgroundWork()
     }
 
     private func setAppActive(_ isActive: Bool) {
