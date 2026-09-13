@@ -188,7 +188,7 @@ public extension SharedKey where Self == AppStorageKey<Bool> {
 }
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var downloadAllForSearch: Self {
-      return Self[.appStorage(Names.downloadAllForSearch.id), default: false]
+      return Self[.appStorage(Names.downloadAllForSearch.id), default: true]
   }
 }
 

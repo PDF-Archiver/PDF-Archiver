@@ -84,6 +84,7 @@ struct AppFeatureTests {
             $0.documentProcessor.processStagedFiles = { }
             $0.documentProcessor.processUntaggedDocuments = { _ in UntaggedProcessingResult(ocrCount: 0, aiCacheCount: 0) }
             $0.indexScheduler.schedule = { }
+            $0.indexScheduler.indexWhileAppIsOpen = { }
             $0.widgetStore.updateWidget = { _, _ in }
             $0.archiveStore.startDownloadOf = { _ in }
             $0.premium.currentStatus = { .active }

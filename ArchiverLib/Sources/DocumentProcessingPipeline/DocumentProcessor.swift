@@ -62,12 +62,16 @@ public actor DocumentProcessor {
     /// not allow stored properties of an `@available(iOS 26, macOS 26)` type
     /// while the package still deploys to iOS 18 / macOS 15.
     private var contentExtractorStorage: AnyObject?
+    private let suggestionCache: SuggestionCache
 
     /// - Parameter stagingFolder: Crash-safe inbox for incoming documents.
     ///   In the app this is the shared temp folder the Share Extension also
     ///   writes to.
-    public init(stagingFolder: URL) {
+    /// - Parameter suggestionCache: Where the background pass remembers what the model suggested.
+    ///   Defaulting to `.unavailable` would silently throw every suggestion away.
+    public init(stagingFolder: URL, suggestionCache: SuggestionCache = .unavailable) {
         self.stagingFolder = stagingFolder
+        self.suggestionCache = suggestionCache
     }
 
     // MARK: - Intake
@@ -389,7 +393,7 @@ public actor DocumentProcessor {
         if let store = contentExtractorStorage as? ContentExtractorStore {
             return store
         }
-        let store = ContentExtractorStore()
+        let store = ContentExtractorStore(cache: suggestionCache)
         contentExtractorStorage = store
         return store
     }

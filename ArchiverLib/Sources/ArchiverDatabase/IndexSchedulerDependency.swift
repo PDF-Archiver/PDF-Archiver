@@ -17,10 +17,12 @@ import Foundation
 public struct IndexSchedulerDependency: Sendable {
     public var schedule: @Sendable () async -> Void
     public var cancel: @Sendable () async -> Void
+    /// Runs for as long as the app is open - the platform schedulers only fire once it is not.
+    public var indexWhileAppIsOpen: @Sendable () async -> Void
 }
 
 extension IndexSchedulerDependency: TestDependencyKey {
-    public static let previewValue = Self(schedule: { }, cancel: { })
+    public static let previewValue = Self(schedule: { }, cancel: { }, indexWhileAppIsOpen: { })
     public static let testValue = Self()
 }
 

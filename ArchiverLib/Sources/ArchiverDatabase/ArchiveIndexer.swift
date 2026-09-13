@@ -49,12 +49,14 @@ public actor ArchiveIndexer {
         currentGeneration += 1
         needsPrune = !observedRoots.isEmpty
 
-        let isScanning = !observedRoots.isEmpty
+        let observedRoots = self.observedRoots
         withErrorReporting {
             try database.write { db in
-                // The indicator means "a scan is running", not "nothing to show yet": a warm launch
-                // shows the stored rows *and* the spinner until the first snapshot lands.
-                try Self.setReconciling(isScanning, in: db)
+                // Only while there is nothing to show. `reloadDocuments()` runs after every OCR
+                // pass and tears the providers down, so an indicator raised per rescan strands on
+                // the next teardown instead of clearing.
+                let storedCount = try Document.where { $0.rootKey.in(observedRoots) }.fetchCount(db)
+                try Self.setReconciling(storedCount == 0 && !observedRoots.isEmpty, in: db)
             }
         }
         return currentGeneration

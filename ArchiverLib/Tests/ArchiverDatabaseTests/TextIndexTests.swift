@@ -29,6 +29,18 @@ struct TextIndexTests {
         #expect(try await Self.body(of: -1)?.contains("Rechnung") == true)
     }
 
+    /// Read-only, so the in-app loop can poll without stamping a text run that did nothing.
+    @Test
+    func countsTheDocumentsStillWaitingForTheirText() async throws {
+        let indexer = ArchiveIndexer()
+        try await Self.seed(id: -1, fixture: "text-layer")
+        #expect(await indexer.pendingTextCount() == 1)
+
+        await indexer.indexPendingTexts(budget: 10)
+
+        #expect(await indexer.pendingTextCount() == 0)
+    }
+
     @Test
     func recordsAPdfWithoutATextLayerAsNoText() async throws {
         try await Self.seed(id: -1, fixture: "image-only")

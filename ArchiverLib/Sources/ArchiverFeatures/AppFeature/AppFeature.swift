@@ -186,10 +186,16 @@ struct AppFeature {
                 )
 
             case .projectionChanged(let projection):
-                state.archiveList.searchSuggestedTokens = [
+                let suggestedTokens = [
                     projection.topTags.prefix(3).map { ArchiveList.State.SearchToken.tag($0) },
                     projection.taggedYears.prefix(3).map { ArchiveList.State.SearchToken.year($0) }
                 ].flatMap(\.self)
+                // The projection republishes on every write, while the top three tags and years
+                // almost never move. Assigning anyway would invalidate the suggestions list under
+                // the open suggestions window, which is where AppKit loses its first responder.
+                if state.archiveList.searchSuggestedTokens != suggestedTokens {
+                    state.archiveList.searchSuggestedTokens = suggestedTokens
+                }
 
                 return .run { [yearCounts = projection.yearCounts, untaggedCount = projection.untaggedCount] _ in
                     await widgetStore.updateWidget(yearCounts, untaggedCount)
@@ -214,6 +220,11 @@ struct AppFeature {
                         for await _ in premium.transactionUpdates() {
                             await send(.premiumStatusChanged(premium.currentStatus()))
                         }
+                    },
+                    .run(priority: .background) { _ in
+                        // Its own effect: the scheduling above returns at once, while this one runs
+                        // for as long as the app is open.
+                        await indexScheduler.indexWhileAppIsOpen()
                     }
                 )
 

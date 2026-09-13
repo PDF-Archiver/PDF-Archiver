@@ -51,6 +51,19 @@ extension ArchiveIndexer {
         await finishTextRun(indexedAnything: indexedAnything)
     }
 
+    /// How many documents still wait for their text.
+    ///
+    /// Read-only on purpose: a caller that polls through `indexPendingTexts` would stamp
+    /// `lastTextRunFinishedAt` on every idle round and wake every `indexerStates` observer with it.
+    public func pendingTextCount() async -> Int {
+        let count = await withErrorReporting {
+            try await database.read { db in
+                try Self.pendingCount().fetchOne(db) ?? 0
+            }
+        }
+        return count ?? 0
+    }
+
     /// Truncates the whole read model, so "Rebuild search index" repairs ghost rows as well as a
     /// broken text index. The caller asks `ArchiveStore` to rescan afterwards.
     public func requestRebuild() async {

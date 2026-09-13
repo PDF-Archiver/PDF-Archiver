@@ -25,6 +25,27 @@ extension IndexSchedulerDependency: DependencyKey {
             #else
             await MacBackgroundActivity.shared.stop()
             #endif
+        },
+        indexWhileAppIsOpen: {
+            @Dependency(\.archiveIndexer) var archiveIndexer
+
+            while !Task.isCancelled {
+                guard await archiveIndexer.pendingTextCount() > 0 else {
+                    try? await Task.sleep(for: .seconds(60))
+                    continue
+                }
+                guard await PremiumEntitlement.isActive() else {
+                    // Long, but not forever: a purchase later in the session starts the index
+                    // without asking the user to relaunch.
+                    try? await Task.sleep(for: .seconds(300))
+                    continue
+                }
+
+                // Ten at a time with a pause between batches: the writer connection is shared with
+                // the reconcile, and a foreground pass must never be what the archive list waits on.
+                await archiveIndexer.indexPendingTexts(10)
+                try? await Task.sleep(for: .seconds(1))
+            }
         }
     )
 }

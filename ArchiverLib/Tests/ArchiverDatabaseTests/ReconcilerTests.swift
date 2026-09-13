@@ -433,28 +433,21 @@ struct ReconcilerTests {
         #expect(stored.count < items.count)
     }
 
-    /// The flag means "a scan is running", not "nothing to show yet": a warm launch shows the
-    /// stored rows *and* the spinner until its snapshot lands.
+    /// The indicator means "nothing to show yet". `reloadDocuments()` runs after every OCR pass and
+    /// tears the providers down, so a per-rescan indicator strands on the next teardown.
     @Test
-    func aWarmStartShowsTheSpinnerOverTheStoredRows() async throws {
+    func aWarmStartShowsTheStoredRowsWithoutTheSpinner() async throws {
         let indexer = ArchiveIndexer()
         let generation = await indexer.setObservedRoots([archiveRoot])
         #expect(try await Self.isReconciling())
         await indexer.reconcile([Self.item(id: 1, path: "/Archive/2024/2024-01-02--x__y.pdf", isTagged: true)],
                                 root: archiveRoot,
                                 generation: generation)
+
+        _ = await indexer.setObservedRoots([archiveRoot])
+
         #expect(try await Self.isReconciling() == false)
-
-        let rescan = await indexer.setObservedRoots([archiveRoot])
-
-        #expect(try await Self.isReconciling())
         #expect(try await Self.allDocuments().count == 1)
-
-        await indexer.reconcile([Self.item(id: 1, path: "/Archive/2024/2024-01-02--x__y.pdf", isTagged: true)],
-                                root: archiveRoot,
-                                generation: rescan)
-
-        #expect(try await Self.isReconciling() == false)
     }
 
     // MARK: - Planning
