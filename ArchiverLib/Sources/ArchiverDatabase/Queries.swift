@@ -69,6 +69,14 @@ nonisolated public struct TagUsage: Equatable, Sendable {
     public let count: Int
 }
 
+/// One retrieval hit for `Document.neighbours(matchingFTSQuery:excluding:limit:)`: a tagged
+/// document plus how well its text matched, best (most negative) rank first.
+@Selection
+nonisolated public struct DocumentNeighbour: Equatable, Sendable {
+    public let document: Document
+    public let rank: Double
+}
+
 extension Document {
     public static let tagged = Self.where(\.isTagged).order { $0.date.desc() }
     public static let inbox = Self.where { !$0.isTagged }.order { $0.date.desc() }
@@ -179,6 +187,34 @@ extension Document {
         Self.tagged.limit(limit)
     }
 
+    /// The *k* tagged documents whose text best matches `ftsQuery`, ranked by `bm25(documentTexts)`.
+    ///
+    /// Reuses `rankedSearch`'s join/rank shape; `ftsQuery` differs because the caller (a whole
+    /// document's text, not a short typed phrase) OR-joins its terms via `DocumentText.orQuery(from:)` -
+    /// see that function for why. `documentID` excludes the document being tagged, so a re-tag
+    /// never retrieves itself as its own nearest neighbour.
+    public static func neighbours(matchingFTSQuery ftsQuery: String, excluding documentID: Document.ID?, limit: Int) -> some Statement<DocumentNeighbour> {
+        #sql(
+            """
+            WITH "ranked" AS (
+              SELECT d."id" AS "id", t."rank" AS "rank"
+              FROM \(Document.self) AS d
+              JOIN \(DocumentText.self) AS t ON t."rowid" = d."id"
+              WHERE d."isTagged" = 1
+                AND (\(bind: documentID) IS NULL OR d."id" != \(bind: documentID))
+                AND \(DocumentText.self) MATCH \(bind: ftsQuery)
+              ORDER BY t."rank" ASC
+              LIMIT \(bind: limit)
+            )
+            SELECT \(Document.columns), r."rank" AS "rank"
+            FROM "ranked" AS r
+            JOIN \(Document.self) ON \(Document.id) = r."id"
+            ORDER BY r."rank" ASC
+            """,
+            as: DocumentNeighbour.self
+        )
+    }
+
     public static func yearCounts(taggedOnly: Bool) -> Select<YearCount, Document, ()> {
         Self.where { documents in
             if taggedOnly {
@@ -219,6 +255,34 @@ extension DocumentText {
             """,
             as: String.self
         )
+    }
+
+    /// Turns a whole document's text into an FTS5 `OR` query.
+    ///
+    /// Unlike `ArchiveSearchQuery.ftsQuery`'s implicit `AND` over a few deliberately typed words,
+    /// a whole document's vocabulary should surface anything sharing *some* of it, not only
+    /// documents containing every word - `bm25()` does the actual relevance ranking.
+    ///
+    /// - Returns: `nil` when no term clears `ArchiveSearchQuery.minimumContentTermLength` - a bound
+    ///   empty `MATCH` still gets parsed by FTS5 and throws, so the caller must skip the query
+    ///   entirely rather than run it with an empty string.
+    public static func orQuery(from text: String) -> String? {
+        let terms = Set(
+            text
+                .split(whereSeparator: \.isWhitespace)
+                .map(String.init)
+                .filter { $0.count >= ArchiveSearchQuery.minimumContentTermLength }
+        )
+        guard !terms.isEmpty else { return nil }
+
+        return terms
+            .sorted()
+            .map { term in
+                // Doubling an embedded quote is how FTS5 escapes it inside a quoted string.
+                let escaped = term.replacingOccurrences(of: "\"", with: "\"\"")
+                return "\"\(escaped)\""
+            }
+            .joined(separator: " OR ")
     }
 }
 
