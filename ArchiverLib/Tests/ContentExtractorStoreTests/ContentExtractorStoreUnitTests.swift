@@ -352,16 +352,9 @@ private actor CallCounter {
 struct ContentExtractorStoreOrchestrationTests {
 
     @available(iOS 26.0, macOS 26.0, *)
-    private static func makeCache() -> ContentExtractorCache {
-        let directory = FileManager.default.temporaryDirectory
-            .appendingPathComponent(UUID().uuidString, isDirectory: true)
-        return ContentExtractorCache(cacheDirectory: directory)
-    }
-
-    @available(iOS 26.0, macOS 26.0, *)
     private static func store(availability: AppleIntelligenceAvailability = .available,
                               respond: @escaping ContentExtractorStore.Responder) -> ContentExtractorStore {
-        ContentExtractorStore(cache: makeCache(), availability: { availability }, respond: respond)
+        ContentExtractorStore(cache: .inMemory(), availability: { availability }, respond: respond)
     }
 
     @Test("Maps and normalizes the raw model output")

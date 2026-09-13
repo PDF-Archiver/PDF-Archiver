@@ -285,6 +285,7 @@ struct DocumentTests {
         // setup
         let date = try #require(dateFormatter.date(from: "2018-05-12"))
         let document = Document(id: 1,
+                                rootKey: "test",
                                 url: URL(fileURLWithPath: "~/Downloads/2018-05-12--\(Document.descriptionPlaceholder)__\(Document.tagPlaceholder).pdf"),
                                 date: date,
                                 specification: "",

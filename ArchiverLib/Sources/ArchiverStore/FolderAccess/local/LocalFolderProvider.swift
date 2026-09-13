@@ -18,7 +18,7 @@ final class LocalFolderProvider: FolderProvider {
 
     private let watcher: DirectoryDeepWatcher
     private let fileManager = FileManager.default
-    private let fileProperties: [URLResourceKey] = [.ubiquitousItemDownloadingStatusKey, .ubiquitousItemIsDownloadingKey, .fileSizeKey, .localizedNameKey]
+    private let fileProperties: [URLResourceKey] = [.ubiquitousItemDownloadingStatusKey, .ubiquitousItemIsDownloadingKey, .fileSizeKey, .localizedNameKey, .creationDateKey, .contentModificationDateKey]
     private var observationTask: Task<Void, Never>?
 
     required init(baseUrl: URL) throws {
@@ -128,9 +128,19 @@ final class LocalFolderProvider: FolderProvider {
                     log.errorAndAssert("Could not fetch resource values from url.", metadata: ["url": "\(url.path)"])
                     return nil
                 }
+                let normalizedUrl = url.normalized()
+                guard let id = normalizedUrl.uniqueId() else {
+                    log.errorAndAssert("Could not fetch unique id from url.", metadata: ["url": "\(url.path)"])
+                    return nil
+                }
 
                 let downloadStatus = getDownloadStatus(from: resourceValues)
-                return DocumentInformation(url: url, downloadStatus: downloadStatus, sizeInBytes: Double(fileSize))
+                return DocumentInformation(id: id,
+                                           url: normalizedUrl,
+                                           downloadStatus: downloadStatus,
+                                           sizeInBytes: Double(fileSize),
+                                           creationDate: resourceValues.creationDate,
+                                           contentModificationDate: resourceValues.contentModificationDate)
             }
             .sorted { $0.url.path < $1.url.path }
     }

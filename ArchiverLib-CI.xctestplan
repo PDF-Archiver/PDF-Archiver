@@ -14,6 +14,13 @@
     {
       "target": {
         "containerPath": "container:",
+        "identifier": "ArchiverDatabaseTests",
+        "name": "ArchiverDatabaseTests"
+      }
+    },
+    {
+      "target": {
+        "containerPath": "container:",
         "identifier": "ArchiverFeaturesTests",
         "name": "ArchiverFeaturesTests"
       }

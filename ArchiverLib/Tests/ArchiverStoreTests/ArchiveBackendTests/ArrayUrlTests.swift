@@ -26,4 +26,14 @@ struct ArrayURLTests {
         #expect(folders.contains(url5))
         #expect(folders.count == 2)
     }
+
+    @Test
+    func siblingFolderIsNotAChild() throws {
+        let archive = URL(filePath: "/test/Archive")
+        let sibling = URL(filePath: "/test/Archive2")
+
+        let folders = [archive, sibling].getUniqueParents()
+
+        #expect(folders.count == 2)
+    }
 }

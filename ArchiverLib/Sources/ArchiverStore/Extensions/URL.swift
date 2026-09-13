@@ -12,10 +12,25 @@ import Shared
 extension URL: Log {
     func uniqueId() -> Int? {
         do {
-            // we use the path hashValue as a backup
-            return try resourceValues(forKeys: [.documentIdentifierKey]).documentIdentifier ?? path().hashValue
+            // The kernel assigns document identifiers lazily, so plain local files fall back to a
+            // deterministic path hash - `hashValue` is seeded per process and would not survive a relaunch.
+            return try resourceValues(forKeys: [.documentIdentifierKey]).documentIdentifier ?? normalized().path().stableHashValue
         } catch {
             log.error("Error while getting unique document identifier", metadata: ["error": "\(error)"])
+            return nil
+        }
+    }
+
+    /// The one spelling of a file the read model stores.
+    func normalized() -> URL {
+        standardizedFileURL.resolvingSymlinksInPath()
+    }
+
+    func fileContentModificationDate() -> Date? {
+        do {
+            return try resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate
+        } catch {
+            log.error("Error while getting content modification date", metadata: ["error": "\(error)"])
             return nil
         }
     }

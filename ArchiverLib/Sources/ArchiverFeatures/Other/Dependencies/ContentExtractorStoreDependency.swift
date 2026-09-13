@@ -43,7 +43,7 @@ public struct ContentExtractorStoreDependency: Sendable {
     }
 
     @available(iOS 26, macOS 26, *)
-    private static let contentExtractorStore = ContentExtractorStore()
+    private static let contentExtractorStore = ContentExtractorStore(cache: .documentSuggestions)
 
     /// Check if Apple Intelligence is available on this device
     /// - Returns: Availability status for Apple Intelligence
@@ -136,6 +136,10 @@ extension ContentExtractorStoreDependency: DependencyKey {
                 @unknown default:
                     Logger.contentExtractor.errorAndAssert("An unknown generation error occurred", metadata: ["error": "\(error)"])
                 }
+                return nil
+            } catch is CancellationError {
+                // Closing the document cancels the extraction mid-flight; that is the normal exit,
+                // and asserting on it terminates every debug build.
                 return nil
             } catch {
                 Logger.contentExtractor.errorAndAssert("An error occurred while extracting document content", metadata: ["error": "\(error)"])

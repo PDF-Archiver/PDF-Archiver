@@ -8,6 +8,7 @@
 import ArchiverModels
 import ArchiverStore
 import ComposableArchitecture
+import ContentExtractorStore
 import DocumentProcessingPipeline
 import Foundation
 import OSLog
@@ -49,7 +50,8 @@ extension DocumentProcessingDependency: TestDependencyKey {
 }
 
 extension DocumentProcessingDependency: DependencyKey {
-    private static let documentProcessor = DocumentProcessor(stagingFolder: Constants.tempDocumentURL)
+    private static let documentProcessor = DocumentProcessor(stagingFolder: Constants.tempDocumentURL,
+                                                            suggestionCache: .documentSuggestions)
 
     /// Resolve the per-request pipeline config from the current user settings.
     private static func makeConfig() async throws -> ProcessingConfig {
