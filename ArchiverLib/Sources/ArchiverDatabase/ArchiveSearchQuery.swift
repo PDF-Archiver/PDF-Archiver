@@ -15,7 +15,8 @@ import SQLiteData
 /// throws at runtime. Every term is therefore quoted, and the star is appended outside the quotes.
 nonisolated public struct ArchiveSearchQuery: Equatable, Sendable {
     /// A single typed character searches filenames only - the `prefix = '2 3'` indexes start at two.
-    private static let minimumContentTermLength = 2
+    /// Shared with `DocumentText.orQuery(from:)`, the other FTS5 query builder in this module.
+    static let minimumContentTermLength = 2
 
     public let tokens: [SearchToken]
     /// What the user typed. The content half matches real words, so it keeps the spaces.
