@@ -13,6 +13,10 @@ import SwiftUI
 
 struct IAPView: View {
     let onCancel: () -> Void
+    /// Called after a purchase made through one of this view's `ProductView`s is verified and
+    /// finished, so the caller can re-evaluate `premiumStatus` - a same-device purchase completes
+    /// through `Product.PurchaseResult`, not `Transaction.updates`, so nothing else observes it.
+    let onPurchaseCompleted: () -> Void
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -26,7 +30,7 @@ struct IAPView: View {
                 }
 
                 features
-                ProductView(id: "LIFETIME")
+                ProductView(id: PremiumProduct.lifetime)
                     .productViewStyle(.large)
                     .padding()
                     .overlay(
@@ -35,7 +39,7 @@ struct IAPView: View {
                     )
 
                 VStack(alignment: .leading, spacing: 16) {
-                    ForEach(["SUBSCRIPTION_YEARLY_IOS_NEW", "SUBSCRIPTION_MONTHLY_IOS"], id: \.self) { id in
+                    ForEach(PremiumProduct.subscriptions, id: \.self) { id in
                         ProductView(id: id)
                             .productViewStyle(.compact)
                     }
@@ -72,6 +76,21 @@ struct IAPView: View {
         .listSectionSeparator(.hidden)
         .foregroundStyle(Color.paDarkGrayAsset)
         .background(Color.paBackgroundAsset)
+        .onInAppPurchaseCompletion { _, result in
+            guard case .success(let purchaseResult) = result,
+                  case .success(let verificationResult) = purchaseResult else { return }
+
+            switch verificationResult {
+            case .verified(let transaction):
+                await transaction.finish()
+                onPurchaseCompleted()
+
+            case .unverified(let transaction, let error):
+                Logger.inAppPurchase.error("""
+                    Transaction ID \(transaction.id) for \(transaction.productID) is unverified: \(error)
+                    """)
+            }
+        }
     }
 
     private var features: some View {
@@ -126,8 +145,11 @@ struct IAPView: View {
             Task {
                 do {
                     try await AppStore.sync()
+                } catch StoreKitError.userCancelled {
+                    // Dismissing the App Store sign-in is a normal outcome, not an error.
                 } catch {
-                    Logger.inAppPurchase.errorAndAssert("AppStore sync failed: \(error)")
+                    Logger.inAppPurchase.error("AppStore sync failed: \(error)")
+                    NotificationCenter.default.postAlert(error)
                 }
             }
         } label: {
@@ -148,12 +170,12 @@ struct IAPView: View {
 
 #if DEBUG
 #Preview("IAP light", traits: .fixedLayout(width: 400, height: 500)) {
-    IAPView(onCancel: { print("Cancel pressed") })
+    IAPView(onCancel: { print("Cancel pressed") }, onPurchaseCompleted: {})
         .preferredColorScheme(.light)
 }
 
 #Preview("IAP dark", traits: .fixedLayout(width: 400, height: 500)) {
-    IAPView(onCancel: { print("Cancel pressed") })
+    IAPView(onCancel: { print("Cancel pressed") }, onPurchaseCompleted: {})
         .preferredColorScheme(.dark)
 }
 #endif

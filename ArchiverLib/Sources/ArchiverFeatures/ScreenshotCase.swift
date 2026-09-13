@@ -50,6 +50,10 @@ public enum ScreenshotCase: String, CaseIterable, Sendable {
         values.context = .preview
         values.archiveStore = screenshotCase.archiveStore
         values.textAnalyser = screenshotCase.textAnalyser
+        // The `.preview` context alone would select `previewValue` (`.active`), which is
+        // wrong for the `.trial` shot.
+        values.premium = PremiumDependency(currentStatus: { screenshotCase.premiumStatus },
+                                           transactionUpdates: { AsyncStream { _ in } })
     }
 
     /// Fills the read model the screens observe. Runs *after* `bootstrapDatabase()`.
