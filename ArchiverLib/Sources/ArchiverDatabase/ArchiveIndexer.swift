@@ -345,7 +345,7 @@ public actor ArchiveIndexer {
     ///
     /// `documentIdentifier` is unique per volume only, so two roots on different volumes can hand
     /// in the same id for different files. That is a known limitation of the identity itself
-    /// (`docs/full-text-search-concept.md`, 6.3) and is not what this guard is about.
+    /// (`docs/adr/0003-database-is-a-derived-read-model.md`) and is not what this guard is about.
     private func isCurrent(root: String, generation: Int) -> Bool {
         generation == currentGeneration && observedRoots.contains(root)
     }
