@@ -13,10 +13,10 @@ import OSLog
 @available(iOS 26, macOS 26, *)
 public actor ContentExtractorStore {
 
-    /// Test seam: turn the context documents + custom prompt + document text into
-    /// raw, un-normalized model output. The live implementation calls the
-    /// on-device model; tests inject a deterministic stub.
-    typealias Responder = @Sendable (_ documents: [Document], _ customPrompt: String?, _ text: String) async throws -> RawDocumentInformation
+    /// Test seam: turn the context documents + retrieved neighbours + custom prompt + document
+    /// text into raw, un-normalized model output. The live implementation calls the on-device
+    /// model; tests inject a deterministic stub.
+    typealias Responder = @Sendable (_ documents: [Document], _ neighbours: [NeighbourFinder.Match], _ customPrompt: String?, _ text: String) async throws -> RawDocumentInformation
 
     // `sampling:` is deprecated in the macOS 27 SDK but the only spelling the
     // macOS 26 SDK has, and CI builds against that one - renaming breaks it.
@@ -36,11 +36,17 @@ public actor ContentExtractorStore {
     }
 
     private let cache: SuggestionCache
+    private let neighbourFinder: NeighbourFinder
+    private let visualNeighbourFinder: VisualNeighbourFinder
     private let availability: @Sendable () -> AppleIntelligenceAvailability
     private let respond: Responder
 
-    public init(cache: SuggestionCache = .unavailable) {
+    public init(cache: SuggestionCache = .unavailable,
+                neighbourFinder: NeighbourFinder = .unavailable,
+                visualNeighbourFinder: VisualNeighbourFinder = .unavailable) {
         self.init(cache: cache,
+                  neighbourFinder: neighbourFinder,
+                  visualNeighbourFinder: visualNeighbourFinder,
                   availability: { Self.getAvailability() },
                   respond: Self.liveResponder)
     }
@@ -48,9 +54,13 @@ public actor ContentExtractorStore {
     /// Designated initializer. Internal seams let tests exercise the cache and
     /// mapping orchestration deterministically, without Apple Intelligence.
     init(cache: SuggestionCache,
+         neighbourFinder: NeighbourFinder = .unavailable,
+         visualNeighbourFinder: VisualNeighbourFinder = .unavailable,
          availability: @escaping @Sendable () -> AppleIntelligenceAvailability,
          respond: @escaping Responder) {
         self.cache = cache
+        self.neighbourFinder = neighbourFinder
+        self.visualNeighbourFinder = visualNeighbourFinder
         self.availability = availability
         self.respond = respond
     }
@@ -93,7 +103,8 @@ public actor ContentExtractorStore {
             return Info(specification: cachedEntry.specification, tags: cachedEntry.tags)
         }
 
-        let raw = try await respond(documents, customPrompt, text)
+        let neighbours = await retrieveNeighbours(text: text, documentId: documentId)
+        let raw = try await respond(documents, neighbours, customPrompt, text)
         let vocabulary = Set(documents.flatMap(\.tags).map { $0.lowercased() })
         let normalized = ContentExtractionMapper.normalize(raw, vocabulary: vocabulary)
         let info = Info(specification: normalized.specification, tags: normalized.tags)
@@ -109,6 +120,19 @@ public actor ContentExtractorStore {
         }
 
         return info
+    }
+
+    // MARK: - Neighbour retrieval
+
+    /// Text neighbours, falling back to visual ones only when text retrieval found nothing above
+    /// the floor (`docs/retrieval-augmented-tagging-concept.md`) - the visual channel is strictly
+    /// a fallback, never a second source added on top.
+    private func retrieveNeighbours(text: String, documentId: Document.ID?) async -> [NeighbourFinder.Match] {
+        let candidates = await neighbourFinder.find(text, documentId, ContentExtractionPromptFactory.neighbourCount)
+        let survivors = ContentExtractionPromptFactory.survivingNeighbours(candidates)
+        guard survivors.isEmpty, let documentId else { return survivors }
+
+        return await visualNeighbourFinder.find(documentId, ContentExtractionPromptFactory.neighbourCount)
     }
 
     // MARK: - Cache Management
@@ -180,8 +204,8 @@ public actor ContentExtractorStore {
     /// The production responder: build a session from the prompt factory's
     /// instruction segments and run the on-device model. This is the only place
     /// that touches FoundationModels generation.
-    private static let liveResponder: Responder = { documents, customPrompt, text in
-        let session = LanguageModelSession(model: .default, tools: [], instructions: instructions(for: documents))
+    private static let liveResponder: Responder = { documents, neighbours, customPrompt, text in
+        let session = LanguageModelSession(model: .default, tools: [], instructions: instructions(for: documents, neighbours: neighbours))
         let model = SystemLanguageModel.default
         let contextSize = model.contextSize
 
@@ -238,13 +262,21 @@ public actor ContentExtractorStore {
 
     /// The instruction segments the live extraction runs with, so a capability
     /// report or an evaluation measures the prompt the app actually sends.
-    public static func instructions(for documents: [Document]) -> Instructions {
+    ///
+    /// - Parameter neighbours: Already floor-filtered survivors (``survivingNeighbours``); this
+    ///   only renders them, so passing every candidate would show the model matches this call is
+    ///   supposed to have rejected.
+    public static func instructions(for documents: [Document], neighbours: [NeighbourFinder.Match] = []) -> Instructions {
         let stats = ContentExtractionPromptFactory.documentStats(from: documents)
         let locale = ContentExtractionPromptFactory.promptLocale
+        let neighbourSegment = ContentExtractionPromptFactory.neighbourSegment(neighbours)
         return Instructions {
             ContentExtractionPromptFactory.taskInstruction
             ContentExtractionPromptFactory.descriptionInstruction(stats: stats, locale: locale)
             ContentExtractionPromptFactory.tagsInstruction(stats: stats, locale: locale)
+            if let neighbourSegment {
+                neighbourSegment
+            }
         }
     }
 }
