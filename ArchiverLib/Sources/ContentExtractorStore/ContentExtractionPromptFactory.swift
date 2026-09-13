@@ -63,6 +63,20 @@ public enum ContentExtractionPromptFactory {
     static let minCompanionCount = 5
     static let minCompanionShare = 0.7
 
+    /// How many retrieved neighbours are offered per document (`docs/retrieval-augmented-tagging-concept.md`).
+    ///
+    /// Provisional: the plan's starting value, pending an `EvaluationCorpus` run. Change this one
+    /// constant to re-tune it - nothing else in this file needs to change with it.
+    static let neighbourCount = 5
+
+    /// Below this `bm25()` rank a neighbour is dropped rather than shown - a weak match teaches the
+    /// wrong vocabulary, which is worse than teaching none.
+    ///
+    /// Provisional: 0 is a no-op (every real FTS5 match already scores below zero; `COALESCE(rank, 0)`
+    /// elsewhere in this codebase treats "no match" as exactly 0), kept permissive until an
+    /// `EvaluationCorpus` run picks a real cutoff. Change this one constant to tighten it.
+    static let neighbourRelevanceFloor: Double = 0
+
     public struct DocumentStats: Equatable, Sendable {
         public let tags: String
 
@@ -198,6 +212,32 @@ public enum ContentExtractionPromptFactory {
         A company or product name spelled with spaces becomes ONE tag without them: "Alte Oldenburger" is the tag alteoldenburger.\(companionRules)
         You MUST ALWAYS use the user's locale: \(locale.identifier).
         Aim for 2-4 tags, but return fewer or none if the document content does not support them.
+        """
+    }
+
+    /// Neighbours whose ``neighbourRelevanceFloor`` the retrieval score clears.
+    ///
+    /// Pure so the "nothing survives" path is directly testable: given rows, this either returns
+    /// them or empties the list, with no I/O and no dependency on how they were retrieved.
+    static func survivingNeighbours(_ matches: [NeighbourFinder.Match]) -> [NeighbourFinder.Match] {
+        matches.filter { $0.rank < neighbourRelevanceFloor }
+    }
+
+    /// Render already-tagged neighbours as filenames - the exact form the archive's own naming
+    /// convention already uses (`Document.createFilename`), so the model is shown examples in a
+    /// shape it already recognizes rather than a new, one-off format.
+    ///
+    /// - Returns: `nil` when there is nothing to show, so the caller can omit the whole segment
+    ///   instead of inserting an empty block.
+    static func neighbourSegment(_ neighbours: [NeighbourFinder.Match]) -> String? {
+        guard !neighbours.isEmpty else { return nil }
+
+        let filenames = neighbours
+            .map { Document.createFilename(date: $0.date, specification: $0.specification, tags: Set($0.tags)) }
+            .joined(separator: "\n")
+        return """
+        These already-tagged documents are the most similar to the one you are describing now, shown as filenames (date--specification__tags.pdf):
+        \(filenames)
         """
     }
 
