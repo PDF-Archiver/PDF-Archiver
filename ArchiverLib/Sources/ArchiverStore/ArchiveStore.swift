@@ -15,7 +15,17 @@ import Shared
 import Sharing
 
 public actor ArchiveStore: Log {
-    public static let shared = ArchiveStore()
+    public static let shared: ArchiveStore = {
+        let store = ArchiveStore()
+        Task(priority: .medium) {
+            do {
+                try await store.reloadArchiveDocuments()
+            } catch {
+                Logger.archiveStore.error("Failed to reload archive documents: \(error.localizedDescription)")
+            }
+        }
+        return store
+    }()
 
     @Dependency(\.archiveIndexer) private var archiveIndexer
 
@@ -29,17 +39,12 @@ public actor ArchiveStore: Log {
     private var untaggedFolders: [URL] = []
     private var providers: [any FolderProvider] = []
     private var folderObservationTasks: [Task<Void, Never>] = []
+    /// Counts `update()` calls: the actor suspends while it creates providers, so a second call
+    /// interleaves with the first, and the superseded run must install nothing.
+    private var updateCount = 0
 
-    private init() {
+    init() {
         Logger.archiveStore.trace("[ArchiveStore] init called")
-
-        Task(priority: .medium) {
-            do {
-                try await reloadArchiveDocuments()
-            } catch {
-                Logger.archiveStore.error("Failed to reload archive documents: \(error.localizedDescription)")
-            }
-        }
     }
 
     public func update(with type: StorageType) async throws {
@@ -56,6 +61,9 @@ public actor ArchiveStore: Log {
     }
 
     func update(archiveFolder: URL, untaggedFolders: [URL]) async {
+        updateCount += 1
+        let updateID = updateCount
+
         // stop all current file providers to prevent watching changes while moving folders
         for provider in providers {
             await provider.stop()
@@ -74,18 +82,32 @@ public actor ArchiveStore: Log {
             let provider = await initProvider(for: observedFolder)
             foundProviders.append(provider)
         }
-        providers = foundProviders.compactMap(\.self)
+        let newProviders = foundProviders.compactMap(\.self)
 
-        var rootKeys: [URL: String] = [:]
-        for provider in providers {
-            await rootKeys[provider.baseUrl] = RootKey.of(provider.baseUrl)
+        // Resolved before the roots are announced: nothing may suspend between the generation the
+        // indexer hands out and the tasks that carry it, or those tasks are born superseded.
+        var observed: [(provider: any FolderProvider, rootKey: String)] = []
+        for provider in newProviders {
+            let rootKey = await RootKey.of(provider.baseUrl)
+            observed.append((provider, rootKey))
         }
-        let generation = await archiveIndexer.setObservedRoots(Array(rootKeys.values))
 
-        for provider in providers {
-            let baseUrl = await provider.baseUrl
-            guard let rootKey = rootKeys[baseUrl] else { continue }
-            let task = Task {
+        // A newer `update()` overtook this one. Announcing these roots now would supersede *its*
+        // generation, and the indexer would drop every snapshot its live tasks deliver - the
+        // progress indicator then spins for the rest of the process.
+        guard updateID == updateCount else {
+            await Self.stop(observed.map(\.provider))
+            return
+        }
+        let generation = await archiveIndexer.setObservedRoots(observed.map(\.rootKey))
+        guard updateID == updateCount else {
+            await Self.stop(observed.map(\.provider))
+            return
+        }
+
+        providers = newProviders
+        folderObservationTasks = observed.map { provider, rootKey in
+            Task {
                 let folderChangeStream = await provider.currentDocumentsStream
                 for await changes in folderChangeStream {
                     guard !Task.isCancelled else { break }
@@ -104,7 +126,12 @@ public actor ArchiveStore: Log {
                     await archiveIndexer.reconcile(items, rootKey, generation)
                 }
             }
-            folderObservationTasks.append(task)
+        }
+    }
+
+    private static func stop(_ providers: [any FolderProvider]) async {
+        for provider in providers {
+            await provider.stop()
         }
     }
 
