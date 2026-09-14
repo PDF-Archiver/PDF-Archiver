@@ -44,7 +44,8 @@ public struct ContentExtractorStoreDependency: Sendable {
 
     @available(iOS 26, macOS 26, *)
     private static let contentExtractorStore = ContentExtractorStore(cache: .documentSuggestions,
-                                                                      neighbourFinder: .documentTexts)
+                                                                      neighbourFinder: .documentTexts,
+                                                                      visualNeighbourFinder: .documentFeaturePrints)
 
     /// Check if Apple Intelligence is available on this device
     /// - Returns: Availability status for Apple Intelligence

@@ -196,7 +196,7 @@ public actor DocumentProcessor {
             guard let encoded = await Self.encodedFeaturePrint(at: document.url) else { continue }
             await featurePrintCache.save(.init(documentID: document.id,
                                                encodedObservation: encoded,
-                                               revision: PDFOCREngine.featurePrintRevision))
+                                               revision: FeaturePrintCache.currentRevision))
         }
     }
 
