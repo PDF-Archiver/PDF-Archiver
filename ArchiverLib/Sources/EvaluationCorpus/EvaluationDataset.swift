@@ -16,9 +16,12 @@ import Foundation
 /// the model.
 public struct EvaluationDataset: Sendable {
 
-    /// How many evaluation samples a split aims for - the 20-30 Apple
-    /// recommends starting from.
-    public static let targetSampleCount = 25
+    /// How many evaluation samples a split aims for.
+    ///
+    /// Apple suggests starting at 20-30, which is too few here: at 26 samples one
+    /// document moves the mean by 0.038, and retrieval measured as a 0.007 *loss*
+    /// that 160 samples showed to be a 0.059 gain (p=0.006).
+    public static let targetSampleCount = 150
 
     /// The archive as the prompt sees it - never contains a sample.
     public let contextDocuments: [Document]

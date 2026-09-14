@@ -255,6 +255,15 @@ asc list-apps
 ### Why AppIntents are in Shared/ not ArchiverLib/
 Swift Package Manager doesn't support App Intents directly, so they must be defined in the main app target. See `Shared/AppIntent.swift` and the comment referencing [this StackOverflow answer](https://stackoverflow.com/a/76976224).
 
+### Private Cloud Compute
+The `com.apple.developer.private-cloud-compute` entitlement **is granted** for this app's
+Apple Developer account, so the `CloudExtraction` evaluation path can be measured.
+
+It only takes effect in a binary actually signed with it: an `xcodebuild test` runner is
+not, so `CloudComputeEntitlement.isGranted` reports `false` there. Always check that flag
+before sending — without the entitlement the first request calls `fatalError`, which no
+`catch` can intercept.
+
 ### Storage Providers
 The app automatically selects the appropriate `FolderProvider` based on the folder URL:
 - iCloud containers use `ICloudFolderProvider`
