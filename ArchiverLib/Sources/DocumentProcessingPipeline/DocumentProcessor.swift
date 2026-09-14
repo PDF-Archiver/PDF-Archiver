@@ -63,15 +63,20 @@ public actor DocumentProcessor {
     /// while the package still deploys to iOS 18 / macOS 15.
     private var contentExtractorStorage: AnyObject?
     private let suggestionCache: SuggestionCache
+    private let featurePrintCache: FeaturePrintCache
 
     /// - Parameter stagingFolder: Crash-safe inbox for incoming documents.
     ///   In the app this is the shared temp folder the Share Extension also
     ///   writes to.
     /// - Parameter suggestionCache: Where the background pass remembers what the model suggested.
     ///   Defaulting to `.unavailable` would silently throw every suggestion away.
-    public init(stagingFolder: URL, suggestionCache: SuggestionCache = .unavailable) {
+    /// - Parameter featurePrintCache: Where the background pass remembers each document's Vision
+    ///   feature print (stage 3's visual retrieval fallback). Defaulting to `.unavailable` simply
+    ///   skips computing them.
+    public init(stagingFolder: URL, suggestionCache: SuggestionCache = .unavailable, featurePrintCache: FeaturePrintCache = .unavailable) {
         self.stagingFolder = stagingFolder
         self.suggestionCache = suggestionCache
+        self.featurePrintCache = featurePrintCache
     }
 
     // MARK: - Intake
@@ -168,9 +173,43 @@ public actor DocumentProcessor {
                 textExtractor: { await Self.extractText(from: $0) },
                 customPrompt: aiContext.customPrompt)
             Logger.documentProcessor.info("Untagged processing: created \(aiCacheCount) AI cache entries")
+
+            // Stage 3's visual fallback needs a print only where the AI pass will use it - tying
+            // this to `aiContext` avoids computing prints nobody is going to look at.
+            await cacheMissingFeaturePrints(for: untaggedDocuments)
         }
 
         return UntaggedProcessingResult(ocrCount: ocrCount, aiCacheCount: aiCacheCount)
+    }
+
+    /// Computes and persists a Vision feature print for every untagged document that does not
+    /// already have one cached.
+    ///
+    /// Rasterizes page 1 on its own rather than reusing the OCR pass above: `addOcrTextLayer`
+    /// skips a document that already carries a text layer, which is the common case for an
+    /// untagged inbox scan, so this cannot ride along with that pass.
+    private func cacheMissingFeaturePrints(for untaggedDocuments: [Document]) async {
+        for document in untaggedDocuments {
+            guard !Task.isCancelled else { break }
+            guard await featurePrintCache.load(document.id) == nil else { continue }
+
+            guard let encoded = await Self.encodedFeaturePrint(at: document.url) else { continue }
+            await featurePrintCache.save(.init(documentID: document.id,
+                                               encodedObservation: encoded,
+                                               revision: PDFOCREngine.featurePrintRevision))
+        }
+    }
+
+    @concurrent
+    private static func encodedFeaturePrint(at url: URL) async -> Data? {
+        guard let pdf = PDFDocument(url: url) else { return nil }
+        do {
+            guard let observation = try await PDFOCREngine.firstPageFeaturePrint(of: pdf) else { return nil }
+            return try PropertyListEncoder().encode(observation)
+        } catch {
+            Logger.ocrProcessing.error("Failed to compute a feature print for \(url.lastPathComponent, privacy: .public): \(error)")
+            return nil
+        }
     }
 
     /// Run OCR on one document, whether or not it already has a text layer.
