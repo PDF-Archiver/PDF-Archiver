@@ -28,6 +28,12 @@ public enum ContentExtractionPromptFactory {
     private static let reservedTokens = 2048
 
     /// Minimum number of occurrences for a tag to be offered to the model.
+    ///
+    /// Measurement-pending tunable alongside ``maxTags``, ``neighbourCount`` and
+    /// ``neighbourRelevanceFloor`` (`docs/retrieval-augmented-tagging-concept.md`): stage 2's
+    /// hypothesis is that this global block can shrink - lowering this to 1 reaches rarer tags -
+    /// now that neighbours carry vocabulary too, but that is unmeasured, so the value stays at its
+    /// last measured setting until an `EvaluationCorpus` run says otherwise.
     static let minTagCount = 3
 
     /// How many example descriptions are shown to the model.
@@ -42,6 +48,10 @@ public enum ContentExtractionPromptFactory {
     /// Measured optimum: 20 and 45 both score worse, and doubling it to 60 under
     /// a strict "existing tags only" prompt left tag F1 bit-identical while the
     /// model suggested *fewer* tags. A longer list does not raise recall.
+    ///
+    /// Measurement-pending tunable alongside ``minTagCount`` - see that constant's doc comment.
+    /// Stage 2 hypothesizes a value below 30 once neighbours share the load, but that is unmeasured
+    /// against this measured baseline, so it stays put until an `EvaluationCorpus` run replaces it.
     static let maxTags = 30
 
     /// Description length asked for when the archive is still too empty to have
@@ -72,9 +82,12 @@ public enum ContentExtractionPromptFactory {
     /// Below this `bm25()` rank a neighbour is dropped rather than shown - a weak match teaches the
     /// wrong vocabulary, which is worse than teaching none.
     ///
-    /// Provisional: 0 is a no-op (every real FTS5 match already scores below zero; `COALESCE(rank, 0)`
-    /// elsewhere in this codebase treats "no match" as exactly 0), kept permissive until an
-    /// `EvaluationCorpus` run picks a real cutoff. Change this one constant to tighten it.
+    /// SQLite's `bm25()` scores a match negative, more negative meaning a *stronger* match
+    /// (`ORDER BY rank ASC` elsewhere in this codebase ranks the same way), so a survivor needs
+    /// `rank < neighbourRelevanceFloor`. **0 admits every row that matched at all** - the floor is
+    /// wired and tested (see `ContentExtractionPromptFactoryTests`), but not yet biting: it is a
+    /// deliberately permissive placeholder, not a forgotten cutoff, pending an `EvaluationCorpus`
+    /// run to pick a real (more negative) value. Change this one constant to tighten it.
     static let neighbourRelevanceFloor: Double = 0
 
     public struct DocumentStats: Equatable, Sendable {
@@ -215,12 +228,14 @@ public enum ContentExtractionPromptFactory {
         """
     }
 
-    /// Neighbours whose ``neighbourRelevanceFloor`` the retrieval score clears.
+    /// Neighbours whose retrieval score clears `floor` - defaulted to ``neighbourRelevanceFloor``,
+    /// injectable so the cutoff mechanism itself is testable independently of that constant's
+    /// currently-permissive shipped value.
     ///
     /// Pure so the "nothing survives" path is directly testable: given rows, this either returns
     /// them or empties the list, with no I/O and no dependency on how they were retrieved.
-    static func survivingNeighbours(_ matches: [NeighbourFinder.Match]) -> [NeighbourFinder.Match] {
-        matches.filter { $0.rank < neighbourRelevanceFloor }
+    static func survivingNeighbours(_ matches: [NeighbourFinder.Match], floor: Double = neighbourRelevanceFloor) -> [NeighbourFinder.Match] {
+        matches.filter { $0.rank < floor }
     }
 
     /// Render already-tagged neighbours as filenames - the exact form the archive's own naming
