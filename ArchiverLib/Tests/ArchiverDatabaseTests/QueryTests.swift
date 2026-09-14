@@ -328,3 +328,50 @@ struct NeighboursQueryTests {
         }
     }
 }
+
+@Suite(.dependencies {
+    try $0.bootstrapDatabase()
+    try $0.defaultDatabase.write { db in
+        try db.seed {
+            Document(id: -1, rootKey: "test", url: URL(filePath: "/Archive/2024/2024-01-01--a__x.pdf"), date: seedDate(2024), specification: "a", tags: ["x"], isTagged: true, sizeInBytes: 10, downloadStatus: 1)
+            Document(id: -2, rootKey: "test", url: URL(filePath: "/Archive/2024/2024-02-01--b__y.pdf"), date: seedDate(2024), specification: "b", tags: ["y"], isTagged: true, sizeInBytes: 10, downloadStatus: 1)
+            Document(id: -3, rootKey: "test", url: URL(filePath: "/Archive/untagged/scan.pdf"), date: seedDate(2024), specification: "", tags: [], isTagged: false, sizeInBytes: 10, downloadStatus: 1)
+            DocumentFeaturePrint(documentID: -1, encodedObservation: Data([1, 2, 3]), revision: 1, createdAt: seedDate(2024))
+            DocumentFeaturePrint(documentID: -2, encodedObservation: Data([4, 5, 6]), revision: 1, createdAt: seedDate(2024))
+            DocumentFeaturePrint(documentID: -3, encodedObservation: Data([7, 8, 9]), revision: 1, createdAt: seedDate(2024))
+        }
+    }
+})
+struct DocumentFeaturePrintQueryTests {
+    @Test
+    func onlyTaggedDocumentsAreReturned() async throws {
+        @Dependency(\.defaultDatabase) var database
+        let rows = try await database.read { db in
+            try DocumentFeaturePrint.taggedRows(excluding: nil).fetchAll(db)
+        }
+
+        #expect(Set(rows.map(\.document.id)) == [-1, -2])
+    }
+
+    @Test
+    func theExcludedDocumentIsOmitted() async throws {
+        @Dependency(\.defaultDatabase) var database
+        let rows = try await database.read { db in
+            try DocumentFeaturePrint.taggedRows(excluding: -1).fetchAll(db)
+        }
+
+        #expect(rows.map(\.document.id) == [-2])
+    }
+
+    @Test
+    func theEncodedObservationAndRevisionRoundTrip() async throws {
+        @Dependency(\.defaultDatabase) var database
+        let rows = try await database.read { db in
+            try DocumentFeaturePrint.taggedRows(excluding: nil).fetchAll(db)
+        }
+
+        let row = try #require(rows.first { $0.document.id == -1 })
+        #expect(row.encodedObservation == Data([1, 2, 3]))
+        #expect(row.revision == 1)
+    }
+}

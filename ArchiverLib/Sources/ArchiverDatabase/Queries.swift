@@ -77,6 +77,14 @@ nonisolated public struct DocumentNeighbour: Equatable, Sendable {
     public let rank: Double
 }
 
+/// One tagged document's Vision feature print, for stage 3's visual nearest-neighbour scan.
+@Selection
+nonisolated public struct DocumentFeaturePrintRow: Equatable, Sendable {
+    public let document: Document
+    public let encodedObservation: Data
+    public let revision: Int
+}
+
 extension Document {
     public static let tagged = Self.where(\.isTagged).order { $0.date.desc() }
     public static let inbox = Self.where { !$0.isTagged }.order { $0.date.desc() }
@@ -194,14 +202,19 @@ extension Document {
     /// see that function for why. `documentID` excludes the document being tagged, so a re-tag
     /// never retrieves itself as its own nearest neighbour.
     public static func neighbours(matchingFTSQuery ftsQuery: String, excluding documentID: Document.ID?, limit: Int) -> some Statement<DocumentNeighbour> {
-        #sql(
+        // Built as a fragment, not `(\(bind: documentID) IS NULL OR ...)`: binding an Optional
+        // directly triggers a spurious "debug description" warning, and unwrapping here also
+        // drops the always-true `IS NULL OR` branch when there is nothing to exclude.
+        let exclusion: QueryFragment = documentID.map { "AND d.\"id\" != \(bind: $0)\n" } ?? ""
+
+        return #sql(
             """
             WITH "ranked" AS (
               SELECT d."id" AS "id", t."rank" AS "rank"
               FROM \(Document.self) AS d
               JOIN \(DocumentText.self) AS t ON t."rowid" = d."id"
               WHERE d."isTagged" = 1
-                AND (\(bind: documentID) IS NULL OR d."id" != \(bind: documentID))
+                \(exclusion)
                 AND \(DocumentText.self) MATCH \(bind: ftsQuery)
               ORDER BY t."rank" ASC
               LIMIT \(bind: limit)
@@ -283,6 +296,32 @@ extension DocumentText {
                 return "\"\(escaped)\""
             }
             .joined(separator: " OR ")
+    }
+}
+
+extension DocumentFeaturePrint {
+    /// Every tagged document's feature print, for the visual fallback's in-memory
+    /// nearest-neighbour scan.
+    ///
+    /// No vector index: at archive scale (thousands of documents) a linear scan plus
+    /// `distance(to:)` is cheap enough that one is not warranted
+    /// (`docs/retrieval-augmented-tagging-concept.md`). `documentID` excludes the document being
+    /// tagged, mirroring `Document.neighbours(matchingFTSQuery:excluding:limit:)`.
+    public static func taggedRows(excluding documentID: Document.ID?) -> some Statement<DocumentFeaturePrintRow> {
+        // See `Document.neighbours` for why this is a fragment rather than an inline
+        // `(\(bind: documentID) IS NULL OR ...)` bind of an Optional.
+        let exclusion: QueryFragment = documentID.map { "AND \(Document.id) != \(bind: $0)\n" } ?? ""
+
+        return #sql(
+            """
+            SELECT \(Document.columns), f."encodedObservation" AS "encodedObservation", f."revision" AS "revision"
+            FROM \(DocumentFeaturePrint.self) AS f
+            JOIN \(Document.self) ON \(Document.id) = f."documentID"
+            WHERE \(Document.isTagged) = 1
+              \(exclusion)
+            """,
+            as: DocumentFeaturePrintRow.self
+        )
     }
 }
 
