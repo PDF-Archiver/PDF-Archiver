@@ -211,7 +211,7 @@ struct DocumentProcessorTests {
 
         let entry = await cache.load(document.id)
         #expect(entry != nil)
-        #expect(entry?.revision == PDFOCREngine.featurePrintRevision)
+        #expect(entry?.revision == FeaturePrintCache.currentRevision)
     }
 
     @Test
@@ -219,7 +219,7 @@ struct DocumentProcessorTests {
         guard #available(iOS 26.0, macOS 26.0, *) else { return }
         let cache = FeaturePrintCache.inMemory()
         let document = Document.mock(url: Bundle.billPDFUrl, isTagged: false, downloadStatus: 1)
-        let sentinel = FeaturePrintCache.Entry(documentID: document.id, encodedObservation: Data([9, 9, 9]), revision: PDFOCREngine.featurePrintRevision)
+        let sentinel = FeaturePrintCache.Entry(documentID: document.id, encodedObservation: Data([9, 9, 9]), revision: FeaturePrintCache.currentRevision)
         await cache.save(sentinel)
         let processor = DocumentProcessor(stagingFolder: stagingFolder, featurePrintCache: cache)
 

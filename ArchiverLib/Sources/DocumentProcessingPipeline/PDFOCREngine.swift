@@ -158,13 +158,7 @@ enum PDFOCREngine {
         }
     }
 
-    // MARK: - Shared core
-
     // MARK: - Feature print (stage 3 visual retrieval fallback)
-
-    /// The only revision `GenerateImageFeaturePrintRequest` currently supports, as the integer a
-    /// `FeaturePrintCache` entry is stamped with.
-    static let featurePrintRevision = 1
 
     /// Vision feature print of page 1, for stage 3's visual retrieval fallback when a scan's OCR
     /// yield is too thin to rank on (`docs/retrieval-augmented-tagging-concept.md`).
@@ -189,6 +183,8 @@ enum PDFOCREngine {
         request.regionOfInterest = NormalizedRect(x: 0, y: 2.0 / 3.0, width: 1, height: 1.0 / 3.0)
         return try await request.perform(on: cgImage)
     }
+
+    // MARK: - Shared core
 
     /// Run Vision OCR on a single image and return recognized text with positions.
     /// Coordinates are in the image's coordinate system (origin top-left, y-down).

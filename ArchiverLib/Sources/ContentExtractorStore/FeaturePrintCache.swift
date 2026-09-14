@@ -15,6 +15,12 @@ import Foundation
 /// A seam like `SuggestionCache`: this module must not depend on `ArchiverDatabase`, so the
 /// vector lives in the app's SQLite read model; tests keep it in memory.
 nonisolated public struct FeaturePrintCache: Sendable {
+    /// The only revision `GenerateImageFeaturePrintRequest` currently supports, as the integer an
+    /// `Entry` is stamped with. Shared between the writer (`PDFOCREngine`/`DocumentProcessor`) and
+    /// the reader (`VisualNeighbourFinder`) so both agree on what "current" means without either
+    /// depending on the other's module.
+    public static let currentRevision = 1
+
     public struct Entry: Equatable, Sendable {
         public let documentID: Document.ID
         /// A `FeaturePrintObservation`, `PropertyListEncoder`-encoded. Vision exposes no public
