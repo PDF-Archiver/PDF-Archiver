@@ -4,6 +4,7 @@
 //
 
 import ArchiverModels
+import ContentExtractorStore
 import Foundation
 import PDFKit
 import Testing
@@ -193,5 +194,49 @@ struct DocumentProcessorTests {
         #expect(filename.contains(Document.descriptionPlaceholder.lowercased()))
         #expect(filename.contains(Document.tagPlaceholder.lowercased()))
         #expect(filename.hasSuffix(".pdf"))
+    }
+
+    // MARK: - Feature print caching (stage 3)
+
+    @Test
+    func untaggedProcessingCachesAFeaturePrintAlongsideTheAiPass() async throws {
+        // Feature-print caching only runs alongside the AI pass, which is gated to the OS this
+        // package's `ContentExtractorStore` requires.
+        guard #available(iOS 26.0, macOS 26.0, *) else { return }
+        let cache = FeaturePrintCache.inMemory()
+        let processor = DocumentProcessor(stagingFolder: stagingFolder, featurePrintCache: cache)
+        let document = Document.mock(url: Bundle.billPDFUrl, isTagged: false, downloadStatus: 1)
+
+        _ = await processor.processUntaggedDocuments(in: [document], config: config, ocr: false, aiContext: AIContext())
+
+        let entry = await cache.load(document.id)
+        #expect(entry != nil)
+        #expect(entry?.revision == PDFOCREngine.featurePrintRevision)
+    }
+
+    @Test
+    func untaggedProcessingSkipsAnAlreadyCachedFeaturePrint() async throws {
+        guard #available(iOS 26.0, macOS 26.0, *) else { return }
+        let cache = FeaturePrintCache.inMemory()
+        let document = Document.mock(url: Bundle.billPDFUrl, isTagged: false, downloadStatus: 1)
+        let sentinel = FeaturePrintCache.Entry(documentID: document.id, encodedObservation: Data([9, 9, 9]), revision: PDFOCREngine.featurePrintRevision)
+        await cache.save(sentinel)
+        let processor = DocumentProcessor(stagingFolder: stagingFolder, featurePrintCache: cache)
+
+        _ = await processor.processUntaggedDocuments(in: [document], config: config, ocr: false, aiContext: AIContext())
+
+        // Untouched, not recomputed: the sentinel bytes prove the cached entry was never replaced.
+        #expect(await cache.load(document.id)?.encodedObservation == Data([9, 9, 9]))
+    }
+
+    @Test
+    func noFeaturePrintIsCachedWithoutAiContext() async throws {
+        let cache = FeaturePrintCache.inMemory()
+        let processor = DocumentProcessor(stagingFolder: stagingFolder, featurePrintCache: cache)
+        let document = Document.mock(url: Bundle.billPDFUrl, isTagged: false, downloadStatus: 1)
+
+        _ = await processor.processUntaggedDocuments(in: [document], config: config, ocr: false, aiContext: nil)
+
+        #expect(await cache.load(document.id) == nil)
     }
 }

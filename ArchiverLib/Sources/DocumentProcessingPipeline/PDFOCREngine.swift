@@ -160,6 +160,36 @@ enum PDFOCREngine {
 
     // MARK: - Shared core
 
+    // MARK: - Feature print (stage 3 visual retrieval fallback)
+
+    /// The only revision `GenerateImageFeaturePrintRequest` currently supports, as the integer a
+    /// `FeaturePrintCache` entry is stamped with.
+    static let featurePrintRevision = 1
+
+    /// Vision feature print of page 1, for stage 3's visual retrieval fallback when a scan's OCR
+    /// yield is too thin to rank on (`docs/retrieval-augmented-tagging-concept.md`).
+    ///
+    /// Rasterizes independently of `addTextLayer`: an untagged document that already carries a
+    /// text layer skips that function's OCR pass entirely, so this cannot simply reuse its raster.
+    static func firstPageFeaturePrint(of pdf: PDFDocument) async throws -> FeaturePrintObservation? {
+        guard let page = pdf.page(at: 0) else { return nil }
+        let bounds = page.bounds(for: .mediaBox)
+        // Same 3x scale `addTextLayer` rasterizes at, so this sees the page at the same fidelity.
+        let renderSize = CGSize(width: bounds.width * 3, height: bounds.height * 3)
+        guard let cgImage = page.thumbnail(of: renderSize, for: .mediaBox).cgImage else { return nil }
+        return try await featurePrint(of: cgImage)
+    }
+
+    /// - `.scaleToFit` keeps the whole page (a centre crop would remove the letterhead).
+    /// - The region of interest is the top third, where the sender identity sits and the varying
+    ///   body text does not.
+    static func featurePrint(of cgImage: CGImage) async throws -> FeaturePrintObservation {
+        var request = GenerateImageFeaturePrintRequest(.revision2)
+        request.cropAndScaleAction = .scaleToFit
+        request.regionOfInterest = NormalizedRect(x: 0, y: 2.0 / 3.0, width: 1, height: 1.0 / 3.0)
+        return try await request.perform(on: cgImage)
+    }
+
     /// Run Vision OCR on a single image and return recognized text with positions.
     /// Coordinates are in the image's coordinate system (origin top-left, y-down).
     ///
