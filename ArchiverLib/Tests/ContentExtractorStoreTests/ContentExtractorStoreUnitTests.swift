@@ -280,6 +280,15 @@ struct ContentExtractionPromptFactoryTests {
         #expect(ContentExtractionPromptFactory.survivingNeighbours([strong, weak]) == [strong])
     }
 
+    @Test("A non-zero floor proves the cutoff mechanism, independent of the shipped permissive default")
+    func survivingNeighboursHonorsAnInjectedFloor() {
+        // bm25: more negative is a stronger match, so -5 clears a -2 floor and -1 does not.
+        let clearsIt = NeighbourFinder.Match(date: Date(), specification: "a", tags: [], rank: -5)
+        let justMisses = NeighbourFinder.Match(date: Date(), specification: "b", tags: [], rank: -1)
+
+        #expect(ContentExtractionPromptFactory.survivingNeighbours([clearsIt, justMisses], floor: -2) == [clearsIt])
+    }
+
     @Test("Nothing surviving the floor renders no segment - the prompt stays unchanged from today")
     func noSurvivorsMeansNoSegment() {
         let weak = NeighbourFinder.Match(date: Date(), specification: "b", tags: [], rank: 0)
