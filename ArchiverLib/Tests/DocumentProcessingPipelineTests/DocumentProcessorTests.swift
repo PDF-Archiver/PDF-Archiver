@@ -4,6 +4,7 @@
 //
 
 import ArchiverModels
+import ContentExtractorStore
 import Foundation
 import PDFKit
 import Testing
@@ -194,4 +195,137 @@ struct DocumentProcessorTests {
         #expect(filename.contains(Document.tagPlaceholder.lowercased()))
         #expect(filename.hasSuffix(".pdf"))
     }
+
+    // MARK: - Feature print caching (stage 3)
+
+    @Test
+    func untaggedProcessingCachesAFeaturePrintAlongsideTheAiPass() async throws {
+        // Feature-print caching only runs alongside the AI pass, which is gated to the OS this
+        // package's `ContentExtractorStore` requires.
+        guard #available(iOS 26.0, macOS 26.0, *) else { return }
+        let cache = FeaturePrintCache.inMemory()
+        let processor = DocumentProcessor(stagingFolder: stagingFolder, featurePrintCache: cache)
+        let document = Document.mock(url: Bundle.billPDFUrl, isTagged: false, downloadStatus: 1)
+
+        _ = await processor.processUntaggedDocuments(in: [document], config: config, ocr: false, aiContext: AIContext())
+
+        let entry = await cache.load(document.id)
+        #expect(entry != nil)
+        #expect(entry?.revision == FeaturePrintCache.currentRevision)
+    }
+
+    @Test
+    func untaggedProcessingSkipsAnAlreadyCachedFeaturePrint() async throws {
+        guard #available(iOS 26.0, macOS 26.0, *) else { return }
+        let cache = FeaturePrintCache.inMemory()
+        let document = Document.mock(url: Bundle.billPDFUrl, isTagged: false, downloadStatus: 1)
+        let sentinel = FeaturePrintCache.Entry(documentID: document.id, encodedObservation: Data([9, 9, 9]), revision: FeaturePrintCache.currentRevision)
+        await cache.save(sentinel)
+        let processor = DocumentProcessor(stagingFolder: stagingFolder, featurePrintCache: cache)
+
+        _ = await processor.processUntaggedDocuments(in: [document], config: config, ocr: false, aiContext: AIContext())
+
+        // Untouched, not recomputed: the sentinel bytes prove the cached entry was never replaced.
+        #expect(await cache.load(document.id)?.encodedObservation == Data([9, 9, 9]))
+    }
+
+    @Test
+    func untaggedProcessingRecomputesAStaleRevisionPrint() async throws {
+        // The bug this guards: `== nil` skipped on presence alone, so a print stamped with a
+        // revision older than `FeaturePrintCache.currentRevision` (e.g. after a Vision revision
+        // bump) would never be recomputed, and `VisualNeighbourFinder` would reject it forever.
+        guard #available(iOS 26.0, macOS 26.0, *) else { return }
+        let cache = FeaturePrintCache.inMemory()
+        let document = Document.mock(url: Bundle.billPDFUrl, isTagged: false, downloadStatus: 1)
+        let stale = FeaturePrintCache.Entry(documentID: document.id, encodedObservation: Data([9, 9, 9]), revision: FeaturePrintCache.currentRevision - 1)
+        await cache.save(stale)
+        let processor = DocumentProcessor(stagingFolder: stagingFolder, featurePrintCache: cache)
+
+        _ = await processor.processUntaggedDocuments(in: [document], config: config, ocr: false, aiContext: AIContext())
+
+        let entry = await cache.load(document.id)
+        #expect(entry?.revision == FeaturePrintCache.currentRevision)
+        #expect(entry?.encodedObservation != Data([9, 9, 9]))
+    }
+
+    @Test
+    func untaggedProcessingBackfillsFeaturePrintsForTaggedDocuments() async throws {
+        // The bug this guards: only `untaggedDocuments` were ever passed here, but
+        // `VisualNeighbourFinder` reads only tagged rows - so a document tagged before this
+        // shipped would never get a print, and the visual channel stayed inert for it forever.
+        guard #available(iOS 26.0, macOS 26.0, *) else { return }
+        let cache = FeaturePrintCache.inMemory()
+        let processor = DocumentProcessor(stagingFolder: stagingFolder, featurePrintCache: cache)
+        let tagged = Document.mock(url: Bundle.billPDFUrl, isTagged: true, downloadStatus: 1)
+
+        _ = await processor.processUntaggedDocuments(in: [tagged], config: config, ocr: false, aiContext: AIContext())
+
+        let entry = await cache.load(tagged.id)
+        #expect(entry != nil)
+        #expect(entry?.revision == FeaturePrintCache.currentRevision)
+    }
+
+    @Test
+    func untaggedProcessingBoundsTheTaggedBackfillPerPass() async throws {
+        guard #available(iOS 26.0, macOS 26.0, *) else { return }
+        let cache = FeaturePrintCache.inMemory()
+        let processor = DocumentProcessor(stagingFolder: stagingFolder, featurePrintCache: cache)
+        // Distinct ids, same underlying file - only the count of backfilled entries matters here.
+        let taggedDocuments = (0..<(DocumentProcessor.taggedFeaturePrintBackfillBudget + 1)).map { index in
+            Document(id: index, rootKey: "test", url: Bundle.billPDFUrl, date: Date(), specification: "doc\(index)", tags: [], isTagged: true, sizeInBytes: 10, downloadStatus: 1)
+        }
+
+        _ = await processor.processUntaggedDocuments(in: taggedDocuments, config: config, ocr: false, aiContext: AIContext())
+
+        var cachedCount = 0
+        for document in taggedDocuments where await cache.load(document.id) != nil {
+            cachedCount += 1
+        }
+        #expect(cachedCount == DocumentProcessor.taggedFeaturePrintBackfillBudget)
+    }
+
+    @Test
+    func noFeaturePrintIsCachedWithoutAiContext() async throws {
+        let cache = FeaturePrintCache.inMemory()
+        let processor = DocumentProcessor(stagingFolder: stagingFolder, featurePrintCache: cache)
+        let document = Document.mock(url: Bundle.billPDFUrl, isTagged: false, downloadStatus: 1)
+
+        _ = await processor.processUntaggedDocuments(in: [document], config: config, ocr: false, aiContext: nil)
+
+        #expect(await cache.load(document.id) == nil)
+    }
+
+    // MARK: - Retrieval wiring (the background AI pass must use the same finders as init got)
+
+    @Test
+    func theBackgroundAiPassQueriesTheInjectedNeighbourFinder() async throws {
+        // The bug this guards: the background pass built its own `ContentExtractorStore` with
+        // `.unavailable` finders, ignoring whatever `DocumentProcessor.init` was given - the cache
+        // entries it wrote then carried the pre-retrieval prompt forever.
+        //
+        // `retrieveNeighbours` sits behind `extract()`'s Apple Intelligence availability gate, not
+        // just an OS-version check, so this only asserts when the model is genuinely usable here -
+        // otherwise it would fail on "AI is off" and prove nothing about the wiring.
+        guard #available(iOS 26.0, macOS 26.0, *), ContentExtractorStore.getAvailability().isUsable else { return }
+        let calls = CallRecorder()
+        let finder = NeighbourFinder { _, _, _ in
+            await calls.record()
+            return []
+        }
+        let processor = DocumentProcessor(stagingFolder: stagingFolder,
+                                          suggestionCache: .unavailable,
+                                          neighbourFinder: finder)
+        let document = Document.mock(url: Bundle.billPDFUrl, isTagged: false, downloadStatus: 1)
+
+        _ = await processor.processUntaggedDocuments(in: [document], config: config, ocr: false, aiContext: AIContext())
+
+        #expect(await calls.wasCalled, "The background pass never reached the injected neighbourFinder")
+    }
+}
+
+/// Records whether a `@Sendable` closure was ever invoked - a plain `var` capture would be a data
+/// race under strict concurrency.
+private actor CallRecorder {
+    private(set) var wasCalled = false
+    func record() { wasCalled = true }
 }

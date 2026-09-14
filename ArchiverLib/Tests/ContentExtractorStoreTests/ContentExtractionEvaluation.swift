@@ -53,19 +53,31 @@ struct ContentExtractionEvaluation: Evaluation {
     /// back. Off by default - the app deliberately keeps documents on device.
     static let usesCloudCompute = false
 
+    /// Flip to `false` and rerun for the retrieval-off baseline
+    /// (`docs/retrieval-augmented-tagging-concept.md`'s comparison).
+    ///
+    /// The seeding and query logic this calls (`CorpusRetrieval`) is not behind
+    /// `canImport(Evaluations)` and carries its own tests - this line is only the wiring.
+    static let retrievalEnabled = true
+
     private let store: ContentExtractorStore
     private let contextDocuments: [Document]
     private let tagVocabulary: Set<String>
     private let typicalDescriptionWords: ClosedRange<Int>
 
     init(dataset source: EvaluationDataset) {
+        let neighbourFinder: NeighbourFinder = Self.retrievalEnabled
+            ? CorpusRetrieval.neighbourFinder(seededWith: source.contextDocuments, texts: source.contextTexts)
+            : .unavailable
+
         if Self.usesCloudCompute {
             let pages = source.samples.reduce(into: [String: String]()) { $0[$1.text] = $1.filename }
             store = ContentExtractorStore(cache: .inMemory(),
+                                          neighbourFinder: neighbourFinder,
                                           availability: { .available },
                                           respond: CloudExtraction.responder(sendsWholeDocument: true, pageSources: pages))
         } else {
-            store = ContentExtractorStore()
+            store = ContentExtractorStore(neighbourFinder: neighbourFinder)
         }
         contextDocuments = source.contextDocuments
         tagVocabulary = source.tagVocabulary

@@ -267,3 +267,111 @@ struct RankedSearchTests {
         }
     }
 }
+
+@Suite(.dependencies {
+    try $0.bootstrapDatabase()
+    try $0.defaultDatabase.write { db in
+        try db.seed {
+            Document(id: -1, rootKey: "test", url: URL(filePath: "/Archive/2024/2024-01-01--stadtwerke-strom__energie.pdf"), date: seedDate(2024), specification: "stadtwerke-strom", tags: ["energie"], isTagged: true, sizeInBytes: 10, downloadStatus: 1)
+            Document(id: -2, rootKey: "test", url: URL(filePath: "/Archive/2024/2024-02-01--miete__wohnung.pdf"), date: seedDate(2024), specification: "miete", tags: ["wohnung"], isTagged: true, sizeInBytes: 10, downloadStatus: 1)
+            Document(id: -3, rootKey: "test", url: URL(filePath: "/Archive/untagged/scan.pdf"), date: seedDate(2024), specification: "", tags: [], isTagged: false, sizeInBytes: 10, downloadStatus: 1)
+            DocumentText(rowid: -1, body: "Stadtwerke Musterstadt Rechnung Stromabrechnung Zaehlernummer 12345")
+            DocumentText(rowid: -2, body: "Mietvertrag Wohnung Musterstrasse")
+            DocumentText(rowid: -3, body: "Stadtwerke Musterstadt Rechnung Stromabrechnung Zaehlernummer 12345")
+        }
+    }
+})
+struct NeighboursQueryTests {
+    @Test
+    func theBestTextualMatchRanksFirst() async throws {
+        let rows = try await Self.neighbours(matching: "Stadtwerke Stromabrechnung", excluding: nil)
+
+        #expect(rows.first?.document.id == -1)
+    }
+
+    @Test
+    func selfRetrievalIsExcluded() async throws {
+        // -1's own text is the query - without exclusion it would be its own best neighbour.
+        let rows = try await Self.neighbours(matching: "Stadtwerke Musterstadt Rechnung Stromabrechnung Zaehlernummer 12345",
+                                             excluding: -1)
+
+        #expect(rows.isEmpty)
+    }
+
+    @Test
+    func untaggedDocumentsNeverAppear() async throws {
+        // -3 carries the same text as -1 but is untagged, so it must never surface as a neighbour.
+        let rows = try await Self.neighbours(matching: "Stadtwerke Stromabrechnung", excluding: nil)
+
+        #expect(!rows.contains { $0.document.id == -3 })
+    }
+
+    @Test
+    func matchingAnyTermFindsBothDocuments() async throws {
+        // OR, unlike the search field's implicit AND: neither document contains every query word.
+        let rows = try await Self.neighbours(matching: "stadtwerke wohnung", excluding: nil)
+
+        #expect(Set(rows.map(\.document.id)) == [-1, -2])
+    }
+
+    @Test
+    func noUsableTermProducesNoQuery() {
+        #expect(DocumentText.orQuery(from: "a") == nil)
+        #expect(DocumentText.orQuery(from: "") == nil)
+    }
+
+    private static func neighbours(matching text: String, excluding documentID: Document.ID?, limit: Int = 5) async throws -> [DocumentNeighbour] {
+        @Dependency(\.defaultDatabase) var database
+        guard let ftsQuery = DocumentText.orQuery(from: text) else { return [] }
+        return try await database.read { db in
+            try Document.neighbours(matchingFTSQuery: ftsQuery, excluding: documentID, limit: limit).fetchAll(db)
+        }
+    }
+}
+
+@Suite(.dependencies {
+    try $0.bootstrapDatabase()
+    try $0.defaultDatabase.write { db in
+        try db.seed {
+            Document(id: -1, rootKey: "test", url: URL(filePath: "/Archive/2024/2024-01-01--a__x.pdf"), date: seedDate(2024), specification: "a", tags: ["x"], isTagged: true, sizeInBytes: 10, downloadStatus: 1)
+            Document(id: -2, rootKey: "test", url: URL(filePath: "/Archive/2024/2024-02-01--b__y.pdf"), date: seedDate(2024), specification: "b", tags: ["y"], isTagged: true, sizeInBytes: 10, downloadStatus: 1)
+            Document(id: -3, rootKey: "test", url: URL(filePath: "/Archive/untagged/scan.pdf"), date: seedDate(2024), specification: "", tags: [], isTagged: false, sizeInBytes: 10, downloadStatus: 1)
+            DocumentFeaturePrint(documentID: -1, encodedObservation: Data([1, 2, 3]), revision: 1, createdAt: seedDate(2024))
+            DocumentFeaturePrint(documentID: -2, encodedObservation: Data([4, 5, 6]), revision: 1, createdAt: seedDate(2024))
+            DocumentFeaturePrint(documentID: -3, encodedObservation: Data([7, 8, 9]), revision: 1, createdAt: seedDate(2024))
+        }
+    }
+})
+struct DocumentFeaturePrintQueryTests {
+    @Test
+    func onlyTaggedDocumentsAreReturned() async throws {
+        @Dependency(\.defaultDatabase) var database
+        let rows = try await database.read { db in
+            try DocumentFeaturePrint.taggedRows(excluding: nil).fetchAll(db)
+        }
+
+        #expect(Set(rows.map(\.document.id)) == [-1, -2])
+    }
+
+    @Test
+    func theExcludedDocumentIsOmitted() async throws {
+        @Dependency(\.defaultDatabase) var database
+        let rows = try await database.read { db in
+            try DocumentFeaturePrint.taggedRows(excluding: -1).fetchAll(db)
+        }
+
+        #expect(rows.map(\.document.id) == [-2])
+    }
+
+    @Test
+    func theEncodedObservationAndRevisionRoundTrip() async throws {
+        @Dependency(\.defaultDatabase) var database
+        let rows = try await database.read { db in
+            try DocumentFeaturePrint.taggedRows(excluding: nil).fetchAll(db)
+        }
+
+        let row = try #require(rows.first { $0.document.id == -1 })
+        #expect(row.encodedObservation == Data([1, 2, 3]))
+        #expect(row.revision == 1)
+    }
+}

@@ -28,6 +28,8 @@ public enum ContentExtractionPromptFactory {
     private static let reservedTokens = 2048
 
     /// Minimum number of occurrences for a tag to be offered to the model.
+    ///
+    /// Stage 2 tunable - see `docs/retrieval-augmented-tagging-concept.md`.
     static let minTagCount = 3
 
     /// How many example descriptions are shown to the model.
@@ -42,6 +44,8 @@ public enum ContentExtractionPromptFactory {
     /// Measured optimum: 20 and 45 both score worse, and doubling it to 60 under
     /// a strict "existing tags only" prompt left tag F1 bit-identical while the
     /// model suggested *fewer* tags. A longer list does not raise recall.
+    ///
+    /// Also a stage 2 tunable alongside `minTagCount` - see `docs/retrieval-augmented-tagging-concept.md`.
     static let maxTags = 30
 
     /// Description length asked for when the archive is still too empty to have
@@ -62,6 +66,36 @@ public enum ContentExtractionPromptFactory {
     /// knowledge rather than noise.
     static let minCompanionCount = 5
     static let minCompanionShare = 0.7
+
+    /// How many retrieved neighbours are offered per document (`docs/retrieval-augmented-tagging-concept.md`).
+    ///
+    /// Provisional: the plan's starting value, pending an `EvaluationCorpus` run. Change this one
+    /// constant to re-tune it - nothing else in this file needs to change with it.
+    static let neighbourCount = 5
+
+    /// Below this `bm25()` rank a neighbour is dropped rather than shown - a weak match teaches the
+    /// wrong vocabulary, which is worse than teaching none.
+    ///
+    /// SQLite's `bm25()` scores a match negative, more negative meaning a *stronger* match
+    /// (`ORDER BY rank ASC` elsewhere in this codebase ranks the same way), so a survivor needs
+    /// `rank < neighbourRelevanceFloor`. **0 admits every row that matched at all** - the floor is
+    /// wired and tested (see `ContentExtractionPromptFactoryTests`), but not yet biting: it is a
+    /// deliberately permissive placeholder, not a forgotten cutoff, pending an `EvaluationCorpus`
+    /// run to pick a real (more negative) value. Change this one constant to tighten it.
+    static let neighbourRelevanceFloor: Double = 0
+
+    /// Above this Vision `distance(to:)` a stage 3 visual match is dropped rather than shown - the
+    /// same "a weak match teaches the wrong vocabulary" reason ``neighbourRelevanceFloor`` exists
+    /// for, applied to the fallback channel so it cannot bypass the floor the text channel has.
+    ///
+    /// `distance(to:)` is unbounded and non-negative, closer to 0 meaning a *stronger* match, so a
+    /// survivor needs `rank < visualNeighbourRelevanceFloor` - the same comparison
+    /// ``survivingNeighbours(_:floor:)`` already applies to the text channel, reused rather than
+    /// re-implemented. Unlike bm25, a feature-print distance has no natural "matched at all"
+    /// boundary to default to, so `.infinity` (admit every candidate) is the only defensible
+    /// placeholder until an `EvaluationCorpus` run measures a real cutoff. Change this one constant
+    /// to tighten it.
+    static let visualNeighbourRelevanceFloor: Double = .infinity
 
     public struct DocumentStats: Equatable, Sendable {
         public let tags: String
@@ -198,6 +232,34 @@ public enum ContentExtractionPromptFactory {
         A company or product name spelled with spaces becomes ONE tag without them: "Alte Oldenburger" is the tag alteoldenburger.\(companionRules)
         You MUST ALWAYS use the user's locale: \(locale.identifier).
         Aim for 2-4 tags, but return fewer or none if the document content does not support them.
+        """
+    }
+
+    /// Neighbours whose retrieval score clears `floor` - defaulted to ``neighbourRelevanceFloor``,
+    /// injectable so the cutoff mechanism itself is testable independently of that constant's
+    /// currently-permissive shipped value.
+    ///
+    /// Pure so the "nothing survives" path is directly testable: given rows, this either returns
+    /// them or empties the list, with no I/O and no dependency on how they were retrieved.
+    static func survivingNeighbours(_ matches: [NeighbourFinder.Match], floor: Double = neighbourRelevanceFloor) -> [NeighbourFinder.Match] {
+        matches.filter { $0.rank < floor }
+    }
+
+    /// Render already-tagged neighbours as filenames - the exact form the archive's own naming
+    /// convention already uses (`Document.createFilename`), so the model is shown examples in a
+    /// shape it already recognizes rather than a new, one-off format.
+    ///
+    /// - Returns: `nil` when there is nothing to show, so the caller can omit the whole segment
+    ///   instead of inserting an empty block.
+    static func neighbourSegment(_ neighbours: [NeighbourFinder.Match]) -> String? {
+        guard !neighbours.isEmpty else { return nil }
+
+        let filenames = neighbours
+            .map { Document.createFilename(date: $0.date, specification: $0.specification, tags: Set($0.tags)) }
+            .joined(separator: "\n")
+        return """
+        These already-tagged documents are the most similar to the one you are describing now, shown as filenames (date--specification__tags.pdf):
+        \(filenames)
         """
     }
 
