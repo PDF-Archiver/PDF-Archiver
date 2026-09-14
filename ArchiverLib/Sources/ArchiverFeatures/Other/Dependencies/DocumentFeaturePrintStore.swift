@@ -33,9 +33,6 @@ extension FeaturePrintCache {
             },
             save: { entry in
                 await archiveIndexer.saveFeaturePrint(entry.documentID, entry.encodedObservation, entry.revision)
-            },
-            clear: {
-                await archiveIndexer.clearFeaturePrints()
             }
         )
     }

@@ -29,11 +29,7 @@ public enum ContentExtractionPromptFactory {
 
     /// Minimum number of occurrences for a tag to be offered to the model.
     ///
-    /// Measurement-pending tunable alongside ``maxTags``, ``neighbourCount`` and
-    /// ``neighbourRelevanceFloor`` (`docs/retrieval-augmented-tagging-concept.md`): stage 2's
-    /// hypothesis is that this global block can shrink - lowering this to 1 reaches rarer tags -
-    /// now that neighbours carry vocabulary too, but that is unmeasured, so the value stays at its
-    /// last measured setting until an `EvaluationCorpus` run says otherwise.
+    /// Stage 2 tunable - see `docs/retrieval-augmented-tagging-concept.md`.
     static let minTagCount = 3
 
     /// How many example descriptions are shown to the model.
@@ -49,9 +45,7 @@ public enum ContentExtractionPromptFactory {
     /// a strict "existing tags only" prompt left tag F1 bit-identical while the
     /// model suggested *fewer* tags. A longer list does not raise recall.
     ///
-    /// Measurement-pending tunable alongside ``minTagCount`` - see that constant's doc comment.
-    /// Stage 2 hypothesizes a value below 30 once neighbours share the load, but that is unmeasured
-    /// against this measured baseline, so it stays put until an `EvaluationCorpus` run replaces it.
+    /// Also a stage 2 tunable alongside `minTagCount` - see `docs/retrieval-augmented-tagging-concept.md`.
     static let maxTags = 30
 
     /// Description length asked for when the archive is still too empty to have
@@ -89,6 +83,19 @@ public enum ContentExtractionPromptFactory {
     /// deliberately permissive placeholder, not a forgotten cutoff, pending an `EvaluationCorpus`
     /// run to pick a real (more negative) value. Change this one constant to tighten it.
     static let neighbourRelevanceFloor: Double = 0
+
+    /// Above this Vision `distance(to:)` a stage 3 visual match is dropped rather than shown - the
+    /// same "a weak match teaches the wrong vocabulary" reason ``neighbourRelevanceFloor`` exists
+    /// for, applied to the fallback channel so it cannot bypass the floor the text channel has.
+    ///
+    /// `distance(to:)` is unbounded and non-negative, closer to 0 meaning a *stronger* match, so a
+    /// survivor needs `rank < visualNeighbourRelevanceFloor` - the same comparison
+    /// ``survivingNeighbours(_:floor:)`` already applies to the text channel, reused rather than
+    /// re-implemented. Unlike bm25, a feature-print distance has no natural "matched at all"
+    /// boundary to default to, so `.infinity` (admit every candidate) is the only defensible
+    /// placeholder until an `EvaluationCorpus` run measures a real cutoff. Change this one constant
+    /// to tighten it.
+    static let visualNeighbourRelevanceFloor: Double = .infinity
 
     public struct DocumentStats: Equatable, Sendable {
         public let tags: String

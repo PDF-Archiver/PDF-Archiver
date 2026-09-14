@@ -19,8 +19,11 @@ nonisolated public struct NeighbourFinder: Sendable {
         public let date: Date
         public let specification: String
         public let tags: [String]
-        /// SQLite FTS5 `bm25()` score - more negative is a stronger match. Meaningless for a
-        /// visual (stage 3) match, which is never filtered by it.
+        /// The retrieval score `survivingNeighbours(_:floor:)` filters on - SQLite FTS5 `bm25()`
+        /// for a text match (more negative is stronger), Vision `distance(to:)` for a visual one
+        /// (closer to 0 is stronger). Each channel is filtered against its own floor constant
+        /// (``ContentExtractionPromptFactory/neighbourRelevanceFloor`` /
+        /// ``ContentExtractionPromptFactory/visualNeighbourRelevanceFloor``), never the other's.
         public let rank: Double
 
         public init(date: Date, specification: String, tags: [String], rank: Double) {

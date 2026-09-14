@@ -64,6 +64,8 @@ public actor DocumentProcessor {
     private var contentExtractorStorage: AnyObject?
     private let suggestionCache: SuggestionCache
     private let featurePrintCache: FeaturePrintCache
+    private let neighbourFinder: NeighbourFinder
+    private let visualNeighbourFinder: VisualNeighbourFinder
 
     /// - Parameter stagingFolder: Crash-safe inbox for incoming documents.
     ///   In the app this is the shared temp folder the Share Extension also
@@ -73,10 +75,21 @@ public actor DocumentProcessor {
     /// - Parameter featurePrintCache: Where the background pass remembers each document's Vision
     ///   feature print (stage 3's visual retrieval fallback). Defaulting to `.unavailable` simply
     ///   skips computing them.
-    public init(stagingFolder: URL, suggestionCache: SuggestionCache = .unavailable, featurePrintCache: FeaturePrintCache = .unavailable) {
+    /// - Parameter neighbourFinder: Text retrieval for the background AI pass's prompt - the same
+    ///   finder the interactive path uses. Left at `.unavailable`, the cache entries this pass
+    ///   writes would carry the pre-retrieval prompt, and the interactive path would then read
+    ///   them back on a cache hit without ever retrieving anything itself.
+    /// - Parameter visualNeighbourFinder: Stage 3's fallback for the same pass.
+    public init(stagingFolder: URL,
+                suggestionCache: SuggestionCache = .unavailable,
+                featurePrintCache: FeaturePrintCache = .unavailable,
+                neighbourFinder: NeighbourFinder = .unavailable,
+                visualNeighbourFinder: VisualNeighbourFinder = .unavailable) {
         self.stagingFolder = stagingFolder
         self.suggestionCache = suggestionCache
         self.featurePrintCache = featurePrintCache
+        self.neighbourFinder = neighbourFinder
+        self.visualNeighbourFinder = visualNeighbourFinder
     }
 
     // MARK: - Intake
@@ -140,7 +153,9 @@ public actor DocumentProcessor {
     /// - Parameters:
     ///   - documents: ALL documents of the archive. The pass filters
     ///     untagged, locally available documents itself; the tagged rest
-    ///     serves as prompt context for the AI pass.
+    ///     serves as prompt context for the AI pass, and - up to a bounded
+    ///     budget per call - as a feature-print backfill for `VisualNeighbourFinder`,
+    ///     which reads only tagged rows.
     ///   - ocr: Whether image-only PDFs should get a text layer.
     ///   - aiContext: Set to pre-compute AI suggestion cache entries.
     @discardableResult
@@ -174,24 +189,48 @@ public actor DocumentProcessor {
                 customPrompt: aiContext.customPrompt)
             Logger.documentProcessor.info("Untagged processing: created \(aiCacheCount) AI cache entries")
 
-            // Stage 3's visual fallback needs a print only where the AI pass will use it - tying
-            // this to `aiContext` avoids computing prints nobody is going to look at.
-            await cacheMissingFeaturePrints(for: untaggedDocuments)
+            // Gated on `aiContext`, not a separate flag: `contentExtractor` above is the only
+            // consumer of these prints (via its `visualNeighbourFinder`), so computing one where
+            // that pass is disabled would be wasted work. Passes every locally-available document,
+            // not just `untaggedDocuments`: `VisualNeighbourFinder` reads only tagged rows
+            // (`DocumentFeaturePrint.taggedRows`), so a document tagged before this shipped needs
+            // its print backfilled too, or the visual channel stays inert for the whole existing
+            // archive forever.
+            await cacheMissingFeaturePrints(for: documents.filter { $0.downloadStatus >= 1 })
         }
 
         return UntaggedProcessingResult(ocrCount: ocrCount, aiCacheCount: aiCacheCount)
     }
 
-    /// Computes and persists a Vision feature print for every untagged document that does not
-    /// already have one cached.
+    /// How many *tagged* documents get a feature print backfilled in one pass.
+    ///
+    /// Untagged documents are never capped - there are few of them, and each needs its own print to
+    /// retrieve suggestions for itself. Tagged ones can be the whole archive (a document tagged
+    /// before this shipped has no print yet, and `VisualNeighbourFinder` reads only tagged rows), so
+    /// one pass backfilling all of them at once would turn a routine background sweep into
+    /// thousands of Vision calls. The rest catch up on the next pass.
+    static let taggedFeaturePrintBackfillBudget = 50
+
+    /// Computes and persists a Vision feature print for every document in `documents` that does not
+    /// already have a current one cached - untagged documents in full, tagged ones up to
+    /// ``taggedFeaturePrintBackfillBudget`` per call.
     ///
     /// Rasterizes page 1 on its own rather than reusing the OCR pass above: `addOcrTextLayer`
     /// skips a document that already carries a text layer, which is the common case for an
     /// untagged inbox scan, so this cannot ride along with that pass.
-    private func cacheMissingFeaturePrints(for untaggedDocuments: [Document]) async {
-        for document in untaggedDocuments {
+    ///
+    /// A revision mismatch is treated exactly like a cache miss - `distance(to:)` throws across
+    /// revisions, so a stale entry is worse than no entry at all.
+    private func cacheMissingFeaturePrints(for documents: [Document]) async {
+        var taggedBackfilled = 0
+        for document in documents {
             guard !Task.isCancelled else { break }
-            guard await featurePrintCache.load(document.id) == nil else { continue }
+            guard await featurePrintCache.load(document.id)?.revision != FeaturePrintCache.currentRevision else { continue }
+
+            if document.isTagged {
+                guard taggedBackfilled < Self.taggedFeaturePrintBackfillBudget else { continue }
+                taggedBackfilled += 1
+            }
 
             guard let encoded = await Self.encodedFeaturePrint(at: document.url) else { continue }
             await featurePrintCache.save(.init(documentID: document.id,
@@ -432,7 +471,9 @@ public actor DocumentProcessor {
         if let store = contentExtractorStorage as? ContentExtractorStore {
             return store
         }
-        let store = ContentExtractorStore(cache: suggestionCache)
+        let store = ContentExtractorStore(cache: suggestionCache,
+                                          neighbourFinder: neighbourFinder,
+                                          visualNeighbourFinder: visualNeighbourFinder)
         contentExtractorStorage = store
         return store
     }

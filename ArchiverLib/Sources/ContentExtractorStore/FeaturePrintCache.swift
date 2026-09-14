@@ -41,26 +41,22 @@ nonisolated public struct FeaturePrintCache: Sendable {
 
     public var load: @Sendable (Document.ID) async -> Entry?
     public var save: @Sendable (Entry) async -> Void
-    public var clear: @Sendable () async -> Void
 
     public init(load: @escaping @Sendable (Document.ID) async -> Entry?,
-                save: @escaping @Sendable (Entry) async -> Void,
-                clear: @escaping @Sendable () async -> Void) {
+                save: @escaping @Sendable (Entry) async -> Void) {
         self.load = load
         self.save = save
-        self.clear = clear
     }
 
     /// Nothing is remembered. Stage 3 degrades to no visual fallback, same as an empty cache.
-    public static let unavailable = FeaturePrintCache(load: { _ in nil }, save: { _ in }, clear: {})
+    public static let unavailable = FeaturePrintCache(load: { _ in nil }, save: { _ in })
 
     /// A fresh cache that lives as long as the returned value.
     public static func inMemory() -> FeaturePrintCache {
         let storage = Storage()
         return FeaturePrintCache(
             load: { await storage.entry(for: $0) },
-            save: { await storage.insert($0) },
-            clear: { await storage.removeAll() }
+            save: { await storage.insert($0) }
         )
     }
 
@@ -69,6 +65,5 @@ nonisolated public struct FeaturePrintCache: Sendable {
 
         func entry(for id: Document.ID) -> Entry? { entries[id] }
         func insert(_ entry: Entry) { entries[entry.documentID] = entry }
-        func removeAll() { entries.removeAll() }
     }
 }

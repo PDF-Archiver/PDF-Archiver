@@ -44,6 +44,18 @@ floor, never alongside a text match.
 - No vector index: a linear scan plus `distance(to:)` over the tagged archive is cheap enough
   (measured at ~2 ms for 3000 prints, Mac numbers on synthetic input — see the concept doc's
   measurement-pending section) that one is not warranted yet.
+- The floor exists on this channel too, not only the text one: `ContentExtractionPromptFactory.visualNeighbourRelevanceFloor`
+  is filtered through the same `survivingNeighbours(_:floor:)` the text channel uses, so a weak
+  visual match cannot bypass the "wrong vocabulary is worse than none" rule just because it arrived
+  through the fallback path. Permissive by default (`.infinity`) — a feature-print distance has no
+  natural "matched at all" boundary the way `bm25()` does, so there is no principled default to pick
+  ahead of measurement.
+- `DocumentProcessor`'s untagged-processing pass also backfills feature prints for *tagged*
+  documents (bounded to `DocumentProcessor.taggedFeaturePrintBackfillBudget` per call): the visual
+  channel reads only tagged rows (`DocumentFeaturePrint.taggedRows`), so without a backfill every
+  document tagged before this shipped would never get a print and the channel would stay inert for
+  the whole existing archive. The bound keeps one background pass from turning into thousands of
+  Vision calls on a large archive; the rest catch up on subsequent passes.
 
 ## Alternatives considered
 
