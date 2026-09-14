@@ -48,24 +48,30 @@ tested in `ContentExtractorStoreUnitTests`).
 
 ## Provisional tunables — where to change them
 
-Nothing below is measured yet. Every constant lives in
+Every constant below lives in
 `ArchiverLib/Sources/ContentExtractorStore/ContentExtractionPromptFactory.swift`, with a doc comment
-marking it provisional, so re-tuning never means hunting through the call sites:
+pointing back here, so re-tuning never means hunting through the call sites. `neighbourCount` and
+`neighbourRelevanceFloor` are new with this feature and unmeasured outright; `minTagCount` and
+`maxTags` predate it and are not being changed, only re-examined - see the distinction below the
+table:
 
 | Constant | Current value | What it controls |
 |---|---|---|
 | `neighbourCount` | 5 | How many candidates stage 1 retrieves per document (the plan's starting `k`). |
 | `neighbourRelevanceFloor` | `0` | The `bm25()` cutoff below which a neighbour is shown. SQLite's `bm25()` scores a match negative, more negative meaning a *stronger* match, so a survivor needs `rank < neighbourRelevanceFloor`. **0 admits every row that matched at all** — permissive on purpose, not yet biting, pending a real (more negative) value from the corpus. |
+| `visualNeighbourRelevanceFloor` | `.infinity` | Stage 3's own cutoff, same mechanism (`survivingNeighbours(_:floor:)`) applied to Vision `distance(to:)` instead of `bm25()`. Closer to 0 is a stronger match, unbounded above, so `.infinity` admits every candidate - there is no "matched at all" boundary to default to the way bm25 has, so this stays maximally permissive until measured. |
 | `minTagCount` | 3 | The global block's frequency cutoff (unchanged; see below). |
 | `maxTags` | 30 | The global block's tag-list cap (unchanged; see below). |
 
 `minTagCount` and `maxTags` are stage 2's variant axis, not stage 1's: the hypothesis is that the
 global block can shrink now that neighbours carry vocabulary too, freeing prompt budget for the
-retrieved examples. That is exactly the kind of claim this file's own history warns against
-guessing — the comment on `maxTags` already records that doubling it to 60 left tag F1
-bit-identical while the model suggested *fewer* tags. Changing either constant without measuring the
-result against the stage 0 baseline would be an unmeasured regression dressed as progress, so both
-stay at their last measured values until the corpus says otherwise.
+retrieved examples. The two are not in the same evidential state, though: `maxTags`'s current value
+of 30 carries a real recorded measurement (the comment on it — doubling to 60 left tag F1
+bit-identical while the model suggested *fewer* tags), while `minTagCount`'s current value of 3 carries
+no measurement anywhere in this repository — it is simply what the constant already was before this
+feature existed. Neither has been measured against *this* feature's hypothesis, so changing either
+without running the corpus first would be an unmeasured regression dressed as progress — both stay
+unchanged until the corpus says otherwise.
 
 ## Measurement pending
 
@@ -142,7 +148,10 @@ Vision feature print needs a rasterized page — there is nothing for
 `VisualNeighbourFinder.documentFeaturePrints` to compute from a corpus entry. Measuring stage 3 needs
 either a real archive (feature prints computed and cached by the running app, as `DocumentProcessor`
 already does) or extending `CorpusBuilder`/`CorpusDocument` to also capture a page-1 image — neither
-is part of this change.
+is part of this change. Whichever route measures it, `visualNeighbourRelevanceFloor` is the fifth
+knob: like the others it is provisional and permissive by default, so it needs the same kind of
+sweep `neighbourRelevanceFloor` gets in step 3, against Vision `distance(to:)` values instead of
+`bm25()` scores.
 
 Stage 3's compute-cost figures (~18 ms per feature print, ~3 KB stored, ~2 ms to scan 3000 of them)
 are Mac numbers measured on a synthetic A4 page and also need re-measuring on device before they are

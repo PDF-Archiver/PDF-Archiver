@@ -132,7 +132,8 @@ public actor ContentExtractorStore {
         let survivors = ContentExtractionPromptFactory.survivingNeighbours(candidates)
         guard survivors.isEmpty, let documentId else { return survivors }
 
-        return await visualNeighbourFinder.find(documentId, ContentExtractionPromptFactory.neighbourCount)
+        let visualCandidates = await visualNeighbourFinder.find(documentId, ContentExtractionPromptFactory.neighbourCount)
+        return ContentExtractionPromptFactory.survivingNeighbours(visualCandidates, floor: ContentExtractionPromptFactory.visualNeighbourRelevanceFloor)
     }
 
     // MARK: - Cache Management
@@ -266,7 +267,7 @@ public actor ContentExtractorStore {
     /// - Parameter neighbours: Already floor-filtered survivors (``survivingNeighbours``); this
     ///   only renders them, so passing every candidate would show the model matches this call is
     ///   supposed to have rejected.
-    public static func instructions(for documents: [Document], neighbours: [NeighbourFinder.Match] = []) -> Instructions {
+    public static func instructions(for documents: [Document], neighbours: [NeighbourFinder.Match]) -> Instructions {
         let stats = ContentExtractionPromptFactory.documentStats(from: documents)
         let locale = ContentExtractionPromptFactory.promptLocale
         let neighbourSegment = ContentExtractionPromptFactory.neighbourSegment(neighbours)

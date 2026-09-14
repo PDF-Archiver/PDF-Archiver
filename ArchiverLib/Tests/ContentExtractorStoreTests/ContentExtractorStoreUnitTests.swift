@@ -289,6 +289,23 @@ struct ContentExtractionPromptFactoryTests {
         #expect(ContentExtractionPromptFactory.survivingNeighbours([clearsIt, justMisses], floor: -2) == [clearsIt])
     }
 
+    @Test("The same mechanism pins a visual (distance-based) floor, closing the asymmetry with the text channel")
+    func survivingNeighboursAppliesToVisualDistancesToo() {
+        // Vision `distance(to:)`: closer to 0 is a stronger match, unlike bm25's negative scores -
+        // the reviewer's own example of what the floor exists to stop.
+        let closeEnough = NeighbourFinder.Match(date: Date(), specification: "a", tags: [], rank: 0.4)
+        let tooFar = NeighbourFinder.Match(date: Date(), specification: "b", tags: [], rank: 1.9)
+
+        #expect(ContentExtractionPromptFactory.survivingNeighbours([closeEnough, tooFar], floor: 1.0) == [closeEnough])
+    }
+
+    @Test("The shipped visual floor is permissive by default, admitting any distance")
+    func visualNeighbourRelevanceFloorIsPermissiveByDefault() {
+        let veryDistant = NeighbourFinder.Match(date: Date(), specification: "a", tags: [], rank: 1_000)
+
+        #expect(ContentExtractionPromptFactory.survivingNeighbours([veryDistant], floor: ContentExtractionPromptFactory.visualNeighbourRelevanceFloor) == [veryDistant])
+    }
+
     @Test("Nothing surviving the floor renders no segment - the prompt stays unchanged from today")
     func noSurvivorsMeansNoSegment() {
         let weak = NeighbourFinder.Match(date: Date(), specification: "b", tags: [], rank: 0)

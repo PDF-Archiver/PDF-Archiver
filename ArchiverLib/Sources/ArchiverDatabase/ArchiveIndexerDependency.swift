@@ -22,7 +22,6 @@ public struct ArchiveIndexerDependency: Sendable {
     public var saveSuggestion: @Sendable (_ documentID: Document.ID, _ specification: String, _ tags: [String]) async -> Void
     public var clearSuggestions: @Sendable () async -> Void
     public var saveFeaturePrint: @Sendable (_ documentID: Document.ID, _ encodedObservation: Data, _ revision: Int) async -> Void
-    public var clearFeaturePrints: @Sendable () async -> Void
 }
 
 extension ArchiveIndexerDependency: TestDependencyKey {
@@ -35,8 +34,7 @@ extension ArchiveIndexerDependency: TestDependencyKey {
         requestRebuild: { },
         saveSuggestion: { _, _, _ in },
         clearSuggestions: { },
-        saveFeaturePrint: { _, _, _ in },
-        clearFeaturePrints: { }
+        saveFeaturePrint: { _, _, _ in }
     )
 
     public static let testValue = Self()
@@ -72,9 +70,6 @@ extension ArchiveIndexerDependency: DependencyKey {
             },
             saveFeaturePrint: { documentID, encodedObservation, revision in
                 await indexer.saveFeaturePrint(documentID: documentID, encodedObservation: encodedObservation, revision: revision)
-            },
-            clearFeaturePrints: {
-                await indexer.clearFeaturePrints()
             }
         )
     }()

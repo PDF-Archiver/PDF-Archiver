@@ -32,12 +32,4 @@ extension ArchiveIndexer {
             }
         }
     }
-
-    public func clearFeaturePrints() async {
-        await withErrorReporting {
-            try await database.write { db in
-                try DocumentFeaturePrint.delete().execute(db)
-            }
-        }
-    }
 }

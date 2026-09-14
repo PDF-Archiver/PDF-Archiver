@@ -52,7 +52,9 @@ extension DocumentProcessingDependency: TestDependencyKey {
 extension DocumentProcessingDependency: DependencyKey {
     private static let documentProcessor = DocumentProcessor(stagingFolder: Constants.tempDocumentURL,
                                                             suggestionCache: .documentSuggestions,
-                                                            featurePrintCache: .documentFeaturePrints)
+                                                            featurePrintCache: .documentFeaturePrints,
+                                                            neighbourFinder: .documentTexts,
+                                                            visualNeighbourFinder: .documentFeaturePrints)
 
     /// Resolve the per-request pipeline config from the current user settings.
     private static func makeConfig() async throws -> ProcessingConfig {
