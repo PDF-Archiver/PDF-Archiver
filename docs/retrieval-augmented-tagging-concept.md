@@ -71,37 +71,93 @@ stay at their last measured values until the corpus says otherwise.
 
 Nothing in this feature has shipped on a measured win yet — the acceptance criterion
 (`Tag F1 over EvaluationCorpus is higher than the stage 0 baseline`) requires a corpus run this
-machine cannot perform: `ContentExtractionEvaluation` is `@available(macOS 27, *)` and behind
-`#if canImport(Evaluations)`, and this repository's current toolchain is Xcode 26.
+repository's current toolchain cannot perform: `ContentExtractionEvaluation` is
+`@available(macOS 27, *)` and behind `#if canImport(Evaluations)`, both satisfied only by Xcode 27.
+This section is the instruction sheet for running it there.
 
-To measure a variant, on a machine with Xcode 27 and the `Evaluations` framework:
+### 1. Get a corpus
 
-1. Build a corpus from a folder of already-tagged PDFs (kept out of the repository — it carries real
-   document text):
-   ```
-   swift run EvalCorpusBuilder <path-to-tagged-pdf-folder> -o corpus.json
-   ```
-2. Point the evaluation at it and run it:
-   ```
-   PDF_ARCHIVER_EVAL_CORPUS=$(pwd)/corpus.json swift test --filter ContentExtractionEvaluationTests
-   ```
-   This scores `ContentExtractionEvaluation` (`ArchiverLib/Tests/ContentExtractorStoreTests/ContentExtractionEvaluation.swift`),
-   whose `tagF1` / `tagPrecision` / `tagRecall` metrics are exactly the `TagScore` comparison the
-   acceptance criterion asks for, aggregated over the corpus and attached as `aggregates.txt`.
-3. Repeat per variant (a `neighbourCount` / `neighbourRelevanceFloor` combination, then a
-   `minTagCount` / `maxTags` combination once stage 1 has a chosen `k` and floor), recording each
-   variant's `tagF1` against the stage 0 baseline before choosing one to ship.
+Build one from a folder of already-tagged PDFs. It is kept out of the repository — it carries real
+document text:
 
-**Known gap:** `ContentExtractionEvaluation` constructs `ContentExtractorStore()` with its defaults,
-which leaves `neighbourFinder` and `visualNeighbourFinder` at `.unavailable` — the corpus dataset is
-an in-memory array of `CorpusDocument`, not a live SQLite `documentTexts` index, so today's harness
-does not exercise retrieval at all. Measuring stages 1–3 needs the evaluation wired to a real (or
-temporary, in-memory) `ArchiverDatabase` so `NeighbourFinder.documentTexts` has something to query
-against the corpus's own documents. That wiring is not part of this change; see the PR's follow-ups.
+```
+swift run EvalCorpusBuilder <path-to-tagged-pdf-folder> -o corpus.json
+```
+
+### 2. Run the baseline you are comparing against
+
+Every run scores `ContentExtractionEvaluation`
+(`ArchiverLib/Tests/ContentExtractorStoreTests/ContentExtractionEvaluation.swift`) against that one
+corpus:
+
+```
+PDF_ARCHIVER_EVAL_CORPUS=$(pwd)/corpus.json swift test --filter ContentExtractionEvaluationTests
+```
+
+Its `tagF1` / `tagPrecision` / `tagRecall` metrics are the `TagScore` comparison the acceptance
+criterion asks for, aggregated over the corpus and attached to the test result as `aggregates.txt`
+(`Attachment.record(result.groupedSummary, …)` in the test — open it from the `.xcresult`, or read it
+from the command line with `xcrun xcresulttool get --legacy --path <.xcresult> --id <attachment-id>`).
+
+Record this number **twice**, both before touching any constant:
+
+1. **Retrieval off** — set `ContentExtractionEvaluation.retrievalEnabled = false`, run, record `tagF1`.
+   This is the stage 0 baseline restated on today's corpus (no code from this PR changes behaviour
+   when retrieval is off).
+2. **Retrieval on, defaults** — set it back to `true` (the shipped default), run, record `tagF1` with
+   `neighbourCount = 5`, `neighbourRelevanceFloor = 0`, `minTagCount = 3`, `maxTags = 30` unchanged.
+
+If (2) is not above (1), stop — the feature has not earned its complexity yet, and no further sweep
+matters until it does.
+
+### 3. Sweep stage 1: `neighbourCount` and `neighbourRelevanceFloor`
+
+Both live in `ArchiverLib/Sources/ContentExtractorStore/ContentExtractionPromptFactory.swift`. Change
+one, rebuild, rerun step 2's command, record `tagF1`:
+
+- `neighbourCount`: try 3 and 10 alongside the default 5.
+- `neighbourRelevanceFloor`: it starts at `0`, meaning *every* real `bm25()` match is shown (the
+  floor is wired but not biting — see the table above for the sign convention). Try a handful of
+  increasingly negative values (e.g. `-2`, `-5`, `-10`) to find where excluding weak matches helps
+  more than it hurts by excluding real ones.
+
+Keep whichever `(neighbourCount, neighbourRelevanceFloor)` pair maximizes `tagF1`, and leave that
+pair as the new constant values.
+
+### 4. Sweep stage 2: `minTagCount` and `maxTags`
+
+Only once step 3 has a chosen pair. Both live in the same file. The hypothesis: neighbours now carry
+vocabulary too, so the global block may be able to shrink without losing recall. Try `minTagCount = 1`
+and `maxTags` below 30 (e.g. 20), together and separately, against the stage 3-chosen retrieval
+settings. Keep a combination only if it raises `tagF1` over step 3's result — this file's own history
+already shows a plausible-sounding change (`maxTags = 60`) that measured as a no-op, so guessing here
+is exactly what this sweep exists to avoid.
+
+### 5. Stage 3, once 1–2 measure positive
+
+The plan gates stage 3 on stages 1–2 measuring positive; this run implements it anyway; the plan's
+gate still applies to whether it *ships enabled*. `ContentExtractionEvaluation` cannot exercise stage
+3 yet: `CorpusDocument` (the corpus file format) carries extracted text only, no page image, and a
+Vision feature print needs a rasterized page — there is nothing for
+`VisualNeighbourFinder.documentFeaturePrints` to compute from a corpus entry. Measuring stage 3 needs
+either a real archive (feature prints computed and cached by the running app, as `DocumentProcessor`
+already does) or extending `CorpusBuilder`/`CorpusDocument` to also capture a page-1 image — neither
+is part of this change.
 
 Stage 3's compute-cost figures (~18 ms per feature print, ~3 KB stored, ~2 ms to scan 3000 of them)
 are Mac numbers measured on a synthetic A4 page and also need re-measuring on device before they are
 load-bearing (`docs/adr/0004-visual-retrieval-is-a-fallback-channel.md`).
+
+### What is and is not verified by this repository's own gate
+
+`CorpusRetrieval` (`ArchiverLib/Tests/ContentExtractorStoreTests/CorpusRetrieval.swift`) — the code
+that seeds a database from the corpus and answers the retrieval query `ContentExtractionEvaluation`
+calls — compiles and is unit-tested on every machine, Xcode 26 included
+(`CorpusRetrievalTests.swift`: bm25 ordering, self-exclusion, a document with no seeded text never
+comes back, an unusable query returns no candidates instead of throwing). What is **not** compiled or
+tested anywhere but Xcode 27 is `ContentExtractionEvaluation.swift` itself and the few lines in its
+`init` that call `CorpusRetrieval` — `#if canImport(Evaluations)` compiles them out entirely on this
+toolchain. Read those lines by eye before trusting a run's numbers; nothing here has run them.
 
 ## Rejected alternatives
 

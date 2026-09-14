@@ -23,6 +23,13 @@ public struct EvaluationDataset: Sendable {
     /// The archive as the prompt sees it - never contains a sample.
     public let contextDocuments: [Document]
 
+    /// Each context document's extracted text, keyed by its `Document.id`.
+    ///
+    /// `Document` itself carries no text - retrieval needs it to seed a queryable index
+    /// (`CorpusRetrieval.neighbourFinder(seededWith:texts:)`), which is the only reason this is
+    /// kept alongside `contextDocuments` rather than dropped like the rest of `CorpusDocument`.
+    public let contextTexts: [Document.ID: String]
+
     /// Held-out documents to generate suggestions for.
     public let samples: [CorpusDocument]
 
@@ -57,6 +64,7 @@ public struct EvaluationDataset: Sendable {
 
         samples = held
         contextDocuments = context.enumerated().map { $1.asArchiveDocument(id: $0) }
+        contextTexts = Dictionary(uniqueKeysWithValues: context.enumerated().map { ($0, $1.text) })
         tagVocabulary = Set(context.flatMap(\.tags).map { $0.lowercased() })
         typicalSpecificationWords = ContentExtractionPromptFactory.descriptionWordRange(of: context.map(\.specification))
     }
