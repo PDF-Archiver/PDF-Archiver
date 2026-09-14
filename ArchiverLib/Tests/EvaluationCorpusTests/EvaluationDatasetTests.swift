@@ -95,4 +95,16 @@ struct EvaluationDatasetTests {
         #expect(!dataset.samples.isEmpty)
         #expect(!dataset.contextDocuments.isEmpty)
     }
+
+    @Test("Every context document's id resolves to its own text")
+    func contextTextsAlignWithContextDocuments() {
+        let corpus = Self.corpus(count: 30)
+        let textByFilename = Dictionary(uniqueKeysWithValues: corpus.map { ($0.filename, $0.text) })
+        let dataset = EvaluationDataset(corpus: corpus, stride: 10)
+
+        #expect(dataset.contextTexts.count == dataset.contextDocuments.count)
+        for document in dataset.contextDocuments {
+            #expect(dataset.contextTexts[document.id] == textByFilename[document.filename])
+        }
+    }
 }
