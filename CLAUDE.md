@@ -255,14 +255,20 @@ asc list-apps
 ### Why AppIntents are in Shared/ not ArchiverLib/
 Swift Package Manager doesn't support App Intents directly, so they must be defined in the main app target. See `Shared/AppIntent.swift` and the comment referencing [this StackOverflow answer](https://stackoverflow.com/a/76976224).
 
-### Private Cloud Compute
-The `com.apple.developer.private-cloud-compute` entitlement **is granted** for this app's
-Apple Developer account, so the `CloudExtraction` evaluation path can be measured.
+### Private Cloud Compute needs the `Evaluations` scheme
+The `com.apple.developer.private-cloud-compute` entitlement **is granted** for this team,
+but an entitlement belongs to a *process*, not to a test bundle. Run the evaluations
+through the scheme that hosts them in the signed `EvaluationHost` app:
 
-It only takes effect in a binary actually signed with it: an `xcodebuild test` runner is
-not, so `CloudComputeEntitlement.isGranted` reports `false` there. Always check that flag
-before sending — without the entitlement the first request calls `fatalError`, which no
-`catch` can intercept.
+```bash
+xcodebuild test -workspace PDFArchiver.xcworkspace -scheme Evaluations -destination 'platform=macOS'
+```
+
+The `ArchiverLib` scheme and `swift test` both run hostless, so
+`CloudComputeEntitlement.isGranted` is `false` there and any PCC request would
+`fatalError` uncatchably. Always check that flag before sending. `xcodebuild` does not
+forward shell variables into a hosted test process — put `PDF_ARCHIVER_EVAL_CORPUS` into
+the scheme's test environment. See `Evaluations/README.md`.
 
 ### Storage Providers
 The app automatically selects the appropriate `FolderProvider` based on the folder URL:

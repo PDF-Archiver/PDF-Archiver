@@ -231,6 +231,7 @@ public enum ContentExtractionPromptFactory {
         Every tag MUST be supported by the document itself - NEVER add a tag just because it is used often.
         A company or product name spelled with spaces becomes ONE tag without them: "Alte Oldenburger" is the tag alteoldenburger.\(companionRules)
         You MUST ALWAYS use the user's locale: \(locale.identifier).
+        Scan the document text for words matching an existing tag: if an existing tag's word appears in the document, it belongs.
         Aim for 2-4 tags, but return fewer or none if the document content does not support them.
         """
     }

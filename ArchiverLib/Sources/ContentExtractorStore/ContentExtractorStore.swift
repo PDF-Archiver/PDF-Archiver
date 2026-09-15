@@ -107,7 +107,11 @@ public actor ContentExtractorStore {
         let raw = try await respond(documents, neighbours, customPrompt, text)
         let vocabulary = Set(documents.flatMap(\.tags).map { $0.lowercased() })
         let normalized = ContentExtractionMapper.normalize(raw, vocabulary: vocabulary)
-        let info = Info(specification: normalized.specification, tags: normalized.tags)
+        let tags = TagExpansion.expanded(normalized.tags,
+                                         with: documents,
+                                         text: text,
+                                         limit: ContentExtractionMapper.maxTags)
+        let info = Info(specification: normalized.specification, tags: tags)
 
         // Save result to cache for faster subsequent access
         if let documentId {
