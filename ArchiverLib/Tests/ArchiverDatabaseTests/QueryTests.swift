@@ -320,12 +320,46 @@ struct NeighboursQueryTests {
         #expect(DocumentText.orQuery(from: "") == nil)
     }
 
+    // 13 of 1911 real documents carry a U+0000 inside a term. FTS5 reads it as the end of the
+    // quoted string and rejects the whole query, so the document gets no neighbours at all.
+    @Test
+    func controlCharactersSeparateTerms() throws {
+        let query = try #require(DocumentText.orQuery(from: "Invoice IN\u{0}56998332"))
+
+        #expect(query.contains("\"IN\""))
+        #expect(query.contains("\"56998332\""))
+        #expect(!query.contains("\u{0}"))
+    }
+
     private static func neighbours(matching text: String, excluding documentID: Document.ID?, limit: Int = 5) async throws -> [DocumentNeighbour] {
         @Dependency(\.defaultDatabase) var database
         guard let ftsQuery = DocumentText.orQuery(from: text) else { return [] }
         return try await database.read { db in
             try Document.neighbours(matchingFTSQuery: ftsQuery, excluding: documentID, limit: limit).fetchAll(db)
         }
+    }
+}
+
+@Suite(.dependencies {
+    try $0.bootstrapDatabase()
+    try $0.defaultDatabase.write { db in
+        try db.seed {
+            Document(id: -1, rootKey: "test", url: URL(filePath: "/Archive/2024/2024-01-01--police__versicherung.pdf"), date: seedDate(2024), specification: "police", tags: ["versicherung"], isTagged: true, sizeInBytes: 10, downloadStatus: 1)
+            DocumentText(rowid: -1, body: "Versicherungsschein IN\u{0}56998332 Police")
+        }
+    }
+})
+struct NeighboursControlCharacterTests {
+    @Test
+    func aDocumentWhoseTextCarriesANulByteStillRetrieves() async throws {
+        @Dependency(\.defaultDatabase) var database
+        let ftsQuery = try #require(DocumentText.orQuery(from: "Versicherungsschein IN\u{0}56998332 Police"))
+
+        let rows = try await database.read { db in
+            try Document.neighbours(matchingFTSQuery: ftsQuery, excluding: nil, limit: 5).fetchAll(db)
+        }
+
+        #expect(rows.map(\.document.id) == [-1])
     }
 }
 

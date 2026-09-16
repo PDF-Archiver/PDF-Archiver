@@ -270,6 +270,13 @@ extension DocumentText {
         )
     }
 
+    /// Where a term ends. Control characters split rather than vanish: FTS5's tokenizer breaks
+    /// the indexed body at a U+0000 too, so `IN\u{0}56998332` has to become the two terms it
+    /// was indexed as - and leaving one inside a quoted term makes FTS5 reject the whole query.
+    private static func isTermSeparator(_ character: Character) -> Bool {
+        character.isWhitespace || character.unicodeScalars.contains { $0.properties.generalCategory == .control }
+    }
+
     /// Turns a whole document's text into an FTS5 `OR` query.
     ///
     /// Unlike `ArchiveSearchQuery.ftsQuery`'s implicit `AND` over a few deliberately typed words,
@@ -282,7 +289,7 @@ extension DocumentText {
     public static func orQuery(from text: String) -> String? {
         let terms = Set(
             text
-                .split(whereSeparator: \.isWhitespace)
+                .split(whereSeparator: isTermSeparator)
                 .map(String.init)
                 .filter { $0.count >= ArchiveSearchQuery.minimumContentTermLength }
         )
