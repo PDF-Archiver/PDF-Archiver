@@ -255,6 +255,66 @@ struct ContentExtractionPromptFactoryTests {
                 == ContentExtractionPromptFactory.defaultDescriptionWords)
     }
 
+    @Test("Neighbours are rendered as filenames, newest naming convention first")
+    func neighbourSegmentRendersFilenames() throws {
+        let matches = [
+            NeighbourFinder.Match(date: Date(timeIntervalSince1970: 0), specification: "stadtwerke strom", tags: ["energie"], rank: -5),
+            NeighbourFinder.Match(date: Date(timeIntervalSince1970: 0), specification: "miete", tags: ["wohnung"], rank: -3)
+        ]
+        let segment = try #require(ContentExtractionPromptFactory.neighbourSegment(matches))
+
+        #expect(segment.contains(Document.createFilename(date: Date(timeIntervalSince1970: 0), specification: "stadtwerke strom", tags: ["energie"])))
+        #expect(segment.contains(Document.createFilename(date: Date(timeIntervalSince1970: 0), specification: "miete", tags: ["wohnung"])))
+    }
+
+    @Test("No neighbours means no segment, not an empty one")
+    func neighbourSegmentIsNilWhenEmpty() {
+        #expect(ContentExtractionPromptFactory.neighbourSegment([]) == nil)
+    }
+
+    @Test("The relevance floor drops weak matches, keeps real ones")
+    func survivingNeighboursAppliesTheFloor() {
+        let strong = NeighbourFinder.Match(date: Date(), specification: "a", tags: [], rank: -4)
+        let weak = NeighbourFinder.Match(date: Date(), specification: "b", tags: [], rank: 0)
+
+        #expect(ContentExtractionPromptFactory.survivingNeighbours([strong, weak]) == [strong])
+    }
+
+    @Test("A non-zero floor proves the cutoff mechanism, independent of the shipped permissive default")
+    func survivingNeighboursHonorsAnInjectedFloor() {
+        // bm25: more negative is a stronger match, so -5 clears a -2 floor and -1 does not.
+        let clearsIt = NeighbourFinder.Match(date: Date(), specification: "a", tags: [], rank: -5)
+        let justMisses = NeighbourFinder.Match(date: Date(), specification: "b", tags: [], rank: -1)
+
+        #expect(ContentExtractionPromptFactory.survivingNeighbours([clearsIt, justMisses], floor: -2) == [clearsIt])
+    }
+
+    @Test("The same mechanism pins a visual (distance-based) floor, closing the asymmetry with the text channel")
+    func survivingNeighboursAppliesToVisualDistancesToo() {
+        // Vision `distance(to:)`: closer to 0 is a stronger match, unlike bm25's negative scores -
+        // the reviewer's own example of what the floor exists to stop.
+        let closeEnough = NeighbourFinder.Match(date: Date(), specification: "a", tags: [], rank: 0.4)
+        let tooFar = NeighbourFinder.Match(date: Date(), specification: "b", tags: [], rank: 1.9)
+
+        #expect(ContentExtractionPromptFactory.survivingNeighbours([closeEnough, tooFar], floor: 1.0) == [closeEnough])
+    }
+
+    @Test("The shipped visual floor is permissive by default, admitting any distance")
+    func visualNeighbourRelevanceFloorIsPermissiveByDefault() {
+        let veryDistant = NeighbourFinder.Match(date: Date(), specification: "a", tags: [], rank: 1_000)
+
+        #expect(ContentExtractionPromptFactory.survivingNeighbours([veryDistant], floor: ContentExtractionPromptFactory.visualNeighbourRelevanceFloor) == [veryDistant])
+    }
+
+    @Test("Nothing surviving the floor renders no segment - the prompt stays unchanged from today")
+    func noSurvivorsMeansNoSegment() {
+        let weak = NeighbourFinder.Match(date: Date(), specification: "b", tags: [], rank: 0)
+
+        let survivors = ContentExtractionPromptFactory.survivingNeighbours([weak])
+        #expect(survivors.isEmpty)
+        #expect(ContentExtractionPromptFactory.neighbourSegment(survivors) == nil)
+    }
+
     @Test("Untagged inbox scans never reach the example descriptions")
     func specificationsSkipUntaggedDocuments() {
         let filed = (0..<10).map { doc("beschreibung-\($0)", ["rechnung"], date: Date(timeIntervalSince1970: 100)) }
@@ -344,6 +404,13 @@ private actor CallCounter {
     func increment() { count += 1 }
 }
 
+/// Captures one value written from a `@Sendable` responder/finder closure - a plain `var` capture
+/// would be a data race under strict concurrency.
+private actor Box<Value: Sendable> {
+    private(set) var value: Value?
+    func set(_ newValue: Value) { value = newValue }
+}
+
 // NOTE: ContentExtractorStore is `@available(iOS 26, macOS 26, *)`, but the Swift
 // Testing macros refuse `@available`-annotated declarations in this toolchain. So
 // the suite/tests stay un-annotated; the OS-26 helpers carry the availability and
@@ -353,14 +420,20 @@ struct ContentExtractorStoreOrchestrationTests {
 
     @available(iOS 26.0, macOS 26.0, *)
     private static func store(availability: AppleIntelligenceAvailability = .available,
+                              neighbourFinder: NeighbourFinder = .unavailable,
+                              visualNeighbourFinder: VisualNeighbourFinder = .unavailable,
                               respond: @escaping ContentExtractorStore.Responder) -> ContentExtractorStore {
-        ContentExtractorStore(cache: .inMemory(), availability: { availability }, respond: respond)
+        ContentExtractorStore(cache: .inMemory(),
+                              neighbourFinder: neighbourFinder,
+                              visualNeighbourFinder: visualNeighbourFinder,
+                              availability: { availability },
+                              respond: respond)
     }
 
     @Test("Maps and normalizes the raw model output")
     func mapsRawOutput() async throws {
         guard #available(iOS 26.0, macOS 26.0, *) else { return }
-        let store = Self.store { _, _, _ in
+        let store = Self.store { _, _, _, _ in
             RawDocumentInformation(description: "  Tom Tailor Jeans  ", tags: ["Tom-Tailor", "Rechnung!", "kleidung"])
         }
         let info = try #require(try await store.extract(from: "text", with: []))
@@ -371,7 +444,7 @@ struct ContentExtractorStoreOrchestrationTests {
     @Test("Returns nil and does not call the model when unavailable")
     func returnsNilWhenUnavailable() async throws {
         guard #available(iOS 26.0, macOS 26.0, *) else { return }
-        let store = Self.store(availability: .unavailable) { _, _, _ in
+        let store = Self.store(availability: .unavailable) { _, _, _, _ in
             Issue.record("Responder must not be called when the model is unavailable")
             return RawDocumentInformation(description: "", tags: [])
         }
@@ -383,7 +456,7 @@ struct ContentExtractorStoreOrchestrationTests {
     func cachesPerDocumentId() async throws {
         guard #available(iOS 26.0, macOS 26.0, *) else { return }
         let counter = CallCounter()
-        let store = Self.store { _, _, _ in
+        let store = Self.store { _, _, _, _ in
             await counter.increment()
             return RawDocumentInformation(description: "desc", tags: ["tag"])
         }
@@ -399,7 +472,7 @@ struct ContentExtractorStoreOrchestrationTests {
     func noCachingWithoutDocumentId() async throws {
         guard #available(iOS 26.0, macOS 26.0, *) else { return }
         let counter = CallCounter()
-        let store = Self.store { _, _, _ in
+        let store = Self.store { _, _, _, _ in
             await counter.increment()
             return RawDocumentInformation(description: "desc", tags: ["tag"])
         }
@@ -413,12 +486,102 @@ struct ContentExtractorStoreOrchestrationTests {
     @Test("Without a document ID nothing is written to the cache")
     func extractWithoutDocumentIdStoresNothing() async throws {
         guard #available(iOS 26.0, macOS 26.0, *) else { return }
-        let store = Self.store { _, _, _ in
+        let store = Self.store { _, _, _, _ in
             RawDocumentInformation(description: "desc", tags: ["tag"])
         }
 
         _ = try await store.extract(from: "text", with: [])
 
         #expect(await store.getCacheCount() == 0)
+    }
+
+    // MARK: - Neighbour retrieval
+
+    @Test("Neighbours above the floor reach the responder")
+    func neighboursAboveTheFloorReachTheResponder() async throws {
+        guard #available(iOS 26.0, macOS 26.0, *) else { return }
+        let match = NeighbourFinder.Match(date: Date(), specification: "strom", tags: ["energie"], rank: -5)
+        let finder = NeighbourFinder { _, _, _ in [match] }
+        let received = Box<[NeighbourFinder.Match]>()
+        let store = Self.store(neighbourFinder: finder) { _, neighbours, _, _ in
+            await received.set(neighbours)
+            return RawDocumentInformation(description: "desc", tags: [])
+        }
+
+        _ = try await store.extract(from: "text", with: [])
+
+        #expect(await received.value == [match])
+    }
+
+    @Test("Weak text matches are dropped before reaching the responder")
+    func weakTextMatchesAreDropped() async throws {
+        guard #available(iOS 26.0, macOS 26.0, *) else { return }
+        let weak = NeighbourFinder.Match(date: Date(), specification: "strom", tags: [], rank: 0)
+        let finder = NeighbourFinder { _, _, _ in [weak] }
+        let received = Box<[NeighbourFinder.Match]>()
+        let store = Self.store(neighbourFinder: finder) { _, neighbours, _, _ in
+            await received.set(neighbours)
+            return RawDocumentInformation(description: "desc", tags: [])
+        }
+
+        _ = try await store.extract(from: "text", with: [], documentId: 1)
+
+        #expect(await received.value == [])
+    }
+
+    @Test("The visual channel only fires once text retrieval finds nothing")
+    func visualFallbackOnlyWithoutTextSurvivors() async throws {
+        guard #available(iOS 26.0, macOS 26.0, *) else { return }
+        let textMatch = NeighbourFinder.Match(date: Date(), specification: "strom", tags: [], rank: -5)
+        let visualMatch = NeighbourFinder.Match(date: Date(), specification: "visual", tags: [], rank: 1.5)
+        let textFinder = NeighbourFinder { _, _, _ in [textMatch] }
+        let visualFinderCalled = Box<Bool>()
+        let visualFinder = VisualNeighbourFinder { _, _ in
+            await visualFinderCalled.set(true)
+            return [visualMatch]
+        }
+        let received = Box<[NeighbourFinder.Match]>()
+        let store = Self.store(neighbourFinder: textFinder, visualNeighbourFinder: visualFinder) { _, neighbours, _, _ in
+            await received.set(neighbours)
+            return RawDocumentInformation(description: "desc", tags: [])
+        }
+
+        _ = try await store.extract(from: "text", with: [], documentId: 1)
+
+        #expect(await visualFinderCalled.value != true)
+        #expect(await received.value == [textMatch])
+    }
+
+    @Test("The visual channel fills in once text retrieval finds nothing")
+    func visualFallbackFillsIn() async throws {
+        guard #available(iOS 26.0, macOS 26.0, *) else { return }
+        let visualMatch = NeighbourFinder.Match(date: Date(), specification: "visual", tags: [], rank: 1.5)
+        let visualFinder = VisualNeighbourFinder { _, _ in [visualMatch] }
+        let received = Box<[NeighbourFinder.Match]>()
+        let store = Self.store(visualNeighbourFinder: visualFinder) { _, neighbours, _, _ in
+            await received.set(neighbours)
+            return RawDocumentInformation(description: "desc", tags: [])
+        }
+
+        _ = try await store.extract(from: "text", with: [], documentId: 1)
+
+        #expect(await received.value == [visualMatch])
+    }
+
+    @Test("Without a document ID the visual fallback never fires")
+    func visualFallbackNeedsADocumentId() async throws {
+        guard #available(iOS 26.0, macOS 26.0, *) else { return }
+        let visualFinderCalled = Box<Bool>()
+        let visualFinder = VisualNeighbourFinder { _, _ in
+            await visualFinderCalled.set(true)
+            return []
+        }
+        let store = Self.store(visualNeighbourFinder: visualFinder) { _, _, _, _ in
+            RawDocumentInformation(description: "desc", tags: [])
+        }
+
+        _ = try await store.extract(from: "text", with: [])
+
+        #expect(await visualFinderCalled.value != true)
     }
 }

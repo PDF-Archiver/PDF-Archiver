@@ -16,12 +16,22 @@ import Foundation
 /// the model.
 public struct EvaluationDataset: Sendable {
 
-    /// How many evaluation samples a split aims for - the 20-30 Apple
-    /// recommends starting from.
-    public static let targetSampleCount = 25
+    /// How many evaluation samples a split aims for.
+    ///
+    /// Apple suggests starting at 20-30, which is too few here: at 26 samples one
+    /// document moves the mean by 0.038, and retrieval measured as a 0.007 *loss*
+    /// that 160 samples showed to be a 0.059 gain (p=0.006).
+    public static let targetSampleCount = 150
 
     /// The archive as the prompt sees it - never contains a sample.
     public let contextDocuments: [Document]
+
+    /// Each context document's extracted text, keyed by its `Document.id`.
+    ///
+    /// `Document` itself carries no text - retrieval needs it to seed a queryable index
+    /// (`CorpusRetrieval.neighbourFinder(seededWith:texts:)`), which is the only reason this is
+    /// kept alongside `contextDocuments` rather than dropped like the rest of `CorpusDocument`.
+    public let contextTexts: [Document.ID: String]
 
     /// Held-out documents to generate suggestions for.
     public let samples: [CorpusDocument]
@@ -57,6 +67,7 @@ public struct EvaluationDataset: Sendable {
 
         samples = held
         contextDocuments = context.enumerated().map { $1.asArchiveDocument(id: $0) }
+        contextTexts = Dictionary(uniqueKeysWithValues: context.enumerated().map { ($0, $1.text) })
         tagVocabulary = Set(context.flatMap(\.tags).map { $0.lowercased() })
         typicalSpecificationWords = ContentExtractionPromptFactory.descriptionWordRange(of: context.map(\.specification))
     }

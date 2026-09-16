@@ -129,6 +129,29 @@ nonisolated public struct DocumentSuggestion: Identifiable, Equatable, Sendable 
     }
 }
 
+/// A document's Vision feature print, remembered between launches - stage 3's visual retrieval
+/// fallback for a scan whose OCR yield is too thin to rank on
+/// (`docs/retrieval-augmented-tagging-concept.md`).
+@Table
+nonisolated public struct DocumentFeaturePrint: Identifiable, Equatable, Sendable {
+    @Column(primaryKey: true) public let documentID: Document.ID
+    public var id: Document.ID { documentID }
+    /// `FeaturePrintObservation`, `PropertyListEncoder`-encoded (Vision has no public initializer
+    /// that rebuilds one from its raw vector alone).
+    public var encodedObservation: Data
+    /// `GenerateImageFeaturePrintRequest.Revision` as an integer - `distance(to:)` throws across
+    /// revisions, so a stale entry must be told apart from a current one without decoding it.
+    public var revision: Int
+    public var createdAt: Date
+
+    public init(documentID: Document.ID, encodedObservation: Data, revision: Int, createdAt: Date) {
+        self.documentID = documentID
+        self.encodedObservation = encodedObservation
+        self.revision = revision
+        self.createdAt = createdAt
+    }
+}
+
 extension SharedKey where Self == AppStorageKey<Bool>.Default {
     /// `true` while the read model could not be opened at all.
     ///
@@ -299,6 +322,16 @@ private enum ReadModel {
                   "tags" TEXT NOT NULL DEFAULT '[]',
                   "createdAt" TEXT NOT NULL,
                   "modelVersion" INTEGER NOT NULL DEFAULT 1
+                ) STRICT
+                """)
+                .execute(db)
+
+            try #sql("""
+                CREATE TABLE "documentFeaturePrints" (
+                  "documentID" INTEGER PRIMARY KEY NOT NULL REFERENCES "documents"("id") ON DELETE CASCADE,
+                  "encodedObservation" BLOB NOT NULL,
+                  "revision" INTEGER NOT NULL,
+                  "createdAt" TEXT NOT NULL
                 ) STRICT
                 """)
                 .execute(db)

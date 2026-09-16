@@ -394,4 +394,25 @@ struct PDFOCREngineTests {
         let result = await DocumentProcessor.addOcrTextLayer(at: missing, config: config)
         #expect(result == false)
     }
+
+    // MARK: - Feature print (stage 3)
+
+    @Test
+    func firstPageFeaturePrintProducesAComparableObservation() async throws {
+        let url = try writeImageOnlyPDF(name: "feature-print.pdf")
+        let pdf = try #require(PDFDocument(url: url))
+
+        let observation = try await PDFOCREngine.firstPageFeaturePrint(of: pdf)
+
+        let unwrapped = try #require(observation)
+        #expect(!unwrapped.data.isEmpty)
+        // Comparable to itself: proves the observation `distance(to:)` will later use is well-formed.
+        #expect(try unwrapped.distance(to: unwrapped) == 0)
+    }
+
+    @Test
+    func firstPageFeaturePrintIsNilForAnEmptyDocument() async throws {
+        let observation = try await PDFOCREngine.firstPageFeaturePrint(of: PDFDocument())
+        #expect(observation == nil)
+    }
 }
