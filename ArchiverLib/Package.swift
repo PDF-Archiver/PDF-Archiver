@@ -32,8 +32,6 @@ let package = Package(
         .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "1.17.1"),
         .package(url: "https://github.com/pointfreeco/swift-sharing", exact: "2.10.1"),
         .package(url: "https://github.com/pointfreeco/sqlite-data", exact: "1.12.0"),
-        // Linked directly by ArchiverModels for `@Table`: pulling SQLiteData in instead would
-        // put GRDB into the Share Extension, which only needs the model types.
         .package(url: "https://github.com/pointfreeco/swift-structured-queries", exact: "0.39.2"),
         .package(url: "https://github.com/sideeffect-io/AsyncExtensions", exact: "0.5.5"),
         .package(url: "https://github.com/apple/swift-async-algorithms", exact: "1.1.5")
@@ -45,8 +43,6 @@ let package = Package(
                     .product(name: "SQLiteData", package: "sqlite-data"),
                     .product(name: "Dependencies", package: "swift-dependencies"),
                     .product(name: "DependenciesMacros", package: "swift-dependencies"),
-                    // For the one shared key `bootstrapDatabase` writes: the `Shared` target would
-                    // pull all of the Composable Architecture in here for it.
                     .product(name: "Sharing", package: "swift-sharing")
                 ]),
         .target(name: "ArchiverFeatures",
