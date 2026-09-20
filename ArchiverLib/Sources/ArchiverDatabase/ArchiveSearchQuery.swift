@@ -49,7 +49,7 @@ nonisolated public struct ArchiveSearchQuery: Equatable, Sendable {
             switch token {
             case .tag(let tag):
                 fragment.append("""
-                    AND EXISTS (SELECT 1 FROM \(DocumentTag.self)                     WHERE \(DocumentTag.documentID) = d."id" AND \(DocumentTag.tag) = \(bind: tag))
+                    AND EXISTS (SELECT 1 FROM \(DocumentTag.self) WHERE \(DocumentTag.documentID) = d."id" AND \(DocumentTag.tag) = \(bind: tag))
 
                     """)
 
