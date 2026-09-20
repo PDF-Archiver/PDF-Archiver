@@ -22,9 +22,9 @@ final class ICloudFolderProvider: FolderProvider {
     private var currentDocuments: [Int: DocumentInformation] = [:]
     private var lastDocuments: [DocumentInformation]?
     private var observationTask: Task<Void, Never>?
-    /// `nonisolated(unsafe)` so `deinit` can still hand them back: they are written in `init` and
-    /// `stop()` under the actor, and `deinit` by definition holds the last reference.
-    nonisolated(unsafe) private var notificationTokens: [any NSObjectProtocol] = []
+    /// Boxed so its own `deinit` removes the observers: a non-`Sendable` array could not be read
+    /// from `ICloudFolderProvider`'s `deinit` directly without an unsafe opt-out.
+    private var notificationTokenBox: NotificationTokenBox?
 
     init(baseUrl: URL) throws {
         self.baseUrl = baseUrl
@@ -63,7 +63,7 @@ final class ICloudFolderProvider: FolderProvider {
         let (gathered, gatheredContinuation) = AsyncStream.makeStream(of: Void.self)
         let (updates, updatesContinuation) = AsyncStream.makeStream(of: MetadataUpdate.self)
         let center = NotificationCenter.default
-        notificationTokens = [
+        notificationTokenBox = NotificationTokenBox([
             // Scoped to `metadataQuery`: macOS runs a second provider for the observed folder, and
             // an unscoped observer would merge that folder's items into this one's snapshot.
             center.addObserver(forName: .NSMetadataQueryDidFinishGathering, object: metadataQuery, queue: nil) { _ in
@@ -72,7 +72,7 @@ final class ICloudFolderProvider: FolderProvider {
             center.addObserver(forName: .NSMetadataQueryDidUpdate, object: metadataQuery, queue: nil) { notification in
                 updatesContinuation.yield(MetadataUpdate(notification))
             }
-        ]
+        ])
 
         observationTask = Task(priority: .utility) { [weak self] in
             guard let self else { return }
@@ -109,16 +109,28 @@ final class ICloudFolderProvider: FolderProvider {
     deinit {
         Self.log.debug("deinit ICloudFolderProvider")
         observationTask?.cancel()
-        notificationTokens.forEach(NotificationCenter.default.removeObserver)
         metadataQuery.stop()
     }
 
     func stop() {
         observationTask?.cancel()
         observationTask = nil
-        notificationTokens.forEach(NotificationCenter.default.removeObserver)
-        notificationTokens = []
+        notificationTokenBox = nil
         metadataQuery.stop()
+    }
+
+    /// Frees its `NotificationCenter` observers when it deallocates, so `ICloudFolderProvider`'s
+    /// own `deinit` never has to touch the non-`Sendable` tokens directly.
+    private final class NotificationTokenBox {
+        private let tokens: [any NSObjectProtocol]
+
+        init(_ tokens: [any NSObjectProtocol]) {
+            self.tokens = tokens
+        }
+
+        deinit {
+            tokens.forEach(NotificationCenter.default.removeObserver)
+        }
     }
 
     /// One `DidUpdate`, read on the posting thread: `NSMetadataItem` is not `Sendable` and must not
@@ -268,10 +280,13 @@ extension NSMetadataItem: nonisolated Log {
             return nil
         }
 
+        // `isTagged` is unknown here - only `ArchiveStore` knows `untaggedFolders`, and adjusts it
+        // before the item reaches the indexer.
         return DocumentInformation(id: id,
                                    url: normalizedUrl,
-                                   downloadStatus: documentStatus,
+                                   isTagged: false,
                                    sizeInBytes: Double(size),
+                                   downloadStatus: documentStatus,
                                    creationDate: value(forAttribute: NSMetadataItemFSCreationDateKey) as? Date,
                                    contentModificationDate: value(forAttribute: NSMetadataItemFSContentChangeDateKey) as? Date)
     }
