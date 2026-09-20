@@ -113,6 +113,6 @@ and — with Premium — the opt-in downloads plus the text extraction that fill
 the search index. `requiresNetworkConnectivity` follows the "Download all
 documents for search" setting, because only those downloads need the network.
 
-On macOS `BackgroundTasks` is unavailable, so `MacBackgroundActivity` runs the
-text extraction from an `NSBackgroundActivityScheduler` and adds the two
-conditions that scheduler has no flag for: external power and an idle user.
+On macOS `BackgroundTasks` is unavailable and there is no replacement: indexing
+only happens through `indexWhileAppIsOpen`, while the app is running in the
+foreground.

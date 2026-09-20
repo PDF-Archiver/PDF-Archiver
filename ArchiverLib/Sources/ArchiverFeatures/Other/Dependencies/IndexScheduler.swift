@@ -13,17 +13,15 @@ import StoreKit
 extension IndexSchedulerDependency: DependencyKey {
     public static let liveValue = IndexSchedulerDependency(
         schedule: {
+            // macOS has no `BackgroundTasks` and no launch-on-schedule; `indexWhileAppIsOpen`
+            // covers it instead, for as long as the app stays open.
             #if os(iOS)
             BackgroundTaskManager.scheduleCacheProcessing()
-            #else
-            await MacBackgroundActivity.shared.start()
             #endif
         },
         cancel: {
             #if os(iOS)
             BackgroundTaskManager.cancelCacheProcessing()
-            #else
-            await MacBackgroundActivity.shared.stop()
             #endif
         },
         indexWhileAppIsOpen: {
