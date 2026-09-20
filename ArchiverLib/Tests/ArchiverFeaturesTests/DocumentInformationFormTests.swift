@@ -376,6 +376,56 @@ struct DocumentInformationFormTests {
     }
 
     @Test
+    func onTaskForAnUntaggedDocumentStartsAISuggestions() async throws {
+        let date = try Date("2025-07-26T15:00:0Z", strategy: .iso8601)
+        let document = Document.mock(isTagged: false)
+
+        let store = TestStore(initialState: DocumentInformationForm.State(document: document)) {
+            DocumentInformationForm()
+        } withDependencies: {
+            $0.archiveStore.parseFilename = { _ in (date, nil, nil) }
+            $0.textAnalyser.getTextFrom = { _ in nil }
+            $0.textAnalyser.getFileTagsFrom = { _ in [] }
+        }
+
+        await store.send(.onTask) {
+            $0.isLoading = true
+            $0.focusedField = .date
+        }
+
+        await store.receive(.startUpdatingAllSuggestionsWithAI(document))
+
+        let expectedResult = DocumentInformationForm.DocumentParsingResult(
+            date: date,
+            specification: "",
+            tags: [],
+            dateSuggestions: nil,
+            tagSuggestions: nil)
+        await store.receive(.updateDocumentData(expectedResult)) {
+            $0.isLoading = false
+            $0.document.date = date
+        }
+    }
+
+    @Test
+    func onTaskForATaggedDocumentStartsTagSuggestions() async throws {
+        let document = Document.mock(tags: ["invoice"], isTagged: true)
+        let store = TestStore(initialState: DocumentInformationForm.State(document: document)) {
+            DocumentInformationForm()
+        }
+
+        await store.send(.onTask) {
+            $0.isLoading = true
+            $0.focusedField = .date
+        }
+
+        await store.receive(.startUpdatingTagSuggestions)
+        await store.receive(.updateTagSuggestions([])) {
+            $0.isLoading = false
+        }
+    }
+
+    @Test
     func updateDocumentDataDropsSuggestionsAlreadyOnDocument() async throws {
         let store = TestStore(initialState: DocumentInformationForm.State(document: .mock())) {
             DocumentInformationForm()
