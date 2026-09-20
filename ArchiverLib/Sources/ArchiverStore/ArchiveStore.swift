@@ -5,8 +5,9 @@
 //  Created by Julian Kahnert on 14.03.24.
 //
 
+import ArchiverDatabase
 import ArchiverModels
-import AsyncExtensions
+import Dependencies
 import Foundation
 import OSLog
 import PDFKit.PDFDocument
@@ -14,7 +15,19 @@ import Shared
 import Sharing
 
 public actor ArchiveStore: Log {
-    public static let shared = ArchiveStore()
+    public static let shared: ArchiveStore = {
+        let store = ArchiveStore()
+        Task(priority: .medium) {
+            do {
+                try await store.reloadArchiveDocuments()
+            } catch {
+                Logger.archiveStore.error("Failed to reload archive documents: \(error.localizedDescription)")
+            }
+        }
+        return store
+    }()
+
+    @Dependency(\.archiveIndexer) private var archiveIndexer
 
     #if os(macOS)
     @Shared(.observedFolder) var observedFolderURL: URL?
@@ -22,30 +35,16 @@ public actor ArchiveStore: Log {
 
     private static let availableProvider: [any FolderProvider.Type] = [ICloudFolderProvider.self, LocalFolderProvider.self]
 
-    public let isLoadingStream = AsyncCurrentValueSubject(true)
-    public let documentsStream: AsyncStream<[Document]>
-    private let documentsStreamContinuation: AsyncStream<[Document]>.Continuation
-    public private(set) var currentDocuments: [Document] = []
-
     private var archiveFolder: URL!
     private var untaggedFolders: [URL] = []
     private var providers: [any FolderProvider] = []
     private var folderObservationTasks: [Task<Void, Never>] = []
+    /// Counts `update()` calls: the actor suspends while it creates providers, so a second call
+    /// interleaves with the first, and the superseded run must install nothing.
+    private var updateCount = 0
 
-    private init() {
-        let (stream, continuation) = AsyncStream<[Document]>.makeStream()
-        self.documentsStream = stream
-        self.documentsStreamContinuation = continuation
-
+    init() {
         Logger.archiveStore.trace("[ArchiveStore] init called")
-
-        Task(priority: .medium) {
-            do {
-                try await reloadArchiveDocuments()
-            } catch {
-                Logger.archiveStore.error("Failed to reload archive documents: \(error.localizedDescription)")
-            }
-        }
     }
 
     public func update(with type: StorageType) async throws {
@@ -62,7 +61,8 @@ public actor ArchiveStore: Log {
     }
 
     func update(archiveFolder: URL, untaggedFolders: [URL]) async {
-        isLoadingStream.send(true)
+        updateCount += 1
+        let updateID = updateCount
 
         // stop all current file providers to prevent watching changes while moving folders
         for provider in providers {
@@ -82,29 +82,52 @@ public actor ArchiveStore: Log {
             let provider = await initProvider(for: observedFolder)
             foundProviders.append(provider)
         }
-        providers = foundProviders.compactMap(\.self)
-        var documentsMap: [URL: [Document]] = [:]
-        for provider in providers {
-            let task = Task {
+        let newProviders = foundProviders.compactMap(\.self)
+
+        // Resolved before the roots are announced: nothing may suspend between the generation the
+        // indexer hands out and the tasks that carry it, or those tasks are born superseded.
+        var observed: [(provider: any FolderProvider, rootKey: String)] = []
+        for provider in newProviders {
+            let rootKey = await RootKey.of(provider.baseUrl)
+            observed.append((provider, rootKey))
+        }
+
+        // A newer `update()` overtook this one. Announcing these roots now would supersede *its*
+        // generation, and the indexer would drop every snapshot its live tasks deliver - the
+        // progress indicator then spins for the rest of the process.
+        guard updateID == updateCount else {
+            await Self.stop(observed.map(\.provider))
+            return
+        }
+        let generation = await archiveIndexer.setObservedRoots(observed.map(\.rootKey))
+        guard updateID == updateCount else {
+            await Self.stop(observed.map(\.provider))
+            return
+        }
+
+        providers = newProviders
+        folderObservationTasks = observed.map { provider, rootKey in
+            Task {
                 let folderChangeStream = await provider.currentDocumentsStream
                 for await changes in folderChangeStream {
+                    guard !Task.isCancelled else { break }
                     Self.log.debug("Found documents count: \(changes.count)")
 
-                    await documentsMap[provider.baseUrl] = changes.asyncMap { change in
-                        await Document.create(url: change.url,
-                                        isTagged: isTagged(change.url),
-                                        downloadStatus: change.downloadStatus,
-                                        sizeInBytes: change.sizeInBytes)
+                    // Only `ArchiveStore` knows `untaggedFolders`, so it stamps `isTagged` per item.
+                    let items = changes.map { change -> DocumentInformation in
+                        var item = change
+                        item.isTagged = isTagged(change.url)
+                        return item
                     }
-                    .compactMap(\.self)
-
-                    let documents = documentsMap.values.flatMap(\.self)
-                    documentsStreamContinuation.yield(documents)
-                    currentDocuments = documents
-                    isLoadingStream.send(false)
+                    await archiveIndexer.reconcile(items, rootKey, generation)
                 }
             }
-            folderObservationTasks.append(task)
+        }
+    }
+
+    private static func stop(_ providers: [any FolderProvider]) async {
+        for provider in providers {
+            await provider.stop()
         }
     }
 
@@ -195,54 +218,6 @@ public actor ArchiveStore: Log {
     public func delete(url: URL) async throws {
         let provider = try await getProvider(for: url)
         try await provider.delete(url: url)
-    }
-
-    /// Returns tags that where used similarly on tagged documents
-    public func getTagSuggestionsSimilar(to tags: Set<String>) -> [String] {
-        guard !tags.isEmpty else { return [] }
-        let filteredTagCombinations = currentDocuments
-            .map(\.tags)
-            .filter { $0.isSuperset(of: tags) }
-
-        var tagCountMap: [String: Int] = [:]
-        for tag in filteredTagCombinations.flatMap(\.self) {
-            guard !tags.contains(tag) else { continue }
-            tagCountMap[tag, default: 0] += 1
-        }
-
-        return tagCountMap
-            .sorted { lhs, rhs in
-                if lhs.value == rhs.value {
-                    lhs.key < rhs.key
-                } else {
-                    lhs.value > rhs.value
-                }
-            }
-            .prefix(5)
-            .map(\.key)
-    }
-
-    /// Returns tags that start with the searchteerm like autocomplete
-    ///
-    /// The returned tag will be sorted according to their usage count.
-    ///
-    /// - `bi` -> `[bill]`
-    public func getTagSuggestions(for searchTerm: String) -> [String] {
-        var tagCountMap: [String: Int] = [:]
-        for tag in currentDocuments.flatMap(\.tags) {
-            tagCountMap[tag, default: 0] += 1
-        }
-        return tagCountMap
-            .filter { $0.key.hasPrefix(searchTerm) }
-            .sorted { lhs, rhs in
-                if lhs.value == rhs.value {
-                    lhs.key < rhs.key
-                } else {
-                    lhs.value > rhs.value
-                }
-            }
-            .prefix(5)
-            .map(\.key)
     }
 
     public func reloadArchiveDocuments() async throws {

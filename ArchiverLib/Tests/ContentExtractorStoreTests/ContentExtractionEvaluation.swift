@@ -61,7 +61,7 @@ struct ContentExtractionEvaluation: Evaluation {
     init(dataset source: EvaluationDataset) {
         if Self.usesCloudCompute {
             let pages = source.samples.reduce(into: [String: String]()) { $0[$1.text] = $1.filename }
-            store = ContentExtractorStore(cache: ContentExtractorCache(cacheDirectory: URL(filePath: NSTemporaryDirectory()).appending(path: "eval-cache")),
+            store = ContentExtractorStore(cache: .inMemory(),
                                           availability: { .available },
                                           respond: CloudExtraction.responder(sendsWholeDocument: true, pageSources: pages))
         } else {

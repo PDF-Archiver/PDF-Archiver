@@ -11,14 +11,9 @@ import Foundation
 
 @DependencyClient
 public struct ArchiveStoreDependency: Sendable {
-    public var documentChanges: @Sendable () async -> AsyncStream<[Document]> = { AsyncStream<[Document]> { $0.yield([]) } }
     public var reloadDocuments: @Sendable () async throws -> Void
-    public var getDocuments: @Sendable () async throws -> [Document]
-    public var isLoading: @Sendable () async -> AsyncStream<Bool> = { AsyncStream<Bool> { $0.yield(false) } }
     public var startDownloadOf: @Sendable (URL) async throws -> Void
     public var deleteDocumentAt: @Sendable (URL) async throws -> Void
-    public var getTagSuggestionsFor: @Sendable (String) async -> [String] = { _ in [] }
-    public var getTagSuggestionsSimilarTo: @Sendable (Set<String>) async -> [String] = { _ in [] }
     public var parseFilename: @Sendable (String) async -> (date: Date?, specification: String?, tagNames: [String]?) = { _ in (nil, nil, nil) }
     public var saveDocument: @Sendable (Document, Bool) async throws -> Void
     public var setArchiveStorageType: @Sendable (StorageType) async throws -> Void
@@ -26,23 +21,9 @@ public struct ArchiveStoreDependency: Sendable {
 
 extension ArchiveStoreDependency: TestDependencyKey {
     public static let previewValue = Self(
-        documentChanges: {
-            AsyncStream { stream in
-                stream.yield([
-                    .mock(url: .temporaryDirectory.appending(component: "file1.pdf"), specification: "document-specification-1", tags: Set(["tag1", "tag2"])),
-                    .mock(url: .temporaryDirectory.appending(component: "file2.pdf"), specification: "document-specification-2", tags: Set(["tag1", "tag2"]), downloadStatus: 1),
-                    .mock(url: .temporaryDirectory.appending(component: "file3.pdf"), specification: "document-specification-3", tags: Set(["tag1", "tag2"]), downloadStatus: 1),
-                    .mock(url: .temporaryDirectory.appending(component: "file4.pdf"), specification: "document-specification-4", tags: Set(["tag1", "tag2"]), downloadStatus: 1)
-                ])
-            }
-        },
         reloadDocuments: { },
-        getDocuments: { [] },
-        isLoading: { AsyncStream { $0.yield(false) } },
         startDownloadOf: { _ in },
         deleteDocumentAt: { _ in },
-        getTagSuggestionsFor: { _ in [] },
-        getTagSuggestionsSimilarTo: { _ in [] },
         parseFilename: { _ in (nil, nil, nil) },
         saveDocument: { _, _ in },
         setArchiveStorageType: { _ in }
@@ -53,39 +34,14 @@ extension ArchiveStoreDependency: TestDependencyKey {
 
 extension ArchiveStoreDependency: DependencyKey {
     public static let liveValue = ArchiveStoreDependency(
-        documentChanges: {
-            return ArchiveStore.shared.documentsStream
-        },
         reloadDocuments: {
             return try await ArchiveStore.shared.reloadArchiveDocuments()
-        },
-        getDocuments: {
-            return await ArchiveStore.shared.currentDocuments
-        },
-        isLoading: {
-            return AsyncStream { stream in
-                let task = Task {
-                    for await isLoading in ArchiveStore.shared.isLoadingStream {
-                        stream.yield(isLoading)
-                    }
-                    stream.finish()
-                }
-                stream.onTermination = { _ in
-                    task.cancel()
-                }
-            }
         },
         startDownloadOf: { url in
             try await ArchiveStore.shared.startDownload(of: url)
         },
         deleteDocumentAt: { url in
             try await ArchiveStore.shared.delete(url: url)
-        },
-        getTagSuggestionsFor: { tag in
-            await ArchiveStore.shared.getTagSuggestions(for: tag)
-        },
-        getTagSuggestionsSimilarTo: { tags in
-            await ArchiveStore.shared.getTagSuggestionsSimilar(to: tags)
         },
         parseFilename: { filename in
             await Document.parseFilename(filename)
