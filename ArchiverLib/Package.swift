@@ -143,7 +143,9 @@ let package = Package(
             dependencies: [
                 "ContentExtractorStore",
                 "ArchiverModels",
-                "EvaluationCorpus"
+                "ArchiverDatabase",
+                "EvaluationCorpus",
+                .product(name: "DependenciesTestSupport", package: "swift-dependencies")
             ]
         ),
         .testTarget(

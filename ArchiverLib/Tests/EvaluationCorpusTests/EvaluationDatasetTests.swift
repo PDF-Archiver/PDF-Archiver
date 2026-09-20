@@ -86,7 +86,13 @@ struct EvaluationDatasetTests {
           arguments: [200, 517, 2537])
     func strideAdaptsToCorpusSize(count: Int) {
         let dataset = EvaluationDataset(corpus: Self.corpus(count: count))
-        #expect((20...30).contains(dataset.samples.count))
+
+        // Derived, not hard-coded: the band was left behind once already when
+        // `targetSampleCount` rose. The stride floor of 2 caps an archive below twice
+        // the target at half its size, which is what leaves it any context at all.
+        let expected = min(EvaluationDataset.targetSampleCount, count / 2)
+
+        #expect((expected...expected * 3 / 2).contains(dataset.samples.count))
     }
 
     @Test("An archive smaller than the target sample count still keeps context documents")
@@ -94,5 +100,17 @@ struct EvaluationDatasetTests {
         let dataset = EvaluationDataset(corpus: Self.corpus(count: 30))
         #expect(!dataset.samples.isEmpty)
         #expect(!dataset.contextDocuments.isEmpty)
+    }
+
+    @Test("Every context document's id resolves to its own text")
+    func contextTextsAlignWithContextDocuments() {
+        let corpus = Self.corpus(count: 30)
+        let textByFilename = Dictionary(uniqueKeysWithValues: corpus.map { ($0.filename, $0.text) })
+        let dataset = EvaluationDataset(corpus: corpus, stride: 10)
+
+        #expect(dataset.contextTexts.count == dataset.contextDocuments.count)
+        for document in dataset.contextDocuments {
+            #expect(dataset.contextTexts[document.id] == textByFilename[document.filename])
+        }
     }
 }

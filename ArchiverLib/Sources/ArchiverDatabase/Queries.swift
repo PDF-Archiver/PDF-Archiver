@@ -69,6 +69,22 @@ nonisolated public struct TagUsage: Equatable, Sendable {
     public let count: Int
 }
 
+/// One retrieval hit for `Document.neighbours(matchingFTSQuery:excluding:limit:)`: a tagged
+/// document plus how well its text matched, best (most negative) rank first.
+@Selection
+nonisolated public struct DocumentNeighbour: Equatable, Sendable {
+    public let document: Document
+    public let rank: Double
+}
+
+/// One tagged document's Vision feature print, for stage 3's visual nearest-neighbour scan.
+@Selection
+nonisolated public struct DocumentFeaturePrintRow: Equatable, Sendable {
+    public let document: Document
+    public let encodedObservation: Data
+    public let revision: Int
+}
+
 extension Document {
     public static let tagged = Self.where(\.isTagged).order { $0.date.desc() }
     public static let inbox = Self.where { !$0.isTagged }.order { $0.date.desc() }
@@ -179,6 +195,39 @@ extension Document {
         Self.tagged.limit(limit)
     }
 
+    /// The *k* tagged documents whose text best matches `ftsQuery`, ranked by `bm25(documentTexts)`.
+    ///
+    /// Reuses `rankedSearch`'s join/rank shape; `ftsQuery` differs because the caller (a whole
+    /// document's text, not a short typed phrase) OR-joins its terms via `DocumentText.orQuery(from:)` -
+    /// see that function for why. `documentID` excludes the document being tagged, so a re-tag
+    /// never retrieves itself as its own nearest neighbour.
+    public static func neighbours(matchingFTSQuery ftsQuery: String, excluding documentID: Document.ID?, limit: Int) -> some Statement<DocumentNeighbour> {
+        // Built as a fragment, not `(\(bind: documentID) IS NULL OR ...)`: binding an Optional
+        // directly triggers a spurious "debug description" warning, and unwrapping here also
+        // drops the always-true `IS NULL OR` branch when there is nothing to exclude.
+        let exclusion: QueryFragment = documentID.map { "AND d.\"id\" != \(bind: $0)\n" } ?? ""
+
+        return #sql(
+            """
+            WITH "ranked" AS (
+              SELECT d."id" AS "id", t."rank" AS "rank"
+              FROM \(Document.self) AS d
+              JOIN \(DocumentText.self) AS t ON t."rowid" = d."id"
+              WHERE d."isTagged" = 1
+                \(exclusion)
+                AND \(DocumentText.self) MATCH \(bind: ftsQuery)
+              ORDER BY t."rank" ASC
+              LIMIT \(bind: limit)
+            )
+            SELECT \(Document.columns), r."rank" AS "rank"
+            FROM "ranked" AS r
+            JOIN \(Document.self) ON \(Document.id) = r."id"
+            ORDER BY r."rank" ASC
+            """,
+            as: DocumentNeighbour.self
+        )
+    }
+
     public static func yearCounts(taggedOnly: Bool) -> Select<YearCount, Document, ()> {
         Self.where { documents in
             if taggedOnly {
@@ -218,6 +267,67 @@ extension DocumentText {
             WHERE "rowid" = \(bind: id)
             """,
             as: String.self
+        )
+    }
+
+    /// Where a term ends. Control characters split rather than vanish: FTS5's tokenizer breaks
+    /// the indexed body at a U+0000 too, so `IN\u{0}56998332` has to become the two terms it
+    /// was indexed as - and leaving one inside a quoted term makes FTS5 reject the whole query.
+    private static func isTermSeparator(_ character: Character) -> Bool {
+        character.isWhitespace || character.unicodeScalars.contains { $0.properties.generalCategory == .control }
+    }
+
+    /// Turns a whole document's text into an FTS5 `OR` query.
+    ///
+    /// Unlike `ArchiveSearchQuery.ftsQuery`'s implicit `AND` over a few deliberately typed words,
+    /// a whole document's vocabulary should surface anything sharing *some* of it, not only
+    /// documents containing every word - `bm25()` does the actual relevance ranking.
+    ///
+    /// - Returns: `nil` when no term clears `ArchiveSearchQuery.minimumContentTermLength` - a bound
+    ///   empty `MATCH` still gets parsed by FTS5 and throws, so the caller must skip the query
+    ///   entirely rather than run it with an empty string.
+    public static func orQuery(from text: String) -> String? {
+        let terms = Set(
+            text
+                .split(whereSeparator: isTermSeparator)
+                .map(String.init)
+                .filter { $0.count >= ArchiveSearchQuery.minimumContentTermLength }
+        )
+        guard !terms.isEmpty else { return nil }
+
+        return terms
+            .sorted()
+            .map { term in
+                // Doubling an embedded quote is how FTS5 escapes it inside a quoted string.
+                let escaped = term.replacingOccurrences(of: "\"", with: "\"\"")
+                return "\"\(escaped)\""
+            }
+            .joined(separator: " OR ")
+    }
+}
+
+extension DocumentFeaturePrint {
+    /// Every tagged document's feature print, for the visual fallback's in-memory
+    /// nearest-neighbour scan.
+    ///
+    /// No vector index: at archive scale (thousands of documents) a linear scan plus
+    /// `distance(to:)` is cheap enough that one is not warranted
+    /// (`docs/retrieval-augmented-tagging-concept.md`). `documentID` excludes the document being
+    /// tagged, mirroring `Document.neighbours(matchingFTSQuery:excluding:limit:)`.
+    public static func taggedRows(excluding documentID: Document.ID?) -> some Statement<DocumentFeaturePrintRow> {
+        // See `Document.neighbours` for why this is a fragment rather than an inline
+        // `(\(bind: documentID) IS NULL OR ...)` bind of an Optional.
+        let exclusion: QueryFragment = documentID.map { "AND \(Document.id) != \(bind: $0)\n" } ?? ""
+
+        return #sql(
+            """
+            SELECT \(Document.columns), f."encodedObservation" AS "encodedObservation", f."revision" AS "revision"
+            FROM \(DocumentFeaturePrint.self) AS f
+            JOIN \(Document.self) ON \(Document.id) = f."documentID"
+            WHERE \(Document.isTagged) = 1
+              \(exclusion)
+            """,
+            as: DocumentFeaturePrintRow.self
         )
     }
 }
