@@ -13,21 +13,6 @@ import Shared
     static let shared = FolderProviderActor()
 }
 
-struct DocumentInformation: Equatable, Comparable, Sendable {
-    static func < (lhs: Self, rhs: Self) -> Bool {
-        lhs.url.path < rhs.url.path
-    }
-
-    let id: Document.ID
-    /// Normalised: `standardizedFileURL.resolvingSymlinksInPath()`, so the same file cannot arrive
-    /// once as `/private/var/…` and once as `/var/…`.
-    let url: URL
-    let downloadStatus: Double
-    let sizeInBytes: Double
-    let creationDate: Date?
-    let contentModificationDate: Date?
-}
-
 @FolderProviderActor
 protocol FolderProvider: AnyObject, Log, Sendable {
 

@@ -13,7 +13,7 @@ import Foundation
 @DependencyClient
 public struct ArchiveIndexerDependency: Sendable {
     public var setObservedRoots: @Sendable ([String]) async -> Int = { _ in 0 }
-    public var reconcile: @Sendable ([DocumentSnapshotItem], String, Int) async -> Void
+    public var reconcile: @Sendable ([DocumentInformation], String, Int) async -> Void
     /// `false` if the reconcile is still running when `timeout` is up.
     public var waitWhileReconciling: @Sendable (_ timeout: Duration) async -> Bool = { _ in true }
     public var indexPendingTexts: @Sendable (_ budget: Int) async -> Void

@@ -555,8 +555,8 @@ struct ReconcilerTests {
                              size: Double = 100,
                              downloadStatus: Double = 1,
                              creationDate: Date? = nil,
-                             contentModificationDate: Date? = fileSystemDate) -> DocumentSnapshotItem {
-        DocumentSnapshotItem(id: id,
+                             contentModificationDate: Date? = fileSystemDate) -> DocumentInformation {
+        DocumentInformation(id: id,
                              url: URL(filePath: path),
                              isTagged: isTagged,
                              sizeInBytes: size,

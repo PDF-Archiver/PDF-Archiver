@@ -114,14 +114,10 @@ public actor ArchiveStore: Log {
                     Self.log.debug("Found documents count: \(changes.count)")
 
                     // Only `ArchiveStore` knows `untaggedFolders`, so it stamps `isTagged` per item.
-                    let items = changes.map { change in
-                        DocumentSnapshotItem(id: change.id,
-                                             url: change.url,
-                                             isTagged: isTagged(change.url),
-                                             sizeInBytes: change.sizeInBytes,
-                                             downloadStatus: change.downloadStatus,
-                                             creationDate: change.creationDate,
-                                             contentModificationDate: change.contentModificationDate)
+                    let items = changes.map { change -> DocumentInformation in
+                        var item = change
+                        item.isTagged = isTagged(change.url)
+                        return item
                     }
                     await archiveIndexer.reconcile(items, rootKey, generation)
                 }

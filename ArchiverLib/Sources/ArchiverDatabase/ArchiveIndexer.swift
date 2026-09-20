@@ -66,7 +66,7 @@ public actor ArchiveIndexer {
     ///
     /// Cancelled provider tasks still deliver buffered snapshots and actor jobs are not strictly
     /// FIFO, so a stale generation or an unobserved root is dropped before anything is written.
-    public func reconcile(_ items: [DocumentSnapshotItem], root: String, generation: Int) async {
+    public func reconcile(_ items: [DocumentInformation], root: String, generation: Int) async {
         guard isCurrent(root: root, generation: generation) else { return }
 
         var existing: [Document.ID: Document] = [:]
@@ -203,7 +203,7 @@ public actor ArchiveIndexer {
     /// `@concurrent` for the same reason as `extractText`: under `NonisolatedNonsendingByDefault`
     /// thousands of filename parses would run on the indexer's executor and stall every other job.
     @concurrent
-    nonisolated static func makeDocuments(from items: [DocumentSnapshotItem],
+    nonisolated static func makeDocuments(from items: [DocumentInformation],
                                           root: String) async -> [Document.ID: Document] {
         var documents: [Document.ID: Document] = [:]
         documents.reserveCapacity(items.count)
@@ -215,7 +215,7 @@ public actor ArchiveIndexer {
 
     /// One row per id within a snapshot, last one wins: a duplicate would otherwise abort the
     /// whole transaction. Duplicates across roots are not covered - see `isCurrent`.
-    static func deduplicated(_ items: [DocumentSnapshotItem], root: String) -> [DocumentSnapshotItem] {
+    static func deduplicated(_ items: [DocumentInformation], root: String) -> [DocumentInformation] {
         var seenIDs: Set<Document.ID> = []
         return items.reversed().filter { item in
             guard seenIDs.insert(item.id).inserted else {
@@ -231,7 +231,7 @@ public actor ArchiveIndexer {
     ///
     /// Pure, so "an unchanged snapshot changes nothing" is one assertion instead of an observation
     /// dance. `documents` carries the row each item's filename parses into.
-    static func plan(items: [DocumentSnapshotItem],
+    static func plan(items: [DocumentInformation],
                      existing: [Document.ID: Document],
                      root: String,
                      documents: [Document.ID: Document]) -> ReconcilePlan {
@@ -352,7 +352,7 @@ public actor ArchiveIndexer {
 
     /// Last resort after a failed write: the snapshot is authoritative, so the root is replaced
     /// wholesale rather than left in a half-applied state that every later snapshot inherits.
-    func replaceRoot(_ root: String, with items: [DocumentSnapshotItem], generation: Int) async {
+    func replaceRoot(_ root: String, with items: [DocumentInformation], generation: Int) async {
         var documents: [Document] = []
         for item in items {
             documents.append(await Document.make(from: item, rootKey: root))

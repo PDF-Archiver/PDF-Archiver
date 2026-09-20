@@ -1,23 +1,29 @@
 //
-//  DocumentSnapshotItem.swift
+//  DocumentInformation.swift
 //  ArchiverLib
 //
-//  Created by Julian Kahnert on 06.09.26.
+//  Created by Julian Kahnert on 19.08.20.
 //
 
 import Foundation
 
-/// One file of a folder snapshot, as `ArchiveStore` hands it to the indexer.
+/// One file a `FolderProvider` knows about, on its way to `ArchiveIndexer`.
 ///
 /// Public so the producer (`ArchiverStore`) and the consumer (`ArchiverDatabase`) can share it:
-/// `ArchiverStore` depends on `ArchiverDatabase`, so passing the store-internal
-/// `DocumentInformation` across would be a module cycle.
-nonisolated public struct DocumentSnapshotItem: Equatable, Sendable {
+/// `ArchiverStore` depends on `ArchiverDatabase`, so a store-internal type would need a module
+/// cycle to cross that boundary.
+nonisolated public struct DocumentInformation: Equatable, Comparable, Sendable {
+    public static func < (lhs: Self, rhs: Self) -> Bool {
+        lhs.url.path < rhs.url.path
+    }
+
     public let id: Document.ID
-    /// Normalised: `standardizedFileURL.resolvingSymlinksInPath()`.
+    /// Normalised: `standardizedFileURL.resolvingSymlinksInPath()`, so the same file cannot arrive
+    /// once as `/private/var/…` and once as `/var/…`.
     public let url: URL
-    /// Folder membership *and* filename pattern, decided by `ArchiveStore`.
-    public let isTagged: Bool
+    /// Folder membership *and* filename pattern. Providers know neither, so they hand back a
+    /// placeholder; only `ArchiveStore` knows `untaggedFolders` and adjusts it.
+    public var isTagged: Bool
     public let sizeInBytes: Double
     public let downloadStatus: Double
     /// Date fallback for untagged files whose filename carries none.
@@ -56,7 +62,7 @@ extension Date {
 extension Document {
     /// The row one snapshot item becomes: the filename decides date, specification and tags, with
     /// the file's creation date as the fallback for an untagged scan.
-    public static func make(from item: DocumentSnapshotItem, rootKey: String) async -> Document {
+    public static func make(from item: DocumentInformation, rootKey: String) async -> Document {
         let filename = item.url.lastPathComponent
         let parsed = await parseFilename(filename)
         var specification = parsed.specification ?? ""

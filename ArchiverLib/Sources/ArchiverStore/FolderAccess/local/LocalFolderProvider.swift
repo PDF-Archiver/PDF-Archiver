@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 17.08.20.
 //
 
+import ArchiverModels
 import AsyncAlgorithms
 import Foundation
 
@@ -135,10 +136,13 @@ final class LocalFolderProvider: FolderProvider {
                 }
 
                 let downloadStatus = getDownloadStatus(from: resourceValues)
+                // `isTagged` is unknown here - only `ArchiveStore` knows `untaggedFolders`, and
+                // adjusts it before the item reaches the indexer.
                 return DocumentInformation(id: id,
                                            url: normalizedUrl,
-                                           downloadStatus: downloadStatus,
+                                           isTagged: false,
                                            sizeInBytes: Double(fileSize),
+                                           downloadStatus: downloadStatus,
                                            creationDate: resourceValues.creationDate,
                                            contentModificationDate: resourceValues.contentModificationDate)
             }
