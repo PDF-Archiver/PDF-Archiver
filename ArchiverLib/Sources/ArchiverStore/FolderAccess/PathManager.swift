@@ -14,6 +14,10 @@ private enum PathError: Error {
     case iCloudDriveNotFound
 }
 
+extension PathError: LogSafeError {
+    var logDescription: String { "\(self)" }
+}
+
 /// Get the "correct" path for the archive
 ///
 /// Use the stored path if possible or choose an OS specific path otherwise.
@@ -67,7 +71,7 @@ final class PathManager: Log {
         let oldArchiveUrl = try archivePathType.getPath().getArchiveUrl()
 
         guard newArchiveUrl != oldArchiveUrl else {
-            log.errorAndAssert("Old and new archive url should be different", metadata: ["newArchiveUrl": "\(newArchiveUrl)"])
+            log.errorAndAssert("Old and new archive url should be different", metadata: ["newArchiveUrl": "\(LogRedact.shape(newArchiveUrl))"])
             return
         }
 

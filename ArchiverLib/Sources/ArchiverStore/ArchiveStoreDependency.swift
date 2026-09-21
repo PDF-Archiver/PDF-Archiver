@@ -8,6 +8,7 @@
 import ArchiverModels
 import ComposableArchitecture
 import Foundation
+import OSLog
 
 @DependencyClient
 public struct ArchiveStoreDependency: Sendable {
@@ -37,8 +38,13 @@ extension ArchiveStoreDependency: DependencyKey {
         reloadDocuments: {
             return try await ArchiveStore.shared.reloadArchiveDocuments()
         },
+        // Bypasses `ArchiveStore`/`FolderProviderActor` on purpose: `startDownloadingUbiquitousItem`
+        // is itself thread-safe, and every caller only ever passes a document whose `downloadStatus`
+        // is already known to be below 1, i.e. an iCloud item - the provider lookup this used to
+        // queue behind would only have picked the same iCloud provider back out again.
         startDownloadOf: { url in
-            try await ArchiveStore.shared.startDownload(of: url)
+            Logger.archiveStore.notice("Requesting iCloud download", metadata: ["document": LogRedact.token(url)])
+            try FileManager.default.startDownloadingUbiquitousItem(at: url)
         },
         deleteDocumentAt: { url in
             try await ArchiveStore.shared.delete(url: url)

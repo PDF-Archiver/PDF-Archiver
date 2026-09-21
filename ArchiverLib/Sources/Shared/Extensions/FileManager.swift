@@ -21,9 +21,9 @@ extension FileManager: Log {
 
     public func createFolderIfNotExists(_ folder: URL) throws {
         if !directoryExists(at: folder) {
-            log.debug("Try to create folder", metadata: ["folder": "\(folder.path)"])
+            log.debug("Try to create folder", metadata: ["folder": "\(LogRedact.shape(folder))"])
             try createDirectory(at: folder, withIntermediateDirectories: true, attributes: nil)
-            log.debug("folder creation success", metadata: ["folder": "\(folder.path)"])
+            log.debug("folder creation success", metadata: ["folder": "\(LogRedact.shape(folder))"])
         }
     }
 

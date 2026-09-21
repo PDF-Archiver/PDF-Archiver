@@ -114,6 +114,10 @@ extension NSItemProvider {
     }
 }
 
+extension NSItemProvider.NSItemProviderError: LogSafeError {
+    var logDescription: String { "\(self)" }
+}
+
 extension Image {
     func jpg(quality: CGFloat) -> Data? {
         #if os(macOS)

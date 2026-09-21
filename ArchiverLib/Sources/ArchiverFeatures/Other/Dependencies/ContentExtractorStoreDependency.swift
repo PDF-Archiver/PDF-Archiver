@@ -136,7 +136,7 @@ extension ContentExtractorStoreDependency: DependencyKey {
                     Logger.contentExtractor.warning("Unsupported generation guide for content extraction")
 
                 @unknown default:
-                    Logger.contentExtractor.errorAndAssert("An unknown generation error occurred", metadata: ["error": "\(error)"])
+                    Logger.contentExtractor.errorAndAssert("An unknown generation error occurred", metadata: ["error": "\(LogRedact.describe(error))"])
                 }
                 return nil
             } catch is CancellationError {
@@ -144,7 +144,7 @@ extension ContentExtractorStoreDependency: DependencyKey {
                 // and asserting on it terminates every debug build.
                 return nil
             } catch {
-                Logger.contentExtractor.errorAndAssert("An error occurred while extracting document content", metadata: ["error": "\(error)"])
+                Logger.contentExtractor.errorAndAssert("An error occurred while extracting document content", metadata: ["error": "\(LogRedact.describe(error))"])
                 return nil
             }
         },

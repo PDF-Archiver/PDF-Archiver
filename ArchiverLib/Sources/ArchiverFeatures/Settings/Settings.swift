@@ -8,11 +8,13 @@
 import ArchiverModels
 import ArchiverStore
 import ComposableArchitecture
+import Diagnostics
 import Shared
 import StoreKit
 import SwiftUI
 #if os(iOS)
 import MessageUI
+import QuickLook
 #endif
 import OSLog
 import UniformTypeIdentifiers
@@ -103,6 +105,11 @@ struct Settings {
 
         var premiumSection = PremiumSection.State()
         var isShowingMailSheet = false
+        var isShowingReportConfirmation = false
+        var diagnosticsReport: DiagnosticsReport?
+        #if os(iOS)
+        var reportPreviewURL: URL?
+        #endif
         #if os(macOS)
         var showObservedFolderPicker = false
         #endif
@@ -122,6 +129,10 @@ struct Settings {
         case onAdvancedSettingsTapped
         case onAppleIntelligenceSettingsTapped
         case onContactSupportTapped
+        case diagnosticsReportCreated(DiagnosticsReport)
+        case onViewDiagnosticsReportTapped
+        case onSendDiagnosticsReportTapped
+        case onCancelDiagnosticsReportTapped
         case onImprintTapped
         case onLegalTapped
         #if os(macOS)
@@ -169,23 +180,39 @@ struct Settings {
                 return .none
 
             case .onContactSupportTapped:
-                #if os(iOS)
-                state.isShowingMailSheet = true
-                return .none
-                #else
-                // build the mailto URL via URLComponents to get proper percent encoding
-                var components = URLComponents()
-                components.scheme = "mailto"
-                components.path = Constants.mailRecipient
-                components.queryItems = [URLQueryItem(name: "subject", value: Constants.mailSubject)]
-                guard let url = components.url else {
-                    Logger.settings.errorAndAssert("Failed to create mailto url")
-                    return .none
+                return .run { send in
+                    let report = await Self.makeDiagnosticsReport()
+                    await send(.diagnosticsReportCreated(report))
                 }
 
-                NSWorkspace.shared.open(url)
+            case .diagnosticsReportCreated(let report):
+                state.diagnosticsReport = report
+                state.isShowingReportConfirmation = true
                 return .none
+
+            case .onViewDiagnosticsReportTapped:
+                guard let report = state.diagnosticsReport,
+                      let url = Self.writeReportToTemporaryFile(report) else { return .none }
+                #if os(iOS)
+                state.reportPreviewURL = url
+                #else
+                NSWorkspace.shared.open(url)
                 #endif
+                return .none
+
+            case .onSendDiagnosticsReportTapped:
+                state.isShowingReportConfirmation = false
+                #if os(iOS)
+                state.isShowingMailSheet = true
+                #else
+                Self.sendReportOnMac(state.diagnosticsReport)
+                #endif
+                return .none
+
+            case .onCancelDiagnosticsReportTapped:
+                state.isShowingReportConfirmation = false
+                state.diagnosticsReport = nil
+                return .none
 
             case .onImprintTapped:
                 state.destination = .imprint
@@ -248,6 +275,61 @@ struct Settings {
     }
 }
 
+extension Settings {
+    static func makeDiagnosticsReport() async -> DiagnosticsReport {
+        await DiagnosticsReporter.create(
+            using: [DiagnosticsReporter.DefaultReporter.generalInfo.reporter,
+                    DiagnosticsReporter.DefaultReporter.appSystemMetadata.reporter,
+                    OSLogReporter()],
+            filters: [SensitivePathFilter.self]
+        )
+    }
+
+    static func writeReportToTemporaryFile(_ report: DiagnosticsReport) -> URL? {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent(report.filename)
+        do {
+            try report.data.write(to: url)
+            return url
+        } catch {
+            Logger.settings.errorAndAssert("Failed to write diagnostics report", metadata: ["error": "\(LogRedact.describe(error))"])
+            return nil
+        }
+    }
+
+    #if os(macOS)
+    /// Attaches the report via the Mail compose service; falls back to a plain `mailto:` link
+    /// (no attachment) and reveals the report in Finder when no mail client is configured.
+    static func sendReportOnMac(_ report: DiagnosticsReport?) {
+        guard let report, let url = writeReportToTemporaryFile(report) else {
+            openMailtoFallback()
+            return
+        }
+
+        let service = NSSharingService(named: .composeEmail)
+        service?.recipients = [Constants.mailRecipient]
+        service?.subject = Constants.mailSubject
+        guard let service, service.canPerform(withItems: [url]) else {
+            openMailtoFallback()
+            NSWorkspace.shared.activateFileViewerSelecting([url])
+            return
+        }
+        service.perform(withItems: [url])
+    }
+
+    static func openMailtoFallback() {
+        var components = URLComponents()
+        components.scheme = "mailto"
+        components.path = Constants.mailRecipient
+        components.queryItems = [URLQueryItem(name: "subject", value: Constants.mailSubject)]
+        guard let url = components.url else {
+            Logger.settings.errorAndAssert("Failed to create mailto url")
+            return
+        }
+        NSWorkspace.shared.open(url)
+    }
+    #endif
+}
+
 extension Settings.Destination.State: Sendable, Equatable {}
 
 struct SettingsView: View {
@@ -274,14 +356,39 @@ struct SettingsView: View {
                     MailComposeView(
                         isShowing: $store.isShowingMailSheet,
                         recipient: Constants.mailRecipient,
-                        subject: Constants.mailSubject
+                        subject: Constants.mailSubject,
+                        report: store.diagnosticsReport
                     )
                 } else {
                     Text("Mail is not configured on this device", bundle: #bundle)
                         .padding()
                 }
             }
+            .quickLookPreview($store.reportPreviewURL)
 #endif
+            .confirmationDialog(
+                Text("Send Diagnostics Report?", bundle: #bundle),
+                isPresented: $store.isShowingReportConfirmation,
+                titleVisibility: .visible
+            ) {
+                Button {
+                    store.send(.onViewDiagnosticsReportTapped)
+                } label: {
+                    Text("View Report", bundle: #bundle)
+                }
+                Button {
+                    store.send(.onSendDiagnosticsReportTapped)
+                } label: {
+                    Text("Send Report", bundle: #bundle)
+                }
+                Button(role: .cancel) {
+                    store.send(.onCancelDiagnosticsReportTapped)
+                } label: {
+                    Text("Cancel", bundle: #bundle)
+                }
+            } message: {
+                Text("The report includes device information and this session's logs, but no document names, tags, descriptions or archive paths.", bundle: #bundle)
+            }
             .navigationDestination(item: $store.destination) { destination in
                 switch destination {
                 case .appleIntelligenceSettings:
@@ -524,7 +631,7 @@ struct SettingsMacView: View {
                 store.send(.updateObservedFolder(url))
 
             case .failure(let error):
-                Logger.settings.faultAndAssert("Failed to import a local folder: \(error)")
+                Logger.settings.faultAndAssert("Failed to import a local folder: \(LogRedact.describe(error))")
                 NotificationCenter.default.postAlert(error)
             }
         })

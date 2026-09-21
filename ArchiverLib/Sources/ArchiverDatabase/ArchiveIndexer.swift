@@ -8,6 +8,7 @@
 import ArchiverModels
 import Dependencies
 import Foundation
+import OSLog
 import SQLiteData
 
 /// The single writer of the read model.
@@ -69,6 +70,20 @@ public actor ArchiveIndexer {
     public func reconcile(_ items: [DocumentInformation], root: String, generation: Int) async {
         guard isCurrent(root: root, generation: generation) else { return }
 
+        // `root` is usually "icloud" or "appContainer"; a custom local folder's root key is its own
+        // absolute path (`RootKey.of`), which must never reach a log line.
+        let safeRoot = root == "icloud" || root == "appContainer" ? root : "custom"
+        let reconcileStart = ContinuousClock.now
+        var changedCount = 0
+        Logger.archiveIndexer.debug("Reconcile started", metadata: ["root": safeRoot, "itemCount": "\(items.count)"])
+        defer {
+            Logger.archiveIndexer.debug("Reconcile finished", metadata: [
+                "root": safeRoot,
+                "duration": "\(reconcileStart.duration(to: .now))",
+                "changedCount": "\(changedCount)"
+            ])
+        }
+
         var existing: [Document.ID: Document] = [:]
         let read = await withErrorReporting {
             try await database.read { db in
@@ -86,8 +101,20 @@ public actor ArchiveIndexer {
         }
 
         let items = Self.deduplicated(items, root: root)
-        let documents = await Self.makeDocuments(from: items, root: root)
+        let toParse = Self.itemsNeedingParse(items: items, existing: existing, root: root)
+        let documents = await Self.makeDocuments(from: toParse, root: root)
         let plan = Self.plan(items: items, existing: existing, root: root, documents: documents)
+        changedCount = plan.changed.count
+
+        // Split from `plan` itself so the diffing stays a pure computation: whether progress ever
+        // arrives for a document is the one question "did the download even start" cannot answer.
+        for change in plan.downloadStatusChanges {
+            Logger.archiveIndexer.notice("Download status changed", metadata: [
+                "documentId": "\(change.id)",
+                "old": "\(change.old)",
+                "new": "\(change.new)"
+            ])
+        }
 
         // Re-checked here, not only at entry: the actor is reentrant, and `setObservedRoots` runs
         // after every rescan, so the diff above may describe a generation that is already gone.
@@ -196,9 +223,16 @@ public actor ArchiveIndexer {
         var changed: [Document] = []
         var tagsToRewrite: Set<Document.ID> = []
         var absentIDs: Set<Document.ID> = []
+        var downloadStatusChanges: [DownloadStatusChange] = []
     }
 
-    /// Parses every snapshot item into the row it becomes.
+    struct DownloadStatusChange: Equatable, Sendable {
+        let id: Document.ID
+        let old: Double
+        let new: Double
+    }
+
+    /// Parses the given items into the rows they become.
     ///
     /// `@concurrent` for the same reason as `extractText`: under `NonisolatedNonsendingByDefault`
     /// thousands of filename parses would run on the indexer's executor and stall every other job.
@@ -211,6 +245,24 @@ public actor ArchiveIndexer {
             documents[item.id] = await Document.make(from: item, rootKey: root)
         }
         return documents
+    }
+
+    /// The items `plan` will need a freshly parsed row for: new files, and files whose stored row
+    /// no longer matches (a move, rename or retag). Most of an archive is neither on any given
+    /// snapshot, and re-parsing every filename anyway was what made every snapshot as expensive as
+    /// a full rescan.
+    static func itemsNeedingParse(items: [DocumentInformation], existing: [Document.ID: Document], root: String) -> [DocumentInformation] {
+        items.filter { matchingRow($0, in: existing, root: root) == nil }
+    }
+
+    /// The stored row `item` still describes, if any - folder membership and filename pattern
+    /// unchanged. Shared between `itemsNeedingParse` and `plan` so the two never disagree about
+    /// which items count as unchanged.
+    private static func matchingRow(_ item: DocumentInformation, in existing: [Document.ID: Document], root: String) -> Document? {
+        guard let row = existing[item.id], row.rootKey == root, row.url == item.url, row.isTagged == item.isTagged else {
+            return nil
+        }
+        return row
     }
 
     /// One row per id within a snapshot, last one wins: a duplicate would otherwise abort the
@@ -237,10 +289,14 @@ public actor ArchiveIndexer {
                      documents: [Document.ID: Document]) -> ReconcilePlan {
         var plan = ReconcilePlan()
         for item in items {
-            if let row = existing[item.id], row.rootKey == root, row.url == item.url, row.isTagged == item.isTagged {
+            if let row = matchingRow(item, in: existing, root: root) {
                 guard !(row.sizeInBytes == item.sizeInBytes
                         && row.downloadStatus == item.downloadStatus
                         && row.contentModificationDate == item.contentModificationDate) else { continue }
+
+                if row.downloadStatus != item.downloadStatus {
+                    plan.downloadStatusChanges.append(DownloadStatusChange(id: item.id, old: row.downloadStatus, new: item.downloadStatus))
+                }
 
                 var updated = row
                 updated.sizeInBytes = item.sizeInBytes

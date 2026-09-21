@@ -87,7 +87,7 @@ struct IAPView: View {
 
             case .unverified(let transaction, let error):
                 Logger.inAppPurchase.error("""
-                    Transaction ID \(transaction.id) for \(transaction.productID) is unverified: \(error)
+                    Transaction ID \(transaction.id, privacy: .public) for \(transaction.productID, privacy: .public) is unverified: \(LogRedact.describe(error), privacy: .public)
                     """)
             }
         }
@@ -148,7 +148,7 @@ struct IAPView: View {
                 } catch StoreKitError.userCancelled {
                     // Dismissing the App Store sign-in is a normal outcome, not an error.
                 } catch {
-                    Logger.inAppPurchase.error("AppStore sync failed: \(error)")
+                    Logger.inAppPurchase.error("AppStore sync failed: \(LogRedact.describe(error), privacy: .public)")
                     NotificationCenter.default.postAlert(error)
                 }
             }

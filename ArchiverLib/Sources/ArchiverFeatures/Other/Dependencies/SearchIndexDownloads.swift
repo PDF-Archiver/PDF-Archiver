@@ -9,6 +9,7 @@ import ArchiverDatabase
 import ArchiverModels
 import ComposableArchitecture
 import Foundation
+import OSLog
 import SQLiteData
 
 /// The opt-in half of indexing: only documents on this device carry text, so a complete index
@@ -33,7 +34,14 @@ enum SearchIndexDownloads {
 
         // The iCloud daemon finishes these in its own time; the next run indexes them.
         for document in documents {
-            try? await archiveStore.startDownloadOf(document.url)
+            do {
+                try await archiveStore.startDownloadOf(document.url)
+            } catch {
+                Logger.app.error("Failed to start search-index prefetch download", metadata: [
+                    "documentId": "\(document.id)",
+                    "error": "\(LogRedact.describe(error))"
+                ])
+            }
         }
     }
 }

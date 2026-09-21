@@ -21,7 +21,7 @@ public actor ArchiveStore: Log {
             do {
                 try await store.reloadArchiveDocuments()
             } catch {
-                Logger.archiveStore.error("Failed to reload archive documents: \(error.localizedDescription)")
+                Logger.archiveStore.error("Failed to reload archive documents: \(LogRedact.describe(error), privacy: .public)")
             }
         }
         return store
@@ -111,7 +111,7 @@ public actor ArchiveStore: Log {
                 let folderChangeStream = await provider.currentDocumentsStream
                 for await changes in folderChangeStream {
                     guard !Task.isCancelled else { break }
-                    Self.log.debug("Found documents count: \(changes.count)")
+                    Self.log.debug("Found documents count: \(changes.count, privacy: .public)")
 
                     // Only `ArchiveStore` knows `untaggedFolders`, so it stamps `isTagged` per item.
                     let items = changes.map { change -> DocumentInformation in
@@ -134,35 +134,30 @@ public actor ArchiveStore: Log {
     @FolderProviderActor
     private func initProvider(for folder: URL) -> FolderProvider? {
         guard let provider = Self.availableProvider.first(where: { $0.canHandle(folder) }) else {
-            Logger.archiveStore.errorAndAssert("Could not find a FolderProvider - path: \(folder.path)")
+            Logger.archiveStore.errorAndAssert("Could not find a FolderProvider", metadata: ["folder": "\(LogRedact.shape(folder))"])
             NotificationCenter.default.createAndPost(title: "Folder Provider Error", message: "Could not find a folder provider for path:\n\(folder.absoluteString)", primaryButtonTitle: "OK")
             return nil
         }
-        Logger.archiveStore.debug("Initialize new provider for: \(folder.path)")
+        Logger.archiveStore.debug("Initialize new provider for \(LogRedact.shape(folder), privacy: .public)")
         do {
             return try provider.init(baseUrl: folder)
         } catch {
-            Logger.archiveStore.error("Failed to create FolderProvider - error: \(error)")
+            Logger.archiveStore.error("Failed to create FolderProvider - error: \(LogRedact.describe(error), privacy: .public)")
             NotificationCenter.default.postAlert(error)
             return nil
         }
     }
 
     private func getProvider(for url: URL) async throws -> any FolderProvider {
-
-        // Use `contains` instead of `prefix` to avoid problems with local files.
-        // This fixes a problem, where we get different file urls back:
-        // /private/var/mobile/Containers/Data/Application/8F70A72B-026D-4F6B-98E8-2C6ACE940133/Documents/untagged/document1.pdf
-        //         /var/mobile/Containers/Data/Application/8F70A72B-026D-4F6B-98E8-2C6ACE940133/Documents/
         for provider in providers {
-            let baseUrlPath = await provider.baseUrl.path()
-            guard url.path().contains(baseUrlPath) else { continue }
+            let baseUrl = await provider.baseUrl
+            guard url.isUnder(baseUrl) else { continue }
             return provider
         }
 
-        Logger.archiveStore.error("No provider found for \(url.path())")
+        Logger.archiveStore.error("No provider found for \(LogRedact.shape(url), privacy: .public)")
         let baseUrls = await self.providers.asyncMap { await $0.baseUrl }
-        Logger.archiveStore.debug("Providers \(baseUrls.map({ $0.path() }).joined(separator: ", "))")
+        Logger.archiveStore.error("Providers: \(baseUrls.count, privacy: .public)")
         throw ArchiveStore.Error.providerNotFound
     }
 
@@ -210,11 +205,6 @@ public actor ArchiveStore: Log {
         }
     }
 
-    public func startDownload(of url: URL) async throws {
-        let provider = try await getProvider(for: url)
-        try await provider.startDownload(of: url)
-    }
-
     public func delete(url: URL) async throws {
         let provider = try await getProvider(for: url)
         try await provider.delete(url: url)
@@ -239,7 +229,7 @@ public actor ArchiveStore: Log {
     private func isTagged(_ url: URL) -> Bool {
 
         // Could document be found in the untagged folder?
-        guard !untaggedFolders.contains(where: { url.path.contains($0.path) }) else { return false }
+        guard !untaggedFolders.contains(where: { url.isUnder($0) }) else { return false }
 
         // Do "--" and "__" exist in filename?
         guard url.lastPathComponent.contains("--"),

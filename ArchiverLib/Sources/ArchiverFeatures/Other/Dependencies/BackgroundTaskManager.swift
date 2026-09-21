@@ -73,7 +73,7 @@ public actor BackgroundTaskManager: Log {
             try scheduler.submit(request)
             Logger.backgroundTask.info("Cache processing task scheduled")
         } catch {
-            Logger.backgroundTask.error("Failed to schedule cache processing task: \(error)")
+            Logger.backgroundTask.error("Failed to schedule cache processing task: \(LogRedact.describe(error), privacy: .public)")
         }
     }
 
@@ -144,9 +144,9 @@ public actor BackgroundTaskManager: Log {
             }
 
             task.setTaskCompleted(success: true)
-            Logger.backgroundTask.info("Background processing completed: \(result.ocrCount) OCR, \(result.aiCacheCount) caches in \(processingDuration)s")
+            Logger.backgroundTask.info("Background processing completed: \(result.ocrCount, privacy: .public) OCR, \(result.aiCacheCount, privacy: .public) caches in \(processingDuration, privacy: .public)s")
         } catch {
-            Logger.backgroundTask.error("Background cache processing failed: \(error)")
+            Logger.backgroundTask.error("Background cache processing failed: \(LogRedact.describe(error), privacy: .public)")
 
             if shouldNotify, !processingTask.isCancelled {
                 await UNUserNotificationCenter.current().showLocalNotification(

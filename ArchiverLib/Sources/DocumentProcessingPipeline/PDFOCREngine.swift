@@ -70,12 +70,12 @@ enum PDFOCREngine {
             try Task.checkCancellation()
 
             guard let image = PlatformImage(contentsOf: url) else {
-                Logger.ocrProcessing.error("Could not load page image \(url.lastPathComponent, privacy: .public)")
+                Logger.ocrProcessing.error("Could not load page image \(LogRedact.token(url), privacy: .public)")
                 continue
             }
 
             guard let cgImage = image.cgImage else {
-                Logger.ocrProcessing.error("Could not read page image \(url.lastPathComponent, privacy: .public)")
+                Logger.ocrProcessing.error("Could not read page image \(LogRedact.token(url), privacy: .public)")
                 continue
             }
             let results = try await recognizeText(in: cgImage, imageSize: image.size)

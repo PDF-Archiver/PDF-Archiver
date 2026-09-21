@@ -145,21 +145,20 @@ final class ShareViewController: UIViewController {
                 do {
                     // Check if file already exists at target
                     if FileManager.default.fileExists(atPath: targetURL.path) {
-                        Self.log.warning("File already exists at target, removing legacy file: \(legacyURL.lastPathComponent)")
+                        Self.log.warning("File already exists at target, removing legacy file: \(LogRedact.token(legacyURL), privacy: .public)")
                         try FileManager.default.removeItem(at: legacyURL)
                     } else {
                         // Move the file to the new location
                         try FileManager.default.moveItem(at: legacyURL, to: targetURL)
                         migratedCount += 1
                         Self.log.info("Migrated document", metadata: [
-                            "from": "\(legacyURL.path)",
-                            "to": "\(targetURL.path)"
+                            "file": "\(LogRedact.token(legacyURL))"
                         ])
                     }
                 } catch {
                     Self.log.error("Failed to migrate document", metadata: [
-                        "file": "\(legacyURL.lastPathComponent)",
-                        "error": "\(error)"
+                        "file": "\(LogRedact.token(legacyURL))",
+                        "error": "\(LogRedact.describe(error))"
                     ])
                 }
             }
@@ -172,9 +171,13 @@ final class ShareViewController: UIViewController {
             // Clean up legacy directory after migration
             try? FileManager.default.removeItem(at: legacyTempURL)
         } catch {
-            Self.log.error("Failed to read legacy temp directory", metadata: ["error": "\(error)"])
+            Self.log.error("Failed to read legacy temp directory", metadata: ["error": "\(LogRedact.describe(error))"])
         }
     }
 }
 
 extension NSItemProvider: @unchecked @retroactive Sendable {}
+
+extension ShareViewController.ShareError: LogSafeError {
+    var logDescription: String { "\(self)" }
+}

@@ -27,7 +27,6 @@ protocol FolderProvider: AnyObject, Log, Sendable {
     func stop()
 
     func save(data: Data, at: URL) throws
-    func startDownload(of: URL) throws
     func fetch(url: URL) throws -> Data
     func delete(url: URL) throws
     func rename(from: URL, to: URL) throws

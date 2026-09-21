@@ -100,7 +100,14 @@ struct AppFeature {
                     selectNextDocument(current: document, &state)
 
                     return .run { _ in
-                        try await archiveStore.deleteDocumentAt(document.url)
+                        do {
+                            try await archiveStore.deleteDocumentAt(document.url)
+                        } catch {
+                            Logger.app.error("Failed to delete document", metadata: [
+                                "documentId": "\(document.id)",
+                                "error": "\(LogRedact.describe(error))"
+                            ])
+                        }
                     }
                 }
 
@@ -116,7 +123,14 @@ struct AppFeature {
                     }
 
                     return .run { _ in
-                        try await archiveStore.saveDocument(document, shouldUpdatePdfMetadata)
+                        do {
+                            try await archiveStore.saveDocument(document, shouldUpdatePdfMetadata)
+                        } catch {
+                            Logger.app.error("Failed to save document", metadata: [
+                                "documentId": "\(document.id)",
+                                "error": "\(LogRedact.describe(error))"
+                            ])
+                        }
                     }
                 }
 
@@ -159,7 +173,14 @@ struct AppFeature {
                         await withTaskGroup(of: Void.self) { group in
                             for document in remoteDocuments {
                                 group.addTask {
-                                    try? await archiveStore.startDownloadOf(document.url)
+                                    do {
+                                        try await archiveStore.startDownloadOf(document.url)
+                                    } catch {
+                                        Logger.app.error("Failed to start inbox prefetch download", metadata: [
+                                            "documentId": "\(document.id)",
+                                            "error": "\(LogRedact.describe(error))"
+                                        ])
+                                    }
                                 }
                             }
                         }

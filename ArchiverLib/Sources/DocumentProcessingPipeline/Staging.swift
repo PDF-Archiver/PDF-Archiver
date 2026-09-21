@@ -115,7 +115,7 @@ enum Staging {
                 }
 
             default:
-                Logger.documentProcessor.debug("Ignoring unsupported staged file \(url.lastPathComponent, privacy: .public)")
+                Logger.documentProcessor.debug("Ignoring unsupported staged file \(LogRedact.token(url), privacy: .public)")
             }
         }
 

@@ -91,3 +91,10 @@ identifier_name:
 type_name:
   excluded:
     - ID
+
+custom_rules:
+  no_paths_in_logs:
+    name: "No paths in logs"
+    regex: '(log|Logger)\.[A-Za-z]+\([^)]*(lastPathComponent|\.path\b|\.path\(\)|absoluteString)'
+    message: "Use LogRedact.token / LogRedact.shape - see Log.swift"
+    severity: error

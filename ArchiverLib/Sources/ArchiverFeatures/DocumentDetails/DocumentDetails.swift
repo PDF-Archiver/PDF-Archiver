@@ -8,6 +8,7 @@
 import ArchiverDatabase
 import ArchiverModels
 import ComposableArchitecture
+import OSLog
 import Shared
 import SQLiteData
 import SwiftUI
@@ -33,6 +34,9 @@ struct DocumentDetails {
         // initially always false to avoid UI glitches, e.g. not showing the inspector
         var showInspector = false
         var isRunningOcr = false
+        /// How often the watchdog has restarted a download that never reported progress - only a
+        /// conscious retry from the failure alert resets it, so the watchdog's own loop still ends.
+        var downloadWatchdogRetryCount = 0
 #if os(iOS)
         var shareDocument: ShareData?
 #endif
@@ -54,6 +58,8 @@ struct DocumentDetails {
         case onEditButtonTapped
         case onRunOcrButtonTapped
         case onRemoteDocumentAppeared
+        case onRemoteDocumentDownloadFailed
+        case onRemoteDocumentDownloadWatchdogFired
         case runOcrFinished(Bool)
 #if os(iOS)
         case onShareButtonTapped
@@ -63,6 +69,7 @@ struct DocumentDetails {
 
         enum Alert {
             case confirmDeleteButtonTapped
+            case retryDownloadButtonTapped
         }
 
         enum Delegate: Equatable {
@@ -72,7 +79,18 @@ struct DocumentDetails {
 
     @Dependency(\.archiveStore.reloadDocuments) var reloadDocuments
     @Dependency(\.archiveStore.startDownloadOf) var startDownloadOf
+    @Dependency(\.continuousClock) var clock
     @Dependency(\.documentProcessor) var documentProcessor
+
+    /// How long a download may sit at the same status before the watchdog restarts it - iCloud
+    /// gives no signal of its own for "stalled" vs. "still queued".
+    static let downloadWatchdogInterval: Duration = .seconds(20)
+    static let maxDownloadWatchdogRetries = 3
+
+    private enum CancelID {
+        case downloadWatchdog
+    }
+
     var body: some ReducerOf<Self> {
         Scope(\.documentInformationForm, action: \.showDocumentInformationForm) {
             DocumentInformationForm()
@@ -83,6 +101,12 @@ struct DocumentDetails {
             switch action {
             case .alert(.presented(.confirmDeleteButtonTapped)):
                 return .send(.delegate(.deleteDocument(state.document)))
+
+            case .alert(.presented(.retryDownloadButtonTapped)):
+                // A conscious retry gets a fresh watchdog budget; only the watchdog's own repeated
+                // firing counts against it.
+                state.downloadWatchdogRetryCount = 0
+                return .send(.onRemoteDocumentAppeared)
 
             case .alert:
                 return .none
@@ -129,9 +153,58 @@ struct DocumentDetails {
                 }
 
             case .onRemoteDocumentAppeared:
-                return .run { [documentUrl = state.document.url] _ in
-                    try await startDownloadOf(documentUrl)
+                Logger.documentDetails.notice("Remote document appeared", metadata: [
+                    "documentId": "\(state.document.id)",
+                    "downloadStatus": "\(state.document.downloadStatus)"
+                ])
+                return .merge(
+                    .run { [documentId = state.document.id, documentUrl = state.document.url] send in
+                        do {
+                            try await startDownloadOf(documentUrl)
+                        } catch {
+                            Logger.documentDetails.error("Failed to start document download", metadata: [
+                                "documentId": "\(documentId)",
+                                "error": "\(LogRedact.describe(error))"
+                            ])
+                            await send(.onRemoteDocumentDownloadFailed)
+                        }
+                    },
+                    // `startDownloadOf` only requests the download - it reports neither progress nor
+                    // a stall, so silence for this long is the only signal a hung download ever gives.
+                    .run { send in
+                        try? await clock.sleep(for: Self.downloadWatchdogInterval)
+                        await send(.onRemoteDocumentDownloadWatchdogFired)
+                    }
+                    .cancellable(id: CancelID.downloadWatchdog, cancelInFlight: true)
+                )
+
+            case .onRemoteDocumentDownloadWatchdogFired:
+                // The view already switched away from the loading screen once this is true; the
+                // watchdog task itself is only torn down by the next `.onRemoteDocumentAppeared`.
+                guard state.document.downloadStatus < 1 else { return .none }
+
+                state.downloadWatchdogRetryCount += 1
+                guard state.downloadWatchdogRetryCount <= Self.maxDownloadWatchdogRetries else {
+                    return .send(.onRemoteDocumentDownloadFailed)
                 }
+                return .send(.onRemoteDocumentAppeared)
+
+            case .onRemoteDocumentDownloadFailed:
+                state.alert = AlertState<Action.Alert> {
+                    TextState("Download failed", bundle: #bundle)
+                } actions: {
+                    ButtonState(action: .retryDownloadButtonTapped) {
+                        TextState("Try Again", bundle: #bundle)
+                    }
+                    ButtonState(role: .cancel) {
+                        TextState("Cancel", bundle: #bundle)
+                    }
+                } message: {
+                    TextState("The document could not be downloaded. Please check your connection and try again.", bundle: #bundle)
+                }
+                // The alert is already asking the user; a still-running watchdog must not restart
+                // the download silently underneath it.
+                return .cancel(id: CancelID.downloadWatchdog)
 
             case .runOcrFinished(let success):
                 state.isRunningOcr = false
