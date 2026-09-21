@@ -1420,26 +1420,6 @@
         }
       }
     },
-    "Send Diagnostics Report?" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Diagnosebericht senden?"
-          }
-        }
-      }
-    },
-    "Send Report" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bericht senden"
-          }
-        }
-      }
-    },
     "Sets the document date to this value" : {
       "comment" : "VoiceOver hint on a suggested-date button.",
       "localizations" : {
@@ -1681,16 +1661,6 @@
         }
       }
     },
-    "The report includes device information and this session's logs, but no document names, tags, descriptions or archive paths." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Der Bericht enthält Geräteinformationen und die Protokolle dieser Sitzung, aber keine Dokumentnamen, Tags, Beschreibungen oder Archivpfade."
-          }
-        }
-      }
-    },
     "The search index could not be created. Rebuilding it may help." : {
       "localizations" : {
         "de" : {
@@ -1802,16 +1772,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Verwende Tastenkombinationen, um in den Dokumentinformationen zu navigieren:\n\n**TAB** zum Wechseln in das nächste Feld\n**CMD S** zum Speichern des Dokuments"
-          }
-        }
-      }
-    },
-    "View Report" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bericht ansehen"
           }
         }
       }

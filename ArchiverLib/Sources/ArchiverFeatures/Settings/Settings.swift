@@ -14,7 +14,6 @@ import StoreKit
 import SwiftUI
 #if os(iOS)
 import MessageUI
-import QuickLook
 #endif
 import OSLog
 import UniformTypeIdentifiers
@@ -105,11 +104,8 @@ struct Settings {
 
         var premiumSection = PremiumSection.State()
         var isShowingMailSheet = false
-        var isShowingReportConfirmation = false
         var diagnosticsReport: DiagnosticsReport?
-        #if os(iOS)
-        var reportPreviewURL: URL?
-        #endif
+        var isCreatingDiagnosticsReport = false
         #if os(macOS)
         var showObservedFolderPicker = false
         #endif
@@ -130,9 +126,6 @@ struct Settings {
         case onAppleIntelligenceSettingsTapped
         case onContactSupportTapped
         case diagnosticsReportCreated(DiagnosticsReport)
-        case onViewDiagnosticsReportTapped
-        case onSendDiagnosticsReportTapped
-        case onCancelDiagnosticsReportTapped
         case onImprintTapped
         case onLegalTapped
         #if os(macOS)
@@ -180,38 +173,29 @@ struct Settings {
                 return .none
 
             case .onContactSupportTapped:
+                // Every tap reports the state at that moment, so the mail never carries the report
+                // an earlier tap in the same session produced.
+                state.diagnosticsReport = nil
+                state.isCreatingDiagnosticsReport = true
+                #if os(iOS)
+                // The sheet goes up right away and waits for the report: generating it reads this
+                // session's log, and waiting for that first is what made the button feel dead.
+                state.isShowingMailSheet = true
+                #endif
                 return .run { send in
+                    // Logged before the report reads the log, so a report from a long-running
+                    // session still carries the current state and not only the one from launch.
+                    await AppStateLog.log()
                     let report = await Self.makeDiagnosticsReport()
                     await send(.diagnosticsReportCreated(report))
                 }
 
             case .diagnosticsReportCreated(let report):
                 state.diagnosticsReport = report
-                state.isShowingReportConfirmation = true
-                return .none
-
-            case .onViewDiagnosticsReportTapped:
-                guard let report = state.diagnosticsReport,
-                      let url = Self.writeReportToTemporaryFile(report) else { return .none }
-                #if os(iOS)
-                state.reportPreviewURL = url
-                #else
-                NSWorkspace.shared.open(url)
+                state.isCreatingDiagnosticsReport = false
+                #if os(macOS)
+                Self.sendReportOnMac(report)
                 #endif
-                return .none
-
-            case .onSendDiagnosticsReportTapped:
-                state.isShowingReportConfirmation = false
-                #if os(iOS)
-                state.isShowingMailSheet = true
-                #else
-                Self.sendReportOnMac(state.diagnosticsReport)
-                #endif
-                return .none
-
-            case .onCancelDiagnosticsReportTapped:
-                state.isShowingReportConfirmation = false
-                state.diagnosticsReport = nil
                 return .none
 
             case .onImprintTapped:
@@ -285,6 +269,7 @@ extension Settings {
         )
     }
 
+    #if os(macOS)
     static func writeReportToTemporaryFile(_ report: DiagnosticsReport) -> URL? {
         let url = FileManager.default.temporaryDirectory.appendingPathComponent(report.filename)
         do {
@@ -296,7 +281,6 @@ extension Settings {
         }
     }
 
-    #if os(macOS)
     /// Attaches the report via the Mail compose service; falls back to a plain `mailto:` link
     /// (no attachment) and reveals the report in Finder when no mail client is configured.
     static func sendReportOnMac(_ report: DiagnosticsReport?) {
@@ -352,43 +336,21 @@ struct SettingsView: View {
             .navigationViewStyle(StackNavigationViewStyle())
             .navigationBarTitleDisplayMode(.inline)
             .sheet(isPresented: $store.isShowingMailSheet) {
-                if MFMailComposeViewController.canSendMail() {
+                if !MFMailComposeViewController.canSendMail() {
+                    Text("Mail is not configured on this device", bundle: #bundle)
+                        .padding()
+                } else if let report = store.diagnosticsReport {
                     MailComposeView(
                         isShowing: $store.isShowingMailSheet,
                         recipient: Constants.mailRecipient,
                         subject: Constants.mailSubject,
-                        report: store.diagnosticsReport
+                        report: report
                     )
                 } else {
-                    Text("Mail is not configured on this device", bundle: #bundle)
-                        .padding()
+                    ProgressView()
                 }
             }
-            .quickLookPreview($store.reportPreviewURL)
 #endif
-            .confirmationDialog(
-                Text("Send Diagnostics Report?", bundle: #bundle),
-                isPresented: $store.isShowingReportConfirmation,
-                titleVisibility: .visible
-            ) {
-                Button {
-                    store.send(.onViewDiagnosticsReportTapped)
-                } label: {
-                    Text("View Report", bundle: #bundle)
-                }
-                Button {
-                    store.send(.onSendDiagnosticsReportTapped)
-                } label: {
-                    Text("Send Report", bundle: #bundle)
-                }
-                Button(role: .cancel) {
-                    store.send(.onCancelDiagnosticsReportTapped)
-                } label: {
-                    Text("Cancel", bundle: #bundle)
-                }
-            } message: {
-                Text("The report includes device information and this session's logs, but no document names, tags, descriptions or archive paths.", bundle: #bundle)
-            }
             .navigationDestination(item: $store.destination) { destination in
                 switch destination {
                 case .appleIntelligenceSettings:
@@ -501,7 +463,13 @@ struct SettingsView: View {
             Button {
                 store.send(.onContactSupportTapped)
             } label: {
-                Label(String(localized: "Contact & Help", bundle: #bundle), systemImage: "envelope")
+                HStack {
+                    Label(String(localized: "Contact & Help", bundle: #bundle), systemImage: "envelope")
+                    Spacer()
+                    if store.isCreatingDiagnosticsReport {
+                        ProgressView()
+                    }
+                }
             }
 
             Button {
@@ -727,6 +695,10 @@ struct SettingsMacView: View {
                     HStack {
                         Label(String(localized: "Contact & Help", bundle: #bundle), systemImage: "envelope")
                         Spacer()
+                        if store.isCreatingDiagnosticsReport {
+                            ProgressView()
+                                .controlSize(.small)
+                        }
                     }
                     .contentShape(Rectangle())
                 }

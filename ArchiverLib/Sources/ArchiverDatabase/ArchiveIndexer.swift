@@ -25,6 +25,9 @@ public actor ArchiveIndexer {
     private var needsPrune = false
     /// When this process first held a text pass back for a running reconcile.
     private var textPassDeferredSince: Date?
+    /// The deadline is re-evaluated on every pass, so without this the override would log once a
+    /// second for as long as the flag stays up.
+    private var didLogReconcileDeadline = false
 
     /// Rows per write transaction. Small enough that the newest documents are on screen within a
     /// fraction of a second, large enough not to pay a transaction per document.
@@ -180,16 +183,32 @@ public actor ArchiveIndexer {
             }
         }
         // A read that fails means writing would fail too, so the next scheduled run tries again.
-        guard let isReconciling else { return false }
+        guard let isReconciling else {
+            Logger.archiveIndexer.error("[textindex] Could not read the reconcile flag")
+            return false
+        }
         guard isReconciling else {
+            if textPassDeferredSince != nil {
+                Logger.archiveIndexer.notice("[textindex] Resumed after the reconcile finished")
+            }
             textPassDeferredSince = nil
+            didLogReconcileDeadline = false
             return true
         }
         guard let deferredSince = textPassDeferredSince else {
             textPassDeferredSince = now
+            Logger.archiveIndexer.notice("[textindex] Deferred to a running reconcile")
             return false
         }
-        return now.timeIntervalSince(deferredSince) >= Self.reconcileDeadline
+        let deferredFor = now.timeIntervalSince(deferredSince)
+        guard deferredFor >= Self.reconcileDeadline else { return false }
+        if !didLogReconcileDeadline {
+            didLogReconcileDeadline = true
+            Logger.archiveIndexer.notice("[textindex] Starting despite a reconcile that never finished", metadata: [
+                "deferredSeconds": "\(Int(deferredFor))"
+            ])
+        }
+        return true
     }
 
     /// Lowers the flag - what every path that stops reconciling still owes the UI.

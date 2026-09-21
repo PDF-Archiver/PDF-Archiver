@@ -168,6 +168,19 @@ struct TextIndexTests {
         #expect(try await Self.outcome(of: -1) == .unreadable)
     }
 
+    /// What separates a document the run indexed from one that stays pending and comes back in the
+    /// next run - the difference between a slow index and a stuck one.
+    @Test
+    func reportsWhetherTheCommitStoredAnything() async throws {
+        try await Self.seed(id: -1, fixture: "text-layer")
+        @Dependency(\.defaultDatabase) var database
+        let document = try #require(try await database.read { db in try Document.find(-1).fetchOne(db) })
+
+        let stored = await ArchiveIndexer().commit(text: "Rechnung", for: document)
+
+        #expect(stored)
+    }
+
     @Test
     func skipsADocumentThatChangedDuringExtraction() async throws {
         try await Self.seed(id: -1, fixture: "text-layer")
@@ -177,8 +190,9 @@ struct TextIndexTests {
         // The commit re-reads the row: a size that no longer matches means the text is stale.
         var stale = document
         stale.sizeInBytes = 12_345
-        await ArchiveIndexer().commit(text: "irrelevant", for: stale)
+        let stored = await ArchiveIndexer().commit(text: "irrelevant", for: stale)
 
+        #expect(stored == false)
         #expect(try await Self.body(of: -1) == nil)
         let states = try await database.read { db in try DocumentIndexState.all.fetchAll(db) }
         #expect(states.isEmpty)

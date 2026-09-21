@@ -6,8 +6,10 @@
 //
 
 import ArchiverDatabase
+import ArchiverModels
 import ComposableArchitecture
 import Foundation
+import OSLog
 import StoreKit
 
 extension IndexSchedulerDependency: DependencyKey {
@@ -26,17 +28,42 @@ extension IndexSchedulerDependency: DependencyKey {
         },
         indexWhileAppIsOpen: {
             @Dependency(\.archiveIndexer) var archiveIndexer
+            Logger.app.notice("[textindex] Loop started")
+
+            // Both guards below poll, so the reason is logged on change only - a line per round
+            // would fill the diagnostics report with the idle case.
+            var pauseReason: String?
 
             while !Task.isCancelled {
-                guard await archiveIndexer.pendingTextCount() > 0 else {
+                let pendingCount = await archiveIndexer.pendingTextCount()
+                guard pendingCount > 0 else {
+                    if pauseReason != "noPendingDocuments" {
+                        pauseReason = "noPendingDocuments"
+                        // A document that is not on this device is never a candidate, so these two
+                        // counts are what tells a finished index from one that cannot reach its files.
+                        let counts = await documentCounts()
+                        Logger.app.notice("[textindex] Loop paused", metadata: [
+                            "reason": "noPendingDocuments",
+                            "documentCount": "\(counts.total)",
+                            "notDownloadedCount": "\(counts.notDownloaded)"
+                        ])
+                    }
                     try? await Task.sleep(for: .seconds(60))
                     continue
                 }
                 guard await PremiumEntitlement.isActive() else {
+                    if pauseReason != "noPremium" {
+                        pauseReason = "noPremium"
+                        Logger.app.notice("[textindex] Loop paused", metadata: ["reason": "noPremium"])
+                    }
                     // Long, but not forever: a purchase later in the session starts the index
                     // without asking the user to relaunch.
                     try? await Task.sleep(for: .seconds(300))
                     continue
+                }
+                if pauseReason != nil {
+                    pauseReason = nil
+                    Logger.app.notice("[textindex] Loop resumed", metadata: ["pendingCount": "\(pendingCount)"])
                 }
 
                 // Ten at a time with a pause between batches: the writer connection is shared with
@@ -46,6 +73,18 @@ extension IndexSchedulerDependency: DependencyKey {
             }
         }
     )
+}
+
+/// What the archive holds versus what of it is reachable, for the paused-loop log line.
+private func documentCounts() async -> (total: Int, notDownloaded: Int) {
+    @Dependency(\.defaultDatabase) var database
+    let counts = await withErrorReporting {
+        try await database.read { db in
+            (total: try Document.all.fetchCount(db),
+             notDownloaded: try Document.where { $0.downloadStatus.lt(1) }.fetchCount(db))
+        }
+    }
+    return counts ?? (total: -1, notDownloaded: -1)
 }
 
 /// Whether the content index may grow.

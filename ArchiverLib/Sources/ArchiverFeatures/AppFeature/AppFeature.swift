@@ -226,6 +226,11 @@ struct AppFeature {
                 return .merge(
                     .publisher { state.$projection.publisher.map(Action.projectionChanged) },
                     .publisher { state.$inbox.publisher.map(Action.inboxChanged) },
+                    // Own effect: what a support report needs as its baseline must not wait behind
+                    // the startup work below.
+                    .run(priority: .background) { _ in
+                        await AppStateLog.log()
+                    },
                     .run(priority: .background) { _ in
                         // check the temp folder at startup for new documents
                         await documentProcessor.processStagedFiles()

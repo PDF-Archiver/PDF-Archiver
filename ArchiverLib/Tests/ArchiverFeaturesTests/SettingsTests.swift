@@ -3,6 +3,7 @@ import ArchiverModels
 import ComposableArchitecture
 import Dependencies
 import DependenciesTestSupport
+import Diagnostics
 import Foundation
 import SQLiteData
 import Testing
@@ -131,6 +132,27 @@ struct SettingsTests {
             $0.isShowingMailSheet = false
         }
     }
+
+    // MARK: - Diagnostics Report Tests
+
+    #if os(iOS)
+    @Test
+    func contactSupportOpensMailWithoutWaitingForTheReport() async throws {
+        let report = DiagnosticsReport(filename: "Diagnostics-Report.html", data: Data())
+        let store = TestStore(initialState: Settings.State(isShowingMailSheet: false, diagnosticsReport: report)) {
+            Settings()
+        }
+        store.exhaustivity = .off
+
+        await store.send(.onContactSupportTapped) {
+            $0.diagnosticsReport = nil
+            $0.isCreatingDiagnosticsReport = true
+            $0.isShowingMailSheet = true
+        }
+
+        await store.finish()
+    }
+    #endif
 
     // MARK: - Premium Section Tests
 

@@ -8,6 +8,7 @@
 import ArchiverModels
 import Dependencies
 import Foundation
+import OSLog
 import PDFKit.PDFDocument
 import SQLiteData
 
@@ -28,27 +29,78 @@ extension ArchiveIndexer {
                 try Self.pendingDocuments(limit: budget).fetchAll(db)
             }
         }
-        guard let pending, !pending.isEmpty else {
+        guard let pending else {
+            Logger.archiveIndexer.error("[textindex] Could not read the run candidates")
+            await finishTextRun(indexedAnything: false)
+            return
+        }
+        guard !pending.isEmpty else {
+            // A document that is not on this device is never a candidate, so a large
+            // `notDownloadedCount` here is a stalled download, not a finished index.
+            let notDownloadedCount = await notDownloadedCount()
+            Logger.archiveIndexer.notice("[textindex] Run found no candidates", metadata: [
+                "notDownloadedCount": "\(notDownloadedCount)"
+            ])
             await finishTextRun(indexedAnything: false)
             return
         }
 
-        var indexedAnything = false
+        var processedCount = 0
+        var storedCount = 0
+        var wasCancelled = false
         for document in pending {
-            guard !Task.isCancelled else { break }
+            guard !Task.isCancelled else {
+                wasCancelled = true
+                break
+            }
             let text = await Self.extractText(from: document.url)
 
             // The parse itself runs to completion; the check is about the write that follows,
             // which an expiring background task would only cancel and report as a failure.
-            guard !Task.isCancelled else { break }
+            guard !Task.isCancelled else {
+                wasCancelled = true
+                break
+            }
 
-            await commit(text: text, for: document)
-            indexedAnything = true
+            if await commit(text: text, for: document) {
+                storedCount += 1
+            }
+            processedCount += 1
             // A reconcile chunk arriving mid-run must not wait out the whole budget.
             await Task.yield()
         }
 
-        await finishTextRun(indexedAnything: indexedAnything)
+        logTextRun(candidateCount: pending.count,
+                   processedCount: processedCount,
+                   storedCount: storedCount,
+                   wasCancelled: wasCancelled)
+
+        await finishTextRun(indexedAnything: processedCount > 0)
+    }
+
+    /// Every document a run reads but does not store comes back in the next run, in the same
+    /// order - which is a stuck index, not a slow one, so it is logged above `debug`.
+    private func logTextRun(candidateCount: Int, processedCount: Int, storedCount: Int, wasCancelled: Bool) {
+        let metadata = [
+            "candidateCount": "\(candidateCount)",
+            "processedCount": "\(processedCount)",
+            "storedCount": "\(storedCount)",
+            "wasCancelled": "\(wasCancelled)"
+        ]
+        guard storedCount == candidateCount else {
+            Logger.archiveIndexer.notice("[textindex] Run stored fewer documents than it read", metadata: metadata)
+            return
+        }
+        Logger.archiveIndexer.debug("[textindex] Run finished", metadata: metadata)
+    }
+
+    private func notDownloadedCount() async -> Int {
+        let count = await withErrorReporting {
+            try await database.read { db in
+                try Document.where { $0.downloadStatus.lt(1) }.fetchCount(db)
+            }
+        }
+        return count ?? 0
     }
 
     /// How many documents still wait for their text.
@@ -127,17 +179,25 @@ extension ArchiveIndexer {
 
     // MARK: - Bookkeeping
 
-    func commit(text: String?, for document: Document) async {
+    /// `false` if nothing was stored, so a run can tell a document it indexed from one that stays
+    /// pending and comes back in the next run.
+    @discardableResult
+    func commit(text: String?, for document: Document) async -> Bool {
         @Dependency(\.date.now) var now
 
         let (outcome, body) = Self.classify(text)
 
-        await withErrorReporting {
-            try await database.write { db in
+        let stored = await withErrorReporting {
+            try await database.write { db -> Bool in
                 // The file may have been deleted or rewritten while it was being parsed.
                 guard let current = try Document.find(document.id).fetchOne(db),
                       current.sizeInBytes == document.sizeInBytes,
-                      current.contentModificationDate == document.contentModificationDate else { return }
+                      current.contentModificationDate == document.contentModificationDate else {
+                    Logger.archiveIndexer.notice("[textindex] Skipped a document that changed during extraction", metadata: [
+                        "documentId": "\(document.id)"
+                    ])
+                    return false
+                }
 
                 // SQLite has no UPSERT for virtual tables, so a replacement is delete plus insert.
                 try DocumentText.find(document.id).delete().execute(db)
@@ -156,8 +216,10 @@ extension ArchiveIndexer {
                                            extractorVersion: DocumentIndexState.currentExtractorVersion)
                     }
                     .execute(db)
+                return true
             }
         }
+        return stored ?? false
     }
 
     /// Mojibake would pollute every prefix query it happens to match, so it is recorded but not
