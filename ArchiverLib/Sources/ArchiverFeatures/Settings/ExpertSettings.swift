@@ -153,6 +153,9 @@ struct ExpertSettingsView: View {
                 }
             }
         }
+        #if os(macOS)
+        .formStyle(.grouped)
+        #endif
         .foregroundStyle(.primary)
         .alert($store.scope(\.$alert, action: \.alert))
     }

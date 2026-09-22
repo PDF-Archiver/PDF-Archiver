@@ -317,6 +317,87 @@ struct SettingsTests {
             $0.showObservedFolderPicker = true
         }
     }
+
+    // MARK: - Settings Pane Tests
+
+    @Test
+    func onPaneSelectedOpensTheMatchingDestination() async throws {
+        let store = TestStore(initialState: Settings.State()) {
+            Settings()
+        }
+
+        await store.send(.onPaneSelected(.searchIndex)) {
+            $0.$selectedPaneID.withLock { $0 = SettingsPane.searchIndex.rawValue }
+            $0.destination = .searchIndex(SearchIndexSettings.State())
+        }
+
+        await store.send(.onPaneSelected(.storage)) {
+            $0.$selectedPaneID.withLock { $0 = SettingsPane.storage.rawValue }
+            $0.destination = .archiveStorage(StorageSelection.State())
+        }
+
+        await store.send(.onPaneSelected(.appleIntelligence)) {
+            $0.$selectedPaneID.withLock { $0 = SettingsPane.appleIntelligence.rawValue }
+            $0.destination = .appleIntelligenceSettings(AppleIntelligenceSettings.State())
+        }
+
+        await store.send(.onPaneSelected(.advanced)) {
+            $0.$selectedPaneID.withLock { $0 = SettingsPane.advanced.rawValue }
+            $0.destination = .expertSettings(ExpertSettings.State())
+        }
+    }
+
+    @Test
+    func onPaneSelectedClearsTheDestinationForPlainPanes() async throws {
+        let store = TestStore(initialState: Settings.State(destination: .searchIndex(SearchIndexSettings.State()))) {
+            Settings()
+        }
+
+        await store.send(.onPaneSelected(.about)) {
+            $0.$selectedPaneID.withLock { $0 = SettingsPane.about.rawValue }
+            $0.destination = nil
+        }
+    }
+
+    @Test
+    func settingsWindowAppearedRestoresThePersistedPane() async throws {
+        var initialState = Settings.State()
+        initialState.$selectedPaneID.withLock { $0 = "advanced" }
+
+        let store = TestStore(initialState: initialState) {
+            Settings()
+        }
+
+        await store.send(.onSettingsWindowAppeared) {
+            $0.destination = .expertSettings(ExpertSettings.State())
+        }
+    }
+
+    @Test
+    func settingsWindowAppearedFallsBackToGeneral() async throws {
+        var initialState = Settings.State()
+        initialState.$selectedPaneID.withLock { $0 = "nonsense" }
+
+        let store = TestStore(initialState: initialState) {
+            Settings()
+        }
+
+        await store.send(.onSettingsWindowAppeared)
+
+        #expect(store.state.destination == nil)
+        #expect(store.state.selectedPane == .general)
+    }
+
+    @Test
+    func settingsWindowDisappearedDropsTheDestination() async throws {
+        let store = TestStore(initialState: Settings.State(destination: .searchIndex(SearchIndexSettings.State()))) {
+            Settings()
+        }
+
+        await store.send(.onSettingsWindowDisappeared) {
+            $0.destination = nil
+        }
+    }
     #endif
 
     // MARK: - URL Constants Tests

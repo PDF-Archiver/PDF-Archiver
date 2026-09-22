@@ -111,9 +111,6 @@ struct StorageSelectionView: View {
                         }
                     }
                 }
-                #if os(macOS)
-                Spacer(minLength: 8)
-                #endif
             }
             HStack(spacing: 16) {
                 Image(systemName: "exclamationmark.triangle")
@@ -140,7 +137,12 @@ struct StorageSelectionView: View {
                 store.showDocumentPicker = false
             })
         }
+        #if !os(macOS)
         .padding()
+        #endif
+        #if os(macOS)
+        .formStyle(.grouped)
+        #endif
         .disabled(store.isProcessing)
         .overlay {
             if store.isProcessing {
