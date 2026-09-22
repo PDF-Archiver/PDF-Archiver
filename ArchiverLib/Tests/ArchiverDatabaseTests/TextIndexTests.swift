@@ -223,6 +223,20 @@ struct TextIndexTests {
         #expect(try await Self.outcome(of: -1) == nil)
     }
 
+    /// The caller decides what to evict from this - untagged and archive documents must both come
+    /// back, so it can tell which is which.
+    @Test
+    func reportsTheDocumentsItProcessed() async throws {
+        try await Self.seed(id: -1, fixture: "text-layer", isTagged: true)
+        try await Self.seed(id: -2, fixture: "text-layer", isTagged: false)
+
+        let processed = await ArchiveIndexer().indexPendingTexts(budget: 10)
+
+        #expect(Set(processed.map(\.id)) == [-1, -2])
+        #expect(processed.first { $0.id == -1 }?.isTagged == true)
+        #expect(processed.first { $0.id == -2 }?.isTagged == false)
+    }
+
     @Test
     func indexesTheInboxFirst() async throws {
         try await Self.seed(id: -1, fixture: "text-layer", isTagged: true)
@@ -243,7 +257,7 @@ struct TextIndexTests {
 
         let run = Task { await indexer.indexPendingTexts(budget: 10) }
         run.cancel()
-        await run.value
+        _ = await run.value
 
         #expect(try await Self.outcome(of: -1) == nil)
         #expect(try await Self.body(of: -1) == nil)

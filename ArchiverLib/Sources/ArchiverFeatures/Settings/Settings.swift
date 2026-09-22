@@ -104,8 +104,10 @@ struct Settings {
 
         var premiumSection = PremiumSection.State()
         var isShowingMailSheet = false
+        var isShowingDiagnosticsReportConsent = false
         var diagnosticsReport: DiagnosticsReport?
         var isCreatingDiagnosticsReport = false
+        var didConfirmSendingDiagnosticsReport = false
         #if os(macOS)
         var showObservedFolderPicker = false
         #endif
@@ -136,11 +138,18 @@ struct Settings {
         case onShowArchiveTypeSelectionTapped
         case onPrivacyTapped
         case onSearchIndexTapped
+        case onSendWithReportTapped
+        case onSendWithoutReportTapped
+        case onCancelContactSupportTapped
         case onTermsOfUseTapped
         case premiumSection(PremiumSection.Action)
         #if os(macOS)
         case updateObservedFolder(URL?)
         #endif
+    }
+
+    private enum CancelID {
+        case diagnosticsReport
     }
 
     var body: some ReducerOf<Self> {
@@ -177,11 +186,10 @@ struct Settings {
                 // an earlier tap in the same session produced.
                 state.diagnosticsReport = nil
                 state.isCreatingDiagnosticsReport = true
-                #if os(iOS)
-                // The sheet goes up right away and waits for the report: generating it reads this
-                // session's log, and waiting for that first is what made the button feel dead.
-                state.isShowingMailSheet = true
-                #endif
+                state.didConfirmSendingDiagnosticsReport = false
+                // The consent dialog goes up right away and the report keeps loading behind it,
+                // so the button never looks dead while the user decides.
+                state.isShowingDiagnosticsReportConsent = true
                 return .run { send in
                     // Logged before the report reads the log, so a report from a long-running
                     // session still carries the current state and not only the one from launch.
@@ -189,14 +197,39 @@ struct Settings {
                     let report = await Self.makeDiagnosticsReport()
                     await send(.diagnosticsReportCreated(report))
                 }
+                .cancellable(id: CancelID.diagnosticsReport)
 
             case .diagnosticsReportCreated(let report):
                 state.diagnosticsReport = report
                 state.isCreatingDiagnosticsReport = false
-                #if os(macOS)
-                Self.sendReportOnMac(report)
-                #endif
+                if state.didConfirmSendingDiagnosticsReport {
+                    Self.deliverDiagnosticsReport(report, state: &state)
+                }
                 return .none
+
+            case .onSendWithReportTapped:
+                state.didConfirmSendingDiagnosticsReport = true
+                // The report may already be ready by the time consent is given; if it isn't,
+                // `diagnosticsReportCreated` delivers it once loading finishes.
+                if let report = state.diagnosticsReport {
+                    Self.deliverDiagnosticsReport(report, state: &state)
+                }
+                return .none
+
+            case .onSendWithoutReportTapped:
+                // No need to wait for the report at all, so this delivers immediately and
+                // drops whatever the background load already produced.
+                state.diagnosticsReport = nil
+                state.isCreatingDiagnosticsReport = false
+                state.didConfirmSendingDiagnosticsReport = false
+                Self.deliverDiagnosticsReport(nil, state: &state)
+                return .cancel(id: CancelID.diagnosticsReport)
+
+            case .onCancelContactSupportTapped:
+                state.diagnosticsReport = nil
+                state.isCreatingDiagnosticsReport = false
+                state.didConfirmSendingDiagnosticsReport = false
+                return .cancel(id: CancelID.diagnosticsReport)
 
             case .onImprintTapped:
                 state.destination = .imprint
@@ -269,6 +302,15 @@ extension Settings {
         )
     }
 
+    static func deliverDiagnosticsReport(_ report: DiagnosticsReport?, state: inout State) {
+        #if os(iOS)
+        state.isShowingMailSheet = true
+        #endif
+        #if os(macOS)
+        sendReportOnMac(report)
+        #endif
+    }
+
     #if os(macOS)
     static func writeReportToTemporaryFile(_ report: DiagnosticsReport) -> URL? {
         let url = FileManager.default.temporaryDirectory.appendingPathComponent(report.filename)
@@ -282,7 +324,8 @@ extension Settings {
     }
 
     /// Attaches the report via the Mail compose service; falls back to a plain `mailto:` link
-    /// (no attachment) and reveals the report in Finder when no mail client is configured.
+    /// (no attachment) for a `nil` report, when no mail client is configured, or when the write fails
+    /// (also revealing the report in Finder in that last case).
     static func sendReportOnMac(_ report: DiagnosticsReport?) {
         guard let report, let url = writeReportToTemporaryFile(report) else {
             openMailtoFallback()
@@ -339,15 +382,15 @@ struct SettingsView: View {
                 if !MFMailComposeViewController.canSendMail() {
                     Text("Mail is not configured on this device", bundle: #bundle)
                         .padding()
-                } else if let report = store.diagnosticsReport {
+                } else {
+                    // Only presented once the consent decision is final, so the report to attach
+                    // (or `nil`, for "Without Report") is already settled.
                     MailComposeView(
                         isShowing: $store.isShowingMailSheet,
                         recipient: Constants.mailRecipient,
                         subject: Constants.mailSubject,
-                        report: report
+                        report: store.diagnosticsReport
                     )
-                } else {
-                    ProgressView()
                 }
             }
 #endif
@@ -471,6 +514,12 @@ struct SettingsView: View {
                     }
                 }
             }
+            .diagnosticsReportConsentDialog(
+                isPresented: $store.isShowingDiagnosticsReportConsent,
+                onSendWithReport: { store.send(.onSendWithReportTapped) },
+                onSendWithoutReport: { store.send(.onSendWithoutReportTapped) },
+                onCancel: { store.send(.onCancelContactSupportTapped) }
+            )
 
             Button {
                 requestReview()
@@ -703,6 +752,12 @@ struct SettingsMacView: View {
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                .diagnosticsReportConsentDialog(
+                    isPresented: $store.isShowingDiagnosticsReportConsent,
+                    onSendWithReport: { store.send(.onSendWithReportTapped) },
+                    onSendWithoutReport: { store.send(.onSendWithoutReportTapped) },
+                    onCancel: { store.send(.onCancelContactSupportTapped) }
+                )
 
                 Button {
                     requestReview()

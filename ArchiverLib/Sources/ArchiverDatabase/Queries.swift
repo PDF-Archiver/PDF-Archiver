@@ -241,11 +241,35 @@ extension Document {
         }
     }
 
-    /// Documents that are not on this device yet, inbox first, newest first.
-    public static func notDownloaded(limit: Int) -> some SelectStatementOf<Document> {
-        Self.where { $0.downloadStatus.lt(1) }
-            .order { ($0.isTagged, $0.date.desc()) }
-            .limit(limit)
+    /// Join + staleness filter shared by the pending-text query (`downloaded: true`) and the
+    /// not-downloaded prefetch query (`downloaded: false`) - same staleness rule, opposite
+    /// download-status side, so eviction and prefetch never fight over the same document.
+    static func indexStateJoinAndFilter(downloaded: Bool) -> QueryFragment {
+        let comparison: QueryFragment = downloaded ? ">= 1" : "< 1"
+        return """
+        LEFT JOIN \(DocumentIndexState.self) ON \(DocumentIndexState.documentID) = \(Document.id)
+        WHERE \(Document.downloadStatus) \(comparison)
+          AND (\(DocumentIndexState.documentID) IS NULL
+               OR \(DocumentIndexState.sourceSize) != \(Document.sizeInBytes)
+               OR \(DocumentIndexState.sourceModificationDate) IS NOT \(Document.contentModificationDate)
+               OR \(DocumentIndexState.extractorVersion) < \(bind: DocumentIndexState.currentExtractorVersion))
+        """
+    }
+
+    /// Documents that are not on this device yet and whose text is missing or stale - excludes a
+    /// document this run already indexed and then evicted, so eviction and prefetch do not churn
+    /// the same document back and forth. Inbox first, newest first.
+    public static func notDownloaded(limit: Int) -> some Statement<Document> {
+        #sql(
+            """
+            SELECT \(Document.columns)
+            FROM \(Document.self)
+            \(indexStateJoinAndFilter(downloaded: false))
+            ORDER BY \(Document.isTagged) ASC, \(Document.date) DESC
+            LIMIT \(bind: limit)
+            """,
+            as: Document.self
+        )
     }
 
     /// Escapes the three characters SQLite's `LIKE` gives a meaning to, for use with `ESCAPE '\'`.

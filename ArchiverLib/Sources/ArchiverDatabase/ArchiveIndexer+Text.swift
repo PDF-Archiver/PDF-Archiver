@@ -20,9 +20,14 @@ extension ArchiveIndexer {
     ///
     /// Only ever called by the platform schedulers, never by a user action: this is the expensive
     /// half of indexing and runs on external power at background quality of service.
-    public func indexPendingTexts(budget: Int) async {
+    ///
+    /// Returns the documents this run attempted, so a caller that manages local copies - not this
+    /// target's job, see `docs/adr/0003-database-is-a-derived-read-model.md` - knows what it can
+    /// evict again.
+    @discardableResult
+    public func indexPendingTexts(budget: Int) async -> [Document] {
         // Returns before any bookkeeping, so the next scheduled run repeats the attempt.
-        guard await mayStartTextPass() else { return }
+        guard await mayStartTextPass() else { return [] }
 
         let pending = await withErrorReporting {
             try await database.read { db in
@@ -32,7 +37,7 @@ extension ArchiveIndexer {
         guard let pending else {
             Logger.archiveIndexer.error("[textindex] Could not read the run candidates")
             await finishTextRun(indexedAnything: false)
-            return
+            return []
         }
         guard !pending.isEmpty else {
             // A document that is not on this device is never a candidate, so a large
@@ -42,10 +47,10 @@ extension ArchiveIndexer {
                 "notDownloadedCount": "\(notDownloadedCount)"
             ])
             await finishTextRun(indexedAnything: false)
-            return
+            return []
         }
 
-        var processedCount = 0
+        var processedDocuments: [Document] = []
         var storedCount = 0
         var wasCancelled = false
         for document in pending {
@@ -65,17 +70,18 @@ extension ArchiveIndexer {
             if await commit(text: text, for: document) {
                 storedCount += 1
             }
-            processedCount += 1
+            processedDocuments.append(document)
             // A reconcile chunk arriving mid-run must not wait out the whole budget.
             await Task.yield()
         }
 
         logTextRun(candidateCount: pending.count,
-                   processedCount: processedCount,
+                   processedCount: processedDocuments.count,
                    storedCount: storedCount,
                    wasCancelled: wasCancelled)
 
-        await finishTextRun(indexedAnything: processedCount > 0)
+        await finishTextRun(indexedAnything: !processedDocuments.isEmpty)
+        return processedDocuments
     }
 
     /// Every document a run reads but does not store comes back in the next run, in the same
@@ -292,14 +298,7 @@ extension ArchiveIndexer {
     }
 
     private static var pendingJoinAndFilter: QueryFragment {
-        """
-        LEFT JOIN \(DocumentIndexState.self) ON \(DocumentIndexState.documentID) = \(Document.id)
-        WHERE \(Document.downloadStatus) >= 1
-          AND (\(DocumentIndexState.documentID) IS NULL
-               OR \(DocumentIndexState.sourceSize) != \(Document.sizeInBytes)
-               OR \(DocumentIndexState.sourceModificationDate) IS NOT \(Document.contentModificationDate)
-               OR \(DocumentIndexState.extractorVersion) < \(bind: DocumentIndexState.currentExtractorVersion))
-        """
+        Document.indexStateJoinAndFilter(downloaded: true)
     }
 }
 

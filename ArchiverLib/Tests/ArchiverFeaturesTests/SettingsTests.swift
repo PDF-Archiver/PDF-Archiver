@@ -135,24 +135,87 @@ struct SettingsTests {
 
     // MARK: - Diagnostics Report Tests
 
-    #if os(iOS)
     @Test
-    func contactSupportOpensMailWithoutWaitingForTheReport() async throws {
+    func contactSupportShowsTheConsentDialogImmediatelyWithoutWaitingForTheReport() async throws {
         let report = DiagnosticsReport(filename: "Diagnostics-Report.html", data: Data())
-        let store = TestStore(initialState: Settings.State(isShowingMailSheet: false, diagnosticsReport: report)) {
+        let store = TestStore(initialState: Settings.State(diagnosticsReport: report)) {
             Settings()
+        } withDependencies: {
+            // The reducer's effect logs the app state before creating the report, which reads this.
+            $0.archiveIndexer.pendingTextCount = { 0 }
         }
         store.exhaustivity = .off
 
         await store.send(.onContactSupportTapped) {
             $0.diagnosticsReport = nil
             $0.isCreatingDiagnosticsReport = true
-            $0.isShowingMailSheet = true
+            $0.isShowingDiagnosticsReportConsent = true
         }
 
         await store.finish()
     }
+
+    @Test
+    func sendWithReportTappedConfirmsSendingWhileTheReportIsStillLoading() async throws {
+        let store = TestStore(initialState: Settings.State()) {
+            Settings()
+        }
+
+        await store.send(.onSendWithReportTapped) {
+            $0.didConfirmSendingDiagnosticsReport = true
+        }
+    }
+
+    // `deliverDiagnosticsReport` calls the real, unmocked `NSSharingService`/`mailto:` handoff on
+    // macOS, so only iOS - where delivery is just a state flag - exercises the "already ready" path.
+    #if os(iOS)
+    @Test
+    func sendWithReportTappedOpensTheMailSheetWhenTheReportIsAlreadyReady() async throws {
+        let report = DiagnosticsReport(filename: "Diagnostics-Report.html", data: Data())
+        let store = TestStore(initialState: Settings.State(diagnosticsReport: report)) {
+            Settings()
+        }
+
+        await store.send(.onSendWithReportTapped) {
+            $0.didConfirmSendingDiagnosticsReport = true
+            $0.isShowingMailSheet = true
+        }
+    }
+
+    @Test
+    func sendWithoutReportTappedOpensTheMailSheetImmediatelyWithoutTheReport() async throws {
+        let report = DiagnosticsReport(filename: "Diagnostics-Report.html", data: Data())
+        let store = TestStore(initialState: Settings.State(
+            diagnosticsReport: report,
+            isCreatingDiagnosticsReport: true
+        )) {
+            Settings()
+        }
+
+        await store.send(.onSendWithoutReportTapped) {
+            $0.diagnosticsReport = nil
+            $0.isCreatingDiagnosticsReport = false
+            $0.isShowingMailSheet = true
+        }
+    }
     #endif
+
+    @Test
+    func cancelContactSupportTappedDiscardsTheReport() async throws {
+        let report = DiagnosticsReport(filename: "Diagnostics-Report.html", data: Data())
+        let store = TestStore(initialState: Settings.State(
+            isShowingDiagnosticsReportConsent: true,
+            diagnosticsReport: report,
+            isCreatingDiagnosticsReport: true
+        )) {
+            Settings()
+        }
+
+        await store.send(.onCancelContactSupportTapped) {
+            $0.diagnosticsReport = nil
+            $0.isCreatingDiagnosticsReport = false
+        }
+    }
 
     // MARK: - Premium Section Tests
 

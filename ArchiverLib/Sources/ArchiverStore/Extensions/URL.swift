@@ -26,6 +26,16 @@ extension URL: Log {
     /// `resolvingSymlinksInPath()` only strips a real `/private` prefix while the path exists on
     /// disk, so a folder that has not been created yet would keep it and get a different identity
     /// than the same folder once files land in it - trim the prefix by string instead.
+    ///
+    /// Measured on-device (iPhone, Debug build, 2026-09-21):
+    ///
+    /// | Path | `/private`? |
+    /// |---|---|
+    /// | raw metadata URL `…/Mobile Documents/…/1993/1993-01-25--….pdf` | yes |
+    /// | same, after `normalized()` | no |
+    /// | iCloud base `…/Mobile Documents/…/Documents/` | yes |
+    /// | app-container base `…/Containers/Data/Application/…/Documents/` | no |
+    /// | same, after `normalized()` (no-op) | no |
     func normalized() -> URL {
         let standardized = standardizedFileURL
         guard standardized.path().hasPrefix("/private/") else { return standardized }

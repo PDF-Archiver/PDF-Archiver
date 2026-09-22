@@ -1220,6 +1220,17 @@
         }
       }
     },
+    "Request Support?" : {
+      "comment" : "The title of the dialog asking whether to include a diagnostic report with the support request.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Support Anfragen?"
+          }
+        }
+      }
+    },
     "Require Document Specification" : {
       "localizations" : {
         "de" : {
@@ -1661,6 +1672,17 @@
         }
       }
     },
+    "The report doesn't include file names or document contents — only information needed to diagnose the problem." : {
+      "comment" : "Explains what information the diagnostic report contains before the user decides whether to send it.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Bericht enthält keine Dateinamen oder Dokumenteninhalte – nur Informationen zur Problemanalyse."
+          }
+        }
+      }
+    },
     "The search index could not be created. Rebuilding it may help." : {
       "localizations" : {
         "de" : {
@@ -1782,6 +1804,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wenn aktiviert, schlägt Apple Intelligence automatisch Beschreibungen und Tags für deine Dokumente vor. Das kann etwas Zeit in Anspruch nehmen.\nIm Falle eines Fehlers wird immer die nicht AI Variante verwendet."
+          }
+        }
+      }
+    },
+    "With Report" : {
+      "comment" : "A button that proceeds with the diagnostic report attached to the support email.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit Bericht"
+          }
+        }
+      }
+    },
+    "Without Report" : {
+      "comment" : "A button that proceeds without attaching the diagnostic report to the support email.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ohne Bericht"
           }
         }
       }

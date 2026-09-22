@@ -109,7 +109,8 @@ public actor BackgroundTaskManager: Log {
 
             if await PremiumEntitlement.isActive() {
                 await SearchIndexDownloads.requestNextBatch()
-                await archiveIndexer.indexPendingTexts(Self.indexBudget)
+                let indexed = await archiveIndexer.indexPendingTexts(Self.indexBudget)
+                await evictLocalCopies(of: indexed)
             }
             return result
         }
