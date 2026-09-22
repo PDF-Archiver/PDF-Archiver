@@ -21,10 +21,13 @@ struct SettingsMacView: View {
             .navigationSplitViewColumnWidth(min: 180, ideal: 200, max: 240)
             .toolbar(removing: .sidebarToggle)
         } detail: {
+            // `.id` recreates the stack per pane, so a page pushed inside one pane (Legal's
+            // links, the About link) does not survive a sidebar switch to another pane.
             NavigationStack {
                 paneBody
                     .navigationTitle(Text(store.selectedPane.title, bundle: #bundle))
             }
+            .id(store.selectedPane)
         }
         .frame(minWidth: 680, idealWidth: 720, minHeight: 460, idealHeight: 520)
         .onAppear { store.send(.onSettingsWindowAppeared) }

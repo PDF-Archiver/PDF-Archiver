@@ -52,9 +52,7 @@ struct GeneralPane: View {
         .fileImporter(isPresented: $store.showObservedFolderPicker, allowedContentTypes: [UTType.folder], onCompletion: { result in
             switch result {
             case .success(let url):
-                // Securely access the URL to save a bookmark
                 guard url.startAccessingSecurityScopedResource() else {
-                    // Handle the failure here.
                     return
                 }
                 store.send(.updateObservedFolder(url))

@@ -111,9 +111,6 @@ struct StorageSelectionView: View {
                         }
                     }
                 }
-                #if !os(macOS)
-                Spacer(minLength: 8)
-                #endif
             }
             HStack(spacing: 16) {
                 Image(systemName: "exclamationmark.triangle")
