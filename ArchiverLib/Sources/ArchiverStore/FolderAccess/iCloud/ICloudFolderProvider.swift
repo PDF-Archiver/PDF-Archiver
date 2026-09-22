@@ -21,7 +21,17 @@ final class ICloudFolderProvider: FolderProvider {
 
     private var currentDocuments: [Int: DocumentInformation] = [:]
     private var lastDocuments: [DocumentInformation]?
+    private var lastSentAt: ContinuousClock.Instant?
     private var observationTask: Task<Void, Never>?
+    /// Delivers `NSMetadataQuery`'s notifications off the main thread: the observer below reads
+    /// each `NSMetadataItem` synchronously (it is not `Sendable`), which includes the per-item
+    /// resource read `uniqueId()` makes - main would otherwise stall on every batch of changes.
+    private static let metadataQueryOperationQueue: OperationQueue = {
+        let queue = OperationQueue()
+        queue.maxConcurrentOperationCount = 1
+        queue.qualityOfService = .utility
+        return queue
+    }()
     /// Boxed so its own `deinit` removes the observers: a non-`Sendable` array could not be read
     /// from `ICloudFolderProvider`'s `deinit` directly without an unsafe opt-out.
     private var notificationTokenBox: NotificationTokenBox?
@@ -29,7 +39,9 @@ final class ICloudFolderProvider: FolderProvider {
     init(baseUrl: URL) throws {
         self.baseUrl = baseUrl
 
-        let (stream, continuation) = AsyncStream.makeStream(of: [DocumentInformation].self)
+        // Snapshots are complete and idempotent, so only the newest one is worth keeping around
+        // while a consumer is still catching up - buffering a backlog would only delay it further.
+        let (stream, continuation) = AsyncStream.makeStream(of: [DocumentInformation].self, bufferingPolicy: .bufferingNewest(1))
         currentDocumentsStream = stream
         currentDocumentsStreamContinuation = continuation
 
@@ -41,8 +53,8 @@ final class ICloudFolderProvider: FolderProvider {
         let notContainsTempPath = NSPredicate(format: "(NOT (%K CONTAINS[c] %@)) AND (NOT (%K CONTAINS[c] %@))", NSMetadataItemPathKey, "/\(Self.tempFolderName)/", NSMetadataItemPathKey, "/.Trash/")
         metadataQuery.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, notContainsTempPath] )
 
-        // update the file status 3 times per second, while downloading
-        metadataQuery.notificationBatchingInterval = 0.3
+        // update the file status roughly once per second, while downloading
+        metadataQuery.notificationBatchingInterval = 1.0
 
         /*
          Ask for both in-container documents and external documents so that
@@ -54,8 +66,9 @@ final class ICloudFolderProvider: FolderProvider {
             NSMetadataQueryUbiquitousDocumentsScope
         ]
 
-        // the operationQueue of the `NSMetadataQuery` must be serial - we use the main queue
-        metadataQuery.operationQueue = .main
+        // the operationQueue of the `NSMetadataQuery` must be serial - a dedicated background queue
+        // keeps the per-item resource reads below off the main thread
+        metadataQuery.operationQueue = Self.metadataQueryOperationQueue
 
         // Registered here, synchronously and before the query starts: `DidFinishGathering` is posted
         // exactly once, and a query that finished before an `await`ed loop began iterating would
@@ -161,6 +174,12 @@ final class ICloudFolderProvider: FolderProvider {
         }
         let documents = Array(currentDocuments.values)
         guard lastDocuments?.sorted() != documents.sorted() else { return }
+
+        let now = ContinuousClock.now
+        let gap = lastSentAt.map { "\($0.duration(to: now))" } ?? "first"
+        log.debug("Sending documents snapshot", metadata: ["count": "\(documents.count)", "gapSinceLastSnapshot": gap])
+        lastSentAt = now
+
         currentDocumentsStreamContinuation.yield(documents)
         lastDocuments = documents
     }
@@ -182,11 +201,11 @@ final class ICloudFolderProvider: FolderProvider {
     // MARK: - API
 
     static func canHandle(_ url: URL) -> Bool {
-        guard let cloudUrl = FileManager.default.url(forUbiquityContainerIdentifier: nil) else {
+        guard let cloudUrl = FileManager.default.iCloudDriveURL else {
             // this is a valid situation, if no iCloud Drive is available
             return false
         }
-        return url.path.starts(with: cloudUrl.path)
+        return url.isUnder(cloudUrl)
     }
 
     func save(data: Data, at url: URL) throws {
@@ -198,10 +217,6 @@ final class ICloudFolderProvider: FolderProvider {
         }
 
         try data.write(to: url)
-    }
-
-    func startDownload(of url: URL) throws {
-        try FileManager.default.startDownloadingUbiquitousItem(at: url)
     }
 
     func fetch(url: URL) throws -> Data {

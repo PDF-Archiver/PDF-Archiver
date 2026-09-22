@@ -35,7 +35,7 @@ extension PremiumDependency: DependencyKey {
                 switch result {
                 case .unverified(let transaction, let error):
                     Logger.inAppPurchase.error("""
-                        Transaction ID \(transaction.id) for \(transaction.productID) is unverified: \(error)
+                        Transaction ID \(transaction.id, privacy: .public) for \(transaction.productID, privacy: .public) is unverified: \(LogRedact.describe(error), privacy: .public)
                         """)
                     continue
 
@@ -63,7 +63,7 @@ extension PremiumDependency: DependencyKey {
 
                     case .unverified(let transaction, let error):
                         Logger.inAppPurchase.error("""
-                            Transaction ID \(transaction.id) for \(transaction.productID) is unverified: \(error)
+                            Transaction ID \(transaction.id, privacy: .public) for \(transaction.productID, privacy: .public) is unverified: \(LogRedact.describe(error), privacy: .public)
                             """)
                     }
                     continuation.yield()

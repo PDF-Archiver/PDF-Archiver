@@ -104,7 +104,7 @@ struct ScanButtonModifier: ViewModifier {
                         let url = try result.get()
                         try await dropHandler.handleImport(of: url)
                         } catch {
-                            Logger.pdfDropHandler.errorAndAssert("Failed to get imported url", metadata: ["error": "\(error)"])
+                            Logger.pdfDropHandler.errorAndAssert("Failed to get imported url", metadata: ["error": "\(LogRedact.describe(error))"])
                             NotificationCenter.default.postAlert(error)
                         }
                 }

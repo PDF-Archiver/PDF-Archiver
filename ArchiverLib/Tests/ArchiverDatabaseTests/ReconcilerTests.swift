@@ -515,6 +515,50 @@ struct ReconcilerTests {
         #expect(try await Self.allDocuments() == before)
     }
 
+    /// This is the one signal that tells "the download never started" apart from "it started but
+    /// never reported progress" - it has to fire even though the file itself is unremarkable.
+    @Test
+    func planReportsADownloadStatusChange() async throws {
+        let path = "/Archive/2024/2024-01-02--rechnung__bill.pdf"
+        let existingDocument = await Document.make(
+            from: Self.item(id: 1, path: path, isTagged: true, downloadStatus: 0),
+            rootKey: archiveRoot)
+        let items = [Self.item(id: 1, path: path, isTagged: true, downloadStatus: 0.5)]
+        var documents: [Document.ID: Document] = [:]
+        for item in items {
+            documents[item.id] = await Document.make(from: item, rootKey: archiveRoot)
+        }
+
+        let plan = ArchiveIndexer.plan(items: items, existing: [1: existingDocument], root: archiveRoot, documents: documents)
+
+        #expect(plan.downloadStatusChanges == [ArchiveIndexer.DownloadStatusChange(id: 1, old: 0, new: 0.5)])
+    }
+
+    /// The whole point of splitting parsing out of `plan`: an item whose stored row already
+    /// matches folder, url and tag state has nothing a re-parse could change.
+    @Test
+    func itemsNeedingParseSkipsAnUnchangedItemButKeepsAMovedOne() async throws {
+        let unchangedPath = "/Archive/2024/2024-01-02--rechnung__bill.pdf"
+        let unchangedItem = Self.item(id: 1, path: unchangedPath, isTagged: true, downloadStatus: 0)
+        let unchangedRow = await Document.make(from: unchangedItem, rootKey: archiveRoot)
+
+        let movedItem = Self.item(id: 2, path: "/Archive/2024/2024-02-02--new-name__bill.pdf", isTagged: true)
+        let movedExistingRow = await Document.make(
+            from: Self.item(id: 2, path: "/Archive/2024/2024-02-02--old-name__bill.pdf", isTagged: true),
+            rootKey: archiveRoot)
+
+        let items = [
+            // Only the download status differs - `plan` updates this in place, no re-parse needed.
+            Self.item(id: 1, path: unchangedPath, isTagged: true, downloadStatus: 1),
+            movedItem
+        ]
+        let existing: [Document.ID: Document] = [1: unchangedRow, 2: movedExistingRow]
+
+        let toParse = ArchiveIndexer.itemsNeedingParse(items: items, existing: existing, root: archiveRoot)
+
+        #expect(toParse.map(\.id) == [2])
+    }
+
     @Test
     func planOrdersTheChangedRowsNewestFirst() async throws {
         let items = [

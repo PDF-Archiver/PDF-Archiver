@@ -73,7 +73,7 @@ nonisolated public struct ArchivePathTypeCustomSharedKey: SharedKey, Log {
             }
         } catch {
             store.set(nil, forKey: key)
-            log.errorAndAssert("Error while getting archive url.", metadata: ["error": "\(String(describing: error))"])
+            log.errorAndAssert("Error while getting archive url.", metadata: ["error": "\(LogRedact.describe(error))"])
             return nil
         }
     }
@@ -98,7 +98,7 @@ nonisolated public struct ArchivePathTypeCustomSharedKey: SharedKey, Log {
                     let bookmark = try url.bookmarkData(options: .minimalBookmark, includingResourceValuesForKeys: nil, relativeTo: nil)
                     store.set(bookmark, forKey: key)
                 } catch {
-                    log.errorAndAssert("Bookmark error \(error)")
+                    log.errorAndAssert("Bookmark error", metadata: ["error": "\(LogRedact.describe(error))"])
                 }
                 #endif
 
@@ -107,7 +107,7 @@ nonisolated public struct ArchivePathTypeCustomSharedKey: SharedKey, Log {
             }
         } catch {
             store.set(nil, forKey: key)
-            log.errorAndAssert("Failed to set ArchivePathType.", metadata: ["error": "\(error)"])
+            log.errorAndAssert("Failed to set ArchivePathType.", metadata: ["error": "\(LogRedact.describe(error))"])
         }
     }
 

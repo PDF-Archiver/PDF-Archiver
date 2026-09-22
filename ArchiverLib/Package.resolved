@@ -1,5 +1,5 @@
 {
-  "originHash" : "470e1e24bac3e001a5cfa7e8f28d7bebe8641db27862c242402ec2cc49421ddb",
+  "originHash" : "3e6a3895b908c88cc1ef0bb7f291eebe330f0ac2614a7ced3fa0f6514f241e9a",
   "pins" : [
     {
       "identity" : "asyncextensions",
@@ -17,6 +17,24 @@
       "state" : {
         "revision" : "c96fdbf1223e22fa4566ac5f40513506dcf5dd41",
         "version" : "1.2.1"
+      }
+    },
+    {
+      "identity" : "diagnostics",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/AvdLee/Diagnostics",
+      "state" : {
+        "revision" : "bc2837ac63d57eddaf7f90cd6bc95d4700e71452",
+        "version" : "7.0.2"
+      }
+    },
+    {
+      "identity" : "exceptioncatcher",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sindresorhus/ExceptionCatcher",
+      "state" : {
+        "revision" : "5770ab8a5b89ad9592baad1298a5fa1e521f4301",
+        "version" : "2.2.1"
       }
     },
     {
@@ -119,6 +137,15 @@
       }
     },
     {
+      "identity" : "swift-issue-reporting",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/swift-issue-reporting",
+      "state" : {
+        "revision" : "71c7c9a761d1ca6ed4ccb6ced040fe1c1a39e8e7",
+        "version" : "2.1.0"
+      }
+    },
+    {
       "identity" : "swift-navigation",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-navigation",
@@ -170,15 +197,6 @@
       "state" : {
         "revision" : "79e4b74a295b6eb74a8b585e3a39d29e70c1dbd1",
         "version" : "603.0.2"
-      }
-    },
-    {
-      "identity" : "xctest-dynamic-overlay",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/pointfreeco/xctest-dynamic-overlay",
-      "state" : {
-        "revision" : "d9308ad679143c26a30dec52daefe82f54af2b82",
-        "version" : "1.13.1"
       }
     }
   ],

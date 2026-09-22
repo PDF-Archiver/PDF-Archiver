@@ -46,6 +46,46 @@ struct SuggestionAndDownloadTests {
         #expect(documents.map(\.id) == [-2])
     }
 
+    /// An evicted document whose index is still fresh must not come straight back as a download
+    /// candidate - otherwise eviction and prefetch churn the same document forever.
+    @Test
+    func theDownloadQueueSkipsAnEvictedDocumentWithAFreshIndex() async throws {
+        @Dependency(\.defaultDatabase) var database
+        @Dependency(\.date.now) var now
+        try await database.write { db in
+            try db.seed {
+                Document(id: -4, rootKey: "test", url: URL(filePath: "/Archive/2024/evicted.pdf"), date: Date(timeIntervalSince1970: 400), specification: "evicted", tags: [], isTagged: true, sizeInBytes: 10, downloadStatus: 0)
+                DocumentIndexState(documentID: -4, sourceSize: 10, sourceModificationDate: nil, indexedAt: now, outcome: .indexed, characterCount: 5, extractorVersion: DocumentIndexState.currentExtractorVersion)
+            }
+        }
+
+        let documents = try await database.read { db in
+            try Document.notDownloaded(limit: 10).fetchAll(db)
+        }
+
+        #expect(!documents.map(\.id).contains(-4))
+    }
+
+    /// A document whose content changed elsewhere still needs downloading, even once it carries a
+    /// (now stale) index state from before.
+    @Test
+    func theDownloadQueueStillOffersADocumentWithAStaleIndex() async throws {
+        @Dependency(\.defaultDatabase) var database
+        @Dependency(\.date.now) var now
+        try await database.write { db in
+            try db.seed {
+                Document(id: -4, rootKey: "test", url: URL(filePath: "/Archive/2024/stale.pdf"), date: Date(timeIntervalSince1970: 400), specification: "stale", tags: [], isTagged: true, sizeInBytes: 20, downloadStatus: 0)
+                DocumentIndexState(documentID: -4, sourceSize: 10, sourceModificationDate: nil, indexedAt: now, outcome: .indexed, characterCount: 5, extractorVersion: DocumentIndexState.currentExtractorVersion)
+            }
+        }
+
+        let documents = try await database.read { db in
+            try Document.notDownloaded(limit: 10).fetchAll(db)
+        }
+
+        #expect(documents.map(\.id).contains(-4))
+    }
+
     @Test
     func theTextPrefixIsCappedAtTheAnalysedLength() async throws {
         @Dependency(\.defaultDatabase) var database

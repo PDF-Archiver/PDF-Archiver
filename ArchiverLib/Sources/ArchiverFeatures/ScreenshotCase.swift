@@ -151,6 +151,7 @@ public enum ScreenshotCase: String, CaseIterable, Sendable {
         ArchiveStoreDependency(
             reloadDocuments: { },
             startDownloadOf: { _ in },
+            evictDocumentAt: { _ in },
             deleteDocumentAt: { _ in },
             // What the app recognises from the scan: its date and description, but no tag yet.
             parseFilename: { _ in (Self.receiptDate, Self.receiptSpecification, nil) },

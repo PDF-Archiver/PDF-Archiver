@@ -112,7 +112,7 @@ public actor DocumentProcessor {
             let urls = try Staging.persist(imageJpegs: imageJpegs, in: stagingFolder)
             return await enqueue(.images(urls), config: config).value
         } catch {
-            Logger.documentProcessor.errorAndAssert("Scan import failed: \(error)")
+            Logger.documentProcessor.errorAndAssert("Scan import failed", metadata: ["error": "\(LogRedact.describe(error))"])
             return nil
         }
     }
@@ -124,7 +124,7 @@ public actor DocumentProcessor {
             let url = try Staging.persist(pdfData: data, filename: filename, in: stagingFolder)
             enqueue(.pdf(url), config: config)
         } catch {
-            Logger.documentProcessor.errorAndAssert("PDF import failed: \(error)")
+            Logger.documentProcessor.errorAndAssert("PDF import failed", metadata: ["error": "\(LogRedact.describe(error))"])
         }
     }
 
@@ -178,7 +178,7 @@ public actor DocumentProcessor {
                     ocrCount += 1
                 }
             }
-            Logger.documentProcessor.info("Untagged processing: added a text layer to \(ocrCount) documents")
+            Logger.documentProcessor.info("Untagged processing: added a text layer to \(ocrCount, privacy: .public) documents")
         }
 
         var aiCacheCount = 0
@@ -187,7 +187,7 @@ public actor DocumentProcessor {
                 documents: documents,
                 textExtractor: { await Self.extractText(from: $0) },
                 customPrompt: aiContext.customPrompt)
-            Logger.documentProcessor.info("Untagged processing: created \(aiCacheCount) AI cache entries")
+            Logger.documentProcessor.info("Untagged processing: created \(aiCacheCount, privacy: .public) AI cache entries")
 
             // Gated on `aiContext`, not a separate flag: `contentExtractor` above is the only
             // consumer of these prints (via its `visualNeighbourFinder`), so computing one where
@@ -246,7 +246,7 @@ public actor DocumentProcessor {
             guard let observation = try await PDFOCREngine.firstPageFeaturePrint(of: pdf) else { return nil }
             return try PropertyListEncoder().encode(observation)
         } catch {
-            Logger.ocrProcessing.error("Failed to compute a feature print for \(url.lastPathComponent, privacy: .public): \(error)")
+            Logger.ocrProcessing.error("Failed to compute a feature print for \(LogRedact.token(url), privacy: .public): \(LogRedact.describe(error), privacy: .public)")
             return nil
         }
     }
@@ -342,7 +342,7 @@ public actor DocumentProcessor {
             }
 
             let timeDiff = Date().timeIntervalSinceReferenceDate - start.timeIntervalSinceReferenceDate
-            Logger.documentProcessor.info("Processing completed", metadata: ["document": "\(documentUrl.lastPathComponent)", "processing_time": "\(timeDiff)"])
+            Logger.documentProcessor.info("Processing completed", metadata: ["document": "\(LogRedact.token(documentUrl))", "processing_time": "\(timeDiff)"])
             emit(.finished(source: source, document: documentUrl))
             return documentUrl
         } catch {
@@ -351,7 +351,7 @@ public actor DocumentProcessor {
             // in-flight set, so a transient failure (file still being written
             // by the Share Extension, destination briefly unavailable) is
             // retried on the next processStagedFiles trigger.
-            Logger.documentProcessor.error("Processing failed: \(error)")
+            Logger.documentProcessor.error("Processing failed: \(LogRedact.describe(error), privacy: .public)")
             for url in batch.sourceUrls {
                 inFlight.remove(url.resolvingSymlinksInPath())
             }
@@ -399,7 +399,7 @@ public actor DocumentProcessor {
     @concurrent
     static func addOcrTextLayer(at url: URL, config: ProcessingConfig, force: Bool = false) async -> Bool {
         guard let pdf = PDFDocument(url: url) else {
-            Logger.ocrProcessing.debug("Could not open PDF at \(url.lastPathComponent, privacy: .public)")
+            Logger.ocrProcessing.debug("Could not open PDF at \(LogRedact.token(url), privacy: .public)")
             return false
         }
 
@@ -411,7 +411,7 @@ public actor DocumentProcessor {
                version >= config.ocrEngineVersion { return false }
         }
 
-        Logger.ocrProcessing.info("OCR processing \(url.lastPathComponent, privacy: .public)")
+        Logger.ocrProcessing.info("OCR processing \(LogRedact.token(url), privacy: .public)")
 
         do {
             try await PDFOCREngine.addTextLayer(to: pdf, quality: config.pdfQuality)
@@ -419,18 +419,18 @@ public actor DocumentProcessor {
             // a successor pass may already be reading the file.
             try Task.checkCancellation()
             if !PDFMetadata.markAsProcessed(pdf, marker: config.processedMarker, version: config.ocrEngineVersion, writeTo: url) {
-                Logger.ocrProcessing.error("Failed to write OCR result for \(url.lastPathComponent, privacy: .public)")
+                Logger.ocrProcessing.error("Failed to write OCR result for \(LogRedact.token(url), privacy: .public)")
                 return false
             }
-            Logger.ocrProcessing.info("OCR completed for \(url.lastPathComponent, privacy: .public) (\(pdf.pageCount) pages)")
+            Logger.ocrProcessing.info("OCR completed for \(LogRedact.token(url), privacy: .public) (\(pdf.pageCount, privacy: .public) pages)")
             return true
         } catch is CancellationError {
             // Partially-modified `pdf` is discarded without writing, so the
             // document is retried on the next pass.
-            Logger.ocrProcessing.info("OCR cancelled for \(url.lastPathComponent, privacy: .public)")
+            Logger.ocrProcessing.info("OCR cancelled for \(LogRedact.token(url), privacy: .public)")
             return false
         } catch {
-            Logger.ocrProcessing.error("OCR failed for \(url.lastPathComponent, privacy: .public): \(error)")
+            Logger.ocrProcessing.error("OCR failed for \(LogRedact.token(url), privacy: .public): \(LogRedact.describe(error), privacy: .public)")
             // The failure stamp exists to stop the automatic sweep from looping.
             // A manual run must leave the file byte-identical instead, because
             // `pdf` may already hold partially replaced pages at this point.
@@ -478,9 +478,11 @@ public actor DocumentProcessor {
         return store
     }
 
-    private enum ProcessingError: Error {
+    private enum ProcessingError: Error, LogSafeError {
         case invalidPdf
         case noPagesRendered
         case failedToWritePdf
+
+        var logDescription: String { "\(self)" }
     }
 }

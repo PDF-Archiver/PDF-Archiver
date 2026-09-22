@@ -33,10 +33,20 @@ struct AboutPane: View {
                     HStack {
                         Label(String(localized: "Contact & Help", bundle: #bundle), systemImage: "envelope")
                         Spacer()
+                        if store.isCreatingDiagnosticsReport {
+                            ProgressView()
+                                .controlSize(.small)
+                        }
                     }
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                .diagnosticsReportConsentDialog(
+                    isPresented: $store.isShowingDiagnosticsReportConsent,
+                    onSendWithReport: { store.send(.onSendWithReportTapped) },
+                    onSendWithoutReport: { store.send(.onSendWithoutReportTapped) },
+                    onCancel: { store.send(.onCancelContactSupportTapped) }
+                )
 
                 Button {
                     requestReview()

@@ -58,7 +58,7 @@ struct GeneralPane: View {
                 store.send(.updateObservedFolder(url))
 
             case .failure(let error):
-                Logger.settings.faultAndAssert("Failed to import a local folder: \(error)")
+                Logger.settings.faultAndAssert("Failed to import a local folder: \(LogRedact.describe(error))")
                 NotificationCenter.default.postAlert(error)
             }
         })
