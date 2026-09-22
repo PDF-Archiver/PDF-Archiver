@@ -2005,6 +2005,36 @@
           }
         }
       }
+    },
+    "Support" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Support"
+          }
+        }
+      }
+    },
+    "Quality of the images that are converted into a PDF." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Qualität der Bilder, die in ein PDF umgewandelt werden."
+          }
+        }
+      }
+    },
+    "PDF Archiver imports new documents from this folder." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PDF Archiver importiert neue Dokumente aus diesem Ordner."
+          }
+        }
+      }
     }
   },
   "version" : "1.1"

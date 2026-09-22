@@ -274,6 +274,7 @@ struct Settings {
         case .appleIntelligence: state.destination = .appleIntelligenceSettings(AppleIntelligenceSettings.State())
         case .searchIndex: state.destination = .searchIndex(SearchIndexSettings.State())
         case .advanced: state.destination = .expertSettings(ExpertSettings.State())
+
         // General, Premium and About are rendered from `Settings.State` itself.
         case .general, .premium, .about: state.destination = nil
         }
