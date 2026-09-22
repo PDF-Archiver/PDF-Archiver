@@ -15,7 +15,6 @@ import SwiftUI
 import MessageUI
 #endif
 import OSLog
-import UniformTypeIdentifiers
 
 extension PDFQuality {
     var name: LocalizedStringKey {
@@ -99,6 +98,9 @@ struct Settings {
         @SharedReader(.archivePathType) var selectedArchiveType: StorageType?
         #if os(macOS)
         @Shared(.observedFolder) var observedFolderURL: URL?
+        @Shared(.settingsPane) var selectedPaneID: String
+
+        var selectedPane: SettingsPane { SettingsPane(persisted: selectedPaneID) }
         #endif
 
         var premiumSection = PremiumSection.State()
@@ -127,6 +129,9 @@ struct Settings {
         #if os(macOS)
         case onObserveredFolderSelectedTapped
         case onObservedFolderRemoveTapped
+        case onPaneSelected(SettingsPane)
+        case onSettingsWindowAppeared
+        case onSettingsWindowDisappeared
         #endif
         case onOpenPdfArchiverWebsiteTapped
         case onShowArchiveTypeSelectionTapped
@@ -202,6 +207,21 @@ struct Settings {
 
             case .onObservedFolderRemoveTapped:
                 return .send(.updateObservedFolder(nil))
+
+            case .onPaneSelected(let pane):
+                state.$selectedPaneID.withLock { $0 = pane.rawValue }
+                Self.openPane(pane, in: &state)
+                return .none
+
+            case .onSettingsWindowAppeared:
+                Self.openPane(state.selectedPane, in: &state)
+                return .none
+
+            case .onSettingsWindowDisappeared:
+                // The Settings scene's state outlives its window, and `SearchIndexSettings.State`
+                // holds a live `@Fetch` — dropping the destination closes that query.
+                state.destination = nil
+                return .none
             #endif
 
             case .onOpenPdfArchiverWebsiteTapped:
@@ -246,6 +266,19 @@ struct Settings {
         }
         .ifLet(\.$destination, action: \.destination)
     }
+
+    #if os(macOS)
+    private static func openPane(_ pane: SettingsPane, in state: inout State) {
+        switch pane {
+        case .storage: state.destination = .archiveStorage(StorageSelection.State())
+        case .appleIntelligence: state.destination = .appleIntelligenceSettings(AppleIntelligenceSettings.State())
+        case .searchIndex: state.destination = .searchIndex(SearchIndexSettings.State())
+        case .advanced: state.destination = .expertSettings(ExpertSettings.State())
+        // General, Premium and About are rendered from `Settings.State` itself.
+        case .general, .premium, .about: state.destination = nil
+        }
+    }
+    #endif
 }
 
 extension Settings.Destination.State: Sendable, Equatable {}
@@ -420,243 +453,6 @@ struct SettingsView: View {
 }
 
 #if os(macOS)
-struct SettingsMacView: View {
-    @Bindable var store: StoreOf<Settings>
-
-    @Environment(\.requestReview) private var requestReview
-
-    var body: some View {
-        NavigationStack {
-            TabView {
-                Tab(String(localized: "General", bundle: #bundle), systemImage: "gear") {
-                    generalPreferences
-                        .focusable(false)
-                }
-
-                Tab(String(localized: "Premium", bundle: #bundle), systemImage: "star.hexagon") {
-                    PremiumSectionView(store: store.scope(\.premiumSection, action: \.premiumSection))
-                        .padding(.horizontal)
-                        .focusable(false)
-                }
-
-                Tab(String(localized: "About", bundle: #bundle), systemImage: "info.circle") {
-                    aboutPreferences
-                        .focusable(false)
-                }
-            }
-            .tabViewStyle(.tabBarOnly)
-        }
-        .frame(width: 400, height: 350)
-        .sheet(isPresented: Binding(
-            get: { store.destination != nil },
-            set: { if !$0 { store.destination = nil } }
-        )) {
-            if let destination = store.destination {
-                NavigationStack {
-                    Group {
-                        switch destination {
-                        case .appleIntelligenceSettings:
-                            if let appleIntelligenceSettingsStore = store.scope(\.destination?.appleIntelligenceSettings, action: \.destination.appleIntelligenceSettings) {
-                                AppleIntelligenceSettingsView(store: appleIntelligenceSettingsStore)
-                                    .navigationTitle(Text("Apple Intelligence", bundle: #bundle))
-                            }
-
-                        case .archiveStorage:
-                            if let storageSelectionStore = store.scope(\.destination?.archiveStorage, action: \.destination.archiveStorage) {
-                                StorageSelectionView(store: storageSelectionStore)
-                                    .navigationTitle(Text("Storage", bundle: #bundle))
-                            }
-
-                        case .expertSettings:
-                            if let expertSettingsStore = store.scope(\.destination?.expertSettings, action: \.destination.expertSettings) {
-                                ExpertSettingsView(store: expertSettingsStore)
-                                    .navigationTitle(Text("Advanced", bundle: #bundle))
-                            }
-
-                        case .searchIndex:
-                            if let searchIndexStore = store.scope(\.destination?.searchIndex, action: \.destination.searchIndex) {
-                                SearchIndexSettingsView(store: searchIndexStore)
-                                    .navigationTitle(Text("Search Index", bundle: #bundle))
-                            }
-
-                        case .aboutMe:
-                            AboutMeView()
-
-                        case .legal:
-                            LegalView(store: store)
-                                .navigationTitle(Text("Legal", bundle: #bundle))
-
-                        case .termsOfUse:
-                            let content = String(localized: "TERMS_OF_USE", bundle: #bundle)
-                            MarkdownView(markdown: content)
-                                .navigationTitle(String(localized: "Terms of Use", bundle: #bundle))
-
-                        case .privacy:
-                            let content = String(localized: "PRIVACY", bundle: #bundle)
-                            MarkdownView(markdown: content)
-                                .navigationTitle(String(localized: "Privacy", bundle: #bundle))
-
-                        case .imprint:
-                            let content = String(localized: "IMPRINT", bundle: #bundle)
-                            MarkdownView(markdown: content)
-                                .navigationTitle(Text("Imprint", bundle: #bundle))
-                        }
-                    }
-                    .toolbar {
-                        ToolbarItem(placement: .confirmationAction) {
-                            Button(String(localized: "Done", bundle: #bundle)) {
-                                store.destination = nil
-                            }
-                        }
-                    }
-                    .frame(minWidth: 500, minHeight: 400)
-                }
-            }
-        }
-        .fileImporter(isPresented: $store.showObservedFolderPicker, allowedContentTypes: [UTType.folder], onCompletion: { result in
-            switch result {
-            case .success(let url):
-                // Securely access the URL to save a bookmark
-                guard url.startAccessingSecurityScopedResource() else {
-                    // Handle the failure here.
-                    return
-                }
-                store.send(.updateObservedFolder(url))
-
-            case .failure(let error):
-                Logger.settings.faultAndAssert("Failed to import a local folder: \(error)")
-                NotificationCenter.default.postAlert(error)
-            }
-        })
-    }
-
-    @ViewBuilder
-    private var generalPreferences: some View {
-        Form {
-            Section {
-                LabeledContent {
-                    Picker("", selection: Binding(store.$pdfQuality)) {
-                        ForEach(PDFQuality.allCases, id: \.self) { quality in
-                            Text(quality.name, bundle: #bundle)
-                        }
-                    }
-                    .labelsHidden()
-                    .pickerStyle(.menu)
-                } label: {
-                    Label(String(localized: "PDF Quality", bundle: #bundle), systemImage: "text.document")
-                }
-
-                LabeledContent {
-                    HStack {
-                        Text(store.selectedArchiveType.getPath().title, bundle: #bundle)
-                            .foregroundStyle(.secondary)
-                        Spacer()
-                        Button(String(localized: "Change…", bundle: #bundle)) {
-                            store.send(.onShowArchiveTypeSelectionTapped)
-                        }
-                    }
-                } label: {
-                    Label(String(localized: "Storage", bundle: #bundle), systemImage: "externaldrive")
-                }
-
-                LabeledContent {
-                    HStack(spacing: 6) {
-                        if let observedFolderURL = store.observedFolderURL {
-                            Text(observedFolderURL.path)
-                            Button {
-                                store.send(.onObservedFolderRemoveTapped)
-                            } label: {
-                                Image(systemName: "xmark.circle.fill")
-                                    .foregroundColor(.secondary)
-                            }
-                        } else {
-                            Button(String(localized: "Select", bundle: #bundle)) {
-                                store.send(.onObserveredFolderSelectedTapped)
-                            }
-                        }
-                    }
-                } label: {
-                    Label(String(localized: "Observed Folder", bundle: #bundle), systemImage: "folder.badge.plus")
-                }
-
-                LabeledContent {
-                    Button(String(localized: "Configure…", bundle: #bundle)) {
-                        store.send(.onAppleIntelligenceSettingsTapped)
-                    }
-                } label: {
-                    Label(String(localized: "Apple Intelligence", bundle: #bundle), systemImage: "apple.intelligence")
-                }
-
-                LabeledContent {
-                    Button(String(localized: "Configure…", bundle: #bundle)) {
-                        store.send(.onSearchIndexTapped)
-                    }
-                } label: {
-                    Label(String(localized: "Search Index", bundle: #bundle), systemImage: "magnifyingglass.circle")
-                }
-
-                LabeledContent {
-                    Button(String(localized: "Configure…", bundle: #bundle)) {
-                        store.send(.onAdvancedSettingsTapped)
-                    }
-                } label: {
-                    Label(String(localized: "Advanced", bundle: #bundle), systemImage: "gearshape.2")
-                }
-            } header: {
-                Text("Preferences", bundle: #bundle)
-                    .foregroundStyle(Color.secondary)
-            }
-        }
-        .formStyle(.grouped)
-    }
-
-    @ViewBuilder
-    private var aboutPreferences: some View {
-        Form {
-            Section {
-                Button {
-                    store.send(.onContactSupportTapped)
-                } label: {
-                    HStack {
-                        Label(String(localized: "Contact & Help", bundle: #bundle), systemImage: "envelope")
-                        Spacer()
-                    }
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-
-                Button {
-                    requestReview()
-                } label: {
-                    HStack {
-                        Label(String(localized: "Rate App", bundle: #bundle), systemImage: "app.gift.fill")
-                        Spacer()
-                    }
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-
-                ShareLink(item: store.appStoreUrl) {
-                    HStack {
-                        Label(String(localized: "Share App", bundle: #bundle), systemImage: "square.and.arrow.up")
-                        Spacer()
-                    }
-                }
-                .buttonStyle(.plain)
-            } header: {
-                Text("About", bundle: #bundle)
-                    .foregroundStyle(Color.secondary)
-            }
-            Section {
-                LegalView(store: store)
-            } header: {
-                Text("Legal", bundle: #bundle)
-                    .foregroundStyle(Color.secondary)
-            }
-        }
-        .formStyle(.grouped)
-    }
-}
 
 #Preview("Settings", traits: .fixedLayout(width: 800, height: 600)) {
     SettingsView(
@@ -667,12 +463,4 @@ struct SettingsMacView: View {
     )
 }
 
-#Preview("Settings Mac", traits: .fixedLayout(width: 500, height: 400)) {
-    SettingsMacView(
-        store: Store(initialState: Settings.State()) {
-            Settings()
-                ._printChanges()
-        }
-    )
-}
 #endif

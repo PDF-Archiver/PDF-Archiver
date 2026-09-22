@@ -23,6 +23,7 @@ enum Names: String {
     case ocrEnabled = "ocr-enabled"
     case highlightDetectedDateEnabled = "highlight-detected-date-enabled"
     case downloadAllForSearch = "download-all-for-search"
+    case settingsPane = "settings-pane"
 
     var id: String { "shared-\(rawValue)" }
 }
@@ -221,5 +222,19 @@ public extension SharedKey where Self == ObservedFolderCustomSharedKey {
       @Dependency(\.defaultAppStorage) var store
       return ObservedFolderCustomSharedKey(key: "observedFolderURL", store: store)
   }
+}
+
+/// The Settings window's selected pane, so it reopens where it was left.
+public extension SharedKey where Self == AppStorageKey<String> {
+    static var settingsPane: Self {
+        appStorage(Names.settingsPane.id)
+    }
+}
+public extension SharedKey where Self == AppStorageKey<String>.Default {
+    static var settingsPane: Self {
+        // The literal matches `SettingsPane.general`, which cannot be named here: the enum
+        // lives in ArchiverFeatures, and a value that does not decode falls back to it anyway.
+        Self[.appStorage(Names.settingsPane.id), default: "general"]
+    }
 }
 #endif

@@ -111,7 +111,7 @@ struct StorageSelectionView: View {
                         }
                     }
                 }
-                #if os(macOS)
+                #if !os(macOS)
                 Spacer(minLength: 8)
                 #endif
             }
@@ -140,7 +140,12 @@ struct StorageSelectionView: View {
                 store.showDocumentPicker = false
             })
         }
+        #if !os(macOS)
         .padding()
+        #endif
+        #if os(macOS)
+        .formStyle(.grouped)
+        #endif
         .disabled(store.isProcessing)
         .overlay {
             if store.isProcessing {

@@ -115,7 +115,6 @@ struct PremiumSectionView: View {
             .padding(.horizontal)
             .padding(.bottom)
         }
-        .frame(width: 300)
         #else
         Section {
             HStack {
