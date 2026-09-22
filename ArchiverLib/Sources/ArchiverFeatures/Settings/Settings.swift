@@ -8,6 +8,7 @@
 import ArchiverModels
 import ArchiverStore
 import ComposableArchitecture
+import Diagnostics
 import Shared
 import StoreKit
 import SwiftUI
@@ -103,6 +104,10 @@ struct Settings {
 
         var premiumSection = PremiumSection.State()
         var isShowingMailSheet = false
+        var isShowingDiagnosticsReportConsent = false
+        var diagnosticsReport: DiagnosticsReport?
+        var isCreatingDiagnosticsReport = false
+        var didConfirmSendingDiagnosticsReport = false
         #if os(macOS)
         var showObservedFolderPicker = false
         #endif
@@ -122,6 +127,7 @@ struct Settings {
         case onAdvancedSettingsTapped
         case onAppleIntelligenceSettingsTapped
         case onContactSupportTapped
+        case diagnosticsReportCreated(DiagnosticsReport)
         case onImprintTapped
         case onLegalTapped
         #if os(macOS)
@@ -132,11 +138,18 @@ struct Settings {
         case onShowArchiveTypeSelectionTapped
         case onPrivacyTapped
         case onSearchIndexTapped
+        case onSendWithReportTapped
+        case onSendWithoutReportTapped
+        case onCancelContactSupportTapped
         case onTermsOfUseTapped
         case premiumSection(PremiumSection.Action)
         #if os(macOS)
         case updateObservedFolder(URL?)
         #endif
+    }
+
+    private enum CancelID {
+        case diagnosticsReport
     }
 
     var body: some ReducerOf<Self> {
@@ -169,23 +182,54 @@ struct Settings {
                 return .none
 
             case .onContactSupportTapped:
-                #if os(iOS)
-                state.isShowingMailSheet = true
-                return .none
-                #else
-                // build the mailto URL via URLComponents to get proper percent encoding
-                var components = URLComponents()
-                components.scheme = "mailto"
-                components.path = Constants.mailRecipient
-                components.queryItems = [URLQueryItem(name: "subject", value: Constants.mailSubject)]
-                guard let url = components.url else {
-                    Logger.settings.errorAndAssert("Failed to create mailto url")
-                    return .none
+                // Every tap reports the state at that moment, so the mail never carries the report
+                // an earlier tap in the same session produced.
+                state.diagnosticsReport = nil
+                state.isCreatingDiagnosticsReport = true
+                state.didConfirmSendingDiagnosticsReport = false
+                // The consent dialog goes up right away and the report keeps loading behind it,
+                // so the button never looks dead while the user decides.
+                state.isShowingDiagnosticsReportConsent = true
+                return .run { send in
+                    // Logged before the report reads the log, so a report from a long-running
+                    // session still carries the current state and not only the one from launch.
+                    await AppStateLog.log()
+                    let report = await Self.makeDiagnosticsReport()
+                    await send(.diagnosticsReportCreated(report))
                 }
+                .cancellable(id: CancelID.diagnosticsReport)
 
-                NSWorkspace.shared.open(url)
+            case .diagnosticsReportCreated(let report):
+                state.diagnosticsReport = report
+                state.isCreatingDiagnosticsReport = false
+                if state.didConfirmSendingDiagnosticsReport {
+                    Self.deliverDiagnosticsReport(report, state: &state)
+                }
                 return .none
-                #endif
+
+            case .onSendWithReportTapped:
+                state.didConfirmSendingDiagnosticsReport = true
+                // The report may already be ready by the time consent is given; if it isn't,
+                // `diagnosticsReportCreated` delivers it once loading finishes.
+                if let report = state.diagnosticsReport {
+                    Self.deliverDiagnosticsReport(report, state: &state)
+                }
+                return .none
+
+            case .onSendWithoutReportTapped:
+                // No need to wait for the report at all, so this delivers immediately and
+                // drops whatever the background load already produced.
+                state.diagnosticsReport = nil
+                state.isCreatingDiagnosticsReport = false
+                state.didConfirmSendingDiagnosticsReport = false
+                Self.deliverDiagnosticsReport(nil, state: &state)
+                return .cancel(id: CancelID.diagnosticsReport)
+
+            case .onCancelContactSupportTapped:
+                state.diagnosticsReport = nil
+                state.isCreatingDiagnosticsReport = false
+                state.didConfirmSendingDiagnosticsReport = false
+                return .cancel(id: CancelID.diagnosticsReport)
 
             case .onImprintTapped:
                 state.destination = .imprint
@@ -248,6 +292,71 @@ struct Settings {
     }
 }
 
+extension Settings {
+    static func makeDiagnosticsReport() async -> DiagnosticsReport {
+        await DiagnosticsReporter.create(
+            using: [DiagnosticsReporter.DefaultReporter.generalInfo.reporter,
+                    DiagnosticsReporter.DefaultReporter.appSystemMetadata.reporter,
+                    OSLogReporter()],
+            filters: [SensitivePathFilter.self]
+        )
+    }
+
+    static func deliverDiagnosticsReport(_ report: DiagnosticsReport?, state: inout State) {
+        #if os(iOS)
+        state.isShowingMailSheet = true
+        #endif
+        #if os(macOS)
+        sendReportOnMac(report)
+        #endif
+    }
+
+    #if os(macOS)
+    static func writeReportToTemporaryFile(_ report: DiagnosticsReport) -> URL? {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent(report.filename)
+        do {
+            try report.data.write(to: url)
+            return url
+        } catch {
+            Logger.settings.errorAndAssert("Failed to write diagnostics report", metadata: ["error": "\(LogRedact.describe(error))"])
+            return nil
+        }
+    }
+
+    /// Attaches the report via the Mail compose service; falls back to a plain `mailto:` link
+    /// (no attachment) for a `nil` report, when no mail client is configured, or when the write fails
+    /// (also revealing the report in Finder in that last case).
+    static func sendReportOnMac(_ report: DiagnosticsReport?) {
+        guard let report, let url = writeReportToTemporaryFile(report) else {
+            openMailtoFallback()
+            return
+        }
+
+        let service = NSSharingService(named: .composeEmail)
+        service?.recipients = [Constants.mailRecipient]
+        service?.subject = Constants.mailSubject
+        guard let service, service.canPerform(withItems: [url]) else {
+            openMailtoFallback()
+            NSWorkspace.shared.activateFileViewerSelecting([url])
+            return
+        }
+        service.perform(withItems: [url])
+    }
+
+    static func openMailtoFallback() {
+        var components = URLComponents()
+        components.scheme = "mailto"
+        components.path = Constants.mailRecipient
+        components.queryItems = [URLQueryItem(name: "subject", value: Constants.mailSubject)]
+        guard let url = components.url else {
+            Logger.settings.errorAndAssert("Failed to create mailto url")
+            return
+        }
+        NSWorkspace.shared.open(url)
+    }
+    #endif
+}
+
 extension Settings.Destination.State: Sendable, Equatable {}
 
 struct SettingsView: View {
@@ -270,15 +379,18 @@ struct SettingsView: View {
             .navigationViewStyle(StackNavigationViewStyle())
             .navigationBarTitleDisplayMode(.inline)
             .sheet(isPresented: $store.isShowingMailSheet) {
-                if MFMailComposeViewController.canSendMail() {
+                if !MFMailComposeViewController.canSendMail() {
+                    Text("Mail is not configured on this device", bundle: #bundle)
+                        .padding()
+                } else {
+                    // Only presented once the consent decision is final, so the report to attach
+                    // (or `nil`, for "Without Report") is already settled.
                     MailComposeView(
                         isShowing: $store.isShowingMailSheet,
                         recipient: Constants.mailRecipient,
-                        subject: Constants.mailSubject
+                        subject: Constants.mailSubject,
+                        report: store.diagnosticsReport
                     )
-                } else {
-                    Text("Mail is not configured on this device", bundle: #bundle)
-                        .padding()
                 }
             }
 #endif
@@ -394,8 +506,20 @@ struct SettingsView: View {
             Button {
                 store.send(.onContactSupportTapped)
             } label: {
-                Label(String(localized: "Contact & Help", bundle: #bundle), systemImage: "envelope")
+                HStack {
+                    Label(String(localized: "Contact & Help", bundle: #bundle), systemImage: "envelope")
+                    Spacer()
+                    if store.isCreatingDiagnosticsReport {
+                        ProgressView()
+                    }
+                }
             }
+            .diagnosticsReportConsentDialog(
+                isPresented: $store.isShowingDiagnosticsReportConsent,
+                onSendWithReport: { store.send(.onSendWithReportTapped) },
+                onSendWithoutReport: { store.send(.onSendWithoutReportTapped) },
+                onCancel: { store.send(.onCancelContactSupportTapped) }
+            )
 
             Button {
                 requestReview()
@@ -524,7 +648,7 @@ struct SettingsMacView: View {
                 store.send(.updateObservedFolder(url))
 
             case .failure(let error):
-                Logger.settings.faultAndAssert("Failed to import a local folder: \(error)")
+                Logger.settings.faultAndAssert("Failed to import a local folder: \(LogRedact.describe(error))")
                 NotificationCenter.default.postAlert(error)
             }
         })
@@ -620,10 +744,20 @@ struct SettingsMacView: View {
                     HStack {
                         Label(String(localized: "Contact & Help", bundle: #bundle), systemImage: "envelope")
                         Spacer()
+                        if store.isCreatingDiagnosticsReport {
+                            ProgressView()
+                                .controlSize(.small)
+                        }
                     }
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                .diagnosticsReportConsentDialog(
+                    isPresented: $store.isShowingDiagnosticsReportConsent,
+                    onSendWithReport: { store.send(.onSendWithReportTapped) },
+                    onSendWithoutReport: { store.send(.onSendWithoutReportTapped) },
+                    onCancel: { store.send(.onCancelContactSupportTapped) }
+                )
 
                 Button {
                     requestReview()

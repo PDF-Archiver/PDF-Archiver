@@ -31,7 +31,7 @@ final class LocalFolderProvider: FolderProvider {
 
         self.didAccessSecurityScope = baseUrl.startAccessingSecurityScopedResource()
 
-        Self.log.debug("Creating file provider.", metadata: ["url": "\(baseUrl.path)"])
+        Self.log.debug("Creating file provider.", metadata: ["url": "\(LogRedact.shape(baseUrl))"])
 
         self.watcher = try DirectoryDeepWatcher(at: baseUrl)
 
@@ -83,10 +83,6 @@ final class LocalFolderProvider: FolderProvider {
         try data.write(to: url)
     }
 
-    func startDownload(of url: URL) throws {
-        log.errorAndAssert("Download of a local file is not supported")
-    }
-
     func fetch(url: URL) throws -> Data {
         try Data(contentsOf: url)
     }
@@ -126,12 +122,12 @@ final class LocalFolderProvider: FolderProvider {
 
                 guard let resourceValues = try? url.resourceValues(forKeys: Set(fileProperties)),
                       let fileSize = resourceValues.fileSize else {
-                    log.errorAndAssert("Could not fetch resource values from url.", metadata: ["url": "\(url.path)"])
+                    log.errorAndAssert("Could not fetch resource values from url.", metadata: ["url": "\(LogRedact.shape(url))"])
                     return nil
                 }
                 let normalizedUrl = url.normalized()
                 guard let id = normalizedUrl.uniqueId() else {
-                    log.errorAndAssert("Could not fetch unique id from url.", metadata: ["url": "\(url.path)"])
+                    log.errorAndAssert("Could not fetch unique id from url.", metadata: ["url": "\(LogRedact.shape(url))"])
                     return nil
                 }
 

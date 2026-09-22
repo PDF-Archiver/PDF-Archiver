@@ -26,9 +26,9 @@ public actor BackgroundTaskManager: Log {
 
     private static let scheduler = BGTaskScheduler.shared
 
-    /// Documents per run. The system grants "several minutes" while idle and charging, so a large
-    /// archive takes several nights - accepted, the settings screen shows the progress.
-    private static let indexBudget = 50
+    /// Documents per run, matched to `SearchIndexDownloads.batchSize` so extraction does not fall
+    /// behind the downloads. An expiring task cancels the run and leaves the rest pending.
+    private static let indexBudget = 250
 
     /// How long a cold start may take before the run gives up on the metadata. The iCloud metadata
     /// gather of a 3.000-document archive needs about half a minute, a first download far longer.
@@ -71,9 +71,9 @@ public actor BackgroundTaskManager: Log {
         request.requiresExternalPower = true
         do {
             try scheduler.submit(request)
-            Logger.backgroundTask.info("Cache processing task scheduled")
+            Logger.backgroundTask.notice("Cache processing task scheduled")
         } catch {
-            Logger.backgroundTask.error("Failed to schedule cache processing task: \(error)")
+            Logger.backgroundTask.error("Failed to schedule cache processing task: \(LogRedact.describe(error), privacy: .public)")
         }
     }
 
@@ -109,7 +109,8 @@ public actor BackgroundTaskManager: Log {
 
             if await PremiumEntitlement.isActive() {
                 await SearchIndexDownloads.requestNextBatch()
-                await archiveIndexer.indexPendingTexts(Self.indexBudget)
+                let indexed = await archiveIndexer.indexPendingTexts(Self.indexBudget)
+                await evictLocalCopies(of: indexed)
             }
             return result
         }
@@ -144,9 +145,9 @@ public actor BackgroundTaskManager: Log {
             }
 
             task.setTaskCompleted(success: true)
-            Logger.backgroundTask.info("Background processing completed: \(result.ocrCount) OCR, \(result.aiCacheCount) caches in \(processingDuration)s")
+            Logger.backgroundTask.notice("Background processing completed: \(result.ocrCount, privacy: .public) OCR, \(result.aiCacheCount, privacy: .public) caches in \(processingDuration, privacy: .public)s")
         } catch {
-            Logger.backgroundTask.error("Background cache processing failed: \(error)")
+            Logger.backgroundTask.error("Background cache processing failed: \(LogRedact.describe(error), privacy: .public)")
 
             if shouldNotify, !processingTask.isCancelled {
                 await UNUserNotificationCenter.current().showLocalNotification(

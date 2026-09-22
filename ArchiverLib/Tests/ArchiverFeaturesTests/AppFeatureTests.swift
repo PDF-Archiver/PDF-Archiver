@@ -11,7 +11,11 @@ import Testing
 @testable import ArchiverFeatures
 
 @MainActor
-@Suite(.dependencies { try $0.bootstrapDatabase() })
+@Suite(.dependencies {
+    try $0.bootstrapDatabase()
+    // The launch task logs the app state, which reads this count.
+    $0.archiveIndexer.pendingTextCount = { 0 }
+})
 struct AppFeatureTests {
     // MARK: - Tab Selection Tests
 

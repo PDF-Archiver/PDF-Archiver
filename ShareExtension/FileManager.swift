@@ -20,9 +20,9 @@ extension FileManager {
 
     func createFolderIfNotExists(_ folder: URL) throws {
         if !directoryExists(at: folder) {
-            Self.log.debug("Try to create folder - folder: \(folder.path)")
+            Self.log.debug("Try to create folder - \(LogRedact.shape(folder), privacy: .public)")
             try createDirectory(at: folder, withIntermediateDirectories: true, attributes: nil)
-            Self.log.debug("folder creation success - folder: \(folder.path)")
+            Self.log.debug("folder creation success - \(LogRedact.shape(folder), privacy: .public)")
         }
     }
 }

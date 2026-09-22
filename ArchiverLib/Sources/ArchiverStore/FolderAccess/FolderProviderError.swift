@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 22.08.20.
 //
 
+import ArchiverModels
 import Foundation
 
 /// Errors which can occur while handling a document.
@@ -67,4 +68,8 @@ extension FolderProviderError: LocalizedError {
             return NSLocalizedString("document_recovery_suggestion__rename_failed_file_already_exists", comment: "Rename failed - file already exists.")
         }
     }
+}
+
+extension FolderProviderError: LogSafeError {
+    var logDescription: String { "\(self)" }
 }

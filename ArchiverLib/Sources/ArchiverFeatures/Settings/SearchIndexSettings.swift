@@ -36,6 +36,11 @@ struct SearchIndexSettings {
         case alert(PresentationAction<Alert>)
         case binding(BindingAction<State>)
         case onRebuildTapped
+        #if DEBUG
+        /// Production downloads the archive from the background task only; this is how a run is
+        /// reproduced while the app is open.
+        case onDebugPrefetchTapped
+        #endif
 
         enum Alert: Equatable {
             case confirmRebuild
@@ -62,6 +67,13 @@ struct SearchIndexSettings {
 
             case .binding:
                 return .none
+
+            #if DEBUG
+            case .onDebugPrefetchTapped:
+                return .run { _ in
+                    await SearchIndexDownloads.requestNextBatch()
+                }
+            #endif
 
             case .onRebuildTapped:
                 state.alert = AlertState {
@@ -135,6 +147,17 @@ struct SearchIndexSettingsView: View {
                     Text("Rebuild Search Index", bundle: #bundle)
                 }
             }
+
+            #if DEBUG
+            Section {
+                // Not localized on purpose: a debug-only label must stay out of the string catalog.
+                Button(String("Download Next Batch Now")) {
+                    store.send(.onDebugPrefetchTapped)
+                }
+            } header: {
+                Text(verbatim: "Debug")
+            }
+            #endif
         }
         .formStyle(.grouped)
         .foregroundStyle(.primary)

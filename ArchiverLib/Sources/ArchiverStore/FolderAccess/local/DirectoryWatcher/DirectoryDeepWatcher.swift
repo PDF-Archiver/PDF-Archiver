@@ -31,7 +31,7 @@ actor DirectoryDeepWatcher: Log {
             do {
                 try await initializeWatcher()
             } catch {
-                Logger.archiveStore.error("Failed to initialize watcher: \(error.localizedDescription)")
+                Logger.archiveStore.error("Failed to initialize watcher: \(LogRedact.describe(error), privacy: .public)")
             }
         }
     }
@@ -50,7 +50,7 @@ actor DirectoryDeepWatcher: Log {
     }
 
     private func initializeWatcher() throws {
-        Self.log.debug("Creating new directory watcher.", metadata: ["path": "\(baseUrl.path)"])
+        Self.log.debug("Creating new directory watcher.", metadata: ["path": "\(LogRedact.shape(baseUrl))"])
 
         do {
             // create source for the parent directory
@@ -63,7 +63,7 @@ actor DirectoryDeepWatcher: Log {
                 try startWatching(contentsOf: baseUrl)
             }
         } catch {
-            log.error("Failed to create DirectoryDeepWatcher", metadata: ["error": "\(error)"])
+            log.error("Failed to create DirectoryDeepWatcher", metadata: ["error": "\(LogRedact.describe(error))"])
             throw error
         }
     }
@@ -82,7 +82,7 @@ actor DirectoryDeepWatcher: Log {
                       !Task.isCancelled else { return }
                 changedUrlContinuation.yield(url)
 
-                Self.log.debug("DispatchSource event has happened.", metadata: ["path": "\(url.path)"])
+                Self.log.debug("DispatchSource event has happened.", metadata: ["path": "\(LogRedact.shape(url))"])
 
                 // remove watchers of deleted folders, so a recreated folder with the same path gets a fresh source
                 await removeStaleSources()
@@ -91,7 +91,7 @@ actor DirectoryDeepWatcher: Log {
                     // iterate (once again) over all folders and subfolders, to get all changes
                     try await startWatching(contentsOf: url)
                 } catch {
-                    Self.log.error("Failed to start watching in event handler", metadata: ["error": "\(error)"])
+                    Self.log.error("Failed to start watching in event handler", metadata: ["error": "\(LogRedact.describe(error))"])
                 }
             }
         }
@@ -120,12 +120,12 @@ actor DirectoryDeepWatcher: Log {
             // if a folder was deleted during enumeration, there occurs a "no such file" error - we assume that there will be another change triggered
             guard (error as NSError).code != NSFileReadNoSuchFileError else { return false }
 
-            Self.log.criticalAndAssert("Directory enumerator error", metadata: ["error": "\(error)", "url": "\(url.path)"])
+            Self.log.criticalAndAssert("Directory enumerator error", metadata: ["error": "\(LogRedact.describe(error))", "url": "\(LogRedact.shape(url))"])
             return true
         }
         guard let safeEnumerator = enumerator else { throw WatcherError.failedToCreateEnumerator }
 
-        log.trace("Iterating and creating sources if needed.", metadata: ["path": "\(url.absoluteString)"])
+        log.trace("Iterating and creating sources if needed.", metadata: ["path": "\(LogRedact.shape(url))"])
         for case let url as URL in safeEnumerator {
             guard url.hasDirectoryPath else { continue }
 
@@ -133,9 +133,11 @@ actor DirectoryDeepWatcher: Log {
         }
     }
 
-    private enum WatcherError: Error {
+    private enum WatcherError: Error, LogSafeError {
         case failedToCreateEnumerator
         case failedToCreateFileDescriptor
+
+        var logDescription: String { "\(self)" }
     }
 }
 

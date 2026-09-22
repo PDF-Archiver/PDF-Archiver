@@ -168,7 +168,7 @@ extension PDFDropHandler: DropDelegate {
                     }
                 }
             } catch {
-                Logger.pdfDropHandler.errorAndAssert("Received error \(error)")
+                Logger.pdfDropHandler.errorAndAssert("Received error", metadata: ["error": "\(LogRedact.describe(error))"])
             }
             await finishDropHandling()
         }

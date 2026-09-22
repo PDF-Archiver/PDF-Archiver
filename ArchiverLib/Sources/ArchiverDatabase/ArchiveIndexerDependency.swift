@@ -16,7 +16,7 @@ public struct ArchiveIndexerDependency: Sendable {
     public var reconcile: @Sendable ([DocumentInformation], String, Int) async -> Void
     /// `false` if the reconcile is still running when `timeout` is up.
     public var waitWhileReconciling: @Sendable (_ timeout: Duration) async -> Bool = { _ in true }
-    public var indexPendingTexts: @Sendable (_ budget: Int) async -> Void
+    public var indexPendingTexts: @Sendable (_ budget: Int) async -> [Document] = { _ in [] }
     public var pendingTextCount: @Sendable () async -> Int = { 0 }
     public var requestRebuild: @Sendable () async -> Void
     public var saveSuggestion: @Sendable (_ documentID: Document.ID, _ specification: String, _ tags: [String]) async -> Void
@@ -29,7 +29,7 @@ extension ArchiveIndexerDependency: TestDependencyKey {
         setObservedRoots: { _ in 0 },
         reconcile: { _, _, _ in },
         waitWhileReconciling: { _ in true },
-        indexPendingTexts: { _ in },
+        indexPendingTexts: { _ in [] },
         pendingTextCount: { 0 },
         requestRebuild: { },
         saveSuggestion: { _, _, _ in },
