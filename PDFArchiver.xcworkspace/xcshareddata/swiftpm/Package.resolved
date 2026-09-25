@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/AvdLee/Diagnostics",
       "state" : {
-        "revision" : "bc2837ac63d57eddaf7f90cd6bc95d4700e71452",
-        "version" : "7.0.2"
+        "revision" : "e3b6ffc95ab07ac3cb31e99103fc64cfb13efaeb",
+        "version" : "7.0.3"
       }
     },
     {
@@ -60,8 +60,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-async-algorithms",
       "state" : {
-        "revision" : "3da39bbc4e687d4192af7c9cf4eab805745a0b9c",
-        "version" : "1.1.5"
+        "revision" : "789dcf1f3d3f00251482f40a432ab7144c181987",
+        "version" : "1.1.6"
       }
     },
     {

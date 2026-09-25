@@ -34,8 +34,8 @@ let package = Package(
         .package(url: "https://github.com/pointfreeco/sqlite-data", exact: "1.12.0"),
         .package(url: "https://github.com/pointfreeco/swift-structured-queries", exact: "0.39.2"),
         .package(url: "https://github.com/sideeffect-io/AsyncExtensions", exact: "0.5.5"),
-        .package(url: "https://github.com/apple/swift-async-algorithms", exact: "1.1.5"),
-        .package(url: "https://github.com/AvdLee/Diagnostics", exact: "7.0.2")
+        .package(url: "https://github.com/apple/swift-async-algorithms", exact: "1.1.6"),
+        .package(url: "https://github.com/AvdLee/Diagnostics", exact: "7.0.3")
     ],
     targets: [
         .target(name: "ArchiverDatabase",
