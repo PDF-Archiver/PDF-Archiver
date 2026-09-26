@@ -49,6 +49,7 @@ extension ArchiveIndexer {
             await finishTextRun(indexedAnything: false)
             return []
         }
+        // TODO: Remove with the diagnostic logs (#339).
         Logger.archiveIndexer.debug("[textindex] Run started", metadata: [
             "budget": "\(budget)",
             "candidateCount": "\(pending.count)",
@@ -64,6 +65,7 @@ extension ArchiveIndexer {
                 wasCancelled = true
                 break
             }
+            // TODO: Remove with the diagnostic logs (#339).
             // Before PDFKit opens the file: if a document kills the process, this is its last line.
             Logger.archiveIndexer.debug("[textindex] Text extraction started", metadata: [
                 "documentId": "\(document.id)",
@@ -189,6 +191,7 @@ extension ArchiveIndexer {
     /// helper would run on the indexer's executor and stall every reconcile behind a PDF parse.
     @concurrent
     nonisolated static func extractText(from url: URL) async -> String? {
+        // TODO: Remove the timing and both debug lines with the diagnostic logs (#339).
         let openStart = ContinuousClock.now
         // Never through `NSFileCoordinator`: it blocks until an iCloud file is downloaded.
         guard let document = PDFDocument(url: url) else {
@@ -220,6 +223,7 @@ extension ArchiveIndexer {
     func commit(text: String?, for document: Document) async -> Bool {
         @Dependency(\.date.now) var now
 
+        // TODO: Remove `commitMs` and the `Text extraction finished` line with the diagnostic logs (#339).
         let commitStart = ContinuousClock.now
         let (outcome, body) = Self.classify(text)
 
@@ -288,6 +292,7 @@ extension ArchiveIndexer {
 
     private func finishTextRun(indexedAnything: Bool) async {
         @Dependency(\.date.now) var now
+        // TODO: Remove the timings and the `Run bookkeeping finished` line with the diagnostic logs (#339).
         let timings = await withErrorReporting {
             try await database.write { db -> (mergeMs: Int?, optimizeMs: Int?, pendingCount: Int) in
                 var mergeMs: Int?

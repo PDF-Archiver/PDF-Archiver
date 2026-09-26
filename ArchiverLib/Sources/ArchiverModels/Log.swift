@@ -65,6 +65,7 @@ nonisolated public extension Logger {
     }
 }
 
+// TODO: Remove with the diagnostic logs (#339) once no timing log uses it.
 public extension Duration {
     /// Whole milliseconds, the unit of every `durationMs` log field.
     var inMilliseconds: Int {

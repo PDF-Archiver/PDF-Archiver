@@ -188,6 +188,7 @@ struct AppFeature {
                     // The pass restarts whenever the inbox changes; the OCR marker and the AI
                     // cache make repeated runs cheap no-ops.
                     .run { _ in
+                        // TODO: Remove the timing and the three `Inbox pass` lines with the diagnostic logs (#339).
                         let passStart = ContinuousClock.now
                         Logger.app.notice("[processing] Inbox pass started", metadata: [
                             "documentCount": "\(inbox.count)",

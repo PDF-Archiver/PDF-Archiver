@@ -226,6 +226,7 @@ private enum ReadModel: Log {
         }
     }
 
+    // TODO: Remove with the diagnostic logs (#339), together with `: Log` and both `configuration:` arguments.
     /// Reports every statement of half a second or more: the one writer connection is shared by the
     /// reconcile and the text pass, so a slow statement stalls both.
     private static func makeConfiguration() -> Configuration {

@@ -64,6 +64,7 @@ private func indexTextsWhileAppIsOpen() async {
     while !Task.isCancelled {
         let pendingCount = await archiveIndexer.pendingTextCount()
         guard pendingCount > 0 else {
+            // TODO: Remove with the diagnostic logs (#339).
             Logger.app.debug("[textindex] Loop round", metadata: ["pendingCount": "0"])
             if pauseReason != "noPendingDocuments" {
                 pauseReason = "noPendingDocuments"
@@ -79,6 +80,7 @@ private func indexTextsWhileAppIsOpen() async {
             try? await Task.sleep(for: .seconds(60))
             continue
         }
+        // TODO: Remove the timing and the `Loop round` line with the diagnostic logs (#339).
         let premiumCheckStart = ContinuousClock.now
         let isPremium = await PremiumEntitlement.isActive()
         Logger.app.debug("[textindex] Loop round", metadata: [
@@ -103,6 +105,7 @@ private func indexTextsWhileAppIsOpen() async {
 
         // Ten at a time with a pause between batches: the writer connection is shared with
         // the reconcile, and a foreground pass must never be what the archive list waits on.
+        // TODO: Remove the timing and the `Batch finished` line with the diagnostic logs (#339).
         let batchStart = ContinuousClock.now
         let indexed = await archiveIndexer.indexPendingTexts(10)
         Logger.app.debug("[textindex] Batch finished", metadata: [
@@ -133,6 +136,7 @@ private func runProcessingPass() async {
     }
     guard let documents, !documents.isEmpty else { return }
 
+    // TODO: Remove the start line and `durationMs` with the diagnostic logs (#339).
     let passStart = ContinuousClock.now
     Logger.app.notice("[processing] Foreground pass started", metadata: ["documentCount": "\(documents.count)"])
     let result = await documentProcessor.processUntaggedDocuments(documents)
@@ -273,6 +277,7 @@ func evictLocalCopies(of documents: [Document]) async {
 
     guard downloadAllForSearch, archivePathType == .iCloudDrive else { return }
 
+    // TODO: Remove `evictedCount` and the `Evicted local copies` line with the diagnostic logs (#339).
     var evictedCount = 0
     for document in documents where document.isTagged && document.downloadStatus == 1 {
         let evicted: Void? = await withErrorReporting {
@@ -285,6 +290,7 @@ func evictLocalCopies(of documents: [Document]) async {
     Logger.app.debug("[textindex] Evicted local copies", metadata: ["evictedCount": "\(evictedCount)"])
 }
 
+// TODO: Remove with the diagnostic logs (#339): call the operations directly and drop `runningPhases`.
 /// Runs one step of a background run between `started` and `finished` lines, and marks it as
 /// running for the expiration handler, which reports what the run was doing when time ran out.
 @discardableResult

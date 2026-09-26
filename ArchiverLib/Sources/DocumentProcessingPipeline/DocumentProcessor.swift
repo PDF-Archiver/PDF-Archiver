@@ -164,6 +164,7 @@ public actor DocumentProcessor {
 
         var ocrCount = 0
         if ocr {
+            // TODO: Remove the start line and `durationMs` with the diagnostic logs (#339).
             let ocrStart = ContinuousClock.now
             Logger.documentProcessor.notice("Untagged OCR started", metadata: ["documentCount": "\(untaggedDocuments.count)"])
             for document in untaggedDocuments {
@@ -190,6 +191,7 @@ public actor DocumentProcessor {
 
         var aiCacheCount = 0
         if let aiContext, !Task.isCancelled, #available(iOS 26.0, macOS 26.0, *) {
+            // TODO: Remove the start line and `durationMs` with the diagnostic logs (#339).
             let aiStart = ContinuousClock.now
             Logger.documentProcessor.notice("AI cache pass started", metadata: ["documentCount": "\(documents.count)"])
             aiCacheCount = await contentExtractor.processUntaggedDocumentsInBackground(
@@ -235,6 +237,7 @@ public actor DocumentProcessor {
     /// A revision mismatch is treated exactly like a cache miss - `distance(to:)` throws across
     /// revisions, so a stale entry is worse than no entry at all.
     private func cacheMissingFeaturePrints(for documents: [Document]) async {
+        // TODO: Remove the timing, the counters and all four log lines with the diagnostic logs (#339).
         let passStart = ContinuousClock.now
         Logger.documentProcessor.notice("Feature prints started", metadata: ["documentCount": "\(documents.count)"])
         var taggedBackfilled = 0
@@ -449,6 +452,7 @@ public actor DocumentProcessor {
         }
 
         if !force {
+            // TODO: Remove both `OCR skipped` lines with the diagnostic logs (#339).
             guard !PDFMetadata.hasTextLayer(pdf) else {
                 Logger.ocrProcessing.debug("OCR skipped, the document has a text layer", metadata: ["document": "\(LogRedact.token(url))"])
                 return false

@@ -23,6 +23,7 @@ public actor ArchiveIndexer {
     private var currentGeneration = 0
     /// Whether rows of roots this generation no longer observes still have to go.
     private var needsPrune = false
+    // TODO: Back to `private` with the diagnostic logs (#339) - only the `Run started` line reads it.
     /// When this process first held a text pass back for a running reconcile.
     private(set) var textPassDeferredSince: Date?
     /// The deadline is re-evaluated on every pass, so without this the override would log once a
@@ -64,6 +65,7 @@ public actor ArchiveIndexer {
                 return storedCount
             }
         }
+        // TODO: Remove this line and the `storedCount` return above with the diagnostic logs (#339).
         Logger.archiveIndexer.notice("Observed roots set", metadata: [
             "generation": "\(currentGeneration)",
             "rootCount": "\(observedRoots.count)",
@@ -85,6 +87,7 @@ public actor ArchiveIndexer {
         let safeRoot = root == "icloud" || root == "appContainer" ? root : "custom"
         let reconcileStart = ContinuousClock.now
         var changedCount = 0
+        // TODO: Remove these three counters and their metadata with the diagnostic logs (#339).
         var toParseCount = 0
         var absentCount = 0
         var chunkCount = 0
@@ -172,6 +175,7 @@ public actor ArchiveIndexer {
     /// iCloud archive - a caller that gives up earlier finds the text pass gated and indexes
     /// nothing.
     public func waitWhileReconciling(timeout: Duration) async -> Bool {
+        // TODO: Remove the timing and the `Waited for the reconcile` line with the diagnostic logs (#339).
         let waitStart = ContinuousClock.now
         let reconciled = await withTaskGroup(of: Bool.self) { group in
             group.addTask { [database] in
@@ -228,6 +232,7 @@ public actor ArchiveIndexer {
         }
         let deferredFor = now.timeIntervalSince(deferredSince)
         guard deferredFor >= Self.reconcileDeadline else {
+            // TODO: Remove with the diagnostic logs (#339).
             Logger.archiveIndexer.debug("[textindex] Still deferred to a running reconcile", metadata: [
                 "deferredSeconds": "\(Int(deferredFor))"
             ])

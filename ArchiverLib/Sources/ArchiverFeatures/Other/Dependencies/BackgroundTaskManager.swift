@@ -76,9 +76,11 @@ public actor BackgroundTaskManager: Log {
     /// Handle cache processing background task
     private func handleCacheProcessing(task: BGProcessingTask) async {
         Logger.backgroundTask.info("Background cache processing started")
+        // TODO: Remove with the diagnostic logs (#339).
         // A background launch never shows the UI, whose start is where this is logged otherwise.
         await AppStateLog.log()
         let startTime = Date()
+        // TODO: Remove `runningPhases` and its `phase` log fields with the diagnostic logs (#339).
         // A lock, not actor state: the expiration handler is a synchronous callback on any thread.
         let runningPhases = LockIsolated<Set<String>>([])
         // Rescheduled together with the completion, so a watchdog completion schedules the next run.

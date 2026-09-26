@@ -37,6 +37,7 @@ struct ExpertSettings {
         @Shared(.highlightDetectedDateEnabled)
         var highlightDetectedDateEnabled: Bool
 
+        // TODO: Remove with the diagnostic logs (#339).
         @Shared(.diagnosticLogsEnabled)
         var diagnosticLogsEnabled: Bool
     }
@@ -142,6 +143,7 @@ struct ExpertSettingsView: View {
             }
             #endif
 
+            // TODO: Remove this section and its two strings with the diagnostic logs (#339).
             Section {
                 Toggle(String(localized: "Diagnostic Logs", bundle: #bundle), isOn: Binding(store.$diagnosticLogsEnabled))
             } footer: {
