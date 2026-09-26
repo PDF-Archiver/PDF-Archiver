@@ -104,7 +104,9 @@ public actor ContentExtractorStore {
         }
 
         let neighbours = await retrieveNeighbours(text: text, documentId: documentId)
+        let modelStart = ContinuousClock.now
         let raw = try await respond(documents, neighbours, customPrompt, text)
+        let modelMs = modelStart.duration(to: .now).inMilliseconds
         let vocabulary = Set(documents.flatMap(\.tags).map { $0.lowercased() })
         let normalized = ContentExtractionMapper.normalize(raw, vocabulary: vocabulary)
         let expanded = TagExpansion.expanded(normalized.tags,
@@ -113,6 +115,12 @@ public actor ContentExtractorStore {
                                              limit: ContentExtractionMapper.maxTags)
         let tags = NeighbourVote.widen(expanded, with: neighbours)
         let info = Info(specification: normalized.specification, tags: tags)
+        Logger.contentExtractor.debug("Extraction finished", metadata: [
+            "documentId": "\(documentId.map { "\($0)" } ?? "none")",
+            "textCharacterCount": "\(text.count)",
+            "modelMs": "\(modelMs)",
+            "tagCount": "\(tags.count)"
+        ])
 
         // Save result to cache for faster subsequent access
         if let documentId {
@@ -133,12 +141,23 @@ public actor ContentExtractorStore {
     /// the floor (`docs/retrieval-augmented-tagging-concept.md`) - the visual channel is strictly
     /// a fallback, never a second source added on top.
     private func retrieveNeighbours(text: String, documentId: Document.ID?) async -> [NeighbourFinder.Match] {
+        let textStart = ContinuousClock.now
         let candidates = await neighbourFinder.find(text, documentId, ContentExtractionPromptFactory.neighbourCount)
         let survivors = ContentExtractionPromptFactory.survivingNeighbours(candidates)
+        var metadata: Logger.Metadata = [
+            "documentId": "\(documentId.map { "\($0)" } ?? "none")",
+            "textRetrievalMs": "\(textStart.duration(to: .now).inMilliseconds)",
+            "textNeighbourCount": "\(survivors.count)"
+        ]
+        defer { Logger.contentExtractor.debug("Neighbours retrieved", metadata: metadata) }
         guard survivors.isEmpty, let documentId else { return survivors }
 
+        let visualStart = ContinuousClock.now
         let visualCandidates = await visualNeighbourFinder.find(documentId, ContentExtractionPromptFactory.neighbourCount)
-        return ContentExtractionPromptFactory.survivingNeighbours(visualCandidates, floor: ContentExtractionPromptFactory.visualNeighbourRelevanceFloor)
+        let visualSurvivors = ContentExtractionPromptFactory.survivingNeighbours(visualCandidates, floor: ContentExtractionPromptFactory.visualNeighbourRelevanceFloor)
+        metadata["visualRetrievalMs"] = "\(visualStart.duration(to: .now).inMilliseconds)"
+        metadata["visualNeighbourCount"] = "\(visualSurvivors.count)"
+        return visualSurvivors
     }
 
     // MARK: - Cache Management
@@ -165,7 +184,10 @@ public actor ContentExtractorStore {
 
         Logger.contentExtractor.info("Background cache processing started", metadata: ["untaggedCount": "\(untaggedDocuments.count)"])
 
+        let passStart = ContinuousClock.now
         var newCachesCreated = 0
+        var cachedCount = 0
+        var failedCount = 0
 
         for document in untaggedDocuments {
             guard !Task.isCancelled else { break }
@@ -174,6 +196,8 @@ public actor ContentExtractorStore {
 
             // Skip if already cached
             if await cache.load(documentId) != nil {
+                cachedCount += 1
+                Logger.contentExtractor.debug("Background cache entry exists", metadata: ["documentId": "\(documentId)"])
                 continue
             }
 
@@ -183,6 +207,7 @@ public actor ContentExtractorStore {
                 continue
             }
 
+            let extractStart = ContinuousClock.now
             do {
                 let info = try await extract(from: text,
                                              customPrompt: customPrompt,
@@ -196,14 +221,21 @@ public actor ContentExtractorStore {
                     Logger.contentExtractor.info("No cache entry created", metadata: ["documentId": "\(documentId)"])
                 }
             } catch {
+                failedCount += 1
                 Logger.contentExtractor.error("Failed to create cache entry in background", metadata: [
                     "documentId": "\(documentId)",
-                    "error": "\(LogRedact.describe(error))"
+                    "error": "\(LogRedact.describe(error))",
+                    "durationMs": "\(extractStart.duration(to: .now).inMilliseconds)"
                 ])
             }
         }
 
-        Logger.contentExtractor.info("Background cache processing completed", metadata: ["createdCount": "\(newCachesCreated)"])
+        Logger.contentExtractor.info("Background cache processing completed", metadata: [
+            "createdCount": "\(newCachesCreated)",
+            "cachedCount": "\(cachedCount)",
+            "failedCount": "\(failedCount)",
+            "durationMs": "\(passStart.duration(to: .now).inMilliseconds)"
+        ])
 
         return newCachesCreated
     }

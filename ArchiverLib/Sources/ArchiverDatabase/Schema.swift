@@ -8,6 +8,7 @@
 import ArchiverModels
 import Dependencies
 import Foundation
+import Logging
 import Sharing
 import SQLiteData
 
@@ -202,11 +203,12 @@ extension DependencyValues {
 }
 
 /// Opening the read model file, separate from the dependency that stores the connection.
-private enum ReadModel {
+private enum ReadModel: Log {
     /// Opens the database and migrates it, recreating the file if that migration fails.
     static func open(at path: String?) throws -> any DatabaseWriter {
         let migrator = makeMigrator()
-        let database = try SQLiteData.defaultDatabase(path: path)
+        let configuration = makeConfiguration()
+        let database = try SQLiteData.defaultDatabase(path: path, configuration: configuration)
         do {
             try migrator.migrate(database)
             return database
@@ -218,10 +220,26 @@ private enum ReadModel {
             // database that cannot be migrated costs the index for good.
             try? database.close()  // best effort: the file is unlinked either way
             try removeFiles(of: database)
-            let recreated = try SQLiteData.defaultDatabase(path: path)
+            let recreated = try SQLiteData.defaultDatabase(path: path, configuration: configuration)
             try migrator.migrate(recreated)
             return recreated
         }
+    }
+
+    /// Reports every statement of half a second or more: the one writer connection is shared by the
+    /// reconcile and the text pass, so a slow statement stalls both.
+    private static func makeConfiguration() -> Configuration {
+        var configuration = Configuration()
+        configuration.prepareDatabase { db in
+            db.trace(options: .profile) { event in
+                guard case let .profile(statement, duration) = event, duration >= 0.5 else { return }
+                Self.log.notice("Slow SQL statement", metadata: [
+                    "durationMs": "\(Int(duration * 1000))",
+                    "sql": "\(statement.sql.prefix(200))"
+                ])
+            }
+        }
+        return configuration
     }
 
     /// Removes the database file and the `-wal` / `-shm` siblings SQLite keeps beside it.

@@ -46,6 +46,7 @@ extension IndexSchedulerDependency: DependencyKey {
 
                 let pendingCount = await archiveIndexer.pendingTextCount()
                 guard pendingCount > 0 else {
+                    Logger.app.debug("[textindex] Loop round", metadata: ["pendingCount": "0"])
                     if pauseReason != "noPendingDocuments" {
                         pauseReason = "noPendingDocuments"
                         // A document that is not on this device is never a candidate, so these two
@@ -60,7 +61,14 @@ extension IndexSchedulerDependency: DependencyKey {
                     try? await Task.sleep(for: .seconds(60))
                     continue
                 }
-                guard await PremiumEntitlement.isActive() else {
+                let premiumCheckStart = ContinuousClock.now
+                let isPremium = await PremiumEntitlement.isActive()
+                Logger.app.debug("[textindex] Loop round", metadata: [
+                    "pendingCount": "\(pendingCount)",
+                    "premium": "\(isPremium)",
+                    "premiumCheckMs": "\(premiumCheckStart.duration(to: .now).inMilliseconds)"
+                ])
+                guard isPremium else {
                     if pauseReason != "noPremium" {
                         pauseReason = "noPremium"
                         Logger.app.notice("[textindex] Loop paused", metadata: ["reason": "noPremium"])
@@ -77,7 +85,12 @@ extension IndexSchedulerDependency: DependencyKey {
 
                 // Ten at a time with a pause between batches: the writer connection is shared with
                 // the reconcile, and a foreground pass must never be what the archive list waits on.
+                let batchStart = ContinuousClock.now
                 let indexed = await archiveIndexer.indexPendingTexts(10)
+                Logger.app.debug("[textindex] Batch finished", metadata: [
+                    "processedCount": "\(indexed.count)",
+                    "durationMs": "\(batchStart.duration(to: .now).inMilliseconds)"
+                ])
                 await evictLocalCopies(of: indexed)
                 try? await Task.sleep(for: .seconds(1))
             }
@@ -104,11 +117,14 @@ private func runProcessingPass() async {
     }
     guard let documents, !documents.isEmpty else { return }
 
+    let passStart = ContinuousClock.now
+    Logger.app.notice("[processing] Foreground pass started", metadata: ["documentCount": "\(documents.count)"])
     let result = await documentProcessor.processUntaggedDocuments(documents)
     Logger.app.notice("[processing] Foreground pass finished", metadata: [
         "documentCount": "\(documents.count)",
         "ocrCount": "\(result.ocrCount)",
-        "aiCacheCount": "\(result.aiCacheCount)"
+        "aiCacheCount": "\(result.aiCacheCount)",
+        "durationMs": "\(passStart.duration(to: .now).inMilliseconds)"
     ])
 
     // An OCR run rewrites the PDF in place, and whether `NSMetadataQuery` reports that for its own
@@ -131,11 +147,36 @@ func evictLocalCopies(of documents: [Document]) async {
 
     guard downloadAllForSearch, archivePathType == .iCloudDrive else { return }
 
+    var evictedCount = 0
     for document in documents where document.isTagged && document.downloadStatus == 1 {
-        await withErrorReporting {
+        let evicted: Void? = await withErrorReporting {
             try await archiveStore.evictDocumentAt(document.url)
         }
+        if evicted != nil {
+            evictedCount += 1
+        }
     }
+    Logger.app.debug("[textindex] Evicted local copies", metadata: ["evictedCount": "\(evictedCount)"])
+}
+
+/// Runs one step of a background run between `started` and `finished` lines, and marks it as
+/// running for the expiration handler, which reports what the run was doing when time ran out.
+@discardableResult
+func runPhase<Value>(_ name: String,
+                     in runningPhases: LockIsolated<Set<String>>,
+                     describe: (Value) -> Logger.Metadata = { _ in [:] },
+                     operation: () async throws -> Value) async rethrows -> Value {
+    runningPhases.withValue { _ = $0.insert(name) }
+    let start = ContinuousClock.now
+    Logger.backgroundTask.notice("Background phase started", metadata: ["phase": "\(name)"])
+    // Left in `runningPhases` when it throws, so the failure report can still name it.
+    let value = try await operation()
+    runningPhases.withValue { _ = $0.remove(name) }
+    var metadata = describe(value)
+    metadata["phase"] = "\(name)"
+    metadata["durationMs"] = "\(start.duration(to: .now).inMilliseconds)"
+    Logger.backgroundTask.notice("Background phase finished", metadata: metadata)
+    return value
 }
 
 /// What the archive holds versus what of it is reachable, for the paused-loop log line.

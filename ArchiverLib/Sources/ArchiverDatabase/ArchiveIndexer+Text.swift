@@ -49,6 +49,12 @@ extension ArchiveIndexer {
             await finishTextRun(indexedAnything: false)
             return []
         }
+        Logger.archiveIndexer.debug("[textindex] Run started", metadata: [
+            "budget": "\(budget)",
+            "candidateCount": "\(pending.count)",
+            "firstDocumentId": "\(pending[0].id)",
+            "reconciling": "\(textPassDeferredSince != nil)"
+        ])
 
         var processedDocuments: [Document] = []
         var storedCount = 0
@@ -58,6 +64,13 @@ extension ArchiveIndexer {
                 wasCancelled = true
                 break
             }
+            // Before PDFKit opens the file: if a document kills the process, this is its last line.
+            Logger.archiveIndexer.debug("[textindex] Text extraction started", metadata: [
+                "documentId": "\(document.id)",
+                "document": "\(LogRedact.token(document.url))",
+                "sizeKB": "\(Int(document.sizeInBytes / 1024))",
+                "isTagged": "\(document.isTagged)"
+            ])
             let text = await Self.extractText(from: document.url)
 
             // The parse itself runs to completion; the check is about the write that follows,
@@ -176,11 +189,27 @@ extension ArchiveIndexer {
     /// helper would run on the indexer's executor and stall every reconcile behind a PDF parse.
     @concurrent
     nonisolated static func extractText(from url: URL) async -> String? {
+        let openStart = ContinuousClock.now
         // Never through `NSFileCoordinator`: it blocks until an iCloud file is downloaded.
-        guard let document = PDFDocument(url: url) else { return nil }
+        guard let document = PDFDocument(url: url) else {
+            Logger.archiveIndexer.debug("[textindex] Could not open the document", metadata: [
+                "document": "\(LogRedact.token(url))",
+                "openMs": "\(openStart.duration(to: .now).inMilliseconds)"
+            ])
+            return nil
+        }
+        let readStart = ContinuousClock.now
         // `nil` is reserved for a document that would not open - `classify` reads it as a failure,
         // while an image-only PDF has to come back empty so it counts as "no text".
-        return document.string ?? ""
+        let text = document.string ?? ""
+        Logger.archiveIndexer.debug("[textindex] Text read", metadata: [
+            "document": "\(LogRedact.token(url))",
+            "openMs": "\(openStart.duration(to: readStart).inMilliseconds)",
+            "extractMs": "\(readStart.duration(to: .now).inMilliseconds)",
+            "pageCount": "\(document.pageCount)",
+            "characterCount": "\(text.count)"
+        ])
+        return text
     }
 
     // MARK: - Bookkeeping
@@ -191,19 +220,15 @@ extension ArchiveIndexer {
     func commit(text: String?, for document: Document) async -> Bool {
         @Dependency(\.date.now) var now
 
+        let commitStart = ContinuousClock.now
         let (outcome, body) = Self.classify(text)
 
-        let stored = await withErrorReporting {
-            try await database.write { db -> Bool in
+        let result = await withErrorReporting {
+            try await database.write { db -> CommitResult in
                 // The file may have been deleted or rewritten while it was being parsed.
-                guard let current = try Document.find(document.id).fetchOne(db),
-                      current.sizeInBytes == document.sizeInBytes,
-                      current.contentModificationDate == document.contentModificationDate else {
-                    Logger.archiveIndexer.notice("[textindex] Skipped a document that changed during extraction", metadata: [
-                        "documentId": "\(document.id)"
-                    ])
-                    return false
-                }
+                guard let current = try Document.find(document.id).fetchOne(db) else { return .missingRow }
+                guard current.sizeInBytes == document.sizeInBytes else { return .sizeChanged }
+                guard current.contentModificationDate == document.contentModificationDate else { return .dateChanged }
 
                 // SQLite has no UPSERT for virtual tables, so a replacement is delete plus insert.
                 try DocumentText.find(document.id).delete().execute(db)
@@ -222,10 +247,34 @@ extension ArchiveIndexer {
                                            extractorVersion: DocumentIndexState.currentExtractorVersion)
                     }
                     .execute(db)
-                return true
+                return .stored
             }
         }
-        return stored ?? false
+
+        var metadata: Logger.Metadata = [
+            "documentId": "\(document.id)",
+            "outcome": "\(outcome.rawValue)",
+            "stored": "\(result == .stored)",
+            "commitMs": "\(commitStart.duration(to: .now).inMilliseconds)"
+        ]
+        guard let result, result != .stored else {
+            if result == nil {
+                metadata["skipReason"] = "writeFailed"
+            }
+            Logger.archiveIndexer.debug("[textindex] Text extraction finished", metadata: metadata)
+            return result == .stored
+        }
+        metadata["skipReason"] = "\(result.rawValue)"
+        Logger.archiveIndexer.notice("[textindex] Skipped a document that changed during extraction", metadata: metadata)
+        return false
+    }
+
+    /// Why a commit stored nothing - the question a document that never leaves "pending" raises.
+    private enum CommitResult: String {
+        case stored
+        case missingRow
+        case sizeChanged
+        case dateChanged
     }
 
     /// Mojibake would pollute every prefix query it happens to match, so it is recorded but not
@@ -239,24 +288,31 @@ extension ArchiveIndexer {
 
     private func finishTextRun(indexedAnything: Bool) async {
         @Dependency(\.date.now) var now
-        await withErrorReporting {
-            try await database.write { db in
+        let timings = await withErrorReporting {
+            try await database.write { db -> (mergeMs: Int?, optimizeMs: Int?, pendingCount: Int) in
+                var mergeMs: Int?
                 if indexedAnything {
+                    let mergeStart = ContinuousClock.now
                     // Incremental: `optimize` merges every segment in one transaction and does not
                     // fit an expirable background budget.
                     try #sql(#"INSERT INTO "documentTexts"("documentTexts", "rank") VALUES ('merge', 16)"#).execute(db)
+                    mergeMs = mergeStart.duration(to: .now).inMilliseconds
                 }
 
                 let isRebuilding = try IndexerState
                     .find(IndexerState.singletonID)
                     .select(\.rebuildRequested)
                     .fetchOne(db) ?? false
-                let hasPendingWork = try Self.pendingCount().fetchOne(db) ?? 0 > 0
+                let pendingCount = try Self.pendingCount().fetchOne(db) ?? 0
+                let hasPendingWork = pendingCount > 0
 
                 // The one moment a full `optimize` is affordable: a rebuild has just written every
                 // segment from scratch and there is nothing left to index.
+                var optimizeMs: Int?
                 if isRebuilding, !hasPendingWork, !Task.isCancelled {
+                    let optimizeStart = ContinuousClock.now
                     try #sql(#"INSERT INTO "documentTexts"("documentTexts", "rank") VALUES ('optimize', -1)"#).execute(db)
+                    optimizeMs = optimizeStart.duration(to: .now).inMilliseconds
                 }
 
                 try IndexerState
@@ -266,8 +322,15 @@ extension ArchiveIndexer {
                         $0.rebuildRequested = #bind(hasPendingWork && isRebuilding)
                     }
                     .execute(db)
+                return (mergeMs, optimizeMs, pendingCount)
             }
         }
+        guard let timings else { return }
+        Logger.archiveIndexer.debug("[textindex] Run bookkeeping finished", metadata: [
+            "mergeMs": "\(timings.mergeMs.map(String.init) ?? "skipped")",
+            "optimizeMs": "\(timings.optimizeMs.map(String.init) ?? "skipped")",
+            "pendingCount": "\(timings.pendingCount)"
+        ])
     }
 
     /// How many documents are waiting. Backs a live `@Fetch`, so it must not decode the rows.

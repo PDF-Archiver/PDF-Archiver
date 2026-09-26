@@ -64,3 +64,10 @@ nonisolated public extension Logger {
         criticalAndAssert(message, metadata: metadata(), file: file, function: function, line: line)
     }
 }
+
+public extension Duration {
+    /// Whole milliseconds, the unit of every `durationMs` log field.
+    var inMilliseconds: Int {
+        Int(components.seconds * 1000 + components.attoseconds / 1_000_000_000_000_000)
+    }
+}

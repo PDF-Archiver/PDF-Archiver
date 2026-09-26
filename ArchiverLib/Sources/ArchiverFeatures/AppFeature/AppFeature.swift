@@ -188,6 +188,11 @@ struct AppFeature {
                     // The pass restarts whenever the inbox changes; the OCR marker and the AI
                     // cache make repeated runs cheap no-ops.
                     .run { _ in
+                        let passStart = ContinuousClock.now
+                        Logger.app.notice("[processing] Inbox pass started", metadata: [
+                            "documentCount": "\(inbox.count)",
+                            "remoteCount": "\(remoteDocuments.count)"
+                        ])
                         // Tagged documents are the model's tag vocabulary and description examples.
                         let context = await withErrorReporting {
                             try await database.read { db in
@@ -195,6 +200,16 @@ struct AppFeature {
                             }
                         }
                         let result = await documentProcessor.processUntaggedDocuments(inbox + (context ?? []))
+                        let metadata: Logger.Metadata = [
+                            "ocrCount": "\(result.ocrCount)",
+                            "aiCacheCount": "\(result.aiCacheCount)",
+                            "durationMs": "\(passStart.duration(to: .now).inMilliseconds)"
+                        ]
+                        if Task.isCancelled {
+                            Logger.app.notice("[processing] Inbox pass cancelled", metadata: metadata)
+                        } else {
+                            Logger.app.notice("[processing] Inbox pass finished", metadata: metadata)
+                        }
 
                         // An OCR run rewrites the PDF in place. Whether `NSMetadataQuery` reports
                         // that for its own process is undocumented, so the rescan is explicit.
