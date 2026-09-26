@@ -6,14 +6,12 @@
 //
 
 #if os(iOS)
-import ArchiverDatabase
 import ArchiverModels
 import BackgroundTasks
 import ComposableArchitecture
 import Foundation
 import Logging
 import Shared
-import SQLiteData
 import UserNotifications
 
 extension BGProcessingTask: @unchecked @retroactive Sendable {}
@@ -26,18 +24,6 @@ public actor BackgroundTaskManager: Log {
 
     private static let scheduler = BGTaskScheduler.shared
 
-    /// Documents per run, matched to `SearchIndexDownloads.batchSize` so extraction does not fall
-    /// behind the downloads. An expiring task cancels the run and leaves the rest pending.
-    private static let indexBudget = 250
-
-    /// How long a cold start may take before the run gives up on the metadata. The iCloud metadata
-    /// gather of a 3.000-document archive needs about half a minute, a first download far longer.
-    private static let initialLoadTimeout = Duration.seconds(5 * 60)
-
-    @Dependency(\.archiveIndexer) var archiveIndexer
-    @Dependency(\.defaultDatabase) var database
-    @Dependency(\.documentProcessor) var documentProcessor
-    @Dependency(\.archiveStore) var archiveStore
     @SharedReader(.backgroundCacheNotificationsEnabled) var shouldNotify: Bool
 
     private init() {}
@@ -98,50 +84,7 @@ public actor BackgroundTaskManager: Log {
 
         // Use a cancellable task so the expiration handler can stop work
         let processingTask = Task {
-            // A cold background launch has no scene, so nothing else starts the folder scan, and
-            // the wait below gives that scan the writer connection before the text pass takes it.
-            try await runPhase("reload", in: runningPhases) {
-                try await archiveStore.reloadDocuments()
-            }
-            await runPhase("initialLoadWait", in: runningPhases, describe: { ["reconciled": "\($0)"] }, operation: {
-                await waitForInitialDocumentLoad()
-            })
-
-            let documents = try await database.read { db in
-                try Document.inbox.fetchAll(db) + Document.aiContext().fetchAll(db)
-            }
-            // Runs OCR (if enabled) before the AI cache pass, so the text
-            // layers exist when the cache entries are computed.
-            let result = await runPhase(
-                "processing",
-                in: runningPhases,
-                describe: { ["documentCount": "\(documents.count)", "ocrCount": "\($0.ocrCount)", "aiCacheCount": "\($0.aiCacheCount)"] },
-                operation: { await documentProcessor.processUntaggedDocuments(documents) }
-            )
-
-            // Whether `NSMetadataQuery` reports an in-place rewrite by its own process is
-            // undocumented, so the rescan is explicit - and it precedes the text pass.
-            if result.ocrCount > 0 {
-                try await runPhase("rescan", in: runningPhases) {
-                    try await archiveStore.reloadDocuments()
-                    await waitForInitialDocumentLoad()
-                }
-            }
-
-            let isPremium = await runPhase("premium", in: runningPhases, describe: { ["premium": "\($0)"] }, operation: {
-                await PremiumEntitlement.isActive()
-            })
-            if isPremium {
-                await runPhase("prefetch", in: runningPhases) {
-                    await SearchIndexDownloads.requestNextBatch()
-                }
-                await runPhase("textPass", in: runningPhases, describe: { (indexed: [Document]) in ["processedCount": "\(indexed.count)"] }, operation: {
-                    let indexed = await archiveIndexer.indexPendingTexts(Self.indexBudget)
-                    await evictLocalCopies(of: indexed)
-                    return indexed
-                })
-            }
-            return result
+            try await runBackgroundProcessing(runningPhases: runningPhases)
         }
 
         // Set expiration handler to cancel the work instead of completing the task directly
@@ -208,18 +151,6 @@ public actor BackgroundTaskManager: Log {
 
         // Reschedule for next time
         Self.scheduleCacheProcessing()
-    }
-
-    /// Waits for the metadata reconcile, which the text pass is gated on.
-    ///
-    /// The wait ends early when the task expires: the cancellation stops the sleep as well.
-    @discardableResult
-    private func waitForInitialDocumentLoad() async -> Bool {
-        let reconciled = await archiveIndexer.waitWhileReconciling(Self.initialLoadTimeout)
-        if !reconciled {
-            Logger.backgroundTask.warning("Timed out waiting for the initial document load")
-        }
-        return reconciled
     }
 }
 #endif

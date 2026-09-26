@@ -49,6 +49,85 @@ struct IndexSchedulerTests {
 
         #expect(documents?.count == 1)
     }
+
+    /// The OCR and AI-cache pass has no budget, and the AI half retries its failures on every
+    /// pass, so a pass can outlast the process - it must not hold the text index back meanwhile.
+    @Test(.timeLimit(.minutes(1)))
+    func aProcessingPassThatNeverReturnsDoesNotBlockTheForegroundTextIndex() async throws {
+        try await Self.insertAnUntaggedDocument()
+        let indexedBudgets = AsyncStream<Int>.makeStream()
+        let loop = Task {
+            await withDependencies {
+                $0.archiveIndexer.pendingTextCount = { 1 }
+                $0.archiveIndexer.indexPendingTexts = { budget in
+                    indexedBudgets.continuation.yield(budget)
+                    return []
+                }
+                $0.premium.currentStatus = { .active }
+                $0.documentProcessor.processUntaggedDocuments = { _ in await Self.neverReturningPass() }
+            } operation: {
+                await IndexSchedulerDependency.liveValue.indexWhileAppIsOpen()
+            }
+        }
+        defer { loop.cancel() }
+
+        var budgets = indexedBudgets.stream.makeAsyncIterator()
+        #expect(await budgets.next() == 10)
+    }
+
+    @Test(.timeLimit(.minutes(1)))
+    func aProcessingPassThatNeverReturnsDoesNotBlockTheBackgroundTextIndex() async throws {
+        try await Self.insertAnUntaggedDocument()
+        let indexedBudgets = AsyncStream<Int>.makeStream()
+        let run = Task {
+            try await withDependencies {
+                $0.archiveStore.reloadDocuments = { }
+                $0.archiveIndexer.waitWhileReconciling = { _ in true }
+                $0.archiveIndexer.indexPendingTexts = { budget in
+                    indexedBudgets.continuation.yield(budget)
+                    return []
+                }
+                $0.premium.currentStatus = { .active }
+                $0.documentProcessor.processUntaggedDocuments = { _ in await Self.neverReturningPass() }
+            } operation: {
+                try await runBackgroundProcessing(runningPhases: LockIsolated([]))
+            }
+        }
+        defer { run.cancel() }
+
+        var budgets = indexedBudgets.stream.makeAsyncIterator()
+        #expect(await budgets.next() == 250)
+    }
+
+    /// The gate reads the same check as the rest of the app, which counts only the premium
+    /// products - any other verified entitlement used to open it.
+    @Test
+    func theTextIndexGateFollowsThePremiumStatus() async {
+        let isActive = await withDependencies {
+            $0.premium.currentStatus = { .active }
+        } operation: {
+            await PremiumEntitlement.isActive()
+        }
+
+        #expect(isActive)
+    }
+
+    /// The processing pass only runs when the inbox or the AI context holds a document.
+    private static func insertAnUntaggedDocument() async throws {
+        @Dependency(\.defaultDatabase) var database
+        try await database.write { db in
+            try Document.insert {
+                Document.mock(url: URL(fileURLWithPath: "/archive/untagged/scan1.pdf"), isTagged: false, downloadStatus: 1)
+            }
+            .execute(db)
+        }
+    }
+
+    private static func neverReturningPass() async -> UntaggedProcessingResult {
+        // Returns only once the test cancels the loop or the run around it.
+        try? await Task<Never, Never>.never()
+        return UntaggedProcessingResult(ocrCount: 0, aiCacheCount: 0)
+    }
 }
 
 @Suite(.dependencies { try $0.bootstrapDatabase() })
