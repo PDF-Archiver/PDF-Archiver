@@ -23,6 +23,7 @@ enum Names: String {
     case ocrEnabled = "ocr-enabled"
     case highlightDetectedDateEnabled = "highlight-detected-date-enabled"
     case downloadAllForSearch = "download-all-for-search"
+    case diagnosticLogsEnabled = "diagnostic-logs-enabled"
     case settingsPane = "settings-pane"
 
     var id: String { "shared-\(rawValue)" }
@@ -190,6 +191,18 @@ public extension SharedKey where Self == AppStorageKey<Bool> {
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var downloadAllForSearch: Self {
       return Self[.appStorage(Names.downloadAllForSearch.id), default: true]
+  }
+}
+
+/// `true` if every log line is also written to the archive's `logs` folder
+public extension SharedKey where Self == AppStorageKey<Bool> {
+    static var diagnosticLogsEnabled: Self {
+        appStorage(Names.diagnosticLogsEnabled.id)
+    }
+}
+public extension SharedKey where Self == AppStorageKey<Bool>.Default {
+  static var diagnosticLogsEnabled: Self {
+      return Self[.appStorage(Names.diagnosticLogsEnabled.id), default: false]
   }
 }
 

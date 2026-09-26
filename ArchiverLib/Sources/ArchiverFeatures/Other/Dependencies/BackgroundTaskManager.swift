@@ -84,6 +84,8 @@ public actor BackgroundTaskManager: Log {
     /// Handle cache processing background task
     private func handleCacheProcessing(task: BGProcessingTask) async {
         Logger.backgroundTask.info("Background cache processing started")
+        // A background launch never shows the UI, whose start is where this is logged otherwise.
+        await AppStateLog.log()
         let startTime = Date()
 
         // Use a cancellable task so the expiration handler can stop work
