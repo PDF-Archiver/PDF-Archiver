@@ -1,14 +1,22 @@
 name: AsyncExtensions, nameSpecified: AsyncExtensions, owner: sideeffect-io, version: 0.5.5, source: https://github.com/sideeffect-io/AsyncExtensions
 
-name: combine-schedulers, nameSpecified: combine-schedulers, owner: pointfreeco, version: 1.2.1, source: https://github.com/pointfreeco/combine-schedulers
+name: combine-schedulers, nameSpecified: combine-schedulers, owner: pointfreeco, version: 1.2.2, source: https://github.com/pointfreeco/combine-schedulers
 
-name: swift-async-algorithms, nameSpecified: swift-async-algorithms, owner: apple, version: 1.1.5, source: https://github.com/apple/swift-async-algorithms
+name: Diagnostics, nameSpecified: Diagnostics, owner: AvdLee, version: 7.0.3, source: https://github.com/AvdLee/Diagnostics
+
+name: ExceptionCatcher, nameSpecified: ExceptionCatcher, owner: sindresorhus, version: 2.2.1, source: https://github.com/sindresorhus/ExceptionCatcher
+
+name: GRDB.swift, nameSpecified: GRDB.swift, owner: groue, version: 7.11.1, source: https://github.com/groue/GRDB.swift
+
+name: sqlite-data, nameSpecified: sqlite-data, owner: pointfreeco, version: 1.12.0, source: https://github.com/pointfreeco/sqlite-data
+
+name: swift-async-algorithms, nameSpecified: swift-async-algorithms, owner: apple, version: 1.1.6, source: https://github.com/apple/swift-async-algorithms
 
 name: swift-case-paths, nameSpecified: swift-case-paths, owner: pointfreeco, version: 1.10.0, source: https://github.com/pointfreeco/swift-case-paths
 
 name: swift-clocks, nameSpecified: swift-clocks, owner: pointfreeco, version: 1.1.1, source: https://github.com/pointfreeco/swift-clocks
 
-name: swift-collections, nameSpecified: swift-collections, owner: apple, version: 1.6.0, source: https://github.com/apple/swift-collections
+name: swift-collections, nameSpecified: swift-collections, owner: apple, version: 1.7.0, source: https://github.com/apple/swift-collections
 
 name: swift-composable-architecture, nameSpecified: swift-composable-architecture, owner: pointfreeco, version: 1.26.2, source: https://github.com/pointfreeco/swift-composable-architecture
 
@@ -26,21 +34,33 @@ name: swift-perception, nameSpecified: swift-perception, owner: pointfreeco, ver
 
 name: swift-sharing, nameSpecified: swift-sharing, owner: pointfreeco, version: 2.10.1, source: https://github.com/pointfreeco/swift-sharing
 
-name: swift-syntax, nameSpecified: swift-syntax, owner: swiftlang, version: 603.0.2, source: https://github.com/swiftlang/swift-syntax
+name: swift-snapshot-testing, nameSpecified: swift-snapshot-testing, owner: pointfreeco, version: 1.19.6, source: https://github.com/pointfreeco/swift-snapshot-testing
+
+name: swift-structured-queries, nameSpecified: swift-structured-queries, owner: pointfreeco, version: 0.39.2, source: https://github.com/pointfreeco/swift-structured-queries
+
+name: swift-syntax, nameSpecified: swift-syntax, owner: swiftlang, version: 604.0.0, source: https://github.com/swiftlang/swift-syntax
 
 name: xctest-dynamic-overlay, nameSpecified: xctest-dynamic-overlay, owner: pointfreeco, version: 1.13.1, source: https://github.com/pointfreeco/xctest-dynamic-overlay
 
 name: AsyncExtensions, nameSpecified: AsyncExtensions, owner: sideeffect-io, version: 0.5.5, source: https://github.com/sideeffect-io/AsyncExtensions
 
-name: combine-schedulers, nameSpecified: combine-schedulers, owner: pointfreeco, version: 1.2.1, source: https://github.com/pointfreeco/combine-schedulers
+name: combine-schedulers, nameSpecified: combine-schedulers, owner: pointfreeco, version: 1.2.2, source: https://github.com/pointfreeco/combine-schedulers
 
-name: swift-async-algorithms, nameSpecified: swift-async-algorithms, owner: apple, version: 1.1.5, source: https://github.com/apple/swift-async-algorithms
+name: Diagnostics, nameSpecified: Diagnostics, owner: AvdLee, version: 7.0.3, source: https://github.com/AvdLee/Diagnostics
+
+name: ExceptionCatcher, nameSpecified: ExceptionCatcher, owner: sindresorhus, version: 2.2.1, source: https://github.com/sindresorhus/ExceptionCatcher
+
+name: GRDB.swift, nameSpecified: GRDB.swift, owner: groue, version: 7.11.1, source: https://github.com/groue/GRDB.swift
+
+name: sqlite-data, nameSpecified: sqlite-data, owner: pointfreeco, version: 1.12.0, source: https://github.com/pointfreeco/sqlite-data
+
+name: swift-async-algorithms, nameSpecified: swift-async-algorithms, owner: apple, version: 1.1.6, source: https://github.com/apple/swift-async-algorithms
 
 name: swift-case-paths, nameSpecified: swift-case-paths, owner: pointfreeco, version: 1.10.0, source: https://github.com/pointfreeco/swift-case-paths
 
 name: swift-clocks, nameSpecified: swift-clocks, owner: pointfreeco, version: 1.1.1, source: https://github.com/pointfreeco/swift-clocks
 
-name: swift-collections, nameSpecified: swift-collections, owner: apple, version: 1.6.0, source: https://github.com/apple/swift-collections
+name: swift-collections, nameSpecified: swift-collections, owner: apple, version: 1.7.0, source: https://github.com/apple/swift-collections
 
 name: swift-composable-architecture, nameSpecified: swift-composable-architecture, owner: pointfreeco, version: 1.26.2, source: https://github.com/pointfreeco/swift-composable-architecture
 
@@ -58,10 +78,14 @@ name: swift-perception, nameSpecified: swift-perception, owner: pointfreeco, ver
 
 name: swift-sharing, nameSpecified: swift-sharing, owner: pointfreeco, version: 2.10.1, source: https://github.com/pointfreeco/swift-sharing
 
-name: swift-syntax, nameSpecified: swift-syntax, owner: swiftlang, version: 603.0.2, source: https://github.com/swiftlang/swift-syntax
+name: swift-snapshot-testing, nameSpecified: swift-snapshot-testing, owner: pointfreeco, version: 1.19.6, source: https://github.com/pointfreeco/swift-snapshot-testing
+
+name: swift-structured-queries, nameSpecified: swift-structured-queries, owner: pointfreeco, version: 0.39.2, source: https://github.com/pointfreeco/swift-structured-queries
+
+name: swift-syntax, nameSpecified: swift-syntax, owner: swiftlang, version: 604.0.0, source: https://github.com/swiftlang/swift-syntax
 
 name: xctest-dynamic-overlay, nameSpecified: xctest-dynamic-overlay, owner: pointfreeco, version: 1.13.1, source: https://github.com/pointfreeco/xctest-dynamic-overlay
 
 add-version-numbers: true
 
-LicensePlist Version: 3.27.9
+LicensePlist Version: 3.28.0
