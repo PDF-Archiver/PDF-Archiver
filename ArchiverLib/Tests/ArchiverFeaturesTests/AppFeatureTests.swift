@@ -157,15 +157,17 @@ struct AppFeatureTests {
 
     @Test
     func scenePhaseActiveReloadsDocuments() async throws {
+        let premium = Self.deferredPremiumStatus()
         let store = TestStore(initialState: AppFeature.State()) {
             AppFeature()
         } withDependencies: {
             $0.documentProcessor.processStagedFiles = { }
             $0.archiveStore.reloadDocuments = { }
-            $0.premium.currentStatus = { .active }
+            $0.premium.currentStatus = premium.currentStatus
         }
 
         await store.send(.onScenePhaseChanged(old: .background, new: .active))
+        premium.release.yield(.active)
 
         await store.receive(\.premiumStatusChanged, .active) {
             $0.$premiumStatus.withLock { $0 = .active }
@@ -183,13 +185,15 @@ struct AppFeatureTests {
 
         let state = AppFeature.State()
         try await state.$projection.load()
+        let premium = Self.deferredPremiumStatus()
         let store = TestStore(initialState: state) {
             AppFeature()
         } withDependencies: {
-            $0.premium.currentStatus = { .inactive }
+            $0.premium.currentStatus = premium.currentStatus
         }
 
         await store.send(.onScenePhaseChanged(old: .background, new: .active))
+        premium.release.yield(.inactive)
 
         await store.receive(\.premiumStatusChanged, .inactive) {
             $0.$premiumStatus.withLock { $0 = .inactive }
@@ -259,17 +263,27 @@ struct AppFeatureTests {
     /// - `IAPView`'s `onInAppPurchaseCompletion` is the only place that notices it.
     @Test
     func aSameDeviceIAPPurchaseReEvaluatesThePremiumStatus() async throws {
+        let premium = Self.deferredPremiumStatus()
         let store = TestStore(initialState: AppFeature.State()) {
             AppFeature()
         } withDependencies: {
-            $0.premium.currentStatus = { .active }
+            $0.premium.currentStatus = premium.currentStatus
         }
 
         await store.send(.untaggedDocumentList(.delegate(.onIapPurchaseCompleted)))
+        premium.release.yield(.active)
 
         await store.receive(\.premiumStatusChanged, .active) {
             $0.$premiumStatus.withLock { $0 = .active }
         }
+    }
+
+    /// A premium status the test hands out once `send` has returned. A stub that answers at once
+    /// lets the effect finish inside `send`, which then reports the shared status change as its own.
+    private static func deferredPremiumStatus() -> (currentStatus: @Sendable () async -> PremiumStatus,
+                                                    release: AsyncStream<PremiumStatus>.Continuation) {
+        let (statuses, release) = AsyncStream<PremiumStatus>.makeStream()
+        return ({ await statuses.first { _ in true } ?? .inactive }, release)
     }
 
     // MARK: - Widget Tests
