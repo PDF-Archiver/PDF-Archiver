@@ -130,6 +130,47 @@ struct IndexSchedulerTests {
     }
 }
 
+struct BackgroundTaskCompletionTests {
+    /// The run and the watchdog can both finish, and `setTaskCompleted` must be called only once.
+    @Test
+    func aSecondCompletionIsIgnored() async {
+        let completions = LockIsolated<[Bool]>([])
+        let completion = BackgroundTaskCompletion { success in
+            completions.withValue { $0.append(success) }
+        }
+
+        await completion.complete(success: true, completion: "normal")
+        await completion.complete(success: false, completion: "watchdog")
+
+        #expect(completions.value == [true])
+    }
+
+    /// A run that outlives its expiration used to leave the task open: the watchdog checked
+    /// `isCancelled` right after cancelling, which is always true.
+    @Test(.timeLimit(.minutes(1)))
+    func theWatchdogCompletesATaskFiveSecondsAfterItExpired() async {
+        let clock = TestClock()
+        let completions = LockIsolated<[Bool]>([])
+        let completion = BackgroundTaskCompletion { success in
+            completions.withValue { $0.append(success) }
+        }
+
+        let watchdog = Task {
+            await withDependencies {
+                $0.continuousClock = clock
+            } operation: {
+                await completion.completeAfterGracePeriod()
+            }
+        }
+        await clock.advance(by: .seconds(4))
+        #expect(completions.value.isEmpty)
+
+        await clock.advance(by: .seconds(1))
+        await watchdog.value
+        #expect(completions.value == [false])
+    }
+}
+
 @Suite(.dependencies { try $0.bootstrapDatabase() })
 struct EvictLocalCopiesTests {
     @Test

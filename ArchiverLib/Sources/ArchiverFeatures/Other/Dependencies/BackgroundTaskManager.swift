@@ -81,6 +81,11 @@ public actor BackgroundTaskManager: Log {
         let startTime = Date()
         // A lock, not actor state: the expiration handler is a synchronous callback on any thread.
         let runningPhases = LockIsolated<Set<String>>([])
+        // Rescheduled together with the completion, so a watchdog completion schedules the next run.
+        let completion = BackgroundTaskCompletion { success in
+            task.setTaskCompleted(success: success)
+            Self.scheduleCacheProcessing()
+        }
 
         // Use a cancellable task so the expiration handler can stop work
         let processingTask = Task {
@@ -94,14 +99,8 @@ public actor BackgroundTaskManager: Log {
                 "phase": "\(runningPhases.value.sorted().joined(separator: "+"))"
             ])
             processingTask.cancel()
-
-            // Extraction observes cancellation per page, so the task returns within a page's
-            // parse time; this guards against a pathological one.
             Task {
-                try? await Task.sleep(for: .seconds(5))
-                guard !processingTask.isCancelled else { return }
-                task.setTaskCompleted(success: false)
-                Logger.backgroundTask.notice("Background task completed", metadata: ["success": "false", "completion": "watchdog"])
+                await completion.completeAfterGracePeriod()
             }
         }
 
@@ -120,10 +119,7 @@ public actor BackgroundTaskManager: Log {
                 )
             }
 
-            task.setTaskCompleted(success: true)
-            Logger.backgroundTask.notice("Background task completed", metadata: [
-                "success": "true",
-                "completion": "normal",
+            await completion.complete(success: true, completion: "normal", metadata: [
                 "ocrCount": "\(result.ocrCount)",
                 "aiCacheCount": "\(result.aiCacheCount)",
                 "durationSeconds": "\(processingDuration)"
@@ -141,16 +137,10 @@ public actor BackgroundTaskManager: Log {
                 )
             }
 
-            task.setTaskCompleted(success: false)
-            Logger.backgroundTask.notice("Background task completed", metadata: [
-                "success": "false",
-                "completion": "normal",
+            await completion.complete(success: false, completion: "normal", metadata: [
                 "durationSeconds": "\(Date().timeIntervalSince(startTime))"
             ])
         }
-
-        // Reschedule for next time
-        Self.scheduleCacheProcessing()
     }
 }
 #endif

@@ -220,6 +220,34 @@ private func runBackgroundTextPass(runningPhases: LockIsolated<Set<String>>) asy
     })
 }
 
+/// Completes a background task exactly once, by the run itself or by the watchdog.
+actor BackgroundTaskCompletion {
+    private let completeTask: @Sendable (_ success: Bool) -> Void
+    private var isCompleted = false
+
+    init(_ completeTask: @escaping @Sendable (_ success: Bool) -> Void) {
+        self.completeTask = completeTask
+    }
+
+    func complete(success: Bool, completion: String, metadata: Logger.Metadata = [:]) {
+        guard !isCompleted else { return }
+        isCompleted = true
+        completeTask(success)
+        var metadata = metadata
+        metadata["success"] = "\(success)"
+        metadata["completion"] = "\(completion)"
+        Logger.backgroundTask.notice("Background task completed", metadata: metadata)
+    }
+
+    /// Called on expiration. The run stops at its next cancellation check, and `extractText` has
+    /// none, so a document PDFKit is still parsing would keep the task open past its end.
+    func completeAfterGracePeriod() async {
+        @Dependency(\.continuousClock) var clock
+        try? await clock.sleep(for: .seconds(5))
+        complete(success: false, completion: "watchdog")
+    }
+}
+
 /// Waits for the metadata reconcile, which the text pass is gated on.
 ///
 /// The wait ends early when the task expires: the cancellation stops the sleep as well.
