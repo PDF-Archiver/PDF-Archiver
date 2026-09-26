@@ -49,6 +49,126 @@ struct IndexSchedulerTests {
 
         #expect(documents?.count == 1)
     }
+
+    /// The OCR and AI-cache pass has no budget, and the AI half retries its failures on every
+    /// pass, so a pass can outlast the process - it must not hold the text index back meanwhile.
+    @Test(.timeLimit(.minutes(1)))
+    func aProcessingPassThatNeverReturnsDoesNotBlockTheForegroundTextIndex() async throws {
+        try await Self.insertAnUntaggedDocument()
+        let indexedBudgets = AsyncStream<Int>.makeStream()
+        let loop = Task {
+            await withDependencies {
+                $0.archiveIndexer.pendingTextCount = { 1 }
+                $0.archiveIndexer.indexPendingTexts = { budget in
+                    indexedBudgets.continuation.yield(budget)
+                    return []
+                }
+                $0.premium.currentStatus = { .active }
+                $0.documentProcessor.processUntaggedDocuments = { _ in await Self.neverReturningPass() }
+            } operation: {
+                await IndexSchedulerDependency.liveValue.indexWhileAppIsOpen()
+            }
+        }
+        defer { loop.cancel() }
+
+        var budgets = indexedBudgets.stream.makeAsyncIterator()
+        #expect(await budgets.next() == 10)
+    }
+
+    @Test(.timeLimit(.minutes(1)))
+    func aProcessingPassThatNeverReturnsDoesNotBlockTheBackgroundTextIndex() async throws {
+        try await Self.insertAnUntaggedDocument()
+        let indexedBudgets = AsyncStream<Int>.makeStream()
+        let run = Task {
+            try await withDependencies {
+                $0.archiveStore.reloadDocuments = { }
+                $0.archiveIndexer.waitWhileReconciling = { _ in true }
+                $0.archiveIndexer.indexPendingTexts = { budget in
+                    indexedBudgets.continuation.yield(budget)
+                    return []
+                }
+                $0.premium.currentStatus = { .active }
+                $0.documentProcessor.processUntaggedDocuments = { _ in await Self.neverReturningPass() }
+            } operation: {
+                try await runBackgroundProcessing(runningPhases: LockIsolated([]))
+            }
+        }
+        defer { run.cancel() }
+
+        var budgets = indexedBudgets.stream.makeAsyncIterator()
+        #expect(await budgets.next() == 250)
+    }
+
+    /// The gate reads the same check as the rest of the app, which counts only the premium
+    /// products - any other verified entitlement used to open it.
+    @Test
+    func theTextIndexGateFollowsThePremiumStatus() async {
+        let isActive = await withDependencies {
+            $0.premium.currentStatus = { .active }
+        } operation: {
+            await PremiumEntitlement.isActive()
+        }
+
+        #expect(isActive)
+    }
+
+    /// The processing pass only runs when the inbox or the AI context holds a document.
+    private static func insertAnUntaggedDocument() async throws {
+        @Dependency(\.defaultDatabase) var database
+        try await database.write { db in
+            try Document.insert {
+                Document.mock(url: URL(fileURLWithPath: "/archive/untagged/scan1.pdf"), isTagged: false, downloadStatus: 1)
+            }
+            .execute(db)
+        }
+    }
+
+    private static func neverReturningPass() async -> UntaggedProcessingResult {
+        // Returns only once the test cancels the loop or the run around it.
+        try? await Task<Never, Never>.never()
+        return UntaggedProcessingResult(ocrCount: 0, aiCacheCount: 0)
+    }
+}
+
+struct BackgroundTaskCompletionTests {
+    /// The run and the watchdog can both finish, and `setTaskCompleted` must be called only once.
+    @Test
+    func aSecondCompletionIsIgnored() async {
+        let completions = LockIsolated<[Bool]>([])
+        let completion = BackgroundTaskCompletion { success in
+            completions.withValue { $0.append(success) }
+        }
+
+        await completion.complete(success: true, completion: "normal")
+        await completion.complete(success: false, completion: "watchdog")
+
+        #expect(completions.value == [true])
+    }
+
+    /// A run that outlives its expiration used to leave the task open: the watchdog checked
+    /// `isCancelled` right after cancelling, which is always true.
+    @Test(.timeLimit(.minutes(1)))
+    func theWatchdogCompletesATaskFiveSecondsAfterItExpired() async {
+        let clock = TestClock()
+        let completions = LockIsolated<[Bool]>([])
+        let completion = BackgroundTaskCompletion { success in
+            completions.withValue { $0.append(success) }
+        }
+
+        let watchdog = Task {
+            await withDependencies {
+                $0.continuousClock = clock
+            } operation: {
+                await completion.completeAfterGracePeriod()
+            }
+        }
+        await clock.advance(by: .seconds(4))
+        #expect(completions.value.isEmpty)
+
+        await clock.advance(by: .seconds(1))
+        await watchdog.value
+        #expect(completions.value == [false])
+    }
 }
 
 @Suite(.dependencies { try $0.bootstrapDatabase() })

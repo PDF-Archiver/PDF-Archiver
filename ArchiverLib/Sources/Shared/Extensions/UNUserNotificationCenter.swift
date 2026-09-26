@@ -6,7 +6,7 @@
 //
 
 import ArchiverModels
-import OSLog
+import Logging
 import UserNotifications
 
 public extension UNUserNotificationCenter {
@@ -28,9 +28,9 @@ public extension UNUserNotificationCenter {
             try await requestAuthorization(options: [.provisional])
 
             try await add(request)
-            Logger.notificationCenter.info("Local notification scheduled: \(title, privacy: .public)")
+            Logger.notificationCenter.info("Local notification scheduled", metadata: ["title": "\(title)"])
         } catch {
-            Logger.notificationCenter.error("Failed to schedule local notification: \(LogRedact.describe(error), privacy: .public)")
+            Logger.notificationCenter.error("Failed to schedule local notification", metadata: ["error": "\(LogRedact.describe(error))"])
         }
     }
 }

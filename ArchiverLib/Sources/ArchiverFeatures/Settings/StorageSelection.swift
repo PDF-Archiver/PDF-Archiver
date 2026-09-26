@@ -8,7 +8,7 @@
 import ArchiverModels
 import ArchiverStore
 import ComposableArchitecture
-import OSLog
+import Logging
 import Shared
 import SwiftUI
 import UniformTypeIdentifiers
@@ -131,7 +131,7 @@ struct StorageSelectionView: View {
                     store.send(.moveToStorageTypeStart(.local(url)))
 
                 case .failure(let error):
-                    Logger.settings.faultAndAssert("Failed to import a local folder: \(LogRedact.describe(error))")
+                    Logger.settings.faultAndAssert("Failed to import a local folder", metadata: ["error": "\(LogRedact.describe(error))"])
                     NotificationCenter.default.postAlert(error)
                 }
                 store.showDocumentPicker = false

@@ -4,8 +4,8 @@ import Foundation
 import OSLog
 
 /// Adds the running session's own-process OSLog entries (`.info` and above) as a diagnostics
-/// chapter. `LogRedact` and the `privacy: .public` markings in `Log.swift` are what make these
-/// entries safe to include - see the redaction rules there.
+/// chapter. `LogRedact` at the call sites is what makes these entries safe to include, since
+/// `OSLogHandler` writes every message as one `privacy: .public` string.
 struct OSLogReporter: DiagnosticsReporting {
     // `report()` is `async` to satisfy `DiagnosticsReporting`; reading OSLogStore is synchronous.
     // swiftlint:disable:next async_without_await

@@ -32,4 +32,13 @@ public enum LogRedact {
         let nsError = error as NSError
         return "\(nsError.domain)#\(nsError.code)"
     }
+
+    /// Second net for free text that no call site redacted, such as a diagnostics report or a
+    /// reported issue: drops the home folder, the user name and every PDF file name.
+    public static func redacted(_ text: String) -> String {
+        var result = text.replacingOccurrences(of: NSHomeDirectory(), with: "~")
+        result = result.replacingOccurrences(of: NSUserName(), with: "<user>")
+        result = result.replacingOccurrences(of: #"[^\s"'<>]+\.pdf"#, with: "<document>", options: .regularExpression)
+        return result
+    }
 }

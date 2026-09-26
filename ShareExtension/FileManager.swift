@@ -7,11 +7,9 @@
 
 import ArchiverModels
 import Foundation
-import OSLog
+import Logging
 
 extension FileManager {
-    private static let log = Logger(subsystem: "PDFArchiverShareExtension", category: "FileManager")
-
     func directoryExists(at url: URL) -> Bool {
         var isDirectory: ObjCBool = false
         let exists = self.fileExists(atPath: url.path, isDirectory: &isDirectory)
@@ -20,9 +18,9 @@ extension FileManager {
 
     func createFolderIfNotExists(_ folder: URL) throws {
         if !directoryExists(at: folder) {
-            Self.log.debug("Try to create folder - \(LogRedact.shape(folder), privacy: .public)")
+            Self.log.debug("Try to create folder", metadata: ["folder": "\(LogRedact.shape(folder))"])
             try createDirectory(at: folder, withIntermediateDirectories: true, attributes: nil)
-            Self.log.debug("folder creation success - \(LogRedact.shape(folder), privacy: .public)")
+            Self.log.debug("folder creation success", metadata: ["folder": "\(LogRedact.shape(folder))"])
         }
     }
 }

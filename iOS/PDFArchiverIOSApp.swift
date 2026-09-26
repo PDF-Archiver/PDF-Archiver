@@ -14,6 +14,9 @@ import SwiftUI
 @main
 struct PDFArchiverIOSApp: App {
     init() {
+        // Before anything logs - `registerTaskHandlers()` below already does, synchronously.
+        AppLogging.bootstrap()
+
         // One block, in this order: the screenshot run has to switch the context to `.preview`
         // before the database is prepared, and can only seed it afterwards.
         prepareDependencies { values in

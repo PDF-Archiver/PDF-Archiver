@@ -7,7 +7,7 @@
 
 import ArchiverModels
 import Foundation
-import OSLog
+import Logging
 import Shared
 
 actor DirectoryDeepWatcher: Log {
@@ -31,7 +31,7 @@ actor DirectoryDeepWatcher: Log {
             do {
                 try await initializeWatcher()
             } catch {
-                Logger.archiveStore.error("Failed to initialize watcher: \(LogRedact.describe(error), privacy: .public)")
+                Logger.archiveStore.error("Failed to initialize watcher", metadata: ["error": "\(LogRedact.describe(error))"])
             }
         }
     }

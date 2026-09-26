@@ -6,14 +6,12 @@
 //
 
 #if os(iOS)
-import ArchiverDatabase
 import ArchiverModels
 import BackgroundTasks
 import ComposableArchitecture
 import Foundation
-import OSLog
+import Logging
 import Shared
-import SQLiteData
 import UserNotifications
 
 extension BGProcessingTask: @unchecked @retroactive Sendable {}
@@ -26,18 +24,6 @@ public actor BackgroundTaskManager: Log {
 
     private static let scheduler = BGTaskScheduler.shared
 
-    /// Documents per run, matched to `SearchIndexDownloads.batchSize` so extraction does not fall
-    /// behind the downloads. An expiring task cancels the run and leaves the rest pending.
-    private static let indexBudget = 250
-
-    /// How long a cold start may take before the run gives up on the metadata. The iCloud metadata
-    /// gather of a 3.000-document archive needs about half a minute, a first download far longer.
-    private static let initialLoadTimeout = Duration.seconds(5 * 60)
-
-    @Dependency(\.archiveIndexer) var archiveIndexer
-    @Dependency(\.defaultDatabase) var database
-    @Dependency(\.documentProcessor) var documentProcessor
-    @Dependency(\.archiveStore) var archiveStore
     @SharedReader(.backgroundCacheNotificationsEnabled) var shouldNotify: Bool
 
     private init() {}
@@ -69,11 +55,17 @@ public actor BackgroundTaskManager: Log {
         // Only the opt-in download needs the network; extraction reads local files.
         request.requiresNetworkConnectivity = downloadAllForSearch
         request.requiresExternalPower = true
+        let metadata: Logger.Metadata = [
+            "requiresNetwork": "\(request.requiresNetworkConnectivity)",
+            "requiresPower": "\(request.requiresExternalPower)"
+        ]
         do {
             try scheduler.submit(request)
-            Logger.backgroundTask.notice("Cache processing task scheduled")
+            Logger.backgroundTask.notice("Cache processing task scheduled", metadata: metadata)
         } catch {
-            Logger.backgroundTask.error("Failed to schedule cache processing task: \(LogRedact.describe(error), privacy: .public)")
+            Logger.backgroundTask.error("Failed to schedule cache processing task", metadata: metadata.merging([
+                "error": "\(LogRedact.describe(error))"
+            ]) { _, error in error })
         }
     }
 
@@ -84,48 +76,33 @@ public actor BackgroundTaskManager: Log {
     /// Handle cache processing background task
     private func handleCacheProcessing(task: BGProcessingTask) async {
         Logger.backgroundTask.info("Background cache processing started")
+        // TODO: Remove with the diagnostic logs (#339).
+        // A background launch never shows the UI, whose start is where this is logged otherwise.
+        await AppStateLog.log()
         let startTime = Date()
+        // TODO: Remove `runningPhases` and its `phase` log fields with the diagnostic logs (#339).
+        // A lock, not actor state: the expiration handler is a synchronous callback on any thread.
+        let runningPhases = LockIsolated<Set<String>>([])
+        // Rescheduled together with the completion, so a watchdog completion schedules the next run.
+        let completion = BackgroundTaskCompletion { success in
+            task.setTaskCompleted(success: success)
+            Self.scheduleCacheProcessing()
+        }
 
         // Use a cancellable task so the expiration handler can stop work
         let processingTask = Task {
-            // A cold background launch has no scene, so nothing else starts the folder scan, and
-            // the wait below gives that scan the writer connection before the text pass takes it.
-            try await archiveStore.reloadDocuments()
-            await waitForInitialDocumentLoad()
-
-            let documents = try await database.read { db in
-                try Document.inbox.fetchAll(db) + Document.aiContext().fetchAll(db)
-            }
-            // Runs OCR (if enabled) before the AI cache pass, so the text
-            // layers exist when the cache entries are computed.
-            let result = await documentProcessor.processUntaggedDocuments(documents)
-
-            // Whether `NSMetadataQuery` reports an in-place rewrite by its own process is
-            // undocumented, so the rescan is explicit - and it precedes the text pass.
-            if result.ocrCount > 0 {
-                try await archiveStore.reloadDocuments()
-                await waitForInitialDocumentLoad()
-            }
-
-            if await PremiumEntitlement.isActive() {
-                await SearchIndexDownloads.requestNextBatch()
-                let indexed = await archiveIndexer.indexPendingTexts(Self.indexBudget)
-                await evictLocalCopies(of: indexed)
-            }
-            return result
+            try await runBackgroundProcessing(runningPhases: runningPhases)
         }
 
         // Set expiration handler to cancel the work instead of completing the task directly
         task.expirationHandler = {
-            Logger.backgroundTask.warning("Background cache processing expired")
+            Logger.backgroundTask.warning("Background cache processing expired", metadata: [
+                "elapsedSeconds": "\(Int(Date().timeIntervalSince(startTime)))",
+                "phase": "\(runningPhases.value.sorted().joined(separator: "+"))"
+            ])
             processingTask.cancel()
-
-            // Extraction observes cancellation per page, so the task returns within a page's
-            // parse time; this guards against a pathological one.
             Task {
-                try? await Task.sleep(for: .seconds(5))
-                guard !processingTask.isCancelled else { return }
-                task.setTaskCompleted(success: false)
+                await completion.completeAfterGracePeriod()
             }
         }
 
@@ -144,10 +121,16 @@ public actor BackgroundTaskManager: Log {
                 )
             }
 
-            task.setTaskCompleted(success: true)
-            Logger.backgroundTask.notice("Background processing completed: \(result.ocrCount, privacy: .public) OCR, \(result.aiCacheCount, privacy: .public) caches in \(processingDuration, privacy: .public)s")
+            await completion.complete(success: true, completion: "normal", metadata: [
+                "ocrCount": "\(result.ocrCount)",
+                "aiCacheCount": "\(result.aiCacheCount)",
+                "durationSeconds": "\(processingDuration)"
+            ])
         } catch {
-            Logger.backgroundTask.error("Background cache processing failed: \(LogRedact.describe(error), privacy: .public)")
+            Logger.backgroundTask.error("Background cache processing failed", metadata: [
+                "error": "\(LogRedact.describe(error))",
+                "phase": "\(runningPhases.value.sorted().joined(separator: "+"))"
+            ])
 
             if shouldNotify, !processingTask.isCancelled {
                 await UNUserNotificationCenter.current().showLocalNotification(
@@ -156,20 +139,10 @@ public actor BackgroundTaskManager: Log {
                 )
             }
 
-            task.setTaskCompleted(success: false)
+            await completion.complete(success: false, completion: "normal", metadata: [
+                "durationSeconds": "\(Date().timeIntervalSince(startTime))"
+            ])
         }
-
-        // Reschedule for next time
-        Self.scheduleCacheProcessing()
-    }
-
-    /// Waits for the metadata reconcile, which the text pass is gated on.
-    ///
-    /// The wait ends early when the task expires: the cancellation stops the sleep as well.
-    private func waitForInitialDocumentLoad() async {
-        let reconciled = await archiveIndexer.waitWhileReconciling(Self.initialLoadTimeout)
-        guard !reconciled else { return }
-        Logger.backgroundTask.warning("Timed out waiting for the initial document load")
     }
 }
 #endif

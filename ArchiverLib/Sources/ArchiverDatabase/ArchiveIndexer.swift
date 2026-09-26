@@ -8,7 +8,7 @@
 import ArchiverModels
 import Dependencies
 import Foundation
-import OSLog
+import Logging
 import SQLiteData
 
 /// The single writer of the read model.
@@ -23,8 +23,9 @@ public actor ArchiveIndexer {
     private var currentGeneration = 0
     /// Whether rows of roots this generation no longer observes still have to go.
     private var needsPrune = false
+    // TODO: Back to `private` with the diagnostic logs (#339) - only the `Run started` line reads it.
     /// When this process first held a text pass back for a running reconcile.
-    private var textPassDeferredSince: Date?
+    private(set) var textPassDeferredSince: Date?
     /// The deadline is re-evaluated on every pass, so without this the override would log once a
     /// second for as long as the flag stays up.
     private var didLogReconcileDeadline = false
@@ -54,15 +55,23 @@ public actor ArchiveIndexer {
         needsPrune = !observedRoots.isEmpty
 
         let observedRoots = self.observedRoots
-        withErrorReporting {
+        let storedCount = withErrorReporting {
             try database.write { db in
                 // Only while there is nothing to show. `reloadDocuments()` runs after every OCR
                 // pass and tears the providers down, so an indicator raised per rescan strands on
                 // the next teardown instead of clearing.
                 let storedCount = try Document.where { $0.rootKey.in(observedRoots) }.fetchCount(db)
                 try Self.setReconciling(storedCount == 0 && !observedRoots.isEmpty, in: db)
+                return storedCount
             }
         }
+        // TODO: Remove this line and the `storedCount` return above with the diagnostic logs (#339).
+        Logger.archiveIndexer.notice("Observed roots set", metadata: [
+            "generation": "\(currentGeneration)",
+            "rootCount": "\(observedRoots.count)",
+            "storedCount": "\(storedCount.map(String.init) ?? "unknown")",
+            "reconciling": "\(storedCount.map { "\($0 == 0 && !observedRoots.isEmpty)" } ?? "unknown")"
+        ])
         return currentGeneration
     }
 
@@ -78,12 +87,19 @@ public actor ArchiveIndexer {
         let safeRoot = root == "icloud" || root == "appContainer" ? root : "custom"
         let reconcileStart = ContinuousClock.now
         var changedCount = 0
-        Logger.archiveIndexer.debug("Reconcile started", metadata: ["root": safeRoot, "itemCount": "\(items.count)"])
+        // TODO: Remove these three counters and their metadata with the diagnostic logs (#339).
+        var toParseCount = 0
+        var absentCount = 0
+        var chunkCount = 0
+        Logger.archiveIndexer.debug("Reconcile started", metadata: ["root": "\(safeRoot)", "itemCount": "\(items.count)"])
         defer {
             Logger.archiveIndexer.debug("Reconcile finished", metadata: [
-                "root": safeRoot,
+                "root": "\(safeRoot)",
                 "duration": "\(reconcileStart.duration(to: .now))",
-                "changedCount": "\(changedCount)"
+                "changedCount": "\(changedCount)",
+                "toParseCount": "\(toParseCount)",
+                "absentCount": "\(absentCount)",
+                "chunkCount": "\(chunkCount)"
             ])
         }
 
@@ -105,9 +121,11 @@ public actor ArchiveIndexer {
 
         let items = Self.deduplicated(items, root: root)
         let toParse = Self.itemsNeedingParse(items: items, existing: existing, root: root)
+        toParseCount = toParse.count
         let documents = await Self.makeDocuments(from: toParse, root: root)
         let plan = Self.plan(items: items, existing: existing, root: root, documents: documents)
         changedCount = plan.changed.count
+        absentCount = plan.absentIDs.count
 
         // Split from `plan` itself so the diffing stays a pure computation: whether progress ever
         // arrives for a document is the one question "did the download even start" cannot answer.
@@ -129,6 +147,7 @@ public actor ArchiveIndexer {
                 guard isCurrent(root: root, generation: generation) else { return }
                 let end = min(start + Self.chunkSize, plan.changed.count)
                 try await write(Array(plan.changed[start..<end]), tagsToRewrite: plan.tagsToRewrite)
+                chunkCount += 1
                 // The rows written so far are already on screen; let anything else in before the
                 // next chunk takes the writer connection again.
                 await Task.yield()
@@ -138,6 +157,10 @@ public actor ArchiveIndexer {
             // A cancelled write is not a failed one: rewriting the root from a snapshot the app has
             // stopped observing would undo what the next generation is about to write.
             guard !Task.isCancelled else { return }
+            Logger.archiveIndexer.warning("Reconcile write failed, replacing the root", metadata: [
+                "root": "\(safeRoot)",
+                "error": "\(LogRedact.describe(error))"
+            ])
             await replaceRoot(root, with: items, generation: generation)
         }
 
@@ -152,7 +175,9 @@ public actor ArchiveIndexer {
     /// iCloud archive - a caller that gives up earlier finds the text pass gated and indexes
     /// nothing.
     public func waitWhileReconciling(timeout: Duration) async -> Bool {
-        await withTaskGroup(of: Bool.self) { group in
+        // TODO: Remove the timing and the `Waited for the reconcile` line with the diagnostic logs (#339).
+        let waitStart = ContinuousClock.now
+        let reconciled = await withTaskGroup(of: Bool.self) { group in
             group.addTask { [database] in
                 @FetchOne(IndexerState.find(IndexerState.singletonID).select(\.isReconciling), database: database)
                 var isReconciling = true
@@ -169,6 +194,11 @@ public actor ArchiveIndexer {
             group.cancelAll()
             return reconciled
         }
+        Logger.archiveIndexer.notice("Waited for the reconcile", metadata: [
+            "reconciled": "\(reconciled)",
+            "durationMs": "\(waitStart.duration(to: .now).inMilliseconds)"
+        ])
+        return reconciled
     }
 
     /// Whether a text pass may take the writer connection now.
@@ -201,7 +231,13 @@ public actor ArchiveIndexer {
             return false
         }
         let deferredFor = now.timeIntervalSince(deferredSince)
-        guard deferredFor >= Self.reconcileDeadline else { return false }
+        guard deferredFor >= Self.reconcileDeadline else {
+            // TODO: Remove with the diagnostic logs (#339).
+            Logger.archiveIndexer.debug("[textindex] Still deferred to a running reconcile", metadata: [
+                "deferredSeconds": "\(Int(deferredFor))"
+            ])
+            return false
+        }
         if !didLogReconcileDeadline {
             didLogReconcileDeadline = true
             Logger.archiveIndexer.notice("[textindex] Starting despite a reconcile that never finished", metadata: [

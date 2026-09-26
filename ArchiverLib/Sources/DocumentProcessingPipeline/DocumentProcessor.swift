@@ -9,7 +9,7 @@ import ArchiverModels
 import ContentExtractorStore
 import CoreGraphics
 import Foundation
-import OSLog
+import Logging
 import PDFKit
 
 /// Result of one untagged-documents pass.
@@ -164,6 +164,9 @@ public actor DocumentProcessor {
 
         var ocrCount = 0
         if ocr {
+            // TODO: Remove the start line and `durationMs` with the diagnostic logs (#339).
+            let ocrStart = ContinuousClock.now
+            Logger.documentProcessor.notice("Untagged OCR started", metadata: ["documentCount": "\(untaggedDocuments.count)"])
             for document in untaggedDocuments {
                 guard !Task.isCancelled else { break }
 
@@ -178,16 +181,28 @@ public actor DocumentProcessor {
                     ocrCount += 1
                 }
             }
-            Logger.documentProcessor.info("Untagged processing: added a text layer to \(ocrCount, privacy: .public) documents")
+            Logger.documentProcessor.notice("Untagged OCR finished", metadata: [
+                "documentCount": "\(untaggedDocuments.count)",
+                "ocrCount": "\(ocrCount)",
+                "cancelled": "\(Task.isCancelled)",
+                "durationMs": "\(ocrStart.duration(to: .now).inMilliseconds)"
+            ])
         }
 
         var aiCacheCount = 0
         if let aiContext, !Task.isCancelled, #available(iOS 26.0, macOS 26.0, *) {
+            // TODO: Remove the start line and `durationMs` with the diagnostic logs (#339).
+            let aiStart = ContinuousClock.now
+            Logger.documentProcessor.notice("AI cache pass started", metadata: ["documentCount": "\(documents.count)"])
             aiCacheCount = await contentExtractor.processUntaggedDocumentsInBackground(
                 documents: documents,
                 textExtractor: { await Self.extractText(from: $0) },
                 customPrompt: aiContext.customPrompt)
-            Logger.documentProcessor.info("Untagged processing: created \(aiCacheCount, privacy: .public) AI cache entries")
+            Logger.documentProcessor.notice("AI cache pass finished", metadata: [
+                "aiCacheCount": "\(aiCacheCount)",
+                "cancelled": "\(Task.isCancelled)",
+                "durationMs": "\(aiStart.duration(to: .now).inMilliseconds)"
+            ])
 
             // Gated on `aiContext`, not a separate flag: `contentExtractor` above is the only
             // consumer of these prints (via its `visualNeighbourFinder`), so computing one where
@@ -222,21 +237,51 @@ public actor DocumentProcessor {
     /// A revision mismatch is treated exactly like a cache miss - `distance(to:)` throws across
     /// revisions, so a stale entry is worse than no entry at all.
     private func cacheMissingFeaturePrints(for documents: [Document]) async {
+        // TODO: Remove the timing, the counters and all four log lines with the diagnostic logs (#339).
+        let passStart = ContinuousClock.now
+        Logger.documentProcessor.notice("Feature prints started", metadata: ["documentCount": "\(documents.count)"])
         var taggedBackfilled = 0
+        var cachedCount = 0
+        var computedCount = 0
+        var failedCount = 0
         for document in documents {
             guard !Task.isCancelled else { break }
-            guard await featurePrintCache.load(document.id)?.revision != FeaturePrintCache.currentRevision else { continue }
+            // Counted, not logged per document: the cache hit is the common case for the whole archive.
+            guard await featurePrintCache.load(document.id)?.revision != FeaturePrintCache.currentRevision else {
+                cachedCount += 1
+                continue
+            }
 
             if document.isTagged {
                 guard taggedBackfilled < Self.taggedFeaturePrintBackfillBudget else { continue }
                 taggedBackfilled += 1
             }
 
-            guard let encoded = await Self.encodedFeaturePrint(at: document.url) else { continue }
+            let printStart = ContinuousClock.now
+            guard let encoded = await Self.encodedFeaturePrint(at: document.url) else {
+                failedCount += 1
+                Logger.documentProcessor.debug("Feature print failed", metadata: [
+                    "documentId": "\(document.id)",
+                    "document": "\(LogRedact.token(document.url))"
+                ])
+                continue
+            }
             await featurePrintCache.save(.init(documentID: document.id,
                                                encodedObservation: encoded,
                                                revision: FeaturePrintCache.currentRevision))
+            computedCount += 1
+            Logger.documentProcessor.debug("Feature print computed", metadata: [
+                "documentId": "\(document.id)",
+                "durationMs": "\(printStart.duration(to: .now).inMilliseconds)"
+            ])
         }
+        Logger.documentProcessor.notice("Feature prints finished", metadata: [
+            "cachedCount": "\(cachedCount)",
+            "computedCount": "\(computedCount)",
+            "failedCount": "\(failedCount)",
+            "cancelled": "\(Task.isCancelled)",
+            "durationMs": "\(passStart.duration(to: .now).inMilliseconds)"
+        ])
     }
 
     @concurrent
@@ -246,7 +291,10 @@ public actor DocumentProcessor {
             guard let observation = try await PDFOCREngine.firstPageFeaturePrint(of: pdf) else { return nil }
             return try PropertyListEncoder().encode(observation)
         } catch {
-            Logger.ocrProcessing.error("Failed to compute a feature print for \(LogRedact.token(url), privacy: .public): \(LogRedact.describe(error), privacy: .public)")
+            Logger.ocrProcessing.error("Failed to compute a feature print", metadata: [
+                "document": "\(LogRedact.token(url))",
+                "error": "\(LogRedact.describe(error))"
+            ])
             return nil
         }
     }
@@ -351,7 +399,7 @@ public actor DocumentProcessor {
             // in-flight set, so a transient failure (file still being written
             // by the Share Extension, destination briefly unavailable) is
             // retried on the next processStagedFiles trigger.
-            Logger.documentProcessor.error("Processing failed: \(LogRedact.describe(error), privacy: .public)")
+            Logger.documentProcessor.error("Processing failed", metadata: ["error": "\(LogRedact.describe(error))"])
             for url in batch.sourceUrls {
                 inFlight.remove(url.resolvingSymlinksInPath())
             }
@@ -399,19 +447,29 @@ public actor DocumentProcessor {
     @concurrent
     static func addOcrTextLayer(at url: URL, config: ProcessingConfig, force: Bool = false) async -> Bool {
         guard let pdf = PDFDocument(url: url) else {
-            Logger.ocrProcessing.debug("Could not open PDF at \(LogRedact.token(url), privacy: .public)")
+            Logger.ocrProcessing.debug("Could not open PDF", metadata: ["document": "\(LogRedact.token(url))"])
             return false
         }
 
         if !force {
-            guard !PDFMetadata.hasTextLayer(pdf) else { return false }
+            // TODO: Remove both `OCR skipped` lines with the diagnostic logs (#339).
+            guard !PDFMetadata.hasTextLayer(pdf) else {
+                Logger.ocrProcessing.debug("OCR skipped, the document has a text layer", metadata: ["document": "\(LogRedact.token(url))"])
+                return false
+            }
             // A file stamped by this engine version or newer was already given
             // its chance; an older stamp (or none) earns one more attempt.
             if let version = PDFMetadata.processedEngineVersion(pdf, markerPrefix: config.processedMarker),
-               version >= config.ocrEngineVersion { return false }
+               version >= config.ocrEngineVersion {
+                Logger.ocrProcessing.debug("OCR skipped, already stamped by this engine", metadata: [
+                    "document": "\(LogRedact.token(url))",
+                    "stampVersion": "\(version)"
+                ])
+                return false
+            }
         }
 
-        Logger.ocrProcessing.info("OCR processing \(LogRedact.token(url), privacy: .public)")
+        Logger.ocrProcessing.info("OCR processing", metadata: ["document": "\(LogRedact.token(url))"])
 
         do {
             try await PDFOCREngine.addTextLayer(to: pdf, quality: config.pdfQuality)
@@ -419,18 +477,21 @@ public actor DocumentProcessor {
             // a successor pass may already be reading the file.
             try Task.checkCancellation()
             if !PDFMetadata.markAsProcessed(pdf, marker: config.processedMarker, version: config.ocrEngineVersion, writeTo: url) {
-                Logger.ocrProcessing.error("Failed to write OCR result for \(LogRedact.token(url), privacy: .public)")
+                Logger.ocrProcessing.error("Failed to write OCR result", metadata: ["document": "\(LogRedact.token(url))"])
                 return false
             }
-            Logger.ocrProcessing.info("OCR completed for \(LogRedact.token(url), privacy: .public) (\(pdf.pageCount, privacy: .public) pages)")
+            Logger.ocrProcessing.info("OCR completed", metadata: ["document": "\(LogRedact.token(url))", "pageCount": "\(pdf.pageCount)"])
             return true
         } catch is CancellationError {
             // Partially-modified `pdf` is discarded without writing, so the
             // document is retried on the next pass.
-            Logger.ocrProcessing.info("OCR cancelled for \(LogRedact.token(url), privacy: .public)")
+            Logger.ocrProcessing.info("OCR cancelled", metadata: ["document": "\(LogRedact.token(url))"])
             return false
         } catch {
-            Logger.ocrProcessing.error("OCR failed for \(LogRedact.token(url), privacy: .public): \(LogRedact.describe(error), privacy: .public)")
+            Logger.ocrProcessing.error("OCR failed", metadata: [
+                "document": "\(LogRedact.token(url))",
+                "error": "\(LogRedact.describe(error))"
+            ])
             // The failure stamp exists to stop the automatic sweep from looping.
             // A manual run must leave the file byte-identical instead, because
             // `pdf` may already hold partially replaced pages at this point.

@@ -7,6 +7,7 @@
 
 import ArchiverModels
 import Foundation
+import Logging
 import Shared
 
 extension URL: Log {

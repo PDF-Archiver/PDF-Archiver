@@ -8,6 +8,7 @@
 import ArchiverModels
 import ComposableArchitecture
 import Foundation
+import Logging
 
 @available(iOS, unavailable)
 nonisolated public struct ObservedFolderCustomSharedKey: SharedKey, Log {

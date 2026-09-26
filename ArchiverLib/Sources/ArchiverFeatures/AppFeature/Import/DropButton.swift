@@ -5,7 +5,6 @@
 //  Created by Julian Kahnert on 28.05.24.
 //
 
-import OSLog
 import Shared
 import SwiftUI
 
