@@ -8,6 +8,7 @@
 import ArchiverModels
 import AsyncAlgorithms
 import Foundation
+import Logging
 
 final class LocalFolderProvider: FolderProvider {
 

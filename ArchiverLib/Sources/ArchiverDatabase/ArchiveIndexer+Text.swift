@@ -8,7 +8,7 @@
 import ArchiverModels
 import Dependencies
 import Foundation
-import OSLog
+import Logging
 import PDFKit.PDFDocument
 import SQLiteData
 
@@ -87,7 +87,7 @@ extension ArchiveIndexer {
     /// Every document a run reads but does not store comes back in the next run, in the same
     /// order - which is a stuck index, not a slow one, so it is logged above `debug`.
     private func logTextRun(candidateCount: Int, processedCount: Int, storedCount: Int, wasCancelled: Bool) {
-        let metadata = [
+        let metadata: Logger.Metadata = [
             "candidateCount": "\(candidateCount)",
             "processedCount": "\(processedCount)",
             "storedCount": "\(storedCount)",

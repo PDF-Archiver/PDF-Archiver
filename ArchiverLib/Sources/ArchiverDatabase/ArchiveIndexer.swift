@@ -8,7 +8,7 @@
 import ArchiverModels
 import Dependencies
 import Foundation
-import OSLog
+import Logging
 import SQLiteData
 
 /// The single writer of the read model.
@@ -78,10 +78,10 @@ public actor ArchiveIndexer {
         let safeRoot = root == "icloud" || root == "appContainer" ? root : "custom"
         let reconcileStart = ContinuousClock.now
         var changedCount = 0
-        Logger.archiveIndexer.debug("Reconcile started", metadata: ["root": safeRoot, "itemCount": "\(items.count)"])
+        Logger.archiveIndexer.debug("Reconcile started", metadata: ["root": "\(safeRoot)", "itemCount": "\(items.count)"])
         defer {
             Logger.archiveIndexer.debug("Reconcile finished", metadata: [
-                "root": safeRoot,
+                "root": "\(safeRoot)",
                 "duration": "\(reconcileStart.duration(to: .now))",
                 "changedCount": "\(changedCount)"
             ])

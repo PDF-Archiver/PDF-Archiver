@@ -9,7 +9,7 @@ import ArchiverDatabase
 import ArchiverModels
 import ComposableArchitecture
 import Foundation
-import OSLog
+import Logging
 import Shared
 import StoreKit
 

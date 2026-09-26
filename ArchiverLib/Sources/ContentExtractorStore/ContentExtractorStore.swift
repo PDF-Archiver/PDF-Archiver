@@ -8,7 +8,7 @@
 import ArchiverModels
 import Foundation
 import FoundationModels
-import OSLog
+import Logging
 
 @available(iOS 26, macOS 26, *)
 public actor ContentExtractorStore {
@@ -99,7 +99,7 @@ public actor ContentExtractorStore {
         // Check cache if document ID is provided
         if let documentId,
            let cachedEntry = await cache.load(documentId) {
-            Logger.contentExtractor.info("Using cached result for document ID: \(documentId, privacy: .public)")
+            Logger.contentExtractor.info("Using cached result", metadata: ["documentId": "\(documentId)"])
             return Info(specification: cachedEntry.specification, tags: cachedEntry.tags)
         }
 
@@ -163,7 +163,7 @@ public actor ContentExtractorStore {
         // Only process untagged documents
         let untaggedDocuments = documents.filter { !$0.isTagged }
 
-        Logger.contentExtractor.info("Background cache processing started for \(untaggedDocuments.count, privacy: .public) untagged documents")
+        Logger.contentExtractor.info("Background cache processing started", metadata: ["untaggedCount": "\(untaggedDocuments.count)"])
 
         var newCachesCreated = 0
 
@@ -179,7 +179,7 @@ public actor ContentExtractorStore {
 
             // Extract text and process (cache will be saved inside extract())
             guard let text = await textExtractor(document.url) else {
-                Logger.contentExtractor.info("Skipping document without extractable text (e.g. not downloaded yet) - document ID: \(documentId, privacy: .public)")
+                Logger.contentExtractor.info("Skipping document without extractable text (e.g. not downloaded yet)", metadata: ["documentId": "\(documentId)"])
                 continue
             }
 
@@ -190,17 +190,20 @@ public actor ContentExtractorStore {
                                              documentId: documentId)
                 if info != nil {
                     newCachesCreated += 1
-                    Logger.contentExtractor.debug("Background cache entry created for document ID: \(documentId, privacy: .public)")
+                    Logger.contentExtractor.debug("Background cache entry created", metadata: ["documentId": "\(documentId)"])
                 } else {
                     // e.g. the language model is currently not available
-                    Logger.contentExtractor.info("No cache entry created for document ID: \(documentId, privacy: .public)")
+                    Logger.contentExtractor.info("No cache entry created", metadata: ["documentId": "\(documentId)"])
                 }
             } catch {
-                Logger.contentExtractor.error("Failed to create cache entry in background for document ID \(documentId, privacy: .public): \(LogRedact.describe(error), privacy: .public)")
+                Logger.contentExtractor.error("Failed to create cache entry in background", metadata: [
+                    "documentId": "\(documentId)",
+                    "error": "\(LogRedact.describe(error))"
+                ])
             }
         }
 
-        Logger.contentExtractor.info("Background cache processing completed: \(newCachesCreated, privacy: .public) new caches created")
+        Logger.contentExtractor.info("Background cache processing completed", metadata: ["createdCount": "\(newCachesCreated)"])
 
         return newCachesCreated
     }
@@ -244,7 +247,7 @@ public actor ContentExtractorStore {
                     truncatedText = recut
                 }
             } catch {
-                Logger.contentExtractor.error("Failed to measure the token count, keeping the estimate: \(LogRedact.describe(error), privacy: .public)")
+                Logger.contentExtractor.error("Failed to measure the token count, keeping the estimate", metadata: ["error": "\(LogRedact.describe(error))"])
             }
         }
 

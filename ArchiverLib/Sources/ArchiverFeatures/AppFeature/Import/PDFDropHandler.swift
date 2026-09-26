@@ -7,7 +7,7 @@
 
 import ArchiverModels
 import Dependencies
-import OSLog
+import Logging
 import PDFKit
 import Shared
 import SwiftUI

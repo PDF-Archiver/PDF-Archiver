@@ -10,7 +10,7 @@ import ComposableArchitecture
 import ContentExtractorStore
 import Foundation
 import FoundationModels
-import OSLog
+import Logging
 import Shared
 
 @DependencyClient

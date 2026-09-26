@@ -7,6 +7,7 @@
 
 import ArchiverModels
 import Foundation
+import Logging
 
 extension FileManager: Log {
     public func fileExists(at url: URL) -> Bool {

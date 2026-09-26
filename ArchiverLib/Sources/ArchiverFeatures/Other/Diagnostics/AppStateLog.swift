@@ -2,7 +2,7 @@ import ArchiverDatabase
 import ArchiverModels
 import ComposableArchitecture
 import Foundation
-import OSLog
+import Logging
 import Shared
 import SQLiteData
 
@@ -16,7 +16,7 @@ enum AppStateLog {
     }
 
     /// Split from `log()` because OSLog's own output is not observable from a test.
-    static func snapshot() async -> [String: String] {
+    static func snapshot() async -> Logger.Metadata {
         @Dependency(\.defaultDatabase) var database
         @Dependency(\.archiveIndexer) var archiveIndexer
         @Shared(.premiumStatus) var premiumStatus: PremiumStatus = .loading
@@ -34,12 +34,12 @@ enum AppStateLog {
         }
 
         return [
-            "storage": storageName(archivePathType),
+            "storage": "\(storageName(archivePathType))",
             "documentCount": "\(counts?.total ?? -1)",
             "untaggedCount": "\(counts?.untagged ?? -1)",
             "notDownloadedCount": "\(counts?.notDownloaded ?? -1)",
             "pendingTextCount": "\(await archiveIndexer.pendingTextCount())",
-            "premiumStatus": premiumStatus.rawValue,
+            "premiumStatus": "\(premiumStatus.rawValue)",
             "downloadAllForSearch": "\(downloadAllForSearch)",
             "appleIntelligenceEnabled": "\(appleIntelligenceEnabled)",
             "ocrEnabled": "\(ocrEnabled)"

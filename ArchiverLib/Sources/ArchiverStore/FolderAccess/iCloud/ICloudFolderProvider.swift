@@ -7,6 +7,7 @@
 
 import ArchiverModels
 import Foundation
+import Logging
 import Shared
 
 final class ICloudFolderProvider: FolderProvider {
@@ -177,7 +178,7 @@ final class ICloudFolderProvider: FolderProvider {
 
         let now = ContinuousClock.now
         let gap = lastSentAt.map { "\($0.duration(to: now))" } ?? "first"
-        log.debug("Sending documents snapshot", metadata: ["count": "\(documents.count)", "gapSinceLastSnapshot": gap])
+        log.debug("Sending documents snapshot", metadata: ["count": "\(documents.count)", "gapSinceLastSnapshot": "\(gap)"])
         lastSentAt = now
 
         currentDocumentsStreamContinuation.yield(documents)

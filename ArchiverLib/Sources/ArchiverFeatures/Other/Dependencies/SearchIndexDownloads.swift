@@ -9,7 +9,7 @@ import ArchiverDatabase
 import ArchiverModels
 import ComposableArchitecture
 import Foundation
-import OSLog
+import Logging
 import SQLiteData
 
 /// The opt-in half of indexing: only documents on this device carry text, so a complete index

@@ -7,14 +7,15 @@
 //
 
 import ArchiverModels
-import OSLog
+import Logging
 import PDFKit
 import Shared
 import UIKit
 import UniformTypeIdentifiers
 
-final class ShareViewController: UIViewController {
-    private static let log = Logger(subsystem: "PDFArchiverShareExtension", category: "ShareViewController")
+final class ShareViewController: UIViewController, Log {
+    // The extension process can create this controller more than once, and a second bootstrap traps.
+    private static let loggingBootstrap: Void = LoggingSystem.bootstrap(OSLogHandler.init)
 
     fileprivate enum ShareError: Error {
         case containerNotFound
@@ -36,6 +37,7 @@ final class ShareViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        _ = Self.loggingBootstrap
 
         activityIndicator.startAnimating()
         activityIndicator.hidesWhenStopped = true
@@ -145,7 +147,7 @@ final class ShareViewController: UIViewController {
                 do {
                     // Check if file already exists at target
                     if FileManager.default.fileExists(atPath: targetURL.path) {
-                        Self.log.warning("File already exists at target, removing legacy file: \(LogRedact.token(legacyURL), privacy: .public)")
+                        Self.log.warning("File already exists at target, removing legacy file", metadata: ["file": "\(LogRedact.token(legacyURL))"])
                         try FileManager.default.removeItem(at: legacyURL)
                     } else {
                         // Move the file to the new location

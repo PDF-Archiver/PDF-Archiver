@@ -9,13 +9,13 @@ import ArchiverModels
 import ArchiverStore
 import ComposableArchitecture
 import Diagnostics
+import Logging
 import Shared
 import StoreKit
 import SwiftUI
 #if os(iOS)
 import MessageUI
 #endif
-import OSLog
 
 extension PDFQuality {
     var name: LocalizedStringKey {

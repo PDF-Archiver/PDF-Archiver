@@ -7,7 +7,7 @@
 
 import ArchiverModels
 import ComposableArchitecture
-import OSLog
+import Logging
 import StoreKit
 
 @DependencyClient
@@ -34,9 +34,11 @@ extension PremiumDependency: DependencyKey {
             for await result in Transaction.currentEntitlements {
                 switch result {
                 case .unverified(let transaction, let error):
-                    Logger.inAppPurchase.error("""
-                        Transaction ID \(transaction.id, privacy: .public) for \(transaction.productID, privacy: .public) is unverified: \(LogRedact.describe(error), privacy: .public)
-                        """)
+                    Logger.inAppPurchase.error("Transaction is unverified", metadata: [
+                        "transactionId": "\(transaction.id)",
+                        "productId": "\(transaction.productID)",
+                        "error": "\(LogRedact.describe(error))"
+                    ])
                     continue
 
                 case .verified(let transaction):
@@ -62,9 +64,11 @@ extension PremiumDependency: DependencyKey {
                         await transaction.finish()
 
                     case .unverified(let transaction, let error):
-                        Logger.inAppPurchase.error("""
-                            Transaction ID \(transaction.id, privacy: .public) for \(transaction.productID, privacy: .public) is unverified: \(LogRedact.describe(error), privacy: .public)
-                            """)
+                        Logger.inAppPurchase.error("Transaction is unverified", metadata: [
+                            "transactionId": "\(transaction.id)",
+                            "productId": "\(transaction.productID)",
+                            "error": "\(LogRedact.describe(error))"
+                        ])
                     }
                     continuation.yield()
                 }

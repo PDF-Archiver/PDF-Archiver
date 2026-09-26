@@ -7,7 +7,7 @@
 
 import ArchiverModels
 import Foundation
-import OSLog
+import Logging
 
 /// File handling for the staging folder — the crash-safe inbox of the
 /// ``DocumentProcessor``.
@@ -115,7 +115,7 @@ enum Staging {
                 }
 
             default:
-                Logger.documentProcessor.debug("Ignoring unsupported staged file \(LogRedact.token(url), privacy: .public)")
+                Logger.documentProcessor.debug("Ignoring unsupported staged file", metadata: ["document": "\(LogRedact.token(url))"])
             }
         }
 

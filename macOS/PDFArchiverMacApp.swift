@@ -17,6 +17,8 @@ import SwiftUI
 @main
 struct PDFArchiverMacApp: App {
     init() {
+        AppLogging.bootstrap()
+
         // One block, in this order: the screenshot run has to switch the context to `.preview`
         // before the database is prepared, and can only seed it afterwards.
         prepareDependencies { values in

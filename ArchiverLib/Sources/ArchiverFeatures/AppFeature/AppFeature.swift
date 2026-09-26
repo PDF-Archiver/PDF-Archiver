@@ -9,7 +9,7 @@ import ArchiverDatabase
 import ArchiverModels
 import ArchiverStore
 import ComposableArchitecture
-import OSLog
+import Logging
 import Shared
 import SQLiteData
 import SwiftUI

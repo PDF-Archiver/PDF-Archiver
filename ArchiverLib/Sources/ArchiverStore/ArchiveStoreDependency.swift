@@ -8,7 +8,7 @@
 import ArchiverModels
 import ComposableArchitecture
 import Foundation
-import OSLog
+import Logging
 
 @DependencyClient
 public struct ArchiveStoreDependency: Sendable {
@@ -45,13 +45,13 @@ extension ArchiveStoreDependency: DependencyKey {
         // is already known to be below 1, i.e. an iCloud item - the provider lookup this used to
         // queue behind would only have picked the same iCloud provider back out again.
         startDownloadOf: { url in
-            Logger.archiveStore.notice("Requesting iCloud download", metadata: ["document": LogRedact.token(url)])
+            Logger.archiveStore.notice("Requesting iCloud download", metadata: ["document": "\(LogRedact.token(url))"])
             try FileManager.default.startDownloadingUbiquitousItem(at: url)
         },
         // Bypasses ArchiveStore/FolderProviderActor on purpose, mirroring `startDownloadOf`: every
         // caller already verified StorageType == .iCloudDrive and downloadStatus == 1.
         evictDocumentAt: { url in
-            Logger.archiveStore.notice("Evicting local copy", metadata: ["document": LogRedact.token(url)])
+            Logger.archiveStore.notice("Evicting local copy", metadata: ["document": "\(LogRedact.token(url))"])
             try FileManager.default.evictUbiquitousItem(at: url)
         },
         deleteDocumentAt: { url in

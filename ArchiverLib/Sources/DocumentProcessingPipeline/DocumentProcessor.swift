@@ -9,7 +9,7 @@ import ArchiverModels
 import ContentExtractorStore
 import CoreGraphics
 import Foundation
-import OSLog
+import Logging
 import PDFKit
 
 /// Result of one untagged-documents pass.
@@ -178,7 +178,7 @@ public actor DocumentProcessor {
                     ocrCount += 1
                 }
             }
-            Logger.documentProcessor.info("Untagged processing: added a text layer to \(ocrCount, privacy: .public) documents")
+            Logger.documentProcessor.info("Untagged processing: added text layers", metadata: ["ocrCount": "\(ocrCount)"])
         }
 
         var aiCacheCount = 0
@@ -187,7 +187,7 @@ public actor DocumentProcessor {
                 documents: documents,
                 textExtractor: { await Self.extractText(from: $0) },
                 customPrompt: aiContext.customPrompt)
-            Logger.documentProcessor.info("Untagged processing: created \(aiCacheCount, privacy: .public) AI cache entries")
+            Logger.documentProcessor.info("Untagged processing: created AI cache entries", metadata: ["aiCacheCount": "\(aiCacheCount)"])
 
             // Gated on `aiContext`, not a separate flag: `contentExtractor` above is the only
             // consumer of these prints (via its `visualNeighbourFinder`), so computing one where
@@ -246,7 +246,10 @@ public actor DocumentProcessor {
             guard let observation = try await PDFOCREngine.firstPageFeaturePrint(of: pdf) else { return nil }
             return try PropertyListEncoder().encode(observation)
         } catch {
-            Logger.ocrProcessing.error("Failed to compute a feature print for \(LogRedact.token(url), privacy: .public): \(LogRedact.describe(error), privacy: .public)")
+            Logger.ocrProcessing.error("Failed to compute a feature print", metadata: [
+                "document": "\(LogRedact.token(url))",
+                "error": "\(LogRedact.describe(error))"
+            ])
             return nil
         }
     }
@@ -351,7 +354,7 @@ public actor DocumentProcessor {
             // in-flight set, so a transient failure (file still being written
             // by the Share Extension, destination briefly unavailable) is
             // retried on the next processStagedFiles trigger.
-            Logger.documentProcessor.error("Processing failed: \(LogRedact.describe(error), privacy: .public)")
+            Logger.documentProcessor.error("Processing failed", metadata: ["error": "\(LogRedact.describe(error))"])
             for url in batch.sourceUrls {
                 inFlight.remove(url.resolvingSymlinksInPath())
             }
@@ -399,7 +402,7 @@ public actor DocumentProcessor {
     @concurrent
     static func addOcrTextLayer(at url: URL, config: ProcessingConfig, force: Bool = false) async -> Bool {
         guard let pdf = PDFDocument(url: url) else {
-            Logger.ocrProcessing.debug("Could not open PDF at \(LogRedact.token(url), privacy: .public)")
+            Logger.ocrProcessing.debug("Could not open PDF", metadata: ["document": "\(LogRedact.token(url))"])
             return false
         }
 
@@ -411,7 +414,7 @@ public actor DocumentProcessor {
                version >= config.ocrEngineVersion { return false }
         }
 
-        Logger.ocrProcessing.info("OCR processing \(LogRedact.token(url), privacy: .public)")
+        Logger.ocrProcessing.info("OCR processing", metadata: ["document": "\(LogRedact.token(url))"])
 
         do {
             try await PDFOCREngine.addTextLayer(to: pdf, quality: config.pdfQuality)
@@ -419,18 +422,21 @@ public actor DocumentProcessor {
             // a successor pass may already be reading the file.
             try Task.checkCancellation()
             if !PDFMetadata.markAsProcessed(pdf, marker: config.processedMarker, version: config.ocrEngineVersion, writeTo: url) {
-                Logger.ocrProcessing.error("Failed to write OCR result for \(LogRedact.token(url), privacy: .public)")
+                Logger.ocrProcessing.error("Failed to write OCR result", metadata: ["document": "\(LogRedact.token(url))"])
                 return false
             }
-            Logger.ocrProcessing.info("OCR completed for \(LogRedact.token(url), privacy: .public) (\(pdf.pageCount, privacy: .public) pages)")
+            Logger.ocrProcessing.info("OCR completed", metadata: ["document": "\(LogRedact.token(url))", "pageCount": "\(pdf.pageCount)"])
             return true
         } catch is CancellationError {
             // Partially-modified `pdf` is discarded without writing, so the
             // document is retried on the next pass.
-            Logger.ocrProcessing.info("OCR cancelled for \(LogRedact.token(url), privacy: .public)")
+            Logger.ocrProcessing.info("OCR cancelled", metadata: ["document": "\(LogRedact.token(url))"])
             return false
         } catch {
-            Logger.ocrProcessing.error("OCR failed for \(LogRedact.token(url), privacy: .public): \(LogRedact.describe(error), privacy: .public)")
+            Logger.ocrProcessing.error("OCR failed", metadata: [
+                "document": "\(LogRedact.token(url))",
+                "error": "\(LogRedact.describe(error))"
+            ])
             // The failure stamp exists to stop the automatic sweep from looping.
             // A manual run must leave the file byte-identical instead, because
             // `pdf` may already hold partially replaced pages at this point.

@@ -11,7 +11,7 @@ import ArchiverModels
 import BackgroundTasks
 import ComposableArchitecture
 import Foundation
-import OSLog
+import Logging
 import Shared
 import SQLiteData
 import UserNotifications
@@ -73,7 +73,7 @@ public actor BackgroundTaskManager: Log {
             try scheduler.submit(request)
             Logger.backgroundTask.notice("Cache processing task scheduled")
         } catch {
-            Logger.backgroundTask.error("Failed to schedule cache processing task: \(LogRedact.describe(error), privacy: .public)")
+            Logger.backgroundTask.error("Failed to schedule cache processing task", metadata: ["error": "\(LogRedact.describe(error))"])
         }
     }
 
@@ -145,9 +145,13 @@ public actor BackgroundTaskManager: Log {
             }
 
             task.setTaskCompleted(success: true)
-            Logger.backgroundTask.notice("Background processing completed: \(result.ocrCount, privacy: .public) OCR, \(result.aiCacheCount, privacy: .public) caches in \(processingDuration, privacy: .public)s")
+            Logger.backgroundTask.notice("Background processing completed", metadata: [
+                "ocrCount": "\(result.ocrCount)",
+                "aiCacheCount": "\(result.aiCacheCount)",
+                "durationSeconds": "\(processingDuration)"
+            ])
         } catch {
-            Logger.backgroundTask.error("Background cache processing failed: \(LogRedact.describe(error), privacy: .public)")
+            Logger.backgroundTask.error("Background cache processing failed", metadata: ["error": "\(LogRedact.describe(error))"])
 
             if shouldNotify, !processingTask.isCancelled {
                 await UNUserNotificationCenter.current().showLocalNotification(

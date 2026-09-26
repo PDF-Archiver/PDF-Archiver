@@ -9,7 +9,7 @@ import ArchiverDatabase
 import ArchiverModels
 import Dependencies
 import Foundation
-import OSLog
+import Logging
 import PDFKit.PDFDocument
 import Shared
 import Sharing
@@ -21,7 +21,7 @@ public actor ArchiveStore: Log {
             do {
                 try await store.reloadArchiveDocuments()
             } catch {
-                Logger.archiveStore.error("Failed to reload archive documents: \(LogRedact.describe(error), privacy: .public)")
+                Logger.archiveStore.error("Failed to reload archive documents", metadata: ["error": "\(LogRedact.describe(error))"])
             }
         }
         return store
@@ -111,7 +111,7 @@ public actor ArchiveStore: Log {
                 let folderChangeStream = await provider.currentDocumentsStream
                 for await changes in folderChangeStream {
                     guard !Task.isCancelled else { break }
-                    Self.log.debug("Found documents count: \(changes.count, privacy: .public)")
+                    Self.log.debug("Found documents", metadata: ["count": "\(changes.count)"])
 
                     // Only `ArchiveStore` knows `untaggedFolders`, so it stamps `isTagged` per item.
                     let items = changes.map { change -> DocumentInformation in
@@ -138,11 +138,11 @@ public actor ArchiveStore: Log {
             NotificationCenter.default.createAndPost(title: "Folder Provider Error", message: "Could not find a folder provider for path:\n\(folder.absoluteString)", primaryButtonTitle: "OK")
             return nil
         }
-        Logger.archiveStore.debug("Initialize new provider for \(LogRedact.shape(folder), privacy: .public)")
+        Logger.archiveStore.debug("Initialize new provider", metadata: ["folder": "\(LogRedact.shape(folder))"])
         do {
             return try provider.init(baseUrl: folder)
         } catch {
-            Logger.archiveStore.error("Failed to create FolderProvider - error: \(LogRedact.describe(error), privacy: .public)")
+            Logger.archiveStore.error("Failed to create FolderProvider", metadata: ["error": "\(LogRedact.describe(error))"])
             NotificationCenter.default.postAlert(error)
             return nil
         }
@@ -155,9 +155,9 @@ public actor ArchiveStore: Log {
             return provider
         }
 
-        Logger.archiveStore.error("No provider found for \(LogRedact.shape(url), privacy: .public)")
+        Logger.archiveStore.error("No provider found", metadata: ["url": "\(LogRedact.shape(url))"])
         let baseUrls = await self.providers.asyncMap { await $0.baseUrl }
-        Logger.archiveStore.error("Providers: \(baseUrls.count, privacy: .public)")
+        Logger.archiveStore.error("Providers", metadata: ["count": "\(baseUrls.count)"])
         throw ArchiveStore.Error.providerNotFound
     }
 

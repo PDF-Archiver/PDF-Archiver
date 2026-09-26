@@ -7,7 +7,7 @@
 
 import ArchiverModels
 import Foundation
-import OSLog
+import Logging
 import PDFKit
 import Vision
 
@@ -70,12 +70,12 @@ enum PDFOCREngine {
             try Task.checkCancellation()
 
             guard let image = PlatformImage(contentsOf: url) else {
-                Logger.ocrProcessing.error("Could not load page image \(LogRedact.token(url), privacy: .public)")
+                Logger.ocrProcessing.error("Could not load page image", metadata: ["document": "\(LogRedact.token(url))"])
                 continue
             }
 
             guard let cgImage = image.cgImage else {
-                Logger.ocrProcessing.error("Could not read page image \(LogRedact.token(url), privacy: .public)")
+                Logger.ocrProcessing.error("Could not read page image", metadata: ["document": "\(LogRedact.token(url))"])
                 continue
             }
             let results = try await recognizeText(in: cgImage, imageSize: image.size)

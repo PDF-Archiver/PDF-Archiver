@@ -8,6 +8,7 @@
 import ArchiverModels
 import ComposableArchitecture
 import Foundation
+import Logging
 
 nonisolated public struct ArchivePathTypeCustomSharedKey: SharedKey, Log {
     private let key: String

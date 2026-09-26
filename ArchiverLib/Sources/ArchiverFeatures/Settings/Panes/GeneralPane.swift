@@ -8,7 +8,7 @@
 #if os(macOS)
 import ArchiverModels
 import ComposableArchitecture
-import OSLog
+import Logging
 import Shared
 import SwiftUI
 import UniformTypeIdentifiers
@@ -58,7 +58,7 @@ struct GeneralPane: View {
                 store.send(.updateObservedFolder(url))
 
             case .failure(let error):
-                Logger.settings.faultAndAssert("Failed to import a local folder: \(LogRedact.describe(error))")
+                Logger.settings.faultAndAssert("Failed to import a local folder", metadata: ["error": "\(LogRedact.describe(error))"])
                 NotificationCenter.default.postAlert(error)
             }
         })
