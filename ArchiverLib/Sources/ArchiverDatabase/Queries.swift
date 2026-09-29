@@ -14,8 +14,37 @@ nonisolated public enum SearchToken: Hashable, Identifiable, Sendable {
     case tag(String)
     case year(Int)
     case text(String)
+    /// Documents the text index gave up on; unlike the other tokens it includes the inbox.
+    case indexFailed
+    /// Documents without a text layer; unlike the other tokens it includes the inbox.
+    case withoutText
 
     public var id: String { description }
+
+    /// The index-state tokens mirror the settings counts, and those include the inbox.
+    public var includesInbox: Bool {
+        switch self {
+        case .indexFailed, .withoutText:
+            return true
+
+        case .tag, .year, .text:
+            return false
+        }
+    }
+
+    /// The `DocumentIndexState` outcomes an index-state token matches, `nil` for the others.
+    var indexOutcomes: [DocumentIndexState.Outcome]? {
+        switch self {
+        case .indexFailed:
+            return [.failed]
+
+        case .withoutText:
+            return [.noText, .unreadable]
+
+        case .tag, .year, .text:
+            return nil
+        }
+    }
 
     public var description: String {
         switch self {
@@ -27,6 +56,12 @@ nonisolated public enum SearchToken: Hashable, Identifiable, Sendable {
 
         case .text(let text):
             "text: \(text)"
+
+        case .indexFailed:
+            "index: failed"
+
+        case .withoutText:
+            "index: without text"
         }
     }
 
@@ -40,6 +75,9 @@ nonisolated public enum SearchToken: Hashable, Identifiable, Sendable {
 
         case .text(let text):
             return text
+
+        case .indexFailed, .withoutText:
+            return description
         }
     }
 }
@@ -92,8 +130,9 @@ extension Document {
 
     /// Tagged documents filtered by tokens, newest first and never capped - the complete list.
     public static func list(tokens: [SearchToken]) -> Select<ArchiveSearchRow, Document, ()> {
-        Self.where { documents in
-            documents.isTagged
+        let includesInbox = tokens.contains(where: \.includesInbox)
+        return Self.where { documents in
+            documents.isTagged.or(includesInbox)
         }
         .where { documents in
             for token in tokens {
@@ -108,6 +147,11 @@ extension Document {
 
                 case .text(let text):
                     documents.filename.like("%\(Self.escapedForLike(text))%", escape: "\\")
+
+                case .indexFailed, .withoutText:
+                    DocumentIndexState
+                        .where { $0.documentID.eq(documents.id).and($0.outcome.in((token.indexOutcomes ?? []).map(Optional.some))) }
+                        .exists()
                 }
             }
         }
@@ -138,7 +182,7 @@ extension Document {
                      d."date" AS "date"
               FROM \(Document.self) AS d
               \(content.join)
-              WHERE d."isTagged" = 1
+              WHERE (d."isTagged" = 1 OR \(bind: query.tokens.contains(where: \.includesInbox)))
                 \(query.tokenPredicates)
                 AND (d."filename" LIKE \(bind: likePattern) ESCAPE '\\'\(content.orClause))
               ORDER BY "isFilenameHit" DESC, COALESCE("rank", 0) ASC, d."date" DESC

@@ -64,6 +64,13 @@ nonisolated public struct ArchiveSearchQuery: Equatable, Sendable {
                     AND d."filename" LIKE \(bind: "%\(Document.escapedForLike(text))%") ESCAPE '\\'
 
                     """)
+
+            case .indexFailed, .withoutText:
+                let outcomes = (token.indexOutcomes ?? []).map { QueryFragment("\(bind: $0)") }
+                fragment.append("""
+                    AND EXISTS (SELECT 1 FROM \(DocumentIndexState.self) WHERE \(DocumentIndexState.documentID) = d."id" AND \(DocumentIndexState.outcome) IN (\(outcomes.joined(separator: ", "))))
+
+                    """)
             }
         }
         return fragment

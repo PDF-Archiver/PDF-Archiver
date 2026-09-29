@@ -35,6 +35,8 @@ struct SearchIndexSettings {
     enum Action: BindableAction, Equatable {
         case alert(PresentationAction<Alert>)
         case binding(BindingAction<State>)
+        case delegate(Delegate)
+        case onDocumentsTapped(SearchToken)
         case onRebuildTapped
         #if DEBUG
         /// Production downloads the archive from the background task only; this is how a run is
@@ -44,6 +46,11 @@ struct SearchIndexSettings {
 
         enum Alert: Equatable {
             case confirmRebuild
+        }
+
+        @CasePathable
+        enum Delegate: Equatable {
+            case showDocuments(SearchToken)
         }
     }
 
@@ -67,6 +74,12 @@ struct SearchIndexSettings {
 
             case .binding:
                 return .none
+
+            case .delegate:
+                return .none
+
+            case .onDocumentsTapped(let token):
+                return .send(.delegate(.showDocuments(token)))
 
             #if DEBUG
             case .onDebugPrefetchTapped:
@@ -97,6 +110,9 @@ struct SearchIndexSettings {
 
 struct SearchIndexSettingsView: View {
     @Bindable var store: StoreOf<SearchIndexSettings>
+    #if os(macOS)
+    @Environment(\.dismissWindow) private var dismissWindow
+    #endif
 
     var body: some View {
         Form {
@@ -165,8 +181,8 @@ struct SearchIndexSettingsView: View {
     }
 
     private var progress: some View {
-        ProgressView(value: Double(store.status.indexed), total: Double(max(store.status.total, 1))) {
-            Text("\(store.status.indexed) of \(store.status.total) documents indexed", bundle: #bundle)
+        ProgressView(value: Double(store.status.processed), total: Double(max(store.status.total, 1))) {
+            Text("\(store.status.processed) of \(store.status.total) documents processed", bundle: #bundle)
         }
     }
 
@@ -175,7 +191,7 @@ struct SearchIndexSettingsView: View {
         // Only what is left to explain: a zero row is noise, and the line above already says how
         // far the index has come.
         if store.status.withoutText > 0 {
-            LabeledContent(String(localized: "Without Text", bundle: #bundle), value: "\(store.status.withoutText)")
+            documentsButton(String(localized: "Without Text", bundle: #bundle), count: store.status.withoutText, token: .withoutText)
         }
         if store.status.pending > 0 {
             LabeledContent(String(localized: "Pending", bundle: #bundle), value: "\(store.status.pending)")
@@ -184,13 +200,33 @@ struct SearchIndexSettingsView: View {
             LabeledContent(String(localized: "Not Downloaded", bundle: #bundle), value: "\(store.status.notDownloaded)")
         }
         if store.status.failed > 0 {
-            LabeledContent(String(localized: "Failed", bundle: #bundle), value: "\(store.status.failed)")
+            documentsButton(String(localized: "Failed", bundle: #bundle), count: store.status.failed, token: .indexFailed)
         }
         if let lastRun = store.status.lastRun {
             LabeledContent(String(localized: "Last Run", bundle: #bundle)) {
                 Text(lastRun, format: .relative(presentation: .named))
             }
         }
+    }
+
+    private func documentsButton(_ title: String, count: Int, token: SearchToken) -> some View {
+        Button {
+            store.send(.onDocumentsTapped(token))
+            #if os(macOS)
+            // The filtered list opens in the main window, which this Settings window would cover.
+            dismissWindow()
+            #endif
+        } label: {
+            LabeledContent(title) {
+                HStack {
+                    Text(count, format: .number)
+                    Image(systemName: "chevron.forward")
+                        .foregroundStyle(.tertiary)
+                }
+            }
+            .contentShape(.rect)
+        }
+        .buttonStyle(.plain)
     }
 }
 

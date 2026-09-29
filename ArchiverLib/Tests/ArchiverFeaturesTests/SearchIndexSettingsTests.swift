@@ -43,6 +43,16 @@ struct SearchIndexSettingsTests {
     }
 
     @Test
+    func tappingACountAsksToShowThoseDocuments() async throws {
+        let store = TestStore(initialState: SearchIndexSettings.State()) {
+            SearchIndexSettings()
+        }
+
+        await store.send(.onDocumentsTapped(.indexFailed))
+        await store.receive(\.delegate.showDocuments, .indexFailed)
+    }
+
+    @Test
     func theStatusStartsEmpty() async throws {
         let state = SearchIndexSettings.State()
         try await state.$status.load()
