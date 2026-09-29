@@ -118,6 +118,11 @@ final class ArchiveLogFile: Sendable, Log {
         fileNamePrefix = "\(formatter.string(from: .now))_\(session)"
     }
 
+    /// The folder this process writes to, `nil` while switched off or not resolved yet.
+    var directory: URL? {
+        state.withLock { $0.directory }
+    }
+
     /// `nil` while switched off, which keeps the cost of a log line to this one check.
     func nextSequenceNumber() -> Int? {
         state.withLock { state in
