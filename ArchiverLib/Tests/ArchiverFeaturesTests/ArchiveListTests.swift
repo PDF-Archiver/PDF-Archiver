@@ -57,6 +57,20 @@ struct ArchiveListTests {
     }
 
     @Test
+    func replacingTokensPresentsTheSearchField() async throws {
+        let store = TestStore(initialState: ArchiveList.State()) {
+            ArchiveList()
+        } withDependencies: {
+            $0.mainQueue = .immediate
+        }
+        store.exhaustivity = .off(showSkippedAssertions: false)
+
+        await store.send(.searchTokensReplaced([.withoutText]))
+
+        #expect(store.state.isSearchPresented)
+    }
+
+    @Test
     func aSpaceTurnsTheTypedTextIntoAToken() async throws {
         let store = TestStore(initialState: ArchiveList.State()) {
             ArchiveList()

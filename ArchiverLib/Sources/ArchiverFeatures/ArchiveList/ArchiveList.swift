@@ -22,6 +22,7 @@ struct ArchiveList {
         @Shared(.selectedDocumentId) var selectedDocumentId: Int?
         @SharedReader(.premiumStatus) var premiumStatus: PremiumStatus = .loading
         var isSearching = false
+        var isSearchPresented = false
         var searchText = ""
         var searchTokens: [SearchToken] = []
         // fallback until real suggestions are derived from the documents in AppFeature
@@ -77,6 +78,8 @@ struct ArchiveList {
             case .searchTokensReplaced(let tokens):
                 state.searchText = ""
                 state.searchTokens = tokens
+                // a collapsed field would hide the token that filters the list
+                state.isSearchPresented = !tokens.isEmpty
                 return reloadRows(state, premiumStatus: state.premiumStatus)
 
             case .selectionChanged(let documentId):
@@ -155,6 +158,7 @@ struct ArchiveListView: View {
         .searchable(text: $store.searchText,
                     tokens: $store.searchTokens,
                     suggestedTokens: $store.searchSuggestedTokens,
+                    isPresented: $store.isSearchPresented,
 //                    placement: .toolbar,
                     prompt: String(localized: "Search your documents", bundle: #bundle)) { token in
             switch token {

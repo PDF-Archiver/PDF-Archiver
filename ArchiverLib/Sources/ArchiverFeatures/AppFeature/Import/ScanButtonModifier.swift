@@ -28,11 +28,11 @@ struct ScanButtonModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .safeAreaInset(edge: .bottom, alignment: .trailing) {
-                DropButton(state: dropHandler.documentProcessingState) { isLongPress in
+                DropButton(state: dropHandler.documentProcessingState) { shouldShare in
                     #if os(macOS)
                     dropHandler.startImport()
                     #else
-                    shouldShareAfterScan = isLongPress
+                    shouldShareAfterScan = shouldShare
                     isScanPresented = true
                     #endif
                 }
@@ -65,7 +65,7 @@ struct ScanButtonModifier: ViewModifier {
                             // Handle images and get the processed document URL
                             let processedDocumentUrl = await documentProcessor.handleImages(images)
 
-                            // If long press was used, share the scanned document
+                            // Share the scanned document when it was requested
                             if let url = processedDocumentUrl {
                                 await MainActor.run {
                                     if shouldShareAfterScan {
