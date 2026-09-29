@@ -20,8 +20,7 @@ final class ICloudFolderProvider: FolderProvider {
 
     private let metadataQuery: NSMetadataQuery
 
-    private var currentDocuments: [Int: DocumentInformation] = [:]
-    private var lastDocuments: [DocumentInformation]?
+    private var snapshots = SnapshotAssembler()
     private var lastSentAt: ContinuousClock.Instant?
     private var observationTask: Task<Void, Never>?
     /// Delivers `NSMetadataQuery`'s notifications off the main thread: the observer below reads
@@ -99,14 +98,7 @@ final class ICloudFolderProvider: FolderProvider {
                     for await _ in gathered {
                         guard let self else { return }
                         Self.log.debug("Documents query finished initial fetch.")
-
-                        let details = await getFileChangeDetails()
-
-                        // update the archive
-                        let changes = details
-                            .compactMap(\.self)
-
-                        await sendDocuments(added: changes, updated: [], removed: [])
+                        await sendInitialSnapshot()
                     }
                 }
 
@@ -165,38 +157,40 @@ final class ICloudFolderProvider: FolderProvider {
     }
 
     private func sendDocuments(added: [DocumentInformation], updated: [DocumentInformation], removed: [DocumentInformation]) {
-        for change in added + updated {
-            currentDocuments[change.id] = change
-        }
-        for change in removed {
-            // match removed files by URL - reading the uniqueId (a resource value)
-            // of an already deleted file would fail
-            currentDocuments = currentDocuments.filter { $0.value.url != change.url }
-        }
-        let documents = Array(currentDocuments.values)
-        guard lastDocuments?.sorted() != documents.sorted() else { return }
-
-        let now = ContinuousClock.now
-        let gap = lastSentAt.map { "\($0.duration(to: now))" } ?? "first"
-        log.debug("Sending documents snapshot", metadata: ["count": "\(documents.count)", "gapSinceLastSnapshot": "\(gap)"])
-        lastSentAt = now
-
-        currentDocumentsStreamContinuation.yield(documents)
-        lastDocuments = documents
+        guard let documents = snapshots.applyUpdate(added: added, updated: updated, removed: removed) else { return }
+        send(documents, source: "update")
     }
 
-    private func getFileChangeDetails() -> [DocumentInformation?] {
-        self.metadataQuery.disableUpdates()
-        var changes: [DocumentInformation?] = []
-        for index in 0..<self.metadataQuery.resultCount {
-            guard let result = self.metadataQuery.result(at: index) as? NSMetadataItem else {
+    /// Reads the results and sends them in one synchronous step: an `await` in between would let an
+    /// update land first, which the older result list then overwrites.
+    private func sendInitialSnapshot() {
+        metadataQuery.disableUpdates()
+        var results: [DocumentInformation] = []
+        for index in 0..<metadataQuery.resultCount {
+            guard let result = metadataQuery.result(at: index) as? NSMetadataItem else {
                 assertionFailure("Could not cast result \(index) to NSMetadataItem")
                 continue
             }
-            changes.append(result.createDetails())
+            if let details = result.createDetails() {
+                results.append(details)
+            }
         }
-        self.metadataQuery.enableUpdates()
-        return changes
+        metadataQuery.enableUpdates()
+        send(snapshots.applyInitial(results), source: "initial")
+    }
+
+    // TODO: Remove the `source` parameter with the diagnostic logs (#339).
+    private func send(_ documents: [DocumentInformation], source: String) {
+        let now = ContinuousClock.now
+        let gap = lastSentAt.map { "\($0.duration(to: now))" } ?? "first"
+        log.debug("Sending documents snapshot", metadata: [
+            "count": "\(documents.count)",
+            "source": "\(source)",
+            "gapSinceLastSnapshot": "\(gap)"
+        ])
+        lastSentAt = now
+
+        currentDocumentsStreamContinuation.yield(documents)
     }
 
     // MARK: - API

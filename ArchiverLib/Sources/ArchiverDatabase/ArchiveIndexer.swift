@@ -40,7 +40,20 @@ public actor ArchiveIndexer {
     /// would then not grow again for the rest of the process.
     static let reconcileDeadline: TimeInterval = 15 * 60
 
-    public init() {}
+    /// Whether a document's file is still there, asked before an absent row is deleted.
+    private let fileExists: @Sendable (URL) -> Bool
+
+    public init(fileExists: @escaping @Sendable (URL) -> Bool = ArchiveIndexer.fileOrPlaceholderExists) {
+        self.fileExists = fileExists
+    }
+
+    /// `true` for the file itself or its iCloud placeholder `.<filename>.icloud` next to it: an
+    /// evicted document is still part of the archive.
+    public static func fileOrPlaceholderExists(_ url: URL) -> Bool {
+        let placeholder = url.deletingLastPathComponent().appending(path: ".\(url.lastPathComponent).icloud")
+        return FileManager.default.fileExists(atPath: url.path(percentEncoded: false))
+            || FileManager.default.fileExists(atPath: placeholder.path(percentEncoded: false))
+    }
 
     /// Announces which roots are observed from now on and returns the generation snapshots must
     /// carry to be accepted.
@@ -79,7 +92,8 @@ public actor ArchiveIndexer {
     ///
     /// Cancelled provider tasks still deliver buffered snapshots and actor jobs are not strictly
     /// FIFO, so a stale generation or an unobserved root is dropped before anything is written.
-    public func reconcile(_ items: [DocumentInformation], root: String, generation: Int) async {
+    /// `rootURL` is the folder the snapshot describes; while it is unreachable nothing is deleted.
+    public func reconcile(_ items: [DocumentInformation], root: String, rootURL: URL, generation: Int) async {
         guard isCurrent(root: root, generation: generation) else { return }
 
         // `root` is usually "icloud" or "appContainer"; a custom local folder's root key is its own
@@ -87,9 +101,11 @@ public actor ArchiveIndexer {
         let safeRoot = root == "icloud" || root == "appContainer" ? root : "custom"
         let reconcileStart = ContinuousClock.now
         var changedCount = 0
-        // TODO: Remove these three counters and their metadata with the diagnostic logs (#339).
+        // TODO: Remove these counters, the existence check timing and their metadata with the diagnostic logs (#339).
         var toParseCount = 0
         var absentCount = 0
+        var keptAbsentCount = 0
+        var existenceCheckDuration = Duration.zero
         var chunkCount = 0
         Logger.archiveIndexer.debug("Reconcile started", metadata: ["root": "\(safeRoot)", "itemCount": "\(items.count)"])
         defer {
@@ -99,6 +115,8 @@ public actor ArchiveIndexer {
                 "changedCount": "\(changedCount)",
                 "toParseCount": "\(toParseCount)",
                 "absentCount": "\(absentCount)",
+                "keptAbsentCount": "\(keptAbsentCount)",
+                "existenceCheckMs": "\(existenceCheckDuration.inMilliseconds)",
                 "chunkCount": "\(chunkCount)"
             ])
         }
@@ -127,6 +145,15 @@ public actor ArchiveIndexer {
         changedCount = plan.changed.count
         absentCount = plan.absentIDs.count
 
+        let existenceCheckStart = ContinuousClock.now
+        let absentURLs = plan.absentIDs.reduce(into: [Document.ID: URL]()) { $0[$1] = existing[$1]?.url }
+        let (removableIDs, keptIDs) = await Self.partitionAbsent(absentURLs,
+                                                                 claimedURLs: Set(items.map(\.url)),
+                                                                 rootURL: rootURL,
+                                                                 fileExists: fileExists)
+        existenceCheckDuration = existenceCheckStart.duration(to: .now)
+        keptAbsentCount = keptIDs.count
+
         // Split from `plan` itself so the diffing stays a pure computation: whether progress ever
         // arrives for a document is the one question "did the download even start" cannot answer.
         for change in plan.downloadStatusChanges {
@@ -142,7 +169,7 @@ public actor ArchiveIndexer {
         guard isCurrent(root: root, generation: generation) else { return }
 
         do {
-            try await removeAndPrune(absentIDs: plan.absentIDs)
+            try await removeAndPrune(absentIDs: removableIDs)
             for start in stride(from: 0, to: plan.changed.count, by: Self.chunkSize) {
                 guard isCurrent(root: root, generation: generation) else { return }
                 let end = min(start + Self.chunkSize, plan.changed.count)
@@ -161,7 +188,7 @@ public actor ArchiveIndexer {
                 "root": "\(safeRoot)",
                 "error": "\(LogRedact.describe(error))"
             ])
-            await replaceRoot(root, with: items, generation: generation)
+            await replaceRoot(root, with: items, keeping: keptIDs, generation: generation)
         }
 
         // Lowered per root, never once every root has reported: a single provider that stops
@@ -376,6 +403,33 @@ public actor ArchiveIndexer {
         return plan
     }
 
+    /// Splits the absent rows into those whose file is gone and those a partial snapshot merely
+    /// missed.
+    ///
+    /// A path in `claimedURLs` belongs to another item of the snapshot - a file replaced at the
+    /// same path gets a new id - so the old row goes even though the path exists.
+    /// `@concurrent` like `makeDocuments`: a few thousand `stat` calls must not block the actor.
+    @concurrent
+    nonisolated static func partitionAbsent(_ absent: [Document.ID: URL],
+                                            claimedURLs: Set<URL>,
+                                            rootURL: URL,
+                                            fileExists: @Sendable (URL) -> Bool) async -> (removable: Set<Document.ID>, kept: Set<Document.ID>) {
+        guard !absent.isEmpty else { return ([], []) }
+        // A signed-out iCloud account or an unmounted volume must not turn into an empty archive.
+        guard fileExists(rootURL) else { return ([], Set(absent.keys)) }
+
+        var removable: Set<Document.ID> = []
+        var kept: Set<Document.ID> = []
+        for (id, url) in absent {
+            if !claimedURLs.contains(url), fileExists(url) {
+                kept.insert(id)
+            } else {
+                removable.insert(id)
+            }
+        }
+        return (removable, kept)
+    }
+
     // MARK: - Writing
 
     /// Everything this snapshot removes, in one transaction ahead of the chunks: an insert or a URL
@@ -391,8 +445,8 @@ public actor ArchiveIndexer {
                 try Self.pruneRoots(keeping: rootsToKeep, in: db)
             }
             guard !absentIDs.isEmpty else { return }
-            // `documentTags` and `documentIndexStates` cascade; a virtual table cannot carry
-            // a foreign key, so the FTS row goes explicitly.
+            // Only rows whose file is gone reach this point, since a partial snapshot misses files that
+            // still exist. Everything keyed by `documents` cascades; the FTS row goes explicitly.
             try DocumentText.where { $0.rowid.in(absentIDs) }.delete().execute(db)
             try Document.where { $0.id.in(absentIDs) }.delete().execute(db)
         }
@@ -463,7 +517,8 @@ public actor ArchiveIndexer {
 
     /// Last resort after a failed write: the snapshot is authoritative, so the root is replaced
     /// wholesale rather than left in a half-applied state that every later snapshot inherits.
-    func replaceRoot(_ root: String, with items: [DocumentInformation], generation: Int) async {
+    /// `keptIDs` - absent rows whose file still exists - survive it with all their derived data.
+    func replaceRoot(_ root: String, with items: [DocumentInformation], keeping keptIDs: Set<Document.ID>, generation: Int) async {
         var documents: [Document] = []
         for item in items {
             documents.append(await Document.make(from: item, rootKey: root))
@@ -473,9 +528,12 @@ public actor ArchiveIndexer {
 
         await withErrorReporting {
             try await database.write { db in
-                let staleIDs = try Document.where { $0.rootKey.eq(root) }.select(\.id).fetchAll(db)
+                let staleIDs = try Document
+                    .where { $0.rootKey.eq(root) && $0.id.notIn(keptIDs) }
+                    .select(\.id)
+                    .fetchAll(db)
                 try DocumentText.where { $0.rowid.in(staleIDs) }.delete().execute(db)
-                try Document.where { $0.rootKey.eq(root) }.delete().execute(db)
+                try Document.where { $0.id.in(staleIDs) }.delete().execute(db)
                 guard !replacement.isEmpty else { return }
                 try Document.insert { replacement }.execute(db)
                 try Self.rewriteTags(of: replacement, in: db)

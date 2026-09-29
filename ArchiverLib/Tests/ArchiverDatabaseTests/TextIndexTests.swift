@@ -315,12 +315,14 @@ struct TextIndexTests {
     @Test
     func deletingADocumentRemovesItsText() async throws {
         try await Self.seed(id: -1, fixture: "text-layer")
-        let indexer = ArchiveIndexer()
+        // The fixture file exists, so the fake reports it gone - only a missing file is deleted.
+        let rootURL = URL(filePath: "/test")
+        let indexer = ArchiveIndexer { $0 == rootURL }
         await indexer.indexPendingTexts(budget: 10)
         #expect(try await Self.body(of: -1) != nil)
 
         let generation = await indexer.setObservedRoots(["test"])
-        await indexer.reconcile([], root: "test", generation: generation)
+        await indexer.reconcile([], root: "test", rootURL: rootURL, generation: generation)
 
         #expect(try await Self.body(of: -1) == nil)
     }

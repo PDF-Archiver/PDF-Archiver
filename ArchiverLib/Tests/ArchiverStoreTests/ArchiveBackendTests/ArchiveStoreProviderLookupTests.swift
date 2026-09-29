@@ -31,7 +31,7 @@ struct ArchiveStoreProviderLookupTests {
 
         try await withDependencies {
             $0.archiveIndexer.setObservedRoots = { _ in 0 }
-            $0.archiveIndexer.reconcile = { _, _, _ in }
+            $0.archiveIndexer.reconcile = { _, _, _, _ in }
         } operation: {
             let store = ArchiveStore()
             await store.update(archiveFolder: dirtyArchive, untaggedFolders: [dirtyUntagged])
