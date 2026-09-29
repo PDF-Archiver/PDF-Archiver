@@ -41,7 +41,7 @@ struct ArchiveStoreUpdateTests {
                     return generations.count
                 }
             }
-            $0.archiveIndexer.reconcile = { _, _, generation in
+            $0.archiveIndexer.reconcile = { _, _, _, generation in
                 forwardedContinuation.yield(generation)
             }
         } operation: {

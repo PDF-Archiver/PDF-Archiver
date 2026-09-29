@@ -13,7 +13,7 @@ import Foundation
 @DependencyClient
 public struct ArchiveIndexerDependency: Sendable {
     public var setObservedRoots: @Sendable ([String]) async -> Int = { _ in 0 }
-    public var reconcile: @Sendable ([DocumentInformation], String, Int) async -> Void
+    public var reconcile: @Sendable (_ items: [DocumentInformation], _ root: String, _ rootURL: URL, _ generation: Int) async -> Void
     /// `false` if the reconcile is still running when `timeout` is up.
     public var waitWhileReconciling: @Sendable (_ timeout: Duration) async -> Bool = { _ in true }
     public var indexPendingTexts: @Sendable (_ budget: Int) async -> [Document] = { _ in [] }
@@ -27,7 +27,7 @@ public struct ArchiveIndexerDependency: Sendable {
 extension ArchiveIndexerDependency: TestDependencyKey {
     public static let previewValue = Self(
         setObservedRoots: { _ in 0 },
-        reconcile: { _, _, _ in },
+        reconcile: { _, _, _, _ in },
         waitWhileReconciling: { _ in true },
         indexPendingTexts: { _ in [] },
         pendingTextCount: { 0 },
@@ -47,8 +47,8 @@ extension ArchiveIndexerDependency: DependencyKey {
             setObservedRoots: { roots in
                 await indexer.setObservedRoots(roots)
             },
-            reconcile: { items, root, generation in
-                await indexer.reconcile(items, root: root, generation: generation)
+            reconcile: { items, root, rootURL, generation in
+                await indexer.reconcile(items, root: root, rootURL: rootURL, generation: generation)
             },
             waitWhileReconciling: { timeout in
                 await indexer.waitWhileReconciling(timeout: timeout)

@@ -109,6 +109,7 @@ public actor ArchiveStore: Log {
         folderObservationTasks = observed.map { provider, rootKey in
             Task {
                 let folderChangeStream = await provider.currentDocumentsStream
+                let rootURL = await provider.baseUrl
                 for await changes in folderChangeStream {
                     guard !Task.isCancelled else { break }
                     Self.log.debug("Found documents", metadata: ["count": "\(changes.count)"])
@@ -119,7 +120,7 @@ public actor ArchiveStore: Log {
                         item.isTagged = isTagged(change.url)
                         return item
                     }
-                    await archiveIndexer.reconcile(items, rootKey, generation)
+                    await archiveIndexer.reconcile(items, rootKey, rootURL, generation)
                 }
             }
         }
