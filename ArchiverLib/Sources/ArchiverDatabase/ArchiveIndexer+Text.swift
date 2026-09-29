@@ -407,6 +407,11 @@ extension DocumentIndexState {
             self.notDownloaded = notDownloaded
             self.lastRun = lastRun
         }
+
+        /// Every document a run has finished with, whatever the outcome - what the progress bar shows.
+        public var processed: Int {
+            Swift.min(indexed + withoutText + failed, total)
+        }
     }
 
     public struct StatusRequest: FetchKeyRequest {

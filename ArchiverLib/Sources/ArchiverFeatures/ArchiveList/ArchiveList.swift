@@ -39,6 +39,7 @@ struct ArchiveList {
         case selectionChanged(Int?)
         case documentDetails(PresentationAction<DocumentDetails.Action>)
         case searchStateChanged(Bool)
+        case searchTokensReplaced([State.SearchToken])
     }
 
     @Dependency(\.mainQueue) var mainQueue
@@ -72,6 +73,11 @@ struct ArchiveList {
             case .searchStateChanged(let isSearching):
                 state.isSearching = isSearching
                 return .none
+
+            case .searchTokensReplaced(let tokens):
+                state.searchText = ""
+                state.searchTokens = tokens
+                return reloadRows(state, premiumStatus: state.premiumStatus)
 
             case .selectionChanged(let documentId):
                 state.$selectedDocumentId.withLock { $0 = documentId }
@@ -160,6 +166,12 @@ struct ArchiveListView: View {
 
             case .text(let text):
                 Label(text, systemImage: "text.viewfinder")
+
+            case .indexFailed:
+                Label(String(localized: "Failed", bundle: #bundle), systemImage: "exclamationmark.triangle")
+
+            case .withoutText:
+                Label(String(localized: "Without Text", bundle: #bundle), systemImage: "doc.text.magnifyingglass")
             }
         }
         .sensoryFeedback(.selection, trigger: store.selectedDocumentId)

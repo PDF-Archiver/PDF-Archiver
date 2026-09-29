@@ -436,3 +436,21 @@ struct TextIndexTests {
         }
     }
 }
+
+struct IndexStatusTests {
+    /// A document without text or one that failed is finished too - a done index shows a full bar.
+    @Test
+    func everyRecordedOutcomeCountsAsProcessed() {
+        let status = DocumentIndexState.Status(total: 10, indexed: 6, withoutText: 3, failed: 1)
+
+        #expect(status.processed == 10)
+    }
+
+    /// Rows from before a file changed can outnumber the documents for a moment.
+    @Test
+    func processedNeverExceedsTheTotal() {
+        let status = DocumentIndexState.Status(total: 5, indexed: 5, withoutText: 1)
+
+        #expect(status.processed == 5)
+    }
+}

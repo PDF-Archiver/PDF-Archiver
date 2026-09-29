@@ -26,6 +26,10 @@ import Testing
             DocumentTag(documentID: -1, tag: "work")
             DocumentTag(documentID: -2, tag: "bill")
             DocumentTag(documentID: -3, tag: "work")
+            DocumentIndexState(documentID: -1, sourceSize: 10, sourceModificationDate: nil, indexedAt: seedDate(2024), outcome: .indexed, characterCount: 100, extractorVersion: 1)
+            DocumentIndexState(documentID: -2, sourceSize: 20, sourceModificationDate: nil, indexedAt: seedDate(2024), outcome: .failed, characterCount: 0, extractorVersion: 1)
+            DocumentIndexState(documentID: -3, sourceSize: 30, sourceModificationDate: nil, indexedAt: seedDate(2024), outcome: .noText, characterCount: 0, extractorVersion: 1)
+            DocumentIndexState(documentID: -4, sourceSize: 40, sourceModificationDate: nil, indexedAt: seedDate(2024), outcome: .unreadable, characterCount: 0, extractorVersion: 1)
         }
     }
 })
@@ -61,6 +65,22 @@ struct QueryTests {
     func aTextTokenTreatsWildcardsLiterally() async throws {
         // A raw `%` would otherwise match every filename.
         #expect(try await Self.listIDs(tokens: [.text("%")]).isEmpty)
+    }
+
+    @Test
+    func anIndexFailedTokenFindsTheFailedDocuments() async throws {
+        #expect(try await Self.listIDs(tokens: [.indexFailed]) == [-2])
+    }
+
+    /// The settings screen counts the inbox too, so the list it opens has to show it as well.
+    @Test
+    func aWithoutTextTokenIncludesTheInbox() async throws {
+        #expect(Set(try await Self.listIDs(tokens: [.withoutText])) == [-3, -4])
+    }
+
+    @Test
+    func aWithoutTextTokenCombinesWithOtherTokens() async throws {
+        #expect(try await Self.listIDs(tokens: [.withoutText, .year(2023)]) == [-3])
     }
 
     @Test
@@ -160,6 +180,7 @@ private func seedDate(_ year: Int) -> Date {
             DocumentTag(documentID: -3, tag: "home")
             DocumentText(rowid: -2, body: "Sehr geehrte Damen und Herren, Ihre Rechnung für Müller GmbH liegt bei.")
             DocumentText(rowid: -3, body: "Mietvertrag über die Wohnung in der Beispielstraße.")
+            DocumentIndexState(documentID: -4, sourceSize: 10, sourceModificationDate: nil, indexedAt: seedDate(2024), outcome: .noText, characterCount: 0, extractorVersion: 1)
         }
     }
 })
@@ -242,6 +263,11 @@ struct RankedSearchTests {
     @Test
     func theInboxNeverAppears() async throws {
         #expect(try await Self.search(text: "scan").isEmpty)
+    }
+
+    @Test
+    func anIndexStateTokenSearchesTheInboxToo() async throws {
+        #expect(try await Self.search(text: "scan", tokens: [.withoutText]).map(\.id) == [-4])
     }
 
     @Test

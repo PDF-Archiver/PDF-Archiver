@@ -34,12 +34,12 @@
       },
       "shouldTranslate" : false
     },
-    "%lld of %lld documents indexed" : {
+    "%lld of %lld documents processed" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld von %2$lld Dokumenten indiziert"
+            "value" : "%1$lld von %2$lld Dokumenten verarbeitet"
           }
         }
       }

@@ -330,6 +330,11 @@ struct AppFeature {
                     return .none
                 }
 
+            case .settings(.delegate(.showDocuments(let token))):
+                state.selectedTab = .search
+                state.archiveList.$selectedDocumentId.withLock { $0 = nil }
+                return .send(.archiveList(.searchTokensReplaced([token])))
+
             case .settings:
                 return .none
 

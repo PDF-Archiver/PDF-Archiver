@@ -39,6 +39,29 @@ struct AppFeatureTests {
     }
 
     @Test
+    func showingDocumentsFromTheSearchIndexSettingsOpensTheSearchWithTheToken() async throws {
+        var state = AppFeature.State(archiveList: ArchiveList.State(selectedDocumentId: Shared(value: 42)))
+        state.selectedTab = .inbox
+        state.archiveList.searchText = "rechnung"
+        state.settings.destination = .searchIndex(SearchIndexSettings.State())
+        let store = TestStore(initialState: state) {
+            AppFeature()
+        } withDependencies: {
+            $0.mainQueue = .immediate
+        }
+        store.exhaustivity = .off(showSkippedAssertions: false)
+
+        await store.send(.settings(.destination(.presented(.searchIndex(.delegate(.showDocuments(.withoutText)))))))
+        await store.receive(\.archiveList.searchTokensReplaced)
+
+        #expect(store.state.selectedTab == .search)
+        #expect(store.state.settings.destination == nil)
+        #expect(store.state.archiveList.selectedDocumentId == nil)
+        #expect(store.state.archiveList.searchText.isEmpty)
+        #expect(store.state.archiveList.searchTokens == [.withoutText])
+    }
+
+    @Test
     func tabSelectionClearsSelectedDocument() async throws {
         let store = TestStore(initialState: AppFeature.State(
             archiveList: ArchiveList.State(selectedDocumentId: Shared(value: 42))

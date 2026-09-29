@@ -5,6 +5,7 @@
 //  Created by Julian Kahnert on 30.06.25.
 //
 
+import ArchiverDatabase
 import ArchiverModels
 import ArchiverStore
 import ComposableArchitecture
@@ -124,6 +125,7 @@ struct Settings {
 
     enum Action: BindableAction {
         case binding(BindingAction<State>)
+        case delegate(Delegate)
         case destination(PresentationAction<Destination.Action>)
         case onAboutMeTapped
         case onAdvancedSettingsTapped
@@ -151,6 +153,10 @@ struct Settings {
         #if os(macOS)
         case updateObservedFolder(URL?)
         #endif
+
+        enum Delegate: Equatable {
+            case showDocuments(SearchToken)
+        }
     }
 
     private enum CancelID {
@@ -166,6 +172,14 @@ struct Settings {
             switch action {
             case .binding:
                 return .none
+
+            case .delegate:
+                return .none
+
+            case .destination(.presented(.searchIndex(.delegate(.showDocuments(let token))))):
+                // Closed so the Settings tab does not reopen on a screen the user already left.
+                state.destination = nil
+                return .send(.delegate(.showDocuments(token)))
 
             case .destination:
                 return .none
@@ -331,7 +345,9 @@ extension Settings {
         await DiagnosticsReporter.create(
             using: [DiagnosticsReporter.DefaultReporter.generalInfo.reporter,
                     DiagnosticsReporter.DefaultReporter.appSystemMetadata.reporter,
-                    OSLogReporter()],
+                    OSLogReporter(),
+                    // TODO: Remove with the diagnostic logs (#339).
+                    ArchiveLogFileReporter()],
             filters: [SensitivePathFilter.self]
         )
     }
