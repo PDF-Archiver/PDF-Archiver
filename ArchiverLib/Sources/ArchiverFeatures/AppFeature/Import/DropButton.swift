@@ -92,13 +92,16 @@ struct DropButton: View {
                 .glassEffectID("scan", in: glassNamespace)
                 .highPriorityGesture(scanGesture)
                 .offset(buttonOffset)
-                .overlay {
+                // Behind the button, so the button covers the bubble once it snaps onto it.
+                .background {
                     if isHolding {
                         Image(systemName: "square.and.arrow.up")
                             .font(.title3)
                             // Centered by its layout bounds, the glyph reads as too low inside the circle.
                             .offset(y: -2)
                             .foregroundStyle(.white)
+                            // The scan glass is translucent, so the icon would show through it.
+                            .opacity(isOverShareTarget ? 0 : 1)
                             .scaleEffect(isOverShareTarget ? 1 : 0.75)
                             // Grown by padding, not `scaleEffect`: the glass shape follows layout, not render transforms.
                             .padding(isOverShareTarget ? 12 : 6)
@@ -157,13 +160,14 @@ struct DropButton: View {
         .background(Color.paPlaceholderGrayAsset, in: Capsule())
         .highPriorityGesture(scanGesture)
         .offset(buttonOffset)
-        .overlay {
+        .background {
             if isHolding {
                 Image(systemName: "square.and.arrow.up")
                     .font(.title3)
                     // Centered by its layout bounds, the glyph reads as too low inside the circle.
                     .offset(y: -2)
                     .foregroundStyle(isOverShareTarget ? .white : Color.paRedAsset)
+                    .opacity(isOverShareTarget ? 0 : 1)
                     .scaleEffect(isOverShareTarget ? 1 : 0.75)
                     .padding(isOverShareTarget ? 12 : 6)
                     .background(isOverShareTarget ? Color.paRedAsset : Color.paPlaceholderGrayAsset, in: Circle())
