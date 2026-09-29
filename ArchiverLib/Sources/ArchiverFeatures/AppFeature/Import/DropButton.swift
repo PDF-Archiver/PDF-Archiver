@@ -15,12 +15,15 @@ enum ScanButtonRelease: Equatable {
     /// Center of the share bubble, relative to the center of the scan button.
     static let shareTargetOffset = CGSize(width: 0, height: -76)
 
-    static func isOverShareTarget(_ translation: CGSize) -> Bool {
-        hypot(translation.width - shareTargetOffset.width, translation.height - shareTargetOffset.height) < 36
+    // Leaving takes a larger radius than entering, so a finger resting on the edge
+    // does not flip the snap (and fire a haptic) on every tiny movement.
+    static func isOverShareTarget(_ translation: CGSize, wasOverShareTarget: Bool) -> Bool {
+        let distance = hypot(translation.width - shareTargetOffset.width, translation.height - shareTargetOffset.height)
+        return distance < (wasOverShareTarget ? 56 : 36)
     }
 
-    init(translation: CGSize) {
-        if Self.isOverShareTarget(translation) {
+    init(translation: CGSize, isOverShareTarget: Bool) {
+        if isOverShareTarget {
             self = .scanAndShare
         } else if hypot(translation.width, translation.height) < 32 {
             self = .scan
@@ -46,13 +49,10 @@ struct DropButton: View {
     @State private var shouldWiggle = 0
     // `nil` while the button is not held; SwiftUI resets it when the gesture ends or gets cancelled.
     @GestureState private var holdTranslation: CGSize?
+    @State private var isOverShareTarget = false
 
     private var isHolding: Bool {
         holdTranslation != nil
-    }
-
-    private var isOverShareTarget: Bool {
-        holdTranslation.map(ScanButtonRelease.isOverShareTarget) ?? false
     }
 
     private var buttonOffset: CGSize {
@@ -96,12 +96,15 @@ struct DropButton: View {
                     if isHolding {
                         Image(systemName: "square.and.arrow.up")
                             .font(.title3)
+                            // Centered by its layout bounds, the glyph reads as too low inside the circle.
+                            .offset(y: -2)
                             .foregroundStyle(.white)
-                            .padding(12)
+                            .scaleEffect(isOverShareTarget ? 1 : 0.75)
+                            // Grown by padding, not `scaleEffect`: the glass shape follows layout, not render transforms.
+                            .padding(isOverShareTarget ? 12 : 6)
                             .glassEffect(.regular.tint(isOverShareTarget ? .paRedAsset : .gray), in: Circle())
                             .glassEffectID("share", in: glassNamespace)
                             .glassEffectTransition(.matchedGeometry)
-                            .scaleEffect(isOverShareTarget ? 1.15 : 1)
                             .offset(ScanButtonRelease.shareTargetOffset)
                     }
                 }
@@ -158,10 +161,12 @@ struct DropButton: View {
             if isHolding {
                 Image(systemName: "square.and.arrow.up")
                     .font(.title3)
+                    // Centered by its layout bounds, the glyph reads as too low inside the circle.
+                    .offset(y: -2)
                     .foregroundStyle(isOverShareTarget ? .white : Color.paRedAsset)
-                    .padding(12)
+                    .scaleEffect(isOverShareTarget ? 1 : 0.75)
+                    .padding(isOverShareTarget ? 12 : 6)
                     .background(isOverShareTarget ? Color.paRedAsset : Color.paPlaceholderGrayAsset, in: Circle())
-                    .scaleEffect(isOverShareTarget ? 1.15 : 1)
                     .offset(ScanButtonRelease.shareTargetOffset)
                     .transition(.scale.combined(with: .opacity))
             }
@@ -181,14 +186,27 @@ struct DropButton: View {
     // A quick tap fails the long press, so only then does the tap get its turn.
     private var scanGesture: some Gesture {
         LongPressGesture(minimumDuration: 0.15)
-            .sequenced(before: DragGesture(minimumDistance: 0))
+            // `.global`: the gesture sits inside the `offset` it drives, so a local
+            // translation would shrink as the button follows the finger and make it jitter.
+            .sequenced(before: DragGesture(minimumDistance: 0, coordinateSpace: .global))
             .updating($holdTranslation) { value, holdTranslation, _ in
                 guard case .second(true, let drag) = value else { return }
                 holdTranslation = drag?.translation ?? .zero
             }
+            .onChanged { value in
+                switch value {
+                case .second(true, let drag?):
+                    isOverShareTarget = ScanButtonRelease.isOverShareTarget(drag.translation, wasOverShareTarget: isOverShareTarget)
+
+                default:
+                    // A cancelled gesture skips `onEnded`, so every new press starts unsnapped.
+                    isOverShareTarget = false
+                }
+            }
             .onEnded { value in
+                defer { isOverShareTarget = false }
                 guard case .second(true, let drag) = value else { return }
-                release(ScanButtonRelease(translation: drag?.translation ?? .zero))
+                release(ScanButtonRelease(translation: drag?.translation ?? .zero, isOverShareTarget: isOverShareTarget))
             }
             .exclusively(before: TapGesture().onEnded { release(.scan) })
     }
@@ -220,7 +238,7 @@ private struct HoldToShareFeedback: ViewModifier {
             .animation(reduceMotion ? nil : .bouncy, value: isHolding)
             .animation(reduceMotion ? nil : .snappy, value: isOverShareTarget)
             .sensoryFeedback(.impact(weight: .light), trigger: isHolding) { _, isHolding in isHolding }
-            .sensoryFeedback(.selection, trigger: isOverShareTarget)
+            .sensoryFeedback(.selection, trigger: isOverShareTarget) { _, isOverShareTarget in isOverShareTarget }
     }
 }
 
