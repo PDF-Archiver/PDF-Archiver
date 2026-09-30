@@ -6,6 +6,7 @@
 //
 
 import ArchiverModels
+import Foundation
 
 /// Folds `NSMetadataQuery`'s initial result set and its later updates into full folder snapshots.
 ///
@@ -28,14 +29,12 @@ struct SnapshotAssembler {
     /// differs from the last one sent.
     mutating func applyUpdate(added: [DocumentInformation],
                               updated: [DocumentInformation],
-                              removed: [DocumentInformation]) -> [DocumentInformation]? {
+                              removed: [URL]) -> [DocumentInformation]? {
         for change in added + updated {
             currentDocuments[change.id] = change
         }
-        for change in removed {
-            // Matched by URL: reading the id (a resource value) of an already deleted file fails.
-            currentDocuments = currentDocuments.filter { $0.value.url != change.url }
-        }
+        let removed = Set(removed)
+        currentDocuments = currentDocuments.filter { !removed.contains($0.value.url) }
         guard let lastSent else { return nil }
         let documents = Array(currentDocuments.values)
         guard lastSent.sorted() != documents.sorted() else { return nil }

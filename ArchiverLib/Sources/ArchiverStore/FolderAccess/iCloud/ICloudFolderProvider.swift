@@ -144,19 +144,23 @@ final class ICloudFolderProvider: FolderProvider {
     private struct MetadataUpdate: Sendable {
         let added: [DocumentInformation]
         let updated: [DocumentInformation]
-        let removed: [DocumentInformation]
+        let removed: [URL]
 
         init(_ notification: Notification) {
-            func details(_ key: String) -> [DocumentInformation] {
-                (notification.userInfo?[key] as? [NSMetadataItem] ?? []).compactMap { $0.createDetails() }
+            func items(_ key: String) -> [NSMetadataItem] {
+                notification.userInfo?[key] as? [NSMetadataItem] ?? []
             }
-            added = details(NSMetadataQueryUpdateAddedItemsKey)
-            updated = details(NSMetadataQueryUpdateChangedItemsKey)
-            removed = details(NSMetadataQueryUpdateRemovedItemsKey)
+            added = items(NSMetadataQueryUpdateAddedItemsKey).compactMap { $0.createDetails() }
+            updated = items(NSMetadataQueryUpdateChangedItemsKey).compactMap { $0.createDetails() }
+            // URL only: `createDetails()` reads the file's id, which fails once the file is gone
+            // and silently dropped every removal.
+            removed = items(NSMetadataQueryUpdateRemovedItemsKey).compactMap {
+                ($0.value(forAttribute: NSMetadataItemURLKey) as? URL)?.normalized()
+            }
         }
     }
 
-    private func sendDocuments(added: [DocumentInformation], updated: [DocumentInformation], removed: [DocumentInformation]) {
+    private func sendDocuments(added: [DocumentInformation], updated: [DocumentInformation], removed: [URL]) {
         guard let documents = snapshots.applyUpdate(added: added, updated: updated, removed: removed) else { return }
         send(documents, source: "update")
     }

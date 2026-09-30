@@ -29,7 +29,7 @@ struct SnapshotAssemblerTests {
         var assembler = SnapshotAssembler()
 
         _ = assembler.applyUpdate(added: [Self.item(id: 9)], updated: [], removed: [])
-        _ = assembler.applyUpdate(added: [], updated: [], removed: [Self.item(id: 9)])
+        _ = assembler.applyUpdate(added: [], updated: [], removed: [Self.item(id: 9).url])
         let initial = assembler.applyInitial([Self.item(id: 1)])
 
         #expect(initial.map(\.id) == [1])
@@ -40,7 +40,7 @@ struct SnapshotAssemblerTests {
         var assembler = SnapshotAssembler()
         _ = assembler.applyInitial([Self.item(id: 1), Self.item(id: 2)])
 
-        let merged = assembler.applyUpdate(added: [Self.item(id: 3)], updated: [], removed: [Self.item(id: 1)])
+        let merged = assembler.applyUpdate(added: [Self.item(id: 3)], updated: [], removed: [Self.item(id: 1).url])
         let repeated = assembler.applyUpdate(added: [Self.item(id: 3)], updated: [], removed: [])
 
         #expect(merged?.map(\.id).sorted() == [2, 3])
