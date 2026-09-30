@@ -157,7 +157,7 @@
 		AA0100000000000000000004 /* UITests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITests_macOS.swift; sourceTree = "<group>"; };
 		AA0100000000000000000010 /* ScreenshotOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotOutput.swift; sourceTree = "<group>"; };
 		AA0100000000000000000005 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AA0100000000000000000011 /* UITests macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "UITests macOS.entitlements"; sourceTree = "<group>"; };
+		AA01000000000000000000E1 /* UITests macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "UITests macOS.entitlements"; sourceTree = "<group>"; };
 		34B1BAB025A8EB440014FF77 /* UITests iOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "UITests iOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		34B1BAB225A8EB440014FF77 /* UITests_iOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITests_iOS.swift; sourceTree = "<group>"; };
 		34B1BAB425A8EB440014FF77 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -370,7 +370,7 @@
 			children = (
 				AA0100000000000000000004 /* UITests_macOS.swift */,
 				AA0100000000000000000005 /* Info.plist */,
-				AA0100000000000000000011 /* UITests macOS.entitlements */,
+				AA01000000000000000000E1 /* UITests macOS.entitlements */,
 			);
 			path = "UITests macOS";
 			sourceTree = "<group>";
