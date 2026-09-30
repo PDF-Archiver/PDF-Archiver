@@ -45,6 +45,9 @@ struct AppFeature {
         var untaggedDocumentList = UntaggedDocumentList.State()
         var statistics = Statistics.State()
         var settings = Settings.State()
+        #if os(iOS)
+        var closesSettingsDestinationOnReturn = false
+        #endif
     }
 
     enum Action: BindableAction {
@@ -92,24 +95,17 @@ struct AppFeature {
         // ... second, run AppFeature reducer, if we need to interact (from an AppFeature domain point of view) with it
         Reduce { state, action in
             switch action {
-            case .archiveList(.documentDetails(.presented(.delegate(let delegateAction)))),
-                    .untaggedDocumentList(.documentDetails(.presented(.delegate(let delegateAction)))):
-                switch delegateAction {
-                case .deleteDocument(let document):
-                    // No optimistic removal: the row leaves the list when the provider event arrives.
-                    selectNextDocument(current: document, &state)
+            // No optimistic removal: the row leaves the list when the provider event arrives.
+            case .archiveList(.documentDetails(.presented(.delegate(.deleteDocument(let document))))):
+                // Decided by the list, not `isTagged`: the index-status searches list inbox documents too.
+                let nextDocument = Self.neighbor(of: document.id, in: state.archiveList.rows)?.document
+                state.archiveList.documentDetails = nextDocument.map { .init(document: $0) }
+                state.archiveList.$selectedDocumentId.withLock { $0 = nextDocument?.id }
+                return delete(document)
 
-                    return .run { _ in
-                        do {
-                            try await archiveStore.deleteDocumentAt(document.url)
-                        } catch {
-                            Logger.app.error("Failed to delete document", metadata: [
-                                "documentId": "\(document.id)",
-                                "error": "\(LogRedact.describe(error))"
-                            ])
-                        }
-                    }
-                }
+            case .untaggedDocumentList(.documentDetails(.presented(.delegate(.deleteDocument(let document))))):
+                selectInboxDocument(after: document, &state)
+                return delete(document)
 
             case .archiveList(.documentDetails(.presented(.showDocumentInformationForm(.delegate(let delegateAction))))),
                     .untaggedDocumentList(.documentDetails(.presented(.showDocumentInformationForm(.delegate(let delegateAction))))):
@@ -119,7 +115,7 @@ struct AppFeature {
                     state.archiveList.$selectedDocumentId.withLock { $0 = nil }
 
                     if case .untaggedDocumentList = action {
-                        selectNextDocument(current: document, &state)
+                        selectInboxDocument(after: document, &state)
                     }
 
                     return .run { _ in
@@ -157,7 +153,12 @@ struct AppFeature {
 
                 #if os(iOS)
                 case .settings:
-                    break
+                    if state.closesSettingsDestinationOnReturn {
+                        state.closesSettingsDestinationOnReturn = false
+                        state.settings.destination = nil
+                        // A fresh stack instead of a pop, which would slide the page out in view.
+                        state.settings.navigationStackID += 1
+                    }
                 #endif
                 }
                 return .none
@@ -331,6 +332,11 @@ struct AppFeature {
                 }
 
             case .settings(.delegate(.showDocuments(let token))):
+                #if os(iOS)
+                // Popped once the tab is back on screen: a stack popped in the same pass as the
+                // tab switch keeps its page but loses the content, leaving a blank Settings tab.
+                state.closesSettingsDestinationOnReturn = true
+                #endif
                 state.selectedTab = .search
                 state.archiveList.$selectedDocumentId.withLock { $0 = nil }
                 return .send(.archiveList(.searchTokensReplaced([token])))
@@ -346,26 +352,34 @@ struct AppFeature {
 
     /// Synchronous on purpose: a database read would add an async hop to the save flow and break
     /// the immediate navigation transition.
-    private func selectNextDocument(current document: Document, _ state: inout State) {
-        if document.isTagged {
-            let nextDocument = state.archiveList.rows.first { $0.id != document.id }?.document
-            if let nextDocument {
-                state.archiveList.documentDetails = .init(document: nextDocument)
-            } else {
-                state.archiveList.documentDetails = nil
+    private func delete(_ document: Document) -> Effect<Action> {
+        .run { _ in
+            do {
+                try await archiveStore.deleteDocumentAt(document.url)
+            } catch {
+                Logger.app.error("Failed to delete document", metadata: [
+                    "documentId": "\(document.id)",
+                    "error": "\(LogRedact.describe(error))"
+                ])
             }
-            state.archiveList.$selectedDocumentId.withLock { $0 = nextDocument?.id }
-        } else {
-            let nextDocument = state.untaggedDocumentList.documents.first { $0.id != document.id }
-            if let nextDocument {
-                state.untaggedDocumentList.documentDetails = .init(document: nextDocument)
-                // always show the inspector when the document is not tagged
-                state.untaggedDocumentList.documentDetails?.showInspector = true
-            } else {
-                state.untaggedDocumentList.documentDetails = nil
-            }
-            state.untaggedDocumentList.$selectedDocumentId.withLock { $0 = nextDocument?.id }
         }
+    }
+
+    private func selectInboxDocument(after document: Document, _ state: inout State) {
+        let nextDocument = Self.neighbor(of: document.id, in: state.untaggedDocumentList.documents)
+        state.untaggedDocumentList.documentDetails = nextDocument.map { .init(document: $0) }
+        // always show the inspector when the document is not tagged
+        state.untaggedDocumentList.documentDetails?.showInspector = true
+        state.untaggedDocumentList.$selectedDocumentId.withLock { $0 = nextDocument?.id }
+    }
+
+    /// The item below `id`, or the one above it when `id` was the last - `nil` once nothing is left.
+    private static func neighbor<Item: Identifiable>(of id: Item.ID, in items: [Item]) -> Item? {
+        guard let index = items.firstIndex(where: { $0.id == id }) else {
+            return items.first
+        }
+        let remaining = items.filter { $0.id != id }
+        return remaining.isEmpty ? nil : remaining[min(index, remaining.count - 1)]
     }
 }
 
