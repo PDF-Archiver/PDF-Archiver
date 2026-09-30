@@ -74,7 +74,7 @@ final class ShareViewController: UIViewController, Log {
     private func handleAttachments() async {
         do {
             // Migrate any documents from legacy temp location before processing new attachment
-            await migrateLegacyDocuments()
+            migrateLegacyDocuments()
 
             let url = Constants.tempDocumentURL
             try FileManager.default.createFolderIfNotExists(url)

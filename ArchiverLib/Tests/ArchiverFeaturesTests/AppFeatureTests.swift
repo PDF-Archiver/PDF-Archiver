@@ -24,7 +24,7 @@ struct AppFeatureTests {
         let store = TestStore(initialState: AppFeature.State()) {
             AppFeature()
         } withDependencies: {
-            $0.mainQueue = .immediate
+            $0.continuousClock = ImmediateClock()
         }
         store.exhaustivity = .off(showSkippedAssertions: false)
 
@@ -47,7 +47,7 @@ struct AppFeatureTests {
         let store = TestStore(initialState: state) {
             AppFeature()
         } withDependencies: {
-            $0.mainQueue = .immediate
+            $0.continuousClock = ImmediateClock()
         }
         store.exhaustivity = .off(showSkippedAssertions: false)
 
@@ -69,7 +69,7 @@ struct AppFeatureTests {
         let store = TestStore(initialState: state) {
             AppFeature()
         } withDependencies: {
-            $0.mainQueue = .immediate
+            $0.continuousClock = ImmediateClock()
         }
         store.exhaustivity = .off(showSkippedAssertions: false)
 
@@ -96,7 +96,7 @@ struct AppFeatureTests {
         )) {
             AppFeature()
         } withDependencies: {
-            $0.mainQueue = .immediate
+            $0.continuousClock = ImmediateClock()
         }
 
         await store.send(.binding(.set(\.selectedTab, .inbox))) {

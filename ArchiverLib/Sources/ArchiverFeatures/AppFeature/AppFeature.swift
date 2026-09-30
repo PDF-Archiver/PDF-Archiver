@@ -429,7 +429,7 @@ struct AppView: View {
 
             #if !os(macOS)
             Tab(String(localized: "Settings", bundle: #bundle), systemImage: "gear", value: AppFeature.State.Tab.settings) {
-                SettingsView(store: store.scope(state: \.settings, action: \.settings))
+                SettingsView(store: store.scope(\.settings, action: \.settings))
             }
             #endif
 
