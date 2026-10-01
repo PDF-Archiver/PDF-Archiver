@@ -104,7 +104,6 @@ public actor ContentExtractorStore {
         }
 
         let neighbours = await retrieveNeighbours(text: text, documentId: documentId)
-        // TODO: Remove the timing and the `Extraction finished` line with the diagnostic logs (#339).
         let modelStart = ContinuousClock.now
         let raw = try await respond(documents, neighbours, customPrompt, text)
         let modelMs = modelStart.duration(to: .now).inMilliseconds
@@ -142,7 +141,6 @@ public actor ContentExtractorStore {
     /// the floor (`docs/retrieval-augmented-tagging-concept.md`) - the visual channel is strictly
     /// a fallback, never a second source added on top.
     private func retrieveNeighbours(text: String, documentId: Document.ID?) async -> [NeighbourFinder.Match] {
-        // TODO: Remove the timings and the `Neighbours retrieved` line with the diagnostic logs (#339).
         let textStart = ContinuousClock.now
         let candidates = await neighbourFinder.find(text, documentId, ContentExtractionPromptFactory.neighbourCount)
         let survivors = ContentExtractionPromptFactory.survivingNeighbours(candidates)
@@ -186,7 +184,6 @@ public actor ContentExtractorStore {
 
         Logger.contentExtractor.info("Background cache processing started", metadata: ["untaggedCount": "\(untaggedDocuments.count)"])
 
-        // TODO: Remove the timings, both counters and the `entry exists` line with the diagnostic logs (#339).
         let passStart = ContinuousClock.now
         var newCachesCreated = 0
         var cachedCount = 0
@@ -200,7 +197,6 @@ public actor ContentExtractorStore {
             // Skip if already cached
             if await cache.load(documentId) != nil {
                 cachedCount += 1
-                Logger.contentExtractor.debug("Background cache entry exists", metadata: ["documentId": "\(documentId)"])
                 continue
             }
 

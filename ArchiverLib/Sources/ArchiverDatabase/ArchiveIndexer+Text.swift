@@ -49,7 +49,6 @@ extension ArchiveIndexer {
             await finishTextRun(indexedAnything: false)
             return []
         }
-        // TODO: Remove with the diagnostic logs (#339).
         Logger.archiveIndexer.debug("[textindex] Run started", metadata: [
             "budget": "\(budget)",
             "candidateCount": "\(pending.count)",
@@ -65,14 +64,6 @@ extension ArchiveIndexer {
                 wasCancelled = true
                 break
             }
-            // TODO: Remove with the diagnostic logs (#339).
-            // Before PDFKit opens the file: if a document kills the process, this is its last line.
-            Logger.archiveIndexer.debug("[textindex] Text extraction started", metadata: [
-                "documentId": "\(document.id)",
-                "document": "\(LogRedact.token(document.url))",
-                "sizeKB": "\(Int(document.sizeInBytes / 1024))",
-                "isTagged": "\(document.isTagged)"
-            ])
             let text = await Self.extractText(from: document.url)
 
             // The parse itself runs to completion; the check is about the write that follows,
@@ -191,28 +182,14 @@ extension ArchiveIndexer {
     /// helper would run on the indexer's executor and stall every reconcile behind a PDF parse.
     @concurrent
     nonisolated static func extractText(from url: URL) async -> String? {
-        // TODO: Remove the timing and both debug lines with the diagnostic logs (#339).
-        let openStart = ContinuousClock.now
         // Never through `NSFileCoordinator`: it blocks until an iCloud file is downloaded.
         guard let document = PDFDocument(url: url) else {
-            Logger.archiveIndexer.debug("[textindex] Could not open the document", metadata: [
-                "document": "\(LogRedact.token(url))",
-                "openMs": "\(openStart.duration(to: .now).inMilliseconds)"
-            ])
+            Logger.archiveIndexer.debug("[textindex] Could not open the document", metadata: ["document": "\(LogRedact.token(url))"])
             return nil
         }
-        let readStart = ContinuousClock.now
         // `nil` is reserved for a document that would not open - `classify` reads it as a failure,
         // while an image-only PDF has to come back empty so it counts as "no text".
-        let text = document.string ?? ""
-        Logger.archiveIndexer.debug("[textindex] Text read", metadata: [
-            "document": "\(LogRedact.token(url))",
-            "openMs": "\(openStart.duration(to: readStart).inMilliseconds)",
-            "extractMs": "\(readStart.duration(to: .now).inMilliseconds)",
-            "pageCount": "\(document.pageCount)",
-            "characterCount": "\(text.count)"
-        ])
-        return text
+        return document.string ?? ""
     }
 
     // MARK: - Bookkeeping
@@ -223,8 +200,6 @@ extension ArchiveIndexer {
     func commit(text: String?, for document: Document) async -> Bool {
         @Dependency(\.date.now) var now
 
-        // TODO: Remove `commitMs` and the `Text extraction finished` line with the diagnostic logs (#339).
-        let commitStart = ContinuousClock.now
         let (outcome, body) = Self.classify(text)
 
         let result = await withErrorReporting {
@@ -255,21 +230,12 @@ extension ArchiveIndexer {
             }
         }
 
-        var metadata: Logger.Metadata = [
+        guard let result, result != .stored else { return result == .stored }
+        Logger.archiveIndexer.notice("[textindex] Skipped a document that changed during extraction", metadata: [
             "documentId": "\(document.id)",
             "outcome": "\(outcome.rawValue)",
-            "stored": "\(result == .stored)",
-            "commitMs": "\(commitStart.duration(to: .now).inMilliseconds)"
-        ]
-        guard let result, result != .stored else {
-            if result == nil {
-                metadata["skipReason"] = "writeFailed"
-            }
-            Logger.archiveIndexer.debug("[textindex] Text extraction finished", metadata: metadata)
-            return result == .stored
-        }
-        metadata["skipReason"] = "\(result.rawValue)"
-        Logger.archiveIndexer.notice("[textindex] Skipped a document that changed during extraction", metadata: metadata)
+            "skipReason": "\(result.rawValue)"
+        ])
         return false
     }
 
@@ -292,7 +258,6 @@ extension ArchiveIndexer {
 
     private func finishTextRun(indexedAnything: Bool) async {
         @Dependency(\.date.now) var now
-        // TODO: Remove the timings and the `Run bookkeeping finished` line with the diagnostic logs (#339).
         let timings = await withErrorReporting {
             try await database.write { db -> (mergeMs: Int?, optimizeMs: Int?, pendingCount: Int) in
                 var mergeMs: Int?
