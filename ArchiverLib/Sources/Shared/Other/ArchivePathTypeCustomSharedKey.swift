@@ -31,7 +31,7 @@ nonisolated public struct ArchivePathTypeCustomSharedKey: SharedKey, Log {
         assert(!key.hasPrefix("@"))
 
         let observer = Observer {
-            subscriber.yield(with: .success(context.initialValue))
+            subscriber.yield(with: .success(getArchivePathType(from: store.wrappedValue)))
         }
         store.wrappedValue.addObserver(observer, forKeyPath: key, context: nil)
 
