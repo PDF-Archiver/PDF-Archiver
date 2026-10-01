@@ -138,6 +138,17 @@
           }
         }
       }
+    },
+    "Year" : {
+      "comment" : "Label for the x-axis in the documents per year chart.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jahr"
+          }
+        }
+      }
     }
   },
   "version" : "1.1"

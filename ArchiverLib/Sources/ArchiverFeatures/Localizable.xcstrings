@@ -1760,6 +1760,17 @@
         }
       }
     },
+    "Untagged" : {
+      "comment" : "Statistics card title for the number of untagged documents.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ungetaggt"
+          }
+        }
+      }
+    },
     "Use Apple Intelligence" : {
       "comment" : "Toggle to enable/disable Apple Intelligence",
       "localizations" : {

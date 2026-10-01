@@ -96,42 +96,23 @@ struct StatisticsView: View {
                             Text(store.totalStorageSize, format: .byteCount(style: .file, allowedUnits: [.mb, .gb]))
                         }
                     }
+
+                    StatCard(
+                        title: String(localized: "Untagged", bundle: #bundle),
+                        systemImage: "tray.fill"
+                    ) {
+                        Text(store.stats.untaggedDocuments, format: .number)
+                    }
                 }
+                // Lets every card grow to the tallest one instead of hugging its own content.
+                .fixedSize(horizontal: false, vertical: true)
 
-                VStack(alignment: .leading, spacing: 24) {
-                    Section {
-                        UntaggedDocumentsStatsView(
-                            untaggedDocuments: store.stats.untaggedDocuments,
-                            size: .medium,
-                            showActions: false
-                        )
-                        .padding()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(Color.paSecondaryBackgroundAsset)
-                        )
-                    }
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 320), spacing: 20, alignment: .top)], spacing: 20) {
+                    DocumentsPerYearChart(yearStats: store.stats.yearStats)
+                        .statisticsCard()
 
-                    Section {
-                        StatsView(yearStats: store.stats.yearStats, size: .medium, showActions: false)
-                            .padding()
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color.paSecondaryBackgroundAsset)
-                            )
-                    }
-
-                    Section {
-                        TopTagsChart(tags: store.stats.topTags)
-                            .padding()
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color.paSecondaryBackgroundAsset)
-                            )
-                    }
+                    TopTagsChart(tags: store.stats.topTags)
+                        .statisticsCard()
                 }
             }
             .padding()
