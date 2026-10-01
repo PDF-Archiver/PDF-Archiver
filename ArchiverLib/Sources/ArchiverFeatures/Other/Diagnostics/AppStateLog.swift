@@ -1,5 +1,6 @@
 import ArchiverDatabase
 import ArchiverModels
+import ArchiverStore
 import ComposableArchitecture
 import Foundation
 import Logging
@@ -34,7 +35,10 @@ enum AppStateLog {
         }
 
         return [
-            "storage": "\(storageName(archivePathType))",
+            // Resolved like the archive path is: a stored `nil` means the default location, and
+            // `none` alone hid that it was iCloud Drive.
+            "storage": "\(storageName(archivePathType.getPath()))",
+            "storageIsDefault": "\(archivePathType == nil)",
             "documentCount": "\(counts?.total ?? -1)",
             "untaggedCount": "\(counts?.untagged ?? -1)",
             "notDownloadedCount": "\(counts?.notDownloaded ?? -1)",

@@ -173,12 +173,12 @@ struct BackgroundTaskCompletionTests {
 
 @Suite(.dependencies { try $0.bootstrapDatabase() })
 struct EvictLocalCopiesTests {
+    /// No storage chosen is the default iCloud archive, which the storage type alone never said.
     @Test
-    func evictsArchiveDocumentsButKeepsUntagged() async throws {
-        let store = try Self.storeOnICloudDrive()
+    func evictsArchiveDocumentsButKeepsUntagged() async {
         let evictedURLs = LockIsolated<[URL]>([])
         await withDependencies {
-            $0.defaultAppStorage = store
+            $0.defaultAppStorage = .inMemory
             $0.archiveStore.evictDocumentAt = { url in evictedURLs.withValue { $0.append(url) } }
         } operation: {
             await evictLocalCopies(of: [
@@ -191,11 +191,10 @@ struct EvictLocalCopiesTests {
     }
 
     @Test
-    func skipsEvictionWhenDownloadAllForSearchIsOff() async throws {
-        let store = try Self.storeOnICloudDrive()
+    func skipsEvictionWhenDownloadAllForSearchIsOff() async {
         let evictedCount = LockIsolated(0)
         await withDependencies {
-            $0.defaultAppStorage = store
+            $0.defaultAppStorage = .inMemory
             $0.archiveStore.evictDocumentAt = { _ in evictedCount.withValue { $0 += 1 } }
         } operation: {
             @Shared(.downloadAllForSearch) var downloadAllForSearch: Bool
@@ -205,28 +204,5 @@ struct EvictLocalCopiesTests {
         }
 
         #expect(evictedCount.value == 0)
-    }
-
-    @Test
-    func skipsEvictionWhenNotOnICloudDrive() async throws {
-        let evictedCount = LockIsolated(0)
-        await withDependencies {
-            $0.defaultAppStorage = .inMemory
-            $0.archiveStore.evictDocumentAt = { _ in evictedCount.withValue { $0 += 1 } }
-        } operation: {
-            await evictLocalCopies(of: [Document.mock(isTagged: true, downloadStatus: 1)])
-        }
-
-        #expect(evictedCount.value == 0)
-    }
-
-    /// Seeds `archivePathType` directly in the store rather than through `@Shared.withLock`:
-    /// `ArchivePathTypeCustomSharedKey.subscribe` replays the stale value captured at subscribe
-    /// time on its own KVO notification, so a write followed by a read through `@Shared` in the
-    /// same scope resets itself back to `nil`.
-    private static func storeOnICloudDrive() throws -> UserDefaults {
-        let store = UserDefaults.inMemory
-        store.set(try JSONEncoder().encode(StorageType.iCloudDrive), forKey: "archivePathType")
-        return store
     }
 }

@@ -64,8 +64,6 @@ private func indexTextsWhileAppIsOpen() async {
     while !Task.isCancelled {
         let pendingCount = await archiveIndexer.pendingTextCount()
         guard pendingCount > 0 else {
-            // TODO: Remove with the diagnostic logs (#339).
-            Logger.app.debug("[textindex] Loop round", metadata: ["pendingCount": "0"])
             if pauseReason != "noPendingDocuments" {
                 pauseReason = "noPendingDocuments"
                 // A document that is not on this device is never a candidate, so these two
@@ -80,15 +78,7 @@ private func indexTextsWhileAppIsOpen() async {
             try? await Task.sleep(for: .seconds(60))
             continue
         }
-        // TODO: Remove the timing and the `Loop round` line with the diagnostic logs (#339).
-        let premiumCheckStart = ContinuousClock.now
-        let isPremium = await PremiumEntitlement.isActive()
-        Logger.app.debug("[textindex] Loop round", metadata: [
-            "pendingCount": "\(pendingCount)",
-            "premium": "\(isPremium)",
-            "premiumCheckMs": "\(premiumCheckStart.duration(to: .now).inMilliseconds)"
-        ])
-        guard isPremium else {
+        guard await PremiumEntitlement.isActive() else {
             if pauseReason != "noPremium" {
                 pauseReason = "noPremium"
                 Logger.app.notice("[textindex] Loop paused", metadata: ["reason": "noPremium"])
@@ -105,7 +95,6 @@ private func indexTextsWhileAppIsOpen() async {
 
         // Ten at a time with a pause between batches: the writer connection is shared with
         // the reconcile, and a foreground pass must never be what the archive list waits on.
-        // TODO: Remove the timing and the `Batch finished` line with the diagnostic logs (#339).
         let batchStart = ContinuousClock.now
         let indexed = await archiveIndexer.indexPendingTexts(10)
         Logger.app.debug("[textindex] Batch finished", metadata: [
@@ -136,7 +125,6 @@ private func runProcessingPass() async {
     }
     guard let documents, !documents.isEmpty else { return }
 
-    // TODO: Remove the start line and `durationMs` with the diagnostic logs (#339).
     let passStart = ContinuousClock.now
     Logger.app.notice("[processing] Foreground pass started", metadata: ["documentCount": "\(documents.count)"])
     let result = await documentProcessor.processUntaggedDocuments(documents)
@@ -269,28 +257,32 @@ private func waitForInitialDocumentLoad() async -> Bool {
 /// needed it on this device, and untagged keeps its copy since the inbox prefetch would only fetch
 /// it right back. Same switch that mass-downloads the archive (`downloadAllForSearch`) gives it up
 /// again; a document the user opened themselves while it is on can also be evicted, and simply
-/// re-downloads on next open.
+/// re-downloads on next open. Whether a file lives in iCloud at all is `evictDocumentAt`'s call.
 func evictLocalCopies(of documents: [Document]) async {
     @Dependency(\.archiveStore) var archiveStore
-    @SharedReader(.archivePathType) var archivePathType: StorageType?
     @Shared(.downloadAllForSearch) var downloadAllForSearch: Bool
 
-    guard downloadAllForSearch, archivePathType == .iCloudDrive else { return }
+    guard downloadAllForSearch else { return }
 
-    // TODO: Remove `evictedCount` and the `Evicted local copies` line with the diagnostic logs (#339).
     var evictedCount = 0
+    var failedCount = 0
     for document in documents where document.isTagged && document.downloadStatus == 1 {
         let evicted: Void? = await withErrorReporting {
             try await archiveStore.evictDocumentAt(document.url)
         }
         if evicted != nil {
             evictedCount += 1
+        } else {
+            failedCount += 1
         }
     }
-    Logger.app.debug("[textindex] Evicted local copies", metadata: ["evictedCount": "\(evictedCount)"])
+    Logger.app.debug("[textindex] Evicted local copies", metadata: [
+        "documentCount": "\(documents.count)",
+        "evictedCount": "\(evictedCount)",
+        "failedCount": "\(failedCount)"
+    ])
 }
 
-// TODO: Remove with the diagnostic logs (#339): call the operations directly and drop `runningPhases`.
 /// Runs one step of a background run between `started` and `finished` lines, and marks it as
 /// running for the expiration handler, which reports what the run was doing when time ran out.
 @discardableResult

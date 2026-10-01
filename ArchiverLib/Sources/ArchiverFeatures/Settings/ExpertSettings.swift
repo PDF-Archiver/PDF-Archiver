@@ -36,10 +36,6 @@ struct ExpertSettings {
 
         @Shared(.highlightDetectedDateEnabled)
         var highlightDetectedDateEnabled: Bool
-
-        // TODO: Remove with the diagnostic logs (#339).
-        @Shared(.diagnosticLogsEnabled)
-        var diagnosticLogsEnabled: Bool
     }
 
     enum Action: BindableAction, Equatable {
@@ -142,13 +138,6 @@ struct ExpertSettingsView: View {
                 Text("Show Permissions", bundle: #bundle)
             }
             #endif
-
-            // TODO: Remove this section and its two strings with the diagnostic logs (#339).
-            Section {
-                Toggle(String(localized: "Diagnostic Logs", bundle: #bundle), isOn: Binding(store.$diagnosticLogsEnabled))
-            } footer: {
-                Text("Writes what the app does to the “logs” folder in your archive, without file names or document contents. Only turn this on when support asks for it.", bundle: #bundle)
-            }
 
             Section {
                 Button {

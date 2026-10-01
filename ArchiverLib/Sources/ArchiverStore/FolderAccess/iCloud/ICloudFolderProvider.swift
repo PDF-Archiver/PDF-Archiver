@@ -183,7 +183,6 @@ final class ICloudFolderProvider: FolderProvider {
         send(snapshots.applyInitial(results), source: "initial")
     }
 
-    // TODO: Remove the `source` parameter with the diagnostic logs (#339).
     private func send(_ documents: [DocumentInformation], source: String) {
         let now = ContinuousClock.now
         let gap = lastSentAt.map { "\($0.duration(to: now))" } ?? "first"

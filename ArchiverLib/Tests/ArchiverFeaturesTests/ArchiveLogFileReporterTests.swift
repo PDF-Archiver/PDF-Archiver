@@ -3,7 +3,6 @@
 //  ArchiverLib
 //
 
-// TODO: Remove this file with the diagnostic logs (#339).
 import Foundation
 import Testing
 

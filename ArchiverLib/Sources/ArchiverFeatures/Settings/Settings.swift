@@ -345,7 +345,6 @@ extension Settings {
             using: [DiagnosticsReporter.DefaultReporter.generalInfo.reporter,
                     DiagnosticsReporter.DefaultReporter.appSystemMetadata.reporter,
                     OSLogReporter(),
-                    // TODO: Remove with the diagnostic logs (#339).
                     ArchiveLogFileReporter()],
             filters: [SensitivePathFilter.self]
         )

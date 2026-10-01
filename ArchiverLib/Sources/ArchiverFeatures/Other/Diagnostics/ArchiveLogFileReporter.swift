@@ -1,4 +1,3 @@
-// TODO: Remove this file with the diagnostic logs (#339).
 import ArchiverModels
 import Diagnostics
 import Foundation
@@ -13,7 +12,7 @@ struct ArchiveLogFileReporter: DiagnosticsReporting {
     func report() async -> DiagnosticsChapter {
         // Taken from the running log rather than resolved here: resolving it starts `ArchiveStore`.
         guard let directory = ArchiveLogFile.shared.directory else {
-            return DiagnosticsChapter(title: "Diagnostic Logs", diagnostics: "Diagnostic logs are switched off.")
+            return DiagnosticsChapter(title: "Diagnostic Logs", diagnostics: "Only TestFlight and debug builds write diagnostic logs.")
         }
         return DiagnosticsChapter(title: "Diagnostic Logs",
                                   diagnostics: Self.makeLogText(in: directory, maxByteCount: 1024 * 1024))
