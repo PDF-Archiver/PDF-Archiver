@@ -95,6 +95,7 @@ struct Settings {
     @ObservableState
     struct State: Equatable {
         @Presents var destination: Destination.State?
+        var navigationStackID = 0
 
         @Shared(.pdfQuality) var pdfQuality: PDFQuality
         @SharedReader(.archivePathType) var selectedArchiveType: StorageType?
@@ -177,8 +178,6 @@ struct Settings {
                 return .none
 
             case .destination(.presented(.searchIndex(.delegate(.showDocuments(let token))))):
-                // Closed so the Settings tab does not reopen on a screen the user already left.
-                state.destination = nil
                 return .send(.delegate(.showDocuments(token)))
 
             case .destination:
@@ -506,6 +505,7 @@ struct SettingsView: View {
                 }
             }
         }
+        .id(store.navigationStackID)
     }
 
     @ViewBuilder

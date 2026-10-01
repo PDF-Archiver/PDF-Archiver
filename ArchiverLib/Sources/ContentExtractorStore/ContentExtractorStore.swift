@@ -18,13 +18,20 @@ public actor ContentExtractorStore {
     /// model; tests inject a deterministic stub.
     typealias Responder = @Sendable (_ documents: [Document], _ neighbours: [NeighbourFinder.Match], _ customPrompt: String?, _ text: String) async throws -> RawDocumentInformation
 
-    // `sampling:` is deprecated in the macOS 27 SDK but the only spelling the
-    // macOS 26 SDK has, and CI builds against that one - renaming breaks it.
+    // CI builds with the 26 SDKs (Swift 6.3), which only know `sampling:`.
+    #if compiler(>=6.4)
+    private static let options = GenerationOptions(
+        samplingMode: .greedy,
+        temperature: 0.0,
+        maximumResponseTokens: 512
+    )
+    #else
     private static let options = GenerationOptions(
         sampling: .greedy,
         temperature: 0.0,
         maximumResponseTokens: 512
     )
+    #endif
 
     /// Maximum number of characters of the user's custom prompt.
     ///

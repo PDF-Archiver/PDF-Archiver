@@ -24,7 +24,7 @@ struct AppFeatureTests {
         let store = TestStore(initialState: AppFeature.State()) {
             AppFeature()
         } withDependencies: {
-            $0.mainQueue = .immediate
+            $0.continuousClock = ImmediateClock()
         }
         store.exhaustivity = .off(showSkippedAssertions: false)
 
@@ -47,7 +47,7 @@ struct AppFeatureTests {
         let store = TestStore(initialState: state) {
             AppFeature()
         } withDependencies: {
-            $0.mainQueue = .immediate
+            $0.continuousClock = ImmediateClock()
         }
         store.exhaustivity = .off(showSkippedAssertions: false)
 
@@ -55,11 +55,39 @@ struct AppFeatureTests {
         await store.receive(\.archiveList.searchTokensReplaced)
 
         #expect(store.state.selectedTab == .search)
-        #expect(store.state.settings.destination == nil)
         #expect(store.state.archiveList.selectedDocumentId == nil)
         #expect(store.state.archiveList.searchText.isEmpty)
         #expect(store.state.archiveList.searchTokens == [.withoutText])
     }
+
+    #if os(iOS)
+    @Test
+    func returningToSettingsAfterShowingDocumentsClosesTheSearchIndex() async throws {
+        var state = AppFeature.State()
+        state.selectedTab = .settings
+        state.settings.destination = .searchIndex(SearchIndexSettings.State())
+        let store = TestStore(initialState: state) {
+            AppFeature()
+        } withDependencies: {
+            $0.continuousClock = ImmediateClock()
+        }
+        store.exhaustivity = .off(showSkippedAssertions: false)
+
+        await store.send(.settings(.destination(.presented(.searchIndex(.delegate(.showDocuments(.indexFailed)))))))
+        await store.receive(\.archiveList.searchTokensReplaced)
+        // Still pushed while the tab leaves the screen: popping now leaves a blank page behind.
+        #expect(store.state.settings.destination != nil)
+
+        await store.send(.binding(.set(\.selectedTab, .settings)))
+        #expect(store.state.settings.destination == nil)
+        #expect(store.state.settings.navigationStackID == 1)
+
+        await store.send(.settings(.onSearchIndexTapped))
+        await store.send(.binding(.set(\.selectedTab, .search)))
+        await store.send(.binding(.set(\.selectedTab, .settings)))
+        #expect(store.state.settings.destination != nil)
+    }
+    #endif
 
     @Test
     func tabSelectionClearsSelectedDocument() async throws {
@@ -68,7 +96,7 @@ struct AppFeatureTests {
         )) {
             AppFeature()
         } withDependencies: {
-            $0.mainQueue = .immediate
+            $0.continuousClock = ImmediateClock()
         }
 
         await store.send(.binding(.set(\.selectedTab, .inbox))) {
@@ -375,6 +403,63 @@ struct AppFeatureTests {
         await store.finish()
 
         #expect(store.state.untaggedDocumentList.documentDetails == nil)
+    }
+
+    /// The "without text" search lists inbox documents too - deleting one there must move the
+    /// search's details on, not the inbox's.
+    @Test
+    func deletingAnInboxDocumentFromTheSearchSelectsTheNextSearchResult() async throws {
+        try await Self.seedInbox()
+        @Dependency(\.defaultDatabase) var database
+        try await database.write { db in
+            try db.seed {
+                DocumentIndexState(documentID: -21, sourceSize: 1, sourceModificationDate: nil, indexedAt: Date(timeIntervalSince1970: 0), outcome: .noText, characterCount: 0, extractorVersion: DocumentIndexState.currentExtractorVersion)
+                DocumentIndexState(documentID: -22, sourceSize: 1, sourceModificationDate: nil, indexedAt: Date(timeIntervalSince1970: 0), outcome: .noText, characterCount: 0, extractorVersion: DocumentIndexState.currentExtractorVersion)
+            }
+        }
+        var state = AppFeature.State()
+        try await state.archiveList.$rows.load(Document.list(tokens: [.withoutText]))
+        let rows = state.archiveList.rows.map(\.document)
+        try #require(rows.count == 2)
+        state.archiveList.documentDetails = .init(document: rows[0])
+
+        let store = TestStore(initialState: state) {
+            AppFeature()
+        } withDependencies: {
+            $0.archiveStore.deleteDocumentAt = { _ in }
+        }
+        store.exhaustivity = .off(showSkippedAssertions: false)
+
+        await store.send(.archiveList(.documentDetails(.presented(.delegate(.deleteDocument(rows[0]))))))
+        await store.finish()
+
+        #expect(store.state.archiveList.documentDetails?.document.id == rows[1].id)
+        #expect(store.state.archiveList.selectedDocumentId == rows[1].id)
+        #expect(store.state.untaggedDocumentList.documentDetails == nil)
+    }
+
+    @Test
+    func deletingASearchResultSelectsTheOneBelowItOrAboveItWhenItWasTheLast() async throws {
+        try await Self.seedArchive()
+        var state = AppFeature.State()
+        try await state.archiveList.$rows.load()
+        let rows = state.archiveList.rows.map(\.document)
+        try #require(rows.count == 3)
+        state.archiveList.documentDetails = .init(document: rows[1])
+
+        let store = TestStore(initialState: state) {
+            AppFeature()
+        } withDependencies: {
+            $0.archiveStore.deleteDocumentAt = { _ in }
+        }
+        store.exhaustivity = .off(showSkippedAssertions: false)
+
+        await store.send(.archiveList(.documentDetails(.presented(.delegate(.deleteDocument(rows[1]))))))
+        #expect(store.state.archiveList.documentDetails?.document.id == rows[2].id)
+
+        await store.send(.archiveList(.documentDetails(.presented(.delegate(.deleteDocument(rows[2]))))))
+        #expect(store.state.archiveList.documentDetails?.document.id == rows[1].id)
+        await store.finish()
     }
 
     // MARK: - Helpers

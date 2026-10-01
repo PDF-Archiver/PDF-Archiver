@@ -39,8 +39,10 @@ extension URL: Log {
     /// | same, after `normalized()` (no-op) | no |
     func normalized() -> URL {
         let standardized = standardizedFileURL
-        guard standardized.path().hasPrefix("/private/") else { return standardized }
-        let trimmedPath = String(standardized.path().dropFirst("/private".count))
+        // Decoded: `fileURLWithPath` encodes again, turning `Mobile%20Documents` into `Mobile%2520Documents`.
+        let path = standardized.path(percentEncoded: false)
+        guard path.hasPrefix("/private/") else { return standardized }
+        let trimmedPath = String(path.dropFirst("/private".count))
         return URL(fileURLWithPath: trimmedPath, isDirectory: standardized.hasDirectoryPath)
     }
 
@@ -73,9 +75,10 @@ extension URL: Log {
 
     /// Whether this URL falls under `base`, comparing the normalized spelling of both sides - the
     /// same file must match regardless of which of the two ever carried a stray `/private` prefix.
-    /// Compared with a trailing separator so a sibling folder `Archive2` is never treated as a
-    /// child of `Archive`.
+    /// Compared by path components, so a directory URL's trailing `/` does not matter and a sibling
+    /// folder `Archive2` is never treated as a child of `Archive`.
     func isUnder(_ base: URL) -> Bool {
-        (normalized().path() + "/").hasPrefix(base.normalized().path() + "/")
+        let baseComponents = base.normalized().pathComponents
+        return normalized().pathComponents.starts(with: baseComponents)
     }
 }

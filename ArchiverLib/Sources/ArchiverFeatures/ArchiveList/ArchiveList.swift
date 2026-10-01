@@ -43,7 +43,7 @@ struct ArchiveList {
         case searchTokensReplaced([State.SearchToken])
     }
 
-    @Dependency(\.mainQueue) var mainQueue
+    @Dependency(\.continuousClock) var clock
 
     private enum CancelID {
         case search
@@ -123,6 +123,7 @@ struct ArchiveList {
                                        includesContent: premiumStatus == .active)
 
         return .run { [rows = state.$rows] _ in
+            try await clock.sleep(for: .milliseconds(150))
             guard query.hasFreeText else {
                 _ = await withErrorReporting {
                     try await rows.load(Document.list(tokens: query.tokens))
@@ -140,7 +141,7 @@ struct ArchiveList {
                 }
             }
         }
-        .debounce(id: CancelID.search, for: .milliseconds(150), scheduler: mainQueue)
+        .cancellable(id: CancelID.search, cancelInFlight: true)
     }
 }
 

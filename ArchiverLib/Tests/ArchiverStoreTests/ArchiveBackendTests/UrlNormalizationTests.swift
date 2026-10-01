@@ -69,4 +69,16 @@ struct UrlNormalizationTests {
         let sibling = URL(filePath: "/var/mobile/Containers/Data/Application/ABC/DocumentsOld/document.pdf")
         #expect(!sibling.isUnder(base))
     }
+
+    /// The iOS ubiquity container sits under `/private/var/mobile/Library/Mobile Documents/`, while
+    /// `NSMetadataQuery` reports its files under `/var/…` - the space must survive the trim.
+    @Test
+    func isUnderMatchesAPrivateBaseWhosePathContainsASpace() throws {
+        let base = URL(filePath: "/private/var/mobile/Library/Mobile Documents/iCloud~de~X/Documents/", directoryHint: .isDirectory)
+        let child = URL(filePath: "/var/mobile/Library/Mobile Documents/iCloud~de~X/Documents/2024/document.pdf")
+
+        #expect(base.normalized().path(percentEncoded: false) == "/var/mobile/Library/Mobile Documents/iCloud~de~X/Documents/")
+        #expect(child.isUnder(base.normalized()))
+        #expect(child.isUnder(base))
+    }
 }

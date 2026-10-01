@@ -32,11 +32,11 @@ struct StatsProvider: AppIntentTimelineProvider {
         return StatsEntry(date: Date(), yearStats: yearStats)
     }
 
-    func timeline(for configuration: ConfigurationAppIntent, in context: Context) async -> Timeline<StatsEntry> {
+    func timeline(for configuration: ConfigurationAppIntent, in context: Context) -> Timeline<StatsEntry> {
         var entries: [StatsEntry] = []
 
         // we can only calculate the current state of the archive
-        let entry = await snapshot(for: configuration, in: context)
+        let entry = snapshot(for: configuration, in: context)
         entries.append(entry)
 
         return Timeline(entries: entries, policy: .after(Date().advanced(by: 60 * 60 * 24)))    // 24h

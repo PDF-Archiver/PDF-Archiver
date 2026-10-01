@@ -32,11 +32,12 @@ struct ArchiveListTests {
         let store = TestStore(initialState: ArchiveList.State()) {
             ArchiveList()
         } withDependencies: {
-            $0.mainQueue = .immediate
+            $0.continuousClock = ImmediateClock()
         }
         store.exhaustivity = .off(showSkippedAssertions: false)
 
         await store.send(.binding(.set(\.searchTokens, [.tag("tag1")])))
+        await store.finish()
 
         #expect(store.state.searchTokens == [.tag("tag1")])
         #expect(store.state.rows.map(\.id) == [-1])
@@ -47,11 +48,12 @@ struct ArchiveListTests {
         let store = TestStore(initialState: ArchiveList.State()) {
             ArchiveList()
         } withDependencies: {
-            $0.mainQueue = .immediate
+            $0.continuousClock = ImmediateClock()
         }
         store.exhaustivity = .off(showSkippedAssertions: false)
 
         await store.send(.binding(.set(\.searchTokens, [.year(1970)])))
+        await store.finish()
 
         #expect(store.state.rows.count == 3)
     }
@@ -61,11 +63,12 @@ struct ArchiveListTests {
         let store = TestStore(initialState: ArchiveList.State()) {
             ArchiveList()
         } withDependencies: {
-            $0.mainQueue = .immediate
+            $0.continuousClock = ImmediateClock()
         }
         store.exhaustivity = .off(showSkippedAssertions: false)
 
         await store.send(.searchTokensReplaced([.withoutText]))
+        await store.finish()
 
         #expect(store.state.isSearchPresented)
     }
@@ -75,11 +78,12 @@ struct ArchiveListTests {
         let store = TestStore(initialState: ArchiveList.State()) {
             ArchiveList()
         } withDependencies: {
-            $0.mainQueue = .immediate
+            $0.continuousClock = ImmediateClock()
         }
         store.exhaustivity = .off(showSkippedAssertions: false)
 
         await store.send(.binding(.set(\.searchText, "invoice ")))
+        await store.finish()
 
         #expect(store.state.searchTokens == [.text("invoice")])
         #expect(store.state.searchText.isEmpty)
@@ -90,11 +94,12 @@ struct ArchiveListTests {
         let store = TestStore(initialState: ArchiveList.State()) {
             ArchiveList()
         } withDependencies: {
-            $0.mainQueue = .immediate
+            $0.continuousClock = ImmediateClock()
         }
         store.exhaustivity = .off(showSkippedAssertions: false)
 
         await store.send(.binding(.set(\.searchText, "invoice")))
+        await store.finish()
 
         #expect(store.state.rows.map(\.id) == [-1])
     }
@@ -104,6 +109,7 @@ struct ArchiveListTests {
         let store = Self.searchStore()
 
         await store.send(.binding(.set(\.searchTokens, [.tag("tag2"), .year(1970)])))
+        await store.finish()
 
         #expect(Set(store.state.rows.map(\.id)) == [-2, -3])
     }
@@ -113,6 +119,7 @@ struct ArchiveListTests {
         let store = Self.searchStore()
 
         await store.send(.binding(.set(\.searchText, "")))
+        await store.finish()
 
         #expect(store.state.rows.count == 3)
     }
@@ -122,9 +129,11 @@ struct ArchiveListTests {
         let store = Self.searchStore()
 
         await store.send(.binding(.set(\.searchText, "INVOICE")))
+        await store.finish()
         #expect(store.state.rows.map(\.id) == [-1])
 
         await store.send(.binding(.set(\.searchText, "InVoIcE")))
+        await store.finish()
         #expect(store.state.rows.map(\.id) == [-1])
     }
 
@@ -133,6 +142,7 @@ struct ArchiveListTests {
         let store = Self.searchStore()
 
         await store.send(.binding(.set(\.searchTokens, [.text("IMPORTANT")])))
+        await store.finish()
 
         #expect(store.state.rows.map(\.id) == [-1])
     }
@@ -142,9 +152,11 @@ struct ArchiveListTests {
         let store = Self.searchStore()
 
         await store.send(.binding(.set(\.searchText, "büro")))
+        await store.finish()
         #expect(store.state.rows.map(\.id) == [-3])
 
         await store.send(.binding(.set(\.searchText, "BÜRO")))
+        await store.finish()
         #expect(store.state.rows.map(\.id) == [-3])
     }
 
@@ -153,6 +165,7 @@ struct ArchiveListTests {
         let store = Self.searchStore()
 
         await store.send(.binding(.set(\.searchText, "port")))
+        await store.finish()
 
         #expect(store.state.rows.map(\.id) == [-1])
     }
@@ -163,6 +176,7 @@ struct ArchiveListTests {
 
         // A trailing space would turn the text into a token, so this stays free text.
         await store.send(.binding(.set(\.searchText, "important invoice")))
+        await store.finish()
 
         #expect(store.state.rows.map(\.id) == [-1])
     }
@@ -174,7 +188,7 @@ struct ArchiveListTests {
         let store = TestStore(initialState: ArchiveList.State()) {
             ArchiveList()
         } withDependencies: {
-            $0.mainQueue = .immediate
+            $0.continuousClock = ImmediateClock()
         }
         try await store.state.$rows.load()
 
@@ -189,7 +203,7 @@ struct ArchiveListTests {
         let store = TestStore(initialState: ArchiveList.State()) {
             ArchiveList()
         } withDependencies: {
-            $0.mainQueue = .immediate
+            $0.continuousClock = ImmediateClock()
         }
         try await store.state.$rows.load()
         await store.send(.selectionChanged(-1)) {
@@ -227,10 +241,12 @@ struct ArchiveListTests {
 
         let store = Self.searchStore()
         await store.send(.binding(.set(\.searchText, "quittung"))).finish()
+        await store.finish()
         #expect(store.state.rows.isEmpty)
 
         // Nothing is retyped: only the status the bridge delivered changes.
         await store.send(.premiumStatusChanged(.active)).finish()
+        await store.finish()
 
         #expect(store.state.rows.map(\.id) == [-2])
     }
@@ -241,7 +257,7 @@ struct ArchiveListTests {
         let store = TestStore(initialState: ArchiveList.State()) {
             ArchiveList()
         } withDependencies: {
-            $0.mainQueue = .immediate
+            $0.continuousClock = ImmediateClock()
         }
         store.exhaustivity = .off(showSkippedAssertions: false)
         return store
@@ -254,7 +270,7 @@ struct ArchiveListTests {
         let store = TestStore(initialState: ArchiveList.State()) {
             ArchiveList()
         } withDependencies: {
-            $0.mainQueue = .immediate
+            $0.continuousClock = ImmediateClock()
         }
 
         await store.send(.searchStateChanged(true)) {
