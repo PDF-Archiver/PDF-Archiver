@@ -62,7 +62,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-async-algorithms</string>
 			<key>Title</key>
-			<string>swift-async-algorithms (1.1.6)</string>
+			<string>swift-async-algorithms (1.1.7)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -86,7 +86,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-collections</string>
 			<key>Title</key>
-			<string>swift-collections (1.7.0)</string>
+			<string>swift-collections (1.7.1)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -127,6 +127,14 @@
 			<string>com.mono0926.LicensePlist/swift-identified-collections</string>
 			<key>Title</key>
 			<string>swift-identified-collections (1.1.1)</string>
+			<key>Type</key>
+			<string>PSChildPaneSpecifier</string>
+		</dict>
+		<dict>
+			<key>File</key>
+			<string>com.mono0926.LicensePlist/swift-log</string>
+			<key>Title</key>
+			<string>swift-log (1.15.1)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
