@@ -418,8 +418,8 @@ struct AppFeatureTests {
             }
         }
         var state = AppFeature.State()
-        try await state.archiveList.$rows.load(Document.list(tokens: [.withoutText]))
-        let rows = state.archiveList.rows.map(\.document)
+        try await state.archiveList.$rows.load(.distinctFetch(FetchAllRequest(Document.list(tokens: [.withoutText]))))
+        let rows = try await Self.documents(of: state.archiveList.rows)
         try #require(rows.count == 2)
         state.archiveList.documentDetails = .init(document: rows[0])
 
@@ -442,8 +442,8 @@ struct AppFeatureTests {
     func deletingASearchResultSelectsTheOneBelowItOrAboveItWhenItWasTheLast() async throws {
         try await Self.seedArchive()
         var state = AppFeature.State()
-        try await state.archiveList.$rows.load()
-        let rows = state.archiveList.rows.map(\.document)
+        try await state.archiveList.$rows.load(.distinctFetch(FetchAllRequest(Document.list(tokens: []))))
+        let rows = try await Self.documents(of: state.archiveList.rows)
         try #require(rows.count == 3)
         state.archiveList.documentDetails = .init(document: rows[1])
 
@@ -463,6 +463,13 @@ struct AppFeatureTests {
     }
 
     // MARK: - Helpers
+
+    private static func documents(of rows: [ArchiveSearchRow]) async throws -> [Document] {
+        @Dependency(\.defaultDatabase) var database
+        return try await database.read { db in
+            try rows.compactMap { try Document.find($0.id).fetchOne(db) }
+        }
+    }
 
     private static func seedArchive() async throws {
         @Dependency(\.defaultDatabase) var database
