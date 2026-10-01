@@ -14,6 +14,9 @@ struct StatCard<Value: View>: View {
     let color: Color
     @ViewBuilder let value: () -> Value
 
+    // The symbols differ in height; a shared row height keeps the values of all cards aligned.
+    @ScaledMetric(relativeTo: .title2) private var iconHeight = 28.0
+
     init(
         title: String,
         systemImage: String,
@@ -42,6 +45,7 @@ struct StatCard<Value: View>: View {
                     .font(.title2)
                 Spacer()
             }
+            .frame(height: iconHeight)
 
             value()
                 .font(valueFont)
@@ -53,12 +57,19 @@ struct StatCard<Value: View>: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(Color.paSecondaryBackgroundAsset)
-        )
+        .frame(maxHeight: .infinity, alignment: .top)
+        .statisticsCard()
+    }
+}
+
+extension View {
+    func statisticsCard() -> some View {
+        padding()
+            .frame(maxWidth: .infinity, alignment: .topLeading)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color.paSecondaryBackgroundAsset)
+            )
     }
 }
 

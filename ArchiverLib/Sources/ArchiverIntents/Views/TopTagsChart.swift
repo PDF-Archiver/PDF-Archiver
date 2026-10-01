@@ -11,12 +11,6 @@ import Shared
 import SwiftUI
 
 public struct TopTagsChart: View {
-    struct TagData: Identifiable {
-        let id = UUID()
-        let tag: String
-        let count: Int
-    }
-
     let tags: [TagCount]
 
     public init(tags: [TagCount]) {
@@ -24,52 +18,38 @@ public struct TopTagsChart: View {
     }
 
     public var body: some View {
-        let tagData = tags.prefix(5).map { TagData(tag: $0.tag, count: $0.count) }
-        let maxCount = tagData.map(\.count).max() ?? 1
-
         VStack(alignment: .leading, spacing: 12) {
-            HStack(alignment: .top) {
-                Text("Most Used Tags", bundle: #bundle)
-                    .minimumScaleFactor(0.8)
-                    .foregroundStyle(.primary)
+            Text("Most Used Tags", bundle: #bundle)
+                .foregroundStyle(.primary)
 
-                Spacer()
-            }
-
-            if tagData.isEmpty {
+            if tags.isEmpty {
                 ContentUnavailableView(
                     String(localized: "No Tags", bundle: #bundle),
                     systemImage: "tag",
                     description: Text("Tag your documents to see the most used tags", bundle: #bundle)
                 )
             } else {
-                Chart(tagData) { item in
+                Chart(tags, id: \.tag) { item in
                     BarMark(
                         x: .value("Amount", item.count),
                         y: .value("Tag", item.tag)
                     )
-                    .annotation(position: .trailing, spacing: 8) {
-                        Text("\(item.count)")
+                    .foregroundStyle(Color.paRedAsset)
+                    .annotation(position: .trailing, spacing: 6) {
+                        Text(item.count, format: .number)
                             .font(.caption)
-                            .foregroundStyle(.primary)
+                            .monospacedDigit()
+                            .foregroundStyle(.secondary)
                     }
-                    .foregroundStyle(
-                        Color.paRedAsset.opacity(0.3 + (Double(item.count) / Double(maxCount) * 0.7))
-                    )
                 }
-                .frame(height: CGFloat(tagData.count * 32))
                 .chartXAxis(.hidden)
                 .chartYAxis {
-                    AxisMarks { value in
-                        AxisValueLabel {
-                            if let tag = value.as(String.self) {
-                                Text(tag)
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
+                    // `.extended` keeps the names left of the bars; the default puts long ones above.
+                    AxisMarks(preset: .extended, position: .leading) {
+                        AxisValueLabel()
                     }
                 }
+                .frame(height: CGFloat(tags.count) * 24)
             }
         }
     }
@@ -78,8 +58,11 @@ public struct TopTagsChart: View {
 #Preview {
     VStack(spacing: 24) {
         TopTagsChart(tags: [
-            TagCount(tag: "rechnung", count: 45),
-            TagCount(tag: "versicherung", count: 32),
+            TagCount(tag: "rechnung", count: 1228),
+            TagCount(tag: "vanessa", count: 375),
+            TagCount(tag: "versicherung", count: 355),
+            TagCount(tag: "gemeinsames", count: 249),
+            TagCount(tag: "haus", count: 247),
             TagCount(tag: "vertrag", count: 28),
             TagCount(tag: "steuer", count: 21),
             TagCount(tag: "gehalt", count: 15)
