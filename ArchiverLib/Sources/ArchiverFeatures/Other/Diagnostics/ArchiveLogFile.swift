@@ -1,4 +1,3 @@
-// TODO: Remove this file with the diagnostic logs (#339).
 import ArchiverModels
 import ArchiverStore
 import Combine
@@ -6,6 +5,7 @@ import ComposableArchitecture
 import Foundation
 import Logging
 import Shared
+import StoreKit
 import Synchronization
 #if os(iOS)
 import UIKit
@@ -170,26 +170,6 @@ final class ArchiveLogFile: Sendable, Log {
         }
     }
 
-    func disable() {
-        let failure = state.withLock { state -> (any Error)? in
-            state.isEnabled = false
-            state.resolution?.cancel()
-            state.resolution = nil
-            state.directory = nil
-            state.bufferedLines.removeAll()
-            defer { state.handle = nil }
-            do {
-                try state.handle?.close()
-                return nil
-            } catch {
-                return error
-            }
-        }
-        if let failure {
-            Self.log.error("Could not close the diagnostic log", metadata: ["error": "\(LogRedact.describe(failure))"])
-        }
-    }
-
     static func deviceFolderName(name: String, model: String) -> String {
         "\(name) (\(model))"
             .replacingOccurrences(of: "/", with: "-")
@@ -269,6 +249,9 @@ final class ArchiveLogFile: Sendable, Log {
         while !Task.isCancelled {
             do {
                 let directory = try await resolveDirectory()
+                // Every launch adds a file and the folder syncs with the archive, so it must not
+                // only ever grow; a support report reads no more than the newest megabyte anyway.
+                Self.removeFiles(modifiedBefore: .now.addingTimeInterval(-2 * 24 * 60 * 60), in: directory)
                 try state.withLock { state in
                     guard state.isEnabled, !Task.isCancelled else { return }
                     state.directory = directory
@@ -293,6 +276,25 @@ final class ArchiveLogFile: Sendable, Log {
         }
     }
 
+    static func removeFiles(modifiedBefore cutoff: Date, in directory: URL) {
+        let fileURLs: [URL]
+        do {
+            fileURLs = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: [.contentModificationDateKey])
+        } catch {
+            log.error("Could not list the diagnostic logs", metadata: ["error": "\(LogRedact.describe(error))"])
+            return
+        }
+        for url in fileURLs where url.pathExtension == "jsonl" {
+            do {
+                guard let modified = try url.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate,
+                      modified < cutoff else { continue }
+                try FileManager.default.removeItem(at: url)
+            } catch {
+                log.error("Could not remove an old diagnostic log", metadata: ["error": "\(LogRedact.describe(error))"])
+            }
+        }
+    }
+
     /// `<archive>/logs/<device>/`, next to `untagged`.
     private static func archiveLogsDirectory() async throws -> URL {
         let archive = try await ArchiveStore.shared.getUntaggedUrl().deletingLastPathComponent()
@@ -304,22 +306,33 @@ final class ArchiveLogFile: Sendable, Log {
     }
 }
 
-// MARK: - Setting
+// MARK: - Build
 
 extension ArchiveLogFile {
-    /// Follows `diagnosticLogsEnabled` for the life of the process.
+    /// Starts writing for the rest of the process, unless the app came from the App Store: Debug and
+    /// TestFlight builds always write, so every TestFlight diagnostics report carries the logs.
     @MainActor
-    func observeSetting() async {
-        @Shared(.diagnosticLogsEnabled) var diagnosticLogsEnabled
-        for await isEnabled in $diagnosticLogsEnabled.publisher.removeDuplicates().values {
-            if isEnabled {
-                enable(header: Self.sessionHeader(session: session))
-                DiagnosticSignals.start()
-            } else {
-                disable()
-                DiagnosticSignals.stop()
+    func startUnlessAppStoreBuild() async {
+        #if !DEBUG
+        let environment: AppStore.Environment
+        do {
+            switch try await AppTransaction.shared {
+            case .verified(let transaction), .unverified(let transaction, _):
+                environment = transaction.environment
             }
+        } catch {
+            // Writing nothing is the safe side: an App Store user never asked for these files.
+            Self.log.error("Could not read the app transaction", metadata: ["error": "\(LogRedact.describe(error))"])
+            return
         }
+        guard Self.isWritten(in: environment) else { return }
+        #endif
+        enable(header: Self.sessionHeader(session: session))
+        DiagnosticSignals.start()
+    }
+
+    static func isWritten(in environment: AppStore.Environment) -> Bool {
+        environment != .production
     }
 
     /// The first line of every file: which build and hardware wrote it, and whether the process

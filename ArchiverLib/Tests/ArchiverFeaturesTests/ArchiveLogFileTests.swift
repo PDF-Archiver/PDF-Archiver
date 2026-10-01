@@ -5,6 +5,7 @@
 
 import Foundation
 import Logging
+import StoreKit
 import Testing
 
 @testable import ArchiverFeatures
@@ -17,6 +18,11 @@ struct ArchiveLogFileTests {
     init() throws {
         directory = URL.temporaryDirectory.appendingPathComponent("ArchiveLogFileTests-\(UUID().uuidString)", isDirectory: true)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+    }
+
+    @Test(arguments: [(AppStore.Environment.production, false), (.sandbox, true), (.xcode, true)])
+    func onlyAnAppStoreInstallationWritesNoLogs(environment: AppStore.Environment, isWritten: Bool) {
+        #expect(ArchiveLogFile.isWritten(in: environment) == isWritten)
     }
 
     @Test
@@ -86,16 +92,20 @@ struct ArchiveLogFileTests {
     }
 
     @Test
-    func aDisabledFileWritesNothing() async throws {
-        let file = ArchiveLogFile { [directory] in directory }
-        await file.enable(header: Self.header)?.value
-        let logger = Self.logger(writingTo: file)
+    func removesOnlyLogFilesOlderThanTheCutoff() throws {
+        let cutoff = Date(timeIntervalSince1970: 1_000_000)
+        let old = directory.appendingPathComponent("old.jsonl")
+        let recent = directory.appendingPathComponent("recent.jsonl")
+        let unrelated = directory.appendingPathComponent("old.txt")
+        for (url, date) in [(old, cutoff.addingTimeInterval(-1)), (recent, cutoff), (unrelated, cutoff.addingTimeInterval(-1))] {
+            try Data().write(to: url)
+            try FileManager.default.setAttributes([.modificationDate: date], ofItemAtPath: url.path)
+        }
 
-        logger.info("kept")
-        file.disable()
-        logger.info("dropped")
+        ArchiveLogFile.removeFiles(modifiedBefore: cutoff, in: directory)
 
-        #expect(try Self.messages(in: directory) == ["kept"])
+        let remaining = try FileManager.default.contentsOfDirectory(atPath: directory.path).sorted()
+        #expect(remaining == ["old.txt", "recent.jsonl"])
     }
 
     // MARK: - Helpers

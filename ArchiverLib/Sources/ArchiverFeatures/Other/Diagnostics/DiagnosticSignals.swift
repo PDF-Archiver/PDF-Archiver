@@ -1,4 +1,3 @@
-// TODO: Remove this file with the diagnostic logs (#339).
 import ArchiverDatabase
 import ArchiverModels
 import ComposableArchitecture
@@ -17,15 +16,11 @@ import AppKit
 enum DiagnosticSignals: Log {
     private static var heartbeat: Task<Void, Never>?
     private static var observers: [any NSObjectProtocol] = []
-    #if os(iOS)
-    private static var wasMonitoringBattery = false
-    #endif
 
     static func start() {
         guard heartbeat == nil else { return }
         IssueReporters.current.append(LoggingIssueReporter())
         #if os(iOS)
-        wasMonitoringBattery = UIDevice.current.isBatteryMonitoringEnabled
         UIDevice.current.isBatteryMonitoringEnabled = true
         #endif
         observers = lifecycleEvents.map { name, event in
@@ -38,20 +33,6 @@ enum DiagnosticSignals: Log {
         heartbeat = Task {
             await beat()
         }
-    }
-
-    static func stop() {
-        guard heartbeat != nil else { return }
-        heartbeat?.cancel()
-        heartbeat = nil
-        for observer in observers {
-            NotificationCenter.default.removeObserver(observer)
-        }
-        observers.removeAll()
-        IssueReporters.current.removeAll { $0 is LoggingIssueReporter }
-        #if os(iOS)
-        UIDevice.current.isBatteryMonitoringEnabled = wasMonitoringBattery
-        #endif
     }
 
     static func applicationState() -> String {
