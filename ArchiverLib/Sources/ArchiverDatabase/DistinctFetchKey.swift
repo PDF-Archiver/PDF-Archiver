@@ -86,7 +86,11 @@ public struct DistinctFetchKey<Value: Equatable & Sendable>: SharedReaderKey {
         let cancellable = observation.start(in: database, scheduling: ImmediateScheduler()) { error in
             subscriber.yield(throwing: error)
         } onChange: { result in
-            guard !skipsNext.withLock({ defer { $0 = false }; return $0 }) else { return }
+            let skip = skipsNext.withLock { value in
+                defer { value = false }
+                return value
+            }
+            guard !skip else { return }
             subscriber.yield(with: result.map(Optional.some))
         }
         return SharedSubscription {
