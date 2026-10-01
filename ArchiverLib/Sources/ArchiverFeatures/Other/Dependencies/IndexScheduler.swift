@@ -269,28 +269,32 @@ private func waitForInitialDocumentLoad() async -> Bool {
 /// needed it on this device, and untagged keeps its copy since the inbox prefetch would only fetch
 /// it right back. Same switch that mass-downloads the archive (`downloadAllForSearch`) gives it up
 /// again; a document the user opened themselves while it is on can also be evicted, and simply
-/// re-downloads on next open.
+/// re-downloads on next open. Whether a file lives in iCloud at all is `evictDocumentAt`'s call.
 func evictLocalCopies(of documents: [Document]) async {
     @Dependency(\.archiveStore) var archiveStore
-    @SharedReader(.archivePathType) var archivePathType: StorageType?
     @Shared(.downloadAllForSearch) var downloadAllForSearch: Bool
 
-    guard downloadAllForSearch, archivePathType == .iCloudDrive else { return }
+    guard downloadAllForSearch else { return }
 
-    // TODO: Remove `evictedCount` and the `Evicted local copies` line with the diagnostic logs (#339).
     var evictedCount = 0
+    var failedCount = 0
     for document in documents where document.isTagged && document.downloadStatus == 1 {
         let evicted: Void? = await withErrorReporting {
             try await archiveStore.evictDocumentAt(document.url)
         }
         if evicted != nil {
             evictedCount += 1
+        } else {
+            failedCount += 1
         }
     }
-    Logger.app.debug("[textindex] Evicted local copies", metadata: ["evictedCount": "\(evictedCount)"])
+    Logger.app.debug("[textindex] Evicted local copies", metadata: [
+        "documentCount": "\(documents.count)",
+        "evictedCount": "\(evictedCount)",
+        "failedCount": "\(failedCount)"
+    ])
 }
 
-// TODO: Remove with the diagnostic logs (#339): call the operations directly and drop `runningPhases`.
 /// Runs one step of a background run between `started` and `finished` lines, and marks it as
 /// running for the expiration handler, which reports what the run was doing when time ran out.
 @discardableResult

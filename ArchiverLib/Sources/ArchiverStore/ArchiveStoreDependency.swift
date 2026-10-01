@@ -48,9 +48,11 @@ extension ArchiveStoreDependency: DependencyKey {
             Logger.archiveStore.notice("Requesting iCloud download", metadata: ["document": "\(LogRedact.token(url))"])
             try FileManager.default.startDownloadingUbiquitousItem(at: url)
         },
-        // Bypasses ArchiveStore/FolderProviderActor on purpose, mirroring `startDownloadOf`: every
-        // caller already verified StorageType == .iCloudDrive and downloadStatus == 1.
+        // Bypasses ArchiveStore/FolderProviderActor on purpose, mirroring `startDownloadOf`.
         evictDocumentAt: { url in
+            // Asks the file, not the storage type: a stored `nil` means the default iCloud archive,
+            // and a custom folder may lie inside iCloud Drive.
+            guard try url.resourceValues(forKeys: [.isUbiquitousItemKey]).isUbiquitousItem == true else { return }
             Logger.archiveStore.notice("Evicting local copy", metadata: ["document": "\(LogRedact.token(url))"])
             try FileManager.default.evictUbiquitousItem(at: url)
         },
