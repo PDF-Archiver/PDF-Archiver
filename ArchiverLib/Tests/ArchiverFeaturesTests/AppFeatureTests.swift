@@ -39,6 +39,24 @@ struct AppFeatureTests {
     }
 
     @Test
+    func anOpenDocumentOnlyCountsOnTheTabThatShowsIt() {
+        var state = AppFeature.State()
+        #expect(!state.isShowingDocument)
+
+        state.archiveList.documentDetails = DocumentDetails.State(document: .mock())
+        #expect(state.isShowingDocument)
+        state.selectedTab = .sectionTags("invoice")
+        #expect(state.isShowingDocument)
+        state.selectedTab = .inbox
+        #expect(!state.isShowingDocument)
+
+        state.untaggedDocumentList.documentDetails = DocumentDetails.State(document: .mock())
+        #expect(state.isShowingDocument)
+        state.selectedTab = .statistics
+        #expect(!state.isShowingDocument)
+    }
+
+    @Test
     func showingDocumentsFromTheSearchIndexSettingsOpensTheSearchWithTheToken() async throws {
         var state = AppFeature.State(archiveList: ArchiveList.State(selectedDocumentId: Shared(value: 42)))
         state.selectedTab = .inbox

@@ -40,6 +40,18 @@ struct AppFeature {
         var showScanButton: Bool {
             selectedTab == .search && archiveList.documentDetails == nil && !archiveList.isSearching
         }
+        var isShowingDocument: Bool {
+            switch selectedTab {
+            case .search, .sectionTags, .sectionYears:
+                return archiveList.documentDetails != nil
+
+            case .inbox:
+                return untaggedDocumentList.documentDetails != nil
+
+            default:
+                return false
+            }
+        }
 
         var archiveList = ArchiveList.State()
         var untaggedDocumentList = UntaggedDocumentList.State()
@@ -410,13 +422,11 @@ struct AppView: View {
             if #available(macOS 26, *) {
                 Tab(value: AppFeature.State.Tab.search, role: .search) {
                     archiveList
-                        .modifier(ScanButtonModifier(showButton: store.showScanButton, currentTip: store.tutorialShown ? tips.currentTip : nil))
                 }
             } else {
                 // old fallback solution
                 Tab(String(localized: "Archive", bundle: #bundle), systemImage: "magnifyingglass", value: AppFeature.State.Tab.search) {
                     archiveList
-                        .modifier(ScanButtonModifier(showButton: store.showScanButton, currentTip: store.tutorialShown ? tips.currentTip : nil))
                 }
             }
             #endif
@@ -457,6 +467,12 @@ struct AppView: View {
             .hidden(horizontalSizeClass == .compact)
         }
         .tabViewStyle(.sidebarAdaptable)
+        #if os(macOS)
+        // Window-wide on the Mac, so a drop lands on any tab and the import sits in the toolbar.
+        .modifier(ScanButtonModifier(showButton: store.showScanButton,
+                                     currentTip: store.tutorialShown ? tips.currentTip : nil,
+                                     isShowingDocument: store.isShowingDocument))
+        #endif
         .task {
             await store.send(.onLongBackgroundTask).finish()
         }

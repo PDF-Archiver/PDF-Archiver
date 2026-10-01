@@ -20,7 +20,7 @@ public struct ScanShareTip: Tip {
 
     public var message: Text? {
             #if os(macOS)
-            Text("**Drag and drop** a PDF document to this area to import it.\n\nOr **click** here to open the file browser.", bundle: #bundle)
+            Text("**Drag and drop** a PDF document onto the window to import it.\n\nOr **click** here to open the file browser.", bundle: #bundle)
             #else
             Text("**Tap** short to start scanning a document.\n\n**Hold and slide up** to scan and share the document after processing.", bundle: #bundle)
             #endif
