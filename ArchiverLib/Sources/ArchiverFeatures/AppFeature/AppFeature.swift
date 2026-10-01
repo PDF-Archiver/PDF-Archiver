@@ -29,8 +29,8 @@ struct AppFeature {
             case sectionTags(String)
             case sectionYears(Int)
         }
-        @Fetch(AppProjectionRequest()) var projection = AppProjection()
-        @FetchAll(Document.inbox) var inbox: [Document]
+        @SharedReader(.distinctFetch(AppProjectionRequest())) var projection = AppProjection()
+        @SharedReader(.distinctFetch(FetchAllRequest(Document.inbox.select { $0 }))) var inbox: [Document]
         @Shared(.tutorialShown) var tutorialShown: Bool
         @Shared(.premiumStatus) var premiumStatus: PremiumStatus = .loading
 
@@ -39,6 +39,18 @@ struct AppFeature {
         var selectedTab = Tab.search
         var showScanButton: Bool {
             selectedTab == .search && archiveList.documentDetails == nil && !archiveList.isSearching
+        }
+        var isShowingDocument: Bool {
+            switch selectedTab {
+            case .search, .sectionTags, .sectionYears:
+                return archiveList.documentDetails != nil
+
+            case .inbox:
+                return untaggedDocumentList.documentDetails != nil
+
+            default:
+                return false
+            }
         }
 
         var archiveList = ArchiveList.State()
@@ -98,7 +110,11 @@ struct AppFeature {
             // No optimistic removal: the row leaves the list when the provider event arrives.
             case .archiveList(.documentDetails(.presented(.delegate(.deleteDocument(let document))))):
                 // Decided by the list, not `isTagged`: the index-status searches list inbox documents too.
-                let nextDocument = Self.neighbor(of: document.id, in: state.archiveList.rows)?.document
+                let nextDocument = Self.neighbor(of: document.id, in: state.archiveList.rows)
+                    .flatMap { row in
+                        withErrorReporting { try database.read { try Document.find(row.id).fetchOne($0) } }
+                    }
+                    .flatMap(\.self)
                 state.archiveList.documentDetails = nextDocument.map { .init(document: $0) }
                 state.archiveList.$selectedDocumentId.withLock { $0 = nextDocument?.id }
                 return delete(document)
@@ -227,8 +243,8 @@ struct AppFeature {
                     projection.topTags.prefix(3).map { ArchiveList.State.SearchToken.tag($0) },
                     projection.taggedYears.prefix(3).map { ArchiveList.State.SearchToken.year($0) }
                 ].flatMap(\.self)
-                // The projection republishes on every write, while the top three tags and years
-                // almost never move. Assigning anyway would invalidate the suggestions list under
+                // The projection republishes whenever a count moves, while the top three tags and
+                // years almost never do. Assigning anyway would invalidate the suggestions list under
                 // the open suggestions window, which is where AppKit loses its first responder.
                 if state.archiveList.searchSuggestedTokens != suggestedTokens {
                     state.archiveList.searchSuggestedTokens = suggestedTokens
@@ -406,13 +422,11 @@ struct AppView: View {
             if #available(macOS 26, *) {
                 Tab(value: AppFeature.State.Tab.search, role: .search) {
                     archiveList
-                        .modifier(ScanButtonModifier(showButton: store.showScanButton, currentTip: store.tutorialShown ? tips.currentTip : nil))
                 }
             } else {
                 // old fallback solution
                 Tab(String(localized: "Archive", bundle: #bundle), systemImage: "magnifyingglass", value: AppFeature.State.Tab.search) {
                     archiveList
-                        .modifier(ScanButtonModifier(showButton: store.showScanButton, currentTip: store.tutorialShown ? tips.currentTip : nil))
                 }
             }
             #endif
@@ -453,6 +467,12 @@ struct AppView: View {
             .hidden(horizontalSizeClass == .compact)
         }
         .tabViewStyle(.sidebarAdaptable)
+        #if os(macOS)
+        // Window-wide on the Mac, so a drop lands on any tab and the import sits in the toolbar.
+        .modifier(ScanButtonModifier(showButton: store.showScanButton,
+                                     currentTip: store.tutorialShown ? tips.currentTip : nil,
+                                     isShowingDocument: store.isShowingDocument))
+        #endif
         .task {
             await store.send(.onLongBackgroundTask).finish()
         }

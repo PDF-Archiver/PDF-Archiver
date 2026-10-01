@@ -82,15 +82,20 @@ nonisolated public enum SearchToken: Hashable, Identifiable, Sendable {
     }
 }
 
-/// One row of the archive list: the document plus what a free-text search found in it.
+/// One row of the archive list: what the row shows, plus what a free-text search found.
+///
+/// Only the visible columns, so a write to e.g. `downloadStatus` leaves the rows equal and the
+/// list is not re-rendered.
 @Selection
 nonisolated public struct ArchiveSearchRow: Identifiable, Equatable, Sendable {
-    public let document: Document
+    public let id: Document.ID
+    public let specification: String
+    public let date: Date
+    @Column(as: SortedTagsRepresentation.self)
+    public let tags: Set<String>
     public let isFilenameHit: Bool
     /// FTS5 snippet with `[`/`]` around the matched terms, `nil` for a filename-only hit.
     public let snippet: String?
-
-    public var id: Document.ID { document.id }
 }
 
 /// A year and how many documents fall into it.
@@ -157,7 +162,12 @@ extension Document {
         }
         .order { $0.date.desc() }
         .select { documents in
-            ArchiveSearchRow.Columns(document: documents, isFilenameHit: #sql("0"), snippet: #sql("NULL"))
+            ArchiveSearchRow.Columns(id: documents.id,
+                                     specification: documents.specification,
+                                     date: documents.date,
+                                     tags: documents.tags,
+                                     isFilenameHit: #sql("0"),
+                                     snippet: #sql("NULL"))
         }
     }
 
@@ -188,7 +198,8 @@ extension Document {
               ORDER BY "isFilenameHit" DESC, COALESCE("rank", 0) ASC, d."date" DESC
               LIMIT \(bind: resultLimit)
             )
-            SELECT \(Document.columns), r."isFilenameHit", \(content.snippet) AS "snippet"
+            SELECT \(Document.id), \(Document.specification), \(Document.date), \(Document.tags),
+                   r."isFilenameHit", \(content.snippet) AS "snippet"
             FROM "ranked" AS r
             JOIN \(Document.self) ON \(Document.id) = r."id"
             ORDER BY r."isFilenameHit" DESC, COALESCE(r."rank", 0) ASC, \(Document.date) DESC

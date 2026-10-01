@@ -190,11 +190,11 @@ struct ArchiveListTests {
         } withDependencies: {
             $0.continuousClock = ImmediateClock()
         }
-        try await store.state.$rows.load()
+        let document = try #require(try await Self.document(-1))
 
         await store.send(.selectionChanged(-1)) {
             $0.$selectedDocumentId.withLock { $0 = -1 }
-            $0.documentDetails = .init(document: try #require(store.state.rows.first { $0.id == -1 }).document)
+            $0.documentDetails = .init(document: document)
         }
     }
 
@@ -205,10 +205,10 @@ struct ArchiveListTests {
         } withDependencies: {
             $0.continuousClock = ImmediateClock()
         }
-        try await store.state.$rows.load()
+        let document = try #require(try await Self.document(-1))
         await store.send(.selectionChanged(-1)) {
             $0.$selectedDocumentId.withLock { $0 = -1 }
-            $0.documentDetails = .init(document: try #require(store.state.rows.first { $0.id == -1 }).document)
+            $0.documentDetails = .init(document: document)
         }
 
         await store.send(.selectionChanged(nil)) {
@@ -261,6 +261,11 @@ struct ArchiveListTests {
         }
         store.exhaustivity = .off(showSkippedAssertions: false)
         return store
+    }
+
+    private static func document(_ id: Document.ID) async throws -> Document? {
+        @Dependency(\.defaultDatabase) var database
+        return try await database.read { try Document.find(id).fetchOne($0) }
     }
 
     // MARK: - Search State Tests

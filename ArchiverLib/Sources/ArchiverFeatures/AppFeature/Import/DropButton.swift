@@ -83,10 +83,7 @@ struct DropButton: View {
                     }
                     .symbolRenderingMode(.hierarchical)
                 }
-#if os(macOS)
-                .frame(width: 50, height: 50)
-                .buttonStyle(.glassProminent)
-#else
+#if !os(macOS)
                 .padding(6)
                 .glassEffect(.regular.tint(.paRedAsset).interactive(), in: Circle())
                 .glassEffectID("scan", in: glassNamespace)
@@ -150,11 +147,7 @@ struct DropButton: View {
             }
             .symbolRenderingMode(.hierarchical)
 
-            #if os(macOS)
-            .frame(width: 40, height: 40)
-            #else
             .frame(width: 60, height: 60)
-            #endif
         }
         #if !os(macOS)
         .background(Color.paPlaceholderGrayAsset, in: Capsule())

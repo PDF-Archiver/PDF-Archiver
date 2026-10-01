@@ -15,6 +15,7 @@ import TipKit
 struct ScanButtonModifier: ViewModifier {
     let showButton: Bool
     let currentTip: (any Tip)?
+    var isShowingDocument = false
 
     @Dependency(\.documentProcessor) var documentProcessor
     @Dependency(\.feedbackGenerator) var feedbackGenerator
@@ -27,34 +28,44 @@ struct ScanButtonModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
+            #if os(macOS)
+            .toolbar {
+                if !isShowingDocument {
+                    ToolbarItem(placement: .primaryAction) {
+                        ImportToolbarButton(state: dropHandler.documentProcessingState) {
+                            dropHandler.startImport()
+                        }
+                        .popoverTip((showButton && (currentTip as? ScanShareTip) != nil) ? currentTip : nil) { _ in
+                            dropHandler.startImport()
+                        }
+                        .tipImageSize(.init(width: 24, height: 24))
+                    }
+                }
+            }
+            .overlay {
+                RoundedRectangle(cornerRadius: 12)
+                    .strokeBorder(.tint, lineWidth: 3)
+                    .background(.tint.opacity(0.08), in: .rect(cornerRadius: 12))
+                    .padding(4)
+                    .opacity(dropHandler.documentProcessingState == .targeted ? 1 : 0)
+                    .animation(.snappy, value: dropHandler.documentProcessingState)
+                    .allowsHitTesting(false)
+            }
+            #else
             .safeAreaInset(edge: .bottom, alignment: .trailing) {
                 DropButton(state: dropHandler.documentProcessingState) { shouldShare in
-                    #if os(macOS)
-                    dropHandler.startImport()
-                    #else
                     shouldShareAfterScan = shouldShare
                     isScanPresented = true
-                    #endif
                 }
-                #if os(macOS)
-                .padding(.bottom, 24)
-                .padding(.trailing, 40)
-                #else
                 .padding(.trailing, 10)
-                #endif
                 .opacity(showButton ? 1 : 0)
                 .popoverTip((showButton && (currentTip as? ScanShareTip) != nil) ? currentTip : nil) { tipAction in
-                    #if os(macOS)
-                    dropHandler.startImport()
-                    #else
                     shouldShareAfterScan = (tipAction.id == "scanAndShare")
                     isScanPresented = true
-                    #endif
                 }
                 .tipImageSize(.init(width: 24, height: 24))
                 .matchedTransitionSource(id: "scanButton", in: scanButtonNamespace)
             }
-            #if !os(macOS)
             .sheet(isPresented: $isScanPresented) {
                 DocumentCameraView(
                     isShown: $isScanPresented,
@@ -132,3 +143,43 @@ struct ScanButtonModifier: ViewModifier {
             }
     }
 }
+
+#if os(macOS)
+/// The Mac counterpart of `DropButton`: imports through the file browser and shows the drop progress.
+private struct ImportToolbarButton: View {
+    let state: DropButton.ButtonState
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Label {
+                Text("Import Document", bundle: #bundle)
+            } icon: {
+                ZStack {
+                    Image(systemName: "square.and.arrow.down")
+                        .opacity(![.processing, .finished].contains(state) ? 1 : 0)
+
+                    ProgressView()
+                        .controlSize(.small)
+                        .opacity(state == .processing ? 1 : 0)
+
+                    Image(systemName: "checkmark.circle")
+                        .foregroundStyle(.green)
+                        .opacity(state == .finished ? 1 : 0)
+                }
+            }
+        }
+        .help(Text("Import Document", bundle: #bundle))
+        .keyboardShortcut("i", modifiers: [.command, .shift])
+    }
+}
+
+#Preview("ImportToolbarButton") {
+    HStack {
+        ImportToolbarButton(state: .noDocument) {}
+        ImportToolbarButton(state: .processing) {}
+        ImportToolbarButton(state: .finished) {}
+    }
+    .padding()
+}
+#endif

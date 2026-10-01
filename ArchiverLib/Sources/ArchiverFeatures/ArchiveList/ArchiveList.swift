@@ -18,7 +18,7 @@ struct ArchiveList {
     struct State: Equatable {
         typealias SearchToken = ArchiverDatabase.SearchToken
 
-        @FetchAll(Document.list(tokens: [])) var rows: [ArchiveSearchRow]
+        @SharedReader(.distinctFetch(FetchAllRequest(Document.list(tokens: [])))) var rows: [ArchiveSearchRow]
         @Shared(.selectedDocumentId) var selectedDocumentId: Int?
         @SharedReader(.premiumStatus) var premiumStatus: PremiumStatus = .loading
         var isSearching = false
@@ -44,6 +44,7 @@ struct ArchiveList {
     }
 
     @Dependency(\.continuousClock) var clock
+    @Dependency(\.defaultDatabase) var database
 
     private enum CancelID {
         case search
@@ -84,10 +85,13 @@ struct ArchiveList {
 
             case .selectionChanged(let documentId):
                 state.$selectedDocumentId.withLock { $0 = documentId }
-                // A fetch wrapper yields a plain array; ranked results are capped, the list is a few thousand.
+                // The rows hold only what the list shows; the details need the whole document.
                 state.documentDetails = documentId
-                    .flatMap { id in state.rows.first { $0.id == id } }
-                    .map { DocumentDetails.State(document: $0.document) }
+                    .flatMap { id in
+                        withErrorReporting { try database.read { try Document.find(id).fetchOne($0) } }
+                    }
+                    .flatMap(\.self)
+                    .map { DocumentDetails.State(document: $0) }
                 return .none
 
             case .binding(\.searchText):
@@ -126,18 +130,18 @@ struct ArchiveList {
             try await clock.sleep(for: .milliseconds(150))
             guard query.hasFreeText else {
                 _ = await withErrorReporting {
-                    try await rows.load(Document.list(tokens: query.tokens))
+                    try await rows.load(.distinctFetch(FetchAllRequest(Document.list(tokens: query.tokens))))
                 }
                 return
             }
 
             do {
-                try await rows.load(Document.rankedSearch(query))
+                try await rows.load(.distinctFetch(FetchAllRequest(Document.rankedSearch(query))))
             } catch {
                 // FTS5 should not reject a sanitised query, but search must never go blank.
                 reportIssue(error)
                 _ = await withErrorReporting {
-                    try await rows.load(Document.list(tokens: query.tokens))
+                    try await rows.load(.distinctFetch(FetchAllRequest(Document.list(tokens: query.tokens))))
                 }
             }
         }
@@ -233,9 +237,9 @@ struct ArchiveListView: View {
         let selection = Binding(get: { store.selectedDocumentId },
                                 set: { store.send(.selectionChanged($0)) })
         return List(store.rows, selection: selection) { row in
-            ArchiveListItemView(documentSpecification: row.document.specification,
-                                documentDate: row.document.date,
-                                documentTags: row.document.tags.sorted(),
+            ArchiveListItemView(documentSpecification: row.specification,
+                                documentDate: row.date,
+                                documentTags: row.tags.sorted(),
                                 snippet: row.isFilenameHit ? nil : row.snippet)
             .tag(row.id)
         }
