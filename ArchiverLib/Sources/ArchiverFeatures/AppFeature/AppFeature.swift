@@ -204,7 +204,8 @@ struct AppFeature {
                     },
                     // The pass restarts whenever the inbox changes; the OCR marker and the AI
                     // cache make repeated runs cheap no-ops.
-                    .run { _ in
+                    // Background: PDFKit's `thumbnail` waits on a background thread, so a higher QoS here is a priority inversion.
+                    .run(priority: .background) { _ in
                         let passStart = ContinuousClock.now
                         Logger.app.notice("[processing] Inbox pass started", metadata: [
                             "documentCount": "\(inbox.count)",

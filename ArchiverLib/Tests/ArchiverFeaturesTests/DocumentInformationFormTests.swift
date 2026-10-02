@@ -644,6 +644,47 @@ struct DocumentInformationFormTests {
         await clock.advance(by: .seconds(2))
     }
 
+    /// The rule: only documents carrying every picked tag count, the 10 most frequent of their other
+    /// tags win, and those are shown alphabetically.
+    @Test
+    func tagSuggestionsComeFromDocumentsCarryingAllPickedTags() async throws {
+        let picked: Set<String> = ["bike", "garden", "invoice"]
+        // Named against the alphabet, so frequency order and display order differ.
+        let byFrequency = ["zz", "yy", "xx", "ww", "vv", "uu", "tt", "ss", "rr", "qq", "pp", "oo"]
+        var documents: [ArchiverModels.Document] = []
+        var tags: [DocumentTag] = []
+        func add(_ documentTags: [String]) {
+            let id = -1 - documents.count
+            documents.append(Document(id: id, rootKey: "test", url: URL(filePath: "/Archive/2024/doc\(id).pdf"), date: Date(timeIntervalSince1970: 0), specification: "doc", tags: Set(documentTags), isTagged: true, sizeInBytes: 1, downloadStatus: 1))
+            tags += documentTags.map { DocumentTag(documentID: id, tag: $0) }
+        }
+        // Document with index carries the first 13 - n candidates: "zz" ends up on 12 documents, "oo" on 1.
+        for index in 1...12 {
+            add(picked.sorted() + byFrequency.prefix(13 - index))
+        }
+        // Each lacks one picked tag, so "unrelated" must never be suggested despite being the most used tag.
+        for _ in 1...20 {
+            add(["bike", "garden", "unrelated"])
+            add(["invoice", "unrelated"])
+        }
+        @Dependency(\.defaultDatabase) var database
+        try await database.write { [documents, tags] db in
+            try Document.insert { documents }.execute(db)
+            try DocumentTag.insert { tags }.execute(db)
+        }
+
+        var document = Document.mock()
+        document.tags = picked
+        let store = TestStore(initialState: DocumentInformationForm.State(document: document)) {
+            DocumentInformationForm()
+        }
+
+        await store.send(.startUpdatingTagSuggestions)
+        await store.receive(.updateTagSuggestions(Array(byFrequency.prefix(10)))) {
+            $0.suggestedTags = ["qq", "rr", "ss", "tt", "uu", "vv", "ww", "xx", "yy", "zz"]
+        }
+    }
+
     /// One archived document carrying both tags, so `first` suggests `fitsfirst` next to it.
     private static func seedTagCompanion() async throws {
         @Dependency(\.defaultDatabase) var database
