@@ -253,35 +253,27 @@ extension NSMetadataItem: nonisolated Log {
             return nil
         }
 
-        // Check if it is a local document. These two values are possible for the "NSMetadataUbiquitousItemDownloadingStatusKey":
-        // - NSMetadataUbiquitousItemDownloadingStatusCurrent
-        // - NSMetadataUbiquitousItemDownloadingStatusNotDownloaded
-        guard let downloadingStatus = value(forAttribute: NSMetadataUbiquitousItemDownloadingStatusKey) as? String else {
-            log.errorAndAssert("Could not parse Metadata DownloadStatus.")
+        // The file's own status, not the query's: on macOS the query called files remote that had
+        // been on disk for weeks. Unlike size and dates, this resource value holds before a download.
+        var statusUrl = documentUrl
+        // The item may hand out the same `NSURL` every time, whose cache would keep an old status.
+        statusUrl.removeAllCachedResourceValues()
+        let statusValues: URLResourceValues
+        do {
+            statusValues = try statusUrl.resourceValues(forKeys: [.ubiquitousItemDownloadingStatusKey, .ubiquitousItemIsDownloadingKey])
+        } catch {
+            log.errorAndAssert("Could not read download status.", metadata: ["error": "\(LogRedact.describe(error))"])
             return nil
         }
-
-        var documentStatus: Double
-        switch downloadingStatus {
-        case NSMetadataUbiquitousItemDownloadingStatusCurrent, NSMetadataUbiquitousItemDownloadingStatusDownloaded:
-            // local
-            documentStatus = 1
-
-        case NSMetadataUbiquitousItemDownloadingStatusNotDownloaded:
-
-            let minValue = 0.0
-            if let isDownloading = value(forAttribute: NSMetadataUbiquitousItemIsDownloadingKey) as? Bool,
-                isDownloading {
-                let percentDownloaded = (value(forAttribute: NSMetadataUbiquitousItemPercentDownloadedKey) as? NSNumber)?.doubleValue ?? 0
-                documentStatus = max(percentDownloaded / 100, minValue)
-            } else {
-                // remote
-                documentStatus = minValue
-            }
-
-        default:
+        guard let downloadingStatus = statusValues.ubiquitousItemDownloadingStatus else {
+            log.errorAndAssert("Could not parse download status.")
+            return nil
+        }
+        let percentDownloaded = (value(forAttribute: NSMetadataUbiquitousItemPercentDownloadedKey) as? NSNumber)?.doubleValue
+        guard let documentStatus = downloadingStatus.documentStatus(isDownloading: statusValues.ubiquitousItemIsDownloading ?? false,
+                                                                    percentDownloaded: percentDownloaded) else {
             // do not crash on future/unknown status values - just skip this item
-            log.criticalAndAssert("Unkown download status.", metadata: ["status": "\(downloadingStatus)"])
+            log.criticalAndAssert("Unkown download status.", metadata: ["status": "\(downloadingStatus.rawValue)"])
             return nil
         }
 
@@ -302,6 +294,24 @@ extension NSMetadataItem: nonisolated Log {
                                    downloadStatus: documentStatus,
                                    creationDate: value(forAttribute: NSMetadataItemFSCreationDateKey) as? Date,
                                    contentModificationDate: value(forAttribute: NSMetadataItemFSContentChangeDateKey) as? Date)
+    }
+}
+
+extension URLUbiquitousItemDownloadingStatus {
+    /// The read model's `downloadStatus`: 1 on this device, 0 remote, the progress while downloading.
+    /// `nil` for a status this SDK does not know yet.
+    func documentStatus(isDownloading: Bool, percentDownloaded: Double?) -> Double? {
+        switch self {
+        case .current, .downloaded:
+            return 1
+
+        case .notDownloaded:
+            guard isDownloading else { return 0 }
+            return max((percentDownloaded ?? 0) / 100, 0)
+
+        default:
+            return nil
+        }
     }
 }
 
