@@ -50,6 +50,40 @@ struct IndexSchedulerTests {
         #expect(documents?.count == 1)
     }
 
+    /// The background task used to be the only caller of the prefetch, so on macOS, which has no
+    /// background task, the index never got past the documents that happened to be on the device.
+    @Test(.timeLimit(.minutes(1)))
+    func theForegroundLoopRequestsDownloadsOnceNothingIsPending() async throws {
+        @Dependency(\.defaultDatabase) var database
+        let remoteURL = URL(fileURLWithPath: "/archive/2024/remote.pdf")
+        try await database.write { db in
+            try Document.insert {
+                Document.mock(url: remoteURL, isTagged: true, downloadStatus: 0)
+            }
+            .execute(db)
+        }
+
+        let requestedURLs = AsyncStream<URL>.makeStream()
+        let loop = Task {
+            await withDependencies {
+                $0.defaultAppStorage = .inMemory
+                $0.archiveIndexer.pendingTextCount = { 0 }
+                $0.premium.currentStatus = { .active }
+                $0.networkPath.allowsAutomaticDownloads = { true }
+                $0.archiveStore.startDownloadOf = { url in requestedURLs.continuation.yield(url) }
+                $0.documentProcessor.processUntaggedDocuments = { _ in
+                    UntaggedProcessingResult(ocrCount: 0, aiCacheCount: 0)
+                }
+            } operation: {
+                await IndexSchedulerDependency.liveValue.indexWhileAppIsOpen()
+            }
+        }
+        defer { loop.cancel() }
+
+        var requests = requestedURLs.stream.makeAsyncIterator()
+        #expect(await requests.next() == remoteURL)
+    }
+
     /// The OCR and AI-cache pass has no budget, and the AI half retries its failures on every
     /// pass, so a pass can outlast the process - it must not hold the text index back meanwhile.
     @Test(.timeLimit(.minutes(1)))
@@ -184,10 +218,24 @@ struct EvictLocalCopiesTests {
             await evictLocalCopies(of: [
                 Document.mock(url: URL(fileURLWithPath: "/archive/2024/tagged.pdf"), isTagged: true, downloadStatus: 1),
                 Document.mock(url: URL(fileURLWithPath: "/archive/untagged/inbox.pdf"), isTagged: false, downloadStatus: 1)
-            ])
+            ], evictsIndexedDocuments: true)
         }
 
         #expect(evictedURLs.value == [URL(fileURLWithPath: "/archive/2024/tagged.pdf")])
+    }
+
+    /// A Mac keeps what it indexed: its disk is not the scarce resource an iPhone's is.
+    @Test
+    func keepsEveryDocumentWhereIndexedDocumentsStayLocal() async {
+        let evictedCount = LockIsolated(0)
+        await withDependencies {
+            $0.defaultAppStorage = .inMemory
+            $0.archiveStore.evictDocumentAt = { _ in evictedCount.withValue { $0 += 1 } }
+        } operation: {
+            await evictLocalCopies(of: [Document.mock(isTagged: true, downloadStatus: 1)], evictsIndexedDocuments: false)
+        }
+
+        #expect(evictedCount.value == 0)
     }
 
     @Test
@@ -200,7 +248,7 @@ struct EvictLocalCopiesTests {
             @Shared(.downloadAllForSearch) var downloadAllForSearch: Bool
             $downloadAllForSearch.withLock { $0 = false }
 
-            await evictLocalCopies(of: [Document.mock(isTagged: true, downloadStatus: 1)])
+            await evictLocalCopies(of: [Document.mock(isTagged: true, downloadStatus: 1)], evictsIndexedDocuments: true)
         }
 
         #expect(evictedCount.value == 0)

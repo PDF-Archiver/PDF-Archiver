@@ -954,12 +954,22 @@
         }
       }
     },
-    "Only documents on this device can be scanned. The rest are downloaded in small batches while your device is charging." : {
+    "Only documents on this Mac can be scanned. The rest are downloaded in small batches while the app is open." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nur Dokumente auf diesem Gerät können durchsucht werden. Die übrigen werden in kleinen Gruppen geladen, während dein Gerät lädt."
+            "value" : "Nur Dokumente auf diesem Mac können durchsucht werden. Die übrigen werden in kleinen Gruppen geladen, solange die App geöffnet ist."
+          }
+        }
+      }
+    },
+    "Only documents on this device can be scanned. The rest are downloaded in small batches over Wi-Fi, while the app is open or your device is charging." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nur Dokumente auf diesem Gerät können durchsucht werden. Die übrigen werden in kleinen Gruppen über WLAN geladen, solange die App geöffnet ist oder dein Gerät aufgeladen wird."
           }
         }
       }
@@ -1879,12 +1889,22 @@
         }
       }
     },
-    "Your document list comes back within seconds. Searching inside documents is rebuilt in the background while your device is charging." : {
+    "Your document list comes back within seconds. Searching inside documents is rebuilt while the app is open or your device is charging." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deine Dokumentliste ist innerhalb von Sekunden wieder da. Die Suche in Dokumenten wird im Hintergrund neu aufgebaut, während dein Gerät lädt."
+            "value" : "Deine Dokumentliste ist innerhalb von Sekunden wieder da. Die Suche in Dokumenten wird neu aufgebaut, solange die App geöffnet ist oder dein Gerät aufgeladen wird."
+          }
+        }
+      }
+    },
+    "Your document list comes back within seconds. Searching inside documents is rebuilt while the app is open." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Dokumentliste ist innerhalb von Sekunden wieder da. Die Suche in Dokumenten wird neu aufgebaut, solange die App geöffnet ist."
           }
         }
       }
