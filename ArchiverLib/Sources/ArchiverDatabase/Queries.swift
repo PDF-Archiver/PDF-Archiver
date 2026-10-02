@@ -411,6 +411,8 @@ extension DocumentFeaturePrint {
     }
 }
 
+private enum SeedTag: AliasName {}
+
 extension DocumentTag {
     /// Tags ordered by how often they are used, optionally narrowed to a prefix.
     public static func counts(prefix: String? = nil, taggedOnly: Bool = false, limit: Int) -> Select<TagUsage, DocumentTag, ()> {
@@ -439,8 +441,9 @@ extension DocumentTag {
             documentTags.tag.notIn(sortedTags)
         }
         .where { documentTags in
+            // Aliased: unaliased, the subquery's `documentTags` shadows the outer row and matches every document.
             for tag in sortedTags {
-                Self.where { $0.documentID.eq(documentTags.documentID).and($0.tag.eq(tag)) }.exists()
+                Self.as(SeedTag.self).where { $0.documentID.eq(documentTags.documentID).and($0.tag.eq(tag)) }.exists()
             }
         }
         .group(by: \.tag)

@@ -306,7 +306,7 @@ struct DocumentInformationForm {
     }
 
     /// How many tag suggestions the form offers, as the archive store used to return.
-    private static let tagSuggestionLimit = 5
+    private static let tagSuggestionLimit = 10
 
     struct DocumentParsingResult: Equatable {
         let date: Date?
@@ -427,7 +427,10 @@ struct DocumentInformationFormView: View {
                     .focusable(false)
                 DatePicker(String(localized: "Date", bundle: #bundle), selection: $store.document.date, displayedComponents: .date)
                     .focused($focusedField, equals: .date)
+                    #if !os(macOS)
+                    // On macOS NSDatePicker tabs through day, month and year itself before leaving.
                     .modifier(TabCycleModifier(store: store))
+                    #endif
                     .listRowSeparator(.hidden)
                     .sensoryFeedback(.selection, trigger: store.document.date)
                 HStack {
@@ -501,6 +504,8 @@ struct DocumentInformationFormView: View {
         }
         .formStyle(.grouped)
         .bind($store.focusedField, to: $focusedField)
+        // On macOS the `.date` that `onTask` sets is not enough to focus the date picker on open.
+        .defaultFocus($focusedField, .date)
         .task(id: store.document.id) {
             await store.send(.onTask).finish()
         }

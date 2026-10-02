@@ -128,6 +128,16 @@ struct QueryTests {
     }
 
     @Test
+    func cooccurringTagsCountOnlyDocumentsCarryingTheGivenOnes() async throws {
+        @Dependency(\.defaultDatabase) var database
+        let usage = try await database.read { db in
+            try DocumentTag.cooccurring(with: ["bill"], limit: 10).fetchAll(db)
+        }
+
+        #expect(usage.map(\.count) == [1])
+    }
+
+    @Test
     func yearCountsCanExcludeTheInbox() async throws {
         @Dependency(\.defaultDatabase) var database
         let all = try await database.read { db in

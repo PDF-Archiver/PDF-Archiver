@@ -42,9 +42,9 @@ public struct TagView: View {
     @ViewBuilder
     private var buttonLabel: some View {
         if isEditable {
-            HStack(alignment: .center) {
+            // Tight spacing: the default ~8 pt gap made the red chips look padded wider than the grey ones.
+            HStack(alignment: .center, spacing: 3) {
                 Text(tagName.capitalized)
-                Spacer()
                 Image(systemName: "xmark.circle")
                     .font(.caption)
                     .accessibilityHidden(true)
@@ -88,10 +88,13 @@ public struct TagView: View {
     // Colour alone must not carry the suggestion state (WCAG 1.4.1).
     @ViewBuilder
     private var suggestionMarker: some View {
+        #if !os(macOS)
         if isSuggestion {
+            // Centred on the edge rather than inset, so the border does not eat into the text padding.
             RoundedRectangle(cornerRadius: 8.0)
-                .strokeBorder(Color.white.opacity(0.8), lineWidth: 1)
+                .stroke(Color.white.opacity(0.8), lineWidth: 1)
         }
+        #endif
     }
 }
 
