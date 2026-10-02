@@ -430,6 +430,34 @@ struct ContentExtractorStoreOrchestrationTests {
                               respond: respond)
     }
 
+    /// The inbox pass and the open app's periodic pass overlap, and both found no cache entry yet.
+    @Test("Two overlapping background passes ask the model once per document")
+    func overlappingPassesExtractEachDocumentOnce() async {
+        guard #available(iOS 26.0, macOS 26.0, *) else { return }
+        let calls = CallCounter()
+        let (firstCallEntered, firstCallEnteredContinuation) = AsyncStream<Void>.makeStream()
+        let (release, releaseContinuation) = AsyncStream<Void>.makeStream()
+        let store = Self.store { _, _, _, _ in
+            await calls.increment()
+            if await calls.count == 1 {
+                firstCallEnteredContinuation.yield()
+                for await _ in release { break }
+            }
+            return RawDocumentInformation(description: "x", tags: [])
+        }
+        let documents = [Document.mock(url: URL(fileURLWithPath: "/archive/untagged/scan.pdf"), isTagged: false, downloadStatus: 1)]
+
+        let firstPass = Task {
+            await store.processUntaggedDocumentsInBackground(documents: documents, textExtractor: { _ in "text" }, customPrompt: nil)
+        }
+        for await _ in firstCallEntered { break }
+        _ = await store.processUntaggedDocumentsInBackground(documents: documents, textExtractor: { _ in "text" }, customPrompt: nil)
+        releaseContinuation.yield()
+        _ = await firstPass.value
+
+        #expect(await calls.count == 1)
+    }
+
     @Test("Maps and normalizes the raw model output")
     func mapsRawOutput() async throws {
         guard #available(iOS 26.0, macOS 26.0, *) else { return }
