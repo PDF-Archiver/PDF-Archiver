@@ -17,7 +17,7 @@ extension IndexSchedulerDependency: DependencyKey {
     public static let liveValue = IndexSchedulerDependency(
         schedule: {
             // macOS has no `BackgroundTasks` and no launch-on-schedule; `indexWhileAppIsOpen`
-            // covers it instead, for as long as the app stays open.
+            // covers it instead, downloads included, for as long as the app stays open.
             #if os(iOS)
             BackgroundTaskManager.scheduleCacheProcessing()
             #endif
@@ -60,6 +60,7 @@ private func indexTextsWhileAppIsOpen() async {
     // Both guards below poll, so the reason is logged on change only - a line per round
     // would fill the diagnostics report with the idle case.
     var pauseReason: String?
+    var prefetchSkipReason: SearchIndexDownloads.SkipReason?
 
     while !Task.isCancelled {
         let pendingCount = await archiveIndexer.pendingTextCount()
@@ -74,6 +75,13 @@ private func indexTextsWhileAppIsOpen() async {
                     "documentCount": "\(counts.total)",
                     "notDownloadedCount": "\(counts.notDownloaded)"
                 ])
+            }
+            // Small batches: a download the iCloud daemon already accepted may keep running once the
+            // device moves on to mobile data.
+            let skipReason = await SearchIndexDownloads.requestNextBatch(limit: 50)
+            if skipReason != prefetchSkipReason {
+                prefetchSkipReason = skipReason
+                Logger.app.notice("[textindex] Prefetch state changed", metadata: ["skipReason": "\(skipReason?.rawValue ?? "none")"])
             }
             try? await Task.sleep(for: .seconds(60))
             continue
@@ -143,9 +151,10 @@ private func runProcessingPass() async {
     }
 }
 
-/// Documents per background run, matched to `SearchIndexDownloads.batchSize` so extraction does not
-/// fall behind the downloads. An expiring task cancels the run and leaves the rest pending.
-private let backgroundIndexBudget = 250
+/// Documents per background run, downloaded and extracted alike so extraction does not fall behind
+/// the downloads. What bounds a run is the time the system grants: at 25 a multi-thousand-document
+/// archive needed months of nights to arrive. An expiring task cancels the run and leaves the rest pending.
+let backgroundIndexBudget = 250
 
 /// How long a cold start may take before the run gives up on the metadata. The iCloud metadata
 /// gather of a 3.000-document archive needs about half a minute, a first download far longer.
@@ -170,11 +179,9 @@ func runBackgroundProcessing(runningPhases: LockIsolated<Set<String>>) async thr
     let isPremium = await runPhase("premium", in: runningPhases, describe: { ["premium": "\($0)"] }, operation: {
         await PremiumEntitlement.isActive()
     })
-    if isPremium {
-        await runPhase("prefetch", in: runningPhases) {
-            await SearchIndexDownloads.requestNextBatch()
-        }
-    }
+    await runPhase("prefetch", in: runningPhases, describe: { ["skipReason": "\($0?.rawValue ?? "none")"] }, operation: {
+        await SearchIndexDownloads.requestNextBatch(limit: backgroundIndexBudget)
+    })
 
     let documents = try await database.read { db in
         try Document.inbox.fetchAll(db) + Document.aiContext().fetchAll(db)
@@ -258,11 +265,11 @@ private func waitForInitialDocumentLoad() async -> Bool {
 /// it right back. Same switch that mass-downloads the archive (`downloadAllForSearch`) gives it up
 /// again; a document the user opened themselves while it is on can also be evicted, and simply
 /// re-downloads on next open. Whether a file lives in iCloud at all is `evictDocumentAt`'s call.
-func evictLocalCopies(of documents: [Document]) async {
+func evictLocalCopies(of documents: [Document], evictsIndexedDocuments: Bool = evictsIndexedDocumentsOnThisPlatform) async {
     @Dependency(\.archiveStore) var archiveStore
     @Shared(.downloadAllForSearch) var downloadAllForSearch: Bool
 
-    guard downloadAllForSearch else { return }
+    guard evictsIndexedDocuments, downloadAllForSearch else { return }
 
     var evictedCount = 0
     var failedCount = 0
@@ -282,6 +289,14 @@ func evictLocalCopies(of documents: [Document]) async {
         "failedCount": "\(failedCount)"
     ])
 }
+
+// A Mac keeps what it indexed: its disk is not scarce like an iPhone's, and it may have held the
+// whole archive long before the index ran.
+#if os(iOS)
+let evictsIndexedDocumentsOnThisPlatform = true
+#else
+let evictsIndexedDocumentsOnThisPlatform = false
+#endif
 
 /// Runs one step of a background run between `started` and `finished` lines, and marks it as
 /// running for the expiration handler, which reports what the run was doing when time ran out.

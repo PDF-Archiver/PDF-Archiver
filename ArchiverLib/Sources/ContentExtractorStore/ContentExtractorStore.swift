@@ -47,6 +47,9 @@ public actor ContentExtractorStore {
     private let visualNeighbourFinder: VisualNeighbourFinder
     private let availability: @Sendable () -> AppleIntelligenceAvailability
     private let respond: Responder
+    /// Documents a background pass is extracting right now. The cache check alone cannot see them,
+    /// since the entry is only written once the model returns.
+    private var backgroundInFlight = Set<Document.ID>()
 
     public init(cache: SuggestionCache = .unavailable,
                 neighbourFinder: NeighbourFinder = .unavailable,
@@ -200,6 +203,11 @@ public actor ContentExtractorStore {
             guard !Task.isCancelled else { break }
 
             let documentId = document.id
+
+            // Inserted before the first `await`, so an overlapping pass sees it before it checks the cache.
+            guard !backgroundInFlight.contains(documentId) else { continue }
+            backgroundInFlight.insert(documentId)
+            defer { backgroundInFlight.remove(documentId) }
 
             // Skip if already cached
             if await cache.load(documentId) != nil {

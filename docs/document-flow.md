@@ -113,6 +113,6 @@ and — with Premium — the opt-in downloads plus the text extraction that fill
 the search index. `requiresNetworkConnectivity` follows the "Download all
 documents for search" setting, because only those downloads need the network.
 
-On macOS `BackgroundTasks` is unavailable and there is no replacement: indexing
-only happens through `indexWhileAppIsOpen`, while the app is running in the
-foreground.
+While the app is open, `indexWhileAppIsOpen` covers the same ground on both platforms: once no document on the device is left to index, it requests the next 50 missing ones and indexes them as they arrive. On macOS this is the only path, because `BackgroundTasks` is unavailable there.
+
+The search-index downloads, in the background task too, run only on a network that is neither expensive (mobile data, a hotspot) nor in Low Data Mode. Opening a document and the inbox prefetch download over any network. After indexing, iOS evicts the local copy of each tagged document again; macOS keeps it.

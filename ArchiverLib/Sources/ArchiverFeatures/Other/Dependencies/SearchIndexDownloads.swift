@@ -15,26 +15,31 @@ import SQLiteData
 /// The opt-in half of indexing: only documents on this device carry text, so a complete index
 /// needs the rest downloaded first.
 enum SearchIndexDownloads {
-    /// Per run. What bounds a run is the time the system grants, not this number - at 25 a
-    /// multi-thousand-document archive needed months of nights to arrive.
-    private static let batchSize = 250
+    enum SkipReason: String {
+        case downloadsOff
+        case noPremium
+        case meteredNetwork
+    }
 
-    static func requestNextBatch() async {
+    /// Requests up to `limit` documents the index cannot reach yet. Returns why it requested
+    /// nothing although documents are missing, for the caller to log - the open app asks every minute.
+    @discardableResult
+    static func requestNextBatch(limit: Int) async -> SkipReason? {
         @Shared(.downloadAllForSearch) var downloadAllForSearch: Bool
-        guard downloadAllForSearch else {
-            Logger.app.notice("[textindex] Prefetch skipped, downloads are turned off")
-            return
-        }
+        guard downloadAllForSearch else { return .downloadsOff }
 
         @Dependency(\.archiveStore) var archiveStore
         @Dependency(\.defaultDatabase) var database
+        @Dependency(\.networkPath) var networkPath
 
         let documents = await withErrorReporting {
             try await database.read { db in
-                try Document.notDownloaded(limit: batchSize).fetchAll(db)
+                try Document.notDownloaded(limit: limit).fetchAll(db)
             }
         }
-        guard let documents else { return }
+        guard let documents, !documents.isEmpty else { return nil }
+        guard await PremiumEntitlement.isActive() else { return .noPremium }
+        guard networkPath.allowsAutomaticDownloads() else { return .meteredNetwork }
         Logger.app.notice("[textindex] Prefetch requested", metadata: ["documentCount": "\(documents.count)"])
 
         // The iCloud daemon finishes these in its own time; the next run indexes them.
@@ -48,5 +53,6 @@ enum SearchIndexDownloads {
                 ])
             }
         }
+        return nil
     }
 }

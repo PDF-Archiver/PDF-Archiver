@@ -84,7 +84,7 @@ struct SearchIndexSettings {
             #if DEBUG
             case .onDebugPrefetchTapped:
                 return .run { _ in
-                    await SearchIndexDownloads.requestNextBatch()
+                    await SearchIndexDownloads.requestNextBatch(limit: backgroundIndexBudget)
                 }
             #endif
 
@@ -99,7 +99,11 @@ struct SearchIndexSettings {
                         TextState("Cancel", bundle: #bundle)
                     }
                 } message: {
-                    TextState("Your document list comes back within seconds. Searching inside documents is rebuilt in the background while your device is charging.", bundle: #bundle)
+                    #if os(macOS)
+                    TextState("Your document list comes back within seconds. Searching inside documents is rebuilt while the app is open.", bundle: #bundle)
+                    #else
+                    TextState("Your document list comes back within seconds. Searching inside documents is rebuilt while the app is open or your device is charging.", bundle: #bundle)
+                    #endif
                 }
                 return .none
             }
@@ -151,9 +155,15 @@ struct SearchIndexSettingsView: View {
             } header: {
                 Text("Downloads", bundle: #bundle)
             } footer: {
-                Text("Only documents on this device can be scanned. The rest are downloaded in small batches while your device is charging.", bundle: #bundle)
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
+                Group {
+                    #if os(macOS)
+                    Text("Only documents on this Mac can be scanned. The rest are downloaded in small batches while the app is open.", bundle: #bundle)
+                    #else
+                    Text("Only documents on this device can be scanned. The rest are downloaded in small batches over Wi-Fi, while the app is open or your device is charging.", bundle: #bundle)
+                    #endif
+                }
+                .font(.footnote)
+                .foregroundStyle(.secondary)
             }
 
             Section {
