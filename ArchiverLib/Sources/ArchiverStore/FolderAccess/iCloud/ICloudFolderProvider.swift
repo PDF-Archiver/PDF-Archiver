@@ -8,7 +8,6 @@
 import ArchiverModels
 import Foundation
 import Logging
-import Shared
 
 final class ICloudFolderProvider: FolderProvider {
 
@@ -206,36 +205,9 @@ final class ICloudFolderProvider: FolderProvider {
         return url.isUnder(cloudUrl)
     }
 
-    func save(data: Data, at url: URL) throws {
-        try FileManager.default.createFolderIfNotExists(url.deletingLastPathComponent())
-
-        // test if the document name already exists in archive, otherwise move it
-        if FileManager.default.fileExists(atPath: url.path) {
-            throw FolderProviderError.renameFailedFileAlreadyExists
-        }
-
-        try data.write(to: url)
-    }
-
-    func fetch(url: URL) throws -> Data {
-        try Data(contentsOf: url)
-    }
-
     func delete(url: URL) throws {
         // trash items (not remove) to let users restore them if needed
         try FileManager.default.trashItem(at: url, resultingItemURL: nil)
-    }
-
-    func rename(from source: URL, to destination: URL) throws {
-        guard source != destination else { return }
-        try FileManager.default.createFolderIfNotExists(destination.deletingLastPathComponent())
-
-        // test if the document name already exists in archive, otherwise move it
-        if FileManager.default.fileExists(atPath: destination.path) {
-            throw FolderProviderError.renameFailedFileAlreadyExists
-        }
-
-        try FileManager.default.moveItem(at: source, to: destination)
     }
 }
 

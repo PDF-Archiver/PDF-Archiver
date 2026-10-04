@@ -123,7 +123,7 @@ extension Document {
         var tagNames: [String]?
         let separator = "__"
         if filename.contains(separator),
-           let raw = filename.components(separatedBy: separator).last?.dropLast(filename.hasSuffix(".pdf") ? 4 : 0),
+           let raw = filename.components(separatedBy: separator).last?.dropLast(filename.lowercased().hasSuffix(".pdf") ? 4 : 0),
            !raw.isEmpty {
             // parse the tags of a document
             tagNames = raw.lowercased()

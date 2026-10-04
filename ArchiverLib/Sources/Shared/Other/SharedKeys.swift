@@ -46,11 +46,6 @@ public extension SharedKey where Self == AppStorageKey<Bool>.Default {
 }
 
 /// Default quality of a the images that will be processed to a PDF document
-public extension SharedKey where Self == AppStorageKey<Float> {
-    static var pdfQuality: Self {
-        appStorage(Names.pdfQuality.id)
-    }
-}
 public extension SharedKey where Self == AppStorageKey<PDFQuality>.Default {
   static var pdfQuality: Self {
       @Dependency(\.defaultAppStorage) var store
@@ -69,11 +64,6 @@ public extension SharedKey where Self == AppStorageKey<PDFQuality>.Default {
   }
 }
 
-public extension SharedKey where Self == AppStorageKey<Bool> {
-    static var notSaveDocumentTagsAsPDFMetadata: Self {
-        appStorage(Names.notSaveDocumentTagsAsPDFMetadata.id)
-    }
-}
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var notSaveDocumentTagsAsPDFMetadata: Self {
       @Dependency(\.defaultAppStorage) var store
@@ -83,11 +73,6 @@ public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   }
 }
 
-public extension SharedKey where Self == AppStorageKey<Bool> {
-    static var documentTagsNotRequired: Self {
-        appStorage(Names.documentTagsNotRequired.id)
-    }
-}
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var documentTagsNotRequired: Self {
       @Dependency(\.defaultAppStorage) var store
@@ -97,11 +82,6 @@ public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   }
 }
 
-public extension SharedKey where Self == AppStorageKey<Bool> {
-    static var documentSpecificationNotRequired: Self {
-        appStorage(Names.documentSpecificationNotRequired.id)
-    }
-}
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var documentSpecificationNotRequired: Self {
       @Dependency(\.defaultAppStorage) var store
@@ -111,55 +91,30 @@ public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   }
 }
 
-public extension SharedKey where Self == AppStorageKey<Bool> {
-    static var appleIntelligenceEnabled: Self {
-        appStorage(Names.appleIntelligenceEnabled.id)
-    }
-}
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var appleIntelligenceEnabled: Self {
       return Self[.appStorage(Names.appleIntelligenceEnabled.id), default: true]
   }
 }
 
-public extension SharedKey where Self == AppStorageKey<String?> {
-    static var appleIntelligenceCustomPrompt: Self {
-        appStorage(Names.appleIntelligenceCustomPrompt.id)
-    }
-}
 public extension SharedKey where Self == AppStorageKey<String?>.Default {
   static var appleIntelligenceCustomPrompt: Self {
       return Self[.appStorage(Names.appleIntelligenceCustomPrompt.id), default: nil]
   }
 }
 
-public extension SharedKey where Self == AppStorageKey<Bool> {
-    static var appleIntelligenceCacheEnabled: Self {
-        appStorage(Names.appleIntelligenceCacheEnabled.id)
-    }
-}
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var appleIntelligenceCacheEnabled: Self {
       return Self[.appStorage(Names.appleIntelligenceCacheEnabled.id), default: true]
   }
 }
 
-public extension SharedKey where Self == AppStorageKey<Bool> {
-    static var backgroundCacheNotificationsEnabled: Self {
-        appStorage(Names.backgroundCacheNotificationsEnabled.id)
-    }
-}
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var backgroundCacheNotificationsEnabled: Self {
       return Self[.appStorage(Names.backgroundCacheNotificationsEnabled.id), default: false]
   }
 }
 
-public extension SharedKey where Self == AppStorageKey<Bool> {
-    static var multiTagSelectionDelayEnabled: Self {
-        appStorage(Names.multiTagSelectionDelayEnabled.id)
-    }
-}
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var multiTagSelectionDelayEnabled: Self {
       return Self[.appStorage(Names.multiTagSelectionDelayEnabled.id), default: true]
@@ -170,11 +125,6 @@ public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   }
 }
 
-public extension SharedKey where Self == AppStorageKey<Bool> {
-    static var highlightDetectedDateEnabled: Self {
-        appStorage(Names.highlightDetectedDateEnabled.id)
-    }
-}
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var highlightDetectedDateEnabled: Self {
       return Self[.appStorage(Names.highlightDetectedDateEnabled.id), default: true]
@@ -182,11 +132,6 @@ public extension SharedKey where Self == AppStorageKey<Bool>.Default {
 }
 
 /// `true` if the background index may download documents that are not on this device yet
-public extension SharedKey where Self == AppStorageKey<Bool> {
-    static var downloadAllForSearch: Self {
-        appStorage(Names.downloadAllForSearch.id)
-    }
-}
 public extension SharedKey where Self == AppStorageKey<Bool>.Default {
   static var downloadAllForSearch: Self {
       return Self[.appStorage(Names.downloadAllForSearch.id), default: true]
@@ -209,27 +154,22 @@ public extension SharedKey where Self == InMemoryKey<Int?> {
 
 // MARK: file storage
 
-public extension SharedKey where Self == ArchivePathTypeCustomSharedKey {
+public extension SharedKey where Self == BookmarkSharedKey<StorageType?> {
   static var archivePathType: Self {
       @Dependency(\.defaultAppStorage) var store
-      return ArchivePathTypeCustomSharedKey(key: "archivePathType", store: store)
+      return .archivePathType(key: "archivePathType", store: store)
   }
 }
 
 #if os(macOS)
-public extension SharedKey where Self == ObservedFolderCustomSharedKey {
+public extension SharedKey where Self == BookmarkSharedKey<URL?> {
   static var observedFolder: Self {
       @Dependency(\.defaultAppStorage) var store
-      return ObservedFolderCustomSharedKey(key: "observedFolderURL", store: store)
+      return .folder(key: "observedFolderURL", store: store)
   }
 }
 
 /// The Settings window's selected pane, so it reopens where it was left.
-public extension SharedKey where Self == AppStorageKey<String> {
-    static var settingsPane: Self {
-        appStorage(Names.settingsPane.id)
-    }
-}
 public extension SharedKey where Self == AppStorageKey<String>.Default {
     static var settingsPane: Self {
         // The literal matches `SettingsPane.general`, which cannot be named here: the enum

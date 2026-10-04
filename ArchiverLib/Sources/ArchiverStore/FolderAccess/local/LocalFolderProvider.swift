@@ -73,21 +73,6 @@ final class LocalFolderProvider: FolderProvider {
         }
     }
 
-    func save(data: Data, at url: URL) throws {
-        try fileManager.createFolderIfNotExists(url.deletingLastPathComponent())
-
-        // test if the document name already exists in archive, otherwise move it
-        if fileManager.fileExists(atPath: url.path) {
-            throw FolderProviderError.renameFailedFileAlreadyExists
-        }
-
-        try data.write(to: url)
-    }
-
-    func fetch(url: URL) throws -> Data {
-        try Data(contentsOf: url)
-    }
-
     func delete(url: URL) throws {
         #if os(macOS)
         try fileManager.trashItem(at: url, resultingItemURL: nil)
@@ -97,18 +82,6 @@ final class LocalFolderProvider: FolderProvider {
         // => we have to use removeItem on iOS
         try fileManager.removeItem(at: url)
         #endif
-    }
-
-    func rename(from source: URL, to destination: URL) throws {
-        guard source != destination else { return }
-        try fileManager.createFolderIfNotExists(destination.deletingLastPathComponent())
-
-        // test if the document name already exists in archive, otherwise move it
-        if fileManager.fileExists(atPath: destination.path) {
-            throw FolderProviderError.renameFailedFileAlreadyExists
-        }
-
-        try fileManager.moveItem(at: source, to: destination)
     }
 
     // MARK: - Helper Functions

@@ -49,11 +49,7 @@ public actor ArchiveStore: Log {
 
     public func update(with type: StorageType) async throws {
         try await PathManager.shared.setArchiveUrl(with: type)
-
-        let archiveUrl = try await PathManager.shared.getArchiveUrl()
-        let untaggedUrl = try await PathManager.shared.getUntaggedUrl()
-
-        await update(archiveFolder: archiveUrl, untaggedFolders: [untaggedUrl])
+        try await reloadArchiveDocuments()
     }
 
     public func getUntaggedUrl() async throws -> URL {
@@ -217,14 +213,17 @@ public actor ArchiveStore: Log {
 
         let archiveUrl = try await PathManager.shared.getArchiveUrl()
         let untaggedUrl = try await PathManager.shared.getUntaggedUrl()
+        await reload(archiveFolder: archiveUrl, untaggedFolder: untaggedUrl)
+    }
 
+    func reload(archiveFolder: URL, untaggedFolder: URL) async {
         #if os(macOS)
-        let untaggedFolders = [untaggedUrl, observedFolderURL].compactMap(\.self)
+        let untaggedFolders = [untaggedFolder, observedFolderURL].compactMap(\.self)
         #else
-        let untaggedFolders = [untaggedUrl]
+        let untaggedFolders = [untaggedFolder]
         #endif
 
-        await update(archiveFolder: archiveUrl, untaggedFolders: untaggedFolders)
+        await update(archiveFolder: archiveFolder, untaggedFolders: untaggedFolders)
     }
 
     private func isTagged(_ url: URL) -> Bool {
@@ -232,8 +231,9 @@ public actor ArchiveStore: Log {
         // Could document be found in the untagged folder?
         guard !untaggedFolders.contains(where: { url.isUnder($0) }) else { return false }
 
-        // Do "--" and "__" exist in filename?
-        guard url.lastPathComponent.contains("--"),
+        // Exactly one "--", as `Document.parseFilename` demands for the specification: a second one
+        // would otherwise reach the archive as a tagged document with an empty specification.
+        guard url.lastPathComponent.components(separatedBy: "--").count == 2,
             url.lastPathComponent.contains("__"),
             !url.lastPathComponent.lowercased().contains(Document.datePlaceholder.lowercased()),
             !url.lastPathComponent.lowercased().contains(Document.descriptionPlaceholder.lowercased()),
