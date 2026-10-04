@@ -49,6 +49,7 @@ struct ExpertSettings {
 
         enum Alert: Equatable {
             case confirmClearTempFolder
+            case confirmResetApp
             case resetCompleted
         }
     }
@@ -64,6 +65,25 @@ struct ExpertSettings {
             switch action {
             case .alert(.presented(.confirmClearTempFolder)):
                 try? fileManager.removeItemAt(Constants.tempDocumentURL)
+                return .none
+
+            case .alert(.presented(.confirmResetApp)):
+                // remove all temporary files
+                try? fileManager.removeItemAt(Constants.tempDocumentURL)
+
+                // remove all user defaults
+                userDefaultsManager.reset()
+
+                // Show alert to inform user about restart requirement
+                state.alert = AlertState {
+                    TextState("Reset App", bundle: #bundle)
+                } actions: {
+                    ButtonState(action: .resetCompleted) {
+                        TextState("OK", bundle: #bundle)
+                    }
+                } message: {
+                    TextState("Please restart the app to complete the reset.", bundle: #bundle)
+                }
                 return .none
 
             case .alert:
@@ -96,21 +116,17 @@ struct ExpertSettings {
             #endif
 
             case .onResetAppTapped:
-                // remove all temporary files
-                try? fileManager.removeItemAt(Constants.tempDocumentURL)
-
-                // remove all user defaults
-                userDefaultsManager.reset()
-
-                // Show alert to inform user about restart requirement
                 state.alert = AlertState {
-                    TextState("Reset App", bundle: #bundle)
+                    TextState("Reset App Preferences", bundle: #bundle)
                 } actions: {
-                    ButtonState(action: .resetCompleted) {
-                        TextState("OK", bundle: #bundle)
+                    ButtonState(role: .destructive, action: .confirmResetApp) {
+                        TextState("Reset", bundle: #bundle)
+                    }
+                    ButtonState(role: .cancel) {
+                        TextState("Cancel", bundle: #bundle)
                     }
                 } message: {
-                    TextState("Please restart the app to complete the reset.", bundle: #bundle)
+                    TextState("This resets all preferences to their defaults. Your documents are not affected.", bundle: #bundle)
                 }
                 return .none
             }

@@ -15,7 +15,6 @@ struct PremiumSection {
     @ObservableState
     struct State: Equatable {
         @Shared(.premiumStatus) var premiumStatus: PremiumStatus = .loading
-        var showIapView = false
     }
 
     enum Action: BindableAction, Equatable {
@@ -35,21 +34,7 @@ struct PremiumSection {
         Reduce { _, action in
             switch action {
             case .showManageSubscription:
-                let url = URL(string: "https://apps.apple.com/account/subscriptions")!
-                #if os(iOS)
-                return .run { _ in
-                    await openURL(url)
-                }
-                #else
-                #if DEBUG
-                return .run { _ in
-                    await openURL(url)
-                }
-                #else
-                NSWorkspace.shared.open(url)
-                return .none
-                #endif
-                #endif
+                return .openExternalURL(URL(string: "https://apps.apple.com/account/subscriptions")!, with: openURL)
 
             case .binding, .delegate:
                 return .none

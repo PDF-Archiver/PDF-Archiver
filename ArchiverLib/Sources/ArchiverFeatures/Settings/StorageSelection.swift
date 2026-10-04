@@ -104,7 +104,7 @@ struct StorageSelectionView: View {
                             // since we have buttons, we have to "fake" the foreground color - it would be the accent color otherwise
                             .foregroundColor(.primary)
                             Spacer()
-                            if storageType.equals(store.selectedArchiveType.getPath()) {
+                            if storageType == store.selectedArchiveType.getPath().selectionType {
                                 Image(systemName: "checkmark.circle.fill")
                                     .foregroundStyle(Color.green)
                             }
@@ -173,21 +173,6 @@ enum StorageSelectionType: String, CaseIterable {
 
     private static let appleDocumentationURL = URL(string: "https://support.apple.com/en-us/HT210598")!
 
-    func equals(_ type: StorageType) -> Bool {
-        switch type {
-        case .iCloudDrive:
-            return self == .iCloudDrive
-
-        #if !os(macOS)
-        case .appContainer:
-            return self == .appContainer
-        #endif
-
-        case .local:
-            return self == .local
-        }
-    }
-
     var title: LocalizedStringKey {
         switch self {
         case .iCloudDrive:
@@ -245,6 +230,28 @@ enum StorageSelectionType: String, CaseIterable {
         case .local:
             Text("Not synchronized - Your documents are stored in a folder you choose on your computer. PDF Archiver does not initiate synchronization.", bundle: #bundle)
         }
+    }
+}
+
+extension StorageType {
+    /// The row of the storage selection that stands for this type, folder URL dropped.
+    var selectionType: StorageSelectionType {
+        switch self {
+        case .iCloudDrive:
+            return .iCloudDrive
+
+        #if !os(macOS)
+        case .appContainer:
+            return .appContainer
+        #endif
+
+        case .local:
+            return .local
+        }
+    }
+
+    var title: LocalizedStringKey {
+        selectionType.title
     }
 }
 

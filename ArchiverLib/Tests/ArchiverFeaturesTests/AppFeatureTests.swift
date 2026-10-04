@@ -28,14 +28,21 @@ struct AppFeatureTests {
         }
         store.exhaustivity = .off(showSkippedAssertions: false)
 
+        // The rows only reload through the list's own action; a token written into its state
+        // from here would show the token over the previous tab's rows.
         await store.send(.binding(.set(\.selectedTab, .sectionTags("invoice"))))
+        await store.receive(\.archiveList.searchTokensReplaced)
         #expect(store.state.archiveList.searchTokens == [.tag("invoice")])
+        #expect(store.state.archiveList.isSearchPresented)
 
         await store.send(.binding(.set(\.selectedTab, .sectionYears(2024))))
+        await store.receive(\.archiveList.searchTokensReplaced)
         #expect(store.state.archiveList.searchTokens == [.year(2024)])
 
         await store.send(.binding(.set(\.selectedTab, .search)))
+        await store.receive(\.archiveList.searchTokensReplaced)
         #expect(store.state.archiveList.searchTokens.isEmpty)
+        #expect(!store.state.archiveList.isSearchPresented)
     }
 
     @Test

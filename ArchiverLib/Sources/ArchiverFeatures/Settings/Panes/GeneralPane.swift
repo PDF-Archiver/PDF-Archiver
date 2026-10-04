@@ -22,7 +22,7 @@ struct GeneralPane: View {
                 SettingsRow(title: "PDF Quality", help: "Quality of the images that are converted into a PDF.") {
                     Picker("", selection: Binding(store.$pdfQuality)) {
                         ForEach(PDFQuality.allCases, id: \.self) { quality in
-                            Text(quality.name, bundle: #bundle)
+                            quality.pickerLabel
                         }
                     }
                     .labelsHidden()

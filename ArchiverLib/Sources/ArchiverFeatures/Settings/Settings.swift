@@ -25,7 +25,7 @@ extension PDFQuality {
             return "100% - Lossless"
 
         case .good:
-            return "75% - Good (Default)"
+            return "75% - Good"
 
         case .normal:
             return "50% - Normal"
@@ -34,46 +34,16 @@ extension PDFQuality {
             return "25% - Small"
         }
     }
-}
 
-extension StorageType {
-    var title: LocalizedStringKey {
-        switch self {
-        case .iCloudDrive:
-            return "iCloud Drive"
-
-        #if !os(macOS)
-        case .appContainer:
-            return "Local"
-        #endif
-
-        case .local:
-            #if os(macOS)
-            return "Drive"
-            #else
-            return "Folder"
-            #endif
-        }
+    /// Read from the stored key itself, so the picker's "(Default)" cannot name another case than
+    /// the one a fresh install gets.
+    static var `default`: PDFQuality {
+        AppStorageKey<PDFQuality>.Default.pdfQuality.initialValue
     }
 
-    @ViewBuilder
-    var descriptionView: some View {
-        switch self {
-        case .iCloudDrive:
-            Text("Synchronized - Your documents are stored in iCloud Drive. They are available to you on all devices with the same iCloud account, e.g. iPhone, iPad and Mac.", bundle: #bundle)
-
-        #if !os(macOS)
-        case .appContainer:
-            VStack(alignment: .leading) {
-                Text("Not synchronized - your documents are only stored locally in this app. They can be transferred via the Finder on a Mac, for example.", bundle: #bundle)
-                // swiftlint:disable:next force_unwrapping
-                Link("https://support.apple.com/en-us/HT210598", destination: URL(string: NSLocalizedString("https://support.apple.com/en-us/HT210598", comment: ""))!)
-            }
-        #endif
-
-        case .local:
-            Text("Not synchronized - Your documents are stored in a folder you choose on your computer. PDF Archiver does not initiate synchronization.", bundle: #bundle)
-        }
+    var pickerLabel: Text {
+        guard self == Self.default else { return Text(name, bundle: #bundle) }
+        return Text(name, bundle: #bundle) + Text(verbatim: " ") + Text("(Default)", bundle: #bundle)
     }
 }
 
@@ -282,14 +252,7 @@ struct Settings {
             #endif
 
             case .onOpenPdfArchiverWebsiteTapped:
-                #if os(iOS) || DEBUG
-                return .run { [pdfArchiverWebsiteUrl = state.pdfArchiverWebsiteUrl] _ in
-                    await openURL(pdfArchiverWebsiteUrl)
-                }
-                #else
-                NSWorkspace.shared.open(state.pdfArchiverWebsiteUrl)
-                return .none
-                #endif
+                return .openExternalURL(state.pdfArchiverWebsiteUrl, with: openURL)
 
             case .onShowArchiveTypeSelectionTapped:
                 state.destination = .archiveStorage(StorageSelection.State())
@@ -512,7 +475,7 @@ struct SettingsView: View {
         Section {
             Picker(selection: Binding(store.$pdfQuality), label: Label(String(localized: "PDF Quality", bundle: #bundle), systemImage: "text.document")) {
                 ForEach(PDFQuality.allCases, id: \.self) { quality in
-                    Text(quality.name, bundle: #bundle)
+                    quality.pickerLabel
                 }
             }
 

@@ -204,7 +204,7 @@ struct DocumentDetailsTests {
 
         for retry in 1...DocumentDetails.maxDownloadWatchdogRetries {
             await clock.advance(by: DocumentDetails.downloadWatchdogInterval)
-            await store.receive(.onRemoteDocumentDownloadWatchdogFired) {
+            await store.receive(.onRemoteDocumentDownloadWatchdogFired(armedAtStatus: 0)) {
                 $0.downloadWatchdogRetryCount = retry
             }
             await store.receive(.onRemoteDocumentAppeared)
@@ -213,7 +213,7 @@ struct DocumentDetailsTests {
 
         // One more silent interval exceeds the budget - give up instead of retrying forever.
         await clock.advance(by: DocumentDetails.downloadWatchdogInterval)
-        await store.receive(.onRemoteDocumentDownloadWatchdogFired) {
+        await store.receive(.onRemoteDocumentDownloadWatchdogFired(armedAtStatus: 0)) {
             $0.downloadWatchdogRetryCount = DocumentDetails.maxDownloadWatchdogRetries + 1
         }
         await store.receive(.onRemoteDocumentDownloadFailed) {
@@ -221,6 +221,49 @@ struct DocumentDetailsTests {
         }
 
         #expect(downloadAttempts.value == DocumentDetails.maxDownloadWatchdogRetries + 1)
+    }
+
+    /// A large download reports progress for minutes. Only a status that has not moved since the
+    /// watchdog was armed is a stall; everything else just arms the next tick.
+    @Test
+    func watchdogLeavesAProgressingDownloadAloneAndRestartsItOnceItStalls() async throws {
+        let clock = TestClock()
+        let downloadAttempts = LockIsolated<Int>(0)
+        let document = Document.mock(url: URL(filePath: "/Archive/2024/2024-01-01--large__bill.pdf"), downloadStatus: 0.2)
+        @Dependency(\.defaultDatabase) var database
+        try await database.write { db in
+            try Document.insert { document }.execute(db)
+        }
+        let store = TestStore(initialState: DocumentDetails.State(document: document)) {
+            DocumentDetails()
+        } withDependencies: {
+            $0.continuousClock = clock
+            $0.archiveStore.startDownloadOf = { _ in
+                downloadAttempts.withValue { $0 += 1 }
+            }
+        }
+        store.exhaustivity = .off(showSkippedAssertions: false)
+
+        await store.send(.onRemoteDocumentAppeared)
+
+        for progress in [0.5, 0.8] {
+            try await database.write { db in
+                try Document.find(document.id).update { $0.downloadStatus = progress }.execute(db)
+            }
+            try await store.state.$document.load()
+            await clock.advance(by: DocumentDetails.downloadWatchdogInterval)
+            await store.receive(\.onRemoteDocumentDownloadWatchdogFired)
+        }
+        #expect(downloadAttempts.value == 1)
+        #expect(store.state.downloadWatchdogRetryCount == 0)
+        #expect(store.state.alert == nil)
+
+        // Stuck at 0.8 for a whole interval: that is the stall the watchdog is for.
+        await clock.advance(by: DocumentDetails.downloadWatchdogInterval)
+        await store.receive(\.onRemoteDocumentDownloadWatchdogFired)
+        await store.receive(\.onRemoteDocumentAppeared)
+        #expect(downloadAttempts.value == 2)
+        #expect(store.state.downloadWatchdogRetryCount == 1)
     }
 
     /// A document that finished downloading (or was never stalled) must not be silently
@@ -240,7 +283,7 @@ struct DocumentDetailsTests {
 
         await store.send(.onRemoteDocumentAppeared)
         await clock.advance(by: DocumentDetails.downloadWatchdogInterval)
-        await store.receive(.onRemoteDocumentDownloadWatchdogFired)
+        await store.receive(.onRemoteDocumentDownloadWatchdogFired(armedAtStatus: 1))
 
         #expect(downloadAttempts.value == 1)
     }
