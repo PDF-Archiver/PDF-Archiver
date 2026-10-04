@@ -47,8 +47,13 @@ jobs:
           VERSION="${{ steps.check_release.outputs.version }}"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag -a "$VERSION" -m "Release $VERSION"
-          git push origin "$VERSION"
+          # The tag may already exist (e.g. set manually); re-tagging would fail the run.
+          if git rev-parse -q --verify "refs/tags/$VERSION" > /dev/null; then
+            echo "Tag $VERSION already exists, skipping"
+          else
+            git tag -a "$VERSION" -m "Release $VERSION"
+            git push origin "$VERSION"
+          fi
 
       - name: Generate release notes
         if: steps.check_release.outputs.is_release == 'true'
