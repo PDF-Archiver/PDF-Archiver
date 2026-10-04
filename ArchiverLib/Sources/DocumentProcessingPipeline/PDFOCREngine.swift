@@ -33,7 +33,7 @@ extension NSAttributedString: @unchecked @retroactive Sendable {}
 /// One shared core (`recognizeText` + `renderPage`) drives both entry points:
 /// - ``createSearchablePDF(fromImagesAt:marker:version:)`` — the scan path: staged
 ///   page images become a brand-new searchable PDF.
-/// - ``addTextLayer(to:quality:maxPages:)`` — the in-place path: image-only
+/// - ``addTextLayer(to:quality:force:)`` — the in-place path: image-only
 ///   pages of an existing PDF are replaced by pages that additionally carry
 ///   the recognized text.
 ///
@@ -43,6 +43,13 @@ extension NSAttributedString: @unchecked @retroactive Sendable {}
 enum PDFOCREngine {
 
     private static let confidenceThreshold = Float(0)
+
+    enum ScanError: Error, LogSafeError {
+        case unreadablePageImage
+        case pageRenderingFailed
+
+        var logDescription: String { "\(self)" }
+    }
 
     struct TextObservationResult: Sendable {
         let rect: CGRect
@@ -63,35 +70,31 @@ enum PDFOCREngine {
     ///   - marker: Written to the PDF `Creator` attribute.
     ///   - version: OCR engine version stamped alongside `marker`, so the sweep
     ///     does not immediately re-OCR a document this very engine produced.
+    /// - Throws: ``ScanError`` for a page that cannot be read or rendered. The
+    ///   caller deletes the staged images after success, so a page left out
+    ///   would be lost for good.
     static func createSearchablePDF(fromImagesAt urls: [URL], marker: String, version: Int) async throws -> PDFDocument {
         let document = PDFDocument()
 
         for url in urls {
             try Task.checkCancellation()
 
-            guard let image = PlatformImage(contentsOf: url) else {
+            guard let image = PlatformImage(contentsOf: url), let cgImage = image.cgImage else {
                 Logger.ocrProcessing.error("Could not load page image", metadata: ["document": "\(LogRedact.token(url))"])
-                continue
-            }
-
-            guard let cgImage = image.cgImage else {
-                Logger.ocrProcessing.error("Could not read page image", metadata: ["document": "\(LogRedact.token(url))"])
-                continue
+                throw ScanError.unreadablePageImage
             }
             let results = try await recognizeText(in: cgImage, imageSize: image.size)
             let textEntries = await makeTextEntries(from: results)
             let bounds = CGRect(origin: .zero, size: image.size)
 
             guard let page = renderPage(image: image, bounds: bounds, texts: textEntries) else {
-                Logger.ocrProcessing.error("Could not render PDF page - skipping page")
-                continue
+                Logger.ocrProcessing.error("Could not render PDF page", metadata: ["document": "\(LogRedact.token(url))"])
+                throw ScanError.pageRenderingFailed
             }
             document.insert(page, at: document.pageCount)
         }
 
-        var attributes = document.documentAttributes ?? [:]
-        attributes[PDFDocumentAttribute.creatorAttribute] = PDFMetadata.markerValue(marker: marker, version: version)
-        document.documentAttributes = attributes
+        PDFMetadata.stamp(document, marker: marker, version: version)
         return document
     }
 
@@ -99,22 +102,26 @@ enum PDFOCREngine {
 
     /// Add an invisible OCR text layer to each image-only page of `pdf`.
     ///
-    /// Each page is rendered to an image, run through Vision, and replaced
+    /// Each such page is rendered to an image, run through Vision, and replaced
     /// by a new page that draws the page image followed by invisible text in
     /// the recognized positions. The page image is re-encoded as JPEG at
     /// `quality` so the rewritten pages stay compact.
-    static func addTextLayer(to pdf: PDFDocument, quality: PDFQuality, maxPages: Int = 10) async throws {
+    ///
+    /// - Parameter force: Also replaces pages that carry readable text or
+    ///   annotations — the manual run, where the user judged the layer broken.
+    static func addTextLayer(to pdf: PDFDocument, quality: PDFQuality, force: Bool = false) async throws {
         // Pages are rasterized once at 3x their point size (~216 DPI) — enough
         // to preserve the quality of typical scans; rendering at 1x (72 DPI)
         // would irreversibly degrade the user's document.
         let renderScale: CGFloat = 3
 
-        for pageIndex in 0..<min(pdf.pageCount, maxPages) {
+        for pageIndex in 0..<pdf.pageCount {
             // Cooperative cancellation: a CancellationError here propagates
             // to the caller, which must NOT write the partially-modified pdf.
             try Task.checkCancellation()
 
             guard let page = pdf.page(at: pageIndex) else { continue }
+            if !force, hasContentARasterWouldDrop(page) { continue }
             let bounds = page.bounds(for: .mediaBox)
 
             // Rendering the page is what preserves its full content: every page
@@ -156,6 +163,14 @@ enum PDFOCREngine {
             pdf.removePage(at: pageIndex)
             pdf.insert(newPage, at: pageIndex)
         }
+    }
+
+    /// Vector text, links and annotations do not survive the replacement by a
+    /// raster; an unreadable text layer (mojibake) is not worth keeping.
+    private static func hasContentARasterWouldDrop(_ page: PDFPage) -> Bool {
+        guard page.annotations.isEmpty else { return true }
+        guard let text = page.string, !text.isEmpty else { return false }
+        return TextReadability.isReadable(text)
     }
 
     // MARK: - Feature print (stage 3 visual retrieval fallback)

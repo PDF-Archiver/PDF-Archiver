@@ -102,13 +102,15 @@ public actor DocumentProcessor {
     @discardableResult
     public func importScan(_ pages: [CGImage], config: ProcessingConfig) async -> URL? {
         let quality = CGFloat(config.pdfQuality.rawValue)
-        let imageJpegs = pages.compactMap { PlatformImage.from($0).jpg(quality: quality) }
-        guard !imageJpegs.isEmpty else {
-            Logger.documentProcessor.errorAndAssert("Scan import failed: could not encode any page image")
-            return nil
-        }
-
         do {
+            // One page that does not encode fails the import: a document with a
+            // page silently missing would look complete.
+            let imageJpegs = try pages.map { page -> Data in
+                guard let jpeg = PlatformImage.from(page).jpg(quality: quality) else { throw ProcessingError.pageEncodingFailed }
+                return jpeg
+            }
+            guard !imageJpegs.isEmpty else { throw ProcessingError.noPagesRendered }
+
             let urls = try Staging.persist(imageJpegs: imageJpegs, in: stagingFolder)
             return await enqueue(.images(urls), config: config).value
         } catch {
@@ -416,7 +418,7 @@ public actor DocumentProcessor {
 
         let filename = await FilenameGenerator.filename(reusing: nil)
         let documentUrl = try uniqueDestination(for: filename, in: config.destinationFolder)
-        guard document.write(to: documentUrl) else { throw ProcessingError.failedToWritePdf }
+        try document.writeAtomically(to: documentUrl)
         return documentUrl
     }
 
@@ -461,7 +463,7 @@ public actor DocumentProcessor {
         Logger.ocrProcessing.info("OCR processing", metadata: ["document": "\(LogRedact.token(url))"])
 
         do {
-            try await PDFOCREngine.addTextLayer(to: pdf, quality: config.pdfQuality)
+            try await PDFOCREngine.addTextLayer(to: pdf, quality: config.pdfQuality, force: force)
             // A pass cancelled during OCR must not write the modified pdf -
             // a successor pass may already be reading the file.
             try Task.checkCancellation()
@@ -505,15 +507,7 @@ public actor DocumentProcessor {
 
     private static func uniqueDestination(for filename: String, in folder: URL) throws -> URL {
         try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
-
-        var url = folder.appendingPathComponent(filename, isDirectory: false)
-        if FileManager.default.fileExists(atPath: url.path) {
-            let base = (filename as NSString).deletingPathExtension
-            let ext = (filename as NSString).pathExtension
-            let suffix = UUID().uuidString.prefix(8).lowercased()
-            url = folder.appendingPathComponent("\(base)-\(suffix)" + (ext.isEmpty ? "" : ".\(ext)"), isDirectory: false)
-        }
-        return url
+        return FileManager.default.uniqueFileURL(for: filename, in: folder)
     }
 
     @available(iOS 26.0, macOS 26.0, *)
@@ -531,7 +525,7 @@ public actor DocumentProcessor {
     private enum ProcessingError: Error, LogSafeError {
         case invalidPdf
         case noPagesRendered
-        case failedToWritePdf
+        case pageEncodingFailed
 
         var logDescription: String { "\(self)" }
     }
