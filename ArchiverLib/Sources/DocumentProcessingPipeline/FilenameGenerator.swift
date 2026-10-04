@@ -19,10 +19,8 @@ enum FilenameGenerator {
     static func filename(reusing originalFilename: String?) async -> String {
         if let originalFilename {
             let parsedOutput = await Document.parseFilename(originalFilename)
-            if parsedOutput.date != nil,
-               let specification = parsedOutput.specification,
-               specification != Document.descriptionPlaceholder {
-                // the current filename of the document could be parsed and has no placeholders, so we use it
+            // parseFilename already turns a placeholder specification into nil
+            if parsedOutput.date != nil, parsedOutput.specification != nil {
                 return originalFilename
             }
         }

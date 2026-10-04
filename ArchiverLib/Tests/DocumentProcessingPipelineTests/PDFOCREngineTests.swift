@@ -215,19 +215,19 @@ struct PDFOCREngineTests {
 
     // MARK: - Page content preservation
 
-    /// OCR replaces every page with its rendered image, so a page that is more
-    /// than one full-page bitmap must be rasterized whole. Reusing the embedded
-    /// image instead would silently discard the rest of the page — unrecoverable,
-    /// because OCR rewrites the user's document in place with no backup.
+    /// A forced run replaces every page with its rendered image, so a page that
+    /// is more than one full-page bitmap must be rasterized whole. Reusing the
+    /// embedded image instead would silently discard the rest of the page —
+    /// unrecoverable, because OCR rewrites the user's document in place with no backup.
     @Test(.tags(.ocr))
-    func addTextLayerKeepsTheTextOfAMixedImageAndTextPage() async throws {
+    func forcedAddTextLayerKeepsTheTextOfAMixedImageAndTextPage() async throws {
         let url = try writeMixedImageAndTextPDF(name: "mixed-page.pdf", text: "Wichtige Rechnung 4711")
         let pdf = try #require(PDFDocument(url: url))
         let bounds = try #require(pdf.page(at: 0)?.bounds(for: .mediaBox))
         // Guards the fixture: the page really does carry extractable text.
         #expect(pdf.page(at: 0)?.string?.contains("Rechnung") == true)
 
-        try await PDFOCREngine.addTextLayer(to: pdf, quality: .lossless)
+        try await PDFOCREngine.addTextLayer(to: pdf, quality: .lossless, force: true)
 
         let page = try #require(pdf.page(at: 0))
         #expect(page.bounds(for: .mediaBox) == bounds)
@@ -238,6 +238,57 @@ struct PDFOCREngineTests {
 
         let text = try #require(page.string)
         #expect(text.contains("Rechnung"))
+    }
+
+    /// The automatic pass promises to touch image-only pages only: a page with
+    /// real text stays as it is, vector text, links and all.
+    @Test
+    func addTextLayerLeavesAPageWithReadableTextUntouched() async throws {
+        let url = try writeMixedImageAndTextPDF(name: "text-page.pdf", text: "Wichtige Rechnung 4711")
+        let pdf = try #require(PDFDocument(url: url))
+        let page = try #require(pdf.page(at: 0))
+        let imageSizesBefore = embeddedImageSizes(of: page)
+
+        try await PDFOCREngine.addTextLayer(to: pdf, quality: .lossless)
+
+        let pageAfter = try #require(pdf.page(at: 0))
+        #expect(embeddedImageSizes(of: pageAfter) == imageSizesBefore)
+        #expect(pageAfter.string?.contains("Rechnung") == true)
+    }
+
+    /// An annotation is an object on the page, not part of its image; a
+    /// raster would silently flatten it.
+    @Test
+    func addTextLayerLeavesAnAnnotatedPageUntouched() async throws {
+        let url = try writeImageOnlyPDF(name: "annotated.pdf")
+        let annotated = try #require(PDFDocument(url: url))
+        let highlight = PDFAnnotation(bounds: CGRect(x: 10, y: 10, width: 100, height: 20), forType: .highlight, withProperties: nil)
+        try #require(annotated.page(at: 0)).addAnnotation(highlight)
+        annotated.write(to: url)
+        let pdf = try #require(PDFDocument(url: url))
+        #expect(pdf.page(at: 0)?.annotations.count == 1)
+
+        try await PDFOCREngine.addTextLayer(to: pdf, quality: .lossless)
+
+        #expect(pdf.page(at: 0)?.annotations.count == 1)
+        #expect(!PDFMetadata.hasTextLayer(pdf))
+    }
+
+    /// The pass stamps the document as processed afterwards, so a page it
+    /// skipped would never get its text layer. Eleven pages: one past the old cap.
+    @Test(.tags(.ocr))
+    func addTextLayerProcessesEveryPageOfALongDocument() async throws {
+        let sourcePage = try #require(PDFDocument(url: Bundle.billPDFUrl)?.page(at: 0))
+        let image = sourcePage.thumbnail(of: sourcePage.bounds(for: .mediaBox).size, for: .mediaBox)
+        let pdf = PDFDocument()
+        for index in 0..<11 {
+            pdf.insert(try #require(PDFMetadataTests.createImageOnlyPDF(from: image).page(at: 0)), at: index)
+        }
+        #expect(pdf.page(at: 10)?.string?.isEmpty != false)
+
+        try await PDFOCREngine.addTextLayer(to: pdf, quality: .lossless)
+
+        #expect(pdf.page(at: 10)?.string?.isEmpty == false)
     }
 
     /// Pages are rendered at 3x their point size (~216 DPI); rendering at 1x
@@ -266,6 +317,20 @@ struct PDFOCREngineTests {
                                                                   version: config.ocrEngineVersion)
 
         #expect(PDFMetadata.processedEngineVersion(document, markerPrefix: config.processedMarker) == config.ocrEngineVersion)
+    }
+
+    /// The processor deletes the staged page images once a scan was written, so
+    /// a page it could not read must fail the scan instead of being left out.
+    @Test
+    func createSearchablePDFThrowsWhenAPageImageCannotBeLoaded() async throws {
+        let broken = tempFolder.appendingPathComponent("broken-page.jpg")
+        try Data("not an image".utf8).write(to: broken)
+
+        await #expect(throws: (any Error).self) {
+            try await PDFOCREngine.createSearchablePDF(fromImagesAt: [broken],
+                                                       marker: config.processedMarker,
+                                                       version: config.ocrEngineVersion)
+        }
     }
 
     // MARK: - Manual run failures

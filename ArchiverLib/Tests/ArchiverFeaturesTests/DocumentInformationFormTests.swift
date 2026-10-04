@@ -365,7 +365,7 @@ struct DocumentInformationFormTests {
         let expectedResult = DocumentInformationForm.DocumentParsingResult(
             date: date,
             specification: "blue hoodie",
-            tags: [],
+            tags: nil,
             dateSuggestions: [],
             tagSuggestions: ["apfel", "hoodie", "zebra"])
         await store.receive(.updateDocumentData(expectedResult)) {
@@ -397,13 +397,89 @@ struct DocumentInformationFormTests {
 
         let expectedResult = DocumentInformationForm.DocumentParsingResult(
             date: date,
-            specification: "",
-            tags: [],
+            specification: nil,
+            tags: nil,
             dateSuggestions: nil,
             tagSuggestions: nil)
         await store.receive(.updateDocumentData(expectedResult)) {
             $0.isLoading = false
             $0.document.date = date
+        }
+    }
+
+    /// Neither the filename nor the text names a date: the document keeps the date it has instead
+    /// of silently getting today's.
+    @Test
+    func parsingWithoutAFoundDateLeavesTheDocumentDateAlone() async throws {
+        let document = Document.mock(date: try Date("2023-05-04T10:00:00Z", strategy: .iso8601), isTagged: false)
+
+        let store = TestStore(initialState: DocumentInformationForm.State(document: document)) {
+            DocumentInformationForm()
+        } withDependencies: {
+            $0.archiveStore.parseFilename = { _ in (nil, nil, nil) }
+            $0.textAnalyser.getTextFrom = { _ in nil }
+            $0.textAnalyser.getFileTagsFrom = { _ in [] }
+        }
+
+        await store.send(.startUpdatingAllSuggestionsWithAI(document))
+
+        let expectedResult = DocumentInformationForm.DocumentParsingResult(
+            date: nil,
+            specification: nil,
+            tags: nil,
+            dateSuggestions: nil,
+            tagSuggestions: nil)
+        await store.receive(.updateDocumentData(expectedResult))
+        #expect(store.state.document.date == document.date)
+    }
+
+    /// The model answers seconds after the form opened; whatever the user typed in the meantime
+    /// wins over its late result, field by field.
+    @Test
+    func aLateParsingResultKeepsWhatTheUserTypedMeanwhile() async throws {
+        let store = TestStore(initialState: DocumentInformationForm.State(document: .mock())) {
+            DocumentInformationForm()
+        }
+
+        let typedDate = try Date("2024-03-01T12:00:00Z", strategy: .iso8601)
+        await store.send(.binding(.set(\.document.date, typedDate))) {
+            $0.document.date = typedDate
+        }
+        await store.send(.binding(.set(\.document.specification, "typed"))) {
+            $0.document.specification = "typed"
+        }
+        await store.send(.binding(.set(\.document.tags, ["typed"]))) {
+            $0.document.tags = ["typed"]
+        }
+
+        let parsingResult = DocumentInformationForm.DocumentParsingResult(
+            date: Date(),
+            specification: "parsed",
+            tags: ["parsed"],
+            dateSuggestions: nil,
+            tagSuggestions: ["more"])
+        await store.send(.updateDocumentData(parsingResult)) {
+            $0.suggestedTags = ["more"]
+        }
+    }
+
+    /// A tagged document without tags has nothing to derive suggestions from; the spinner the form
+    /// shows while loading still has to go away.
+    @Test
+    func onTaskForATaggedDocumentWithoutTagsStopsLoading() async throws {
+        let document = Document.mock(tags: [], isTagged: true)
+        let store = TestStore(initialState: DocumentInformationForm.State(document: document)) {
+            DocumentInformationForm()
+        }
+
+        await store.send(.onTask) {
+            $0.isLoading = true
+            $0.focusedField = .date
+        }
+
+        await store.receive(.startUpdatingTagSuggestions)
+        await store.receive(.updateTagSuggestions([])) {
+            $0.isLoading = false
         }
     }
 

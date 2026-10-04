@@ -153,19 +153,20 @@ struct AppFeature {
                 // deselect the last document because the user could not selected e.g. the inspector when switching tabs
                 state.archiveList.$selectedDocumentId.withLock { $0 = nil }
 
-                // switch tab
+                // The list reloads its rows only through its own action; a token written into its
+                // state from here would show over the previous tab's rows.
                 switch state.selectedTab {
                 case .search:
-                    state.archiveList.searchTokens = []
+                    return .send(.archiveList(.searchTokensReplaced([])))
 
                 case .sectionTags(let tag):
-                    state.archiveList.searchTokens = [.tag(tag)]
+                    return .send(.archiveList(.searchTokensReplaced([.tag(tag)])))
 
                 case .sectionYears(let year):
-                    state.archiveList.searchTokens = [.year(year)]
+                    return .send(.archiveList(.searchTokensReplaced([.year(year)])))
 
                 case .inbox, .statistics:
-                    break
+                    return .none
 
                 #if os(iOS)
                 case .settings:
@@ -175,9 +176,9 @@ struct AppFeature {
                         // A fresh stack instead of a pop, which would slide the page out in view.
                         state.settings.navigationStackID += 1
                     }
+                    return .none
                 #endif
                 }
-                return .none
 
             case .binding:
                 return .none

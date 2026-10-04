@@ -9,14 +9,8 @@ import ArchiverModels
 import Foundation
 import PDFKit
 import Shared
+import UIKit
 import UniformTypeIdentifiers
-#if os(macOS)
-import AppKit.NSImage
-private typealias Image = NSImage
-#else
-import UIKit.UIImage
-private typealias Image = UIImage
-#endif
 
 extension NSItemProvider {
     enum NSItemProviderError: Error {
@@ -37,10 +31,11 @@ extension NSItemProvider {
 
             guard let data else { continue }
 
-            if let image = Image(data: data),
-                let imageData = image.jpg(quality: 1) {
+            if let image = UIImage(data: data),
+               let imageData = image.normalizedOrientation().jpegData(compressionQuality: 1) {
                 let fileUrl = url.appendingPathComponent(UUID().uuidString).appendingPathExtension("jpeg")
-                try imageData.write(to: fileUrl)
+                // The app's processor polls this folder; it must never pick up a half-written file.
+                try imageData.write(to: fileUrl, options: .atomic)
                 return true
             } else if PDFDocument(data: data) != nil {
                 // For PDFs, preserve filename only if it has valid structure with tags/description
@@ -51,8 +46,12 @@ extension NSItemProvider {
                 } else {
                     filename = UUID().uuidString + ".pdf"
                 }
-                let fileUrl = url.appendingPathComponent(filename)
-                try data.write(to: fileUrl)
+                var fileUrl = url.appendingPathComponent(filename)
+                // Same scheme as `Staging.persist`: two shares with one tagged name must both arrive.
+                if FileManager.default.fileExists(atPath: fileUrl.path) {
+                    fileUrl = url.appendingPathComponent("\(UUID().uuidString)-\(filename)")
+                }
+                try data.write(to: fileUrl, options: .atomic)
                 return true
             }
         }
@@ -93,8 +92,8 @@ extension NSItemProvider {
             return (inputData, url)
         } else if let inputData = Self.validate(rawData as? Data) {
             return (inputData, nil)
-        } else if let image = rawData as? Image {
-            return (image.jpg(quality: 1), nil)
+        } else if let image = rawData as? UIImage {
+            return (image.jpegData(compressionQuality: 1), nil)
         } else {
             return (nil, nil)
         }
@@ -107,7 +106,7 @@ extension NSItemProvider {
 
     private static func validate(_ data: Data?) -> Data? {
         guard let inputData = data else { return data }
-        if PDFDocument(data: inputData) == nil, Image(data: inputData) == nil {
+        if PDFDocument(data: inputData) == nil, UIImage(data: inputData) == nil {
             return nil
         }
         return inputData
@@ -118,15 +117,17 @@ extension NSItemProvider.NSItemProviderError: LogSafeError {
     var logDescription: String { "\(self)" }
 }
 
-extension Image {
-    func jpg(quality: CGFloat) -> Data? {
-        #if os(macOS)
-        // swiftlint:disable:next force_unwrapping
-        let cgImage = image.cgImage(forProposedRect: nil, context: nil, hints: nil)!
-        let bitmapRep = NSBitmapImageRep(cgImage: cgImage)
-        return bitmapRep.representation(using: .jpeg, properties: [.compressionFactor: NSNumber(value: 1)])
-        #else
-        return jpegData(compressionQuality: 1)
-        #endif
+private extension UIImage {
+    /// Bake the EXIF orientation into the bitmap: the processor runs OCR on `cgImage`,
+    /// which ignores it, so a sideways photo would get text boxes for an upright page.
+    func normalizedOrientation() -> UIImage {
+        guard imageOrientation != .up else { return self }
+        let format = UIGraphicsImageRendererFormat.default()
+        // Keep the photo's pixel size; the default display scale would triple it and
+        // exceed the extension's memory limit on a camera photo.
+        format.scale = scale
+        return UIGraphicsImageRenderer(size: size, format: format).image { _ in
+            draw(in: CGRect(origin: .zero, size: size))
+        }
     }
 }

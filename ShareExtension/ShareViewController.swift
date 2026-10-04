@@ -73,9 +73,6 @@ final class ShareViewController: UIViewController, Log {
 
     private func handleAttachments() async {
         do {
-            // Migrate any documents from legacy temp location before processing new attachment
-            migrateLegacyDocuments()
-
             let url = Constants.tempDocumentURL
             try FileManager.default.createFolderIfNotExists(url)
 
@@ -104,76 +101,6 @@ final class ShareViewController: UIViewController, Log {
             complete(with: error)
         } catch {
             complete(with: error)
-        }
-    }
-
-    /// Migrates documents from the old temporary directory (used before App Group Container)
-    /// to the new shared App Group Container location.
-    /// This ensures documents shared via ShareExtension before the fix are not lost.
-    ///
-    /// This was a bug in version 4.3.0. it can be removed after some time.
-    private func migrateLegacyDocuments() {
-        // Old location: URL.temporaryDirectory/TempDocuments (extension-specific temp directory)
-        let legacyTempURL = URL.temporaryDirectory.appendingPathComponent("TempDocuments")
-
-        guard FileManager.default.directoryExists(at: legacyTempURL) else {
-            Self.log.debug("No legacy temp directory found, skipping migration")
-            return
-        }
-
-        Self.log.info("Found legacy temp directory, checking for documents to migrate")
-
-        do {
-            let legacyURLs = try FileManager.default.contentsOfDirectory(
-                at: legacyTempURL,
-                includingPropertiesForKeys: nil,
-                options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants]
-            )
-
-            guard !legacyURLs.isEmpty else {
-                Self.log.debug("No documents to migrate")
-                // Clean up empty legacy directory
-                try? FileManager.default.removeItem(at: legacyTempURL)
-                return
-            }
-
-            // Ensure target directory exists
-            try FileManager.default.createFolderIfNotExists(Constants.tempDocumentURL)
-
-            var migratedCount = 0
-            for legacyURL in legacyURLs {
-                let targetURL = Constants.tempDocumentURL.appendingPathComponent(legacyURL.lastPathComponent)
-
-                do {
-                    // Check if file already exists at target
-                    if FileManager.default.fileExists(atPath: targetURL.path) {
-                        Self.log.warning("File already exists at target, removing legacy file", metadata: ["file": "\(LogRedact.token(legacyURL))"])
-                        try FileManager.default.removeItem(at: legacyURL)
-                    } else {
-                        // Move the file to the new location
-                        try FileManager.default.moveItem(at: legacyURL, to: targetURL)
-                        migratedCount += 1
-                        Self.log.info("Migrated document", metadata: [
-                            "file": "\(LogRedact.token(legacyURL))"
-                        ])
-                    }
-                } catch {
-                    Self.log.error("Failed to migrate document", metadata: [
-                        "file": "\(LogRedact.token(legacyURL))",
-                        "error": "\(LogRedact.describe(error))"
-                    ])
-                }
-            }
-
-            Self.log.info("Migration completed", metadata: [
-                "migratedCount": "\(migratedCount)",
-                "totalFound": "\(legacyURLs.count)"
-            ])
-
-            // Clean up legacy directory after migration
-            try? FileManager.default.removeItem(at: legacyTempURL)
-        } catch {
-            Self.log.error("Failed to read legacy temp directory", metadata: ["error": "\(LogRedact.describe(error))"])
         }
     }
 }

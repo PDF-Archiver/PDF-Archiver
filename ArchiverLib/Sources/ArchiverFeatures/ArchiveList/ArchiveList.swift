@@ -184,15 +184,7 @@ struct ArchiveListView: View {
             }
         }
         .sensoryFeedback(.selection, trigger: store.selectedDocumentId)
-        .navigationDestination(item: $store.scope(\.$documentDetails, action: \.documentDetails)) { documentStore in
-            DocumentDetailsView(store: documentStore)
-                .navigationTitle(documentStore.document.specification)
-#if os(macOS)
-                .navigationSubtitle(Text(documentStore.document.date, format: .dateTime.year().month().day()))
-#else
-                .navigationBarTitleDisplayMode(.inline)
-#endif
-        }
+        .documentDetailsDestination(item: $store.scope(\.$documentDetails, action: \.documentDetails))
     }
 
     @ViewBuilder

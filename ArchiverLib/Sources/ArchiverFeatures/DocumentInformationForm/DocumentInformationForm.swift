@@ -244,7 +244,10 @@ struct DocumentInformationForm {
             case .startUpdatingTagSuggestions:
                 return .run { [tagSearchterm = state.tagSearchterm, documentTags = state.document.tags] send in
                     // Without a search term the suggestions come from the tags already picked.
-                    guard !tagSearchterm.isEmpty || !documentTags.isEmpty else { return }
+                    guard !tagSearchterm.isEmpty || !documentTags.isEmpty else {
+                        await send(.updateTagSuggestions([]))
+                        return
+                    }
 
                     let tags = await withErrorReporting {
                         try await database.read { db in
@@ -260,9 +263,8 @@ struct DocumentInformationForm {
                                 .map(\.tag)
                         }
                     }
-                    guard let tags else { return }
-
-                    await send(.updateTagSuggestions(tags))
+                    // Every path ends the loading state `onTask` entered, a failed read included.
+                    await send(.updateTagSuggestions(tags ?? []))
                 }
                 // we do not need multiple fetches of tag suggestions - so we cancelInFlight suggestions
                 .cancellable(id: CancelID.startUpdatingTagSuggestions, cancelInFlight: true)
@@ -270,13 +272,16 @@ struct DocumentInformationForm {
             case .updateDocumentData(let result):
                 state.isLoading = false
 
-                if let date = result.date {
+                // The result arrives seconds after the form opened; a field the user edited
+                // meanwhile keeps their value.
+                let untouched = state.initialDocument
+                if let date = result.date, state.document.date == untouched.date {
                     state.document.date = date
                 }
-                if let specification = result.specification {
+                if let specification = result.specification, state.document.specification == untouched.specification {
                     state.document.specification = specification
                 }
-                if let tags = result.tags {
+                if let tags = result.tags, state.document.tags == untouched.tags {
                     state.document.tags = tags
                 }
                 if let dateSuggestions = result.dateSuggestions {
@@ -379,11 +384,12 @@ struct DocumentInformationForm {
         // add tags from Finder tags
         tagNames.formUnion((try? await textAnalyser.getFileTagsFrom(document.url)) ?? [])
 
-        let date = foundDate ?? Date()
-        let tags = tagNames
-        let specification = foundSpecification ?? ""
-
-        return DocumentParsingResult(date: date, specification: specification, tags: tags, dateSuggestions: dateSuggestions, tagSuggestions: tagSuggestions)
+        // `nil` where nothing was found: the form keeps the document's own value then.
+        return DocumentParsingResult(date: foundDate,
+                                     specification: foundSpecification,
+                                     tags: tagNames.isEmpty ? nil : tagNames,
+                                     dateSuggestions: dateSuggestions,
+                                     tagSuggestions: tagSuggestions)
     }
 }
 

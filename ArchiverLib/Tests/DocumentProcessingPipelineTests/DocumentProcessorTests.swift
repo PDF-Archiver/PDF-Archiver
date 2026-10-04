@@ -180,6 +180,22 @@ struct DocumentProcessorTests {
         #expect(Staging.batches(in: missing).isEmpty)
     }
 
+    // MARK: - Unique file names
+
+    /// Shared by the staging folder and the destination folder: a free name is
+    /// kept, a taken one gets a suffix in front of the extension.
+    @Test
+    func uniqueFileURLKeepsAFreeNameAndSuffixesATakenOne() throws {
+        let free = FileManager.default.uniqueFileURL(for: "scan.pdf", in: stagingFolder)
+        #expect(free.lastPathComponent == "scan.pdf")
+
+        try Data("pdf".utf8).write(to: free)
+        let taken = FileManager.default.uniqueFileURL(for: "scan.pdf", in: stagingFolder)
+        #expect(taken.lastPathComponent.hasPrefix("scan-"))
+        #expect(taken.pathExtension == "pdf")
+        #expect(!FileManager.default.fileExists(atPath: taken.path))
+    }
+
     // MARK: - Filename generation
 
     @Test

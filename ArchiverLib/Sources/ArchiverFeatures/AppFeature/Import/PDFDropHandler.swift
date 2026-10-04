@@ -37,7 +37,13 @@ final class PDFDropHandler: Log {
 
     func handleImport(of url: URL) async throws {
         documentProcessingState = .processing
-        try await handle(input: url as any NSSecureCoding)
+        do {
+            try await handle(input: url as any NSSecureCoding)
+        } catch {
+            // The caller shows the error; the button must not keep spinning behind the alert.
+            await finishDropHandling()
+            throw error
+        }
         await finishDropHandling()
     }
 
@@ -168,7 +174,8 @@ extension PDFDropHandler: DropDelegate {
                     }
                 }
             } catch {
-                Logger.pdfDropHandler.errorAndAssert("Received error", metadata: ["error": "\(LogRedact.describe(error))"])
+                // A file the user dropped can be unreadable; that is not a programmer error.
+                Logger.pdfDropHandler.error("Failed to import dropped item", metadata: ["error": "\(LogRedact.describe(error))"])
             }
             await finishDropHandling()
         }

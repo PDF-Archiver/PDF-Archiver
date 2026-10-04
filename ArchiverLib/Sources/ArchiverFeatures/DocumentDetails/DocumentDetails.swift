@@ -59,7 +59,7 @@ struct DocumentDetails {
         case onRunOcrButtonTapped
         case onRemoteDocumentAppeared
         case onRemoteDocumentDownloadFailed
-        case onRemoteDocumentDownloadWatchdogFired
+        case onRemoteDocumentDownloadWatchdogFired(armedAtStatus: Double)
         case runOcrFinished(Bool)
 #if os(iOS)
         case onShareButtonTapped
@@ -169,19 +169,18 @@ struct DocumentDetails {
                             await send(.onRemoteDocumentDownloadFailed)
                         }
                     },
-                    // `startDownloadOf` only requests the download - it reports neither progress nor
-                    // a stall, so silence for this long is the only signal a hung download ever gives.
-                    .run { send in
-                        try? await clock.sleep(for: Self.downloadWatchdogInterval)
-                        await send(.onRemoteDocumentDownloadWatchdogFired)
-                    }
-                    .cancellable(id: CancelID.downloadWatchdog, cancelInFlight: true)
+                    downloadWatchdog(armedAtStatus: state.document.downloadStatus)
                 )
 
-            case .onRemoteDocumentDownloadWatchdogFired:
+            case .onRemoteDocumentDownloadWatchdogFired(let armedAtStatus):
                 // The view already switched away from the loading screen once this is true; the
                 // watchdog task itself is only torn down by the next `.onRemoteDocumentAppeared`.
                 guard state.document.downloadStatus < 1 else { return .none }
+
+                // A status that moved means iCloud is still delivering; only silence is a stall.
+                guard state.document.downloadStatus == armedAtStatus else {
+                    return downloadWatchdog(armedAtStatus: state.document.downloadStatus)
+                }
 
                 state.downloadWatchdogRetryCount += 1
                 guard state.downloadWatchdogRetryCount <= Self.maxDownloadWatchdogRetries else {
@@ -241,6 +240,16 @@ struct DocumentDetails {
             }
         }
         .ifLet(\.$alert, action: \.alert)
+    }
+
+    /// `startDownloadOf` only requests the download - it reports neither progress nor a stall, so
+    /// silence for this long is the only signal a hung download ever gives.
+    private func downloadWatchdog(armedAtStatus status: Double) -> Effect<Action> {
+        .run { send in
+            try? await clock.sleep(for: Self.downloadWatchdogInterval)
+            await send(.onRemoteDocumentDownloadWatchdogFired(armedAtStatus: status))
+        }
+        .cancellable(id: CancelID.downloadWatchdog, cancelInFlight: true)
     }
 }
 
@@ -339,35 +348,16 @@ struct DocumentDetailsView: View {
         .toolbar {
             if #available(macOS 26.0, iOS 26.0, *) {
 #if os(macOS)
-                if store.document.isTagged {
-                    ToolbarItem(placement: .accessoryBar(id: "tags")) {
-                        // macOS Bug: the accessoryBar will trigger a high CPU usage
-                        TagListView(
-                            tags: store.document.tags.sorted(),
-                            isEditable: false,
-                            isMultiLine: false,
-                            tapHandler: nil
-                        )
-                        .font(.caption)
-                    }
-                }
+                tagsAccessoryBar
 #endif
 
                 ToolbarItem(id: "edit") {
-                    Button {
-                        store.send(.onEditButtonTapped)
-                    } label: {
-                        Label(String(localized: "Edit", bundle: #bundle), systemImage: "pencil")
-                    }
+                    editButton
                 }
 
 #if os(macOS)
                 ToolbarItem(id: "showInFinder") {
-                    Button(role: .none) {
-                        NSWorkspace.shared.activateFileViewerSelecting([store.document.url])
-                    } label: {
-                        Label(String(localized: "Show in Finder", bundle: #bundle), systemImage: "folder")
-                    }
+                    showInFinderButton
                 }
 #endif
 
@@ -380,29 +370,14 @@ struct DocumentDetailsView: View {
                 }
 
                 ToolbarItem(id: "share") {
-#if os(iOS)
-                    Button(role: .none) {
-                        store.send(.onShareButtonTapped)
-                    } label: {
-                        Label(String(localized: "Share", bundle: #bundle), systemImage: "square.and.arrow.up")
-                    }
-#else
-                    // iOS Bug: when the inspector is active/shown, ShareLink will not trigger the share sheet.
-                    // So we use the workaround with ShareSheet instead.
-                    ShareLink(Text(store.document.filename), item: store.document.url)
-#endif
+                    shareButton
                 }
 
                 ToolbarSpacer()
 
                 ToolbarItem(id: "delete") {
-                    Button(role: .destructive) {
-                        store.send(.onDeleteDocumentButtonTapped)
-                    } label: {
-                        Label(String(localized: "Delete", bundle: #bundle), systemImage: "trash")
-                            .foregroundColor(.red)
-                    }
-                    .buttonStyle(.glass(.identity))
+                    deleteButton
+                        .buttonStyle(.glass(.identity))
                 }
             } else {
                 legacyToolbar
@@ -416,9 +391,32 @@ struct DocumentDetailsView: View {
                     onRunOcr: { store.send(.onRunOcrButtonTapped) })
     }
 
+    /// iOS 18 and macOS 15 have neither `ToolbarItem(id:)` nor `ToolbarSpacer`.
     @ToolbarContentBuilder
     private var legacyToolbar: some ToolbarContent {
 #if os(macOS)
+        tagsAccessoryBar
+#endif
+
+        ToolbarItemGroup(placement: .primaryAction) {
+            editButton
+
+            if store.document.downloadStatus >= 1 {
+                pdfInfoView
+            }
+
+#if os(macOS)
+            showInFinderButton
+#endif
+
+            shareButton
+            deleteButton
+        }
+    }
+
+#if os(macOS)
+    @ToolbarContentBuilder
+    private var tagsAccessoryBar: some ToolbarContent {
         if store.document.isTagged {
             ToolbarItem(placement: .accessoryBar(id: "tags")) {
                 // macOS Bug: the accessoryBar will trigger a high CPU usage
@@ -431,48 +429,60 @@ struct DocumentDetailsView: View {
                 .font(.caption)
             }
         }
+    }
+
+    private var showInFinderButton: some View {
+        Button(role: .none) {
+            NSWorkspace.shared.activateFileViewerSelecting([store.document.url])
+        } label: {
+            Label(String(localized: "Show in Finder", bundle: #bundle), systemImage: "folder")
+        }
+    }
 #endif
 
-        ToolbarItemGroup(placement: .primaryAction) {
-            // editButton
-            Button {
-                store.send(.onEditButtonTapped)
-            } label: {
-                Label(String(localized: "Edit", bundle: #bundle), systemImage: "pencil")
-            }
+    private var editButton: some View {
+        Button {
+            store.send(.onEditButtonTapped)
+        } label: {
+            Label(String(localized: "Edit", bundle: #bundle), systemImage: "pencil")
+        }
+    }
 
-            if store.document.downloadStatus >= 1 {
-                pdfInfoView
-            }
-
-#if os(macOS)
-            // showInFinderButton
-            Button(role: .none) {
-                NSWorkspace.shared.activateFileViewerSelecting([store.document.url])
-            } label: {
-                Label(String(localized: "Show in Finder", bundle: #bundle), systemImage: "folder")
-            }
-#endif
-
-            // share button
+    private var shareButton: some View {
 #if os(iOS)
-            Button(role: .none) {
-                store.send(.onShareButtonTapped)
-            } label: {
-                Label(String(localized: "Share", bundle: #bundle), systemImage: "square.and.arrow.up")
-            }
+        // iOS Bug: when the inspector is active/shown, ShareLink will not trigger the share sheet.
+        // So we use the workaround with ShareSheet instead.
+        Button(role: .none) {
+            store.send(.onShareButtonTapped)
+        } label: {
+            Label(String(localized: "Share", bundle: #bundle), systemImage: "square.and.arrow.up")
+        }
 #else
-            // iOS 18 Bug: when the inspector is active/shown, ShareLink will not trigger the share sheet.
-            // So we use the workaround with ShareSheet instead.
-            ShareLink(Text(store.document.filename), item: store.document.url)
+        ShareLink(Text(store.document.filename), item: store.document.url)
 #endif
-            // deleteButton
-            Button(role: .destructive) {
-                store.send(.onDeleteDocumentButtonTapped)
-            } label: {
-                Label(String(localized: "Delete", bundle: #bundle), systemImage: "trash")
-                    .foregroundColor(.red)
-            }
+    }
+
+    private var deleteButton: some View {
+        Button(role: .destructive) {
+            store.send(.onDeleteDocumentButtonTapped)
+        } label: {
+            Label(String(localized: "Delete", bundle: #bundle), systemImage: "trash")
+                .foregroundColor(.red)
+        }
+    }
+}
+
+extension View {
+    /// The archive and the inbox push the same details page, titled by the document.
+    func documentDetailsDestination(item: Binding<StoreOf<DocumentDetails>?>) -> some View {
+        navigationDestination(item: item) { documentStore in
+            DocumentDetailsView(store: documentStore)
+                .navigationTitle(documentStore.document.specification)
+#if os(macOS)
+                .navigationSubtitle(Text(documentStore.document.date, format: .dateTime.year().month().day()))
+#else
+                .navigationBarTitleDisplayMode(.inline)
+#endif
         }
     }
 }

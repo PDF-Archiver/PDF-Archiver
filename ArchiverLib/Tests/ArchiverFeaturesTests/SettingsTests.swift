@@ -26,9 +26,16 @@ struct SettingsTests {
     @Test
     func pdfQualityNames() throws {
         #expect(PDFQuality.lossless.name == "100% - Lossless")
-        #expect(PDFQuality.good.name == "75% - Good (Default)")
+        #expect(PDFQuality.good.name == "75% - Good")
         #expect(PDFQuality.normal.name == "50% - Normal")
         #expect(PDFQuality.small.name == "25% - Small")
+    }
+
+    /// The picker marks the quality the stored key falls back to, not a case named by hand - the
+    /// two drifted apart once already.
+    @Test
+    func theDefaultPdfQualityComesFromTheStoredKey() throws {
+        #expect(PDFQuality.default == .lossless)
     }
 
     // MARK: - Storage Type Tests
