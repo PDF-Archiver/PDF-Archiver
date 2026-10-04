@@ -1,5 +1,8 @@
 #!/bin/zsh
 
+# Also run as `bash ci_post_clone.sh` by .github/workflows/pr.yml, so stay in the common subset.
+set -euo pipefail
+
 # https://stackoverflow.com/a/78572430
 mkdir -p ~/Library/org.swift.swiftpm/security/
 
@@ -17,10 +20,10 @@ swift-structured-queries StructuredQueriesMacros
 swift-structured-queries StructuredQueriesSQLiteMacros
 "
 
-entries=""
+entries=()
 
-# Loop through packages
-echo "$PACKAGES" | while read -r pkg target; do
+# A here-string keeps the loop in this shell, so `exit 1` ends the script instead of a pipeline subshell.
+while read -r pkg target; do
   [ -z "$pkg" ] && continue
 
   # Extract fingerprint (revision) using jq
@@ -34,12 +37,14 @@ echo "$PACKAGES" | while read -r pkg target; do
   fi
 
   # Create JSON entry
-  jq -n \
+  entries+=("$(jq -n \
     --arg fp "$fingerprint" \
     --arg pkg "$pkg" \
     --arg target "$target" \
-    '{fingerprint: $fp, packageIdentity: $pkg, targetName: $target}'
-done | jq -s '.' > macros.json
+    '{fingerprint: $fp, packageIdentity: $pkg, targetName: $target}')")
+done <<< "$PACKAGES"
+
+printf '%s\n' "${entries[@]}" | jq -s '.' > macros.json
 
 # copy the new file
 cp macros.json ~/Library/org.swift.swiftpm/security/
