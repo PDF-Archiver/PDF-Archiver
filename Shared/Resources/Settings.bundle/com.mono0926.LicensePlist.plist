@@ -86,7 +86,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-collections</string>
 			<key>Title</key>
-			<string>swift-collections (1.7.1)</string>
+			<string>swift-collections (1.7.2)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -134,7 +134,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-log</string>
 			<key>Title</key>
-			<string>swift-log (1.15.1)</string>
+			<string>swift-log (1.16.1)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>

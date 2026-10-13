@@ -38,7 +38,7 @@ let package = Package(
         .package(url: "https://github.com/sideeffect-io/AsyncExtensions", exact: "0.5.5"),
         .package(url: "https://github.com/apple/swift-async-algorithms", exact: "1.1.7"),
         .package(url: "https://github.com/AvdLee/Diagnostics", exact: "7.0.3"),
-        .package(url: "https://github.com/apple/swift-log", exact: "1.15.1")
+        .package(url: "https://github.com/apple/swift-log", exact: "1.16.1")
     ],
     targets: [
         .target(name: "ArchiverDatabase",

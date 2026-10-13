@@ -16,7 +16,7 @@ name: swift-case-paths, nameSpecified: swift-case-paths, owner: pointfreeco, ver
 
 name: swift-clocks, nameSpecified: swift-clocks, owner: pointfreeco, version: 1.1.1, source: https://github.com/pointfreeco/swift-clocks
 
-name: swift-collections, nameSpecified: swift-collections, owner: apple, version: 1.7.1, source: https://github.com/apple/swift-collections
+name: swift-collections, nameSpecified: swift-collections, owner: apple, version: 1.7.2, source: https://github.com/apple/swift-collections
 
 name: swift-composable-architecture, nameSpecified: swift-composable-architecture, owner: pointfreeco, version: 1.26.2, source: https://github.com/pointfreeco/swift-composable-architecture
 
@@ -28,7 +28,7 @@ name: swift-dependencies, nameSpecified: swift-dependencies, owner: pointfreeco,
 
 name: swift-identified-collections, nameSpecified: swift-identified-collections, owner: pointfreeco, version: 1.1.1, source: https://github.com/pointfreeco/swift-identified-collections
 
-name: swift-log, nameSpecified: swift-log, owner: apple, version: 1.15.1, source: https://github.com/apple/swift-log
+name: swift-log, nameSpecified: swift-log, owner: apple, version: 1.16.1, source: https://github.com/apple/swift-log
 
 name: swift-navigation, nameSpecified: swift-navigation, owner: pointfreeco, version: 2.11.2, source: https://github.com/pointfreeco/swift-navigation
 
@@ -62,7 +62,7 @@ name: swift-case-paths, nameSpecified: swift-case-paths, owner: pointfreeco, ver
 
 name: swift-clocks, nameSpecified: swift-clocks, owner: pointfreeco, version: 1.1.1, source: https://github.com/pointfreeco/swift-clocks
 
-name: swift-collections, nameSpecified: swift-collections, owner: apple, version: 1.7.1, source: https://github.com/apple/swift-collections
+name: swift-collections, nameSpecified: swift-collections, owner: apple, version: 1.7.2, source: https://github.com/apple/swift-collections
 
 name: swift-composable-architecture, nameSpecified: swift-composable-architecture, owner: pointfreeco, version: 1.26.2, source: https://github.com/pointfreeco/swift-composable-architecture
 
@@ -74,7 +74,7 @@ name: swift-dependencies, nameSpecified: swift-dependencies, owner: pointfreeco,
 
 name: swift-identified-collections, nameSpecified: swift-identified-collections, owner: pointfreeco, version: 1.1.1, source: https://github.com/pointfreeco/swift-identified-collections
 
-name: swift-log, nameSpecified: swift-log, owner: apple, version: 1.15.1, source: https://github.com/apple/swift-log
+name: swift-log, nameSpecified: swift-log, owner: apple, version: 1.16.1, source: https://github.com/apple/swift-log
 
 name: swift-navigation, nameSpecified: swift-navigation, owner: pointfreeco, version: 2.11.2, source: https://github.com/pointfreeco/swift-navigation
 
