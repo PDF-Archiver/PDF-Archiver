@@ -101,7 +101,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fügen Sie Dokumente hinzu, um Ihre jährliche Statistik zu sehen"
+            "value" : "Füge Dokumente hinzu, um deine Jahresstatistik zu sehen"
           }
         }
       }
@@ -123,7 +123,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Taggen Sie Ihre Dokumente, um die meistgenutzten Tags zu sehen"
+            "value" : "Tagge deine Dokumente, um die meistgenutzten Tags zu sehen"
           }
         }
       }

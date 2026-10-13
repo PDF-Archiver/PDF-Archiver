@@ -376,7 +376,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Es konnte kein Abonnement oder lebenslanger Kauf gefunden werden. Bitte wählen Sie eine der folgenden Optionen, um die Entwicklung der App zu unterstützen."
+            "value" : "Es wurde weder ein Abo noch eine Lizenz auf Lebenszeit gefunden. Bitte wähle eine der folgenden Optionen, um die Entwicklung der App zu unterstützen."
           }
         }
       }
