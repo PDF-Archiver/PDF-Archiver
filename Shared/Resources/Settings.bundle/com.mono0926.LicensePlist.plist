@@ -54,7 +54,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/sqlite-data</string>
 			<key>Title</key>
-			<string>sqlite-data (1.12.0)</string>
+			<string>sqlite-data (1.12.1)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -86,7 +86,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-collections</string>
 			<key>Title</key>
-			<string>swift-collections (1.7.2)</string>
+			<string>swift-collections (1.7.3)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
@@ -102,7 +102,7 @@
 			<key>File</key>
 			<string>com.mono0926.LicensePlist/swift-concurrency-extras</string>
 			<key>Title</key>
-			<string>swift-concurrency-extras (1.4.1)</string>
+			<string>swift-concurrency-extras (1.4.2)</string>
 			<key>Type</key>
 			<string>PSChildPaneSpecifier</string>
 		</dict>
