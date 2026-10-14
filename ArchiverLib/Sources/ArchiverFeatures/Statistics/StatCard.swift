@@ -68,7 +68,7 @@ extension View {
             .frame(maxWidth: .infinity, alignment: .topLeading)
             .background(
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(Color.paSecondaryBackgroundAsset)
+                    .fill(Color.secondaryGroupedBackgroundAsset)
             )
     }
 }

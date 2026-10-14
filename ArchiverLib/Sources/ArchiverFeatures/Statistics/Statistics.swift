@@ -117,6 +117,7 @@ struct StatisticsView: View {
             }
             .padding()
         }
+        .background(Color.groupedBackgroundAsset)
         .task {
             await store.send(.onTask).finish()
         }
