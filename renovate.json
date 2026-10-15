@@ -1,5 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "baseBranchPatterns": ["develop"],
   "extends": ["config:recommended", "group:all"],
   "swift": {
     "enabled": true

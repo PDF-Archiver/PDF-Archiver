@@ -1,35 +1,52 @@
-name: Update Package.resolved for Renovate
+# Renovate bumps the pins in Package.swift but cannot regenerate Package.resolved. This job writes
+# it with Xcode Cloud's toolchain and builds against it first, so a broken update fails here.
+name: Update Package.resolved on Renovate branches
 
 on:
   push:
     branches:
       - "renovate/**"
 
+# Renovate force-pushes rebases; a superseded run is macOS minutes spent on a dead commit.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  update-package-resolved:
-    runs-on: macos-26
+  resolve:
+    # Point-Free manifests pick swift-issue-reporting only from Swift 6.4 on; an older toolchain
+    # resolves xctest-dynamic-overlay, which Xcode Cloud rejects as out of date.
+    runs-on: xcode-27
+    # A hung xcodebuild would otherwise bill the 360-minute default; lower it once real runs are measured.
+    timeout-minutes: 60
     permissions:
       contents: write
-
+      statuses: write
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
 
-      - name: Delete existing Package.resolved to force regeneration
+      # A kept pin stays behind when a bumped package switches its own dependencies.
+      - name: Delete Package.resolved
         run: |
-          rm -f ArchiverLib/Package.resolved
+          rm -f ArchiverLib/Package.resolved \
+            PDFArchiver.xcworkspace/xcshareddata/swiftpm/Package.resolved \
+            PDFArchiver.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
 
-      - name: Resolve ArchiverLib SPM packages
-        run: |
-          cd ArchiverLib && swift package resolve
+      - name: Resolve package dependencies
+        run: swift package resolve
+        working-directory: ArchiverLib
 
-      - name: Sync Package.resolved to xcworkspace and xcodeproj
+      - name: Mirror into the workspace and the app project
         run: |
-          cp ArchiverLib/Package.resolved PDFArchiver.xcworkspace/xcshareddata/swiftpm/Package.resolved
-          cp ArchiverLib/Package.resolved PDFArchiver.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+          cp ArchiverLib/Package.resolved \
+            PDFArchiver.xcworkspace/xcshareddata/swiftpm/Package.resolved
+          cp ArchiverLib/Package.resolved \
+            PDFArchiver.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
 
       - name: Install LicensePlist
         run: |
@@ -41,23 +58,55 @@ jobs:
         run: |
           license-plist --suppress-opening-directory --add-version-numbers --force --output-path Shared/Resources/Settings.bundle --package-paths ArchiverLib/Package.swift
 
-      - name: Check for changes in Package.resolved and Settings.bundle
-        id: changes
-        run: |
-          if git diff --quiet ArchiverLib/Package.resolved Shared/Resources/Settings.bundle/; then
-            echo "changed=false" >> $GITHUB_OUTPUT
-          else
-            echo "changed=true" >> $GITHUB_OUTPUT
-          fi
+      - name: Approve macros
+        run: cd ci_scripts && bash ci_post_clone.sh
 
-      - name: Commit Package.resolved and Settings.bundle changes
-        if: steps.changes.outputs.changed == 'true'
+      - name: Resolve like Xcode Cloud
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add -f ArchiverLib/Package.resolved
-          git add PDFArchiver.xcworkspace/xcshareddata/swiftpm/Package.resolved
-          git add PDFArchiver.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
-          git add Shared/Resources/Settings.bundle/
-          git commit -m "Package.resolved and Settings.bundle updated"
+          xcodebuild -resolvePackageDependencies -disableAutomaticPackageResolution \
+            -workspace PDFArchiver.xcworkspace -scheme iOS
+          xcodebuild -resolvePackageDependencies -disableAutomaticPackageResolution \
+            -project PDFArchiver.xcodeproj -scheme iOS
+
+      - name: Build like Xcode Cloud
+        run: |
+          xcodebuild build -disableAutomaticPackageResolution \
+            -workspace PDFArchiver.xcworkspace -scheme iOS \
+            -destination 'generic/platform=iOS' -configuration Debug CODE_SIGNING_ALLOWED=NO
+          xcodebuild build -disableAutomaticPackageResolution \
+            -workspace PDFArchiver.xcworkspace -scheme macOS \
+            -destination 'platform=macOS,arch=arm64' -configuration Debug CODE_SIGNING_ALLOWED=NO
+
+      # Last on purpose: a failure above leaves Renovate's commit as the PR head, with a red check.
+      - name: Commit if it changed
+        id: commit
+        run: |
+          files=(
+            ArchiverLib/Package.resolved
+            PDFArchiver.xcworkspace/xcshareddata/swiftpm/Package.resolved
+            PDFArchiver.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+            Shared/Resources/Settings.bundle/
+          )
+          git add "${files[@]}"
+          if git diff --cached --quiet; then
+            echo "Package.resolved already up to date."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: update Package.resolved and licenses"
           git push
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+
+      # A GITHUB_TOKEN push starts no push-triggered run, so this posts the green result on the new head.
+      # The context must not equal a required check, or it could satisfy one without a test run.
+      - name: Report the new head
+        if: steps.commit.outputs.pushed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/statuses/$(git rev-parse HEAD)" \
+            -f state=success \
+            -f context=renovate-resolve \
+            -f description="Resolved and built with Xcode 27.0" \
+            -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"

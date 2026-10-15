@@ -20,13 +20,15 @@ name: swift-collections, nameSpecified: swift-collections, owner: apple, version
 
 name: swift-composable-architecture, nameSpecified: swift-composable-architecture, owner: pointfreeco, version: 1.26.2, source: https://github.com/pointfreeco/swift-composable-architecture
 
-name: swift-concurrency-extras, nameSpecified: swift-concurrency-extras, owner: pointfreeco, version: 1.4.2, source: https://github.com/pointfreeco/swift-concurrency-extras
+name: swift-concurrency-extras, nameSpecified: swift-concurrency-extras, owner: pointfreeco, version: 1.4.3, source: https://github.com/pointfreeco/swift-concurrency-extras
 
 name: swift-custom-dump, nameSpecified: swift-custom-dump, owner: pointfreeco, version: 1.7.3, source: https://github.com/pointfreeco/swift-custom-dump
 
 name: swift-dependencies, nameSpecified: swift-dependencies, owner: pointfreeco, version: 1.17.1, source: https://github.com/pointfreeco/swift-dependencies
 
 name: swift-identified-collections, nameSpecified: swift-identified-collections, owner: pointfreeco, version: 1.1.1, source: https://github.com/pointfreeco/swift-identified-collections
+
+name: swift-issue-reporting, nameSpecified: swift-issue-reporting, owner: pointfreeco, version: 2.1.2, source: https://github.com/pointfreeco/swift-issue-reporting
 
 name: swift-log, nameSpecified: swift-log, owner: apple, version: 1.16.1, source: https://github.com/apple/swift-log
 
@@ -41,8 +43,6 @@ name: swift-snapshot-testing, nameSpecified: swift-snapshot-testing, owner: poin
 name: swift-structured-queries, nameSpecified: swift-structured-queries, owner: pointfreeco, version: 0.39.2, source: https://github.com/pointfreeco/swift-structured-queries
 
 name: swift-syntax, nameSpecified: swift-syntax, owner: swiftlang, version: 604.0.0, source: https://github.com/swiftlang/swift-syntax
-
-name: xctest-dynamic-overlay, nameSpecified: xctest-dynamic-overlay, owner: pointfreeco, version: 1.13.1, source: https://github.com/pointfreeco/xctest-dynamic-overlay
 
 name: AsyncExtensions, nameSpecified: AsyncExtensions, owner: sideeffect-io, version: 0.5.5, source: https://github.com/sideeffect-io/AsyncExtensions
 
@@ -66,13 +66,15 @@ name: swift-collections, nameSpecified: swift-collections, owner: apple, version
 
 name: swift-composable-architecture, nameSpecified: swift-composable-architecture, owner: pointfreeco, version: 1.26.2, source: https://github.com/pointfreeco/swift-composable-architecture
 
-name: swift-concurrency-extras, nameSpecified: swift-concurrency-extras, owner: pointfreeco, version: 1.4.2, source: https://github.com/pointfreeco/swift-concurrency-extras
+name: swift-concurrency-extras, nameSpecified: swift-concurrency-extras, owner: pointfreeco, version: 1.4.3, source: https://github.com/pointfreeco/swift-concurrency-extras
 
 name: swift-custom-dump, nameSpecified: swift-custom-dump, owner: pointfreeco, version: 1.7.3, source: https://github.com/pointfreeco/swift-custom-dump
 
 name: swift-dependencies, nameSpecified: swift-dependencies, owner: pointfreeco, version: 1.17.1, source: https://github.com/pointfreeco/swift-dependencies
 
 name: swift-identified-collections, nameSpecified: swift-identified-collections, owner: pointfreeco, version: 1.1.1, source: https://github.com/pointfreeco/swift-identified-collections
+
+name: swift-issue-reporting, nameSpecified: swift-issue-reporting, owner: pointfreeco, version: 2.1.2, source: https://github.com/pointfreeco/swift-issue-reporting
 
 name: swift-log, nameSpecified: swift-log, owner: apple, version: 1.16.1, source: https://github.com/apple/swift-log
 
@@ -88,8 +90,6 @@ name: swift-structured-queries, nameSpecified: swift-structured-queries, owner: 
 
 name: swift-syntax, nameSpecified: swift-syntax, owner: swiftlang, version: 604.0.0, source: https://github.com/swiftlang/swift-syntax
 
-name: xctest-dynamic-overlay, nameSpecified: xctest-dynamic-overlay, owner: pointfreeco, version: 1.13.1, source: https://github.com/pointfreeco/xctest-dynamic-overlay
-
 add-version-numbers: true
 
-LicensePlist Version: 3.28.0
+LicensePlist Version: 3.28.3
