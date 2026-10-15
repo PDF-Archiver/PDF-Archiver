@@ -155,18 +155,20 @@ private struct ImportToolbarButton: View {
             Label {
                 Text("Import Document", bundle: #bundle)
             } icon: {
-                ZStack {
-                    Image(systemName: "square.and.arrow.down")
-                        .opacity(![.processing, .finished].contains(state) ? 1 : 0)
-
-                    ProgressView()
-                        .controlSize(.small)
-                        .opacity(state == .processing ? 1 : 0)
-
-                    Image(systemName: "checkmark.circle")
-                        .foregroundStyle(.green)
-                        .opacity(state == .finished ? 1 : 0)
-                }
+                // The symbol alone sizes the icon: in a `ZStack` with the spinner, the tray sat 1 pt
+                // below the other toolbar icons.
+                Image(systemName: "square.and.arrow.down")
+                    .opacity(![.processing, .finished].contains(state) ? 1 : 0)
+                    .overlay {
+                        ProgressView()
+                            .controlSize(.small)
+                            .opacity(state == .processing ? 1 : 0)
+                    }
+                    .overlay {
+                        Image(systemName: "checkmark.circle")
+                            .foregroundStyle(.green)
+                            .opacity(state == .finished ? 1 : 0)
+                    }
             }
         }
         .help(Text("Import Document", bundle: #bundle))
