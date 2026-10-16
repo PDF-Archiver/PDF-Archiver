@@ -46,7 +46,11 @@ extension ArchiveStoreDependency: DependencyKey {
         // queue behind would only have picked the same iCloud provider back out again.
         startDownloadOf: { url in
             Logger.archiveStore.notice("Requesting iCloud download", metadata: ["document": "\(LogRedact.token(url))"])
-            try FileManager.default.startDownloadingUbiquitousItem(at: url)
+            try await withCheckedThrowingContinuation { continuation in
+                iCloudDownloadQueue.async {
+                    continuation.resume(with: Result { try FileManager.default.startDownloadingUbiquitousItem(at: url) })
+                }
+            }
         },
         // Bypasses ArchiveStore/FolderProviderActor on purpose, mirroring `startDownloadOf`.
         evictDocumentAt: { url in
@@ -70,6 +74,10 @@ extension ArchiveStoreDependency: DependencyKey {
         }
     )
 }
+
+// `startDownloadingUbiquitousItem` waits on the iCloud daemon, at times for minutes. On the
+// cooperative pool the inbox prefetch blocked every thread with it and stalled all async work.
+private let iCloudDownloadQueue = DispatchQueue(label: "de.JulianKahnert.PDFArchiver.icloud-download", qos: .utility)
 
 public extension DependencyValues {
     var archiveStore: ArchiveStoreDependency {
