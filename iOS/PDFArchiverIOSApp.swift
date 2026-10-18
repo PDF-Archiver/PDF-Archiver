@@ -39,6 +39,7 @@ struct PDFArchiverIOSApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()
+                .withExchangeBanner()
         }
     }
 }

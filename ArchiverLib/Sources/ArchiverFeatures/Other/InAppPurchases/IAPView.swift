@@ -5,168 +5,17 @@
 //  Created by Julian Kahnert on 23.05.24.
 //
 
-import ArchiverModels
-import Logging
-import Shared
-import StoreKit
 import SwiftUI
 
 struct IAPView: View {
     let onCancel: () -> Void
-    /// Called after a purchase made through one of this view's `ProductView`s is verified and
-    /// finished, so the caller can re-evaluate `premiumStatus` - a same-device purchase completes
-    /// through `Product.PurchaseResult`, not `Transaction.updates`, so nothing else observes it.
+    /// Called after a purchase made through this view is verified and finished, so the caller can
+    /// re-evaluate `premiumStatus` - a same-device purchase completes through `Product.PurchaseResult`,
+    /// not `Transaction.updates`, so nothing else observes it.
     let onPurchaseCompleted: () -> Void
 
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
     var body: some View {
-        ScrollView {
-            VStack(spacing: 30) {
-                VStack(spacing: 10) {
-                    Text("No Subscription", bundle: #bundle)
-                        .font(.title)
-                    Text("Could not find a subscription or lifetime purchase. Please choose one of the options below to support the app development.", bundle: #bundle)
-                }
-
-                features
-                ProductView(id: PremiumProduct.lifetime)
-                    .productViewStyle(.large)
-                    .padding()
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.paRedAsset, lineWidth: 2)
-                    )
-
-                VStack(alignment: .leading, spacing: 16) {
-                    ForEach(PremiumProduct.subscriptions, id: \.self) { id in
-                        ProductView(id: id)
-                            .productViewStyle(.compact)
-                    }
-                    HStack {
-                        Spacer()
-                        Text("You get a 2-week free trial before all subscriptions.", bundle: #bundle)
-                            .foregroundStyle(.secondary)
-                            .font(.caption)
-                        Spacer()
-                    }
-                }
-                .padding()
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(Color.paDarkGrayAsset.opacity(0.125), lineWidth: 2)
-                )
-
-                HStack {
-                    Spacer()
-                    restore
-                    Spacer()
-                    cancel
-                    Spacer()
-                }
-            }
-            .padding()
-        }
-
-        .frame(minWidth: 400, idealWidth: 500)
-        #if os(macOS)
-        .frame(width: 500, height: 600)
-        #endif
-        .listRowSeparator(.hidden)
-        .listSectionSeparator(.hidden)
-        .foregroundStyle(Color.paDarkGrayAsset)
-        .background(Color.paBackgroundAsset)
-        .onInAppPurchaseCompletion { _, result in
-            guard case .success(let purchaseResult) = result,
-                  case .success(let verificationResult) = purchaseResult else { return }
-
-            switch verificationResult {
-            case .verified(let transaction):
-                await transaction.finish()
-                onPurchaseCompleted()
-
-            case .unverified(let transaction, let error):
-                Logger.inAppPurchase.error("Transaction is unverified", metadata: [
-                    "transactionId": "\(transaction.id)",
-                    "productId": "\(transaction.productID)",
-                    "error": "\(LogRedact.describe(error))"
-                ])
-            }
-        }
-    }
-
-    private var features: some View {
-        VStack(alignment: .center, spacing: 16) {
-            HStack(spacing: 16) {
-                VStack(alignment: .leading, spacing: 6) {
-                    Label(String(localized: "Search PDFs", bundle: #bundle), systemImage: "magnifyingglass")
-                    Label(String(localized: "iCloud Sync", bundle: #bundle), systemImage: "cloud")
-                    Label(String(localized: "Open Source", bundle: #bundle), systemImage: "lock.open")
-                }
-                .frame(maxWidth: 220, alignment: .leading)
-                .padding()
-                .background(Color.paDarkGrayAsset.opacity(0.125))
-                .cornerRadius(8)
-
-                VStack(alignment: .leading, spacing: 6) {
-                    Label(String(localized: "Scanner", bundle: #bundle), systemImage: "doc.text.viewfinder")
-                    Label(String(localized: "Searchable PDFs", bundle: #bundle), systemImage: "doc.text.magnifyingglass")
-                    Label(String(localized: "Tag PDFs", bundle: #bundle), systemImage: "tag")
-                }
-                .frame(maxWidth: 220, alignment: .leading)
-                .padding()
-                .background(Color.paDarkGrayAsset.opacity(0.125))
-                .cornerRadius(8)
-                .overlay(alignment: .topTrailing) {
-                    Text("Premium", bundle: #bundle)
-                        .padding(4)
-                        .font(.footnote)
-                        .foregroundColor(Color.paWhiteAsset)
-                        .background(Color.paRedAsset)
-                        .cornerRadius(8)
-                        .transition(reduceMotion ? .opacity : .scale)
-                        .offset(x: -16, y: -12)
-                }
-            }
-
-            HStack(spacing: 8) {
-                Image(systemName: "heart.fill")
-                    .foregroundColor(Color.paRedAsset)
-                Text("Support further development of a 1 person team.", bundle: #bundle)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .frame(maxWidth: 250)
-            }
-            .padding()
-            .background(Color.paDarkGrayAsset.opacity(0.125))
-            .cornerRadius(8)
-        }
-    }
-
-    private var restore: some View {
-        Button {
-            Task {
-                do {
-                    try await AppStore.sync()
-                } catch StoreKitError.userCancelled {
-                    // Dismissing the App Store sign-in is a normal outcome, not an error.
-                } catch {
-                    Logger.inAppPurchase.error("AppStore sync failed", metadata: ["error": "\(LogRedact.describe(error))"])
-                    NotificationCenter.default.postAlert(error)
-                }
-            }
-        } label: {
-            Text("Restore purchases", bundle: #bundle)
-        }
-        .buttonBorderShape(.capsule)
-    }
-
-    private var cancel: some View {
-        Button {
-            onCancel()
-        } label: {
-            Text("Cancel", bundle: #bundle)
-        }
-        .buttonBorderShape(.capsule)
+        PaywallView(onCancel: onCancel, onPurchaseCompleted: onPurchaseCompleted)
     }
 }
 

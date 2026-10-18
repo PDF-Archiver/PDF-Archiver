@@ -37,6 +37,7 @@ struct PDFArchiverMacApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()
+                .withExchangeBanner()
             #if DEBUG
                 .onAppear(perform: sizeWindowForScreenshot)
             #endif
@@ -47,6 +48,7 @@ struct PDFArchiverMacApp: App {
 
         Settings {
             RootView.settings
+                .withExchangeBanner()
         }
     }
 

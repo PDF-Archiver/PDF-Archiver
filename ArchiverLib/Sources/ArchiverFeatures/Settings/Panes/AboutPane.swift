@@ -19,10 +19,10 @@ struct AboutPane: View {
     var body: some View {
         Form {
             Section {
-                NavigationLink {
+                PageLink {
                     AboutMeView()
                 } label: {
-                    Label(String(localized: "About", bundle: #bundle), systemImage: "info.circle")
+                    Label(String(localized: "About the Developer", bundle: #bundle), systemImage: "info.circle")
                 }
             }
 
@@ -41,6 +41,7 @@ struct AboutPane: View {
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                .focusable(false)
                 .diagnosticsReportConsentDialog(
                     isPresented: $store.isShowingDiagnosticsReportConsent,
                     onSendWithReport: { store.send(.onSendWithReportTapped) },
@@ -58,6 +59,7 @@ struct AboutPane: View {
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                .focusable(false)
 
                 ShareLink(item: store.appStoreUrl) {
                     HStack {
@@ -66,6 +68,7 @@ struct AboutPane: View {
                     }
                 }
                 .buttonStyle(.plain)
+                .focusable(false)
             } header: {
                 Text("Support", bundle: #bundle)
             }

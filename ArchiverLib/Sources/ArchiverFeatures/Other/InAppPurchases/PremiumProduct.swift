@@ -12,8 +12,8 @@ import StoreKit
 enum PremiumProduct {
     static let subscriptionGroupID = "20516661"
     static let lifetime = "LIFETIME"
-    /// Display order in `IAPView`.
-    static let subscriptions = ["SUBSCRIPTION_YEARLY_IOS_NEW", "SUBSCRIPTION_MONTHLY_IOS"]
+    static let yearly = "SUBSCRIPTION_YEARLY_IOS_NEW"
+    static let monthly = "SUBSCRIPTION_MONTHLY_IOS"
 
     /// The lifetime purchase or any subscription of the group grants premium. Matching the group
     /// instead of the product IDs keeps subscribers of products no longer on sale entitled.

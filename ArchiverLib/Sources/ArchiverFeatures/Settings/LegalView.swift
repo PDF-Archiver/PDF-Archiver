@@ -14,21 +14,21 @@ struct LegalView: View {
 
     var body: some View {
             Group {
-                NavigationLink {
+                PageLink {
                     MarkdownView(markdown: String(localized: "TERMS_OF_USE", bundle: #bundle))
                         .navigationTitle(String(localized: "Terms of Use", bundle: #bundle))
                 } label: {
                     Label(String(localized: "Terms of Use", bundle: #bundle), systemImage: "doc.text")
                 }
 
-                NavigationLink {
+                PageLink {
                     MarkdownView(markdown: String(localized: "PRIVACY", bundle: #bundle))
                         .navigationTitle(String(localized: "Privacy", bundle: #bundle))
                 } label: {
                     Label(String(localized: "Privacy", bundle: #bundle), systemImage: "hand.raised")
                 }
 
-                NavigationLink {
+                PageLink {
                     MarkdownView(markdown: String(localized: "IMPRINT", bundle: #bundle))
                         .navigationTitle(Text("Imprint", bundle: #bundle))
                 } label: {
@@ -51,6 +51,7 @@ struct LegalView: View {
                 }
                 #if os(macOS)
                 .buttonStyle(.link)
+                .focusable(false)
                 #endif
             }
             .foregroundColor(.primary)
