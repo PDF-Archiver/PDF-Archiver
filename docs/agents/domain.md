@@ -32,6 +32,10 @@ When your output names a domain concept (in an issue title, a refactor proposal,
 
 If the concept you need isn't in the glossary yet, that's a signal: either you're inventing language the project doesn't use (reconsider) or there's a real gap (note it for `/domain-modeling`).
 
+## Specs are not ADRs
+
+A spec says what one feature builds and is finished when its tickets close; an ADR says why the code is the way it is and stays true until it is edited. A spec yields an ADR only for a decision that is hard to reverse and binds code beyond the feature; most yield none. Specs: see `docs/agents/issue-tracker.md`.
+
 ## Flag ADR conflicts
 
 If your output contradicts an existing ADR, surface it explicitly rather than silently overriding:

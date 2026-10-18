@@ -321,7 +321,7 @@ Main dependencies (from `ArchiverLib/Package.swift`):
 
 ### Issue tracker
 
-Issues live in GitHub Issues (`gh` CLI). See `docs/agents/issue-tracker.md`.
+Tickets live in GitHub Issues (`gh` CLI); specs live in the Obsidian vault at `~/KnowledgeBase/Resources/PDF Archiver/spec/`, not as issues. See `docs/agents/issue-tracker.md`.
 
 ### Triage labels
 
