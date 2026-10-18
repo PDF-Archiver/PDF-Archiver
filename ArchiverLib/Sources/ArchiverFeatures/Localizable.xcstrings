@@ -1008,6 +1008,16 @@
         }
       }
     },
+    "Or as a subscription" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oder als Abo"
+          }
+        }
+      }
+    },
     "PDF Archiver" : {
       "shouldTranslate" : false
     },
@@ -1214,6 +1224,16 @@
         }
       }
     },
+    "Recommended" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Empfohlen"
+          }
+        }
+      }
+    },
     "Recreate OCR" : {
       "localizations" : {
         "de" : {
@@ -1281,16 +1301,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Einstellungen zurücksetzen"
-          }
-        }
-      }
-    },
-    "Restore purchases" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Käufe wiederherstellen"
           }
         }
       }
@@ -1905,16 +1915,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Möchtest du das aktuelle Dokument wirklich löschen?"
-          }
-        }
-      }
-    },
-    "You get a 2-week free trial before all subscriptions." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Du erhältst eine 2-wöchige kostenlose Testphase vor allen Abonnements.\n"
           }
         }
       }

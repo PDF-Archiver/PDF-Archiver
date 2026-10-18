@@ -99,6 +99,10 @@ struct PremiumSectionView: View {
             .buttonStyle(.bordered)
             .padding(.horizontal)
             .padding(.bottom)
+
+            ExchangeBannerSlot()
+                .padding(.horizontal)
+                .padding(.bottom)
         }
         #else
         Section {
@@ -138,6 +142,8 @@ struct PremiumSectionView: View {
             } label: {
                 Label(String(localized: "Manage Subscription", bundle: #bundle), systemImage: "switch.2")
             }
+
+            ExchangeBannerSlot()
         } header: {
             Text("Premium", bundle: #bundle)
                 .foregroundStyle(Color.secondary)

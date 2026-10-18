@@ -104,6 +104,7 @@ struct UntaggedDocumentListView: View {
             }, onPurchaseCompleted: {
                 store.send(.delegate(.onIapPurchaseCompleted))
             })
+            .presentationSizing(.form)
         })
         #endif
         .sensoryFeedback(.selection, trigger: store.selectedDocumentId)

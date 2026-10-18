@@ -34,6 +34,10 @@
 		A3708E2D2E774FA3004FC2CF /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = A3708E2C2E774FA3004FC2CF /* AppIcon.icon */; };
 		A3708E2E2E774FA3004FC2CF /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = A3708E2C2E774FA3004FC2CF /* AppIcon.icon */; };
 		A3708E2F2E774FA3004FC2CF /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = A3708E2C2E774FA3004FC2CF /* AppIcon.icon */; };
+		A3C5E0022F00000000000000 /* ExchangeBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3C5E0012F00000000000000 /* ExchangeBanner.swift */; };
+		A3C5E0032F00000000000000 /* ExchangeBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3C5E0012F00000000000000 /* ExchangeBanner.swift */; };
+		A3C5E0072F00000000000000 /* KickstartExchange in Frameworks */ = {isa = PBXBuildFile; productRef = A3C5E0052F00000000000000 /* KickstartExchange */; };
+		A3C5E0082F00000000000000 /* KickstartExchange in Frameworks */ = {isa = PBXBuildFile; productRef = A3C5E0062F00000000000000 /* KickstartExchange */; };
 		A3708E322E77555F004FC2CF /* AppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3708E312E77555F004FC2CF /* AppIntent.swift */; };
 		A3708E332E77555F004FC2CF /* AppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3708E312E77555F004FC2CF /* AppIntent.swift */; };
 		A3708E3E2E8E000B004FC2CF /* PDFArchiverShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3708E3D2E8E000B004FC2CF /* PDFArchiverShortcuts.swift */; };
@@ -168,6 +172,7 @@
 		A3579A582BFFD9B6001D921C /* PDFArchiverIAP.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = PDFArchiverIAP.storekit; sourceTree = "<group>"; };
 		A3708E2C2E774FA3004FC2CF /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		A3708E302E77538F004FC2CF /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		A3C5E0012F00000000000000 /* ExchangeBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExchangeBanner.swift; sourceTree = "<group>"; };
 		A3708E312E77555F004FC2CF /* AppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntent.swift; sourceTree = "<group>"; };
 		A3708E3D2E8E000B004FC2CF /* PDFArchiverShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFArchiverShortcuts.swift; sourceTree = "<group>"; };
 		A372F4272DE8484700D6E9AA /* WidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -204,6 +209,7 @@
 				34A5CF8224A93A3C002409EF /* StoreKit.framework in Frameworks */,
 				A3EEFBD62E1AEE8600E70A8C /* ArchiverLib in Frameworks */,
 				A39A29D72CCAE6BD0072EFDE /* AsyncExtensions in Frameworks */,
+				A3C5E0072F00000000000000 /* KickstartExchange in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -212,6 +218,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A36FB17F2CCBDF3E006ADDE9 /* AsyncExtensions in Frameworks */,
+				A3C5E0082F00000000000000 /* KickstartExchange in Frameworks */,
 				34D470BB255B249B000302A8 /* StoreKit.framework in Frameworks */,
 				A36033872E18580900A5F573 /* ArchiverLib in Frameworks */,
 			);
@@ -289,6 +296,7 @@
 			isa = PBXGroup;
 			children = (
 				A3708E312E77555F004FC2CF /* AppIntent.swift */,
+				A3C5E0012F00000000000000 /* ExchangeBanner.swift */,
 				A3708E3D2E8E000B004FC2CF /* PDFArchiverShortcuts.swift */,
 				3416B1AC24A9282700D5F4E0 /* Resources */,
 			);
@@ -415,6 +423,7 @@
 			packageProductDependencies = (
 				A39A29D62CCAE6BD0072EFDE /* AsyncExtensions */,
 				A3EEFBD52E1AEE8600E70A8C /* ArchiverLib */,
+				A3C5E0052F00000000000000 /* KickstartExchange */,
 			);
 			productName = iOS;
 			productReference = 3489D71B24A3C53E0035E64F /* PDFArchiver.app */;
@@ -438,6 +447,7 @@
 			packageProductDependencies = (
 				A36FB17E2CCBDF3E006ADDE9 /* AsyncExtensions */,
 				A36033862E18580900A5F573 /* ArchiverLib */,
+				A3C5E0062F00000000000000 /* KickstartExchange */,
 			);
 			productName = macOS;
 			productReference = 3489D72324A3C53E0035E64F /* PDFArchiver.app */;
@@ -564,6 +574,7 @@
 			mainGroup = 3489D70E24A3C53D0035E64F;
 			packageReferences = (
 				A39A29D52CCAE6BD0072EFDE /* XCRemoteSwiftPackageReference "AsyncExtensions" */,
+				A3C5E0042F00000000000000 /* XCRemoteSwiftPackageReference "KickstartSDK" */,
 				A36033852E18580900A5F573 /* XCLocalSwiftPackageReference "ArchiverLib" */,
 			);
 			productRefGroup = 3489D71C24A3C53E0035E64F /* Products */;
@@ -687,6 +698,7 @@
 			files = (
 				A38256C12C1F552C00416A08 /* PDFArchiverIOSApp.swift in Sources */,
 				A3708E322E77555F004FC2CF /* AppIntent.swift in Sources */,
+				A3C5E0022F00000000000000 /* ExchangeBanner.swift in Sources */,
 				A3708E3E2E8E000B004FC2CF /* PDFArchiverShortcuts.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -698,6 +710,7 @@
 				A3B5D90B2BB37114002B9FF1 /* PDFArchiverMacApp.swift in Sources */,
 				A30BCBE22F7B05EB005185F8 /* ContentExtractorStorePlayground.swift in Sources */,
 				A3708E332E77555F004FC2CF /* AppIntent.swift in Sources */,
+				A3C5E0032F00000000000000 /* ExchangeBanner.swift in Sources */,
 				A3708E3F2E8E000B004FC2CF /* PDFArchiverShortcuts.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1343,6 +1356,14 @@
 				minimumVersion = 0.5.3;
 			};
 		};
+		A3C5E0042F00000000000000 /* XCRemoteSwiftPackageReference "KickstartSDK" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/twostraws/KickstartSDK";
+			requirement = {
+				kind = exactVersion;
+				version = 0.6.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1362,6 +1383,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A39A29D52CCAE6BD0072EFDE /* XCRemoteSwiftPackageReference "AsyncExtensions" */;
 			productName = AsyncExtensions;
+		};
+		A3C5E0052F00000000000000 /* KickstartExchange */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A3C5E0042F00000000000000 /* XCRemoteSwiftPackageReference "KickstartSDK" */;
+			productName = KickstartExchange;
+		};
+		A3C5E0062F00000000000000 /* KickstartExchange */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A3C5E0042F00000000000000 /* XCRemoteSwiftPackageReference "KickstartSDK" */;
+			productName = KickstartExchange;
 		};
 		A39A29D62CCAE6BD0072EFDE /* AsyncExtensions */ = {
 			isa = XCSwiftPackageProductDependency;

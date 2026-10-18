@@ -154,6 +154,10 @@ struct ArchiveListView: View {
 
     var body: some View {
         content
+        .safeAreaInset(edge: .bottom) {
+            ExchangeBannerSlot()
+                .padding()
+        }
         .task {
             await store.send(.onTask).finish()
         }

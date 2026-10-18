@@ -13,7 +13,7 @@ import SwiftUI
 
 struct IAPView: View {
     let onCancel: () -> Void
-    /// Called after a purchase made through one of this view's `ProductView`s is verified and
+    /// Called after a purchase made through this view's store views is verified and
     /// finished, so the caller can re-evaluate `premiumStatus` - a same-device purchase completes
     /// through `Product.PurchaseResult`, not `Transaction.updates`, so nothing else observes it.
     let onPurchaseCompleted: () -> Void
@@ -21,7 +21,9 @@ struct IAPView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
-        ScrollView {
+        // The lifetime offer lives in the marketing content so it scrolls above the
+        // subscription picker instead of competing with a second, nested scroll view.
+        SubscriptionStoreView(productIDs: PremiumProduct.subscriptions) {
             VStack(spacing: 30) {
                 VStack(spacing: 10) {
                     Text("No Subscription", bundle: #bundle)
@@ -30,52 +32,29 @@ struct IAPView: View {
                 }
 
                 features
-                ProductView(id: PremiumProduct.lifetime)
-                    .productViewStyle(.large)
-                    .padding()
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.paRedAsset, lineWidth: 2)
-                    )
+                lifetime
 
-                VStack(alignment: .leading, spacing: 16) {
-                    ForEach(PremiumProduct.subscriptions, id: \.self) { id in
-                        ProductView(id: id)
-                            .productViewStyle(.compact)
-                    }
-                    HStack {
-                        Spacer()
-                        Text("You get a 2-week free trial before all subscriptions.", bundle: #bundle)
-                            .foregroundStyle(.secondary)
-                            .font(.caption)
-                        Spacer()
-                    }
-                }
-                .padding()
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(Color.paDarkGrayAsset.opacity(0.125), lineWidth: 2)
-                )
-
-                HStack {
-                    Spacer()
-                    restore
-                    Spacer()
-                    cancel
-                    Spacer()
-                }
+                Text("Or as a subscription", bundle: #bundle)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             }
             .padding()
         }
-
+        .subscriptionStoreControlStyle(.compactPicker)
+        .storeButton(.visible, for: .restorePurchases)
+        .storeButton(.hidden, for: .cancellation)
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button {
+                    onCancel()
+                } label: {
+                    Text("Cancel", bundle: #bundle)
+                }
+            }
+        }
         .frame(minWidth: 400, idealWidth: 500)
-        #if os(macOS)
-        .frame(width: 500, height: 600)
-        #endif
-        .listRowSeparator(.hidden)
-        .listSectionSeparator(.hidden)
         .foregroundStyle(Color.paDarkGrayAsset)
-        .background(Color.paBackgroundAsset)
+        .containerBackground(Color.paBackgroundAsset, for: .subscriptionStore)
         .onInAppPurchaseCompletion { _, result in
             guard case .success(let purchaseResult) = result,
                   case .success(let verificationResult) = purchaseResult else { return }
@@ -142,31 +121,23 @@ struct IAPView: View {
         }
     }
 
-    private var restore: some View {
-        Button {
-            Task {
-                do {
-                    try await AppStore.sync()
-                } catch StoreKitError.userCancelled {
-                    // Dismissing the App Store sign-in is a normal outcome, not an error.
-                } catch {
-                    Logger.inAppPurchase.error("AppStore sync failed", metadata: ["error": "\(LogRedact.describe(error))"])
-                    NotificationCenter.default.postAlert(error)
-                }
+    private var lifetime: some View {
+        ProductView(id: PremiumProduct.lifetime)
+            .productViewStyle(.large)
+            .padding()
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(Color.paRedAsset, lineWidth: 2)
+            )
+            .overlay(alignment: .topTrailing) {
+                Text("Recommended", bundle: #bundle)
+                    .padding(4)
+                    .font(.footnote)
+                    .foregroundColor(Color.paWhiteAsset)
+                    .background(Color.paRedAsset)
+                    .cornerRadius(8)
+                    .offset(x: -16, y: -12)
             }
-        } label: {
-            Text("Restore purchases", bundle: #bundle)
-        }
-        .buttonBorderShape(.capsule)
-    }
-
-    private var cancel: some View {
-        Button {
-            onCancel()
-        } label: {
-            Text("Cancel", bundle: #bundle)
-        }
-        .buttonBorderShape(.capsule)
     }
 }
 
