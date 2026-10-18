@@ -6,36 +6,24 @@ How the engineering skills should consume this repo's domain documentation when 
 
 - **`GLOSSARY.md`** at the repo root, or
 - **`GLOSSARY-MAP.md`** at the repo root if it exists: it points at one `GLOSSARY.md` per context. Read each one relevant to the topic.
-- **`docs/adr/`**: read ADRs that touch the area you're about to work in. In multi-context repos, also check `src/<context>/docs/adr/` for context-scoped decisions.
+- **`~/KnowledgeBase/Resources/PDF Archiver/adr/`**: read the ADRs that touch the area you're about to work in. They live in the Obsidian vault, not in this repo (decided 2026-10-18); where a skill names `docs/adr/`, it means this vault path. Never create `docs/adr/` in this repo. `CLAUDE.md` lists them under "Domain docs".
 
-If any of these files don't exist, **proceed silently**. Don't flag their absence; don't suggest creating them upfront. The `/domain-modeling` skill (reached via `/grill-with-docs` and `/improve-codebase-architecture`) creates them lazily when terms or decisions actually get resolved.
+If the glossary doesn't exist, **proceed silently**; the `/domain-modeling` skill (reached via `/grill-with-docs` and `/improve-codebase-architecture`) creates it lazily when terms actually get resolved. If the vault is not on this machine, as in a cloud session or CI, also proceed silently and don't write ADRs anywhere else.
+
+## Writing an ADR
+
+The vault's own `~/KnowledgeBase/CLAUDE.md` sets the rules for notes; read it before the first write. An ADR is German, named `adr-NNN--<kurze-behauptung>.md` with the next free number, frontmatter `type: explanation` and `tags: [adr]`. The sections are a TL;DR callout, then Kontext, Entscheidung, Folgen, Verworfene Alternativen, Verwandt. Add it to the ADR index in the vault hub `PDF Archiver.md` and to "Domain docs" in this repo's `CLAUDE.md`.
 
 ## File structure
-
-Single-context repo (most repos):
 
 ```
 /
 ├── GLOSSARY.md
-├── docs/adr/
-│   ├── 0001-event-sourced-orders.md
-│   └── 0002-postgres-for-write-model.md
-└── src/
-```
+└── ArchiverLib/
 
-Multi-context repo (presence of `GLOSSARY-MAP.md` at the root):
-
-```
-/
-├── GLOSSARY-MAP.md
-├── docs/adr/                          ← system-wide decisions
-└── src/
-    ├── ordering/
-    │   ├── GLOSSARY.md
-    │   └── docs/adr/                  ← context-specific decisions
-    └── billing/
-        ├── GLOSSARY.md
-        └── docs/adr/
+~/KnowledgeBase/Resources/PDF Archiver/adr/
+├── adr-001--ocr-marker-mit-version.md
+└── …
 ```
 
 ## Use the glossary's vocabulary
@@ -48,4 +36,4 @@ If the concept you need isn't in the glossary yet, that's a signal: either you'r
 
 If your output contradicts an existing ADR, surface it explicitly rather than silently overriding:
 
-> _Contradicts ADR-0007 (event-sourced orders), but worth reopening because…_
+> _Contradicts ADR-003 (derived read model), but worth reopening because…_

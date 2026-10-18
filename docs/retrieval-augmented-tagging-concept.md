@@ -2,7 +2,7 @@
 
 How the content-extraction prompt gets its archive context, and why it now retrieves that context
 per document instead of aggregating it once per archive. Companion to
-`docs/adr/0004-visual-retrieval-is-a-fallback-channel.md` (stage 3's visual fallback).
+ADR-004 (stage 3's visual fallback).
 
 ## Design
 
@@ -155,7 +155,7 @@ sweep `neighbourRelevanceFloor` gets in step 3, against Vision `distance(to:)` v
 
 Stage 3's compute-cost figures (~18 ms per feature print, ~3 KB stored, ~2 ms to scan 3000 of them)
 are Mac numbers measured on a synthetic A4 page and also need re-measuring on device before they are
-load-bearing (`docs/adr/0004-visual-retrieval-is-a-fallback-channel.md`).
+load-bearing (ADR-004).
 
 ### What is and is not verified by this repository's own gate
 

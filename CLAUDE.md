@@ -329,4 +329,9 @@ Default five-label vocabulary (`needs-triage`, `needs-info`, `ready-for-agent`, 
 
 ### Domain docs
 
-Single-context: root `GLOSSARY.md` + `docs/adr/`. See `docs/agents/domain.md`.
+Single-context: root `GLOSSARY.md` plus the ADRs, which live in the Obsidian vault, not in this repo: `~/KnowledgeBase/Resources/PDF Archiver/adr/`. They are written in German; a new ADR takes the next number and the sections of the existing ones. See `docs/agents/domain.md`.
+
+- ADR-001: the OCR processed marker carries the engine version, so a version bump retries every document once
+- ADR-002: a page is always re-rasterized for OCR, its embedded image never reused
+- ADR-003: the SQLite database is a derived read model, never a second source of truth
+- ADR-004: visual retrieval (Vision feature prints) is a fallback channel, never the primary one

@@ -22,8 +22,7 @@ extension ArchiveIndexer {
     /// half of indexing and runs on external power at background quality of service.
     ///
     /// Returns the documents this run attempted, so a caller that manages local copies - not this
-    /// target's job, see `docs/adr/0003-database-is-a-derived-read-model.md` - knows what it can
-    /// evict again.
+    /// target's job, see ADR-003 - knows what it can evict again.
     @discardableResult
     public func indexPendingTexts(budget: Int) async -> [Document] {
         // Returns before any bookkeeping, so the next scheduled run repeats the attempt.
@@ -147,9 +146,8 @@ extension ArchiveIndexer {
 
     /// Remembers what the model suggested for one document.
     ///
-    /// Routed through the indexer so it stays the read model's only writer
-    /// (`docs/adr/0003-database-is-a-derived-read-model.md`); the suggestion is derived data like
-    /// everything else and a rebuild drops it.
+    /// Routed through the indexer so it stays the read model's only writer (ADR-003); the
+    /// suggestion is derived data like everything else and a rebuild drops it.
     public func saveSuggestion(documentID: Document.ID, specification: String, tags: [String]) async {
         @Dependency(\.date.now) var now
         await withErrorReporting {

@@ -215,9 +215,8 @@ private enum ReadModel: Log {
         } catch {
             reportIssue(error)
 
-            // Recreating is safe because every table is derived from the file system
-            // (`docs/adr/0003-database-is-a-derived-read-model.md`): it costs one rescan, where a
-            // database that cannot be migrated costs the index for good.
+            // Recreating is safe because every table is derived from the file system (ADR-003): it
+            // costs one rescan, where a database that cannot be migrated costs the index for good.
             try? database.close()  // best effort: the file is unlinked either way
             try removeFiles(of: database)
             let recreated = try SQLiteData.defaultDatabase(path: path, configuration: configuration)
@@ -263,8 +262,8 @@ private enum ReadModel: Log {
     private static func makeMigrator() -> DatabaseMigrator {
         var migrator = DatabaseMigrator()
         #if DEBUG
-        // The read model is derived (`docs/adr/0003-database-is-a-derived-read-model.md`), so a
-        // schema change rebuilds it from the file system instead of carrying migration code.
+        // The read model is derived (ADR-003), so a schema change rebuilds it from the file system
+        // instead of carrying migration code.
         migrator.eraseDatabaseOnSchemaChange = true
         #endif
         migrator.registerMigration("Create the read model") { db in
