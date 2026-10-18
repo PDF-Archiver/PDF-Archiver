@@ -499,8 +499,8 @@ public actor ArchiveIndexer {
     /// Whether a snapshot still describes the world the app is observing.
     ///
     /// `documentIdentifier` is unique per volume only, so two roots on different volumes can hand
-    /// in the same id for different files. That is a known limitation of the identity itself
-    /// (`docs/adr/0003-database-is-a-derived-read-model.md`) and is not what this guard is about.
+    /// in the same id for different files. That is a known limitation of the identity
+    /// itself (ADR-003) and is not what this guard is about.
     private func isCurrent(root: String, generation: Int) -> Bool {
         generation == currentGeneration && observedRoots.contains(root)
     }

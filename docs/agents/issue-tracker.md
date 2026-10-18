@@ -1,6 +1,6 @@
-# Issue tracker: GitHub
+# Issue tracker: GitHub, specs in the vault
 
-Issues and specs for this repo live as GitHub issues. Use the `gh` CLI for all operations.
+Tickets for this repo live as GitHub issues; use the `gh` CLI for them. Specs do not: a spec is a note in the Obsidian vault at `~/KnowledgeBase/Resources/PDF Archiver/spec/` (decided 2026-10-18).
 
 ## Conventions
 
@@ -28,11 +28,21 @@ GitHub shares one number space across issues and PRs, so a bare `#42` may be eit
 
 ## When a skill says "publish to the issue tracker"
 
-Create a GitHub issue.
+- **A spec** (`/to-spec`): write it to the vault, never as an issue. Rules under **Specs** below.
+- **A ticket** (`/to-tickets`, `/triage`, `/wayfinder`): create a GitHub issue. A ticket cut from a spec starts its body with `Spec: ~/KnowledgeBase/Resources/PDF Archiver/spec/<file>.md`.
 
 ## When a skill says "fetch the relevant ticket"
 
-Read it as in **Read an issue** above.
+Run `gh issue view <number> --comments`. If the body starts with a `Spec:` line, read that vault note too; it is the source of the ticket.
+
+## Specs
+
+- **Path and name:** `~/KnowledgeBase/Resources/PDF Archiver/spec/<topic>--<short-claim>.md`, kebab-case, at most 50 characters. Read `~/KnowledgeBase/CLAUDE.md` before the first write.
+- **Frontmatter:** `type: task`, `tags: [spec]`, `project: "[[PDF Archiver]]"`, `status: Offen`. The vault's `Tasks.base` lists every spec whose status is not `Erledigt`; keep those two German values, the view filters on them.
+- **Body:** English. A TL;DR callout, then the `/to-spec` template's sections as it ships them (Problem Statement, Solution, User Stories, Implementation Decisions, Testing Decisions, Out of Scope, Further Notes), then `## Related` with at least one wikilink. Add the spec to the "Specs" list in the vault hub.
+- **Label:** none on the spec; `ready-for-agent` goes on the tickets cut from it.
+- **Done:** once the last ticket closes, set `status: Erledigt`. An implementation decision that is hard to reverse and binds code beyond the feature becomes an ADR in the sibling `adr/` folder, linked under Related; the spec itself is never an ADR.
+- **No vault on this machine** (cloud session, CI): say so and stop. Never write the spec into the repo or into an issue instead.
 
 ## Wayfinding operations
 

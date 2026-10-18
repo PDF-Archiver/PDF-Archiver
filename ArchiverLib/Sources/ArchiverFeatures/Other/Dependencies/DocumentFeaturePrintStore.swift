@@ -14,8 +14,7 @@ import Vision
 
 extension FeaturePrintCache {
     /// The `documentFeaturePrints` table. Reads go straight to the database; writes go through the
-    /// indexer, which stays the read model's only writer
-    /// (`docs/adr/0003-database-is-a-derived-read-model.md`). A deleted document takes its
+    /// indexer, which stays the read model's only writer (ADR-003). A deleted document takes its
     /// feature print with it through the foreign key, so nothing has to prune stale entries.
     static var documentFeaturePrints: FeaturePrintCache {
         @Dependency(\.archiveIndexer) var archiveIndexer
