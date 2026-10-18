@@ -57,6 +57,7 @@ struct Settings {
         case expertSettings(ExpertSettings)
         case imprint
         case legal
+        case premium
         case privacy
         case searchIndex(SearchIndexSettings)
         case termsOfUse
@@ -113,6 +114,7 @@ struct Settings {
         case onSettingsWindowDisappeared
         #endif
         case onOpenPdfArchiverWebsiteTapped
+        case onPremiumTapped
         case onShowArchiveTypeSelectionTapped
         case onPrivacyTapped
         case onSearchIndexTapped
@@ -254,6 +256,10 @@ struct Settings {
             case .onOpenPdfArchiverWebsiteTapped:
                 return .openExternalURL(state.pdfArchiverWebsiteUrl, with: openURL)
 
+            case .onPremiumTapped:
+                state.destination = .premium
+                return .none
+
             case .onShowArchiveTypeSelectionTapped:
                 state.destination = .archiveStorage(StorageSelection.State())
                 return .none
@@ -380,7 +386,6 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 preferences
-                PremiumSectionView(store: store.scope(\.premiumSection, action: \.premiumSection))
                 aboutSection
             }
             // since we have buttons, we have to "fake" the foreground color - it would be the accent color otherwise
@@ -438,6 +443,14 @@ struct SettingsView: View {
                     } else {
                         preconditionFailure("Failed to load the search index settings")
                     }
+
+                case .premium:
+                    Form {
+                        PremiumSectionView(store: store.scope(\.premiumSection, action: \.premiumSection))
+                    }
+                    // Same as the root form: the buttons would take the accent color otherwise.
+                    .foregroundColor(.primary)
+                    .navigationTitle(Text("Premium", bundle: #bundle))
 
                 case .aboutMe:
                     AboutMeView()
@@ -506,6 +519,12 @@ struct SettingsView: View {
                 store.send(.onAdvancedSettingsTapped)
             } label: {
                 Label(String(localized: "Advanced", bundle: #bundle), systemImage: "gearshape.2")
+            }
+
+            Button {
+                store.send(.onPremiumTapped)
+            } label: {
+                Label(String(localized: "Premium", bundle: #bundle), systemImage: "star.hexagon")
             }
         } header: {
             Text("Preferences", bundle: #bundle)

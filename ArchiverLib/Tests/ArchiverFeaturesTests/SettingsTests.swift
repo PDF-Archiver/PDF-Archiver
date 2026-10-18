@@ -463,6 +463,17 @@ struct SettingsTests {
     }
 
     @Test
+    func onPremiumTapped() async throws {
+        let store = TestStore(initialState: Settings.State()) {
+            Settings()
+        }
+
+        await store.send(.onPremiumTapped) {
+            $0.destination = .premium
+        }
+    }
+
+    @Test
     func onAppleIntelligenceSettingsTapped() async throws {
         let store = TestStore(initialState: Settings.State()) {
             Settings()

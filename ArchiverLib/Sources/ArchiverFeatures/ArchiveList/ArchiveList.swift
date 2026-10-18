@@ -154,10 +154,14 @@ struct ArchiveListView: View {
 
     var body: some View {
         content
+        #if os(macOS)
         .safeAreaInset(edge: .bottom) {
             ExchangeBannerSlot()
+                // The SDK card ignores `dynamicTypeSize` on the Mac; scaling is the only way to shrink it.
+                .scaleEffect(0.8, anchor: .bottom)
                 .padding()
         }
+        #endif
         .task {
             await store.send(.onTask).finish()
         }
@@ -195,6 +199,13 @@ struct ArchiveListView: View {
     private var content: some View {
         if store.rows.isEmpty {
             emptyState
+                #if os(iOS)
+                // Same spot as the banner's own section at the top of a filled list.
+                .safeAreaInset(edge: .top) {
+                    ExchangeBannerSlot()
+                        .padding(.horizontal)
+                }
+                #endif
         } else {
             documentList
         }
@@ -232,12 +243,25 @@ struct ArchiveListView: View {
     private var documentList: some View {
         let selection = Binding(get: { store.selectedDocumentId },
                                 set: { store.send(.selectionChanged($0)) })
-        return List(store.rows, selection: selection) { row in
-            ArchiveListItemView(documentSpecification: row.specification,
-                                documentDate: row.date,
-                                documentTags: row.tags.sorted(),
-                                snippet: row.isFilenameHit ? nil : row.snippet)
-            .tag(row.id)
+        return List(selection: selection) {
+            #if os(iOS)
+            Section {
+                // The list clips the row to the section's shape, so both get the same corners.
+                ExchangeBannerSlot(style: .listRow)
+                    .listRowInsets(EdgeInsets())
+            }
+            .listSectionSpacing(8)
+            #endif
+
+            Section {
+                ForEach(store.rows) { row in
+                    ArchiveListItemView(documentSpecification: row.specification,
+                                        documentDate: row.date,
+                                        documentTags: row.tags.sorted(),
+                                        snippet: row.isFilenameHit ? nil : row.snippet)
+                    .tag(row.id)
+                }
+            }
         }
     }
 }
@@ -252,3 +276,64 @@ struct ArchiveListView: View {
         )
     }
 }
+
+#if DEBUG
+#Preview("Ad in list") {
+    archiveListWithAd(documents: ScreenshotCase.archivedDocuments)
+}
+
+#Preview("Ad in empty archive") {
+    archiveListWithAd(documents: [])
+}
+
+@MainActor
+private func archiveListWithAd(documents: [Document]) -> some View {
+    prepareDependencies {
+        // swiftlint:disable:next force_try
+        try! $0.bootstrapDatabase()
+        // swiftlint:disable:next force_try
+        try! $0.defaultDatabase.write { db in
+            guard !documents.isEmpty else { return }
+            try Document.insert { documents }.execute(db)
+            try DocumentTag.insert {
+                documents.flatMap { document in document.tags.sorted().map { DocumentTag(documentID: document.id, tag: $0) } }
+            }.execute(db)
+        }
+    }
+    @Shared(.premiumStatus) var premiumStatus: PremiumStatus = .loading
+    $premiumStatus.withLock { $0 = .inactive }
+
+    return NavigationStack {
+        ArchiveListView(
+            store: Store(initialState: ArchiveList.State()) {
+                ArchiveList()
+            }
+        )
+        .navigationTitle(Text(verbatim: "Archive"))
+    }
+    .environment(\.exchangeBanner, AnyView(AdPlaceholder()))
+}
+
+/// Stands in for the Kickstart card, whose SDK is linked into the app targets only.
+private struct AdPlaceholder: View {
+    @Environment(\.exchangeBannerStyle) private var style
+
+    var body: some View {
+        let cornerRadius: Double = style == .card ? 16 : 0
+        return HStack(spacing: 10) {
+            RoundedRectangle(cornerRadius: 10)
+                .fill(.orange.gradient)
+                .frame(width: 44, height: 44)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(verbatim: "Kickstart Exchange").font(.headline)
+                Text(verbatim: "Test advert – it works!").font(.subheadline).foregroundStyle(.secondary)
+            }
+            Spacer()
+            Text(verbatim: "Get").bold().foregroundStyle(.red)
+        }
+        .padding(12)
+        .background(.background, in: .rect(cornerRadius: cornerRadius))
+        .overlay(RoundedRectangle(cornerRadius: cornerRadius).stroke(style == .card ? AnyShapeStyle(.quaternary) : AnyShapeStyle(.clear)))
+    }
+}
+#endif

@@ -271,7 +271,7 @@ public enum ScreenshotCase: String, CaseIterable, Sendable {
         Locale.current.language.languageCode?.identifier == "de"
     }
 
-    private static var archivedDocuments: [Document] {
+    static var archivedDocuments: [Document] {
         isGerman ? germanDocuments : englishDocuments
     }
 

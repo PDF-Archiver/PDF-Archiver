@@ -336,7 +336,7 @@ struct AppFeatureTests {
     }
 
     /// A same-device purchase completes through `Product.PurchaseResult`, not `Transaction.updates`
-    /// - `IAPView`'s `onInAppPurchaseCompletion` is the only place that notices it.
+    /// - `PaywallView`'s purchase handling is the only place that notices it.
     @Test
     func aSameDeviceIAPPurchaseReEvaluatesThePremiumStatus() async throws {
         let premium = Self.deferredPremiumStatus()
