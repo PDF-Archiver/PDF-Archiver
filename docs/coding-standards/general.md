@@ -115,6 +115,14 @@ Names reveal responsibility and read clearly at the call site. No abbreviations 
 - Fail fast on programmer errors (precondition violations); degrade gracefully on expected ones and give the user an actionable message.
 - Never silence a compiler warning or a lint rule instead of fixing the cause. If a suppression is genuinely correct, the comment next to it says why.
 - Validate data crossing a boundary (network, file, user input) — it is untrusted. No secrets or personal data in source or logs.
+- **Handle the absent value where it can occur.** Unwrap with `guard`/`if let`, optional chaining or an explicit fallback; a force unwrap (`!`, `try!`) is only for a programmer-error invariant, never for data from outside. A fallback default must not hide a `nil` that is really a bug.
+- **Fail the way the neighbouring API fails.** A function that returns `nil` where its siblings throw (or the reverse) makes every caller guess; keep one failure contract per type or module, or say in the doc comment why this one differs.
+
+## Security
+
+- **Never build a query, command, or path from strings.** SQL takes bound parameters, shell commands take an argument array, file paths are joined by the path API and checked against the directory they must stay in. String interpolation of outside data into any of them is an injection.
+- **Encode output for the sink it goes into**: HTML-escape what lands in a page, URL-encode what lands in a URL, quote what lands in CSV. Validation on the way in does not replace encoding on the way out.
+- **Authentication and authorization are checked where the data is served**, on every request, not only in the client or the UI that hides a button.
 
 ## Concurrency — nothing you read before an `await` is still true after it
 
@@ -144,9 +152,24 @@ It is a race condition, not a data race, so neither the compiler nor strict conc
 
 Follow the architecture the project already uses, and keep domain logic free of infrastructure and UI concerns so it stays testable. Do not introduce layers, modules, or indirection a project does not have — that is the simplicity rule applied to structure. When a project documents its own conventions (the "This repo" part of its `CODING_STANDARDS.md`, its `CLAUDE.md`), those win over these shared files.
 
+- **One function, one job.** A function that validates, transforms, persists and notifies in one body is split into named steps the caller runs in order; each step is then testable alone, and the caller reads as the outline.
+- **No shared mutable state without an owner.** A global or static `var` that several call sites write is a hidden parameter to all of them; pass the value in, return a new one, or give the state one owner (an actor, an injected dependency) that serializes access.
+
+## Performance
+
+These are what a reviewer flags in a diff without a profiler; anything beyond them needs a measurement first, not a guess.
+
+- **No query or request per loop iteration (N+1).** Fetch the related rows in one query (a join, an `IN (…)`, a batch call) and look them up in memory.
+- **Bound every fetch whose size the user controls.** A list read from a database or an API gets a limit or pagination; "all rows" is a size that grows until it is a bug.
+- **No blocking I/O on the main thread or an event loop.** File, network and database work runs off the UI thread through the platform's async API.
+- **No retain cycles.** A closure stored by the object it captures captures it `weak` or `unowned`; an observer, timer or task started by an object is cancelled when the object goes.
+- **No cache without a measured reason.** A cache adds invalidation bugs; it comes with the measurement that showed the uncached path is slow.
+
 ## Tests
 
 - Assert observable behavior through the public API, not implementation details, so a refactor does not break the suite.
 - Keep tests deterministic: inject clock, randomness, and network; no sleeps, no shared mutable fixture, no dependence on execution order.
 - One reason to fail per test, and a name that says what breaks.
+- **Test the edges and the failures, not only the happy path**: empty input, `nil`, the boundary values on both sides of a limit, and every error the code under test throws or returns.
+- **Fake only the seams** — network, clock, file system, the system frameworks behind a dependency client. A mock of the code under test, or of a pure function it calls, tests the mock.
 - **A test run must have no side effects on the machine running it.** A suite that opens a real window, plays sound, or reaches shared state is not safe inside an automated `test` command and must be isolated and excluded by default. Swift: any suite that constructs an `NSWindow`/`UIWindow` goes in a target suffixed `*UITests`, kept out of the default `swift test` run via `--skip <Target>UITests`. **Verify the exclusion by running it and confirming no window appears** — a `--skip` argument that doesn't match the actual target name silently runs the suite anyway, and reading the skip name back proves nothing.

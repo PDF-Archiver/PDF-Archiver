@@ -7,7 +7,7 @@ How to work on a change (diagnose first, the TDD loop, verification, commits, PR
 
 | File | Covers | Read when |
 |---|---|---|
-| `general.md` | Simplicity, SDK first, comments (incl. Xcode `MARK:`), naming, errors, the concurrency rule, architecture, test isolation | Every change, any language |
+| `general.md` | Simplicity, SDK first, comments (incl. Xcode `MARK:`), naming, errors and absent values, security, the concurrency rule, architecture, performance, tests (isolation, edge cases, fakes at the seams) | Every change, any language |
 | `swift.md` | Swift and SwiftUI style: naming, golden path, no `if`/`switch` expressions, access control, doc comments, typography, layout, availability | Writing or reviewing Swift |
 | `swift-testing.md` | Swift Testing: `ext:swift-testing-pro` first, custom assertions with `sourceLocation`, helper naming | Any work with `import Testing` |
 | `logging.md` | Static message with values in `metadata:`, levels, errors, the `OSLog` variant, what not to log | Adding, reviewing, or fixing a log call |
