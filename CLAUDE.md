@@ -2,38 +2,9 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Communication Style
+## Where things are
 
-### Pull Requests and Issues
-- Keep PR descriptions **concise and bullet-pointed**
-- Use simple lists without elaborate explanations
-- Focus on what changed, not why (code should be self-explanatory)
-- No emoji (🤖 footer is acceptable)
-- Example format:
-  ```
-  ## Changes
-  - Removed background view from Share Extension
-  - Updated storyboard constraints
-  - Removed corner radius setup
-  ```
-
-### Commit Messages
-- Use conventional commits format: `feat:`, `fix:`, `refactor:`, etc.
-- Keep first line under 72 characters
-- Add brief bullet points in body if needed
-
-### Branch Naming
-- **Always** use `feature/` prefix for all branches
-- This applies to both new features and bug fixes
-- Example: `feature/fix-share-extension-crash`, `feature/add-dark-mode`, `feature/update-dependencies`
-
-### Code Comments
-- **ALL code comments MUST be in English**
-- No exceptions for any programming language files
-- Explain **why**, not what — the code already states what it does
-- **Max 2 lines**; go longer only when the reason genuinely requires it, e.g. a
-  non-obvious failure mode or a deliberately rejected alternative
-- Delete comments that only restate the line below them
+- [CODING_STANDARDS.md](CODING_STANDARDS.md): the shared code rules and this repo's own (PR, commit and branch conventions, comments, localization before commit, pitfalls). Read it before writing code.
 
 ## Project Overview
 
@@ -150,7 +121,7 @@ swift build --triple x86_64-apple-macosx     # Intel
 
 ### Localization Workflow
 
-**CRITICAL**: Always check and update localizations before committing any code changes.
+The rule to check before every commit is in [CODING_STANDARDS.md](CODING_STANDARDS.md).
 
 ```bash
 # 1. Build the project to update localization files
@@ -172,11 +143,6 @@ xcodebuild -workspace PDFArchiver.xcworkspace \
 # - Shared/Resources/de.lproj/Localizable.strings
 ```
 
-**Before every commit:**
-1. Build the project with xcodebuild
-2. Check localization files for stale/untranslated strings
-3. Fix any localization issues
-4. Then commit
 
 ### Testing
 
@@ -281,24 +247,6 @@ The app automatically selects the appropriate `FolderProvider` based on the fold
 3. `ArchiveIndexer` applies a snapshot in chunks of 250 rows, newest first, so the list renders from the first chunk onward
 4. Features observe that database through `@FetchAll`/`@FetchOne`/`@Fetch`
 
-### Platform-Specific Code
-Use conditional compilation for platform differences:
-```swift
-#if os(iOS)
-// iOS-specific code
-#elseif os(macOS)
-// macOS-specific code
-#endif
-```
-
-## Common Pitfalls
-
-- **Don't** modify `Package.swift` to enable commented-out Swift features (MainActor default isolation, etc.) without checking the linked TCA/Dependencies GitHub issues
-- **Always** use the naming convention helpers (`Document.createFilename()`) when saving documents
-- **Remember** that `ArchiveStore` is an actor - all interactions must be `await`
-- **Use** `@Shared` for state that needs to persist or be accessed across features
-- **Test locale-dependent code** with German locale (`de_DE`) - this is the default test locale per `ArchiverLib.xctestplan`
-
 ## CI/CD
 
 GitHub Actions workflow (`.github/workflows/pr.yml`):
@@ -315,7 +263,6 @@ Main dependencies (from `ArchiverLib/Package.swift`):
 - `swift-sharing` (v2.7.4+): Shared state persistence
 - `AsyncExtensions` (v0.5.4+): Async utilities
 - `swift-async-algorithms` (v1.0.4+): Async sequence algorithms
-
 
 ## Agent skills
 
