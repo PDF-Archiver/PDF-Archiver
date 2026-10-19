@@ -7,6 +7,13 @@ What code and commits in this repo have to look like. Read it before writing cod
 The shared standards are generated from the Obsidian vault into `docs/coding-standards/` and never edited in the repo. See [docs/coding-standards/readme.md](docs/coding-standards/readme.md).
 
 <!-- BEGIN shared file list: written by sync-coding-standards.py -->
+- [`docs/coding-standards/general.md`](docs/coding-standards/general.md)
+- [`docs/coding-standards/logging.md`](docs/coding-standards/logging.md)
+- [`docs/coding-standards/macos-design.md`](docs/coding-standards/macos-design.md)
+- [`docs/coding-standards/readme.md`](docs/coding-standards/readme.md)
+- [`docs/coding-standards/swift-deprecations.md`](docs/coding-standards/swift-deprecations.md)
+- [`docs/coding-standards/swift-testing.md`](docs/coding-standards/swift-testing.md)
+- [`docs/coding-standards/swift.md`](docs/coding-standards/swift.md)
 <!-- END shared file list -->
 
 ## This repo

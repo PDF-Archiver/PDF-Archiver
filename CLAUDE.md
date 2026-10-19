@@ -5,6 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Where things are
 
 - [CODING_STANDARDS.md](CODING_STANDARDS.md): the shared code rules and this repo's own (PR, commit and branch conventions, comments, localization before commit, pitfalls). Read it before writing code.
+- More on how the features work: the project's folder in the knowledge base (the Obsidian vault), under `references/`. Without the vault (a cloud session, CI), go on without it.
 
 ## Project Overview
 
