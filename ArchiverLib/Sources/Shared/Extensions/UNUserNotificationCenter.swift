@@ -6,10 +6,11 @@
 //
 
 import ArchiverModels
-import OSLog
+import Logging
 import UserNotifications
 
 public extension UNUserNotificationCenter {
+    /// `title` and `body` must never carry document data - they are logged verbatim.
     func showLocalNotification(title: String, body: String) async {
         let content = UNMutableNotificationContent()
         content.title = title
@@ -27,9 +28,9 @@ public extension UNUserNotificationCenter {
             try await requestAuthorization(options: [.provisional])
 
             try await add(request)
-            Logger.notificationCenter.info("Local notification scheduled: \(title)")
+            Logger.notificationCenter.info("Local notification scheduled", metadata: ["title": "\(title)"])
         } catch {
-            Logger.notificationCenter.error("Failed to schedule local notification: \(error)")
+            Logger.notificationCenter.error("Failed to schedule local notification", metadata: ["error": "\(LogRedact.describe(error))"])
         }
     }
 }

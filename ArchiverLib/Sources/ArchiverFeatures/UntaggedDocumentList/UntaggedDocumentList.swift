@@ -5,19 +5,20 @@
 //  Created by Julian Kahnert on 13.07.25.
 //
 
+import ArchiverDatabase
 import ArchiverModels
 import ComposableArchitecture
 import Shared
+import SQLiteData
 import SwiftUI
 
 @Reducer
 struct UntaggedDocumentList {
     @ObservableState
     struct State: Equatable {
-        @Shared(.documents) var documents: IdentifiedArrayOf<Document> = []
+        @FetchAll(Document.inbox) var documents: [Document]
         @Shared(.selectedDocumentId) var selectedDocumentId: Int?
         @Shared(.premiumStatus) var premiumStatus: PremiumStatus = .loading
-        var untaggedDocuments: IdentifiedArrayOf<Document> { documents.filter(\.isTagged.flipped) }
         @Presents var documentDetails: DocumentDetails.State?
     }
 
@@ -28,6 +29,7 @@ struct UntaggedDocumentList {
 
         enum Delegate {
             case onCancelIapButtonTapped
+            case onIapPurchaseCompleted
         }
     }
 
@@ -39,15 +41,14 @@ struct UntaggedDocumentList {
 
             case .selectionChanged(let documentId):
                 state.$selectedDocumentId.withLock { $0 = documentId }
-                if let documentId,
-                   let document = Shared(state.$documents[id: documentId]) {
-                    state.documentDetails = .init(document: document)
-                    return .run { send in
-                        await send(.documentDetails(.presented(.updateShowInspector(true))))
-                    }
-                } else {
+                guard let documentId,
+                      let document = state.documents.first(where: { $0.id == documentId }) else {
                     state.documentDetails = nil
                     return .none
+                }
+                state.documentDetails = .init(document: document)
+                return .run { send in
+                    await send(.documentDetails(.presented(.updateShowInspector(true))))
                 }
 
             case .delegate:
@@ -66,12 +67,12 @@ struct UntaggedDocumentListView: View {
     var body: some View {
         Group {
             #if os(macOS)
-            if store.untaggedDocuments.isEmpty {
+            if store.documents.isEmpty {
                 ContentUnavailableView(String(localized: "No document", bundle: #bundle),
                                        systemImage: "checkmark.seal",
                                        description: Text("Congratulations! All documents are tagged. 🎉", bundle: #bundle))
             } else {
-                List(store.untaggedDocuments, selection: Binding(get: { store.selectedDocumentId }, set: { store.send(.selectionChanged($0)) })) { document in
+                List(store.documents, selection: Binding(get: { store.selectedDocumentId }, set: { store.send(.selectionChanged($0)) })) { document in
                     Text(document.url.lastPathComponent)
                         .tag(document.id)
                 }
@@ -79,15 +80,17 @@ struct UntaggedDocumentListView: View {
             }
             #else
             if store.premiumStatus == .inactive {
-                IAPView {
+                IAPView(onCancel: {
                     store.send(.delegate(.onCancelIapButtonTapped))
-                }
-            } else if store.untaggedDocuments.isEmpty {
+                }, onPurchaseCompleted: {
+                    store.send(.delegate(.onIapPurchaseCompleted))
+                })
+            } else if store.documents.isEmpty {
                 ContentUnavailableView(String(localized: "No document", bundle: #bundle),
                                        systemImage: "checkmark.seal",
                                        description: Text("Congratulations! All documents are tagged. 🎉", bundle: #bundle))
             } else {
-                List(store.untaggedDocuments, selection: Binding(get: { store.selectedDocumentId }, set: { store.send(.selectionChanged($0)) })) { document in
+                List(store.documents, selection: Binding(get: { store.selectedDocumentId }, set: { store.send(.selectionChanged($0)) })) { document in
                     Text(document.url.lastPathComponent)
                         .tag(document.id)
                 }
@@ -96,21 +99,16 @@ struct UntaggedDocumentListView: View {
         }
         #if os(macOS)
         .sheet(isPresented: .init(get: { store.premiumStatus == .inactive }, set: { _ in }), content: {
-            IAPView {
+            IAPView(onCancel: {
                 store.send(.delegate(.onCancelIapButtonTapped))
-            }
+            }, onPurchaseCompleted: {
+                store.send(.delegate(.onIapPurchaseCompleted))
+            })
+            .presentationSizing(.fitted)
         })
         #endif
         .sensoryFeedback(.selection, trigger: store.selectedDocumentId)
-        .navigationDestination(item: $store.scope(\.$documentDetails, action: \.documentDetails)) { documentStore in
-            DocumentDetailsView(store: documentStore)
-                .navigationTitle(documentStore.document.specification)
-#if os(macOS)
-                .navigationSubtitle(Text(documentStore.document.date, format: .dateTime.year().month().day()))
-#else
-                .navigationBarTitleDisplayMode(.inline)
-#endif
-        }
+        .documentDetailsDestination(item: $store.scope(\.$documentDetails, action: \.documentDetails))
     }
 }
 

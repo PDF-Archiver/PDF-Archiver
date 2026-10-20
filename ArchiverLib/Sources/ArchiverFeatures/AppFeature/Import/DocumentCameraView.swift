@@ -8,6 +8,7 @@
 
 #if !os(macOS)
 import ArchiverModels
+import Logging
 import Shared
 import SwiftUI
 @preconcurrency import VisionKit
@@ -62,7 +63,7 @@ struct DocumentCameraView: UIViewControllerRepresentable, Log {
         }
 
         func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFailWithError error: Error) {
-            log.error("Scan did fail with error.", metadata: ["error": "\(error)"])
+            log.error("Scan did fail with error.", metadata: ["error": "\(LogRedact.describe(error))"])
             self.isShown.wrappedValue = false
         }
     }

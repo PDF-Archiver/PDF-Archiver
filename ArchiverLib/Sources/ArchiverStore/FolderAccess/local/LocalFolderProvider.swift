@@ -5,8 +5,10 @@
 //  Created by Julian Kahnert on 17.08.20.
 //
 
+import ArchiverModels
 import AsyncAlgorithms
 import Foundation
+import Logging
 
 final class LocalFolderProvider: FolderProvider {
 
@@ -18,7 +20,7 @@ final class LocalFolderProvider: FolderProvider {
 
     private let watcher: DirectoryDeepWatcher
     private let fileManager = FileManager.default
-    private let fileProperties: [URLResourceKey] = [.ubiquitousItemDownloadingStatusKey, .ubiquitousItemIsDownloadingKey, .fileSizeKey, .localizedNameKey]
+    private let fileProperties: [URLResourceKey] = [.ubiquitousItemDownloadingStatusKey, .ubiquitousItemIsDownloadingKey, .fileSizeKey, .localizedNameKey, .creationDateKey, .contentModificationDateKey]
     private var observationTask: Task<Void, Never>?
 
     required init(baseUrl: URL) throws {
@@ -30,7 +32,7 @@ final class LocalFolderProvider: FolderProvider {
 
         self.didAccessSecurityScope = baseUrl.startAccessingSecurityScopedResource()
 
-        Self.log.debug("Creating file provider.", metadata: ["url": "\(baseUrl.path)"])
+        Self.log.debug("Creating file provider.", metadata: ["url": "\(LogRedact.shape(baseUrl))"])
 
         self.watcher = try DirectoryDeepWatcher(at: baseUrl)
 
@@ -71,25 +73,6 @@ final class LocalFolderProvider: FolderProvider {
         }
     }
 
-    func save(data: Data, at url: URL) throws {
-        try fileManager.createFolderIfNotExists(url.deletingLastPathComponent())
-
-        // test if the document name already exists in archive, otherwise move it
-        if fileManager.fileExists(atPath: url.path) {
-            throw FolderProviderError.renameFailedFileAlreadyExists
-        }
-
-        try data.write(to: url)
-    }
-
-    func startDownload(of url: URL) throws {
-        log.errorAndAssert("Download of a local file is not supported")
-    }
-
-    func fetch(url: URL) throws -> Data {
-        try Data(contentsOf: url)
-    }
-
     func delete(url: URL) throws {
         #if os(macOS)
         try fileManager.trashItem(at: url, resultingItemURL: nil)
@@ -99,18 +82,6 @@ final class LocalFolderProvider: FolderProvider {
         // => we have to use removeItem on iOS
         try fileManager.removeItem(at: url)
         #endif
-    }
-
-    func rename(from source: URL, to destination: URL) throws {
-        guard source != destination else { return }
-        try fileManager.createFolderIfNotExists(destination.deletingLastPathComponent())
-
-        // test if the document name already exists in archive, otherwise move it
-        if fileManager.fileExists(atPath: destination.path) {
-            throw FolderProviderError.renameFailedFileAlreadyExists
-        }
-
-        try fileManager.moveItem(at: source, to: destination)
     }
 
     // MARK: - Helper Functions
@@ -125,12 +96,25 @@ final class LocalFolderProvider: FolderProvider {
 
                 guard let resourceValues = try? url.resourceValues(forKeys: Set(fileProperties)),
                       let fileSize = resourceValues.fileSize else {
-                    log.errorAndAssert("Could not fetch resource values from url.", metadata: ["url": "\(url.path)"])
+                    log.errorAndAssert("Could not fetch resource values from url.", metadata: ["url": "\(LogRedact.shape(url))"])
+                    return nil
+                }
+                let normalizedUrl = url.normalized()
+                guard let id = normalizedUrl.uniqueId() else {
+                    log.errorAndAssert("Could not fetch unique id from url.", metadata: ["url": "\(LogRedact.shape(url))"])
                     return nil
                 }
 
                 let downloadStatus = getDownloadStatus(from: resourceValues)
-                return DocumentInformation(url: url, downloadStatus: downloadStatus, sizeInBytes: Double(fileSize))
+                // `isTagged` is unknown here - only `ArchiveStore` knows `untaggedFolders`, and
+                // adjusts it before the item reaches the indexer.
+                return DocumentInformation(id: id,
+                                           url: normalizedUrl,
+                                           isTagged: false,
+                                           sizeInBytes: Double(fileSize),
+                                           downloadStatus: downloadStatus,
+                                           creationDate: resourceValues.creationDate,
+                                           contentModificationDate: resourceValues.contentModificationDate)
             }
             .sorted { $0.url.path < $1.url.path }
     }

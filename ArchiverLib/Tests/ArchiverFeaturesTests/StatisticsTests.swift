@@ -1,201 +1,87 @@
+import ArchiverDatabase
 import ArchiverModels
 import ComposableArchitecture
+import Dependencies
+import DependenciesTestSupport
 import Foundation
+import SQLiteData
 import Testing
 
 @testable import ArchiverFeatures
 
 @MainActor
+@Suite(.dependencies {
+    try $0.bootstrapDatabase()
+    try $0.defaultDatabase.write { db in
+        try db.seed {
+            Document(id: -1, rootKey: "test", url: URL(filePath: "/Archive/2024/2024-01-01--invoice__invoice_work.pdf"), date: statisticsDate(2024), specification: "invoice", tags: ["invoice", "work"], isTagged: true, sizeInBytes: 1000, downloadStatus: 1)
+            Document(id: -2, rootKey: "test", url: URL(filePath: "/Archive/2023/2023-01-01--receipt__invoice.pdf"), date: statisticsDate(2023), specification: "receipt", tags: ["invoice"], isTagged: true, sizeInBytes: 2000, downloadStatus: 1)
+            Document(id: -3, rootKey: "test", url: URL(filePath: "/Archive/untagged/scan.pdf"), date: statisticsDate(2024), specification: "scan", tags: [], isTagged: false, sizeInBytes: 3000, downloadStatus: 1)
+            DocumentTag(documentID: -1, tag: "invoice")
+            DocumentTag(documentID: -1, tag: "work")
+            DocumentTag(documentID: -2, tag: "invoice")
+        }
+    }
+})
 struct StatisticsTests {
-    // MARK: - Document Statistics Tests
-
     @Test
-    func statisticsWithDocuments() throws {
-        let calendar = Calendar.current
-
-        let doc1 = Document.mock(
-            url: URL(string: "https://example.com/1")!,
-            tags: ["invoice", "work"]
-        )
-        let doc2 = Document.mock(
-            url: URL(string: "https://example.com/2")!,
-            tags: ["receipt", "personal"]
-        )
-        let doc3 = Document.mock(
-            url: URL(string: "https://example.com/3")!,
-            tags: ["invoice", "personal"]
-        )
-
-        let state = Statistics.State(documents: [doc1, doc2, doc3])
-
-        #expect(state.documents.count == 3)
-    }
-
-    @Test
-    func statisticsWithEmptyDocuments() throws {
+    func everyFigureComesFromTheDatabase() async throws {
         let state = Statistics.State()
+        try await state.$stats.load()
 
-        #expect(state.documents.isEmpty)
-    }
-
-    // MARK: - Tag Count Tests
-
-    @Test
-    func tagCountsCalculation() throws {
-        let doc1 = Document.mock(
-            url: URL(string: "https://example.com/1")!,
-            tags: ["invoice"]
-        )
-        let doc2 = Document.mock(
-            url: URL(string: "https://example.com/2")!,
-            tags: ["invoice"]
-        )
-        let doc3 = Document.mock(
-            url: URL(string: "https://example.com/3")!,
-            tags: ["receipt"]
-        )
-
-        let state = Statistics.State(documents: [doc1, doc2, doc3])
-
-        // TagCounts should be calculated from documents
-        #expect(state.documents.count == 3)
+        #expect(state.stats.totalDocuments == 3)
+        #expect(state.stats.untaggedDocuments == 1)
+        #expect(state.stats.totalBytes == 6000)
+        #expect(state.totalStorageSize.value == 6000)
     }
 
     @Test
-    func tagCountsWithMultipleTags() throws {
-        let doc1 = Document.mock(
-            url: URL(string: "https://example.com/1")!,
-            tags: ["invoice", "work", "tax"]
-        )
-        let doc2 = Document.mock(
-            url: URL(string: "https://example.com/2")!,
-            tags: ["invoice", "personal"]
-        )
-
-        let state = Statistics.State(documents: [doc1, doc2])
-
-        #expect(state.documents.count == 2)
-    }
-
-    // MARK: - Year Statistics Tests
-
-    @Test
-    func statisticsByYear() throws {
-        let calendar = Calendar.current
-        // swiftlint:disable:next force_unwrapping
-        let date2024 = calendar.date(from: DateComponents(year: 2024, month: 1, day: 1))!
-        // swiftlint:disable:next force_unwrapping
-        let date2023 = calendar.date(from: DateComponents(year: 2023, month: 1, day: 1))!
-        // swiftlint:disable:next force_unwrapping
-        let date2022 = calendar.date(from: DateComponents(year: 2022, month: 1, day: 1))!
-
-        let doc1 = Document.mock(url: URL(string: "https://example.com/1")!, date: date2024)
-        let doc2 = Document.mock(url: URL(string: "https://example.com/2")!, date: date2023)
-        let doc3 = Document.mock(url: URL(string: "https://example.com/3")!, date: date2022)
-
-        let state = Statistics.State(documents: [doc1, doc2, doc3])
-
-        #expect(state.documents.count == 3)
-    }
-
-    @Test
-    func statisticsSingleYear() throws {
-        let calendar = Calendar.current
-        // swiftlint:disable:next force_unwrapping
-        let date2024 = calendar.date(from: DateComponents(year: 2024, month: 1, day: 1))!
-
-        let doc1 = Document.mock(url: URL(string: "https://example.com/1")!, date: date2024)
-        let doc2 = Document.mock(url: URL(string: "https://example.com/2")!, date: date2024)
-
-        let state = Statistics.State(documents: [doc1, doc2])
-
-        #expect(state.documents.count == 2)
-    }
-
-    // MARK: - Document Count Tests
-
-    @Test
-    func totalDocumentCount() throws {
-        let doc1 = Document.mock(url: URL(string: "https://example.com/1")!)
-        let doc2 = Document.mock(url: URL(string: "https://example.com/2")!)
-        let doc3 = Document.mock(url: URL(string: "https://example.com/3")!)
-
-        let state = Statistics.State(documents: [doc1, doc2, doc3])
-
-        #expect(state.documents.count == 3)
-    }
-
-    @Test
-    func zeroDocumentCount() throws {
+    func yearsCountEveryDocumentIncludingTheInbox() async throws {
         let state = Statistics.State()
+        try await state.$stats.load()
 
-        #expect(state.documents.isEmpty)
-    }
-
-    // MARK: - Tagged vs Untagged Tests
-
-    @Test
-    func taggedDocumentsCount() throws {
-        let tagged1 = Document.mock(url: URL(string: "https://example.com/1")!, tags: ["tag1"], isTagged: true)
-        let tagged2 = Document.mock(url: URL(string: "https://example.com/2")!, tags: ["tag2"], isTagged: true)
-        let untagged = Document.mock(url: URL(string: "https://example.com/3")!, isTagged: false)
-
-        let state = Statistics.State(documents: [tagged1, tagged2, untagged])
-        let taggedDocs = state.documents.filter(\.isTagged)
-
-        #expect(taggedDocs.count == 2)
+        #expect(state.stats.yearStats == [2024: 2, 2023: 1])
     }
 
     @Test
-    func untaggedDocumentsCount() throws {
-        let tagged = Document.mock(url: URL(string: "https://example.com/1")!, tags: ["tag"], isTagged: true)
-        let untagged1 = Document.mock(url: URL(string: "https://example.com/2")!, isTagged: false)
-        let untagged2 = Document.mock(url: URL(string: "https://example.com/3")!, isTagged: false)
-
-        let state = Statistics.State(documents: [tagged, untagged1, untagged2])
-        let untaggedDocs = state.documents.filter { !$0.isTagged }
-
-        #expect(untaggedDocs.count == 2)
-    }
-
-    // MARK: - Storage Size Tests
-
-    @Test
-    func totalStorageSize() throws {
-        let doc1 = Document.mock(url: URL(string: "https://example.com/1")!, sizeInBytes: 1000)
-        let doc2 = Document.mock(url: URL(string: "https://example.com/2")!, sizeInBytes: 2000)
-        let doc3 = Document.mock(url: URL(string: "https://example.com/3")!, sizeInBytes: 3000)
-
-        let state = Statistics.State(documents: [doc1, doc2, doc3])
-        let totalSize = state.documents.reduce(0.0) { $0 + $1.sizeInBytes }
-
-        #expect(totalSize == 6000.0)
-    }
-
-    @Test
-    func zeroStorageSize() throws {
+    func topTagsAreOrderedByUsage() async throws {
         let state = Statistics.State()
-        let totalSize = state.documents.reduce(0.0) { $0 + $1.sizeInBytes }
+        try await state.$stats.load()
 
-        #expect(totalSize == 0.0)
+        #expect(state.stats.topTags == [TagCount(tag: "invoice", count: 2), TagCount(tag: "work", count: 1)])
     }
 
-    // MARK: - State Initialization Tests
-
     @Test
-    func defaultStateInitialization() throws {
+    func anEmptyArchiveReportsZeroes() async throws {
+        @Dependency(\.defaultDatabase) var database
+        try await database.write { db in
+            try Document.delete().execute(db)
+        }
+
         let state = Statistics.State()
+        try await state.$stats.load()
 
-        #expect(state.documents.isEmpty)
+        #expect(state.stats.totalDocuments == 0)
+        #expect(state.stats.totalBytes == 0)
+        #expect(state.stats.yearStats.isEmpty)
+        #expect(state.stats.topTags.isEmpty)
     }
 
     @Test
-    func stateWithDocumentsInitialization() throws {
-        let doc1 = Document.mock(url: URL(string: "https://example.com/1")!)
-        let doc2 = Document.mock(url: URL(string: "https://example.com/2")!)
+    func onTaskLoadsTheFigures() async throws {
+        let store = TestStore(initialState: Statistics.State()) {
+            Statistics()
+        }
+        store.exhaustivity = .off(showSkippedAssertions: false)
 
-        let state = Statistics.State(documents: [doc1, doc2])
+        await store.send(.onTask)
 
-        #expect(state.documents.count == 2)
+        #expect(store.state.stats.totalDocuments == 3)
     }
+}
+
+private func statisticsDate(_ year: Int) -> Date {
+    var calendar = Calendar(identifier: .gregorian)
+    calendar.timeZone = .gmt
+    return calendar.date(from: DateComponents(year: year, month: 6, day: 1)) ?? .distantPast
 }

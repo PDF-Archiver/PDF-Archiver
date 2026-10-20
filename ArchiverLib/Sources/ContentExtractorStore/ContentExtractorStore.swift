@@ -8,23 +8,30 @@
 import ArchiverModels
 import Foundation
 import FoundationModels
-import OSLog
+import Logging
 
 @available(iOS 26, macOS 26, *)
 public actor ContentExtractorStore {
 
-    /// Test seam: turn the context documents + custom prompt + document text into
-    /// raw, un-normalized model output. The live implementation calls the
-    /// on-device model; tests inject a deterministic stub.
-    typealias Responder = @Sendable (_ documents: [Document], _ customPrompt: String?, _ text: String) async throws -> RawDocumentInformation
+    /// Test seam: turn the context documents + retrieved neighbours + custom prompt + document
+    /// text into raw, un-normalized model output. The live implementation calls the on-device
+    /// model; tests inject a deterministic stub.
+    typealias Responder = @Sendable (_ documents: [Document], _ neighbours: [NeighbourFinder.Match], _ customPrompt: String?, _ text: String) async throws -> RawDocumentInformation
 
-    // `sampling:` is deprecated in the macOS 27 SDK but the only spelling the
-    // macOS 26 SDK has, and CI builds against that one - renaming breaks it.
+    // CI builds with the 26 SDKs (Swift 6.3), which only know `sampling:`.
+    #if compiler(>=6.4)
+    private static let options = GenerationOptions(
+        samplingMode: .greedy,
+        temperature: 0.0,
+        maximumResponseTokens: 512
+    )
+    #else
     private static let options = GenerationOptions(
         sampling: .greedy,
         temperature: 0.0,
         maximumResponseTokens: 512
     )
+    #endif
 
     /// Maximum number of characters of the user's custom prompt.
     ///
@@ -35,22 +42,35 @@ public actor ContentExtractorStore {
         ContentExtractionPromptFactory.maxCustomPromptLength(contextSize: SystemLanguageModel.default.contextSize)
     }
 
-    private let cache: ContentExtractorCache
+    private let cache: SuggestionCache
+    private let neighbourFinder: NeighbourFinder
+    private let visualNeighbourFinder: VisualNeighbourFinder
     private let availability: @Sendable () -> AppleIntelligenceAvailability
     private let respond: Responder
+    /// Documents a background pass is extracting right now. The cache check alone cannot see them,
+    /// since the entry is only written once the model returns.
+    private var backgroundInFlight = Set<Document.ID>()
 
-    public init() {
-        self.init(cache: ContentExtractorCache(),
+    public init(cache: SuggestionCache = .unavailable,
+                neighbourFinder: NeighbourFinder = .unavailable,
+                visualNeighbourFinder: VisualNeighbourFinder = .unavailable) {
+        self.init(cache: cache,
+                  neighbourFinder: neighbourFinder,
+                  visualNeighbourFinder: visualNeighbourFinder,
                   availability: { Self.getAvailability() },
                   respond: Self.liveResponder)
     }
 
     /// Designated initializer. Internal seams let tests exercise the cache and
     /// mapping orchestration deterministically, without Apple Intelligence.
-    init(cache: ContentExtractorCache,
+    init(cache: SuggestionCache,
+         neighbourFinder: NeighbourFinder = .unavailable,
+         visualNeighbourFinder: VisualNeighbourFinder = .unavailable,
          availability: @escaping @Sendable () -> AppleIntelligenceAvailability,
          respond: @escaping Responder) {
         self.cache = cache
+        self.neighbourFinder = neighbourFinder
+        self.visualNeighbourFinder = visualNeighbourFinder
         self.availability = availability
         self.respond = respond
     }
@@ -88,39 +108,78 @@ public actor ContentExtractorStore {
 
         // Check cache if document ID is provided
         if let documentId,
-           let cachedEntry = await cache.getCachedResult(for: documentId) {
-            Logger.contentExtractor.info("Using cached result for document ID: \(documentId)")
+           let cachedEntry = await cache.load(documentId) {
+            Logger.contentExtractor.info("Using cached result", metadata: ["documentId": "\(documentId)"])
             return Info(specification: cachedEntry.specification, tags: cachedEntry.tags)
         }
 
-        let raw = try await respond(documents, customPrompt, text)
+        let neighbours = await retrieveNeighbours(text: text, documentId: documentId)
+        let modelStart = ContinuousClock.now
+        let raw = try await respond(documents, neighbours, customPrompt, text)
+        let modelMs = modelStart.duration(to: .now).inMilliseconds
         let vocabulary = Set(documents.flatMap(\.tags).map { $0.lowercased() })
         let normalized = ContentExtractionMapper.normalize(raw, vocabulary: vocabulary)
-        let info = Info(specification: normalized.specification, tags: normalized.tags)
+        let expanded = TagExpansion.expanded(normalized.tags,
+                                             with: documents,
+                                             text: text,
+                                             limit: ContentExtractionMapper.maxTags)
+        let tags = NeighbourVote.widen(expanded, with: neighbours)
+        let info = Info(specification: normalized.specification, tags: tags)
+        Logger.contentExtractor.debug("Extraction finished", metadata: [
+            "documentId": "\(documentId.map { "\($0)" } ?? "none")",
+            "textCharacterCount": "\(text.count)",
+            "modelMs": "\(modelMs)",
+            "tagCount": "\(tags.count)"
+        ])
 
         // Save result to cache for faster subsequent access
         if let documentId {
-            let cacheEntry = ContentExtractorCache.CacheEntry(
-                documentId: documentId,
+            let cacheEntry = SuggestionCache.Entry(
+                documentID: documentId,
                 specification: info.specification,
                 tags: info.tags
             )
-            await cache.saveCacheEntry(cacheEntry)
+            await cache.save(cacheEntry)
         }
 
         return info
+    }
+
+    // MARK: - Neighbour retrieval
+
+    /// Text neighbours, falling back to visual ones only when text retrieval found nothing above
+    /// the floor (`docs/retrieval-augmented-tagging-concept.md`) - the visual channel is strictly
+    /// a fallback, never a second source added on top.
+    private func retrieveNeighbours(text: String, documentId: Document.ID?) async -> [NeighbourFinder.Match] {
+        let textStart = ContinuousClock.now
+        let candidates = await neighbourFinder.find(text, documentId, ContentExtractionPromptFactory.neighbourCount)
+        let survivors = ContentExtractionPromptFactory.survivingNeighbours(candidates)
+        var metadata: Logger.Metadata = [
+            "documentId": "\(documentId.map { "\($0)" } ?? "none")",
+            "textRetrievalMs": "\(textStart.duration(to: .now).inMilliseconds)",
+            "textNeighbourCount": "\(survivors.count)"
+        ]
+        defer { Logger.contentExtractor.debug("Neighbours retrieved", metadata: metadata) }
+        guard survivors.isEmpty, let documentId else { return survivors }
+
+        let visualStart = ContinuousClock.now
+        let visualCandidates = await visualNeighbourFinder.find(documentId, ContentExtractionPromptFactory.neighbourCount)
+        let visualSurvivors = ContentExtractionPromptFactory.survivingNeighbours(visualCandidates, floor: ContentExtractionPromptFactory.visualNeighbourRelevanceFloor)
+        metadata["visualRetrievalMs"] = "\(visualStart.duration(to: .now).inMilliseconds)"
+        metadata["visualNeighbourCount"] = "\(visualSurvivors.count)"
+        return visualSurvivors
     }
 
     // MARK: - Cache Management
 
     /// Clear all cache entries
     public func clearCache() async {
-        await cache.clearCache()
+        await cache.clear()
     }
 
     /// Get the number of cache entries
     public func getCacheCount() async -> Int {
-        await cache.getCacheCount()
+        await cache.count()
     }
 
     /// Process untagged documents in the background to create cache entries
@@ -133,26 +192,36 @@ public actor ContentExtractorStore {
         // Only process untagged documents
         let untaggedDocuments = documents.filter { !$0.isTagged }
 
-        Logger.contentExtractor.info("Background cache processing started for \(untaggedDocuments.count) untagged documents")
+        Logger.contentExtractor.info("Background cache processing started", metadata: ["untaggedCount": "\(untaggedDocuments.count)"])
 
+        let passStart = ContinuousClock.now
         var newCachesCreated = 0
+        var cachedCount = 0
+        var failedCount = 0
 
         for document in untaggedDocuments {
             guard !Task.isCancelled else { break }
 
             let documentId = document.id
 
+            // Inserted before the first `await`, so an overlapping pass sees it before it checks the cache.
+            guard !backgroundInFlight.contains(documentId) else { continue }
+            backgroundInFlight.insert(documentId)
+            defer { backgroundInFlight.remove(documentId) }
+
             // Skip if already cached
-            if await cache.getCachedResult(for: documentId) != nil {
+            if await cache.load(documentId) != nil {
+                cachedCount += 1
                 continue
             }
 
             // Extract text and process (cache will be saved inside extract())
             guard let text = await textExtractor(document.url) else {
-                Logger.contentExtractor.info("Skipping document without extractable text (e.g. not downloaded yet) - document ID: \(documentId)")
+                Logger.contentExtractor.info("Skipping document without extractable text (e.g. not downloaded yet)", metadata: ["documentId": "\(documentId)"])
                 continue
             }
 
+            let extractStart = ContinuousClock.now
             do {
                 let info = try await extract(from: text,
                                              customPrompt: customPrompt,
@@ -160,25 +229,27 @@ public actor ContentExtractorStore {
                                              documentId: documentId)
                 if info != nil {
                     newCachesCreated += 1
-                    Logger.contentExtractor.debug("Background cache entry created for document ID: \(documentId)")
+                    Logger.contentExtractor.debug("Background cache entry created", metadata: ["documentId": "\(documentId)"])
                 } else {
                     // e.g. the language model is currently not available
-                    Logger.contentExtractor.info("No cache entry created for document ID: \(documentId)")
+                    Logger.contentExtractor.info("No cache entry created", metadata: ["documentId": "\(documentId)"])
                 }
             } catch {
-                Logger.contentExtractor.error("Failed to create cache entry in background for document ID \(documentId): \(error)")
+                failedCount += 1
+                Logger.contentExtractor.error("Failed to create cache entry in background", metadata: [
+                    "documentId": "\(documentId)",
+                    "error": "\(LogRedact.describe(error))",
+                    "durationMs": "\(extractStart.duration(to: .now).inMilliseconds)"
+                ])
             }
         }
 
-        // Prune cache entries for documents that no longer exist in untagged folder.
-        // Never prune while the document list is empty (e.g. the store has not finished
-        // loading) - that would wipe all valid cache entries.
-        if !documents.isEmpty {
-            let untaggedIds = Set(untaggedDocuments.map(\.id))
-            await cache.pruneCache(keepingOnly: untaggedIds)
-        }
-
-        Logger.contentExtractor.info("Background cache processing completed: \(newCachesCreated) new caches created")
+        Logger.contentExtractor.info("Background cache processing completed", metadata: [
+            "createdCount": "\(newCachesCreated)",
+            "cachedCount": "\(cachedCount)",
+            "failedCount": "\(failedCount)",
+            "durationMs": "\(passStart.duration(to: .now).inMilliseconds)"
+        ])
 
         return newCachesCreated
     }
@@ -188,8 +259,8 @@ public actor ContentExtractorStore {
     /// The production responder: build a session from the prompt factory's
     /// instruction segments and run the on-device model. This is the only place
     /// that touches FoundationModels generation.
-    private static let liveResponder: Responder = { documents, customPrompt, text in
-        let session = LanguageModelSession(model: .default, tools: [], instructions: instructions(for: documents))
+    private static let liveResponder: Responder = { documents, neighbours, customPrompt, text in
+        let session = LanguageModelSession(model: .default, tools: [], instructions: instructions(for: documents, neighbours: neighbours))
         let model = SystemLanguageModel.default
         let contextSize = model.contextSize
 
@@ -222,7 +293,7 @@ public actor ContentExtractorStore {
                     truncatedText = recut
                 }
             } catch {
-                Logger.contentExtractor.error("Failed to measure the token count, keeping the estimate: \(error)")
+                Logger.contentExtractor.error("Failed to measure the token count, keeping the estimate", metadata: ["error": "\(LogRedact.describe(error))"])
             }
         }
 
@@ -246,13 +317,21 @@ public actor ContentExtractorStore {
 
     /// The instruction segments the live extraction runs with, so a capability
     /// report or an evaluation measures the prompt the app actually sends.
-    public static func instructions(for documents: [Document]) -> Instructions {
+    ///
+    /// - Parameter neighbours: Already floor-filtered survivors (``survivingNeighbours``); this
+    ///   only renders them, so passing every candidate would show the model matches this call is
+    ///   supposed to have rejected.
+    public static func instructions(for documents: [Document], neighbours: [NeighbourFinder.Match]) -> Instructions {
         let stats = ContentExtractionPromptFactory.documentStats(from: documents)
         let locale = ContentExtractionPromptFactory.promptLocale
+        let neighbourSegment = ContentExtractionPromptFactory.neighbourSegment(neighbours)
         return Instructions {
             ContentExtractionPromptFactory.taskInstruction
             ContentExtractionPromptFactory.descriptionInstruction(stats: stats, locale: locale)
             ContentExtractionPromptFactory.tagsInstruction(stats: stats, locale: locale)
+            if let neighbourSegment {
+                neighbourSegment
+            }
         }
     }
 }

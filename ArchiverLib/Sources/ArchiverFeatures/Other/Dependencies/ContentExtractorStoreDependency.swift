@@ -10,7 +10,7 @@ import ComposableArchitecture
 import ContentExtractorStore
 import Foundation
 import FoundationModels
-import OSLog
+import Logging
 import Shared
 
 @DependencyClient
@@ -43,7 +43,9 @@ public struct ContentExtractorStoreDependency: Sendable {
     }
 
     @available(iOS 26, macOS 26, *)
-    private static let contentExtractorStore = ContentExtractorStore()
+    private static let contentExtractorStore = ContentExtractorStore(cache: .documentSuggestions,
+                                                                      neighbourFinder: .documentTexts,
+                                                                      visualNeighbourFinder: .documentFeaturePrints)
 
     /// Check if Apple Intelligence is available on this device
     /// - Returns: Availability status for Apple Intelligence
@@ -134,11 +136,15 @@ extension ContentExtractorStoreDependency: DependencyKey {
                     Logger.contentExtractor.warning("Unsupported generation guide for content extraction")
 
                 @unknown default:
-                    Logger.contentExtractor.errorAndAssert("An unknown generation error occurred", metadata: ["error": "\(error)"])
+                    Logger.contentExtractor.errorAndAssert("An unknown generation error occurred", metadata: ["error": "\(LogRedact.describe(error))"])
                 }
                 return nil
+            } catch is CancellationError {
+                // Closing the document cancels the extraction mid-flight; that is the normal exit,
+                // and asserting on it terminates every debug build.
+                return nil
             } catch {
-                Logger.contentExtractor.errorAndAssert("An error occurred while extracting document content", metadata: ["error": "\(error)"])
+                Logger.contentExtractor.errorAndAssert("An error occurred while extracting document content", metadata: ["error": "\(LogRedact.describe(error))"])
                 return nil
             }
         },

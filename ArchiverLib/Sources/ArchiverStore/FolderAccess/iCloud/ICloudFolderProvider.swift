@@ -7,7 +7,7 @@
 
 import ArchiverModels
 import Foundation
-import Shared
+import Logging
 
 final class ICloudFolderProvider: FolderProvider {
 
@@ -19,14 +19,28 @@ final class ICloudFolderProvider: FolderProvider {
 
     private let metadataQuery: NSMetadataQuery
 
-    private var currentDocuments: [Int: DocumentInformation] = [:]
-    private var lastDocuments: [DocumentInformation]?
+    private var snapshots = SnapshotAssembler()
+    private var lastSentAt: ContinuousClock.Instant?
     private var observationTask: Task<Void, Never>?
+    /// Delivers `NSMetadataQuery`'s notifications off the main thread: the observer below reads
+    /// each `NSMetadataItem` synchronously (it is not `Sendable`), which includes the per-item
+    /// resource read `uniqueId()` makes - main would otherwise stall on every batch of changes.
+    private static let metadataQueryOperationQueue: OperationQueue = {
+        let queue = OperationQueue()
+        queue.maxConcurrentOperationCount = 1
+        queue.qualityOfService = .utility
+        return queue
+    }()
+    /// Boxed so its own `deinit` removes the observers: a non-`Sendable` array could not be read
+    /// from `ICloudFolderProvider`'s `deinit` directly without an unsafe opt-out.
+    private var notificationTokenBox: NotificationTokenBox?
 
     init(baseUrl: URL) throws {
         self.baseUrl = baseUrl
 
-        let (stream, continuation) = AsyncStream.makeStream(of: [DocumentInformation].self)
+        // Snapshots are complete and idempotent, so only the newest one is worth keeping around
+        // while a consumer is still catching up - buffering a backlog would only delay it further.
+        let (stream, continuation) = AsyncStream.makeStream(of: [DocumentInformation].self, bufferingPolicy: .bufferingNewest(1))
         currentDocumentsStream = stream
         currentDocumentsStreamContinuation = continuation
 
@@ -38,8 +52,8 @@ final class ICloudFolderProvider: FolderProvider {
         let notContainsTempPath = NSPredicate(format: "(NOT (%K CONTAINS[c] %@)) AND (NOT (%K CONTAINS[c] %@))", NSMetadataItemPathKey, "/\(Self.tempFolderName)/", NSMetadataItemPathKey, "/.Trash/")
         metadataQuery.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, notContainsTempPath] )
 
-        // update the file status 3 times per second, while downloading
-        metadataQuery.notificationBatchingInterval = 0.3
+        // update the file status roughly once per second, while downloading
+        metadataQuery.notificationBatchingInterval = 1.0
 
         /*
          Ask for both in-container documents and external documents so that
@@ -51,8 +65,26 @@ final class ICloudFolderProvider: FolderProvider {
             NSMetadataQueryUbiquitousDocumentsScope
         ]
 
-        // the operationQueue of the `NSMetadataQuery` must be serial - we use the main queue
-        metadataQuery.operationQueue = .main
+        // the operationQueue of the `NSMetadataQuery` must be serial - a dedicated background queue
+        // keeps the per-item resource reads below off the main thread
+        metadataQuery.operationQueue = Self.metadataQueryOperationQueue
+
+        // Registered here, synchronously and before the query starts: `DidFinishGathering` is posted
+        // exactly once, and a query that finished before an `await`ed loop began iterating would
+        // post it into the void - this provider would then never yield a single snapshot.
+        let (gathered, gatheredContinuation) = AsyncStream.makeStream(of: Void.self)
+        let (updates, updatesContinuation) = AsyncStream.makeStream(of: MetadataUpdate.self)
+        let center = NotificationCenter.default
+        notificationTokenBox = NotificationTokenBox([
+            // Scoped to `metadataQuery`: macOS runs a second provider for the observed folder, and
+            // an unscoped observer would merge that folder's items into this one's snapshot.
+            center.addObserver(forName: .NSMetadataQueryDidFinishGathering, object: metadataQuery, queue: nil) { _ in
+                gatheredContinuation.yield()
+            },
+            center.addObserver(forName: .NSMetadataQueryDidUpdate, object: metadataQuery, queue: nil) { notification in
+                updatesContinuation.yield(MetadataUpdate(notification))
+            }
+        ])
 
         observationTask = Task(priority: .utility) { [weak self] in
             guard let self else { return }
@@ -62,36 +94,17 @@ final class ICloudFolderProvider: FolderProvider {
 
             await withTaskGroup(of: Void.self) { group in
                 group.addTask { [weak self] in
-                    for await _ in NotificationCenter.default.notifications(named: .NSMetadataQueryDidFinishGathering) {
+                    for await _ in gathered {
                         guard let self else { return }
                         Self.log.debug("Documents query finished initial fetch.")
-
-                        let details = await getFileChangeDetails()
-
-                        // update the archive
-                        let changes = details
-                            .compactMap(\.self)
-
-                        await sendDocuments(added: changes, updated: [], removed: [])
+                        await sendInitialSnapshot()
                     }
                 }
 
                 group.addTask { [weak self] in
-                    for await notification in NotificationCenter.default.notifications(named: .NSMetadataQueryDidUpdate) {
+                    for await update in updates {
                         guard let self else { return }
-                        let addedMetadataItems = (notification.userInfo?[NSMetadataQueryUpdateAddedItemsKey] as? [NSMetadataItem]) ?? []
-                        let updatedMetadataItems = (notification.userInfo?[NSMetadataQueryUpdateChangedItemsKey] as? [NSMetadataItem]) ?? []
-                        let removedMetadataItems = (notification.userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem]) ?? []
-
-                        // update the archive
-                        let added = addedMetadataItems
-                            .compactMap { $0.createDetails() }
-                        let updated = updatedMetadataItems
-                            .compactMap { $0.createDetails() }
-                        let removed = removedMetadataItems
-                            .compactMap { $0.createDetails() }
-
-                        await sendDocuments(added: added, updated: updated, removed: removed)
+                        await sendDocuments(added: update.added, updated: update.updated, removed: update.removed)
                     }
                 }
             }
@@ -107,86 +120,94 @@ final class ICloudFolderProvider: FolderProvider {
     func stop() {
         observationTask?.cancel()
         observationTask = nil
+        notificationTokenBox = nil
         metadataQuery.stop()
     }
 
-    private func sendDocuments(added: [DocumentInformation], updated: [DocumentInformation], removed: [DocumentInformation]) {
-        for change in added + updated {
-            guard let id = change.url.uniqueId() else {
-                assertionFailure("Failed to get uniqueId for \(change.url)")
-                continue
-            }
-            currentDocuments[id] = change
+    /// Frees its `NotificationCenter` observers when it deallocates, so `ICloudFolderProvider`'s
+    /// own `deinit` never has to touch the non-`Sendable` tokens directly.
+    private final class NotificationTokenBox {
+        private let tokens: [any NSObjectProtocol]
+
+        init(_ tokens: [any NSObjectProtocol]) {
+            self.tokens = tokens
         }
-        for change in removed {
-            // match removed files by URL - reading the uniqueId (a resource value)
-            // of an already deleted file would fail
-            currentDocuments = currentDocuments.filter { $0.value.url != change.url }
+
+        deinit {
+            tokens.forEach(NotificationCenter.default.removeObserver)
         }
-        let documents = Array(currentDocuments.values)
-        guard lastDocuments?.sorted() != documents.sorted() else { return }
-        currentDocumentsStreamContinuation.yield(documents)
-        lastDocuments = documents
     }
 
-    private func getFileChangeDetails() -> [DocumentInformation?] {
-        self.metadataQuery.disableUpdates()
-        var changes: [DocumentInformation?] = []
-        for index in 0..<self.metadataQuery.resultCount {
-            guard let result = self.metadataQuery.result(at: index) as? NSMetadataItem else {
+    /// One `DidUpdate`, read on the posting thread: `NSMetadataItem` is not `Sendable` and must not
+    /// travel to the observation task.
+    private struct MetadataUpdate: Sendable {
+        let added: [DocumentInformation]
+        let updated: [DocumentInformation]
+        let removed: [URL]
+
+        init(_ notification: Notification) {
+            func items(_ key: String) -> [NSMetadataItem] {
+                notification.userInfo?[key] as? [NSMetadataItem] ?? []
+            }
+            added = items(NSMetadataQueryUpdateAddedItemsKey).compactMap { $0.createDetails() }
+            updated = items(NSMetadataQueryUpdateChangedItemsKey).compactMap { $0.createDetails() }
+            // URL only: `createDetails()` reads the file's id, which fails once the file is gone
+            // and silently dropped every removal.
+            removed = items(NSMetadataQueryUpdateRemovedItemsKey).compactMap {
+                ($0.value(forAttribute: NSMetadataItemURLKey) as? URL)?.normalized()
+            }
+        }
+    }
+
+    private func sendDocuments(added: [DocumentInformation], updated: [DocumentInformation], removed: [URL]) {
+        guard let documents = snapshots.applyUpdate(added: added, updated: updated, removed: removed) else { return }
+        send(documents, source: "update")
+    }
+
+    /// Reads the results and sends them in one synchronous step: an `await` in between would let an
+    /// update land first, which the older result list then overwrites.
+    private func sendInitialSnapshot() {
+        metadataQuery.disableUpdates()
+        var results: [DocumentInformation] = []
+        for index in 0..<metadataQuery.resultCount {
+            guard let result = metadataQuery.result(at: index) as? NSMetadataItem else {
                 assertionFailure("Could not cast result \(index) to NSMetadataItem")
                 continue
             }
-            changes.append(result.createDetails())
+            if let details = result.createDetails() {
+                results.append(details)
+            }
         }
-        self.metadataQuery.enableUpdates()
-        return changes
+        metadataQuery.enableUpdates()
+        send(snapshots.applyInitial(results), source: "initial")
+    }
+
+    private func send(_ documents: [DocumentInformation], source: String) {
+        let now = ContinuousClock.now
+        let gap = lastSentAt.map { "\($0.duration(to: now))" } ?? "first"
+        log.debug("Sending documents snapshot", metadata: [
+            "count": "\(documents.count)",
+            "source": "\(source)",
+            "gapSinceLastSnapshot": "\(gap)"
+        ])
+        lastSentAt = now
+
+        currentDocumentsStreamContinuation.yield(documents)
     }
 
     // MARK: - API
 
     static func canHandle(_ url: URL) -> Bool {
-        guard let cloudUrl = FileManager.default.url(forUbiquityContainerIdentifier: nil) else {
+        guard let cloudUrl = FileManager.default.iCloudDriveURL else {
             // this is a valid situation, if no iCloud Drive is available
             return false
         }
-        return url.path.starts(with: cloudUrl.path)
-    }
-
-    func save(data: Data, at url: URL) throws {
-        try FileManager.default.createFolderIfNotExists(url.deletingLastPathComponent())
-
-        // test if the document name already exists in archive, otherwise move it
-        if FileManager.default.fileExists(atPath: url.path) {
-            throw FolderProviderError.renameFailedFileAlreadyExists
-        }
-
-        try data.write(to: url)
-    }
-
-    func startDownload(of url: URL) throws {
-        try FileManager.default.startDownloadingUbiquitousItem(at: url)
-    }
-
-    func fetch(url: URL) throws -> Data {
-        try Data(contentsOf: url)
+        return url.isUnder(cloudUrl)
     }
 
     func delete(url: URL) throws {
         // trash items (not remove) to let users restore them if needed
         try FileManager.default.trashItem(at: url, resultingItemURL: nil)
-    }
-
-    func rename(from source: URL, to destination: URL) throws {
-        guard source != destination else { return }
-        try FileManager.default.createFolderIfNotExists(destination.deletingLastPathComponent())
-
-        // test if the document name already exists in archive, otherwise move it
-        if FileManager.default.fileExists(atPath: destination.path) {
-            throw FolderProviderError.renameFailedFileAlreadyExists
-        }
-
-        try FileManager.default.moveItem(at: source, to: destination)
     }
 }
 
@@ -204,39 +225,65 @@ extension NSMetadataItem: nonisolated Log {
             return nil
         }
 
-        // Check if it is a local document. These two values are possible for the "NSMetadataUbiquitousItemDownloadingStatusKey":
-        // - NSMetadataUbiquitousItemDownloadingStatusCurrent
-        // - NSMetadataUbiquitousItemDownloadingStatusNotDownloaded
-        guard let downloadingStatus = value(forAttribute: NSMetadataUbiquitousItemDownloadingStatusKey) as? String else {
-            log.errorAndAssert("Could not parse Metadata DownloadStatus.")
+        // The file's own status, not the query's: on macOS the query called files remote that had
+        // been on disk for weeks. Unlike size and dates, this resource value holds before a download.
+        var statusUrl = documentUrl
+        // The item may hand out the same `NSURL` every time, whose cache would keep an old status.
+        statusUrl.removeAllCachedResourceValues()
+        let statusValues: URLResourceValues
+        do {
+            statusValues = try statusUrl.resourceValues(forKeys: [.ubiquitousItemDownloadingStatusKey, .ubiquitousItemIsDownloadingKey])
+        } catch {
+            log.errorAndAssert("Could not read download status.", metadata: ["error": "\(LogRedact.describe(error))"])
+            return nil
+        }
+        guard let downloadingStatus = statusValues.ubiquitousItemDownloadingStatus else {
+            log.errorAndAssert("Could not parse download status.")
+            return nil
+        }
+        let percentDownloaded = (value(forAttribute: NSMetadataUbiquitousItemPercentDownloadedKey) as? NSNumber)?.doubleValue
+        guard let documentStatus = downloadingStatus.documentStatus(isDownloading: statusValues.ubiquitousItemIsDownloading ?? false,
+                                                                    percentDownloaded: percentDownloaded) else {
+            // do not crash on future/unknown status values - just skip this item
+            log.criticalAndAssert("Unkown download status.", metadata: ["status": "\(downloadingStatus.rawValue)"])
             return nil
         }
 
-        var documentStatus: Double
-        switch downloadingStatus {
-        case NSMetadataUbiquitousItemDownloadingStatusCurrent, NSMetadataUbiquitousItemDownloadingStatusDownloaded:
-            // local
-            documentStatus = 1
+        // The metadata attributes answer before a download; the URL resource values of an
+        // undownloaded item return stub data.
+        let normalizedUrl = documentUrl.normalized()
+        guard let id = normalizedUrl.uniqueId() else {
+            log.errorAndAssert("Could not fetch unique id from url.")
+            return nil
+        }
 
-        case NSMetadataUbiquitousItemDownloadingStatusNotDownloaded:
+        // `isTagged` is unknown here - only `ArchiveStore` knows `untaggedFolders`, and adjusts it
+        // before the item reaches the indexer.
+        return DocumentInformation(id: id,
+                                   url: normalizedUrl,
+                                   isTagged: false,
+                                   sizeInBytes: Double(size),
+                                   downloadStatus: documentStatus,
+                                   creationDate: value(forAttribute: NSMetadataItemFSCreationDateKey) as? Date,
+                                   contentModificationDate: value(forAttribute: NSMetadataItemFSContentChangeDateKey) as? Date)
+    }
+}
 
-            let minValue = 0.0
-            if let isDownloading = value(forAttribute: NSMetadataUbiquitousItemIsDownloadingKey) as? Bool,
-                isDownloading {
-                let percentDownloaded = (value(forAttribute: NSMetadataUbiquitousItemPercentDownloadedKey) as? NSNumber)?.doubleValue ?? 0
-                documentStatus = max(percentDownloaded / 100, minValue)
-            } else {
-                // remote
-                documentStatus = minValue
-            }
+extension URLUbiquitousItemDownloadingStatus {
+    /// The read model's `downloadStatus`: 1 on this device, 0 remote, the progress while downloading.
+    /// `nil` for a status this SDK does not know yet.
+    func documentStatus(isDownloading: Bool, percentDownloaded: Double?) -> Double? {
+        switch self {
+        case .current, .downloaded:
+            return 1
+
+        case .notDownloaded:
+            guard isDownloading else { return 0 }
+            return max((percentDownloaded ?? 0) / 100, 0)
 
         default:
-            // do not crash on future/unknown status values - just skip this item
-            log.criticalAndAssert("Unkown download status.", metadata: ["status": "\(downloadingStatus)"])
             return nil
         }
-
-        return DocumentInformation(url: documentUrl, downloadStatus: documentStatus, sizeInBytes: Double(size))
     }
 }
 

@@ -5,79 +5,68 @@
 //  Created by Julian Kahnert on 17.07.25.
 //
 
+import ArchiverDatabase
 import ArchiverIntents
 import ArchiverModels
 import ComposableArchitecture
 import Foundation
 import Shared
+import SQLiteData
 import SwiftUI
 
 @Reducer
 struct Statistics {
+    /// Every figure the tab shows, in one transaction - they all change together.
+    struct Values: Equatable, Sendable {
+        var totalDocuments = 0
+        var untaggedDocuments = 0
+        var totalBytes = 0.0
+        var yearStats: [Int: Int] = [:]
+        var topTags: [TagCount] = []
+    }
+
+    struct Request: FetchKeyRequest {
+        /// How many tags the chart shows.
+        private static let tagLimit = 10
+
+        func fetch(_ db: Database) throws -> Values {
+            let years = try Document.yearCounts(taggedOnly: false).fetchAll(db)
+            return Values(
+                totalDocuments: try Document.all.fetchCount(db),
+                untaggedDocuments: try Document.untaggedCount.fetchOne(db) ?? 0,
+                totalBytes: try Document.select { $0.sizeInBytes.sum() }.fetchOne(db).flatMap(\.self) ?? 0,
+                yearStats: Dictionary(years.map { ($0.year, $0.count) }, uniquingKeysWith: +),
+                topTags: try DocumentTag.counts(limit: Self.tagLimit)
+                    .fetchAll(db)
+                    .map { TagCount(tag: $0.tag, count: $0.count) }
+            )
+        }
+    }
+
     @ObservableState
     struct State: Equatable {
-        @Shared(.documents) var documents: IdentifiedArrayOf<Document> = []
+        @Fetch(Request()) var stats = Values()
 
-        var isLoading = true
-        var yearStats: [Int: Int] = [:]
-        var untaggedDocuments = 0
-        var totalDocuments = 0
-        var totalStorageSize: Measurement<UnitInformationStorage> = Measurement(value: 0, unit: .bytes)
-        var topTags: [TagCount] = []
-
-        /// Derives every figure the tab shows from the archive.
-        mutating func apply(documents: IdentifiedArrayOf<Document>) {
-            let documentsArray = Array(documents.elements)
-
-            totalDocuments = documentsArray.count
-            untaggedDocuments = documentsArray.filter { !$0.isTagged }.count
-            let totalBytes = documentsArray.reduce(0.0) { $0 + $1.sizeInBytes }
-            totalStorageSize = Measurement(value: totalBytes, unit: .bytes)
-
-            var yearStats: [Int: Int] = [:]
-            for document in documentsArray {
-                let year = Calendar.current.component(.year, from: document.date)
-                yearStats[year, default: 0] += 1
-            }
-            self.yearStats = yearStats
-
-            var tagCountMap: [String: Int] = [:]
-            for tag in documentsArray.flatMap(\.tags) {
-                tagCountMap[tag, default: 0] += 1
-            }
-
-            topTags = tagCountMap
-                .sorted { lhs, rhs in
-                    if lhs.value == rhs.value {
-                        lhs.key < rhs.key
-                    } else {
-                        lhs.value > rhs.value
-                    }
-                }
-                .prefix(10)
-                .map { TagCount(tag: $0.key, count: $0.value) }
-
-            isLoading = false
+        var totalStorageSize: Measurement<UnitInformationStorage> {
+            Measurement(value: stats.totalBytes, unit: .bytes)
         }
     }
 
     enum Action {
         case onTask
-        case documentsUpdated(IdentifiedArrayOf<Document>)
     }
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
             case .onTask:
-                return .publisher {
-                  state.$documents.publisher
-                    .map(Action.documentsUpdated)
+                // The query observes on its own; this only covers a tab opened before the
+                // first reconcile has written anything.
+                return .run { [stats = state.$stats] _ in
+                    await withErrorReporting {
+                        try await stats.load()
+                    }
                 }
-
-            case .documentsUpdated(let documents):
-                state.apply(documents: documents)
-                return .none
             }
         }
     }
@@ -94,7 +83,7 @@ struct StatisticsView: View {
                         title: String(localized: "Total Documents", bundle: #bundle),
                         systemImage: "doc.text.fill"
                     ) {
-                        Text(store.totalDocuments, format: .number)
+                        Text(store.stats.totalDocuments, format: .number)
                     }
 
                     StatCard(
@@ -107,53 +96,30 @@ struct StatisticsView: View {
                             Text(store.totalStorageSize, format: .byteCount(style: .file, allowedUnits: [.mb, .gb]))
                         }
                     }
+
+                    StatCard(
+                        title: String(localized: "Untagged", bundle: #bundle),
+                        systemImage: "tray.fill"
+                    ) {
+                        Text(store.stats.untaggedDocuments, format: .number)
+                    }
                 }
+                // Lets every card grow to the tallest one instead of hugging its own content.
+                .fixedSize(horizontal: false, vertical: true)
 
-                VStack(alignment: .leading, spacing: 24) {
-                    Section {
-                        UntaggedDocumentsStatsView(
-                            untaggedDocuments: store.untaggedDocuments,
-                            size: .medium,
-                            showActions: false
-                        )
-                        .padding()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(Color.paSecondaryBackgroundAsset)
-                        )
-                    }
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 320), spacing: 20, alignment: .top)], spacing: 20) {
+                    DocumentsPerYearChart(yearStats: store.stats.yearStats)
+                        .statisticsCard()
 
-                    Section {
-                        StatsView(yearStats: store.yearStats, size: .medium, showActions: false)
-                            .padding()
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color.paSecondaryBackgroundAsset)
-                            )
-                    }
-
-                    Section {
-                        TopTagsChart(tags: store.topTags)
-                            .padding()
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color.paSecondaryBackgroundAsset)
-                            )
-                    }
+                    TopTagsChart(tags: store.stats.topTags)
+                        .statisticsCard()
                 }
             }
             .padding()
         }
+        .background(Color.groupedBackgroundAsset)
         .task {
             await store.send(.onTask).finish()
-        }
-        .overlay {
-            if store.isLoading {
-                ProgressView()
-            }
         }
     }
 }

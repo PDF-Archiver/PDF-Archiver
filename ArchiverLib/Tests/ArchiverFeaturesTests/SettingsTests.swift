@@ -1,11 +1,17 @@
+import ArchiverDatabase
 import ArchiverModels
 import ComposableArchitecture
+import Dependencies
+import DependenciesTestSupport
+import Diagnostics
 import Foundation
+import SQLiteData
 import Testing
 
 @testable import ArchiverFeatures
 
 @MainActor
+@Suite(.dependencies { try $0.bootstrapDatabase() })
 struct SettingsTests {
     // MARK: - PDF Quality Tests
 
@@ -20,9 +26,16 @@ struct SettingsTests {
     @Test
     func pdfQualityNames() throws {
         #expect(PDFQuality.lossless.name == "100% - Lossless")
-        #expect(PDFQuality.good.name == "75% - Good (Default)")
+        #expect(PDFQuality.good.name == "75% - Good")
         #expect(PDFQuality.normal.name == "50% - Normal")
         #expect(PDFQuality.small.name == "25% - Small")
+    }
+
+    /// The picker marks the quality the stored key falls back to, not a case named by hand - the
+    /// two drifted apart once already.
+    @Test
+    func theDefaultPdfQualityComesFromTheStoredKey() throws {
+        #expect(PDFQuality.default == .lossless)
     }
 
     // MARK: - Storage Type Tests
@@ -127,13 +140,97 @@ struct SettingsTests {
         }
     }
 
+    // MARK: - Diagnostics Report Tests
+
+    @Test
+    func contactSupportShowsTheConsentDialogImmediatelyWithoutWaitingForTheReport() async throws {
+        let report = DiagnosticsReport(filename: "Diagnostics-Report.html", data: Data())
+        let store = TestStore(initialState: Settings.State(diagnosticsReport: report)) {
+            Settings()
+        } withDependencies: {
+            // The reducer's effect logs the app state before creating the report, which reads this.
+            $0.archiveIndexer.pendingTextCount = { 0 }
+        }
+        store.exhaustivity = .off
+
+        await store.send(.onContactSupportTapped) {
+            $0.diagnosticsReport = nil
+            $0.isCreatingDiagnosticsReport = true
+            $0.isShowingDiagnosticsReportConsent = true
+        }
+
+        await store.finish()
+    }
+
+    @Test
+    func sendWithReportTappedConfirmsSendingWhileTheReportIsStillLoading() async throws {
+        let store = TestStore(initialState: Settings.State()) {
+            Settings()
+        }
+
+        await store.send(.onSendWithReportTapped) {
+            $0.didConfirmSendingDiagnosticsReport = true
+        }
+    }
+
+    // `deliverDiagnosticsReport` calls the real, unmocked `NSSharingService`/`mailto:` handoff on
+    // macOS, so only iOS - where delivery is just a state flag - exercises the "already ready" path.
+    #if os(iOS)
+    @Test
+    func sendWithReportTappedOpensTheMailSheetWhenTheReportIsAlreadyReady() async throws {
+        let report = DiagnosticsReport(filename: "Diagnostics-Report.html", data: Data())
+        let store = TestStore(initialState: Settings.State(diagnosticsReport: report)) {
+            Settings()
+        }
+
+        await store.send(.onSendWithReportTapped) {
+            $0.didConfirmSendingDiagnosticsReport = true
+            $0.isShowingMailSheet = true
+        }
+    }
+
+    @Test
+    func sendWithoutReportTappedOpensTheMailSheetImmediatelyWithoutTheReport() async throws {
+        let report = DiagnosticsReport(filename: "Diagnostics-Report.html", data: Data())
+        let store = TestStore(initialState: Settings.State(
+            diagnosticsReport: report,
+            isCreatingDiagnosticsReport: true
+        )) {
+            Settings()
+        }
+
+        await store.send(.onSendWithoutReportTapped) {
+            $0.diagnosticsReport = nil
+            $0.isCreatingDiagnosticsReport = false
+            $0.isShowingMailSheet = true
+        }
+    }
+    #endif
+
+    @Test
+    func cancelContactSupportTappedDiscardsTheReport() async throws {
+        let report = DiagnosticsReport(filename: "Diagnostics-Report.html", data: Data())
+        let store = TestStore(initialState: Settings.State(
+            isShowingDiagnosticsReportConsent: true,
+            diagnosticsReport: report,
+            isCreatingDiagnosticsReport: true
+        )) {
+            Settings()
+        }
+
+        await store.send(.onCancelContactSupportTapped) {
+            $0.diagnosticsReport = nil
+            $0.isCreatingDiagnosticsReport = false
+        }
+    }
+
     // MARK: - Premium Section Tests
 
     @Test
     func premiumSectionInitialized() throws {
         let state = Settings.State()
 
-        #expect(state.premiumSection.premiumStatus == .inactive)
+        #expect(state.premiumSection.premiumStatus == .loading)
     }
 
     @Test
@@ -227,6 +324,87 @@ struct SettingsTests {
             $0.showObservedFolderPicker = true
         }
     }
+
+    // MARK: - Settings Pane Tests
+
+    @Test
+    func onPaneSelectedOpensTheMatchingDestination() async throws {
+        let store = TestStore(initialState: Settings.State()) {
+            Settings()
+        }
+
+        await store.send(.onPaneSelected(.searchIndex)) {
+            $0.$selectedPaneID.withLock { $0 = SettingsPane.searchIndex.rawValue }
+            $0.destination = .searchIndex(SearchIndexSettings.State())
+        }
+
+        await store.send(.onPaneSelected(.storage)) {
+            $0.$selectedPaneID.withLock { $0 = SettingsPane.storage.rawValue }
+            $0.destination = .archiveStorage(StorageSelection.State())
+        }
+
+        await store.send(.onPaneSelected(.appleIntelligence)) {
+            $0.$selectedPaneID.withLock { $0 = SettingsPane.appleIntelligence.rawValue }
+            $0.destination = .appleIntelligenceSettings(AppleIntelligenceSettings.State())
+        }
+
+        await store.send(.onPaneSelected(.advanced)) {
+            $0.$selectedPaneID.withLock { $0 = SettingsPane.advanced.rawValue }
+            $0.destination = .expertSettings(ExpertSettings.State())
+        }
+    }
+
+    @Test
+    func onPaneSelectedClearsTheDestinationForPlainPanes() async throws {
+        let store = TestStore(initialState: Settings.State(destination: .searchIndex(SearchIndexSettings.State()))) {
+            Settings()
+        }
+
+        await store.send(.onPaneSelected(.about)) {
+            $0.$selectedPaneID.withLock { $0 = SettingsPane.about.rawValue }
+            $0.destination = nil
+        }
+    }
+
+    @Test
+    func settingsWindowAppearedRestoresThePersistedPane() async throws {
+        var initialState = Settings.State()
+        initialState.$selectedPaneID.withLock { $0 = "advanced" }
+
+        let store = TestStore(initialState: initialState) {
+            Settings()
+        }
+
+        await store.send(.onSettingsWindowAppeared) {
+            $0.destination = .expertSettings(ExpertSettings.State())
+        }
+    }
+
+    @Test
+    func settingsWindowAppearedFallsBackToGeneral() async throws {
+        var initialState = Settings.State()
+        initialState.$selectedPaneID.withLock { $0 = "nonsense" }
+
+        let store = TestStore(initialState: initialState) {
+            Settings()
+        }
+
+        await store.send(.onSettingsWindowAppeared)
+
+        #expect(store.state.destination == nil)
+        #expect(store.state.selectedPane == .general)
+    }
+
+    @Test
+    func settingsWindowDisappearedDropsTheDestination() async throws {
+        let store = TestStore(initialState: Settings.State(destination: .searchIndex(SearchIndexSettings.State()))) {
+            Settings()
+        }
+
+        await store.send(.onSettingsWindowDisappeared) {
+            $0.destination = nil
+        }
+    }
     #endif
 
     // MARK: - URL Constants Tests
@@ -285,6 +463,17 @@ struct SettingsTests {
     }
 
     @Test
+    func onPremiumTapped() async throws {
+        let store = TestStore(initialState: Settings.State()) {
+            Settings()
+        }
+
+        await store.send(.onPremiumTapped) {
+            $0.destination = .premium
+        }
+    }
+
+    @Test
     func onAppleIntelligenceSettingsTapped() async throws {
         let store = TestStore(initialState: Settings.State()) {
             Settings()
@@ -292,6 +481,17 @@ struct SettingsTests {
 
         await store.send(.onAppleIntelligenceSettingsTapped) {
             $0.destination = .appleIntelligenceSettings(.init())
+        }
+    }
+
+    @Test
+    func navigateToSearchIndex() async throws {
+        let store = TestStore(initialState: Settings.State()) {
+            Settings()
+        }
+
+        await store.send(.onSearchIndexTapped) {
+            $0.destination = .searchIndex(SearchIndexSettings.State())
         }
     }
 }

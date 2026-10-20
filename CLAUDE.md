@@ -64,12 +64,17 @@ The core logic is organized into separate SPM targets in `ArchiverLib/`:
   - `Settings`: App settings and premium management
   - `Statistics`: Usage statistics
 
-- **ArchiverStore**: Document storage and folder management
-  - `ArchiveStore`: Main actor-based document repository
+- **ArchiverStore**: The file-system gateway - watching folders, saving, renaming, deleting and downloading. It holds no document state.
+  - `ArchiveStore`: Actor that creates the providers and forwards their snapshots
   - `FolderProvider` protocol with implementations:
     - `ICloudFolderProvider`: iCloud Drive integration
     - `LocalFolderProvider`: Local filesystem
   - `DirectoryDeepWatcher`: File system observation
+
+- **ArchiverDatabase**: The SQLite read model every screen reads from
+  - Schema and migrations: `documents`, `documentTags`, `indexerStates`, the `documentTexts` FTS5 index, `documentIndexStates` and `documentSuggestions`
+  - `ArchiveIndexer`: the single writer - reconciles folder snapshots and extracts document text
+  - Query builders: `Document.list(tokens:)`, `Document.rankedSearch(_:)`, `DocumentTag.counts(prefix:)`, `DocumentTag.cooccurring(with:)`
 
 - **ArchiverModels**: Core data models
   - `Document`: Main document model with URL, date, specification, tags
@@ -250,6 +255,21 @@ asc list-apps
 ### Why AppIntents are in Shared/ not ArchiverLib/
 Swift Package Manager doesn't support App Intents directly, so they must be defined in the main app target. See `Shared/AppIntent.swift` and the comment referencing [this StackOverflow answer](https://stackoverflow.com/a/76976224).
 
+### Private Cloud Compute needs the `Evaluations` scheme
+The `com.apple.developer.private-cloud-compute` entitlement **is granted** for this team,
+but an entitlement belongs to a *process*, not to a test bundle. Run the evaluations
+through the scheme that hosts them in the signed `EvaluationHost` app:
+
+```bash
+xcodebuild test -workspace PDFArchiver.xcworkspace -scheme Evaluations -destination 'platform=macOS'
+```
+
+The `ArchiverLib` scheme and `swift test` both run hostless, so
+`CloudComputeEntitlement.isGranted` is `false` there and any PCC request would
+`fatalError` uncatchably. Always check that flag before sending. `xcodebuild` does not
+forward shell variables into a hosted test process — put `PDF_ARCHIVER_EVAL_CORPUS` into
+the scheme's test environment. See `Evaluations/README.md`.
+
 ### Storage Providers
 The app automatically selects the appropriate `FolderProvider` based on the folder URL:
 - iCloud containers use `ICloudFolderProvider`
@@ -257,9 +277,9 @@ The app automatically selects the appropriate `FolderProvider` based on the fold
 
 ### Document Loading Flow
 1. `ArchiveStore.update()` initializes folder providers
-2. Providers watch for file system changes via `DirectoryDeepWatcher`
-3. Changes stream through `documentsStream` → `AppFeature` → UI updates
-4. TCA's `@Shared(.documents)` propagates state to all features
+2. Providers watch for file system changes via `DirectoryDeepWatcher` and hand full folder snapshots to `ArchiveIndexer`
+3. `ArchiveIndexer` applies a snapshot in chunks of 250 rows, newest first, so the list renders from the first chunk onward
+4. Features observe that database through `@FetchAll`/`@FetchOne`/`@Fetch`
 
 ### Platform-Specific Code
 Use conditional compilation for platform differences:
@@ -288,9 +308,30 @@ GitHub Actions workflow (`.github/workflows/pr.yml`):
 ## Dependencies
 
 Main dependencies (from `ArchiverLib/Package.swift`):
+- `sqlite-data` (v1.12.0): Persistence and query layer for the document read model
+- `swift-structured-queries` (v0.39.2): `@Table`/`@Selection` and the query builders, linked directly by `ArchiverModels`
 - `swift-composable-architecture` (v1.22.3+): State management
 - `swift-dependencies` (v1.10.0+): Dependency injection
 - `swift-sharing` (v2.7.4+): Shared state persistence
 - `AsyncExtensions` (v0.5.4+): Async utilities
 - `swift-async-algorithms` (v1.0.4+): Async sequence algorithms
 
+
+## Agent skills
+
+### Issue tracker
+
+Tickets live in GitHub Issues (`gh` CLI); specs live in the Obsidian vault at `~/KnowledgeBase/Resources/PDF Archiver/spec/`, not as issues. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default five-label vocabulary (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: root `GLOSSARY.md` plus the ADRs, which live in the Obsidian vault, not in this repo: `~/KnowledgeBase/Resources/PDF Archiver/adr/`. They are written in German; a new ADR takes the next number and the sections of the existing ones. See `docs/agents/domain.md`.
+
+- ADR-001: the OCR processed marker carries the engine version, so a version bump retries every document once
+- ADR-002: a page is always re-rasterized for OCR, its embedded image never reused
+- ADR-003: the SQLite database is a derived read model, never a second source of truth
+- ADR-004: visual retrieval (Vision feature prints) is a fallback channel, never the primary one

@@ -1,0 +1,58 @@
+//
+//  SearchIndexDownloads.swift
+//  ArchiverLib
+//
+//  Created by Julian Kahnert on 06.09.26.
+//
+
+import ArchiverDatabase
+import ArchiverModels
+import ComposableArchitecture
+import Foundation
+import Logging
+import SQLiteData
+
+/// The opt-in half of indexing: only documents on this device carry text, so a complete index
+/// needs the rest downloaded first.
+enum SearchIndexDownloads {
+    enum SkipReason: String {
+        case downloadsOff
+        case noPremium
+        case meteredNetwork
+    }
+
+    /// Requests up to `limit` documents the index cannot reach yet. Returns why it requested
+    /// nothing although documents are missing, for the caller to log - the open app asks every minute.
+    @discardableResult
+    static func requestNextBatch(limit: Int) async -> SkipReason? {
+        @Shared(.downloadAllForSearch) var downloadAllForSearch: Bool
+        guard downloadAllForSearch else { return .downloadsOff }
+
+        @Dependency(\.archiveStore) var archiveStore
+        @Dependency(\.defaultDatabase) var database
+        @Dependency(\.networkPath) var networkPath
+
+        let documents = await withErrorReporting {
+            try await database.read { db in
+                try Document.notDownloaded(limit: limit).fetchAll(db)
+            }
+        }
+        guard let documents, !documents.isEmpty else { return nil }
+        guard await PremiumEntitlement.isActive() else { return .noPremium }
+        guard networkPath.allowsAutomaticDownloads() else { return .meteredNetwork }
+        Logger.app.notice("[textindex] Prefetch requested", metadata: ["documentCount": "\(documents.count)"])
+
+        // The iCloud daemon finishes these in its own time; the next run indexes them.
+        for document in documents {
+            do {
+                try await archiveStore.startDownloadOf(document.url)
+            } catch {
+                Logger.app.error("Failed to start search-index prefetch download", metadata: [
+                    "documentId": "\(document.id)",
+                    "error": "\(LogRedact.describe(error))"
+                ])
+            }
+        }
+        return nil
+    }
+}

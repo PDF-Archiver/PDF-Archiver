@@ -36,6 +36,7 @@ public extension CorpusDocument {
     ///   evaluation, so any value unique within the array will do.
     func asArchiveDocument(id: Document.ID) -> Document {
         Document(id: id,
+                 rootKey: "corpus",
                  url: URL(filePath: filename),
                  date: date,
                  // `Document.create` un-slugifies a filed specification, so the

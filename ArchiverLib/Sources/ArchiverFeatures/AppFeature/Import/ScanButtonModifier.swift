@@ -7,7 +7,7 @@
 
 import ArchiverModels
 import Dependencies
-import OSLog
+import Logging
 import Shared
 import SwiftUI
 import TipKit
@@ -15,6 +15,7 @@ import TipKit
 struct ScanButtonModifier: ViewModifier {
     let showButton: Bool
     let currentTip: (any Tip)?
+    var isShowingDocument = false
 
     @Dependency(\.documentProcessor) var documentProcessor
     @Dependency(\.feedbackGenerator) var feedbackGenerator
@@ -27,34 +28,44 @@ struct ScanButtonModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .safeAreaInset(edge: .bottom, alignment: .trailing) {
-                DropButton(state: dropHandler.documentProcessingState) { isLongPress in
-                    #if os(macOS)
-                    dropHandler.startImport()
-                    #else
-                    shouldShareAfterScan = isLongPress
-                    isScanPresented = true
-                    #endif
+            #if os(macOS)
+            .toolbar {
+                if !isShowingDocument {
+                    ToolbarItem(placement: .primaryAction) {
+                        ImportToolbarButton(state: dropHandler.documentProcessingState) {
+                            dropHandler.startImport()
+                        }
+                        .popoverTip((showButton && (currentTip as? ScanShareTip) != nil) ? currentTip : nil) { _ in
+                            dropHandler.startImport()
+                        }
+                        .tipImageSize(.init(width: 24, height: 24))
+                    }
                 }
-                #if os(macOS)
-                .padding(.bottom, 24)
-                .padding(.trailing, 40)
-                #else
+            }
+            .overlay {
+                RoundedRectangle(cornerRadius: 12)
+                    .strokeBorder(.tint, lineWidth: 3)
+                    .background(.tint.opacity(0.08), in: .rect(cornerRadius: 12))
+                    .padding(4)
+                    .opacity(dropHandler.documentProcessingState == .targeted ? 1 : 0)
+                    .animation(.snappy, value: dropHandler.documentProcessingState)
+                    .allowsHitTesting(false)
+            }
+            #else
+            .safeAreaInset(edge: .bottom, alignment: .trailing) {
+                DropButton(state: dropHandler.documentProcessingState) { shouldShare in
+                    shouldShareAfterScan = shouldShare
+                    isScanPresented = true
+                }
                 .padding(.trailing, 10)
-                #endif
                 .opacity(showButton ? 1 : 0)
                 .popoverTip((showButton && (currentTip as? ScanShareTip) != nil) ? currentTip : nil) { tipAction in
-                    #if os(macOS)
-                    dropHandler.startImport()
-                    #else
                     shouldShareAfterScan = (tipAction.id == "scanAndShare")
                     isScanPresented = true
-                    #endif
                 }
                 .tipImageSize(.init(width: 24, height: 24))
                 .matchedTransitionSource(id: "scanButton", in: scanButtonNamespace)
             }
-            #if !os(macOS)
             .sheet(isPresented: $isScanPresented) {
                 DocumentCameraView(
                     isShown: $isScanPresented,
@@ -65,7 +76,7 @@ struct ScanButtonModifier: ViewModifier {
                             // Handle images and get the processed document URL
                             let processedDocumentUrl = await documentProcessor.handleImages(images)
 
-                            // If long press was used, share the scanned document
+                            // Share the scanned document when it was requested
                             if let url = processedDocumentUrl {
                                 await MainActor.run {
                                     if shouldShareAfterScan {
@@ -104,7 +115,7 @@ struct ScanButtonModifier: ViewModifier {
                         let url = try result.get()
                         try await dropHandler.handleImport(of: url)
                         } catch {
-                            Logger.pdfDropHandler.errorAndAssert("Failed to get imported url", metadata: ["error": "\(error)"])
+                            Logger.pdfDropHandler.error("Failed to import file", metadata: ["error": "\(LogRedact.describe(error))"])
                             NotificationCenter.default.postAlert(error)
                         }
                 }
@@ -132,3 +143,45 @@ struct ScanButtonModifier: ViewModifier {
             }
     }
 }
+
+#if os(macOS)
+/// The Mac counterpart of `DropButton`: imports through the file browser and shows the drop progress.
+private struct ImportToolbarButton: View {
+    let state: DropButton.ButtonState
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Label {
+                Text("Import Document", bundle: #bundle)
+            } icon: {
+                // The symbol alone sizes the icon: in a `ZStack` with the spinner, the tray sat 1 pt
+                // below the other toolbar icons.
+                Image(systemName: "square.and.arrow.down")
+                    .opacity(![.processing, .finished].contains(state) ? 1 : 0)
+                    .overlay {
+                        ProgressView()
+                            .controlSize(.small)
+                            .opacity(state == .processing ? 1 : 0)
+                    }
+                    .overlay {
+                        Image(systemName: "checkmark.circle")
+                            .foregroundStyle(.green)
+                            .opacity(state == .finished ? 1 : 0)
+                    }
+            }
+        }
+        .help(Text("Import Document", bundle: #bundle))
+        .keyboardShortcut("i", modifiers: [.command, .shift])
+    }
+}
+
+#Preview("ImportToolbarButton") {
+    HStack {
+        ImportToolbarButton(state: .noDocument) {}
+        ImportToolbarButton(state: .processing) {}
+        ImportToolbarButton(state: .finished) {}
+    }
+    .padding()
+}
+#endif

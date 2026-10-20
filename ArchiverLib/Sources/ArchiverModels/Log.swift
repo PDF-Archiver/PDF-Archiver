@@ -1,12 +1,12 @@
 //
 //  Log.swift
-//  
+//
 //
 //  Created by Julian Kahnert on 20.10.20.
 //
 
 import Foundation
-import OSLog
+import Logging
 
 public protocol Log {
     var log: Logger { get }
@@ -14,122 +14,60 @@ public protocol Log {
 
 public extension Log {
     nonisolated static var log: Logger {
-        Logger(subsystem: Logger.subsystem, category: String(describing: self))
+        Logger(label: String(describing: self))
     }
     nonisolated var log: Logger {
         Self.log
     }
 }
 
+// The labels are the OSLog categories `OSLogHandler` logs under.
 nonisolated public extension Logger {
-    fileprivate static let subsystem = Bundle.main.bundleIdentifier ?? "de.JulianKahnert.PDFArchiveViewer"
+    static let app = Logger(label: "app")
+    static let archiveIndexer = Logger(label: "archive-indexer")
+    static let archiveStore = Logger(label: "archive-store")
+    static let backgroundTask = Logger(label: "background-task")
+    static let contentExtractor = Logger(label: "content-extractor")
+    static let documentDetails = Logger(label: "document-details")
+    static let documentProcessor = Logger(label: "document-processor")
+    static let ocrProcessing = Logger(label: "ocr-processing")
+    static let inAppPurchase = Logger(label: "in-app-purchase")
+    static let notificationCenter = Logger(label: "notification-center")
+    static let pdfDropHandler = Logger(label: "pdf-drop-handler")
+    static let settings = Logger(label: "settings")
 
-#if DEBUG
-    static let debugging = Logger(subsystem: subsystem, category: "debugging")
-#endif
-
-    static let app = Logger(subsystem: subsystem, category: "app")
-    static let archiveStore = Logger(subsystem: subsystem, category: "archive-store")
-    static let backgroundTask = Logger(subsystem: subsystem, category: "background-task")
-    static let contentExtractor = Logger(subsystem: subsystem, category: "content-extractor")
-    static let documentProcessing = Logger(subsystem: subsystem, category: "document-processing")
-    static let documentProcessor = Logger(subsystem: subsystem, category: "document-processor")
-    static let ocrProcessing = Logger(subsystem: subsystem, category: "ocr-processing")
-    static let inAppPurchase = Logger(subsystem: subsystem, category: "in-app-purchase")
-    static let navigationModel = Logger(subsystem: subsystem, category: "navigation-model")
-    static let newDocument = Logger(subsystem: subsystem, category: "new-document")
-    static let notificationCenter = Logger(subsystem: subsystem, category: "notification-center")
-    static let pdfDropHandler = Logger(subsystem: subsystem, category: "pdf-drop-handler")
-    static let settings = Logger(subsystem: subsystem, category: "settings")
-    static let taggingView = Logger(subsystem: subsystem, category: "tagging-view")
-
-    nonisolated func errorAndAssert(_ message: String) {
-        assertionFailure(message)
-        error("\(message)")
+    // `file` is a `StaticString` so the assertion points at the caller rather than this file.
+    func errorAndAssert(_ message: Logger.Message,
+                        metadata: @autoclosure () -> Logger.Metadata? = nil,
+                        file: StaticString = #fileID,
+                        function: String = #function,
+                        line: UInt = #line) {
+        error(message, metadata: metadata(), file: "\(file)", function: function, line: line)
+        assertionFailure(message.description, file: file, line: line)
     }
 
-    nonisolated func trace(_ message: String,
-                           metadata: @autoclosure () -> [String: String],
-                           file: StaticString = #file,
-                           function: StaticString = #function,
+    func criticalAndAssert(_ message: Logger.Message,
+                           metadata: @autoclosure () -> Logger.Metadata? = nil,
+                           file: StaticString = #fileID,
+                           function: String = #function,
                            line: UInt = #line) {
-        let tmp = input2message(message, metadata: metadata(), file: file, function: function, line: line)
-        trace("\(tmp)")
+        critical(message, metadata: metadata(), file: "\(file)", function: function, line: line)
+        assertionFailure(message.description, file: file, line: line)
     }
 
-    nonisolated func info(_ message: String,
-                          metadata: @autoclosure () -> [String: String],
-                          file: StaticString = #file,
-                          function: StaticString = #function,
-                          line: UInt = #line) {
-        let tmp = input2message(message, metadata: metadata(), file: file, function: function, line: line)
-        info("\(tmp)")
+    /// OSLog's name for `critical` - both reach OSLog as a fault.
+    func faultAndAssert(_ message: Logger.Message,
+                        metadata: @autoclosure () -> Logger.Metadata? = nil,
+                        file: StaticString = #fileID,
+                        function: String = #function,
+                        line: UInt = #line) {
+        criticalAndAssert(message, metadata: metadata(), file: file, function: function, line: line)
     }
+}
 
-    nonisolated func debug(_ message: String,
-                           metadata: @autoclosure () -> [String: String],
-                           file: StaticString = #file,
-                           function: StaticString = #function,
-                           line: UInt = #line) {
-        let tmp = input2message(message, metadata: metadata(), file: file, function: function, line: line)
-        debug("\(tmp)")
-    }
-
-    nonisolated func error(_ message: String,
-                           metadata: @autoclosure () -> [String: String]?,
-                           file: StaticString = #file,
-                           function: StaticString = #function,
-                           line: UInt = #line) {
-        let tmp = input2message(message, metadata: metadata(), file: file, function: function, line: line)
-        error("\(tmp)")
-    }
-
-    nonisolated func errorAndAssert(_ message: String,
-                                    metadata: @autoclosure () -> [String: String]? = nil,
-                                    file: StaticString = #file,
-                                    function: StaticString = #function,
-                                    line: UInt = #line) {
-        let tmp = input2message(message, metadata: metadata(), file: file, function: function, line: line)
-        error("\(tmp)")
-        assertionFailure(message, file: file, line: line)
-    }
-
-    nonisolated func criticalAndAssert(_ message: String,
-                                       metadata: @autoclosure () -> [String: String]? = nil,
-                                       file: StaticString = #file,
-                                       function: StaticString = #function,
-                                       line: UInt = #line) {
-        let tmp = input2message(message, metadata: metadata(), file: file, function: function, line: line)
-        critical("\(tmp)")
-        assertionFailure(message, file: file, line: line)
-    }
-
-    nonisolated func faultAndAssert(_ message: String,
-                                    metadata: @autoclosure () -> [String: String]? = nil,
-                                    file: StaticString = #file,
-                                    function: StaticString = #function,
-                                    line: UInt = #line) {
-        let tmp = input2message(message, metadata: metadata(), file: file, function: function, line: line)
-        fault("\(tmp)")
-        assertionFailure(message, file: file, line: line)
-    }
-
-    private func input2message(_ message: String,
-                               metadata: [String: String]?,
-                               file: StaticString,
-                               function: StaticString,
-                               line: UInt) -> String {
-        let metadataText: String
-        if let metadataRaw = metadata,
-           !metadataRaw.isEmpty {
-
-            let text = metadataRaw.reduce("") { partialResult, element in
-                "\(partialResult), [\(element.key): \(element.value)]"
-            }
-            metadataText = " metadata: \(text),"
-        } else {
-            metadataText = ""
-        }
-        return "\(message) -\(metadataText) file: \(URL(fileURLWithPath: file.description).lastPathComponent) \(function):\(line)"
+public extension Duration {
+    /// Whole milliseconds, the unit of every `durationMs` log field.
+    var inMilliseconds: Int {
+        Int(components.seconds * 1000 + components.attoseconds / 1_000_000_000_000_000)
     }
 }

@@ -84,7 +84,8 @@ public struct StatsView: View {
                             .font(.caption)
                             .foregroundStyle(.primary)
                     }
-                    .foregroundStyle(Color.paRedAsset.opacity(Double(item.count) / Double(maxCount)))
+                    // The floor keeps a small year visible next to a large one.
+                    .foregroundStyle(Color.paRedAsset.opacity(0.3 + Double(item.count) / Double(maxCount) * 0.7))
                 }
                 .frame(height: 80)
                 .fixedSize(horizontal: false, vertical: true)

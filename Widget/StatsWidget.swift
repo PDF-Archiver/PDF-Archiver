@@ -7,9 +7,7 @@
 
 import AppIntents
 import ArchiverIntents
-import Charts
 import Shared
-import SwiftData
 import SwiftUI
 import WidgetKit
 
@@ -32,11 +30,11 @@ struct StatsProvider: AppIntentTimelineProvider {
         return StatsEntry(date: Date(), yearStats: yearStats)
     }
 
-    func timeline(for configuration: ConfigurationAppIntent, in context: Context) async -> Timeline<StatsEntry> {
+    func timeline(for configuration: ConfigurationAppIntent, in context: Context) -> Timeline<StatsEntry> {
         var entries: [StatsEntry] = []
 
         // we can only calculate the current state of the archive
-        let entry = await snapshot(for: configuration, in: context)
+        let entry = snapshot(for: configuration, in: context)
         entries.append(entry)
 
         return Timeline(entries: entries, policy: .after(Date().advanced(by: 60 * 60 * 24)))    // 24h
@@ -48,42 +46,13 @@ struct StatsEntry: TimelineEntry {
     let yearStats: [Int: Int]   // year: count
 }
 
-fileprivate extension View {
-    @ViewBuilder
-    func labelStyle(includingText: Bool) -> some View {
-        if includingText {
-            self.labelStyle(.titleAndIcon)
-        } else {
-            self.labelStyle(.iconOnly)
-        }
-    }
-}
-
-extension StatsView.Size {
-    static func create(from size: WidgetFamily) -> Self {
-        switch size {
-        case .systemSmall:
-            return .small
-
-        case .systemMedium:
-            return .medium
-
-        case .systemLarge, .systemExtraLarge:
-            return .large
-
-        default:
-            return .small
-        }
-    }
-}
-
 private struct StatsEntryView: View {
     @Environment(\.widgetFamily) var widgetFamily
     let entry: StatsEntry
 
     var body: some View {
         StatsView(yearStats: entry.yearStats,
-                  size: .create(from: widgetFamily))
+                  size: widgetFamily == .systemMedium ? .medium : .small)
             .containerBackground(.fill.tertiary, for: .widget)
     }
 }

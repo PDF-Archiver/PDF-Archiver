@@ -10,7 +10,7 @@ import ArchiverModels
 import BackgroundTasks
 import ComposableArchitecture
 import Foundation
-import OSLog
+import Logging
 import Shared
 import UserNotifications
 
@@ -18,15 +18,12 @@ extension BGProcessingTask: @unchecked @retroactive Sendable {}
 extension BGTaskScheduler: @unchecked @retroactive Sendable {}
 
 /// Manages background tasks for cache processing on iOS
-@available(iOS 26, *)
 public actor BackgroundTaskManager: Log {
     /// Background task identifier for cache processing
     public static let cacheProcessingTaskIdentifier = "de.JulianKahnert.PDFArchiveViewer.pdf-processing"
 
     private static let scheduler = BGTaskScheduler.shared
 
-    @Dependency(\.documentProcessor) var documentProcessor
-    @Dependency(\.archiveStore) var archiveStore
     @SharedReader(.backgroundCacheNotificationsEnabled) var shouldNotify: Bool
 
     private init() {}
@@ -52,39 +49,59 @@ public actor BackgroundTaskManager: Log {
 
     /// Schedule the cache processing background task
     public static func scheduleCacheProcessing() {
+        @Shared(.downloadAllForSearch) var downloadAllForSearch: Bool
+
         let request = BGProcessingTaskRequest(identifier: cacheProcessingTaskIdentifier)
-        request.requiresNetworkConnectivity = false
-        request.requiresExternalPower = true // Only run when connected to power
+        // Only the opt-in download needs the network; extraction reads local files.
+        request.requiresNetworkConnectivity = downloadAllForSearch
+        request.requiresExternalPower = true
+        let metadata: Logger.Metadata = [
+            "requiresNetwork": "\(request.requiresNetworkConnectivity)",
+            "requiresPower": "\(request.requiresExternalPower)"
+        ]
         do {
             try scheduler.submit(request)
-            Logger.backgroundTask.info("Cache processing task scheduled")
+            Logger.backgroundTask.notice("Cache processing task scheduled", metadata: metadata)
         } catch {
-            Logger.backgroundTask.error("Failed to schedule cache processing task: \(error)")
+            Logger.backgroundTask.error("Failed to schedule cache processing task", metadata: metadata.merging([
+                "error": "\(LogRedact.describe(error))"
+            ]) { _, error in error })
         }
+    }
+
+    public static func cancelCacheProcessing() {
+        scheduler.cancel(taskRequestWithIdentifier: cacheProcessingTaskIdentifier)
     }
 
     /// Handle cache processing background task
     private func handleCacheProcessing(task: BGProcessingTask) async {
         Logger.backgroundTask.info("Background cache processing started")
+        // A background launch never shows the UI, whose start is where this is logged otherwise.
+        await AppStateLog.log()
         let startTime = Date()
+        // A lock, not actor state: the expiration handler is a synchronous callback on any thread.
+        let runningPhases = LockIsolated<Set<String>>([])
+        // Rescheduled together with the completion, so a watchdog completion schedules the next run.
+        let completion = BackgroundTaskCompletion { success in
+            task.setTaskCompleted(success: success)
+            Self.scheduleCacheProcessing()
+        }
 
         // Use a cancellable task so the expiration handler can stop work
         let processingTask = Task {
-            // The background task may have launched the app in the background - in that case
-            // ArchiveStore has only just started its asynchronous folder scan and
-            // getDocuments() would return an empty snapshot.
-            await waitForInitialDocumentLoad()
-
-            let documents = try await archiveStore.getDocuments()
-            // Runs OCR (if enabled) before the AI cache pass, so the text
-            // layers exist when the cache entries are computed.
-            return await documentProcessor.processUntaggedDocuments(documents)
+            try await runBackgroundProcessing(runningPhases: runningPhases)
         }
 
         // Set expiration handler to cancel the work instead of completing the task directly
         task.expirationHandler = {
-            Logger.backgroundTask.warning("Background cache processing expired")
+            Logger.backgroundTask.warning("Background cache processing expired", metadata: [
+                "elapsedSeconds": "\(Int(Date().timeIntervalSince(startTime)))",
+                "phase": "\(runningPhases.value.sorted().joined(separator: "+"))"
+            ])
             processingTask.cancel()
+            Task {
+                await completion.completeAfterGracePeriod()
+            }
         }
 
         do {
@@ -102,10 +119,16 @@ public actor BackgroundTaskManager: Log {
                 )
             }
 
-            task.setTaskCompleted(success: true)
-            Logger.backgroundTask.info("Background processing completed: \(result.ocrCount) OCR, \(result.aiCacheCount) caches in \(processingDuration)s")
+            await completion.complete(success: true, completion: "normal", metadata: [
+                "ocrCount": "\(result.ocrCount)",
+                "aiCacheCount": "\(result.aiCacheCount)",
+                "durationSeconds": "\(processingDuration)"
+            ])
         } catch {
-            Logger.backgroundTask.error("Background cache processing failed: \(error)")
+            Logger.backgroundTask.error("Background cache processing failed", metadata: [
+                "error": "\(LogRedact.describe(error))",
+                "phase": "\(runningPhases.value.sorted().joined(separator: "+"))"
+            ])
 
             if shouldNotify, !processingTask.isCancelled {
                 await UNUserNotificationCenter.current().showLocalNotification(
@@ -114,29 +137,9 @@ public actor BackgroundTaskManager: Log {
                 )
             }
 
-            task.setTaskCompleted(success: false)
-        }
-
-        // Reschedule for next time
-        Self.scheduleCacheProcessing()
-    }
-
-    /// Wait until the initial document load has finished, but no longer than a fixed
-    /// timeout - the background execution window is limited.
-    private func waitForInitialDocumentLoad() async {
-        await withTaskGroup(of: Void.self) { group in
-            group.addTask {
-                for await isLoading in await self.archiveStore.isLoading() {
-                    guard isLoading else { return }
-                }
-            }
-            group.addTask {
-                try? await Task.sleep(for: .seconds(30))
-                guard !Task.isCancelled else { return }
-                Logger.backgroundTask.warning("Timed out waiting for the initial document load")
-            }
-            await group.next()
-            group.cancelAll()
+            await completion.complete(success: false, completion: "normal", metadata: [
+                "durationSeconds": "\(Date().timeIntervalSince(startTime))"
+            ])
         }
     }
 }

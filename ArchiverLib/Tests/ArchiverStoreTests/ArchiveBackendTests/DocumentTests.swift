@@ -141,6 +141,14 @@ struct DocumentTests {
         #expect(result.tagNames == nil)
     }
 
+    /// Both providers admit `.PDF`; the tag parser must not keep the extension as part of the tag.
+    @Test
+    func filenameParsingWithUppercaseExtension() async {
+        let result = await Document.parseFilename("2024-01-01--x__steuer.PDF")
+
+        #expect(result.tagNames == ["steuer"])
+    }
+
     @Test
     func documentRenamingWithNoSpecification() async {
 
@@ -285,6 +293,7 @@ struct DocumentTests {
         // setup
         let date = try #require(dateFormatter.date(from: "2018-05-12"))
         let document = Document(id: 1,
+                                rootKey: "test",
                                 url: URL(fileURLWithPath: "~/Downloads/2018-05-12--\(Document.descriptionPlaceholder)__\(Document.tagPlaceholder).pdf"),
                                 date: date,
                                 specification: "",

@@ -5,17 +5,18 @@
 //  Created by Julian Kahnert on 30.06.25.
 //
 
+import ArchiverDatabase
 import ArchiverModels
 import ArchiverStore
 import ComposableArchitecture
+import Diagnostics
+import Logging
 import Shared
 import StoreKit
 import SwiftUI
 #if os(iOS)
 import MessageUI
 #endif
-import OSLog
-import UniformTypeIdentifiers
 
 extension PDFQuality {
     var name: LocalizedStringKey {
@@ -24,7 +25,7 @@ extension PDFQuality {
             return "100% - Lossless"
 
         case .good:
-            return "75% - Good (Default)"
+            return "75% - Good"
 
         case .normal:
             return "50% - Normal"
@@ -33,46 +34,16 @@ extension PDFQuality {
             return "25% - Small"
         }
     }
-}
 
-extension StorageType {
-    var title: LocalizedStringKey {
-        switch self {
-        case .iCloudDrive:
-            return "iCloud Drive"
-
-        #if !os(macOS)
-        case .appContainer:
-            return "Local"
-        #endif
-
-        case .local:
-            #if os(macOS)
-            return "Drive"
-            #else
-            return "Folder"
-            #endif
-        }
+    /// Read from the stored key itself, so the picker's "(Default)" cannot name another case than
+    /// the one a fresh install gets.
+    static var `default`: PDFQuality {
+        AppStorageKey<PDFQuality>.Default.pdfQuality.initialValue
     }
 
-    @ViewBuilder
-    var descriptionView: some View {
-        switch self {
-        case .iCloudDrive:
-            Text("Synchronized - Your documents are stored in iCloud Drive. They are available to you on all devices with the same iCloud account, e.g. iPhone, iPad and Mac.", bundle: #bundle)
-
-        #if !os(macOS)
-        case .appContainer:
-            VStack(alignment: .leading) {
-                Text("Not synchronized - your documents are only stored locally in this app. They can be transferred via the Finder on a Mac, for example.", bundle: #bundle)
-                // swiftlint:disable:next force_unwrapping
-                Link("https://support.apple.com/en-us/HT210598", destination: URL(string: NSLocalizedString("https://support.apple.com/en-us/HT210598", comment: ""))!)
-            }
-        #endif
-
-        case .local:
-            Text("Not synchronized - Your documents are stored in a folder you choose on your computer. PDF Archiver does not initiate synchronization.", bundle: #bundle)
-        }
+    var pickerLabel: Text {
+        guard self == Self.default else { return Text(name, bundle: #bundle) }
+        return Text(name, bundle: #bundle) + Text(verbatim: " ") + Text("(Default)", bundle: #bundle)
     }
 }
 
@@ -86,22 +57,32 @@ struct Settings {
         case expertSettings(ExpertSettings)
         case imprint
         case legal
+        case premium
         case privacy
+        case searchIndex(SearchIndexSettings)
         case termsOfUse
     }
 
     @ObservableState
     struct State: Equatable {
         @Presents var destination: Destination.State?
+        var navigationStackID = 0
 
         @Shared(.pdfQuality) var pdfQuality: PDFQuality
         @SharedReader(.archivePathType) var selectedArchiveType: StorageType?
         #if os(macOS)
         @Shared(.observedFolder) var observedFolderURL: URL?
+        @Shared(.settingsPane) var selectedPaneID: String
+
+        var selectedPane: SettingsPane { SettingsPane(persisted: selectedPaneID) }
         #endif
 
         var premiumSection = PremiumSection.State()
         var isShowingMailSheet = false
+        var isShowingDiagnosticsReportConsent = false
+        var diagnosticsReport: DiagnosticsReport?
+        var isCreatingDiagnosticsReport = false
+        var didConfirmSendingDiagnosticsReport = false
         #if os(macOS)
         var showObservedFolderPicker = false
         #endif
@@ -116,25 +97,43 @@ struct Settings {
 
     enum Action: BindableAction {
         case binding(BindingAction<State>)
+        case delegate(Delegate)
         case destination(PresentationAction<Destination.Action>)
         case onAboutMeTapped
         case onAdvancedSettingsTapped
         case onAppleIntelligenceSettingsTapped
         case onContactSupportTapped
+        case diagnosticsReportCreated(DiagnosticsReport)
         case onImprintTapped
         case onLegalTapped
         #if os(macOS)
         case onObserveredFolderSelectedTapped
         case onObservedFolderRemoveTapped
+        case onPaneSelected(SettingsPane)
+        case onSettingsWindowAppeared
+        case onSettingsWindowDisappeared
         #endif
         case onOpenPdfArchiverWebsiteTapped
+        case onPremiumTapped
         case onShowArchiveTypeSelectionTapped
         case onPrivacyTapped
+        case onSearchIndexTapped
+        case onSendWithReportTapped
+        case onSendWithoutReportTapped
+        case onCancelContactSupportTapped
         case onTermsOfUseTapped
         case premiumSection(PremiumSection.Action)
         #if os(macOS)
         case updateObservedFolder(URL?)
         #endif
+
+        enum Delegate: Equatable {
+            case showDocuments(SearchToken)
+        }
+    }
+
+    private enum CancelID {
+        case diagnosticsReport
     }
 
     var body: some ReducerOf<Self> {
@@ -146,6 +145,12 @@ struct Settings {
             switch action {
             case .binding:
                 return .none
+
+            case .delegate:
+                return .none
+
+            case .destination(.presented(.searchIndex(.delegate(.showDocuments(let token))))):
+                return .send(.delegate(.showDocuments(token)))
 
             case .destination:
                 return .none
@@ -162,24 +167,59 @@ struct Settings {
                 state.destination = .appleIntelligenceSettings(AppleIntelligenceSettings.State())
                 return .none
 
-            case .onContactSupportTapped:
-                #if os(iOS)
-                state.isShowingMailSheet = true
+            case .onSearchIndexTapped:
+                state.destination = .searchIndex(SearchIndexSettings.State())
                 return .none
-                #else
-                // build the mailto URL via URLComponents to get proper percent encoding
-                var components = URLComponents()
-                components.scheme = "mailto"
-                components.path = Constants.mailRecipient
-                components.queryItems = [URLQueryItem(name: "subject", value: Constants.mailSubject)]
-                guard let url = components.url else {
-                    Logger.settings.errorAndAssert("Failed to create mailto url")
-                    return .none
-                }
 
-                NSWorkspace.shared.open(url)
+            case .onContactSupportTapped:
+                // Every tap reports the state at that moment, so the mail never carries the report
+                // an earlier tap in the same session produced.
+                state.diagnosticsReport = nil
+                state.isCreatingDiagnosticsReport = true
+                state.didConfirmSendingDiagnosticsReport = false
+                // The consent dialog goes up right away and the report keeps loading behind it,
+                // so the button never looks dead while the user decides.
+                state.isShowingDiagnosticsReportConsent = true
+                return .run { send in
+                    // Logged before the report reads the log, so a report from a long-running
+                    // session still carries the current state and not only the one from launch.
+                    await AppStateLog.log()
+                    let report = await Self.makeDiagnosticsReport()
+                    await send(.diagnosticsReportCreated(report))
+                }
+                .cancellable(id: CancelID.diagnosticsReport)
+
+            case .diagnosticsReportCreated(let report):
+                state.diagnosticsReport = report
+                state.isCreatingDiagnosticsReport = false
+                if state.didConfirmSendingDiagnosticsReport {
+                    Self.deliverDiagnosticsReport(report, state: &state)
+                }
                 return .none
-                #endif
+
+            case .onSendWithReportTapped:
+                state.didConfirmSendingDiagnosticsReport = true
+                // The report may already be ready by the time consent is given; if it isn't,
+                // `diagnosticsReportCreated` delivers it once loading finishes.
+                if let report = state.diagnosticsReport {
+                    Self.deliverDiagnosticsReport(report, state: &state)
+                }
+                return .none
+
+            case .onSendWithoutReportTapped:
+                // No need to wait for the report at all, so this delivers immediately and
+                // drops whatever the background load already produced.
+                state.diagnosticsReport = nil
+                state.isCreatingDiagnosticsReport = false
+                state.didConfirmSendingDiagnosticsReport = false
+                Self.deliverDiagnosticsReport(nil, state: &state)
+                return .cancel(id: CancelID.diagnosticsReport)
+
+            case .onCancelContactSupportTapped:
+                state.diagnosticsReport = nil
+                state.isCreatingDiagnosticsReport = false
+                state.didConfirmSendingDiagnosticsReport = false
+                return .cancel(id: CancelID.diagnosticsReport)
 
             case .onImprintTapped:
                 state.destination = .imprint
@@ -196,17 +236,29 @@ struct Settings {
 
             case .onObservedFolderRemoveTapped:
                 return .send(.updateObservedFolder(nil))
+
+            case .onPaneSelected(let pane):
+                state.$selectedPaneID.withLock { $0 = pane.rawValue }
+                Self.openPane(pane, in: &state)
+                return .none
+
+            case .onSettingsWindowAppeared:
+                Self.openPane(state.selectedPane, in: &state)
+                return .none
+
+            case .onSettingsWindowDisappeared:
+                // The Settings scene's state outlives its window, and `SearchIndexSettings.State`
+                // holds a live `@Fetch` — dropping the destination closes that query.
+                state.destination = nil
+                return .none
             #endif
 
             case .onOpenPdfArchiverWebsiteTapped:
-                #if os(iOS) || DEBUG
-                return .run { [pdfArchiverWebsiteUrl = state.pdfArchiverWebsiteUrl] _ in
-                    await openURL(pdfArchiverWebsiteUrl)
-                }
-                #else
-                NSWorkspace.shared.open(state.pdfArchiverWebsiteUrl)
+                return .openExternalURL(state.pdfArchiverWebsiteUrl, with: openURL)
+
+            case .onPremiumTapped:
+                state.destination = .premium
                 return .none
-                #endif
 
             case .onShowArchiveTypeSelectionTapped:
                 state.destination = .archiveStorage(StorageSelection.State())
@@ -240,6 +292,86 @@ struct Settings {
         }
         .ifLet(\.$destination, action: \.destination)
     }
+
+    #if os(macOS)
+    private static func openPane(_ pane: SettingsPane, in state: inout State) {
+        switch pane {
+        case .storage: state.destination = .archiveStorage(StorageSelection.State())
+        case .appleIntelligence: state.destination = .appleIntelligenceSettings(AppleIntelligenceSettings.State())
+        case .searchIndex: state.destination = .searchIndex(SearchIndexSettings.State())
+        case .advanced: state.destination = .expertSettings(ExpertSettings.State())
+
+        // General, Premium and About are rendered from `Settings.State` itself.
+        case .general, .premium, .about: state.destination = nil
+        }
+    }
+    #endif
+}
+
+extension Settings {
+    static func makeDiagnosticsReport() async -> DiagnosticsReport {
+        await DiagnosticsReporter.create(
+            using: [DiagnosticsReporter.DefaultReporter.generalInfo.reporter,
+                    DiagnosticsReporter.DefaultReporter.appSystemMetadata.reporter,
+                    OSLogReporter(),
+                    ArchiveLogFileReporter()],
+            filters: [SensitivePathFilter.self]
+        )
+    }
+
+    static func deliverDiagnosticsReport(_ report: DiagnosticsReport?, state: inout State) {
+        #if os(iOS)
+        state.isShowingMailSheet = true
+        #endif
+        #if os(macOS)
+        sendReportOnMac(report)
+        #endif
+    }
+
+    #if os(macOS)
+    static func writeReportToTemporaryFile(_ report: DiagnosticsReport) -> URL? {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent(report.filename)
+        do {
+            try report.data.write(to: url)
+            return url
+        } catch {
+            Logger.settings.errorAndAssert("Failed to write diagnostics report", metadata: ["error": "\(LogRedact.describe(error))"])
+            return nil
+        }
+    }
+
+    /// Attaches the report via the Mail compose service; falls back to a plain `mailto:` link
+    /// (no attachment) for a `nil` report, when no mail client is configured, or when the write fails
+    /// (also revealing the report in Finder in that last case).
+    static func sendReportOnMac(_ report: DiagnosticsReport?) {
+        guard let report, let url = writeReportToTemporaryFile(report) else {
+            openMailtoFallback()
+            return
+        }
+
+        let service = NSSharingService(named: .composeEmail)
+        service?.recipients = [Constants.mailRecipient]
+        service?.subject = Constants.mailSubject
+        guard let service, service.canPerform(withItems: [url]) else {
+            openMailtoFallback()
+            NSWorkspace.shared.activateFileViewerSelecting([url])
+            return
+        }
+        service.perform(withItems: [url])
+    }
+
+    static func openMailtoFallback() {
+        var components = URLComponents()
+        components.scheme = "mailto"
+        components.path = Constants.mailRecipient
+        components.queryItems = [URLQueryItem(name: "subject", value: Constants.mailSubject)]
+        guard let url = components.url else {
+            Logger.settings.errorAndAssert("Failed to create mailto url")
+            return
+        }
+        NSWorkspace.shared.open(url)
+    }
+    #endif
 }
 
 extension Settings.Destination.State: Sendable, Equatable {}
@@ -254,7 +386,6 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 preferences
-                PremiumSectionView(store: store.scope(\.premiumSection, action: \.premiumSection))
                 aboutSection
             }
             // since we have buttons, we have to "fake" the foreground color - it would be the accent color otherwise
@@ -264,15 +395,18 @@ struct SettingsView: View {
             .navigationViewStyle(StackNavigationViewStyle())
             .navigationBarTitleDisplayMode(.inline)
             .sheet(isPresented: $store.isShowingMailSheet) {
-                if MFMailComposeViewController.canSendMail() {
+                if !MFMailComposeViewController.canSendMail() {
+                    Text("Mail is not configured on this device", bundle: #bundle)
+                        .padding()
+                } else {
+                    // Only presented once the consent decision is final, so the report to attach
+                    // (or `nil`, for "Without Report") is already settled.
                     MailComposeView(
                         isShowing: $store.isShowingMailSheet,
                         recipient: Constants.mailRecipient,
-                        subject: Constants.mailSubject
+                        subject: Constants.mailSubject,
+                        report: store.diagnosticsReport
                     )
-                } else {
-                    Text("Mail is not configured on this device", bundle: #bundle)
-                        .padding()
                 }
             }
 #endif
@@ -302,6 +436,22 @@ struct SettingsView: View {
                         preconditionFailure("Failed to load export nothing found")
                     }
 
+                case .searchIndex:
+                    if let searchIndexStore = store.scope(\.destination?.searchIndex, action: \.destination.searchIndex) {
+                        SearchIndexSettingsView(store: searchIndexStore)
+                            .navigationTitle(Text("Search Index", bundle: #bundle))
+                    } else {
+                        preconditionFailure("Failed to load the search index settings")
+                    }
+
+                case .premium:
+                    Form {
+                        PremiumSectionView(store: store.scope(\.premiumSection, action: \.premiumSection))
+                    }
+                    // Same as the root form: the buttons would take the accent color otherwise.
+                    .foregroundColor(.primary)
+                    .navigationTitle(Text("Premium", bundle: #bundle))
+
                 case .aboutMe:
                     AboutMeView()
 
@@ -330,6 +480,7 @@ struct SettingsView: View {
                 }
             }
         }
+        .id(store.navigationStackID)
     }
 
     @ViewBuilder
@@ -337,7 +488,7 @@ struct SettingsView: View {
         Section {
             Picker(selection: Binding(store.$pdfQuality), label: Label(String(localized: "PDF Quality", bundle: #bundle), systemImage: "text.document")) {
                 ForEach(PDFQuality.allCases, id: \.self) { quality in
-                    Text(quality.name, bundle: #bundle)
+                    quality.pickerLabel
                 }
             }
 
@@ -359,9 +510,21 @@ struct SettingsView: View {
             }
 
             Button {
+                store.send(.onSearchIndexTapped)
+            } label: {
+                Label(String(localized: "Search Index", bundle: #bundle), systemImage: "magnifyingglass.circle")
+            }
+
+            Button {
                 store.send(.onAdvancedSettingsTapped)
             } label: {
                 Label(String(localized: "Advanced", bundle: #bundle), systemImage: "gearshape.2")
+            }
+
+            Button {
+                store.send(.onPremiumTapped)
+            } label: {
+                Label(String(localized: "Premium", bundle: #bundle), systemImage: "star.hexagon")
             }
         } header: {
             Text("Preferences", bundle: #bundle)
@@ -374,8 +537,20 @@ struct SettingsView: View {
             Button {
                 store.send(.onContactSupportTapped)
             } label: {
-                Label(String(localized: "Contact & Help", bundle: #bundle), systemImage: "envelope")
+                HStack {
+                    Label(String(localized: "Contact & Help", bundle: #bundle), systemImage: "envelope")
+                    Spacer()
+                    if store.isCreatingDiagnosticsReport {
+                        ProgressView()
+                    }
+                }
             }
+            .diagnosticsReportConsentDialog(
+                isPresented: $store.isShowingDiagnosticsReportConsent,
+                onSendWithReport: { store.send(.onSendWithReportTapped) },
+                onSendWithoutReport: { store.send(.onSendWithoutReportTapped) },
+                onCancel: { store.send(.onCancelContactSupportTapped) }
+            )
 
             Button {
                 requestReview()
@@ -400,230 +575,6 @@ struct SettingsView: View {
 }
 
 #if os(macOS)
-struct SettingsMacView: View {
-    @Bindable var store: StoreOf<Settings>
-
-    @Environment(\.requestReview) private var requestReview
-
-    var body: some View {
-        NavigationStack {
-            TabView {
-                Tab(String(localized: "General", bundle: #bundle), systemImage: "gear") {
-                    generalPreferences
-                        .focusable(false)
-                }
-
-                Tab(String(localized: "Premium", bundle: #bundle), systemImage: "star.hexagon") {
-                    PremiumSectionView(store: store.scope(\.premiumSection, action: \.premiumSection))
-                        .padding(.horizontal)
-                        .focusable(false)
-                }
-
-                Tab(String(localized: "About", bundle: #bundle), systemImage: "info.circle") {
-                    aboutPreferences
-                        .focusable(false)
-                }
-            }
-            .tabViewStyle(.tabBarOnly)
-        }
-        .frame(width: 400, height: 350)
-        .sheet(isPresented: Binding(
-            get: { store.destination != nil },
-            set: { if !$0 { store.destination = nil } }
-        )) {
-            if let destination = store.destination {
-                NavigationStack {
-                    Group {
-                        switch destination {
-                        case .appleIntelligenceSettings:
-                            if let appleIntelligenceSettingsStore = store.scope(\.destination?.appleIntelligenceSettings, action: \.destination.appleIntelligenceSettings) {
-                                AppleIntelligenceSettingsView(store: appleIntelligenceSettingsStore)
-                                    .navigationTitle(Text("Apple Intelligence", bundle: #bundle))
-                            }
-
-                        case .archiveStorage:
-                            if let storageSelectionStore = store.scope(\.destination?.archiveStorage, action: \.destination.archiveStorage) {
-                                StorageSelectionView(store: storageSelectionStore)
-                                    .navigationTitle(Text("Storage", bundle: #bundle))
-                            }
-
-                        case .expertSettings:
-                            if let expertSettingsStore = store.scope(\.destination?.expertSettings, action: \.destination.expertSettings) {
-                                ExpertSettingsView(store: expertSettingsStore)
-                                    .navigationTitle(Text("Advanced", bundle: #bundle))
-                            }
-
-                        case .aboutMe:
-                            AboutMeView()
-
-                        case .legal:
-                            LegalView(store: store)
-                                .navigationTitle(Text("Legal", bundle: #bundle))
-
-                        case .termsOfUse:
-                            let content = String(localized: "TERMS_OF_USE", bundle: #bundle)
-                            MarkdownView(markdown: content)
-                                .navigationTitle(String(localized: "Terms of Use", bundle: #bundle))
-
-                        case .privacy:
-                            let content = String(localized: "PRIVACY", bundle: #bundle)
-                            MarkdownView(markdown: content)
-                                .navigationTitle(String(localized: "Privacy", bundle: #bundle))
-
-                        case .imprint:
-                            let content = String(localized: "IMPRINT", bundle: #bundle)
-                            MarkdownView(markdown: content)
-                                .navigationTitle(Text("Imprint", bundle: #bundle))
-                        }
-                    }
-                    .toolbar {
-                        ToolbarItem(placement: .confirmationAction) {
-                            Button(String(localized: "Done", bundle: #bundle)) {
-                                store.destination = nil
-                            }
-                        }
-                    }
-                    .frame(minWidth: 500, minHeight: 400)
-                }
-            }
-        }
-        .fileImporter(isPresented: $store.showObservedFolderPicker, allowedContentTypes: [UTType.folder], onCompletion: { result in
-            switch result {
-            case .success(let url):
-                // Securely access the URL to save a bookmark
-                guard url.startAccessingSecurityScopedResource() else {
-                    // Handle the failure here.
-                    return
-                }
-                store.send(.updateObservedFolder(url))
-
-            case .failure(let error):
-                Logger.settings.faultAndAssert("Failed to import a local folder: \(error)")
-                NotificationCenter.default.postAlert(error)
-            }
-        })
-    }
-
-    @ViewBuilder
-    private var generalPreferences: some View {
-        Form {
-            Section {
-                LabeledContent {
-                    Picker("", selection: Binding(store.$pdfQuality)) {
-                        ForEach(PDFQuality.allCases, id: \.self) { quality in
-                            Text(quality.name, bundle: #bundle)
-                        }
-                    }
-                    .labelsHidden()
-                    .pickerStyle(.menu)
-                } label: {
-                    Label(String(localized: "PDF Quality", bundle: #bundle), systemImage: "text.document")
-                }
-
-                LabeledContent {
-                    HStack {
-                        Text(store.selectedArchiveType.getPath().title, bundle: #bundle)
-                            .foregroundStyle(.secondary)
-                        Spacer()
-                        Button(String(localized: "Change…", bundle: #bundle)) {
-                            store.send(.onShowArchiveTypeSelectionTapped)
-                        }
-                    }
-                } label: {
-                    Label(String(localized: "Storage", bundle: #bundle), systemImage: "externaldrive")
-                }
-
-                LabeledContent {
-                    HStack(spacing: 6) {
-                        if let observedFolderURL = store.observedFolderURL {
-                            Text(observedFolderURL.path)
-                            Button {
-                                store.send(.onObservedFolderRemoveTapped)
-                            } label: {
-                                Image(systemName: "xmark.circle.fill")
-                                    .foregroundColor(.secondary)
-                            }
-                        } else {
-                            Button(String(localized: "Select", bundle: #bundle)) {
-                                store.send(.onObserveredFolderSelectedTapped)
-                            }
-                        }
-                    }
-                } label: {
-                    Label(String(localized: "Observed Folder", bundle: #bundle), systemImage: "folder.badge.plus")
-                }
-
-                LabeledContent {
-                    Button(String(localized: "Configure…", bundle: #bundle)) {
-                        store.send(.onAppleIntelligenceSettingsTapped)
-                    }
-                } label: {
-                    Label(String(localized: "Apple Intelligence", bundle: #bundle), systemImage: "apple.intelligence")
-                }
-
-                LabeledContent {
-                    Button(String(localized: "Configure…", bundle: #bundle)) {
-                        store.send(.onAdvancedSettingsTapped)
-                    }
-                } label: {
-                    Label(String(localized: "Advanced", bundle: #bundle), systemImage: "gearshape.2")
-                }
-            } header: {
-                Text("Preferences", bundle: #bundle)
-                    .foregroundStyle(Color.secondary)
-            }
-        }
-        .formStyle(.grouped)
-    }
-
-    @ViewBuilder
-    private var aboutPreferences: some View {
-        Form {
-            Section {
-                Button {
-                    store.send(.onContactSupportTapped)
-                } label: {
-                    HStack {
-                        Label(String(localized: "Contact & Help", bundle: #bundle), systemImage: "envelope")
-                        Spacer()
-                    }
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-
-                Button {
-                    requestReview()
-                } label: {
-                    HStack {
-                        Label(String(localized: "Rate App", bundle: #bundle), systemImage: "app.gift.fill")
-                        Spacer()
-                    }
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-
-                ShareLink(item: store.appStoreUrl) {
-                    HStack {
-                        Label(String(localized: "Share App", bundle: #bundle), systemImage: "square.and.arrow.up")
-                        Spacer()
-                    }
-                }
-                .buttonStyle(.plain)
-            } header: {
-                Text("About", bundle: #bundle)
-                    .foregroundStyle(Color.secondary)
-            }
-            Section {
-                LegalView(store: store)
-            } header: {
-                Text("Legal", bundle: #bundle)
-                    .foregroundStyle(Color.secondary)
-            }
-        }
-        .formStyle(.grouped)
-    }
-}
-
 #Preview("Settings", traits: .fixedLayout(width: 800, height: 600)) {
     SettingsView(
         store: Store(initialState: Settings.State()) {
@@ -633,12 +584,4 @@ struct SettingsMacView: View {
     )
 }
 
-#Preview("Settings Mac", traits: .fixedLayout(width: 500, height: 400)) {
-    SettingsMacView(
-        store: Store(initialState: Settings.State()) {
-            Settings()
-                ._printChanges()
-        }
-    )
-}
 #endif

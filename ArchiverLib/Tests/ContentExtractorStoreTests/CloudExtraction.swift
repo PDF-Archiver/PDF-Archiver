@@ -33,10 +33,10 @@ enum CloudExtraction {
     ///   two documents unanswered.
     static func responder(sendsWholeDocument: Bool,
                           pageSources: [String: String]) -> ContentExtractorStore.Responder {
-        { documents, customPrompt, text in
+        { documents, neighbours, customPrompt, text in
             let pageImage = pageSources[text].flatMap(PageImage.url(for:))
             let session = LanguageModelSession(model: PrivateCloudComputeLanguageModel(),
-                                               instructions: ContentExtractorStore.instructions(for: documents))
+                                               instructions: ContentExtractorStore.instructions(for: documents, neighbours: neighbours))
             let body = sendsWholeDocument ? text : String(text.prefix(onDeviceTextLimit))
             let prompt = Prompt {
                 customPrompt ?? ""

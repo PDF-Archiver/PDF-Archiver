@@ -5,7 +5,9 @@
 //  Created by Julian Kahnert on 17.11.20.
 //
 
+import ArchiverModels
 import Foundation
+import Logging
 import Shared
 
 extension FileManager {
@@ -19,7 +21,7 @@ extension FileManager {
         let foundUrl = url(forUbiquityContainerIdentifier: nil)?.appending(path: "Documents", directoryHint: .isDirectory)
         guard let foundUrl else { return nil }
 
-        log.debug("Got iCloudDriveURL", metadata: ["iCloudDriveURL": "\(foundUrl)"])
+        log.debug("Got iCloudDriveURL", metadata: ["iCloudDriveURL": "\(LogRedact.shape(foundUrl))"])
 
         // try to fix the error:
         //        Error Domain=NSCocoaErrorDomain
@@ -32,12 +34,12 @@ extension FileManager {
             return nil
         }
 
-        return foundUrl
+        return foundUrl.normalized()
     }
 
     #if !os(macOS)
     var appContainerURL: URL {
-        urls(for: .documentDirectory, in: .userDomainMask)[0]
+        urls(for: .documentDirectory, in: .userDomainMask)[0].normalized()
     }
     #endif
 

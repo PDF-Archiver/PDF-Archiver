@@ -5,9 +5,12 @@
 //  Created by Julian Kahnert on 30.06.25.
 //
 
+import ArchiverDatabase
 import ArchiverModels
 import ComposableArchitecture
+import Logging
 import Shared
+import SQLiteData
 import SwiftUI
 
 @Reducer
@@ -24,11 +27,16 @@ struct DocumentDetails {
     @ObservableState
     struct State: Equatable {
         @Presents var alert: AlertState<Action.Alert>?
-        @Shared var document: Document
+        /// Kept live so download progress and renames arrive; the parent clears the presentation
+        /// when the id leaves its rows, so this never has to model "no document".
+        @FetchOne var document: Document
         var documentInformationForm: DocumentInformationForm.State
         // initially always false to avoid UI glitches, e.g. not showing the inspector
         var showInspector = false
         var isRunningOcr = false
+        /// How often the watchdog has restarted a download that never reported progress - only a
+        /// conscious retry from the failure alert resets it, so the watchdog's own loop still ends.
+        var downloadWatchdogRetryCount = 0
 #if os(iOS)
         var shareDocument: ShareData?
 #endif
@@ -36,9 +44,9 @@ struct DocumentDetails {
         @SharedReader(.highlightDetectedDateEnabled)
         var highlightDetectedDateEnabled: Bool
 
-        init(document: Shared<Document>) {
-            self._document = document
-            self.documentInformationForm = DocumentInformationForm.State(document: document.wrappedValue)
+        init(document: Document) {
+            self._document = FetchOne(wrappedValue: document, Document.find(document.id))
+            self.documentInformationForm = DocumentInformationForm.State(document: document)
         }
     }
 
@@ -50,6 +58,8 @@ struct DocumentDetails {
         case onEditButtonTapped
         case onRunOcrButtonTapped
         case onRemoteDocumentAppeared
+        case onRemoteDocumentDownloadFailed
+        case onRemoteDocumentDownloadWatchdogFired(armedAtStatus: Double)
         case runOcrFinished(Bool)
 #if os(iOS)
         case onShareButtonTapped
@@ -59,6 +69,7 @@ struct DocumentDetails {
 
         enum Alert {
             case confirmDeleteButtonTapped
+            case retryDownloadButtonTapped
         }
 
         enum Delegate: Equatable {
@@ -66,8 +77,20 @@ struct DocumentDetails {
         }
     }
 
+    @Dependency(\.archiveStore.reloadDocuments) var reloadDocuments
     @Dependency(\.archiveStore.startDownloadOf) var startDownloadOf
+    @Dependency(\.continuousClock) var clock
     @Dependency(\.documentProcessor) var documentProcessor
+
+    /// How long a download may sit at the same status before the watchdog restarts it - iCloud
+    /// gives no signal of its own for "stalled" vs. "still queued".
+    static let downloadWatchdogInterval: Duration = .seconds(20)
+    static let maxDownloadWatchdogRetries = 3
+
+    private enum CancelID {
+        case downloadWatchdog
+    }
+
     var body: some ReducerOf<Self> {
         Scope(\.documentInformationForm, action: \.showDocumentInformationForm) {
             DocumentInformationForm()
@@ -78,6 +101,12 @@ struct DocumentDetails {
             switch action {
             case .alert(.presented(.confirmDeleteButtonTapped)):
                 return .send(.delegate(.deleteDocument(state.document)))
+
+            case .alert(.presented(.retryDownloadButtonTapped)):
+                // A conscious retry gets a fresh watchdog budget; only the watchdog's own repeated
+                // firing counts against it.
+                state.downloadWatchdogRetryCount = 0
+                return .send(.onRemoteDocumentAppeared)
 
             case .alert:
                 return .none
@@ -124,13 +153,67 @@ struct DocumentDetails {
                 }
 
             case .onRemoteDocumentAppeared:
-                return .run { [documentUrl = state.document.url] _ in
-                    try await startDownloadOf(documentUrl)
+                Logger.documentDetails.notice("Remote document appeared", metadata: [
+                    "documentId": "\(state.document.id)",
+                    "downloadStatus": "\(state.document.downloadStatus)"
+                ])
+                return .merge(
+                    .run { [documentId = state.document.id, documentUrl = state.document.url] send in
+                        do {
+                            try await startDownloadOf(documentUrl)
+                        } catch {
+                            Logger.documentDetails.error("Failed to start document download", metadata: [
+                                "documentId": "\(documentId)",
+                                "error": "\(LogRedact.describe(error))"
+                            ])
+                            await send(.onRemoteDocumentDownloadFailed)
+                        }
+                    },
+                    downloadWatchdog(armedAtStatus: state.document.downloadStatus)
+                )
+
+            case .onRemoteDocumentDownloadWatchdogFired(let armedAtStatus):
+                // The view already switched away from the loading screen once this is true; the
+                // watchdog task itself is only torn down by the next `.onRemoteDocumentAppeared`.
+                guard state.document.downloadStatus < 1 else { return .none }
+
+                // A status that moved means iCloud is still delivering; only silence is a stall.
+                guard state.document.downloadStatus == armedAtStatus else {
+                    return downloadWatchdog(armedAtStatus: state.document.downloadStatus)
                 }
+
+                state.downloadWatchdogRetryCount += 1
+                guard state.downloadWatchdogRetryCount <= Self.maxDownloadWatchdogRetries else {
+                    return .send(.onRemoteDocumentDownloadFailed)
+                }
+                return .send(.onRemoteDocumentAppeared)
+
+            case .onRemoteDocumentDownloadFailed:
+                state.alert = AlertState<Action.Alert> {
+                    TextState("Download failed", bundle: #bundle)
+                } actions: {
+                    ButtonState(action: .retryDownloadButtonTapped) {
+                        TextState("Try Again", bundle: #bundle)
+                    }
+                    ButtonState(role: .cancel) {
+                        TextState("Cancel", bundle: #bundle)
+                    }
+                } message: {
+                    TextState("The document could not be downloaded. Please check your connection and try again.", bundle: #bundle)
+                }
+                // The alert is already asking the user; a still-running watchdog must not restart
+                // the download silently underneath it.
+                return .cancel(id: CancelID.downloadWatchdog)
 
             case .runOcrFinished(let success):
                 state.isRunningOcr = false
-                guard !success else { return .none }
+                guard !success else {
+                    // The rewritten file has a new size and date; the rescan is what gets its
+                    // fresh text layer indexed.
+                    return .run { _ in
+                        try await reloadDocuments()
+                    }
+                }
                 state.alert = AlertState<Action.Alert> {
                     TextState("OCR failed", bundle: #bundle)
                 } message: {
@@ -157,6 +240,16 @@ struct DocumentDetails {
             }
         }
         .ifLet(\.$alert, action: \.alert)
+    }
+
+    /// `startDownloadOf` only requests the download - it reports neither progress nor a stall, so
+    /// silence for this long is the only signal a hung download ever gives.
+    private func downloadWatchdog(armedAtStatus status: Double) -> Effect<Action> {
+        .run { send in
+            try? await clock.sleep(for: Self.downloadWatchdogInterval)
+            await send(.onRemoteDocumentDownloadWatchdogFired(armedAtStatus: status))
+        }
+        .cancellable(id: CancelID.downloadWatchdog, cancelInFlight: true)
     }
 }
 
@@ -255,35 +348,16 @@ struct DocumentDetailsView: View {
         .toolbar {
             if #available(macOS 26.0, iOS 26.0, *) {
 #if os(macOS)
-                if store.document.isTagged {
-                    ToolbarItem(placement: .accessoryBar(id: "tags")) {
-                        // macOS Bug: the accessoryBar will trigger a high CPU usage
-                        TagListView(
-                            tags: store.document.tags.sorted(),
-                            isEditable: false,
-                            isMultiLine: false,
-                            tapHandler: nil
-                        )
-                        .font(.caption)
-                    }
-                }
+                tagsAccessoryBar
 #endif
 
                 ToolbarItem(id: "edit") {
-                    Button {
-                        store.send(.onEditButtonTapped)
-                    } label: {
-                        Label(String(localized: "Edit", bundle: #bundle), systemImage: "pencil")
-                    }
+                    editButton
                 }
 
 #if os(macOS)
                 ToolbarItem(id: "showInFinder") {
-                    Button(role: .none) {
-                        NSWorkspace.shared.activateFileViewerSelecting([store.document.url])
-                    } label: {
-                        Label(String(localized: "Show in Finder", bundle: #bundle), systemImage: "folder")
-                    }
+                    showInFinderButton
                 }
 #endif
 
@@ -296,29 +370,14 @@ struct DocumentDetailsView: View {
                 }
 
                 ToolbarItem(id: "share") {
-#if os(iOS)
-                    Button(role: .none) {
-                        store.send(.onShareButtonTapped)
-                    } label: {
-                        Label(String(localized: "Share", bundle: #bundle), systemImage: "square.and.arrow.up")
-                    }
-#else
-                    // iOS Bug: when the inspector is active/shown, ShareLink will not trigger the share sheet.
-                    // So we use the workaround with ShareSheet instead.
-                    ShareLink(Text(store.document.filename), item: store.document.url)
-#endif
+                    shareButton
                 }
 
                 ToolbarSpacer()
 
                 ToolbarItem(id: "delete") {
-                    Button(role: .destructive) {
-                        store.send(.onDeleteDocumentButtonTapped)
-                    } label: {
-                        Label(String(localized: "Delete", bundle: #bundle), systemImage: "trash")
-                            .foregroundColor(.red)
-                    }
-                    .buttonStyle(.glass(.identity))
+                    deleteButton
+                        .buttonStyle(.glass(.identity))
                 }
             } else {
                 legacyToolbar
@@ -332,9 +391,32 @@ struct DocumentDetailsView: View {
                     onRunOcr: { store.send(.onRunOcrButtonTapped) })
     }
 
+    /// iOS 18 and macOS 15 have neither `ToolbarItem(id:)` nor `ToolbarSpacer`.
     @ToolbarContentBuilder
     private var legacyToolbar: some ToolbarContent {
 #if os(macOS)
+        tagsAccessoryBar
+#endif
+
+        ToolbarItemGroup(placement: .primaryAction) {
+            editButton
+
+            if store.document.downloadStatus >= 1 {
+                pdfInfoView
+            }
+
+#if os(macOS)
+            showInFinderButton
+#endif
+
+            shareButton
+            deleteButton
+        }
+    }
+
+#if os(macOS)
+    @ToolbarContentBuilder
+    private var tagsAccessoryBar: some ToolbarContent {
         if store.document.isTagged {
             ToolbarItem(placement: .accessoryBar(id: "tags")) {
                 // macOS Bug: the accessoryBar will trigger a high CPU usage
@@ -347,48 +429,60 @@ struct DocumentDetailsView: View {
                 .font(.caption)
             }
         }
+    }
+
+    private var showInFinderButton: some View {
+        Button(role: .none) {
+            NSWorkspace.shared.activateFileViewerSelecting([store.document.url])
+        } label: {
+            Label(String(localized: "Show in Finder", bundle: #bundle), systemImage: "folder")
+        }
+    }
 #endif
 
-        ToolbarItemGroup(placement: .primaryAction) {
-            // editButton
-            Button {
-                store.send(.onEditButtonTapped)
-            } label: {
-                Label(String(localized: "Edit", bundle: #bundle), systemImage: "pencil")
-            }
+    private var editButton: some View {
+        Button {
+            store.send(.onEditButtonTapped)
+        } label: {
+            Label(String(localized: "Edit", bundle: #bundle), systemImage: "pencil")
+        }
+    }
 
-            if store.document.downloadStatus >= 1 {
-                pdfInfoView
-            }
-
-#if os(macOS)
-            // showInFinderButton
-            Button(role: .none) {
-                NSWorkspace.shared.activateFileViewerSelecting([store.document.url])
-            } label: {
-                Label(String(localized: "Show in Finder", bundle: #bundle), systemImage: "folder")
-            }
-#endif
-
-            // share button
+    private var shareButton: some View {
 #if os(iOS)
-            Button(role: .none) {
-                store.send(.onShareButtonTapped)
-            } label: {
-                Label(String(localized: "Share", bundle: #bundle), systemImage: "square.and.arrow.up")
-            }
+        // iOS Bug: when the inspector is active/shown, ShareLink will not trigger the share sheet.
+        // So we use the workaround with ShareSheet instead.
+        Button(role: .none) {
+            store.send(.onShareButtonTapped)
+        } label: {
+            Label(String(localized: "Share", bundle: #bundle), systemImage: "square.and.arrow.up")
+        }
 #else
-            // iOS 18 Bug: when the inspector is active/shown, ShareLink will not trigger the share sheet.
-            // So we use the workaround with ShareSheet instead.
-            ShareLink(Text(store.document.filename), item: store.document.url)
+        ShareLink(Text(store.document.filename), item: store.document.url)
 #endif
-            // deleteButton
-            Button(role: .destructive) {
-                store.send(.onDeleteDocumentButtonTapped)
-            } label: {
-                Label(String(localized: "Delete", bundle: #bundle), systemImage: "trash")
-                    .foregroundColor(.red)
-            }
+    }
+
+    private var deleteButton: some View {
+        Button(role: .destructive) {
+            store.send(.onDeleteDocumentButtonTapped)
+        } label: {
+            Label(String(localized: "Delete", bundle: #bundle), systemImage: "trash")
+                .foregroundColor(.red)
+        }
+    }
+}
+
+extension View {
+    /// The archive and the inbox push the same details page, titled by the document.
+    func documentDetailsDestination(item: Binding<StoreOf<DocumentDetails>?>) -> some View {
+        navigationDestination(item: item) { documentStore in
+            DocumentDetailsView(store: documentStore)
+                .navigationTitle(documentStore.document.specification)
+#if os(macOS)
+                .navigationSubtitle(Text(documentStore.document.date, format: .dateTime.year().month().day()))
+#else
+                .navigationBarTitleDisplayMode(.inline)
+#endif
         }
     }
 }
@@ -396,7 +490,7 @@ struct DocumentDetailsView: View {
 #Preview("Document", traits: .fixedLayout(width: 800, height: 600)) {
     NavigationStack {
         DocumentDetailsView(
-            store: Store(initialState: DocumentDetails.State(document: Shared(value: .mock(downloadStatus: 1)))) {
+            store: Store(initialState: DocumentDetails.State(document: .mock(downloadStatus: 1))) {
                 DocumentDetails()
                     ._printChanges()
             }
@@ -407,7 +501,7 @@ struct DocumentDetailsView: View {
 #Preview("Loading", traits: .fixedLayout(width: 800, height: 600)) {
     NavigationStack {
         DocumentDetailsView(
-            store: Store(initialState: DocumentDetails.State(document: Shared(value: .mock(downloadStatus: 0.33)))) {
+            store: Store(initialState: DocumentDetails.State(document: .mock(downloadStatus: 0.33))) {
                 DocumentDetails()
                     ._printChanges()
             }

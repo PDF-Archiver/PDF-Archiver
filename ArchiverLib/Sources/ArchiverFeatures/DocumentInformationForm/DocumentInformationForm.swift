@@ -5,11 +5,13 @@
 //  Created by Julian Kahnert on 26.06.25.
 //
 
+import ArchiverDatabase
 import ArchiverModels
 import ArchiverStore
 import ComposableArchitecture
 import ContentExtractorStore
 import Shared
+import SQLiteData
 import SwiftUI
 import TipKit
 
@@ -94,7 +96,7 @@ struct DocumentInformationForm {
         case onTagSuggestionTapped(String)
         case onTask
         case onTodayButtonTapped
-        case startUpdatingAllSuggestionsWithAI(URL)
+        case startUpdatingAllSuggestionsWithAI(Document)
         case startUpdatingTagSuggestions
         case updateDocumentData(DocumentParsingResult)
         case updateTagSuggestions([String])
@@ -107,6 +109,7 @@ struct DocumentInformationForm {
     }
 
     @Dependency(\.archiveStore) var archiveStore
+    @Dependency(\.defaultDatabase) var database
     @Dependency(\.textAnalyser) var textAnalyser
     @Dependency(\.contentExtractorStore) var contentExtractorStore
     @Dependency(\.calendar) var calendar
@@ -218,11 +221,11 @@ struct DocumentInformationForm {
             case .onTask:
                 state.isLoading = true
                 state.focusedField = .date
-                return .run { [documentUrl = state.document.url, isTagged = state.document.isTagged] send in
-                    if isTagged {
+                return .run { [document = state.document] send in
+                    if document.isTagged {
                         await send(.startUpdatingTagSuggestions)
                     } else {
-                        await send(.startUpdatingAllSuggestionsWithAI(documentUrl))
+                        await send(.startUpdatingAllSuggestionsWithAI(document))
                     }
                 }
 
@@ -230,9 +233,9 @@ struct DocumentInformationForm {
                 state.document.date = Date()
                 return .none
 
-            case .startUpdatingAllSuggestionsWithAI(let documentUrl):
-                return .run { [appleIntelligenceEnabled = state.appleIntelligenceEnabled, customPrompt = state.customPrompt, documentId = state.document.id] send in
-                    let result = await startUpdatingAllSuggestionsWithAI(url: documentUrl, appleIntelligenceEnabled: appleIntelligenceEnabled, customPrompt: customPrompt, documentId: documentId)
+            case .startUpdatingAllSuggestionsWithAI(let document):
+                return .run { [appleIntelligenceEnabled = state.appleIntelligenceEnabled, customPrompt = state.customPrompt] send in
+                    let result = await startUpdatingAllSuggestionsWithAI(document: document, appleIntelligenceEnabled: appleIntelligenceEnabled, customPrompt: customPrompt)
                     await send(.updateDocumentData(result))
                 }
                 // we try to abort the foundation model response after content generation
@@ -240,15 +243,28 @@ struct DocumentInformationForm {
 
             case .startUpdatingTagSuggestions:
                 return .run { [tagSearchterm = state.tagSearchterm, documentTags = state.document.tags] send in
-                    let tags: [String]
-                    if tagSearchterm.isEmpty {
-                        guard !documentTags.isEmpty else { return }
-                        tags = await archiveStore.getTagSuggestionsSimilarTo(documentTags)
-                    } else {
-                        tags = await archiveStore.getTagSuggestionsFor(tagSearchterm.lowercased())
+                    // Without a search term the suggestions come from the tags already picked.
+                    guard !tagSearchterm.isEmpty || !documentTags.isEmpty else {
+                        await send(.updateTagSuggestions([]))
+                        return
                     }
 
-                    await send(.updateTagSuggestions(tags))
+                    let tags = await withErrorReporting {
+                        try await database.read { db in
+                            if tagSearchterm.isEmpty {
+                                return try DocumentTag
+                                    .cooccurring(with: documentTags, limit: Self.tagSuggestionLimit)
+                                    .fetchAll(db)
+                                    .map(\.tag)
+                            }
+                            return try DocumentTag
+                                .counts(prefix: tagSearchterm.lowercased(), limit: Self.tagSuggestionLimit)
+                                .fetchAll(db)
+                                .map(\.tag)
+                        }
+                    }
+                    // Every path ends the loading state `onTask` entered, a failed read included.
+                    await send(.updateTagSuggestions(tags ?? []))
                 }
                 // we do not need multiple fetches of tag suggestions - so we cancelInFlight suggestions
                 .cancellable(id: CancelID.startUpdatingTagSuggestions, cancelInFlight: true)
@@ -256,13 +272,16 @@ struct DocumentInformationForm {
             case .updateDocumentData(let result):
                 state.isLoading = false
 
-                if let date = result.date {
+                // The result arrives seconds after the form opened; a field the user edited
+                // meanwhile keeps their value.
+                let untouched = state.initialDocument
+                if let date = result.date, state.document.date == untouched.date {
                     state.document.date = date
                 }
-                if let specification = result.specification {
+                if let specification = result.specification, state.document.specification == untouched.specification {
                     state.document.specification = specification
                 }
-                if let tags = result.tags {
+                if let tags = result.tags, state.document.tags == untouched.tags {
                     state.document.tags = tags
                 }
                 if let dateSuggestions = result.dateSuggestions {
@@ -291,6 +310,9 @@ struct DocumentInformationForm {
         }
     }
 
+    /// How many tag suggestions the form offers, as the archive store used to return.
+    private static let tagSuggestionLimit = 10
+
     struct DocumentParsingResult: Equatable {
         let date: Date?
         let specification: String?
@@ -299,10 +321,20 @@ struct DocumentInformationForm {
         let tagSuggestions: [String]?
     }
 
-    private func startUpdatingAllSuggestionsWithAI(url: URL, appleIntelligenceEnabled: Bool, customPrompt: String?, documentId: Document.ID) async -> DocumentParsingResult {
+    /// Tagged documents are the model's tag vocabulary and description examples.
+    private func archiveContext() async -> [Document] {
+        let documents = await withErrorReporting {
+            try await database.read { db in
+                try Document.aiContext().fetchAll(db)
+            }
+        }
+        return documents ?? []
+    }
+
+    private func startUpdatingAllSuggestionsWithAI(document: Document, appleIntelligenceEnabled: Bool, customPrompt: String?) async -> DocumentParsingResult {
 
         // analyse document content and fill suggestions
-        let parserOutput = await archiveStore.parseFilename(url.lastPathComponent)
+        let parserOutput = await archiveStore.parseFilename(document.filename)
         var tagNames = Set(parserOutput.tagNames ?? [])
 
         var foundDate = parserOutput.date
@@ -310,7 +342,7 @@ struct DocumentInformationForm {
         var dateSuggestions: [Date]?
         var tagSuggestions: [String]?
 
-        if let text = await textAnalyser.getTextFrom(url) {
+        if let text = await textAnalyser.getTextFrom(document) {
 
             // STEP 1 - try to find date
             var results = await textAnalyser.parseDateFrom(text)
@@ -334,10 +366,10 @@ struct DocumentInformationForm {
             // Try Apple Intelligence first if enabled and available
             if appleIntelligenceEnabled,
                await contentExtractorStore.isAvailable() == .available,
-               let content = await contentExtractorStore.getDocumentInformation(.init(currentDocuments: (try? await archiveStore.getDocuments()) ?? [],
+               let content = await contentExtractorStore.getDocumentInformation(.init(currentDocuments: await archiveContext(),
                                                                                       text: text,
                                                                                       customPrompt: customPrompt,
-                                                                                      documentId: documentId)) {
+                                                                                      documentId: document.id)) {
                 foundSpecification = content.specification
                 tagSuggestions = Array(content.tags).sorted()
             } else {
@@ -350,13 +382,14 @@ struct DocumentInformationForm {
         }
 
         // add tags from Finder tags
-        tagNames.formUnion((try? await textAnalyser.getFileTagsFrom(url)) ?? [])
+        tagNames.formUnion((try? await textAnalyser.getFileTagsFrom(document.url)) ?? [])
 
-        let date = foundDate ?? Date()
-        let tags = tagNames
-        let specification = foundSpecification ?? ""
-
-        return DocumentParsingResult(date: date, specification: specification, tags: tags, dateSuggestions: dateSuggestions, tagSuggestions: tagSuggestions)
+        // `nil` where nothing was found: the form keeps the document's own value then.
+        return DocumentParsingResult(date: foundDate,
+                                     specification: foundSpecification,
+                                     tags: tagNames.isEmpty ? nil : tagNames,
+                                     dateSuggestions: dateSuggestions,
+                                     tagSuggestions: tagSuggestions)
     }
 }
 
@@ -400,7 +433,10 @@ struct DocumentInformationFormView: View {
                     .focusable(false)
                 DatePicker(String(localized: "Date", bundle: #bundle), selection: $store.document.date, displayedComponents: .date)
                     .focused($focusedField, equals: .date)
+                    #if !os(macOS)
+                    // On macOS NSDatePicker tabs through day, month and year itself before leaving.
                     .modifier(TabCycleModifier(store: store))
+                    #endif
                     .listRowSeparator(.hidden)
                     .sensoryFeedback(.selection, trigger: store.document.date)
                 HStack {
@@ -474,6 +510,8 @@ struct DocumentInformationFormView: View {
         }
         .formStyle(.grouped)
         .bind($store.focusedField, to: $focusedField)
+        // On macOS the `.date` that `onTask` sets is not enough to focus the date picker on open.
+        .defaultFocus($focusedField, .date)
         .task(id: store.document.id) {
             await store.send(.onTask).finish()
         }

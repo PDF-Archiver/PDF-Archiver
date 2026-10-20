@@ -7,6 +7,7 @@
 
 import ArchiverModels
 import Foundation
+import Logging
 import PDFKit
 
 /// Helpers for reading and writing the metadata flag used to track which
@@ -64,11 +65,18 @@ public enum PDFMetadata {
     }
 
     /// The `Creator` value written for `marker` at `version`.
+    public static func markerValue(marker: String, version: Int) -> String {
+        "\(marker) v\(version)"
+    }
+
+    /// Sets the `Creator` metadata to `"<marker> v<version>"` in memory.
     ///
     /// Shared by both OCR entry points so a scanned document is born at the
     /// current engine version instead of being re-OCR'd by the same engine.
-    public static func markerValue(marker: String, version: Int) -> String {
-        "\(marker) v\(version)"
+    public static func stamp(_ pdf: PDFDocument, marker: String, version: Int) {
+        var attributes = pdf.documentAttributes ?? [:]
+        attributes[PDFDocumentAttribute.creatorAttribute] = markerValue(marker: marker, version: version)
+        pdf.documentAttributes = attributes
     }
 
     /// Sets the `Creator` metadata to `"<marker> v<version>"` and writes the
@@ -81,9 +89,31 @@ public enum PDFMetadata {
     /// - Returns: Whether the file was written successfully.
     @discardableResult
     public static func markAsProcessed(_ pdf: PDFDocument, marker: String, version: Int, writeTo url: URL) -> Bool {
-        var attributes = pdf.documentAttributes ?? [:]
-        attributes[PDFDocumentAttribute.creatorAttribute] = markerValue(marker: marker, version: version)
-        pdf.documentAttributes = attributes
-        return pdf.write(to: url)
+        stamp(pdf, marker: marker, version: version)
+        do {
+            try pdf.writeAtomically(to: url)
+            return true
+        } catch {
+            Logger.ocrProcessing.error("Failed to write PDF", metadata: [
+                "document": "\(LogRedact.token(url))",
+                "error": "\(LogRedact.describe(error))"
+            ])
+            return false
+        }
+    }
+}
+
+extension PDFDocument {
+    enum WriteError: Error, LogSafeError {
+        case noDataRepresentation
+
+        var logDescription: String { "\(self)" }
+    }
+
+    /// `write(to:)` streams straight into the target file, so a crash mid-write
+    /// leaves the user's document truncated; `.atomic` renames a finished copy.
+    func writeAtomically(to url: URL) throws {
+        guard let data = dataRepresentation() else { throw WriteError.noDataRepresentation }
+        try data.write(to: url, options: .atomic)
     }
 }

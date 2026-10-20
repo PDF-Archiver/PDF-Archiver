@@ -6,6 +6,7 @@
 //
 
 #if os(iOS)
+import Diagnostics
 import MessageUI
 import SwiftUI
 
@@ -13,12 +14,16 @@ struct MailComposeView: UIViewControllerRepresentable {
     @Binding var isShowing: Bool
     let recipient: String
     let subject: String
+    let report: DiagnosticsReport?
 
     func makeUIViewController(context: Context) -> MFMailComposeViewController {
         let composer = MFMailComposeViewController()
         composer.mailComposeDelegate = context.coordinator
         composer.setToRecipients([recipient])
         composer.setSubject(subject)
+        if let report {
+            composer.addDiagnosticReport(report)
+        }
         return composer
     }
 

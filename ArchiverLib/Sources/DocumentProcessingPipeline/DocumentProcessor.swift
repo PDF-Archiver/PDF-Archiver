@@ -9,7 +9,7 @@ import ArchiverModels
 import ContentExtractorStore
 import CoreGraphics
 import Foundation
-import OSLog
+import Logging
 import PDFKit
 
 /// Result of one untagged-documents pass.
@@ -62,12 +62,34 @@ public actor DocumentProcessor {
     /// not allow stored properties of an `@available(iOS 26, macOS 26)` type
     /// while the package still deploys to iOS 18 / macOS 15.
     private var contentExtractorStorage: AnyObject?
+    private let suggestionCache: SuggestionCache
+    private let featurePrintCache: FeaturePrintCache
+    private let neighbourFinder: NeighbourFinder
+    private let visualNeighbourFinder: VisualNeighbourFinder
 
     /// - Parameter stagingFolder: Crash-safe inbox for incoming documents.
     ///   In the app this is the shared temp folder the Share Extension also
     ///   writes to.
-    public init(stagingFolder: URL) {
+    /// - Parameter suggestionCache: Where the background pass remembers what the model suggested.
+    ///   Defaulting to `.unavailable` would silently throw every suggestion away.
+    /// - Parameter featurePrintCache: Where the background pass remembers each document's Vision
+    ///   feature print (stage 3's visual retrieval fallback). Defaulting to `.unavailable` simply
+    ///   skips computing them.
+    /// - Parameter neighbourFinder: Text retrieval for the background AI pass's prompt - the same
+    ///   finder the interactive path uses. Left at `.unavailable`, the cache entries this pass
+    ///   writes would carry the pre-retrieval prompt, and the interactive path would then read
+    ///   them back on a cache hit without ever retrieving anything itself.
+    /// - Parameter visualNeighbourFinder: Stage 3's fallback for the same pass.
+    public init(stagingFolder: URL,
+                suggestionCache: SuggestionCache = .unavailable,
+                featurePrintCache: FeaturePrintCache = .unavailable,
+                neighbourFinder: NeighbourFinder = .unavailable,
+                visualNeighbourFinder: VisualNeighbourFinder = .unavailable) {
         self.stagingFolder = stagingFolder
+        self.suggestionCache = suggestionCache
+        self.featurePrintCache = featurePrintCache
+        self.neighbourFinder = neighbourFinder
+        self.visualNeighbourFinder = visualNeighbourFinder
     }
 
     // MARK: - Intake
@@ -80,17 +102,19 @@ public actor DocumentProcessor {
     @discardableResult
     public func importScan(_ pages: [CGImage], config: ProcessingConfig) async -> URL? {
         let quality = CGFloat(config.pdfQuality.rawValue)
-        let imageJpegs = pages.compactMap { PlatformImage.from($0).jpg(quality: quality) }
-        guard !imageJpegs.isEmpty else {
-            Logger.documentProcessor.errorAndAssert("Scan import failed: could not encode any page image")
-            return nil
-        }
-
         do {
+            // One page that does not encode fails the import: a document with a
+            // page silently missing would look complete.
+            let imageJpegs = try pages.map { page -> Data in
+                guard let jpeg = PlatformImage.from(page).jpg(quality: quality) else { throw ProcessingError.pageEncodingFailed }
+                return jpeg
+            }
+            guard !imageJpegs.isEmpty else { throw ProcessingError.noPagesRendered }
+
             let urls = try Staging.persist(imageJpegs: imageJpegs, in: stagingFolder)
             return await enqueue(.images(urls), config: config).value
         } catch {
-            Logger.documentProcessor.errorAndAssert("Scan import failed: \(error)")
+            Logger.documentProcessor.errorAndAssert("Scan import failed", metadata: ["error": "\(LogRedact.describe(error))"])
             return nil
         }
     }
@@ -102,7 +126,7 @@ public actor DocumentProcessor {
             let url = try Staging.persist(pdfData: data, filename: filename, in: stagingFolder)
             enqueue(.pdf(url), config: config)
         } catch {
-            Logger.documentProcessor.errorAndAssert("PDF import failed: \(error)")
+            Logger.documentProcessor.errorAndAssert("PDF import failed", metadata: ["error": "\(LogRedact.describe(error))"])
         }
     }
 
@@ -131,7 +155,9 @@ public actor DocumentProcessor {
     /// - Parameters:
     ///   - documents: ALL documents of the archive. The pass filters
     ///     untagged, locally available documents itself; the tagged rest
-    ///     serves as prompt context for the AI pass.
+    ///     serves as prompt context for the AI pass, and - up to a bounded
+    ///     budget per call - as a feature-print backfill for `VisualNeighbourFinder`,
+    ///     which reads only tagged rows.
     ///   - ocr: Whether image-only PDFs should get a text layer.
     ///   - aiContext: Set to pre-compute AI suggestion cache entries.
     @discardableResult
@@ -140,6 +166,8 @@ public actor DocumentProcessor {
 
         var ocrCount = 0
         if ocr {
+            let ocrStart = ContinuousClock.now
+            Logger.documentProcessor.notice("Untagged OCR started", metadata: ["documentCount": "\(untaggedDocuments.count)"])
             for document in untaggedDocuments {
                 guard !Task.isCancelled else { break }
 
@@ -154,19 +182,120 @@ public actor DocumentProcessor {
                     ocrCount += 1
                 }
             }
-            Logger.documentProcessor.info("Untagged processing: added a text layer to \(ocrCount) documents")
+            Logger.documentProcessor.notice("Untagged OCR finished", metadata: [
+                "documentCount": "\(untaggedDocuments.count)",
+                "ocrCount": "\(ocrCount)",
+                "cancelled": "\(Task.isCancelled)",
+                "durationMs": "\(ocrStart.duration(to: .now).inMilliseconds)"
+            ])
         }
 
         var aiCacheCount = 0
         if let aiContext, !Task.isCancelled, #available(iOS 26.0, macOS 26.0, *) {
+            let aiStart = ContinuousClock.now
+            Logger.documentProcessor.notice("AI cache pass started", metadata: ["documentCount": "\(documents.count)"])
             aiCacheCount = await contentExtractor.processUntaggedDocumentsInBackground(
                 documents: documents,
                 textExtractor: { await Self.extractText(from: $0) },
                 customPrompt: aiContext.customPrompt)
-            Logger.documentProcessor.info("Untagged processing: created \(aiCacheCount) AI cache entries")
+            Logger.documentProcessor.notice("AI cache pass finished", metadata: [
+                "aiCacheCount": "\(aiCacheCount)",
+                "cancelled": "\(Task.isCancelled)",
+                "durationMs": "\(aiStart.duration(to: .now).inMilliseconds)"
+            ])
+
+            // Gated on `aiContext`, not a separate flag: `contentExtractor` above is the only
+            // consumer of these prints (via its `visualNeighbourFinder`), so computing one where
+            // that pass is disabled would be wasted work. Passes every locally-available document,
+            // not just `untaggedDocuments`: `VisualNeighbourFinder` reads only tagged rows
+            // (`DocumentFeaturePrint.taggedRows`), so a document tagged before this shipped needs
+            // its print backfilled too, or the visual channel stays inert for the whole existing
+            // archive forever.
+            await cacheMissingFeaturePrints(for: documents.filter { $0.downloadStatus >= 1 })
         }
 
         return UntaggedProcessingResult(ocrCount: ocrCount, aiCacheCount: aiCacheCount)
+    }
+
+    /// How many *tagged* documents get a feature print backfilled in one pass.
+    ///
+    /// Untagged documents are never capped - there are few of them, and each needs its own print to
+    /// retrieve suggestions for itself. Tagged ones can be the whole archive (a document tagged
+    /// before this shipped has no print yet, and `VisualNeighbourFinder` reads only tagged rows), so
+    /// one pass backfilling all of them at once would turn a routine background sweep into
+    /// thousands of Vision calls. The rest catch up on the next pass.
+    static let taggedFeaturePrintBackfillBudget = 50
+
+    /// Computes and persists a Vision feature print for every document in `documents` that does not
+    /// already have a current one cached - untagged documents in full, tagged ones up to
+    /// ``taggedFeaturePrintBackfillBudget`` per call.
+    ///
+    /// Rasterizes page 1 on its own rather than reusing the OCR pass above: `addOcrTextLayer`
+    /// skips a document that already carries a text layer, which is the common case for an
+    /// untagged inbox scan, so this cannot ride along with that pass.
+    ///
+    /// A revision mismatch is treated exactly like a cache miss - `distance(to:)` throws across
+    /// revisions, so a stale entry is worse than no entry at all.
+    private func cacheMissingFeaturePrints(for documents: [Document]) async {
+        let passStart = ContinuousClock.now
+        Logger.documentProcessor.notice("Feature prints started", metadata: ["documentCount": "\(documents.count)"])
+        var taggedBackfilled = 0
+        var cachedCount = 0
+        var computedCount = 0
+        var failedCount = 0
+        for document in documents {
+            guard !Task.isCancelled else { break }
+            // Counted, not logged per document: the cache hit is the common case for the whole archive.
+            guard await featurePrintCache.load(document.id)?.revision != FeaturePrintCache.currentRevision else {
+                cachedCount += 1
+                continue
+            }
+
+            if document.isTagged {
+                guard taggedBackfilled < Self.taggedFeaturePrintBackfillBudget else { continue }
+                taggedBackfilled += 1
+            }
+
+            let printStart = ContinuousClock.now
+            guard let encoded = await Self.encodedFeaturePrint(at: document.url) else {
+                failedCount += 1
+                Logger.documentProcessor.debug("Feature print failed", metadata: [
+                    "documentId": "\(document.id)",
+                    "document": "\(LogRedact.token(document.url))"
+                ])
+                continue
+            }
+            await featurePrintCache.save(.init(documentID: document.id,
+                                               encodedObservation: encoded,
+                                               revision: FeaturePrintCache.currentRevision))
+            computedCount += 1
+            Logger.documentProcessor.debug("Feature print computed", metadata: [
+                "documentId": "\(document.id)",
+                "durationMs": "\(printStart.duration(to: .now).inMilliseconds)"
+            ])
+        }
+        Logger.documentProcessor.notice("Feature prints finished", metadata: [
+            "cachedCount": "\(cachedCount)",
+            "computedCount": "\(computedCount)",
+            "failedCount": "\(failedCount)",
+            "cancelled": "\(Task.isCancelled)",
+            "durationMs": "\(passStart.duration(to: .now).inMilliseconds)"
+        ])
+    }
+
+    @concurrent
+    private static func encodedFeaturePrint(at url: URL) async -> Data? {
+        guard let pdf = PDFDocument(url: url) else { return nil }
+        do {
+            guard let observation = try await PDFOCREngine.firstPageFeaturePrint(of: pdf) else { return nil }
+            return try PropertyListEncoder().encode(observation)
+        } catch {
+            Logger.ocrProcessing.error("Failed to compute a feature print", metadata: [
+                "document": "\(LogRedact.token(url))",
+                "error": "\(LogRedact.describe(error))"
+            ])
+            return nil
+        }
     }
 
     /// Run OCR on one document, whether or not it already has a text layer.
@@ -193,7 +322,7 @@ public actor DocumentProcessor {
         let id = UUID()
         let (stream, continuation) = AsyncStream<ProcessingEvent>.makeStream()
         continuation.onTermination = { _ in
-            Task { [weak self] in
+            Task { [weak self = self] in
                 await self?.removeEventContinuation(id)
             }
         }
@@ -260,7 +389,7 @@ public actor DocumentProcessor {
             }
 
             let timeDiff = Date().timeIntervalSinceReferenceDate - start.timeIntervalSinceReferenceDate
-            Logger.documentProcessor.info("Processing completed", metadata: ["document": "\(documentUrl.lastPathComponent)", "processing_time": "\(timeDiff)"])
+            Logger.documentProcessor.info("Processing completed", metadata: ["document": "\(LogRedact.token(documentUrl))", "processing_time": "\(timeDiff)"])
             emit(.finished(source: source, document: documentUrl))
             return documentUrl
         } catch {
@@ -269,7 +398,7 @@ public actor DocumentProcessor {
             // in-flight set, so a transient failure (file still being written
             // by the Share Extension, destination briefly unavailable) is
             // retried on the next processStagedFiles trigger.
-            Logger.documentProcessor.error("Processing failed: \(error)")
+            Logger.documentProcessor.error("Processing failed", metadata: ["error": "\(LogRedact.describe(error))"])
             for url in batch.sourceUrls {
                 inFlight.remove(url.resolvingSymlinksInPath())
             }
@@ -289,7 +418,7 @@ public actor DocumentProcessor {
 
         let filename = await FilenameGenerator.filename(reusing: nil)
         let documentUrl = try uniqueDestination(for: filename, in: config.destinationFolder)
-        guard document.write(to: documentUrl) else { throw ProcessingError.failedToWritePdf }
+        try document.writeAtomically(to: documentUrl)
         return documentUrl
     }
 
@@ -317,7 +446,7 @@ public actor DocumentProcessor {
     @concurrent
     static func addOcrTextLayer(at url: URL, config: ProcessingConfig, force: Bool = false) async -> Bool {
         guard let pdf = PDFDocument(url: url) else {
-            Logger.ocrProcessing.debug("Could not open PDF at \(url.lastPathComponent, privacy: .public)")
+            Logger.ocrProcessing.debug("Could not open PDF", metadata: ["document": "\(LogRedact.token(url))"])
             return false
         }
 
@@ -326,29 +455,34 @@ public actor DocumentProcessor {
             // A file stamped by this engine version or newer was already given
             // its chance; an older stamp (or none) earns one more attempt.
             if let version = PDFMetadata.processedEngineVersion(pdf, markerPrefix: config.processedMarker),
-               version >= config.ocrEngineVersion { return false }
+               version >= config.ocrEngineVersion {
+                return false
+            }
         }
 
-        Logger.ocrProcessing.info("OCR processing \(url.lastPathComponent, privacy: .public)")
+        Logger.ocrProcessing.info("OCR processing", metadata: ["document": "\(LogRedact.token(url))"])
 
         do {
-            try await PDFOCREngine.addTextLayer(to: pdf, quality: config.pdfQuality)
+            try await PDFOCREngine.addTextLayer(to: pdf, quality: config.pdfQuality, force: force)
             // A pass cancelled during OCR must not write the modified pdf -
             // a successor pass may already be reading the file.
             try Task.checkCancellation()
             if !PDFMetadata.markAsProcessed(pdf, marker: config.processedMarker, version: config.ocrEngineVersion, writeTo: url) {
-                Logger.ocrProcessing.error("Failed to write OCR result for \(url.lastPathComponent, privacy: .public)")
+                Logger.ocrProcessing.error("Failed to write OCR result", metadata: ["document": "\(LogRedact.token(url))"])
                 return false
             }
-            Logger.ocrProcessing.info("OCR completed for \(url.lastPathComponent, privacy: .public) (\(pdf.pageCount) pages)")
+            Logger.ocrProcessing.info("OCR completed", metadata: ["document": "\(LogRedact.token(url))", "pageCount": "\(pdf.pageCount)"])
             return true
         } catch is CancellationError {
             // Partially-modified `pdf` is discarded without writing, so the
             // document is retried on the next pass.
-            Logger.ocrProcessing.info("OCR cancelled for \(url.lastPathComponent, privacy: .public)")
+            Logger.ocrProcessing.info("OCR cancelled", metadata: ["document": "\(LogRedact.token(url))"])
             return false
         } catch {
-            Logger.ocrProcessing.error("OCR failed for \(url.lastPathComponent, privacy: .public): \(error)")
+            Logger.ocrProcessing.error("OCR failed", metadata: [
+                "document": "\(LogRedact.token(url))",
+                "error": "\(LogRedact.describe(error))"
+            ])
             // The failure stamp exists to stop the automatic sweep from looping.
             // A manual run must leave the file byte-identical instead, because
             // `pdf` may already hold partially replaced pages at this point.
@@ -365,7 +499,7 @@ public actor DocumentProcessor {
         guard let document = PDFDocument(url: url) else { return nil }
         var content = ""
         for pageIndex in 0..<min(document.pageCount, 3) {
-            guard content.count < 5000 else { break }
+            guard content.count < Document.analysedTextLength else { break }
             content += document.page(at: pageIndex)?.string ?? ""
         }
         return content.isEmpty ? nil : content
@@ -373,15 +507,7 @@ public actor DocumentProcessor {
 
     private static func uniqueDestination(for filename: String, in folder: URL) throws -> URL {
         try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
-
-        var url = folder.appendingPathComponent(filename, isDirectory: false)
-        if FileManager.default.fileExists(atPath: url.path) {
-            let base = (filename as NSString).deletingPathExtension
-            let ext = (filename as NSString).pathExtension
-            let suffix = UUID().uuidString.prefix(8).lowercased()
-            url = folder.appendingPathComponent("\(base)-\(suffix)" + (ext.isEmpty ? "" : ".\(ext)"), isDirectory: false)
-        }
-        return url
+        return FileManager.default.uniqueFileURL(for: filename, in: folder)
     }
 
     @available(iOS 26.0, macOS 26.0, *)
@@ -389,14 +515,18 @@ public actor DocumentProcessor {
         if let store = contentExtractorStorage as? ContentExtractorStore {
             return store
         }
-        let store = ContentExtractorStore()
+        let store = ContentExtractorStore(cache: suggestionCache,
+                                          neighbourFinder: neighbourFinder,
+                                          visualNeighbourFinder: visualNeighbourFinder)
         contentExtractorStorage = store
         return store
     }
 
-    private enum ProcessingError: Error {
+    private enum ProcessingError: Error, LogSafeError {
         case invalidPdf
         case noPagesRendered
-        case failedToWritePdf
+        case pageEncodingFailed
+
+        var logDescription: String { "\(self)" }
     }
 }

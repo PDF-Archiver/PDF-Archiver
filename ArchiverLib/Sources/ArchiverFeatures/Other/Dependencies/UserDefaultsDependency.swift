@@ -9,6 +9,7 @@ import ArchiverModels
 import ArchiverStore
 import ComposableArchitecture
 import Foundation
+import Logging
 import Shared
 
 @DependencyClient

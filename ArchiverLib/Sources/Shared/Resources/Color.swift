@@ -36,8 +36,20 @@ public extension Color {
         Color("paWhite", bundle: #bundle)
     }
 
-    static var paSecondaryBackgroundAsset: Color {
-        Color("paSecondaryBackground", bundle: #bundle)
+    static var groupedBackgroundAsset: Color {
+        #if os(macOS)
+        Color(.windowBackgroundColor)
+        #else
+        Color(.systemGroupedBackground)
+        #endif
+    }
+
+    static var secondaryGroupedBackgroundAsset: Color {
+        #if os(macOS)
+        Color(.controlBackgroundColor)
+        #else
+        Color(.secondarySystemGroupedBackground)
+        #endif
     }
 
     static var secondaryLabelAsset: Color {

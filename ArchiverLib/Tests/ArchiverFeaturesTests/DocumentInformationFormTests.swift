@@ -1,12 +1,17 @@
+import ArchiverDatabase
 import ArchiverModels
 import ComposableArchitecture
+import Dependencies
+import DependenciesTestSupport
 import Foundation
+import SQLiteData
 import SwiftUI
 import Testing
 
 @testable import ArchiverFeatures
 
 @MainActor
+@Suite(.dependencies { try $0.bootstrapDatabase() })
 struct DocumentInformationFormTests {
     @Test
     func selectDate() async throws {
@@ -26,7 +31,6 @@ struct DocumentInformationFormTests {
         let store = TestStore(initialState: DocumentInformationForm.State(document: .mock())) {
             DocumentInformationForm()
         } withDependencies: {
-            $0.archiveStore.getTagSuggestionsSimilarTo = { _ in [] }
             $0.continuousClock = clock
         }
 
@@ -66,9 +70,8 @@ struct DocumentInformationFormTests {
     func submitTagSearchteam() async throws {
         let store = TestStore(initialState: DocumentInformationForm.State(document: .mock(), suggestedTags: ["first", "second"])) {
             DocumentInformationForm()
-        } withDependencies: {
-            $0.archiveStore.getTagSuggestionsSimilarTo = { _ in ["fitsfirst"] }
         }
+        try await Self.seedTagCompanion()
 
         await store.send(.onTagSearchtermSubmitted) {
             $0.document.tags = ["first"]
@@ -103,7 +106,7 @@ struct DocumentInformationFormTests {
 
     @Test(.disabled("Currently not working"))
     func save() async throws {
-        let document: Document = .mock()
+        let document = ArchiverModels.Document.mock()
         let store = TestStore(initialState: DocumentInformationForm.State(document: document)) {
             DocumentInformationForm()
         }
@@ -187,8 +190,6 @@ struct DocumentInformationFormTests {
     func addingTagUpdatesDocument() async throws {
         let store = TestStore(initialState: DocumentInformationForm.State(document: .mock(), suggestedTags: ["invoice"])) {
             DocumentInformationForm()
-        } withDependencies: {
-            $0.archiveStore.getTagSuggestionsSimilarTo = { _ in [] }
         }
 
         await store.send(.onTagSuggestionTapped("invoice")) {
@@ -280,7 +281,6 @@ struct DocumentInformationFormTests {
         )) {
             DocumentInformationForm()
         } withDependencies: {
-            $0.archiveStore.getTagSuggestionsSimilarTo = { _ in [] }
             $0.continuousClock = clock
         }
 
@@ -351,7 +351,6 @@ struct DocumentInformationFormTests {
             DocumentInformationForm()
         } withDependencies: {
             $0.archiveStore.parseFilename = { _ in (date, nil, nil) }
-            $0.archiveStore.getDocuments = { [] }
             $0.textAnalyser.getTextFrom = { _ in "document text" }
             $0.textAnalyser.parseDateFrom = { _ in [] }
             $0.textAnalyser.getFileTagsFrom = { _ in [] }
@@ -361,18 +360,144 @@ struct DocumentInformationFormTests {
             }
         }
 
-        await store.send(.startUpdatingAllSuggestionsWithAI(document.url))
+        await store.send(.startUpdatingAllSuggestionsWithAI(document))
 
         let expectedResult = DocumentInformationForm.DocumentParsingResult(
             date: date,
             specification: "blue hoodie",
-            tags: [],
+            tags: nil,
             dateSuggestions: [],
             tagSuggestions: ["apfel", "hoodie", "zebra"])
         await store.receive(.updateDocumentData(expectedResult)) {
             $0.document.date = date
             $0.document.specification = "blue hoodie"
             $0.suggestedTags = ["apfel", "hoodie", "zebra"]
+        }
+    }
+
+    @Test
+    func onTaskForAnUntaggedDocumentStartsAISuggestions() async throws {
+        let date = try Date("2025-07-26T15:00:0Z", strategy: .iso8601)
+        let document = Document.mock(isTagged: false)
+
+        let store = TestStore(initialState: DocumentInformationForm.State(document: document)) {
+            DocumentInformationForm()
+        } withDependencies: {
+            $0.archiveStore.parseFilename = { _ in (date, nil, nil) }
+            $0.textAnalyser.getTextFrom = { _ in nil }
+            $0.textAnalyser.getFileTagsFrom = { _ in [] }
+        }
+
+        await store.send(.onTask) {
+            $0.isLoading = true
+            $0.focusedField = .date
+        }
+
+        await store.receive(.startUpdatingAllSuggestionsWithAI(document))
+
+        let expectedResult = DocumentInformationForm.DocumentParsingResult(
+            date: date,
+            specification: nil,
+            tags: nil,
+            dateSuggestions: nil,
+            tagSuggestions: nil)
+        await store.receive(.updateDocumentData(expectedResult)) {
+            $0.isLoading = false
+            $0.document.date = date
+        }
+    }
+
+    /// Neither the filename nor the text names a date: the document keeps the date it has instead
+    /// of silently getting today's.
+    @Test
+    func parsingWithoutAFoundDateLeavesTheDocumentDateAlone() async throws {
+        let document = Document.mock(date: try Date("2023-05-04T10:00:00Z", strategy: .iso8601), isTagged: false)
+
+        let store = TestStore(initialState: DocumentInformationForm.State(document: document)) {
+            DocumentInformationForm()
+        } withDependencies: {
+            $0.archiveStore.parseFilename = { _ in (nil, nil, nil) }
+            $0.textAnalyser.getTextFrom = { _ in nil }
+            $0.textAnalyser.getFileTagsFrom = { _ in [] }
+        }
+
+        await store.send(.startUpdatingAllSuggestionsWithAI(document))
+
+        let expectedResult = DocumentInformationForm.DocumentParsingResult(
+            date: nil,
+            specification: nil,
+            tags: nil,
+            dateSuggestions: nil,
+            tagSuggestions: nil)
+        await store.receive(.updateDocumentData(expectedResult))
+        #expect(store.state.document.date == document.date)
+    }
+
+    /// The model answers seconds after the form opened; whatever the user typed in the meantime
+    /// wins over its late result, field by field.
+    @Test
+    func aLateParsingResultKeepsWhatTheUserTypedMeanwhile() async throws {
+        let store = TestStore(initialState: DocumentInformationForm.State(document: .mock())) {
+            DocumentInformationForm()
+        }
+
+        let typedDate = try Date("2024-03-01T12:00:00Z", strategy: .iso8601)
+        await store.send(.binding(.set(\.document.date, typedDate))) {
+            $0.document.date = typedDate
+        }
+        await store.send(.binding(.set(\.document.specification, "typed"))) {
+            $0.document.specification = "typed"
+        }
+        await store.send(.binding(.set(\.document.tags, ["typed"]))) {
+            $0.document.tags = ["typed"]
+        }
+
+        let parsingResult = DocumentInformationForm.DocumentParsingResult(
+            date: Date(),
+            specification: "parsed",
+            tags: ["parsed"],
+            dateSuggestions: nil,
+            tagSuggestions: ["more"])
+        await store.send(.updateDocumentData(parsingResult)) {
+            $0.suggestedTags = ["more"]
+        }
+    }
+
+    /// A tagged document without tags has nothing to derive suggestions from; the spinner the form
+    /// shows while loading still has to go away.
+    @Test
+    func onTaskForATaggedDocumentWithoutTagsStopsLoading() async throws {
+        let document = Document.mock(tags: [], isTagged: true)
+        let store = TestStore(initialState: DocumentInformationForm.State(document: document)) {
+            DocumentInformationForm()
+        }
+
+        await store.send(.onTask) {
+            $0.isLoading = true
+            $0.focusedField = .date
+        }
+
+        await store.receive(.startUpdatingTagSuggestions)
+        await store.receive(.updateTagSuggestions([])) {
+            $0.isLoading = false
+        }
+    }
+
+    @Test
+    func onTaskForATaggedDocumentStartsTagSuggestions() async throws {
+        let document = Document.mock(tags: ["invoice"], isTagged: true)
+        let store = TestStore(initialState: DocumentInformationForm.State(document: document)) {
+            DocumentInformationForm()
+        }
+
+        await store.send(.onTask) {
+            $0.isLoading = true
+            $0.focusedField = .date
+        }
+
+        await store.receive(.startUpdatingTagSuggestions)
+        await store.receive(.updateTagSuggestions([])) {
+            $0.isLoading = false
         }
     }
 
@@ -443,7 +568,6 @@ struct DocumentInformationFormTests {
         let store = TestStore(initialState: DocumentInformationForm.State(document: .mock(), suggestedTags: ["keep", "tag1"])) {
             DocumentInformationForm()
         } withDependencies: {
-            $0.archiveStore.getTagSuggestionsSimilarTo = { _ in [] }
             $0.continuousClock = clock
         }
 
@@ -493,7 +617,6 @@ struct DocumentInformationFormTests {
         let store = TestStore(initialState: DocumentInformationForm.State(document: .mock(), suggestedTags: ["keep", "tag1", "tag2"])) {
             DocumentInformationForm()
         } withDependencies: {
-            $0.archiveStore.getTagSuggestionsSimilarTo = { _ in [] }
             $0.continuousClock = clock
         }
 
@@ -550,7 +673,6 @@ struct DocumentInformationFormTests {
         let store = TestStore(initialState: DocumentInformationForm.State(document: .mock(), suggestedTags: ["tag1"])) {
             DocumentInformationForm()
         } withDependencies: {
-            $0.archiveStore.getTagSuggestionsSimilarTo = { _ in [] }
             $0.continuousClock = clock
         }
 
@@ -569,7 +691,6 @@ struct DocumentInformationFormTests {
         let store = TestStore(initialState: DocumentInformationForm.State(document: .mock(), suggestedTags: ["tag1", "tag2"])) {
             DocumentInformationForm()
         } withDependencies: {
-            $0.archiveStore.getTagSuggestionsSimilarTo = { _ in [] }
             $0.continuousClock = clock
         }
 
@@ -597,5 +718,58 @@ struct DocumentInformationFormTests {
 
         // the timer of the first tag must be gone - otherwise its progress updates arrive here
         await clock.advance(by: .seconds(2))
+    }
+
+    /// The rule: only documents carrying every picked tag count, the 10 most frequent of their other
+    /// tags win, and those are shown alphabetically.
+    @Test
+    func tagSuggestionsComeFromDocumentsCarryingAllPickedTags() async throws {
+        let picked: Set<String> = ["bike", "garden", "invoice"]
+        // Named against the alphabet, so frequency order and display order differ.
+        let byFrequency = ["zz", "yy", "xx", "ww", "vv", "uu", "tt", "ss", "rr", "qq", "pp", "oo"]
+        var documents: [ArchiverModels.Document] = []
+        var tags: [DocumentTag] = []
+        func add(_ documentTags: [String]) {
+            let id = -1 - documents.count
+            documents.append(Document(id: id, rootKey: "test", url: URL(filePath: "/Archive/2024/doc\(id).pdf"), date: Date(timeIntervalSince1970: 0), specification: "doc", tags: Set(documentTags), isTagged: true, sizeInBytes: 1, downloadStatus: 1))
+            tags += documentTags.map { DocumentTag(documentID: id, tag: $0) }
+        }
+        // Document with index carries the first 13 - n candidates: "zz" ends up on 12 documents, "oo" on 1.
+        for index in 1...12 {
+            add(picked.sorted() + byFrequency.prefix(13 - index))
+        }
+        // Each lacks one picked tag, so "unrelated" must never be suggested despite being the most used tag.
+        for _ in 1...20 {
+            add(["bike", "garden", "unrelated"])
+            add(["invoice", "unrelated"])
+        }
+        @Dependency(\.defaultDatabase) var database
+        try await database.write { [documents, tags] db in
+            try Document.insert { documents }.execute(db)
+            try DocumentTag.insert { tags }.execute(db)
+        }
+
+        var document = Document.mock()
+        document.tags = picked
+        let store = TestStore(initialState: DocumentInformationForm.State(document: document)) {
+            DocumentInformationForm()
+        }
+
+        await store.send(.startUpdatingTagSuggestions)
+        await store.receive(.updateTagSuggestions(Array(byFrequency.prefix(10)))) {
+            $0.suggestedTags = ["qq", "rr", "ss", "tt", "uu", "vv", "ww", "xx", "yy", "zz"]
+        }
+    }
+
+    /// One archived document carrying both tags, so `first` suggests `fitsfirst` next to it.
+    private static func seedTagCompanion() async throws {
+        @Dependency(\.defaultDatabase) var database
+        try await database.write { db in
+            try db.seed {
+                Document(id: -1, rootKey: "test", url: URL(filePath: "/Archive/2024/2024-01-01--doc__first_fitsfirst.pdf"), date: Date(timeIntervalSince1970: 0), specification: "doc", tags: ["first", "fitsfirst"], isTagged: true, sizeInBytes: 10, downloadStatus: 1)
+                DocumentTag(documentID: -1, tag: "first")
+                DocumentTag(documentID: -1, tag: "fitsfirst")
+            }
+        }
     }
 }

@@ -7,11 +7,16 @@
 
 import ArchiverModels
 import Foundation
+import Logging
 import Shared
 import Sharing
 
 private enum PathError: Error {
     case iCloudDriveNotFound
+}
+
+extension PathError: LogSafeError {
+    var logDescription: String { "\(self)" }
 }
 
 /// Get the "correct" path for the archive
@@ -67,7 +72,7 @@ final class PathManager: Log {
         let oldArchiveUrl = try archivePathType.getPath().getArchiveUrl()
 
         guard newArchiveUrl != oldArchiveUrl else {
-            log.errorAndAssert("Old and new archive url should be different", metadata: ["newArchiveUrl": "\(newArchiveUrl)"])
+            log.errorAndAssert("Old and new archive url should be different", metadata: ["newArchiveUrl": "\(LogRedact.shape(newArchiveUrl))"])
             return
         }
 

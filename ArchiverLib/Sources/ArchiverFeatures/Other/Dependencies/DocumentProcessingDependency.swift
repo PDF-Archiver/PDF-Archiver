@@ -8,9 +8,10 @@
 import ArchiverModels
 import ArchiverStore
 import ComposableArchitecture
+import ContentExtractorStore
 import DocumentProcessingPipeline
 import Foundation
-import OSLog
+import Logging
 import Shared
 #if canImport(UIKit)
 import UIKit
@@ -49,7 +50,11 @@ extension DocumentProcessingDependency: TestDependencyKey {
 }
 
 extension DocumentProcessingDependency: DependencyKey {
-    private static let documentProcessor = DocumentProcessor(stagingFolder: Constants.tempDocumentURL)
+    private static let documentProcessor = DocumentProcessor(stagingFolder: Constants.tempDocumentURL,
+                                                            suggestionCache: .documentSuggestions,
+                                                            featurePrintCache: .documentFeaturePrints,
+                                                            neighbourFinder: .documentTexts,
+                                                            visualNeighbourFinder: .documentFeaturePrints)
 
     /// Resolve the per-request pipeline config from the current user settings.
     private static func makeConfig() async throws -> ProcessingConfig {
@@ -67,7 +72,7 @@ extension DocumentProcessingDependency: DependencyKey {
                 let config = try await makeConfig()
                 await documentProcessor.processStagedFiles(config: config)
             } catch {
-                Logger.app.error("Staged file processing failed to resolve the untagged folder: \(error)")
+                Logger.app.error("Staged file processing failed to resolve the untagged folder", metadata: ["error": "\(LogRedact.describe(error))"])
             }
         },
         handleImages: { images in
@@ -78,7 +83,7 @@ extension DocumentProcessingDependency: DependencyKey {
                 let pages = images.compactMap { $0.normalizedOrientation().cgImage }
                 return await documentProcessor.importScan(pages, config: config)
             } catch {
-                Logger.app.error("Scan import failed to resolve the untagged folder: \(error)")
+                Logger.app.error("Scan import failed to resolve the untagged folder", metadata: ["error": "\(LogRedact.describe(error))"])
                 return nil
             }
         },
@@ -87,7 +92,7 @@ extension DocumentProcessingDependency: DependencyKey {
                 let config = try await makeConfig()
                 await documentProcessor.importPdf(pdfData, filename: documentURL?.lastPathComponent, config: config)
             } catch {
-                Logger.app.error("PDF import failed to resolve the untagged folder: \(error)")
+                Logger.app.error("PDF import failed to resolve the untagged folder", metadata: ["error": "\(LogRedact.describe(error))"])
             }
         },
         processUntaggedDocuments: { documents in
@@ -103,7 +108,7 @@ extension DocumentProcessingDependency: DependencyKey {
                 let config = try await makeConfig()
                 return await documentProcessor.processUntaggedDocuments(in: documents, config: config, ocr: ocrEnabled, aiContext: aiContext)
             } catch {
-                Logger.app.error("Untagged processing failed to resolve the untagged folder: \(error)")
+                Logger.app.error("Untagged processing failed to resolve the untagged folder", metadata: ["error": "\(LogRedact.describe(error))"])
                 return UntaggedProcessingResult(ocrCount: 0, aiCacheCount: 0)
             }
         },
@@ -112,7 +117,7 @@ extension DocumentProcessingDependency: DependencyKey {
                 let config = try await makeConfig()
                 return await documentProcessor.runOcrTextLayer(at: url, config: config)
             } catch {
-                Logger.app.error("Manual OCR failed to resolve the untagged folder: \(error)")
+                Logger.app.error("Manual OCR failed to resolve the untagged folder", metadata: ["error": "\(LogRedact.describe(error))"])
                 return false
             }
         },

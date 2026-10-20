@@ -7,7 +7,7 @@
 
 import ArchiverModels
 import Foundation
-import OSLog
+import Logging
 
 /// File handling for the staging folder — the crash-safe inbox of the
 /// ``DocumentProcessor``.
@@ -51,7 +51,8 @@ enum Staging {
         do {
             for (index, data) in imageJpegs.enumerated() {
                 let url = folder.appendingPathComponent("\(uuid)\(pageImageSeparator)\(index).jpg", isDirectory: false)
-                try data.write(to: url)
+                // A truncated page image would be recovered as a page the scan cannot read.
+                try data.write(to: url, options: .atomic)
                 urls.append(url)
             }
         } catch {
@@ -72,11 +73,8 @@ enum Staging {
             name += ".pdf"
         }
 
-        var url = folder.appendingPathComponent(name, isDirectory: false)
-        if FileManager.default.fileExists(atPath: url.path) {
-            url = folder.appendingPathComponent("\(UUID().uuidString)-\(name)", isDirectory: false)
-        }
-        try pdfData.write(to: url)
+        let url = FileManager.default.uniqueFileURL(for: name, in: folder)
+        try pdfData.write(to: url, options: .atomic)
         return url
     }
 
@@ -115,7 +113,7 @@ enum Staging {
                 }
 
             default:
-                Logger.documentProcessor.debug("Ignoring unsupported staged file \(url.lastPathComponent, privacy: .public)")
+                Logger.documentProcessor.debug("Ignoring unsupported staged file", metadata: ["document": "\(LogRedact.token(url))"])
             }
         }
 

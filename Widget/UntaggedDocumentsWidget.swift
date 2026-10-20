@@ -7,9 +7,7 @@
 
 import AppIntents
 import ArchiverIntents
-import Charts
 import Shared
-import SwiftData
 import SwiftUI
 import WidgetKit
 
@@ -43,31 +41,13 @@ struct UntaggedDocumentsEntry: TimelineEntry {
     let untaggedDocuments: Int
 }
 
-extension UntaggedDocumentsStatsView.Size {
-    static func create(from size: WidgetFamily) -> Self {
-        switch size {
-        case .systemSmall:
-            return .small
-
-        case .systemMedium:
-            return .medium
-
-        case .systemLarge, .systemExtraLarge:
-            return .large
-
-        default:
-            return .small
-        }
-    }
-}
-
 private struct UntaggedDocumentsEntryView: View {
     @Environment(\.widgetFamily) var widgetFamily
     let entry: UntaggedDocumentsEntry
 
     var body: some View {
         UntaggedDocumentsStatsView(untaggedDocuments: entry.untaggedDocuments,
-                                   size: .create(from: widgetFamily))
+                                   size: widgetFamily == .systemMedium ? .medium : .small)
             .containerBackground(.fill.tertiary, for: .widget)
     }
 }
@@ -100,12 +80,4 @@ struct UntaggedDocumentsWidget: Widget {
     UntaggedDocumentsEntry(date: .now, untaggedDocuments: 0)
     UntaggedDocumentsEntry(date: .now, untaggedDocuments: 5)
     UntaggedDocumentsEntry(date: .now, untaggedDocuments: 542)
-}
-
-#Preview("Large", as: .systemLarge) {
-    UntaggedDocumentsWidget()
-} timeline: {
-    UntaggedDocumentsEntry(date: .now, untaggedDocuments: 0)
-    UntaggedDocumentsEntry(date: .now, untaggedDocuments: 5)
-    UntaggedDocumentsEntry(date: .now, untaggedDocuments: 42)
 }

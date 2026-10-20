@@ -11,7 +11,7 @@ let package = Package(
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "ArchiverLib",
-            targets: ["ArchiverFeatures", "ArchiverIntents"]),
+            targets: ["ArchiverDatabase", "ArchiverFeatures", "ArchiverIntents"]),
         .library(
             name: "Shared",
             targets: ["Shared"]),
@@ -31,29 +31,51 @@ let package = Package(
                  ]),
         .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "1.17.1"),
         .package(url: "https://github.com/pointfreeco/swift-sharing", exact: "2.10.1"),
+        .package(url: "https://github.com/pointfreeco/sqlite-data", exact: "1.12.1"),
+        // Pinned to the version sqlite-data resolves; `ArchiverDatabase` needs `ValueObservation` directly.
+        .package(url: "https://github.com/groue/GRDB.swift", exact: "7.11.1"),
+        .package(url: "https://github.com/pointfreeco/swift-structured-queries", exact: "0.39.2"),
         .package(url: "https://github.com/sideeffect-io/AsyncExtensions", exact: "0.5.5"),
-        .package(url: "https://github.com/apple/swift-async-algorithms", exact: "1.1.5")
+        .package(url: "https://github.com/apple/swift-async-algorithms", exact: "1.1.7"),
+        .package(url: "https://github.com/AvdLee/Diagnostics", exact: "7.0.3"),
+        .package(url: "https://github.com/apple/swift-log", exact: "1.16.1")
     ],
     targets: [
+        .target(name: "ArchiverDatabase",
+                dependencies: [
+                    "ArchiverModels",
+                    .product(name: "GRDB", package: "GRDB.swift"),
+                    .product(name: "SQLiteData", package: "sqlite-data"),
+                    .product(name: "Dependencies", package: "swift-dependencies"),
+                    .product(name: "DependenciesMacros", package: "swift-dependencies"),
+                    .product(name: "Logging", package: "swift-log"),
+                    .product(name: "Sharing", package: "swift-sharing")
+                ]),
         .target(name: "ArchiverFeatures",
                 dependencies: [
+                    "ArchiverDatabase",
                     "ArchiverModels",
                     "ArchiverIntents",
                     "ArchiverStore",
                     "ContentExtractorStore",
                     "DocumentProcessingPipeline",
                     "Shared",
-                    .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+                    .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+                    .product(name: "SQLiteData", package: "sqlite-data"),
+                    .product(name: "Diagnostics", package: "Diagnostics"),
+                    .product(name: "Logging", package: "swift-log")
                 ],
                 resources: [
                     .process("Localizable.xcstrings")
                 ]),
         .target(name: "ArchiverStore",
                 dependencies: [
+                    "ArchiverDatabase",
                     "ArchiverModels",
                     "Shared",
                     .product(name: "Dependencies", package: "swift-dependencies"),
                     .product(name: "DependenciesMacros", package: "swift-dependencies"),
+                    .product(name: "Logging", package: "swift-log"),
                     .product(name: "Sharing", package: "swift-sharing"),
                     "AsyncExtensions",
                     .product(name: "AsyncAlgorithms", package: "swift-async-algorithms")
@@ -67,15 +89,20 @@ let package = Package(
                     .process("Localizable.xcstrings")
                 ]),
         .target(name: "ArchiverModels",
-                dependencies: []),
+                dependencies: [
+                    .product(name: "Logging", package: "swift-log"),
+                    .product(name: "StructuredQueries", package: "swift-structured-queries")
+                ]),
         .target(name: "ContentExtractorStore",
                 dependencies: [
-                    "ArchiverModels"
+                    "ArchiverModels",
+                    .product(name: "Logging", package: "swift-log")
                 ]),
         .target(name: "DocumentProcessingPipeline",
                 dependencies: [
                     "ArchiverModels",
-                    "ContentExtractorStore"
+                    "ContentExtractorStore",
+                    .product(name: "Logging", package: "swift-log")
                 ]),
         .target(name: "EvaluationCorpus",
                 dependencies: [
@@ -89,19 +116,37 @@ let package = Package(
         .target(name: "Shared",
                 dependencies: [
                     "ArchiverModels",
-                    .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+                    .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+                    .product(name: "Logging", package: "swift-log")
                 ],
                 resources: [
                     .process("Resources/Localizable.xcstrings"),
                     .process("Resources/Assets.xcassets")
                 ]),
         .testTarget(
+            name: "ArchiverDatabaseTests",
+            dependencies: [
+                "ArchiverDatabase",
+                .product(name: "DependenciesTestSupport", package: "swift-dependencies")
+            ],
+            resources: [
+                .process("assets")
+            ]
+        ),
+        .testTarget(
             name: "ArchiverFeaturesTests",
-            dependencies: ["ArchiverFeatures"]
+            dependencies: [
+                "ArchiverFeatures",
+                .product(name: "DependenciesTestSupport", package: "swift-dependencies"),
+                .product(name: "Logging", package: "swift-log")
+            ]
         ),
         .testTarget(
             name: "ArchiverStoreTests",
-            dependencies: ["ArchiverStore"]
+            dependencies: [
+                "ArchiverStore",
+                .product(name: "Logging", package: "swift-log")
+            ]
         ),
         .testTarget(
             name: "DocumentProcessingPipelineTests",
@@ -115,7 +160,9 @@ let package = Package(
             dependencies: [
                 "ContentExtractorStore",
                 "ArchiverModels",
-                "EvaluationCorpus"
+                "ArchiverDatabase",
+                "EvaluationCorpus",
+                .product(name: "DependenciesTestSupport", package: "swift-dependencies")
             ]
         ),
         .testTarget(

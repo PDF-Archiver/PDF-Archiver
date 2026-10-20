@@ -31,38 +31,42 @@ struct ContentExtractionEvaluationTests {
         // in reach of a command-line run.
         Attachment.record(result.groupedSummary, named: "aggregates.txt")
 
+        // Thresholds are calibrated to a 1911-document corpus (160 samples). The
+        // earlier, stricter ones came from a 26-sample corpus where a single
+        // document moved a mean by 0.038; they are not comparable.
+
         // A sample the model never answered for is a missing measurement, not a
-        // zero, so every mean below is then taken over a smaller corpus. One is
-        // tolerated: the safety guardrails refuse a parental-allowance notice in
-        // this corpus, which no prompt of ours controls.
-        #expect(result.errors.inferenceFailureCount <= 1)
+        // zero, so every mean below is then taken over a smaller corpus. The
+        // safety guardrails refuse ~5 of 160, which no prompt of ours controls.
+        #expect(result.errors.inferenceFailureCount <= 10)
         #expect(result.errors.metricsNotFound.isEmpty)
 
         // Describing the text instead of the document is a bug the instructions
         // already forbid, and the user sees it verbatim in the filename.
         #expect(result.aggregateValue(.mean(of: Self.evaluation.noMetaCommentary)) >= 1.0)
 
-        // No longer 1.0: for a document whose every suggested tag was invented,
-        // the vocabulary filter leaves none, and that is the intended answer.
-        #expect(result.aggregateValue(.mean(of: Self.evaluation.suggestionOffered)) >= 0.96)
+        // The description becomes the filename, so a verbose one is unusable
+        // however accurate it is. Splitting the prompt in two raised description
+        // word count from 2.1 to 12.6 and dropped this to 0.85 while tag F1 stayed
+        // flat - this is the guard that caught it.
+        #expect(result.aggregateValue(.mean(of: Self.evaluation.descriptionLength)) >= 0.95)
+
+        // Not 1.0: for a document whose every suggested tag was invented, the
+        // vocabulary filter leaves none, and that is the intended answer.
+        #expect(result.aggregateValue(.mean(of: Self.evaluation.suggestionOffered)) >= 0.90)
 
         // Only tags the archive already uses may be suggested. Short of 1.0 for
         // the same reason: a document left with no tag counts as a failure here.
-        #expect(result.aggregateValue(.mean(of: Self.evaluation.tagsFromArchive)) >= 0.96)
+        #expect(result.aggregateValue(.mean(of: Self.evaluation.tagsFromArchive)) >= 0.90)
 
         // The tags carry the document type, so the description has to add what
-        // it is about. Prompt-enforced and by far the noisiest measurement here:
-        // two runs of the identical prompt gave 0.76 and 0.65.
-        #expect(result.aggregateValue(.mean(of: Self.evaluation.descriptionAvoidsTags)) >= 0.60)
+        // it is about.
+        #expect(result.aggregateValue(.mean(of: Self.evaluation.descriptionAvoidsTags)) >= 0.70)
 
         // The optimization target: how many of the tags the user picked are
-        // recovered. Deterministic given one prompt, but the safety guardrails
-        // refuse a sample on some runs, and 25 vs 26 samples moves the mean -
-        // hence a small margin under the measured 0.3803.
-        //
-        // Down from 0.4173 for the two rules above. Precision rose 0.42 -> 0.54
-        // in exchange: fewer tags, but more of them right, and none invented.
-        #expect(result.aggregateValue(.mean(of: Self.evaluation.tagF1)) >= 0.40)
+        // recovered. Measured 0.5295 with the retrieval block, the "scan the text
+        // for existing tags" rule and `TagExpansion`; 0.4252 with retrieval off.
+        #expect(result.aggregateValue(.mean(of: Self.evaluation.tagF1)) >= 0.50)
     }
 }
 

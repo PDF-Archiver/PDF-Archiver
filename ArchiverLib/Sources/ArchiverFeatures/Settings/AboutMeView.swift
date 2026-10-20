@@ -20,6 +20,9 @@ struct AboutMeView: View {
                 profilePicture
                 text
             }
+            #if os(macOS)
+            .padding(.top, 32)
+            #endif
         }
         .navigationTitle(Text("About", bundle: #bundle))
     }
@@ -28,7 +31,7 @@ struct AboutMeView: View {
         HStack {
             Image(.logoAsset)
                 .resizable()
-                .frame(width: 50.0, height: 50.0, alignment: .center)
+                .frame(width: 64, height: 64)
             VStack(alignment: .leading, spacing: 4.0) {
                 Text("PDF Archiver", bundle: #bundle)
                     .font(.largeTitle)

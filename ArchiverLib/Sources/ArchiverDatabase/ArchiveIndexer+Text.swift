@@ -1,0 +1,418 @@
+//
+//  ArchiveIndexer+Text.swift
+//  ArchiverLib
+//
+//  Created by Julian Kahnert on 06.09.26.
+//
+
+import ArchiverModels
+import Dependencies
+import Foundation
+import Logging
+import PDFKit.PDFDocument
+import SQLiteData
+
+extension ArchiveIndexer {
+    /// One pathological file must not fill the index on its own.
+    static let maximumCharacterCount = 1_000_000
+
+    /// Extracts and stores the text of documents whose index is missing or stale.
+    ///
+    /// Only ever called by the platform schedulers, never by a user action: this is the expensive
+    /// half of indexing and runs on external power at background quality of service.
+    ///
+    /// Returns the documents this run attempted, so a caller that manages local copies - not this
+    /// target's job, see ADR-003 - knows what it can evict again.
+    @discardableResult
+    public func indexPendingTexts(budget: Int) async -> [Document] {
+        // Returns before any bookkeeping, so the next scheduled run repeats the attempt.
+        guard await mayStartTextPass() else { return [] }
+
+        let pending = await withErrorReporting {
+            try await database.read { db in
+                try Self.pendingDocuments(limit: budget).fetchAll(db)
+            }
+        }
+        guard let pending else {
+            Logger.archiveIndexer.error("[textindex] Could not read the run candidates")
+            await finishTextRun(indexedAnything: false)
+            return []
+        }
+        guard !pending.isEmpty else {
+            // A document that is not on this device is never a candidate, so a large
+            // `notDownloadedCount` here is a stalled download, not a finished index.
+            let notDownloadedCount = await notDownloadedCount()
+            Logger.archiveIndexer.notice("[textindex] Run found no candidates", metadata: [
+                "notDownloadedCount": "\(notDownloadedCount)"
+            ])
+            await finishTextRun(indexedAnything: false)
+            return []
+        }
+        Logger.archiveIndexer.debug("[textindex] Run started", metadata: [
+            "budget": "\(budget)",
+            "candidateCount": "\(pending.count)",
+            "firstDocumentId": "\(pending[0].id)",
+            "reconciling": "\(textPassDeferredSince != nil)"
+        ])
+
+        var processedDocuments: [Document] = []
+        var storedCount = 0
+        var wasCancelled = false
+        for document in pending {
+            guard !Task.isCancelled else {
+                wasCancelled = true
+                break
+            }
+            let text = await Self.extractText(from: document.url)
+
+            // The parse itself runs to completion; the check is about the write that follows,
+            // which an expiring background task would only cancel and report as a failure.
+            guard !Task.isCancelled else {
+                wasCancelled = true
+                break
+            }
+
+            if await commit(text: text, for: document) {
+                storedCount += 1
+            }
+            processedDocuments.append(document)
+            // A reconcile chunk arriving mid-run must not wait out the whole budget.
+            await Task.yield()
+        }
+
+        logTextRun(candidateCount: pending.count,
+                   processedCount: processedDocuments.count,
+                   storedCount: storedCount,
+                   wasCancelled: wasCancelled)
+
+        await finishTextRun(indexedAnything: !processedDocuments.isEmpty)
+        return processedDocuments
+    }
+
+    /// Every document a run reads but does not store comes back in the next run, in the same
+    /// order - which is a stuck index, not a slow one, so it is logged above `debug`.
+    private func logTextRun(candidateCount: Int, processedCount: Int, storedCount: Int, wasCancelled: Bool) {
+        let metadata: Logger.Metadata = [
+            "candidateCount": "\(candidateCount)",
+            "processedCount": "\(processedCount)",
+            "storedCount": "\(storedCount)",
+            "wasCancelled": "\(wasCancelled)"
+        ]
+        guard storedCount == candidateCount else {
+            Logger.archiveIndexer.notice("[textindex] Run stored fewer documents than it read", metadata: metadata)
+            return
+        }
+        Logger.archiveIndexer.debug("[textindex] Run finished", metadata: metadata)
+    }
+
+    private func notDownloadedCount() async -> Int {
+        let count = await withErrorReporting {
+            try await database.read { db in
+                try Document.where { $0.downloadStatus.lt(1) }.fetchCount(db)
+            }
+        }
+        return count ?? 0
+    }
+
+    /// How many documents still wait for their text.
+    ///
+    /// Read-only on purpose: a caller that polls through `indexPendingTexts` would stamp
+    /// `lastTextRunFinishedAt` on every idle round and wake every `indexerStates` observer with it.
+    public func pendingTextCount() async -> Int {
+        let count = await withErrorReporting {
+            try await database.read { db in
+                try Self.pendingCount().fetchOne(db) ?? 0
+            }
+        }
+        return count ?? 0
+    }
+
+    /// Truncates the whole read model, so "Rebuild search index" repairs ghost rows as well as a
+    /// broken text index. The caller asks `ArchiveStore` to rescan afterwards.
+    public func requestRebuild() async {
+        await withErrorReporting {
+            try await database.write { db in
+                try DocumentText.delete().execute(db)
+                try Document.delete().execute(db)
+                try IndexerState
+                    .find(IndexerState.singletonID)
+                    .update { $0.rebuildRequested = true }
+                    .execute(db)
+            }
+        }
+    }
+
+    // MARK: - Suggestions
+
+    /// Remembers what the model suggested for one document.
+    ///
+    /// Routed through the indexer so it stays the read model's only writer (ADR-003); the
+    /// suggestion is derived data like everything else and a rebuild drops it.
+    public func saveSuggestion(documentID: Document.ID, specification: String, tags: [String]) async {
+        @Dependency(\.date.now) var now
+        await withErrorReporting {
+            try await database.write { db in
+                try DocumentSuggestion
+                    .upsert {
+                        DocumentSuggestion(documentID: documentID,
+                                           specification: specification,
+                                           tags: tags,
+                                           createdAt: now)
+                    }
+                    .execute(db)
+            }
+        }
+    }
+
+    public func clearSuggestions() async {
+        await withErrorReporting {
+            try await database.write { db in
+                try DocumentSuggestion.delete().execute(db)
+            }
+        }
+    }
+
+    // MARK: - Extraction
+
+    /// Reads the document's text layer.
+    ///
+    /// `@concurrent` is the point: under `NonisolatedNonsendingByDefault` an ordinary `async`
+    /// helper would run on the indexer's executor and stall every reconcile behind a PDF parse.
+    @concurrent
+    nonisolated static func extractText(from url: URL) async -> String? {
+        // Never through `NSFileCoordinator`: it blocks until an iCloud file is downloaded.
+        guard let document = PDFDocument(url: url) else {
+            Logger.archiveIndexer.debug("[textindex] Could not open the document", metadata: ["document": "\(LogRedact.token(url))"])
+            return nil
+        }
+        // `nil` is reserved for a document that would not open - `classify` reads it as a failure,
+        // while an image-only PDF has to come back empty so it counts as "no text".
+        return document.string ?? ""
+    }
+
+    // MARK: - Bookkeeping
+
+    /// `false` if nothing was stored, so a run can tell a document it indexed from one that stays
+    /// pending and comes back in the next run.
+    @discardableResult
+    func commit(text: String?, for document: Document) async -> Bool {
+        @Dependency(\.date.now) var now
+
+        let (outcome, body) = Self.classify(text)
+
+        let result = await withErrorReporting {
+            try await database.write { db -> CommitResult in
+                // The file may have been deleted or rewritten while it was being parsed.
+                guard let current = try Document.find(document.id).fetchOne(db) else { return .missingRow }
+                guard current.sizeInBytes == document.sizeInBytes else { return .sizeChanged }
+                guard current.contentModificationDate == document.contentModificationDate else { return .dateChanged }
+
+                // SQLite has no UPSERT for virtual tables, so a replacement is delete plus insert.
+                try DocumentText.find(document.id).delete().execute(db)
+                if let body {
+                    try DocumentText.insert { DocumentText(rowid: document.id, body: body) }.execute(db)
+                }
+
+                try DocumentIndexState
+                    .upsert {
+                        DocumentIndexState(documentID: document.id,
+                                           sourceSize: document.sizeInBytes,
+                                           sourceModificationDate: document.contentModificationDate,
+                                           indexedAt: now,
+                                           outcome: outcome,
+                                           characterCount: body?.count ?? 0,
+                                           extractorVersion: DocumentIndexState.currentExtractorVersion)
+                    }
+                    .execute(db)
+                return .stored
+            }
+        }
+
+        guard let result, result != .stored else { return result == .stored }
+        Logger.archiveIndexer.notice("[textindex] Skipped a document that changed during extraction", metadata: [
+            "documentId": "\(document.id)",
+            "outcome": "\(outcome.rawValue)",
+            "skipReason": "\(result.rawValue)"
+        ])
+        return false
+    }
+
+    /// Why a commit stored nothing - the question a document that never leaves "pending" raises.
+    private enum CommitResult: String {
+        case stored
+        case missingRow
+        case sizeChanged
+        case dateChanged
+    }
+
+    /// Mojibake would pollute every prefix query it happens to match, so it is recorded but not
+    /// indexed; empty text means the document has no text layer yet.
+    private static func classify(_ text: String?) -> (DocumentIndexState.Outcome, String?) {
+        guard let text else { return (.failed, nil) }
+        guard !text.isEmpty else { return (.noText, nil) }
+        guard TextReadability.isReadable(text) else { return (.unreadable, nil) }
+        return (.indexed, String(text.prefix(maximumCharacterCount)))
+    }
+
+    private func finishTextRun(indexedAnything: Bool) async {
+        @Dependency(\.date.now) var now
+        let timings = await withErrorReporting {
+            try await database.write { db -> (mergeMs: Int?, optimizeMs: Int?, pendingCount: Int) in
+                var mergeMs: Int?
+                if indexedAnything {
+                    let mergeStart = ContinuousClock.now
+                    // Incremental: `optimize` merges every segment in one transaction and does not
+                    // fit an expirable background budget.
+                    try #sql(#"INSERT INTO "documentTexts"("documentTexts", "rank") VALUES ('merge', 16)"#).execute(db)
+                    mergeMs = mergeStart.duration(to: .now).inMilliseconds
+                }
+
+                let isRebuilding = try IndexerState
+                    .find(IndexerState.singletonID)
+                    .select(\.rebuildRequested)
+                    .fetchOne(db) ?? false
+                let pendingCount = try Self.pendingCount().fetchOne(db) ?? 0
+                let hasPendingWork = pendingCount > 0
+
+                // The one moment a full `optimize` is affordable: a rebuild has just written every
+                // segment from scratch and there is nothing left to index.
+                var optimizeMs: Int?
+                if isRebuilding, !hasPendingWork, !Task.isCancelled {
+                    let optimizeStart = ContinuousClock.now
+                    try #sql(#"INSERT INTO "documentTexts"("documentTexts", "rank") VALUES ('optimize', -1)"#).execute(db)
+                    optimizeMs = optimizeStart.duration(to: .now).inMilliseconds
+                }
+
+                try IndexerState
+                    .find(IndexerState.singletonID)
+                    .update {
+                        $0.lastTextRunFinishedAt = #bind(now)
+                        $0.rebuildRequested = #bind(hasPendingWork && isRebuilding)
+                    }
+                    .execute(db)
+                return (mergeMs, optimizeMs, pendingCount)
+            }
+        }
+        guard let timings else { return }
+        Logger.archiveIndexer.debug("[textindex] Run bookkeeping finished", metadata: [
+            "mergeMs": "\(timings.mergeMs.map(String.init) ?? "skipped")",
+            "optimizeMs": "\(timings.optimizeMs.map(String.init) ?? "skipped")",
+            "pendingCount": "\(timings.pendingCount)"
+        ])
+    }
+
+    /// How many documents are waiting. Backs a live `@Fetch`, so it must not decode the rows.
+    static func pendingCount() -> some Statement<Int> {
+        #sql(
+            """
+            SELECT count(*)
+            FROM \(Document.self)
+            \(pendingJoinAndFilter)
+            """,
+            as: Int.self
+        )
+    }
+
+    /// Documents with no index state, a changed size or modification date, or an older extractor.
+    /// Inbox first, newest first.
+    static func pendingDocuments(limit: Int) -> some Statement<Document> {
+        #sql(
+            """
+            SELECT \(Document.columns)
+            FROM \(Document.self)
+            \(pendingJoinAndFilter)
+            ORDER BY \(Document.isTagged) ASC, \(Document.date) DESC
+            LIMIT \(bind: limit)
+            """,
+            as: Document.self
+        )
+    }
+
+    private static var pendingJoinAndFilter: QueryFragment {
+        Document.indexStateJoinAndFilter(downloaded: true)
+    }
+}
+
+/// How many documents a text run recorded under one outcome.
+@Selection
+nonisolated struct OutcomeCount: Equatable, Sendable {
+    let outcome: DocumentIndexState.Outcome?
+    let count: Int
+}
+
+extension DocumentIndexState {
+    /// What the settings screen shows about the content index.
+    ///
+    /// `indexed + withoutText + failed` is what a run has already looked at, `pending` is what it
+    /// looks at next and `notDownloaded` what it cannot look at yet. They do not sum to `total`,
+    /// because a document that is not downloaded may still carry a state row from before.
+    public struct Status: Equatable, Sendable {
+        public var total = 0
+        public var indexed = 0
+        public var withoutText = 0
+        public var failed = 0
+        public var pending = 0
+        public var notDownloaded = 0
+        public var lastRun: Date?
+
+        public init(total: Int = 0,
+                    indexed: Int = 0,
+                    withoutText: Int = 0,
+                    failed: Int = 0,
+                    pending: Int = 0,
+                    notDownloaded: Int = 0,
+                    lastRun: Date? = nil) {
+            self.total = total
+            self.indexed = indexed
+            self.withoutText = withoutText
+            self.failed = failed
+            self.pending = pending
+            self.notDownloaded = notDownloaded
+            self.lastRun = lastRun
+        }
+
+        /// Every document a run has finished with, whatever the outcome - what the progress bar shows.
+        public var processed: Int {
+            Swift.min(indexed + withoutText + failed, total)
+        }
+    }
+
+    public struct StatusRequest: FetchKeyRequest {
+        public init() {}
+
+        /// Counts only - this backs a live `@Fetch` and must never decode a document row.
+        public func fetch(_ db: Database) throws -> Status {
+            var status = Status(
+                total: try Document.all.fetchCount(db),
+                pending: try ArchiveIndexer.pendingCount().fetchOne(db) ?? 0,
+                notDownloaded: try Document.where { $0.downloadStatus.lt(1) }.fetchCount(db),
+                lastRun: try IndexerState
+                    .find(IndexerState.singletonID)
+                    .select(\.lastTextRunFinishedAt)
+                    .fetchOne(db)
+                    .flatMap(\.self)
+            )
+
+            let outcomes = try DocumentIndexState
+                .group(by: \.outcome)
+                .select { OutcomeCount.Columns(outcome: $0.outcome, count: $0.count()) }
+                .fetchAll(db)
+            for row in outcomes {
+                switch row.outcome {
+                case .indexed:
+                    status.indexed = row.count
+
+                case .noText, .unreadable:
+                    status.withoutText += row.count
+
+                case .failed:
+                    status.failed = row.count
+
+                case nil:
+                    break
+                }
+            }
+            return status
+        }
+    }
+}
