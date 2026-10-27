@@ -14,13 +14,14 @@ import Testing
 @Suite
 struct SnapshotAssemblerTests {
     @Test
-    func anUpdateBeforeTheInitialSnapshotYieldsNoSnapshotAndIsNotLost() {
-        let snapshots = Self.snapshots(from: [
-            .update(added: [Self.item(id: 3)], updated: [], removed: []),
-            .initialSnapshot([Self.item(id: 1), Self.item(id: 2), Self.item(id: 3)])
-        ])
+    func nothingIsSentBeforeTheInitialSnapshotAndItsResultsReplaceEarlierUpdates() {
+        // The serial queue reads the Initial Snapshot after the update, so its results already hold that change.
+        let earlierUpdate = Self.item(id: 3, downloadStatus: 0.5)
+        let initialSnapshot = [Self.item(id: 1), Self.item(id: 3, downloadStatus: 1)]
+        var assembler = SnapshotAssembler()
 
-        #expect(snapshots == [[1, 2, 3]])
+        #expect(assembler.apply(.update(added: [], updated: [earlierUpdate], removed: [])) == nil)
+        #expect(assembler.apply(.initialSnapshot(initialSnapshot))?.sorted() == initialSnapshot.sorted())
     }
 
     @Test
@@ -62,12 +63,12 @@ struct SnapshotAssemblerTests {
         return events.compactMap { assembler.apply($0)?.map(\.id).sorted() }
     }
 
-    private static func item(id: Int) -> DocumentInformation {
+    private static func item(id: Int, downloadStatus: Double = 1) -> DocumentInformation {
         DocumentInformation(id: id,
                             url: URL(filePath: "/Archive/2024/2024-01-0\(id)--doc__x.pdf"),
                             isTagged: true,
                             sizeInBytes: 100,
-                            downloadStatus: 1,
+                            downloadStatus: downloadStatus,
                             creationDate: nil,
                             contentModificationDate: nil)
     }

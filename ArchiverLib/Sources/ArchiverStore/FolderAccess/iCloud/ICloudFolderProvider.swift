@@ -69,13 +69,13 @@ final class ICloudFolderProvider: FolderProvider {
         // keeps the per-item resource reads below off the main thread
         metadataQuery.operationQueue = Self.metadataQueryOperationQueue
 
-        // Registered here, synchronously and before the query starts: `DidFinishGathering` is posted
-        // exactly once, and a query that finished before an `await`ed loop began iterating would
-        // post it into the void - this provider would then never yield a single snapshot.
         // Unbounded: an update is a delta, and dropping one would lose a document.
         let (events, eventsContinuation) = AsyncStream.makeStream(of: SnapshotAssembler.Event.self)
         let query = metadataQuery
         let center = NotificationCenter.default
+        // Registered here, synchronously and before the query starts: `DidFinishGathering` is posted
+        // exactly once, and a query that finished before an `await`ed loop began iterating would
+        // post it into the void - this provider would then never yield a single snapshot.
         // Both observers run on the query's serial queue, the only place its results are read:
         // reading them anywhere else raced the query's own update and crashed in `resultAtIndex:`.
         notificationTokenBox = NotificationTokenBox([
@@ -97,7 +97,7 @@ final class ICloudFolderProvider: FolderProvider {
             // A single consumer keeps the order the query's queue gave the events.
             for await event in events {
                 guard let self else { return }
-                await apply(event)
+                apply(event)
             }
         }
     }
@@ -159,18 +159,15 @@ final class ICloudFolderProvider: FolderProvider {
 
     private func apply(_ event: SnapshotAssembler.Event) {
         guard let documents = snapshots.apply(event) else { return }
-        switch event {
-        case .initialSnapshot: send(documents, source: "initial")
-        case .update: send(documents, source: "update")
-        }
+        send(documents, source: event)
     }
 
-    private func send(_ documents: [DocumentInformation], source: String) {
+    private func send(_ documents: [DocumentInformation], source: SnapshotAssembler.Event) {
         let now = ContinuousClock.now
         let gap = lastSentAt.map { "\($0.duration(to: now))" } ?? "first"
         log.debug("Sending documents snapshot", metadata: [
             "count": "\(documents.count)",
-            "source": "\(source)",
+            "source": "\(source.name)",
             "gapSinceLastSnapshot": "\(gap)"
         ])
         lastSentAt = now

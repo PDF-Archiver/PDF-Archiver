@@ -18,6 +18,14 @@ struct SnapshotAssembler {
     enum Event: Sendable {
         case initialSnapshot([DocumentInformation])
         case update(added: [DocumentInformation], updated: [DocumentInformation], removed: [URL])
+
+        /// The event's name in the log.
+        var name: String {
+            switch self {
+            case .initialSnapshot: "initial"
+            case .update: "update"
+            }
+        }
     }
 
     private var currentDocuments: [Int: DocumentInformation] = [:]

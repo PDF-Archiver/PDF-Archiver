@@ -403,7 +403,7 @@ struct SettingsView: View {
                     }
                 }
             }
-            .diagnosticsReportFlow(store: store.scope(state: \.diagnosticsReportFlow, action: \.diagnosticsReportFlow))
+            .diagnosticsReportFlow(store: store.scope(\.diagnosticsReportFlow, action: \.diagnosticsReportFlow))
 
             Button {
                 requestReview()
