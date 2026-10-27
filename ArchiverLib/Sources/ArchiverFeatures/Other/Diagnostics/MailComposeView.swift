@@ -6,7 +6,6 @@
 //
 
 #if os(iOS)
-import Diagnostics
 import MessageUI
 import SwiftUI
 
@@ -14,15 +13,15 @@ struct MailComposeView: UIViewControllerRepresentable {
     @Binding var isShowing: Bool
     let recipient: String
     let subject: String
-    let report: DiagnosticsReport?
+    let attachments: [MailAttachment]
 
     func makeUIViewController(context: Context) -> MFMailComposeViewController {
         let composer = MFMailComposeViewController()
         composer.mailComposeDelegate = context.coordinator
         composer.setToRecipients([recipient])
         composer.setSubject(subject)
-        if let report {
-            composer.addDiagnosticReport(report)
+        for attachment in attachments {
+            composer.addAttachmentData(attachment.data, mimeType: attachment.mimeType, fileName: attachment.filename)
         }
         return composer
     }

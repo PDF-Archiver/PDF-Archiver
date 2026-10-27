@@ -116,50 +116,28 @@ struct SettingsTests {
         }
     }
 
-    // MARK: - Mail Sheet Tests
-
-    @Test
-    func showMailSheet() async throws {
-        let store = TestStore(initialState: Settings.State()) {
-            Settings()
-        }
-
-        await store.send(.binding(.set(\.isShowingMailSheet, true))) {
-            $0.isShowingMailSheet = true
-        }
-    }
-
-    @Test
-    func hideMailSheet() async throws {
-        let store = TestStore(initialState: Settings.State(isShowingMailSheet: true)) {
-            Settings()
-        }
-
-        await store.send(.binding(.set(\.isShowingMailSheet, false))) {
-            $0.isShowingMailSheet = false
-        }
-    }
-
     // MARK: - Diagnostics Report Tests
 
     @Test
     func contactSupportShowsTheConsentDialogImmediatelyWithoutWaitingForTheReport() async throws {
         let report = DiagnosticsReport(filename: "Diagnostics-Report.html", data: Data())
-        let store = TestStore(initialState: Settings.State(diagnosticsReport: report)) {
+        var initialState = Settings.State()
+        initialState.diagnosticsReportFlow.report = report
+        let store = TestStore(initialState: initialState) {
             Settings()
         } withDependencies: {
-            // The reducer's effect logs the app state before creating the report, which reads this.
-            $0.archiveIndexer.pendingTextCount = { 0 }
-        }
-        store.exhaustivity = .off
-
-        await store.send(.onContactSupportTapped) {
-            $0.diagnosticsReport = nil
-            $0.isCreatingDiagnosticsReport = true
-            $0.isShowingDiagnosticsReportConsent = true
+            $0.diagnosticsMail.createReport = { report }
         }
 
-        await store.finish()
+        await store.send(.diagnosticsReportFlow(.start())) {
+            $0.diagnosticsReportFlow.report = nil
+            $0.diagnosticsReportFlow.isCreatingReport = true
+            $0.diagnosticsReportFlow.isShowingConsent = true
+        }
+        await store.receive(\.diagnosticsReportFlow.reportCreated) {
+            $0.diagnosticsReportFlow.report = report
+            $0.diagnosticsReportFlow.isCreatingReport = false
+        }
     }
 
     @Test
@@ -168,59 +146,81 @@ struct SettingsTests {
             Settings()
         }
 
-        await store.send(.onSendWithReportTapped) {
-            $0.didConfirmSendingDiagnosticsReport = true
-        }
-    }
-
-    // `deliverDiagnosticsReport` calls the real, unmocked `NSSharingService`/`mailto:` handoff on
-    // macOS, so only iOS - where delivery is just a state flag - exercises the "already ready" path.
-    #if os(iOS)
-    @Test
-    func sendWithReportTappedOpensTheMailSheetWhenTheReportIsAlreadyReady() async throws {
-        let report = DiagnosticsReport(filename: "Diagnostics-Report.html", data: Data())
-        let store = TestStore(initialState: Settings.State(diagnosticsReport: report)) {
-            Settings()
-        }
-
-        await store.send(.onSendWithReportTapped) {
-            $0.didConfirmSendingDiagnosticsReport = true
-            $0.isShowingMailSheet = true
+        await store.send(.diagnosticsReportFlow(.sendWithReportTapped)) {
+            $0.diagnosticsReportFlow.didConfirmSending = true
         }
     }
 
     @Test
-    func sendWithoutReportTappedOpensTheMailSheetImmediatelyWithoutTheReport() async throws {
+    func sendWithReportTappedDeliversTheMailWhenTheReportIsAlreadyReady() async throws {
         let report = DiagnosticsReport(filename: "Diagnostics-Report.html", data: Data())
-        let store = TestStore(initialState: Settings.State(
-            diagnosticsReport: report,
-            isCreatingDiagnosticsReport: true
-        )) {
+        let deliveredMails = LockIsolated<[DiagnosticsMail]>([])
+        var initialState = Settings.State()
+        initialState.diagnosticsReportFlow.report = report
+        let store = TestStore(initialState: initialState) {
             Settings()
+        } withDependencies: {
+            $0.diagnosticsMail.send = { mail in deliveredMails.withValue { $0.append(mail) } }
         }
 
-        await store.send(.onSendWithoutReportTapped) {
-            $0.diagnosticsReport = nil
-            $0.isCreatingDiagnosticsReport = false
-            $0.isShowingMailSheet = true
+        await store.send(.diagnosticsReportFlow(.sendWithReportTapped)) {
+            $0.diagnosticsReportFlow.didConfirmSending = true
+            #if os(iOS)
+            $0.diagnosticsReportFlow.isShowingMailSheet = true
+            #endif
         }
+        await store.finish()
+
+        #if os(iOS)
+        #expect(store.state.diagnosticsReportFlow.mail == DiagnosticsMail(report: report, extraAttachments: []))
+        #else
+        #expect(deliveredMails.value == [DiagnosticsMail(report: report, extraAttachments: [])])
+        #endif
     }
-    #endif
+
+    @Test
+    func sendWithoutReportTappedDeliversTheMailImmediatelyWithoutTheReport() async throws {
+        let report = DiagnosticsReport(filename: "Diagnostics-Report.html", data: Data())
+        let deliveredMails = LockIsolated<[DiagnosticsMail]>([])
+        var initialState = Settings.State()
+        initialState.diagnosticsReportFlow.report = report
+        initialState.diagnosticsReportFlow.isCreatingReport = true
+        let store = TestStore(initialState: initialState) {
+            Settings()
+        } withDependencies: {
+            $0.diagnosticsMail.send = { mail in deliveredMails.withValue { $0.append(mail) } }
+        }
+
+        await store.send(.diagnosticsReportFlow(.sendWithoutReportTapped)) {
+            $0.diagnosticsReportFlow.report = nil
+            $0.diagnosticsReportFlow.isCreatingReport = false
+            #if os(iOS)
+            $0.diagnosticsReportFlow.isShowingMailSheet = true
+            #endif
+        }
+        await store.finish()
+
+        #if os(iOS)
+        #expect(store.state.diagnosticsReportFlow.mail == DiagnosticsMail(report: nil, extraAttachments: []))
+        #else
+        #expect(deliveredMails.value == [DiagnosticsMail(report: nil, extraAttachments: [])])
+        #endif
+    }
 
     @Test
     func cancelContactSupportTappedDiscardsTheReport() async throws {
         let report = DiagnosticsReport(filename: "Diagnostics-Report.html", data: Data())
-        let store = TestStore(initialState: Settings.State(
-            isShowingDiagnosticsReportConsent: true,
-            diagnosticsReport: report,
-            isCreatingDiagnosticsReport: true
-        )) {
+        var initialState = Settings.State()
+        initialState.diagnosticsReportFlow.isShowingConsent = true
+        initialState.diagnosticsReportFlow.report = report
+        initialState.diagnosticsReportFlow.isCreatingReport = true
+        let store = TestStore(initialState: initialState) {
             Settings()
         }
 
-        await store.send(.onCancelContactSupportTapped) {
-            $0.diagnosticsReport = nil
-            $0.isCreatingDiagnosticsReport = false
+        await store.send(.diagnosticsReportFlow(.cancelTapped)) {
+            $0.diagnosticsReportFlow.report = nil
+            $0.diagnosticsReportFlow.isCreatingReport = false
         }
     }
 
@@ -259,7 +259,7 @@ struct SettingsTests {
         let state = Settings.State()
 
         #expect(state.destination == nil)
-        #expect(state.isShowingMailSheet == false)
+        #expect(state.diagnosticsReportFlow == DiagnosticsReportFlow.State())
     }
 
     @Test
@@ -426,16 +426,15 @@ struct SettingsTests {
         let state2 = Settings.State()
 
         // States with same values should be equal
-        #expect(state1.isShowingMailSheet == state2.isShowingMailSheet)
-        #expect(state1.destination == state2.destination)
+        #expect(state1 == state2)
     }
 
     @Test
     func stateInequality() throws {
-        let state1 = Settings.State(isShowingMailSheet: false)
-        let state2 = Settings.State(isShowingMailSheet: true)
+        let state1 = Settings.State(destination: nil)
+        let state2 = Settings.State(destination: .legal)
 
-        #expect(state1.isShowingMailSheet != state2.isShowingMailSheet)
+        #expect(state1 != state2)
     }
 
     // MARK: - Action Tests
