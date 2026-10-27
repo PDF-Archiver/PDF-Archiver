@@ -19,13 +19,14 @@ struct DiagnosticsMailDependency {
         DiagnosticsReport(filename: "Diagnostics-Report.html", data: Data())
     }
     /// Hands the mail to Mail on macOS; iOS presents `MailComposeView` from the flow's state instead.
-    var send: @Sendable (DiagnosticsMail) async -> Void
+    /// Returns `true` only when Mail got the mail with every attachment.
+    var send: @Sendable (DiagnosticsMail) async -> Bool = { _ in false }
 }
 
 extension DiagnosticsMailDependency: TestDependencyKey {
     static let previewValue = Self(
         createReport: { DiagnosticsReport(filename: "Diagnostics-Report.html", data: Data()) },
-        send: { _ in }
+        send: { _ in false }
     )
 
     static let testValue = Self()
@@ -47,7 +48,9 @@ extension DiagnosticsMailDependency: DependencyKey {
         },
         send: { mail in
             #if os(macOS)
-            await MainActor.run { MacMail.send(mail) }
+            return await MainActor.run { MacMail.send(mail) }
+            #else
+            return false
             #endif
         }
     )
@@ -63,14 +66,13 @@ extension DependencyValues {
 #if os(macOS)
 @MainActor
 private enum MacMail {
-    /// Attaches the files via the Mail compose service; falls back to a plain `mailto:` link
-    /// (no attachments) when there is nothing to attach, no mail client is configured or no file
-    /// could be written (revealing the written files in Finder in the no-client case).
-    static func send(_ mail: DiagnosticsMail) {
+    /// - Attaches the files via the Mail compose service; `true` once every file went along.
+    /// - Otherwise opens a `mailto:` link without attachments and reveals the files in Finder.
+    static func send(_ mail: DiagnosticsMail) -> Bool {
         let urls = mail.attachments.compactMap(writeToTemporaryFile)
         guard !urls.isEmpty else {
             openMailtoFallback()
-            return
+            return false
         }
 
         let service = NSSharingService(named: .composeEmail)
@@ -79,9 +81,10 @@ private enum MacMail {
         guard let service, service.canPerform(withItems: urls) else {
             openMailtoFallback()
             NSWorkspace.shared.activateFileViewerSelecting(urls)
-            return
+            return false
         }
         service.perform(withItems: urls)
+        return urls.count == mail.attachments.count
     }
 
     private static func writeToTemporaryFile(_ attachment: MailAttachment) -> URL? {

@@ -3,7 +3,6 @@ import ArchiverModels
 import ComposableArchitecture
 import Dependencies
 import DependenciesTestSupport
-import Diagnostics
 import DocumentProcessingPipeline
 import Foundation
 import SQLiteData
@@ -16,8 +15,6 @@ import Testing
     try $0.bootstrapDatabase()
     // The launch task logs the app state, which reads this count.
     $0.archiveIndexer.pendingTextCount = { 0 }
-    $0.crashReports.stored = { [] }
-    $0.crashReports.storeIncoming = {}
 })
 struct AppFeatureTests {
     // MARK: - Tab Selection Tests
@@ -490,109 +487,7 @@ struct AppFeatureTests {
         await store.finish()
     }
 
-    // MARK: - Crash Report Tests
-
-    @Test
-    func aStoredCrashReportIsOfferedAtLaunch() async throws {
-        let store = TestStore(initialState: AppFeature.State()) {
-            AppFeature()
-        } withDependencies: {
-            Self.launchDependencies(&$0)
-            $0.crashReports.stored = { [Self.crashReport] }
-        }
-        store.exhaustivity = .off(showSkippedAssertions: false)
-
-        let task = await store.send(.onLongBackgroundTask)
-
-        await store.receive(\.crashReportsLoaded, [Self.crashReport])
-        #expect(store.state.offeredCrashReports == [Self.crashReport])
-        #expect(store.state.crashReportAlert != nil)
-        await task.cancel()
-    }
-
-    @Test
-    func noStoredCrashReportShowsNoDialog() async throws {
-        let (storing, storingContinuation) = AsyncStream<Void>.makeStream()
-        let store = TestStore(initialState: AppFeature.State()) {
-            AppFeature()
-        } withDependencies: {
-            Self.launchDependencies(&$0)
-            $0.crashReports.storeIncoming = { storingContinuation.finish() }
-        }
-        store.exhaustivity = .off(showSkippedAssertions: false)
-
-        let task = await store.send(.onLongBackgroundTask)
-        // Without a dialog the incoming reports are still stored for the next launch.
-        for await _ in storing {}
-        await task.cancel()
-
-        #expect(store.state.crashReportAlert == nil)
-        #expect(store.state.offeredCrashReports.isEmpty)
-    }
-
-    @Test
-    func sendingACrashReportMailsItWithTheDiagnosticsReportAndDiscardsIt() async throws {
-        let discarded = LockIsolated<[StoredCrashReport]>([])
-        var state = AppFeature.State()
-        state.offeredCrashReports = [Self.crashReport]
-        state.crashReportAlert = AppFeature.crashReportAlert
-        let store = TestStore(initialState: state) {
-            AppFeature()
-        } withDependencies: {
-            $0.crashReports.discard = { reports in discarded.withValue { $0 += reports } }
-            $0.diagnosticsMail.createReport = { DiagnosticsReport(filename: "Diagnostics-Report.html", data: Data()) }
-            $0.diagnosticsMail.send = { _ in }
-        }
-        store.exhaustivity = .off(showSkippedAssertions: false)
-
-        await store.send(.crashReportAlert(.presented(.sendTapped)))
-        await store.receive(\.diagnosticsReportFlow.start)
-        await store.finish()
-
-        let attachment = MailAttachment(data: Self.crashReport.data, filename: Self.crashReport.filename, mimeType: "application/json")
-        #expect(store.state.diagnosticsReportFlow.extraAttachments == [attachment])
-        // The alert was the consent, so the flow does not ask again.
-        #expect(!store.state.diagnosticsReportFlow.isShowingConsent)
-        #expect(store.state.offeredCrashReports.isEmpty)
-        #expect(discarded.value == [Self.crashReport])
-    }
-
-    @Test
-    func notNowDiscardsTheCrashReportWithoutAMail() async throws {
-        let discarded = LockIsolated<[StoredCrashReport]>([])
-        var state = AppFeature.State()
-        state.offeredCrashReports = [Self.crashReport]
-        state.crashReportAlert = AppFeature.crashReportAlert
-        let store = TestStore(initialState: state) {
-            AppFeature()
-        } withDependencies: {
-            $0.crashReports.discard = { reports in discarded.withValue { $0 += reports } }
-        }
-        store.exhaustivity = .off(showSkippedAssertions: false)
-
-        await store.send(.crashReportAlert(.presented(.notNowTapped)))
-        await store.finish()
-
-        #expect(store.state.offeredCrashReports.isEmpty)
-        #expect(store.state.diagnosticsReportFlow.extraAttachments.isEmpty)
-        #expect(!store.state.diagnosticsReportFlow.isCreatingReport)
-        #expect(discarded.value == [Self.crashReport])
-    }
-
     // MARK: - Helpers
-
-    private static let crashReport = StoredCrashReport(filename: "Crash-Report-1.json", data: Data("{}".utf8))
-
-    private static func launchDependencies(_ dependencies: inout DependencyValues) {
-        dependencies.documentProcessor.processStagedFiles = { }
-        dependencies.documentProcessor.processUntaggedDocuments = { _ in UntaggedProcessingResult(ocrCount: 0, aiCacheCount: 0) }
-        dependencies.indexScheduler.schedule = { }
-        dependencies.indexScheduler.indexWhileAppIsOpen = { }
-        dependencies.widgetStore.updateWidget = { _, _ in }
-        dependencies.archiveStore.startDownloadOf = { _ in }
-        dependencies.premium.currentStatus = { .active }
-        dependencies.premium.transactionUpdates = { AsyncStream { $0.finish() } }
-    }
 
     private static func documents(of rows: [ArchiveSearchRow]) async throws -> [Document] {
         @Dependency(\.defaultDatabase) var database

@@ -41,22 +41,31 @@ struct DiagnosticsReportFlow {
         var extraAttachments: [MailAttachment] = []
         #if os(iOS)
         var isShowingMailSheet = false
+        #endif
 
         var mail: DiagnosticsMail {
             DiagnosticsMail(report: report, extraAttachments: extraAttachments)
         }
-        #endif
     }
 
     enum Action: BindableAction {
         case binding(BindingAction<State>)
         case cancelTapped
+        case delegate(Delegate)
+        /// `sent` once the mail left the app's hands: sent or saved on iOS, handed to Mail with
+        /// every attachment on macOS.
+        case mailFinished(sent: Bool)
         case reportCreated(DiagnosticsReport)
         case sendWithReportTapped
         case sendWithoutReportTapped
         /// `askForConsent: false` is for a caller that already has the user's consent, so the
         /// mail opens as soon as the report is ready.
         case start(extraAttachments: [MailAttachment] = [], askForConsent: Bool = true)
+
+        @CasePathable
+        enum Delegate {
+            case mailSent
+        }
     }
 
     private enum CancelID {
@@ -73,10 +82,17 @@ struct DiagnosticsReportFlow {
                 return .none
 
             case .cancelTapped:
-                state.report = nil
-                state.isCreatingReport = false
-                state.didConfirmSending = false
+                Self.reset(&state)
                 return .cancel(id: CancelID.report)
+
+            case .delegate:
+                return .none
+
+            case .mailFinished(let sent):
+                #if os(iOS)
+                state.isShowingMailSheet = false
+                #endif
+                return sent ? .send(.delegate(.mailSent)) : .none
 
             case .reportCreated(let report):
                 state.report = report
@@ -91,14 +107,12 @@ struct DiagnosticsReportFlow {
                 return deliver(&state)
 
             case .sendWithoutReportTapped:
-                state.report = nil
-                state.isCreatingReport = false
-                state.didConfirmSending = false
+                Self.reset(&state)
                 return .merge(.cancel(id: CancelID.report), deliver(&state))
 
             case let .start(extraAttachments, askForConsent):
                 // Every start reports the state at that moment, never a report an earlier start produced.
-                state.report = nil
+                Self.reset(&state)
                 state.isCreatingReport = true
                 state.extraAttachments = extraAttachments
                 state.didConfirmSending = !askForConsent
@@ -118,8 +132,15 @@ struct DiagnosticsReportFlow {
         state.isShowingMailSheet = true
         return .none
         #else
-        let mail = DiagnosticsMail(report: state.report, extraAttachments: state.extraAttachments)
-        return .run { _ in await diagnosticsMail.send(mail) }
+        return .run { [mail = state.mail] send in
+            await send(.mailFinished(sent: diagnosticsMail.send(mail)))
+        }
         #endif
+    }
+
+    private static func reset(_ state: inout State) {
+        state.report = nil
+        state.isCreatingReport = false
+        state.didConfirmSending = false
     }
 }

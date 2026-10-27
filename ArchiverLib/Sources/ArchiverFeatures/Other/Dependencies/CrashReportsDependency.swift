@@ -22,15 +22,15 @@ struct CrashReportsDependency {
     /// The crash reports stored by earlier sessions.
     var stored: @Sendable () -> [StoredCrashReport] = { [] }
     var discard: @Sendable (_ reports: [StoredCrashReport]) -> Void
-    /// Stores every crash report MetricKit delivers; returns only when the delivery ends.
-    var storeIncoming: @Sendable () async -> Void
+    /// Stores every crash report MetricKit delivers and yields it once it is on disk.
+    var storeIncoming: @Sendable () -> AsyncStream<StoredCrashReport> = { .finished }
 }
 
 extension CrashReportsDependency: TestDependencyKey {
     static let previewValue = Self(
         stored: { [] },
         discard: { _ in },
-        storeIncoming: {}
+        storeIncoming: { .finished }
     )
 
     static let testValue = Self()
@@ -62,11 +62,19 @@ extension CrashReportsDependency: DependencyKey {
         },
         storeIncoming: {
             #if canImport(MetricKit)
-            guard #available(iOS 27, macOS 27, *) else { return }
-            for await report in MetricManager().diagnosticReports {
-                guard case .crash = report.result else { continue }
-                store(report)
+            guard #available(iOS 27, macOS 27, *) else { return .finished }
+            return AsyncStream { continuation in
+                let task = Task {
+                    for await report in MetricManager().diagnosticReports {
+                        guard case .crash = report.result, let stored = store(report) else { continue }
+                        continuation.yield(stored)
+                    }
+                    continuation.finish()
+                }
+                continuation.onTermination = { _ in task.cancel() }
             }
+            #else
+            return .finished
             #endif
         }
     )
@@ -77,7 +85,7 @@ extension CrashReportsDependency: DependencyKey {
 
     #if canImport(MetricKit)
     @available(iOS 27, macOS 27, *)
-    private static func store(_ report: DiagnosticReport) {
+    private static func store(_ report: DiagnosticReport) -> StoredCrashReport? {
         do {
             let encoder = JSONEncoder()
             encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
@@ -89,10 +97,12 @@ extension CrashReportsDependency: DependencyKey {
             let filename = "Crash-Report-\(timestamp)-\(UUID().uuidString.prefix(8)).json"
             try data.write(to: directory.appending(path: filename), options: .atomic)
             Logger.app.notice("Stored a crash report")
+            return StoredCrashReport(filename: filename, data: data)
         } catch {
             Logger.app.error("Failed to store crash report", metadata: [
                 "error": "\(LogRedact.describe(error))"
             ])
+            return nil
         }
     }
     #endif

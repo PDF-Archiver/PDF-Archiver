@@ -61,18 +61,13 @@ struct AppFeature {
         var closesSettingsDestinationOnReturn = false
         #endif
 
-        @Presents var crashReportAlert: AlertState<Action.CrashReportAlert>?
-        /// The reports the dialog asks about; one arriving later waits for the next launch.
-        var offeredCrashReports: [StoredCrashReport] = []
-        var diagnosticsReportFlow = DiagnosticsReportFlow.State()
+        var crashReportOffer = CrashReportOffer.State()
     }
 
     enum Action: BindableAction {
         case binding(BindingAction<State>)
         case archiveList(ArchiveList.Action)
-        case crashReportAlert(PresentationAction<CrashReportAlert>)
-        case crashReportsLoaded([StoredCrashReport])
-        case diagnosticsReportFlow(DiagnosticsReportFlow.Action)
+        case crashReportOffer(CrashReportOffer.Action)
         case inboxChanged([Document])
         case onLongBackgroundTask
         case onScenePhaseChanged(old: ScenePhase, new: ScenePhase)
@@ -82,18 +77,12 @@ struct AppFeature {
         case untaggedDocumentList(UntaggedDocumentList.Action)
         case statistics(Statistics.Action)
         case settings(Settings.Action)
-
-        enum CrashReportAlert: Equatable {
-            case sendTapped
-            case notNowTapped
-        }
     }
 
     @Dependency(\.defaultDatabase) var database
     @Dependency(\.documentProcessor) var documentProcessor
     @Dependency(\.indexScheduler) var indexScheduler
     @Dependency(\.archiveStore) var archiveStore
-    @Dependency(\.crashReports) var crashReports
     @Dependency(\.widgetStore) var widgetStore
     @Dependency(\.premium) var premium
 
@@ -117,8 +106,8 @@ struct AppFeature {
         Scope(\.settings, action: \.settings) {
             Settings()
         }
-        Scope(\.diagnosticsReportFlow, action: \.diagnosticsReportFlow) {
-            DiagnosticsReportFlow()
+        Scope(\.crashReportOffer, action: \.crashReportOffer) {
+            CrashReportOffer()
         }
 
         // ... second, run AppFeature reducer, if we need to interact (from an AppFeature domain point of view) with it
@@ -200,32 +189,7 @@ struct AppFeature {
             case .binding:
                 return .none
 
-            case .crashReportAlert(.presented(.sendTapped)):
-                let reports = state.offeredCrashReports
-                state.offeredCrashReports = []
-                let attachments = reports.map {
-                    MailAttachment(data: $0.data, filename: $0.filename, mimeType: "application/json")
-                }
-                return .merge(
-                    // The alert already asked, so the flow opens the mail without its own consent dialog.
-                    .send(.diagnosticsReportFlow(.start(extraAttachments: attachments, askForConsent: false))),
-                    .run { _ in crashReports.discard(reports) }
-                )
-
-            case .crashReportAlert(.presented(.notNowTapped)):
-                let reports = state.offeredCrashReports
-                state.offeredCrashReports = []
-                return .run { _ in crashReports.discard(reports) }
-
-            case .crashReportAlert:
-                return .none
-
-            case .crashReportsLoaded(let reports):
-                state.offeredCrashReports = reports
-                state.crashReportAlert = Self.crashReportAlert
-                return .none
-
-            case .diagnosticsReportFlow:
+            case .crashReportOffer:
                 return .none
 
             case .inboxChanged(let inbox):
@@ -330,14 +294,6 @@ struct AppFeature {
                         // Its own effect: the scheduling above returns at once, while this one runs
                         // for as long as the app is open.
                         await indexScheduler.indexWhileAppIsOpen()
-                    },
-                    .run(priority: .background) { send in
-                        // Read before storing, so a report delivered in this session waits for the next launch.
-                        let reports = crashReports.stored()
-                        if !reports.isEmpty {
-                            await send(.crashReportsLoaded(reports))
-                        }
-                        await crashReports.storeIncoming()
                     }
                 )
 
@@ -418,20 +374,6 @@ struct AppFeature {
                 return .none
             }
         }
-        .ifLet(\.$crashReportAlert, action: \.crashReportAlert)
-    }
-
-    static let crashReportAlert = AlertState<Action.CrashReportAlert> {
-        TextState("Send Crash Report?", bundle: #bundle)
-    } actions: {
-        ButtonState(action: .sendTapped) {
-            TextState("Send", bundle: #bundle)
-        }
-        ButtonState(role: .cancel, action: .notNowTapped) {
-            TextState("Not Now", bundle: #bundle)
-        }
-    } message: {
-        TextState("PDF Archiver quit unexpectedly last time. Send the crash report and a diagnostics report to support? You see the mail before it is sent.", bundle: #bundle)
     }
 
     /// Synchronous on purpose: a database read would add an async hop to the save flow and break
@@ -557,8 +499,7 @@ struct AppView: View {
             #endif
         }
         .modifier(AlertDataModelProvider())
-        .alert($store.scope(\.$crashReportAlert, action: \.crashReportAlert))
-        .diagnosticsReportFlow(store: store.scope(state: \.diagnosticsReportFlow, action: \.diagnosticsReportFlow))
+        .crashReportOffer(store: store.scope(\.crashReportOffer, action: \.crashReportOffer))
         .sheet(isPresented: Binding(store.$tutorialShown).flipped) {
             OnboardingView(isPresented: Binding(store.$tutorialShown).flipped)
                 #if os(macOS)

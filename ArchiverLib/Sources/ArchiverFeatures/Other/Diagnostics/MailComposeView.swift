@@ -10,10 +10,11 @@ import MessageUI
 import SwiftUI
 
 struct MailComposeView: UIViewControllerRepresentable {
-    @Binding var isShowing: Bool
     let recipient: String
     let subject: String
     let attachments: [MailAttachment]
+    /// Called with `true` when the mail was sent or saved as a draft.
+    let onFinish: (_ sent: Bool) -> Void
 
     func makeUIViewController(context: Context) -> MFMailComposeViewController {
         let composer = MFMailComposeViewController()
@@ -29,18 +30,18 @@ struct MailComposeView: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: MFMailComposeViewController, context: Context) {}
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(isShowing: $isShowing)
+        Coordinator(onFinish: onFinish)
     }
 
     class Coordinator: NSObject, MFMailComposeViewControllerDelegate {
-        @Binding var isShowing: Bool
+        let onFinish: (_ sent: Bool) -> Void
 
-        init(isShowing: Binding<Bool>) {
-            _isShowing = isShowing
+        init(onFinish: @escaping (_ sent: Bool) -> Void) {
+            self.onFinish = onFinish
         }
 
         func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
-            isShowing = false
+            onFinish(result == .sent || result == .saved)
         }
     }
 }

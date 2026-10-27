@@ -160,7 +160,10 @@ struct SettingsTests {
         let store = TestStore(initialState: initialState) {
             Settings()
         } withDependencies: {
-            $0.diagnosticsMail.send = { mail in deliveredMails.withValue { $0.append(mail) } }
+            $0.diagnosticsMail.send = { mail in
+                deliveredMails.withValue { $0.append(mail) }
+                return true
+            }
         }
 
         await store.send(.diagnosticsReportFlow(.sendWithReportTapped)) {
@@ -169,6 +172,10 @@ struct SettingsTests {
             $0.diagnosticsReportFlow.isShowingMailSheet = true
             #endif
         }
+        #if os(macOS)
+        await store.receive(\.diagnosticsReportFlow.mailFinished)
+        await store.receive(\.diagnosticsReportFlow.delegate.mailSent)
+        #endif
         await store.finish()
 
         #if os(iOS)
@@ -188,7 +195,11 @@ struct SettingsTests {
         let store = TestStore(initialState: initialState) {
             Settings()
         } withDependencies: {
-            $0.diagnosticsMail.send = { mail in deliveredMails.withValue { $0.append(mail) } }
+            // Nothing to attach, so macOS falls back to `mailto:` and the mail did not leave yet.
+            $0.diagnosticsMail.send = { mail in
+                deliveredMails.withValue { $0.append(mail) }
+                return false
+            }
         }
 
         await store.send(.diagnosticsReportFlow(.sendWithoutReportTapped)) {
@@ -198,6 +209,9 @@ struct SettingsTests {
             $0.diagnosticsReportFlow.isShowingMailSheet = true
             #endif
         }
+        #if os(macOS)
+        await store.receive(\.diagnosticsReportFlow.mailFinished)
+        #endif
         await store.finish()
 
         #if os(iOS)

@@ -36,10 +36,10 @@ private struct DiagnosticsReportFlowModifier: ViewModifier {
                 } else {
                     // Only presented once the consent decision is final, so the attachments are settled.
                     MailComposeView(
-                        isShowing: $store.isShowingMailSheet,
                         recipient: Constants.mailRecipient,
                         subject: Constants.mailSubject,
-                        attachments: store.mail.attachments
+                        attachments: store.mail.attachments,
+                        onFinish: { sent in store.send(.mailFinished(sent: sent)) }
                     )
                 }
             }
