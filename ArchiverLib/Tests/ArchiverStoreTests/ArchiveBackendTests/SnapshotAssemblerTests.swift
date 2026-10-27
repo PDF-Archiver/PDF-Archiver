@@ -14,37 +14,52 @@ import Testing
 @Suite
 struct SnapshotAssemblerTests {
     @Test
-    func anUpdateBeforeTheInitialSnapshotIsHeldBack() {
-        var assembler = SnapshotAssembler()
+    func anUpdateBeforeTheInitialSnapshotYieldsNoSnapshotAndIsNotLost() {
+        let snapshots = Self.snapshots(from: [
+            .update(added: [Self.item(id: 3)], updated: [], removed: []),
+            .initialSnapshot([Self.item(id: 1), Self.item(id: 2), Self.item(id: 3)])
+        ])
 
-        let early = assembler.applyUpdate(added: [], updated: [Self.item(id: 1)], removed: [])
-        let initial = assembler.applyInitial([Self.item(id: 1), Self.item(id: 2), Self.item(id: 3)])
-
-        #expect(early == nil)
-        #expect(initial.map(\.id).sorted() == [1, 2, 3])
+        #expect(snapshots == [[1, 2, 3]])
     }
 
     @Test
-    func anEarlyRemovalOfAnItemMissingFromTheResultsStaysOut() {
-        var assembler = SnapshotAssembler()
+    func theInitialSnapshotOutranksAnEarlierRemoval() {
+        let snapshots = Self.snapshots(from: [
+            .update(added: [Self.item(id: 9)], updated: [], removed: []),
+            .update(added: [], updated: [], removed: [Self.item(id: 9).url]),
+            .initialSnapshot([Self.item(id: 1)])
+        ])
 
-        _ = assembler.applyUpdate(added: [Self.item(id: 9)], updated: [], removed: [])
-        _ = assembler.applyUpdate(added: [], updated: [], removed: [Self.item(id: 9).url])
-        let initial = assembler.applyInitial([Self.item(id: 1)])
-
-        #expect(initial.map(\.id) == [1])
+        #expect(snapshots == [[1]])
     }
 
     @Test
-    func anUpdateAfterTheInitialSnapshotIsMergedAndSentOnlyOnce() {
+    func anUpdateAfterTheInitialSnapshotIsKept() {
+        let snapshots = Self.snapshots(from: [
+            .initialSnapshot([Self.item(id: 1), Self.item(id: 2)]),
+            .update(added: [Self.item(id: 3)], updated: [], removed: [Self.item(id: 1).url])
+        ])
+
+        #expect(snapshots == [[1, 2], [2, 3]])
+    }
+
+    @Test
+    func anIdenticalSnapshotIsNotSentTwice() {
+        let snapshots = Self.snapshots(from: [
+            .initialSnapshot([Self.item(id: 1), Self.item(id: 2)]),
+            .update(added: [Self.item(id: 3)], updated: [], removed: []),
+            .update(added: [], updated: [Self.item(id: 3)], removed: []),
+            .update(added: [], updated: [], removed: [Self.item(id: 7).url])
+        ])
+
+        #expect(snapshots == [[1, 2], [1, 2, 3]])
+    }
+
+    /// The ids of every Folder Snapshot the assembler sends for `events`, in order.
+    private static func snapshots(from events: [SnapshotAssembler.Event]) -> [[Int]] {
         var assembler = SnapshotAssembler()
-        _ = assembler.applyInitial([Self.item(id: 1), Self.item(id: 2)])
-
-        let merged = assembler.applyUpdate(added: [Self.item(id: 3)], updated: [], removed: [Self.item(id: 1).url])
-        let repeated = assembler.applyUpdate(added: [Self.item(id: 3)], updated: [], removed: [])
-
-        #expect(merged?.map(\.id).sorted() == [2, 3])
-        #expect(repeated == nil)
+        return events.compactMap { assembler.apply($0)?.map(\.id).sorted() }
     }
 
     private static func item(id: Int) -> DocumentInformation {

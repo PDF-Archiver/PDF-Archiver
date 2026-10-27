@@ -72,41 +72,32 @@ final class ICloudFolderProvider: FolderProvider {
         // Registered here, synchronously and before the query starts: `DidFinishGathering` is posted
         // exactly once, and a query that finished before an `await`ed loop began iterating would
         // post it into the void - this provider would then never yield a single snapshot.
-        let (gathered, gatheredContinuation) = AsyncStream.makeStream(of: Void.self)
-        let (updates, updatesContinuation) = AsyncStream.makeStream(of: MetadataUpdate.self)
+        // Unbounded: an update is a delta, and dropping one would lose a document.
+        let (events, eventsContinuation) = AsyncStream.makeStream(of: SnapshotAssembler.Event.self)
+        let query = metadataQuery
         let center = NotificationCenter.default
+        // Both observers run on the query's serial queue, the only place its results are read:
+        // reading them anywhere else raced the query's own update and crashed in `resultAtIndex:`.
         notificationTokenBox = NotificationTokenBox([
             // Scoped to `metadataQuery`: macOS runs a second provider for the observed folder, and
             // an unscoped observer would merge that folder's items into this one's snapshot.
             center.addObserver(forName: .NSMetadataQueryDidFinishGathering, object: metadataQuery, queue: nil) { _ in
-                gatheredContinuation.yield()
+                Self.log.debug("Documents query finished initial fetch.")
+                eventsContinuation.yield(.initialSnapshot(Self.readResults(of: query)))
             },
             center.addObserver(forName: .NSMetadataQueryDidUpdate, object: metadataQuery, queue: nil) { notification in
-                updatesContinuation.yield(MetadataUpdate(notification))
+                eventsContinuation.yield(Self.readUpdate(notification))
             }
         ])
 
         observationTask = Task(priority: .utility) { [weak self] in
-            guard let self else { return }
+            query.start()
+            Self.log.debug("Starting the documents query.")
 
-            metadataQuery.start()
-            log.debug("Starting the documents query.")
-
-            await withTaskGroup(of: Void.self) { group in
-                group.addTask { [weak self] in
-                    for await _ in gathered {
-                        guard let self else { return }
-                        Self.log.debug("Documents query finished initial fetch.")
-                        await sendInitialSnapshot()
-                    }
-                }
-
-                group.addTask { [weak self] in
-                    for await update in updates {
-                        guard let self else { return }
-                        await sendDocuments(added: update.added, updated: update.updated, removed: update.removed)
-                    }
-                }
+            // A single consumer keeps the order the query's queue gave the events.
+            for await event in events {
+                guard let self else { return }
+                await apply(event)
             }
         }
     }
@@ -138,48 +129,40 @@ final class ICloudFolderProvider: FolderProvider {
         }
     }
 
-    /// One `DidUpdate`, read on the posting thread: `NSMetadataItem` is not `Sendable` and must not
-    /// travel to the observation task.
-    private struct MetadataUpdate: Sendable {
-        let added: [DocumentInformation]
-        let updated: [DocumentInformation]
-        let removed: [URL]
-
-        init(_ notification: Notification) {
-            func items(_ key: String) -> [NSMetadataItem] {
-                notification.userInfo?[key] as? [NSMetadataItem] ?? []
-            }
-            added = items(NSMetadataQueryUpdateAddedItemsKey).compactMap { $0.createDetails() }
-            updated = items(NSMetadataQueryUpdateChangedItemsKey).compactMap { $0.createDetails() }
-            // URL only: `createDetails()` reads the file's id, which fails once the file is gone
-            // and silently dropped every removal.
-            removed = items(NSMetadataQueryUpdateRemovedItemsKey).compactMap {
-                ($0.value(forAttribute: NSMetadataItemURLKey) as? URL)?.normalized()
-            }
+    /// Runs on the query's queue: `NSMetadataItem` is not `Sendable` and must not travel to the
+    /// observation task.
+    nonisolated private static func readUpdate(_ notification: Notification) -> SnapshotAssembler.Event {
+        func items(_ key: String) -> [NSMetadataItem] {
+            notification.userInfo?[key] as? [NSMetadataItem] ?? []
         }
+        return .update(added: items(NSMetadataQueryUpdateAddedItemsKey).compactMap { $0.createDetails() },
+                       updated: items(NSMetadataQueryUpdateChangedItemsKey).compactMap { $0.createDetails() },
+                       // URL only: `createDetails()` reads the file's id, which fails once the file is gone
+                       // and silently dropped every removal.
+                       removed: items(NSMetadataQueryUpdateRemovedItemsKey).compactMap {
+                           ($0.value(forAttribute: NSMetadataItemURLKey) as? URL)?.normalized()
+                       })
     }
 
-    private func sendDocuments(added: [DocumentInformation], updated: [DocumentInformation], removed: [URL]) {
-        guard let documents = snapshots.applyUpdate(added: added, updated: updated, removed: removed) else { return }
-        send(documents, source: "update")
-    }
-
-    /// Reads the results and sends them in one synchronous step: an `await` in between would let an
-    /// update land first, which the older result list then overwrites.
-    private func sendInitialSnapshot() {
-        metadataQuery.disableUpdates()
-        var results: [DocumentInformation] = []
-        for index in 0..<metadataQuery.resultCount {
-            guard let result = metadataQuery.result(at: index) as? NSMetadataItem else {
+    /// Runs on the query's queue, the only place its result list is safe to read.
+    nonisolated private static func readResults(of query: NSMetadataQuery) -> [DocumentInformation] {
+        query.disableUpdates()
+        defer { query.enableUpdates() }
+        return (0..<query.resultCount).compactMap { index in
+            guard let result = query.result(at: index) as? NSMetadataItem else {
                 assertionFailure("Could not cast result \(index) to NSMetadataItem")
-                continue
+                return nil
             }
-            if let details = result.createDetails() {
-                results.append(details)
-            }
+            return result.createDetails()
         }
-        metadataQuery.enableUpdates()
-        send(snapshots.applyInitial(results), source: "initial")
+    }
+
+    private func apply(_ event: SnapshotAssembler.Event) {
+        guard let documents = snapshots.apply(event) else { return }
+        switch event {
+        case .initialSnapshot: send(documents, source: "initial")
+        case .update: send(documents, source: "update")
+        }
     }
 
     private func send(_ documents: [DocumentInformation], source: String) {
