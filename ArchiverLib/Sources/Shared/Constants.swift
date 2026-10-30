@@ -9,7 +9,7 @@
 import Foundation
 
 nonisolated public enum Constants {
-    public static let mailRecipient = "support@pdf-archiver.io"
+    public static let mailRecipient = "support@kahnert.me"
     public static let mailSubject = "PDF Archiver: Support"
 
     // Staging area for documents before they are processed and moved to the archive:
