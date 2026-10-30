@@ -29,7 +29,7 @@ let package = Package(
                     "ComposableArchitecture2Deprecations",
                     "ComposableArchitecture2DeprecationOverloads"
                  ]),
-        .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "1.17.1"),
+        .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "1.17.2"),
         .package(url: "https://github.com/pointfreeco/swift-sharing", exact: "2.10.1"),
         .package(url: "https://github.com/pointfreeco/sqlite-data", exact: "1.12.1"),
         // Pinned to the version sqlite-data resolves; `ArchiverDatabase` needs `ValueObservation` directly.
