@@ -41,12 +41,12 @@ jobs:
         run: swift package resolve
         working-directory: ArchiverLib
 
-      - name: Mirror into the workspace and the app project
+      # Resolved per container, not copied: the app project adds packages (KickstartSDK) that
+      # ArchiverLib lacks, and Xcode rejects a copy as out of date.
+      - name: Resolve the workspace and the app project
         run: |
-          cp ArchiverLib/Package.resolved \
-            PDFArchiver.xcworkspace/xcshareddata/swiftpm/Package.resolved
-          cp ArchiverLib/Package.resolved \
-            PDFArchiver.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+          xcodebuild -resolvePackageDependencies -workspace PDFArchiver.xcworkspace -scheme iOS
+          xcodebuild -resolvePackageDependencies -project PDFArchiver.xcodeproj -scheme iOS
 
       - name: Install LicensePlist
         run: |
